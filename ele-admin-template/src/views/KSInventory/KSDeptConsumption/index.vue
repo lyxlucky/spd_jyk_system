@@ -4,7 +4,7 @@
       <!-- 搜索表单 -->
       <user-search @search="reload" />
       <!-- 数据表格 -->
-      <ele-pro-table ref="table" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" cache-key="DepaStorageQuery">
+      <ele-pro-table ref="table" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" cache-key="KSDeptConsumption">
         <!-- 表头工具栏 -->
         <!-- <template v-slot:toolbar>
           <el-button size="small" type="primary" icon="el-icon-plus" class="ele-btn-icon" @click="openEdit()">
@@ -24,9 +24,9 @@
         </template>
 
         <!-- 操作列 -->
-        <template v-slot:Contract_Type="{ row }">
-          <el-tag :type="['', 'success','info'][row.Contract_Type]" :disable-transitions="true">
-            {{['中标','临采','未设置'][row.Contract_Type]}}
+        <template v-slot:Consumption_Type="{ row }">
+          <el-tag :type="['', 'success','danger','warning','info'][row.Consumption_Type]" :disable-transitions="true">
+            {{['PDA扫码消耗','His计费消耗','申领消耗','超时默认消耗',''][row.Consumption_Type]}}
           </el-tag>
         </template>
 
@@ -85,9 +85,9 @@ import {
   updateUserStatus,
   updateUserPassword
 } from '@/api/system/user';
-import { GetDeptInStockDetail } from '@/api/KSInventory/DepaStorageQuery';
+import { SearchDept } from '@/api/KSInventory/KSDeptConsumption';
 export default {
-  name: 'DepaStorageQuery',
+  name: 'KSDeptConsumption',
   components: {
     UserSearch,
     UserEdit
@@ -122,8 +122,8 @@ export default {
         //   showOverflowTooltip: true
         // },
         {
-          slot: 'Contract_Type',
-          label: '合同类型',
+          prop: 'Dept_One_Name',
+          label: '一级科室',
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
@@ -138,32 +138,32 @@ export default {
         //   minWidth: 110
         // },
         {
-          prop: 'SUPPLIER_NAME',
-          label: '科室/供应商名称',
+          prop: 'Dept_Two_Name',
+          label: '二级科室',
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 150
         },
         {
-          prop: 'From_Supplier_Name',
-          label: '供应商名称',
+          prop: 'Dept_Name',
+          label: '计费科室',
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 150
         },
         {
-          prop: 'RECEIVING_TIME',
-          label: '入库时间',
+          prop: 'SPD_COST_DEPT_NAME',
+          label: '成本科室',
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 180
         },
         {
-          prop: 'VARIETIE_CODE_NEW',
-          label: '品种(材料)编码',
+          prop: 'APPLY_DEPT',
+          label: 'His领用科室',
           align: 'center',
           sortable: 'custom',
           showOverflowTooltip: true,
@@ -192,149 +192,172 @@ export default {
         //   // }
         // },
         {
-          prop: 'VARIETIE_NAME',
+          prop: 'Consume_Time',
+          label: '消耗时间',
+          width: 220,
+          align: 'center',
+          showOverflowTooltip: true,
+          formatter: (_row, _column, cellValue) => {
+            return cellValue.substr(0, 10);
+          }
+        },
+        {
+          prop: 'Varietie_Code_New',
+          label: '品种编码',
+          width: 220,
+          align: 'center',
+          showOverflowTooltip: true
+        },
+        {
+          prop: 'Varietie_Name',
           label: '品种全称',
           width: 220,
           align: 'center',
           showOverflowTooltip: true
         },
         {
-          prop: 'SPECIFICATION_OR_TYPE',
+          prop: 'Specification_Or_Type',
           label: '型号/规格',
           width: 220,
           align: 'center',
           showOverflowTooltip: true
         },
         {
-          prop: 'UNIT',
+          prop: 'Unit',
           label: '单位',
-          width: 220,
+          width: 80,
           align: 'center',
           showOverflowTooltip: true
         },
         {
-          prop: 'MANUFACTURING_ENT_NAME',
+          prop: 'Manufacturing_Ent_Name',
           label: '生产企业名称',
           width: 220,
           align: 'center',
           showOverflowTooltip: true
         },
         {
-          prop: 'MEDICAL_CODE',
-          label: '医保码',
+          prop: 'Supplier_Name',
+          label: '供应商',
           width: 220,
           align: 'center',
           showOverflowTooltip: true
         },
         {
-          prop: 'Brand',
-          label: '品牌',
-          width: 220,
-          align: 'center',
-          showOverflowTooltip: true
-        },
-        {
-          prop: 'BATCH',
+          prop: 'Batch',
           label: '生产批号',
           width: 220,
           align: 'center',
           showOverflowTooltip: true
         },
         {
-          prop: 'BATCH_PRODUCTION_DATE',
-          label: '生产时间',
+          prop: 'Batch_Production_Date',
+          label: '生产日期',
           width: 220,
           align: 'center',
-          showOverflowTooltip: true
+          showOverflowTooltip: true,
+          formatter: (_row, _column, cellValue) => {
+            return cellValue.substr(0, 10);
+          }
         },
         {
-          prop: 'BATCH_VALIDITY_PERIOD',
-          label: '有效到期',
-          width: 220,
-          align: 'center',
-          showOverflowTooltip: true
-        },
-        {
-          prop: 'DISINFECTION_BATCH',
+          prop: 'Batch_Validity_Period',
           label: '灭菌批号',
           width: 220,
           align: 'center',
+          showOverflowTooltip: true,
+          formatter: (_row, _column, cellValue) => {
+            return cellValue.substr(0, 10);
+          }
+        },
+        {
+          prop: 'Goods_Qty',
+          label: '消耗数量',
+          width: 220,
+          align: 'center',
           showOverflowTooltip: true
         },
         {
-          prop: 'COEFFICIENT',
+          prop: 'Supply_Price',
+          label: '单价',
+          width: 120,
+          align: 'center',
+          showOverflowTooltip: true
+        },
+        {
+          prop: 'Cost',
+          label: '金额',
+          width: 120,
+          align: 'center',
+          showOverflowTooltip: true
+        },
+        {
+          prop: 'Coefficient',
           label: '系数',
+          width: 80,
+          align: 'center',
+          showOverflowTooltip: true
+        },
+        {
+          slot: 'Def_No_Pkg_Code',
+          label: '定数码',
           width: 220,
           align: 'center',
           showOverflowTooltip: true
         },
         {
-          prop: 'RECEIVING_QUANTITY',
-          label: '入库数量',
+          slot: 'Consumption_Type',
+          label: '消耗方式',
           width: 220,
           align: 'center',
           showOverflowTooltip: true
         },
         {
-          prop: 'SUPPLY_PRICE',
-          label: '消耗价',
+          prop: 'Operate_Person',
+          label: '消耗人',
+          width: 120,
+          align: 'center',
+          showOverflowTooltip: true
+        },
+        {
+          prop: 'High_Or_Low_Class',
+          label: '高低值',
+          width: 100,
+          align: 'center',
+          showOverflowTooltip: true
+        },
+        {
+          slot: 'Trade_Type',
+          label: '国产/进口',
+          width: 80,
+          align: 'center',
+          showOverflowTooltip: true
+        },
+        {
+          slot: 'PDA_CONSUME_MAN',
+          label: 'PDA扫码人(收货结算)',
           width: 220,
           align: 'center',
           showOverflowTooltip: true
         },
         {
-          prop: 'PURCHASE_PRICE',
-          label: '采购价',
+          prop: 'PDA_CONSUME_TIME',
+          label: 'PDA扫码时间(收货结算)',
           width: 220,
           align: 'center',
           showOverflowTooltip: true
         },
         {
-          prop: 'GOODS_QTY',
-          label: '散货数量',
+          prop: 'MEDICAL_CODE',
+          label: '医保编码',
           width: 220,
           align: 'center',
           showOverflowTooltip: true
         },
         {
-          prop: 'BUSINESS_BILL',
-          label: '入库单号',
-          width: 220,
-          align: 'center',
-          showOverflowTooltip: true
-        },
-        {
-          prop: 'MARK',
-          label: '入库备注',
-          width: 220,
-          align: 'center',
-          showOverflowTooltip: true
-        },
-        {
-          prop: 'APPROVAL_NUMBER',
-          label: '注册证号',
-          width: 220,
-          align: 'center',
-          showOverflowTooltip: true
-        },
-        {
-          slot: 'HIGH_OR_LOW_CLASS_TWO',
-          label: '高低值分类下级属性',
-          width: 220,
-          align: 'center',
-          showOverflowTooltip: true
-        },
-        {
-          slot: 'IS_BIDDING',
-          label: '是否中标',
-          width: 220,
-          align: 'center',
-          showOverflowTooltip: true
-        },
-        {
-          prop: 'Operator',
-          label: '操作人',
-          width: 220,
+          prop: 'MONTHLY_TIME',
+          label: '月结月份',
+          width: 100,
           align: 'center',
           showOverflowTooltip: true
         }
@@ -358,14 +381,45 @@ export default {
   methods: {
     /* 表格数据源 */
     datasource({ page, limit, where, order }) {
-      var Dept_Two_CodeStr = '';
+      var Dept_Two_CodeStr = [];
       var userDeptList = this.$store.state.user.info.userDept;
       for (let i = 0; i < userDeptList.length; i++) {
-        Dept_Two_CodeStr =
-          Dept_Two_CodeStr + userDeptList[i].Dept_Two_Code + ',';
+        Dept_Two_CodeStr.push(userDeptList[i].Dept_Two_Code);
       }
-      where.DeptCode = Dept_Two_CodeStr;
-      let data = GetDeptInStockDetail({ page, limit, where, order }).then(
+      where.deptTwoJson = Dept_Two_CodeStr;
+      // where.varietie = '';
+      // where.supplier = '';
+      // where.batch = '';
+      // where.deptTwoName = '';
+      // where.DEPT_NAME = '';
+      // where.manuEntName = '';
+      // where.validDateFrom = '';
+      // where.validDateTo = '';
+      // where.KSConsumePDA_endDate = '';
+      // where.KSConsumePDA_startDate = '';
+      // where.field = '';
+      // where.order = '';
+      // where.highOrLow = '';
+      // where.trade = '';
+      // where.classificName = '';
+      // where.consumeType = '';
+      // where.specType = '';
+      // where.useMonth = false;
+      // where.monthFmt = '';
+      // where.monthFmt2 = '';
+      // where.dayClearingDate = '';
+      // where.isPdaScan = '';
+      // where.isProtect = '';
+      // where.highOrLowClassTwo = '';
+      // where.hp = null;
+      // where.stzx_state = '1';
+      // where.stzx_state_gz = '1';
+      // where.def = '';
+      // where.Patient_Number = '';
+      // where.SPDDEPTNAME = '';
+      // where.Operate_Person = '';
+
+      let data = SearchDept({ page, limit, where, order }).then(
         (res) => {
           var tData = {
             count: res.total,
@@ -378,6 +432,13 @@ export default {
     },
     /* 刷新表格 */
     reload(where) {
+      // var Dept_Two_CodeStr = [];
+      // var userDeptList = this.$store.state.user.info.userDept;
+      // for (let i = 0; i < userDeptList.length; i++) {
+      //   Dept_Two_CodeStr.push(userDeptList[i].Dept_Two_Code);
+      // }
+      // where.deptTwoJson = Dept_Two_CodeStr;
+      // console.log(where);
       this.$refs.table.reload({ page: 1, where: where });
     },
     /* 打开编辑弹窗 */
@@ -395,7 +456,7 @@ export default {
             Dept_Two_CodeStr + userDeptList[i].Dept_Two_Code + ',';
         }
         where.DeptCode = Dept_Two_CodeStr;
-        GetDeptInStockDetail({
+        SearchDept({
           page: 1,
           limit: 999999,
           where: where,
