@@ -1,3 +1,5 @@
+import { TOKEN_STORE_NAME } from '@/config/setting';
+
 /**
 * 格式数据为 表单 form-data 
 * Content-Type: multipart/form-data
@@ -26,7 +28,7 @@ export const DataToObject = (data,params) => {
         data[item[0]] = item[1];
     })
     data.size = data.limit;
-    data.Token = sessionStorage.getItem('Token');
+    data.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
     // 删除where属性
     Reflect.deleteProperty(data, 'where')
     return data;

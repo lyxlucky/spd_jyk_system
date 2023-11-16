@@ -7,12 +7,12 @@
             <div slot="header" class="clearfix">
               <span>申领计划单列表</span>
             </div>
-            <KSDepartmentalPlantable></KSDepartmentalPlantable>
+            <KSDepartmentalPlantable @getCurrent="getCurrent"></KSDepartmentalPlantable>
           </el-card>
         </el-aside>
         <el-main>
           <el-card shadow="always">
-            <KSDepartmentalPlanDetailstable2></KSDepartmentalPlanDetailstable2>
+            <KSDepartmentalPlanDetailstable2 :KSDepartmentalPlanData="KSDepartmentalPlanData"></KSDepartmentalPlanDetailstable2>
           </el-card>
         </el-main>
       </el-container>
@@ -31,8 +31,15 @@ export default {
     KSDepartmentalPlanDetailstable2
   },
   data() {
-    return {};
+    return {
+      KSDepartmentalPlanData:null
+    };
   },
-  methods: {}
+  methods: {
+    getCurrent(data){
+      this.KSDepartmentalPlanData = data;
+      console.log(data);
+    }
+  }
 };
 </script>

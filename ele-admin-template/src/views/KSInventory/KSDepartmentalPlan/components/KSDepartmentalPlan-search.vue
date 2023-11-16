@@ -3,11 +3,11 @@
   <el-form label-width="77px" class="ele-form-search" @keyup.enter.native="search" @submit.native.prevent>
     <el-row :gutter="10">
       <el-col v-bind="styleResponsive ? { lg: 16, md: 12 } : { span: 16 }">
-        <el-input clearable v-model="where.Varietie_Code_New" placeholder="请输入申领单备注信息" />
+        <el-input clearable v-model="BZ" placeholder="请输入申领单备注信息" />
       </el-col>
       <el-col v-bind="styleResponsive ? { lg: 8, md: 12 } : { span: 8 }">
         <div class="ele-form-actions">
-          <el-button size="small" type="primary" icon="el-icon-check" class="ele-btn-icon" @click="aaa()">
+          <el-button size="small" type="primary" icon="el-icon-check" class="ele-btn-icon" @click="CreatApplicationForm()">
             确认创建
           </el-button>
         </div>
@@ -15,28 +15,42 @@
     </el-row>
     <el-row :gutter="10">
       <el-col v-bind="styleResponsive ? { lg: 12, md: 12 } : { span: 12 }">
-        <el-input clearable v-model="where.Varietie_Code_New" placeholder="品种名称/规格型号/生产企业" />
+        <el-input clearable v-model="where.SerachName" placeholder="品种名称/规格型号/生产企业" />
       </el-col>
       <el-col v-bind="styleResponsive ? { lg: 12, md: 12 } : { span: 12 }">
-        <el-input clearable v-model="where.APPROVAL_NUMBER" placeholder="申领单" />
+        <el-input clearable v-model="where.PlanNum" placeholder="申领单" />
       </el-col>
     </el-row>
     <el-row :gutter="10" style="margin-top:5px">
       <el-col v-bind="styleResponsive ? { lg: 12, md: 12 } : { span: 12 }">
         <div class="block">
-          <el-date-picker v-model="value1" type="date" style="width:200px" value-format="yyyy-MM-dd" placeholder="申领开始日期">
+          <el-date-picker v-model="where.Start" type="date" style="width:200px" value-format="yyyy-MM-dd" placeholder="申领开始日期">
           </el-date-picker>
         </div>
       </el-col>
       <el-col v-bind="styleResponsive ? { lg: 12, md: 12 } : { span: 12 }">
         <div class="block">
-          <el-date-picker v-model="value2" type="date" style="width:200px" value-format="yyyy-MM-dd" placeholder="申领结束日期">
+          <el-date-picker v-model="where.End" type="date" style="width:200px" value-format="yyyy-MM-dd" placeholder="申领结束日期">
           </el-date-picker>
         </div>
       </el-col>
     </el-row>
-    <el-row :gutter="24" style="margin-top:5px">
-      <el-col v-bind="styleResponsive ? { lg: 24, md: 12 } : { span: 6 }">
+    <el-row :gutter="10" style="margin-top:5px">
+      <el-col v-bind="styleResponsive ? { lg: 12, md: 12 } : { span: 6 }">
+        <el-form-item label="状态：" >
+          <el-select v-model="where.State" @change="search()">
+            <el-option label="全部" value="-1"></el-option>
+            <el-option label="新增" value="0"></el-option>
+            <el-option label="已提交" value="1"></el-option>
+            <el-option label="已审核" value="5"></el-option>
+            <el-option label="已审批" value="6"></el-option>
+            <el-option label="未收全" value="3"></el-option>
+            <el-option label="已收全" value="4"></el-option>
+            <el-option label="强制结束" value="10"></el-option>
+          </el-select>
+        </el-form-item>
+      </el-col>
+      <el-col v-bind="styleResponsive ? { lg: 12, md: 12 } : { span: 6 }">
         <div class="ele-form-actions">
           <el-button size="small" type="primary" icon="el-icon-search" class="ele-btn-icon" @click="search">
             查询
@@ -49,28 +63,29 @@
 </template>
 
 <script>
-
+import { CreatList } from '@/api/KSInventory/KSDepartmentalPlan';
 export default {
   data() {
     // 默认表单数据
     const defaultWhere = {
-      Varietie_Code_New: '',
-      APPROVAL_NUMBER: '',
+      SerachName: '',
+      PlanNum: '',
       Start: '',
       End: '',
+      State: '-1',
+      isTwoApp: '',
     };
     return {
       // 表单数据
       where: { ...defaultWhere },
-      value1:'',
-      value2:'',
+      BZ: '',
     };
   },
   computed: {
     // 是否开启响应式布局
     styleResponsive() {
       return this.$store.state.theme.styleResponsive;
-    }
+    },
   },
   methods: {
     /* 搜索 */
@@ -81,7 +96,22 @@ export default {
     reset() {
       this.where = { ...this.defaultWhere };
       this.search();
-    }
+    },
+    /* 创建申领单 */
+    CreatApplicationForm(){
+      var data = {
+        BZ: this.BZ,
+        DeptCode: this.$store.state.user.info.DeptNow.Dept_Two_Code,
+        State: '1',
+        Operater: this.$store.state.user.info.UserName,
+      }
+      CreatList(data).then(res=>{
+          this.$message.success(res.msg)
+          this.$emit('search', this.where);
+      })
+    },
+  },
+  created() {
   }
 };
 </script>

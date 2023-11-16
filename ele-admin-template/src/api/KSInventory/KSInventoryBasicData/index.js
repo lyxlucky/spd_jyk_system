@@ -1,13 +1,25 @@
 import request from '@/utils/request';
-import { formdataify } from '@/utils/formdataify';
-import { TOKEN_STORE_NAME } from '@/config/setting';
+import { formdataify, DataToObject } from '@/utils/formdataify';
+import { TOKEN_STORE_NAME, } from '@/config/setting';
 
 export async function getDeptAuthVarNew(data) {
-    data.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+    var data2 ={};
+    data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+    data2.page = data.page;
+    data2.limit = data.limit;
+    data2.Varietie_Code_New = data.where.Varietie_Code_New ? data.where.Varietie_Code_New : '';
+    data2.Specification_Or_Type = data.where.Specification_Or_Type ? data.where.Specification_Or_Type : '';
+    data2.Manufacturing_Ent_Name = data.where.Manufacturing_Ent_Name ? data.where.Manufacturing_Ent_Name : '';
+    data2.CLASS_NUM = data.where.CLASS_NUM ? data.where.CLASS_NUM : '';
+    data2.DEVICE_REMARK = data.where.DEVICE_REMARK ? data.where.DEVICE_REMARK : '';
+    data2.order = data.order ? data.order : '';
+    data2.Dept_One_Code = data.where.Dept_One_Code ? data.where.Dept_One_Code : '';
+
+    DataToObject(data,data2)
     if(data != null){
-        var data2 = formdataify(data);
+        var data3 = formdataify(data);
     }
-    const res = await request.post('/VarietieBasicInfo/getDeptAuthVarNew', data2);
+    const res = await request.post('/VarietieBasicInfo/getDeptAuthVarNew',data3);
     // const res = await request.post('/VarietieBasicInfo/getVar', {
     //     username,
     //     password,
@@ -28,7 +40,7 @@ export async function getUnreadNotice() {
 }
 
 export async function UpdateVarietieBasic(data) {
-    if(data != null){
+    if (data != null) {
         var data2 = formdataify(data);
     }
     const res = await request.post('/AJykDept/UpdateVarietieBasic', data2);
@@ -48,8 +60,8 @@ export async function UpdateVarietieBasic(data) {
 export async function GetClassificProp_Jy() {
     var Token = sessionStorage.getItem(TOKEN_STORE_NAME);
     // const res = await request.get(`/AJykDept/GetClassificProp_Jy?Token=${Token}`);
-    const res = await request.get(`/AJykDept/GetClassificProp_Jy`,{
-        params:{
+    const res = await request.get(`/AJykDept/GetClassificProp_Jy`, {
+        params: {
             Token
         }
     });
@@ -59,4 +71,15 @@ export async function GetClassificProp_Jy() {
     } else {
         return Promise.reject(new Error(res.data.msg));
     }
+}
+
+export async function UpdateVarietieBasicJyk(data) {
+    data.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+    if (data != null) {
+        var data2 = formdataify(data);
+    }
+    const res = await request.post('/AJykDept/UpdateVarietieBasicJyk', data2);
+
+    return res;
+
 }

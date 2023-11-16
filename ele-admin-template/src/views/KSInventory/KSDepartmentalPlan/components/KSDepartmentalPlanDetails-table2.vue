@@ -1,7 +1,9 @@
 <template>
-  <div class="ele-body"  style="height:80vh" >
+  <div class="ele-body" style="height:80vh">
+    <el-button type="primary" size="mini" @click="aaa()">1111</el-button>
+
     <!-- 数据表格 -->
-    <ele-pro-table ref="table" height="70vh" :stripe="true" :rowClickChecked="true" :pagerCount="pagerCount" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" cache-key="KSInventoryBasicDataTable">
+    <ele-pro-table ref="table" height="70vh" :stripe="true" :rowClickChecked="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" cache-key="KSInventoryBasicDataTable">
       <!-- 表头工具栏 -->
       <template v-slot:toolbar>
         <!-- 搜索表单 -->
@@ -38,9 +40,10 @@
 <script>
 import KSDepartmentalPlanDetailsSearch from './KSDepartmentalPlanDetails-search.vue';
 import { SerachPlanList } from '@/api/KSInventory/KSDepartmentalPlan';
-import { getDeptAuthVarNew } from '@/api/KSInventory/KSInventoryBasicData';
+import { SerachPlanListDeta } from '@/api/KSInventory/KSDepartmentalPlan';
 export default {
   name: 'KSDepartmentalPlanTable',
+  props: ['KSDepartmentalPlanData'],
   components: {
     KSDepartmentalPlanDetailsSearch
   },
@@ -73,7 +76,7 @@ export default {
         //   showOverflowTooltip: true
         // },
         {
-          prop: 'Varietie_Code_New',
+          prop: 'VarCode',
           label: '品种编码',
           sortable: 'custom',
           align: 'center',
@@ -81,23 +84,54 @@ export default {
           minWidth: 110
         },
         {
-          prop: 'Varietie_Name',
-          label: '品种名称',
+          prop: 'DEPT_ZDY_VARIETIE_CODE',
+          label: '自定义编码',
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110,
+          formatter: (row, column, cellValue) => {
+            if (cellValue == null) {
+              return '未定义';
+            }
+            return cellValue;
+          }
         },
         {
-          prop: 'Specification_Or_Type',
-          label: '规格/型号',
+          prop: 'CONTRACT_TYPE',
+          label: '合同类型',
+          sortable: 'custom',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 110,
+          formatter: (row, column, cellValue) => {
+            if (cellValue == 2) {
+              return '临采';
+            } else if (cellValue == 1) {
+              return '中标';
+            } else {
+              return '-';
+            }
+          }
+        },
+        {
+          prop: 'VarName',
+          label: '品种全称',
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110
         },
         {
-          prop: 'Manufacturing_Ent_Name',
+          prop: 'GG',
+          label: '型号/规格',
+          sortable: 'custom',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 110
+        },
+        {
+          prop: 'Manufacturing',
           label: '生产企业名称',
           sortable: 'custom',
           align: 'center',
@@ -105,8 +139,40 @@ export default {
           minWidth: 110
         },
         {
-          prop: 'APPROVAL_NUMBER',
-          label: '注册证号',
+          prop: 'SUPPLIER_NAME',
+          label: '启用供应商',
+          sortable: 'custom',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 110
+        },
+        {
+          prop: 'TempQty',
+          label: '模板/历史申领数量',
+          sortable: 'custom',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 110
+        },
+        {
+          prop: 'StockQty',
+          label: '散货库存',
+          sortable: 'custom',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 110
+        },
+        {
+          prop: 'TJ_QTY',
+          label: '提交数量',
+          sortable: 'custom',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 110
+        },
+        {
+          prop: 'PlanQty',
+          label: '实际申领数量',
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
@@ -118,40 +184,95 @@ export default {
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 110,
+          minWidth: 110
+        },
+        {
+          prop: 'BigBoxCount',
+          label: '大包装数量',
+          sortable: 'custom',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 110
+        },
+        {
+          prop: 'MinBoxCount',
+          label: '中包装数量',
+          sortable: 'custom',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 110
+        },
+        {
+          prop: 'PAG_TYPE',
+          label: '包装规格',
+          sortable: 'custom',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 110
         },
         {
           prop: 'Price',
-          label: '中标价',
+          label: '结算价',
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110
         },
         {
-          prop: 'VAR_CATEGORY',
-          label: '品种类别',
+          prop: '',
+          label: '总金额',
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 110
+          minWidth: 110,
+          formatter: (row, column, cellValue) => {
+            return row.Price * row.PlanQty;
+          }
         },
         {
-          prop: 'REAGENT_CONVERSION_RATIO',
-          label: '换算比(试剂)',
+          prop: '',
+          label: '已收货数量',
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 110
+          minWidth: 110,
+          formatter: (row, column, cellValue) => {
+            return row.PlanQty - row.LEFT_APPLY_QTY;
+          }
         },
         {
-          prop: 'INSTRUMENT_REMARK',
-          label: '仪器备注',
+          prop: 'IS_NEED_TWO_APP',
+          label: '二级审批',
+          sortable: 'custom',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 110,
+          formatter: (row, column, cellValue) => {
+            var IS_NEED_TWO_APP = '';
+            var STATE = '';
+            if (row.IS_NEED_TWO_APP == 0) {
+              return '-';
+            }
+            if (row.IS_NEED_TWO_APP == 1) {
+              IS_NEED_TWO_APP = '是';
+            }
+            if (row.SENCOND_APP_STATE == 0) {
+              STATE = '未审批';
+            }
+            if (row.SENCOND_APP_STATE == 1) {
+              STATE = '已审批';
+            }
+            return IS_NEED_TWO_APP + '/' + STATE;
+          }
+        },
+        {
+          prop: '备注',
+          label: '包装规格',
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110
-        },
+        }
       ],
       toolbar: false,
       pageSize: 5,
@@ -161,6 +282,8 @@ export default {
       selection: [],
       // 当前编辑数据
       current: null,
+      //
+      data222: this.KSDepartmentalPlanData,
       // 是否显示编辑弹窗
       showEdit: false,
       // 是否显示导入弹窗
@@ -179,18 +302,23 @@ export default {
           Dept_Two_CodeStr + userDeptList[i].Dept_Two_Code + ',';
       }
       where.DeptCode = Dept_Two_CodeStr;
-      let data = getDeptAuthVarNew({ page, limit, where, order }).then((res) => {
-        var tData = {
-          count: res.total,
-          list: res.result
-        };
-        return tData;
-      });
+      let data = SerachPlanListDeta({ page, limit, where, order }).then(
+        (res) => {
+          var tData = {
+            count: res.total,
+            list: res.result
+          };
+          return tData;
+        }
+      );
       return data;
     },
     /* 刷新表格 */
     reload(where) {
       this.$refs.table.reload({ page: 1, where: where });
+    },
+    aaa() {
+      console.log(this.data222);
     }
   },
   created() {

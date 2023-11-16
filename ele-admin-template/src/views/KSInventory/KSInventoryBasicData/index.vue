@@ -52,7 +52,7 @@ import {
   updateUserStatus,
   updateUserPassword
 } from '@/api/system/user';
-import { getDeptAuthVarNew } from '@/api/KSInventory/KSInventoryBasicData';
+import { getDeptAuthVarNew,UpdateVarietieBasicJyk } from '@/api/KSInventory/KSInventoryBasicData';
 export default {
   name: 'SystemUser',
   components: {
@@ -96,6 +96,15 @@ export default {
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 150
+        },
+        {
+          prop: 'Varietie_Code',
+          label: '品种id',
+          sortable: 'custom',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 150,
+          hide:true
         },
         {
           prop: 'Varietie_Name',
@@ -187,6 +196,7 @@ export default {
   methods: {
     /* 表格数据源 */
     datasource({ page, limit, where, order }) {
+       where.Dept_One_Code = this.$store.state.user.info.DeptNow.Dept_Two_Code;
       let data = getDeptAuthVarNew({ page, limit, where, order }).then(
         (res) => {
           return res.result;
@@ -281,6 +291,7 @@ export default {
   },
   created() {
     // this.getdatasource();
+    // console.log(this.$store.state.user.info)
   }
 };
 </script>

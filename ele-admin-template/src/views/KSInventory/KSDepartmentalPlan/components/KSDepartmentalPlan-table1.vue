@@ -1,7 +1,7 @@
 <template>
   <div class="ele-body" style="height:75vh">
     <!-- 数据表格 -->
-    <ele-pro-table @selection-change="onSelectionChange" @done="onDone" ref="table" style="width:450px;" height="50vh" :rowClickChecked="true" :stripe="true" :pagerCount="pagerCount" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" cache-key="KSInventoryBasicDataTable">
+    <ele-pro-table highlight-current-row @current-change="onCurrentChange" ref="table" style="width:450px;" height="50vh" :rowClickChecked="true" :stripe="true" :pagerCount="pagerCount" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" cache-key="KSInventoryBasicDataTable">
       <!-- 表头工具栏 -->
       <template v-slot:toolbar>
         <!-- 搜索表单 -->
@@ -16,12 +16,12 @@
 
       <template v-slot:State="{ row }">
         <el-tag v-if="row.State==0" type="success">新增</el-tag>
-        <el-tag v-if="row.State==1" type="success">已提交</el-tag>
-        <el-tag v-if="row.State==2" type="success">配送中</el-tag>
-        <el-tag v-if="row.State==5" type="success">已审核</el-tag>
-        <el-tag v-if="row.State==10" type="success">强制结束</el-tag>
+        <el-tag v-if="row.State==1">已提交</el-tag>
+        <el-tag v-if="row.State==2" type="primary">配送中</el-tag>
+        <el-tag v-if="row.State==5" type="primary" color="#2ee693">已审核</el-tag>
+        <el-tag v-if="row.State==10" type="primary" color="#e60000" style="color:white">强制结束</el-tag>
         <el-tag v-if="(row.State==6 || row.State==4) && row.SUM_Left_Apply_Qty == row.SUM_Apply_Qty" type="success">已审批</el-tag>
-        <el-tag v-if="(row.SUM_Left_Apply_Qty > 0 && row.SUM_Left_Apply_Qty != row.SUM_Apply_Qty)" type="success">未收全</el-tag>
+        <el-tag v-if="(row.SUM_Left_Apply_Qty > 0 && row.SUM_Left_Apply_Qty != row.SUM_Apply_Qty)" type="danger">未收全</el-tag>
         <el-tag v-if="(row.SUM_Left_Apply_Qty == 0)" type="success">已收全</el-tag>
         <!-- <el-tag v-for="(item) in row" :key="item.PlanNum" size="mini" type="primary" :disable-transitions="true">
           {{ item.State }}
@@ -151,9 +151,9 @@ export default {
         }
       ],
       toolbar: false,
-      pageSize: 5,
+      pageSize: 10,
       pagerCount: 2,
-      pageSizes: [5, 20, 50, 100, 9999999],
+      pageSizes: [10, 20, 50, 100, 9999999],
       // 表格选中数据
       selection: [],
       // 当前编辑数据
@@ -193,13 +193,18 @@ export default {
       // console.log('res:', res);
       // 例如选中第一条数据
       if (res.data?.length) {
-        this.$refs.table.setCurrentRow(res.data[1]);
+        this.$refs.table.setCurrentRow(res.data[0]);
       }
     },
     onSelectionChange(selection) {
       this.selection = selection;
-      console.log(this.selection)
-    }
+      console.log(selection);
+    },
+    onCurrentChange(current) {
+      this.current = current;
+      // console.log(current);
+      this.$emit('getCurrent', current);
+    },
   },
   created() {
     // this.getdatasource();

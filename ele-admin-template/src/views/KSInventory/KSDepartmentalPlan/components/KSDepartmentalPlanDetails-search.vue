@@ -1,30 +1,58 @@
 <!-- 搜索表单 -->
 <template>
   <el-form class="ele-form-search">
-    <el-row :gutter="15">
-      <el-col :lg="6" :md="12">
-        <el-form-item label="">
-          <el-input v-model="where.username" placeholder="品种编码/品种名称" clearable />
+    <el-row :gutter="10">
+      <!-- <el-col v-bind="styleResponsive ? { lg: 6, md: 12 } : { span: 6 }">
+        <el-form-item label="状态：">
+          <el-select v-model="where.State" @change="search()">
+            <el-option label="显示所有申领品种" value="-1"></el-option>
+            <el-option label="仅显示实际申领为空品种" value="0"></el-option>
+            <el-option label="仅显示实际申领非空品种" value="1"></el-option>
+          </el-select>
+        </el-form-item>
+      </el-col> -->
+      <el-col v-bind="styleResponsive ? { lg: 10, md: 12 } : { span: 6 }">
+        <el-form-item label="平均用量时间段：" label-width='130px'>
+          <el-date-picker v-model="where.dateFrom" type="date" value-format="yyyy-MM-dd" placeholder="yyyy-MM-dd">
+          </el-date-picker>
         </el-form-item>
       </el-col>
-      <el-col :lg="6" :md="12">
+      <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 6 }">
+        <el-date-picker v-model="where.dateTo" type="date" value-format="yyyy-MM-dd" placeholder="yyyy-MM-dd">
+        </el-date-picker>
+      </el-col>
+    </el-row>
+    <el-row :gutter="10">
+      <el-col :lg="12" :md="12">
         <el-form-item label="">
-          <el-input v-model="where.username" placeholder="注册证号" clearable />
+          <el-input v-model="where.SerachName" placeholder="请输入品种名称/品种编码/型号规格/生产企业搜索" clearable />
         </el-form-item>
-        <!-- <el-form-item label="性别:">
-              <el-select clearable v-model="where.sex" placeholder="请选择" class="ele-fluid">
-                <el-option label="男" value="1" />
-                <el-option label="女" value="2" />
-              </el-select>
-            </el-form-item> -->
       </el-col>
       <el-col :lg="12" :md="12">
         <div class="ele-form-actions">
-          <el-button type="primary" @click="reload">查询</el-button>
+          <el-button type="primary" @click="search">查询</el-button>
           <el-button @click="reset">重置</el-button>
-          <el-button type="danger" @click="removeBatch">批量删除</el-button>
+          <!-- <el-button type="danger" @click="removeBatch">批量删除</el-button> -->
         </div>
       </el-col>
+    </el-row>
+    <el-row :gutter="10">
+      <div class="ele-form-actions">
+        <el-button type="primary" size="small" @click="search">自定义新增</el-button>
+        <el-button type="primary" size="small" @click="reset">引用常规模板</el-button>
+        <el-button type="primary" size="small" @click="reset">引入其他模板</el-button>
+        <el-button type="primary" size="small" @click="reset">引入历史记录</el-button>
+        <el-button type="primary" size="small" @click="reset">暂存申领单</el-button>
+        <el-button type="primary" size="small" @click="reset">保存并提交</el-button>
+        <el-button type="primary" size="small" @click="reset">查询订单情况</el-button>
+        <el-button type="primary" size="small" @click="reset">合并订单</el-button>
+      </div>
+    </el-row>
+    <el-row :gutter="10">
+      <div class="ele-form-actions">
+        <el-button type="primary" size="small" @click="search">审核申领单</el-button>
+        <el-button type="primary" size="small" @click="search">审批申领单</el-button>
+      </div>
     </el-row>
   </el-form>
 </template>
@@ -34,10 +62,12 @@ export default {
   data() {
     // 默认表单数据
     const defaultWhere = {
-      username: '',
-      APPROVAL_NUMBER: '',
-      Start: '',
-      End: ''
+      Token: '',
+      PlanNum: '',
+      is_second_app: '',
+      SerachName: '',
+      dateFrom: '',
+      dateTo: ''
     };
     return {
       // 表单数据

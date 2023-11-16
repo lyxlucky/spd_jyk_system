@@ -35,7 +35,10 @@
 </template>
 
 <script>
-import { GetClassificProp_Jy,UpdateVarietieBasic } from '@/api/KSInventory/KSInventoryBasicData';
+import {
+  GetClassificProp_Jy,
+  UpdateVarietieBasicJyk
+} from '@/api/KSInventory/KSInventoryBasicData';
 
 export default {
   components: {},
@@ -47,7 +50,7 @@ export default {
   },
   data() {
     const defaultForm = {
-      id: '',
+      Varietie_Code: '',
       varietie_code_new: '',
       CONVERSION_RATIO: '',
       CLASS_NUM: '',
@@ -107,26 +110,12 @@ export default {
           return false;
         }
         // this.loading = true;
-        this.form.VarietieCode = this.data.Varietie_Code_New;
-        UpdateVarietieBasic(this.form).then(res=>{
-          console.log(res);
-        })
-        // this.updateVisible(false);
-        // this.$emit('done');
-        // this.updateVisible(false);
-        // this.$emit('done');
-        // const saveOrUpdate = this.isUpdate ? updateUser : addUser;
-        // saveOrUpdate(data)
-        //   .then((msg) => {
-        //     this.loading = false;
-        //     this.$message.success(msg);
-        //     this.updateVisible(false);
-        //     this.$emit('done');
-        //   })
-        //   .catch((e) => {
-        //     this.loading = false;
-        //     this.$message.error(e.message);
-        //   });
+        this.form.Varietie_Code = this.data.Varietie_Code;
+        UpdateVarietieBasicJyk(this.form).then((res) => {
+          this.$emit('done');
+          this.updateVisible(false);
+          this.$message.success(res.data.msg);
+        });
       });
     },
     /* 更新visible */

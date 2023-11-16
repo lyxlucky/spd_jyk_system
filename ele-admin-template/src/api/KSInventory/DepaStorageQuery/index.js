@@ -1,11 +1,14 @@
 import request from '@/utils/request';
-import { formdataify,DataToObject } from '@/utils/formdataify';
+import { formdataify, DataToObject} from '@/utils/formdataify';
+
 import { TOKEN_STORE_NAME } from '@/config/setting';
 
 
 export async function getDeptAuthVarNew(data) {
     data.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
-    if(data != null){
+    // var aaa = DataToObject(data,data.where);
+
+    if (data != null) {
         var data2 = formdataify(data);
     }
     const res = await request.post('/VarietieBasicInfo/getDeptAuthVarNew', data2);
@@ -28,7 +31,7 @@ export async function GetDeptInStockDetail(data) {
     if(data != null){
         var data2 = formdataify(data);
     }
-    const res = await request.post('/AJykDept/GetDeptInStockDetail',data2);
+    const res = await request.post('/AJykDept/GetDeptInStockDetail', data2);
     if (res.data.code == 200) {
         return res.data;
     } else {
