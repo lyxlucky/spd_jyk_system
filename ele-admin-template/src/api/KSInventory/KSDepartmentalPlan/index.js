@@ -76,7 +76,7 @@ export async function SerachPlanListDeta(data) {
     var data2 = {};
     data2.page = data.page;
     data2.size = data.limit;
-    data2.PlanNum = data.where.PlanNum ? data.where.PlanNum : 'JH00011223'
+    data2.PlanNum = data.where.PlanNum ? data.where.PlanNum : '-1'
     data2.is_second_app = data.where.is_second_app ? data.where.is_second_app : ''
     data2.SerachName = data.where.SerachName ? data.where.SerachName : ''
     data2.dateFrom = data.where.dateFrom ? data.where.dateFrom : ''
@@ -86,6 +86,38 @@ export async function SerachPlanListDeta(data) {
     const res = await request.get('/DeptApplyPlan/SerachPlanListDeta', {
         params: data2
     });
+    if (res.data.code == 200) {
+        return res.data;
+    } else {
+        return Promise.reject(new Error(res.data.msg));
+    }
+}
+
+/* 删除申领单 */
+export async function DeletePlanList(data) {
+    var data2 = {};
+    data2.PlanNum = data.PlanNum ? data.PlanNum : '-1'
+    data2.DeptCode = data.PlanDept ? data.PlanDept : ''
+    data2.Operater = data.Operater ? data.Operater : ''
+    data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+
+    var aaa = formdataify(data2)
+    const res = await request.post('/DeptApplyPlan/DeletePlanList', aaa);
+    if (res.data.code == 200) {
+        return res.data;
+    } else {
+        return Promise.reject(new Error(res.data.msg));
+    }
+}
+
+/* 删除申领单品种 */
+export async function DeletePlanDeta(data) {
+    var data2 = {};
+    data2.ID = data.ID ? data.ID : ''
+    data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+
+    var aaa = formdataify(data2)
+    const res = await request.post('/DeptApplyPlan/DeletePlanDeta', aaa);
     if (res.data.code == 200) {
         return res.data;
     } else {

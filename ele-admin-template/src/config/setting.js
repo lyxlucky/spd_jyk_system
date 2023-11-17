@@ -48,7 +48,7 @@ export const USER_MENUS = [
         path: '/KSInventory/KSDepartmentalPlan',
         component: '/KSInventory/KSDepartmentalPlan',
         meta: {
-          title: '科室计划',
+          title: '科室计划管理',
           icon: 'el-icon-_user-group',
         },
       },
@@ -65,6 +65,14 @@ export const USER_MENUS = [
         component: '/KSInventory/KSDeptConsumption',
         meta: {
           title: '科室消耗查询',
+          icon: 'el-icon-_user-group',
+        },
+      },
+      {
+        path: '/KSInventory/ApplyTemp',
+        component: '/KSInventory/ApplyTemp',
+        meta: {
+          title: '申领模板管理',
           icon: 'el-icon-_user-group',
         },
       },

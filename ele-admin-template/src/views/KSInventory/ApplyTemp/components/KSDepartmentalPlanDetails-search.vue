@@ -37,8 +37,8 @@
     </el-row>
     <el-row :gutter="10">
       <div class="ele-form-actions">
-        <el-button type="primary" size="small" @click="openIntroduceUserDefinedTemp" :disabled='!IsDisabled'>自定义新增</el-button>
-        <el-button type="primary" size="small" @click="openIntroduceOtherTemp" :disabled='!IsDisabled'>引用常规模板</el-button>
+        <el-button type="primary" size="small" @click="search" :disabled='!IsDisabled'>自定义新增</el-button>
+        <el-button type="primary" size="small" @click="reset" :disabled='!IsDisabled'>引用常规模板</el-button>
         <el-button type="primary" size="small" @click="reset" :disabled='!IsDisabled'>引入其他模板</el-button>
         <el-button type="primary" size="small" @click="reset" :disabled='!IsDisabled'>引入历史记录</el-button>
         <el-button type="primary" size="small" @click="reset" :disabled='!IsDisabled'>暂存申领单</el-button>
@@ -54,22 +54,13 @@
         <el-button type="danger" size="small" @click="removeBatch" :disabled='!IsDisabledByDel'>删除</el-button>
       </div>
     </el-row>
-    <IntroduceUserDefinedTemp :visible.sync="showEdit" />
-    <IntroduceDefinedTemp :visible.sync="showEdit" />
-
   </el-form>
 </template>
 
 <script>
 import { DeletePlanDeta } from '@/api/KSInventory/KSDepartmentalPlan';
-import IntroduceUserDefinedTemp from '@/views/KSInventory/IntroduceUserDefinedTemp/index.vue';
-import IntroduceDefinedTemp from './aaaaccc.vue';
 export default {
   props: ['KSDepartmentalPlanDataSearch', 'selection'],
-  components: {
-    IntroduceUserDefinedTemp,
-    IntroduceDefinedTemp
-  },
   data() {
     // 默认表单数据
     const defaultWhere = {
@@ -83,7 +74,8 @@ export default {
     return {
       // 表单数据
       where: { ...defaultWhere },
-      showEdit: false
+      value1: '',
+      value2: ''
     };
   },
   computed: {
@@ -113,7 +105,6 @@ export default {
       this.where = { ...this.defaultWhere };
       this.search();
     },
-    /* 批量删除 */
     removeBatch() {
       console.log(this.selection);
       var ID = '';
@@ -127,14 +118,6 @@ export default {
       DeletePlanDeta(data).then((res) => {
         console.log(res);
       });
-    },
-    /* 打开自定义新增页面 */
-    openIntroduceUserDefinedTemp() {
-        this.showEdit = true;
-    },
-    /* 打开其他模板页面 */
-    openIntroduceOtherTemp() {
-        this.showEdit2 = true;
     }
   }
 };
