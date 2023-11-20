@@ -1,5 +1,6 @@
 <template>
   <div class="ele-body" style="height:75vh">
+    <el-button type="danger" size="small" @click="aaa">aaa</el-button>
     <!-- 数据表格 -->
     <ele-pro-table ref="table" height="50vh" highlight-current-row :stripe="true" :rowClickChecked="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" @selection-change="onSelectionChange" cache-key="KSInventoryBasicDataTable">
       <!-- 表头工具栏 -->
@@ -12,8 +13,8 @@
       <!-- 左表头 -->
       <template v-slot:toolbar>
         <!-- 搜索表单 -->
-        <KSDepartmentalPlanDetails-search @search="reload" :KSDepartmentalPlanDataSearch='KSDepartmentalPlanDataSearch' :selection="selection" />
-  
+        <KSDepartmentalPlanDetails-search @search="reload" :KSDepartmentalPlanDataSearch='KSDepartmentalPlanDataSearch' :selection="selection" @showEditReoad="showEditReoad" :datasourceList="datasourceList" />
+
         <!-- <el-button size="small" type="danger" icon="el-icon-delete" class="ele-btn-icon" @click="removebatch">
           删除
         </el-button> -->
@@ -53,6 +54,7 @@ import { SerachPlanListDeta } from '@/api/KSInventory/KSDepartmentalPlan';
 export default {
   name: 'KSDepartmentalPlanTable',
   props: ['KSDepartmentalPlanData'],
+  inject: ['reload'],
   components: {
     KSDepartmentalPlanDetailsSearch: KSDepartmentalPlanDetailsSearch
   },
@@ -296,8 +298,7 @@ export default {
       showEdit: false,
       // 是否显示导入弹窗
       showImport: false,
-      // datasource: [],
-      data: []
+      datasourceList: []
     };
   },
   methods: {
@@ -316,6 +317,7 @@ export default {
             count: res.total,
             list: res.result
           };
+          this.datasourceList = res.result;
           return tData;
         }
       );
@@ -331,6 +333,17 @@ export default {
     onSelectionChange(selection) {
       this.selection = selection;
       // console.log(this.selection);
+    },
+    showEditReoad(data) {
+      if (data == false) {
+        var where = {
+          PlanNum: this.KSDepartmentalPlanData.PlanNum
+        };
+        this.$refs.table.reload({ page: 1, where: where });
+      }
+    },
+    aaa() {
+      this.reload();
     }
   },
   computed: {
@@ -340,9 +353,12 @@ export default {
   },
   watch: {
     KSDepartmentalPlanDataSearch() {
-      var where = {
-        PlanNum: this.KSDepartmentalPlanData.PlanNum
-      };
+      this.$forceUpdate();
+      if (this.KSDepartmentalPlanData) {
+        var where = {
+          PlanNum: this.KSDepartmentalPlanData.PlanNum
+        };
+      }
       this.$refs.table.reload({ page: 1, where: where });
     }
   },

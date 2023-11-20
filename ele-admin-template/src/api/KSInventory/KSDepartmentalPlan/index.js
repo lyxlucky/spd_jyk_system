@@ -116,8 +116,39 @@ export async function DeletePlanDeta(data) {
     data2.ID = data.ID ? data.ID : ''
     data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
 
-    var aaa = formdataify(data2)
-    const res = await request.post('/DeptApplyPlan/DeletePlanDeta', aaa);
+    var rep = formdataify(data2)
+    const res = await request.post('/DeptApplyPlan/DeletePlanDeta', rep);
+    if (res.data.code == 200) {
+        return res.data;
+    } else {
+        return Promise.reject(new Error(res.data.msg));
+    }
+}
+
+/* 保存并提交 */
+export async function PutInListDeta(data) {
+    var data2 = {};
+    data2.PlanNum = data.PlanNum ? data.PlanNum : ''
+    data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+
+    var rep = formdataify(data2)
+    const res = await request.post('/DeptApplyPlan/PutInListDeta', rep);
+    if (res.data.code == 200) {
+        return res.data;
+    } else {
+        return Promise.reject(new Error(res.data.msg));
+    }
+}
+
+/* 审批申领单 */
+export async function ToExamine(data) {
+    var data2 = {};
+    data2.PlanNum = data.PlanNum ? data.PlanNum : ''
+    data2.Operator = data.Operator ? data.Operator : ''
+    data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+
+    var rep = formdataify(data2)
+    const res = await request.post('/DeptApplyPlan/ToExamine', rep);
     if (res.data.code == 200) {
         return res.data;
     } else {

@@ -213,11 +213,16 @@ export default {
     /* 删除数据 */
     remove(row) {
       const loading = this.$loading({ lock: true });
-      DeletePlanList(row).then((res) => {
-        this.$message.success(res.msg);
-        loading.close();
-        this.reload();
-      });
+      DeletePlanList(row)
+        .then((res) => {
+          this.$message.success(res.msg);
+          loading.close();
+          this.reload();
+        })
+        .catch((err) => {
+          loading.close();
+          this.$message.error(err);
+        });
     }
   },
   created() {

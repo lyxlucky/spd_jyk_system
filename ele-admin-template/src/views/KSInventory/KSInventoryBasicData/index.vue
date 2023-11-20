@@ -104,7 +104,7 @@ export default {
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 150,
-          hide:true
+          show: false
         },
         {
           prop: 'Varietie_Name',

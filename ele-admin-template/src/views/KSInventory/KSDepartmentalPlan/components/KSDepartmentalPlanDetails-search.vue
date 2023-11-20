@@ -38,34 +38,39 @@
     <el-row :gutter="10">
       <div class="ele-form-actions">
         <el-button type="primary" size="small" @click="openIntroduceUserDefinedTemp" :disabled='!IsDisabled'>自定义新增</el-button>
-        <el-button type="primary" size="small" @click="openIntroduceOtherTemp" :disabled='!IsDisabled'>引用常规模板</el-button>
+        <!-- <el-button type="primary" size="small" @click="openIntroduceOtherTemp" :disabled='!IsDisabled'>引用常规模板</el-button> -->
         <el-button type="primary" size="small" @click="reset" :disabled='!IsDisabled'>引入其他模板</el-button>
         <el-button type="primary" size="small" @click="reset" :disabled='!IsDisabled'>引入历史记录</el-button>
         <el-button type="primary" size="small" @click="reset" :disabled='!IsDisabled'>暂存申领单</el-button>
-        <el-button type="primary" size="small" @click="reset" :disabled='!IsDisabled'>保存并提交</el-button>
+        <el-button type="primary" size="small" @click="addPutInListDeta" :disabled='!IsDisabled'>保存并提交</el-button>
         <!-- <el-button type="primary" size="small" @click="reset" :disabled='IsDisabled'>查询订单情况</el-button> -->
         <!-- <el-button type="primary" size="small" @click="reset" :disabled='IsDisabled'>合并订单</el-button> -->
       </div>
     </el-row>
     <el-row :gutter="10">
       <div class="ele-form-actions">
-        <el-button type="primary" size="small" @click="search">审核申领单</el-button>
-        <el-button type="primary" size="small" @click="search">审批申领单</el-button>
+        <el-button type="primary" size="small" @click="subToExamine" :disabled='!IsPutInListDeta'>审核申领单</el-button>
+        <!-- <el-button type="primary" size="small" @click="search" :disabled='!IsToExamine'>审批申领单</el-button> -->
         <el-button type="danger" size="small" @click="removeBatch" :disabled='!IsDisabledByDel'>删除</el-button>
       </div>
     </el-row>
-    <IntroduceUserDefinedTemp :visible.sync="showEdit" />
-    <IntroduceDefinedTemp :visible.sync="showEdit" />
+    <IntroduceUserDefinedTemp :visible.sync="showEdit" :IntroduceUserDefinedTempSearch="KSDepartmentalPlanDataSearch" />
+    <IntroduceDefinedTemp :visible.sync="showEdit2" />
 
   </el-form>
 </template>
 
 <script>
-import { DeletePlanDeta } from '@/api/KSInventory/KSDepartmentalPlan';
+import { reloadPageTab, finishPageTab } from '@/utils/page-tab-util';
+import {
+  DeletePlanDeta,
+  PutInListDeta,
+  ToExamine
+} from '@/api/KSInventory/KSDepartmentalPlan';
 import IntroduceUserDefinedTemp from '@/views/KSInventory/IntroduceUserDefinedTemp/index.vue';
 import IntroduceDefinedTemp from './aaaaccc.vue';
 export default {
-  props: ['KSDepartmentalPlanDataSearch', 'selection'],
+  props: ['KSDepartmentalPlanDataSearch', 'selection', 'datasourceList'],
   components: {
     IntroduceUserDefinedTemp,
     IntroduceDefinedTemp
@@ -83,7 +88,8 @@ export default {
     return {
       // 表单数据
       where: { ...defaultWhere },
-      showEdit: false
+      showEdit: false,
+      showEdit2: false,
     };
   },
   computed: {
@@ -91,16 +97,44 @@ export default {
     styleResponsive() {
       return this.$store.state.theme.styleResponsive;
     },
+
+    /* 保存提交 */
     IsDisabled() {
-      return (
-        this.KSDepartmentalPlanDataSearch.State == '0' &&
-        (this.KSDepartmentalPlanDataSearch.PlanNum != null ||
-          this.KSDepartmentalPlanDataSearch.PlanNum != undefined ||
-          this.KSDepartmentalPlanDataSearch.PlanNum.length != 0)
-      );
+      if (this.KSDepartmentalPlanDataSearch) {
+        return this.KSDepartmentalPlanDataSearch.State == '0';
+      } else {
+        return false;
+      }
+      // return (
+      //   this.KSDepartmentalPlanDataSearch.State == '0' &&
+      //   (this.KSDepartmentalPlanDataSearch.PlanNum != null ||
+      //     this.KSDepartmentalPlanDataSearch.PlanNum != undefined ||
+      //     this.KSDepartmentalPlanDataSearch.PlanNum.length != 0)
+      // );
     },
+    IsDisabledIsNot() {
+      return false;
+    },
+    /* 删除键 */
     IsDisabledByDel() {
       return this.KSDepartmentalPlanDataSearch.State == '0';
+    },
+
+    /* 审核申领单 */
+    IsPutInListDeta() {
+      return this.KSDepartmentalPlanDataSearch.State == '1';
+    },
+
+    /* 审批申领单 */
+    IsToExamine() {
+      return this.KSDepartmentalPlanDataSearch.State == '6';
+    }
+  },
+  watch: {
+    showEdit() {
+      if (this.showEdit == false) {
+        this.$emit('showEditReoad', false);
+      }
     }
   },
   methods: {
@@ -115,7 +149,7 @@ export default {
     },
     /* 批量删除 */
     removeBatch() {
-      console.log(this.selection);
+      const loading = this.$messageLoading('删除中..');
       var ID = '';
       this.selection.forEach((item) => {
         ID += item.ID + ',';
@@ -124,18 +158,78 @@ export default {
       var data = {
         ID
       };
-      DeletePlanDeta(data).then((res) => {
-        console.log(res);
-      });
+      DeletePlanDeta(data)
+        .then((res) => {
+          loading.close();
+          this.search();
+          this.$message.success(res.msg);
+        })
+        .catch((err) => {
+          loading.close();
+          this.$message.error(err);
+        });
     },
     /* 打开自定义新增页面 */
     openIntroduceUserDefinedTemp() {
-        this.showEdit = true;
+      this.showEdit = true;
     },
     /* 打开其他模板页面 */
     openIntroduceOtherTemp() {
-        this.showEdit2 = true;
+      this.showEdit2 = true;
+    },
+    /* 保存并提交  */
+    addPutInListDeta() {
+      // console.log(this.datasourceList)
+      if (
+        this.KSDepartmentalPlanDataSearch.PlanNum == null ||
+        this.KSDepartmentalPlanDataSearch.PlanNum == undefined ||
+        this.KSDepartmentalPlanDataSearch.PlanNum.length == 0
+      ) {
+        this.$message.warning('请选择需提交的申领单');
+        return;
+      }
+      if (this.datasourceList.length == 0) {
+        this.$message.warning('请添加品种');
+        return;
+      }
+      var loading = this.$messageLoading('保存中..');
+      var data = {
+        PlanNum: this.KSDepartmentalPlanDataSearch.PlanNum
+      };
+      PutInListDeta(data)
+        .then((res) => {
+          loading.close();
+          this.$message.success('提交成功');
+          // reloadPageTab();
+        })
+        .catch((err) => {
+          loading.close();
+          this.$message.error(err);
+        });
+    },
+    /* 审批申领单  */
+    subToExamine() {
+      // console.log(this.$store.state.user);
+      var loading = this.$messageLoading('保存中..');
+      var data = {
+        Operator: this.$store.state.user.info.Nickname,
+        PlanNum: this.KSDepartmentalPlanDataSearch.PlanNum
+      };
+      ToExamine(data)
+        .then((res) => {
+          loading.close();
+          this.$message.success(res.msg);
+          // reloadPageTab();
+        })
+        .catch((err) => {
+          loading.close();
+          this.$message.error(err);
+        });
     }
+  },
+  created() {
+    // reloadPageTab();
+    // console.log(this.$store.state.user);
   }
 };
 </script>

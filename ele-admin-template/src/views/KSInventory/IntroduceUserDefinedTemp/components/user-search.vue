@@ -1,36 +1,9 @@
 <!-- 搜索表单 -->
 <template>
   <el-form label-width="77px" class="ele-form-search" @keyup.enter.native="search" @submit.native.prevent>
-    <el-row :gutter="15">
-      <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 6 }">
-        <el-input clearable v-model="where.SearchVarietie" style="width:250px" placeholder="品种编码/品种名称/规格" />
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 6 }">
-        <el-input clearable v-model="where.Specifications" placeholder="请输入规格型号" />
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 6 }">
-        <el-input clearable v-model="where.Batch" placeholder="请输入生产批号" />
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 6 }">
-        <el-input clearable v-model="where.OutType" placeholder="请输入入库类型" />
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 6 }">
-        <el-input clearable v-model="where.BUSINESS_BILL" placeholder="请输入库单号" />
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 6 }">
-        <el-input clearable v-model="where.Production" placeholder="请输入生产企业" />
-      </el-col>
-    </el-row>
     <el-row :gutter="10" style="margin-top:10px">
-      <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 6 }">
-        <el-form-item label="入库时间:">
-          <el-date-picker v-model="where.StartTime" type="date" style="width:200px" value-format="yyyy-MM-dd" placeholder="入库开始时间">
-          </el-date-picker>
-        </el-form-item>
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 6 }" style="margin-left:10px">
-        <el-date-picker v-model="where.EndTime" type="date" style="width:200px" value-format="yyyy-MM-dd" placeholder="入库结束时间">
-        </el-date-picker>
+      <el-col v-bind="styleResponsive ? { lg: 8, md: 12 } : { span: 6 }">
+        <el-input clearable v-model="where.SerachName" style="width:400px" placeholder="请输入品种编码/品种名称/型号规格/生产企业搜索" />
       </el-col>
       <el-col v-bind="styleResponsive ? { lg: 6, md: 12 } : { span: 6 }">
         <div class="ele-form-actions">
@@ -53,31 +26,7 @@ export default {
   data() {
     // 默认表单数据
     const defaultWhere = {
-      SearchVarietie: '',
-      Supplier: '',
-      Batch: '',
-      OutType: '',
-      BUSINESS_BILL: '',
-      Specifications: '',
-      StartTime: null,
-      EndTime: null,
-      Production: '',
-      field: 'RECEIVING_TIME',
-      order: 'desc',
-      IS_CHARGE: '-1',
-      HIGH_OR_LOW_CLASS: '-1',
-      IS_BIDDING: '-1',
-      SPECIAL_PURCHASE: '-1',
-      ONEOFF_STERILIZATION_PACKAGING: '-1',
-      STORAGE_TYPE: '-1',
-      IS_EMBEDDED: '-1',
-      IS_SERIAL_NUMBER: '-1',
-      IS_INTERVENED: '-1',
-      IS_PROTECT: '-1',
-      HIGH_OR_LOW_CLASS_TWO: '',
-      IS_EQUIPMENT_CHANGE: '',
-      SUPPLIER_NAME: '',
-      DeptCode: null
+      SerachName: '',
     };
     return {
       // 表单数据

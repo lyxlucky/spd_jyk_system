@@ -13,6 +13,11 @@ export default {
     // 恢复主题
     this.$store.dispatch('theme/recoverTheme');
   },
+  // provide() {
+  //   return {
+  //     reloadAll: this.reloadAll
+  //   };
+  // },
   methods: {
     /* 路由切换更新浏览器标题 */
     setDocumentTitle() {
@@ -21,7 +26,13 @@ export default {
         (key) => this.$t(key),
         this.$store.state.theme.tabs
       );
-    }
+    },
+    // reloadAll() {
+    //   this.isRouterAlive = false;
+    //   this.$nextTick(() => {
+    //     this.isRouterAlive = true;
+    //   });
+    // }
   },
   watch: {
     '$i18n.locale'() {
@@ -35,5 +46,4 @@ export default {
 </script>
 
 <style lang='scss'>
-
 </style>
