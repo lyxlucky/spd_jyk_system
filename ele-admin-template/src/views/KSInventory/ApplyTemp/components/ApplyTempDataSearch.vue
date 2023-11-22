@@ -46,7 +46,7 @@
         </div>
       </el-row>
     </el-form>
-    <el-dialog title="授权品种目录" :visible.sync="dialogTableVisible">
+    <el-dialog title="授权品种目录" :visible.sync="dialogTableVisible" width='70%'>
       <AuthVarTable :dialogTableVisible="dialogTableVisible" />
     </el-dialog>
   </div>

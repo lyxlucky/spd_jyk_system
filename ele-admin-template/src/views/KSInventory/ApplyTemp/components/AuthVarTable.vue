@@ -11,6 +11,23 @@
       </template> -->
       <!-- 左表头 -->
       <template v-slot:toolbar>
+        <el-form class="ele-form-search">
+          <el-row :gutter="10">
+            <el-col :lg="10" :md="12">
+              <el-form-item label="">
+                <el-input v-model="SerachName" placeholder="请输入品种名称/品种编码/型号规格/生产企业搜索" clearable />
+              </el-form-item>
+            </el-col>
+            <el-col :lg="14" :md="12">
+              <div class="ele-form-actions">
+                <el-button type="primary" @click="search">查询</el-button>
+                <el-button @click="reset">重置</el-button>
+                <el-button type="primary" size="small" @click="dialogTableVisible = true">添加至选定模板</el-button>
+                <el-button type="primary" size="small" @click="search">导出目录</el-button>
+              </div>
+            </el-col>
+          </el-row>
+        </el-form>
         <!-- 搜索表单 -->
         <!-- <ApplyTempDataSearch @search="reload" :ApplyTempTableDataSearch='ApplyTempTableDataSearch' :selection="selection" /> -->
 
@@ -37,7 +54,8 @@
 // import ApplyTempDataSearch from './ApplyTempDataSearch.vue';
 import {
   SerachTempletDeta,
-  DeleteTempletDeta
+  DeleteTempletDeta,
+  SerachAuthVar
 } from '@/api/KSInventory/ApplyTemp';
 export default {
   name: 'AuthVarTable',
@@ -223,24 +241,22 @@ export default {
       // 是否显示导入弹窗
       showImport: false,
       // datasource: [],
-      data: []
+      data: [],
+      SerachName: ''
     };
   },
   methods: {
     /* 表格数据源 */
     datasource({ page, limit, where, order }) {
       where.DeptCode = this.$store.state.user.info.DeptNow.Dept_Two_Code;
-      where.UserId = this.$store.state.user.info.ID;
-      where.TempletMasteID = this.ApplyTempTableData.ID;
-      let data = SerachTempletDeta({ page, limit, where, order }).then(
-        (res) => {
-          var tData = {
-            count: res.total,
-            list: res.result
-          };
-          return tData;
-        }
-      );
+      where.SerachName = this.SerachName;
+      let data = SerachAuthVar({ page, limit, where, order }).then((res) => {
+        var tData = {
+          count: res.total,
+          list: res.result
+        };
+        return tData;
+      });
       return data;
     },
     /* 刷新表格 */
