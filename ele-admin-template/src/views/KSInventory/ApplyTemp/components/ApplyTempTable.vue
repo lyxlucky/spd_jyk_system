@@ -1,11 +1,11 @@
 <template>
   <div class="ele-body" style="height:75vh">
     <!-- 数据表格 -->
-    <ele-pro-table highlight-current-row @current-change="onCurrentChange" ref="table" height="50vh" :rowClickChecked="true" :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" cache-key="KSInventoryBasicDataTable">
+    <ele-pro-table highlight-current-row @current-change="onCurrentChange" ref="table" height="50vh" :rowClickChecked="true" :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" cache-key="ApplyTempTable">
       <!-- 表头工具栏 -->
       <template v-slot:toolbar>
         <!-- 搜索表单 -->
-        <KSDepartmentalPlan-search @search="reload" />
+        <ApplyTempSearch @search="reload" />
       </template>
 
       <template v-slot:State="{ row }">
@@ -23,6 +23,7 @@
       </template>
       <!-- 操作列 -->
       <template v-slot:action="{ row }">
+        <el-button type="primary" size="small" @click="search(row)">设置为专属模板</el-button>
         <el-popconfirm class="ele-action" title="确定要删除此用户吗？" @confirm="remove(row)">
           <template v-slot:reference>
             <el-link type="danger" :underline="false" icon="el-icon-delete">
@@ -36,16 +37,12 @@
 </template>
 
 <script>
-import KSDepartmentalPlanSearch from './KSDepartmentalPlan-search.vue';
-import {
-  SerachPlanList,
-  DeletePlanList
-} from '@/api/KSInventory/KSDepartmentalPlan';
-import { getDeptAuthVarNew } from '@/api/KSInventory/KSInventoryBasicData';
+import ApplyTempSearch from './ApplyTempSearch.vue';
+import { SerachTempletList, DeleteTemplet } from '@/api/KSInventory/ApplyTemp';
 export default {
-  name: 'KSDepartmentalPlanTable',
+  name: 'ApplyTempTable',
   components: {
-    KSDepartmentalPlanSearch
+    ApplyTempSearch
   },
   data() {
     return {
@@ -69,7 +66,7 @@ export default {
         {
           columnKey: 'action',
           label: '操作',
-          width: 80,
+          width: 200,
           align: 'center',
           resizable: false,
           slot: 'action',
@@ -77,81 +74,96 @@ export default {
           fixed: 'right'
         },
         {
-          prop: 'PlanNum',
-          label: '申领单号',
+          prop: 'TempletCode',
+          label: '模板编号',
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110
         },
         {
-          // prop: 'State',
-          label: '状态',
+          prop: 'TempletName',
+          label: '模板名称',
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110,
-          slot: 'State'
-          // formatter: (row, column, cellValue) => {
-          //   if (cellValue === '0') {
-          //     return '新增';
-          //   } else if (cellValue === '1') {
-          //     return '已提交';
-          //   } else if (cellValue === '2') {
-          //     return '配送中';
-          //   } else if (cellValue === '5') {
-          //     return '已审核';
-          //   } else if (cellValue === '10') {
-          //     return '强制结束';
-          //   } else if (cellValue === '6' || cellValue === '4') {
-          //     return '已审批';
-          //   } else {
-          //     return '配送中';
-          //   }
-          // }
+          formatter(row, column, cellValue) {
+            if (cellValue == null) {
+              return '无';
+            } else {
+              return cellValue;
+            }
+          }
         },
         {
-          prop: 'DEPT_TWO_NAME',
-          label: '科室名称',
+          prop: 'CommonState',
+          label: '常规',
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 110
-        },
-        {
-          prop: 'PlanTime',
-          label: '申领时间',
-          sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 110
+          minWidth: 110,
+          formatter(row, column, cellValue) {
+            if (cellValue == 1) {
+              return '√';
+            } else {
+              return '';
+            }
+          }
         },
         {
           prop: 'Operater',
-          label: '申领人',
+          label: '创建人',
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110
         },
         {
-          prop: 'Approval_Time',
-          label: '审批时间',
+          prop: 'CreateTime',
+          label: '模板创建时间',
+          sortable: 'custom',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 180,
+          formatter(row, column, cellValue) {
+            return cellValue.replace('T', ' ');
+          }
+        },
+        {
+          prop: 'LastUpDateTime',
+          label: '最近更新时间',
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 180,
           formatter: (row, column, cellValue) => {
-            return this.$util.toDateString(cellValue);
+            return cellValue.replace('T', ' ');
           }
         },
         {
-          prop: 'BZ',
-          label: '备注',
+          prop: 'USER_ID',
+          label: '是否专属',
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 110
+          minWidth: 110,
+          formatter(row, column, cellValue) {
+            if (cellValue != null && cellValue.length > 0) {
+              return '是';
+            } else {
+              return '否';
+            }
+          }
+        },
+        {
+          prop: 'ID',
+          label: 'ID',
+          sortable: 'custom',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 180,
+          show: false
         }
       ],
       toolbar: false,
@@ -173,20 +185,17 @@ export default {
   methods: {
     /* 表格数据源 */
     datasource({ page, limit, where, order }) {
-      var Dept_Two_CodeStr = '';
-      var userDeptList = this.$store.state.user.info.userDept;
-      for (let i = 0; i < userDeptList.length; i++) {
-        Dept_Two_CodeStr =
-          Dept_Two_CodeStr + userDeptList[i].Dept_Two_Code + ',';
-      }
-      where.DeptCode = Dept_Two_CodeStr;
-      let data = SerachPlanList({ page, limit, where, order }).then((res) => {
-        var tData = {
-          count: res.total,
-          list: res.result
-        };
-        return tData;
-      });
+      where.DeptCode = this.$store.state.user.info.DeptNow.Dept_Two_Code;
+      where.UserId = this.$store.state.user.info.ID;
+      let data = SerachTempletList({ page, limit, where, order }).then(
+        (res) => {
+          var tData = {
+            count: res.total,
+            list: res.result
+          };
+          return tData;
+        }
+      );
       return data;
     },
     /* 刷新表格 */
@@ -212,16 +221,23 @@ export default {
 
     /* 删除数据 */
     remove(row) {
-      const loading = this.$loading({ lock: true });
-      DeletePlanList(row).then((res) => {
-        this.$message.success(res.msg);
-        loading.close();
-        this.reload();
-      });
+      // const loading = this.$loading({ lock: true });
+      const loading = this.$messageLoading('删除中...');
+      DeleteTemplet(row)
+        .then((res) => {
+          this.$message.success(res.msg);
+          loading.close();
+          this.reload();
+        })
+        .catch((err) => {
+          loading.close();
+           this.$message.error(err);
+        });
     }
   },
   created() {
     // this.getdatasource();
+    // console.log(this.$store.state.user.info.DeptNow.Dept_Two_Code);
   }
 };
 </script>

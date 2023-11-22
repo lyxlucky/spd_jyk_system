@@ -26,7 +26,6 @@ export async function getDeptAuthVarNew(data) {
 }
 
 export async function GetDeptInStockDetail(data) {
-    console.log(data);
     var aaa = DataToObject(data,data.where);
     if(data != null){
         var data2 = formdataify(data);

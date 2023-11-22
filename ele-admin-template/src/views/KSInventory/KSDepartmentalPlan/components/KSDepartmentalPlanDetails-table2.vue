@@ -1,6 +1,6 @@
 <template>
   <div class="ele-body" style="height:75vh">
-    <el-button type="danger" size="small" @click="aaa">aaa</el-button>
+    <!-- <el-button type="danger" size="small" @click="aaa">aaa</el-button> -->
     <!-- 数据表格 -->
     <ele-pro-table ref="table" height="50vh" highlight-current-row :stripe="true" :rowClickChecked="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" @selection-change="onSelectionChange" cache-key="KSInventoryBasicDataTable">
       <!-- 表头工具栏 -->
@@ -54,7 +54,7 @@ import { SerachPlanListDeta } from '@/api/KSInventory/KSDepartmentalPlan';
 export default {
   name: 'KSDepartmentalPlanTable',
   props: ['KSDepartmentalPlanData'],
-  inject: ['reload'],
+  // inject: ['reload'],
   components: {
     KSDepartmentalPlanDetailsSearch: KSDepartmentalPlanDetailsSearch
   },
@@ -342,9 +342,9 @@ export default {
         this.$refs.table.reload({ page: 1, where: where });
       }
     },
-    aaa() {
-      this.reload();
-    }
+    // aaa() {
+    //   this.reload();
+    // }
   },
   computed: {
     KSDepartmentalPlanDataSearch() {
