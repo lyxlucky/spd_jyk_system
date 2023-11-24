@@ -2,7 +2,8 @@ const CompressionWebpackPlugin = require('compression-webpack-plugin');
 const { transformElementScss } = require('ele-admin/lib/utils/dynamic-theme');
 
 module.exports = {
-  publicPath: '/jyk',
+  publicPath: '/jyk/',
+  outputDir: 'jyk',
   productionSourceMap: false,
   transpileDependencies: ['element-ui', 'ele-admin', 'vue-i18n'],
   configureWebpack: {
