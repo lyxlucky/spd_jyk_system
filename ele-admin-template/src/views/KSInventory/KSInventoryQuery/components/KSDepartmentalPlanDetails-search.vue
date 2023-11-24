@@ -1,70 +1,28 @@
 <!-- 搜索表单 -->
 <template>
-  <el-form class="ele-form-search">
+  <el-form label-width="77px" class="ele-form-search" @keyup.enter.native="search" @submit.native.prevent>
     <el-row :gutter="10">
-      <!-- <el-col v-bind="styleResponsive ? { lg: 6, md: 12 } : { span: 6 }">
-        <el-form-item label="状态：">
-          <el-select v-model="where.State" @change="search()">
-            <el-option label="显示所有申领品种" value="-1"></el-option>
-            <el-option label="仅显示实际申领为空品种" value="0"></el-option>
-            <el-option label="仅显示实际申领非空品种" value="1"></el-option>
+      <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 12 }">
+        <el-input clearable v-model="where.Name" placeholder="品种名称/品种编码" />
+      </el-col>
+      <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 12 }">
+        <el-form-item label="入库类型">
+          <el-select v-model="where.TYPE" @change="search()">
+            <el-option label="全部" value=""></el-option>
+            <el-option label="新增" value="0"></el-option>
+            <el-option label="已提交" value="1"></el-option>
           </el-select>
-        </el-form-item>
-      </el-col> -->
-      <el-col v-bind="styleResponsive ? { lg: 11, md: 12 } : { span: 6 }">
-        <el-form-item label="平均用量时间段：" label-width='130px'>
-          <el-date-picker v-model="where.dateFrom" type="date" value-format="yyyy-MM-dd" placeholder="yyyy-MM-dd">
-          </el-date-picker>
         </el-form-item>
       </el-col>
       <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 6 }">
-        <el-date-picker v-model="where.dateTo" type="date" value-format="yyyy-MM-dd" placeholder="yyyy-MM-dd">
-        </el-date-picker>
-      </el-col>
-    </el-row>
-    <el-row :gutter="10">
-      <el-col :lg="12" :md="12">
-        <el-form-item label="">
-          <el-input v-model="where.SerachName" placeholder="请输入品种名称/品种编码/型号规格/生产企业搜索" clearable />
-        </el-form-item>
-      </el-col>
-      <el-col :lg="12" :md="12">
         <div class="ele-form-actions">
-          <el-button type="primary" @click="search">查询</el-button>
-          <el-button @click="reset">重置</el-button>
+          <el-button size="small" type="primary" icon="el-icon-search" class="ele-btn-icon" @click="search">
+            查询
+          </el-button>
+          <el-button size="small" @click="reset">重置</el-button>
         </div>
       </el-col>
     </el-row>
-    <el-row :gutter="10">
-      <div class="ele-form-actions">
-        <el-button type="primary" size="small" @click="openIntroduceUserDefinedTemp" :disabled='!IsDisabled'>自定义新增</el-button>
-        <!-- <el-button type="primary" size="small" @click="openIntroduceOtherTemp" :disabled='!IsDisabled'>引用常规模板</el-button> -->
-        <el-button type="primary" size="small" @click="reset" :disabled='!IsDisabled'>引入其他模板</el-button>
-        <!-- <el-button type="primary" size="small" @click="reset" :disabled='!IsDisabled'>引入历史记录</el-button> -->
-        <el-button type="primary" size="small" @click="reset" :disabled='!IsDisabled'>暂存申领单</el-button>
-        <el-button type="primary" size="small" @click="addPutInListDeta" :disabled='!IsDisabled'>保存并提交</el-button>
-        <!-- <el-button type="primary" size="small" @click="reset" :disabled='IsDisabled'>查询订单情况</el-button> -->
-        <!-- <el-button type="primary" size="small" @click="reset" :disabled='IsDisabled'>合并订单</el-button> -->
-      </div>
-    </el-row>
-    <el-row :gutter="10">
-      <div class="ele-form-actions">
-        <el-button type="primary" size="small" @click="subToExamine" :disabled='!IsPutInListDeta'>审核申领单</el-button>
-        <!-- <el-button type="primary" size="small" @click="search" :disabled='!IsToExamine'>审批申领单</el-button> -->
-        <!-- <el-button type="danger" size="small" @click="removeBatch" :disabled='!IsDisabledByDel'>删除</el-button> -->
-        <el-popconfirm class="ele-action" title="确定删除？" @confirm="removeBatch()">
-          <template v-slot:reference>
-            <!-- <el-link type="danger" :underline="false" icon="el-icon-delete">
-              删除
-            </el-link> -->
-            <el-button type="danger" size="small" :underline="false" :disabled='!IsDisabledByDel'>删除</el-button>
-          </template>
-        </el-popconfirm>
-      </div>
-    </el-row>
-    <IntroduceUserDefinedTemp :visible.sync="showEdit" :IntroduceUserDefinedTempSearch="KSDepartmentalPlanDataSearch" />
-    <IntroduceDefinedTemp :visible.sync="showEdit2" />
-
   </el-form>
 </template>
 
@@ -76,22 +34,18 @@ import {
   ToExamine
 } from '@/api/KSInventory/KSDepartmentalPlan';
 import IntroduceUserDefinedTemp from '@/views/KSInventory/IntroduceUserDefinedTemp/index.vue';
-import IntroduceDefinedTemp from './aaaaccc.vue';
+
 export default {
   props: ['KSDepartmentalPlanDataSearch', 'selection', 'datasourceList'],
   components: {
-    IntroduceUserDefinedTemp,
-    IntroduceDefinedTemp
+    IntroduceUserDefinedTemp
+    // IntroduceDefinedTemp
   },
   data() {
     // 默认表单数据
     const defaultWhere = {
       Token: '',
-      PlanNum: '',
-      is_second_app: '',
-      SerachName: '',
-      dateFrom: '',
-      dateTo: ''
+      TYPE: ''
     };
     return {
       // 表单数据

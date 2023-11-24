@@ -6,7 +6,6 @@ import { HOME_HP } from '@/config/setting';
 
 
 export async function SearchDept(data) {
-    console.log(data)
     let data2 = {};
     data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
     data2.hp = HOME_HP;

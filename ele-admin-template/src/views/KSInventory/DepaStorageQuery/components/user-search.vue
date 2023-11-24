@@ -48,7 +48,6 @@
 </template>
 
 <script>
-
 export default {
   data() {
     // 默认表单数据
@@ -81,7 +80,7 @@ export default {
     };
     return {
       // 表单数据
-      where: { ...defaultWhere },
+      where: { ...defaultWhere }
     };
   },
   computed: {
@@ -93,13 +92,13 @@ export default {
   methods: {
     /* 搜索 */
     search() {
-      this.$emit('search', {...this.where});
+      this.$emit('search', { ...this.where });
     },
     /*  重置 */
     reset() {
       this.where = { ...this.defaultWhere };
       this.search();
-    },
+    }
   },
   created() {
     // 获取各种类型当前时间
@@ -116,8 +115,20 @@ export default {
     var year2 = date2.getFullYear();
     var month2 = date2.getMonth() + 1;
     var day2 = date2.getDate();
-    var now_time2 = year2 + '-' + month2 + '-' + day2;
-    this.where.StartTime = now_time2;
+    this.where.StartTime = year2 + '-' + month2 + '-' + day2;
+  },
+  mounted() {
+    var Dept_Two_CodeStr = '';
+    var userDeptList = this.$store.state.user.info.userDept;
+    for (let i = 0; i < userDeptList.length; i++) {
+      Dept_Two_CodeStr = Dept_Two_CodeStr + userDeptList[i].Dept_Two_Code + ',';
+    }
+    var data = {
+      StartTime: this.where.StartTime,
+      EndTime: this.where.EndTime,
+      DeptCode: Dept_Two_CodeStr
+    };
+    // this.$emit('search', data);
   }
 };
 </script>

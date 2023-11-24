@@ -2,7 +2,7 @@
   <div class="ele-body">
     <el-card shadow="never">
       <!-- 搜索表单 -->
-      <user-search @search="reload" />
+      <user-search @search="reload" @exportData="exportData" />
       <!-- 数据表格 -->
       <ele-pro-table ref="table" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" cache-key="KSInventoryBasicDataTable">
         <!-- 表头工具栏 -->
@@ -20,10 +20,10 @@
 
         <!-- 操作列 -->
         <template v-slot:action="{ row }">
-           <el-link type="primary" :underline="false" icon="el-icon-edit" @click="openEdit(row)">
+          <el-link type="primary" :underline="false" icon="el-icon-edit" @click="openEdit(row)">
             修改
           </el-link>
-           <!-- <el-button type="primary" size="mini" @click="openEdit(row)">编辑</el-button> -->
+          <!-- <el-button type="primary" size="mini" @click="openEdit(row)">编辑</el-button> -->
           <!-- <el-popconfirm class="ele-action" title="确定要删除此用户吗？" @confirm="remove(row)">
             <template v-slot:reference>
               <el-link type="danger" :underline="false" icon="el-icon-delete">
@@ -42,6 +42,7 @@
 </template>
 
 <script>
+import { utils, writeFile } from 'xlsx';
 import UserSearch from './components/user-search.vue';
 import UserEdit from './components/user-edit.vue';
 import UserImport from './components/user-import.vue';
@@ -52,12 +53,15 @@ import {
   updateUserStatus,
   updateUserPassword
 } from '@/api/system/user';
-import { getDeptAuthVarNew,UpdateVarietieBasicJyk } from '@/api/KSInventory/KSInventoryBasicData';
+import {
+  getDeptAuthVarNew,
+  UpdateVarietieBasicJyk
+} from '@/api/KSInventory/KSInventoryBasicData';
 export default {
   name: 'SystemUser',
   components: {
     UserSearch,
-    UserEdit,
+    UserEdit
     // UserImport
   },
   data() {
@@ -174,8 +178,7 @@ export default {
           width: 220,
           align: 'center',
           showOverflowTooltip: true
-        },
-        
+        }
       ],
       toolbar: false,
       pageSize: 5,
@@ -196,7 +199,7 @@ export default {
   methods: {
     /* 表格数据源 */
     datasource({ page, limit, where, order }) {
-       where.Dept_One_Code = this.$store.state.user.info.DeptNow.Dept_Two_Code;
+      where.Dept_One_Code = this.$store.state.user.info.DeptNow.Dept_Two_Code;
       let data = getDeptAuthVarNew({ page, limit, where, order }).then(
         (res) => {
           return res.result;
@@ -287,6 +290,67 @@ export default {
           row.status = !row.status ? 1 : 0;
           this.$message.error(e.message);
         });
+    },
+    exportData(data) {
+      const loading = this.$messageLoading('正在导出数据...');
+      this.$refs.table.doRequest(({ where, order }) => {
+        where = data;
+        where.Dept_One_Code = this.$store.state.user.info.DeptNow.Dept_Two_Code;
+        getDeptAuthVarNew({
+          page: 1,
+          limit: 999999,
+          where: where,
+          order: order
+        })
+          .then((res) => {
+            loading.close();
+            const array = [
+              [
+                '品种编码',
+                '品种id',
+                '品种名称',
+                '规格/型号',
+                '生产企业名称',
+                '注册证号',
+                '单位',
+                '中标价',
+                '品种类别',
+                '换算比(试剂)',
+                '仪器备注',
+              ]
+            ];
+            res.result.forEach((d) => {
+              array.push([
+                d.Varietie_Code_New,
+                d.Varietie_Code,
+                d.Varietie_Name,
+                d.Specification_Or_Type,
+                d.Manufacturing_Ent_Name,
+                d.APPROVAL_NUMBER,
+                d.UNIT,
+                d.Price ,
+                d.CLASS_NUM,
+                d.CONVERSION_RATIO,
+                d.DEVICE_REMARK,
+                // this.$util.toDateString(d.createTime)
+              ]);
+            });
+            writeFile(
+              {
+                SheetNames: ['Sheet1'],
+                Sheets: {
+                  Sheet1: utils.aoa_to_sheet(array)
+                }
+              },
+              '科室入库品种.xlsx'
+            );
+            this.$message.success("导出成功");
+          })
+          .catch((e) => {
+            loading.close();
+            this.$message.error(e.message);
+          });
+      });
     }
   },
   created() {

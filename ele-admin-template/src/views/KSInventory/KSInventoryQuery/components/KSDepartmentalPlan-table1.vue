@@ -1,7 +1,7 @@
 <template>
-  <div class="ele-body" style="height:75vh">
+  <div class="ele-body" style="height:35vh">
     <!-- 数据表格 -->
-    <ele-pro-table highlight-current-row @current-change="onCurrentChange" ref="table" height="50vh" :rowClickChecked="true" :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" cache-key="KSInventoryBasicDataTable">
+    <ele-pro-table highlight-current-row @current-change="onCurrentChange" ref="table" height="300" :rowClickChecked="true" :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" cache-key="KSInventoryBasicDataTable">
       <!-- 表头工具栏 -->
       <template v-slot:toolbar>
         <!-- 搜索表单 -->
@@ -41,7 +41,7 @@ import {
   SerachPlanList,
   DeletePlanList
 } from '@/api/KSInventory/KSDepartmentalPlan';
-import { getDeptAuthVarNew } from '@/api/KSInventory/KSInventoryBasicData';
+import { GetJykMainShelf } from '@/api/KSInventory/KSInventoryQuery';
 export default {
   name: 'KSDepartmentalPlanTable',
   components: {
@@ -77,38 +77,151 @@ export default {
           fixed: 'right'
         },
         {
-          prop: 'PlanNum',
-          label: '申领单号',
+          prop: 'ID',
+          label: 'ID',
+          sortable: 'custom',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 110,
+          show: false
+        },
+        {
+          prop: 'VARIETIE_CODE',
+          label: '品种ID',
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110
         },
         {
-          // prop: 'State',
-          label: '状态',
+          prop: 'VARIETIE_CODE_NEW',
+          label: '品种编码',
+          sortable: 'custom',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 110
+        },
+        {
+          prop: 'VARIETIE_NAME',
+          label: '品种名称',
+          sortable: 'custom',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 150
+        },
+        {
+          prop: 'BATCH',
+          label: '批次号',
+          sortable: 'custom',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 110
+        },
+        {
+          prop: 'BATCH_ID',
+          label: '批号',
+          sortable: 'custom',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 110
+        },
+        {
+          prop: 'OPERATOR',
+          label: '操作人',
+          sortable: 'custom',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 110
+        },
+        {
+          prop: 'DELIVERY_NUMBER',
+          label: 'DELIVERY_NUMBER',
+          sortable: 'custom',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 120
+        },
+        {
+          prop: 'RECORD_TYPE',
+          label: '入库类型',
+          sortable: 'custom',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 110
+        },
+        {
+          prop: 'DEF_NO_PKG_CODE',
+          label: '定数码',
+          sortable: 'custom',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 110
+        },
+        {
+          prop: 'APPROVAL_NUMBER',
+          label: '注册证号',
+          sortable: 'custom',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 110
+        },
+        {
+          prop: 'MANUFACTURING_ENT_NAME',
+          label: '生产企业',
+          sortable: 'custom',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 180
+        },
+        {
+          prop: 'SPECIFICATION_OR_TYPE',
+          label: '规格型号',
+          sortable: 'custom',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 180
+        },
+        {
+          prop: 'UNIT',
+          label: '单位',
+          sortable: 'custom',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 180
+        },
+        {
+          prop: 'PRICE',
+          label: '价格',
+          sortable: 'custom',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 180
+        },
+        {
+          prop: 'SUPPLIER_CODE',
+          label: '供应商编码',
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110,
-          slot: 'State'
-          // formatter: (row, column, cellValue) => {
-          //   if (cellValue === '0') {
-          //     return '新增';
-          //   } else if (cellValue === '1') {
-          //     return '已提交';
-          //   } else if (cellValue === '2') {
-          //     return '配送中';
-          //   } else if (cellValue === '5') {
-          //     return '已审核';
-          //   } else if (cellValue === '10') {
-          //     return '强制结束';
-          //   } else if (cellValue === '6' || cellValue === '4') {
-          //     return '已审批';
-          //   } else {
-          //     return '配送中';
-          //   }
-          // }
+          show: false
+        },
+        {
+          prop: 'SUPPLIER_NAME',
+          label: '供应商名称',
+          sortable: 'custom',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 110
+        },
+        {
+          prop: 'DEPT_TWO_CODE',
+          label: '二级科室编码',
+          sortable: 'custom',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 110,
+          show: false
         },
         {
           prop: 'DEPT_TWO_NAME',
@@ -116,43 +229,58 @@ export default {
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 110
+          minWidth: 110,
+          show: false
         },
         {
-          prop: 'PlanTime',
-          label: '申领时间',
+          prop: 'BATCH_PRODUCTION_DATE',
+          label: '生产日期',
+          sortable: 'custom',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 150
+        },
+        {
+          prop: 'BATCH_VALIDITY_PERIOD',
+          label: '有效到期',
+          sortable: 'custom',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 150
+        },
+        {
+          prop: 'RECORD_TIME',
+          label: '入库时间',
+          sortable: 'custom',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 150
+        },
+        {
+          prop: 'COUNT',
+          label: '数量',
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110
         },
         {
-          prop: 'Operater',
-          label: '申领人',
+          prop: 'RECORD_TYPE',
+          label: '入库类型',
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110
         },
         {
-          prop: 'Approval_Time',
-          label: '审批时间',
-          sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 180,
-          formatter: (row, column, cellValue) => {
-            return this.$util.toDateString(cellValue);
-          }
-        },
-        {
-          prop: 'BZ',
-          label: '备注',
+          prop: 'CHARGING_CODE',
+          label: '计费编码',
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110
-        }
+        },
+       
       ],
       toolbar: false,
       pageSize: 10,
@@ -173,14 +301,7 @@ export default {
   methods: {
     /* 表格数据源 */
     datasource({ page, limit, where, order }) {
-      var Dept_Two_CodeStr = '';
-      var userDeptList = this.$store.state.user.info.userDept;
-      for (let i = 0; i < userDeptList.length; i++) {
-        Dept_Two_CodeStr =
-          Dept_Two_CodeStr + userDeptList[i].Dept_Two_Code + ',';
-      }
-      where.DeptCode = Dept_Two_CodeStr;
-      let data = SerachPlanList({ page, limit, where, order }).then((res) => {
+      let data = GetJykMainShelf({ page, limit, where, order }).then((res) => {
         var tData = {
           count: res.total,
           list: res.result

@@ -1,6 +1,27 @@
 <template >
   <div class="ele-body">
     <el-card shadow="never">
+      <el-row style="margin-bottom: 5px;">
+        <el-col :span="3">
+          当前页总金额:
+          {{data.pageCost}}
+        </el-col>
+
+        <el-col :span="3">
+          所有页总金额:
+          {{data.allCost}}
+        </el-col>
+
+        <el-col :span="3">
+          当前页散货汇总数量:
+          {{data.pageGoodsQty}}
+        </el-col>
+
+        <el-col :span="3">
+          所有页散货汇总数量:
+          {{data.allGoodsQty}}
+        </el-col>
+      </el-row>
       <!-- 搜索表单 -->
       <user-search @search="reload" />
       <!-- 数据表格 -->
@@ -375,7 +396,12 @@ export default {
       // 是否显示导入弹窗
       showImport: false,
       // datasource: [],
-      data: []
+      data: {
+        pageCost: 0,
+        allCost: 0,
+        pageGoodsQty: 0,
+        allGoodsQty: 0
+      }
     };
   },
   methods: {
@@ -419,15 +445,17 @@ export default {
       // where.SPDDEPTNAME = '';
       // where.Operate_Person = '';
 
-      let data = SearchDept({ page, limit, where, order }).then(
-        (res) => {
-          var tData = {
-            count: res.total,
-            list: res.result
-          };
-          return tData;
-        }
-      );
+      let data = SearchDept({ page, limit, where, order }).then((res) => {
+        var tData = {
+          count: res.total,
+          list: res.result
+        };
+        this.data.pageCost = res.pageCost;
+        this.data.allCost = res.allCost;
+        this.data.pageGoodsQty = res.pageGoodsQty;
+        this.data.allGoodsQty = res.allGoodsQty;
+        return tData;
+      });
       return data;
     },
     /* 刷新表格 */
@@ -654,7 +682,7 @@ export default {
         this.$message.error('请至少选择一条数据');
         return;
       }
-      this.$confirm('确定要删除选中的用户吗?', '提示', {
+      this.$confirm('确定要删除选中的数据?', '提示', {
         type: 'warning'
       })
         .then(() => {

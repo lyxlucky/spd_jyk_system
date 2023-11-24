@@ -1,6 +1,35 @@
 <template >
   <div class="ele-body">
     <el-card shadow="never">
+      <el-row style="margin-bottom: 5px;">
+        <el-col :span="3">
+          <b>
+            品种当前页散货金额:
+            {{data.pageCost}}
+          </b>
+        </el-col>
+
+        <el-col :span="3">
+          <b>
+            品种总金额:
+            {{data.allCost}}
+          </b>
+        </el-col>
+
+        <el-col :span="3">
+          <b>
+            品种当前页入库数量:
+            {{data.pageGoodsQty}}
+          </b>
+        </el-col>
+
+        <el-col :span="3">
+          <b>
+            品种入库总数量:
+            {{data.allGoodsQty}}
+          </b>
+        </el-col>
+      </el-row>
       <!-- 搜索表单 -->
       <user-search @search="reload" />
       <!-- 数据表格 -->
@@ -352,7 +381,12 @@ export default {
       // 是否显示导入弹窗
       showImport: false,
       // datasource: [],
-      data: []
+      data: {
+        pageCost: 0,
+        allCost: 0,
+        allGoodsQty: 0,
+        pageGoodsQty: 0
+      }
     };
   },
   methods: {
@@ -365,12 +399,20 @@ export default {
           Dept_Two_CodeStr + userDeptList[i].Dept_Two_Code + ',';
       }
       where.DeptCode = Dept_Two_CodeStr;
+
       let data = GetDeptInStockDetail({ page, limit, where, order }).then(
         (res) => {
           var tData = {
             count: res.total,
             list: res.result
           };
+
+          this.data.allCost = res.result[0].ALL_PRICE;
+          this.data.allGoodsQty = res.result[0].ALL_QTY;
+          res.result.forEach((element) => {
+            this.data.pageCost += element.GOODS_QTY * element.SUPPLY_PRICE;
+            this.data.pageGoodsQty += Number(element.RECEIVING_QUANTITY);
+          });
           return tData;
         }
       );
