@@ -8,20 +8,24 @@ import { WHITE_LIST, REDIRECT_PATH, LAYOUT_PATH } from '@/config/setting';
 import store from '@/store';
 import { getToken } from '@/utils/token-util';
 import { routes, getMenuRoutes } from './routes';
+// import { createWebHistory } from "vue-router";
 
 Vue.use(VueRouter);
 
 const router = new VueRouter({
-  routes,
+  base: '/jyk/',
   mode: 'history',
+  routes,
+  // history: createWebHistory("/gis/"),
   scrollBehavior() {
     return { y: 0 };
   }
-});
+})
 
 /**
  * 路由守卫
  */
+
 router.beforeEach((to, from, next) => {
   if (!from.path.includes(REDIRECT_PATH)) {
     NProgress.start();
@@ -47,7 +51,7 @@ router.beforeEach((to, from, next) => {
   } else if (WHITE_LIST.includes(to.path)) {
     next();
   } else {
-    if(getToken()){
+    if (getToken()) {
       alert('登录已过期，请重新登录!');
     }
     next({

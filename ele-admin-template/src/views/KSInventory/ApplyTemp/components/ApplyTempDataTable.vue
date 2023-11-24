@@ -279,7 +279,9 @@ export default {
   watch: {
     ApplyTempTableDataSearch() {
       var where = {
-        PlanNum: this.ApplyTempTableData.PlanNum
+        DeptCode: this.$store.state.user.info.DeptNow.Dept_Two_Code,
+        UserId: this.$store.state.user.info.ID,
+        TempletMasteID: this.ApplyTempTableData.ID,
       };
       this.$refs.table.reload({ page: 1, where: where });
     }

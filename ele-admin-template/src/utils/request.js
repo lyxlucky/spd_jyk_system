@@ -8,6 +8,7 @@ import { API_BASE_URL, TOKEN_HEADER_NAME, LAYOUT_PATH } from '@/config/setting';
 import { getToken, setToken } from './token-util';
 import { logout } from './page-tab-util';
 
+// axios.defaults.headers.post['Content-Type'] = 'application/json;charset=UTF-8';
 const service = axios.create({
   baseURL: API_BASE_URL
 });
@@ -15,13 +16,18 @@ const service = axios.create({
 /**
  * 添加请求拦截器
  */
+
 service.interceptors.request.use(
   (config) => {
     // 添加 token 到 header
     const token = getToken();
     if (token && config.headers) {
       config.headers.common[TOKEN_HEADER_NAME] = token;
+      // config.headers.common[TOKEN_HEADER_NAME] = 'text/html, application/xhtml+xml';
+      // config.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
+      // config.headers.common['Content-Type'] = 'application/x-www-form-urlencoded';
     }
+
     return config;
   },
   (error) => {

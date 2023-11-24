@@ -47,7 +47,7 @@
       </el-row>
     </el-form>
     <el-dialog title="授权品种目录" :visible.sync="dialogTableVisible" width='70%'>
-      <AuthVarTable :dialogTableVisible="dialogTableVisible" />
+      <AuthVarTable :ApplyTempTableDataID="ApplyTempTableDataID" />
     </el-dialog>
   </div>
 
@@ -57,7 +57,7 @@
 import { DeletePlanDeta } from '@/api/KSInventory/KSDepartmentalPlan';
 import AuthVarTable from './AuthVarTable.vue';
 export default {
-  props: ['KSDepartmentalPlanDataSearch', 'selection'],
+  props: ['ApplyTempTableDataSearch', 'selection'],
   components: {
     AuthVarTable: AuthVarTable
   },
@@ -81,6 +81,9 @@ export default {
     // 是否开启响应式布局
     styleResponsive() {
       return this.$store.state.theme.styleResponsive;
+    },
+     ApplyTempTableDataID() {
+      return this.ApplyTempTableDataSearch;
     }
   },
   methods: {
@@ -107,6 +110,6 @@ export default {
         console.log(res);
       });
     }
-  }
+  },
 };
 </script>

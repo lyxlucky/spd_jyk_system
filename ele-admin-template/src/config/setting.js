@@ -160,7 +160,6 @@ export const USER_MENUS = [
 ];
 
 // 首页名称, 为空则取第一个菜单的名称
-
 export const HOME_TITLE = undefined;
 
 // 首页路径, 为空则取第一个菜单的地址
@@ -196,8 +195,10 @@ export const I18N_ENABLE = true;
 export const MAP_KEY = '006d995d433058322319fa797f2876f5';
 
 // EleAdmin 授权码, 自带的只能用于演示, 正式项目请更换为自己的授权码
+// export const LICENSE_CODE =
+//   'dk9mcwJyetRWQlxWRiojIqJWdzJCLi4WakJCLxojI0NWZkJiOi4Wah12bkFWZsVmLv1WZsISbvNmLulWbkJVUiojIklmI2JCLik3SFZHOiojIu9WazJXZQfgISMx4SM0NW==';
 export const LICENSE_CODE =
-  'dk9mcwJyetRWQlxWRiojIqJWdzJCLi4WakJCLxojI0NWZkJiOi4Wah12bkFWZsVmLv1WZsISbvNmLulWbkJVUiojIklmI2JCLik3SFZHOiojIu9WazJXZQfgISMx4SM0NW==';
+  'dk9mcwJyetRWQlxWRiojIqJWdzJCLi4Wa0kjN3ojI0NWZBVmI6ICZpJCLiwiIkZGbph1N6Iibvl2cyVmdQfiETMuEjI0NW==';
 
 // 医院标识
 export const HOME_HP = 'bd'

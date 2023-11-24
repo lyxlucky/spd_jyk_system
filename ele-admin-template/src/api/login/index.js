@@ -10,15 +10,12 @@ export async function login(data) {
   data.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
   const res = await request.post('/Commons/login', data);
   if (res.data.code == 200) {
-    var username = res.data.result.Nickname;
-    var password = res.data.result.Password;
-    var token = '199411@Abc';
+    var data2 = {};
+    data2.username = res.data.result.UserName;
+    data2.password = res.data.result.Password;
+    data2.token = '199411@Abc';
     await request
-      .post('/Commons/GetToken', {
-        username,
-        password,
-        token
-      })
+      .post('/Commons/GetToken', data2)
       .then((res) => {
         if (res.data.code == 200) {
           setToken(res.data.token, 0);
@@ -43,9 +40,9 @@ export async function getToken(username, password, Token) {
 
   if (res.data.code == 200) {
     return res.data.data;
-  } else if(res.data.code == 400){
+  } else if (res.data.code == 400) {
     return Promise.reject(new Error(res.data.msg));
-  }else{
+  } else {
     return Promise.reject(new Error(res.data.msg));
   }
 }

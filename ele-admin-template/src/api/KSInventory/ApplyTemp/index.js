@@ -92,14 +92,36 @@ export async function DeleteTempletDeta(data) {
 /* 获取授权品种 */
 export async function SerachAuthVar(data) {
     var data2 = {};
-    data2.DeptCode = data.DeptCode ? data.DeptCode : ''
-    data2.SerachName = data.SerachName ? data.SerachName : ''
+    data2.DeptCode = data.where.DeptCode ? data.where.DeptCode : ''
+    data2.SerachName = data.where.SerachName ? data.where.SerachName : ''
     data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
-    var rep = formdataify(data2)
-    const res = await request.post('/DeptApplyPlan/SerachAuthVar', rep);
+    data2.page = data.page
+    data2.size = data.limit
+
+    // var data2 = DataToObject(data);
+    // var rep = formdataify(data2)
+    const res = await request.get('/DeptApplyPlan/SerachAuthVar', {
+        params: data2
+    });
     if (res.data.code == 200) {
         return res.data;
     } else {
         return Promise.reject(new Error(res.data.msg));
     }
 }
+
+/* 模板添加品种 */
+export async function CreateTempletDeta(data) {
+    var data2 = {};
+    data2.json =  JSON.stringify(data);
+    data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+
+    var rep = formdataify(data2);
+
+    const res = await request.post('/DeptApplyPlan/CreateTempletDeta', rep);
+    if (res.data.code == 200) {
+        return res.data;
+    } else {
+        return Promise.reject(new Error(res.data.msg));
+    }
+}  
