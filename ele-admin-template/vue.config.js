@@ -39,9 +39,8 @@ module.exports = {
     proxy: {
       '/api': {
         // 这里可以写你自己的后端接口地址，如：
-        //target: 'http://localhost:8081'
         target: 'http://localhost:16416/',
-        // target: 'http://47.106.243.154:9001',
+        target: 'http://47.106.243.154:9001',
       }
     },
     // port: 8060

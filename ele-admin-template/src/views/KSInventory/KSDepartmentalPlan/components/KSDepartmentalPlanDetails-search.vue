@@ -212,7 +212,7 @@ export default {
         .then((res) => {
           loading.close();
           this.$message.success('提交成功');
-          // reloadPageTab();
+          reloadPageTab();
         })
         .catch((err) => {
           loading.close();
@@ -231,7 +231,7 @@ export default {
         .then((res) => {
           loading.close();
           this.$message.success(res.msg);
-          // reloadPageTab();
+          reloadPageTab();
         })
         .catch((err) => {
           loading.close();
