@@ -28,7 +28,7 @@
         </div>
       </el-col>
     </el-row>
-    <el-row :gutter="15" style="margin-top:5px">
+    <!-- <el-row :gutter="15" style="margin-top:5px">
       <el-col v-bind="styleResponsive ? { lg: 7, md: 12 } : { span: 12 }">
         <div class="ele-form-actions">
           <el-button size="small" type="primary" class="ele-btn-icon" @click="search">
@@ -46,7 +46,7 @@
           <el-button size="small" type="danger" @click="reset">删除</el-button>
         </div>
       </el-col>
-    </el-row>
+    </el-row> -->
   </el-form>
 </template>
 

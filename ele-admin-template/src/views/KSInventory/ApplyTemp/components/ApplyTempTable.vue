@@ -23,7 +23,7 @@
       </template>
       <!-- 操作列 -->
       <template v-slot:action="{ row }">
-        <el-button type="primary" size="small" @click="search(row)">设置为专属模板</el-button>
+        <!-- <el-button type="primary" size="small" @click="search(row)">设置为专属模板</el-button> -->
         <el-popconfirm class="ele-action" title="确定要删除此用户吗？" @confirm="remove(row)">
           <template v-slot:reference>
             <el-link type="danger" :underline="false" icon="el-icon-delete">
@@ -66,7 +66,7 @@ export default {
         {
           columnKey: 'action',
           label: '操作',
-          width: 200,
+          width: 120,
           align: 'center',
           resizable: false,
           slot: 'action',

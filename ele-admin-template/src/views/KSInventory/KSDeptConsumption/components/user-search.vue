@@ -50,23 +50,23 @@
     <el-row :gutter="10" style="margin-top:10px">
       <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 6 }">
         <el-form-item label="消耗时间:">
-          <el-date-picker v-model="where.validDateFrom" type="date" style="width:150px" value-format="yyyy-MM-dd" placeholder="入库开始时间">
+          <el-date-picker v-model="where.validDateFrom" type="date" style="width:150px" value-format="yyyy-MM-dd" placeholder="消耗开始时间">
           </el-date-picker>
         </el-form-item>
       </el-col>
       <el-col v-bind="styleResponsive ? { lg: 2, md: 12 } : { span: 6 }" style="margin-left:40px">
-        <el-date-picker v-model="where.validDateTo" type="date" style="width:150px" value-format="yyyy-MM-dd" placeholder="入库结束时间">
+        <el-date-picker v-model="where.validDateTo" type="date" style="width:150px" value-format="yyyy-MM-dd" placeholder="消耗结束时间">
         </el-date-picker>
       </el-col>
 
       <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 6 }" style="margin-left:25px">
         <el-form-item label="日清时间:">
-          <el-date-picker v-model="where.dayClearingDate" type="date" style="width:150px" value-format="yyyy-MM-dd" placeholder="入库开始时间">
+          <el-date-picker v-model="where.dayClearingDate" type="date" style="width:150px" value-format="yyyy-MM-dd" placeholder="日清开始时间">
           </el-date-picker>
         </el-form-item>
       </el-col>
 
-      <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 6 }" style="margin-left:25px">
+      <!-- <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 6 }" style="margin-left:25px">
         <el-form-item label="PDA扫码时间:" label-width='120px'>
           <el-date-picker v-model="where.KSConsumePDA_startDate" type="date" style="width:150px" value-format="yyyy-MM-dd" placeholder="入库开始时间">
           </el-date-picker>
@@ -75,7 +75,7 @@
       <el-col v-bind="styleResponsive ? { lg: 2, md: 12 } : { span: 6 }" style="margin-left:5px">
         <el-date-picker v-model="where.KSConsumePDA_endDate" type="date" style="width:150px" value-format="yyyy-MM-dd" placeholder="入库结束时间">
         </el-date-picker>
-      </el-col>
+      </el-col> -->
 
     </el-row>
     <el-row :gutter="10" style="margin-top:10px">
@@ -85,11 +85,11 @@
         </el-form-item>
       </el-col>
       <el-col v-bind="styleResponsive ? { lg: 2, md: 12 } : { span: 6 }">
-        <el-date-picker v-model="where.monthFmt" type="date" style="width:150px" value-format="yyyy-MM-dd" placeholder="入库结束时间" :disabled="!where.useMonth">
+        <el-date-picker v-model="where.monthFmt" type="date" style="width:150px" value-format="yyyy-MM-dd" placeholder="开始时间" :disabled="!where.useMonth">
         </el-date-picker>
       </el-col>
       <el-col v-bind="styleResponsive ? { lg: 2, md: 12 } : { span: 6 }" style="margin-left:25px">
-        <el-date-picker v-model="where.monthFmt2" type="date" style="width:150px" value-format="yyyy-MM-dd" placeholder="入库结束时间" :disabled="!where.useMonth">
+        <el-date-picker v-model="where.monthFmt2" type="date" style="width:150px" value-format="yyyy-MM-dd" placeholder="结束时间" :disabled="!where.useMonth">
         </el-date-picker>
       </el-col>
       <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 6 }" style="margin-left:25px">

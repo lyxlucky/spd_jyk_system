@@ -164,7 +164,8 @@ export default {
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 150
+          minWidth: 150,
+          show: false
         },
         {
           prop: 'Dept_Name',
@@ -172,7 +173,8 @@ export default {
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 150
+          minWidth: 150,
+          show: false
         },
         {
           prop: 'SPD_COST_DEPT_NAME',
@@ -188,7 +190,8 @@ export default {
           align: 'center',
           sortable: 'custom',
           showOverflowTooltip: true,
-          minWidth: 120
+          minWidth: 120,
+          show: false
           // formatter: (_row, _column, cellValue) => {
           //   console.log(_row);
           //   console.log(_column);
@@ -266,7 +269,7 @@ export default {
         },
         {
           prop: 'Batch',
-          label: '生产批号',
+          label: '批号',
           width: 220,
           align: 'center',
           showOverflowTooltip: true
@@ -283,10 +286,21 @@ export default {
         },
         {
           prop: 'Batch_Validity_Period',
+          label: '有效期日期',
+          width: 220,
+          align: 'center',
+          showOverflowTooltip: true,
+          formatter: (_row, _column, cellValue) => {
+            return cellValue.substr(0, 10);
+          }
+        },
+        {
+          prop: 'Batch_Validity_Period',
           label: '灭菌批号',
           width: 220,
           align: 'center',
           showOverflowTooltip: true,
+          show: false,
           formatter: (_row, _column, cellValue) => {
             return cellValue.substr(0, 10);
           }
@@ -359,14 +373,16 @@ export default {
           label: 'PDA扫码人(收货结算)',
           width: 220,
           align: 'center',
-          showOverflowTooltip: true
+          showOverflowTooltip: true,
+          show: false
         },
         {
           prop: 'PDA_CONSUME_TIME',
           label: 'PDA扫码时间(收货结算)',
           width: 220,
           align: 'center',
-          showOverflowTooltip: true
+          showOverflowTooltip: true,
+          show: false
         },
         {
           prop: 'MEDICAL_CODE',

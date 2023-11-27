@@ -25,7 +25,7 @@
       <template v-slot:action="{ row }">
         <el-popconfirm class="ele-action" title="确定删除？" @confirm="remove(row)">
           <template v-slot:reference>
-            <el-link type="danger" :underline="false" icon="el-icon-delete">
+            <el-link type="danger" :underline="false" v-if="row.State==0" icon="el-icon-delete">
               删除
             </el-link>
           </template>
@@ -85,6 +85,14 @@ export default {
           minWidth: 110
         },
         {
+          prop: 'Operater',
+          label: '申领人',
+          sortable: 'custom',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 110
+        },
+        {
           // prop: 'State',
           label: '状态',
           sortable: 'custom',
@@ -121,14 +129,6 @@ export default {
         {
           prop: 'PlanTime',
           label: '申领时间',
-          sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 110
-        },
-        {
-          prop: 'Operater',
-          label: '申领人',
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,

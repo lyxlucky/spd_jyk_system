@@ -56,7 +56,7 @@ export const USER_MENUS = [
         path: '/KSInventory/DepaStorageQuery',
         component: '/KSInventory/DepaStorageQuery',
         meta: {
-          title: '科室入库查询',
+          title: 'SPD出库配送信息',
           icon: 'el-icon-_user-group',
         },
       },
@@ -64,7 +64,7 @@ export const USER_MENUS = [
         path: '/KSInventory/KSDeptConsumption',
         component: '/KSInventory/KSDeptConsumption',
         meta: {
-          title: '科室消耗查询',
+          title: 'SPD结算信息',
           icon: 'el-icon-_user-group',
         },
       },

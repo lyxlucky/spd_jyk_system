@@ -37,8 +37,12 @@
         </template>
       </el-dropdown>
     </div>
+    <!-- 用户名称 -->
+    <div class="ele-admin-header-tool-item">
+      <h5>{{UserName}}</h5>
+    </div>
     <!-- 科室名称 -->
-    <div class="ele-admin-header-tool-item" >
+    <div class="ele-admin-header-tool-item">
       <el-dropdown trigger="click" @command="handleCommand">
         <span class="el-dropdown-link">{{DeptNow}}<i class="el-icon-arrow-down el-icon--right"></i></span>
         <el-dropdown-menu slot="dropdown">
@@ -75,8 +79,8 @@ export default {
       // 是否显示修改密码弹窗
       passwordVisible: false,
       // 是否显示主题设置抽屉
-      settingVisible: false,
-      // 
+      settingVisible: false
+      //
       // userDept:[]
     };
   },
@@ -86,11 +90,14 @@ export default {
       return this.$store.state.user.info;
     },
     // 用户科室
-    userDept(){
+    userDept() {
       return this.$store.state.user.info.userDept;
     },
-    DeptNow(){
+    DeptNow() {
       return this.$store.state.user.info.DeptNow.Dept_Two_Name;
+    },
+    UserName() {
+      return this.$store.state.user.info.UserName;
     }
   },
   methods: {

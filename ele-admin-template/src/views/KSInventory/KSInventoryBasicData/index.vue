@@ -86,7 +86,7 @@ export default {
         {
           columnKey: 'action',
           label: '操作',
-          width: 220,
+          width: 120,
           align: 'center',
           resizable: false,
           slot: 'action',
@@ -163,7 +163,23 @@ export default {
           label: '品种类别',
           width: 220,
           align: 'center',
-          showOverflowTooltip: true
+          showOverflowTooltip: true,
+           formatter: (_row, _column, cellValue) => {
+            if (cellValue == 1) {
+              cellValue = '有毒物品';
+            }else if(cellValue == 2){
+              cellValue = '质控品';
+            }else if(cellValue == 3){
+              cellValue = '校准品';
+            }else if(cellValue == 4){
+              cellValue = '耗材';
+            }else if(cellValue == 5){
+              cellValue = '试剂';
+            }else{
+              cellValue = '未定义';
+            }
+            return cellValue;
+          }
         },
         {
           prop: 'CONVERSION_RATIO',

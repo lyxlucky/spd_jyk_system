@@ -2,7 +2,7 @@
   <div class="ele-body" style="height:75vh">
     <!-- <el-button type="danger" size="small" @click="aaa">aaa</el-button> -->
     <!-- 数据表格 -->
-    <ele-pro-table ref="table" height="50vh" highlight-current-row :stripe="true" :rowClickChecked="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" @selection-change="onSelectionChange" cache-key="KSInventoryBasicDataTable">
+    <ele-pro-table ref="table" :toolStyle="toolStyle" height="50vh" highlight-current-row :stripe="true" :rowClickChecked="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" @selection-change="onSelectionChange" cache-key="KSInventoryBasicDataTable">
       <!-- 表头工具栏 -->
       <!-- 右表头 -->
       <!-- <template v-slot:toolkit>
@@ -14,10 +14,6 @@
       <template v-slot:toolbar>
         <!-- 搜索表单 -->
         <KSDepartmentalPlanDetails-search @search="reload" :KSDepartmentalPlanDataSearch='KSDepartmentalPlanDataSearch' :selection="selection" @showEditReoad="showEditReoad" :datasourceList="datasourceList" />
-
-        <!-- <el-button size="small" type="danger" icon="el-icon-delete" class="ele-btn-icon" @click="removebatch">
-          删除
-        </el-button> -->
       </template>
 
       <template v-slot:PlanQty="{ row }">
@@ -106,6 +102,7 @@ export default {
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110,
+          show: false,
           formatter: (row, column, cellValue) => {
             if (cellValue == null) {
               return '未定义';
@@ -120,6 +117,7 @@ export default {
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110,
+          show: false,
           formatter: (row, column, cellValue) => {
             if (cellValue == 2) {
               return '临采';
@@ -164,7 +162,7 @@ export default {
         },
         {
           prop: 'TempQty',
-          label: '模板/历史申领数量',
+          label: '中心库库存',
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
@@ -292,6 +290,11 @@ export default {
         }
       ],
       toolbar: false,
+      toolStyle: {
+        'display': 'flex',
+        'flex-wrap': 'wrap',
+        'align-items': 'flex-end'
+      },
       pageSize: 10,
       pagerCount: 2,
       pageSizes: [10, 20, 50, 100, 9999999],

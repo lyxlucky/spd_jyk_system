@@ -39,7 +39,7 @@ module.exports = {
     proxy: {
       '/api': {
         // 这里可以写你自己的后端接口地址，如：
-        target: 'http://localhost:16416/',
+        // target: 'http://localhost:16416/',
         target: 'http://47.106.243.154:9001',
       }
     },

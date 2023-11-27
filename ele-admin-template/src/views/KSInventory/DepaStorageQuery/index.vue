@@ -156,7 +156,8 @@ export default {
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 100
+          minWidth: 100,
+          show: false
         },
         // {
         //   slot: 'Storage_ID',
@@ -168,7 +169,7 @@ export default {
         // },
         {
           prop: 'SUPPLIER_NAME',
-          label: '科室/供应商名称',
+          label: '科室名称',
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
@@ -271,7 +272,7 @@ export default {
         },
         {
           prop: 'BATCH_PRODUCTION_DATE',
-          label: '生产时间',
+          label: '生产日期',
           width: 220,
           align: 'center',
           showOverflowTooltip: true
@@ -306,7 +307,7 @@ export default {
         },
         {
           prop: 'SUPPLY_PRICE',
-          label: '消耗价',
+          label: '价格',
           width: 220,
           align: 'center',
           showOverflowTooltip: true
@@ -316,7 +317,8 @@ export default {
           label: '采购价',
           width: 220,
           align: 'center',
-          showOverflowTooltip: true
+          showOverflowTooltip: true,
+          show: false
         },
         {
           prop: 'GOODS_QTY',

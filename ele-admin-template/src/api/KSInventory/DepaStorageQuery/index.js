@@ -44,6 +44,19 @@ export async function GetDeptInStockDetail(data) {
     data.where.StartTime = data.where.StartTime ? data.where.StartTime : now_time2;
 
 
+    data.where.IS_CHARGE = data.where.IS_CHARGE ? data.where.IS_CHARGE : -1;
+    data.where.HIGH_OR_LOW_CLASS = data.where.HIGH_OR_LOW_CLASS ? data.where.HIGH_OR_LOW_CLASS : -1;
+    data.where.IS_BIDDING = data.where.IS_BIDDING ? data.where.IS_BIDDING : -1;
+    data.where.SPECIAL_PURCHASE = data.where.SPECIAL_PURCHASE ? data.where.SPECIAL_PURCHASE : -1;
+    data.where.ONEOFF_STERILIZATION_PACKAGING = data.where.ONEOFF_STERILIZATION_PACKAGING ? data.where.ONEOFF_STERILIZATION_PACKAGING : -1;
+    data.where.STORAGE_TYPE = data.where.STORAGE_TYPE ? data.where.STORAGE_TYPE : -1;
+    data.where.IS_EMBEDDED = data.where.IS_EMBEDDED ? data.where.IS_EMBEDDED : -1;
+    data.where.IS_SERIAL_NUMBER = data.where.IS_SERIAL_NUMBER ? data.where.IS_SERIAL_NUMBER : -1;
+    data.where.IS_INTERVENED = data.where.IS_INTERVENED ? data.where.IS_INTERVENED : -1;
+    data.where.IS_PROTECT = data.where.IS_PROTECT ? data.where.IS_PROTECT : -1;
+
+
+
     var data_a = DataToObject(data, data.where);
     if (data != null) {
         var data2 = formdataify(data_a);

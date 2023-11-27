@@ -39,9 +39,9 @@
       <el-row :gutter="10">
         <div class="ele-form-actions">
           <el-button type="primary" size="small" @click="dialogTableVisible = true">添加品种</el-button>
-          <el-button type="primary" size="small" @click="search">导入模板</el-button>
-          <el-button type="primary" size="small" @click="search">导出模板</el-button>
-          <el-button type="primary" size="small" @click="search">保存</el-button>
+          <!-- <el-button type="primary" size="small" @click="search">导入模板</el-button> -->
+          <!-- <el-button type="primary" size="small" @click="search">导出模板</el-button> -->
+          <!-- <el-button type="primary" size="small" @click="search">保存</el-button> -->
           <el-button type="danger" size="small" @click="removeBatch">删除</el-button>
         </div>
       </el-row>
