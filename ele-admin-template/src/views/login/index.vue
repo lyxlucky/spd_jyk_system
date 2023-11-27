@@ -185,7 +185,7 @@ export default {
   padding: 50px 20px;
   position: relative;
   box-sizing: border-box;
-  background-image: url('@/assets/bg-login2.jpg');
+  background-image: url('@/assets/bg-login3.jpg');
   background-repeat: no-repeat;
   background-size: cover;
   min-height: 100vh;

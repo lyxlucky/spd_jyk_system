@@ -246,6 +246,6 @@ export function logout(route, from) {
     });
   } else {
     // 这样跳转避免再次登录重复注册动态路由
-    location.replace(BASE_URL + 'login' + (from ? '?from=' + from : ''));
+    location.replace(BASE_URL + '#/' +'login' + (from ? '?from=' + from : ''));
   }
 }
