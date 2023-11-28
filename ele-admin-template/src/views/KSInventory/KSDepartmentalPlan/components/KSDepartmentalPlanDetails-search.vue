@@ -39,7 +39,7 @@
       <div class="ele-form-actions">
         <el-button type="primary" size="small" @click="openIntroduceUserDefinedTemp" :disabled='!IsDisabled'>自定义新增</el-button>
         <!-- <el-button type="primary" size="small" @click="openIntroduceOtherTemp" :disabled='!IsDisabled'>引用常规模板</el-button> -->
-        <!-- <el-button type="primary" size="small" @click="reset" :disabled='!IsDisabled'>引入其他模板</el-button> -->
+        <el-button type="primary" size="small" @click="showApplyTemp" :disabled='!IsDisabled'>引入其他模板</el-button>
         <!-- <el-button type="primary" size="small" @click="reset" :disabled='!IsDisabled'>引入历史记录</el-button> -->
         <el-button type="primary" size="small" @click="reset" :disabled='!IsDisabled'>暂存申领单</el-button>
         <el-button type="primary" size="small" @click="addPutInListDeta" :disabled='!IsDisabled'>保存并提交</el-button>
@@ -72,7 +72,10 @@
     </el-row> -->
     <IntroduceUserDefinedTemp :visible.sync="showEdit" :IntroduceUserDefinedTempSearch="KSDepartmentalPlanDataSearch" />
     <IntroduceDefinedTemp :visible.sync="showEdit2" />
-
+    <el-dialog title="授权品种目录" :visible.sync="ApplyTempPage" width='90%'>
+      <!-- <AuthVarTable :dialogTableVisible="dialogTableVisible" :ApplyTempTableDataID="ApplyTempTableDataID" /> -->
+      <ApplyTemp :IntroduceUserDefinedTempSearch="KSDepartmentalPlanDataSearch" @ApplyTempPageChange="ApplyTempPageChange" />
+    </el-dialog>
   </el-form>
 </template>
 
@@ -84,12 +87,14 @@ import {
   ToExamine
 } from '@/api/KSInventory/KSDepartmentalPlan';
 import IntroduceUserDefinedTemp from '@/views/KSInventory/IntroduceUserDefinedTemp/index.vue';
+import ApplyTemp from '@/views/KSInventory/ApplyTemp/index.vue';
 import IntroduceDefinedTemp from './aaaaccc.vue';
 export default {
   props: ['KSDepartmentalPlanDataSearch', 'selection', 'datasourceList'],
   components: {
     IntroduceUserDefinedTemp,
-    IntroduceDefinedTemp
+    IntroduceDefinedTemp,
+    ApplyTemp
   },
   data() {
     // 默认表单数据
@@ -105,7 +110,8 @@ export default {
       // 表单数据
       where: { ...defaultWhere },
       showEdit: false,
-      showEdit2: false
+      showEdit2: false,
+      ApplyTempPage: false
     };
   },
   computed: {
@@ -193,6 +199,10 @@ export default {
     openIntroduceUserDefinedTemp() {
       this.showEdit = true;
     },
+    showApplyTemp() {
+      console.log(this.KSDepartmentalPlanDataSearch);
+      this.ApplyTempPage = true;
+    },
     /* 打开其他模板页面 */
     openIntroduceOtherTemp() {
       this.showEdit2 = true;
@@ -245,6 +255,14 @@ export default {
           loading.close();
           this.$message.error(err);
         });
+    },
+    /* 其他模板弹出框状态 */
+    ApplyTempPageChange(data) {
+      this.ApplyTempPage = data;
+      var where = {
+        PlanNum: this.KSDepartmentalPlanDataSearch.PlanNum
+      };
+      this.$emit('search', where);
     }
   },
   created() {

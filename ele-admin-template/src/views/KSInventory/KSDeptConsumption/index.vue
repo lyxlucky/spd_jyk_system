@@ -294,17 +294,17 @@ export default {
             return cellValue.substr(0, 10);
           }
         },
-        {
-          prop: 'Batch_Validity_Period',
-          label: '灭菌批号',
-          width: 220,
-          align: 'center',
-          showOverflowTooltip: true,
-          show: false,
-          formatter: (_row, _column, cellValue) => {
-            return cellValue.substr(0, 10);
-          }
-        },
+        // {
+        //   prop: 'Batch_Validity_Period',
+        //   label: '灭菌批号',
+        //   width: 220,
+        //   align: 'center',
+        //   showOverflowTooltip: true,
+        //   show: false,
+        //   formatter: (_row, _column, cellValue) => {
+        //     return cellValue.substr(0, 10);
+        //   }
+        // },
         {
           prop: 'Goods_Qty',
           label: '消耗数量',

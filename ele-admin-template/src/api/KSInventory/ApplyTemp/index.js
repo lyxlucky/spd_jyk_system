@@ -125,3 +125,20 @@ export async function CreateTempletDeta(data) {
         return Promise.reject(new Error(res.data.msg));
     }
 }  
+
+/* 其他模板添加品种 */
+export async function KeeptListDeta(data) {
+    var data2 = {};
+    data2.json =  JSON.stringify(data);
+    data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+    data2.type = '0';
+
+    var rep = formdataify(data2);
+
+    const res = await request.post('/DeptApplyPlan/KeeptListDeta', rep);
+    if (res.data.code == 200) {
+        return res.data;
+    } else {
+        return Promise.reject(new Error(res.data.msg));
+    }
+}  

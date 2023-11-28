@@ -20,6 +20,9 @@
       </template>
 
       <!-- 操作列 -->
+      <template v-slot:TempletQty="{ row }">
+        <el-input-number v-model="row.TempletQty" :min="0" :max="9999" :step="1" size="mini" />
+      </template>
       <template v-slot:action="{ row }">
         <el-popconfirm class="ele-action" title="确定要删除此用户吗？" @confirm="remove(row)">
           <template v-slot:reference>
@@ -37,7 +40,7 @@
 import ApplyTempDataSearch from './ApplyTempDataSearch.vue';
 import {
   SerachTempletDeta,
-  DeleteTempletDeta
+  DeleteTempletDeta,
 } from '@/api/KSInventory/ApplyTemp';
 export default {
   name: 'ApplyTempDataTable',
@@ -65,6 +68,16 @@ export default {
           fixed: 'left'
         },
         {
+          // prop: 'TempletQty',
+          slot: 'TempletQty',
+          label: '模板申领数量',
+          sortable: 'custom',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 150,
+          fixed: 'right'
+        },
+        {
           columnKey: 'action',
           label: '操作',
           width: 80,
@@ -82,20 +95,20 @@ export default {
           showOverflowTooltip: true,
           minWidth: 130
         },
-        {
-          prop: 'DEPT_ZDY_VARIETIE_CODE',
-          label: '自定义编码',
-          sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 110,
-          formatter: (row, column, cellValue) => {
-            if (cellValue == null) {
-              return '未定义';
-            }
-            return cellValue;
-          }
-        },
+        // {
+        //   prop: 'DEPT_ZDY_VARIETIE_CODE',
+        //   label: '自定义编码',
+        //   sortable: 'custom',
+        //   align: 'center',
+        //   showOverflowTooltip: true,
+        //   minWidth: 110,
+        //   formatter: (row, column, cellValue) => {
+        //     if (cellValue == null) {
+        //       return '未定义';
+        //     }
+        //     return cellValue;
+        //   }
+        // },
         {
           prop: 'VarName',
           label: '品种全称',
@@ -152,14 +165,7 @@ export default {
           showOverflowTooltip: true,
           minWidth: 110
         },
-        {
-          prop: 'TempletQty',
-          label: '模板申领数量',
-          sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 110
-        },
+
         {
           prop: 'Day_Consume_Qty',
           label: '平均使用数量',
@@ -268,6 +274,7 @@ export default {
     },
     onSelectionChange(selection) {
       this.selection = selection;
+      this.$emit('selectionData', selection);
       // console.log(this.selection);
     },
     showEditReoad(data) {
