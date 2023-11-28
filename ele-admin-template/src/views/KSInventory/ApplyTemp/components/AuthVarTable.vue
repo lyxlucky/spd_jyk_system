@@ -1,65 +1,68 @@
 <template>
-  <div class="ele-body" style="height:75vh">
-    <!-- 数据表格 -->
-    <ele-pro-table ref="table" height="50vh" highlight-current-row :stripe="true" :rowClickChecked="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" @selection-change="onSelectionChange" cache-key="ApplyTempDataTable">
-      <!-- 表头工具栏 -->
-      <!-- 右表头 -->
-      <!-- <template v-slot:toolkit>
+  <ele-modal width="1400px" :visible="visible" :close-on-click-modal="true" custom-class="ele-dialog-form" title="引用自定义模板" @update:visible="updateVisible">
+    <div class="ele-body" style="height:75vh">
+      <!-- 数据表格 -->
+      <ele-pro-table ref="table" height="50vh" highlight-current-row :stripe="true" :rowClickChecked="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" @selection-change="onSelectionChange" cache-key="ApplyTempDataTable">
+        <!-- 表头工具栏 -->
+        <!-- 右表头 -->
+        <!-- <template v-slot:toolkit>
         <el-button size="small" type="danger" icon="el-icon-delete" class="ele-btn-icon" @click="removebatch">
           删除
         </el-button>
       </template> -->
-      <!-- 左表头 -->
-      <template v-slot:toolbar>
-        <el-form class="ele-form-search">
-          <el-row :gutter="10">
-            <el-col :lg="10" :md="12">
-              <el-form-item label="">
-                <el-input v-model="SerachName" placeholder="请输入品种名称/品种编码/型号规格/生产企业搜索" clearable />
-              </el-form-item>
-            </el-col>
-            <el-col :lg="14" :md="12">
-              <div class="ele-form-actions">
-                <el-button type="primary" @click="search">查询</el-button>
-                <el-button @click="reset">重置</el-button>
-                <el-button type="primary" size="small" @click="dialogTableVisible = true">添加至选定模板</el-button>
-                <el-button type="primary" size="small" @click="search">导出目录</el-button>
-              </div>
-            </el-col>
-          </el-row>
-        </el-form>
-        <!-- 搜索表单 -->
-        <!-- <ApplyTempDataSearch @search="reload" :ApplyTempTableDataSearch='ApplyTempTableDataSearch' :selection="selection" /> -->
+        <!-- 左表头 -->
+        <template v-slot:toolbar>
+          <el-form class="ele-form-search">
+            <el-row :gutter="10">
+              <el-col :lg="10" :md="12">
+                <el-form-item label="">
+                  <el-input v-model="SerachName" placeholder="请输入品种名称/品种编码/型号规格/生产企业搜索" clearable />
+                </el-form-item>
+              </el-col>
+              <el-col :lg="14" :md="12">
+                <div class="ele-form-actions">
+                  <el-button type="primary" @click="reload">查询</el-button>
+                  <el-button type="primary" size="small" @click="addTempVar">添加至选定模板</el-button>
+                  <!-- <el-button type="primary" size="small" @click="search">导出目录</el-button> -->
+                </div>
+              </el-col>
+            </el-row>
+          </el-form>
+          <!-- 搜索表单 -->
+          <!-- <ApplyTempDataSearch @search="reload" :ApplyTempTableDataSearch='ApplyTempTableDataSearch' :selection="selection" /> -->
 
-        <!-- <el-button size="small" type="danger" icon="el-icon-delete" class="ele-btn-icon" @click="removebatch">
+          <!-- <el-button size="small" type="danger" icon="el-icon-delete" class="ele-btn-icon" @click="removebatch">
           删除
         </el-button> -->
-      </template>
+        </template>
 
-      <!-- 操作列 -->
-      <template v-slot:action="{ row }">
-        <el-popconfirm class="ele-action" title="确定要删除此用户吗？" @confirm="remove(row)">
-          <template v-slot:reference>
-            <el-link type="danger" :underline="false" icon="el-icon-delete">
-              删除
-            </el-link>
-          </template>
-        </el-popconfirm>
-      </template>
-    </ele-pro-table>
-  </div>
+        <!-- 操作列 -->
+        <template v-slot:action="{ row }">
+          <el-popconfirm class="ele-action" title="确定要删除此用户吗？" @confirm="remove(row)">
+            <template v-slot:reference>
+              <el-link type="danger" :underline="false" icon="el-icon-delete">
+                删除
+              </el-link>
+            </template>
+          </el-popconfirm>
+        </template>
+      </ele-pro-table>
+    </div>
+  </ele-modal>
 </template>
 
 <script>
 // import ApplyTempDataSearch from './ApplyTempDataSearch.vue';
+import { reloadPageTab, finishPageTab } from '@/utils/page-tab-util';
 import {
   SerachTempletDeta,
   DeleteTempletDeta,
-  SerachAuthVar
+  SerachAuthVar,
+  CreateTempletDeta
 } from '@/api/KSInventory/ApplyTemp';
 export default {
   name: 'AuthVarTable',
-  props: [],
+  props: ['ApplyTempTableDataID', 'visible'],
   components: {
     // ApplyTempDataSearch: ApplyTempDataSearch
   },
@@ -242,7 +245,8 @@ export default {
       showImport: false,
       // datasource: [],
       data: [],
-      SerachName: ''
+      SerachName: '',
+      isUpdate: false
     };
   },
   methods: {
@@ -258,6 +262,9 @@ export default {
         return tData;
       });
       return data;
+    },
+    updateVisible(value) {
+      this.$emit('update:visible', value);
     },
     /* 刷新表格 */
     reload(where) {
@@ -285,6 +292,22 @@ export default {
     onSelectionChange(selection) {
       this.selection = selection;
       // console.log(this.selection);
+    },
+    addTempVar() {
+      const loading = this.$messageLoading('添加中...');
+      this.selection.forEach((element) => {
+        element.APPLY_TEMPLET_MAIN_ID = this.ApplyTempTableDataID.ID;
+      });
+      CreateTempletDeta(this.selection)
+        .then((res) => {
+          this.$message.success(res.msg);
+          this.updateVisible(false);
+          loading.close();
+        })
+        .catch((err) => {
+          this.$message.error(err);
+          loading.close();
+        });
     }
   },
   computed: {
@@ -298,6 +321,19 @@ export default {
         PlanNum: this.ApplyTempTableData.PlanNum
       };
       this.$refs.table.reload({ page: 1, where: where });
+    },
+    visible(visible) {
+      if (visible) {
+        if (this.data) {
+          this.$util.assignObject(this.form, this.data);
+          this.isUpdate = true;
+        } else {
+          this.isUpdate = false;
+        }
+      } else {
+        // this.$refs.form.clearValidate();
+        this.form = { ...this.defaultForm };
+      }
     }
   },
   created() {

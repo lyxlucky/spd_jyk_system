@@ -46,9 +46,10 @@
         </div>
       </el-row>
     </el-form>
-    <el-dialog title="授权品种目录" :visible.sync="dialogTableVisible" width='70%'>
-      <AuthVarTable :ApplyTempTableDataID="ApplyTempTableDataID" />
-    </el-dialog>
+    <!-- <el-dialog title="授权品种目录" :visible.sync="dialogTableVisible" width='70%'>
+      <AuthVarTable :dialogTableVisible="dialogTableVisible" :ApplyTempTableDataID="ApplyTempTableDataID" />
+    </el-dialog> -->
+    <AuthVarTable :visible.sync="dialogTableVisible" :ApplyTempTableDataID="ApplyTempTableDataID" />
   </div>
 
 </template>
@@ -82,7 +83,7 @@ export default {
     styleResponsive() {
       return this.$store.state.theme.styleResponsive;
     },
-     ApplyTempTableDataID() {
+    ApplyTempTableDataID() {
       return this.ApplyTempTableDataSearch;
     }
   },
@@ -111,5 +112,12 @@ export default {
       });
     }
   },
+  watch: {
+    dialogTableVisible() {
+      if (this.dialogTableVisible == false) {
+        this.$emit('showEditReoad', false);
+      }
+    }
+  }
 };
 </script>

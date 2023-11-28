@@ -12,7 +12,7 @@
       <!-- 左表头 -->
       <template v-slot:toolbar>
         <!-- 搜索表单 -->
-        <ApplyTempDataSearch @search="reload" :ApplyTempTableDataSearch='ApplyTempTableDataSearch' :selection="selection" />
+        <ApplyTempDataSearch @search="reload" :ApplyTempTableDataSearch='ApplyTempTableDataSearch' :selection="selection" @showEditReoad="showEditReoad" />
 
         <!-- <el-button size="small" type="danger" icon="el-icon-delete" class="ele-btn-icon" @click="removebatch">
           删除
@@ -269,6 +269,16 @@ export default {
     onSelectionChange(selection) {
       this.selection = selection;
       // console.log(this.selection);
+    },
+    showEditReoad(data) {
+      if (data == false) {
+        var where = {
+          DeptCode: this.$store.state.user.info.DeptNow.Dept_Two_Code,
+          UserId: this.$store.state.user.info.ID,
+          TempletMasteID: this.ApplyTempTableData.ID
+        };
+        this.$refs.table.reload({ page: 1, where: where });
+      }
     }
   },
   computed: {
@@ -281,7 +291,7 @@ export default {
       var where = {
         DeptCode: this.$store.state.user.info.DeptNow.Dept_Two_Code,
         UserId: this.$store.state.user.info.ID,
-        TempletMasteID: this.ApplyTempTableData.ID,
+        TempletMasteID: this.ApplyTempTableData.ID
       };
       this.$refs.table.reload({ page: 1, where: where });
     }
