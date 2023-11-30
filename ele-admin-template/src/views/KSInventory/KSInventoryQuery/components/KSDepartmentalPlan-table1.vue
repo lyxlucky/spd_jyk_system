@@ -66,16 +66,16 @@ export default {
           showOverflowTooltip: true,
           fixed: 'left'
         },
-        {
-          columnKey: 'action',
-          label: '操作',
-          width: 80,
-          align: 'center',
-          resizable: false,
-          slot: 'action',
-          showOverflowTooltip: true,
-          fixed: 'right'
-        },
+        // {
+        //   columnKey: 'action',
+        //   label: '操作',
+        //   width: 80,
+        //   align: 'center',
+        //   resizable: false,
+        //   slot: 'action',
+        //   showOverflowTooltip: true,
+        //   fixed: 'right'
+        // },
         {
           prop: 'ID',
           label: 'ID',
@@ -91,7 +91,8 @@ export default {
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 110
+          minWidth: 110,
+          show: false
         },
         {
           prop: 'VARIETIE_CODE_NEW',
@@ -135,11 +136,12 @@ export default {
         },
         {
           prop: 'DELIVERY_NUMBER',
-          label: 'DELIVERY_NUMBER',
+          label: '入库单号',
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 120
+          minWidth: 120,
+          show: false
         },
         {
           prop: 'RECORD_TYPE',
@@ -147,7 +149,8 @@ export default {
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 110
+          minWidth: 110,
+          show: false
         },
         {
           prop: 'DEF_NO_PKG_CODE',
@@ -254,7 +257,8 @@ export default {
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 150
+          minWidth: 150,
+          show: false
         },
         {
           prop: 'COUNT',
@@ -270,7 +274,8 @@ export default {
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 110
+          minWidth: 110,
+          show: false
         },
         {
           prop: 'CHARGING_CODE',
@@ -279,8 +284,7 @@ export default {
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110
-        },
-       
+        }
       ],
       toolbar: false,
       pageSize: 10,

@@ -200,7 +200,7 @@ export default {
       this.showEdit = true;
     },
     showApplyTemp() {
-      console.log(this.KSDepartmentalPlanDataSearch);
+      // console.log(this.KSDepartmentalPlanDataSearch);
       this.ApplyTempPage = true;
     },
     /* 打开其他模板页面 */

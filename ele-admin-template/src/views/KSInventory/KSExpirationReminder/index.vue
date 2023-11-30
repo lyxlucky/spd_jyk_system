@@ -45,18 +45,7 @@
 import { utils, writeFile } from 'xlsx';
 import UserSearch from './components/user-search.vue';
 import UserEdit from './components/user-edit.vue';
-import UserImport from './components/user-import.vue';
-import {
-  pageUsers,
-  removeUser,
-  removeUsers,
-  updateUserStatus,
-  updateUserPassword
-} from '@/api/system/user';
-import {
-  getDeptAuthVarNew,
-  UpdateVarietieBasicJyk
-} from '@/api/KSInventory/KSInventoryBasicData';
+import { SearchDefRemind } from '@/api/KSInventory/KSExpirationReminder';
 export default {
   name: 'SystemUser',
   components: {
@@ -83,15 +72,23 @@ export default {
           showOverflowTooltip: true,
           fixed: 'left'
         },
+        // {
+        //   columnKey: 'action',
+        //   label: '操作',
+        //   width: 120,
+        //   align: 'center',
+        //   resizable: false,
+        //   slot: 'action',
+        //   showOverflowTooltip: true,
+        //   fixed: 'left'
+        // },
         {
-          columnKey: 'action',
-          label: '操作',
-          width: 120,
+          prop: 'Source_Name',
+          label: '所属科室',
+          sortable: 'custom',
           align: 'center',
-          resizable: false,
-          slot: 'action',
           showOverflowTooltip: true,
-          fixed: 'left'
+          minWidth: 100
         },
         {
           prop: 'Varietie_Code_New',
@@ -100,15 +97,6 @@ export default {
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 150
-        },
-        {
-          prop: 'Varietie_Code',
-          label: '品种id',
-          sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 150,
-          show: false
         },
         {
           prop: 'Varietie_Name',
@@ -127,22 +115,6 @@ export default {
           minWidth: 200
         },
         {
-          prop: 'Manufacturing_Ent_Name',
-          label: '生产企业名称',
-          sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 180
-        },
-        {
-          prop: 'APPROVAL_NUMBER',
-          label: '注册证号',
-          sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 180
-        },
-        {
           prop: 'Unit',
           label: '单位',
           align: 'center',
@@ -151,54 +123,99 @@ export default {
           minWidth: 80
         },
         {
-          prop: 'Price',
-          label: '中标价',
-          align: 'center',
+          prop: 'Supplier_Name',
+          label: '供应商',
           sortable: 'custom',
-          width: 100,
-          showOverflowTooltip: true
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 180
         },
         {
-          prop: 'CLASS_NUM',
-          label: '品种类别',
+          prop: 'Batch',
+          label: '生产批号',
+          sortable: 'custom',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 180
+        },
+        {
+          prop: 'Batch_Production_Date',
+          label: '生产日期',
+          sortable: 'custom',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 150
+        },
+        {
+          prop: 'Batch_Validity_Period',
+          label: '有效到期',
+          sortable: 'custom',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 180
+        },
+        // {
+        //   prop: 'Coefficient',
+        //   label: '系数',
+        //   align: 'center',
+        //   sortable: 'custom',
+        //   width: 100,
+        //   showOverflowTooltip: true
+        // },
+        {
+          prop: 'Def_No_Pkg_Code',
+          label: '定数码',
           width: 220,
           align: 'center',
           showOverflowTooltip: true,
-           formatter: (_row, _column, cellValue) => {
-            if (cellValue == 5) {
-              cellValue = '有毒物品';
-            }else if(cellValue == 4){
-              cellValue = '质控品';
-            }else if(cellValue == 3){
-              cellValue = '校准品';
-            }else if(cellValue == 2){
-              cellValue = '耗材';
-            }else if(cellValue == 1){
-              cellValue = '试剂';
-            }else{
-              cellValue = '未定义';
+          // formatter: (_row, _column, cellValue) => {
+          //   if (cellValue == 0) {
+          //     cellValue = '已退货';
+          //   } else if (cellValue == 1) {
+          //     cellValue = '已上架';
+          //   } else if (cellValue == 2) {
+          //     cellValue = '已锁定';
+          //   } else if (cellValue == 3) {
+          //     cellValue = '已出库';
+          //   } else {
+          //     cellValue = '';
+          //   }
+          //   return cellValue;
+          // }
+        },
+        {
+          prop: 'Storaged_Days',
+          label: '在库天数',
+          width: 220,
+          align: 'center',
+          showOverflowTooltip: true
+        },
+        {
+          prop: 'Remark',
+          label: '备注',
+          width: 220,
+          align: 'center',
+          showOverflowTooltip: true
+        },
+        {
+          prop: 'USE_DEF_NO_PKG_CODE  ',
+          label: '库存状态',
+          width: 220,
+          align: 'center',
+          showOverflowTooltip: true,
+          formatter: (_row, _column, cellValue) => {
+            if (cellValue == _column.Def_No_Pkg_Code) {
+              cellValue = '已结算';
+            } else {
+              cellValue = '未结算';
             }
             return cellValue;
           }
-        },
-        {
-          prop: 'CONVERSION_RATIO',
-          label: '换算比(试剂)',
-          width: 220,
-          align: 'center',
-          showOverflowTooltip: true
-        },
-        {
-          prop: 'DEVICE_REMARK',
-          label: '仪器备注',
-          width: 220,
-          align: 'center',
-          showOverflowTooltip: true
         }
       ],
       toolbar: false,
-      pageSize: 5,
-      pageSizes: [5, 20, 50, 100, 9999999],
+      pageSize: 10,
+      pageSizes: [10, 20, 50, 100, 9999999],
       pagerCount: 5,
       // 表格选中数据
       selection: [],
@@ -215,12 +232,10 @@ export default {
   methods: {
     /* 表格数据源 */
     datasource({ page, limit, where, order }) {
-      where.Dept_One_Code = this.$store.state.user.info.DeptNow.Dept_Two_Code;
-      let data = getDeptAuthVarNew({ page, limit, where, order }).then(
-        (res) => {
-          return res.result;
-        }
-      );
+      where.sourceFrom = this.$store.state.user.info.DeptNow.Dept_Two_Code;
+      let data = SearchDefRemind({ page, limit, where, order }).then((res) => {
+        return res.result;
+      });
       return data;
     },
     /* 刷新表格 */
@@ -236,83 +251,12 @@ export default {
     openImport() {
       this.showImport = true;
     },
-    /* 删除 */
-    remove(row) {
-      const loading = this.$loading({ lock: true });
-      removeUser(row.userId)
-        .then((msg) => {
-          loading.close();
-          this.$message.success(msg);
-          this.reload();
-        })
-        .catch((e) => {
-          loading.close();
-          this.$message.error(e.message);
-        });
-    },
-    /* 批量删除 */
-    removeBatch() {
-      if (!this.selection.length) {
-        this.$message.error('请至少选择一条数据');
-        return;
-      }
-      this.$confirm('确定要删除选中的用户吗?', '提示', {
-        type: 'warning'
-      })
-        .then(() => {
-          const loading = this.$loading({ lock: true });
-          removeUsers(this.selection.map((d) => d.userId))
-            .then((msg) => {
-              loading.close();
-              this.$message.success(msg);
-              this.reload();
-            })
-            .catch((e) => {
-              loading.close();
-              this.$message.error(e.message);
-            });
-        })
-        .catch(() => {});
-    },
-    /* 重置用户密码 */
-    resetPsw(row) {
-      this.$confirm('确定要重置此用户的密码为"123456"吗?', '提示', {
-        type: 'warning'
-      })
-        .then(() => {
-          const loading = this.$loading({ lock: true });
-          updateUserPassword(row.userId)
-            .then((msg) => {
-              loading.close();
-              this.$message.success(msg);
-            })
-            .catch((e) => {
-              loading.close();
-              this.$message.error(e.message);
-            });
-        })
-        .catch(() => {});
-    },
-    /* 更改状态 */
-    editStatus(row) {
-      const loading = this.$loading({ lock: true });
-      updateUserStatus(row.userId, row.status)
-        .then((msg) => {
-          loading.close();
-          this.$message.success(msg);
-        })
-        .catch((e) => {
-          loading.close();
-          row.status = !row.status ? 1 : 0;
-          this.$message.error(e.message);
-        });
-    },
     exportData(data) {
       const loading = this.$messageLoading('正在导出数据...');
       this.$refs.table.doRequest(({ where, order }) => {
         where = data;
-        where.Dept_One_Code = this.$store.state.user.info.DeptNow.Dept_Two_Code;
-        getDeptAuthVarNew({
+        where.sourceFrom = this.$store.state.user.info.DeptNow.Dept_Two_Code;
+        SearchDefRemind({
           page: 1,
           limit: 999999,
           where: where,
@@ -332,7 +276,7 @@ export default {
                 '中标价',
                 '品种类别',
                 '换算比(试剂)',
-                '仪器备注',
+                '仪器备注'
               ]
             ];
             res.result.forEach((d) => {
@@ -344,10 +288,10 @@ export default {
                 d.Manufacturing_Ent_Name,
                 d.APPROVAL_NUMBER,
                 d.UNIT,
-                d.Price ,
+                d.Price,
                 d.CLASS_NUM,
                 d.CONVERSION_RATIO,
-                d.DEVICE_REMARK,
+                d.DEVICE_REMARK
                 // this.$util.toDateString(d.createTime)
               ]);
             });
@@ -358,9 +302,9 @@ export default {
                   Sheet1: utils.aoa_to_sheet(array)
                 }
               },
-              '科室入库品种.xlsx'
+              '库存近效期提醒.xlsx'
             );
-            this.$message.success("导出成功");
+            this.$message.success('导出成功');
           })
           .catch((e) => {
             loading.close();

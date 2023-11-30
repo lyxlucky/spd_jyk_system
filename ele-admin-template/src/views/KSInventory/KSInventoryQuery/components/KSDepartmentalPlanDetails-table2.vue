@@ -106,7 +106,8 @@ export default {
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 110
+          minWidth: 110,
+          show: false
         },
         {
           prop: 'VARIETIE_CODE_NEW',
@@ -186,7 +187,7 @@ export default {
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 150
+          minWidth: 150,
         },
         {
           prop: 'OPERATOR',
@@ -198,7 +199,7 @@ export default {
         },
         {
           prop: 'DELIVERY_NUMBER',
-          label: 'DELIVERY_NUMBER',
+          label: '入库单号',
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
@@ -210,11 +211,11 @@ export default {
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 110
+          minWidth: 110,
         },
         {
           prop: 'DEF_NO_PKG_CODE',
-          label: '顶数码',
+          label: '定数码',
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,

@@ -88,7 +88,7 @@ export const USER_MENUS = [
         path: '/KSInventory/KSExpirationReminder',
         component: '/KSInventory/KSExpirationReminder',
         meta: {
-          title: '效期提醒',
+          title: '库存近效期提醒',
           icon: 'el-icon-_user-group',
         },
       },

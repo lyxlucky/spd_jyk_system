@@ -191,7 +191,8 @@ export default {
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 180
+          minWidth: 180,
+          fixed: 'right'
         },
         {
           prop: 'Unit',
