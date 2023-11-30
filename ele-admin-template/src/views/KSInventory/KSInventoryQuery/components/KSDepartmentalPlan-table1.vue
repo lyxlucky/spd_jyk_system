@@ -1,7 +1,7 @@
 <template>
-  <div class="ele-body" style="height:35vh">
+  <div class="ele-body" >
     <!-- 数据表格 -->
-    <ele-pro-table highlight-current-row @current-change="onCurrentChange" ref="table" height="300" :rowClickChecked="true" :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" cache-key="KSInventoryBasicDataTable">
+    <ele-pro-table highlight-current-row @current-change="onCurrentChange" ref="table" :rowClickChecked="true" :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" cache-key="KSInventoryBasicDataTable">
       <!-- 表头工具栏 -->
       <template v-slot:toolbar>
         <!-- 搜索表单 -->
@@ -267,15 +267,6 @@ export default {
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110
-        },
-        {
-          prop: 'RECORD_TYPE',
-          label: '入库类型',
-          sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 110,
-          show: false
         },
         {
           prop: 'CHARGING_CODE',

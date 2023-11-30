@@ -1,8 +1,8 @@
 <template>
-  <div class="ele-body" style="height:35vh">
+  <div class="ele-body">
     <!-- <el-button type="danger" size="small" @click="aaa">aaa</el-button> -->
     <!-- 数据表格 -->
-    <ele-pro-table ref="table" highlight-current-row :stripe="true" height="250" :rowClickChecked="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" @selection-change="onSelectionChange" cache-key="KSInventoryBasicDataTable">
+    <ele-pro-table ref="table" highlight-current-row :stripe="true" :rowClickChecked="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" @selection-change="onSelectionChange" cache-key="KSInventoryBasicDataTable">
       <!-- 表头工具栏 -->
       <!-- 右表头 -->
       <!-- <template v-slot:toolkit>
