@@ -167,7 +167,7 @@ export default {
           label: '定数码',
           width: 220,
           align: 'center',
-          showOverflowTooltip: true,
+          showOverflowTooltip: true
           // formatter: (_row, _column, cellValue) => {
           //   if (cellValue == 0) {
           //     cellValue = '已退货';
@@ -266,32 +266,44 @@ export default {
             loading.close();
             const array = [
               [
+                '所属科室',
                 '品种编码',
-                '品种id',
+                '品种名称',
                 '品种名称',
                 '规格/型号',
-                '生产企业名称',
-                '注册证号',
                 '单位',
-                '中标价',
-                '品种类别',
-                '换算比(试剂)',
-                '仪器备注'
+                '供应商',
+                '生产批号',
+                '生产日期',
+                '有效到期',
+                '定数码',
+                '在库天数',
+                '备注',
+                '库存状态'
               ]
             ];
             res.result.forEach((d) => {
+              var USE_DEF_NO_PKG_CODE = '';
+              if (d.USE_DEF_NO_PKG_CODE == d.Def_No_Pkg_Code) {
+                USE_DEF_NO_PKG_CODE = '已结算';
+              } else {
+                USE_DEF_NO_PKG_CODE = '未结算';
+              }
               array.push([
+                d.Source_Name,
                 d.Varietie_Code_New,
-                d.Varietie_Code,
                 d.Varietie_Name,
                 d.Specification_Or_Type,
-                d.Manufacturing_Ent_Name,
-                d.APPROVAL_NUMBER,
-                d.UNIT,
-                d.Price,
-                d.CLASS_NUM,
-                d.CONVERSION_RATIO,
-                d.DEVICE_REMARK
+                d.Unit,
+                d.Supplier_Name,
+                d.Batch,
+                d.Batch_Production_Date,
+                d.Batch_Validity_Period,
+                d.Def_No_Pkg_Code,
+                d.Storaged_Days,
+                d.Remark,
+                d.Storaged_Days,
+                USE_DEF_NO_PKG_CODE
                 // this.$util.toDateString(d.createTime)
               ]);
             });
