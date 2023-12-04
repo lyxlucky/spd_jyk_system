@@ -93,6 +93,14 @@ export const USER_MENUS = [
         },
       },
       {
+        path: '/KSInventory/InstrumentalAnalysis',
+        component: '/KSInventory/InstrumentalAnalysis',
+        meta: {
+          title: '检验科仪器分析',
+          icon: 'el-icon-_user-group',
+        },
+      },
+      {
         path: '/KSInventory/KSNewBatchReminder',
         component: '/KSInventory/KSNewBatchReminder',
         meta: {
