@@ -40,3 +40,31 @@ export async function GetJykDetailShelf(data) {
         return Promise.reject(new Error(res.data.msg));
     }
 }
+
+export async function saveJykOutInfo(data) {
+    var data2 ={};
+    data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+    data2.VARIETIE_CODE = data.VARIETIE_CODE ? data.VARIETIE_CODE : '';
+    data2.BATCH = data.BATCH ? data.BATCH : '';
+    data2.DEPT_TWO_CODE = data.DEPT_TWO_CODE ? data.DEPT_TWO_CODE : '';
+    data2.BATCH_VALIDITY_PERIOD = data.BATCH_VALIDITY_PERIOD ? data.BATCH_VALIDITY_PERIOD : '2099-01-01';
+    data2.qty = data.qty ? data.qty : 0;
+    data2.mark = data.mark ? data.mark : '';
+
+    DataToObject(data,data2)
+    if(data != null){
+        var data3 = formdataify(data);
+    }
+    const res = await request.post('/TwoDeptApply/saveJykOutInfo',data3);
+    // const res = await request.post('/VarietieBasicInfo/getVar', {
+    //     username,
+    //     password,
+    //     Token
+    // });
+
+    if (res.data.code == 200) {
+        return res.data;
+    } else {
+        return Promise.reject(new Error(res.data.msg));
+    }
+}

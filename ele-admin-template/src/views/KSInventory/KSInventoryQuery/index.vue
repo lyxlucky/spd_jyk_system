@@ -27,7 +27,7 @@
         </div> -->
         <KSDepartmentalPlantable @getCurrent="getCurrent"></KSDepartmentalPlantable>
       </el-tab-pane>
-      <el-tab-pane label="消耗详情" name="second">
+      <el-tab-pane label="库存记录" name="second">
         <!-- <div slot="header" class="clearfix">
           <span>消耗详情</span>
         </div> -->

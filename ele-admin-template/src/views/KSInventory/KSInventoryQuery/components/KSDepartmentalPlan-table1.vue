@@ -1,5 +1,5 @@
 <template>
-  <div class="ele-body" >
+  <div class="ele-body">
     <!-- 数据表格 -->
     <ele-pro-table highlight-current-row @current-change="onCurrentChange" ref="table" :rowClickChecked="true" :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" cache-key="KSInventoryBasicDataTable">
       <!-- 表头工具栏 -->
@@ -23,20 +23,19 @@
       </template>
       <!-- 操作列 -->
       <template v-slot:action="{ row }">
-        <el-popconfirm class="ele-action" title="确定删除？" @confirm="remove(row)">
-          <template v-slot:reference>
-            <el-link type="danger" :underline="false" icon="el-icon-delete">
-              删除
-            </el-link>
-          </template>
-        </el-popconfirm>
+        <el-button size="small" type="primary" icon="" class="ele-btn-icon" @click="openEdit(row)">
+          散货出库
+        </el-button>
+        <!-- <el-button type="primary" size="small" @click="dialogTableVisible = true">散货出库</el-button> -->
       </template>
     </ele-pro-table>
+    <user-edit :visible.sync="showEdit" :data="rowData" @done="reload" />
   </div>
 </template>
 
 <script>
 import KSDepartmentalPlanSearch from './KSDepartmentalPlan-search.vue';
+import UserEdit from './user-edit.vue';
 import {
   SerachPlanList,
   DeletePlanList
@@ -45,7 +44,8 @@ import { GetJykMainShelf } from '@/api/KSInventory/KSInventoryQuery';
 export default {
   name: 'KSDepartmentalPlanTable',
   components: {
-    KSDepartmentalPlanSearch
+    KSDepartmentalPlanSearch,
+    UserEdit
   },
   data() {
     return {
@@ -66,16 +66,16 @@ export default {
           showOverflowTooltip: true,
           fixed: 'left'
         },
-        // {
-        //   columnKey: 'action',
-        //   label: '操作',
-        //   width: 80,
-        //   align: 'center',
-        //   resizable: false,
-        //   slot: 'action',
-        //   showOverflowTooltip: true,
-        //   fixed: 'right'
-        // },
+        {
+          columnKey: 'action',
+          label: '操作',
+          width: 150,
+          align: 'center',
+          resizable: false,
+          slot: 'action',
+          showOverflowTooltip: true,
+          fixed: 'left'
+        },
         {
           prop: 'ID',
           label: 'ID',
@@ -278,7 +278,7 @@ export default {
         }
       ],
       toolbar: false,
-      pageSize: 10,
+      pageSize: 20,
       pagerCount: 2,
       pageSizes: [10, 20, 50, 100, 9999999],
       // 表格选中数据
@@ -290,7 +290,8 @@ export default {
       // 是否显示导入弹窗
       showImport: false,
       // datasource: [],
-      data: []
+      data: [],
+      rowData: null
     };
   },
   methods: {
@@ -325,7 +326,11 @@ export default {
       // console.log(current);
       this.$emit('getCurrent', current);
     },
-
+    openEdit(row) {
+      // console.log(row)
+      this.rowData = row;
+      this.showEdit = true;
+    },
     /* 删除数据 */
     remove(row) {
       const loading = this.$loading({ lock: true });

@@ -208,7 +208,8 @@ export default {
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 110
+          minWidth: 110,
+          show: false
         },
         {
           prop: 'MinBoxCount',
@@ -216,7 +217,8 @@ export default {
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 110
+          minWidth: 110,
+          show: false
         },
         {
           prop: 'PAG_TYPE',
@@ -292,7 +294,7 @@ export default {
       ],
       toolbar: false,
       toolStyle: {
-        'display': 'flex',
+        display: 'flex',
         'flex-wrap': 'wrap',
         'align-items': 'flex-end'
       },

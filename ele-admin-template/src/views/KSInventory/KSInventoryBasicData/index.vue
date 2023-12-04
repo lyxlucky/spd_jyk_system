@@ -164,18 +164,18 @@ export default {
           width: 220,
           align: 'center',
           showOverflowTooltip: true,
-           formatter: (_row, _column, cellValue) => {
+          formatter: (_row, _column, cellValue) => {
             if (cellValue == 5) {
               cellValue = '有毒物品';
-            }else if(cellValue == 4){
+            } else if (cellValue == 4) {
               cellValue = '质控品';
-            }else if(cellValue == 3){
+            } else if (cellValue == 3) {
               cellValue = '校准品';
-            }else if(cellValue == 2){
+            } else if (cellValue == 2) {
               cellValue = '耗材';
-            }else if(cellValue == 1){
+            } else if (cellValue == 1) {
               cellValue = '试剂';
-            }else{
+            } else {
               cellValue = '未定义';
             }
             return cellValue;
@@ -197,8 +197,8 @@ export default {
         }
       ],
       toolbar: false,
-      pageSize: 5,
-      pageSizes: [5, 20, 50, 100, 9999999],
+      pageSize: 20,
+      pageSizes: [10, 20, 50, 100, 9999999],
       pagerCount: 5,
       // 表格选中数据
       selection: [],
@@ -218,7 +218,11 @@ export default {
       where.Dept_One_Code = this.$store.state.user.info.DeptNow.Dept_Two_Code;
       let data = getDeptAuthVarNew({ page, limit, where, order }).then(
         (res) => {
-          return res.result;
+          var tData = {
+            count: res.total,
+            list: res.result
+          };
+          return tData;
         }
       );
       return data;
@@ -332,7 +336,7 @@ export default {
                 '中标价',
                 '品种类别',
                 '换算比(试剂)',
-                '仪器备注',
+                '仪器备注'
               ]
             ];
             res.result.forEach((d) => {
@@ -344,10 +348,10 @@ export default {
                 d.Manufacturing_Ent_Name,
                 d.APPROVAL_NUMBER,
                 d.UNIT,
-                d.Price ,
+                d.Price,
                 d.CLASS_NUM,
                 d.CONVERSION_RATIO,
-                d.DEVICE_REMARK,
+                d.DEVICE_REMARK
                 // this.$util.toDateString(d.createTime)
               ]);
             });
@@ -360,7 +364,7 @@ export default {
               },
               '科室入库品种.xlsx'
             );
-            this.$message.success("导出成功");
+            this.$message.success('导出成功');
           })
           .catch((e) => {
             loading.close();

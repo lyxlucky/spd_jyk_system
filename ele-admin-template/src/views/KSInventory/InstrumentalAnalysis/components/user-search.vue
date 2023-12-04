@@ -17,9 +17,9 @@
             查询
           </el-button>
           <el-button @click="reset">重置</el-button>
-          <el-button type="primary" icon="el-icon-download" class="ele-btn-icon" @click="exportData">
+          <!-- <el-button type="primary" icon="el-icon-download" class="ele-btn-icon" @click="exportData">
             导出
-          </el-button>
+          </el-button> -->
         </div>
       </el-col>
     </el-row>

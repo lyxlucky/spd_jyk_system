@@ -40,7 +40,7 @@
 import ApplyTempDataSearch from './ApplyTempDataSearch.vue';
 import {
   SerachTempletDeta,
-  DeleteTempletDeta,
+  DeleteTempletDeta
 } from '@/api/KSInventory/ApplyTemp';
 export default {
   name: 'ApplyTempDataTable',
@@ -180,7 +180,8 @@ export default {
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 110
+          minWidth: 110,
+          show: false
         },
         {
           prop: 'MinBoxCount',
@@ -188,7 +189,8 @@ export default {
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 110
+          minWidth: 110,
+          show: false
         },
         {
           prop: 'PAG_TYPE',
