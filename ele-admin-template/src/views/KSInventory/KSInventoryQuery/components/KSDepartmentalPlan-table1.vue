@@ -128,14 +128,14 @@ export default {
           minWidth: 110,
           show: false
         },
-        {
-          prop: 'OPERATOR',
-          label: '操作人',
-          sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 110
-        },
+        // {
+        //   prop: 'OPERATOR',
+        //   label: '操作人',
+        //   sortable: 'custom',
+        //   align: 'center',
+        //   showOverflowTooltip: true,
+        //   minWidth: 110,
+        // },
         {
           prop: 'DELIVERY_NUMBER',
           label: '入库单号',
@@ -214,10 +214,10 @@ export default {
         {
           prop: 'SUPPLIER_NAME',
           label: '供应商名称',
-          sortable: 'custom',
+          // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 110
+          minWidth: 150
         },
         {
           prop: 'DEPT_TWO_CODE',
@@ -235,7 +235,6 @@ export default {
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110,
-          show: false
         },
         {
           prop: 'BATCH_PRODUCTION_DATE',
@@ -243,7 +242,10 @@ export default {
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 150
+          minWidth: 150,
+          formatter: (_row, _column, cellValue) => {
+            return this.$util.toDateString(cellValue, 'yyyy-MM-dd')
+          }
         },
         {
           prop: 'BATCH_VALIDITY_PERIOD',
@@ -251,7 +253,10 @@ export default {
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 150
+          minWidth: 150,
+          formatter: (_row, _column, cellValue) => {
+             return this.$util.toDateString(cellValue, 'yyyy-MM-dd')
+          }
         },
         {
           prop: 'RECORD_TIME',
@@ -299,6 +304,13 @@ export default {
   methods: {
     /* 表格数据源 */
     datasource({ page, limit, where, order }) {
+      var Dept_Two_CodeStr = '';
+      var userDeptList = this.$store.state.user.info.userDept;
+      for (let i = 0; i < userDeptList.length; i++) {
+        Dept_Two_CodeStr =
+          Dept_Two_CodeStr + userDeptList[i].Dept_Two_Code + ',';
+      }
+      where.DeptCode = Dept_Two_CodeStr;
       let data = GetJykMainShelf({ page, limit, where, order }).then((res) => {
         var tData = {
           count: res.total,

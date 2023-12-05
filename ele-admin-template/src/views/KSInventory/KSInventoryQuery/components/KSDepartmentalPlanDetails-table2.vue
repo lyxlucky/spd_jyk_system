@@ -173,7 +173,10 @@ export default {
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 150
+          minWidth: 150,
+          formatter: (_row, _column, cellValue) => {
+            return this.$util.toDateString(cellValue, 'yyyy-MM-dd');
+          }
         },
         {
           prop: 'BATCH_VALIDITY_PERIOD',
@@ -181,7 +184,10 @@ export default {
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 150
+          minWidth: 150,
+          formatter: (_row, _column, cellValue) => {
+            return this.$util.toDateString(cellValue, 'yyyy-MM-dd');
+          }
         },
         {
           prop: 'RECORD_TIME',
@@ -213,7 +219,22 @@ export default {
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 110
+          minWidth: 110,
+          formatter: (_row, _column, cellValue) => {
+            var type = '';
+            if (cellValue == 1) {
+              type = '申领入库';
+            } else if (cellValue == 2) {
+              type = '定数包入库';
+            } else if (cellValue == 3) {
+              type = '定数包消耗';
+            } else if (cellValue == 4) {
+              type = '定数包退货';
+            } else if (cellValue == 5) {
+              type = '散货出库';
+            }
+            return type;
+          }
         },
         {
           prop: 'DEF_NO_PKG_CODE',
@@ -308,6 +329,13 @@ export default {
   methods: {
     /* 表格数据源 */
     datasource({ page, limit, where, order }) {
+      var Dept_Two_CodeStr = '';
+      var userDeptList = this.$store.state.user.info.userDept;
+      for (let i = 0; i < userDeptList.length; i++) {
+        Dept_Two_CodeStr =
+          Dept_Two_CodeStr + userDeptList[i].Dept_Two_Code + ',';
+      }
+      where.DeptCode = Dept_Two_CodeStr;
       let data = GetJykDetailShelf({ page, limit, where, order }).then(
         (res) => {
           var tData = {

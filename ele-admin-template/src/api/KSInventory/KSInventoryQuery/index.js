@@ -11,7 +11,7 @@ export async function GetJykMainShelf(data) {
     data2.SPEC = data.where.SPEC ? data.where.SPEC : '';
     data2.MANUFACTURING_ENT_NAME = data.where.MANUFACTURING_ENT_NAME ? data.where.MANUFACTURING_ENT_NAME : '';
     data2.DEPTNAME = data.where.DEPTNAME ? data.where.DEPTNAME : '';
-    data2.DEPTNAME = data.where.DEPTNAME ? data.where.DEPTNAME : '';
+    data2.DeptCode = data.where.DeptCode ? data.where.DeptCode : '';
 
     const res = await request.get('/AJykDept/GetJykMainShelf', {
         params: data2,
@@ -30,6 +30,7 @@ export async function GetJykDetailShelf(data) {
     data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
     data2.Name = data.where.Name ? data.where.Name : '';
     data2.TYPE = data.where.TYPE ? data.where.TYPE : '';
+    data2.DeptCode = data.where.DeptCode ? data.where.DeptCode : '';
 
     const res = await request.get('/AJykDept/GetJykDetailShelf', {
         params: data2,
