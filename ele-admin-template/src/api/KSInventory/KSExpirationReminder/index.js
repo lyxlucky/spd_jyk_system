@@ -16,7 +16,7 @@ export async function SearchDefRemind(data) {
     data2.field = data.where.field ? data.where.field : '';
     data2.order = data.where.order ? data.where.order : '';
     data2.condition1 = data.where.condition1 ? data.where.condition1 : '';
-    data2.jxqSatte = data.where.jxqSatte ? data.where.jxqSatte : '0';
+    data2.jxqSatte = data.where.jxqSatte ? data.where.jxqSatte : '3';
     data2.isHaveTh = data.where.isHaveTh ? data.where.isHaveTh : '-1';
 
     const res = await request.get('/DeptTwoDefNoPackageStock/SearchJYkDefRemind', {

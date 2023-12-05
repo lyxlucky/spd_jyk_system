@@ -155,7 +155,8 @@ export default {
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 110
+          minWidth: 110,
+          show: false
         },
         {
           prop: 'BATCH_ID',
@@ -163,7 +164,8 @@ export default {
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 110
+          minWidth: 110,
+          show: false
         },
         {
           prop: 'BATCH_PRODUCTION_DATE',
@@ -187,7 +189,7 @@ export default {
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 150,
+          minWidth: 150
         },
         {
           prop: 'OPERATOR',
@@ -211,7 +213,7 @@ export default {
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 110,
+          minWidth: 110
         },
         {
           prop: 'DEF_NO_PKG_CODE',

@@ -41,7 +41,7 @@
         <!-- <el-button type="primary" size="small" @click="openIntroduceOtherTemp" :disabled='!IsDisabled'>引用常规模板</el-button> -->
         <el-button type="primary" size="small" @click="showApplyTemp" :disabled='!IsDisabled'>引入其他模板</el-button>
         <!-- <el-button type="primary" size="small" @click="reset" :disabled='!IsDisabled'>引入历史记录</el-button> -->
-        <el-button type="primary" size="small" @click="reset" :disabled='!IsDisabled'>暂存申领单</el-button>
+        <el-button type="primary" size="small" @click="KeeptApplyDate" :disabled='!IsDisabled'>暂存申领单</el-button>
         <el-button type="primary" size="small" @click="addPutInListDeta" :disabled='!IsDisabled'>保存并提交</el-button>
         <!-- <el-button type="primary" size="small" @click="reset" :disabled='IsDisabled'>查询订单情况</el-button> -->
         <!-- <el-button type="primary" size="small" @click="reset" :disabled='IsDisabled'>合并订单</el-button> -->
@@ -84,7 +84,8 @@ import { reloadPageTab, finishPageTab } from '@/utils/page-tab-util';
 import {
   DeletePlanDeta,
   PutInListDeta,
-  ToExamine
+  ToExamine,
+  KeeptListDeta
 } from '@/api/KSInventory/KSDepartmentalPlan';
 import IntroduceUserDefinedTemp from '@/views/KSInventory/IntroduceUserDefinedTemp/index.vue';
 import ApplyTemp from '@/views/KSInventory/ApplyTemp/index.vue';
@@ -263,6 +264,38 @@ export default {
         PlanNum: this.KSDepartmentalPlanDataSearch.PlanNum
       };
       this.$emit('search', where);
+    },
+    /* 暂存申领单 */
+    KeeptApplyDate() {
+      const loading = this.$messageLoading('暂存中..');
+      var list = [];
+      this.selection.forEach((element) => {
+        var data = {
+          ID: element.ID,
+          ENABLE: element.ENABLE,
+          PLAN_NUMBER: element.PlanNum,
+          VARIETIE_CODE: element.VarID,
+          VARIETIE_NAME: element.VarName,
+          SPECIFICATION_OR_TYPE: element.GG,
+          UNIT: element.Unit,
+          MANUFACTURING_ENT_NAME: element.Manufacturing,
+          APPLY_QTY: element.PlanQty
+        };
+        list.push(data);
+      });
+      KeeptListDeta(list)
+        .then((res) => {
+          loading.close();
+          this.$message.success(res.msg);
+          var where = {
+            PlanNum: this.KSDepartmentalPlanDataSearch.PlanNum
+          };
+          this.$emit('search', where);
+        })
+        .catch((err) => {
+          loading.close();
+          this.$message.error(err);
+        });
     }
   },
   created() {

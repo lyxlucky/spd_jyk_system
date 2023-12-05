@@ -85,11 +85,11 @@
         </el-form-item>
       </el-col>
       <el-col v-bind="styleResponsive ? { lg: 2, md: 12 } : { span: 6 }">
-        <el-date-picker v-model="where.monthFmt" type="date" style="width:150px" value-format="yyyy-MM-dd" placeholder="开始时间" :disabled="!where.useMonth">
+        <el-date-picker v-model="where.monthFmt" type="month" style="width:150px" value-format="yyyy-MM" placeholder="开始时间" :disabled="!where.useMonth">
         </el-date-picker>
       </el-col>
       <el-col v-bind="styleResponsive ? { lg: 2, md: 12 } : { span: 6 }" style="margin-left:25px">
-        <el-date-picker v-model="where.monthFmt2" type="date" style="width:150px" value-format="yyyy-MM-dd" placeholder="结束时间" :disabled="!where.useMonth">
+        <el-date-picker v-model="where.monthFmt2" type="month" style="width:150px" value-format="yyyy-MM" placeholder="结束时间" :disabled="!where.useMonth">
         </el-date-picker>
       </el-col>
       <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 6 }" style="margin-left:25px">

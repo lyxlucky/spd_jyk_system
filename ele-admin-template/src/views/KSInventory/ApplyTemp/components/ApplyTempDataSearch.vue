@@ -39,6 +39,7 @@
       <el-row :gutter="10">
         <div class="ele-form-actions">
           <el-button type="primary" size="small" @click="dialogTableVisible = true">添加品种</el-button>
+          <el-button type="primary" size="small" @click="saveApplyNum">保存</el-button>
           <!-- <el-button type="primary" size="small" @click="search">导入模板</el-button> -->
           <!-- <el-button type="primary" size="small" @click="search">导出模板</el-button> -->
           <!-- <el-button type="primary" size="small" @click="search">保存</el-button> -->
@@ -55,7 +56,11 @@
 </template>
 
 <script>
-import { DeletePlanDeta } from '@/api/KSInventory/KSDepartmentalPlan';
+import {
+  DeletePlanDeta
+  // KeeptListDeta,
+} from '@/api/KSInventory/KSDepartmentalPlan';
+import { KeepTempletDeta } from '@/api/KSInventory/ApplyTemp';
 import AuthVarTable from './AuthVarTable.vue';
 export default {
   props: ['ApplyTempTableDataSearch', 'selection'],
@@ -110,6 +115,24 @@ export default {
       DeletePlanDeta(data).then((res) => {
         console.log(res);
       });
+    },
+    saveApplyNum() {
+      const loading = this.$messageLoading('保存中...');
+      var list = this.selection;
+      for (let i = 0; i < list.length; i++) {
+        list[i].BigBoxCount = '0';
+        list[i].MinBoxCount = '0';
+      }
+      KeepTempletDeta(list)
+        .then((res) => {
+          loading.close();
+          this.$emit('search', this.where);
+          this.$message.success(res.msg);
+        })
+        .catch((err) => {
+          loading.close();
+          this.$message.error(err);
+        });
     }
   },
   watch: {

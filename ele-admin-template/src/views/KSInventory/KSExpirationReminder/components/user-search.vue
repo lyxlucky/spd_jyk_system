@@ -50,7 +50,7 @@ export default {
     const defaultWhere = {
       condition: '',
       condition1: '',
-      jxqSatte: '-1',
+      jxqSatte: '3',
       isHaveTh: '0',
     };
     return {

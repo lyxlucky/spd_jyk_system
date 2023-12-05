@@ -14,12 +14,12 @@
       </el-col>
     </el-row>
     <el-row :gutter="10">
-      <el-col v-bind="styleResponsive ? { lg: 12, md: 12 } : { span: 12 }">
+      <!-- <el-col v-bind="styleResponsive ? { lg: 12, md: 12 } : { span: 12 }">
         <el-input clearable v-model="where.SerachName" placeholder="品种名称/规格型号/生产企业" />
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 12, md: 12 } : { span: 12 }">
+      </el-col> -->
+      <el-col v-bind="styleResponsive ? { lg: 24, md: 24 } : { span: 24 }">
         <el-input clearable v-model="where.PlanNum" placeholder="申领单" />
-      </el-col>
+      </el-col> 
     </el-row>
     <el-row :gutter="10" style="margin-top:5px">
       <el-col v-bind="styleResponsive ? { lg: 12, md: 12 } : { span: 12 }">

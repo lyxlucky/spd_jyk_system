@@ -45,11 +45,11 @@
         </template>
 
         <!-- 操作列 -->
-        <template v-slot:Consumption_Type="{ row }">
+        <!-- <template v-slot:Consumption_Type="{ row }">
           <el-tag :type="['', 'success','danger','warning','info'][row.Consumption_Type]" :disable-transitions="true">
-            {{['PDA扫码消耗','His计费消耗','申领消耗','超时默认消耗',''][row.Consumption_Type]}}
+            {{['条码扫码消耗','RFID读码消耗','HIS计费消耗','散货申领消耗','HIS医嘱计费消耗','超时默认消耗'][row.Consumption_Type]}}
           </el-tag>
-        </template>
+        </template> -->
 
         <template v-slot:Storage_ID="{ row }">
           <el-tag :type="['', 'success'][row.Storage_ID]" :disable-transitions="true">
@@ -341,11 +341,29 @@ export default {
           showOverflowTooltip: true
         },
         {
-          slot: 'Consumption_Type',
+          // slot: 'Consumption_Type',
+          prop:'Consumption_Type',
           label: '消耗方式',
           width: 220,
           align: 'center',
-          showOverflowTooltip: true
+          showOverflowTooltip: true,
+          formatter: (row, column, cellValue) =>{
+            var type = "";
+            if(cellValue == 0){
+              type = "条码扫码消耗"
+            }else if(cellValue == 1){
+              type = "RFID读码消耗"
+            }else if(cellValue == 2){
+              type = "HIS计费消耗"
+            }else if(cellValue == 3){
+              type = "散货申领消耗"
+            }else if(cellValue == 4){
+              type = "HIS医嘱计费消耗"
+            }else if(cellValue == 5){
+              type = "超时默认消耗"
+            }
+            return type;
+          }
         },
         {
           prop: 'Operate_Person',

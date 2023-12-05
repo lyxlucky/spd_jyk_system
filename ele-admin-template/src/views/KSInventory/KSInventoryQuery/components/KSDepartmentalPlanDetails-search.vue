@@ -9,8 +9,8 @@
         <el-form-item label="入库类型">
           <el-select v-model="where.TYPE" @change="search()">
             <el-option label="全部" value=""></el-option>
-            <el-option label="新增" value="0"></el-option>
-            <el-option label="已提交" value="1"></el-option>
+            <el-option label="使用" value="0"></el-option>
+            <el-option label="入库" value="1"></el-option>
           </el-select>
         </el-form-item>
       </el-col>
