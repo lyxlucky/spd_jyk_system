@@ -101,6 +101,14 @@ export const USER_MENUS = [
         },
       },
       {
+        path: '/KSInventory/ScanDefHis',
+        component: '/KSInventory/ScanDefHis',
+        meta: {
+          title: '科室定数码消耗',
+          icon: 'el-icon-_user-group',
+        },
+      },
+      {
         path: '/KSInventory/KSNewBatchReminder',
         component: '/KSInventory/KSNewBatchReminder',
         meta: {
