@@ -99,6 +99,7 @@ export default {
       insertScanDef(this.where)
         .then((res) => {
           loading.close();
+           this.msgTip = 'Tip:' + res.msgTip;
           this.search();
           this.$message.success(res.msg);
         })
@@ -109,7 +110,7 @@ export default {
     },
     /* 删除*/
     removeBatch() {
-      const loading = this.$$messageLoading('删除中...');
+      const loading = this.$messageLoading('删除中...');
       var idJosn = [];
       var Nickname = this.$store.state.user.info.Nickname;
       this.selection.forEach((element) => {
@@ -121,7 +122,6 @@ export default {
       };
       delScanDef(data)
         .then((res) => {
-          this.msgTip = 'Tip:' + res.msgTip;
           loading.close();
           this.$message.success(res.msg);
           this.search();
