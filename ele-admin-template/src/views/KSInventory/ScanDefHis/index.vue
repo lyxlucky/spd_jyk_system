@@ -2,9 +2,9 @@
   <div class="ele-body">
     <el-card shadow="never">
       <!-- 搜索表单 -->
-      <user-search @search="reload" @exportData="exportData" />
+      <user-search @search="reload" @exportData="exportData" :selection="selection" />
       <!-- 数据表格 -->
-      <ele-pro-table ref="table" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" cache-key="KSInventoryBasicDataTable">
+      <ele-pro-table ref="table" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" @selection-change="onSelectionChange" cache-key="KSInventoryBasicDataTable">
         <!-- 表头工具栏 -->
         <!-- <template v-slot:toolbar>
           <el-button size="small" type="primary" icon="el-icon-plus" class="ele-btn-icon" @click="openEdit()">
@@ -153,13 +153,13 @@ export default {
           minWidth: 180
         },
         {
-          prop: 'Last_Update_Time',
+          prop: '',
           label: '在库天数',
           align: 'center',
           width: 100,
           showOverflowTooltip: true,
           formatter(row, column, cellValue, index) {
-            var bvp_date = cellValue.substr(0, 10);
+            var bvp_date = row.Last_Update_Time.substr(0, 10);
             var this_date = new Date(bvp_date).getTime();
             var nowDate = new Date().getTime();
             return (
@@ -272,6 +272,9 @@ export default {
     /* 打开导入弹窗 */
     openImport() {
       this.showImport = true;
+    },
+    onSelectionChange(selection){
+      this.selection = selection
     },
     exportData(data) {
       const loading = this.$messageLoading('正在导出数据...');

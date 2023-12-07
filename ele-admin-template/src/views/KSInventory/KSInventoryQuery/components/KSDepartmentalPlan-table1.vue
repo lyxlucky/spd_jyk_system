@@ -154,14 +154,14 @@ export default {
           minWidth: 110,
           show: false
         },
-        {
-          prop: 'DEF_NO_PKG_CODE',
-          label: '定数码',
-          sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 110
-        },
+        // {
+        //   prop: 'DEF_NO_PKG_CODE',
+        //   label: '定数码',
+        //   sortable: 'custom',
+        //   align: 'center',
+        //   showOverflowTooltip: true,
+        //   minWidth: 110
+        // },
         {
           prop: 'APPROVAL_NUMBER',
           label: '注册证号',
