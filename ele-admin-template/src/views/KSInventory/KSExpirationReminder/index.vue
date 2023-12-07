@@ -183,35 +183,35 @@ export default {
           //   return cellValue;
           // }
         },
-        {
-          prop: 'Storaged_Days',
-          label: '在库天数',
-          width: 220,
-          align: 'center',
-          showOverflowTooltip: true
-        },
-        {
-          prop: 'Remark',
-          label: '备注',
-          width: 220,
-          align: 'center',
-          showOverflowTooltip: true
-        },
-        {
-          prop: 'USE_DEF_NO_PKG_CODE  ',
-          label: '库存状态',
-          width: 220,
-          align: 'center',
-          showOverflowTooltip: true,
-          formatter: (_row, _column, cellValue) => {
-            if (cellValue == _column.Def_No_Pkg_Code) {
-              cellValue = '已结算';
-            } else {
-              cellValue = '未结算';
-            }
-            return cellValue;
-          }
-        }
+        // {
+        //   prop: 'Storaged_Days',
+        //   label: '在库天数',
+        //   width: 220,
+        //   align: 'center',
+        //   showOverflowTooltip: true
+        // },
+        // {
+        //   prop: 'Remark',
+        //   label: '备注',
+        //   width: 220,
+        //   align: 'center',
+        //   showOverflowTooltip: true
+        // },
+        // {
+        //   prop: 'USE_DEF_NO_PKG_CODE  ',
+        //   label: '库存状态',
+        //   width: 220,
+        //   align: 'center',
+        //   showOverflowTooltip: true,
+        //   formatter: (_row, _column, cellValue) => {
+        //     if (cellValue == _column.Def_No_Pkg_Code) {
+        //       cellValue = '已结算';
+        //     } else {
+        //       cellValue = '未结算';
+        //     }
+        //     return cellValue;
+        //   }
+        // }
       ],
       toolbar: false,
       pageSize: 10,
