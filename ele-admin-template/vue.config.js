@@ -2,8 +2,8 @@ const CompressionWebpackPlugin = require('compression-webpack-plugin');
 const { transformElementScss } = require('ele-admin/lib/utils/dynamic-theme');
 
 module.exports = {
-  // publicPath: '/jyk/',
-  // outputDir: 'jyk',
+  // publicPath: '/jyknw/',
+  // outputDir: 'jyknw',
   productionSourceMap: false,
   transpileDependencies: ['element-ui', 'ele-admin', 'vue-i18n'],
   configureWebpack: {
@@ -40,7 +40,12 @@ module.exports = {
       '/api': {
         // 这里可以写你自己的后端接口地址，如：
         target: 'http://localhost:16416/',
-        // target: 'http://47.106.243.154:9001',
+
+        // 北大
+        // target: 'http://47.106.243.154:9001',  
+
+        // 北大内网
+        // target: 'http://100.100.100.45:8001',
       }
     },
     // port: 8060

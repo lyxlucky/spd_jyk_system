@@ -69,3 +69,27 @@ export async function saveJykOutInfo(data) {
         return Promise.reject(new Error(res.data.msg));
     }
 }
+
+export async function DeptReceivingScanOrder(data) {
+    var data2 ={};
+    data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+    data2.DistributeNumber = data.DistributeNumber ? data.DistributeNumber : '';
+
+    var data3 = formdataify(data2)
+    // DataToObject(data,data2)
+    // if(data != null){
+    //     var data3 = formdataify(data);
+    // }
+    const res = await request.post('/DeptHisDefZxyy/DeptReceivingScanOrder',data3);
+    // const res = await request.post('/VarietieBasicInfo/getVar', {
+    //     username,
+    //     password,
+    //     Token
+    // });
+
+    if (res.data.code == 200) {
+        return res.data;
+    } else {
+        return Promise.reject(new Error(res.data.msg));
+    }
+}

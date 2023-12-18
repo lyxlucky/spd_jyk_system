@@ -37,6 +37,14 @@ export const USER_MENUS = [
     },
     children: [
       {
+        path: '/KSInventory/KSInventoryStock',
+        component: '/KSInventory/KSInventoryStock',
+        meta: {
+          title: '入库出库库存',
+          icon: 'el-icon-_user-group',
+        },
+      },
+      {
         path: '/KSInventory/KSInventoryBasicData',
         component: '/KSInventory/KSInventoryBasicData',
         meta: {
@@ -117,22 +125,6 @@ export const USER_MENUS = [
         },
       },
       {
-        path: '/KSInventory/KSTakeStock',
-        component: '/KSInventory/KSTakeStock',
-        meta: {
-          title: '盘点库存',
-          icon: 'el-icon-_user-group',
-        },
-      },
-      {
-        path: '/KSInventory/KSInventoryStock',
-        component: '/KSInventory/KSInventoryStock',
-        meta: {
-          title: '入库消耗库存',
-          icon: 'el-icon-_user-group',
-        },
-      },
-      {
         path: '/KSInventory/KSUtilizationRatio',
         component: '/KSInventory/KSUtilizationRatio',
         meta: {
@@ -153,6 +145,14 @@ export const USER_MENUS = [
         component: '/KSInventory/KSOutgoingStatistics',
         meta: {
           title: '出库统计',
+          icon: 'el-icon-_user-group',
+        },
+      },
+      {
+        path: '/KSInventory/KSTakeStock',
+        component: '/KSInventory/KSTakeStock',
+        meta: {
+          title: '盘点库存',
           icon: 'el-icon-_user-group',
         },
       },

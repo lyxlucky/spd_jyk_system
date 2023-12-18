@@ -20,14 +20,26 @@
             查询
           </el-button>
           <el-button size="small" @click="reset">重置</el-button>
+          <el-button type="primary" size="small" @click="DeptReceivingScanOrderShow">扫码入库</el-button>
         </div>
       </el-col>
     </el-row>
+    <el-dialog title="授权品种目录" :visible.sync="showEdit" width='30%'>
+      <el-form label-width="80px">
+        <el-form-item label="收货单号:">
+          <el-input v-model="DistributeNumber"></el-input>
+        </el-form-item>
+        <div style="width:100%;display: flex;justify-content: center;">
+          <el-button type="primary" @click="onSubmit">确定</el-button>
+        </div>
+      </el-form>
+    </el-dialog>
   </el-form>
 </template>
 
 <script>
 import { CreatList } from '@/api/KSInventory/KSDepartmentalPlan';
+import { DeptReceivingScanOrder } from '@/api/KSInventory/KSInventoryQuery';
 export default {
   data() {
     // 默认表单数据
@@ -35,12 +47,14 @@ export default {
       Name: '',
       SPEC: '',
       MANUFACTURING_ENT_NAME: '',
-      DEPTNAME: '',
+      DEPTNAME: ''
     };
     return {
       // 表单数据
       where: { ...defaultWhere },
-      BZ: ''
+      BZ: '',
+      showEdit: false,
+      DistributeNumber: ''
     };
   },
   computed: {
@@ -73,6 +87,23 @@ export default {
         this.$message.success(res.msg);
         this.$emit('search', this.where);
       });
+    },
+    DeptReceivingScanOrderShow() {
+      this.showEdit = true;
+    },
+    onSubmit() {
+      const loading = this.$messageLoading('正在处理中...');
+      var data = {
+        DistributeNumber: this.DistributeNumber
+      };
+      DeptReceivingScanOrder(data)
+        .then((res) => {
+          loading.close();
+          this.$message.success(res.msg);
+        })
+        .catch((err) => {
+          this.$message.error(err);
+        });
     }
   },
   created() {}
