@@ -37,18 +37,18 @@ export const USER_MENUS = [
     },
     children: [
       {
-        path: '/KSInventory/KSInventoryStock',
-        component: '/KSInventory/KSInventoryStock',
+        path: '/KSInventory/KSInventoryQuery',
+        component: '/KSInventory/KSInventoryQuery',
         meta: {
-          title: '入库出库库存',
+          title: '入出库及库存流向',
           icon: 'el-icon-_user-group',
         },
       },
       {
-        path: '/KSInventory/KSInventoryBasicData',
-        component: '/KSInventory/KSInventoryBasicData',
+        path: '/KSInventory/ScanDefHis',
+        component: '/KSInventory/ScanDefHis',
         meta: {
-          title: '科室品种目录维护',
+          title: '标签扫码出库',
           icon: 'el-icon-_user-group',
         },
       },
@@ -61,18 +61,10 @@ export const USER_MENUS = [
         },
       },
       {
-        path: '/KSInventory/DepaStorageQuery',
-        component: '/KSInventory/DepaStorageQuery',
+        path: '/KSInventory/KSInventoryBasicData',
+        component: '/KSInventory/KSInventoryBasicData',
         meta: {
-          title: 'SPD出库配送信息',
-          icon: 'el-icon-_user-group',
-        },
-      },
-      {
-        path: '/KSInventory/KSDeptConsumption',
-        component: '/KSInventory/KSDeptConsumption',
-        meta: {
-          title: 'SPD结算信息',
+          title: '科室品种目录维护',
           icon: 'el-icon-_user-group',
         },
       },
@@ -85,14 +77,6 @@ export const USER_MENUS = [
         },
       },
       {
-        path: '/KSInventory/KSInventoryQuery',
-        component: '/KSInventory/KSInventoryQuery',
-        meta: {
-          title: '库存查询',
-          icon: 'el-icon-_user-group',
-        },
-      },
-      {
         path: '/KSInventory/KSExpirationReminder',
         component: '/KSInventory/KSExpirationReminder',
         meta: {
@@ -100,19 +84,12 @@ export const USER_MENUS = [
           icon: 'el-icon-_user-group',
         },
       },
+
       {
         path: '/KSInventory/InstrumentalAnalysis',
         component: '/KSInventory/InstrumentalAnalysis',
         meta: {
           title: '检验科仪器分析',
-          icon: 'el-icon-_user-group',
-        },
-      },
-      {
-        path: '/KSInventory/ScanDefHis',
-        component: '/KSInventory/ScanDefHis',
-        meta: {
-          title: '科室定数码消耗',
           icon: 'el-icon-_user-group',
         },
       },
@@ -132,47 +109,71 @@ export const USER_MENUS = [
           icon: 'el-icon-_user-group',
         },
       },
+      // {
+      //   path: '/KSInventory/DepaStorageQuery',
+      //   component: '/KSInventory/DepaStorageQuery',
+      //   meta: {
+      //     title: 'SPD出库配送信息',
+      //     icon: 'el-icon-_user-group',
+      //   },
+      // },
       {
-        path: '/KSInventory/KSStorageStatistics',
-        component: '/KSInventory/KSStorageStatistics',
+        path: '/KSInventory/KSDeptConsumption',
+        component: '/KSInventory/KSDeptConsumption',
         meta: {
-          title: '入库统计',
+          title: 'SPD结算信息',
           icon: 'el-icon-_user-group',
         },
       },
-      {
-        path: '/KSInventory/KSOutgoingStatistics',
-        component: '/KSInventory/KSOutgoingStatistics',
-        meta: {
-          title: '出库统计',
-          icon: 'el-icon-_user-group',
-        },
-      },
-      {
-        path: '/KSInventory/KSTakeStock',
-        component: '/KSInventory/KSTakeStock',
-        meta: {
-          title: '盘点库存',
-          icon: 'el-icon-_user-group',
-        },
-      },
+      // {
+      //   path: '/KSInventory/KSInventoryStock',
+      //   component: '/KSInventory/KSInventoryStock',
+      //   meta: {
+      //     title: '品种基础资料',
+      //     icon: 'el-icon-_user-group',
+      //   },
+      // },
+      // {
+      //   path: '/KSInventory/KSStorageStatistics',
+      //   component: '/KSInventory/KSStorageStatistics',
+      //   meta: {
+      //     title: '入库统计',
+      //     icon: 'el-icon-_user-group',
+      //   },
+      // },
+      // {
+      //   path: '/KSInventory/KSOutgoingStatistics',
+      //   component: '/KSInventory/KSOutgoingStatistics',
+      //   meta: {
+      //     title: '出库统计',
+      //     icon: 'el-icon-_user-group',
+      //   },
+      // },
+      // {
+      //   path: '/KSInventory/KSTakeStock',
+      //   component: '/KSInventory/KSTakeStock',
+      //   meta: {
+      //     title: '盘点库存',
+      //     icon: 'el-icon-_user-group',
+      //   },
+      // },
     ],
   },
-  {
-    path: '/demo',
-    redirect: '/demo/test',
-    meta: { title: '演示', icon: 'el-icon-setting' },
-    children: [
-      {
-        path: '/demo/test',
-        component: '/demo/test',
-        meta: {
-          title: '测试页面',
-          icon: 'el-icon-setting'
-        }
-      }
-    ]
-  }
+  // {
+  //   path: '/demo',
+  //   redirect: '/demo/test',
+  //   meta: { title: '演示', icon: 'el-icon-setting' },
+  //   children: [
+  //     {
+  //       path: '/demo/test',
+  //       component: '/demo/test',
+  //       meta: {
+  //         title: '测试页面',
+  //         icon: 'el-icon-setting'
+  //       }
+  //     }
+  //   ]
+  // }
 ];
 
 // 首页名称, 为空则取第一个菜单的名称

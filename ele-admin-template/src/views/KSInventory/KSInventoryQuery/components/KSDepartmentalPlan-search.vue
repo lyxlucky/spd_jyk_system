@@ -102,6 +102,7 @@ export default {
           this.$message.success(res.msg);
         })
         .catch((err) => {
+          loading.close();
           this.$message.error(err);
         });
     }

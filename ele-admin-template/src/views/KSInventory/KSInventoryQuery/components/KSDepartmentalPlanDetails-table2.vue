@@ -91,132 +91,26 @@ export default {
         //   showOverflowTooltip: true,
         //   fixed: 'right'
         // },
-        {
-          prop: 'ID',
-          label: 'ID',
-          sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 110,
-          show: false
-        },
+        
+        // {
+        //   prop: 'ID',
+        //   label: 'ID',
+        //   align: 'center',
+        //   showOverflowTooltip: true,
+        //   minWidth: 110,
+        //   show: false
+        // },
         {
           prop: 'VARIETIE_CODE',
           label: '品种ID',
-          sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110,
           show: false
-        },
-        {
-          prop: 'VARIETIE_CODE_NEW',
-          label: '品种编码',
-          sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 110
-        },
-        {
-          prop: 'VARIETIE_NAME',
-          label: '品种名称',
-          sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 150
-        },
-        {
-          prop: 'SPECIFICATION_OR_TYPE',
-          label: '规格型号',
-          sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 180
-        },
-        {
-          prop: 'UNIT',
-          label: '单位',
-          sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 110
-        },
-        {
-          prop: 'PRICE',
-          label: '价格',
-          sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 110
-        },
-        {
-          prop: 'BATCH',
-          label: '批次号',
-          sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 110,
-          show: false
-        },
-        {
-          prop: 'BATCH_ID',
-          label: '批次号ID',
-          sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 110,
-          show: false
-        },
-        {
-          prop: 'BATCH_PRODUCTION_DATE',
-          label: '生产日期',
-          sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 150,
-          formatter: (_row, _column, cellValue) => {
-            return this.$util.toDateString(cellValue, 'yyyy-MM-dd');
-          }
-        },
-        {
-          prop: 'BATCH_VALIDITY_PERIOD',
-          label: '有效到期',
-          sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 150,
-          formatter: (_row, _column, cellValue) => {
-            return this.$util.toDateString(cellValue, 'yyyy-MM-dd');
-          }
-        },
-        {
-          prop: 'RECORD_TIME',
-          label: '入库时间',
-          sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 150
-        },
-        {
-          prop: 'OPERATOR',
-          label: '操作人',
-          sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 110
-        },
-        {
-          prop: 'DELIVERY_NUMBER',
-          label: '入库单号',
-          sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 110
         },
         {
           prop: 'RECORD_TYPE',
-          label: '入库类型',
-          sortable: 'custom',
+          label: '类型',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110,
@@ -236,10 +130,125 @@ export default {
             return type;
           }
         },
+          {
+          prop: 'DEPT_TWO_NAME',
+          label: '科室名称',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 110
+        },
+        {
+          prop: 'VARIETIE_CODE_NEW',
+          label: '品种编码',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 110
+        },
+        {
+          prop: 'VARIETIE_NAME',
+          label: '品种名称',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 150
+        },
+        {
+          prop: 'SPECIFICATION_OR_TYPE',
+          label: '规格型号',
+
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 180
+        },
+        {
+          prop: 'COUNT',
+          label: '数量',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 110
+        },
+        {
+          prop: 'UNIT',
+          label: '单位',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 110
+        },
+        {
+          prop: 'PRICE',
+          label: '价格',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 110
+        },
+        {
+          prop: 'BATCH',
+          label: '批号',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 110
+        },
+        {
+          prop: 'BATCH_ID',
+          label: '批号ID',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 110,
+          show: false
+        },
+        {
+          prop: 'BATCH_PRODUCTION_DATE',
+          label: '生产日期',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 150,
+          formatter: (_row, _column, cellValue) => {
+            return this.$util.toDateString(cellValue, 'yyyy-MM-dd');
+          }
+        },
+        {
+          prop: 'BATCH_VALIDITY_PERIOD',
+          label: '有效到期',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 150,
+          formatter: (_row, _column, cellValue) => {
+            return this.$util.toDateString(cellValue, 'yyyy-MM-dd');
+          }
+        },
+        {
+          prop: 'MANUFACTURING_ENT_NAME',
+          label: '生产企业',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 180
+        },
+        {
+          prop: 'RECORD_TIME',
+          label: '时间',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 150
+        },
+        {
+          prop: 'OPERATOR',
+          label: '操作人',
+
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 110
+        },
+        {
+          prop: 'DELIVERY_NUMBER',
+          label: '单号',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 110
+        },
+
         {
           prop: 'DEF_NO_PKG_CODE',
           label: '定数码',
-          sortable: 'custom',
+
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110
@@ -247,23 +256,16 @@ export default {
         {
           prop: 'APPROVAL_NUMBER',
           label: '注册证号',
-          sortable: 'custom',
+
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 150
         },
-        {
-          prop: 'MANUFACTURING_ENT_NAME',
-          label: '生产企业',
-          sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 180
-        },
+
         {
           prop: 'SUPPLIER_CODE',
           label: '供应商编码',
-          sortable: 'custom',
+
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 180,
@@ -272,40 +274,24 @@ export default {
         {
           prop: 'SUPPLIER_NAME',
           label: '供应商名称',
-          sortable: 'custom',
+
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 180,
           show: false
         },
-        {
-          prop: 'DEPT_TWO_CODE',
-          label: '二级科室编码',
-          sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 110
-        },
-        {
-          prop: 'DEPT_TWO_NAME',
-          label: '二级科室名称',
-          sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 110
-        },
-        {
-          prop: 'COUNT',
-          label: '数量',
-          sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 110
-        },
+        // {
+        //   prop: 'DEPT_TWO_CODE',
+        //   label: '科室编码',
+        //
+        //   align: 'center',
+        //   showOverflowTooltip: true,
+        //   minWidth: 110
+        // },
+      
         {
           prop: 'CHARGING_CODE',
           label: '计费编码',
-          sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110

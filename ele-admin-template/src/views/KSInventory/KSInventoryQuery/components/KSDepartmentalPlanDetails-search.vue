@@ -1,15 +1,15 @@
 <!-- 搜索表单 -->
 <template>
-  <el-form label-width="77px" class="ele-form-search" @keyup.enter.native="search" @submit.native.prevent>
+  <el-form label-width="100px" class="ele-form-search" @keyup.enter.native="search" @submit.native.prevent>
     <el-row :gutter="10">
       <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 12 }">
         <el-input clearable v-model="where.Name" placeholder="品种名称/品种编码" />
       </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 12 }">
-        <el-form-item label="入库类型">
+      <el-col v-bind="styleResponsive ? { lg: 5, md: 12 } : { span: 12 }">
+        <el-form-item label="流向类型:">
           <el-select v-model="where.TYPE" @change="search()">
             <el-option label="全部" value=""></el-option>
-            <el-option label="使用" value="0"></el-option>
+            <el-option label="出库" value="0"></el-option>
             <el-option label="入库" value="1"></el-option>
           </el-select>
         </el-form-item>
