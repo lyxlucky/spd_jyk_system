@@ -24,7 +24,7 @@
         </div>
       </el-col>
     </el-row>
-    <el-dialog title="授权品种目录" :visible.sync="showEdit" width='30%'>
+    <el-dialog title="扫码入库" :visible.sync="showEdit" width='30%'>
       <el-form label-width="80px">
         <el-form-item label="收货单号:">
           <el-input v-model="DistributeNumber"></el-input>
