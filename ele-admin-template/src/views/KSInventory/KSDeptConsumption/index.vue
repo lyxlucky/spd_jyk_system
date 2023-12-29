@@ -334,7 +334,7 @@ export default {
           showOverflowTooltip: true
         },
         {
-          slot: 'Def_No_Pkg_Code',
+          prop: 'Def_No_Pkg_Code',
           label: '定数码',
           width: 220,
           align: 'center',
@@ -380,14 +380,14 @@ export default {
           showOverflowTooltip: true
         },
         {
-          slot: 'Trade_Type',
+          prop: 'Trade_Type',
           label: '国产/进口',
-          width: 80,
+          width: 120,
           align: 'center',
           showOverflowTooltip: true
         },
         {
-          slot: 'PDA_CONSUME_MAN',
+          prop: 'PDA_CONSUME_MAN',
           label: 'PDA扫码人(收货结算)',
           width: 220,
           align: 'center',

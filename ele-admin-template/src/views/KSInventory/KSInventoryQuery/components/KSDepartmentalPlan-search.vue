@@ -1,6 +1,11 @@
 <!-- 搜索表单 -->
 <template>
   <el-form label-width="77px" class="ele-form-search" @keyup.enter.native="search" @submit.native.prevent>
+    <el-row :gutter="15">
+      <el-col v-bind="styleResponsive ? { lg: 12, md: 12 } : { span: 12 }">
+        <el-button type="success" size="medium" @click="DeptReceivingScanOrderShow">扫码入库</el-button>
+      </el-col>
+    </el-row>
     <el-row :gutter="10">
       <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 12 }">
         <el-input clearable v-model="where.Name" placeholder="品种名称" />
@@ -20,7 +25,7 @@
             查询
           </el-button>
           <el-button size="small" @click="reset">重置</el-button>
-          <el-button type="primary" size="small" @click="DeptReceivingScanOrderShow">扫码入库</el-button>
+
         </div>
       </el-col>
     </el-row>
