@@ -104,6 +104,8 @@ export default {
       DeptReceivingScanOrder(data)
         .then((res) => {
           loading.close();
+          this.showEdit = false;
+          this.$emit('search', this.where);
           this.$message.success(res.msg);
         })
         .catch((err) => {
