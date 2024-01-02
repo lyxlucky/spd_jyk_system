@@ -83,4 +83,9 @@ export default {
 ::v-deep .el-tabs__item {
   width: 50%;
 }
+
+::v-deep .el-tabs__item  {
+  font-size: 20px;
+}
+
 </style>
