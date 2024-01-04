@@ -4,7 +4,7 @@
     <el-form label-width="77px" class="ele-form-search" @keyup.enter.native="search" @submit.native.prevent>
       <el-row :gutter="15">
         <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 6 }">
-          <el-input clearable v-model="where.defNoPkgCode" placeholder="请输入定数码" @change="addScanDef" />
+          <el-input id="idDefNoPkgCode" clearable v-model="where.defNoPkgCode" placeholder="请输入定数码" @change="addScanDef" />
         </el-col>
         <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 6 }">
           <el-input clearable v-model="where.varietie" placeholder="请输入品种编码/品种名称" />
@@ -21,7 +21,7 @@
         <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 6 }">
           <el-input clearable v-model="where.deptTwoName" placeholder="请输入二级科室名称" />
         </el-col>
-        <el-col v-bind="styleResponsive ? { lg: 6, md: 12 } : { span: 6 }">
+        <el-col v-bind="styleResponsive ? { lg: 12, md: 12 } : { span: 6 }">
           <div class="ele-form-actions">
             <el-button type="primary" icon="el-icon-search" class="ele-btn-icon" @click="search">
               查询
@@ -37,7 +37,7 @@
             </el-popconfirm>
             <el-popconfirm class="ele-action" title="确定消耗？" @confirm="consumption()">
               <template v-slot:reference>
-                <el-button type="primary" size="small" :underline="false">消耗</el-button>
+                <el-button type="success" size="small" :underline="false">消耗</el-button>
               </template>
             </el-popconfirm>
           </div>
@@ -98,8 +98,9 @@ export default {
       const loading = this.$messageLoading('添加中...');
       insertScanDef(this.where)
         .then((res) => {
+          document.getElementById("idDefNoPkgCode").focus();
           loading.close();
-           this.msgTip = 'Tip:' + res.msgTip;
+          this.msgTip = 'Tip:' + res.msgTip;
           this.search();
           this.$message.success(res.msg);
         })
