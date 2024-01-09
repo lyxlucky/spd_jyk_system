@@ -98,6 +98,7 @@ export default {
       const loading = this.$messageLoading('添加中...');
       insertScanDef(this.where)
         .then((res) => {
+          this.where.defNoPkgCode = '';
           document.getElementById("idDefNoPkgCode").focus();
           loading.close();
           this.msgTip = 'Tip:' + res.msgTip;
@@ -105,6 +106,8 @@ export default {
           this.$message.success(res.msg);
         })
         .catch((err) => {
+          this.where.defNoPkgCode = '';
+           document.getElementById("idDefNoPkgCode").focus();
           loading.close();
           this.$message.error(err);
         });
