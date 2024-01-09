@@ -60,7 +60,7 @@ export default {
         var data = {};
         data.PLAN_NUMBER = this.IntroduceUserDefinedTempSearch.PlanNum;
         data.ENABLE = element.VAR_ENABLE;
-        data.VARIETIE_CODE = element.ID;
+        data.VARIETIE_CODE = element.VarID;
         data.VARIETIE_NAME = element.VarName;
         data.SPECIFICATION_OR_TYPE = element.GG;
         data.UNIT = element.Unit;

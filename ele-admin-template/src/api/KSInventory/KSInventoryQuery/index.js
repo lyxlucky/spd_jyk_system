@@ -30,6 +30,8 @@ export async function GetJykDetailShelf(data) {
     data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
     data2.Name = data.where.Name ? data.where.Name : '';
     data2.TYPE = data.where.TYPE ? data.where.TYPE : '';
+    data2.DELIVERY_NUMBER = data.where.DELIVERY_NUMBER ? data.where.DELIVERY_NUMBER : '';
+    data2.DEF_NO_PKG_CODE = data.where.DEF_NO_PKG_CODE ? data.where.DEF_NO_PKG_CODE : '';
     data2.DeptCode = data.where.DeptCode ? data.where.DeptCode : '';
 
     const res = await request.get('/AJykDept/GetJykDetailShelf', {

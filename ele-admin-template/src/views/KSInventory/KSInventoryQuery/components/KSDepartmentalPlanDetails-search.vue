@@ -14,6 +14,12 @@
           </el-select>
         </el-form-item>
       </el-col>
+      <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 12 }">
+        <el-input clearable v-model="where.DELIVERY_NUMBER" placeholder="入库单号" />
+      </el-col>
+      <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 12 }">
+        <el-input clearable v-model="where.DEF_NO_PKG_CODE" placeholder="定数码" />
+      </el-col>
       <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 6 }">
         <div class="ele-form-actions">
           <el-button size="small" type="primary" icon="el-icon-search" class="ele-btn-icon" @click="search">
@@ -45,7 +51,10 @@ export default {
     // 默认表单数据
     const defaultWhere = {
       Token: '',
-      TYPE: ''
+      TYPE: '',
+      DELIVERY_NUMBER: '',
+      DEF_NO_PKG_CODE: '',
+      Name: ''
     };
     return {
       // 表单数据

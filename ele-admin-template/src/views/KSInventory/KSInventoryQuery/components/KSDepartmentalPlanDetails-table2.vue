@@ -37,6 +37,15 @@
           {{ item.State }}
         </el-tag> -->
       </template>
+
+        <template v-slot:RECORD_TYPE="{ row }">
+        <el-tag v-if="row.RECORD_TYPE==1" type="info">申领入库</el-tag>
+        <el-tag v-if="row.RECORD_TYPE==2" type="success">已入库</el-tag>
+        <el-tag v-if="row.RECORD_TYPE==3" >已出库</el-tag>
+        <el-tag v-if="row.RECORD_TYPE==4" type="info">定数包退货</el-tag>
+        <el-tag v-if="row.RECORD_TYPE==5" type="info">散货出库</el-tag>
+      </template>
+
       <!-- 操作列 -->
       <template v-slot:action="{ row }">
         <el-popconfirm class="ele-action" title="确定要删除此用户吗？" @confirm="remove(row)">
@@ -109,26 +118,27 @@ export default {
           show: false
         },
         {
-          prop: 'RECORD_TYPE',
+          slot:'RECORD_TYPE',
+          // prop: 'RECORD_TYPE',
           label: '类型',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110,
-          formatter: (_row, _column, cellValue) => {
-            var type = '';
-            if (cellValue == 1) {
-              type = '申领入库';
-            } else if (cellValue == 2) {
-              type = '定数包入库';
-            } else if (cellValue == 3) {
-              type = '定数包消耗';
-            } else if (cellValue == 4) {
-              type = '定数包退货';
-            } else if (cellValue == 5) {
-              type = '散货出库';
-            }
-            return type;
-          }
+          // formatter: (_row, _column, cellValue) => {
+          //   var type = '';
+          //   if (cellValue == 1) {
+          //     type = '申领入库';
+          //   } else if (cellValue == 2) {
+          //     type = '定数包入库';
+          //   } else if (cellValue == 3) {
+          //     type = '定数包消耗';
+          //   } else if (cellValue == 4) {
+          //     type = '定数包退货';
+          //   } else if (cellValue == 5) {
+          //     type = '散货出库';
+          //   }
+          //   return type;
+          // }
         },
           {
           prop: 'DEPT_TWO_NAME',
