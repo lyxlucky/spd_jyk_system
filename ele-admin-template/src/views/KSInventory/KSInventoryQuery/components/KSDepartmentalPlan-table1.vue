@@ -221,41 +221,41 @@ export default {
         //   showOverflowTooltip: true,
         //   minWidth: 110,
         // },
-        {
-          prop: 'DELIVERY_NUMBER',
-          label: '入库单号',
-          sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 120,
-          show: false
-        },
-        {
-          prop: 'RECORD_TYPE',
-          label: '入库类型',
-          sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 110,
-          show: false
-        },
         // {
-        //   prop: 'DEF_NO_PKG_CODE',
-        //   label: '定数码',
+        //   prop: 'DELIVERY_NUMBER',
+        //   label: '入库单号',
         //   sortable: 'custom',
         //   align: 'center',
         //   showOverflowTooltip: true,
-        //   minWidth: 110
+        //   minWidth: 120,
+        //   show: false
+        // },
+        // {
+        //   prop: 'RECORD_TYPE',
+        //   label: '入库类型',
+        //   sortable: 'custom',
+        //   align: 'center',
+        //   showOverflowTooltip: true,
+        //   minWidth: 110,
+        //   show: false
         // },
         {
-          prop: 'SUPPLIER_CODE',
-          label: '供应商编码',
+          prop: 'DEF_NO_PKG_CODE',
+          label: '定数码',
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 110,
-          show: false
+          minWidth: 110
         },
+        // {
+        //   prop: 'SUPPLIER_CODE',
+        //   label: '供应商编码',
+        //   sortable: 'custom',
+        //   align: 'center',
+        //   showOverflowTooltip: true,
+        //   minWidth: 110,
+        //   show: false
+        // },
         {
           prop: 'CHARGING_CODE',
           label: '计费编码',
@@ -264,24 +264,24 @@ export default {
           showOverflowTooltip: true,
           minWidth: 110
         },
-        {
-          prop: 'DEPT_TWO_CODE',
-          label: '二级科室编码',
-          sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 110,
-          show: false
-        },
-        {
-          prop: 'RECORD_TIME',
-          label: '入库时间',
-          sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 150,
-          show: false
-        }
+        // {
+        //   prop: 'DEPT_TWO_CODE',
+        //   label: '二级科室编码',
+        //   sortable: 'custom',
+        //   align: 'center',
+        //   showOverflowTooltip: true,
+        //   minWidth: 110,
+        //   show: false
+        // },
+        // {
+        //   prop: 'RECORD_TIME',
+        //   label: '入库时间',
+        //   sortable: 'custom',
+        //   align: 'center',
+        //   showOverflowTooltip: true,
+        //   minWidth: 150,
+        //   show: false
+        // }
       ],
       toolbar: false,
       pageSize: 20,
