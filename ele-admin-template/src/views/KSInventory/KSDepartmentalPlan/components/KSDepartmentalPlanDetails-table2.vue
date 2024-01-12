@@ -90,7 +90,7 @@ export default {
         {
           prop: 'VarCode',
           label: '品种编码',
-          sortable: 'custom',
+          
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110
@@ -98,7 +98,7 @@ export default {
         {
           prop: 'DEPT_ZDY_VARIETIE_CODE',
           label: '自定义编码',
-          sortable: 'custom',
+          
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110,
@@ -113,7 +113,7 @@ export default {
         {
           prop: 'CONTRACT_TYPE',
           label: '合同类型',
-          sortable: 'custom',
+          
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110,
@@ -131,7 +131,7 @@ export default {
         {
           prop: 'VarName',
           label: '品种全称',
-          sortable: 'custom',
+          
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110
@@ -139,7 +139,7 @@ export default {
         {
           prop: 'GG',
           label: '型号/规格',
-          sortable: 'custom',
+          
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110
@@ -147,7 +147,7 @@ export default {
         {
           prop: 'Manufacturing',
           label: '生产企业名称',
-          sortable: 'custom',
+          
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110
@@ -155,7 +155,7 @@ export default {
         {
           prop: 'SUPPLIER_NAME',
           label: '启用供应商',
-          sortable: 'custom',
+          
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110
@@ -163,7 +163,7 @@ export default {
         {
           prop: 'TempQty',
           label: '中心库库存',
-          sortable: 'custom',
+          
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110
@@ -171,7 +171,7 @@ export default {
         {
           prop: 'StockQty',
           label: '散货库存',
-          sortable: 'custom',
+          
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110
@@ -179,7 +179,7 @@ export default {
         {
           prop: 'TJ_QTY',
           label: '提交数量',
-          sortable: 'custom',
+          
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110
@@ -188,7 +188,7 @@ export default {
           slot: 'PlanQty',
           // prop: 'PlanQty',
           label: '实际申领数量',
-          sortable: 'custom',
+          
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 180,
@@ -197,7 +197,7 @@ export default {
         {
           prop: 'Unit',
           label: '单位',
-          sortable: 'custom',
+          
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110
@@ -205,7 +205,7 @@ export default {
         {
           prop: 'BigBoxCount',
           label: '大包装数量',
-          sortable: 'custom',
+          
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110,
@@ -214,7 +214,7 @@ export default {
         {
           prop: 'MinBoxCount',
           label: '中包装数量',
-          sortable: 'custom',
+          
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110,
@@ -223,7 +223,7 @@ export default {
         {
           prop: 'PAG_TYPE',
           label: '包装规格',
-          sortable: 'custom',
+          
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110
@@ -231,7 +231,7 @@ export default {
         {
           prop: 'Price',
           label: '结算价',
-          sortable: 'custom',
+          
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110
@@ -239,7 +239,7 @@ export default {
         {
           prop: '',
           label: '总金额',
-          sortable: 'custom',
+          
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110,
@@ -250,7 +250,7 @@ export default {
         {
           prop: '',
           label: '已收货数量',
-          sortable: 'custom',
+          
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110,
@@ -261,7 +261,7 @@ export default {
         {
           prop: 'IS_NEED_TWO_APP',
           label: '二级审批',
-          sortable: 'custom',
+          
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110,
@@ -284,9 +284,17 @@ export default {
           }
         },
         {
-          prop: '备注',
-          label: '包装规格',
-          sortable: 'custom',
+          prop: 'REMARK',
+          label: '备注',
+          
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 110
+        },
+        {
+          prop: 'SPDBZ',
+          label: 'SPD备注',
+          
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110
