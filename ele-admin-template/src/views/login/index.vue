@@ -123,6 +123,10 @@ export default {
     }
   },
   created() {
+    this.form.username =
+      localStorage.username != undefined ? localStorage.username : '';
+    this.form.password =
+      localStorage.password != undefined ? localStorage.password : '';
     if (getToken()) {
       this.goHome();
     } else {
@@ -145,6 +149,10 @@ export default {
         login(data)
           .then((res) => {
             this.$store.commit('user/setLoginInfo', this.form);
+            if (this.form.remember == true) {
+              localStorage.username = this.form.username;
+              localStorage.password = this.form.password;
+            }
             this.loading = false;
             this.$message.success(res.msg);
             this.goHome();
