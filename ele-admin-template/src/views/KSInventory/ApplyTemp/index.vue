@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- <el-card shadow="always"> -->
-    <el-container>
+    <!-- <el-container>
       <el-aside width="600px" style="margin: 20px 0px 0px 20px;">
         <el-card shadow="always">
           <div slot="header" class="clearfix">
@@ -23,8 +23,31 @@
           <el-button type="primary" @click="addTempVar" :style="{ display: IsDisabled==true?'none':'' }">确定</el-button>
         </el-footer>
       </el-container>
-    </el-container>
+    </el-container> -->
     <!-- </el-card> -->
+
+
+    <el-container>
+      <el-header height="300" >
+         <el-card shadow="always" >
+          <div slot="header" class="clearfix">
+            <span>申领模板列表</span>
+          </div>
+          <ApplyTempTable @getCurrent="getCurrent"></ApplyTempTable>
+        </el-card>
+      </el-header>
+      <el-main>
+        <el-card shadow="always">
+          <div slot="header" class="clearfix">
+            <span>申领模板列表品种</span>
+          </div>
+           <ApplyTempDataTable :ApplyTempTableData="ApplyTempTableData" @selectionData="selectionData"></ApplyTempDataTable>
+        </el-card>
+      </el-main>
+      <el-footer>
+          <el-button type="primary" @click="addTempVar" :style="{ display: IsDisabled==true?'none':'' }">确定</el-button>
+        </el-footer>
+    </el-container>
   </div>
 </template>
 
