@@ -7,6 +7,9 @@
         <!-- 数据表格 -->
         <ele-pro-table ref="table" height="500px" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" @selection-change="onSelectionChange" cache-key="DepaStorageQuery">
           <template v-slot:toolbar>
+            <el-button size="small" type="primary" icon="el-icon-plus" class="ele-btn-icon" @click="addKSKSDepartmentalPlanData()">
+              确定添加
+            </el-button>
           </template>
           <!-- 操作列 -->
           <template v-slot:APPLY_QTY="{ row }">
@@ -16,11 +19,11 @@
           </template>
         </ele-pro-table>
       </el-card>
-      <div class="ele-footer" style="display: flex;justify-content: center;">
+      <!-- <div class="ele-footer" style="display: flex;justify-content: center;">
         <el-button size="small" type="primary" icon="el-icon-plus" class="ele-btn-icon" @click="addKSKSDepartmentalPlanData()">
           确定添加
         </el-button>
-      </div>
+      </div> -->
 
       <!-- 编辑弹窗 -->
       <user-edit :visible.sync="showEdit" :data="current" @done="reload" />

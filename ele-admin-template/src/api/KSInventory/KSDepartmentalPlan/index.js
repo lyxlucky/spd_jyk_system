@@ -140,6 +140,39 @@ export async function PutInListDeta(data) {
     }
 }
 
+export async function isHaveZeroDel(data) {
+    var data2 = {};
+    data2.PlanNum = data.PlanNum ? data.PlanNum : ''
+    data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+
+    var rep = formdataify(data2)
+    const res = await request.post('/DeptApplyPlan/isHaveZeroDel', rep);
+
+    return res.data;
+    // if (res.data.code == 200) {
+    //     return res.data;
+    // } else {
+    //     return Promise.reject(new Error(res.data.msg));
+    // }
+}
+
+export async function deleteZeroDel(data) {
+    var data2 = {};
+    data2.PlanNum = data.PlanNum ? data.PlanNum : ''
+    data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+
+    var rep = formdataify(data2)
+    const res = await request.post('/DeptApplyPlan/deleteZeroDel', rep);
+
+    return res.data;
+    // if (res.data.code == 200) {
+    //     return res.data;
+    // } else {
+    //     return Promise.reject(new Error(res.data.msg));
+    // }
+}
+
+
 /* 审批申领单 */
 export async function ToExamine(data) {
     var data2 = {};

@@ -1,5 +1,5 @@
 <template>
-  <div class="ele-body" >
+  <div class="ele-body">
     <!-- <el-button type="danger" size="small" @click="aaa">aaa</el-button> -->
     <!-- 数据表格 -->
     <ele-pro-table ref="table" :toolStyle="toolStyle" height="30vh" highlight-current-row :stripe="true" :rowClickChecked="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" @selection-change="onSelectionChange" cache-key="KSInventoryBasicDataTable">
@@ -90,18 +90,18 @@ export default {
         {
           prop: 'VarCode',
           label: '品种编码',
-          
+
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 110
+          minWidth: 120
         },
         {
           prop: 'DEPT_ZDY_VARIETIE_CODE',
           label: '自定义编码',
-          
+
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 110,
+          minWidth: 120,
           show: false,
           formatter: (row, column, cellValue) => {
             if (cellValue == null) {
@@ -113,7 +113,7 @@ export default {
         {
           prop: 'CONTRACT_TYPE',
           label: '合同类型',
-          
+
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110,
@@ -131,7 +131,7 @@ export default {
         {
           prop: 'VarName',
           label: '品种全称',
-          
+
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110
@@ -139,7 +139,7 @@ export default {
         {
           prop: 'GG',
           label: '型号/规格',
-          
+
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110
@@ -147,7 +147,7 @@ export default {
         {
           prop: 'Manufacturing',
           label: '生产企业名称',
-          
+
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110
@@ -155,7 +155,7 @@ export default {
         {
           prop: 'SUPPLIER_NAME',
           label: '启用供应商',
-          
+
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110
@@ -163,7 +163,7 @@ export default {
         {
           prop: 'TempQty',
           label: '中心库库存',
-          
+
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110
@@ -171,7 +171,7 @@ export default {
         {
           prop: 'StockQty',
           label: '散货库存',
-          
+
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110
@@ -179,7 +179,7 @@ export default {
         {
           prop: 'TJ_QTY',
           label: '提交数量',
-          
+
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110
@@ -188,7 +188,7 @@ export default {
           slot: 'PlanQty',
           // prop: 'PlanQty',
           label: '实际申领数量',
-          
+
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 180,
@@ -197,7 +197,7 @@ export default {
         {
           prop: 'Unit',
           label: '单位',
-          
+
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110
@@ -205,7 +205,7 @@ export default {
         {
           prop: 'BigBoxCount',
           label: '大包装数量',
-          
+
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110,
@@ -214,7 +214,7 @@ export default {
         {
           prop: 'MinBoxCount',
           label: '中包装数量',
-          
+
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110,
@@ -223,7 +223,7 @@ export default {
         {
           prop: 'PAG_TYPE',
           label: '包装规格',
-          
+
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110
@@ -231,7 +231,7 @@ export default {
         {
           prop: 'Price',
           label: '结算价',
-          
+
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110
@@ -239,7 +239,7 @@ export default {
         {
           prop: '',
           label: '总金额',
-          
+
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110,
@@ -250,7 +250,7 @@ export default {
         {
           prop: '',
           label: '已收货数量',
-          
+
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110,
@@ -261,7 +261,7 @@ export default {
         {
           prop: 'IS_NEED_TWO_APP',
           label: '二级审批',
-          
+
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110,
@@ -286,7 +286,7 @@ export default {
         {
           prop: 'REMARK',
           label: '备注',
-          
+
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110
@@ -294,7 +294,7 @@ export default {
         {
           prop: 'SPDBZ',
           label: 'SPD备注',
-          
+
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110
@@ -317,7 +317,7 @@ export default {
       showEdit: false,
       // 是否显示导入弹窗
       showImport: false,
-      datasourceList: []
+      datasourceList: [],
     };
   },
   methods: {

@@ -34,14 +34,21 @@
 
       <!-- 操作列 -->
       <template v-slot:action="{ row }">
-        <el-button v-if="row.COUNT >=1 " size="small" type="primary" icon="" class="ele-btn-icon" @click="openEdit(row)">
+        <el-button v-if="row.COUNT >=1 && row.DEF_NO_PKG_CODE != null" size="small" type="primary" icon="" class="ele-btn-icon" @click="openEdit(row)">
           散货出库
         </el-button>
         <!-- <el-button v-else disabled>
         </el-button> -->
         <!-- <el-button type="primary" size="small" @click="dialogTableVisible = true">散货出库</el-button> -->
       </template>
+
+      <template v-slot:DEF_NO_PKG_CODE="{ row }">
+        <el-tag v-if="row.COUNT>=1 && row.DEF_NO_PKG_CODE != null" type="success">{{row.DEF_NO_PKG_CODE}}</el-tag>
+        <el-tag v-if="row.COUNT<1 && row.DEF_NO_PKG_CODE != null" type="info">{{row.DEF_NO_PKG_CODE}}</el-tag>
+      </template>
+
     </ele-pro-table>
+
     <user-edit :visible.sync="showEdit" :data="rowData" @done="reload" />
   </div>
 </template>
@@ -103,6 +110,15 @@ export default {
         {
           prop: 'DEPT_TWO_NAME',
           label: '科室名称',
+          // sortable: 'custom',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 110
+        },
+        {
+          // prop: 'DEF_NO_PKG_CODE',
+          slot: 'DEF_NO_PKG_CODE',
+          label: '定数码',
           // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
@@ -237,15 +253,15 @@ export default {
         //   showOverflowTooltip: true,
         //   minWidth: 110,
         // },
-        {
-          prop: 'DELIVERY_NUMBER',
-          label: '入库单号',
-          // sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 120,
-          show: false
-        },
+        // {
+        //   prop: 'DELIVERY_NUMBER',
+        //   label: '入库单号',
+        //   // sortable: 'custom',
+        //   align: 'center',
+        //   showOverflowTooltip: true,
+        //   minWidth: 120,
+        //   show: false
+        // },
         // {
         //   prop: 'RECORD_TYPE',
         //   label: '入库类型',
@@ -255,14 +271,6 @@ export default {
         //   minWidth: 110,
         //   show: false
         // },
-        {
-          prop: 'DEF_NO_PKG_CODE',
-          label: '定数码',
-          // sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 110
-        },
         // {
         //   prop: 'SUPPLIER_CODE',
         //   label: '供应商编码',

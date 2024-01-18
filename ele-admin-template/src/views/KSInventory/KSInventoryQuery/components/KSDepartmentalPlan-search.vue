@@ -40,7 +40,7 @@
         </el-form-item>
       </el-col>
       <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 12 }">
-        <el-input clearable v-model="where.DEF_NO_PKG_CODE" placeholder="入库单号" />
+        <el-input clearable v-model="where.DELIVERY_NUMBER" placeholder="入库单号" />
       </el-col>
       <el-col v-bind="styleResponsive ? { lg: 5, md: 12 } : { span: 8 }">
         <div class="ele-form-actions">

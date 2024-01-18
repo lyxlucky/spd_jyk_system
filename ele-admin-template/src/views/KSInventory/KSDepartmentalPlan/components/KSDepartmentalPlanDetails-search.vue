@@ -42,7 +42,7 @@
         <el-button type="primary" size="small" @click="showApplyTemp" :disabled='!IsDisabled'>引入其他模板</el-button>
         <!-- <el-button type="primary" size="small" @click="reset" :disabled='!IsDisabled'>引入历史记录</el-button> -->
         <el-button type="primary" size="small" @click="KeeptApplyDate" :disabled='!IsDisabled'>暂存申领单</el-button>
-        <el-button type="primary" size="small" @click="addPutInListDeta" :disabled='!IsDisabled'>保存并提交</el-button>
+        <el-button type="primary" size="small" @click="addPutInListDeta2" :disabled='!IsDisabled'>保存并提交</el-button>
         <!-- <el-button type="primary" size="small" @click="reset" :disabled='IsDisabled'>查询订单情况</el-button> -->
         <!-- <el-button type="primary" size="small" @click="reset" :disabled='IsDisabled'>合并订单</el-button> -->
         <el-button type="primary" size="small" @click="subToExamine" :disabled='!IsPutInListDeta'>审核申领单</el-button>
@@ -76,6 +76,14 @@
       <!-- <AuthVarTable :dialogTableVisible="dialogTableVisible" :ApplyTempTableDataID="ApplyTempTableDataID" /> -->
       <ApplyTemp :IntroduceUserDefinedTempSearch="KSDepartmentalPlanDataSearch" @ApplyTempPageChange="ApplyTempPageChange" />
     </el-dialog>
+
+    <el-dialog title="提示" :visible.sync="centerDialogVisible" width="30%" center>
+      <span>存在申领数量为0的明细</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="deleteZeroDelAndCommit">剔除并提交</el-button>
+        <el-button @click="centerDialogVisible = false">取 消</el-button>
+      </span>
+    </el-dialog>
   </el-form>
 </template>
 
@@ -85,7 +93,9 @@ import {
   DeletePlanDeta,
   PutInListDeta,
   ToExamine,
-  KeeptListDeta
+  KeeptListDeta,
+  isHaveZeroDel,
+  deleteZeroDel
 } from '@/api/KSInventory/KSDepartmentalPlan';
 import IntroduceUserDefinedTemp from '@/views/KSInventory/IntroduceUserDefinedTemp/index.vue';
 import ApplyTemp from '@/views/KSInventory/ApplyTemp/index.vue';
@@ -112,7 +122,8 @@ export default {
       where: { ...defaultWhere },
       showEdit: false,
       showEdit2: false,
-      ApplyTempPage: false
+      ApplyTempPage: false,
+      centerDialogVisible: false
     };
   },
   computed: {
@@ -237,6 +248,74 @@ export default {
           loading.close();
           this.$message.error(err);
         });
+    },
+
+    addPutInListDeta2() {
+      const loading = this.$messageLoading('提交中..');
+      var list = [];
+      this.selection.forEach((element) => {
+        var data = {
+          ID: element.ID,
+          ENABLE: element.ENABLE,
+          PLAN_NUMBER: element.PlanNum,
+          VARIETIE_CODE: element.VarID,
+          VARIETIE_NAME: element.VarName,
+          SPECIFICATION_OR_TYPE: element.GG,
+          UNIT: element.Unit,
+          MANUFACTURING_ENT_NAME: element.Manufacturing,
+          APPLY_QTY: element.PlanQty
+        };
+        list.push(data);
+      });
+      KeeptListDeta(list)
+        .then((res) => {
+          loading.close();
+          if (res.code == '200') {
+            var data = {
+              PlanNum: this.KSDepartmentalPlanDataSearch.PlanNum
+            };
+            isHaveZeroDel(data).then((res) => {
+              this.$message.success(res.msg);
+              if (res.code == '200') {
+                this.centerDialogVisible = true;
+              } else {
+                this.$message.success('保存成功');
+                reloadPageTab();
+              }
+            });
+
+            this.$message.success(res.msg);
+            var where = {
+              PlanNum: this.KSDepartmentalPlanDataSearch.PlanNum
+            };
+            this.$emit('search', where);
+          }
+        })
+        .catch((err) => {
+          loading.close();
+          this.$message.error(err);
+        });
+    },
+
+    deleteZeroDelAndCommit() {
+      var data = {
+        PlanNum: this.KSDepartmentalPlanDataSearch.PlanNum
+      };
+      deleteZeroDel(data).then((res) => {
+        if (res.code == '200') {
+          this.$message.success('保存成功');
+          var data = {
+            PlanNum: this.KSDepartmentalPlanDataSearch.PlanNum
+          };
+          PutInListDeta(data)
+            .then((res) => {
+              reloadPageTab();
+            })
+            .catch((err) => {
+              this.$message.error(err);
+            });
+        }
+      });
     },
     /* 审批申领单  */
     subToExamine() {
