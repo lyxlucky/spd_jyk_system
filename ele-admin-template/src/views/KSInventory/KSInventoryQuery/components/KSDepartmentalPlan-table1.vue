@@ -217,17 +217,14 @@ export default {
             return this.$util.toDateString(cellValue, 'yyyy-MM-dd');
           }
         },
-        {
+          {
           // prop: 'BATCH_VALIDITY_PERIOD',
           slot: 'BATCH_VALIDITY_PERIOD',
           label: '有效到期',
           // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 150,
-          formatter: (_row, _column, cellValue) => {
-            return this.$util.toDateString(cellValue, 'yyyy-MM-dd');
-          }
+          minWidth: 150
         },
         {
           prop: 'SUPPLIER_NAME',

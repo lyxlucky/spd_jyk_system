@@ -9,7 +9,7 @@
       </template>
 
       <template v-slot:State="{ row }">
-        <el-tag v-if="row.State==1">已提交</el-tag>
+        <el-tag v-if="row.State==1" type="warning">已提交</el-tag>
         <el-tag v-if="row.State==2" type="primary">配送中</el-tag>
         <el-tag v-if="row.State==5" type="primary" color="#2ee693">已审核</el-tag>
         <el-tag v-if="row.State==10" type="primary" color="#e60000" style="color:white">强制结束</el-tag>
