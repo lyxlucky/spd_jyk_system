@@ -34,7 +34,7 @@
 
       <!-- 操作列 -->
       <template v-slot:action="{ row }">
-        <el-button v-if="row.COUNT >=1 && row.DEF_NO_PKG_CODE != null" size="small" type="primary" icon="" class="ele-btn-icon" @click="openEdit(row)">
+        <el-button v-if="row.COUNT >=1 && row.DEF_NO_PKG_CODE == null" size="small" type="primary" icon="" class="ele-btn-icon" @click="openEdit(row)">
           散货出库
         </el-button>
         <!-- <el-button v-else disabled>
@@ -122,7 +122,7 @@ export default {
           // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 110
+          minWidth: 130
         },
         {
           prop: 'VARIETIE_CODE',

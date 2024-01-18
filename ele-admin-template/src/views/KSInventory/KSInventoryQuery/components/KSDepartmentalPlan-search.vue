@@ -22,7 +22,7 @@
       <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 12 }">
         <el-input clearable v-model="where.DEF_NO_PKG_CODE" placeholder="定数码" />
       </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 12 }">
+      <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 12 }">
         <el-form-item label="库存类型:">
           <el-select v-model="where.TYPE" @change="search()">
             <el-option label="全部" value=""></el-option>
