@@ -21,11 +21,24 @@
           {{ item.State }}
         </el-tag> -->
       </template>
+
+      <template v-slot:BATCH_VALIDITY_PERIOD="{ row }">
+        <!-- {{dateNow}} -->
+        <!-- {{dateNow1 = row.BATCH_VALIDITY_PERIOD?'':row.BATCH_VALIDITY_PERIOD.substring(0,10)}} -->
+        <!-- <el-tag v-if="row.COUNT >=1 && row.BATCH_VALIDITY_PERIOD<=dateNow1" type="info">{{(new Date(row.BATCH_VALIDITY_PERIOD)).toLocaleDateString()}}</el-tag> -->
+        <el-tag v-if="row.COUNT >=1 && dateNow1<=row.BATCH_VALIDITY_PERIOD<dateNow2" type="danger">{{(new Date(row.BATCH_VALIDITY_PERIOD)).toLocaleDateString()}}</el-tag>
+        <el-tag v-if="row.COUNT >=1 && dateNow2<=row.BATCH_VALIDITY_PERIOD<dateNow3" type="warning">{{(new Date(row.BATCH_VALIDITY_PERIOD)).toLocaleDateString()}}</el-tag>
+        <el-tag v-if="row.COUNT >=1 && dateNow4<=row.BATCH_VALIDITY_PERIOD" type="success">{{(new Date(row.BATCH_VALIDITY_PERIOD)).toLocaleDateString()}}</el-tag>
+        <el-tag v-else type="info">{{(new Date(row.BATCH_VALIDITY_PERIOD)).toLocaleDateString()}}</el-tag>
+      </template>
+
       <!-- 操作列 -->
       <template v-slot:action="{ row }">
-        <el-button size="small" type="primary" icon="" class="ele-btn-icon" @click="openEdit(row)">
+        <el-button v-if="row.COUNT >=1 " size="small" type="primary" icon="" class="ele-btn-icon" @click="openEdit(row)">
           散货出库
         </el-button>
+        <!-- <el-button v-else disabled>
+        </el-button> -->
         <!-- <el-button type="primary" size="small" @click="dialogTableVisible = true">散货出库</el-button> -->
       </template>
     </ele-pro-table>
@@ -36,6 +49,8 @@
 <script>
 import KSDepartmentalPlanSearch from './KSDepartmentalPlan-search.vue';
 import UserEdit from './user-edit.vue';
+import dayjs from 'dayjs';
+// import { formatDate } from '@/utils/formdataify';
 import {
   SerachPlanList,
   DeletePlanList
@@ -69,7 +84,7 @@ export default {
         {
           prop: 'ID',
           label: 'ID',
-          sortable: 'custom',
+          // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110,
@@ -88,7 +103,7 @@ export default {
         {
           prop: 'DEPT_TWO_NAME',
           label: '科室名称',
-          sortable: 'custom',
+          // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110
@@ -96,7 +111,7 @@ export default {
         {
           prop: 'VARIETIE_CODE',
           label: '品种ID',
-          sortable: 'custom',
+          // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110,
@@ -105,23 +120,23 @@ export default {
         {
           prop: 'VARIETIE_CODE_NEW',
           label: '品种编码',
-          sortable: 'custom',
+          // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 110
+          minWidth: 130
         },
         {
           prop: 'VARIETIE_NAME',
           label: '品种名称',
-          sortable: 'custom',
+          // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 150
+          minWidth: 160
         },
         {
           prop: 'SPECIFICATION_OR_TYPE',
           label: '规格型号',
-          sortable: 'custom',
+          // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 180
@@ -129,7 +144,7 @@ export default {
         {
           prop: 'MANUFACTURING_ENT_NAME',
           label: '生产企业',
-          sortable: 'custom',
+          // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 180
@@ -137,7 +152,7 @@ export default {
         {
           prop: 'COUNT',
           label: '库存数量',
-          sortable: 'custom',
+          // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110
@@ -145,7 +160,7 @@ export default {
         {
           prop: 'UNIT',
           label: '单位',
-          sortable: 'custom',
+          // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 180
@@ -153,7 +168,7 @@ export default {
         {
           prop: 'PRICE',
           label: '价格',
-          sortable: 'custom',
+          // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 180
@@ -161,7 +176,7 @@ export default {
         {
           prop: 'BATCH',
           label: '生产批号',
-          sortable: 'custom',
+          // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110
@@ -169,7 +184,7 @@ export default {
         {
           prop: 'BATCH_ID',
           label: '批号ID',
-          sortable: 'custom',
+          // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110,
@@ -178,7 +193,7 @@ export default {
         {
           prop: 'BATCH_PRODUCTION_DATE',
           label: '生产日期',
-          sortable: 'custom',
+          // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 150,
@@ -187,9 +202,10 @@ export default {
           }
         },
         {
-          prop: 'BATCH_VALIDITY_PERIOD',
+          // prop: 'BATCH_VALIDITY_PERIOD',
+          slot: 'BATCH_VALIDITY_PERIOD',
           label: '有效到期',
-          sortable: 'custom',
+          // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 150,
@@ -200,7 +216,7 @@ export default {
         {
           prop: 'SUPPLIER_NAME',
           label: '供应商名称',
-          // sortable: 'custom',
+          // // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 150
@@ -208,7 +224,7 @@ export default {
         {
           prop: 'APPROVAL_NUMBER',
           label: '注册证号',
-          sortable: 'custom',
+          // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110
@@ -216,24 +232,24 @@ export default {
         // {
         //   prop: 'OPERATOR',
         //   label: '操作人',
-        //   sortable: 'custom',
+        //   // sortable: 'custom',
         //   align: 'center',
         //   showOverflowTooltip: true,
         //   minWidth: 110,
         // },
-        // {
-        //   prop: 'DELIVERY_NUMBER',
-        //   label: '入库单号',
-        //   sortable: 'custom',
-        //   align: 'center',
-        //   showOverflowTooltip: true,
-        //   minWidth: 120,
-        //   show: false
-        // },
+        {
+          prop: 'DELIVERY_NUMBER',
+          label: '入库单号',
+          // sortable: 'custom',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 120,
+          show: false
+        },
         // {
         //   prop: 'RECORD_TYPE',
         //   label: '入库类型',
-        //   sortable: 'custom',
+        //   // sortable: 'custom',
         //   align: 'center',
         //   showOverflowTooltip: true,
         //   minWidth: 110,
@@ -242,7 +258,7 @@ export default {
         {
           prop: 'DEF_NO_PKG_CODE',
           label: '定数码',
-          sortable: 'custom',
+          // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110
@@ -250,7 +266,7 @@ export default {
         // {
         //   prop: 'SUPPLIER_CODE',
         //   label: '供应商编码',
-        //   sortable: 'custom',
+        //   // sortable: 'custom',
         //   align: 'center',
         //   showOverflowTooltip: true,
         //   minWidth: 110,
@@ -259,15 +275,15 @@ export default {
         {
           prop: 'CHARGING_CODE',
           label: '计费编码',
-          sortable: 'custom',
+          // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110
-        },
+        }
         // {
         //   prop: 'DEPT_TWO_CODE',
         //   label: '二级科室编码',
-        //   sortable: 'custom',
+        //   // sortable: 'custom',
         //   align: 'center',
         //   showOverflowTooltip: true,
         //   minWidth: 110,
@@ -276,7 +292,7 @@ export default {
         // {
         //   prop: 'RECORD_TIME',
         //   label: '入库时间',
-        //   sortable: 'custom',
+        //   // sortable: 'custom',
         //   align: 'center',
         //   showOverflowTooltip: true,
         //   minWidth: 150,
@@ -297,7 +313,11 @@ export default {
       showImport: false,
       // datasource: [],
       data: [],
-      rowData: null
+      rowData: null,
+      dateNow1: dayjs().format('YYYY-MM-DD'),
+      dateNow2: dayjs().format('YYYY-MM-DD'),
+      dateNow3: dayjs().format('YYYY-MM-DD'),
+      dateNow4: dayjs().format('YYYY-MM-DD')
     };
   },
   methods: {
@@ -310,6 +330,8 @@ export default {
           Dept_Two_CodeStr + userDeptList[i].Dept_Two_Code + ',';
       }
       where.DeptCode = Dept_Two_CodeStr;
+      where.TYPE = where.TYPE == undefined ? '0' : where.TYPE;
+      where.COUNT = where.COUNT == undefined ? '1' : where.COUNT;
       let data = GetJykMainShelf({ page, limit, where, order }).then((res) => {
         var tData = {
           count: res.total,
@@ -357,10 +379,22 @@ export default {
           loading.close();
           this.$message.error(err);
         });
+    },
+    formatDate(date) {
+      const year = date.getFullYear();
+      const month = ('0' + (date.getMonth() + 1)).slice(-2);
+      const day = ('0' + date.getDate()).slice(-2);
+      const hours = ('0' + date.getHours()).slice(-2);
+      const minutes = ('0' + date.getMinutes()).slice(-2);
+      const seconds = ('0' + date.getSeconds()).slice(-2);
+      return `${year}-${month}-${day}`;
     }
   },
   created() {
     // this.getdatasource();
+    dayjs(this.dateNow2).add(30, 'day');
+    dayjs(this.dateNow3).add(60, 'day');
+    dayjs(this.dateNow4).add(90, 'day');
   }
 };
 </script>

@@ -19,7 +19,7 @@
       <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 12 }">
         <el-input clearable v-model="where.DEPTNAME" placeholder="科室名称" />
       </el-col>
-       <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 12 }">
+      <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 12 }">
         <el-input clearable v-model="where.DEF_NO_PKG_CODE" placeholder="定数码" />
       </el-col>
       <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 12 }">
@@ -29,6 +29,18 @@
             <el-option label="定数码与散货分开" value="0"></el-option>
           </el-select>
         </el-form-item>
+      </el-col>
+      <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 12 }">
+        <el-form-item label="数量:">
+          <el-select v-model="where.COUNT" @change="search()">
+            <el-option label="全部" value=""></el-option>
+            <el-option label="大于0" value="1"></el-option>
+            <el-option label="无" value="0"></el-option>
+          </el-select>
+        </el-form-item>
+      </el-col>
+      <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 12 }">
+        <el-input clearable v-model="where.DEF_NO_PKG_CODE" placeholder="入库单号" />
       </el-col>
       <el-col v-bind="styleResponsive ? { lg: 5, md: 12 } : { span: 8 }">
         <div class="ele-form-actions">
@@ -65,7 +77,9 @@ export default {
       MANUFACTURING_ENT_NAME: '',
       DEPTNAME: '',
       DEF_NO_PKG_CODE: '',
-      TYPE: '',
+      TYPE: '0',
+      COUNT: '1',
+      DELIVERY_NUMBER: ''
     };
     return {
       // 表单数据

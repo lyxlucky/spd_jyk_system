@@ -44,7 +44,7 @@
            <ApplyTempDataTable :ApplyTempTableData="ApplyTempTableData" @selectionData="selectionData"></ApplyTempDataTable>
         </el-card>
       </el-main>
-      <el-footer>
+      <el-footer style="display: flex;justify-content: center;height:''">
           <el-button type="primary" @click="addTempVar" :style="{ display: IsDisabled==true?'none':'' }">确定</el-button>
         </el-footer>
     </el-container>

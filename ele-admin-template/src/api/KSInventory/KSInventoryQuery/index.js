@@ -13,6 +13,8 @@ export async function GetJykMainShelf(data) {
     data2.DEPTNAME = data.where.DEPTNAME ? data.where.DEPTNAME : '';
     data2.DEF_NO_PKG_CODE = data.where.DEF_NO_PKG_CODE ? data.where.DEF_NO_PKG_CODE : '';
     data2.TYPE = data.where.TYPE ? data.where.TYPE : '';
+    data2.COUNT = data.where.COUNT ? data.where.COUNT : '';
+    data2.DELIVERY_NUMBER = data.where.DELIVERY_NUMBER ? data.where.DELIVERY_NUMBER : '';
     data2.DeptCode = data.where.DeptCode ? data.where.DeptCode : '';
 
     const res = await request.get('/AJykDept/GetJykMainShelf', {
