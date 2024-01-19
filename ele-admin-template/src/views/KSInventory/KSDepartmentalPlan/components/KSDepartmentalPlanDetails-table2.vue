@@ -20,6 +20,10 @@
         <el-input-number v-model="row.PlanQty" :min="0" :max="9999" :step="1" size="mini" />
         <!-- <el-input-number v-model="row.PlanQty" controls-position="right" @change="handleChange" :min="0" :max="9999" size="mini"></el-input-number> -->
       </template>
+      <template v-slot:VarCode="{ row }">
+        <el-tag v-if="row.LEFT_APPLY_QTY==0" type="success">{{row.VarCode}}</el-tag>
+        <el-tag v-else type="danger">{{row.VarCode}}</el-tag>
+      </template>
       <template v-slot:State="{ row }">
         <el-tag v-if="row.State==0" type="success">新增</el-tag>
         <el-tag v-if="row.State==1" type="success">已提交</el-tag>
@@ -88,12 +92,13 @@ export default {
         //   fixed: 'right'
         // },
         {
-          prop: 'VarCode',
+          // prop: 'VarCode',
+          slot: 'VarCode',
           label: '品种编码',
 
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 120
+          minWidth: 150
         },
         {
           prop: 'DEPT_ZDY_VARIETIE_CODE',
@@ -317,7 +322,7 @@ export default {
       showEdit: false,
       // 是否显示导入弹窗
       showImport: false,
-      datasourceList: [],
+      datasourceList: []
     };
   },
   methods: {

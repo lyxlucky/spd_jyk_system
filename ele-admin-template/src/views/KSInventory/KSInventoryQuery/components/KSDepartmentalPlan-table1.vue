@@ -34,7 +34,7 @@
 
       <!-- 操作列 -->
       <template v-slot:action="{ row }">
-        <el-button v-if="row.COUNT >=1 && row.DEF_NO_PKG_CODE == null" size="small" type="primary" icon="" class="ele-btn-icon" @click="openEdit(row)">
+        <el-button v-if="row.COUNT >=1 && row.DEF_NO_PKG_CODE == null && TYPE != ''" size="small" type="primary" icon="" class="ele-btn-icon" @click="openEdit(row)">
           散货出库
         </el-button>
         <!-- <el-button v-else disabled>
@@ -217,7 +217,7 @@ export default {
             return this.$util.toDateString(cellValue, 'yyyy-MM-dd');
           }
         },
-          {
+        {
           // prop: 'BATCH_VALIDITY_PERIOD',
           slot: 'BATCH_VALIDITY_PERIOD',
           label: '有效到期',
@@ -318,6 +318,7 @@ export default {
       showImport: false,
       // datasource: [],
       data: [],
+      TYPE: null,
       rowData: null,
       dateNow1: dayjs().format('YYYY-MM-DD'),
       dateNow2: dayjs().format('YYYY-MM-DD'),
@@ -337,6 +338,8 @@ export default {
       where.DeptCode = Dept_Two_CodeStr;
       where.TYPE = where.TYPE == undefined ? '0' : where.TYPE;
       where.COUNT = where.COUNT == undefined ? '1' : where.COUNT;
+
+      this.TYPE = where.TYPE;
       let data = GetJykMainShelf({ page, limit, where, order }).then((res) => {
         var tData = {
           count: res.total,
