@@ -202,7 +202,6 @@ export default {
     },
     onSelectionChange(selection) {
       this.selection = selection;
-      console.log(selection);
     },
     onCurrentChange(current) {
       this.current = current;

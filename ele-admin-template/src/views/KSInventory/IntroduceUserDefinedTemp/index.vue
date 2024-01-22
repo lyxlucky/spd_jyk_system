@@ -5,7 +5,7 @@
         <!-- 搜索表单 -->
         <user-search @search="reload" />
         <!-- 数据表格 -->
-        <ele-pro-table ref="table" height="500px" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :rowClickChecked="true" :selection.sync="selection" @selection-change="onSelectionChange" cache-key="DepaStorageQuery">
+        <ele-pro-table ref="table" height="500px" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :rowClickChecked="true" :rowClickCheckedIntelligent="false" :selection.sync="selection" @selection-change="onSelectionChange" cache-key="DepaStorageQuery">
           <template v-slot:toolbar>
             <el-button size="small" type="primary" icon="el-icon-plus" class="ele-btn-icon" @click="addKSKSDepartmentalPlanData()">
               确定添加
