@@ -355,7 +355,13 @@ export default {
       console.log(row);
     },
     onSelectionChange(selection) {
+      // this.selection.push(...selection);
       this.selection = selection;
+      //       console.log(this.selection)
+      // console.log(selection)
+
+      // var isExit = this.selection.includes(selection);
+
       // console.log(this.selection);
     },
     showEditReoad(data) {

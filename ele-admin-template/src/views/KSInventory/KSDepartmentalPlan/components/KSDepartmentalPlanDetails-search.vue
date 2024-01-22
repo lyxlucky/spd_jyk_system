@@ -151,18 +151,26 @@ export default {
     },
     /* 删除键 */
     IsDisabledByDel() {
-      return this.KSDepartmentalPlanDataSearch.State == '0';
+      if (this.KSDepartmentalPlanDataSearch) {
+        return this.KSDepartmentalPlanDataSearch.State == '0';
+      } else {
+        return false;
+      }
     },
 
     /* 审核申领单 */
     IsPutInListDeta() {
-      return this.KSDepartmentalPlanDataSearch.State == '1';
-    },
+      if (this.KSDepartmentalPlanDataSearch) {
+        return this.KSDepartmentalPlanDataSearch.State == '1';
+      } else {
+        return false;
+      }
+    }
 
     /* 审批申领单 */
-    IsToExamine() {
-      return this.KSDepartmentalPlanDataSearch.State == '6';
-    }
+    // IsToExamine() {
+    //   return this.KSDepartmentalPlanDataSearch.State == '6';
+    // }
   },
   watch: {
     showEdit() {
@@ -275,20 +283,19 @@ export default {
               PlanNum: this.KSDepartmentalPlanDataSearch.PlanNum
             };
             isHaveZeroDel(data).then((res) => {
-              this.$message.success(res.msg);
+              console.log(res);
               if (res.code == '200') {
                 this.centerDialogVisible = true;
               } else {
-                this.$message.success('保存成功');
-                reloadPageTab();
+                return this.$message.error(res.msg);
               }
             });
 
-            this.$message.success(res.msg);
-            var where = {
-              PlanNum: this.KSDepartmentalPlanDataSearch.PlanNum
-            };
-            this.$emit('search', where);
+            // this.$message.success(res.msg);
+            // var where = {
+            //   PlanNum: this.KSDepartmentalPlanDataSearch.PlanNum
+            // };
+            // this.$emit('search', where);
           }
         })
         .catch((err) => {
@@ -303,12 +310,12 @@ export default {
       };
       deleteZeroDel(data).then((res) => {
         if (res.code == '200') {
-          this.$message.success('保存成功');
           var data = {
             PlanNum: this.KSDepartmentalPlanDataSearch.PlanNum
           };
           PutInListDeta(data)
             .then((res) => {
+              this.$message.success(res.msg);
               reloadPageTab();
             })
             .catch((err) => {
