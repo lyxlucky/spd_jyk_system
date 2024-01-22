@@ -72,7 +72,7 @@
     </el-row> -->
     <IntroduceUserDefinedTemp :visible.sync="showEdit" :IntroduceUserDefinedTempSearch="KSDepartmentalPlanDataSearch" />
     <IntroduceDefinedTemp :visible.sync="showEdit2" />
-    <el-dialog title="授权品种目录" :visible.sync="ApplyTempPage" width='90%'>
+    <el-dialog title="授权品种目录" :visible.sync="ApplyTempPage" width='95%'>
       <!-- <AuthVarTable :dialogTableVisible="dialogTableVisible" :ApplyTempTableDataID="ApplyTempTableDataID" /> -->
       <ApplyTemp :IntroduceUserDefinedTempSearch="KSDepartmentalPlanDataSearch" @ApplyTempPageChange="ApplyTempPageChange" />
     </el-dialog>

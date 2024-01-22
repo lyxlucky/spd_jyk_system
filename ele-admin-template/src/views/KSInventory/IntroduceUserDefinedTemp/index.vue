@@ -1,5 +1,5 @@
 <template >
-  <ele-modal width="1400px" :visible="visible" :close-on-click-modal="true" custom-class="ele-dialog-form" title="引用自定义模板" @update:visible="updateVisible">
+  <ele-modal width="1900px" :visible="visible" :close-on-click-modal="true" custom-class="ele-dialog-form" title="引用自定义模板" @update:visible="updateVisible">
     <div class="ele-body">
       <el-card shadow="never">
         <!-- 搜索表单 -->
