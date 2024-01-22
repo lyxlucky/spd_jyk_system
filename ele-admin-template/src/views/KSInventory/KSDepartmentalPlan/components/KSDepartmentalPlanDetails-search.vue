@@ -81,7 +81,7 @@
       <span>存在申领数量为0的明细</span>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="deleteZeroDelAndCommit">剔除并提交</el-button>
-        <el-button @click="centerDialogVisible = false">取 消</el-button>
+        <el-button @click="deleteZeroDelAndCommit2">取 消</el-button>
       </span>
     </el-dialog>
   </el-form>
@@ -287,7 +287,7 @@ export default {
               if (res.code == '200') {
                 this.centerDialogVisible = true;
               } else {
-                return this.$message.error(res.msg);
+                this.deleteZeroDelAndCommit2();
               }
             });
 
@@ -323,6 +323,20 @@ export default {
             });
         }
       });
+    },
+
+    deleteZeroDelAndCommit2() {
+      var data = {
+        PlanNum: this.KSDepartmentalPlanDataSearch.PlanNum
+      };
+      PutInListDeta(data)
+        .then((res) => {
+          this.$message.success(res.msg);
+          reloadPageTab();
+        })
+        .catch((err) => {
+          this.$message.error(err);
+        });
     },
     /* 审批申领单  */
     subToExamine() {
