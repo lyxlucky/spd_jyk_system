@@ -1,11 +1,11 @@
 <template >
-  <ele-modal width="1900px" :visible="visible" :close-on-click-modal="true" custom-class="ele-dialog-form" title="引用自定义模板" @update:visible="updateVisible">
+  <ele-modal width="1900px" :visible="visible" :close-on-click-modal="true" custom-class="ele-dialog-form" title="自定义新增" @update:visible="updateVisible">
     <div class="ele-body">
       <el-card shadow="never">
         <!-- 搜索表单 -->
         <user-search @search="reload" />
         <!-- 数据表格 -->
-        <ele-pro-table ref="table" height="500px" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" @selection-change="onSelectionChange" cache-key="DepaStorageQuery">
+        <ele-pro-table ref="table" height="500px" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :rowClickChecked="true" :selection.sync="selection" @selection-change="onSelectionChange" cache-key="DepaStorageQuery">
           <template v-slot:toolbar>
             <el-button size="small" type="primary" icon="el-icon-plus" class="ele-btn-icon" @click="addKSKSDepartmentalPlanData()">
               确定添加
