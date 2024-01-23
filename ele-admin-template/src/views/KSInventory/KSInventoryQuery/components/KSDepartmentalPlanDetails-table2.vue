@@ -174,21 +174,21 @@ export default {
           label: '数量',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 110
+          minWidth: 80
         },
         {
           prop: 'UNIT',
           label: '单位',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 110
+          minWidth: 80
         },
         {
           prop: 'PRICE',
           label: '价格',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 110
+          minWidth: 80
         },
         {
           prop: 'BATCH',
@@ -210,7 +210,7 @@ export default {
           label: '生产日期',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 150,
+          minWidth: 100,
           formatter: (_row, _column, cellValue) => {
             return this.$util.toDateString(cellValue, 'yyyy-MM-dd');
           }
@@ -220,7 +220,7 @@ export default {
           label: '有效到期',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 150,
+          minWidth: 100,
           formatter: (_row, _column, cellValue) => {
             return this.$util.toDateString(cellValue, 'yyyy-MM-dd');
           }

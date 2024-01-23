@@ -99,30 +99,30 @@ export default {
 
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 150
+          width: 150
         },
-        {
-          prop: 'DEPT_ZDY_VARIETIE_CODE',
-          label: '自定义编码',
+        // {
+        //   prop: 'DEPT_ZDY_VARIETIE_CODE',
+        //   label: '自定义编码',
 
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 120,
-          show: false,
-          formatter: (row, column, cellValue) => {
-            if (cellValue == null) {
-              return '未定义';
-            }
-            return cellValue;
-          }
-        },
+        //   align: 'center',
+        //   showOverflowTooltip: true,
+        //   width: 120,
+        //   show: false,
+        //   formatter: (row, column, cellValue) => {
+        //     if (cellValue == null) {
+        //       return '未定义';
+        //     }
+        //     return cellValue;
+        //   }
+        // },
         {
           prop: 'CONTRACT_TYPE',
           label: '合同类型',
 
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 110,
+          width: 110,
           show: false,
           formatter: (row, column, cellValue) => {
             if (cellValue == 2) {
@@ -140,7 +140,7 @@ export default {
 
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 110
+          width: 150
         },
         {
           prop: 'GG',
@@ -148,7 +148,7 @@ export default {
 
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 110
+          width: 110
         },
         {
           prop: 'Manufacturing',
@@ -156,7 +156,7 @@ export default {
 
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 110
+          width: 110
         },
         {
           prop: 'SUPPLIER_NAME',
@@ -164,7 +164,7 @@ export default {
 
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 110
+          width: 110
         },
         {
           prop: 'TempQty',
@@ -172,7 +172,7 @@ export default {
 
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 110
+          width: 110
         },
         {
           prop: 'StockQty',
@@ -180,7 +180,7 @@ export default {
 
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 110
+          width: 80
         },
         {
           prop: 'TJ_QTY',
@@ -188,7 +188,7 @@ export default {
 
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 110
+          width: 80
         },
         {
           slot: 'PlanQty',
@@ -197,7 +197,7 @@ export default {
 
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 180,
+          width: 150,
           fixed: 'right'
         },
         {
@@ -206,25 +206,7 @@ export default {
 
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 110
-        },
-        {
-          prop: 'BigBoxCount',
-          label: '大包装数量',
-
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 110,
-          show: false
-        },
-        {
-          prop: 'MinBoxCount',
-          label: '中包装数量',
-
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 110,
-          show: false
+          width: 80
         },
         {
           prop: 'PAG_TYPE',
@@ -232,7 +214,7 @@ export default {
 
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 110
+          width: 110
         },
         {
           prop: 'Price',
@@ -240,7 +222,7 @@ export default {
 
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 110
+          width: 80
         },
         {
           prop: '',
@@ -248,7 +230,7 @@ export default {
 
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 110,
+          width: 80,
           formatter: (row, column, cellValue) => {
             return row.Price * row.PlanQty;
           }
@@ -259,7 +241,7 @@ export default {
 
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 110,
+          width: 100,
           formatter: (row, column, cellValue) => {
             return row.PlanQty - row.LEFT_APPLY_QTY;
           }
@@ -270,7 +252,7 @@ export default {
 
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 110,
+          width: 110,
           formatter: (row, column, cellValue) => {
             var IS_NEED_TWO_APP = '';
             var STATE = '';
@@ -295,7 +277,7 @@ export default {
 
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 110
+          width: 110
         },
         {
           prop: 'SPDBZ',
@@ -303,7 +285,7 @@ export default {
 
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 110
+          width: 110
         }
       ],
       toolbar: false,

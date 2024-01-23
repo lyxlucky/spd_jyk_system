@@ -87,70 +87,70 @@ export default {
           label: '定数码',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 150
+          width: 150
         },
         {
           prop: 'Dept_Two_Name',
           label: '二级科室名称',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 120
+          width: 120
         },
         {
           prop: 'Varietie_Code_New',
           label: '品种编码',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 150
+          width: 150
         },
         {
           prop: 'Varietie_Name',
           label: '品种名称',
           align: 'center',
           howOverflowTooltip: true,
-          minWidth: 180
+          width: 180
         },
         {
           prop: 'Specification_Or_Type',
           label: '规格/型号',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 200
+          width: 200
         },
         {
           prop: 'Unit',
           label: '单位',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 80
+          width: 80
         },
         {
           prop: 'Dept_Two_Code',
           label: '二级科室编码',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 180
+          width: 180
         },
         {
           prop: 'Coefficient',
           label: '系数',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 80
+          width: 80
         },
         {
           prop: 'Batch',
           label: '批号',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 150
+          width: 150
         },
         {
           prop: 'Last_Update_Time',
           label: '上架时间',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 180
+          width: 150
         },
         {
           prop: '',
@@ -193,14 +193,14 @@ export default {
         {
           prop: 'Batch_Validity_Period',
           label: '有效期',
-          width: 220,
+          width: 150,
           align: 'center',
           showOverflowTooltip: true
         },
         {
           prop: 'Batch_Production_Date',
           label: '生产日期',
-          width: 220,
+          width: 150,
           align: 'center',
           showOverflowTooltip: true
         },
@@ -214,7 +214,7 @@ export default {
         {
           prop: 'Contract_Code',
           label: '合同编码',
-          width: 220,
+          width: 150,
           align: 'center',
           showOverflowTooltip: true
         },

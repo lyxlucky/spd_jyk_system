@@ -79,7 +79,7 @@ export default {
         {
           prop: 'PlanNum',
           label: '申领单号',
-          sortable: 'custom',
+          
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110
@@ -87,15 +87,15 @@ export default {
         {
           prop: 'Operater',
           label: '申领人',
-          sortable: 'custom',
+          
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 110
+          minWidth: 80
         },
         {
           // prop: 'State',
           label: '状态',
-          sortable: 'custom',
+          
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110,
@@ -121,7 +121,7 @@ export default {
         {
           prop: 'DEPT_TWO_NAME',
           label: '科室名称',
-          sortable: 'custom',
+          
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110
@@ -129,7 +129,7 @@ export default {
         {
           prop: 'PlanTime',
           label: '申领时间',
-          sortable: 'custom',
+          
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110
@@ -137,7 +137,7 @@ export default {
         {
           prop: 'Approval_Time',
           label: '审批时间',
-          sortable: 'custom',
+          
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 180,
@@ -148,7 +148,7 @@ export default {
         {
           prop: 'BZ',
           label: '备注',
-          sortable: 'custom',
+          
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110

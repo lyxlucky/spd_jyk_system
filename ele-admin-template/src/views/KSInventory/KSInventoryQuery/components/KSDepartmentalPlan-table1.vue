@@ -113,7 +113,7 @@ export default {
           // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 110
+          minWidth: 100
         },
         {
           // prop: 'DEF_NO_PKG_CODE',
@@ -171,7 +171,7 @@ export default {
           // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 110
+          minWidth: 80
         },
         {
           prop: 'UNIT',
@@ -179,7 +179,7 @@ export default {
           // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 180
+          minWidth: 80
         },
         {
           prop: 'PRICE',
@@ -187,7 +187,7 @@ export default {
           // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 180
+          minWidth: 80
         },
         {
           prop: 'BATCH',
@@ -212,7 +212,7 @@ export default {
           // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 150,
+          minWidth: 120,
           formatter: (_row, _column, cellValue) => {
             return this.$util.toDateString(cellValue, 'yyyy-MM-dd');
           }

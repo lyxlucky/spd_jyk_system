@@ -145,52 +145,52 @@ export default {
         {
           prop: 'Dept_One_Name',
           label: '一级科室',
-          sortable: 'custom',
+          
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 100
+          width: 100
         },
         // {
         //   slot: 'Storage_ID',
         //   label: '业务发起库区',
-        //   sortable: 'custom',
+        //   
         //   align: 'center',
         //   howOverflowTooltip: true,
-        //   minWidth: 110
+        //   width: 110
         // },
-        {
-          prop: 'Dept_Two_Name',
-          label: '二级科室',
-          sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 150,
-          show: false
-        },
-        {
-          prop: 'Dept_Name',
-          label: '计费科室',
-          sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 150,
-          show: false
-        },
+        // {
+        //   prop: 'Dept_Two_Name',
+        //   label: '二级科室',
+          
+        //   align: 'center',
+        //   showOverflowTooltip: true,
+        //   width: 100,
+        //   show: false
+        // },
+        // {
+        //   prop: 'Dept_Name',
+        //   label: '计费科室',
+          
+        //   align: 'center',
+        //   showOverflowTooltip: true,
+        //   width: 100,
+        //   show: false
+        // },
         {
           prop: 'SPD_COST_DEPT_NAME',
           label: '成本科室',
-          sortable: 'custom',
+          
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 180
+          width: 100
         },
         {
           prop: 'APPLY_DEPT',
           label: 'His领用科室',
           align: 'center',
-          sortable: 'custom',
+          
           showOverflowTooltip: true,
-          minWidth: 120,
+          width: 100,
           show: false
           // formatter: (_row, _column, cellValue) => {
           //   console.log(_row);
@@ -203,7 +203,7 @@ export default {
         //   prop: 'SPH_ERP_VARIETIE_CODE',
         //   label: '上药HERP编码',
         //   align: 'center',
-        //   sortable: 'custom',
+        //   
         //   width: 120,
         //   showOverflowTooltip: true
         //   // formatter: (_row, _column, cellValue) => {
@@ -218,7 +218,7 @@ export default {
         {
           prop: 'Consume_Time',
           label: '消耗时间',
-          width: 220,
+          width: 120,
           align: 'center',
           showOverflowTooltip: true,
           formatter: (_row, _column, cellValue) => {
@@ -228,7 +228,7 @@ export default {
         {
           prop: 'Varietie_Code_New',
           label: '品种编码',
-          width: 220,
+          width: 150,
           align: 'center',
           showOverflowTooltip: true
         },
@@ -270,14 +270,14 @@ export default {
         {
           prop: 'Batch',
           label: '批号',
-          width: 220,
+          width: 100,
           align: 'center',
           showOverflowTooltip: true
         },
         {
           prop: 'Batch_Production_Date',
           label: '生产日期',
-          width: 220,
+          width: 120,
           align: 'center',
           showOverflowTooltip: true,
           formatter: (_row, _column, cellValue) => {
@@ -287,7 +287,7 @@ export default {
         {
           prop: 'Batch_Validity_Period',
           label: '有效期日期',
-          width: 220,
+          width: 120,
           align: 'center',
           showOverflowTooltip: true,
           formatter: (_row, _column, cellValue) => {
@@ -308,21 +308,21 @@ export default {
         {
           prop: 'Goods_Qty',
           label: '消耗数量',
-          width: 220,
+          width: 80,
           align: 'center',
           showOverflowTooltip: true
         },
         {
           prop: 'Supply_Price',
           label: '单价',
-          width: 120,
+          width: 80,
           align: 'center',
           showOverflowTooltip: true
         },
         {
           prop: 'Cost',
           label: '金额',
-          width: 120,
+          width: 80,
           align: 'center',
           showOverflowTooltip: true
         },
@@ -336,7 +336,7 @@ export default {
         {
           prop: 'Def_No_Pkg_Code',
           label: '定数码',
-          width: 220,
+          width: 150,
           align: 'center',
           showOverflowTooltip: true
         },
@@ -344,7 +344,7 @@ export default {
           // slot: 'Consumption_Type',
           prop:'Consumption_Type',
           label: '消耗方式',
-          width: 220,
+          width: 120,
           align: 'center',
           showOverflowTooltip: true,
           formatter: (row, column, cellValue) =>{

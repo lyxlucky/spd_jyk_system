@@ -101,15 +101,15 @@ export default {
           showOverflowTooltip: true,
           minWidth: 150
         },
-        {
-          prop: 'Varietie_Code',
-          label: '品种id',
-          sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 150,
-          show: false
-        },
+        // {
+        //   prop: 'Varietie_Code',
+        //   label: '品种id',
+        //   sortable: 'custom',
+        //   align: 'center',
+        //   showOverflowTooltip: true,
+        //   minWidth: 150,
+        //   show: false
+        // },
         {
           prop: 'Varietie_Name',
           label: '品种名称',
@@ -161,7 +161,7 @@ export default {
         {
           prop: 'CLASS_NUM',
           label: '品种类别',
-          width: 220,
+          width: 120,
           align: 'center',
           showOverflowTooltip: true,
           formatter: (_row, _column, cellValue) => {
@@ -184,14 +184,14 @@ export default {
         {
           prop: 'CONVERSION_RATIO',
           label: '换算比(试剂)',
-          width: 220,
+          width: 100,
           align: 'center',
           showOverflowTooltip: true
         },
         {
           prop: 'DEVICE_REMARK',
           label: '仪器备注',
-          width: 220,
+          width: 100,
           align: 'center',
           showOverflowTooltip: true
         }
