@@ -13,7 +13,7 @@
         <el-tag v-if="row.State==2" type="primary">配送中</el-tag>
         <el-tag v-if="row.State==5" type="primary" color="#2ee693">已审核</el-tag>
         <el-tag v-if="row.State==10" type="primary" color="#e60000" style="color:white">强制结束</el-tag>
-        <el-tag v-if="(row.State==6 || row.State==4) && row.SUM_Left_Apply_Qty == row.SUM_Apply_Qty" type="success">已审批</el-tag>
+        <el-tag v-if="(row.State==6 || row.State==4)" type="success">已审批</el-tag>
         <el-tag v-if="(row.SUM_Left_Apply_Qty > 0 && row.SUM_Left_Apply_Qty != row.SUM_Apply_Qty)" type="danger">未收全</el-tag>
         <el-tag v-if="row.State==0" type="primary">新增</el-tag>
         <el-tag v-if="(row.SUM_Left_Apply_Qty == 0 && row.State == 6 )" type="success">已收全</el-tag>
