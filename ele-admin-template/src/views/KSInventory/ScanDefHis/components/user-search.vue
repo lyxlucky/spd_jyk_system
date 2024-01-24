@@ -45,7 +45,7 @@
 
       </el-row>
     </el-form>
-    <h3 style="color:red">{{msgTip}}</h3>
+    <h3 style="color:blue">{{msgTip}}</h3>
   </div>
 </template>
 
