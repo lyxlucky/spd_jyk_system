@@ -7,6 +7,9 @@
       </el-col>
     </el-row> -->
     <el-row :gutter="10">
+       <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 12 }">
+        <el-input id="idDistributeNumber" clearable v-model="DistributeNumber" placeholder="收货单号" @change="onSubmit"/>
+      </el-col>
       <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 12 }">
         <el-input clearable v-model="where.Name" placeholder="品种名称" />
       </el-col>
@@ -48,11 +51,11 @@
             查询
           </el-button>
           <el-button size="small" @click="reset">重置</el-button>
-          <el-button type="success" size="medium" @click="DeptReceivingScanOrderShow">扫码入库</el-button>
+          <!-- <el-button type="success" size="medium" @click="DeptReceivingScanOrderShow">扫码入库</el-button> -->
         </div>
       </el-col>
     </el-row>
-    <el-dialog title="扫码入库" :visible.sync="showEdit" width='30%'>
+    <!-- <el-dialog title="扫码入库" :visible.sync="showEdit" width='30%'>
       <el-form label-width="80px">
         <el-form-item label="收货单号:">
           <el-input v-model="DistributeNumber"></el-input>
@@ -61,7 +64,7 @@
           <el-button type="primary" @click="onSubmit">确定</el-button>
         </div>
       </el-form>
-    </el-dialog>
+    </el-dialog> -->
   </el-form>
 </template>
 
@@ -130,12 +133,14 @@ export default {
       };
       DeptReceivingScanOrder(data)
         .then((res) => {
+          document.getElementById("idDistributeNumber").focus();
           loading.close();
           this.showEdit = false;
           this.$emit('search', this.where);
           this.$message.success(res.msg);
         })
         .catch((err) => {
+          document.getElementById("idDistributeNumber").focus();
           loading.close();
           this.$message.error(err);
         });

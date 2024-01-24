@@ -45,7 +45,7 @@
 
       </el-row>
     </el-form>
-    <h3 style="color:blue">{{msgTip}}</h3>
+    <!-- <h3 style="color:blue">{{msgTip}}</h3> -->
   </div>
 </template>
 
@@ -102,12 +102,13 @@ export default {
           document.getElementById("idDefNoPkgCode").focus();
           loading.close();
           this.msgTip = 'Tip:' + res.msgTip;
+          this.$emit("getMsgTip",this.msgTip)
           this.search();
           this.$message.success(res.msg);
         })
         .catch((err) => {
           this.where.defNoPkgCode = '';
-           document.getElementById("idDefNoPkgCode").focus();
+          document.getElementById("idDefNoPkgCode").focus();
           loading.close();
           this.$message.error(err);
         });

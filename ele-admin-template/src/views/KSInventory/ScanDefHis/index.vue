@@ -2,7 +2,7 @@
   <div class="ele-body">
     <el-card shadow="never">
       <!-- 搜索表单 -->
-      <user-search @search="reload" @exportData="exportData" :selection="selection" />
+      <user-search @search="reload" @getMsgTip="getMsgTip" @exportData="exportData" :selection="selection" />
       <!-- 数据表格 -->
       <ele-pro-table ref="table" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" @selection-change="onSelectionChange" cache-key="KSInventoryBasicDataTable">
         <!-- 表头工具栏 -->
@@ -38,6 +38,7 @@
     <user-edit :visible.sync="showEdit" :data="current" @done="reload" />
     <!-- 导入弹窗 -->
     <!-- <user-import :visible.sync="showImport" @done="reload" /> -->
+    <h3 style="color:blue">{{msgTip}}</h3>
   </div>
 </template>
 
@@ -246,7 +247,8 @@ export default {
       // 是否显示导入弹窗
       showImport: false,
       // datasource: [],
-      data: []
+      data: [],
+      msgTip:""
     };
   },
   methods: {
@@ -273,8 +275,11 @@ export default {
     openImport() {
       this.showImport = true;
     },
-    onSelectionChange(selection){
-      this.selection = selection
+    onSelectionChange(selection) {
+      this.selection = selection;
+    },
+    getMsgTip(data) {
+      this.msgTip = data;
     },
     exportData(data) {
       const loading = this.$messageLoading('正在导出数据...');
@@ -352,7 +357,7 @@ export default {
                 d.Supply_Price,
                 d.Contract_Code,
                 d.Supplier_Name,
-                d.Serial_Number,
+                d.Serial_Number
                 // this.$util.toDateString(d.createTime)
               ]);
             });
