@@ -4,7 +4,7 @@
       <!-- 搜索表单 -->
       <user-search @search="reload" @getMsgTip="getMsgTip" @exportData="exportData" :selection="selection" />
       <!-- 数据表格 -->
-      <ele-pro-table ref="table" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" @selection-change="onSelectionChange" cache-key="KSInventoryBasicDataTable">
+      <ele-pro-table ref="table" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" @selection-change="onSelectionChange" @done="done" cache-key="KSInventoryBasicDataTable">
         <!-- 表头工具栏 -->
         <!-- <template v-slot:toolbar>
           <el-button size="small" type="primary" icon="el-icon-plus" class="ele-btn-icon" @click="openEdit()">
@@ -235,7 +235,7 @@ export default {
         }
       ],
       toolbar: false,
-      pageSize: 10,
+      pageSize: 20,
       pageSizes: [10, 20, 50, 100, 9999999],
       pagerCount: 5,
       // 表格选中数据
@@ -248,7 +248,7 @@ export default {
       showImport: false,
       // datasource: [],
       data: [],
-      msgTip:""
+      msgTip: ''
     };
   },
   methods: {
@@ -261,6 +261,11 @@ export default {
         }
       );
       return data;
+    },
+    done(res, curr, count) {
+      this.$nextTick(() => {
+        this.$refs.table.toggleAllSelection();
+      });
     },
     /* 刷新表格 */
     reload(where) {
@@ -382,6 +387,9 @@ export default {
   created() {
     // this.getdatasource();
     // console.log(this.$store.state.user.info)
+    this.$nextTick(() => {
+      this.$refs.table.toggleAllSelection();
+    });
   }
 };
 </script>

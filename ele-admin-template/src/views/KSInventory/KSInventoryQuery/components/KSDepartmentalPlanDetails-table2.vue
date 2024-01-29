@@ -38,10 +38,10 @@
         </el-tag> -->
       </template>
 
-        <template v-slot:RECORD_TYPE="{ row }">
+      <template v-slot:RECORD_TYPE="{ row }">
         <el-tag v-if="row.RECORD_TYPE==1" type="info">申领入库</el-tag>
         <el-tag v-if="row.RECORD_TYPE==2" type="success">已入库</el-tag>
-        <el-tag v-if="row.RECORD_TYPE==3" >已出库</el-tag>
+        <el-tag v-if="row.RECORD_TYPE==3">已出库</el-tag>
         <el-tag v-if="row.RECORD_TYPE==4" type="info">定数包退货</el-tag>
         <el-tag v-if="row.RECORD_TYPE==5" type="info">散货出库</el-tag>
       </template>
@@ -78,7 +78,7 @@ export default {
         {
           columnKey: 'selection',
           type: 'selection',
-          width: 45,
+          width: 60,
           align: 'center',
           fixed: 'left'
         },
@@ -100,7 +100,7 @@ export default {
         //   showOverflowTooltip: true,
         //   fixed: 'right'
         // },
-        
+
         // {
         //   prop: 'ID',
         //   label: 'ID',
@@ -118,12 +118,12 @@ export default {
           show: false
         },
         {
-          slot:'RECORD_TYPE',
+          slot: 'RECORD_TYPE',
           // prop: 'RECORD_TYPE',
           label: '类型',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 110,
+          minWidth: 110
           // formatter: (_row, _column, cellValue) => {
           //   var type = '';
           //   if (cellValue == 1) {
@@ -140,7 +140,7 @@ export default {
           //   return type;
           // }
         },
-          {
+        {
           prop: 'DEPT_TWO_NAME',
           label: '科室名称',
           align: 'center',
@@ -298,7 +298,7 @@ export default {
         //   showOverflowTooltip: true,
         //   minWidth: 110
         // },
-      
+
         {
           prop: 'CHARGING_CODE',
           label: '计费编码',
@@ -310,7 +310,7 @@ export default {
       toolbar: false,
       pageSize: 20,
       pagerCount: 2,
-      pageSizes: [10, 20, 50, 100, 9999999],
+      pageSizes: [10, 20, 30, 50, 100, 9999999],
       // 表格选中数据
       selection: [],
       // 当前编辑数据
@@ -388,3 +388,11 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+/* 多选框 */
+::v-deep span.el-checkbox__inner {
+  height: 20px;
+  width: 20px;
+}
+</style>

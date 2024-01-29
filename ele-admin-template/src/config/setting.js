@@ -61,18 +61,18 @@ export const USER_MENUS = [
         },
       },
       {
-        path: '/KSInventory/KSInventoryBasicData',
-        component: '/KSInventory/KSInventoryBasicData',
-        meta: {
-          title: '科室品种目录维护',
-          icon: 'el-icon-_user-group',
-        },
-      },
-      {
         path: '/KSInventory/ApplyTemp',
         component: '/KSInventory/ApplyTemp',
         meta: {
           title: '申领模板管理',
+          icon: 'el-icon-_user-group',
+        },
+      },
+      {
+        path: '/KSInventory/KSInventoryBasicData',
+        component: '/KSInventory/KSInventoryBasicData',
+        meta: {
+          title: '科室品种目录维护',
           icon: 'el-icon-_user-group',
         },
       },

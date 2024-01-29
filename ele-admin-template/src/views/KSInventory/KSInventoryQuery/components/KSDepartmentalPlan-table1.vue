@@ -307,7 +307,7 @@ export default {
       toolbar: false,
       pageSize: 20,
       pagerCount: 2,
-      pageSizes: [10, 20, 50, 100, 9999999],
+      pageSizes: [10, 20, 30, 50, 100, 9999999],
       // 表格选中数据
       selection: [],
       // 当前编辑数据
@@ -336,7 +336,7 @@ export default {
           Dept_Two_CodeStr + userDeptList[i].Dept_Two_Code + ',';
       }
       where.DeptCode = Dept_Two_CodeStr;
-      where.TYPE = where.TYPE == undefined ? '0' : where.TYPE;
+      where.TYPE = where.TYPE == undefined ? '1' : where.TYPE;
       where.COUNT = where.COUNT == undefined ? '1' : where.COUNT;
 
       this.TYPE = where.TYPE;
