@@ -2,12 +2,13 @@
   <div class="ele-body">
     <el-card shadow="never">
       <!-- 搜索表单 -->
-      <user-search @search="reload" @getMsgTip="getMsgTip" @exportData="exportData" :selection="selection" />
+      <!-- <user-search @search="reload" @getMsgTip="getMsgTip" @exportData="exportData" :selection="selection" /> -->
       <!-- 数据表格 -->
       <ele-pro-table ref="table" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" @selection-change="onSelectionChange" @done="done" cache-key="KSInventoryBasicDataTable">
         <!-- 表头工具栏 -->
-        <!-- <template v-slot:toolbar>
-          <el-button size="small" type="primary" icon="el-icon-plus" class="ele-btn-icon" @click="openEdit()">
+        <template v-slot:toolbar>
+          <user-search @search="reload" @getMsgTip="getMsgTip" @exportData="exportData" :selection="selection" />
+          <!-- <el-button size="small" type="primary" icon="el-icon-plus" class="ele-btn-icon" @click="openEdit()">
             新建
           </el-button>
           <el-button size="small" type="danger" icon="el-icon-delete" class="ele-btn-icon" @click="removeBatch">
@@ -15,8 +16,8 @@
           </el-button>
           <el-button size="small" icon="el-icon-upload2" class="ele-btn-icon" @click="openImport">
             导入
-          </el-button>
-        </template> -->
+          </el-button> -->
+        </template>
 
         <!-- 操作列 -->
         <template v-slot:action="{ row }">
