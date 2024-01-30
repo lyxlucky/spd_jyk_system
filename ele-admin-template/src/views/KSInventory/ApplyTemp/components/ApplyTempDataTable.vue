@@ -71,11 +71,10 @@ export default {
           // prop: 'TempletQty',
           slot: 'TempletQty',
           label: '模板申领数量',
-          
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 150,
-          fixed: 'right'
+          minWidth: 160,
+          fixed: 'left'
         },
         {
           columnKey: 'action',
@@ -85,7 +84,7 @@ export default {
           resizable: false,
           slot: 'action',
           showOverflowTooltip: true,
-          fixed: 'right'
+          fixed: 'left'
         },
         {
           prop: 'VARIETIE_CODE_NEW',

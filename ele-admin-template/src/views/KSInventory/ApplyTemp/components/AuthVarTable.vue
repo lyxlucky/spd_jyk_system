@@ -98,7 +98,7 @@ export default {
         {
           prop: 'VARIETIE_CODE_NEW',
           label: '品种编码',
-          sortable: 'custom',
+          // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 130
@@ -106,7 +106,7 @@ export default {
         {
           prop: 'DEPT_ZDY_VARIETIE_CODE',
           label: '自定义编码',
-          sortable: 'custom',
+          // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110,
@@ -118,25 +118,25 @@ export default {
           }
         },
         {
-          prop: 'VarName',
+          prop: 'VARIETIE_NAME',
           label: '品种全称',
-          sortable: 'custom',
+          // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110
         },
         {
-          prop: 'GG',
+          prop: 'SPECIFICATION_OR_TYPE',
           label: '型号/规格',
-          sortable: 'custom',
+          // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 150
         },
         {
-          prop: 'Unit',
+          prop: 'UNIT',
           label: '单位',
-          sortable: 'custom',
+          // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110
@@ -144,15 +144,15 @@ export default {
         {
           prop: 'Price',
           label: '结算价',
-          sortable: 'custom',
+          // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110
         },
         {
-          prop: 'Manufacturing',
+          prop: 'MANUFACTURING_ENT_NAME',
           label: '生产企业名称',
-          sortable: 'custom',
+          // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 150
@@ -160,7 +160,7 @@ export default {
         {
           prop: 'SUPPLIER_NAME',
           label: '供应商',
-          sortable: 'custom',
+          // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 150
@@ -168,55 +168,39 @@ export default {
         {
           prop: 'StockQty',
           label: '散货库存',
-          sortable: 'custom',
+          // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110
         },
-        {
-          prop: 'TempletQty',
-          label: '模板申领数量',
-          sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 110
-        },
-        {
-          prop: 'Day_Consume_Qty',
-          label: '平均使用数量',
-          sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 110
-        },
-        {
-          prop: 'BigBoxCount',
-          label: '大包装数量',
-          sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 110
-        },
-        {
-          prop: 'MinBoxCount',
-          label: '中包装数量',
-          sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 110
-        },
-        {
-          prop: 'PAG_TYPE',
-          label: '包装规格',
-          sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 110
-        },
+        // {
+        //   prop: 'TempletQty',
+        //   label: '模板申领数量',
+        //   // sortable: 'custom',
+        //   align: 'center',
+        //   showOverflowTooltip: true,
+        //   minWidth: 110
+        // },
+        // {
+        //   prop: 'Day_Consume_Qty',
+        //   label: '平均使用数量',
+        //   // sortable: 'custom',
+        //   align: 'center',
+        //   showOverflowTooltip: true,
+        //   minWidth: 110
+        // },
+        // {
+        //   prop: 'PAG_TYPE',
+        //   label: '包装规格',
+        //   // sortable: 'custom',
+        //   align: 'center',
+        //   showOverflowTooltip: true,
+        //   minWidth: 110
+        // },
         {
           prop: 'ZB',
           label: '是否中标',
-          sortable: 'custom',
+          // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110,
