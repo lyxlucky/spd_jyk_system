@@ -206,3 +206,21 @@ export async function KeeptListDeta(data) {
         return Promise.reject(new Error(res.data.msg));
     }
 }  
+
+
+/* 更新备注 */
+export async function UpdateApplyPlanBZ(data) {
+    var data2 = {};
+    data2.ID = data.ID;
+    data2.REMARK = data.REMARK ? data.REMARK : ''
+    data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+
+    var rep = formdataify(data2);
+
+    const res = await request.post('/DeptApplyPlan/UpdateApplyPlanBZ', rep);
+    if (res.data.code == 200) {
+        return res.data;
+    } else {
+        return Promise.reject(new Error(res.data.msg));
+    }
+}  

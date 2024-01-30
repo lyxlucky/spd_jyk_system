@@ -34,6 +34,9 @@ export const DataToObject = (data, params) => {
     return data;
 };
 
+/**
+ * 生成GUID
+ */
 export const GetGuid = (len = 32, radix = 16) => {
     var chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('');
     var uuid = [], i;
@@ -63,6 +66,8 @@ export const GetGuid = (len = 32, radix = 16) => {
     return uuid.join('');
 };
 
+
+/** 格式化日期 */
 export const formatDate = (date) => {
     const year = date.getFullYear();
     const month = ('0' + (date.getMonth() + 1)).slice(-2);

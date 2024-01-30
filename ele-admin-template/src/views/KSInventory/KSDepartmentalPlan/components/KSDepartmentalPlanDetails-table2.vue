@@ -24,6 +24,10 @@
         <el-tag v-if="row.LEFT_APPLY_QTY==0" type="success">{{row.VarCode}}</el-tag>
         <el-tag v-else type="danger">{{row.VarCode}}</el-tag>
       </template>
+      <template v-slot:REMARK="{ row }">
+        <el-link v-if="row.REMARK==null" type="info" @click="OpenUpApplyPlanBZBox(row.ID)">无</el-link>
+        <el-tag v-else type="primary" @click="OpenUpApplyPlanBZBox(row.ID)">{{row.REMARK}}</el-tag>
+      </template>
       <template v-slot:State="{ row }">
         <el-tag v-if="row.State==0" type="success">新增</el-tag>
         <el-tag v-if="row.State==1" type="success">已提交</el-tag>
@@ -54,8 +58,10 @@
 
 <script>
 import KSDepartmentalPlanDetailsSearch from './KSDepartmentalPlanDetails-search.vue';
-import { SerachPlanList } from '@/api/KSInventory/KSDepartmentalPlan';
-import { SerachPlanListDeta } from '@/api/KSInventory/KSDepartmentalPlan';
+import {
+  SerachPlanListDeta,
+  UpdateApplyPlanBZ
+} from '@/api/KSInventory/KSDepartmentalPlan';
 export default {
   name: 'KSDepartmentalPlanTable',
   props: ['KSDepartmentalPlanData'],
@@ -272,9 +278,9 @@ export default {
           }
         },
         {
-          prop: 'REMARK',
+          // prop: 'REMARK',
+          slot: 'REMARK',
           label: '备注',
-
           align: 'center',
           showOverflowTooltip: true,
           width: 110
@@ -334,8 +340,8 @@ export default {
     reload(where) {
       this.$refs.table.reload({ page: 1, where: where });
     },
-    ClickReload(IsReload){
-      this.$emit('IsReload',IsReload)
+    ClickReload(IsReload) {
+      this.$emit('IsReload', IsReload);
     },
     remove(row) {
       console.log(row);
@@ -350,10 +356,44 @@ export default {
         };
         this.$refs.table.reload({ page: 1, where: where });
       }
+    },
+    OpenUpApplyPlanBZBox(ID) {
+      this.$prompt('请输入备注信息', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消'
+        // inputPattern:
+        //   /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
+        // inputErrorMessage: '邮箱格式不正确'
+      })
+        .then(({ value }) => {
+          const loading = this.$messageLoading('备注提交中..');
+          var data = {
+            ID,
+            REMARK: value
+          };
+          UpdateApplyPlanBZ(data).then((res) => {
+            if (res.code == 200) {
+              this.$message({
+                type: 'success',
+                message: '备注成功'
+              });
+            } else {
+              this.$message({
+                type: 'error',
+                message: res.message
+              });
+            }
+            loading.close();
+            this.reload();
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '取消备注'
+          });
+        });
     }
-    // aaa() {
-    //   this.reload();
-    // }
   },
   computed: {
     KSDepartmentalPlanDataSearch() {
