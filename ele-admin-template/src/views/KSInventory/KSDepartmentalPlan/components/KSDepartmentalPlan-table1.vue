@@ -44,6 +44,7 @@ import {
 import { getDeptAuthVarNew } from '@/api/KSInventory/KSInventoryBasicData';
 export default {
   name: 'KSDepartmentalPlanTable',
+  props: ['IsReload'],
   components: {
     KSDepartmentalPlanSearch
   },
@@ -79,7 +80,7 @@ export default {
         {
           prop: 'PlanNum',
           label: '申领单号',
-          
+
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110
@@ -87,7 +88,7 @@ export default {
         {
           prop: 'Operater',
           label: '申领人',
-          
+
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 80
@@ -95,7 +96,7 @@ export default {
         {
           // prop: 'State',
           label: '状态',
-          
+
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110,
@@ -121,7 +122,7 @@ export default {
         {
           prop: 'DEPT_TWO_NAME',
           label: '科室名称',
-          
+
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110
@@ -129,7 +130,7 @@ export default {
         {
           prop: 'PlanTime',
           label: '申领时间',
-          
+
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110
@@ -137,7 +138,7 @@ export default {
         {
           prop: 'Approval_Time',
           label: '审批时间',
-          
+
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 180,
@@ -148,7 +149,7 @@ export default {
         {
           prop: 'BZ',
           label: '备注',
-          
+
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110
@@ -222,6 +223,13 @@ export default {
           loading.close();
           this.$message.error(err);
         });
+    }
+  },
+  watch: {
+    IsReload() {
+      if (this.IsReload == true) {
+        this.reload(); // 调用刷新表格的方法
+      }
     }
   },
   created() {

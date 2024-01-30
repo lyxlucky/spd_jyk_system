@@ -21,12 +21,12 @@
     </el-container> -->
 
     <el-container>
-      <el-header height="300" >
-         <el-card shadow="always" >
+      <el-header height="300">
+        <el-card shadow="always">
           <div slot="header" class="clearfix">
             <span>申领计划单列表</span>
           </div>
-          <KSDepartmentalPlantable @getCurrent="getCurrent"></KSDepartmentalPlantable>
+          <KSDepartmentalPlantable @getCurrent="getCurrent" :IsReload="IsReloadTag"></KSDepartmentalPlantable>
         </el-card>
       </el-header>
       <el-main>
@@ -34,7 +34,7 @@
           <div slot="header" class="clearfix">
             <span>申领单详情</span>
           </div>
-          <KSDepartmentalPlanDetailstable2 :KSDepartmentalPlanData="KSDepartmentalPlanData" v-if="isActive"></KSDepartmentalPlanDetailstable2>
+          <KSDepartmentalPlanDetailstable2 :KSDepartmentalPlanData="KSDepartmentalPlanData" @clickReload="clickReload" v-if="isActive"></KSDepartmentalPlanDetailstable2>
         </el-card>
       </el-main>
     </el-container>
@@ -61,7 +61,8 @@ export default {
   data() {
     return {
       KSDepartmentalPlanData: {},
-      isActive: true
+      isActive: true,
+      IsReloadTag: false
     };
   },
   methods: {
@@ -73,7 +74,13 @@ export default {
       this.$nextTick(() => {
         this.isActive = true;
       });
+    },
+    clickReload(data){
+      this.IsReloadTag = data
     }
+  },
+  watch: {
+    IsReload() {}
   }
 };
 </script>

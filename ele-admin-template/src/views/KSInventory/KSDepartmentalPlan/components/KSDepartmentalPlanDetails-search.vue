@@ -283,7 +283,6 @@ export default {
               PlanNum: this.KSDepartmentalPlanDataSearch.PlanNum
             };
             isHaveZeroDel(data).then((res) => {
-              console.log(res);
               if (res.code == '200') {
                 this.centerDialogVisible = true;
               } else {
@@ -291,11 +290,10 @@ export default {
               }
             });
 
-            // this.$message.success(res.msg);
-            // var where = {
-            //   PlanNum: this.KSDepartmentalPlanDataSearch.PlanNum
-            // };
-            // this.$emit('search', where);
+            var where = {
+              PlanNum: this.KSDepartmentalPlanDataSearch.PlanNum
+            };
+            this.$emit('search', where);
           }
         })
         .catch((err) => {
@@ -332,6 +330,7 @@ export default {
       PutInListDeta(data)
         .then((res) => {
           this.$message.success(res.msg);
+          this.$emit('ClickReload', true);
           reloadPageTab();
         })
         .catch((err) => {

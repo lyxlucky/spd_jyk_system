@@ -13,7 +13,7 @@
       <!-- 左表头 -->
       <template v-slot:toolbar>
         <!-- 搜索表单 -->
-        <KSDepartmentalPlanDetails-search @search="reload" :KSDepartmentalPlanDataSearch='KSDepartmentalPlanDataSearch' :selection="selection" @showEditReoad="showEditReoad" :datasourceList="datasourceList" />
+        <KSDepartmentalPlanDetails-search @search="reload" @ClickReload="ClickReload" :KSDepartmentalPlanDataSearch='KSDepartmentalPlanDataSearch' :selection="selection" @showEditReoad="showEditReoad" :datasourceList="datasourceList" />
       </template>
 
       <template v-slot:PlanQty="{ row }">
@@ -333,6 +333,9 @@ export default {
     /* 刷新表格 */
     reload(where) {
       this.$refs.table.reload({ page: 1, where: where });
+    },
+    ClickReload(IsReload){
+      this.$emit('IsReload',IsReload)
     },
     remove(row) {
       console.log(row);
