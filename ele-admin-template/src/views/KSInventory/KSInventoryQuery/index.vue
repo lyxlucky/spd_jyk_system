@@ -20,20 +20,25 @@
       </el-main>
     </el-container> -->
     <!-- </el-card> -->
-    <el-tabs v-model="activeName" @tab-click="handleClick" type="border-card">
+
+    
+    <!-- <el-tabs v-model="activeName" @tab-click="handleClick" type="border-card">
       <el-tab-pane label="库存详情" name="first">
-        <!-- <div slot="header" class="clearfix">
+        <div slot="header" class="clearfix">
           <span>库存详情</span>
-        </div> -->
+        </div>
         <KSDepartmentalPlantable @getCurrent="getCurrent"></KSDepartmentalPlantable>
       </el-tab-pane>
       <el-tab-pane label="出入库记录" name="second">
-        <!-- <div slot="header" class="clearfix">
+        <div slot="header" class="clearfix">
           <span>消耗详情</span>
-        </div> -->
+        </div>
         <KSDepartmentalPlanDetailstable2 :KSDepartmentalPlanData="KSDepartmentalPlanData" v-if="isActive"></KSDepartmentalPlanDetailstable2>
       </el-tab-pane>
-    </el-tabs>
+    </el-tabs> -->
+
+
+     <KSDepartmentalPlantable @getCurrent="getCurrent"></KSDepartmentalPlantable>
   </div>
 </template>
 

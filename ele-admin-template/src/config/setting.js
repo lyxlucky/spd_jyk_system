@@ -40,7 +40,23 @@ export const USER_MENUS = [
         path: '/KSInventory/KSInventoryQuery',
         component: '/KSInventory/KSInventoryQuery',
         meta: {
-          title: '入出库及库存流向',
+          title: '库存详情',
+          icon: 'el-icon-_user-group',
+        },
+      },
+      {
+        path: '/KSInventory/KSInventoryRecord',
+        component: '/KSInventory/KSInventoryRecord',
+        meta: {
+          title: '出入库记录',
+          icon: 'el-icon-_user-group',
+        },
+      },
+      {
+        path: '/KSInventory/KSScanCodeRecGood',
+        component: '/KSInventory/KSScanCodeRecGood',
+        meta: {
+          title: '扫码收货',
           icon: 'el-icon-_user-group',
         },
       },

@@ -1,0 +1,179 @@
+<template>
+  <div class="ele-body">
+    <!-- 数据表格 -->
+    <ele-pro-table ref="table" height="67vh" highlight-current-row :stripe="true" :rowClickChecked="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" cache-key="DefNoPkgDataTable">
+      <!-- 表头工具栏 -->
+      <!-- 右表头 -->
+      <!-- <template v-slot:toolkit>
+        <el-button size="small" type="danger" icon="el-icon-delete" class="ele-btn-icon" @click="removebatch">
+          删除
+        </el-button>
+      </template> -->
+      <!-- 左表头 -->
+      <!-- <template v-slot:toolbar>
+        <ApplyTempDataSearch @search="reload" :ApplyTempTableDataSearch='ApplyTempTableDataSearch' :selection="selection" @showEditReoad="showEditReoad" />
+      </template> -->
+
+      <!-- 操作列 -->
+      <!-- <template v-slot:TempletQty="{ row }">
+        <el-input-number v-model="row.TempletQty" :min="0" :max="9999" :step="1" size="mini" />
+      </template> -->
+
+    </ele-pro-table>
+  </div>
+</template>
+
+<script>
+import DefNoPkgDataSearch from './DefNoPkgDataSearch.vue';
+import { GetDistributeDefDetailNum } from '@/api/KSInventory/KSScanCodeRecGood';
+export default {
+  name: 'DefNoPkgDataTable',
+  props: ['ReplenishGoodData'],
+  components: {
+    DefNoPkgDataSearch
+  },
+  data() {
+    return {
+      // 表格列配置
+      columns: [
+        // {
+        //   columnKey: 'selection',
+        //   type: 'selection',
+        //   width: 45,
+        //   align: 'center',
+        //   fixed: 'left'
+        // },
+        {
+          columnKey: 'index',
+          type: 'index',
+          width: 45,
+          align: 'center',
+          showOverflowTooltip: true,
+          fixed: 'left'
+        },
+        // {
+        //   columnKey: 'action',
+        //   label: '操作',
+        //   width: 80,
+        //   align: 'center',
+        //   resizable: false,
+        //   slot: 'action',
+        //   showOverflowTooltip: true,
+        //   fixed: 'left'
+        // },
+        {
+          prop: 'batch',
+          label: '生产批号',
+
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 110
+        },
+        {
+          prop: 'Coefficient',
+          label: '系数',
+
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 70
+        },
+        {
+          prop: 'def_no_pkg_code',
+          label: '定数码',
+
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 150
+        },
+        {
+          prop: 'pack_time',
+          label: '拣配时间',
+
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 120,
+          formatter(row, column, cellValue) {
+            return cellValue ? cellValue.replace('T', ' ') : '';
+          }
+        },
+        {
+          prop: 'packer',
+          label: '拣配人',
+
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 80
+        },
+        {
+          prop: 'PositionNum',
+          label: '货位号',
+
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 120
+        },
+        {
+          prop: 'Supplier_Name',
+          label: '供应商名称',
+
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 220
+        }
+      ],
+      toolbar: false,
+      pageSize: 20,
+      pagerCount: 2,
+      pageSizes: [10, 20, 50, 100, 9999999],
+      // 表格选中数据
+      selection: [],
+      // 当前编辑数据
+      current: null,
+      // 是否显示编辑弹窗
+      showEdit: false,
+      // 是否显示导入弹窗
+      showImport: false,
+      // datasource: [],
+      data: []
+    };
+  },
+  methods: {
+    /* 表格数据源 */
+    datasource({ page, limit, where, order }) {
+      let data = GetDistributeDefDetailNum({ page, limit, where, order }).then(
+        (res) => {
+          var tData = {
+            count: res.total,
+            list: res.result
+          };
+          return tData;
+        }
+      );
+      return data;
+    },
+    /* 刷新表格 */
+    reload(where) {
+      // console.log(this.ReplenishGoodData);
+      // console.log(this.$store.state.user.info);
+      this.$refs.table.reload({ page: 1, where: where });
+    }
+  },
+  computed: {
+    ApplyTempTableDataSearch() {
+      return this.ReplenishGoodData;
+    }
+  },
+  watch: {
+    ApplyTempTableDataSearch() {
+      var where = {
+        stock_out_distribute_number:
+          this.ReplenishGoodData.stock_out_distribute_number
+      };
+      this.$refs.table.reload({ page: 1, where: where });
+    }
+  },
+  created() {
+    // this.getdatasource();
+  }
+};
+</script>
