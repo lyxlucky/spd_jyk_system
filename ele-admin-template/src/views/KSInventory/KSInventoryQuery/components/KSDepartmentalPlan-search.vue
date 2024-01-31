@@ -7,9 +7,9 @@
       </el-col>
     </el-row> -->
     <el-row :gutter="10">
-      <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 12 }">
+      <!-- <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 12 }">
         <el-input id="idDistributeNumber" clearable v-model="DistributeNumber" style=" border: solid #52c41a;" placeholder="请扫码入库" @change="onSubmit" />
-      </el-col>
+      </el-col> -->
       <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 12 }">
         <el-input clearable v-model="where.Name" placeholder="品种名称" />
       </el-col>
