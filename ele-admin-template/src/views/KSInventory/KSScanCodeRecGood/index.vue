@@ -2,7 +2,7 @@
   <div>
     <!-- <el-card shadow="always"> -->
     <el-container>
-      <el-aside width="650px" style="margin: 20px 0px 0px 20px;">
+      <el-aside width="400px" style="margin: 20px 0px 0px 20px;">
         <el-card shadow="always">
           <div slot="header" class="clearfix">
             <span>补货信息</span>
@@ -11,13 +11,25 @@
         </el-card>
       </el-aside>
       <el-container>
-        <el-main width="550px">
-          <el-card shadow="always">
-            <div slot="header" class="clearfix">
-              <span>定数包明细列表</span>
-            </div>
-            <DefNoPkgDataTable :ReplenishGoodData="ReplenishGoodData" @selectionData="selectionData"></DefNoPkgDataTable>
-          </el-card>
+        <el-main>
+          <el-row :gutter="20">
+            <el-col :span="12">
+              <el-card shadow="always">
+                <div slot="header" class="clearfix">
+                  <span>品种明细列表</span>
+                </div>
+                <DistributeDetailTable :ReplenishGoodData="ReplenishGoodData" @getVarCurrent="getVarCurrent"></DistributeDetailTable>
+              </el-card>
+            </el-col>
+            <el-col :span="12">
+              <el-card shadow="always">
+                <div slot="header" class="clearfix">
+                  <span>定数包明细列表</span>
+                </div>
+                <DefNoPkgDataTable :ReplenishGoodData="ReplenishGoodData" :DefNoPkgDataData="DefNoPkgDataData" @selectionData="selectionData"></DefNoPkgDataTable>
+              </el-card>
+            </el-col>
+          </el-row>
         </el-main>
         <el-footer>
           <el-button type="primary" @click="addTempVar" :style="{ display: IsDisabled==true?'none':'' }">确定</el-button>
@@ -25,25 +37,28 @@
       </el-container>
     </el-container>
     <!-- </el-card> -->
-    
+
   </div>
 </template>
 
 <script>
 import ReplenishGoodsTable from './components/ReplenishGoodsTable.vue';
 import DefNoPkgDataTable from './components/DefNoPkgDataTable';
+import DistributeDetailTable from './components/DistributeDetailTable';
 import { KeeptListDeta } from '@/api/KSInventory/ApplyTemp';
 export default {
   name: 'ApplyTemp',
   props: ['IntroduceUserDefinedTempSearch'],
   components: {
     ReplenishGoodsTable,
-    DefNoPkgDataTable
+    DefNoPkgDataTable,
+    DistributeDetailTable
   },
   data() {
     return {
       // 主表数据
       ReplenishGoodData: {},
+      DefNoPkgDataData: {},
       // 详情表选择数据
       ApplyTempDataSelData: []
     };
@@ -51,6 +66,9 @@ export default {
   methods: {
     getCurrent(data) {
       this.ReplenishGoodData = data;
+    },
+    getVarCurrent(data) {
+      this.DefNoPkgDataData = data;
     },
     addTempVar() {
       // console.log(this.IntroduceUserDefinedTempSearch);

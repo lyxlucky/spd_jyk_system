@@ -1,34 +1,42 @@
 <template>
   <div class="ele-body">
     <!-- 数据表格 -->
-    <ele-pro-table ref="table" height="67vh" highlight-current-row :stripe="true" :rowClickChecked="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" cache-key="DefNoPkgDataTable">
-      <!-- 表头工具栏 -->
-      <!-- 右表头 -->
-      <!-- <template v-slot:toolkit>
+
+    <ele-pro-table ref="table" v-if="IsRefDefNoPkgDataTable==false" height="67vh" highlight-current-row :stripe="true" :rowClickChecked="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" cache-key="DefNoPkgDataTable">
+    </ele-pro-table>
+
+    <ele-pro-table ref="table2" v-else height="67vh" highlight-current-row :stripe="true" :rowClickChecked="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource2" :selection.sync="selection" cache-key="DefNoPkgDataTable">
+    </ele-pro-table>
+
+    <!-- 表头工具栏 -->
+    <!-- 右表头 -->
+    <!-- <template v-slot:toolkit>
         <el-button size="small" type="danger" icon="el-icon-delete" class="ele-btn-icon" @click="removebatch">
           删除
         </el-button>
       </template> -->
-      <!-- 左表头 -->
-      <!-- <template v-slot:toolbar>
+    <!-- 左表头 -->
+    <!-- <template v-slot:toolbar>
         <ApplyTempDataSearch @search="reload" :ApplyTempTableDataSearch='ApplyTempTableDataSearch' :selection="selection" @showEditReoad="showEditReoad" />
       </template> -->
 
-      <!-- 操作列 -->
-      <!-- <template v-slot:TempletQty="{ row }">
+    <!-- 操作列 -->
+    <!-- <template v-slot:TempletQty="{ row }">
         <el-input-number v-model="row.TempletQty" :min="0" :max="9999" :step="1" size="mini" />
       </template> -->
 
-    </ele-pro-table>
   </div>
 </template>
 
 <script>
 import DefNoPkgDataSearch from './DefNoPkgDataSearch.vue';
-import { GetDistributeDefDetailNum } from '@/api/KSInventory/KSScanCodeRecGood';
+import {
+  GetDistributeDefDetailNum,
+  GetDistributeDefDetail
+} from '@/api/KSInventory/KSScanCodeRecGood';
 export default {
   name: 'DefNoPkgDataTable',
-  props: ['ReplenishGoodData'],
+  props: ['ReplenishGoodData', 'DefNoPkgDataData'],
   components: {
     DefNoPkgDataSearch
   },
@@ -134,7 +142,8 @@ export default {
       // 是否显示导入弹窗
       showImport: false,
       // datasource: [],
-      data: []
+      data: [],
+      IsRefDefNoPkgDataTable: false
     };
   },
   methods: {
@@ -151,6 +160,26 @@ export default {
       );
       return data;
     },
+    datasource2({ page, limit, where, order }) {
+      var where2 = {
+        page: 1,
+        limit: this.pageSize,
+        dept_two_var_distribute_dtl_id: this.DefNoPkgDataData.ID
+      };
+      let data = GetDistributeDefDetail({
+        page,
+        limit,
+        where: where2,
+        order
+      }).then((res) => {
+        var tData = {
+          count: res.total,
+          list: res.result
+        };
+        return tData;
+      });
+      return data;
+    },
     /* 刷新表格 */
     reload(where) {
       // console.log(this.ReplenishGoodData);
@@ -161,15 +190,60 @@ export default {
   computed: {
     ApplyTempTableDataSearch() {
       return this.ReplenishGoodData;
+    },
+    DefNoPkgDataDataSearch() {
+      return this.DefNoPkgDataData;
     }
   },
   watch: {
     ApplyTempTableDataSearch() {
+      this.IsRefDefNoPkgDataTable =
+        this.ReplenishGoodData == undefined
+          ? false
+          : this.ReplenishGoodData.IsRefDefNoPkgDataTable;
+
+      // console.log(this.ReplenishGoodData);
+      // console.log(this.IsRefDefNoPkgDataTable);
+
       var where = {
         stock_out_distribute_number:
           this.ReplenishGoodData.stock_out_distribute_number
       };
-      this.$refs.table.reload({ page: 1, where: where });
+      if (this.IsRefDefNoPkgDataTable == false) {
+        this.$refs.table.reload({ page: 1, where: where });
+      }
+    },
+    DefNoPkgDataDataSearch() {
+      this.IsRefDefNoPkgDataTable =
+        this.DefNoPkgDataData == undefined
+          ? false
+          : this.DefNoPkgDataData.IsRefDefNoPkgDataTable;
+      var where2 = {
+        page: 1,
+        limit: this.pageSize,
+        dept_two_var_distribute_dtl_id: this.DefNoPkgDataData.ID
+      };
+
+      // console.log(this.ReplenishGoodData);
+      // console.log(this.IsRefDefNoPkgDataTable);
+      if (this.IsRefDefNoPkgDataTable == true) {
+        this.$refs.table2.reload({ page: 1, where: where2 });
+      }
+      // var tData = [];
+      // var where = {
+      //   page: 1,
+      //   limit: this.pageSize,
+      //   dept_two_var_distribute_dtl_id: this.DefNoPkgDataData.ID
+      // };
+      // let data = GetDistributeDefDetail({ where: where }).then((res) => {
+      //   tData = {
+      //     count: res.total,
+      //     list: res.result
+      //   };
+      //   console.log(tData.list);
+      //   this.$refs.table.setData(tData.list);
+      //   return tData;
+      // });
     }
   },
   created() {

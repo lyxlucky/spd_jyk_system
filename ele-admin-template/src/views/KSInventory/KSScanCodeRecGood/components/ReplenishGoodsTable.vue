@@ -1,7 +1,7 @@
 <template>
   <div class="ele-body">
     <!-- 数据表格 -->
-    <ele-pro-table highlight-current-row @current-change="onCurrentChange" ref="table" height="62vh" :rowClickChecked="true" :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" cache-key="ReplenishGoodsTable">
+    <ele-pro-table highlight-current-row @current-change="onCurrentChange" ref="table" height="55vh" :rowClickChecked="true" :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" cache-key="ReplenishGoodsTable">
       <!-- 表头工具栏 -->
       <template v-slot:toolbar>
         <!-- 搜索表单 -->
@@ -75,43 +75,24 @@ export default {
         // },
         {
           prop: 'stock_out_distribute_number',
-          label: '补货单号',
+          label: '收货单号',
           // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110
         },
         {
-          prop: 'pack_directive_number',
-          label: '拣配单号',
-          // sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 150
-        },
-        {
-          prop: 'replenish_time',
-          label: '补货时间',
-          // sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 170,
-          formatter(row, column, cellValue) {
-            return cellValue.replace('T', ' ');
-          }
-        },
-        {
           prop: 'replenish_state',
-          label: '补货状态',
+          label: '状态',
           // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 110,
+          minWidth: 80,
           formatter(row, column, cellValue) {
             if (cellValue == 0) {
-              return '未补货';
+              return '未收货';
             } else if (cellValue == 1) {
-              return '补货中';
+              return '送货中';
             } else if (cellValue == 2) {
               return '已收货';
             } else {
@@ -119,14 +100,37 @@ export default {
             }
           }
         },
+        // {
+        //   prop: 'pack_directive_number',
+        //   label: '拣配单号',
+        //   // sortable: 'custom',
+        //   align: 'center',
+        //   showOverflowTooltip: true,
+        //   minWidth: 150
+        // },
         {
-          prop: 'Print_Count',
-          label: '打印次数',
+          prop: 'replenish_time',
+          label: '收货时间',
           // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 80,
+          minWidth: 170,
+          formatter(row, column, cellValue) {
+            if (row.replenish_state == 2) {
+              return cellValue.replace('T', ' ');
+            } else {
+              return '';
+            }
+          }
         },
+        // {
+        //   prop: 'Print_Count',
+        //   label: '打印次数',
+        //   // sortable: 'custom',
+        //   align: 'center',
+        //   showOverflowTooltip: true,
+        //   minWidth: 80,
+        // },
         {
           prop: 'ID',
           label: 'ID',
@@ -184,10 +188,10 @@ export default {
     },
     onCurrentChange(current) {
       this.current = current;
+      current.IsRefDefNoPkgDataTable = false;
       // console.log(current);
       this.$emit('getCurrent', current);
-    },
-
+    }
   },
   created() {
     // this.getdatasource();
