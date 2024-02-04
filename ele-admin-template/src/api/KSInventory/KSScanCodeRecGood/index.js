@@ -32,7 +32,7 @@ export async function GetDistributeDefDetailNum(data) {
     data2.stock_out_distribute_number = data.where.stock_out_distribute_number ? data.where.stock_out_distribute_number : '';
     data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
 
-    const res = await request.get('/PickDistributionmgmt/GetDistributeDefDetailNum', {
+    const res = await request.get('/PickDistributionmgmt/GetDistributeDefDetailNumJYK', {
         params: data2
     });
     if (res.data.code == 200) {
@@ -67,7 +67,7 @@ export async function GetDistributeDetail(data) {
     data2.stock_out_distribute_number = data.where.stock_out_distribute_number ? data.where.stock_out_distribute_number : ''
     data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
 
-    const res = await request.get('/PickDistributionmgmt/GetDistributeDetail', {
+    const res = await request.get('/PickDistributionmgmt/GetDistributeDetailJYK', {
         params: data2
     });
     if (res.data.code == 200) {
