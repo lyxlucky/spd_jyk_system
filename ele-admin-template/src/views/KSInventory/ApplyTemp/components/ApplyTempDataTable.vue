@@ -114,7 +114,7 @@ export default {
           
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 110
+          minWidth: 180
         },
         {
           prop: 'GG',

@@ -55,6 +55,7 @@ export async function saveJykOutInfo(data) {
     data2.BATCH = data.BATCH ? data.BATCH : '';
     data2.DEPT_TWO_CODE = data.DEPT_TWO_CODE ? data.DEPT_TWO_CODE : '';
     data2.BATCH_VALIDITY_PERIOD = data.BATCH_VALIDITY_PERIOD ? data.BATCH_VALIDITY_PERIOD : '2099-01-01';
+    data2.COUNT = data.COUNT ? data.COUNT : 0;
     data2.qty = data.qty ? data.qty : 0;
     data2.mark = data.mark ? data.mark : '';
 

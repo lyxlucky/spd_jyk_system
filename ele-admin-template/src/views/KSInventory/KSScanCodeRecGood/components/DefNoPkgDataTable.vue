@@ -198,9 +198,7 @@ export default {
   watch: {
     ApplyTempTableDataSearch() {
       this.IsRefDefNoPkgDataTable =
-        this.ReplenishGoodData == undefined
-          ? false
-          : this.ReplenishGoodData.IsRefDefNoPkgDataTable;
+        this.ReplenishGoodData.IsRefDefNoPkgDataTable;
 
       // console.log(this.ReplenishGoodData);
       // console.log(this.IsRefDefNoPkgDataTable);
@@ -215,9 +213,7 @@ export default {
     },
     DefNoPkgDataDataSearch() {
       this.IsRefDefNoPkgDataTable =
-        this.DefNoPkgDataData == undefined
-          ? false
-          : this.DefNoPkgDataData.IsRefDefNoPkgDataTable;
+        this.DefNoPkgDataData.IsRefDefNoPkgDataTable;
       var where2 = {
         page: 1,
         limit: this.pageSize,

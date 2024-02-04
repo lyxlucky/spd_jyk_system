@@ -19,6 +19,9 @@
           <el-form-item label="有效期:" prop="">
             <el-input clearable :maxlength="20" :disabled="true" v-model="form.BATCH_VALIDITY_PERIOD" placeholder="" />
           </el-form-item>
+          <el-form-item label="库存数量:" prop="">
+            <el-input clearable :maxlength="20" :disabled="true" v-model="form.COUNT" placeholder="库存数量" />
+          </el-form-item>
           <el-form-item label="出库数量:" prop="qty">
             <el-input clearable :maxlength="20" v-model="form.qty" placeholder="出库数量" />
           </el-form-item>
@@ -56,6 +59,7 @@ export default {
       BATCH: '',
       DEPT_TWO_CODE: '',
       BATCH_VALIDITY_PERIOD: null,
+      COUNT: '',
       qty: '',
       mark: ''
     };
@@ -69,9 +73,9 @@ export default {
           {
             required: true,
             message: '请输入出库数量',
-            trigger: 'blur',
+            trigger: 'blur'
           },
-          { pattern:/^[0-9]*$/ , message:'请输入数字' ,trigger:'blur' },
+          { pattern: /^[0-9]*$/, message: '请输入数字', trigger: 'blur' }
         ]
       },
       // 提交状态
@@ -95,7 +99,7 @@ export default {
         }
         this.loading = true;
         const data = {
-          ...this.form,
+          ...this.form
         };
         saveJykOutInfo(data)
           .then((msg) => {
