@@ -123,14 +123,22 @@ export default {
             }
           }
         },
-        // {
-        //   prop: 'Print_Count',
-        //   label: '打印次数',
-        //   // sortable: 'custom',
-        //   align: 'center',
-        //   showOverflowTooltip: true,
-        //   minWidth: 80,
-        // },
+        {
+          prop: 'RK_COUNT',
+          label: '入库数量',
+          // sortable: 'custom',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 80,
+        },
+         {
+          prop: 'KC_COUNT',
+          label: '库存数量',
+          // sortable: 'custom',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 80,
+        },
         {
           prop: 'ID',
           label: 'ID',

@@ -109,7 +109,21 @@ export default {
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 80
-        }
+        },
+         {
+          prop: 'KC_COUNT',
+          label: '库存数量',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 80
+        },
+         {
+          prop: 'replenish_quantity',
+          label: '收货数量',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 80
+        },
       ],
       toolbar: false,
       pageSize: 20,

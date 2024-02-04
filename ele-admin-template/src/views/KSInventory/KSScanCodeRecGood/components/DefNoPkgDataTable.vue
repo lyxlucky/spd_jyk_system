@@ -3,9 +3,17 @@
     <!-- 数据表格 -->
 
     <ele-pro-table ref="table" v-if="IsRefDefNoPkgDataTable==false" height="67vh" highlight-current-row :stripe="true" :rowClickChecked="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" cache-key="DefNoPkgDataTable">
+      <template v-slot:KC_COUNT="{ row }">
+        <el-tag v-if="row.KC_COUNT>0" type="success">在库</el-tag>
+        <el-tag v-else type="info">已消耗</el-tag>
+      </template>
     </ele-pro-table>
 
     <ele-pro-table ref="table2" v-else height="67vh" highlight-current-row :stripe="true" :rowClickChecked="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource2" :selection.sync="selection" cache-key="DefNoPkgDataTable">
+      <template v-slot:KC_COUNT="{ row }">
+        <el-tag v-if="row.KC_COUNT>0" type="success">在库</el-tag>
+        <el-tag v-else type="info">已消耗</el-tag>
+      </template>
     </ele-pro-table>
 
     <!-- 表头工具栏 -->
@@ -21,9 +29,6 @@
       </template> -->
 
     <!-- 操作列 -->
-    <!-- <template v-slot:TempletQty="{ row }">
-        <el-input-number v-model="row.TempletQty" :min="0" :max="9999" :step="1" size="mini" />
-      </template> -->
 
   </div>
 </template>
@@ -93,28 +98,37 @@ export default {
           showOverflowTooltip: true,
           minWidth: 150
         },
-        {
-          prop: 'pack_time',
-          label: '拣配时间',
+        // {
+        //   prop: 'pack_time',
+        //   label: '拣配时间',
 
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 120,
-          formatter(row, column, cellValue) {
-            return cellValue ? cellValue.replace('T', ' ') : '';
-          }
-        },
-        {
-          prop: 'packer',
-          label: '拣配人',
+        //   align: 'center',
+        //   showOverflowTooltip: true,
+        //   minWidth: 120,
+        //   formatter(row, column, cellValue) {
+        //     return cellValue ? cellValue.replace('T', ' ') : '';
+        //   }
+        // },
+        // {
+        //   prop: 'packer',
+        //   label: '拣配人',
 
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 80
-        },
+        //   align: 'center',
+        //   showOverflowTooltip: true,
+        //   minWidth: 80
+        // },
+        // {
+        //   prop: 'PositionNum',
+        //   label: '货位号',
+
+        //   align: 'center',
+        //   showOverflowTooltip: true,
+        //   minWidth: 120
+        // },
         {
-          prop: 'PositionNum',
-          label: '货位号',
+          // prop: 'KC_COUNT',
+          slot: 'KC_COUNT',
+          label: '库存状态',
 
           align: 'center',
           showOverflowTooltip: true,
