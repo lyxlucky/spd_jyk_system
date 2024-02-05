@@ -21,11 +21,11 @@
     </el-container> -->
 
     <el-container>
-      <el-header height="300">
+      <el-header height="350">
         <el-card shadow="always">
-          <div slot="header" class="clearfix">
+          <!-- <div slot="header" class="clearfix">
             <span>申领计划单列表</span>
-          </div>
+          </div> -->
           <KSDepartmentalPlantable @getCurrent="getCurrent" :IsReload="IsReloadTag"></KSDepartmentalPlantable>
         </el-card>
       </el-header>

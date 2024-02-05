@@ -23,41 +23,52 @@
       </el-col>
     </el-row>
     <el-row :gutter="10">
-      <el-col :lg="12" :md="12">
+      <el-col :lg="8" :md="12">
         <el-form-item label="">
           <el-input v-model="where.SerachName" placeholder="请输入品种名称/品种编码/型号规格/生产企业搜索" clearable />
         </el-form-item>
       </el-col>
-      <el-col :lg="12" :md="12">
+      <el-col :lg="16" :md="12">
         <div class="ele-form-actions">
           <el-button type="primary" @click="search">查询</el-button>
           <el-button @click="reset">重置</el-button>
+
+          <el-button type="primary" size="small" @click="openIntroduceUserDefinedTemp" :disabled='!IsDisabled'>自定义新增</el-button>
+          <!-- <el-button type="primary" size="small" @click="openIntroduceOtherTemp" :disabled='!IsDisabled'>引用常规模板</el-button> -->
+          <el-button type="primary" size="small" @click="showApplyTemp" :disabled='!IsDisabled'>引入其他模板</el-button>
+          <!-- <el-button type="primary" size="small" @click="reset" :disabled='!IsDisabled'>引入历史记录</el-button> -->
+          <el-button type="primary" size="small" @click="KeeptApplyDate" :disabled='!IsDisabled'>暂存申领单</el-button>
+          <el-button type="primary" size="small" @click="addPutInListDeta2" :disabled='!IsDisabled'>保存并提交</el-button>
+          <!-- <el-button type="primary" size="small" @click="reset" :disabled='IsDisabled'>查询订单情况</el-button> -->
+          <!-- <el-button type="primary" size="small" @click="reset" :disabled='IsDisabled'>合并订单</el-button> -->
+          <el-button type="primary" size="small" @click="subToExamine" :disabled='!IsPutInListDeta'>审核申领单</el-button>
+          <!-- <el-button type="primary" size="small" @click="search" :disabled='!IsToExamine'>审批申领单</el-button> -->
+          <!-- <el-button type="danger" size="small" @click="removeBatch" :disabled='!IsDisabledByDel'>删除</el-button> -->
+          <el-popconfirm class="ele-action" title="确定删除？" @confirm="removeBatch()">
+            <template v-slot:reference>
+              <!-- <el-link type="danger" :underline="false" icon="el-icon-delete">
+              删除
+            </el-link> -->
+              <el-button type="danger" size="small" :underline="false" :disabled='!IsDisabledByDel'>删除</el-button>
+            </template>
+          </el-popconfirm>
         </div>
       </el-col>
     </el-row>
-    <el-row :gutter="10">
+    <!-- <el-row :gutter="10">
       <div class="ele-form-actions">
         <el-button type="primary" size="small" @click="openIntroduceUserDefinedTemp" :disabled='!IsDisabled'>自定义新增</el-button>
-        <!-- <el-button type="primary" size="small" @click="openIntroduceOtherTemp" :disabled='!IsDisabled'>引用常规模板</el-button> -->
         <el-button type="primary" size="small" @click="showApplyTemp" :disabled='!IsDisabled'>引入其他模板</el-button>
-        <!-- <el-button type="primary" size="small" @click="reset" :disabled='!IsDisabled'>引入历史记录</el-button> -->
         <el-button type="primary" size="small" @click="KeeptApplyDate" :disabled='!IsDisabled'>暂存申领单</el-button>
         <el-button type="primary" size="small" @click="addPutInListDeta2" :disabled='!IsDisabled'>保存并提交</el-button>
-        <!-- <el-button type="primary" size="small" @click="reset" :disabled='IsDisabled'>查询订单情况</el-button> -->
-        <!-- <el-button type="primary" size="small" @click="reset" :disabled='IsDisabled'>合并订单</el-button> -->
         <el-button type="primary" size="small" @click="subToExamine" :disabled='!IsPutInListDeta'>审核申领单</el-button>
-        <!-- <el-button type="primary" size="small" @click="search" :disabled='!IsToExamine'>审批申领单</el-button> -->
-        <!-- <el-button type="danger" size="small" @click="removeBatch" :disabled='!IsDisabledByDel'>删除</el-button> -->
         <el-popconfirm class="ele-action" title="确定删除？" @confirm="removeBatch()">
           <template v-slot:reference>
-            <!-- <el-link type="danger" :underline="false" icon="el-icon-delete">
-              删除
-            </el-link> -->
             <el-button type="danger" size="small" :underline="false" :disabled='!IsDisabledByDel'>删除</el-button>
           </template>
         </el-popconfirm>
       </div>
-    </el-row>
+    </el-row> -->
     <!-- <el-row :gutter="10">
       <div class="ele-form-actions">
         <el-button type="primary" size="small" @click="subToExamine" :disabled='!IsPutInListDeta'>审核申领单</el-button>

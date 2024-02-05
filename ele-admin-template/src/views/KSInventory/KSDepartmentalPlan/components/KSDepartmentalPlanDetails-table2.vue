@@ -416,3 +416,10 @@ export default {
   }
 };
 </script>
+
+
+<style scoped>
+.ele-body {
+  padding: 0px;
+}
+</style>
