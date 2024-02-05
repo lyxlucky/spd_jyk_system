@@ -83,7 +83,7 @@ export default {
           minWidth: 110
         },
         {
-          prop: 'Coefficient',
+          prop: 'coefficient',
           label: '系数',
 
           align: 'center',
@@ -178,7 +178,8 @@ export default {
       var where2 = {
         page: 1,
         limit: this.pageSize,
-        dept_two_var_distribute_dtl_id: this.DefNoPkgDataData.ID
+        dept_two_var_distribute_dtl_id: this.DefNoPkgDataData.ID,
+        Varietie_Code: this.DefNoPkgDataData.Varietie_Code,
       };
       let data = GetDistributeDefDetail({
         page,
@@ -231,7 +232,8 @@ export default {
       var where2 = {
         page: 1,
         limit: this.pageSize,
-        dept_two_var_distribute_dtl_id: this.DefNoPkgDataData.ID
+        dept_two_var_distribute_dtl_id: this.DefNoPkgDataData.ID,
+        Varietie_Code: this.DefNoPkgDataData.Varietie_Code,
       };
 
       // console.log(this.ReplenishGoodData);
