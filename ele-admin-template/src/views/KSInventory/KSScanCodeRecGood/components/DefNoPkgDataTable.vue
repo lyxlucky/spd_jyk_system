@@ -74,6 +74,23 @@ export default {
         //   showOverflowTooltip: true,
         //   fixed: 'left'
         // },
+          {
+          // prop: 'KC_COUNT',
+          slot: 'KC_COUNT',
+          label: '库存状态',
+
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 80
+        },
+          {
+          prop: 'def_no_pkg_code',
+          label: '定数码',
+
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 150
+        },
         {
           prop: 'batch',
           label: '生产批号',
@@ -82,22 +99,23 @@ export default {
           showOverflowTooltip: true,
           minWidth: 110
         },
+        // {
+        //   prop: '',
+        //   label: '有效期',
+
+        //   align: 'center',
+        //   showOverflowTooltip: true,
+        //   minWidth: 60
+        // },
         {
           prop: 'coefficient',
           label: '系数',
 
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 70
+          minWidth: 60
         },
-        {
-          prop: 'def_no_pkg_code',
-          label: '定数码',
-
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 150
-        },
+      
         // {
         //   prop: 'pack_time',
         //   label: '拣配时间',
@@ -125,15 +143,7 @@ export default {
         //   showOverflowTooltip: true,
         //   minWidth: 120
         // },
-        {
-          // prop: 'KC_COUNT',
-          slot: 'KC_COUNT',
-          label: '库存状态',
-
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 120
-        },
+      
         {
           prop: 'Supplier_Name',
           label: '供应商名称',

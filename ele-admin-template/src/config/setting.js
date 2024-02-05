@@ -29,29 +29,13 @@ export const USER_MENUS = [
   {
     path: '/KSInventory',
     component: null,
-    redirect: '/KSInventory/InventoryQueryNew',
+    redirect: '/KSInventory/KSScanCodeRecGood',
     meta: {
       title: '科室申领',
       icon: 'el-icon-setting',
       routePath: '/KSInventory',
     },
     children: [
-      {
-        path: '/KSInventory/KSInventoryQuery',
-        component: '/KSInventory/KSInventoryQuery',
-        meta: {
-          title: '库存详情',
-          icon: 'el-icon-_user-group',
-        },
-      },
-      {
-        path: '/KSInventory/KSInventoryRecord',
-        component: '/KSInventory/KSInventoryRecord',
-        meta: {
-          title: '出入库记录',
-          icon: 'el-icon-_user-group',
-        },
-      },
       {
         path: '/KSInventory/KSScanCodeRecGood',
         component: '/KSInventory/KSScanCodeRecGood',
@@ -65,6 +49,22 @@ export const USER_MENUS = [
         component: '/KSInventory/ScanDefHis',
         meta: {
           title: '标签扫码出库',
+          icon: 'el-icon-_user-group',
+        },
+      },
+      {
+        path: '/KSInventory/KSInventoryQuery',
+        component: '/KSInventory/KSInventoryQuery',
+        meta: {
+          title: '库存详情',
+          icon: 'el-icon-_user-group',
+        },
+      },
+      {
+        path: '/KSInventory/KSInventoryRecord',
+        component: '/KSInventory/KSInventoryRecord',
+        meta: {
+          title: '出入库记录',
           icon: 'el-icon-_user-group',
         },
       },

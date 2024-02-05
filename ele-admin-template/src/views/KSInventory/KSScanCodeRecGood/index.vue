@@ -2,18 +2,26 @@
   <div>
     <!-- <el-card shadow="always"> -->
     <el-container>
-      <el-aside width="400px" style="margin: 20px 0px 0px 20px;">
+      <!-- <el-aside width="400px" style="margin: 20px 0px 0px 20px;">
         <el-card shadow="always">
           <div slot="header" class="clearfix">
             <span>补货信息</span>
           </div>
           <ReplenishGoodsTable @getCurrent="getCurrent"></ReplenishGoodsTable>
         </el-card>
-      </el-aside>
+      </el-aside> -->
       <el-container>
         <el-main>
-          <el-row :gutter="20">
-            <el-col :span="12">
+          <el-row :gutter="2">
+            <el-col :span="6">
+              <el-card shadow="always">
+                <div slot="header" class="clearfix">
+                  <span>补货信息</span>
+                </div>
+                <ReplenishGoodsTable @getCurrent="getCurrent"></ReplenishGoodsTable>
+              </el-card>
+            </el-col>
+            <el-col :span="9">
               <el-card shadow="always">
                 <div slot="header" class="clearfix">
                   <span>品种明细列表</span>
@@ -21,7 +29,7 @@
                 <DistributeDetailTable :ReplenishGoodData="ReplenishGoodData" @getVarCurrent="getVarCurrent"></DistributeDetailTable>
               </el-card>
             </el-col>
-            <el-col :span="12">
+            <el-col :span="9">
               <el-card shadow="always">
                 <div slot="header" class="clearfix">
                   <span>定数包明细列表</span>
