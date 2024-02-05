@@ -129,15 +129,23 @@ export default {
           // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 80,
+          minWidth: 80
         },
-         {
+        {
           prop: 'KC_COUNT',
           label: '库存数量',
           // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 80,
+          minWidth: 80
+        },
+        {
+          prop: 'dept_two_name',
+          label: '科室名称',
+          // sortable: 'custom',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 120
         },
         {
           prop: 'ID',
@@ -168,6 +176,14 @@ export default {
   methods: {
     /* 表格数据源 */
     datasource({ page, limit, where, order }) {
+      var Dept_Two_Code = this.$store.state.user.info.userDept;
+
+      var Dept_Two_CodeStr = '';
+      for (let i = 0; i < Dept_Two_Code.length; i++) {
+        Dept_Two_CodeStr += Dept_Two_Code[i].Dept_Two_Code + ',';
+      }
+      Dept_Two_CodeStr = Dept_Two_CodeStr.substring(0, Dept_Two_CodeStr.length - 1); 
+      where.Dept_Two_Code = Dept_Two_CodeStr;
       let data = SearchDistributeListJYK({ page, limit, where, order }).then(
         (res) => {
           var tData = {
@@ -181,6 +197,16 @@ export default {
     },
     /* 刷新表格 */
     reload(where) {
+      console.log(this.$store.state.user.userDept);
+
+      var Dept_Two_Code = this.$store.state.user.info.userDept;
+
+      var Dept_Two_CodeStr = '';
+      for (let i = 0; i < Dept_Two_Code.length; i++) {
+        Dept_Two_CodeStr += Dept_Two_Code[i].Dept_Two_Code + ',';
+      }
+      where.Dept_Two_Code = Dept_Two_CodeStr;
+      Dept_Two_CodeStr = Dept_Two_CodeStr.substring(0, Dept_Two_CodeStr.length - 1); 
       this.$refs.table.reload({ page: 1, where: where });
     },
     onDone(res) {
