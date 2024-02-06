@@ -73,12 +73,34 @@ export default {
           loading.close();
           this.showEdit = false;
           this.$emit('search', this.where);
-          this.$message.success(res.msg);
+          // this.$message.success(res.msg);
+          this.$alert(res.msg, '提示', {
+            confirmButtonText: '确定',
+            type: 'success',
+            callback: (action) => {
+              // this.$message({
+              //   type: 'info',
+              //   message: `action: ${action}`
+              // });
+            }
+          });
+          this.DistributeNumber = '';
         })
         .catch((err) => {
           document.getElementById('idDistributeNumber').focus();
           loading.close();
-          this.$message.error(err);
+          // this.$message.error(err);
+          this.$alert(err, '提示', {
+            confirmButtonText: '确定',
+            type: 'error',
+            callback: (action) => {
+              // this.$message({
+              //   type: 'error',
+              //   message: `action: ${action}`
+              // });
+            }
+          });
+          this.DistributeNumber = '';
         });
     }
   },
