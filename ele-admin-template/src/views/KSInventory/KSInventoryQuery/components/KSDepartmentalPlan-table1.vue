@@ -26,10 +26,10 @@
         <!-- {{dateNow}} -->
         <!-- {{dateNow1 = row.BATCH_VALIDITY_PERIOD?'':row.BATCH_VALIDITY_PERIOD.substring(0,10)}} -->
         <!-- <el-tag v-if="row.COUNT >=1 && row.BATCH_VALIDITY_PERIOD<=dateNow1" type="info">{{(new Date(row.BATCH_VALIDITY_PERIOD)).toLocaleDateString()}}</el-tag> -->
-        <el-tag v-if="row.COUNT >=1 && dateNow1<=row.BATCH_VALIDITY_PERIOD<dateNow2" type="danger">{{(new Date(row.BATCH_VALIDITY_PERIOD)).toLocaleDateString()}}</el-tag>
-        <el-tag v-if="row.COUNT >=1 && dateNow2<=row.BATCH_VALIDITY_PERIOD<dateNow3" type="warning">{{(new Date(row.BATCH_VALIDITY_PERIOD)).toLocaleDateString()}}</el-tag>
-        <el-tag v-if="row.COUNT >=1 && dateNow4<=row.BATCH_VALIDITY_PERIOD" type="success">{{(new Date(row.BATCH_VALIDITY_PERIOD)).toLocaleDateString()}}</el-tag>
-        <el-tag v-else type="info">{{(new Date(row.BATCH_VALIDITY_PERIOD)).toLocaleDateString()}}</el-tag>
+        <el-tag v-if="row.COUNT >=1 && dateNow1<=row.BATCH_VALIDITY_PERIOD<dateNow2" type="danger">{{(new Date(row.BATCH_VALIDITY_PERIOD)).toLocaleDateString().replace("/","-").replace("/","-")}}</el-tag>
+        <el-tag v-if="row.COUNT >=1 && dateNow2<=row.BATCH_VALIDITY_PERIOD<dateNow3" type="warning">{{(new Date(row.BATCH_VALIDITY_PERIOD)).toLocaleDateString().replace("/","-").replace("/","-")}}</el-tag>
+        <el-tag v-if="row.COUNT >=1 && dateNow4<=row.BATCH_VALIDITY_PERIOD" type="success">{{(new Date(row.BATCH_VALIDITY_PERIOD)).toLocaleDateString().replace("/","-").replace("/","-")}}</el-tag>
+        <el-tag v-else type="info">{{(new Date(row.BATCH_VALIDITY_PERIOD)).toLocaleDateString().replace("/","-").replace("/","-")}}</el-tag>
       </template>
 
       <!-- 操作列 -->

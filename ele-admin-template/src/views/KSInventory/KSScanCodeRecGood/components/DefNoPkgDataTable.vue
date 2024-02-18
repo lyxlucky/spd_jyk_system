@@ -74,7 +74,7 @@ export default {
         //   showOverflowTooltip: true,
         //   fixed: 'left'
         // },
-          {
+        {
           // prop: 'KC_COUNT',
           slot: 'KC_COUNT',
           label: '库存状态',
@@ -83,7 +83,19 @@ export default {
           showOverflowTooltip: true,
           minWidth: 80
         },
-          {
+        {
+          // prop: 'KC_COUNT',
+          prop: 'replenish_time',
+          label: '效期',
+
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 120,
+          formatter: (_row, _column, cellValue) => {
+            return this.$util.toDateString(cellValue, 'yyyy-MM-dd');
+          }
+        },
+        {
           prop: 'def_no_pkg_code',
           label: '定数码',
 
@@ -115,7 +127,7 @@ export default {
           showOverflowTooltip: true,
           minWidth: 60
         },
-      
+
         // {
         //   prop: 'pack_time',
         //   label: '拣配时间',
@@ -143,7 +155,7 @@ export default {
         //   showOverflowTooltip: true,
         //   minWidth: 120
         // },
-      
+
         {
           prop: 'Supplier_Name',
           label: '供应商名称',
@@ -189,7 +201,7 @@ export default {
         page: 1,
         limit: this.pageSize,
         dept_two_var_distribute_dtl_id: this.DefNoPkgDataData.ID,
-        Varietie_Code: this.DefNoPkgDataData.Varietie_Code,
+        Varietie_Code: this.DefNoPkgDataData.Varietie_Code
       };
       let data = GetDistributeDefDetail({
         page,
@@ -243,7 +255,7 @@ export default {
         page: 1,
         limit: this.pageSize,
         dept_two_var_distribute_dtl_id: this.DefNoPkgDataData.ID,
-        Varietie_Code: this.DefNoPkgDataData.Varietie_Code,
+        Varietie_Code: this.DefNoPkgDataData.Varietie_Code
       };
 
       // console.log(this.ReplenishGoodData);

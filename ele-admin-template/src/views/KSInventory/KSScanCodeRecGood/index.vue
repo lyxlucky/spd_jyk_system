@@ -21,7 +21,7 @@
                 <ReplenishGoodsTable @getCurrent="getCurrent"></ReplenishGoodsTable>
               </el-card>
             </el-col>
-            <el-col :span="9">
+            <el-col :span="11">
               <el-card shadow="always">
                 <div slot="header" class="clearfix">
                   <span>品种明细列表</span>
@@ -29,7 +29,7 @@
                 <DistributeDetailTable :ReplenishGoodData="ReplenishGoodData" @getVarCurrent="getVarCurrent"></DistributeDetailTable>
               </el-card>
             </el-col>
-            <el-col :span="9">
+            <el-col :span="7">
               <el-card shadow="always">
                 <div slot="header" class="clearfix">
                   <span>定数包明细列表</span>
