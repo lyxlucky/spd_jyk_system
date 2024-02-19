@@ -75,13 +75,13 @@ export default {
     return {
       // 表格列配置
       columns: [
-        {
-          columnKey: 'selection',
-          type: 'selection',
-          width: 60,
-          align: 'center',
-          fixed: 'left'
-        },
+        // {
+        //   columnKey: 'selection',
+        //   type: 'selection',
+        //   width: 60,
+        //   align: 'center',
+        //   fixed: 'left'
+        // },
         {
           columnKey: 'index',
           type: 'index',

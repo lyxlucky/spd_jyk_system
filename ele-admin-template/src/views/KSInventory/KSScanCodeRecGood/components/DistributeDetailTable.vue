@@ -94,35 +94,40 @@ export default {
           label: '注册证号',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 180
+          minWidth: 180,
+          fixed: 'right'
         },
         {
           prop: 'Unit',
           label: '单位',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 80
+          minWidth: 60,
+          fixed: 'right'
         },
         {
           prop: 'PRICE',
           label: '价格',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 80
+          minWidth: 70,
+          fixed: 'right'
         },
          {
           prop: 'KC_COUNT',
           label: '库存数量',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 80
+          minWidth: 80,
+          fixed: 'right'
         },
          {
           prop: 'replenish_quantity',
           label: '收货数量',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 80
+          minWidth: 80,
+          fixed: 'right'
         },
       ],
       toolbar: false,

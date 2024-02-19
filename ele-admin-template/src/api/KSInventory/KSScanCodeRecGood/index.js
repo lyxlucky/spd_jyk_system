@@ -49,6 +49,7 @@ export async function GetDistributeDefDetail(data) {
     data2.size = data.where.limit;
     data2.dept_two_var_distribute_dtl_id = data.where.dept_two_var_distribute_dtl_id ? data.where.dept_two_var_distribute_dtl_id : '';
     data2.Varietie_Code = data.where.Varietie_Code ? data.where.Varietie_Code : '';
+    data2.state = data.where.state ? data.where.state : '';
     data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
 
     const res = await request.get('/PickDistributionmgmt/GetDistributeDefDetailJYK', {

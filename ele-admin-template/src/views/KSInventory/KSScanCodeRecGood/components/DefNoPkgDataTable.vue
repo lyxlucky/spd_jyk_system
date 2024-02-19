@@ -7,6 +7,13 @@
         <el-tag v-if="row.KC_COUNT>0" type="success">在库</el-tag>
         <el-tag v-else type="info">已消耗</el-tag>
       </template>
+
+      <!-- 表头工具栏 -->
+      <template v-slot:toolbar>
+        <!-- 搜索表单 -->
+        <DefNoPkgDataSearch @search="reload" />
+      </template>
+
     </ele-pro-table>
 
     <ele-pro-table ref="table2" v-else height="67vh" highlight-current-row :stripe="true" :rowClickChecked="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource2" :selection.sync="selection" cache-key="DefNoPkgDataTable">
@@ -14,6 +21,12 @@
         <el-tag v-if="row.KC_COUNT>0" type="success">在库</el-tag>
         <el-tag v-else type="info">已消耗</el-tag>
       </template>
+      <!-- 表头工具栏 -->
+      <template v-slot:toolbar>
+        <!-- 搜索表单 -->
+        <DefNoPkgDataSearch @search="reload" />
+      </template>
+
     </ele-pro-table>
 
     <!-- 表头工具栏 -->
@@ -90,7 +103,7 @@ export default {
 
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 120,
+          minWidth: 110,
           formatter: (_row, _column, cellValue) => {
             return this.$util.toDateString(cellValue, 'yyyy-MM-dd');
           }
@@ -101,7 +114,7 @@ export default {
 
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 150
+          minWidth: 140
         },
         {
           prop: 'batch',
@@ -109,7 +122,7 @@ export default {
 
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 110
+          minWidth: 100
         },
         // {
         //   prop: '',
@@ -200,6 +213,7 @@ export default {
       var where2 = {
         page: 1,
         limit: this.pageSize,
+        state: where.State,
         dept_two_var_distribute_dtl_id: this.DefNoPkgDataData.ID,
         Varietie_Code: this.DefNoPkgDataData.Varietie_Code
       };
@@ -221,7 +235,7 @@ export default {
     reload(where) {
       // console.log(this.ReplenishGoodData);
       // console.log(this.$store.state.user.info);
-      this.$refs.table.reload({ page: 1, where: where });
+      this.$refs.table2.reload({ page: 1, where: where });
     }
   },
   computed: {
