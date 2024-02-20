@@ -17,7 +17,7 @@
       </template>
 
       <template v-slot:PlanQty="{ row }">
-        <el-input-number v-model="row.PlanQty" :min="0" :max="9999" :step="1" size="mini" />
+        <el-input-number v-model="row.PlanQty" :min="0" :max="99999999" :step="1" size="mini" />
         <!-- <el-input-number v-model="row.PlanQty" controls-position="right" @change="handleChange" :min="0" :max="9999" size="mini"></el-input-number> -->
       </template>
       <template v-slot:VarCode="{ row }">

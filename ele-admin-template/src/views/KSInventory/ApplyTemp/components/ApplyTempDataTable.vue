@@ -1,7 +1,7 @@
 <template>
   <div class="ele-body">
     <!-- 数据表格 -->
-    <ele-pro-table ref="table" height="25vh" highlight-current-row :stripe="true" :rowClickChecked="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" @selection-change="onSelectionChange" cache-key="ApplyTempDataTable">
+    <ele-pro-table ref="table" height="55vh" highlight-current-row :stripe="true" :rowClickChecked="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" @selection-change="onSelectionChange" cache-key="ApplyTempDataTable">
       <!-- 表头工具栏 -->
       <!-- 右表头 -->
       <!-- <template v-slot:toolkit>
@@ -21,7 +21,7 @@
 
       <!-- 操作列 -->
       <template v-slot:TempletQty="{ row }">
-        <el-input-number v-model="row.TempletQty" :min="0" :max="9999" :step="1" size="mini" />
+        <el-input-number v-model="row.TempletQty" :min="0" :max="999999999" :step="1" size="mini" />
       </template>
       <template v-slot:action="{ row }">
         <el-popconfirm class="ele-action" title="确定要删除此用户吗？" @confirm="remove(row)">

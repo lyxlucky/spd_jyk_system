@@ -1,7 +1,7 @@
 <template>
   <div class="ele-body">
     <!-- 数据表格 -->
-    <ele-pro-table highlight-current-row @current-change="onCurrentChange" ref="table" height="20vh" :rowClickChecked="true" :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" cache-key="ApplyTempTable">
+    <ele-pro-table highlight-current-row @current-change="onCurrentChange" ref="table" height="55vh" :rowClickChecked="true" :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" cache-key="ApplyTempTable">
       <!-- 表头工具栏 -->
       <template v-slot:toolbar>
         <!-- 搜索表单 -->
@@ -66,7 +66,7 @@ export default {
         {
           columnKey: 'action',
           label: '操作',
-          width: 120,
+          width: 80,
           align: 'center',
           resizable: false,
           slot: 'action',
@@ -74,20 +74,12 @@ export default {
           fixed: 'right'
         },
         {
-          prop: 'TempletCode',
-          label: '模板编号',
-          sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 110
-        },
-        {
           prop: 'TempletName',
           label: '模板名称',
-          sortable: 'custom',
+          // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 110,
+          minWidth: 100,
           formatter(row, column, cellValue) {
             if (cellValue == null) {
               return '无';
@@ -97,9 +89,17 @@ export default {
           }
         },
         {
+          prop: 'TempletCode',
+          label: '模板编号',
+          // sortable: 'custom',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 110
+        },
+        {
           prop: 'CommonState',
           label: '常规',
-          sortable: 'custom',
+          // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110,
@@ -114,7 +114,7 @@ export default {
         {
           prop: 'Operater',
           label: '创建人',
-          sortable: 'custom',
+          // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110
@@ -122,7 +122,7 @@ export default {
         {
           prop: 'CreateTime',
           label: '模板创建时间',
-          sortable: 'custom',
+          // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 180,
@@ -133,7 +133,7 @@ export default {
         {
           prop: 'LastUpDateTime',
           label: '最近更新时间',
-          sortable: 'custom',
+          // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 180,
@@ -144,7 +144,7 @@ export default {
         {
           prop: 'USER_ID',
           label: '是否专属',
-          sortable: 'custom',
+          // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110,
@@ -159,7 +159,7 @@ export default {
         {
           prop: 'ID',
           label: 'ID',
-          sortable: 'custom',
+          // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 180,

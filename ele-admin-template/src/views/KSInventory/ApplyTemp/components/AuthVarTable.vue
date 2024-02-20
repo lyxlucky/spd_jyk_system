@@ -16,7 +16,7 @@
             <el-row :gutter="10">
               <el-col :lg="10" :md="12">
                 <el-form-item label="">
-                  <el-input v-model="SerachName" placeholder="请输入品种名称/品种编码/型号规格/生产企业搜索" clearable />
+                  <el-input v-model="SerachName" placeholder="请输入品种名称/品种编码/型号规格/生产企业搜索" clearable @change="reload"/>
                 </el-form-item>
               </el-col>
               <el-col :lg="14" :md="12">
