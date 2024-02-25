@@ -149,14 +149,6 @@ export default {
           minWidth: 150
         },
         {
-          prop: 'SUPPLIER_NAME',
-          label: '供应商',
-          
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 150
-        },
-        {
           prop: 'StockQty',
           label: '散货库存',
           
@@ -215,6 +207,14 @@ export default {
               return '未知';
             }
           }
+        },
+        {
+          prop: 'SUPPLIER_NAME',
+          label: '供应商',
+          
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 150
         }
       ],
       toolbar: false,
