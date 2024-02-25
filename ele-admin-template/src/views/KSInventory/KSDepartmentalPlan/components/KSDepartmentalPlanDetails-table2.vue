@@ -106,6 +106,14 @@ export default {
           align: 'center',
           showOverflowTooltip: true,
           width: 150
+        }, {
+          // prop: 'CHARGING_CODE',
+          slot: 'CHARGING_CODE',
+          label: '计费编码',
+
+          align: 'center',
+          showOverflowTooltip: true,
+          width: 150
         },
         // {
         //   prop: 'DEPT_ZDY_VARIETIE_CODE',
@@ -173,16 +181,15 @@ export default {
           width: 110
         },
         {
-          prop: 'TempQty',
-          label: '中心库库存',
-
+          prop: 'Day_Consume_Qty',
+          label: '平均用量(默认近30天)',
           align: 'center',
           showOverflowTooltip: true,
           width: 110
         },
         {
           prop: 'StockQty',
-          label: '散货库存',
+          label: '中心库库存',
 
           align: 'center',
           showOverflowTooltip: true,
