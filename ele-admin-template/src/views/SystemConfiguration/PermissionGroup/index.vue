@@ -29,7 +29,7 @@
     <!-- 添加权限弹窗 -->
     <user-edit :visible.sync="showEdit" :data="current" @done="reload" />
     <!-- 导入弹窗 -->
-    <permission-list :visible.sync="showPermission" @done="reload" />
+    <permission-list :visible.sync="showPermission" :data="rowData" @done="reload" />
   </div>
 </template>
 
@@ -103,7 +103,9 @@ export default {
       // 是否显示导入弹窗
       showPermission: false,
       // datasource: [],
-      data: []
+      data: [],
+      // 选中框数据源
+      rowData:null
     };
   },
   methods: {
@@ -131,7 +133,8 @@ export default {
       this.showEdit = true;
     },
     // 打开分配权限弹窗
-    assignPermissions(){
+    assignPermissions(row){
+      this.rowData = row;
       this.showPermission = true;
     },
     /* 打开导入弹窗 */

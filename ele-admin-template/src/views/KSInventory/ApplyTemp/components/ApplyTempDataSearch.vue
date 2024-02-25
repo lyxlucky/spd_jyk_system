@@ -40,38 +40,61 @@
             <el-input v-model="where.SerachName" placeholder="请输入品种名称/品种编码/型号规格/生产企业搜索" clearable />
           </el-form-item>
         </el-col>
-        <el-col :lg="12" :md="12">
+        <el-col :lg="14" :md="12">
           <div class="ele-form-actions">
             <el-button type="primary" @click="search">查询</el-button>
             <el-button @click="reset">重置</el-button>
+
+            <el-button type="primary" size="small" @click="dialogTableVisible = true">添加品种</el-button>
+            <el-button type="primary" size="small" @click="saveApplyNum">保存</el-button>
+            <!-- <el-button type="primary" size="small" @click="search">导入模板</el-button> -->
+            <!-- <el-upload action="" :before-upload="importFile" :show-file-list="false" accept=".xls,.xlsx,.csv">
+              <el-button>导入excel</el-button>
+            </el-upload> -->
+
+            <el-button type="primary" size="small" @click="dialogTableVisible2=true">导入模板</el-button>
+            <el-button type="primary" size="small" @click="exportData">导出模板</el-button>
+            <el-button type="danger" size="small" @click="removeBatch">删除</el-button>
           </div>
         </el-col>
       </el-row>
-      <el-row :gutter="10">
+      <!-- <el-row :gutter="10">
         <div class="ele-form-actions">
           <el-button type="primary" size="small" @click="dialogTableVisible = true">添加品种</el-button>
           <el-button type="primary" size="small" @click="saveApplyNum">保存</el-button>
-          <!-- <el-button type="primary" size="small" @click="search">导入模板</el-button> -->
-          <!-- <el-button type="primary" size="small" @click="search">导出模板</el-button> -->
-          <!-- <el-button type="primary" size="small" @click="search">保存</el-button> -->
+          <el-button type="primary" size="small" @click="search">导入模板</el-button>
+          <el-button type="primary" size="small" @click="search">导出模板</el-button>
           <el-button type="danger" size="small" @click="removeBatch">删除</el-button>
         </div>
-      </el-row>
+      </el-row> -->
     </el-form>
-    <!-- <el-dialog title="授权品种目录" :visible.sync="dialogTableVisible" width='70%'>
-      <AuthVarTable :dialogTableVisible="dialogTableVisible" :ApplyTempTableDataID="ApplyTempTableDataID" />
-    </el-dialog> -->
+    <el-dialog title="导入模板品种" :visible.sync="dialogTableVisible2" width='30%'>
+      <div style="width:100%;text-align:center">
+        <form action="" id="CreateBydFpform">
+          <input type="text" style="display:none;" name="TEMPLET_MAIN_ID" autocomplete="off" placeholder="" :value="TEMPLET_MAIN_ID">
+          <input type="text" style="display:none;" name="Token" autocomplete="off" placeholder="" :value="Token">
+
+          <div class="layui-form-item">
+            <label style="width:170px;">选择文件:</label>
+            <input id="FILE" style="height:30px;width:200px;display:inline;margin-left:5px;" name="FILE" type="file" value="" required="required" autocomplete="off">
+          </div>
+        </form>
+        <el-button type="primary" size="small" @click="importFile">确定</el-button>
+      </div>
+    </el-dialog>
     <AuthVarTable :visible.sync="dialogTableVisible" :ApplyTempTableDataID="ApplyTempTableDataID" />
   </div>
 
 </template>
 
 <script>
+import { utils, read } from 'xlsx';
+import { TOKEN_STORE_NAME } from '@/config/setting';
 import {
   DeletePlanDeta
   // KeeptListDeta,
 } from '@/api/KSInventory/KSDepartmentalPlan';
-import { KeepTempletDeta } from '@/api/KSInventory/ApplyTemp';
+import { KeepTempletDeta, ImportTempExcel } from '@/api/KSInventory/ApplyTemp';
 import AuthVarTable from './AuthVarTable.vue';
 export default {
   props: ['ApplyTempTableDataSearch', 'selection'],
@@ -91,7 +114,10 @@ export default {
     return {
       // 表单数据
       where: { ...defaultWhere },
-      dialogTableVisible: false
+      dialogTableVisible: false,
+      dialogTableVisible2: false,
+      TEMPLET_MAIN_ID: null,
+      Token: sessionStorage.getItem(TOKEN_STORE_NAME)
     };
   },
   computed: {
@@ -144,9 +170,33 @@ export default {
           loading.close();
           this.$message.error(err);
         });
+    },
+    exportData() {
+      this.$emit('exportData', this.where);
+    },
+    importFile() {
+      if (this.TEMPLET_MAIN_ID == null) {
+        this.$message.warning('请先选择模板');
+        return;
+      }
+      const loading = this.$messageLoading('导入中...');
+      var formData = new FormData(document.getElementById('CreateBydFpform'));
+      ImportTempExcel(formData)
+        .then((res) => {
+          loading.close();
+          this.dialogTableVisible2 = false;
+          this.$message.success(res.msg);
+          this.$emit('search', this.where);
+        })
+        .catch((err) => {
+          this.$message.error(err);
+        });
     }
   },
   watch: {
+    ApplyTempTableDataSearch() {
+      this.TEMPLET_MAIN_ID = this.ApplyTempTableDataSearch.ID;
+    },
     dialogTableVisible() {
       if (this.dialogTableVisible == false) {
         this.$emit('showEditReoad', false);

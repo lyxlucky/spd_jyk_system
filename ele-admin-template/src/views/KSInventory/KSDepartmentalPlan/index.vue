@@ -29,11 +29,11 @@
           <KSDepartmentalPlantable @getCurrent="getCurrent" :IsReload="IsReloadTag"></KSDepartmentalPlantable>
         </el-card>
       </el-header>
-      <el-main>
+      <el-main style="padding-top: 1px">
         <el-card shadow="always">
-          <div slot="header" class="clearfix">
+          <!-- <div slot="header" class="clearfix">
             <span>申领单详情</span>
-          </div>
+          </div> -->
           <KSDepartmentalPlanDetailstable2 :KSDepartmentalPlanData="KSDepartmentalPlanData" @clickReload="clickReload" v-if="isActive"></KSDepartmentalPlanDetailstable2>
         </el-card>
       </el-main>

@@ -7,7 +7,7 @@
       <ele-pro-table ref="table" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" cache-key="KSInventoryBasicDataTable">
         <!-- 表头工具栏 -->
         <template v-slot:toolbar>
-           <user-search @search="reload" @exportData="exportData" />
+          <user-search @search="reload" @exportData="exportData" />
         </template>
 
         <!-- 操作列 -->
@@ -77,7 +77,7 @@ export default {
         {
           prop: 'Source_Name',
           label: '所属科室',
-          sortable: 'custom',
+          // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 100
@@ -85,7 +85,7 @@ export default {
         {
           prop: 'Varietie_Code_New',
           label: '品种编码',
-          sortable: 'custom',
+          // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 150
@@ -93,15 +93,23 @@ export default {
         {
           prop: 'Varietie_Name',
           label: '品种名称',
-          sortable: 'custom',
+          // sortable: 'custom',
           align: 'center',
           howOverflowTooltip: true,
           minWidth: 180
         },
         {
+          prop: 'CHARGING_CODE',
+          label: '计费编码',
+          // // sortable: 'custom',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 120
+        },
+        {
           prop: 'Specification_Or_Type',
           label: '规格/型号',
-          sortable: 'custom',
+          // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 200
@@ -110,14 +118,14 @@ export default {
           prop: 'Unit',
           label: '单位',
           align: 'center',
-          sortable: 'custom',
+          // sortable: 'custom',
           showOverflowTooltip: true,
           minWidth: 80
         },
         {
           prop: 'Supplier_Name',
           label: '供应商',
-          sortable: 'custom',
+          // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 180
@@ -125,7 +133,7 @@ export default {
         {
           prop: 'Batch',
           label: '生产批号',
-          sortable: 'custom',
+          // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 180
@@ -133,24 +141,30 @@ export default {
         {
           prop: 'Batch_Production_Date',
           label: '生产日期',
-          sortable: 'custom',
+          // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 150
+          minWidth: 150,
+          formatter: (_row, _column, cellValue) => {
+            return cellValue.substr(0, 10);
+          }
         },
         {
           prop: 'Batch_Validity_Period',
           label: '有效到期',
-          sortable: 'custom',
+          // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 180
+          minWidth: 180,
+          formatter: (_row, _column, cellValue) => {
+            return cellValue.substr(0, 10);
+          }
         },
         // {
         //   prop: 'Coefficient',
         //   label: '系数',
         //   align: 'center',
-        //   sortable: 'custom',
+        //   // sortable: 'custom',
         //   width: 100,
         //   showOverflowTooltip: true
         // },
@@ -174,7 +188,7 @@ export default {
           //   }
           //   return cellValue;
           // }
-        },
+        }
         // {
         //   prop: 'Storaged_Days',
         //   label: '在库天数',
@@ -226,7 +240,11 @@ export default {
     datasource({ page, limit, where, order }) {
       where.sourceFrom = this.$store.state.user.info.DeptNow.Dept_Two_Code;
       let data = SearchDefRemind({ page, limit, where, order }).then((res) => {
-        return res.result;
+        var tData = {
+          count: res.total,
+          list: res.result
+        };
+        return tData;
       });
       return data;
     },

@@ -23,7 +23,7 @@
           <el-link type="primary" :underline="false" icon="el-icon-edit" @click="openEdit(row)">
             修改
           </el-link>
-          <!-- <el-button type="primary" size="mini" @click="openEdit(row)">编辑</el-button> -->
+          <el-button type="primary" size="mini" @click="openEdit2(row)">修改上下限</el-button>
           <!-- <el-popconfirm class="ele-action" title="确定要删除此用户吗？" @confirm="remove(row)">
             <template v-slot:reference>
               <el-link type="danger" :underline="false" icon="el-icon-delete">
@@ -36,16 +36,18 @@
     </el-card>
     <!-- 编辑弹窗 -->
     <user-edit :visible.sync="showEdit" :data="current" @done="reload" />
+    <user-edit2 :visible.sync="showEdit2" :data="current2" @done="reload" />
     <!-- 导入弹窗 -->
     <!-- <user-import :visible.sync="showImport" @done="reload" /> -->
   </div>
 </template>
 
 <script>
+import { reloadPageTab, finishPageTab } from '@/utils/page-tab-util';
 import { utils, writeFile } from 'xlsx';
 import UserSearch from './components/user-search.vue';
 import UserEdit from './components/user-edit.vue';
-import UserImport from './components/user-import.vue';
+import userEdit2 from './components/user-edit2.vue';
 import {
   pageUsers,
   removeUser,
@@ -55,13 +57,14 @@ import {
 } from '@/api/system/user';
 import {
   getDeptAuthVarNew,
-  UpdateVarietieBasicJyk
+  UpDownKsQuery
 } from '@/api/KSInventory/KSInventoryBasicData';
 export default {
   name: 'SystemUser',
   components: {
     UserSearch,
-    UserEdit
+    UserEdit,
+    userEdit2
     // UserImport
   },
   data() {
@@ -86,7 +89,7 @@ export default {
         {
           columnKey: 'action',
           label: '操作',
-          width: 120,
+          width: 200,
           align: 'center',
           resizable: false,
           slot: 'action',
@@ -100,6 +103,14 @@ export default {
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 150
+        },
+         {
+          prop: 'CHARGING_CODE',
+          label: '计费编码',
+          sortable: 'custom',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 120
         },
         // {
         //   prop: 'Varietie_Code',
@@ -159,6 +170,14 @@ export default {
           showOverflowTooltip: true
         },
         {
+          prop: 'SOURCE_FROM',
+          label: '来源',
+          align: 'center',
+          sortable: 'custom',
+          width: 100,
+          showOverflowTooltip: true
+        },
+        {
           prop: 'CLASS_NUM',
           label: '品种类别',
           width: 120,
@@ -204,12 +223,15 @@ export default {
       selection: [],
       // 当前编辑数据
       current: null,
+      current2: null,
       // 是否显示编辑弹窗
       showEdit: false,
+      showEdit2: false,
       // 是否显示导入弹窗
       showImport: false,
       // datasource: [],
-      data: []
+      data: [],
+      isDeptTwoAuth: null
     };
   },
   methods: {
@@ -229,12 +251,17 @@ export default {
     },
     /* 刷新表格 */
     reload(where) {
+      this.isDeptTwoAuth = where.isDeptTwoAuth;
       this.$refs.table.reload({ page: 1, where: where });
     },
     /* 打开编辑弹窗 */
     openEdit(row) {
       this.current = row;
       this.showEdit = true;
+    },
+    openEdit2(row) {
+      this.current2 = row;
+      this.showEdit2 = true;
     },
     /* 打开导入弹窗 */
     openImport() {
@@ -371,6 +398,38 @@ export default {
             this.$message.error(e.message);
           });
       });
+    }
+  },
+  watch: {
+    isDeptTwoAuth() {
+      var length = this.columns.length;
+      if (this.isDeptTwoAuth == 1) {
+        if (this.columns[length - 1].prop == 'DEVICE_REMARK') {
+          this.columns.push({
+            prop: 'Coefficient',
+            label: '系数',
+            width: 80,
+            align: 'center',
+            showOverflowTooltip: true
+          });
+          this.columns.push({
+            prop: 'up',
+            label: '上限',
+            width: 80,
+            align: 'center',
+            showOverflowTooltip: true
+          });
+          this.columns.push({
+            prop: 'down',
+            label: '下限',
+            width: 80,
+            align: 'center',
+            showOverflowTooltip: true
+          });
+        }
+      } else {
+        this.columns = this.columns.slice(1, 13);
+      }
     }
   },
   created() {

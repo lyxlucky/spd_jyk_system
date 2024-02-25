@@ -26,7 +26,7 @@
       <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 12 }">
         <el-form-item label="科室名称:">
           <el-select v-model="where.DEPTNAME" @change="search()">
-            <el-option label="全部"  value="">全部</el-option>
+            <el-option label="全部" value="">全部</el-option>
             <el-option v-for="item in userDept" :key="item.Dept_Two_Code" :value="item.Dept_Two_Name">{{item.Dept_Two_Name}}</el-option>
           </el-select>
         </el-form-item>
@@ -43,6 +43,31 @@
           </el-select>
         </el-form-item>
       </el-col>
+      <!-- <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 12 }">
+        <el-form-item label="数量:">
+          <el-select v-model="where.COUNT" @change="search()">
+            <el-option label="全部" value=""></el-option>
+            <el-option label="未出库" value="1"></el-option>
+            <el-option label="已出库" value="0"></el-option>
+          </el-select>
+        </el-form-item>
+      </el-col>
+      <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 12 }">
+        <el-input clearable v-model="where.DELIVERY_NUMBER" placeholder="入库单号" />
+      </el-col>
+      <el-col v-bind="styleResponsive ? { lg: 5, md: 12 } : { span: 8 }">
+        <div class="ele-form-actions">
+          <el-button size="small" type="primary" icon="el-icon-search" class="ele-btn-icon" @click="search">
+            查询
+          </el-button>
+          <el-button size="small" @click="reset">重置</el-button>
+
+          <el-button size="small" type="primary" class="ele-btn-icon" @click="KSInventoryQueryShow=true">库存汇总</el-button>
+        </div>
+      </el-col> -->
+    </el-row>
+
+    <el-row>
       <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 12 }">
         <el-form-item label="数量:">
           <el-select v-model="where.COUNT" @change="search()">
@@ -61,27 +86,28 @@
             查询
           </el-button>
           <el-button size="small" @click="reset">重置</el-button>
-          <!-- <el-button type="success" size="medium" @click="DeptReceivingScanOrderShow">扫码入库</el-button> -->
+
+          <el-button size="small" type="primary" class="ele-btn-icon" @click="KSInventoryQueryShow=true">库存汇总</el-button>
+
+          <label style="margin-left: 30px">合计数量:<b>{{sumCount}}</b></label>
+
         </div>
       </el-col>
     </el-row>
-    <!-- <el-dialog title="扫码入库" :visible.sync="showEdit" width='30%'>
-      <el-form label-width="80px">
-        <el-form-item label="收货单号:">
-          <el-input v-model="DistributeNumber"></el-input>
-        </el-form-item>
-        <div style="width:100%;display: flex;justify-content: center;">
-          <el-button type="primary" @click="onSubmit">确定</el-button>
-        </div>
-      </el-form>
-    </el-dialog> -->
+
+    <KSInventoryQuery2 :visible.sync="KSInventoryQueryShow" />
   </el-form>
 </template>
 
 <script>
 import { CreatList } from '@/api/KSInventory/KSDepartmentalPlan';
 import { DeptReceivingScanOrder } from '@/api/KSInventory/KSInventoryQuery';
+import KSInventoryQuery2 from '@/views/KSInventory/ReferenceComponent/KSInventoryQuery/index.vue';
 export default {
+  props: ['sumCount'],
+  components: {
+    KSInventoryQuery2
+  },
   data() {
     // 默认表单数据
     const defaultWhere = {
@@ -100,7 +126,8 @@ export default {
       BZ: '',
       showEdit: false,
       DistributeNumber: '',
-      userDept:[]
+      userDept: [],
+      KSInventoryQueryShow: false
     };
   },
   computed: {

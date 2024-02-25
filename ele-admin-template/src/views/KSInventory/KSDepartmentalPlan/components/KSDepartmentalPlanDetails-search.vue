@@ -23,19 +23,19 @@
       </el-col>
     </el-row>
     <el-row :gutter="10">
-      <el-col :lg="8" :md="12">
+      <el-col :lg="6" :md="12">
         <el-form-item label="">
           <el-input v-model="where.SerachName" placeholder="请输入品种名称/品种编码/型号规格/生产企业搜索" clearable />
         </el-form-item>
       </el-col>
-      <el-col :lg="16" :md="12">
+      <el-col :lg="18" :md="12">
         <div class="ele-form-actions">
           <el-button type="primary" @click="search">查询</el-button>
           <el-button @click="reset">重置</el-button>
 
           <el-button type="primary" size="small" @click="openIntroduceUserDefinedTemp" :disabled='!IsDisabled'>自定义新增</el-button>
           <!-- <el-button type="primary" size="small" @click="openIntroduceOtherTemp" :disabled='!IsDisabled'>引用常规模板</el-button> -->
-          <el-button type="primary" size="small" @click="showApplyTemp" :disabled='!IsDisabled'>引入其他模板</el-button>
+          <el-button type="primary" size="small" @click="showApplyTemp" :disabled='!IsDisabled'>引入模板</el-button>
           <!-- <el-button type="primary" size="small" @click="reset" :disabled='!IsDisabled'>引入历史记录</el-button> -->
           <el-button type="primary" size="small" @click="KeeptApplyDate" :disabled='!IsDisabled'>暂存申领单</el-button>
           <el-button type="primary" size="small" @click="addPutInListDeta2" :disabled='!IsDisabled'>保存并提交</el-button>
@@ -52,6 +52,12 @@
               <el-button type="danger" size="small" :underline="false" :disabled='!IsDisabledByDel'>删除</el-button>
             </template>
           </el-popconfirm>
+
+          <el-button type="primary" size="small" @click="ApplyOperateTipShow=true">查看订单详情</el-button>
+          <el-button type="primary" size="small" @click="BidListShowEdit=true">中标目录</el-button>
+          <el-button type="primary" size="small" @click="VarietyDataLzhLookShow=true">在用目录</el-button>
+          <el-button type="primary" size="small" @click="DpetOneAuthWithDeptShow=true">科室目录</el-button>
+          <!-- <el-button type="primary" size="small" @click="subToExamine">申领指引</el-button> -->
         </div>
       </el-col>
     </el-row>
@@ -83,6 +89,11 @@
     </el-row> -->
     <IntroduceUserDefinedTemp :visible.sync="showEdit" :IntroduceUserDefinedTempSearch="KSDepartmentalPlanDataSearch" />
     <IntroduceDefinedTemp :visible.sync="showEdit2" />
+    <BidVarInfoDept :visible.sync="BidListShowEdit" />
+    <ApplyOperateTip :visible.sync="ApplyOperateTipShow" />
+    <ApplyOperateTip :visible.sync="ApplyOperateTipShow" />
+    <VarietyDataLzhLook :visible.sync="VarietyDataLzhLookShow" />
+    <DpetOneAuthWithDept :visible.sync="DpetOneAuthWithDeptShow" />
     <el-dialog title="授权品种目录" :visible.sync="ApplyTempPage" width='95%'>
       <!-- <AuthVarTable :dialogTableVisible="dialogTableVisible" :ApplyTempTableDataID="ApplyTempTableDataID" /> -->
       <ApplyTemp :IntroduceUserDefinedTempSearch="KSDepartmentalPlanDataSearch" @ApplyTempPageChange="ApplyTempPageChange" />
@@ -109,6 +120,10 @@ import {
   deleteZeroDel
 } from '@/api/KSInventory/KSDepartmentalPlan';
 import IntroduceUserDefinedTemp from '@/views/KSInventory/IntroduceUserDefinedTemp/index.vue';
+import BidVarInfoDept from '@/views/KSInventory/ReferenceComponent/BidVarInfoDept/index.vue';
+import ApplyOperateTip from '@/views/KSInventory/ReferenceComponent/ApplyOperateTip/index.vue';
+import VarietyDataLzhLook from '@/views/KSInventory/ReferenceComponent/VarietyDataLzhLook/index.vue';
+import DpetOneAuthWithDept from '@/views/KSInventory/ReferenceComponent/DpetOneAuthWithDept/index.vue';
 import ApplyTemp from '@/views/KSInventory/ApplyTemp/index.vue';
 import IntroduceDefinedTemp from './aaaaccc.vue';
 export default {
@@ -116,7 +131,11 @@ export default {
   components: {
     IntroduceUserDefinedTemp,
     IntroduceDefinedTemp,
-    ApplyTemp
+    ApplyTemp,
+    BidVarInfoDept,
+    ApplyOperateTip,
+    VarietyDataLzhLook,
+    DpetOneAuthWithDept,
   },
   data() {
     // 默认表单数据
@@ -134,7 +153,11 @@ export default {
       showEdit: false,
       showEdit2: false,
       ApplyTempPage: false,
-      centerDialogVisible: false
+      centerDialogVisible: false,
+      BidListShowEdit: false,
+      ApplyOperateTipShow: false,
+      VarietyDataLzhLookShow: false,
+      DpetOneAuthWithDeptShow: false,
     };
   },
   computed: {

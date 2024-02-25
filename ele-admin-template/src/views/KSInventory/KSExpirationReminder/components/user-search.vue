@@ -19,14 +19,14 @@
           </el-select>
         </el-form-item>
       </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 6 }" >
+      <!-- <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 6 }" >
         <el-form-item label="已退货:">
           <el-select v-model="where.isHaveTh" >
             <el-option label="不包含" value="0"></el-option>
             <el-option label="包含" value="1"></el-option>
           </el-select>
         </el-form-item>
-      </el-col>
+      </el-col> -->
       <el-col v-bind="styleResponsive ? { lg: 6, md: 12 } : { span: 6 }">
         <div class="ele-form-actions">
           <el-button type="primary" icon="el-icon-search" class="ele-btn-icon" @click="search">

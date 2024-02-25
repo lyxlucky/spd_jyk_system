@@ -113,7 +113,7 @@ export async function SerachAuthVar(data) {
 /* 模板添加品种 */
 export async function CreateTempletDeta(data) {
     var data2 = {};
-    data2.json =  JSON.stringify(data);
+    data2.json = JSON.stringify(data);
     data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
 
     var rep = formdataify(data2);
@@ -124,12 +124,12 @@ export async function CreateTempletDeta(data) {
     } else {
         return Promise.reject(new Error(res.data.msg));
     }
-}  
+}
 
 /* 其他模板添加品种 */
 export async function KeeptListDeta(data) {
     var data2 = {};
-    data2.json =  JSON.stringify(data);
+    data2.json = JSON.stringify(data);
     data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
     data2.type = '0';
 
@@ -141,17 +141,59 @@ export async function KeeptListDeta(data) {
     } else {
         return Promise.reject(new Error(res.data.msg));
     }
-}  
+}
 
 /*  */
 export async function KeepTempletDeta(data) {
     var data2 = {};
-    data2.json =  JSON.stringify(data);
+    data2.json = JSON.stringify(data);
     data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
 
     var rep = formdataify(data2);
 
     const res = await request.post('/DeptApplyPlan/KeepTempletDeta', rep);
+    if (res.data.code == 200) {
+        return res.data;
+    } else {
+        return Promise.reject(new Error(res.data.msg));
+    }
+}
+
+/* 设置常规模板 */
+export async function UpdateCommon(data) {
+    var data2 = {};
+    data2.ID = data.ID;
+    data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+
+    var rep = formdataify(data2);
+
+    const res = await request.post('/DeptApplyPlan/UpdateCommon', rep);
+    if (res.data.code == 200) {
+        return res.data;
+    } else {
+        return Promise.reject(new Error(res.data.msg));
+    }
+}
+
+/* 取消常规模板 */
+export async function UpdateCommon2(data) {
+    var data2 = {};
+    data2.ID = 0;
+    data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+
+    var rep = formdataify(data2);
+
+    const res = await request.post('/DeptApplyPlan/UpdateCommon', rep);
+    if (res.data.code == 200) {
+        return res.data;
+    } else {
+        return Promise.reject(new Error(res.data.msg));
+    }
+}
+
+/* 导入模板 */
+export async function ImportTempExcel(data) {
+    const res = await request.post('/DeptApplyPlan/ImportTempExcel', data);
     if (res.data.code == 200) {
         return res.data;
     } else {

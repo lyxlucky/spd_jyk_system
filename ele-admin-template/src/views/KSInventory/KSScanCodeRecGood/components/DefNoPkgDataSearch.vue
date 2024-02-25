@@ -32,7 +32,7 @@ export default {
     // 默认表单数据
     const defaultWhere = {
       Token: '',
-      State: '-1',
+      State: '',
     };
     return {
       // 表单数据

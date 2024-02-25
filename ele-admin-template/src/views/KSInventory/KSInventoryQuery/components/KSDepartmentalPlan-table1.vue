@@ -5,7 +5,8 @@
       <!-- 表头工具栏 -->
       <template v-slot:toolbar>
         <!-- 搜索表单 -->
-        <KSDepartmentalPlan-search @search="reload" />
+        <KSDepartmentalPlan-search @search="reload" :sumCount ='sumCount'/>
+        <!-- <label>合计数量:<b>{{sumCount}}</b></label> -->
       </template>
 
       <template v-slot:State="{ row }">
@@ -320,6 +321,7 @@ export default {
       data: [],
       TYPE: null,
       rowData: null,
+      sumCount: 0,
       dateNow1: dayjs().format('YYYY-MM-DD'),
       dateNow2: dayjs().format('YYYY-MM-DD'),
       dateNow3: dayjs().format('YYYY-MM-DD'),
@@ -345,6 +347,7 @@ export default {
           count: res.total,
           list: res.result
         };
+        this.sumCount = res.sumCount;
         return tData;
       });
       return data;

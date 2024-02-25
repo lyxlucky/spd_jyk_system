@@ -31,7 +31,7 @@
       </el-table-column>
     </el-table>
     <el-row class="btn_permission">
-      <el-button type="success">确定</el-button>
+      <el-button type="success" @click="submin()">确定</el-button>
       <el-button @click="updateVisible(false)">取消</el-button>
     </el-row>
   </el-dialog>
@@ -40,13 +40,16 @@
 <script>
 import {
   getPermissionList,
-  getPermissionListByGroupsID
+  getPermissionListByGroupsID,
+  correlationGroups_Permissions
 } from '@/api/SystemConfiguration/PermissionGroup';
-
+import { reloadPageTab, finishPageTab } from '@/utils/page-tab-util';
 export default {
   props: {
     // 是否打开弹窗
-    visible: Boolean
+    visible: Boolean,
+    // 修改回显的数据
+    data: Object
   },
   data() {
     return {
@@ -162,6 +165,28 @@ export default {
         //   this.$refs.table.toggleRowSelection(row);
         // });
         return data2;
+      });
+    },
+    submin() {
+      const loading = this.$messageLoading('授权中...');
+      var array = [];
+      for (let i = 0; i < this.multipleSelection.length; i++) {
+        array.push(this.multipleSelection[i].ID);
+      }
+      var data = {
+        array,
+        groupID: this.data.ID
+      };
+
+      correlationGroups_Permissions(data).then((res) => {
+        loading.close();
+        if (res == true) {
+          loading.close();
+          this.$message.success('授权成功!');
+          location.reload();
+        } else {
+          this.$message.error('授权失败!');
+        }
       });
     }
   },

@@ -8,6 +8,15 @@
       <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 6 }">
         <el-input clearable v-model="where.APPROVAL_NUMBER" placeholder="注册证号" />
       </el-col>
+      <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 6 }">
+        <el-form-item label="是否主动补货：" label-width="120px">
+          <el-select v-model="where.isDeptTwoAuth" @change="search()">
+            <el-option label="全部" value=""></el-option>
+            <el-option label="是" value="1"></el-option>
+            <el-option label="否" value="0"></el-option>
+          </el-select>
+        </el-form-item>
+      </el-col>
       <el-col v-bind="styleResponsive ? { lg: 6, md: 12 } : { span: 6 }">
         <div class="ele-form-actions">
           <el-button type="primary" icon="el-icon-search" class="ele-btn-icon" @click="search">
@@ -24,7 +33,6 @@
 </template>
 
 <script>
-
 export default {
   data() {
     // 默认表单数据
@@ -34,7 +42,8 @@ export default {
       Manufacturing_Ent_Name: '',
       CLASS_NUM: '',
       DEVICE_REMARK: '',
-      Dept_One_Code: ''
+      Dept_One_Code: '',
+      isDeptTwoAuth: '',
     };
     return {
       // 表单数据
@@ -58,7 +67,7 @@ export default {
       this.search();
     },
     exportData() {
-      this.$emit('exportData',this.where)
+      this.$emit('exportData', this.where);
     }
   }
 };

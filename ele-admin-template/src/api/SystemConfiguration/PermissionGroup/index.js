@@ -52,3 +52,10 @@ export async function getPermissionListByGroupsID(ID) {
     const res = await request.get('/Commons/getPermissionListByGroupsID', { params });
     return res.data;
 }
+
+export async function correlationGroups_Permissions(data) {
+    data.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+    var rep = formdataify(data)
+    const res = await request.post('/Commons/correlationGroups_Permissions', rep);
+    return res.data;
+}

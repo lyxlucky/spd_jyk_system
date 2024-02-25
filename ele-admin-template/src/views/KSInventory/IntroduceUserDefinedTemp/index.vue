@@ -131,20 +131,20 @@ export default {
           showOverflowTooltip: true,
           minWidth: 80
         },
-        {
-          prop: 'BIG_BOX_COUNT',
-          label: '大包装数量',
-          width: 80,
-          align: 'center',
-          showOverflowTooltip: true
-        },
-        {
-          prop: 'MIDDLE_PACKAGE_COUNT',
-          label: '中包装数量',
-          width: 80,
-          align: 'center',
-          showOverflowTooltip: true
-        },
+        // {
+        //   prop: 'BIG_BOX_COUNT',
+        //   label: '大包装数量',
+        //   width: 80,
+        //   align: 'center',
+        //   showOverflowTooltip: true
+        // },
+        // {
+        //   prop: 'MIDDLE_PACKAGE_COUNT',
+        //   label: '中包装数量',
+        //   width: 80,
+        //   align: 'center',
+        //   showOverflowTooltip: true
+        // },
         {
           prop: 'PAG_TYPE',
           label: '包装规格',

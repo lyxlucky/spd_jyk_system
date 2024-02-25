@@ -68,12 +68,50 @@ export const GetGuid = (len = 32, radix = 16) => {
 
 
 /** 格式化日期 */
-export const formatDate = (date) => {
+export const formatDate = (date, format) => {
+    date = new Date(date);
+    // 当前时间字符串
+    var dateNowChar = new Date(Date.now());
+
+    // 当前时间
+    var dateNowLast =`${dateNowChar.toLocaleDateString().replace(/\//g, '-')}` + ` ${dateNowChar.toTimeString().substring(0, 8)}`
+
+
+    format = format.toLowerCase()
     const year = date.getFullYear();
     const month = ('0' + (date.getMonth() + 1)).slice(-2);
     const day = ('0' + date.getDate()).slice(-2);
     const hours = ('0' + date.getHours()).slice(-2);
     const minutes = ('0' + date.getMinutes()).slice(-2);
     const seconds = ('0' + date.getSeconds()).slice(-2);
-    return `${year}-${month}-${day}`;
+
+    var dateLast = "";
+    switch (format) {
+        case "yyyy":
+            dateLast = `${year}`
+            break;
+        case "yyyy-mm":
+            dateLast = `${year}-${month}`
+            break;
+        case "yyyy-mm-dd":
+            dateLast = `${year}-${month}-${day}`
+            break;
+        case "yyyy-mm-dd hh:mi:ss":
+            dateLast = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
+            break;
+        default:
+            dateLast = `${year}-${month}-${day}`
+            break;
+    }
+    return dateLast;
 };
+
+function getAesKey() {
+    var chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
+    var nums = "";
+    for (var i = 0; i < 32; i++) {
+        var id = parseInt(Math.random() * 61);
+        nums += chars[id];
+    }
+    return nums;
+}

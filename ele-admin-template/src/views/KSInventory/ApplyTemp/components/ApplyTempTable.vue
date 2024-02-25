@@ -1,11 +1,11 @@
 <template>
   <div class="ele-body">
     <!-- 数据表格 -->
-    <ele-pro-table highlight-current-row @current-change="onCurrentChange" ref="table" height="55vh" :rowClickChecked="true" :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" cache-key="ApplyTempTable">
+    <ele-pro-table highlight-current-row @current-change="onCurrentChange" :row-class-name="tableRowClassName" ref="table" height="48vh" :rowClickChecked="true" :stripe="false" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" cache-key="ApplyTempTable">
       <!-- 表头工具栏 -->
       <template v-slot:toolbar>
         <!-- 搜索表单 -->
-        <ApplyTempSearch @search="reload" />
+        <ApplyTempSearch @search="reload" :rowData="current" />
       </template>
 
       <template v-slot:State="{ row }">
@@ -21,6 +21,12 @@
           {{ item.State }}
         </el-tag> -->
       </template>
+
+      <template v-slot:CommonState="{ row }">
+        <el-tag v-if="row.CommonState==0" type="success">新增</el-tag>
+        <el-tag v-if="row.CommonState==1">已提交</el-tag>
+      </template>
+
       <!-- 操作列 -->
       <template v-slot:action="{ row }">
         <!-- <el-button type="primary" size="small" @click="search(row)">设置为专属模板</el-button> -->
@@ -35,6 +41,16 @@
     </ele-pro-table>
   </div>
 </template>
+
+<style>
+.el-table .warning-row {
+  background: oldlace;
+}
+
+.el-table .success-row {
+  background: #65bb37;
+}
+</style>
 
 <script>
 import ApplyTempSearch from './ApplyTempSearch.vue';
@@ -98,6 +114,7 @@ export default {
         },
         {
           prop: 'CommonState',
+          // slot: 'CommonState',
           label: '常规',
           // sortable: 'custom',
           align: 'center',
@@ -231,8 +248,16 @@ export default {
         })
         .catch((err) => {
           loading.close();
-           this.$message.error(err);
+          this.$message.error(err);
         });
+    },
+
+    tableRowClassName({ row, rowIndex }) {
+      if (row.CommonState == 1) {
+        return 'success-row';
+      } else {
+        return '';
+      }
     }
   },
   created() {

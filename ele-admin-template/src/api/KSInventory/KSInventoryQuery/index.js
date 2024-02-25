@@ -27,6 +27,33 @@ export async function GetJykMainShelf(data) {
     }
 }
 
+
+export async function GetJykMainShelfHz(data) {
+    var data2 = {};
+    data2.page = data.page;
+    data2.size = data.limit;
+    data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+    data2.Name = data.where.Name ? data.where.Name : '';
+    data2.SPEC = data.where.SPEC ? data.where.SPEC : '';
+    data2.MANUFACTURING_ENT_NAME = data.where.MANUFACTURING_ENT_NAME ? data.where.MANUFACTURING_ENT_NAME : '';
+    data2.DEPTNAME = data.where.DEPTNAME ? data.where.DEPTNAME : '';
+    data2.DEF_NO_PKG_CODE = data.where.DEF_NO_PKG_CODE ? data.where.DEF_NO_PKG_CODE : '';
+    data2.TYPE = data.where.TYPE ? data.where.TYPE : '';
+    data2.COUNT = data.where.COUNT ? data.where.COUNT : '';
+    data2.DELIVERY_NUMBER = data.where.DELIVERY_NUMBER ? data.where.DELIVERY_NUMBER : '';
+    data2.DeptCode = data.where.DeptCode ? data.where.DeptCode : '';
+
+    const res = await request.get('/AJykDept/GetJykMainShelfHz', {
+        params: data2,
+    });
+    if (res.data.code == 200) {
+        return res.data;
+    } else {
+        return Promise.reject(new Error(res.data.msg));
+    }
+}
+
+
 export async function GetJykDetailShelf(data) {
     var data2 = {};
     data2.page = data.page;

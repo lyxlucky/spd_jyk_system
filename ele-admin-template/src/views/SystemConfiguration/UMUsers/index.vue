@@ -17,9 +17,11 @@
           <el-link type="primary" :underline="false" icon="el-icon-edit" @click="openEdit(row)">
             修改密码
           </el-link>
-          <el-link type="primary" :underline="false" icon="el-icon-key" @click="resetPsw(row)">
+          <el-button size="small" type="primary" class="ele-btn-icon" @click="openEdit2(row)">分配权限组</el-button>
+          <el-button size="small" type="primary" class="ele-btn-icon" @click="openEdit()">分配组内权限</el-button>
+          <!-- <el-link type="primary" :underline="false" icon="el-icon-key" @click="resetPsw(row)">
             重置密码
-          </el-link>
+          </el-link> -->
           <el-popconfirm class="ele-action" title="确定要删除此用户吗？" @confirm="remove(row)">
             <template v-slot:reference>
               <el-link type="danger" :underline="false" icon="el-icon-delete">
@@ -31,20 +33,18 @@
       </ele-pro-table>
     </el-card>
     <!-- 编辑弹窗 -->
-    <user-edit :visible.sync="showEdit" :data="current" @done="reload" />
+    <user-edit :visible.sync="showEdit" :data="current" @reload="reload" />
     <!-- 导入弹窗 -->
-    <user-import :visible.sync="showImport" @done="reload" />
+    <uMUser-groups :visible.sync="showEdit2" :data="current" @reload="reload" />
   </div>
 </template>
 
 <script>
 import UserSearch from './components/user-search.vue';
 import UserEdit from './components/user-edit.vue';
-import UserImport from './components/user-import.vue';
+import UMUserGroups from './components/umUser_groups.vue';
 
 import {
-  pageUsers,
-  removeUser,
   removeUsers,
   updateUserStatus,
   updateUserPassword
@@ -55,7 +55,7 @@ export default {
   components: {
     UserSearch,
     UserEdit,
-    UserImport
+    UMUserGroups
   },
   data() {
     return {
@@ -119,7 +119,7 @@ export default {
         {
           columnKey: 'action',
           label: '操作',
-          width: 300,
+          width: 400,
           align: 'center',
           resizable: false,
           slot: 'action',
@@ -138,6 +138,7 @@ export default {
       showEdit: false,
       // 是否显示导入弹窗
       showImport: false,
+      showEdit2: false,
       // datasource: [],
       data: []
     };
@@ -172,6 +173,10 @@ export default {
     openEdit(row) {
       this.current = row;
       this.showEdit = true;
+    },
+    openEdit2(row) {
+      this.current = row;
+      this.showEdit2 = true;
     },
     /* 打开导入弹窗 */
     openImport() {

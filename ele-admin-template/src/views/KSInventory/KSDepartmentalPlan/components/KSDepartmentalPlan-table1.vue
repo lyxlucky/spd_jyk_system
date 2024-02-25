@@ -1,10 +1,11 @@
 <template>
   <div class="ele-body">
     <!-- 数据表格 -->
-    <ele-pro-table highlight-current-row @current-change="onCurrentChange" ref="table" height="25vh" :rowClickChecked="true" :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" cache-key="KSInventoryBasicDataTable">
+    <ele-pro-table highlight-current-row @current-change="onCurrentChange" ref="table" height="27vh" :rowClickChecked="true" :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" cache-key="KSInventoryBasicDataTable">
       <!-- 表头工具栏 -->
       <template v-slot:toolbar>
         <!-- 搜索表单 -->
+        <label>当月-申报总金额:{{applyPlanSbz}} 消耗总金额:{{applyPlanXhz}} 消耗/计划:{{applyPlanBl}}</label>
         <KSDepartmentalPlan-search @search="reload" />
       </template>
 
@@ -39,7 +40,8 @@
 import KSDepartmentalPlanSearch from './KSDepartmentalPlan-search.vue';
 import {
   SerachPlanList,
-  DeletePlanList
+  DeletePlanList,
+  SearchHistoryConsumedAndPurchaseDept
 } from '@/api/KSInventory/KSDepartmentalPlan';
 import { getDeptAuthVarNew } from '@/api/KSInventory/KSInventoryBasicData';
 export default {
@@ -168,7 +170,10 @@ export default {
       // 是否显示导入弹窗
       showImport: false,
       // datasource: [],
-      data: []
+      data: [],
+      applyPlanSbz: 0,
+      applyPlanXhz: 0,
+      applyPlanBl: '0%'
     };
   },
   methods: {
@@ -223,6 +228,28 @@ export default {
           loading.close();
           this.$message.error(err);
         });
+    },
+    GetConsume() {
+      var data = {
+        deptTwoCode: this.$store.state.user.info.DeptNow.Dept_Two_Code
+      };
+      SearchHistoryConsumedAndPurchaseDept(data)
+        .then((res) => {
+          this.applyPlanSbz = res.result[0].Purchase_Cost.toFixed(2);
+          this.applyPlanXhz = res.result[0].Consumed_Cost.toFixed(2);
+          if (data.result[0].Purchase_Cost > 0) {
+            this.applyPlanBl =
+              (
+                (data.result[0].Consumed_Cost / data.result[0].Purchase_Cost) *
+                100
+              ).toFixed(2) + '%';
+          } else {
+            this.applyPlanBl = 0 + '%';
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
   },
   watch: {
@@ -234,6 +261,7 @@ export default {
   },
   created() {
     // this.getdatasource();
+    this.GetConsume();
   }
 };
 </script>

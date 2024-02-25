@@ -95,7 +95,6 @@ export default {
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 180,
-          fixed: 'right'
         },
         {
           prop: 'Unit',
@@ -103,7 +102,6 @@ export default {
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 60,
-          fixed: 'right'
         },
         {
           prop: 'PRICE',
@@ -111,7 +109,6 @@ export default {
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 70,
-          fixed: 'right'
         },
          {
           prop: 'KC_COUNT',
@@ -119,7 +116,6 @@ export default {
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 80,
-          fixed: 'right'
         },
          {
           prop: 'replenish_quantity',

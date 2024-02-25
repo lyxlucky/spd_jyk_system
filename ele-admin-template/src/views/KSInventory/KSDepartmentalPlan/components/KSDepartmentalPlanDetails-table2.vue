@@ -2,7 +2,7 @@
   <div class="ele-body">
     <!-- <el-button type="danger" size="small" @click="aaa">aaa</el-button> -->
     <!-- 数据表格 -->
-    <ele-pro-table ref="table" :toolStyle="toolStyle" height="30vh" highlight-current-row :stripe="true" :rowClickChecked="true" :rowClickCheckedIntelligent="false" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" @selection-change="onSelectionChange" cache-key="KSInventoryBasicDataTable">
+    <ele-pro-table ref="table" :toolStyle="toolStyle" height="32vh" highlight-current-row :stripe="true" :rowClickChecked="true" :rowClickCheckedIntelligent="false" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" @selection-change="onSelectionChange" cache-key="KSInventoryBasicDataTable">
       <!-- 表头工具栏 -->
       <!-- 右表头 -->
       <!-- <template v-slot:toolkit>
@@ -53,6 +53,7 @@
         </el-popconfirm>
       </template>
     </ele-pro-table>
+    <p style="display: flex;justify-content: flex-end;">实际申领数量合计: <b>{{sumNumber}}</b> 实际申领金额合计:  <b>{{sumAount}}</b> </p>
   </div>
 </template>
 
@@ -102,14 +103,6 @@ export default {
           // prop: 'VarCode',
           slot: 'VarCode',
           label: '品种编码',
-
-          align: 'center',
-          showOverflowTooltip: true,
-          width: 150
-        }, {
-          // prop: 'CHARGING_CODE',
-          slot: 'CHARGING_CODE',
-          label: '计费编码',
 
           align: 'center',
           showOverflowTooltip: true,
@@ -180,9 +173,18 @@ export default {
           showOverflowTooltip: true,
           width: 110
         },
+        // {
+        //   prop: 'TempQty',
+        //   label: '中心库库存',
+
+        //   align: 'center',
+        //   showOverflowTooltip: true,
+        //   width: 110
+        // },
         {
           prop: 'Day_Consume_Qty',
-          label: '平均用量(默认近30天)',
+          label: '平均用量(默认近30天)  ',
+
           align: 'center',
           showOverflowTooltip: true,
           width: 110
@@ -193,7 +195,7 @@ export default {
 
           align: 'center',
           showOverflowTooltip: true,
-          width: 80
+          width: 120
         },
         {
           prop: 'TJ_QTY',
@@ -318,7 +320,9 @@ export default {
       showEdit: false,
       // 是否显示导入弹窗
       showImport: false,
-      datasourceList: []
+      datasourceList: [],
+      sumNumber:0,
+      sumAount:0
     };
   },
   methods: {
@@ -338,6 +342,8 @@ export default {
             list: res.result
           };
           this.datasourceList = res.result;
+          this.sumNumber = res.sumNumber;
+          this.sumAount = res.sumAount;
           return tData;
         }
       );

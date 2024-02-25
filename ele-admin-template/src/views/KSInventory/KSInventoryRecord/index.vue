@@ -14,7 +14,7 @@
       <template v-slot:toolbar>
         <!-- 搜索表单 -->
         <KSDepartmentalPlanDetails-search @search="reload" :KSDepartmentalPlanDataSearch='KSDepartmentalPlanDataSearch' :selection="selection" @showEditReoad="showEditReoad" :datasourceList="datasourceList" />
-
+        <label>出库数:<b>{{SumCount2}}</b> 入库数: <b>{{SumCount1}}</b>净入库:<b>{{netExport}}</b></label>
         <!-- <el-button size="small" type="danger" icon="el-icon-delete" class="ele-btn-icon" @click="removebatch">
           删除
         </el-button> -->
@@ -319,7 +319,10 @@ export default {
       showEdit: false,
       // 是否显示导入弹窗
       showImport: false,
-      datasourceList: []
+      datasourceList: [],
+      SumCount1: 0,
+      SumCount2: 0,
+      netExport: 0
     };
   },
   methods: {
@@ -339,6 +342,9 @@ export default {
             list: res.result
           };
           this.datasourceList = res.result;
+          this.SumCount1 = Math.abs(res.SumCount1);
+          this.SumCount2 = Math.abs(res.SumCount2);
+          this.netExport = res.SumCount1 + res.SumCount2;
           return tData;
         }
       );
