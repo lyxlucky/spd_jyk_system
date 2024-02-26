@@ -106,12 +106,14 @@
           </el-form-item>
         </el-col>
       </div>
-      <el-col v-bind="styleResponsive ? { lg: 6, md: 12 } : { span: 6 }">
+      <el-col v-bind="styleResponsive ? { lg: 10, md: 12 } : { span: 6 }">
         <div class="ele-form-actions">
           <el-button type="primary" icon="el-icon-search" class="ele-btn-icon" @click="search">
             查询
           </el-button>
           <el-button @click="reset">重置</el-button>
+          <el-button type="primary" class="ele-btn-icon" @click="ApplyToVarietyDataLzhLook()">申请至再用目录</el-button>
+          <el-button type="danger" class="ele-btn-icon" @click="CalApplyToVarietyDataLzhLook()">取消申请至再用目录</el-button>
           <el-button type="primary" icon="el-icon-download" class="ele-btn-icon" @click="exportData">
             导出
           </el-button>
@@ -122,7 +124,10 @@
 </template>
 
 <script>
+import { CreateTempletDeta } from '@/api/KSInventory/BidVarInfoDept';
+
 export default {
+  props: ['selection'],
   data() {
     // 默认表单数据
     const defaultWhere = {
@@ -170,6 +175,38 @@ export default {
     },
     exportData() {
       this.$emit('exportData', this.where);
+    },
+    ApplyToVarietyDataLzhLook() {
+      const loading = this.$messageLoading('保存中。。。');
+      var data = this.selection;
+      data.dept_two_code = this.$store.state.user.info.DeptNow.Dept_Two_Code;
+      data.state = 3;
+      CreateTempletDeta(data)
+        .then((res) => {
+          loading.close();
+          this.$message.success(res.msg);
+          this.search();
+        })
+        .catch((err) => {
+          loading.close();
+          this.$message.error(err);
+        });
+    },
+    CalApplyToVarietyDataLzhLook() {
+      const loading = this.$messageLoading('保存中。。。');
+      var data = this.selection;
+      data.dept_two_code = this.$store.state.user.info.DeptNow.Dept_Two_Code;
+      data.state = 0;
+      CreateTempletDeta(data)
+        .then((res) => {
+          loading.close();
+          this.$message.success(res.msg);
+          this.search();
+        })
+        .catch((err) => {
+          loading.close();
+          this.$message.error(err);
+        });
     }
   },
   created() {
