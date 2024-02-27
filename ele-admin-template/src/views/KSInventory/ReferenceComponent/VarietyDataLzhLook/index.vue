@@ -14,11 +14,8 @@
               <el-input v-model="row.APPLY_QTY"></el-input>
             </el-form-item>
           </template>
-          <template v-slot:PIC_URL="{  }">
-            <!-- <el-tag type="info">图片</el-tag> -->
-            <el-button type="info" size="mini">包装图片</el-button>
-            <!-- <div v-html="row.body"></div> -->
-            <!-- <el-table-column label="BMI" :formatter="bmiFormatter"></el-table-column> -->
+          <template v-slot:Varietie_Code_New="{  }">
+            <el-tag type="info">图片</el-tag>
           </template>
         </ele-pro-table>
       </el-card>
@@ -97,21 +94,12 @@ export default {
           minWidth: 120
         },
         {
-          slot: 'PIC_URL',
-          // prop: 'PIC_URL',
-          label: '包装图片',
+          slot: 'Varietie_Code_New',
+          label: '图片',
           // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 120,
-          formatter(row, column, cellValue, index) {
-            if (cellValue) {
-              var PIC_URL_List = cellValue.split(',');
-            }
-            // cellValue = <el-button type="info" size="mini">包装图片</el-button>;
-            // return '<el-button type="info" size="mini">包装图片</el-button>';
-            // return <el-button type="info" size="mini">包装图片</el-button>;
-          }
+          minWidth: 80
         },
         {
           prop: 'CHARGING_CODE',
@@ -272,7 +260,7 @@ export default {
     },
     onSelectionChange(selection) {
       this.selection = selection;
-    },
+    }
   },
   watch: {
     visible(visible) {
