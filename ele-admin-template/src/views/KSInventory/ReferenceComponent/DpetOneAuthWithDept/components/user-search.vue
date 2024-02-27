@@ -3,29 +3,30 @@
   <el-form class="ele-form-search" @keyup.enter.native="search" @submit.native.prevent>
     <el-row>
       <el-col :span="4">
-        <el-form-item >
+        <el-form-item>
           <el-input style="width: 90%;" clearable v-model="where.Varietie_Name" placeholder="品种编码/名称" />
         </el-form-item>
       </el-col>
       <el-col :span="4">
-        <el-form-item >
+        <el-form-item>
           <el-input style="width: 90%;" clearable v-model="where.Specification_Or_Type" placeholder="规格型号" />
         </el-form-item>
       </el-col>
       <el-col :span="4">
-        <el-form-item >
+        <el-form-item>
           <el-input style="width: 90%;" clearable v-model="where.Manufacturing_Ent_Name" placeholder="生产企业" />
         </el-form-item>
       </el-col>
       <el-col :span="4">
-        <el-form-item >
+        <el-form-item>
           <el-input style="width: 90%;" clearable v-model="where.APPROVAL_NUMBER" placeholder="注册证" />
         </el-form-item>
       </el-col>
 
-      <el-col :span="4">
+      <el-col :span="6">
         <el-button type="primary" icon="el-icon-search" class="ele-btn-icon" @click="search">查询</el-button>
         <el-button @click="reset">重置</el-button>
+        <el-button type="primary" icon="el-icon-download" class="ele-btn-icon" @click="exportData">导出</el-button>
       </el-col>
     </el-row>
   </el-form>
@@ -39,7 +40,7 @@ export default {
       Varietie_Name: '',
       Specification_Or_Type: '',
       APPROVAL_NUMBER: '',
-      Manufacturing_Ent_Name: '',
+      Manufacturing_Ent_Name: ''
     };
     return {
       // 表单数据
@@ -61,6 +62,9 @@ export default {
     reset() {
       this.where = { ...this.defaultWhere };
       this.search();
+    },
+    exportData() {
+      this.$emit('exportData', this.where);
     }
   },
   created() {

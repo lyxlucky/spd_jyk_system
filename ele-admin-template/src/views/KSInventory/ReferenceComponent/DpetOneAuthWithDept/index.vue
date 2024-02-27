@@ -6,7 +6,7 @@
         <!-- 数据表格 -->
         <ele-pro-table ref="table" height="600px" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :rowClickChecked="true" :rowClickCheckedIntelligent="false" :selection.sync="selection" @selection-change="onSelectionChange" cache-key="dpetOneAuthWithDept">
           <template v-slot:toolbar>
-            <user-search @search="reload" />
+            <user-search @search="reload" @exportData="exportData" />
           </template>
           <!-- 操作列 -->
           <template v-slot:APPLY_QTY="{ row }">
@@ -242,6 +242,74 @@ export default {
     },
     onSelectionChange(selection) {
       this.selection = selection;
+    },
+    exportData(data) {
+      const loading = this.$messageLoading('正在导出数据...');
+      this.$refs.table.doRequest(({ where, order }) => {
+        where = data;
+        where.Dept_Two_Code = this.$store.state.user.info.DeptNow.Dept_Two_Code;
+        getOneAuthVarWithDept({
+          page: 1,
+          limit: 999999,
+          where: where,
+          order: order
+        })
+          .then((res) => {
+            loading.close();
+            const array = [
+              [
+                '启用状态',
+                '品种（材料）编码',
+                '计费编码',
+                '阳光产品码',
+                '注册证名称',
+                '品种名称',
+                '型号/规格',
+                '生产企业名称',
+                '单位',
+                '中标价',
+                '批准文号',
+                '科室名称'
+              ]
+            ];
+            res.result.forEach((d) => {
+              if (d.Enable == '1') {
+                d.Enable = '启用';
+              } else if (d.Enable == '0') {
+                d.Enable = '冻结';
+              }
+
+              array.push([
+                d.Enable.replace('1', '启用').replace('0', '冻结'),
+                d.Varietie_Code_New,
+                d.CHARGING_CODE,
+                d.YG_CODE,
+                d.PROD_REGISTRATION_NAME,
+                d.Varietie_Name,
+                d.Specification_Or_Type,
+                d.Manufacturing_Ent_Name,
+                d.Unit,
+                d.Price,
+                d.APPROVAL_NUMBER,
+                d.Dept_One_Name
+              ]);
+            });
+            writeFile(
+              {
+                SheetNames: ['Sheet1'],
+                Sheets: {
+                  Sheet1: utils.aoa_to_sheet(array)
+                }
+              },
+              '科室目录目录.xlsx'
+            );
+            this.$message.success('导出成功');
+          })
+          .catch((e) => {
+            loading.close();
+            this.$message.error(e.message);
+          });
+      });
     }
   },
   watch: {
