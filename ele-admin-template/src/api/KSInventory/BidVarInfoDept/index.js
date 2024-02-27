@@ -63,3 +63,20 @@ export async function searchBID_VAR_INFO(data) {
         return Promise.reject(new Error(res.data.msg));
     }
 }
+
+export async function CreateTempletDeta(data) {
+    var data2 = {};
+    data2.json = JSON.stringify(data);
+    data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+    data2.state = data.state ? data.state : '';
+    data2.dept_two_code = data.dept_two_code ? data.dept_two_code : '';
+
+    var rep = formdataify(data2);
+
+    const res = await request.post('/VarietieBasicInfo/BID_VAR_INFOIsEnbaleCommit', rep);
+    if (res.data.code == 200) {
+        return res.data;
+    } else {
+        return Promise.reject(new Error(res.data.msg));
+    }
+}

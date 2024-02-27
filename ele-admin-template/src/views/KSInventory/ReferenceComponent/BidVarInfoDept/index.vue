@@ -4,9 +4,9 @@
       <el-card shadow="never">
         <!-- 搜索表单 -->
         <!-- 数据表格 -->
-        <ele-pro-table ref="table" height="600px" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :rowClickChecked="true" :rowClickCheckedIntelligent="false" :selection.sync="selection" @selection-change="onSelectionChange" cache-key="DepaStorageQuery">
+        <ele-pro-table ref="table" height="600px" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :rowClickChecked="true" :rowClickCheckedIntelligent="false" :selection.sync="selection" @selection-change="onSelectionChange" cache-key="IntroduceUserDefinedTemp">
           <template v-slot:toolbar>
-            <user-search @search="reload" @exportData="exportData" />
+            <user-search @search="reload" @exportData="exportData" :selection="selection" />
           </template>
           <!-- 操作列 -->
           <template v-slot:APPLY_QTY="{ row }">
@@ -65,14 +65,14 @@ export default {
           align: 'center',
           fixed: 'left'
         },
-        // {
-        //   columnKey: 'index',
-        //   type: 'index',
-        //   width: 45,
-        //   align: 'center',
-        //   showOverflowTooltip: true,
-        //   fixed: 'left'
-        // },
+        {
+          columnKey: 'index',
+          type: 'index',
+          width: 45,
+          align: 'center',
+          showOverflowTooltip: true,
+          fixed: 'left'
+        },
         // {
         //   columnKey: 'action',
         //   label: '操作',
