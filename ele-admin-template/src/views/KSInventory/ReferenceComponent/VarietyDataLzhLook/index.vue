@@ -1,10 +1,13 @@
 <template >
-  <ele-modal width="1600px" :visible="visible" :close-on-click-modal="true" custom-class="ele-dialog-form" title="在用目录" @update:visible="updateVisible">
+  <ele-modal width="1600px" :visible="visible" :close-on-click-modal="true" custom-class="ele-dialog-form" title="在用目录"
+    @update:visible="updateVisible">
     <div class="ele-body">
       <el-card shadow="never">
         <!-- 搜索表单 -->
         <!-- 数据表格 -->
-        <ele-pro-table ref="table" height="600px" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :rowClickChecked="true" :rowClickCheckedIntelligent="false" :selection.sync="selection" @selection-change="onSelectionChange" cache-key="VarietyDataLzhLook">
+        <ele-pro-table ref="table" height="600px" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns"
+          :datasource="datasource" :rowClickChecked="true" :rowClickCheckedIntelligent="false" :selection.sync="selection"
+          @selection-change="onSelectionChange" cache-key="VarietyDataLzhLook">
           <template v-slot:toolbar>
             <user-search @search="reload" :selection='selection' />
           </template>
@@ -14,8 +17,24 @@
               <el-input v-model="row.APPLY_QTY"></el-input>
             </el-form-item>
           </template>
-          <template v-slot:Varietie_Code_New="{  }">
-            <el-tag type="info">图片</el-tag>
+          <template v-slot:PIC_URL="{ row }">
+            <span v-if="row.PIC_URL">
+              <span v-for="(item, index) in row.PIC_URL.split(',').filter(Boolean)" :key="index">
+                <span v-if="isImage(item)">
+                  <el-image style="width: 30px; height: 30px" :preview-src-list="row.PIC_URL.split(',').filter(Boolean)"
+                    :src="item">
+                  </el-image>
+                </span>
+                <span style v-else>
+                  <el-link style="text-align:center; align-items: center;" :underline="false"
+                    :href="'http://localhost:16416/Upload/ProPic/' + item" target="_blank" type="primary">pdf 文件
+                  </el-link>
+                </span>
+
+
+
+              </span>
+            </span>
           </template>
         </ele-pro-table>
       </el-card>
@@ -59,6 +78,11 @@ export default {
   },
   data() {
     return {
+      //测试数据
+      testSrcList: [
+        'https://fuss10.elemecdn.com/8/27/f01c15bb73e1ef3793e64e6b7bbccjpeg.jpeg',
+        'https://fuss10.elemecdn.com/1/8e/aeffeb4de74e2fde4bd74fc7b4486jpeg.jpeg'
+      ],
       // 表格列配置
       columns: [
         {
@@ -94,12 +118,12 @@ export default {
           minWidth: 120
         },
         {
-          slot: 'Varietie_Code_New',
+          slot: 'PIC_URL',
           label: '图片',
           // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 80
+          minWidth: 200
         },
         {
           prop: 'CHARGING_CODE',
@@ -260,7 +284,12 @@ export default {
     },
     onSelectionChange(selection) {
       this.selection = selection;
-    }
+    },
+    isImage(item) {
+      const imageExtensions = ['jpg', 'jpeg', 'png', 'gif']; // 可以根据实际情况添加更多的图片扩展名
+      const extension = item.split('.').pop().toLowerCase();
+      return imageExtensions.includes(extension);
+    },
   },
   watch: {
     visible(visible) {
@@ -279,6 +308,6 @@ export default {
   },
   created() {
     // this.getdatasource();
-  }
+  },
 };
 </script>
