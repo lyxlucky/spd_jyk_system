@@ -2,43 +2,46 @@
 <template>
   <el-form class="ele-form-search" @keyup.enter.native="search" @submit.native.prevent>
     <el-row>
-      <el-col :span="4">
-        <el-form-item >
+      <el-col :span="3">
+        <el-form-item>
           <el-input style="width: 90%;" clearable v-model="where.varietieCode" placeholder="品种编码/名称" />
         </el-form-item>
       </el-col>
-      <el-col :span="4">
-        <el-form-item >
+      <el-col :span="3">
+        <el-form-item>
           <el-input style="width: 90%;" clearable v-model="where.Specification_Or_Type" placeholder="规格型号" />
         </el-form-item>
       </el-col>
-      <el-col :span="4">
-        <el-form-item >
+      <el-col :span="3">
+        <el-form-item>
           <el-input style="width: 90%;" clearable v-model="where.SCQY" placeholder="生产企业" />
         </el-form-item>
       </el-col>
-      <el-col :span="4">
-        <el-form-item >
+      <el-col :span="3">
+        <el-form-item>
           <el-input style="width: 90%;" clearable v-model="where.ZCZ" placeholder="注册证" />
         </el-form-item>
       </el-col>
 
-      <el-col :span="4">
-        <el-form-item >
+      <el-col :span="3">
+        <el-form-item>
           <el-input style="width: 90%;" clearable v-model="where.SUP" placeholder="供应商" />
         </el-form-item>
       </el-col>
 
       <el-col :span="4">
         <el-button type="primary" icon="el-icon-search" class="ele-btn-icon" @click="search">查询</el-button>
-        <el-button @click="reset">重置</el-button>
+        <!-- <el-button @click="reset">重置</el-button> -->
+        <el-button type="primary" class="ele-btn-icon" @click="ApplyToBidVarInfoDept()">申请至科室目录</el-button>
       </el-col>
     </el-row>
   </el-form>
 </template>
 
 <script>
+import { addOneDeptAuthCommit } from '@/api/KSInventory/VarietyDataLzhLook';
 export default {
+  props: ['selection'],
   data() {
     // 默认表单数据
     const defaultWhere = {
@@ -68,6 +71,26 @@ export default {
     reset() {
       this.where = { ...this.defaultWhere };
       this.search();
+    },
+    ApplyToBidVarInfoDept() {
+      if (this.selection.length <= 0) {
+        this.$message.warning('请选择数据');
+        return;
+      }
+      const loading = this.$messageLoading('正在提交申请，请稍后...');
+      var data = this.selection;
+      data.dept_two_code = this.$store.state.user.info.DeptNow.Dept_Two_Code;
+      data.type = 1;
+      addOneDeptAuthCommit(data)
+        .then((res) => {
+          loading.close();
+          this.$message.success(res.msg);
+          this.search();
+        })
+        .catch((err) => {
+          loading.close();
+          this.$message.error(err);
+        });
     }
   },
   created() {

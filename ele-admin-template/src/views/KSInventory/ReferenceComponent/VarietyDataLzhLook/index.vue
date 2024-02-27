@@ -6,7 +6,7 @@
         <!-- 数据表格 -->
         <ele-pro-table ref="table" height="600px" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :rowClickChecked="true" :rowClickCheckedIntelligent="false" :selection.sync="selection" @selection-change="onSelectionChange" cache-key="VarietyDataLzhLook">
           <template v-slot:toolbar>
-            <user-search @search="reload" />
+            <user-search @search="reload" :selection='selection' />
           </template>
           <!-- 操作列 -->
           <template v-slot:APPLY_QTY="{ row }">
@@ -61,13 +61,13 @@ export default {
     return {
       // 表格列配置
       columns: [
-        // {
-        //   columnKey: 'selection',
-        //   type: 'selection',
-        //   width: 45,
-        //   align: 'center',
-        //   fixed: 'left'
-        // },
+        {
+          columnKey: 'selection',
+          type: 'selection',
+          width: 45,
+          align: 'center',
+          fixed: 'left'
+        },
         {
           columnKey: 'index',
           type: 'index',
