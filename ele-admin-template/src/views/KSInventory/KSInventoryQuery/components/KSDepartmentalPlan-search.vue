@@ -43,6 +43,9 @@
           </el-select>
         </el-form-item>
       </el-col>
+     <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 12 }">
+        <el-input clearable type="number" v-model="where.xqDay" placeholder="近效期/天" />
+      </el-col>
       <!-- <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 12 }">
         <el-form-item label="数量:">
           <el-select v-model="where.COUNT" @change="search()">
@@ -118,7 +121,8 @@ export default {
       DEF_NO_PKG_CODE: '',
       TYPE: '1',
       COUNT: '1',
-      DELIVERY_NUMBER: ''
+      DELIVERY_NUMBER: '',
+      xqDay: null
     };
     return {
       // 表单数据

@@ -16,6 +16,7 @@ export async function GetJykMainShelf(data) {
     data2.COUNT = data.where.COUNT ? data.where.COUNT : '';
     data2.DELIVERY_NUMBER = data.where.DELIVERY_NUMBER ? data.where.DELIVERY_NUMBER : '';
     data2.DeptCode = data.where.DeptCode ? data.where.DeptCode : '';
+    data2.xqDay = data.where.xqDay ? data.where.xqDay : 0;
 
     const res = await request.get('/AJykDept/GetJykMainShelf', {
         params: data2,
@@ -76,7 +77,7 @@ export async function GetJykDetailShelf(data) {
 }
 
 export async function saveJykOutInfo(data) {
-    var data2 ={};
+    var data2 = {};
     data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
     data2.VARIETIE_CODE = data.VARIETIE_CODE ? data.VARIETIE_CODE : '';
     data2.BATCH = data.BATCH ? data.BATCH : '';
@@ -86,11 +87,11 @@ export async function saveJykOutInfo(data) {
     data2.qty = data.qty ? data.qty : 0;
     data2.mark = data.mark ? data.mark : '';
 
-    DataToObject(data,data2)
-    if(data != null){
+    DataToObject(data, data2)
+    if (data != null) {
         var data3 = formdataify(data);
     }
-    const res = await request.post('/TwoDeptApply/saveJykOutInfo',data3);
+    const res = await request.post('/TwoDeptApply/saveJykOutInfo', data3);
     // const res = await request.post('/VarietieBasicInfo/getVar', {
     //     username,
     //     password,
@@ -105,7 +106,7 @@ export async function saveJykOutInfo(data) {
 }
 
 export async function DeptReceivingScanOrder(data) {
-    var data2 ={};
+    var data2 = {};
     data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
     data2.DistributeNumber = data.DistributeNumber ? data.DistributeNumber : '';
 
@@ -114,7 +115,7 @@ export async function DeptReceivingScanOrder(data) {
     // if(data != null){
     //     var data3 = formdataify(data);
     // }
-    const res = await request.post('/DeptHisDefZxyy/DeptReceivingScanOrder',data3);
+    const res = await request.post('/DeptHisDefZxyy/DeptReceivingScanOrder', data3);
     // const res = await request.post('/VarietieBasicInfo/getVar', {
     //     username,
     //     password,

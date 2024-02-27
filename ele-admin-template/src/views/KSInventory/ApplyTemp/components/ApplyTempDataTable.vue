@@ -80,7 +80,7 @@ export default {
           minWidth: 160,
           fixed: 'left'
         },
-     
+
         {
           columnKey: 'action',
           label: '操作',
@@ -154,14 +154,6 @@ export default {
           minWidth: 150
         },
         {
-          prop: 'SUPPLIER_NAME',
-          label: '供应商',
-
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 150
-        },
-        {
           prop: 'StockQty',
           label: '散货库存',
 
@@ -171,7 +163,7 @@ export default {
         },
 
         {
-          prop: 'Day_Consume_Qty',
+          prop: '月均用量',
           label: '平均使用数量',
 
           align: 'center',
@@ -227,8 +219,16 @@ export default {
           label: '排序',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 160,
+          minWidth: 160
         },
+        {
+          prop: 'SUPPLIER_NAME',
+          label: '供应商',
+
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 150
+        }
       ],
       toolbar: false,
       pageSize: 10,
@@ -352,7 +352,7 @@ export default {
                 d.StockQty,
                 d.Day_Consume_Qty,
                 d.PAG_TYPE,
-                d.ZB,
+                d.ZB
                 // this.$util.toDateString(d.createTime)
               ]);
             });

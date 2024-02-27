@@ -4,8 +4,9 @@
 
     <ele-pro-table ref="table" v-if="IsRefDefNoPkgDataTable==false" height="67vh" highlight-current-row :stripe="true" :rowClickChecked="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" cache-key="DefNoPkgDataTable">
       <template v-slot:KC_COUNT="{ row }">
-        <el-tag v-if="row.KC_COUNT>0" type="success">在库</el-tag>
-        <el-tag v-else type="info">已消耗</el-tag>
+        <el-tag v-if="row.KC_DEF_NO_PKG_CODE == null" type="info">未收货</el-tag>
+        <el-tag v-else-if="row.KC_COUNT>0" type="success">在库</el-tag>
+        <el-tag v-if="row.KC_DEF_NO_PKG_CODE != null && row.KC_COUNT<=0" type="info">已消耗</el-tag>
       </template>
 
       <!-- 表头工具栏 -->
@@ -18,8 +19,10 @@
 
     <ele-pro-table ref="table2" v-else height="67vh" highlight-current-row :stripe="true" :rowClickChecked="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource2" :selection.sync="selection" cache-key="DefNoPkgDataTable">
       <template v-slot:KC_COUNT="{ row }">
+        <el-tag v-if="row.KC_DEF_NO_PKG_CODE == null" type="info">未收货</el-tag>
         <el-tag v-if="row.KC_COUNT>0" type="success">在库</el-tag>
-        <el-tag v-else type="info">已消耗</el-tag>
+        <!-- <el-tag v-else type="info">已消耗</el-tag> -->
+        <el-tag v-if="row.KC_DEF_NO_PKG_CODE != null && row.KC_COUNT<=0" type="info">已消耗</el-tag>
       </template>
       <!-- 表头工具栏 -->
       <template v-slot:toolbar>
