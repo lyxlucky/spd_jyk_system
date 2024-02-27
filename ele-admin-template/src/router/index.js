@@ -13,7 +13,7 @@ import { routes, getMenuRoutes } from './routes';
 Vue.use(VueRouter);
 
 const router = new VueRouter({
-  base: '/jyknw/', // 二级目录(本地把它注释掉) 
+  // base: '/jyknw/', // 二级目录(本地把它注释掉) 
   mode: 'hash',
   routes,
   // history: createWebHistory("/gis/"),
