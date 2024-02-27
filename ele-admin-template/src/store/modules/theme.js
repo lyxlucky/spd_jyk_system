@@ -38,7 +38,8 @@ const DEFAULT_STATE = Object.freeze({
   // 侧栏风格: light(亮色), dark(暗色)
   sideStyle: 'dark',
   // 布局风格: side(默认), top(顶栏导航), mix(混合导航)
-  layoutStyle: 'side',
+  // layoutStyle: 'side',
+  layoutStyle: 'top',
   // 侧栏菜单风格: default(默认), mix(双排侧栏)
   sideMenuStyle: 'default',
   // 页签风格: default(默认), dot(圆点), card(卡片)
