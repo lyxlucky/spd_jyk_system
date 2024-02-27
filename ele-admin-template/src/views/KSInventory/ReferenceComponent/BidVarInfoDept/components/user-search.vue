@@ -176,7 +176,7 @@ export default {
       this.$emit('exportData', this.where);
     },
     ApplyToVarietyDataLzhLook() {
-      if (this.selection == undefined) {
+     if (this.selection.length == 0) {
         this.$message.warning('请选择数据');
         return;
       }
@@ -196,8 +196,7 @@ export default {
         });
     },
     CalApplyToVarietyDataLzhLook() {
-      console.log(this.selection);
-      if (this.selection == undefined) {
+      if (this.selection.length == 0) {
         this.$message.warning('请选择数据');
         return;
       }
