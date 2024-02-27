@@ -21,7 +21,7 @@
             <span v-if="row.PIC_URL">
               <span v-for="(item, index) in row.PIC_URL.split(',').filter(Boolean)" :key="index">
                 <span v-if="isImage(item)">
-                  <el-image style="width: 30px; height: 30px" :preview-src-list="row.PIC_URL.split(',').filter(Boolean)"
+                  <el-image style="width: 30px; height: 30px" :preview-src-list="row.PIC_URL.split(',').filter(Boolean).filter(isImage)"
                     :src="item">
                   </el-image>
                 </span>
@@ -30,11 +30,23 @@
                     :href="'http://localhost:16416/Upload/ProPic/' + item" target="_blank" type="primary">pdf 文件
                   </el-link>
                 </span>
-
-
-
               </span>
             </span>
+
+            <!-- <span v-if="row.PIC_URL">
+              <span v-for="(item, index) in testUrlList.split(',').filter(Boolean)" :key="index">
+                <span v-if="isImage(item)">
+                  <el-image style="width: 30px; height: 30px" :preview-src-list="testUrlList.split(',').filter(Boolean).filter(isImage)"
+                    :src="item">
+                  </el-image>
+                </span>
+                <span style v-else>
+                  <el-link style="text-align:center; align-items: center;" :underline="false" :href="'http://localhost:16416/Upload/ProPic/' + item" target="_blank"
+                    type="primary">pdf 文件
+                  </el-link>
+                </span>
+              </span>
+            </span> -->
           </template>
         </ele-pro-table>
       </el-card>
@@ -78,11 +90,15 @@ export default {
   },
   data() {
     return {
-      //测试数据
+      //测试数据开始
       testSrcList: [
         'https://fuss10.elemecdn.com/8/27/f01c15bb73e1ef3793e64e6b7bbccjpeg.jpeg',
-        'https://fuss10.elemecdn.com/1/8e/aeffeb4de74e2fde4bd74fc7b4486jpeg.jpeg'
+        'https://fuss10.elemecdn.com/1/8e/aeffeb4de74e2fde4bd74fc7b4486jpeg.jpeg',
+        'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'
       ],
+      testUrlList:"https://fuss10.elemecdn.com/8/27/f01c15bb73e1ef3793e64e6b7bbccjpeg.jpeg,https://fuss10.elemecdn.com/1/8e/aeffeb4de74e2fde4bd74fc7b4486jpeg.jpeg,https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+      //测试数据结束
+
       // 表格列配置
       columns: [
         {
