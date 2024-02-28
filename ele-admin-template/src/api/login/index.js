@@ -10,8 +10,8 @@ import { TOKEN_STORE_NAME } from '@/config/setting';
 export async function login(data) {
   // data.tenantId = 1; // 租户id
   data.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
-  data.username = Encrypt(data.username);
-  data.password = Encrypt(data.password);
+  data.username = Encrypt(data.username) != null ? Encrypt(data.username) : store.state.user.loginInfo.username;
+  data.password = Encrypt(data.password) != null ? Encrypt(data.password) : store.state.user.loginInfo.password;
   const res = await request.post('/Commons/login', data);
   if (res.data.code == 200) {
     var data2 = {};
