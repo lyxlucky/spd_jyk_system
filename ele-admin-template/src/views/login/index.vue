@@ -124,14 +124,16 @@ export default {
     }
   },
   created() {
-    this.form.username =
-      localStorage.username != undefined
-        ? this.Decrypt(localStorage.username)
-        : ''; 
-    this.form.password =
-      localStorage.password != undefined
-        ? this.Decrypt(localStorage.password)
-        : '';
+    // console.log(this.Encrypt('123'));
+    // console.log(this.Decrypt(this.Encrypt('123')));
+    // this.form.username =
+    //   localStorage.username != undefined
+    //     ? this.Decrypt(localStorage.username)
+    //     : '';
+    // this.form.password =
+    //   localStorage.password != undefined
+    //     ? this.Decrypt(localStorage.password)
+    //     : '';
     if (getToken()) {
       this.goHome();
     } else {
@@ -160,8 +162,8 @@ export default {
           .then((res) => {
             this.$store.commit('user/setLoginInfo', this.form);
             if (this.form.remember == true) {
-              localStorage.username = this.Encrypt(this.form.username);
-              localStorage.password = this.Encrypt(this.form.password);
+              localStorage.username = this.form.username;
+              localStorage.password = this.form.password;
             }
             this.loading = false;
             this.$message.success(res.msg);
@@ -216,6 +218,7 @@ export default {
     Decrypt(str) {
       var KEY = this.$store.state.user.encrypted.KEY; //32位
       var IV = this.$store.state.user.encrypted.IV; //16位
+
       var key = CryptoJS.enc.Utf8.parse(KEY);
       var iv = CryptoJS.enc.Utf8.parse(IV);
       var encryptedHexStr = CryptoJS.enc.Hex.parse(str);
