@@ -124,16 +124,16 @@ export default {
     }
   },
   created() {
-    // console.log(this.Encrypt('123'));
-    // console.log(this.Decrypt(this.Encrypt('123')));
-    // this.form.username =
-    //   localStorage.username != undefined
-    //     ? this.Decrypt(localStorage.username)
-    //     : '';
-    // this.form.password =
-    //   localStorage.password != undefined
-    //     ? this.Decrypt(localStorage.password)
-    //     : '';
+    console.log(localStorage.username)
+    this.form.username =
+      localStorage.username != undefined
+        ? this.Decrypt(localStorage.username)
+        : '';
+    this.form.password =
+      localStorage.password != undefined
+        ? this.Decrypt(localStorage.password)
+        : '';
+
     if (getToken()) {
       this.goHome();
     } else {
@@ -153,17 +153,20 @@ export default {
         }
         this.loading = true;
         var data = this.form;
-        // var data = {
-        //   UserName: this.Encrypt(this.form.username),
-        //   Password: this.Encrypt(this.form.password),
-        //   code: this.form.code
-        // };
-        login(data)
+        var data2 = {
+          username: data.username,
+          password: data.password,
+          code: this.form.code
+        };
+        login(data2)
           .then((res) => {
-            this.$store.commit('user/setLoginInfo', this.form);
+            this.$store.commit('user/setLoginInfo', data2);
             if (this.form.remember == true) {
-              localStorage.username = this.form.username;
-              localStorage.password = this.form.password;
+              localStorage.username = this.Encrypt(data.username);
+              localStorage.password = this.Encrypt(data.password);
+            } else {
+              localStorage.removeItem('username');
+              localStorage.removeItem('password');
             }
             this.loading = false;
             this.$message.success(res.msg);
@@ -172,7 +175,7 @@ export default {
           })
           .catch((e) => {
             this.loading = false;
-            this.$message.error(e.message);
+            this.$message.error('请核对账号密码');
           });
       });
     },

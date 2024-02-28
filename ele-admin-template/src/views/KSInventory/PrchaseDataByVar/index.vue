@@ -84,16 +84,16 @@ export default {
           showOverflowTooltip: true,
           fixed: 'left'
         },
-        {
-          columnKey: 'action',
-          label: '操作',
-          width: 200,
-          align: 'center',
-          resizable: false,
-          slot: 'action',
-          showOverflowTooltip: true,
-          fixed: 'left'
-        },
+        // {
+        //   columnKey: 'action',
+        //   label: '操作',
+        //   width: 200,
+        //   align: 'center',
+        //   resizable: false,
+        //   slot: 'action',
+        //   showOverflowTooltip: true,
+        //   fixed: 'left'
+        // },
         {
           prop: 'XM_NUM',
           label: '项目编号',
