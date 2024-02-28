@@ -305,6 +305,20 @@ export default {
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110
+        },
+         {
+          prop: 'PATIENT_NUMBER',
+          label: '病患号',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 110
+        },
+         {
+          prop: 'HOSPITALIZATION_NUMBER',
+          label: '住院号',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 110
         }
       ],
       toolbar: false,
