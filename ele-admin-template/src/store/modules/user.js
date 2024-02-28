@@ -17,7 +17,16 @@ export default {
     // 当前登录用户的角色
     roles: [],
     // 登录账号密码
-    loginInfo: []
+    loginInfo: [],
+
+    // 加密参数
+    encrypted: {
+      // 密钥
+      KEY: "19941120240000001994112024000000",
+      // 偏移量
+      IV: "1994112024000000"
+    }
+
   },
   mutations: {
     // 设置登录用户的信息
@@ -48,7 +57,7 @@ export default {
     async fetchUserInfo({ commit }) {
       var data = this.state.user.loginInfo;
       // data.Token = sessionStorage.getItem('Token') ? sessionStorage.getItem('Token') : "0";
-      const result = await getUserInfo(data).catch(() => {});
+      const result = await getUserInfo(data).catch(() => { });
       result.DeptNow = result.userDept[0];
       if (!result) {
         return {};
@@ -70,12 +79,12 @@ export default {
 
       const { menus, homePath } = formatMenus(
         USER_MENUS ??
-          toTreeData({
-            // data: result.authorities?.filter((d) => d.menuType !== 1),
-            data: result.permission_group,
-            idField: 'ID',
-            parentIdField: 'PID'
-          })
+        toTreeData({
+          // data: result.authorities?.filter((d) => d.menuType !== 1),
+          data: result.permission_group,
+          idField: 'ID',
+          parentIdField: 'PID'
+        })
       );
       commit('setMenus', menus);
       return { menus, homePath };

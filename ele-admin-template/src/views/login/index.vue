@@ -72,6 +72,7 @@
 </template>
 
 <script>
+import CryptoJS from 'crypto-js';
 import I18nIcon from '@/layout/components/i18n-icon.vue';
 import { getToken } from '@/utils/token-util';
 import { login, getCaptcha } from '@/api/login';
@@ -123,10 +124,16 @@ export default {
     }
   },
   created() {
+    console.log(localStorage.username)
     this.form.username =
-      localStorage.username != undefined ? localStorage.username : '';
+      localStorage.username != undefined
+        ? this.Decrypt(localStorage.username)
+        : '';
     this.form.password =
-      localStorage.password != undefined ? localStorage.password : '';
+      localStorage.password != undefined
+        ? this.Decrypt(localStorage.password)
+        : '';
+
     if (getToken()) {
       this.goHome();
     } else {
@@ -146,20 +153,29 @@ export default {
         }
         this.loading = true;
         var data = this.form;
-        login(data)
+        var data2 = {
+          username: data.username,
+          password: data.password,
+          code: this.form.code
+        };
+        login(data2)
           .then((res) => {
-            this.$store.commit('user/setLoginInfo', this.form);
+            this.$store.commit('user/setLoginInfo', data2);
             if (this.form.remember == true) {
-              localStorage.username = this.form.username;
-              localStorage.password = this.form.password;
+              localStorage.username = this.Encrypt(data.username);
+              localStorage.password = this.Encrypt(data.password);
+            } else {
+              localStorage.removeItem('username');
+              localStorage.removeItem('password');
             }
             this.loading = false;
             this.$message.success(res.msg);
+            // this.$router.push('/KSInventory/KSScanCodeRecGood').catch(() => {});
             this.goHome();
           })
           .catch((e) => {
             this.loading = false;
-            this.$message.error(e.message);
+            this.$message.error('请核对账号密码');
           });
       });
     },
@@ -182,6 +198,41 @@ export default {
         .catch((e) => {
           this.$message.error(e.message);
         });
+    },
+    Encrypt(str) {
+      var KEY = this.$store.state.user.encrypted.KEY; //32位
+      var IV = this.$store.state.user.encrypted.IV; //16位
+
+      var key = CryptoJS.enc.Utf8.parse(KEY);
+      var iv = CryptoJS.enc.Utf8.parse(IV);
+
+      var encrypted = '';
+
+      var srcs = CryptoJS.enc.Utf8.parse(str);
+      encrypted = CryptoJS.AES.encrypt(srcs, key, {
+        iv: iv,
+        mode: CryptoJS.mode.CBC,
+        padding: CryptoJS.pad.Pkcs7
+      });
+
+      return encrypted.ciphertext.toString();
+    },
+
+    Decrypt(str) {
+      var KEY = this.$store.state.user.encrypted.KEY; //32位
+      var IV = this.$store.state.user.encrypted.IV; //16位
+
+      var key = CryptoJS.enc.Utf8.parse(KEY);
+      var iv = CryptoJS.enc.Utf8.parse(IV);
+      var encryptedHexStr = CryptoJS.enc.Hex.parse(str);
+      var srcs = CryptoJS.enc.Base64.stringify(encryptedHexStr);
+      var decrypt = CryptoJS.AES.decrypt(srcs, key, {
+        iv: iv,
+        mode: CryptoJS.mode.CBC,
+        padding: CryptoJS.pad.Pkcs7
+      });
+      var decryptedStr = decrypt.toString(CryptoJS.enc.Utf8);
+      return decryptedStr.toString();
     }
   }
 };
