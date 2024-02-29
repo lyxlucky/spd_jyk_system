@@ -124,7 +124,6 @@ export default {
     }
   },
   created() {
-    console.log(localStorage.username)
     this.form.username =
       localStorage.username != undefined
         ? this.Decrypt(localStorage.username)
