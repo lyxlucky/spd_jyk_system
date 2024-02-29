@@ -96,7 +96,7 @@
             <el-button size="small" type="primary">上传初始化库存</el-button>
           </el-upload>
 
-          <el-button style="margin-left: 30px" size="small" type="primary" @click="DownloadTemplate()">下载模板</el-button>
+          <el-button style="margin-left: 30px" size="small" type="primary" @click="DownloadTemplate()">下载初始化模板</el-button>
 
           <label style="margin-left: 30px">合计数量:<b>{{sumCount}}</b></label>
 
