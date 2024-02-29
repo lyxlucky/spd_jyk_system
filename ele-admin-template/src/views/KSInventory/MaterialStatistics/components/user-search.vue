@@ -50,6 +50,9 @@
           <el-button type="primary" icon="el-icon-search" class="ele-btn-icon" @click="search">
             查询
           </el-button>
+          <el-button type="primary" icon="el-icon-download" class="ele-btn-icon" @click="exportData">
+            导出
+          </el-button>
         </div>
       </el-col>
     </el-row>

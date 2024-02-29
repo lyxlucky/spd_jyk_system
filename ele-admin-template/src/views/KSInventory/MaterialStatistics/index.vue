@@ -51,6 +51,8 @@ import UserSearch from './components/user-search.vue';
 import UserEdit from './components/user-edit.vue';
 import {
   getMaterialStatics,
+  getMaterialStaticsSheet,
+  downloadMaterialStaticsSheet,
 } from '@/api/KSInventory/MaterialStatics';
 export default {
   name: 'MaterialStatics',
@@ -139,7 +141,7 @@ export default {
           minWidth: 100
         },
         {
-          prop: 'HQ_PRICE',
+          prop: 'HQ_PRICE_ADD',
           label: '增幅金额',
           align: 'center',
           sortable: 'custom',
@@ -161,7 +163,7 @@ export default {
           }
         },
         {
-          prop: '',
+          prop: 'USING_DEPARTMENT_1',
           label: '使用科室1',
           align: 'center',
           sortable: 'custom',
@@ -172,7 +174,7 @@ export default {
           }
         },
         {
-          prop: '',
+          prop: 'PROPORTION_1',
           label: '占比%',
           align: 'center',
           sortable: 'custom',
@@ -186,7 +188,7 @@ export default {
           }
         },
         {
-          prop: '',
+          prop: 'USING_DEPARTMENT_2',
           label: '使用科室2',
           align: 'center',
           sortable: 'custom',
@@ -201,7 +203,7 @@ export default {
         },
 
         {
-          prop: '',
+          prop: 'PROPORTION_2',
           label: '占比%',
           align: 'center',
           sortable: 'custom',
@@ -219,7 +221,7 @@ export default {
         },
 
         {
-          prop: '',
+          prop: 'USING_DEPARTMENT_3',
           label: '使用科室3',
           align: 'center',
           sortable: 'custom',
@@ -234,7 +236,7 @@ export default {
         },
 
         {
-          prop: '',
+          prop: 'PROPORTION_3',
           label: '占比%',
           align: 'center',
           sortable: 'custom',
@@ -252,7 +254,7 @@ export default {
         },
 
         {
-          prop: '',
+          prop: 'USING_DEPARTMENT_4',
           label: '使用科室4',
           align: 'center',
           sortable: 'custom',
@@ -267,7 +269,7 @@ export default {
         },
 
         {
-          prop: 'LIS_COUNT9',
+          prop: 'PROPORTION_4',
           label: '占比%',
           align: 'center',
           sortable: 'custom',
@@ -285,7 +287,7 @@ export default {
         },
 
         {
-          prop: '',
+          prop: 'USING_DEPARTMENT_5',
           label: '使用科室5',
           align: 'center',
           sortable: 'custom',
@@ -300,7 +302,7 @@ export default {
         },
 
         {
-          prop: '',
+          prop: 'PROPORTION_5',
           label: '占比%',
           align: 'center',
           sortable: 'custom',
@@ -332,8 +334,6 @@ export default {
       showImport: false,
       // datasource: [],
       data: [],
-      // 增幅金额
-      increaseAmount: "",
     };
   },
   methods: {
@@ -368,7 +368,7 @@ export default {
       this.$refs.table.doRequest(({ where, order }) => {
         where = data;
         where.Dept_One_Code = this.$store.state.user.info.DeptNow.Dept_Two_Code;
-        getMaterialStatics({
+        getMaterialStaticsSheet({
           page: 1,
           limit: 999999,
           where: where,
@@ -378,43 +378,56 @@ export default {
             loading.close();
             const array = [
               [
-                '品种编码',
-                '品种id',
-                '品种名称',
-                '规格/型号',
-                '生产企业名称',
-                '注册证号',
-                '单位',
-                '中标价',
-                '品种类别',
-                '换算比(试剂)',
-                '仪器备注',
+                "品种编码",
+                "品种名称",
+                "消耗数量",
+                "消耗金额/元",
+                "环期消耗数量",
+                "环期消耗金额/元",
+                "增幅金额",
+                "环比增幅（%）",
+                "使用科室1",
+                "占比%",
+                "使用科室2",
+                "占比%",
+                "使用科室3",
+                "占比%",
+                "使用科室4",
+                "占比%",
+                "使用科室5",
+                "占比%",
               ]
             ];
             res.result.forEach((d) => {
               array.push([
-                d.Varietie_Code_New,
-                d.Varietie_Code,
-                d.Varietie_Name,
-                d.Specification_Or_Type,
-                d.Manufacturing_Ent_Name,
-                d.APPROVAL_NUMBER,
-                d.UNIT,
-                d.Price,
-                d.CLASS_NUM,
-                d.CONVERSION_RATIO,
-                d.DEVICE_REMARK,
-                // this.$util.toDateString(d.createTime)
+                d.VARIETIE_CODE_NEW,
+                d.VARIETIE_NAME,
+                d.MAIN_QTY,
+                d.MAIN_PRICE,
+                d.HQ_QTY,
+                d.HQ_PRICE,
+                d.HQ_PRICE_ADD,
+                d.HB_ZZ,
+                d.USING_DEPARTMENT_1,
+                d.PROPORTION_1,
+                d.USING_DEPARTMENT_2,
+                d.PROPORTION_2,
+                d.USING_DEPARTMENT_3,
+                d.PROPORTION_3,
+                d.USING_DEPARTMENT_4,
+                d.PROPORTION_4,
+                d.USING_DEPARTMENT_5,
+                d.PROPORTION_5,
               ]);
             });
             writeFile(
               {
-                SheetNames: ['Sheet1'],
+                SheetNames: ["sheet1"],
                 Sheets: {
-                  Sheet1: utils.aoa_to_sheet(array)
+                  // Sheet1: utils.aoa_to_sheet(array)
                 }
               },
-              '科室入库品种.xlsx'
+              '新耗材监管统计.xlsx'
             );
             this.$message.success("导出成功");
           })
