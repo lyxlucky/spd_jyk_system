@@ -32,17 +32,20 @@
           </el-option>
         </el-select>
       </el-col>
-
-      <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 6 }">
-        <el-date-picker v-model="where.time1Range" value-format="yyyy-MM" type="monthrange" range-separator="至"
-          start-placeholder="本期开始日期" end-placeholder="本期结束日期">
-        </el-date-picker>
+    </el-row>
+    <el-row style="margin-top: 10px">
+      <el-col v-bind="styleResponsive ? { lg: 6, md: 12 } : { span: 6 }">
+        <el-form-item label="本期时间:">
+          <el-date-picker v-model="where.time1Range" value-format="yyyy-MM" type="monthrange" range-separator="至" start-placeholder="本期开始日期" end-placeholder="本期结束日期">
+          </el-date-picker>
+        </el-form-item>
       </el-col>
 
-      <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 6 }">
-        <el-date-picker v-model="where.time2Range" value-format="yyyy-MM" type="monthrange" range-separator="至"
-          start-placeholder="环期开始日期" end-placeholder="环期结束日期">
-        </el-date-picker>
+      <el-col v-bind="styleResponsive ? { lg: 6, md: 12 } : { span: 6 }">
+        <el-form-item label="环期时间:">
+          <el-date-picker v-model="where.time2Range" value-format="yyyy-MM" type="monthrange" range-separator="至" start-placeholder="环期开始日期" end-placeholder="环期结束日期">
+          </el-date-picker>
+        </el-form-item>
       </el-col>
 
       <el-col v-bind="styleResponsive ? { lg: 6, md: 12 } : { span: 6 }">
@@ -60,7 +63,6 @@
 </template>
 
 <script>
-
 export default {
   data() {
     // 默认表单数据
@@ -68,13 +70,13 @@ export default {
       BIND_MACHINE: '',
       VARIETIE_CODE_NEW: '',
       SPECIFICATION_OR_TYPE: '',
-      deptState: "1",
-      varState: "1",
-      IS_CHARGE: "",
-      timeState: "1",
-      orderState: "1",
-      time1Range: ["2023-01", "2023-12"],
-      time2Range: ["2022-01", "2022-12"]
+      deptState: '1',
+      varState: '1',
+      IS_CHARGE: '',
+      timeState: '1',
+      orderState: '1',
+      time1Range: ['2023-01', '2023-12'],
+      time2Range: ['2022-01', '2022-12']
     };
     return {
       // 表单数据
@@ -91,7 +93,7 @@ export default {
         {
           value: '3',
           label: '三级科室'
-        },
+        }
       ],
       varStateOptions: [
         {
@@ -101,7 +103,7 @@ export default {
         {
           value: '2',
           label: '品种名称'
-        },
+        }
       ],
       isChargeOptions: [
         {
@@ -115,7 +117,7 @@ export default {
         {
           value: '0',
           label: '否'
-        },
+        }
       ],
       timeStateOptions: [
         {
@@ -125,7 +127,7 @@ export default {
         {
           value: '2',
           label: '月结'
-        },
+        }
       ],
       orderStateOptions: [
         {
@@ -139,8 +141,8 @@ export default {
         {
           value: '3',
           label: '环比增幅金额'
-        },
-      ],
+        }
+      ]
     };
   },
   computed: {
@@ -160,7 +162,7 @@ export default {
       this.search();
     },
     exportData() {
-      this.$emit('exportData', this.where)
+      this.$emit('exportData', this.where);
     }
   }
 };

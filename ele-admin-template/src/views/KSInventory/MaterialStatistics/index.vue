@@ -7,20 +7,17 @@
       <!-- 搜索表单 -->
       <!-- <user-search @search="reload" @exportData="exportData" /> -->
       <!-- 数据表格 -->
-      <ele-pro-table ref="table" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource"
-        :selection.sync="selection" cache-key="KSInventoryBasicDataTable">
+      <ele-pro-table ref="table" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" cache-key="KSInventoryBasicDataTable">
         <!-- 表头工具栏 -->
         <template v-slot:toolbar>
           <user-search @search="reload" @exportData="exportData" />
         </template>
-
 
         <template v-slot:HQ_PRICE="{ row }">
           <el-form-item label="">
             <el-input v-model="row.HQ_PRICE"></el-input>
           </el-form-item>
         </template>
-
 
         <!-- 操作列 -->
         <!-- <template v-slot:action="{ row }">
@@ -46,13 +43,14 @@
 </template>
 
 <script>
+import { API_BASE_URL, TOKEN_HEADER_NAME, LAYOUT_PATH } from '@/config/setting';
 import { utils, writeFile } from 'xlsx';
 import UserSearch from './components/user-search.vue';
 import UserEdit from './components/user-edit.vue';
 import {
   getMaterialStatics,
   getMaterialStaticsSheet,
-  downloadMaterialStaticsSheet,
+  downloadMaterialStaticsSheet
 } from '@/api/KSInventory/MaterialStatics';
 export default {
   name: 'MaterialStatics',
@@ -61,8 +59,7 @@ export default {
     UserEdit
     // UserImport
   },
-  computed: {
-  },
+  computed: {},
   data() {
     return {
       // 表格列配置
@@ -98,7 +95,7 @@ export default {
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 150,
+          minWidth: 150
         },
         {
           prop: 'VARIETIE_NAME',
@@ -106,7 +103,7 @@ export default {
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 150,
+          minWidth: 150
         },
         {
           prop: 'MAIN_QTY',
@@ -159,7 +156,7 @@ export default {
           width: 100,
           showOverflowTooltip: true,
           formatter(row, column, cellValue, index) {
-            return row.HB_ZZ + "%";
+            return row.HB_ZZ + '%';
           }
         },
         {
@@ -170,7 +167,7 @@ export default {
           width: 100,
           showOverflowTooltip: true,
           formatter(row, column, cellValue, index) {
-            return row.DeptList[0].DEPT_TWO_NAME
+            return row.DeptList[0].DEPT_TWO_NAME;
           }
         },
         {
@@ -182,9 +179,12 @@ export default {
           showOverflowTooltip: true,
           formatter(row, column, cellValue, index) {
             if (row.DeptList[0].DEPT_PRICE == 0) {
-              return "0";
+              return '0';
             }
-            return (row.DeptList[0].DEPT_PRICE / row.MAIN_PRICE * 100).toFixed(2) + "%";
+            return (
+              ((row.DeptList[0].DEPT_PRICE / row.MAIN_PRICE) * 100).toFixed(2) +
+              '%'
+            );
           }
         },
         {
@@ -196,9 +196,9 @@ export default {
           showOverflowTooltip: true,
           formatter(row, column, cellValue, index) {
             if (row.DeptList.length < 2) {
-              return "无";
+              return '无';
             }
-            return row.DeptList[1].DEPT_TWO_NAME
+            return row.DeptList[1].DEPT_TWO_NAME;
           }
         },
 
@@ -211,12 +211,15 @@ export default {
           showOverflowTooltip: true,
           formatter(row, column, cellValue, index) {
             if (row.DeptList.length < 2) {
-              return "0";
+              return '0';
             }
             if (row.DeptList[1].DEPT_PRICE == 0) {
-              return "0";
+              return '0';
             }
-            return (row.DeptList[1].DEPT_PRICE / row.MAIN_PRICE * 100).toFixed(2) + "%";
+            return (
+              ((row.DeptList[1].DEPT_PRICE / row.MAIN_PRICE) * 100).toFixed(2) +
+              '%'
+            );
           }
         },
 
@@ -229,9 +232,9 @@ export default {
           showOverflowTooltip: true,
           formatter(row, column, cellValue, index) {
             if (row.DeptList.length < 3) {
-              return "无";
+              return '无';
             }
-            return row.DeptList[2].DEPT_TWO_NAME
+            return row.DeptList[2].DEPT_TWO_NAME;
           }
         },
 
@@ -244,12 +247,15 @@ export default {
           showOverflowTooltip: true,
           formatter(row, column, cellValue, index) {
             if (row.DeptList.length < 3) {
-              return "0";
+              return '0';
             }
             if (row.DeptList[2].DEPT_PRICE == 0) {
-              return "0";
+              return '0';
             }
-            return (row.DeptList[2].DEPT_PRICE / row.MAIN_PRICE * 100).toFixed(2) + "%";
+            return (
+              ((row.DeptList[2].DEPT_PRICE / row.MAIN_PRICE) * 100).toFixed(2) +
+              '%'
+            );
           }
         },
 
@@ -262,9 +268,9 @@ export default {
           showOverflowTooltip: true,
           formatter(row, column, cellValue, index) {
             if (row.DeptList.length < 4) {
-              return "无";
+              return '无';
             }
-            return row.DeptList[3].DEPT_TWO_NAME
+            return row.DeptList[3].DEPT_TWO_NAME;
           }
         },
 
@@ -277,12 +283,15 @@ export default {
           showOverflowTooltip: true,
           formatter(row, column, cellValue, index) {
             if (row.DeptList.length < 4) {
-              return "0";
+              return '0';
             }
             if (row.DeptList[3].DEPT_PRICE == 0) {
-              return "0";
+              return '0';
             }
-            return (row.DeptList[3].DEPT_PRICE / row.MAIN_PRICE * 100).toFixed(2) + "%";
+            return (
+              ((row.DeptList[3].DEPT_PRICE / row.MAIN_PRICE) * 100).toFixed(2) +
+              '%'
+            );
           }
         },
 
@@ -295,9 +304,9 @@ export default {
           showOverflowTooltip: true,
           formatter(row, column, cellValue, index) {
             if (row.DeptList.length < 5) {
-              return "无";
+              return '无';
             }
-            return row.DeptList[4].DEPT_TWO_NAME
+            return row.DeptList[4].DEPT_TWO_NAME;
           }
         },
 
@@ -310,15 +319,17 @@ export default {
           showOverflowTooltip: true,
           formatter(row, column, cellValue, index) {
             if (row.DeptList.length < 5) {
-              return "0";
+              return '0';
             }
             if (row.DeptList[4].DEPT_PRICE == 0) {
-              return "0";
+              return '0';
             }
-            return (row.DeptList[4].DEPT_PRICE / row.MAIN_PRICE * 100).toFixed(2) + "%";
+            return (
+              ((row.DeptList[4].DEPT_PRICE / row.MAIN_PRICE) * 100).toFixed(2) +
+              '%'
+            );
           }
-        },
-
+        }
       ],
       toolbar: false,
       pageSize: 10,
@@ -333,7 +344,7 @@ export default {
       // 是否显示导入弹窗
       showImport: false,
       // datasource: [],
-      data: [],
+      data: []
     };
   },
   methods: {
@@ -363,79 +374,92 @@ export default {
     openImport() {
       this.showImport = true;
     },
+    // exportData(data) {
+    //   const loading = this.$messageLoading('正在导出数据...');
+    //   this.$refs.table.doRequest(({ where, order }) => {
+    //     where = data;
+    //     where.Dept_One_Code = this.$store.state.user.info.DeptNow.Dept_Two_Code;
+    //     getMaterialStaticsSheet({
+    //       page: 1,
+    //       limit: 999999,
+    //       where: where,
+    //       order: order
+    //     })
+    //       .then((res) => {
+    //         loading.close();
+    //         const array = [
+    //           [
+    //             "品种编码",
+    //             "品种名称",
+    //             "消耗数量",
+    //             "消耗金额/元",
+    //             "环期消耗数量",
+    //             "环期消耗金额/元",
+    //             "增幅金额",
+    //             "环比增幅（%）",
+    //             "使用科室1",
+    //             "占比%",
+    //             "使用科室2",
+    //             "占比%",
+    //             "使用科室3",
+    //             "占比%",
+    //             "使用科室4",
+    //             "占比%",
+    //             "使用科室5",
+    //             "占比%",
+    //           ]
+    //         ];
+    //         res.result.forEach((d) => {
+    //           array.push([
+    //             d.VARIETIE_CODE_NEW,
+    //             d.VARIETIE_NAME,
+    //             d.MAIN_QTY,
+    //             d.MAIN_PRICE,
+    //             d.HQ_QTY,
+    //             d.HQ_PRICE,
+    //             d.HQ_PRICE_ADD,
+    //             d.HB_ZZ,
+    //             d.USING_DEPARTMENT_1,
+    //             d.PROPORTION_1,
+    //             d.USING_DEPARTMENT_2,
+    //             d.PROPORTION_2,
+    //             d.USING_DEPARTMENT_3,
+    //             d.PROPORTION_3,
+    //             d.USING_DEPARTMENT_4,
+    //             d.PROPORTION_4,
+    //             d.USING_DEPARTMENT_5,
+    //             d.PROPORTION_5,
+    //           ]);
+    //         });
+    //         writeFile(
+    //           {
+    //             SheetNames: ["sheet1"],
+    //             Sheets: {
+    //               // Sheet1: utils.aoa_to_sheet(array)
+    //             }
+    //           },
+    //           '新耗材监管统计.xlsx'
+    //         );
+    //         this.$message.success("导出成功");
+    //       })
+    //       .catch((e) => {
+    //         loading.close();
+    //         this.$message.error(e.message);
+    //       });
+    //   });
+    // },
     exportData(data) {
-      const loading = this.$messageLoading('正在导出数据...');
-      this.$refs.table.doRequest(({ where, order }) => {
-        where = data;
-        where.Dept_One_Code = this.$store.state.user.info.DeptNow.Dept_Two_Code;
-        getMaterialStaticsSheet({
-          page: 1,
-          limit: 999999,
-          where: where,
-          order: order
-        })
-          .then((res) => {
-            loading.close();
-            const array = [
-              [
-                "品种编码",
-                "品种名称",
-                "消耗数量",
-                "消耗金额/元",
-                "环期消耗数量",
-                "环期消耗金额/元",
-                "增幅金额",
-                "环比增幅（%）",
-                "使用科室1",
-                "占比%",
-                "使用科室2",
-                "占比%",
-                "使用科室3",
-                "占比%",
-                "使用科室4",
-                "占比%",
-                "使用科室5",
-                "占比%",
-              ]
-            ];
-            res.result.forEach((d) => {
-              array.push([
-                d.VARIETIE_CODE_NEW,
-                d.VARIETIE_NAME,
-                d.MAIN_QTY,
-                d.MAIN_PRICE,
-                d.HQ_QTY,
-                d.HQ_PRICE,
-                d.HQ_PRICE_ADD,
-                d.HB_ZZ,
-                d.USING_DEPARTMENT_1,
-                d.PROPORTION_1,
-                d.USING_DEPARTMENT_2,
-                d.PROPORTION_2,
-                d.USING_DEPARTMENT_3,
-                d.PROPORTION_3,
-                d.USING_DEPARTMENT_4,
-                d.PROPORTION_4,
-                d.USING_DEPARTMENT_5,
-                d.PROPORTION_5,
-              ]);
-            });
-            writeFile(
-              {
-                SheetNames: ["sheet1"],
-                Sheets: {
-                  // Sheet1: utils.aoa_to_sheet(array)
-                }
-              },
-              '新耗材监管统计.xlsx'
-            );
-            this.$message.success("导出成功");
-          })
-          .catch((e) => {
-            loading.close();
-            this.$message.error(e.message);
-          });
+      // const loading = this.$messageLoading('正在导出数据...');
+
+      getMaterialStaticsSheet({
+        where: data
+      }).then((res) => {
+        var url = `${API_BASE_URL}/Excel/files/${res.msg}`;
+        window.open(url);
       });
+      // getMaterialStaticsSheet(data).then((res) => {
+      //   console.log(res);
+      // });
     }
   },
   created() {
