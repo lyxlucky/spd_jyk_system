@@ -39,11 +39,13 @@
       </template>
 
       <template v-slot:RECORD_TYPE="{ row }">
+        <el-tag v-if="row.RECORD_TYPE==0" type="info">库存初始化</el-tag>
         <el-tag v-if="row.RECORD_TYPE==1" type="info">申领入库</el-tag>
         <el-tag v-if="row.RECORD_TYPE==2" type="success">已入库</el-tag>
         <el-tag v-if="row.RECORD_TYPE==3">已出库</el-tag>
         <el-tag v-if="row.RECORD_TYPE==4" type="info">定数包退货</el-tag>
         <el-tag v-if="row.RECORD_TYPE==5" type="info">散货出库</el-tag>
+        <el-tag v-if="row.RECORD_TYPE==6" type="info">his计费</el-tag>
       </template>
 
       <!-- 操作列 -->

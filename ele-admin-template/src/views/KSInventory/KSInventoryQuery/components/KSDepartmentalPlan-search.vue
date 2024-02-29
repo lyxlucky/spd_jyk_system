@@ -83,7 +83,7 @@
       <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 12 }">
         <el-input clearable v-model="where.DELIVERY_NUMBER" placeholder="入库单号" />
       </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 8, md: 12 } : { span: 8 }">
+      <el-col style="margin-left:10px;" v-bind="styleResponsive ? { lg: 8, md: 12 } : { span: 8 }">
         <div class="ele-form-actions" style="display: flex">
           <el-button size="small" type="primary" icon="el-icon-search" class="ele-btn-icon" @click="search">
             查询
@@ -93,7 +93,7 @@
           <el-button size="small" type="primary" class="ele-btn-icon" @click="KSInventoryQueryShow=true">库存汇总</el-button>
 
           <el-upload style="width: 100px;margin-left: 10px" class="upload-demo" :show-file-list="false" :action="actionUrl" :data="Updata" :on-success="onSuccess" :on-progress="onProgress">
-            <el-button size="small" type="primary">点击上传</el-button>
+            <el-button size="small" type="primary">上传初始化库存</el-button>
           </el-upload>
 
           <label style="margin-left: 30px">合计数量:<b>{{sumCount}}</b></label>
