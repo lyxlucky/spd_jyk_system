@@ -1,6 +1,22 @@
 // 接口地址
 export const API_BASE_URL = process.env.VUE_APP_API_BASE_URL;
 
+// 后端地址
+export const BACK_BASE_URL = "http://localhost:16416";
+
+// // 北大
+// export const BACK_BASE_URL = "http://47.106.243.154:9001";
+
+// // 北大内网
+// export const BACK_BASE_URL = "http://100.100.100.45:8001";
+
+// // 龙华妇幼外网
+// export const BACK_BASE_URL = "http://61.145.158.182:10082";
+
+// // 龙华妇幼内网
+// export const BACK_BASE_URL = "http://10.88.10.209:82/";
+
+
 // 项目名称
 export const PROJECT_NAME = process.env.VUE_APP_NAME;
 

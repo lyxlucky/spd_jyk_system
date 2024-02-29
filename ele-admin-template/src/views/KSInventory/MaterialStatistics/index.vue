@@ -43,7 +43,7 @@
 </template>
 
 <script>
-import { API_BASE_URL, TOKEN_HEADER_NAME, LAYOUT_PATH } from '@/config/setting';
+import { API_BASE_URL, BACK_BASE_URL } from '@/config/setting';
 import { utils, writeFile } from 'xlsx';
 import UserSearch from './components/user-search.vue';
 import UserEdit from './components/user-edit.vue';
@@ -332,8 +332,8 @@ export default {
         }
       ],
       toolbar: false,
-      pageSize: 10,
-      pageSizes: [10, 20, 50, 100, 9999999],
+      pageSize: 15,
+      pageSizes: [15, 20, 50, 100, 9999999],
       pagerCount: 5,
       // 表格选中数据
       selection: [],
@@ -454,8 +454,8 @@ export default {
       getMaterialStaticsSheet({
         where: data
       }).then((res) => {
-        var url = `${API_BASE_URL}/Excel/files/${res.msg}`;
-        window.open(url);
+        var url = `${BACK_BASE_URL}/Excel/files/${res.msg}`;
+        window.open(url.replace('/undefined', ''));
       });
       // getMaterialStaticsSheet(data).then((res) => {
       //   console.log(res);
