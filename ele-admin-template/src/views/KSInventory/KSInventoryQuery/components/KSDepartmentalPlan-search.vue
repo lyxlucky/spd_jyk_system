@@ -96,6 +96,8 @@
             <el-button size="small" type="primary">上传初始化库存</el-button>
           </el-upload>
 
+          <el-button style="margin-left: 30px" size="small" type="primary" @click="DownloadTemplate()">下载模板</el-button>
+
           <label style="margin-left: 30px">合计数量:<b>{{sumCount}}</b></label>
 
         </div>
@@ -107,7 +109,7 @@
 </template>
 
 <script>
-import { API_BASE_URL, TOKEN_HEADER_NAME, LAYOUT_PATH } from '@/config/setting';
+import { API_BASE_URL, BACK_BASE_URL } from '@/config/setting';
 import { CreatList } from '@/api/KSInventory/KSDepartmentalPlan';
 import { DeptReceivingScanOrder } from '@/api/KSInventory/KSInventoryQuery';
 import KSInventoryQuery2 from '@/views/KSInventory/ReferenceComponent/KSInventoryQuery/index.vue';
@@ -207,6 +209,10 @@ export default {
       } else {
         this.$message.error(response.msg);
       }
+    },
+    DownloadTemplate(){
+      var url = `${BACK_BASE_URL}/ZL/库存初始化.xls`
+      window.location.href = url.replace('/undefined', '');
     }
   },
   created() {

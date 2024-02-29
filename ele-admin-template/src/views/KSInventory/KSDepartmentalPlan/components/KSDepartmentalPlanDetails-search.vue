@@ -57,7 +57,7 @@
           <el-button type="primary" size="small" @click="BidListShowEdit=true">中标目录</el-button>
           <el-button type="primary" size="small" @click="VarietyDataLzhLookShow=true">在用目录</el-button>
           <el-button type="primary" size="small" @click="DpetOneAuthWithDeptShow=true">科室目录</el-button>
-          <!-- <el-button type="primary" size="small" @click="subToExamine">申领指引</el-button> -->
+          <el-button type="primary" size="small" @click="DownloadGuide">申领指引</el-button>
         </div>
       </el-col>
     </el-row>
@@ -110,6 +110,7 @@
 </template>
 
 <script>
+import { API_BASE_URL, BACK_BASE_URL } from '@/config/setting';
 import { reloadPageTab, finishPageTab } from '@/utils/page-tab-util';
 import {
   DeletePlanDeta,
@@ -135,7 +136,7 @@ export default {
     BidVarInfoDept,
     ApplyOperateTip,
     VarietyDataLzhLook,
-    DpetOneAuthWithDept,
+    DpetOneAuthWithDept
   },
   data() {
     // 默认表单数据
@@ -157,7 +158,7 @@ export default {
       BidListShowEdit: false,
       ApplyOperateTipShow: false,
       VarietyDataLzhLookShow: false,
-      DpetOneAuthWithDeptShow: false,
+      DpetOneAuthWithDeptShow: false
     };
   },
   computed: {
@@ -429,11 +430,15 @@ export default {
           loading.close();
           this.$message.error(err);
         });
+    },
+    DownloadGuide() {
+      var url = `${BACK_BASE_URL}/ZL/上药控股SPD科室操作手册.pdf`;
+      window.open(url.replace('/undefined', ''));
     }
   },
   created() {
     // reloadPageTab();
-    // console.log(this.$store.state.user);
+    console.log(this.$store.state.user);
   }
 };
 </script>

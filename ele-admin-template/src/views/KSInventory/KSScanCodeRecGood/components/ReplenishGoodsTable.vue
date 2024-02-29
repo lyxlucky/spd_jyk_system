@@ -176,7 +176,9 @@ export default {
   methods: {
     /* 表格数据源 */
     datasource({ page, limit, where, order }) {
+      // console.log(this.$store.state.user.info)
       var Dept_Two_Code = this.$store.state.user.info.userDept;
+      // var Dept_Two_Code = this.$store.state.user.info.DeptNow.Dept_Two_Code
 
       var Dept_Two_CodeStr = '';
       for (let i = 0; i < Dept_Two_Code.length; i++) {
@@ -197,8 +199,6 @@ export default {
     },
     /* 刷新表格 */
     reload(where) {
-      console.log(this.$store.state.user.userDept);
-
       var Dept_Two_Code = this.$store.state.user.info.userDept;
 
       var Dept_Two_CodeStr = '';
