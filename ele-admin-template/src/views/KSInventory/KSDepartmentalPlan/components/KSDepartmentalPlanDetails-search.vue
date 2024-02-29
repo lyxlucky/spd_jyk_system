@@ -41,7 +41,7 @@
           <el-button type="primary" size="small" @click="addPutInListDeta2" :disabled='!IsDisabled'>保存并提交</el-button>
           <!-- <el-button type="primary" size="small" @click="reset" :disabled='IsDisabled'>查询订单情况</el-button> -->
           <!-- <el-button type="primary" size="small" @click="reset" :disabled='IsDisabled'>合并订单</el-button> -->
-          <el-button type="primary" size="small" @click="subToExamine" :disabled='!IsPutInListDeta'>审核申领单</el-button>
+          <el-button :style="{ display: visibleLine }" type="primary" size="small" @click="subToExamine" :disabled='!IsPutInListDeta'>审核申领单</el-button>
           <!-- <el-button type="primary" size="small" @click="search" :disabled='!IsToExamine'>审批申领单</el-button> -->
           <!-- <el-button type="danger" size="small" @click="removeBatch" :disabled='!IsDisabledByDel'>删除</el-button> -->
           <el-popconfirm class="ele-action" title="确定删除？" @confirm="removeBatch()">
@@ -158,7 +158,9 @@ export default {
       BidListShowEdit: false,
       ApplyOperateTipShow: false,
       VarietyDataLzhLookShow: false,
-      DpetOneAuthWithDeptShow: false
+      DpetOneAuthWithDeptShow: false,
+      HidesubToExamine: false,
+      visibleLine: 'none'
     };
   },
   computed: {
@@ -434,11 +436,26 @@ export default {
     DownloadGuide() {
       var url = `${BACK_BASE_URL}/ZL/上药控股SPD科室操作手册.pdf`;
       window.open(url.replace('/undefined', ''));
+    },
+    IsHide() {
+      console.log(this.HidesubToExamine);
+      if (this.HidesubToExamine == false) {
+        this.visibleLine = 'none';
+      } else {
+        this.visibleLine = '';
+      }
     }
   },
   created() {
     // reloadPageTab();
-    console.log(this.$store.state.user);
+    var permission_group = this.$store.state.user.info.permission_group;
+    for (let i = 0; i < permission_group.length; i++) {
+      if (permission_group[i].component == 'ApplyPlan_审核') {
+        this.HidesubToExamine = true;
+        break;
+      }
+    }
+    this.IsHide()
   }
 };
 </script>
