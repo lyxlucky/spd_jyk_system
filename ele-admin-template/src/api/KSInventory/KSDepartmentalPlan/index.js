@@ -370,3 +370,16 @@ export async function deleteOneAuthVarWithDeptItem(row){
         return Promise.reject(new Error(res.data.msg));
     }
 }
+
+export async function deleteOneAuthVarWithDeptItems(data) {
+    var data2 = {};
+    data2.IDs = data.IDs;
+    data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+    var rep = formdataify(data2);
+    const res = await request.post('/DeptOneBulkCargoAuthVar/deleteOneAuthVarWithDeptItems', rep);
+    if (res.data.code == 200) {
+        return res.data;
+    } else {
+        return Promise.reject(new Error(res.data.msg));
+    }
+}

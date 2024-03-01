@@ -45,11 +45,12 @@ import UserEdit from './components/user-edit.vue';
 
 import {
   getOneAuthVarWithDept,
-  deleteOneAuthVarWithDeptItem
+  deleteOneAuthVarWithDeptItem,
+  deleteOneAuthVarWithDeptItems
 } from '@/api/KSInventory/KSDepartmentalPlan';
 import {
   SerachPlanList,
-  KeeptListDeta
+  KeeptListDeta,
 } from '@/api/KSInventory/IntroduceUserDefinedTemp';
 export default {
   name: 'dpetOneAuthWithDept',
@@ -69,13 +70,13 @@ export default {
     return {
       // 表格列配置
       columns: [
-        // {
-        //   columnKey: 'selection',
-        //   type: 'selection',
-        //   width: 45,
-        //   align: 'center',
-        //   fixed: 'left'
-        // },
+        {
+          columnKey: 'selection',
+          type: 'selection',
+          width: 45,
+          align: 'center',
+          fixed: 'left'
+        },
         {
           columnKey: 'index',
           type: 'index',
@@ -353,6 +354,31 @@ export default {
             type: 'info',
             message: '已取消删除'
           });
+        });
+    },
+    deleteIds(){
+      const loading = this.$messageLoading('删除中..');
+      var ID = '';
+      this.selection.forEach((item) => {
+        ID += item.ID + ',';
+      });
+      ID.substring(0, ID.length - 1);
+      var data = {
+        ID
+      };
+      deleteOneAuthVarWithDeptItems(data)
+        .then((res) => {
+          loading.close();
+          this.search();
+          var where = {
+            PlanNum: this.KSDepartmentalPlanDataSearch.PlanNum
+          };
+          this.$emit('search', where);
+          this.$message.success(res.msg);
+        })
+        .catch((err) => {
+          loading.close();
+          this.$message.error(err);
         });
     }
   },

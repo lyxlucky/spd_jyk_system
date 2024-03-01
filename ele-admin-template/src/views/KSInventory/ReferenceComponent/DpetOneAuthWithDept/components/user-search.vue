@@ -27,6 +27,7 @@
         <el-button type="primary" icon="el-icon-search" class="ele-btn-icon" @click="search">查询</el-button>
         <el-button @click="reset">重置</el-button>
         <el-button type="primary" icon="el-icon-download" class="ele-btn-icon" @click="exportData">导出</el-button>
+        <el-button type="danger" class="ele-btn-icon" @click="deleteIds()">批量删除</el-button>
       </el-col>
     </el-row>
   </el-form>
@@ -65,6 +66,9 @@ export default {
     },
     exportData() {
       this.$emit('exportData', this.where);
+    },
+    deleteIds(){
+      this.$emit('deleteIds', this.where);
     }
   },
   created() {
