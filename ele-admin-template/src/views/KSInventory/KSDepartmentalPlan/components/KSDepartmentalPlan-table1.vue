@@ -31,7 +31,7 @@
             </el-link>
           </template>
         </el-popconfirm>
-        <el-button size="small" type="primary" class="ele-btn-icon" @click="ReturnStateBtn(row)"> 取消为新增状态</el-button>
+        <el-button v-if="row.State!=0" size="small" type="primary" class="ele-btn-icon" @click="ReturnStateBtn(row)"> 取消提交</el-button>
       </template>
     </ele-pro-table>
   </div>
@@ -74,7 +74,7 @@ export default {
         {
           columnKey: 'action',
           label: '操作',
-          width: 200,
+          width: 120,
           align: 'center',
           resizable: false,
           slot: 'action',
