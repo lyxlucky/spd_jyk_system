@@ -1,7 +1,7 @@
 <template>
   <div class="ele-body">
     <!-- 数据表格 -->
-    <ele-pro-table highlight-current-row @current-change="onCurrentChange" ref="table" height="27vh" :rowClickChecked="true" :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" cache-key="KSInventoryBasicDataTable">
+    <ele-pro-table :key="key" highlight-current-row @current-change="onCurrentChange" ref="table" height="27vh" :rowClickChecked="true" :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" cache-key="KSInventoryBasicDataTable">
       <!-- 表头工具栏 -->
       <template v-slot:toolbar>
         <!-- 搜索表单 -->
@@ -175,7 +175,8 @@ export default {
       data: [],
       applyPlanSbz: 0,
       applyPlanXhz: 0,
-      applyPlanBl: '0%'
+      applyPlanBl: '0%',
+      key: 0
     };
   },
   methods: {
@@ -224,7 +225,9 @@ export default {
         .then((res) => {
           this.$message.success(res.msg);
           loading.close();
+          // this.$refs.table.reRenderTable();
           this.reload();
+          this.$forceUpdate();
         })
         .catch((err) => {
           loading.close();
@@ -268,8 +271,10 @@ export default {
       ReturnInitState(data2)
         .then((res) => {
           loading.close();
-          this.reload();
           this.$message.success(res.msg);
+          // this.reload();
+          // this.$forceUpdate();
+          this.key += 1;
         })
         .catch((err) => {
           loading.close();
