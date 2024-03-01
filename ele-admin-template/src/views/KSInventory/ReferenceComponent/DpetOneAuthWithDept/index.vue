@@ -6,7 +6,7 @@
         <!-- 数据表格 -->
         <ele-pro-table ref="table" height="600px" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :rowClickChecked="true" :rowClickCheckedIntelligent="false" :selection.sync="selection" @selection-change="onSelectionChange" cache-key="dpetOneAuthWithDept">
           <template v-slot:toolbar>
-            <user-search @search="reload" @exportData="exportData" />
+            <user-search @search="reload" @exportData="exportData" @deleteIds="deleteIds" />
           </template>
           <!-- 操作列 -->
           <template v-slot:APPLY_QTY="{ row }">
@@ -50,7 +50,7 @@ import {
 } from '@/api/KSInventory/KSDepartmentalPlan';
 import {
   SerachPlanList,
-  KeeptListDeta,
+  KeeptListDeta
 } from '@/api/KSInventory/IntroduceUserDefinedTemp';
 export default {
   name: 'dpetOneAuthWithDept',
@@ -181,14 +181,14 @@ export default {
           width: 120,
           align: 'center',
           showOverflowTooltip: true
-        },
-        {
-          slot: 'Enable',
-          label: '操作',
-          width: 120,
-          align: 'center',
-          showOverflowTooltip: true
         }
+        // {
+        //   slot: 'Enable',
+        //   label: '操作',
+        //   width: 120,
+        //   align: 'center',
+        //   showOverflowTooltip: true
+        // }
       ],
       toolbar: false,
       pageSize: 15,
@@ -356,11 +356,11 @@ export default {
           });
         });
     },
-    deleteIds(){
+    deleteIds() {
       const loading = this.$messageLoading('删除中..');
       var ID = '';
       this.selection.forEach((item) => {
-        ID += item.ID + ',';
+        ID += item.Varietie_Code + ',';
       });
       ID.substring(0, ID.length - 1);
       var data = {
@@ -369,11 +369,11 @@ export default {
       deleteOneAuthVarWithDeptItems(data)
         .then((res) => {
           loading.close();
-          this.search();
-          var where = {
-            PlanNum: this.KSDepartmentalPlanDataSearch.PlanNum
-          };
-          this.$emit('search', where);
+          this.reload();
+          // var where = {
+          //   PlanNum: this.KSDepartmentalPlanDataSearch.PlanNum
+          // };
+          // this.$emit('search', where);
           this.$message.success(res.msg);
         })
         .catch((err) => {

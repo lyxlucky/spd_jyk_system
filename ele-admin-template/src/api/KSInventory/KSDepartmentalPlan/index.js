@@ -357,8 +357,8 @@ export async function ReturnInitState(data) {
     } else {
         return Promise.reject(new Error(res.data.msg));
     }
-}  
-export async function deleteOneAuthVarWithDeptItem(row){
+}
+export async function deleteOneAuthVarWithDeptItem(row) {
     var data2 = {};
     data2.ID = row.ID;
     data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
@@ -373,10 +373,11 @@ export async function deleteOneAuthVarWithDeptItem(row){
 
 export async function deleteOneAuthVarWithDeptItems(data) {
     var data2 = {};
-    data2.IDs = data.IDs;
+    data2.IDs = data.ID;
     data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
     var rep = formdataify(data2);
     const res = await request.post('/DeptOneBulkCargoAuthVar/deleteOneAuthVarWithDeptItems', rep);
+    console.log(res)
     if (res.data.code == 200) {
         return res.data;
     } else {
