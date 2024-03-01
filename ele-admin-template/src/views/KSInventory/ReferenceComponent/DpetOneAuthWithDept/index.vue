@@ -1,10 +1,13 @@
 <template >
-  <ele-modal width="1600px" :visible="visible" :close-on-click-modal="true" custom-class="ele-dialog-form" title="科室目录" @update:visible="updateVisible">
+  <ele-modal width="1600px" :visible="visible" :close-on-click-modal="true" custom-class="ele-dialog-form" title="科室目录"
+    @update:visible="updateVisible">
     <div class="ele-body">
       <el-card shadow="never">
         <!-- 搜索表单 -->
         <!-- 数据表格 -->
-        <ele-pro-table ref="table" height="600px" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :rowClickChecked="true" :rowClickCheckedIntelligent="false" :selection.sync="selection" @selection-change="onSelectionChange" cache-key="dpetOneAuthWithDept">
+        <ele-pro-table ref="table" height="600px" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns"
+          :datasource="datasource" :rowClickChecked="true" :rowClickCheckedIntelligent="false" :selection.sync="selection"
+          @selection-change="onSelectionChange" cache-key="dpetOneAuthWithDept">
           <template v-slot:toolbar>
             <user-search @search="reload" @exportData="exportData" />
           </template>
@@ -12,6 +15,15 @@
           <template v-slot:APPLY_QTY="{ row }">
             <el-form-item label="">
               <el-input v-model="row.APPLY_QTY"></el-input>
+            </el-form-item>
+          </template>
+
+          <template v-slot:Enable="{ row }">
+            <el-form-item label="">
+              <el-button size="small" type="danger" icon="el-icon-plus" class="ele-btn-icon"
+                @click="deleteOneAuthVarWithDeptItem(row)">
+                删除
+              </el-button>
             </el-form-item>
           </template>
         </ele-pro-table>
@@ -35,7 +47,7 @@ import { utils, writeFile } from 'xlsx';
 import UserSearch from './components/user-search.vue';
 import UserEdit from './components/user-edit.vue';
 
-import { getOneAuthVarWithDept } from '@/api/KSInventory/KSDepartmentalPlan';
+import { getOneAuthVarWithDept,deleteOneAuthVarWithDeptItem } from '@/api/KSInventory/KSDepartmentalPlan';
 import {
   SerachPlanList,
   KeeptListDeta
@@ -166,6 +178,13 @@ export default {
         {
           prop: 'Dept_One_Name',
           label: '科室名称',
+          width: 120,
+          align: 'center',
+          showOverflowTooltip: true
+        },
+        {
+          prop: 'Enable',
+          label: '操作',
           width: 120,
           align: 'center',
           showOverflowTooltip: true
@@ -310,7 +329,27 @@ export default {
             this.$message.error(e.message);
           });
       });
-    }
+    },
+    deleteOneAuthVarWithDeptItem(row){
+      this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          deleteOneAuthVarWithDeptItem(row).then((res) => {
+            this.$message({
+              type: 'success',
+              message: `${res.msg}！`
+            });
+            this.reload();
+          });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
+      }
   },
   watch: {
     visible(visible) {

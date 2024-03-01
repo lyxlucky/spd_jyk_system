@@ -358,3 +358,15 @@ export async function ReturnInitState(data) {
         return Promise.reject(new Error(res.data.msg));
     }
 }  
+export async function deleteOneAuthVarWithDeptItem(row){
+    var data2 = {};
+    data2.ID = row.ID;
+    data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+    var rep = formdataify(data2);
+    const res = await request.post('/DeptOneBulkCargoAuthVar/deleteOneAuthVarWithDeptItem', rep);
+    if (res.data.code == 200) {
+        return res.data;
+    } else {
+        return Promise.reject(new Error(res.data.msg));
+    }
+}
