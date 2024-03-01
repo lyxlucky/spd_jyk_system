@@ -31,6 +31,7 @@
             </el-link>
           </template>
         </el-popconfirm>
+        <el-button size="small" type="primary" class="ele-btn-icon" @click="ReturnStateBtn(row)"> 取消为新增状态</el-button>
       </template>
     </ele-pro-table>
   </div>
@@ -41,7 +42,8 @@ import KSDepartmentalPlanSearch from './KSDepartmentalPlan-search.vue';
 import {
   SerachPlanList,
   DeletePlanList,
-  SearchHistoryConsumedAndPurchaseDept
+  SearchHistoryConsumedAndPurchaseDept,
+  ReturnInitState
 } from '@/api/KSInventory/KSDepartmentalPlan';
 import { getDeptAuthVarNew } from '@/api/KSInventory/KSInventoryBasicData';
 export default {
@@ -72,7 +74,7 @@ export default {
         {
           columnKey: 'action',
           label: '操作',
-          width: 80,
+          width: 200,
           align: 'center',
           resizable: false,
           slot: 'action',
@@ -249,6 +251,29 @@ export default {
         })
         .catch((err) => {
           console.log(err);
+        });
+    },
+    ReturnStateBtn(data) {
+      // var IDs = data.PlanNum;
+      // var IDStr = IDs + ',';
+      // IDs.forEach((item) => {
+      //   IDStr += item + ',';
+      // });
+      // IDStr.substring(0, IDStr.length - 1);
+
+      var data2 = {
+        IDs: data.PlanNum
+      };
+      const loading = this.$messageLoading('正在保存。。。');
+      ReturnInitState(data2)
+        .then((res) => {
+          loading.close();
+          this.reload();
+          this.$message.success(res.msg);
+        })
+        .catch((err) => {
+          loading.close();
+          this.$message.error(err);
         });
     }
   },

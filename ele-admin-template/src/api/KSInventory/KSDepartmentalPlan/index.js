@@ -316,7 +316,7 @@ export async function QueryPageLayUIByJYK(data) {
     } else {
         return Promise.reject(new Error(res.data.msg));
     }
-}  
+}
 
 
 export async function getOneAuthVarWithDept(data) {
@@ -336,6 +336,22 @@ export async function getOneAuthVarWithDept(data) {
     var rep = formdataify(data2);
 
     const res = await request.post('/DeptOneBulkCargoAuthVar/getOneAuthVarWithDept', rep);
+    if (res.data.code == 200) {
+        return res.data;
+    } else {
+        return Promise.reject(new Error(res.data.msg));
+    }
+}
+
+
+export async function ReturnInitState(data) {
+    var data2 = {};
+    data2.IDs = data.IDs;
+    data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+
+    var rep = formdataify(data2);
+
+    const res = await request.post('/DeptApplyPlan/ReturnInitState', rep);
     if (res.data.code == 200) {
         return res.data;
     } else {

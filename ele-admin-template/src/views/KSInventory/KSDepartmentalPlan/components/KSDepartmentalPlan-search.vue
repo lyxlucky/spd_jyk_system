@@ -17,8 +17,8 @@
       <el-col v-bind="styleResponsive ? { lg: 5, md: 12 } : { span: 8 }">
         <el-input clearable v-model="BZ" style="width:200px" placeholder="请输入申领单备注信息" />
         <el-button style="margin-left: 20px;" size="small" type="primary" icon="el-icon-check" class="ele-btn-icon" @click="CreatApplicationForm()">
-            确认创建
-          </el-button>
+          确认创建
+        </el-button>
       </el-col>
       <!-- <el-col v-bind="styleResponsive ? { lg: 2, md: 12 } : { span: 8 }">
         <div class="ele-form-actions">
@@ -29,7 +29,7 @@
       </el-col> -->
       <el-col v-bind="styleResponsive ? { lg: 3, md: 4 } : { span: 4 }">
         <el-input clearable v-model="where.PlanNum" placeholder="申领单" />
-      </el-col> 
+      </el-col>
       <el-col style="padding-left: 0px" v-bind="styleResponsive ? { lg: 2, md: 4 } : { span: 4 }">
         <div class="block">
           <el-date-picker v-model="where.Start" type="date" style="width:140px" value-format="yyyy-MM-dd" placeholder="申领开始日期">
@@ -112,7 +112,10 @@
 </template>
 
 <script>
-import { CreatList } from '@/api/KSInventory/KSDepartmentalPlan';
+import {
+  CreatList,
+  ReturnInitState
+} from '@/api/KSInventory/KSDepartmentalPlan';
 export default {
   data() {
     // 默认表单数据
@@ -160,8 +163,9 @@ export default {
         this.$message.success(res.msg);
         this.$emit('search', this.where);
       });
-    }
+    },
   },
+
   created() {}
 };
 </script>
