@@ -1,13 +1,10 @@
 <template >
-  <ele-modal width="1600px" :visible="visible" :close-on-click-modal="true" custom-class="ele-dialog-form" title="科室目录"
-    @update:visible="updateVisible">
+  <ele-modal width="1600px" :visible="visible" :close-on-click-modal="true" custom-class="ele-dialog-form" title="科室目录" @update:visible="updateVisible">
     <div class="ele-body">
       <el-card shadow="never">
         <!-- 搜索表单 -->
         <!-- 数据表格 -->
-        <ele-pro-table ref="table" height="600px" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns"
-          :datasource="datasource" :rowClickChecked="true" :rowClickCheckedIntelligent="false" :selection.sync="selection"
-          @selection-change="onSelectionChange" cache-key="dpetOneAuthWithDept">
+        <ele-pro-table ref="table" height="600px" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :rowClickChecked="true" :rowClickCheckedIntelligent="false" :selection.sync="selection" @selection-change="onSelectionChange" cache-key="dpetOneAuthWithDept">
           <template v-slot:toolbar>
             <user-search @search="reload" @exportData="exportData" />
           </template>
@@ -20,8 +17,7 @@
 
           <template v-slot:Enable="{ row }">
             <el-form-item label="">
-              <el-button size="small" type="danger" icon="el-icon-plus" class="ele-btn-icon"
-                @click="deleteOneAuthVarWithDeptItem(row)">
+              <el-button size="small" type="danger" class="ele-btn-icon" @click="deleteOneAuthVarWithDeptItemBtn(row)">
                 删除
               </el-button>
             </el-form-item>
@@ -47,7 +43,10 @@ import { utils, writeFile } from 'xlsx';
 import UserSearch from './components/user-search.vue';
 import UserEdit from './components/user-edit.vue';
 
-import { getOneAuthVarWithDept,deleteOneAuthVarWithDeptItem } from '@/api/KSInventory/KSDepartmentalPlan';
+import {
+  getOneAuthVarWithDept,
+  deleteOneAuthVarWithDeptItem
+} from '@/api/KSInventory/KSDepartmentalPlan';
 import {
   SerachPlanList,
   KeeptListDeta
@@ -183,7 +182,7 @@ export default {
           showOverflowTooltip: true
         },
         {
-          prop: 'Enable',
+          slot: 'Enable',
           label: '操作',
           width: 120,
           align: 'center',
@@ -330,26 +329,32 @@ export default {
           });
       });
     },
-    deleteOneAuthVarWithDeptItem(row){
+    deleteOneAuthVarWithDeptItemBtn(row) {
+      console.log(row);
       this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          deleteOneAuthVarWithDeptItem(row).then((res) => {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(() => {
+          var data = {
+            ID: row.Varietie_Code
+          };
+          deleteOneAuthVarWithDeptItem(data).then((res) => {
             this.$message({
               type: 'success',
               message: `${res.msg}！`
             });
             this.reload();
           });
-        }).catch(() => {
+        })
+        .catch(() => {
           this.$message({
             type: 'info',
             message: '已取消删除'
-          });          
+          });
         });
-      }
+    }
   },
   watch: {
     visible(visible) {
