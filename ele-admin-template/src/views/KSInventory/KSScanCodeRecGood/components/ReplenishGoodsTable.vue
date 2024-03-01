@@ -176,15 +176,18 @@ export default {
   methods: {
     /* 表格数据源 */
     datasource({ page, limit, where, order }) {
-      // console.log(this.$store.state.user.info)
-      var Dept_Two_Code = this.$store.state.user.info.userDept;
-      // var Dept_Two_Code = this.$store.state.user.info.DeptNow.Dept_Two_Code
-
+      // console.log(this.$store.state.user.info.DeptNow.Dept_Two_Code)
+      // var Dept_Two_Code = this.$store.state.user.info.userDept;
+      var Dept_Two_Code2 = this.$store.state.user.info.DeptNow;
+      var Dept_Two_Code = [Dept_Two_Code2];
       var Dept_Two_CodeStr = '';
       for (let i = 0; i < Dept_Two_Code.length; i++) {
         Dept_Two_CodeStr += Dept_Two_Code[i].Dept_Two_Code + ',';
       }
-      Dept_Two_CodeStr = Dept_Two_CodeStr.substring(0, Dept_Two_CodeStr.length - 1); 
+      Dept_Two_CodeStr = Dept_Two_CodeStr.substring(
+        0,
+        Dept_Two_CodeStr.length - 1
+      );
       where.Dept_Two_Code = Dept_Two_CodeStr;
       let data = SearchDistributeListJYK({ page, limit, where, order }).then(
         (res) => {
@@ -206,7 +209,10 @@ export default {
         Dept_Two_CodeStr += Dept_Two_Code[i].Dept_Two_Code + ',';
       }
       where.Dept_Two_Code = Dept_Two_CodeStr;
-      Dept_Two_CodeStr = Dept_Two_CodeStr.substring(0, Dept_Two_CodeStr.length - 1); 
+      Dept_Two_CodeStr = Dept_Two_CodeStr.substring(
+        0,
+        Dept_Two_CodeStr.length - 1
+      );
       this.$refs.table.reload({ page: 1, where: where });
     },
     onDone(res) {
