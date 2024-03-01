@@ -34,7 +34,7 @@
     <template v-slot:footer>
       <el-button @click="updateVisible(false)">取消</el-button>
       <el-button type="primary" :loading="loading" @click="save">
-        保存
+        确定
       </el-button>
     </template>
   </ele-modal>
