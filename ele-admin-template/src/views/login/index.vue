@@ -72,6 +72,7 @@
 </template>
 
 <script>
+import { reloadPageTab } from '@/utils/page-tab-util';
 import CryptoJS from 'crypto-js';
 import I18nIcon from '@/layout/components/i18n-icon.vue';
 import { getToken } from '@/utils/token-util';
@@ -180,7 +181,12 @@ export default {
     },
     /* 跳转到首页 */
     goHome() {
-      this.$router.push(this.$route?.query?.from ?? '/').catch(() => {});
+      this.$router
+        .push(this.$route?.query?.from ?? '/')
+        .then((res) => {
+          location.reload();
+        })
+        .catch(() => {});
     },
     /* 更换图形验证码 */
     changeCaptcha() {
