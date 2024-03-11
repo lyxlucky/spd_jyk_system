@@ -1,7 +1,7 @@
 <template>
     <div>
         <!-- //@update:visible="updateVisible" -->
-        <ele-modal width="1900px" :centered="true" :visible="visible" :close-on-click-modal="true"
+        <ele-modal width="1500px" :centered="true" :visible="visible" :close-on-click-modal="true"
             custom-class="ele-dialog-form" title="品种列表" @update:visible="updateVisible">
             <div class="ele-body">
                 <el-card shadow="never">

@@ -11,32 +11,34 @@
         </el-form-item>
       </el-col>
 
-      <el-col v-bind="styleResponsive ? { lg: 3, md: 4 } : { span: 4 }" style="padding-left: 130px;">
+      <!-- 请勿删除此行代码 -->
+      <el-col v-bind="styleResponsive ? { lg: 3, md: 4 } : { span: 4 }" style="padding-left: 150px;">
+        <div class="ele-form-actions">
+        </div>
+      </el-col>
+
+      <el-col v-bind="styleResponsive ? { lg: 10, md: 4 } : { span: 4 }" style="padding-left: 40px;">
         <div class="ele-form-actions">
           <el-button size="medium " type="primary" icon="el-icon-search" class="ele-btn-icon" @click="search">
             查询
           </el-button>
-        </div>
-      </el-col>
-
-      <el-col v-bind="styleResponsive ? { lg: 6, md: 4 } : { span: 4 }" style="padding-left: 40px;">
-        <div class="ele-form-actions">
-          <el-button size="medium " type="primary" class="ele-btn-icon"
-            @click="createItem">
+          <el-button size="medium " type="primary" class="ele-btn-icon" @click="createItem">
             创建
           </el-button>
 
-          <el-button size="medium " type="danger" icon="el-icon-delete" @click="deleteItem" :disabled="isDisable" class="ele-btn-icon">
+          <el-button size="medium " type="danger" icon="el-icon-delete" @click="deleteItem" :disabled="isDisable"
+            class="ele-btn-icon">
             剔除
           </el-button>
 
-          <el-button size="medium " type="primary" icon="" @click="submitItem" :disabled="isDisable" class="ele-btn-icon">
+          <el-button size="medium " type="primary" @click="submitItem" :disabled="isDisable"
+            class="ele-btn-icon">
             提交
           </el-button>
         </div>
       </el-col>
 
-      <el-col v-bind="styleResponsive ? { lg: 5, md: 5 } : { span: 9 }">
+      <el-col style="" v-bind="styleResponsive ? { lg: 8, md: 4 } : { span: 4 }">
         <el-form-item label="状态：">
           <el-select v-model="where.status" @change="search()">
             <el-option label="全部" value=""></el-option>

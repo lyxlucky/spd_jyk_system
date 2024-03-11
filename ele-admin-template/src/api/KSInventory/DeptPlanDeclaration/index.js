@@ -6,8 +6,6 @@ import { TOKEN_STORE_NAME } from '@/config/setting';
 
 //获取科室上申报列表
 export async function getDeptPlanTableData(data) {
-  console.log('data');
-  console.log(data);
   var data2 = {};
   data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
   data2.page = data.page;
@@ -15,7 +13,7 @@ export async function getDeptPlanTableData(data) {
   const [timeStart, timeEnd] = data.where.topTableSearchTime || '';
   data2.startTime = timeStart ? timeStart : '';
   data2.endTime = timeEnd ? timeEnd : '';
-  data2.state = data.status ? data.status : '';
+  data2.state = data.where.status ? data.where.status : '';
   data2.DEPT_TWO_CODE = store.state.user.info.DeptNow.Dept_Two_Code
     ? store.state.user.info.DeptNow.Dept_Two_Code
     : '';

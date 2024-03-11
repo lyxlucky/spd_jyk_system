@@ -51,14 +51,14 @@
         </el-form-item>
       </el-col>
 
-      <el-col v-bind="styleResponsive ? { lg: 6, md: 12 } : { span: 6 }">
+      <el-col style="padding-left: 30px;" v-bind="styleResponsive ? { lg: 6, md: 12 } : { span: 6 }">
         <el-form-item label="环期时间:">
           <el-date-picker v-model="where.time2Range" value-format="yyyy-MM" type="monthrange" range-separator="至" start-placeholder="环期开始日期" end-placeholder="环期结束日期">
           </el-date-picker>
         </el-form-item>
       </el-col>
 
-      <el-col v-bind="styleResponsive ? { lg: 6, md: 12 } : { span: 6 }">
+      <el-col style="padding-left: 60px;" v-bind="styleResponsive ? { lg: 6, md: 12 } : { span: 6 }">
         <div class="ele-form-actions">
           <el-button type="primary" icon="el-icon-search" class="ele-btn-icon" @click="search">
             查询

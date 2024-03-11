@@ -1,6 +1,6 @@
 <template>
     <div class="quotation-plan">
-        <ele-modal width="1600px" :centered="true" :visible="visible" :close-on-click-modal="true"
+        <ele-modal width="1500px" :centered="true" :visible="visible" :close-on-click-modal="true"
             custom-class="ele-dialog-form" title="引入模板品种" @update:visible="updateVisible">
             <!-- Your code goes here -->
             <el-container>

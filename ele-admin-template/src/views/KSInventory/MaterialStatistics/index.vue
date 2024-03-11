@@ -18,21 +18,6 @@
             <el-input v-model="row.HQ_PRICE"></el-input>
           </el-form-item>
         </template>
-
-        <!-- 操作列 -->
-        <!-- <template v-slot:action="{ row }">
-          <el-link type="primary" :underline="false" icon="el-icon-edit" @click="openEdit(row)">
-            修改
-          </el-link> -->
-        <!-- <el-button type="primary" size="mini" @click="openEdit(row)">编辑</el-button> -->
-        <!-- <el-popconfirm class="ele-action" title="确定要删除此用户吗？" @confirm="remove(row)">
-            <template v-slot:reference>
-              <el-link type="danger" :underline="false" icon="el-icon-delete">
-                删除
-              </el-link>
-            </template>
-          </el-popconfirm> -->
-        <!-- </template> -->
       </ele-pro-table>
     </el-card>
     <!-- 编辑弹窗 -->
@@ -374,92 +359,13 @@ export default {
     openImport() {
       this.showImport = true;
     },
-    // exportData(data) {
-    //   const loading = this.$messageLoading('正在导出数据...');
-    //   this.$refs.table.doRequest(({ where, order }) => {
-    //     where = data;
-    //     where.Dept_One_Code = this.$store.state.user.info.DeptNow.Dept_Two_Code;
-    //     getMaterialStaticsSheet({
-    //       page: 1,
-    //       limit: 999999,
-    //       where: where,
-    //       order: order
-    //     })
-    //       .then((res) => {
-    //         loading.close();
-    //         const array = [
-    //           [
-    //             "品种编码",
-    //             "品种名称",
-    //             "消耗数量",
-    //             "消耗金额/元",
-    //             "环期消耗数量",
-    //             "环期消耗金额/元",
-    //             "增幅金额",
-    //             "环比增幅（%）",
-    //             "使用科室1",
-    //             "占比%",
-    //             "使用科室2",
-    //             "占比%",
-    //             "使用科室3",
-    //             "占比%",
-    //             "使用科室4",
-    //             "占比%",
-    //             "使用科室5",
-    //             "占比%",
-    //           ]
-    //         ];
-    //         res.result.forEach((d) => {
-    //           array.push([
-    //             d.VARIETIE_CODE_NEW,
-    //             d.VARIETIE_NAME,
-    //             d.MAIN_QTY,
-    //             d.MAIN_PRICE,
-    //             d.HQ_QTY,
-    //             d.HQ_PRICE,
-    //             d.HQ_PRICE_ADD,
-    //             d.HB_ZZ,
-    //             d.USING_DEPARTMENT_1,
-    //             d.PROPORTION_1,
-    //             d.USING_DEPARTMENT_2,
-    //             d.PROPORTION_2,
-    //             d.USING_DEPARTMENT_3,
-    //             d.PROPORTION_3,
-    //             d.USING_DEPARTMENT_4,
-    //             d.PROPORTION_4,
-    //             d.USING_DEPARTMENT_5,
-    //             d.PROPORTION_5,
-    //           ]);
-    //         });
-    //         writeFile(
-    //           {
-    //             SheetNames: ["sheet1"],
-    //             Sheets: {
-    //               // Sheet1: utils.aoa_to_sheet(array)
-    //             }
-    //           },
-    //           '新耗材监管统计.xlsx'
-    //         );
-    //         this.$message.success("导出成功");
-    //       })
-    //       .catch((e) => {
-    //         loading.close();
-    //         this.$message.error(e.message);
-    //       });
-    //   });
-    // },
     exportData(data) {
-      // const loading = this.$messageLoading('正在导出数据...');
-
       getMaterialStaticsSheet({
         where: data
       }).then((res) => {
         var url = `${BACK_BASE_URL}/Excel/files/${res.msg}`;
         window.open(url.replace('/undefined', ''));
       });
-      // getMaterialStaticsSheet(data).then((res) => {
-      //   console.log(res);
-      // });
     }
   },
   created() {
