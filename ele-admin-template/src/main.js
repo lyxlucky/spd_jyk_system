@@ -9,6 +9,7 @@ import VueClipboard from 'vue-clipboard2';
 import i18n from './i18n';
 import './styles/index.scss';
 
+
 Vue.config.productionTip = false;
 
 Vue.use(EleAdmin, {
