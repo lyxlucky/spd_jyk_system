@@ -1,5 +1,10 @@
 const CompressionWebpackPlugin = require('compression-webpack-plugin');
 const { transformElementScss } = require('ele-admin/lib/utils/dynamic-theme');
+const path = require('path')
+
+function resolve(dir) {
+  return path.join(__dirname, dir)
+}
 
 module.exports = {
   // publicPath: '/jyknw/',
@@ -13,6 +18,20 @@ module.exports = {
     }
   },
   chainWebpack(config) {
+    // set svg-sprite-loader
+    config.module.rule('svg').exclude.add(resolve('src/assets')).end();
+    config.module
+      .rule('icons')
+      .test(/\.svg$/)
+      .include.add(resolve('src/assets'))
+      .end()
+      .use('svg-sprite-loader')
+      .loader('svg-sprite-loader')
+      .options({
+        symbolId: 'icon-[name]'
+      })
+      .end();
+
     config.plugins.delete('prefetch');
     if (process.env.NODE_ENV !== 'development') {
       // gzip 压缩
@@ -39,21 +58,21 @@ module.exports = {
     proxy: {
       '/api': {
         // 这里可以写你自己的后端接口地址，如：
-        target: 'http://localhost:16416/',
+        target: 'http://localhost:16416/'
 
         // 北大
-        // target: 'http://47.106.243.154:9001',  
+        // target: 'http://47.106.243.154:9001',
 
         // 北大内网
         // target: 'http://100.100.100.45:8001',
 
         // 龙华妇幼外网
         // target: 'http://61.145.158.182:10082',
-        
+
         // 龙华妇幼内网
         // target: 'http://10.88.10.209:82/',
       }
-    },
+    }
     // port: 8060
-  },
+  }
 };

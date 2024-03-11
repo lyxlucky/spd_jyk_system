@@ -1,37 +1,24 @@
 <template>
   <div class="ele-body">
     <div class="ele-page-header">
-    </div>
-    <el-card v-for="(item,index) in MenuList" :key="index" shadow="never">
-      <!-- <img src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png" class="image">
-      <div style="padding: 14px;">
-        <div class="bottom clearfix">
-          <el-button type="text" class="button">好吃的汉堡</el-button>
-        </div>
-      </div> -->
 
-      <!-- <div class="demo-image">
-        <el-image style="width: 100px; height: 100px" :src="url" :fit="fit"></el-image>
-        <div class="bottom clearfix">
-          <el-button type="text" class="button">好吃的汉堡</el-button>
-        </div>
-      </div> -->
+      <!-- <i src="@/assets/qr_code.png" style="font-size: 80px;"></i> -->
+      <!-- <img src="@/assets/qr_code.png" style="width: 80px;height: 80px;" alt=""> -->
+
+    </div>
+    <el-card v-for="(item, index) in MenuList" :key="index" shadow="never">
+
       <div class="demo-image" style="display:flex;">
         <div class="block" v-for="(p) in item" :key="p.component">
-          <!-- <el-image style="width: 100px; height: 100px" :src="url" fit="fill"></el-image> -->
-          <div style="width:150px;height:120px;border-radius: 2px;margin-right: 100px;" @click="changeRoute(p.component)">
+          <div style="width:150px;height:120px;border-radius: 2px;margin-right: 100px;"
+            @click="changeRoute(p.component)">
             <el-button type="text" class="button">
-              <!-- <div style="width:150px;display: flex;justify-content: center;">
-                <i class="el-icon-s-tools" style="font-size: 80px;"></i>
-              </div> -->
               <div style="width:150px;display: flex;justify-content: center;">
-                <!-- {{p.icon}} -->
-                <i :class="p.icon" style="font-size: 80px;"></i>
+                <svg-icon :icon-class="p.icon" style="width: 80px;height: 80px;" />
               </div>
               <div style="width:150px;display: flex;justify-content: center;margin-top: 10px;color:#606266;">
                 <div class="bottom clearfix">
-                  <span>{{p.title}}</span>
-                  <!-- <el-button type="text" class="button" style="font-size: 15px;">{{p.title}}</el-button> -->
+                  <span>{{ p.title }}</span>
                 </div>
               </div>
             </el-button>
@@ -55,25 +42,21 @@ export default {
     return {
       MenuList: null,
       icons: [
-        'el-icon-receiving',
-        'el-icon-data-analysis',
-        'el-icon-notebook-1',
-        'el-icon-notebook-2',
-        'el-icon-office-building',
-        'el-icon-school',
-        'el-icon-box',
-        'el-icon-tickets',
-        'el-icon-document-remove',
-        'el-icon-s-order',
-        'el-icon-wallet',
-        'el-icon-discount',
-        'el-icon-pie-chart',
-        'el-icon-document-copy',
-        'el-icon-document',
-        'el-icon-s-claim',
-        'el-icon-s-operation',
-        'el-icon-s-promotion',
-        'el-icon-s-shop'
+        "saomashouhuo",
+        "light_batch_parallel",
+        "kucunxiangqing",
+        "churukujilu",
+        "keshiguanli",
+        "mobanguanli",
+        "mulu",
+        "kucuntixing",
+        "microscope",
+        "listtixing",
+        "liyongshuai",
+        "jiesuanxinxi",
+        "zonghejianguan_tongjifenxi_nor",
+        "jiance",
+        "keshi",
       ]
     };
   },
@@ -115,14 +98,12 @@ export default {
           for (var k = 0; k < ListCount3; k++) {
             //二维
             permission_group2[i][k] = permission_group[startCount];
-            // permission_group2[i][j].icon = this.icons[startCount]
             startCount++;
           }
         } else {
           for (var j = 0; j < ListCount; j++) {
             //二维
             permission_group2[i][j] = permission_group[startCount];
-            // permission_group2[i][j].icon = this.icons[startCount]
             startCount++;
           }
         }

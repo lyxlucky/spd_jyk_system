@@ -8,6 +8,7 @@ import EleAdmin from 'ele-admin';
 import VueClipboard from 'vue-clipboard2';
 import i18n from './i18n';
 import './styles/index.scss';
+import '@/assets'; // icon
 
 
 Vue.config.productionTip = false;
