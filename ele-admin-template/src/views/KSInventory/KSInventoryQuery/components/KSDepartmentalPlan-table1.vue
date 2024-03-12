@@ -172,7 +172,8 @@ export default {
           // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 80
+          minWidth: 80,
+          sortable: true
         },
         {
           prop: 'UNIT',
@@ -180,7 +181,7 @@ export default {
           // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 80
+          minWidth: 80,
         },
         {
           prop: 'PRICE',
@@ -188,7 +189,8 @@ export default {
           // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 80
+          minWidth: 80,
+          sortable: true
         },
         {
           prop: 'BATCH',
@@ -196,7 +198,7 @@ export default {
           // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 110
+          minWidth: 110,
         },
         {
           prop: 'BATCH_ID',
@@ -216,16 +218,18 @@ export default {
           minWidth: 120,
           formatter: (_row, _column, cellValue) => {
             return this.$util.toDateString(cellValue, 'yyyy-MM-dd');
-          }
+          },
+          sortable: true
         },
         {
-          // prop: 'BATCH_VALIDITY_PERIOD',
+          prop: 'BATCH_VALIDITY_PERIOD',
           slot: 'BATCH_VALIDITY_PERIOD',
           label: '有效到期',
           // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 150
+          minWidth: 150,
+          sortable: true
         },
         {
           prop: 'SUPPLIER_NAME',
