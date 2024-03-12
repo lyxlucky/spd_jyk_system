@@ -1,10 +1,6 @@
 <template>
   <div class="ele-body">
     <div class="ele-page-header">
-
-      <!-- <i src="@/assets/qr_code.png" style="font-size: 80px;"></i> -->
-      <!-- <img src="@/assets/qr_code.png" style="width: 80px;height: 80px;" alt=""> -->
-
     </div>
     <el-card v-for="(item, index) in MenuList" :key="index" shadow="never">
 

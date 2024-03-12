@@ -39,14 +39,16 @@
     </div>
     <!-- 用户名称 -->
     <div class="ele-admin-header-tool-item">
-      <h5>{{UserName}}</h5>
+      <h5>{{ UserName }}</h5>
     </div>
     <!-- 科室名称 -->
     <div class="ele-admin-header-tool-item">
       <el-dropdown trigger="click" @command="handleCommand">
-        <span class="el-dropdown-link">{{DeptNow}}<i class="el-icon-arrow-down el-icon--right"></i></span>
+        <span class="el-dropdown-link">{{ DeptNow }}<i class="el-icon-arrow-down el-icon--right"></i></span>
         <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item v-for="(d,index) in userDept" :key="d.Dept_Two_Code+index" :command="d.Dept_Two_Name+','+d.Dept_Two_Code">{{d.Dept_Two_Name}}</el-dropdown-item>
+          <el-dropdown-item v-for="(d, index) in userDept" :key="d.Dept_Two_Code + index"
+            :command="d.Dept_Two_Name + ',' + d.Dept_Two_Code">{{ d.Dept_Two_Name }}
+          </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
     </div>
@@ -79,7 +81,7 @@ export default {
       // 是否显示修改密码弹窗
       passwordVisible: false,
       // 是否显示主题设置抽屉
-      settingVisible: false
+      settingVisible: false,
       //
       // userDept:[]
     };
@@ -100,11 +102,17 @@ export default {
       return this.$store.state.user.info.UserName;
     }
   },
+  created() {
+    // this.userDept = this.$store.state.user.info.userDept;
+  },
   methods: {
     handleCommand(command) {
-      var userDept = command.split(',');
-      this.$store.state.user.info.DeptNow.Dept_Two_Name = userDept[0];
-      this.$store.state.user.info.DeptNow.Dept_Two_Code = userDept[1];
+      let userDept = command.split(',');
+      let userDeptName = userDept[0];
+      let userDeptCode = userDept[1];
+      this.$store.commit("user/setDeptNowInfoName", userDeptName);
+      this.$store.commit("user/setDeptNowInfoCode", userDeptCode);
+      this.$bus.$emit("handleCommand");
     },
     /* 用户信息下拉点击事件 */
     onUserDropClick(command) {
@@ -124,7 +132,7 @@ export default {
           .then(() => {
             logout();
           })
-          .catch(() => {});
+          .catch(() => { });
       }
     },
     /* 全屏切换 */

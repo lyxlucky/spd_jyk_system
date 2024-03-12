@@ -10,7 +10,11 @@ import i18n from './i18n';
 import './styles/index.scss';
 import '@/assets'; // icon
 
+//事件总线
+export const EventBus = new Vue();
 
+//挂载事件总线
+Vue.prototype.$bus = EventBus
 Vue.config.productionTip = false;
 
 Vue.use(EleAdmin, {

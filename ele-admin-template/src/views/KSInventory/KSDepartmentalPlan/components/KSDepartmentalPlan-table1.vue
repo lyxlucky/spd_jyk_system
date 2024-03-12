@@ -179,6 +179,11 @@ export default {
       key: 0
     };
   },
+  mounted() {
+    this.$bus.$on('handleCommand', (data) => {
+      this.reload();
+    });
+  },
   methods: {
     /* 表格数据源 */
     datasource({ page, limit, where, order }) {
@@ -292,6 +297,11 @@ export default {
   created() {
     // this.getdatasource();
     this.GetConsume();
+  },
+  // 取消监听bus事件
+  destroyed () {
+    // 取消对handleCommand事件的监听
+    this.$bus.$off('handleCommand')
   }
 };
 </script>

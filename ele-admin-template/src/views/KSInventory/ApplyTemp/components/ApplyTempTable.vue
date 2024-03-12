@@ -260,6 +260,14 @@ export default {
       }
     }
   },
+  mounted() {
+    this.$bus.$on('handleCommand', (data) => {
+      this.reload();
+    });
+  },
+  destroyed() {
+    this.$bus.$off('handleCommand');
+  },
   created() {
     // this.getdatasource();
     // console.log(this.$store.state.user.info.DeptNow.Dept_Two_Code);

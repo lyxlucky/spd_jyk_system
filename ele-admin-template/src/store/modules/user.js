@@ -34,7 +34,7 @@ export default {
   mutations: {
     // 设置登录用户的信息
     setUserInfo(state, info) {
-      state.info = info;
+      state.info = JSON.parse(JSON.stringify(info));
     },
     // 设置登录用户的菜单
     setMenus(state, menus) {
@@ -56,7 +56,15 @@ export default {
     // 设置科室计划申报下表单ID参数
     setDeptPlanNewMainId(state, deptPlanNewMainId) {
       state.deptPlanNewMainId = deptPlanNewMainId;
-    }
+    },
+
+    setDeptNowInfoName(state, info) {
+      state.info.DeptNow.Dept_Two_Name = info;
+    },
+
+    setDeptNowInfoCode(state, info) {
+      state.info.DeptNow.Dept_Two_Code = info;
+    },
   },
   actions: {
     /**

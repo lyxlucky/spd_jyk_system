@@ -1,10 +1,10 @@
 import request from '@/utils/request';
 import { formdataify, DataToObject, formatDate } from '@/utils/formdataify';
 import { TOKEN_STORE_NAME } from '@/config/setting';
+import store from '@/store';
 
 
 export async function getDeptAuthVarNew(data) {
-    console.log(data)
     var data2 = {}
     data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
     data2.page = data.page;
@@ -35,10 +35,12 @@ export async function getDeptAuthVarNew(data) {
 
 /* 查询申领单 */
 export async function SerachPlanList(data) {
+    console.log(data)
     var data2 = {};
     data2.page = data.page;
     data2.size = data.limit;
-    data2.DeptCode = data.where.DeptCode;
+    data2.DeptCode = store.state.user.info.DeptNow.Dept_Two_Code + "," ? store.state.user.info.DeptNow.Dept_Two_Code + "," : '';
+    // data2.DeptCode = data.where.DeptCode ? data.where.DeptCode : '';
     data2.State = data.where.State ? data.where.State : '-1'
     data2.SerachName = data.where.SerachName ? data.where.SerachName : ''
     data2.Start = data.where.Start ? data.where.Start : ''
@@ -56,6 +58,7 @@ export async function SerachPlanList(data) {
         return Promise.reject(new Error(res.data.msg));
     }
 }
+
 
 /* 创建申领单 */
 export async function CreatList(data) {
