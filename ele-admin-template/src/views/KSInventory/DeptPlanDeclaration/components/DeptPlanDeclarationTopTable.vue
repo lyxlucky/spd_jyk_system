@@ -227,7 +227,15 @@ export default {
   created() {
     // this.getdatasource();
     // this.GetConsume();
-  }
+  },
+  mounted(){
+    this.$bus.$on('handleCommand', (data) => {
+      this.reload();
+    });
+  },
+  destroyed(){
+    this.$bus.$off('handleCommand')
+  },
 };
 </script>
 

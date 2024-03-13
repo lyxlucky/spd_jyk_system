@@ -1,7 +1,11 @@
 <template>
   <div class="ele-body">
     <!-- 数据表格 -->
-    <ele-pro-table ref="table" height="60vh" highlight-current-row :stripe="true" :rowClickChecked="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" @selection-change="onSelectionChange" cache-key="ApplyTempDataTable">
+    <!-- 自定义指令实现当pageSizes改变时触发 -->
+    <!-- :pageSize="pageSize" :pageSizes="pageSizes" -->
+    <ele-pro-table ref="table" height="60vh" highlight-current-row :stripe="true" :rowClickChecked="true"
+      :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource"
+      :selection.sync="selection" @selection-change="onSelectionChange" cache-key="ApplyTempDataTable">
       <!-- 表头工具栏 -->
       <!-- 右表头 -->
       <!-- <template v-slot:toolkit>
@@ -12,7 +16,8 @@
       <!-- 左表头 -->
       <template v-slot:toolbar>
         <!-- 搜索表单 -->
-        <ApplyTempDataSearch @search="reload" @exportData="exportData" :ApplyTempTableDataSearch='ApplyTempTableDataSearch' :selection="selection" @showEditReoad="showEditReoad" />
+        <ApplyTempDataSearch @search="reload" @exportData="exportData"
+          :ApplyTempTableDataSearch='ApplyTempTableDataSearch' :selection="selection" @showEditReoad="showEditReoad" />
 
         <!-- <el-button size="small" type="danger" icon="el-icon-delete" class="ele-btn-icon" @click="removebatch">
           删除
@@ -21,7 +26,8 @@
 
       <!-- 操作列 -->
       <template v-slot:TempletQty="{ row }">
-        <el-input-number style="width: 120px" v-model="row.TempletQty" :min="0" :max="999999999" :step="1" size="mini" />
+        <el-input-number style="width: 120px" v-model="row.TempletQty" :min="0" :max="999999999" :step="1"
+          size="mini" />
       </template>
       <template v-slot:AUTH="{ row }">
         <el-input-number style="width: 120px" v-model="row.AUTH" :min="0" :max="999999999" :step="1" size="mini" />
@@ -231,7 +237,7 @@ export default {
         }
       ],
       toolbar: false,
-      pageSize: 10,
+      pageSize: 20,
       pagerCount: 2,
       pageSizes: [10, 20, 50, 100, 9999999],
       // 表格选中数据
@@ -289,7 +295,6 @@ export default {
     onSelectionChange(selection) {
       this.selection = selection;
       this.$emit('selectionData', selection);
-      // console.log(this.selection);
     },
     showEditReoad(data) {
       if (data == false) {
@@ -372,12 +377,15 @@ export default {
             this.$message.error(e.message);
           });
       });
-    }
+    },
   },
   computed: {
     ApplyTempTableDataSearch() {
       return this.ApplyTempTableData;
-    }
+    },
+    // pageSize(){
+    //   return localStorage.getItem('SerachTempletDetaPageSize')?localStorage.getItem('SerachTempletDetaPageSize'):10
+    // }
   },
   watch: {
     ApplyTempTableDataSearch() {
@@ -387,10 +395,13 @@ export default {
         TempletMasteID: this.ApplyTempTableData.ID
       };
       this.$refs.table.reload({ page: 1, where: where });
-    }
+    },
+  },
+  mounted() {
   },
   created() {
     // this.getdatasource();
-  }
+  },
+  
 };
 </script>

@@ -17,6 +17,7 @@ export const EventBus = new Vue();
 Vue.prototype.$bus = EventBus
 Vue.config.productionTip = false;
 
+
 Vue.use(EleAdmin, {
   response: {
     dataName: 'list'

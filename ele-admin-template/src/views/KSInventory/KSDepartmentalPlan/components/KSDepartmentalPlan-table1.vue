@@ -1,7 +1,7 @@
 <template>
   <div class="ele-body">
     <!-- 数据表格 -->
-    <ele-pro-table :key="key" highlight-current-row @current-change="onCurrentChange" ref="table" height="27vh" :rowClickChecked="true" :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" cache-key="KSInventoryBasicDataTable">
+    <ele-pro-table :key="key" highlight-current-row @current-change="onCurrentChange" ref="table" height="12vh" :rowClickChecked="true" :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" cache-key="KSInventoryBasicDataTable">
       <!-- 表头工具栏 -->
       <template v-slot:toolbar>
         <!-- 搜索表单 -->
@@ -160,7 +160,7 @@ export default {
         }
       ],
       toolbar: false,
-      pageSize: 10,
+      pageSize: 2,
       pagerCount: 2,
       pageSizes: [10, 20, 50, 100, 9999999],
       // 表格选中数据

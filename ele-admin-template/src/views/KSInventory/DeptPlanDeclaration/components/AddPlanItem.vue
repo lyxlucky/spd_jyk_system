@@ -1,7 +1,7 @@
 <template>
     <div>
         <!-- //@update:visible="updateVisible" -->
-        <ele-modal width="1500px" :centered="true" :visible="visible" :close-on-click-modal="true"
+        <ele-modal width="1600px" :centered="true" :visible="visible" :close-on-click-modal="true"
             custom-class="ele-dialog-form" title="品种列表" @update:visible="updateVisible">
             <div class="ele-body">
                 <el-card shadow="never">
@@ -10,7 +10,8 @@
                     <ele-pro-table ref="table" height="600px" :pageSize="pageSize" :pageSizes="pageSizes"
                         :columns="columns" :datasource="datasource" :rowClickChecked="true"
                         :rowClickCheckedIntelligent="false" @selection-change="onSelectionChange"
-                        cache-key="AddPlanItem">
+                        cache-key="AddPlanItem"
+                        :selection.sync="selection">
                         <!-- 表头 -->
                         <template v-slot:toolbar>
                             <el-form class="ele-form-search" @keyup.enter.native="search" @submit.native.prevent>
@@ -60,7 +61,8 @@
                         </template>
 
                         <template v-slot:PLAN_NUM="{ row }">
-                            <el-input type='number' style='width:80px;height:15px;' v-model=row.PLAN_NUM></el-input>
+                            <el-input-number style="width: 100px" v-model="row.PLAN_NUM" :min="0" :max="999999999"
+                                :step="1" size="mini" />
                         </template>
                     </ele-pro-table>
                 </el-card>
@@ -171,13 +173,13 @@ export default {
                 {
                     prop: 'Dept_One_Name',
                     label: '科室名称',
-                    width: 200,
+                    width: 100,
                     showOverflowTooltip: true,
                 },
                 {
                     prop: 'PLAN_NUM',
                     label: '计划数量',
-                    width: 100,
+                    width: 130,
                     align: 'left',
                     showOverflowTooltip: true,
                     slot: "PLAN_NUM"
@@ -224,6 +226,7 @@ export default {
                 type: "warning",
             }).then(() => {
                 addDeptPlanTableDataKind(this.selection).then((res) => {
+                    this.$emit("addItemDone", "");
                     if (res.code == 200) return this.$message.success("添加成功");
                 })
             });

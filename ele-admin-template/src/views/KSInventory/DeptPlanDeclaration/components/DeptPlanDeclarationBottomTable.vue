@@ -12,7 +12,8 @@
           :DeptPlanDeclarationTopTableCurrent='DeptPlanDeclarationTopTableCurrent' :selection="selection"
           @showEditReoad="showEditReoad" :datasourceList="datasourceList" @exportData="exportData"
           @exportPrintSheet="exportPrintSheet" @deleteBottomTableItems="deleteBottomTableItems"
-          @excelBottomTable="ExcelBottomPlanTable" :TopTableSelection="TopTableSelection" />
+          @excelBottomTable="ExcelBottomPlanTable" :TopTableSelection="TopTableSelection"
+          @addPlanItemDone="reload" />
       </template>
 
       <template v-slot:DEPT_ZDY_VARIETIE_CODE="{ row }">
@@ -164,7 +165,6 @@ export default {
     },
     /* 刷新表格 */
     reload(where) {
-      console.log(where);
       this.$refs.table.reload({ page: 1, where: where });
     },
     ClickReload(IsReload) {

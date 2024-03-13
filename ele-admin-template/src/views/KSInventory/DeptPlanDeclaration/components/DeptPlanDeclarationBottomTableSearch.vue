@@ -44,18 +44,19 @@
 
 
     <!-- 修改明细对话框 -->
-    <el-dialog title="修改明细" center :visible.sync="updateDeptPlantTableDetailVisible" width="20%"
+    <el-dialog title="修改明细" center @close="updateDeptPlantTableDetailDialogClose" :visible.sync="updateDeptPlantTableDetailVisible" width="20%"
       :before-close="where.updateDeptPlantTableDetailClose">
 
-      <el-form :model="where.updateDeptPlantTableDetail" ref="updateDeptPlantTableDetailRef" label-width="100px"
+      <el-form :model="where.updateDeptPlantTableDetail" :rules="updateDetailRules" ref="updateDeptPlantTableDetailRef" label-width="100px"
         class="updateDeptPlantTableDetailForm">
 
-        <el-form-item label="备注：" prop="REMARK">
-          <el-input v-model="where.updateDeptPlantTableDetail.REMARK" placeholder="请输入备注"></el-input>
-        </el-form-item>
 
         <el-form-item label="计划数量" prop="PLAN_NUM">
           <el-input v-model="where.updateDeptPlantTableDetail.PLAN_NUM" placeholder=""></el-input>
+        </el-form-item>
+
+        <el-form-item label="备注：" prop="REMARK">
+          <el-input v-model="where.updateDeptPlantTableDetail.REMARK" placeholder="请输入备注"></el-input>
         </el-form-item>
 
         <el-form-item>
@@ -66,7 +67,7 @@
     </el-dialog>
 
     <!-- 添加计划品种 -->
-    <AddPlanItem :visible.sync="addPlanItemVisiable" />
+    <AddPlanItem @addItemDone="addItemDone" :visible.sync="addPlanItemVisiable" />
 
     <!-- 引用计划模板 -->
     <QuotationPlan :visible.sync="QuotationPlanVisible" />
@@ -116,6 +117,13 @@ export default {
       updateDeptPlantTableDetailVisible: false,
       QuotationPlanVisible: false,
       uploadUrl: `${BACK_BASE_URL}${API_BASE_URL}/DeptPlanDec/ImportDeptPDDel`,
+      updateDetailRules:{
+        PLAN_NUM: [
+          { required: true, message: '请输入计划数量', trigger: 'blur' },
+          { pattern: /^[1-9]\d*$/, message: '请输入正整数', trigger: 'blur' }
+          // 备注不能为空
+        ]
+      }
     };
   },
   computed: {
@@ -162,6 +170,13 @@ export default {
     }
   },
   methods: {
+    updateDeptPlantTableDetailDialogClose(){
+      this.where.updateDeptPlantTableDetail = {}
+    },
+    addItemDone(){
+      this.addPlanItemVisiable = false;
+      this.$emit('addPlanItemDone',"")
+    },
     //修改明细
     submitUpdateDeptPlanForm() {
       let data = {

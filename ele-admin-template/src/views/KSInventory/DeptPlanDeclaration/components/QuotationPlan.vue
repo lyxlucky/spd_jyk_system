@@ -47,8 +47,7 @@
                             @current-change="onRightSelectionChange" cache-key="rightTableKey">
 
                             <template v-slot:planCount="{ row }">
-                                <el-input type='number' style='width:80px;height:15px;'
-                                    v-model=row.planCount></el-input>
+                                <el-input-number style="width: 100px" v-model="row.PLAN_NUM" :min="0" :max="999999999" :step="1" size="mini" />
                             </template>
 
                             <template v-slot:VAR_ENABLE="{ row }">
@@ -210,7 +209,7 @@ export default {
                 {
                     slot: 'planCount',
                     label: '计划数量',
-                    width: 100,
+                    width: 110,
                     align: 'center',
                 },
                 {
