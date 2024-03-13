@@ -237,7 +237,7 @@ export default {
         }
       ],
       toolbar: false,
-      pageSize: 50,
+      pageSize: 20,
       pagerCount: 2,
       pageSizes: [10, 20, 50, 100, 9999999],
       // 表格选中数据
@@ -396,8 +396,6 @@ export default {
       };
       this.$refs.table.reload({ page: 1, where: where });
     },
-  },
-  mounted() {
   },
   created() {
     // this.getdatasource();

@@ -58,7 +58,6 @@ export default {
   },
   methods: {
     changeRoute(data) {
-      console.log(data);
       this.$router.push(this.$route?.query?.from ?? data);
     },
     permission_groupList() {
