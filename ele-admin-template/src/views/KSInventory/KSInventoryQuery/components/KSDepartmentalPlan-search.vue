@@ -83,7 +83,7 @@
       <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 12 }">
         <el-input clearable v-model="where.DELIVERY_NUMBER" placeholder="入库单号" />
       </el-col>
-      <el-col style="margin-left:10px;" v-bind="styleResponsive ? { lg: 8, md: 12 } : { span: 8 }">
+      <el-col style="margin-left:10px;" v-bind="styleResponsive ? { lg: 12, md: 12 } : { span: 8 }">
         <div class="ele-form-actions" style="display: flex">
           <el-button size="small" type="primary" icon="el-icon-search" class="ele-btn-icon" @click="search">
             查询
@@ -98,6 +98,8 @@
 
           <el-button style="margin-left: 30px" size="small" type="primary" @click="DownloadTemplate()">下载初始化模板</el-button>
 
+          <el-button style="margin-left: 30px" size="small" type="primary" @click="GenerateStockData_btn()">生成盘点数据</el-button>
+
           <label style="margin-left: 30px">合计数量:<b>{{sumCount}}</b></label>
 
         </div>
@@ -111,7 +113,10 @@
 <script>
 import { API_BASE_URL, BACK_BASE_URL } from '@/config/setting';
 import { CreatList } from '@/api/KSInventory/KSDepartmentalPlan';
-import { DeptReceivingScanOrder } from '@/api/KSInventory/KSInventoryQuery';
+import {
+  DeptReceivingScanOrder,
+  GenerateStockData
+} from '@/api/KSInventory/KSInventoryQuery';
 import KSInventoryQuery2 from '@/views/KSInventory/ReferenceComponent/KSInventoryQuery/index.vue';
 export default {
   props: ['sumCount'],
@@ -205,14 +210,55 @@ export default {
       this.loading.close();
       if (response.code == 200) {
         this.$message.success(response.msg);
-        this.search()
+        this.search();
       } else {
         this.$message.error(response.msg);
       }
     },
-    DownloadTemplate(){
-      var url = `${BACK_BASE_URL}/ZL/库存初始化.xls`
+    DownloadTemplate() {
+      var url = `${BACK_BASE_URL}/ZL/库存初始化.xls`;
       window.location.href = url.replace('/undefined', '');
+    },
+    GenerateStockData_btn() {
+      var Dept_Two_CodeStr = '';
+      var userDeptList = this.$store.state.user.info.userDept;
+      for (let i = 0; i < userDeptList.length; i++) {
+        Dept_Two_CodeStr =
+          Dept_Two_CodeStr + userDeptList[i].Dept_Two_Code + ',';
+      }
+      this.where.DeptCode = Dept_Two_CodeStr;
+      this.where.TYPE = this.where.TYPE == undefined ? '1' : this.where.TYPE;
+      this.where.COUNT = this.where.COUNT == undefined ? '1' : this.where.COUNT;
+      this.TYPE = this.where.TYPE;
+
+      var data = {
+        where: this.where,
+        limit: 999999,
+        page: 1,
+        order: {},
+        Nickname: this.$store.state.user.info.Nickname
+      };
+      console.log(data);
+      this.$confirm('是否生成盘点数据？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(() => {
+          var loading = this.$messageLoading('正在生成盘点数据...');
+          GenerateStockData(data)
+            .then((res) => {
+              loading.close();
+              this.$message.success(res.msg);
+            })
+            .catch((err) => {
+              loading.close();
+              this.$message.error(err);
+            });
+        })
+        .catch((err) => {
+          this.$message.error(err);
+        });
     }
   },
   created() {
