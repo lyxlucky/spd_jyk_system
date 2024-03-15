@@ -44,6 +44,7 @@ import {
   deleteDeptPlanTableDataItem,
   submitDeptPlanTableDataItem,
 } from '@/api/KSInventory/DeptPlanDeclaration';
+import Vue from 'vue';
 export default {
   name: 'DeptPlanDeclarationTopTable',
   props: ['IsReload'],
@@ -135,7 +136,8 @@ export default {
       showImport: false,
       // datasource: [],
       data: [],
-      key: 0
+      key: 0,
+      localBus:new Vue()
     };
   },
   methods: {

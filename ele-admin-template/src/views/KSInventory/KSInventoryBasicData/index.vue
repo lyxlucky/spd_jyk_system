@@ -251,7 +251,7 @@ export default {
     },
     /* 刷新表格 */
     reload(where) {
-      this.isDeptTwoAuth = where.isDeptTwoAuth;
+      // this.isDeptTwoAuth = where.isDeptTwoAuth;
       this.$refs.table.reload({ page: 1, where: where });
     },
     /* 打开编辑弹窗 */
@@ -435,6 +435,15 @@ export default {
   created() {
     // this.getdatasource();
     // console.log(this.$store.state.user.info)
-  }
+  },
+  mounted(){
+    console.log(1)
+    this.$bus.$on('handleCommand', (data) => {
+      this.reload();
+    });
+  },
+  destroyed(){
+    this.$bus.$off('handleCommand')
+  },
 };
 </script>

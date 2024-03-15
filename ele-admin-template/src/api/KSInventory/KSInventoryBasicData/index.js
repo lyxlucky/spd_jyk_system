@@ -1,6 +1,7 @@
 import request from '@/utils/request';
 import { formdataify, DataToObject } from '@/utils/formdataify';
 import { TOKEN_STORE_NAME, } from '@/config/setting';
+import store from '@/store';
 
 export async function getDeptAuthVarNew(data) {
     var data2 = {};
@@ -14,7 +15,8 @@ export async function getDeptAuthVarNew(data) {
     data2.DEVICE_REMARK = data.where.DEVICE_REMARK ? data.where.DEVICE_REMARK : '';
     data2.isDeptTwoAuth = data.where.isDeptTwoAuth ? data.where.isDeptTwoAuth : '';
     data2.order = data.order ? data.order : '';
-    data2.Dept_One_Code = data.where.Dept_One_Code ? data.where.Dept_One_Code : '';
+    // data2.Dept_One_Code = data.where.Dept_One_Code ? data.where.Dept_One_Code : '';
+    data2.Dept_One_Code = store.state.user.info.DeptNow.Dept_Two_Code ? store.state.user.info.DeptNow.Dept_Two_Code :""
 
     DataToObject(data, data2)
     if (data != null) {

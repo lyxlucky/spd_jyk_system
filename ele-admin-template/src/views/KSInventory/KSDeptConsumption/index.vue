@@ -442,10 +442,8 @@ export default {
     /* 表格数据源 */
     datasource({ page, limit, where, order }) {
       var Dept_Two_CodeStr = [];
-      var userDeptList = this.$store.state.user.info.userDept;
-      for (let i = 0; i < userDeptList.length; i++) {
-        Dept_Two_CodeStr.push(userDeptList[i].Dept_Two_Code);
-      }
+      var userDeptList = this.$store.state.user.info.DeptNow.Dept_Two_Code;
+      Dept_Two_CodeStr.push(userDeptList);
       where.deptTwoJson = Dept_Two_CodeStr;
       // where.varietie = '';
       // where.supplier = '';
@@ -770,6 +768,14 @@ export default {
   },
   created() {
     // this.getdatasource();
-  }
+  },
+  mounted(){
+    this.$bus.$on('handleCommand', (data) => {
+      this.reload();
+    });
+  },
+  destroyed(){
+    this.$bus.$off('handleCommand')
+  },
 };
 </script>

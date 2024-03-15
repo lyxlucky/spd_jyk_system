@@ -407,7 +407,15 @@ export default {
   },
   created() {
     // this.getdatasource();
-  }
+  },
+  mounted(){
+    this.$bus.$on('handleCommand', (data) => {
+      this.reload();
+    });
+  },
+  destroyed(){
+    this.$bus.$off('handleCommand')
+  },
 };
 </script>
 

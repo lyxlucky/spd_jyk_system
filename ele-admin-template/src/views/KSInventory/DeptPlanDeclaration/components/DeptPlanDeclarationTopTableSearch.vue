@@ -31,8 +31,7 @@
             剔除
           </el-button>
 
-          <el-button size="medium " type="primary" @click="submitItem" :disabled="isDisable"
-            class="ele-btn-icon">
+          <el-button size="medium " type="primary" @click="submitItem" :disabled="isDisable" class="ele-btn-icon">
             提交
           </el-button>
         </div>
@@ -53,30 +52,30 @@
       </el-col>
     </el-row>
     <!-- 创建科室计划申报对话框 -->
-    <el-dialog title="科室申报" center :visible.sync="where.createDeptPlandialogVisible" width="30%"
+    <el-dialog title="科室申报"  center :visible.sync="where.createDeptPlandialogVisible" width="20%"
       :before-close="where.createDeptPlanHandleClose">
+      <div>
+        <el-form :model="where.createDeptPlanForm" :rules="where.createDeptRules" ref="createDeptRuleRef"
+          label-width="100px" class="createDeptPlanRuleForm">
+          <el-form-item label="申报类型" prop="TYPE">
+            <el-select v-model="where.createDeptPlanForm.TYPE">
+              <el-option label="正常申报" value="1"></el-option>
+              <el-option label="补充申报" value="2"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item style="width: 317px;" label="申报月份：" prop="PLAN_MONTH_TIME">
+            <el-input v-model="where.createDeptPlanForm.PLAN_MONTH_TIME" placeholder="yyyy-MM"></el-input>
+          </el-form-item>
 
-      <el-form :model="where.createDeptPlanForm" :rules="where.createDeptRules" ref="createDeptRuleRef"
-        label-width="100px" class="createDeptPlanRuleForm">
-        <el-form-item label="申报类型" prop="TYPE">
-          <el-select v-model="where.createDeptPlanForm.TYPE">
-            <el-option label="正常申报" value="1"></el-option>
-            <el-option label="补充申报" value="2"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="申报月份：" prop="PLAN_MONTH_TIME">
-          <el-input v-model="where.createDeptPlanForm.PLAN_MONTH_TIME" placeholder="yyyy-MM"></el-input>
-        </el-form-item>
+          <el-form-item style="width: 317px;" label="备注：" prop="REMARK">
+            <el-input v-model="where.createDeptPlanForm.REMARK" placeholder="请输入备注"></el-input>
+          </el-form-item>
 
-        <el-form-item label="备注：" prop="REMARK">
-          <el-input v-model="where.createDeptPlanForm.REMARK" placeholder="请输入备注"></el-input>
-        </el-form-item>
-
-        <el-form-item>
-          <el-button type="primary" @click="submitDeptPlanForm()">保存</el-button>
-        </el-form-item>
-      </el-form>
-
+          <el-form-item>
+            <el-button type="primary" @click="submitDeptPlanForm()">保存</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
     </el-dialog>
   </el-form>
 </template>

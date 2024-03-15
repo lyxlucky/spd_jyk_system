@@ -1,6 +1,6 @@
 import request from '@/utils/request';
 import { formdataify, DataToObject } from '@/utils/formdataify';
-
+import store from '@/store';
 import { TOKEN_STORE_NAME } from '@/config/setting';
 
 
@@ -11,7 +11,9 @@ export async function SearchDistributeListJYK(data) {
     data2.page = data.page;
     data2.size = data.limit;
     data2.stock_out_distribute_number = data.where.stock_out_distribute_number ? data.where.stock_out_distribute_number : '';
-    data2.dept_two_code = data.where.Dept_Two_Code ? data.where.Dept_Two_Code : '';
+    data2.dept_two_code = store.state.user.info.DeptNow.Dept_Two_Code
+    ? store.state.user.info.DeptNow.Dept_Two_Code
+    : '';
 
     DataToObject(data, data2)
     if (data != null) {
