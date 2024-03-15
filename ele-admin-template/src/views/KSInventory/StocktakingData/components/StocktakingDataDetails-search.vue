@@ -52,11 +52,6 @@ import { API_BASE_URL, BACK_BASE_URL } from '@/config/setting';
 import { reloadPageTab, finishPageTab } from '@/utils/page-tab-util';
 import {
   DeletePlanDeta,
-  PutInListDeta,
-  ToExamine,
-  KeeptListDeta,
-  isHaveZeroDel,
-  deleteZeroDel
 } from '@/api/KSInventory/KSDepartmentalPlan';
 
 export default {

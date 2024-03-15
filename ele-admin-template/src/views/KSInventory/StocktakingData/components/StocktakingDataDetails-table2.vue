@@ -2,7 +2,7 @@
   <div class="ele-body">
     <!-- <el-button type="danger" size="small" @click="aaa">aaa</el-button> -->
     <!-- 数据表格 -->
-    <ele-pro-table ref="table" :toolStyle="toolStyle" height="43vh" highlight-current-row :stripe="true" :rowClickChecked="true" :rowClickCheckedIntelligent="false" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" @selection-change="onSelectionChange" cache-key="KSInventoryBasicDataTable">
+    <ele-pro-table ref="table" :toolStyle="toolStyle" height="43vh" highlight-current-row :stripe="true" :rowClickChecked="true" :rowClickCheckedIntelligent="false" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" @selection-change="onSelectionChange" cache-key="StocktakingDataDetailsTabel">
       <!-- 表头工具栏 -->
       <!-- 右表头 -->
       <!-- <template v-slot:toolkit>
@@ -13,7 +13,7 @@
       <!-- 左表头 -->
       <template v-slot:toolbar>
         <!-- 搜索表单 -->
-        <KSDepartmentalPlanDetails-search @search="reload" @ClickReload="ClickReload" :KSDepartmentalPlanDataSearch='KSDepartmentalPlanDataSearch' :selection="selection" @showEditReoad="showEditReoad" :datasourceList="datasourceList" />
+        <StocktakingDataDetailsSearch @search="reload" @ClickReload="ClickReload" :KSDepartmentalPlanDataSearch='KSDepartmentalPlanDataSearch' :selection="selection" @showEditReoad="showEditReoad" :datasourceList="datasourceList" />
       </template>
 
       <template v-slot:PlanQty="{ row }">
@@ -53,22 +53,24 @@
         </el-popconfirm>
       </template>
     </ele-pro-table>
-    <p style="display: flex;justify-content: flex-end;">实际申领数量合计: <b>{{sumNumber}}</b> 实际申领金额合计:  <b>{{sumAount}}</b> </p>
+    <!-- <p style="display: flex;justify-content: flex-end;">实际申领数量合计: <b>{{sumNumber}}</b> 实际申领金额合计: <b>{{sumAount}}</b> </p> -->
   </div>
 </template>
 
 <script>
-import KSDepartmentalPlanDetailsSearch from './KSDepartmentalPlanDetails-search.vue';
+import StocktakingDataDetailsSearch from './StocktakingDataDetails-search.vue';
 import {
   SerachPlanListDeta,
   UpdateApplyPlanBZ
 } from '@/api/KSInventory/KSDepartmentalPlan';
+
+import { GetStockDataDel } from '@/api/KSInventory/StocktakingData';
 export default {
-  name: 'KSDepartmentalPlanTable',
+  name: 'StocktakingDataDetails',
   props: ['KSDepartmentalPlanData'],
   // inject: ['reload'],
   components: {
-    KSDepartmentalPlanDetailsSearch: KSDepartmentalPlanDetailsSearch
+    StocktakingDataDetailsSearch
   },
   data() {
     return {
@@ -89,218 +91,137 @@ export default {
           showOverflowTooltip: true,
           fixed: 'left'
         },
-        // {
-        //   columnKey: 'action',
-        //   label: '操作',
-        //   width: 80,
-        //   align: 'center',
-        //   resizable: false,
-        //   slot: 'action',
-        //   showOverflowTooltip: true,
-        //   fixed: 'right'
-        // },
         {
-          // prop: 'VarCode',
-          slot: 'VarCode',
-          label: '品种编码',
-
+          prop: 'GENERATE_DATE',
+          label: '生成日期',
+          // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          width: 150
-        },
-        // {
-        //   prop: 'DEPT_ZDY_VARIETIE_CODE',
-        //   label: '自定义编码',
-
-        //   align: 'center',
-        //   showOverflowTooltip: true,
-        //   width: 120,
-        //   show: false,
-        //   formatter: (row, column, cellValue) => {
-        //     if (cellValue == null) {
-        //       return '未定义';
-        //     }
-        //     return cellValue;
-        //   }
-        // },
-        {
-          prop: 'CONTRACT_TYPE',
-          label: '合同类型',
-
-          align: 'center',
-          showOverflowTooltip: true,
-          width: 110,
-          show: false,
-          formatter: (row, column, cellValue) => {
-            if (cellValue == 2) {
-              return '临采';
-            } else if (cellValue == 1) {
-              return '中标';
-            } else {
-              return '-';
-            }
+          minWidth: 120,
+          formatter: (_row, _column, cellValue) => {
+            return this.$util.toDateString(cellValue, 'yyyy-MM-dd');
           }
         },
         {
-          prop: 'VarName',
-          label: '品种全称',
-
+          // prop: 'VarCode',
+          prop: 'GENERATE_MAN',
+          label: '生成人',
           align: 'center',
           showOverflowTooltip: true,
-          width: 150
+          minWidth: 80
         },
         {
-          prop: 'GG',
-          label: '型号/规格',
-
+          prop: 'VARIETIE_CODE_NEW',
+          label: '品种编码',
+          // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          width: 110
+          minWidth: 130
         },
         {
-          prop: 'Manufacturing',
-          label: '生产企业名称',
-
+          prop: 'VARIETIE_NAME',
+          label: '品种名称',
+          // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          width: 110
+          minWidth: 160
+        },
+        {
+          prop: 'SPECIFICATION_OR_TYPE',
+          label: '规格型号',
+          // sortable: 'custom',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 180
+        },
+        {
+          prop: 'MANUFACTURING_ENT_NAME',
+          label: '生产企业',
+          // sortable: 'custom',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 180
+        },
+        {
+          prop: 'COUNT',
+          label: '库存数量',
+          // sortable: 'custom',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 80,
+          sortable: true
+        },
+        {
+          prop: 'UNIT',
+          label: '单位',
+          // sortable: 'custom',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 80
+        },
+        {
+          prop: 'PRICE',
+          label: '价格',
+          // sortable: 'custom',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 80,
+          sortable: true
+        },
+        {
+          prop: 'BATCH',
+          label: '生产批号',
+          align: 'center',
+          showOverflowTooltip: true,
+          width: 110,
+          show: false
+        },
+        {
+          prop: 'BATCH_PRODUCTION_DATE',
+          label: '生产日期',
+          // sortable: 'custom',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 120,
+          formatter: (_row, _column, cellValue) => {
+            return this.$util.toDateString(cellValue, 'yyyy-MM-dd');
+          }
+        },
+        {
+          prop: 'BATCH_VALIDITY_PERIOD',
+          slot: 'BATCH_VALIDITY_PERIOD',
+          label: '有效到期',
+          // sortable: 'custom',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 150,
+          formatter: (_row, _column, cellValue) => {
+            return this.$util.toDateString(cellValue, 'yyyy-MM-dd');
+          }
         },
         {
           prop: 'SUPPLIER_NAME',
-          label: '启用供应商',
-
+          label: '供应商名称',
+          // // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          width: 110
-        },
-        // {
-        //   prop: 'TempQty',
-        //   label: '中心库库存',
-
-        //   align: 'center',
-        //   showOverflowTooltip: true,
-        //   width: 110
-        // },
-        {
-          prop: 'Day_Consume_Qty',
-          label: '平均用量(默认近30天)  ',
-
-          align: 'center',
-          showOverflowTooltip: true,
-          width: 110
+          minWidth: 150
         },
         {
-          prop: 'StockQty',
-          label: '中心库库存',
-
+          prop: 'APPROVAL_NUMBER',
+          label: '注册证号',
+          // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          width: 120
+          minWidth: 110
         },
         {
-          prop: 'TJ_QTY',
-          label: '提交数量',
-
+          prop: 'CHARGING_CODE',
+          label: '计费编码',
+          // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          width: 80
-        },
-        {
-          slot: 'PlanQty',
-          // prop: 'PlanQty',
-          label: '实际申领数量',
-
-          align: 'center',
-          showOverflowTooltip: true,
-          width: 150,
-          fixed: 'right'
-        },
-        {
-          prop: 'Unit',
-          label: '单位',
-
-          align: 'center',
-          showOverflowTooltip: true,
-          width: 80
-        },
-        {
-          prop: 'PAG_TYPE',
-          label: '包装规格',
-
-          align: 'center',
-          showOverflowTooltip: true,
-          width: 110
-        },
-        {
-          prop: 'Price',
-          label: '结算价',
-
-          align: 'center',
-          showOverflowTooltip: true,
-          width: 80
-        },
-        {
-          prop: '',
-          label: '总金额',
-
-          align: 'center',
-          showOverflowTooltip: true,
-          width: 80,
-          formatter: (row, column, cellValue) => {
-            return row.Price * row.PlanQty;
-          }
-        },
-        {
-          prop: '',
-          label: '已收货数量',
-
-          align: 'center',
-          showOverflowTooltip: true,
-          width: 100,
-          formatter: (row, column, cellValue) => {
-            return row.PlanQty - row.LEFT_APPLY_QTY;
-          }
-        },
-        {
-          prop: 'IS_NEED_TWO_APP',
-          label: '二级审批',
-
-          align: 'center',
-          showOverflowTooltip: true,
-          width: 110,
-          formatter: (row, column, cellValue) => {
-            var IS_NEED_TWO_APP = '';
-            var STATE = '';
-            if (row.IS_NEED_TWO_APP == 0) {
-              return '-';
-            }
-            if (row.IS_NEED_TWO_APP == 1) {
-              IS_NEED_TWO_APP = '是';
-            }
-            if (row.SENCOND_APP_STATE == 0) {
-              STATE = '未审批';
-            }
-            if (row.SENCOND_APP_STATE == 1) {
-              STATE = '已审批';
-            }
-            return IS_NEED_TWO_APP + '/' + STATE;
-          }
-        },
-        {
-          // prop: 'REMARK',
-          slot: 'REMARK',
-          label: '备注',
-          align: 'center',
-          showOverflowTooltip: true,
-          width: 110
-        },
-        {
-          prop: 'SPDBZ',
-          label: 'SPD备注',
-
-          align: 'center',
-          showOverflowTooltip: true,
-          width: 110
+          minWidth: 110
         }
       ],
       toolbar: false,
@@ -321,32 +242,20 @@ export default {
       // 是否显示导入弹窗
       showImport: false,
       datasourceList: [],
-      sumNumber:0,
-      sumAount:0
+      sumNumber: 0,
+      sumAount: 0
     };
   },
   methods: {
     /* 表格数据源 */
     datasource({ page, limit, where, order }) {
-      var Dept_Two_CodeStr = '';
-      var userDeptList = this.$store.state.user.info.userDept;
-      for (let i = 0; i < userDeptList.length; i++) {
-        Dept_Two_CodeStr =
-          Dept_Two_CodeStr + userDeptList[i].Dept_Two_Code + ',';
-      }
-      where.DeptCode = Dept_Two_CodeStr;
-      let data = SerachPlanListDeta({ page, limit, where, order }).then(
-        (res) => {
-          var tData = {
-            count: res.total,
-            list: res.result
-          };
-          this.datasourceList = res.result;
-          this.sumNumber = res.sumNumber;
-          this.sumAount = res.sumAount;
-          return tData;
-        }
-      );
+      let data = GetStockDataDel({ page, limit, where, order }).then((res) => {
+        var tData = {
+          count: res.total,
+          list: res.result
+        };
+        return tData;
+      });
       return data;
     },
     /* 刷新表格 */
@@ -365,7 +274,7 @@ export default {
     showEditReoad(data) {
       if (data == false) {
         var where = {
-          PlanNum: this.KSDepartmentalPlanData.PlanNum
+          GENERATE_DATE: this.KSDepartmentalPlanData.GENERATE_DATE
         };
         this.$refs.table.reload({ page: 1, where: where });
       }
@@ -418,9 +327,11 @@ export default {
       this.$forceUpdate();
       if (this.KSDepartmentalPlanData) {
         var where = {
-          PlanNum: this.KSDepartmentalPlanData.PlanNum
+          GENERATE_DATE: this.KSDepartmentalPlanData.GENERATE_DATE
         };
       }
+      console.log( this.where)
+
       this.$refs.table.reload({ page: 1, where: where });
     }
   },

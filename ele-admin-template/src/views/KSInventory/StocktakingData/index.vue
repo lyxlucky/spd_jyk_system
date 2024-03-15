@@ -6,7 +6,7 @@
           <!-- <div slot="header" class="clearfix">
             <span>申领计划单列表</span>
           </div> -->
-          <KSDepartmentalPlantable @getCurrent="getCurrent" :IsReload="IsReloadTag"></KSDepartmentalPlantable>
+          <StocktakingDataTabel @getCurrent="getCurrent" :IsReload="IsReloadTag"></StocktakingDataTabel>
         </el-card>
       </el-header>
       <el-main style="padding-top: 1px">
@@ -14,7 +14,7 @@
           <!-- <div slot="header" class="clearfix">
             <span>申领单详情</span>
           </div> -->
-          <KSDepartmentalPlanDetailstable2 :KSDepartmentalPlanData="KSDepartmentalPlanData" @clickReload="clickReload" v-if="isActive"></KSDepartmentalPlanDetailstable2>
+          <StocktakingDataTabelDel :KSDepartmentalPlanData="KSDepartmentalPlanData" @clickReload="clickReload" v-if="isActive"></StocktakingDataTabelDel>
         </el-card>
       </el-main>
     </el-container>
@@ -24,14 +24,14 @@
 </template>
 
 <script>
-import KSDepartmentalPlantable from './components/KSDepartmentalPlan-table1.vue';
-import KSDepartmentalPlanDetailstable2 from './components/KSDepartmentalPlanDetails-table2';
+import StocktakingDataTabel from './components/StocktakingData-table1.vue';
+import StocktakingDataTabelDel from './components/StocktakingDataDetails-table2';
 
 export default {
   name: 'KSDepartmentalPlan',
   components: {
-    KSDepartmentalPlantable,
-    KSDepartmentalPlanDetailstable2
+    StocktakingDataTabel,
+    StocktakingDataTabelDel
   },
   provide() {
     return {
