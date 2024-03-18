@@ -32,11 +32,15 @@
         <div class="ele-form-actions">
           <el-button type="primary" @click="search">查询</el-button>
           <el-button @click="reset">重置</el-button>
-
+          <el-popconfirm class="ele-action" title="确定删除？" @confirm="removeBatch()">
+            <template v-slot:reference>
+              <el-button type="danger" size="small" :underline="false">删除</el-button>
+            </template>
+          </el-popconfirm>
         </div>
       </el-col>
     </el-row>
-   
+
     <el-dialog title="提示" :visible.sync="centerDialogVisible" width="30%" center>
       <span>存在申领数量为0的明细</span>
       <span slot="footer" class="dialog-footer">
@@ -48,17 +52,11 @@
 </template>
 
 <script>
-import { API_BASE_URL, BACK_BASE_URL } from '@/config/setting';
-import { reloadPageTab, finishPageTab } from '@/utils/page-tab-util';
-import {
-  DeletePlanDeta,
-} from '@/api/KSInventory/KSDepartmentalPlan';
+import { DelBatchStockDataDel } from '@/api/KSInventory/StocktakingData';
 
 export default {
   props: ['KSDepartmentalPlanDataSearch', 'selection', 'datasourceList'],
-  components: {
-   
-  },
+  components: {},
   data() {
     // 默认表单数据
     const defaultWhere = {
@@ -106,9 +104,8 @@ export default {
     },
     IsDisabledIsNot() {
       return false;
-    },
+    }
     /* 删除键 */
-    
   },
   watch: {
     showEdit() {
@@ -129,35 +126,33 @@ export default {
     },
     /* 批量删除 */
     removeBatch() {
-      const loading = this.$messageLoading('删除中..');
+      console.log(this.selection);
       var ID = '';
       this.selection.forEach((item) => {
         ID += item.ID + ',';
       });
-      ID.substring(0, ID.length - 1);
+      ID = ID.substring(0, ID.length - 1);
       var data = {
         ID
       };
-      DeletePlanDeta(data)
+      const loading = this.$messageLoading('删除中..');
+
+      DelBatchStockDataDel(data)
         .then((res) => {
           loading.close();
           this.search();
-          var where = {
-            PlanNum: this.KSDepartmentalPlanDataSearch.PlanNum
-          };
-          this.$emit('search', where);
+          // var where = {
+          //   PlanNum: this.KSDepartmentalPlanDataSearch.PlanNum
+          // };
+          // this.$emit('search', where);
           this.$message.success(res.msg);
         })
         .catch((err) => {
           loading.close();
           this.$message.error(err);
         });
-    },
-    
-
-    
+    }
   },
-  created() {
-  }
+  created() {}
 };
 </script>

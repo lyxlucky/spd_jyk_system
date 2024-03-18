@@ -65,3 +65,19 @@ export async function GetStockDataDel(data) {
     }
 }
 
+export async function DelBatchStockDataDel(data) {
+    console.log(data)
+    var data2 = {};
+    data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+    data2.ID = data.ID ? data.ID : '';
+
+    var data3 = formdataify(data2)
+
+    const res = await request.post('/AJykDept/DelBatchStockDataDel', data3);
+    if (res.data.code == 200) {
+        return res.data;
+    } else {
+        return Promise.reject(new Error(res.data.msg));
+    }
+}
+

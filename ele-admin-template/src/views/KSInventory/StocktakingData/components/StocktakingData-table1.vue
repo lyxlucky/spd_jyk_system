@@ -56,7 +56,10 @@ export default {
           label: '生成日期',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 110
+          minWidth: 110,
+          formatter: (_row, _column, cellValue) => {
+            return this.$util.toDateString(cellValue, 'yyyy-MM');
+          }
         },
         {
           prop: 'GENERATE_MAN',
