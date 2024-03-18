@@ -4,7 +4,6 @@ import { TOKEN_STORE_NAME } from '@/config/setting';
 import { HOME_HP } from '@/config/setting';
 
 
-
 export async function SearchDept(data) {
     let data2 = {};
     data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);

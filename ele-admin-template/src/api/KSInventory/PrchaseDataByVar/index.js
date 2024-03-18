@@ -1,6 +1,8 @@
 import request from '@/utils/request';
 import { formdataify, DataToObject } from '@/utils/formdataify';
 import { TOKEN_STORE_NAME, } from '@/config/setting';
+import store from '@/store';
+
 
 export async function getPROD_REGISTRATION_LIMIT_BUY(data) {
     var data2 = {};
@@ -18,7 +20,8 @@ export async function getPROD_REGISTRATION_LIMIT_BUY(data) {
     data2.last = data.where.last ? data.where.last : '';
     data2.endTime2 = data.where.endTime2 ? data.where.endTime2 : '';
     data2.CountState = data.where.CountState ? data.where.CountState : '';
-    data2.deptTwoCode = data.where.deptTwoCode ? data.where.deptTwoCode : '';
+    data2.deptTwoCode = store.state.user.info.DeptNow.Dept_Two_Code ? store.state.user.info.DeptNow.Dept_Two_Code :""
+
 
     DataToObject(data, data2)
     if (data != null) {

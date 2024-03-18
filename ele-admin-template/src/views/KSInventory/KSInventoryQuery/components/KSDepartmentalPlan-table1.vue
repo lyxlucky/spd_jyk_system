@@ -335,13 +335,12 @@ export default {
   methods: {
     /* 表格数据源 */
     datasource({ page, limit, where, order }) {
-      var Dept_Two_CodeStr = '';
-      var userDeptList = this.$store.state.user.info.userDept;
-      for (let i = 0; i < userDeptList.length; i++) {
-        Dept_Two_CodeStr =
-          Dept_Two_CodeStr + userDeptList[i].Dept_Two_Code + ',';
-      }
-      where.DeptCode = Dept_Two_CodeStr;
+      // var Dept_Two_CodeStr = '';
+      // var userDeptList = this.$store.state.user.info.userDept;
+      // for (let i = 0; i < userDeptList.length; i++) {
+      //   Dept_Two_CodeStr =
+      //     Dept_Two_CodeStr + userDeptList[i].Dept_Two_Code + ',';
+      // }
       where.TYPE = where.TYPE == undefined ? '1' : where.TYPE;
       where.COUNT = where.COUNT == undefined ? '1' : where.COUNT;
 
@@ -410,6 +409,14 @@ export default {
     dayjs(this.dateNow2).add(30, 'day');
     dayjs(this.dateNow3).add(60, 'day');
     dayjs(this.dateNow4).add(90, 'day');
-  }
+  },
+  mounted(){
+    this.$bus.$on('handleCommand', (data) => {
+      this.reload();
+    });
+  },
+  destroyed(){
+    this.$bus.$off('handleCommand')
+  },
 };
 </script>

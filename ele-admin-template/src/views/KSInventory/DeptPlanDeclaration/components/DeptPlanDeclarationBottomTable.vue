@@ -308,7 +308,9 @@ export default {
       ExceTablePlan(data).then((res) => {
         var url = `${BACK_BASE_URL}/Excel/files/${res.msg}`;
         window.open(url.replace('/undefined', ''));
-      })
+      }).catch((e) => {
+        this.$message.error(e.message);
+      }); 
     }
   },
   computed: {
