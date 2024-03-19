@@ -22,19 +22,19 @@
           </el-form-item>
         </el-col>
 
-        <el-col v-bind="styleResponsive ? { lg: 16, md: 2 } : { span: 6 }">
+        <el-col v-bind="styleResponsive ? { lg: 10, md: 2 } : { span: 6 }">
           <div class="ele-form-actions">
-            <el-button type="primary" @click="search">查询</el-button>
+            <el-button type="primary" size="small" @click="search">查询</el-button>
             <el-button type="primary" size="small" @click="addPlanItemVisiable = true">添加计划品种</el-button>
             <el-button type="primary" size="small" @click="updateDeptPlantTableDetailVisible = true"
               :disabled='IsDisabled'>修改明细</el-button>
             <el-button type="danger" size="small" @click="deleteBottomTableItems" :disabled='IsDisabled'>剔除</el-button>
-            <el-button type="primary" size="small" @click="exportData">导出</el-button>
-            <el-button type="primary" size="small" @click="exportPrintSheet">打印计划表</el-button>
+            <!-- <el-button type="primary" size="small" @click="exportPrintSheet">打印计划表</el-button> -->
             <el-button type="primary" size="small" @click="QuotationPlanVisible = true">引用计划模板</el-button>
-            <el-button type="primary" size="small" :disabled="excelBottomTableIsabled"
-              @click="excelBottomTable">导出计划表</el-button>
-            <el-upload style="padding-top: 10px;" :action="uploadUrl" :limit="1">
+            <!-- <el-button type="primary" size="small" :disabled="excelBottomTableIsabled"
+              @click="excelBottomTable">导出计划表</el-button> -->
+            <el-button type="primary" size="small" :disabled='TopTableDisabled' @click="exportData">导出</el-button>
+            <el-upload style="float: right; position: relative; right: 10px;" :action="uploadUrl" :limit="1">
               <el-button size="small" type="primary">导入</el-button>
             </el-upload>
           </div>
@@ -140,6 +140,9 @@ export default {
     /* 保存提交 */
     IsDisabled() {
       return this.selection.length === 0;
+    },
+    TopTableDisabled(){
+      return (this.TopTableSelection.length == 0 && this.datasourceList.length == 0)
     },
     IsDisabledIsNot() {
       return false;

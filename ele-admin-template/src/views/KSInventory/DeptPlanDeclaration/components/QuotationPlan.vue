@@ -10,18 +10,19 @@
                             <el-menu-item index="1">模板列表</el-menu-item>
                         </el-menu>
 
-                        <ele-pro-table ref="leftTable" height="500px" :pageSize="leftPageSize"
+                        <ele-pro-table :toolkit="[]" ref="leftTable" height="500px" :pageSize="leftPageSize"
                             :pageSizes="leftPageSizes" :columns="leftColumns" :datasource="leftDatasource"
                             :rowClickChecked="true" :rowClickCheckedIntelligent="false"
                             @current-change="onLeftSelectionChange" cache-key="leftTableKey">
                             <template v-slot:toolbar>
                                 <el-form class="ele-form-search" @keyup.enter.native="search" @submit.native.prevent>
                                     <el-row>
-                                        <el-col v-bind="styleResponsive ? { lg: 4, md: 4 } : { span: 6 }">
+                                        <el-col v-bind="styleResponsive ? { lg: 14, md: 4 } : { span: 6 }">
                                             <el-form-item>
                                                 <el-input clearable v-model="where.SerachName" placeholder="请输入模板名称" />
                                             </el-form-item>
-
+                                        </el-col>
+                                        <el-col style='padding-left: 10px;' v-bind="styleResponsive ? { lg: 4, md: 4 } : { span: 6 }">
                                             <el-form-item>
                                                 <el-button type="primary" icon="el-icon-search" class="ele-btn-icon"
                                                     @click="leftTableReload">
@@ -41,13 +42,14 @@
                             <el-menu-item index="1">历史申领单详情</el-menu-item>
                         </el-menu>
 
-                        <ele-pro-table ref="rightTable" height="500px" :pageSize="rightPageSize"
+                        <ele-pro-table :toolkit="[]" ref="rightTable" height="500px" :pageSize="rightPageSize"
                             :pageSizes="rightPageSizes" :columns="rightColumns" :datasource="rightDatasource"
                             :rowClickChecked="true" :rowClickCheckedIntelligent="false"
                             @current-change="onRightSelectionChange" cache-key="rightTableKey">
 
                             <template v-slot:planCount="{ row }">
-                                <el-input-number style="width: 100px" v-model="row.PLAN_NUM" :min="0" :max="999999999" :step="1" size="mini" />
+                                <el-input-number style="width: 100px" v-model="row.PLAN_NUM" :min="0" :max="999999999"
+                                    :step="1" size="mini" />
                             </template>
 
                             <template v-slot:VAR_ENABLE="{ row }">
@@ -61,12 +63,13 @@
                             <template v-slot:toolbar>
                                 <el-form class="ele-form-search" @keyup.enter.native="search" @submit.native.prevent>
                                     <el-row>
-                                        <el-col v-bind="styleResponsive ? { lg: 4, md: 4 } : { span: 6 }">
+                                        <el-col v-bind="styleResponsive ? { lg: 10, md: 4 } : { span: 6 }">
                                             <el-form-item>
                                                 <el-input clearable v-model="where.SerachName"
                                                     placeholder="请输入品种名称/型号规格/生产企业搜索" />
                                             </el-form-item>
-
+                                        </el-col>
+                                        <el-col style='padding-left: 10px;' v-bind="styleResponsive ? { lg: 4, md: 4 } : { span: 6 }">
                                             <el-form-item>
                                                 <el-button type="primary" icon="el-icon-search" class="ele-btn-icon"
                                                     @click="rightTableReload">

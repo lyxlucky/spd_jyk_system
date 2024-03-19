@@ -1,7 +1,7 @@
 <template>
   <div class="ele-body">
     <!-- 数据表格 -->
-    <ele-pro-table ref="table" :toolStyle="toolStyle" height="40vh" highlight-current-row :stripe="true"
+    <ele-pro-table ref="table" :toolStyle="toolStyle" height="40vh" :toolkit="[]" highlight-current-row :stripe="true"
       :rowClickChecked="true" :rowClickCheckedIntelligent="false" :pageSize="pageSize" :pageSizes="pageSizes"
       :columns="columns" :datasource="datasource" :selection.sync="selection" @selection-change="onSelectionChange"
       cache-key="DeptPlanDeclarationBottomTable">
@@ -16,10 +16,10 @@
           @addPlanItemDone="reload" />
       </template>
 
-      <template v-slot:DEPT_ZDY_VARIETIE_CODE="{ row }">
+      <!-- <template v-slot:DEPT_ZDY_VARIETIE_CODE="{ row }">
         <el-tag v-if="row.DEPT_ZDY_VARIETIE_CODE == null" type="danger">未定义</el-tag>
         <el-tag v-else type="ifno">{{ row.DEPT_ZDY_VARIETIE_CODE }}</el-tag>
-      </template>
+      </template> -->
     </ele-pro-table>
   </div>
 </template>
@@ -62,14 +62,14 @@ export default {
           showOverflowTooltip: true,
           fixed: 'left'
         },
-        {
-          prop: 'DEPT_ZDY_VARIETIE_CODE',
-          label: '自定义编码',
-          align: 'center',
-          showOverflowTooltip: true,
-          fixed: 'left',
-          slot: "DEPT_ZDY_VARIETIE_CODE"
-        },
+        // {
+        //   prop: 'DEPT_ZDY_VARIETIE_CODE',
+        //   label: '自定义编码',
+        //   align: 'center',
+        //   showOverflowTooltip: true,
+        //   fixed: 'left',
+        //   slot: "DEPT_ZDY_VARIETIE_CODE"
+        // },
         {
           prop: 'VARIETIE_NAME',
           label: '品种名称',
@@ -231,7 +231,7 @@ export default {
               [
                 '序号',
                 '品种编码',
-                '自定义编码',
+                // '自定义编码',
                 '品种名称',
                 '规格型号',
                 '单位',
@@ -249,7 +249,7 @@ export default {
               array.push([
                 d.ID,
                 d.VARIETIE_CODE_NEW,
-                d.DEPT_ZDY_VARIETIE_CODE,
+                // d.DEPT_ZDY_VARIETIE_CODE,
                 d.VARIETIE_NAME,
                 d.SPECIFICATION_OR_TYPE,
                 d.UNIT,
