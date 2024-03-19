@@ -19,9 +19,6 @@ export default {
     // 登录账号密码
     loginInfo: [],
 
-    // 科室计划申报下表单ID参数
-    deptPlanNewMainId: '', 
-
     // 加密参数
     encrypted: {
       // 密钥
@@ -64,6 +61,10 @@ export default {
 
     setDeptNowInfoCode(state, info) {
       state.info.DeptNow.Dept_Two_Code = info;
+    },
+    // 设置科室申报审批上表格ID
+    setDeptDeclarAndApprovalMainId(state, info) {
+      state.DeptDeclarAndApprovalMainId = info;
     },
   },
   actions: {

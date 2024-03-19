@@ -14,7 +14,6 @@ export async function getDeptAuthVarNew(data) {
     data2.Manufacturing_Ent_Name = data.where.Manufacturing_Ent_Name ? data.where.Manufacturing_Ent_Name : '';
     data2.CLASS_NUM = data.where.CLASS_NUM ? data.where.CLASS_NUM : '';
     data2.DEVICE_REMARK = data.where.DEVICE_REMARK ? data.where.DEVICE_REMARK : '';
-    console.log(data2)
     if (data != null) {
         var data3 = formdataify(data);
     }
@@ -35,7 +34,6 @@ export async function getDeptAuthVarNew(data) {
 
 /* 查询申领单 */
 export async function SerachPlanList(data) {
-    console.log(data)
     var data2 = {};
     data2.page = data.page;
     data2.size = data.limit;
@@ -380,7 +378,6 @@ export async function deleteOneAuthVarWithDeptItems(data) {
     data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
     var rep = formdataify(data2);
     const res = await request.post('/DeptOneBulkCargoAuthVar/deleteOneAuthVarWithDeptItems', rep);
-    console.log(res)
     if (res.data.code == 200) {
         return res.data;
     } else {

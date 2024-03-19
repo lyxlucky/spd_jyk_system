@@ -4,7 +4,6 @@ import { TOKEN_STORE_NAME, } from '@/config/setting';
 import store from '@/store';
 
 export async function GetJykMainShelf(data) {
-    console.log(data)
     var data2 = {};
     data2.page = data.page;
     data2.size = data.limit;

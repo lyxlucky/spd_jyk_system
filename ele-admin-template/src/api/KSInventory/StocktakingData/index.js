@@ -66,7 +66,6 @@ export async function GetStockDataDel(data) {
 }
 
 export async function DelBatchStockDataDel(data) {
-    console.log(data)
     var data2 = {};
     data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
     data2.ID = data.ID ? data.ID : '';

@@ -241,7 +241,6 @@ export async function getLeftTableData(data) {
 
 //引用计划模板右边表格
 export async function getRightTableData(data) {
-  console.log(data)
   var data2 = {};
   data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
   data2.page = data.page;
