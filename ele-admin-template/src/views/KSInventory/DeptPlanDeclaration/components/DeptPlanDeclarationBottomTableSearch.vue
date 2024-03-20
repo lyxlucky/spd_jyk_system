@@ -22,7 +22,7 @@
           </el-form-item>
         </el-col>
 
-        <el-col v-bind="styleResponsive ? { lg: 10, md: 2 } : { span: 6 }">
+        <el-col style="padding-top: 2px;" v-bind="styleResponsive ? { lg: 10, md: 2 } : { span: 6 }">
           <div class="ele-form-actions">
             <el-button type="primary" size="small" @click="search">查询</el-button>
             <el-button type="primary" size="small" @click="addPlanItemVisiable = true">添加计划品种</el-button>

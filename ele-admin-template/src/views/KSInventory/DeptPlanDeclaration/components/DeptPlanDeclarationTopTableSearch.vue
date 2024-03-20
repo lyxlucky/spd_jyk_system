@@ -17,27 +17,27 @@
         </div>
       </el-col>
 
-      <el-col v-bind="styleResponsive ? { lg: 6, md: 4 } : { span: 4 }" style="padding-left: 40px;">
+      <el-col v-bind="styleResponsive ? { lg: 5, md: 4 } : { span: 4 }" style="padding-left: 20px;padding-top: 2px;">
         <div class="ele-form-actions">
-          <el-button size="medium " type="primary" icon="el-icon-search" class="ele-btn-icon" @click="search">
+          <el-button size="small " type="primary" icon="el-icon-search" class="ele-btn-icon" @click="search">
             查询
           </el-button>
-          <el-button size="medium " type="primary" class="ele-btn-icon" @click="createItem">
+          <el-button size="small " type="primary" class="ele-btn-icon" @click="createItem">
             创建
           </el-button>
 
-          <el-button size="medium " type="danger" icon="el-icon-delete" @click="deleteItem" :disabled="isDisable"
+          <el-button size="small " type="danger" icon="el-icon-delete" @click="deleteItem" :disabled="isDisable"
             class="ele-btn-icon">
             剔除
           </el-button>
 
-          <el-button size="medium " type="primary" @click="submitItem" :disabled="isDisable" class="ele-btn-icon">
+          <el-button size="small " type="primary" @click="submitItem" :disabled="isDisable" class="ele-btn-icon">
             提交
           </el-button>
         </div>
       </el-col>
 
-      <el-col style="" v-bind="styleResponsive ? { lg: 8, md: 4 } : { span: 4 }">
+      <el-col style="" v-bind="styleResponsive ? { lg: 5, md: 4 } : { span: 4 }">
         <el-form-item label="状态：">
           <el-select v-model="where.status" @change="search()">
             <el-option label="全部" value=""></el-option>

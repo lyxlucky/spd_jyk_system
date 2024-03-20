@@ -1,7 +1,7 @@
 /**
  * 登录状态管理
  */
-import { formatMenus, toTreeData, formatTreeData } from 'ele-admin';
+import { formatMenus, toTreeData, formatTreeData,deepClone } from 'ele-admin';
 import { USER_MENUS } from '@/config/setting';
 import { getUserInfo } from '@/api/layout';
 
@@ -33,7 +33,7 @@ export default {
   mutations: {
     // 设置登录用户的信息
     setUserInfo(state, info) {
-      state.info = JSON.parse(JSON.stringify(info));
+      state.info = deepClone(info)
     },
     // 设置登录用户的菜单
     setMenus(state, menus) {
