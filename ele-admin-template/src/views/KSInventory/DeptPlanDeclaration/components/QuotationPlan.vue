@@ -20,7 +20,7 @@
                                         <el-col v-bind="styleResponsive ? { lg: 14, md: 4 } : { span: 6 }">
                                             <el-form-item>
                                                 <!-- v-model="where.SerachName" -->
-                                                <el-input clearable placeholder="请输入模板名称" />
+                                                <el-input clearable v-model="where.leftSerachName" placeholder="请输入模板名称" />
                                             </el-form-item>
                                         </el-col>
                                         <el-col style='padding-left: 10px;'
@@ -108,6 +108,7 @@ export default {
         const defaultWhere = {
             SerachName: "",
             TempletMasteID: "",
+            leftSerachName:"",
         };
         return {
             // Your data goes here

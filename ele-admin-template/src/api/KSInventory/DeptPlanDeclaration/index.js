@@ -231,7 +231,7 @@ export async function getLeftTableData(data) {
   data2.DeptCode = store.state.user.info.DeptNow.Dept_Two_Code
     ? store.state.user.info.DeptNow.Dept_Two_Code
     : '';
-  data2.SerachName = data.where.SerachName ? data.where.SerachName : '';
+  data2.SerachName = data.where.leftSerachName ? data.where.leftSerachName : '';
   data2.UserId = '';
   const res = await request.get('DeptApplyPlan/SerachTempletList', {
     params: data2
