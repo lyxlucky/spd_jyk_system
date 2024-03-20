@@ -27,8 +27,8 @@
 
 
        <template v-slot:PLAN_NUM="{ row }">
-        <el-input-number style="width: 120px" v-model="row.PLAN_NUM" :min="0" :max="999999999"></el-input-number>
-        <el-link type="primary" :underline="false" icon="el-icon-edit" @click="openEdit(row.PLAN_NUM)">
+        <el-input-number style="width: 130px" v-model="row.PLAN_NUM" :min="0" :max="999999999"></el-input-number>
+        <el-link type="primary" style="padding-left: 10px;" :underline="false" icon="el-icon-position" @click="submit(row)">
             提交
         </el-link>
       </template>
@@ -48,7 +48,8 @@ import {
   ExcelDeptPlanTableBottom,
   ExcelPrintDeptPlanTableBottom,
   deleteDeptPlanBottomTableDataItem,
-  ExceTablePlan
+  ExceTablePlan,
+  updateDeptPlanTablePlanNum
 } from '@/api/KSInventory/DeptPlanDeclaration';
 export default {
   name: 'DeptPlanDeclarationBottomTable',
@@ -117,6 +118,7 @@ export default {
           showOverflowTooltip: true,
           fixed: 'left',
           slot: 'PLAN_NUM',
+          width: 270,
         },
         {
           prop: 'APPROVAL_NUMBER',
@@ -175,6 +177,13 @@ export default {
         }
       );
       return data;
+    },
+    submit(row){
+      updateDeptPlanTablePlanNum(row).then((res)=>{
+        this.$message.success(res.msg)
+      }).catch((err)=>{
+        this.$message.error(err.msg)
+      })
     },
     /* 刷新表格 */
     reload(where) {
