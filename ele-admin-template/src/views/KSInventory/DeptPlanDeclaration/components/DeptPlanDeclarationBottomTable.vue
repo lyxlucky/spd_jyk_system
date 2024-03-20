@@ -1,9 +1,10 @@
 <template>
   <div class="ele-body">
     <!-- 数据表格 -->
-    <ele-pro-table ref="table" :toolStyle="toolStyle" height="40vh" :toolkit="[]" highlight-current-row :stripe="true"
+    <ele-pro-table ref="table" 
+      :toolStyle="toolStyle" height="40vh" :toolkit="[]" highlight-current-row :stripe="true"
       :rowClickChecked="true" :rowClickCheckedIntelligent="false" :pageSize="pageSize" :pageSizes="pageSizes"
-      :columns="columns" :datasource="datasource" :selection.sync="selection" @selection-change="onSelectionChange"
+      :columns="columns" :datasource="datasource" :initLoad="false" :selection.sync="selection" @selection-change="onSelectionChange"
       cache-key="DeptPlanDeclarationBottomTable">
 
       <template v-slot:toolbar>
@@ -16,10 +17,21 @@
           @addPlanItemDone="reload" />
       </template>
 
-      <!-- <template v-slot:DEPT_ZDY_VARIETIE_CODE="{ row }">
+      <!--
+        
+        <template v-slot:DEPT_ZDY_VARIETIE_CODE="{ row }">
         <el-tag v-if="row.DEPT_ZDY_VARIETIE_CODE == null" type="danger">未定义</el-tag>
         <el-tag v-else type="ifno">{{ row.DEPT_ZDY_VARIETIE_CODE }}</el-tag>
-      </template> -->
+      </template> 
+    -->
+
+
+       <template v-slot:PLAN_NUM="{ row }">
+        <el-input-number style="width: 120px" v-model="row.PLAN_NUM" :min="0" :max="999999999"></el-input-number>
+        <el-link type="primary" :underline="false" icon="el-icon-edit" @click="openEdit(row.PLAN_NUM)">
+            提交
+        </el-link>
+      </template>
     </ele-pro-table>
   </div>
 </template>
@@ -103,7 +115,8 @@ export default {
           label: '计划数量',
           align: 'center',
           showOverflowTooltip: true,
-          fixed: 'left'
+          fixed: 'left',
+          slot: 'PLAN_NUM',
         },
         {
           prop: 'APPROVAL_NUMBER',
@@ -311,7 +324,8 @@ export default {
       }).catch((e) => {
         this.$message.error(e.message);
       }); 
-    }
+    },
+    
   },
   computed: {
     DeptPlanDeclarationTopTableSearch() {

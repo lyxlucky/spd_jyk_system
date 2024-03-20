@@ -5,7 +5,7 @@
             <!-- Your code goes here -->
             <el-container>
                 <el-aside width="350px">
-                    <el-card shadow="none">
+                    <el-card shadow="always">
                         <el-menu class="el-menu-demo" mode="horizontal">
                             <el-menu-item index="1">模板列表</el-menu-item>
                         </el-menu>
@@ -19,10 +19,12 @@
                                     <el-row>
                                         <el-col v-bind="styleResponsive ? { lg: 14, md: 4 } : { span: 6 }">
                                             <el-form-item>
-                                                <el-input clearable v-model="where.SerachName" placeholder="请输入模板名称" />
+                                                <!-- v-model="where.SerachName" -->
+                                                <el-input clearable placeholder="请输入模板名称" />
                                             </el-form-item>
                                         </el-col>
-                                        <el-col style='padding-left: 10px;' v-bind="styleResponsive ? { lg: 4, md: 4 } : { span: 6 }">
+                                        <el-col style='padding-left: 10px;'
+                                            v-bind="styleResponsive ? { lg: 4, md: 4 } : { span: 6 }">
                                             <el-form-item>
                                                 <el-button type="primary" icon="el-icon-search" class="ele-btn-icon"
                                                     @click="leftTableReload">
@@ -69,7 +71,8 @@
                                                     placeholder="请输入品种名称/型号规格/生产企业搜索" />
                                             </el-form-item>
                                         </el-col>
-                                        <el-col style='padding-left: 10px;' v-bind="styleResponsive ? { lg: 4, md: 4 } : { span: 6 }">
+                                        <el-col style='padding-left: 10px;'
+                                            v-bind="styleResponsive ? { lg: 4, md: 4 } : { span: 6 }">
                                             <el-form-item>
                                                 <el-button type="primary" icon="el-icon-search" class="ele-btn-icon"
                                                     @click="rightTableReload">
@@ -169,7 +172,7 @@ export default {
                 {
                     prop: 'AUTH',
                     label: '排序',
-                    minWidth: 40,
+                    minWidth: 50,
                     fixed: 'left',
                     showOverflowTooltip: true,
                 },
@@ -218,7 +221,7 @@ export default {
                 {
                     prop: 'USE_COUNT',
                     label: '上月消耗',
-                    width: 60,
+                    width: 90,
                 },
                 {
                     prop: 'Unit',
@@ -247,7 +250,7 @@ export default {
                 {
                     prop: 'TempletQty',
                     label: '模板申领数量',
-                    width: 100,
+                    width: 120,
                     align: 'center',
                 },
                 {
@@ -278,14 +281,14 @@ export default {
                 {
                     prop: 'BigBoxCount',
                     label: '大包装数量',
-                    width: 80,
+                    width: 100,
                     align: 'center',
                 },
 
                 {
                     prop: 'MinBoxCount',
                     label: '中包装数量',
-                    width: 80,
+                    width: 100,
                     align: 'center',
                 },
             ],

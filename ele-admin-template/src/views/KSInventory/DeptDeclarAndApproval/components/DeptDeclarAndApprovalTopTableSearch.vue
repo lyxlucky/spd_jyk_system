@@ -6,7 +6,7 @@
       <el-col v-bind="styleResponsive ? { lg: 4, md: 4 } : { span: 4 }" style="padding-left: 40px;">
         <div class="ele-form-actions">
           <el-button size="medium " :disabled="isDisable" type="primary" class="ele-btn-icon" @click="approval">
-            审批
+            审批通过
           </el-button>
           <el-button size="medium" :disabled="isDisable" type="danger" class="ele-btn-icon" @click="denyApproval">
             审批不通过

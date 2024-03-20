@@ -3,7 +3,7 @@
     <!-- 数据表格 -->
     <ele-pro-table ref="table" :toolStyle="toolStyle" height="40vh" highlight-current-row :stripe="true"
       :rowClickChecked="true" :rowClickCheckedIntelligent="false" :pageSize="pageSize" :pageSizes="pageSizes"
-      :columns="columns" :datasource="datasource" :selection.sync="selection" @selection-change="onSelectionChange"
+      :columns="columns" :datasource="datasource" :initLoad="false" :selection.sync="selection" @selection-change="onSelectionChange"
       cache-key="DeptDeclarAndApprovalBottomTable">
 
       <template v-slot:toolbar>
@@ -207,8 +207,6 @@ export default {
   created() {
     // this.getdatasource();
   },
-  mounted() {
-  }
 };
 </script>
 

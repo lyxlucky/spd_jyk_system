@@ -17,7 +17,7 @@
         </div>
       </el-col>
 
-      <el-col v-bind="styleResponsive ? { lg: 10, md: 4 } : { span: 4 }" style="padding-left: 40px;">
+      <el-col v-bind="styleResponsive ? { lg: 6, md: 4 } : { span: 4 }" style="padding-left: 40px;">
         <div class="ele-form-actions">
           <el-button size="medium " type="primary" icon="el-icon-search" class="ele-btn-icon" @click="search">
             查询
