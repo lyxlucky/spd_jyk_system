@@ -17,7 +17,7 @@ export async function GetJykMainShelf(data) {
     data2.COUNT = data.where.COUNT ? data.where.COUNT : '';
     data2.DELIVERY_NUMBER = data.where.DELIVERY_NUMBER ? data.where.DELIVERY_NUMBER : '';
     // data2.DeptCode = data.where.DeptCode ? data.where.DeptCode : '';
-    data2.dept_two_code = store.state.user.info.DeptNow.Dept_Two_Code ? store.state.user.info.DeptNow.Dept_Two_Code :""
+    data2.DeptCode = store.state.user.info.DeptNow.Dept_Two_Code ? store.state.user.info.DeptNow.Dept_Two_Code :""
     data2.xqDay = data.where.xqDay ? data.where.xqDay : 0;
     data2.order = data.order ? data.order : '';
     const res = await request.get('/AJykDept/GetJykMainShelf', {
