@@ -4,7 +4,9 @@ yourFunctionName()
   <div class="ele-body">
     <!-- 数据表格 -->
     <!-- @current-change="onCurrentChange" -->
-    <ele-pro-table :key="key" highlight-current-row ref="table" :toolkit="[]" @current-change="onCurrentChange" height="15vh" :rowClickChecked="true" :stripe="true"
+    <ele-pro-table :key="key" highlight-current-row ref="table" 
+      :toolkit="[]" @current-change="onCurrentChange" height="15vh" 
+      :rowClickChecked="true" :stripe="true"
       :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource"
       :selection.sync="selection" cache-key="DeptPlanDeclarationTopTable">
       <!-- 表头工具栏 -->
@@ -246,4 +248,4 @@ export default {
 .ele-body {
   padding: 0px;
 }
-</style>./DeptPlanDeclarationTopTableSearch.vue
+</style>

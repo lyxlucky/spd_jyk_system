@@ -1,20 +1,18 @@
 <template>
   <div class="ele-body">
     <!-- 数据表格 -->
-    <ele-pro-table ref="table" 
-      :toolStyle="toolStyle" height="40vh" :toolkit="[]" highlight-current-row :stripe="true"
+    <ele-pro-table ref="table" :toolStyle="toolStyle" height="40vh" :toolkit="[]" highlight-current-row :stripe="true"
       :rowClickChecked="true" :rowClickCheckedIntelligent="false" :pageSize="pageSize" :pageSizes="pageSizes"
-      :columns="columns" :datasource="datasource" :initLoad="false" :selection.sync="selection" @selection-change="onSelectionChange"
-      cache-key="DeptPlanDeclarationBottomTable">
+      :columns="columns" :datasource="datasource" :initLoad="false" :current.sync="current" :selection.sync="selection"
+      @selection-change="onSelectionChange" cache-key="DeptPlanDeclarationBottomTable">
 
       <template v-slot:toolbar>
         <!-- 搜索表单 -->
-        <DeptPlanDeclarationBottomTableSearch @search="reload" @ClickReload="ClickReload"
+        <DeptPlanDeclarationBottomTableSearch @uploadSuccess="uploadSuccess" @search="reload" @ClickReload="ClickReload"
           :DeptPlanDeclarationTopTableCurrent='DeptPlanDeclarationTopTableCurrent' :selection="selection"
-          @showEditReoad="showEditReoad" :datasourceList="datasourceList" @exportData="exportData"
+          :current="current" @showEditReoad="showEditReoad" :datasourceList="datasourceList" @exportData="exportData"
           @exportPrintSheet="exportPrintSheet" @deleteBottomTableItems="deleteBottomTableItems"
-          @excelBottomTable="ExcelBottomPlanTable" :TopTableSelection="TopTableSelection"
-          @addPlanItemDone="reload" />
+          @excelBottomTable="ExcelBottomPlanTable" :TopTableSelection="TopTableSelection" @addPlanItemDone="reload" />
       </template>
 
       <!--
@@ -26,12 +24,12 @@
     -->
 
 
-       <template v-slot:PLAN_NUM="{ row }">
+      <!-- <template v-slot:PLAN_NUM="{ row }">
         <el-input-number style="width: 130px" v-model="row.PLAN_NUM" :min="0" :max="999999999"></el-input-number>
         <el-link type="primary" style="padding-left: 10px;" :underline="false" icon="el-icon-position" @click="submit(row)">
             提交
         </el-link>
-      </template>
+      </template> -->
     </ele-pro-table>
   </div>
 </template>
@@ -117,8 +115,6 @@ export default {
           align: 'center',
           showOverflowTooltip: true,
           fixed: 'left',
-          slot: 'PLAN_NUM',
-          width: 270,
         },
         {
           prop: 'APPROVAL_NUMBER',
@@ -172,16 +168,16 @@ export default {
             list: res.result
           };
           this.datasourceList = res.result;
-          this.$store.commit('user/setDeptPlanNewMainId', where.DEPT_PLAN_NEW_MAIN_ID);
+          // this.$store.commit('user/setDeptPlanNewMainId', where.DEPT_PLAN_NEW_MAIN_ID);
           return tData;
         }
       );
       return data;
     },
-    submit(row){
-      updateDeptPlanTablePlanNum(row).then((res)=>{
+    submit(row) {
+      updateDeptPlanTablePlanNum(row).then((res) => {
         this.$message.success(res.msg)
-      }).catch((err)=>{
+      }).catch((err) => {
         this.$message.error(err.msg)
       })
     },
@@ -332,26 +328,38 @@ export default {
         window.open(url.replace('/undefined', ''));
       }).catch((e) => {
         this.$message.error(e.message);
-      }); 
+      });
     },
-    
+    uploadSuccess(){
+      this.$refs.table.reload();
+    },
+
   },
   computed: {
-    DeptPlanDeclarationTopTableSearch() {
-      return this.DeptPlanDeclarationTopTableCurrent;
-    }
+    // DeptPlanDeclarationTopTableSearch() {
+    //   return this.DeptPlanDeclarationTopTableCurrent;
+    // }
   },
   watch: {
-    DeptPlanDeclarationTopTableSearch() {
-      this.$forceUpdate();
-      if (this.DeptPlanDeclarationTopTableCurrent) {
-        var where = {
+    DeptPlanDeclarationTopTableCurrent() {
+      if (this.DeptPlanDeclarationTopTableCurrent != null) {
+        let where = {
           DEPT_PLAN_NEW_MAIN_ID: this.DeptPlanDeclarationTopTableCurrent.ID
         };
         this.$store.commit('user/setDeptPlanNewMainId', where.DEPT_PLAN_NEW_MAIN_ID);
+        this.$refs.table.reload({ page: 1, where: where })
       }
-      this.$refs.table.reload({ page: 1, where: where });
     }
+    // DeptPlanDeclarationTopTableSearch() {
+    //   this.$forceUpdate();
+    //   if (this.DeptPlanDeclarationTopTableCurrent) {
+    //     var where = {
+    //       DEPT_PLAN_NEW_MAIN_ID: this.DeptPlanDeclarationTopTableCurrent.ID
+    //     };
+    //     // this.$store.commit('user/setDeptPlanNewMainId', where.DEPT_PLAN_NEW_MAIN_ID);
+    //   }
+    //   this.$refs.table.reload({ page: 1, where: where });
+    // }
   },
   created() {
     // this.getdatasource();

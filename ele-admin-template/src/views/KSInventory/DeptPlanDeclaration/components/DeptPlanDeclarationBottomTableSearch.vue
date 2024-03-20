@@ -27,15 +27,15 @@
             <el-button type="primary" size="small" @click="search">查询</el-button>
             <el-button type="primary" size="small" @click="addPlanItemVisiable = true">添加计划品种</el-button>
             <el-button type="primary" size="small" @click="updateDeptPlantTableDetailVisible = true"
-              :disabled='IsDisabled'>修改明细</el-button>
+              :disabled='updateIsDisabled'>修改明细</el-button>
             <el-button type="danger" size="small" @click="deleteBottomTableItems" :disabled='IsDisabled'>剔除</el-button>
             <!-- <el-button type="primary" size="small" @click="exportPrintSheet">打印计划表</el-button> -->
             <el-button type="primary" size="small" @click="QuotationPlanVisible = true">引用计划模板</el-button>
             <!-- <el-button type="primary" size="small" :disabled="excelBottomTableIsabled"
               @click="excelBottomTable">导出计划表</el-button> -->
             <el-button type="primary" size="small" :disabled='TopTableDisabled' @click="exportData">导出</el-button>
-            <el-upload style="float: right; position: relative; right: 10px;" :action="uploadUrl" :limit="1">
-              <el-button size="small" type="primary">导入</el-button>
+            <el-upload :on-success="uploadSuccess" style="float: right;" :show-file-list="false" :action="uploadUrl" ref='upload' :limit="1">
+              <el-button size="small" icon="el-icon-_upload" type="primary">导入</el-button>
             </el-upload>
           </div>
         </el-col>
@@ -44,19 +44,19 @@
 
 
     <!-- 修改明细对话框 -->
-    <el-dialog title="修改明细" center @close="updateDeptPlantTableDetailDialogClose" :visible.sync="updateDeptPlantTableDetailVisible" width="20%"
-      :before-close="where.updateDeptPlantTableDetailClose">
+    <!-- :before-close="where.updateDeptPlantTableDetailClose" -->
+    <el-dialog title="修改明细" center @close="updateDeptPlantTableDetailDialogClose"
+      :visible.sync="updateDeptPlantTableDetailVisible" width="20%" :before-close="updateDeptPlantTableDetailClose">
 
-      <el-form :model="where.updateDeptPlantTableDetail" :rules="updateDetailRules" ref="updateDeptPlantTableDetailRef" label-width="100px"
-        class="updateDeptPlantTableDetailForm">
-
+      <el-form :model="where.BottomTableCurrent" :rules="updateDetailRules" ref="updateDeptPlantTableDetailRef"
+        label-width="100px" class="updateDeptPlantTableDetailForm">
 
         <el-form-item label="计划数量" prop="PLAN_NUM">
-          <el-input v-model="where.updateDeptPlantTableDetail.PLAN_NUM" placeholder=""></el-input>
+          <el-input v-model="where.BottomTableCurrent.PLAN_NUM" placeholder=""></el-input>
         </el-form-item>
 
         <el-form-item label="备注：" prop="REMARK">
-          <el-input v-model="where.updateDeptPlantTableDetail.REMARK" placeholder="请输入备注"></el-input>
+          <el-input v-model="where.BottomTableCurrent.REMARK" placeholder="请输入备注"></el-input>
         </el-form-item>
 
         <el-form-item>
@@ -87,7 +87,13 @@ import {
 } from '@/api/KSInventory/DeptPlanDeclaration';
 
 export default {
-  props: ['DeptPlanDeclarationTopTableCurrent', 'selection', 'datasourceList', 'TopTableSelection'],
+  props: [
+    'DeptPlanDeclarationTopTableCurrent',
+    'selection',
+    'datasourceList',
+    'TopTableSelection',
+    'current'
+  ],
   components: {
     AddPlanItem,
     QuotationPlan
@@ -100,9 +106,10 @@ export default {
       VARIETIE_CODE_NEW: '',
       MANUFACTURING_ENT_NAME: '',
       APPROVAL_NUMBER: '',
-      updateDeptPlantTableDetail: {
+      BottomTableCurrent: {
+        PLAN_NUM: 0,
         REMARK: "",
-        PLAN_NUM: ""
+        ID: ""
       }
     };
     return {
@@ -117,7 +124,7 @@ export default {
       updateDeptPlantTableDetailVisible: false,
       QuotationPlanVisible: false,
       uploadUrl: `${BACK_BASE_URL}${API_BASE_URL}/DeptPlanDec/ImportDeptPDDel`,
-      updateDetailRules:{
+      updateDetailRules: {
         PLAN_NUM: [
           { required: true, message: '请输入计划数量', trigger: 'blur' },
           { pattern: /^[1-9]\d*$/, message: '请输入正整数', trigger: 'blur' }
@@ -141,7 +148,7 @@ export default {
     IsDisabled() {
       return this.selection.length === 0;
     },
-    TopTableDisabled(){
+    TopTableDisabled() {
       return (this.TopTableSelection.length == 0 && this.datasourceList.length == 0)
     },
     IsDisabledIsNot() {
@@ -155,7 +162,9 @@ export default {
         return false;
       }
     },
-
+    updateIsDisabled() {
+      return this.selection.length != 1;
+    },
     /* 审核申领单 */
     IsPutInListDeta() {
       if (this.DeptPlanDeclarationTopTableCurrent) {
@@ -170,21 +179,27 @@ export default {
       if (this.showEdit == false) {
         this.$emit('showEditReoad', false);
       }
+    },
+    current() {
+      if (this.current != null) {
+        this.where.BottomTableCurrent.PLAN_NUM = this.current.PLAN_NUM
+        this.where.BottomTableCurrent.REMARK = this.current.REMARK
+        this.where.BottomTableCurrent.ID = this.current.ID
+      }
     }
   },
   methods: {
-    updateDeptPlantTableDetailDialogClose(){
+    updateDeptPlantTableDetailDialogClose() {
       this.where.updateDeptPlantTableDetail = {}
     },
-    addItemDone(){
+    addItemDone() {
       this.addPlanItemVisiable = false;
-      this.$emit('addPlanItemDone',"")
+      this.$emit('addPlanItemDone', "")
     },
     //修改明细
     submitUpdateDeptPlanForm() {
       let data = {
-        "where": this.where.updateDeptPlantTableDetail,
-        "ID": this.selection
+        "where": this.where.BottomTableCurrent,
       }
       updateDeptPlantTableDetails(data).then(res => {
         this.$message.success(res.msg);
@@ -266,6 +281,11 @@ export default {
       //     loading.close();
       //     this.$message.error(err);
       //   });
+    },
+
+    uploadSuccess(response, file, fileList){
+      this.$refs.upload.clearFiles()
+      this.$emit("uploadSuccess")
     },
 
     addPutInListDeta2() {
@@ -422,6 +442,8 @@ export default {
       this.$emit("exportData", this.where)
     },
     updateDeptPlantTableDetailClose() {
+      // this.where.BottomTableCurrent = {};
+      this.$refs.updateDeptPlantTableDetailRef.clearValidate()
       this.updateDeptPlantTableDetailVisible = false;
     },
     exportPrintSheet() {
@@ -448,6 +470,6 @@ export default {
       }
     }
     this.IsHide()
-  }
+  },
 };
 </script>

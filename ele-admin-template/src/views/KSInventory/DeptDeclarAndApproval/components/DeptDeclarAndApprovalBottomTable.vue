@@ -18,12 +18,12 @@
         <el-tag v-else type="ifno">{{ row.DEPT_ZDY_VARIETIE_CODE }}</el-tag>
       </template>
 
-      <template v-slot:PLAN_NUM="{ row }">
+      <!-- <template v-slot:PLAN_NUM="{ row }">
         <el-input-number style="width: 130px" v-model="row.PLAN_NUM" :min="0" :max="999999999"></el-input-number>
         <el-link type="primary" style="padding-left: 10px;" :underline="false" icon="el-icon-position" @click="submit(row)">
             提交
         </el-link>
-      </template>
+      </template> -->
 
     </ele-pro-table>
   </div>
@@ -97,12 +97,10 @@ export default {
         },
         {
           prop: 'PLAN_NUM',
-          slot: 'PLAN_NUM',
           label: '计划数量',
           align: 'center',
           showOverflowTooltip: true,
           fixed: 'left',
-          width:270
         },
         {
           prop: 'APPROVAL_NUMBER',

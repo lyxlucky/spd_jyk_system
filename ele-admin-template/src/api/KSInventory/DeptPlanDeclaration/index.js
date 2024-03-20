@@ -33,6 +33,7 @@ export async function getDeptPlanBottomTableData(data) {
   data2.page = data.page;
   data2.size = data.limit;
   data2.DEPT_PLAN_NEW_MAIN_ID = store.state.user.deptPlanNewMainId;
+  // data2.DEPT_PLAN_NEW_MAIN_ID = data.where.DEPT_PLAN_NEW_MAIN_ID ? data.where.DEPT_PLAN_NEW_MAIN_ID : ""
   data2.VARIETIE_CODE_NEW = data.where.VARIETIE_CODE_NEW
     ? data.where.VARIETIE_CODE_NEW
     : '';
@@ -214,12 +215,16 @@ export async function addDeptPlanTableDataKind(data) {
 export async function updateDeptPlantTableDetails(data) {
   var data2 = {};
   data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
-  data2.ID = data.ID.map((item) => item.ID).join(',');
+  data2.ID = data.where.ID ? data.where.ID : '';
   data2.REMARK = data.where.REMARK ? data.where.REMARK : '';
-  data2.PLAN_NUM = data.where.PLAN_NUM ? data.where.PLAN_NUM : '';
+  data2.PLAN_NUM = data.where.PLAN_NUM;
   var data3 = formdataify(data2);
   const res = await request.post('DeptPlanDec/UpIDeptPlanDecDel', data3);
-  return res.data;
+  if (res.data.code == 200) {
+    return res.data;
+  } else {
+    return Promise.reject(new Error(res.data.msg));
+  }
 }
 
 //引用计划模板左边表格

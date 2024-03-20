@@ -25,7 +25,9 @@ export default {
       KEY: "19941120240000001994112024000000",
       // 偏移量
       IV: "1994112024000000"
-    }
+    },
+    deptPlanNewMainId:"",
+    DeptDeclarAndApprovalMainId:""
 
   },
   mutations: {
