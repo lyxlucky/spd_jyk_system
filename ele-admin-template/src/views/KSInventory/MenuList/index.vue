@@ -65,7 +65,7 @@ export default {
       permission_group = permission_group.filter((res) => {
         return (
           res.title != '申领计划管理_审核按钮' &&
-          res.title != '领计划管理_审批按钮' &&
+          res.title != '申领计划管理_审批按钮' &&
           res.title != '科室申领' &&
           res.title != '菜单列表'
         );
