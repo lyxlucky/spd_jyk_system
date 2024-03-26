@@ -38,10 +38,10 @@
           <el-button type="primary" size="small" @click="showApplyTemp" :disabled='!IsDisabled'>引入模板</el-button>
           <!-- <el-button type="primary" size="small" @click="reset" :disabled='!IsDisabled'>引入历史记录</el-button> -->
           <el-button type="primary" size="small" @click="KeeptApplyDate" :disabled='!IsDisabled'>暂存申领单</el-button>
-          <el-button type="primary" size="small" @click="addPutInListDeta2" :disabled='!IsDisabled'>保存并提交</el-button>
+          <el-button type="success" size="small" @click="addPutInListDeta2" :disabled='!IsDisabled'>保存并提交</el-button>
           <!-- <el-button type="primary" size="small" @click="reset" :disabled='IsDisabled'>查询订单情况</el-button> -->
           <!-- <el-button type="primary" size="small" @click="reset" :disabled='IsDisabled'>合并订单</el-button> -->
-          <el-button :style="{ display: visibleLine }" type="primary" size="small" @click="subToExamine" :disabled='!IsPutInListDeta'>审核申领单</el-button>
+          <el-button :style="{ display: visibleLine }" type="success" size="small" @click="subToExamine" :disabled='!IsPutInListDeta'>审核申领单</el-button>
           <!-- <el-button type="primary" size="small" @click="search" :disabled='!IsToExamine'>审批申领单</el-button> -->
           <!-- <el-button type="danger" size="small" @click="removeBatch" :disabled='!IsDisabledByDel'>删除</el-button> -->
           <el-popconfirm class="ele-action" title="确定删除？" @confirm="removeBatch()">
