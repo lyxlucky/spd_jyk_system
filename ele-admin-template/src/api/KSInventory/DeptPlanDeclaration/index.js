@@ -278,3 +278,21 @@ export async function updateDeptPlanTablePlanNum(data) {
     return Promise.reject(new Error(res.data.msg));
   }
 }
+
+//添加模板品种
+export async function addTemplateItem(data) {
+  var data2 = {};
+  data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+  data2.DEPT_PLAN_NEW_MAIN_ID = store.state.user.deptPlanNewMainId;
+  data2.json = JSON.stringify(data)
+  data2.DEPT_TWO_CODE = store.state.user.info.DeptNow.Dept_Two_Code ? store.state.user.info.DeptNow.Dept_Two_Code : '';
+  data2.CREATE_MAN = store.state.user.info.UserName ? store.state.user.info.UserName : '';
+  data2.tag = '2';
+  var data3 = formdataify(data2);
+  const res = await request.post('DeptPlanDec/AddVarWithDeptPlanDel', data3);
+  if (res.data.code == 200) {
+    return res.data;
+  } else {
+    return Promise.reject(new Error(res.data.msg));
+  }
+}

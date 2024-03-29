@@ -10,9 +10,9 @@
                             <el-menu-item index="1">模板列表</el-menu-item>
                         </el-menu>
 
-                        <ele-pro-table :toolkit="[]" ref="leftTable" height="500px" :pageSize="leftPageSize"
-                            :pageSizes="leftPageSizes" :columns="leftColumns" :datasource="leftDatasource"
-                            :rowClickChecked="true" :rowClickCheckedIntelligent="false"
+                        <ele-pro-table :toolkit="[]" ref="leftTable" :selection.sync="leftSelection" height="500px"
+                            :pageSize="leftPageSize" :pageSizes="leftPageSizes" :columns="leftColumns"
+                            :datasource="leftDatasource" :rowClickChecked="true" :rowClickCheckedIntelligent="false"
                             @current-change="onLeftSelectionChange" cache-key="leftTableKey">
                             <template v-slot:toolbar>
                                 <el-form class="ele-form-search" @keyup.enter.native="search" @submit.native.prevent>
@@ -20,7 +20,8 @@
                                         <el-col v-bind="styleResponsive ? { lg: 14, md: 4 } : { span: 6 }">
                                             <el-form-item>
                                                 <!-- v-model="where.SerachName" -->
-                                                <el-input clearable v-model="where.leftSerachName" placeholder="请输入模板名称" />
+                                                <el-input clearable v-model="where.leftSerachName"
+                                                    placeholder="请输入模板名称" />
                                             </el-form-item>
                                         </el-col>
                                         <el-col style='padding-left: 10px;'
@@ -44,9 +45,9 @@
                             <el-menu-item index="1">历史申领单详情</el-menu-item>
                         </el-menu>
 
-                        <ele-pro-table :toolkit="[]" ref="rightTable" height="500px" :pageSize="rightPageSize"
-                            :pageSizes="rightPageSizes" :columns="rightColumns" :datasource="rightDatasource"
-                            :rowClickChecked="true" :rowClickCheckedIntelligent="false"
+                        <ele-pro-table :toolkit="[]" ref="rightTable" :selection.sync="rightSelection" height="500px"
+                            :pageSize="rightPageSize" :pageSizes="rightPageSizes" :columns="rightColumns"
+                            :datasource="rightDatasource" :rowClickChecked="true" :rowClickCheckedIntelligent="false"
                             @current-change="onRightSelectionChange" cache-key="rightTableKey">
 
                             <template v-slot:planCount="{ row }">
@@ -72,7 +73,7 @@
                                             </el-form-item>
                                         </el-col>
                                         <el-col style='padding-left: 10px;'
-                                            v-bind="styleResponsive ? { lg: 4, md: 4 } : { span: 6 }">
+                                            v-bind="styleResponsive ? { lg: 2, md: 4 } : { span: 6 }">
                                             <el-form-item>
                                                 <el-button type="primary" icon="el-icon-search" class="ele-btn-icon"
                                                     @click="rightTableReload">
@@ -80,6 +81,16 @@
                                                 </el-button>
                                             </el-form-item>
                                         </el-col>
+                                        <el-col style='padding-left: 10px;'
+                                            v-bind="styleResponsive ? { lg: 2, md: 4 } : { span: 6 }">
+                                            <el-form-item>
+                                                <el-button :disabled="rightSelectionIsable" type="primary" icon=""
+                                                    class="ele-btn-icon" @click="submitItem()">
+                                                    确定
+                                                </el-button>
+                                            </el-form-item>
+                                        </el-col>
+
                                     </el-row>
                                 </el-form>
                             </template>
@@ -94,7 +105,8 @@
 <script>
 import {
     getLeftTableData,
-    getRightTableData
+    getRightTableData,
+    addTemplateItem
 } from '@/api/KSInventory/DeptPlanDeclaration';
 export default {
     name: 'QuotationPlan',
@@ -108,7 +120,7 @@ export default {
         const defaultWhere = {
             SerachName: "",
             TempletMasteID: "",
-            leftSerachName:"",
+            leftSerachName: "",
         };
         return {
             // Your data goes here
@@ -306,6 +318,23 @@ export default {
         updateVisible(value) {
             this.$emit('update:visible', value);
         },
+        submitItem() {
+            this.$confirm('确定要提交所选品种吗?', '提示', {
+                type: 'info'
+            })
+                .then(() => {
+                    addTemplateItem(this.rightSelection).then((res) => {
+                        this.updateVisible()
+                        this.$message.success(res.msg);
+                        this.rightTableReload()
+                    }).catch(err  => {
+                        this.$message.error(err);
+                        this.updateVisible()
+                    });
+                })
+                .catch(() => {
+                });
+        },
         onLeftSelectionChange(selection) {
             this.where.TempletMasteID = selection.ID;
             this.rightTableReload();
@@ -350,6 +379,9 @@ export default {
         styleResponsive() {
             return this.$store.state.theme.styleResponsive;
         },
+        rightSelectionIsable() {
+            return this.rightSelection.length === 0
+        }
     },
     watch: {
 
