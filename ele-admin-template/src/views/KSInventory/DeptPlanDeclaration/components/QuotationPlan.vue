@@ -27,7 +27,7 @@
                                         <el-col style='padding-left: 10px;'
                                             v-bind="styleResponsive ? { lg: 4, md: 4 } : { span: 6 }">
                                             <el-form-item>
-                                                <el-button type="primary" icon="el-icon-search" class="ele-btn-icon"
+                                                <el-button size="small" type="primary" icon="el-icon-search" class="ele-btn-icon"
                                                     @click="leftTableReload">
                                                     查询
                                                 </el-button>
@@ -75,7 +75,7 @@
                                         <el-col style='padding-left: 10px;'
                                             v-bind="styleResponsive ? { lg: 2, md: 4 } : { span: 6 }">
                                             <el-form-item>
-                                                <el-button type="primary" icon="el-icon-search" class="ele-btn-icon"
+                                                <el-button size="small" type="primary" icon="el-icon-search" class="ele-btn-icon"
                                                     @click="rightTableReload">
                                                     查询
                                                 </el-button>
@@ -84,7 +84,7 @@
                                         <el-col style='padding-left: 10px;'
                                             v-bind="styleResponsive ? { lg: 2, md: 4 } : { span: 6 }">
                                             <el-form-item>
-                                                <el-button :disabled="rightSelectionIsable" type="primary" icon=""
+                                                <el-button size="small" :disabled="rightSelectionIsable" type="primary" icon=""
                                                     class="ele-btn-icon" @click="submitItem()">
                                                     确定
                                                 </el-button>
