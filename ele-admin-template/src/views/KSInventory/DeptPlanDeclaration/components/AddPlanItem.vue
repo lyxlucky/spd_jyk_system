@@ -144,6 +144,13 @@ export default {
                     showOverflowTooltip: true,
                 },
                 {
+                    prop: 'PAG_TYPE',
+                    label: '包装规格',
+                    align: 'center',
+                    minWidth: 150,
+                    showOverflowTooltip: true,
+                },
+                {
                     prop: 'Manufacturing_Ent_Name',
                     label: '生产企业名称',
                     align: 'center',
