@@ -364,7 +364,13 @@ export default {
   created() {
     // this.getdatasource();
   },
+  beforeDestroy(){
+    this.$bus.$off('bottomTableReload');
+  },
   mounted() {
+    this.$bus.$on('bottomTableReload', () => {
+      this.reload();
+    })
   }
 };
 </script>

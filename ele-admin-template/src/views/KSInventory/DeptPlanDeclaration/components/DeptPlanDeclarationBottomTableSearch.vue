@@ -30,7 +30,7 @@
               :disabled='updateIsDisabled'>修改明细</el-button>
             <el-button type="danger" size="small" @click="deleteBottomTableItems" :disabled='IsDisabled'>剔除</el-button>
             <!-- <el-button type="primary" size="small" @click="exportPrintSheet">打印计划表</el-button> -->
-            <el-button type="primary" size="small" @click="QuotationPlanVisible = true">引用计划模板</el-button>
+            <el-button type="primary" size="small" @click="QuotationPlan()">引用计划模板</el-button>
             <!-- <el-button type="primary" size="small" :disabled="excelBottomTableIsabled"
               @click="excelBottomTable">导出计划表</el-button> -->
             <el-button type="primary" size="small" :disabled='TopTableDisabled' @click="exportData">导出</el-button>
@@ -189,6 +189,10 @@ export default {
     }
   },
   methods: {
+    QuotationPlan(){
+      this.QuotationPlanVisible = true;
+      this.$bus.$emit("quotationLeftTableReload")
+    },
     updateDeptPlantTableDetailDialogClose() {
       this.where.updateDeptPlantTableDetail = {}
     },

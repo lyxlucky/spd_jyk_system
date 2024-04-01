@@ -2,7 +2,6 @@
     <div class="quotation-plan">
         <ele-modal width="1500px" :centered="true" :visible="visible" :close-on-click-modal="true"
             custom-class="ele-dialog-form" title="引入模板品种" @update:visible="updateVisible">
-            <!-- Your code goes here -->
             <el-container>
                 <el-aside width="350px">
                     <el-card shadow="always">
@@ -27,8 +26,8 @@
                                         <el-col style='padding-left: 10px;'
                                             v-bind="styleResponsive ? { lg: 4, md: 4 } : { span: 6 }">
                                             <el-form-item>
-                                                <el-button size="small" type="primary" icon="el-icon-search" class="ele-btn-icon"
-                                                    @click="leftTableReload">
+                                                <el-button size="small" type="primary" icon="el-icon-search"
+                                                    class="ele-btn-icon" @click="leftTableReload">
                                                     查询
                                                 </el-button>
                                             </el-form-item>
@@ -75,8 +74,8 @@
                                         <el-col style='padding-left: 10px;'
                                             v-bind="styleResponsive ? { lg: 2, md: 4 } : { span: 6 }">
                                             <el-form-item>
-                                                <el-button size="small" type="primary" icon="el-icon-search" class="ele-btn-icon"
-                                                    @click="rightTableReload">
+                                                <el-button size="small" type="primary" icon="el-icon-search"
+                                                    class="ele-btn-icon" @click="rightTableReload">
                                                     查询
                                                 </el-button>
                                             </el-form-item>
@@ -84,8 +83,8 @@
                                         <el-col style='padding-left: 10px;'
                                             v-bind="styleResponsive ? { lg: 2, md: 4 } : { span: 6 }">
                                             <el-form-item>
-                                                <el-button size="small" :disabled="rightSelectionIsable" type="primary" icon=""
-                                                    class="ele-btn-icon" @click="submitItem()">
+                                                <el-button size="small" :disabled="rightSelectionIsable" type="primary"
+                                                    icon="" class="ele-btn-icon" @click="submitItem()">
                                                     确定
                                                 </el-button>
                                             </el-form-item>
@@ -327,7 +326,8 @@ export default {
                         this.updateVisible()
                         this.$message.success(res.msg);
                         this.rightTableReload()
-                    }).catch(err  => {
+                        this.$bus.$emit("bottomTableReload")
+                    }).catch(err => {
                         this.$message.error(err);
                         this.updateVisible()
                     });
@@ -371,7 +371,7 @@ export default {
                 }
             );
             return data;
-        }
+        },
     },
     computed: {
         // Your computed properties go here
@@ -388,7 +388,15 @@ export default {
     },
     mounted() {
         // Code to run when the component is mounted
+        this.$bus.$on('quotationLeftTableReload', (data) => {
+            this.leftTableReload();
+        })
     },
+    created() {
+    },
+    beforeDestroy() {
+        this.$bus.$off('quotationLeftTableReload');
+    }
 };
 </script>
 
