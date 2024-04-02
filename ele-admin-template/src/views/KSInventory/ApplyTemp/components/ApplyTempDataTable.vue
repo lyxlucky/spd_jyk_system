@@ -237,7 +237,7 @@ export default {
         }
       ],
       toolbar: false,
-      pageSize: 20,
+      pageSize: 50,
       pagerCount: 2,
       pageSizes: [10, 20, 50, 100, 9999999],
       // 表格选中数据
