@@ -1,5 +1,5 @@
 <template>
-  <div class="ele-body">
+  <div class="ele-body" v-if='RenderTabel'>
     <!-- 数据表格 -->
     <ele-pro-table :key="key" highlight-current-row @current-change="onCurrentChange" ref="table" height="18vh" :rowClickChecked="true" :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" cache-key="KSInventoryBasicDataTable">
       <!-- 表头工具栏 -->
@@ -35,6 +35,8 @@
       </template>
     </ele-pro-table>
   </div>
+  
+
 </template>
 
 <script>
@@ -176,12 +178,22 @@ export default {
       applyPlanSbz: 0,
       applyPlanXhz: 0,
       applyPlanBl: '0%',
-      key: 0
+      key: 0,
+      RenderTabel: true
     };
   },
   mounted() {
     this.$bus.$on('handleCommand', (data) => {
+      // this.RenderTabel = !this.RenderTabel;
+
       this.reload();
+      this.RenderTabel = false;
+      // 建议加上 nextTick 微任务
+      // 否则在同一事件内同时将tableShow设置false和true有可能导致组件渲染失败
+      this.$nextTick(function () {
+        // 加载
+        this.RenderTabel = true;
+      });
     });
   },
   methods: {
@@ -299,9 +311,9 @@ export default {
     this.GetConsume();
   },
   // 取消监听bus事件
-  destroyed () {
+  destroyed() {
     // 取消对handleCommand事件的监听
-    this.$bus.$off('handleCommand')
+    this.$bus.$off('handleCommand');
   }
 };
 </script>
