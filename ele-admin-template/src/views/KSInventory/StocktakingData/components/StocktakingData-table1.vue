@@ -200,6 +200,7 @@ export default {
   created() {
     // this.getdatasource();
     this.GetConsume();
+    console.log(this.$store.state.user.info);
   },
   // 取消监听bus事件
   destroyed() {

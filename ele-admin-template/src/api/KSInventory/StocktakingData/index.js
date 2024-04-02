@@ -1,14 +1,14 @@
 import request from '@/utils/request';
 import { formdataify, DataToObject } from '@/utils/formdataify';
 import { TOKEN_STORE_NAME, } from '@/config/setting';
-
+import store from '@/store/index.js';
 export async function GetStockDataMain(data){
     var data2 = {};
     data2.page = data.page;
     data2.size = data.limit;
     data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
     data2.GENERATE_DATE = data.where.GENERATE_DATE ? data.where.GENERATE_DATE : '';
-
+    data2.DEPT_TWO_CODE = store.state.user.info.DeptNow.Dept_Two_Code? store.state.user.info.DeptNow.Dept_Two_Code : '';
     var data3 = formdataify(data2)
 
     const res = await request.post('/AJykDept/GetStockDataMain', data3);
