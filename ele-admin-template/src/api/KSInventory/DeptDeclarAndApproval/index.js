@@ -1,6 +1,5 @@
 import request from '@/utils/request';
 import store from '@/store/index.js';
-import set from "vue"
 
 import { formdataify } from '@/utils/formdataify';
 import { TOKEN_STORE_NAME } from '@/config/setting';
@@ -93,6 +92,22 @@ export async function getDeptPlanDecList(data) {
       code: '500',
       msg: '查找失败'
     };
+  }
+}
+
+export async function getDeptPlanDecListInArray(data) {
+  var data2 = {};
+  data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+  data2.page = data.page;
+  data2.size = data.limit;
+  data2.DEPT_TWO_CODE = (store.state.user.info.userDept).map((item)=>item.Dept_Two_Code).join(",");
+  data2.PLAN_MONTH_TIME = data.PLAN_MONTH_TIME ? data.PLAN_MONTH_TIME : '';
+  var data3 = formdataify(data2);
+  const res = await request.post('DeptPlanDec/GetDeptPlanDecByODeptInArray', data3);
+  if (res.data.code == 200) {
+    return res.data;
+  } else {
+    return Promise.reject(new Error(res.data.msg));
   }
 }
 

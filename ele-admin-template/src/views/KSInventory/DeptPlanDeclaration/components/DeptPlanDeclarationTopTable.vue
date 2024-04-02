@@ -199,12 +199,11 @@ export default {
         type: 'warning'
       }).then(() => {
         submitDeptPlanTableDataItem(data).then((res) => {
-          if (res.code == 200) {
             this.$message.success(res.msg);
             this.reload();
-          } else {
-            this.$message.error(res.msg);
-          }
+            this.$bus.$emit("submitDeptPlanTableDataItem")
+        }).catch(err=>{
+          this.$message.error(err);
         })
       }).catch(() => {
         this.$message({
