@@ -35,7 +35,7 @@ yourFunctionName()
 
 <script>
 import DeptDeclarAndApprovalTopTableSearch from '@/views/KSInventory/DeptDeclarAndApproval/components/DeptDeclarAndApprovalTopTableSearch';
-import { getDeptPlanDecList } from "@/api/KSInventory/DeptDeclarAndApproval"
+import { getDeptPlanDecList,getDeptPlanDecListInArray } from "@/api/KSInventory/DeptDeclarAndApproval"
 export default {
   name: 'DeptDeclarAndApprovalTopTable',
   props: ['IsReload'],
@@ -142,7 +142,7 @@ export default {
   methods: {
     /* 表格数据源 */
     datasource({ page, limit, where, order }) {
-      let data = getDeptPlanDecList({ page, limit, where, order }).then((res) => {
+      let data = getDeptPlanDecListInArray({ page, limit, where, order }).then((res) => {
         var tData = {
           count: res.total,
           list: res.result
@@ -169,6 +169,12 @@ export default {
     selection() {
       this.$emit("TopTableSelection", this.selection)
     }
+  },
+  mounted(){
+    this.$router.beforeEach((to, from, next) => {
+      this.reload()
+      next();
+    });
   },
   created() {
   },
