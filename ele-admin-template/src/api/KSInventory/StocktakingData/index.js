@@ -54,6 +54,8 @@ export async function GetStockDataDel(data) {
     data2.size = data.limit;
     data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
     data2.GENERATE_DATE = data.where.GENERATE_DATE ? data.where.GENERATE_DATE : '';
+    data2.DEPT_TWO_CODE = data.where.DEPT_TWO_CODE ? data.where.DEPT_TWO_CODE : '';
+    data2.VARIETIE_CODE_NEW = data.where.VARIETIE_CODE_NEW ? data.where.VARIETIE_CODE_NEW : '';
 
     var data3 = formdataify(data2)
 

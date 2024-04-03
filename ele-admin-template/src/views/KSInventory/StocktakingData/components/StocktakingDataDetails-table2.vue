@@ -249,6 +249,8 @@ export default {
   methods: {
     /* 表格数据源 */
     datasource({ page, limit, where, order }) {
+      where.GENERATE_DATE = this.KSDepartmentalPlanData.GENERATE_DATE;
+      where.DEPT_TWO_CODE = this.KSDepartmentalPlanData.DEPT_TWO_CODE;
       let data = GetStockDataDel({ page, limit, where, order }).then((res) => {
         var tData = {
           count: res.total,
@@ -327,11 +329,10 @@ export default {
       this.$forceUpdate();
       if (this.KSDepartmentalPlanData) {
         var where = {
-          GENERATE_DATE: this.KSDepartmentalPlanData.GENERATE_DATE
+          GENERATE_DATE: this.KSDepartmentalPlanData.GENERATE_DATE,
+          DEPT_TWO_CODE: this.KSDepartmentalPlanData.DEPT_TWO_CODE,
         };
       }
-      console.log( this.where)
-
       this.$refs.table.reload({ page: 1, where: where });
     }
   },

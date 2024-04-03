@@ -25,7 +25,7 @@
     <el-row :gutter="10">
       <el-col :lg="6" :md="12">
         <el-form-item label="">
-          <el-input v-model="where.SerachName" placeholder="请输入品种名称/品种编码/型号规格/生产企业搜索" clearable />
+          <el-input v-model="where.VARIETIE_CODE_NEW" placeholder="请输入品种名称/品种编码" clearable />
         </el-form-item>
       </el-col>
       <el-col :lg="18" :md="12">
@@ -63,7 +63,7 @@ export default {
       Token: '',
       PlanNum: '',
       is_second_app: '',
-      SerachName: '',
+      VARIETIE_CODE_NEW: '',
       dateFrom: '',
       dateTo: ''
     };

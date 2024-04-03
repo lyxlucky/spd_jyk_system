@@ -220,13 +220,13 @@ export default {
       window.location.href = url.replace('/undefined', '');
     },
     GenerateStockData_btn() {
-      var Dept_Two_CodeStr = '';
-      var userDeptList = this.$store.state.user.info.userDept;
-      for (let i = 0; i < userDeptList.length; i++) {
-        Dept_Two_CodeStr =
-          Dept_Two_CodeStr + userDeptList[i].Dept_Two_Code + ',';
-      }
-      this.where.DeptCode = Dept_Two_CodeStr;
+      // var Dept_Two_CodeStr = '';
+      // var userDeptList = this.$store.state.user.info.userDept;
+      // for (let i = 0; i < userDeptList.length; i++) {
+      //   Dept_Two_CodeStr =
+      //     Dept_Two_CodeStr + userDeptList[i].Dept_Two_Code + ',';
+      // }
+      this.where.DeptCode = this.$store.state.user.info.DeptNow.Dept_Two_Code;
       this.where.TYPE = this.where.TYPE == undefined ? '1' : this.where.TYPE;
       this.where.COUNT = this.where.COUNT == undefined ? '1' : this.where.COUNT;
       this.TYPE = this.where.TYPE;
