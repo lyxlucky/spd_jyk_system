@@ -57,9 +57,9 @@ export default {
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110,
-          formatter: (_row, _column, cellValue) => {
-            return this.$util.toDateString(cellValue, 'yyyy-MM');
-          }
+          // formatter: (_row, _column, cellValue) => {
+          //   return this.$util.toDateString(cellValue, 'yyyy-MM');
+          // }
         },
         {
           prop: 'GENERATE_MAN',
@@ -67,7 +67,14 @@ export default {
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110
-        }
+        },
+        {
+          prop: 'DEPT_TWO_NAME',
+          label: '生成科室',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 110
+        },
       ],
       toolbar: false,
       pageSize: 2,
