@@ -37,6 +37,9 @@
               <el-button type="danger" size="small" :underline="false">删除</el-button>
             </template>
           </el-popconfirm>
+          <el-button type="primary" icon="el-icon-download" class="ele-btn-icon" @click="exportData">
+            导出
+          </el-button>
         </div>
       </el-col>
     </el-row>
@@ -48,6 +51,7 @@
         <el-button @click="deleteZeroDelAndCommit2">取 消</el-button>
       </span>
     </el-dialog>
+
   </el-form>
 </template>
 
@@ -151,6 +155,9 @@ export default {
           loading.close();
           this.$message.error(err);
         });
+    },
+    exportData() {
+      this.$emit('exportData', this.where);
     }
   },
   created() {}

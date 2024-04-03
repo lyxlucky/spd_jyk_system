@@ -13,7 +13,7 @@
       <!-- 左表头 -->
       <template v-slot:toolbar>
         <!-- 搜索表单 -->
-        <StocktakingDataDetailsSearch @search="reload" @ClickReload="ClickReload" :KSDepartmentalPlanDataSearch='KSDepartmentalPlanDataSearch' :selection="selection" @showEditReoad="showEditReoad" :datasourceList="datasourceList" />
+        <StocktakingDataDetailsSearch @exportData="exportData" @search="reload" @ClickReload="ClickReload" :KSDepartmentalPlanDataSearch='KSDepartmentalPlanDataSearch' :selection="selection" @showEditReoad="showEditReoad" :datasourceList="datasourceList" />
       </template>
 
       <template v-slot:PlanQty="{ row }">
@@ -59,6 +59,7 @@
 
 <script>
 import StocktakingDataDetailsSearch from './StocktakingDataDetails-search.vue';
+import { utils, writeFile } from 'xlsx';
 import {
   SerachPlanListDeta,
   UpdateApplyPlanBZ
@@ -98,9 +99,9 @@ export default {
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 120,
-          formatter: (_row, _column, cellValue) => {
-            return this.$util.toDateString(cellValue, 'yyyy-MM-dd');
-          }
+          // formatter: (_row, _column, cellValue) => {
+          //   return this.$util.toDateString(cellValue, 'yyyy-MM-dd');
+          // }
         },
         {
           // prop: 'VarCode',
@@ -317,6 +318,76 @@ export default {
             message: '取消备注'
           });
         });
+    },
+    exportData(data) {
+      const loading = this.$messageLoading('正在导出数据...');
+      this.$refs.table.doRequest(({ where, order }) => {
+        where = data;
+        where.GENERATE_DATE = this.KSDepartmentalPlanData.GENERATE_DATE;
+        where.DEPT_TWO_CODE = this.KSDepartmentalPlanData.DEPT_TWO_CODE;
+        GetStockDataDel({
+          page: 1,
+          limit: 999999,
+          where: where,
+          order: order
+        })
+          .then((res) => {
+            loading.close();
+            const array = [
+              [
+                '生成日期',
+                '生成人',
+                '品种编码',
+                '品种名称',
+                '规格型号',
+                '生产企业',
+                '库存数量',
+                '单位',
+                '价格',
+                '生产批号',
+                '生产日期',
+                '有效到期',
+                '供应商名称',
+                '注册证号',
+                '计费编码',
+              ]
+            ];
+            res.result.forEach((d) => {
+              array.push([
+                d.GENERATE_DATE,
+                d.GENERATE_MAN,
+                d.VARIETIE_CODE_NEW,
+                d.VARIETIE_NAME,
+                d.SPECIFICATION_OR_TYPE,
+                d.MANUFACTURING_ENT_NAME,
+                d.COUNT,
+                d.UNIT,
+                d.PRICE,
+                d.BATCH,
+                this.$util.toDateString(d.BATCH_PRODUCTION_DATE, 'yyyy-MM-dd'),
+                this.$util.toDateString(d.BATCH_VALIDITY_PERIOD, 'yyyy-MM-dd'),
+                d.SUPPLIER_NAME,
+                d.APPROVAL_NUMBER,
+                d.CHARGING_CODE,
+                // this.$util.toDateString(d.createTime)
+              ]);
+            });
+            writeFile(
+              {
+                SheetNames: ['Sheet1'],
+                Sheets: {
+                  Sheet1: utils.aoa_to_sheet(array)
+                }
+              },
+              '盘点数据.xlsx'
+            );
+            this.$message.success('导出成功');
+          })
+          .catch((e) => {
+            loading.close();
+            this.$message.error(e.message);
+          });
+      });
     }
   },
   computed: {
@@ -330,7 +401,7 @@ export default {
       if (this.KSDepartmentalPlanData) {
         var where = {
           GENERATE_DATE: this.KSDepartmentalPlanData.GENERATE_DATE,
-          DEPT_TWO_CODE: this.KSDepartmentalPlanData.DEPT_TWO_CODE,
+          DEPT_TWO_CODE: this.KSDepartmentalPlanData.DEPT_TWO_CODE
         };
       }
       this.$refs.table.reload({ page: 1, where: where });
