@@ -325,6 +325,7 @@ export default {
               [
                 '品种编码',
                 '模板申领数量',
+                '排序',
                 '品种全称',
                 '规格/型号',
                 '单位',
@@ -348,6 +349,7 @@ export default {
               array.push([
                 d.VARIETIE_CODE_NEW,
                 d.TempletQty,
+                d.AUTH,
                 d.VarName,
                 d.GG,
                 d.Unit,
