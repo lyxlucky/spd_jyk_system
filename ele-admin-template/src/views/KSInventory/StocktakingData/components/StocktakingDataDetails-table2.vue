@@ -13,7 +13,19 @@
       <!-- 左表头 -->
       <template v-slot:toolbar>
         <!-- 搜索表单 -->
-        <StocktakingDataDetailsSearch @exportData="exportData" @search="reload" @ClickReload="ClickReload" :KSDepartmentalPlanDataSearch='KSDepartmentalPlanDataSearch' :selection="selection" @showEditReoad="showEditReoad" :datasourceList="datasourceList" />
+        <StocktakingDataDetailsSearch 
+        @exportData="exportData" 
+        @search="reload" 
+        @ClickReload="ClickReload" 
+        :KSDepartmentalPlanDataSearch='KSDepartmentalPlanDataSearch' 
+        :KSDepartmentalPlanData='KSDepartmentalPlanData'
+        :selection="selection"
+        :current="current"
+        @showEditReoad="showEditReoad" 
+        :datasourceList="datasourceList"
+        @createBatchData="createBatchData"
+        @scanItem="scanItem"
+         />
       </template>
 
       <template v-slot:PlanQty="{ row }">
@@ -53,15 +65,23 @@
         </el-popconfirm>
       </template>
     </ele-pro-table>
+    <!-- 生成盘点数据 -->
+    <createBatchDataModal :KSDepartmentalPlanData="KSDepartmentalPlanData" 
+    :visible.sync="createBatchDataModalVisible"/>
+
+    <!-- 扫码盘点 -->
+    <scanTotal :visible.sync="scanTotalVisible" :KSDepartmentalPlanData="KSDepartmentalPlanData"/>
+
     <!-- <p style="display: flex;justify-content: flex-end;">实际申领数量合计: <b>{{sumNumber}}</b> 实际申领金额合计: <b>{{sumAount}}</b> </p> -->
   </div>
 </template>
 
 <script>
 import StocktakingDataDetailsSearch from './StocktakingDataDetails-search.vue';
+import createBatchDataModal from '@/views/KSInventory/StocktakingData/components/CreateBatchDataModal.vue';
+import scanTotal from '@/views/KSInventory/StocktakingData/components/ScanTotal.vue';
 import { utils, writeFile } from 'xlsx';
 import {
-  SerachPlanListDeta,
   UpdateApplyPlanBZ
 } from '@/api/KSInventory/KSDepartmentalPlan';
 
@@ -69,9 +89,10 @@ import { GetStockDataDel } from '@/api/KSInventory/StocktakingData';
 export default {
   name: 'StocktakingDataDetails',
   props: ['KSDepartmentalPlanData'],
-  // inject: ['reload'],
   components: {
-    StocktakingDataDetailsSearch
+    StocktakingDataDetailsSearch,
+    createBatchDataModal,
+    scanTotal
   },
   data() {
     return {
@@ -244,7 +265,9 @@ export default {
       showImport: false,
       datasourceList: [],
       sumNumber: 0,
-      sumAount: 0
+      sumAount: 0,
+      createBatchDataModalVisible: false,
+      scanTotalVisible:false,
     };
   },
   methods: {
@@ -388,6 +411,12 @@ export default {
             this.$message.error(e.message);
           });
       });
+    },
+    createBatchData(){
+      this.createBatchDataModalVisible = true;
+    },
+    scanItem(){
+      this.scanTotalVisible = true;
     }
   },
   computed: {

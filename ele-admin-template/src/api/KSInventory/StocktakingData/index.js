@@ -2,6 +2,7 @@ import request from '@/utils/request';
 import { formdataify, DataToObject } from '@/utils/formdataify';
 import { TOKEN_STORE_NAME, } from '@/config/setting';
 import store from '@/store/index.js';
+
 export async function GetStockDataMain(data){
     var data2 = {};
     data2.page = data.page;
@@ -82,3 +83,39 @@ export async function DelBatchStockDataDel(data) {
     }
 }
 
+export async function scanInventory(data) {
+    var data2 = {};
+    data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+    data2.CODE = data.code ? data.code : '';
+    data2.GENERATE_DATE = data.GENERATE_DATE ? data.GENERATE_DATE : '';
+    data2.DEPT_TWO_CODE = data.DEPT_TWO_CODE ? data.DEPT_TWO_CODE : '';
+
+    var data3 = formdataify(data2)
+
+    const res = await request.post('/AJykDept/scanInventory', data3);
+    if (res.data.code == 200) {
+        return res.data;
+    } else {
+        return Promise.reject(new Error(res.data.msg));
+    }
+}
+
+// 盘点汇总
+export async function GetStockDataDelHz(data) {
+    var data2 = {};
+    data2.page = data.page;
+    data2.size = data.limit;
+    data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+    data2.GENERATE_DATE = data.where.GENERATE_DATE ? data.where.GENERATE_DATE : '';
+    data2.DEPT_TWO_CODE = (store.state.user.info.userDept).map((item)=>item.Dept_Two_Code).join(",");
+    data2.VARIETIE_CODE_NEW = data.where.VARIETIE_CODE_NEW ? data.where.VARIETIE_CODE_NEW : '';
+
+    var data3 = formdataify(data2)
+
+    const res = await request.post('/AJykDept/GetStockDataDelHz', data3);
+    if (res.data.code == 200) {
+        return res.data;
+    } else {
+        return Promise.reject(new Error(res.data.msg));
+    }
+}

@@ -40,6 +40,14 @@
           <el-button type="primary" icon="el-icon-download" class="ele-btn-icon" @click="exportData">
             导出
           </el-button>
+          <!-- 盘点汇总 -->
+          <el-button type="primary" icon="el-icon-data-analysis" class="ele-btn-icon" @click="createBatchData()">
+            盘点汇总
+          </el-button>
+          <!-- 扫码盘点 -->
+          <el-button type="primary" icon="el-icon-_scan" :disabled="IsScanVisiable" class="ele-btn-icon" @click="scanTotal()">
+            扫码盘点
+          </el-button>
         </div>
       </el-col>
     </el-row>
@@ -59,7 +67,7 @@
 import { DelBatchStockDataDel } from '@/api/KSInventory/StocktakingData';
 
 export default {
-  props: ['KSDepartmentalPlanDataSearch', 'selection', 'datasourceList'],
+  props: ['KSDepartmentalPlanDataSearch', 'selection', 'datasourceList','current','KSDepartmentalPlanData'],
   components: {},
   data() {
     // 默认表单数据
@@ -108,8 +116,14 @@ export default {
     },
     IsDisabledIsNot() {
       return false;
-    }
+    },
     /* 删除键 */
+    // IsCreatBatchDataDisable(){
+    //   return this.current != 0;
+    // }
+    IsScanVisiable(){
+      return Object.keys(this.KSDepartmentalPlanData).length == 0;
+    }
   },
   watch: {
     showEdit() {
@@ -119,6 +133,12 @@ export default {
     }
   },
   methods: {
+    createBatchData(){
+      this.$emit('createBatchData','');
+    },
+    scanTotal(){
+      this.$emit('scanItem','');
+    },
     /* 搜索 */
     search() {
       this.$emit('search', this.where);
