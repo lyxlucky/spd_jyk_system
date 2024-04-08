@@ -25,7 +25,7 @@
           </el-form>
         </template>
 
-        <template v-slot:PlanQty="{ row }">
+        <!-- <template v-slot:PlanQty="{ row }">
           <el-input-number v-model="row.PlanQty" :min="0" :max="99999999" :step="1" size="mini" />
         </template>
         <template v-slot:VarCode="{ row }">
@@ -43,10 +43,7 @@
           <el-tag v-if="(row.SUM_Left_Apply_Qty > 0 && row.SUM_Left_Apply_Qty != row.SUM_Apply_Qty)"
             type="success">未收全</el-tag>
           <el-tag v-if="(row.SUM_Left_Apply_Qty == 0)" type="success">已收全</el-tag>
-        </template>
-        <template v-slot:STATE="{ }">
-          <!-- TODO -->
-        </template>
+        </template> -->
       </ele-pro-table>
     </ele-modal>
   </div>
@@ -148,56 +145,63 @@ export default {
           // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 80,
+          minWidth: 100,
           sortable: true
         },
         {
-          prop: 'BATCH',
-          label: '生产批号',
+          prop: 'PC_COUNT',
+          label: '盘存数量',
           align: 'center',
           showOverflowTooltip: true,
-          width: 110,
-          show: false
+          minWidth: 100,
         },
-        {
-          prop: 'BATCH_PRODUCTION_DATE',
-          label: '生产日期',
-          // sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 120,
-          formatter: (_row, _column, cellValue) => {
-            return this.$util.toDateString(cellValue, 'yyyy-MM-dd');
-          }
-        },
-        {
-          prop: 'BATCH_VALIDITY_PERIOD',
-          slot: 'BATCH_VALIDITY_PERIOD',
-          label: '有效到期',
-          // sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 150,
-          formatter: (_row, _column, cellValue) => {
-            return this.$util.toDateString(cellValue, 'yyyy-MM-dd');
-          }
-        },
-        {
-          prop: 'SUPPLIER_NAME',
-          label: '供应商名称',
-          // // sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 150
-        },
-        {
-          prop: 'APPROVAL_NUMBER',
-          label: '注册证号',
-          // sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 110
-        },
+        // {
+        //   prop: 'BATCH',
+        //   label: '生产批号',
+        //   align: 'center',
+        //   showOverflowTooltip: true,
+        //   width: 110,
+        //   show: false
+        // },
+        // {
+        //   prop: 'BATCH_PRODUCTION_DATE',
+        //   label: '生产日期',
+        //   // sortable: 'custom',
+        //   align: 'center',
+        //   showOverflowTooltip: true,
+        //   minWidth: 120,
+        //   formatter: (_row, _column, cellValue) => {
+        //     return this.$util.toDateString(cellValue, 'yyyy-MM-dd');
+        //   }
+        // },
+        // {
+        //   prop: 'BATCH_VALIDITY_PERIOD',
+        //   slot: 'BATCH_VALIDITY_PERIOD',
+        //   label: '有效到期',
+        //   // sortable: 'custom',
+        //   align: 'center',
+        //   showOverflowTooltip: true,
+        //   minWidth: 150,
+        //   formatter: (_row, _column, cellValue) => {
+        //     return this.$util.toDateString(cellValue, 'yyyy-MM-dd');
+        //   }
+        // },
+        // {
+        //   prop: 'SUPPLIER_NAME',
+        //   label: '供应商名称',
+        //   // // sortable: 'custom',
+        //   align: 'center',
+        //   showOverflowTooltip: true,
+        //   minWidth: 150
+        // },
+        // {
+        //   prop: 'APPROVAL_NUMBER',
+        //   label: '注册证号',
+        //   // sortable: 'custom',
+        //   align: 'center',
+        //   showOverflowTooltip: true,
+        //   minWidth: 110
+        // },
         {
           prop: 'CHARGING_CODE',
           label: '计费编码',
@@ -206,15 +210,6 @@ export default {
           showOverflowTooltip: true,
           minWidth: 110
         },
-        {
-          prop: 'STATE',
-          slot: 'STATE',
-          label: '状态',
-          // sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 110
-        }
       ]
     };
   },

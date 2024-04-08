@@ -64,6 +64,13 @@
           </template>
         </el-popconfirm>
       </template>
+
+      <template v-slot:STATE="{ row }">
+        <el-tag v-if="row.STATE==0" type="danger">缺失</el-tag>
+        <el-tag v-if="row.STATE==1" type="success">存在</el-tag>
+        <el-tag v-if="row.STATE==2" type="warning">盘溢</el-tag>
+      </template>
+
     </ele-pro-table>
     <!-- 生成盘点数据 -->
     <createBatchDataModal :KSDepartmentalPlanData="KSDepartmentalPlanData" 
@@ -241,6 +248,13 @@ export default {
           prop: 'CHARGING_CODE',
           label: '计费编码',
           // sortable: 'custom',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 110
+        },
+        {
+          slot: 'STATE',
+          label: '状态',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110
