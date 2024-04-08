@@ -1,6 +1,6 @@
 <template>
   <div class="quotation-plan">
-    <ele-modal width="1500px" :centered="true" :visible="visible" :close-on-click-modal="true" custom-class="ele-dialog-form" title="引入模板品种" @update:visible="updateVisible">
+    <ele-modal width="1500px" :destroy-on-close="true" :centered="true" :visible="visible" :close-on-click-modal="true" custom-class="ele-dialog-form" title="引入模板品种" @update:visible="updateVisible">
       <el-container>
         <el-aside width="350px">
           <el-card shadow="always">
@@ -367,13 +367,9 @@ export default {
   watch: {},
   mounted() {
     // Code to run when the component is mounted
-    this.$bus.$on('quotationLeftTableReload', (data) => {
-      this.leftTableReload();
-    });
   },
   created() {},
   beforeDestroy() {
-    this.$bus.$off('quotationLeftTableReload');
   }
 };
 </script>

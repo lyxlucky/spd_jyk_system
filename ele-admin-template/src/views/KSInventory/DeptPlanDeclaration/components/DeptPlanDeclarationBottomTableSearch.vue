@@ -191,7 +191,6 @@ export default {
   methods: {
     QuotationPlan(){
       this.QuotationPlanVisible = true;
-      this.$bus.$emit("quotationLeftTableReload")
     },
     updateDeptPlantTableDetailDialogClose() {
       this.where.updateDeptPlantTableDetail = {}

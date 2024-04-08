@@ -1,7 +1,7 @@
 <!-- 扫码盘点弹窗 -->
 <template>
   <div class="create-batch-data-modal">
-    <ele-modal width="1200px" :visible="visible" :close-on-click-modal="true" custom-class="ele-dialog-form"
+    <ele-modal width="1200px" :destroy-on-close="true" :visible="visible" :close-on-click-modal="true" custom-class="ele-dialog-form"
       title="盘点汇总" @update:visible="updateVisible">
       <ele-pro-table height='50vh' highlight-current-row @current-change="onCurrentChange" ref="CreateBatchDataTable"
         :rowClickChecked="true" :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns"
