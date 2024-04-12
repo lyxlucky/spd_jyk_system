@@ -25,6 +25,13 @@
           </el-form>
         </template>
 
+        <template v-slot:PC_PERCENT="{ row }">
+          <el-tag v-if="parseFloat(row.PC_COUNT / row.COUNT).toFixed(2) >= 0.9" type="success">{{ numberToPercent(row.PC_COUNT / row.COUNT) }}</el-tag>
+          <el-tag v-else-if="parseFloat(row.PC_COUNT / row.COUNT).toFixed(2) >= 0.8 && parseFloat(row.PC_COUNT / row.COUNT).toFixed(2) < 0.9" type="warning">{{ numberToPercent(row.PC_COUNT / row.COUNT) }}</el-tag>
+          <el-tag v-else-if="parseFloat(row.PC_COUNT / row.COUNT).toFixed(2) < 0.8" type="danger">{{ numberToPercent(row.PC_COUNT / row.COUNT) }}</el-tag>
+          <el-tag v-else type="danger">{{ numberToPercent(0) }}</el-tag>
+        </template>
+
         <!-- <template v-slot:PlanQty="{ row }">
           <el-input-number v-model="row.PlanQty" :min="0" :max="99999999" :step="1" size="mini" />
         </template>
@@ -51,6 +58,7 @@
 
 <script>
 import { GetStockDataDelHz } from '@/api/KSInventory/StocktakingData';
+import {numberToPercent} from "@/utils/number-percent"
 export default {
   name: 'CreateBatchDataModal',
   components: {},
@@ -155,6 +163,14 @@ export default {
           showOverflowTooltip: true,
           minWidth: 100,
         },
+
+        {
+          slot: 'PC_PERCENT',
+          label: '盘存率',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 100,
+        },
         // {
         //   prop: 'BATCH',
         //   label: '生产批号',
@@ -252,7 +268,8 @@ export default {
     },
     search(){
       this.reload()
-    }
+    },
+    numberToPercent
   },
   watch: {},
   created() { },

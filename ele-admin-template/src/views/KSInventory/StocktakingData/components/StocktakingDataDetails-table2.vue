@@ -71,6 +71,11 @@
         <el-tag v-if="row.STATE==2" type="warning">盘溢</el-tag>
       </template>
 
+
+      <template v-slot:DEF_NO_PKG_CODE="{ row }">
+        <el-tag type="success">{{row.DEF_NO_PKG_CODE}}</el-tag>
+      </template>
+
     </ele-pro-table>
     <!-- 生成盘点数据 -->
     <createBatchDataModal :KSDepartmentalPlanData="KSDepartmentalPlanData" 
@@ -143,6 +148,14 @@ export default {
           prop: 'VARIETIE_CODE_NEW',
           label: '品种编码',
           // sortable: 'custom',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 130
+        },
+        {
+          prop: 'DEF_NO_PKG_CODE',
+          slot:"DEF_NO_PKG_CODE",
+          label: '定数码',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 130
