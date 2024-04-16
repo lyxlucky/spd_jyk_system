@@ -226,6 +226,15 @@ export default {
           showOverflowTooltip: true,
           minWidth: 110
         },
+
+        {
+          prop: 'DEPT_TWO_NAME',
+          label: '科室',
+          // sortable: 'custom',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 110
+        },
       ]
     };
   },
