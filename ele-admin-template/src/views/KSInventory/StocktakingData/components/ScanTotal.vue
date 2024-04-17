@@ -1,9 +1,9 @@
 <template>
     <div class="scan-total">
-        <ele-modal width="600px" :visible="visible" :close-on-click-modal="true" custom-class="ele-dialog-form"
+        <ele-modal width="600px" :visible="visible" :close-on-click-modal="false" custom-class="ele-dialog-form"
             title="扫码盘点" @update:visible="updateVisible">
 
-            <el-input style="" v-model="form.code" placeholder="扫码获取定数码" @change="submitItem()">
+            <el-input style="" ref="input" v-model="form.code" placeholder="扫码获取定数码" @change="submitItem()">
             </el-input>
 
         </ele-modal>
@@ -47,8 +47,16 @@ export default {
                 "DEPT_TWO_CODE":this.KSDepartmentalPlanData.DEPT_TWO_CODE
             }
             scanInventory(data).then(res => {
-                this.$message.success(res.msg)
+                this.$message.success(res.msg);
+                this.form.code = ''
+                this.$nextTick(() => {
+                    this.$refs.input.focus();
+                });
             }).catch(err=>{
+                this.form.code = ''
+                this.$nextTick(() => {
+                    this.$refs.input.focus();
+                });
                 this.$message.error(err)
             })
         }
