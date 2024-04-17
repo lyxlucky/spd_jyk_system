@@ -1,6 +1,6 @@
 <template>
     <div class="scan-total">
-        <ele-modal width="600px" :visible="visible" :close-on-click-modal="false" custom-class="ele-dialog-form"
+        <ele-modal width="600px" :visible="visible" :close-on-click-modal="false" @close="closeModal" custom-class="ele-dialog-form"
             title="扫码盘点" @update:visible="updateVisible">
 
             <el-input style="" ref="input" v-model="form.code" placeholder="扫码获取定数码" @change="submitItem()">
@@ -38,6 +38,9 @@ export default {
         /* 更新visible */
         updateVisible(value) {
             this.$emit('update:visible', value);
+        },
+        closeModal(){
+            this.$emit('closeModal', '');
         },
         // 提交扫描的定数码
         submitItem(){

@@ -82,7 +82,7 @@
     :visible.sync="createBatchDataModalVisible"/>
 
     <!-- 扫码盘点 -->
-    <scanTotal :visible.sync="scanTotalVisible" :KSDepartmentalPlanData="KSDepartmentalPlanData"/>
+    <scanTotal @closeModal="closeModal" :visible.sync="scanTotalVisible" :KSDepartmentalPlanData="KSDepartmentalPlanData"/>
 
     <!-- <p style="display: flex;justify-content: flex-end;">实际申领数量合计: <b>{{sumNumber}}</b> 实际申领金额合计: <b>{{sumAount}}</b> </p> -->
   </div>
@@ -320,6 +320,9 @@ export default {
     },
     remove(row) {
       console.log(row);
+    },
+    closeModal(){
+      this.reload();
     },
     onSelectionChange(selection) {
       this.selection = selection;
