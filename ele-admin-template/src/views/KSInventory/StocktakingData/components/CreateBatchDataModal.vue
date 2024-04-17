@@ -1,11 +1,8 @@
 <!-- 扫码盘点弹窗 -->
 <template>
   <div class="create-batch-data-modal">
-    <ele-modal width="1200px" :destroy-on-close="true" :visible="visible" :close-on-click-modal="true" custom-class="ele-dialog-form"
-      title="盘点汇总" @update:visible="updateVisible">
-      <ele-pro-table height='50vh' highlight-current-row @current-change="onCurrentChange" ref="CreateBatchDataTable"
-        :rowClickChecked="true" :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns"
-        :datasource="datasource" :selection.sync="selection" cache-key="CreateBatchDataModal">
+    <ele-modal width="1200px" :destroy-on-close="true" :visible="visible" :close-on-click-modal="true" custom-class="ele-dialog-form" title="盘点汇总" @update:visible="updateVisible">
+      <ele-pro-table height='50vh' highlight-current-row @current-change="onCurrentChange" ref="CreateBatchDataTable" :rowClickChecked="true" :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" cache-key="CreateBatchDataModal">
 
         <!-- 搜索表单 -->
         <template v-slot:toolbar>
@@ -19,6 +16,9 @@
               <el-col :lg="5" :md="12">
                 <div class="ele-form-actions">
                   <el-button type="primary" @click="search">查询</el-button>
+                  <el-button type="primary" icon="el-icon-download" class="ele-btn-icon" @click="exportData">
+                    导出
+                  </el-button>
                 </div>
               </el-col>
             </el-row>
@@ -58,7 +58,8 @@
 
 <script>
 import { GetStockDataDelHz } from '@/api/KSInventory/StocktakingData';
-import {numberToPercent} from "@/utils/number-percent"
+import { numberToPercent } from '@/utils/number-percent';
+import { utils, writeFile } from 'xlsx';
 export default {
   name: 'CreateBatchDataModal',
   components: {},
@@ -69,7 +70,7 @@ export default {
   },
   data() {
     const defaultForm = {
-      VARIETIE_CODE_NEW: '',
+      VARIETIE_CODE_NEW: ''
     };
     return {
       defaultForm,
@@ -102,7 +103,7 @@ export default {
           // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 120,
+          minWidth: 120
           // formatter: (_row, _column, cellValue) => {
           //   return this.$util.toDateString(cellValue, 'yyyy-MM-dd');
           // }
@@ -161,7 +162,7 @@ export default {
           label: '盘存数量',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 100,
+          minWidth: 100
         },
 
         {
@@ -169,7 +170,7 @@ export default {
           label: '盘存率',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 100,
+          minWidth: 100
         },
         // {
         //   prop: 'BATCH',
@@ -234,7 +235,7 @@ export default {
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110
-        },
+        }
       ]
     };
   },
@@ -250,13 +251,15 @@ export default {
       where.GENERATE_DATE = this.KSDepartmentalPlanData.GENERATE_DATE;
       where.DEPT_TWO_CODE = this.KSDepartmentalPlanData.DEPT_TWO_CODE;
       where.VARIETIE_CODE_NEW = this.where.VARIETIE_CODE_NEW;
-      let data = GetStockDataDelHz({ page, limit, where, order }).then((res) => {
-        var tData = {
-          count: res.total,
-          list: res.result
-        };
-        return tData;
-      });
+      let data = GetStockDataDelHz({ page, limit, where, order }).then(
+        (res) => {
+          var tData = {
+            count: res.total,
+            list: res.result
+          };
+          return tData;
+        }
+      );
       return data;
     },
     /* 更新visible */
@@ -275,14 +278,77 @@ export default {
       this.current = current;
       this.$emit('getCurrent', current);
     },
-    search(){
-      this.reload()
+    search() {
+      this.reload();
+    },
+    exportData(data) {
+      const loading = this.$messageLoading('正在导出数据...');
+      this.$refs.CreateBatchDataTable.doRequest(({ where, order }) => {
+        where = data;
+        where.GENERATE_DATE = this.KSDepartmentalPlanData.GENERATE_DATE;
+        where.DEPT_TWO_CODE = this.KSDepartmentalPlanData.DEPT_TWO_CODE;
+        where.VARIETIE_CODE_NEW = this.where.VARIETIE_CODE_NEW;
+        GetStockDataDelHz({
+          page: 1,
+          limit: 999999,
+          where: where,
+          order: order
+        })
+          .then((res) => {
+            loading.close();
+            const array = [
+              [
+                '生成日期',
+                '生成人',
+                '品种编码',
+                '品种名称',
+                '规格型号',
+                '生产企业',
+                '库存数量',
+                '盘存数量',
+                '盘存率',
+                '计费编码',
+                '科室',
+              ]
+            ];
+            res.result.forEach((d) => {
+              array.push([
+                d.GENERATE_DATE,
+                d.GENERATE_MAN,
+                d.VARIETIE_CODE_NEW,
+                d.VARIETIE_NAME,
+                d.SPECIFICATION_OR_TYPE,
+                d.MANUFACTURING_ENT_NAME,
+                d.COUNT,
+                d.PC_COUNT,
+                d.PC_PERCENT,
+                d.CHARGING_CODE,
+                d.DEPT_TWO_NAME
+                // this.$util.toDateString(d.createTime)
+              ]);
+            });
+            writeFile(
+              {
+                SheetNames: ['Sheet1'],
+                Sheets: {
+                  Sheet1: utils.aoa_to_sheet(array)
+                }
+              },
+              '盘点汇总数据.xlsx'
+            );
+            this.$message.success('导出成功');
+          })
+          .catch((e) => {
+            loading.close();
+            this.$message.error(e.message);
+          });
+      });
     },
     numberToPercent
   },
   watch: {},
-  created() { },
-  mounted() { },
-  beforeDestroy() { }
+  created() {},
+  mounted() {},
+  beforeDestroy() {}
 };
 </script>
