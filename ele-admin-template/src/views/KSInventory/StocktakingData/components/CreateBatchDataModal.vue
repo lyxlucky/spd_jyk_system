@@ -321,10 +321,9 @@ export default {
                 d.MANUFACTURING_ENT_NAME,
                 d.COUNT,
                 d.PC_COUNT,
-                d.PC_PERCENT,
+                numberToPercent((d.PC_COUNT == 0 && d.COUNT == 0)? 0 : d.PC_COUNT / d.COUNT),
                 d.CHARGING_CODE,
                 d.DEPT_TWO_NAME
-                // this.$util.toDateString(d.createTime)
               ]);
             });
             writeFile(
