@@ -1,5 +1,5 @@
 <template >
-  <ele-modal width="1800px" :centered="true" :visible="visible" :close-on-click-modal="true" custom-class="ele-dialog-form" title="计划收货情况" @update:visible="updateVisible">
+  <ele-modal :destroy-on-close="true" width="1800px" :centered="true" :visible="visible" :close-on-click-modal="true" custom-class="ele-dialog-form" title="计划收货情况" @update:visible="updateVisible">
     <div class="ele-body">
       <el-card shadow="never">
         <!-- 搜索表单 -->
