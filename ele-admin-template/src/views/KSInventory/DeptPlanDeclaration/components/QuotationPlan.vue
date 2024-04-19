@@ -2,12 +2,11 @@
   <div class="quotation-plan">
     <ele-modal width="1500px" :destroy-on-close="true" :centered="true" :visible="visible" :close-on-click-modal="true" custom-class="ele-dialog-form" title="引入模板品种" @update:visible="updateVisible">
       <el-container>
-        <el-aside width="350px">
+        <el-aside width="350px" style="margin: 20px 0px 0px 20px;">
           <el-card shadow="always">
-            <el-menu class="el-menu-demo" mode="horizontal">
-              <el-menu-item index="1">模板列表</el-menu-item>
-            </el-menu>
-
+            <div slot="header" class="clearfix">
+              <span>模板列表</span>
+            </div>
             <ele-pro-table :toolkit="[]" ref="leftTable" :selection.sync="leftSelection" height="500px" :pageSize="leftPageSize" :pageSizes="leftPageSizes" :columns="leftColumns" :datasource="leftDatasource" :rowClickChecked="true" :rowClickCheckedIntelligent="false" @current-change="onLeftSelectionChange" cache-key="leftTableKey">
               <template v-slot:toolbar>
                 <el-form class="ele-form-search" @keyup.enter.native="search" @submit.native.prevent>
@@ -33,10 +32,10 @@
         </el-aside>
         <el-main>
           <el-card shadow="none">
-            <el-menu class="el-menu-demo" mode="horizontal">
-              <el-menu-item index="1">历史申领单详情</el-menu-item>
-            </el-menu>
 
+            <div slot="header" class="clearfix">
+              <span>历史申领单详情</span>
+            </div>
             <ele-pro-table :toolkit="[]" ref="rightTable" :selection.sync="rightSelection" height="500px" :pageSize="rightPageSize" :pageSizes="rightPageSizes" :columns="rightColumns" :datasource="rightDatasource" :rowClickChecked="true" :rowClickCheckedIntelligent="false" @current-change="onRightSelectionChange" cache-key="rightTableKey">
 
               <template v-slot:planCount="{ row }">
