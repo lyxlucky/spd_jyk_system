@@ -10,7 +10,7 @@
             <el-row :gutter="10">
               <el-col :lg="10" :md="12">
                 <el-form-item label="">
-                  <el-input v-model="where.VARIETIE_CODE_NEW" placeholder="请输入品种名称/品种编码" clearable />
+                  <el-input v-model="where.VARIETIE_CODE_NEW" placeholder="请输入品种编码" clearable />
                 </el-form-item>
               </el-col>
               <el-col :lg="5" :md="12">
