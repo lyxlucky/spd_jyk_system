@@ -1,5 +1,5 @@
 <template>
-  <ele-modal width="1600px" :visible="visible" :close-on-click-modal="true" custom-class="ele-dialog-form" title="库存详情" @update:visible="updateVisible">
+  <ele-modal width="1600px" :destroy-on-close="true" :visible="visible" :close-on-click-modal="true" custom-class="ele-dialog-form" title="库存详情" @update:visible="updateVisible">
     <!-- <el-card shadow="always"> -->
     <!-- <el-container>
       <el-header height="45vh" style="margin: 20px 0px 0px 0px;">

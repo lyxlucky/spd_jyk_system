@@ -10,7 +10,7 @@
             <el-row :gutter="10">
               <el-col :lg="10" :md="12">
                 <el-form-item label="">
-                  <el-input v-model="where.VARIETIE_CODE_NEW" placeholder="请输入品种名称/品种编码" clearable />
+                  <el-input v-model="where.VARIETIE_CODE_NEW" placeholder="请输入品种编码" clearable />
                 </el-form-item>
               </el-col>
               <el-col :lg="5" :md="12">
@@ -321,10 +321,9 @@ export default {
                 d.MANUFACTURING_ENT_NAME,
                 d.COUNT,
                 d.PC_COUNT,
-                d.PC_PERCENT,
+                numberToPercent((d.PC_COUNT == 0 && d.COUNT == 0)? 0 : d.PC_COUNT / d.COUNT),
                 d.CHARGING_CODE,
                 d.DEPT_TWO_NAME
-                // this.$util.toDateString(d.createTime)
               ]);
             });
             writeFile(
