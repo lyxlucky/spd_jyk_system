@@ -25,27 +25,27 @@
     <el-row :gutter="10">
       <el-col :lg="6" :md="12">
         <el-form-item label="">
-          <el-input v-model="where.VARIETIE_CODE_NEW" placeholder="请输入品种名称/品种编码" clearable />
+          <el-input size="small" v-model="where.VARIETIE_CODE_NEW" placeholder="请输入品种名称/品种编码" clearable />
         </el-form-item>
       </el-col>
       <el-col :lg="18" :md="12">
         <div class="ele-form-actions">
-          <el-button type="primary" @click="search">查询</el-button>
-          <el-button @click="reset">重置</el-button>
+          <el-button type="primary" size="small" @click="search" icon="el-icon-search">查询</el-button>
+          <el-button @click="reset" size="small" icon="el-icon-refresh-left">重置</el-button>
           <el-popconfirm class="ele-action" title="确定删除？" @confirm="removeBatch()">
             <template v-slot:reference>
-              <el-button type="danger" size="small" :underline="false">删除</el-button>
+              <el-button type="danger" size="small" icon="el-icon-delete-solid" :underline="false">删除</el-button>
             </template>
           </el-popconfirm>
-          <el-button type="primary" icon="el-icon-download" class="ele-btn-icon" @click="exportData">
+          <el-button type="primary" size="small"  icon="el-icon-download" class="ele-btn-icon" @click="exportData">
             导出
           </el-button>
           <!-- 盘点汇总 -->
-          <el-button type="primary" icon="el-icon-data-analysis" class="ele-btn-icon" @click="createBatchData()">
+          <el-button type="primary" size="small" icon="el-icon-data-analysis" class="ele-btn-icon" @click="createBatchData()">
             盘点汇总
           </el-button>
           <!-- 扫码盘点 -->
-          <el-button type="primary" icon="el-icon-_scan" :disabled="IsScanVisiable" class="ele-btn-icon" @click="scanTotal()">
+          <el-button type="primary" size="small" icon="el-icon-_scan" :disabled="IsScanVisiable" class="ele-btn-icon" @click="scanTotal()">
             扫码盘点
           </el-button>
         </div>

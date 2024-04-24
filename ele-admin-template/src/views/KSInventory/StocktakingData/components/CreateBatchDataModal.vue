@@ -306,6 +306,8 @@ export default {
               loading.close();
               return this.$message.error('无数据导出');
             }
+            // 格式化成json数据，按照科室分组
+            // {科室名字:[data]}
             const groupedData = res.result.reduce((acc, obj) => {
               const key = obj.DEPT_TWO_NAME;
               if (!acc[key]) {

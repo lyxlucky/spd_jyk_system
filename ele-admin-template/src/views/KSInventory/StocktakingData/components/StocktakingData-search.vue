@@ -4,7 +4,7 @@
     <el-row :gutter="10">
       <el-col style="padding-left: 0px" v-bind="styleResponsive ? { lg: 4, md: 4 } : { span: 4 }">
         <div class="block">
-          <el-date-picker v-model="where.GENERATE_DATE" type="date" style="width:200px" value-format="yyyy-MM-dd"
+          <el-date-picker size="small" v-model="where.GENERATE_DATE" type="date" style="width:200px" value-format="yyyy-MM-dd"
             placeholder="申领开始日期">
           </el-date-picker>
         </div>
@@ -14,7 +14,7 @@
           <el-button size="small" type="primary" icon="el-icon-search" class="ele-btn-icon" @click="search">
             查询
           </el-button>
-          <el-button size="small" @click="reset">重置</el-button>
+          <el-button size="small" icon="el-icon-refresh-left" @click="reset">重置</el-button>
           <!-- 生成盘点数据 -->
           <el-button size="small" type="primary" icon="el-icon-loading" @click="generateData()">生成盘点数据</el-button>
         </div>

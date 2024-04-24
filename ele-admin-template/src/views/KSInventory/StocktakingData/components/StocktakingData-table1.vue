@@ -12,9 +12,9 @@
 
       <!-- 操作列 -->
       <template v-slot:ACTION="{ row }">
-        <el-button size="mini" :disabled="row.SUBMIT == 1" type="primary" class="ele-btn-icon"
+        <el-button size="mini" :disabled="row.SUBMIT == 1" type="primary" icon="el-icon-check" class="ele-btn-icon"
           @click="submitItem(row)">提交</el-button>
-        <el-button size="mini" :disabled="row.SUBMIT == 1" type="danger" class="ele-btn-icon"
+        <el-button size="mini" :disabled="row.SUBMIT == 1" type="danger" icon="el-icon-delete-solid" class="ele-btn-icon"
           @click="deleteItem(row)">删除</el-button>
       </template>
 
@@ -128,7 +128,7 @@ export default {
           label: '操作',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 60
+          minWidth: 80
         },
       ],
       toolbar: false,
