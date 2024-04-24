@@ -1,7 +1,9 @@
 <template>
   <div class="ele-body">
     <!-- 数据表格 -->
-    <ele-pro-table :key="key" highlight-current-row @current-change="onCurrentChange" ref="table" height="17vh" :rowClickChecked="true" :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" cache-key="StocktakingDataTabel">
+    <ele-pro-table :key="key" highlight-current-row @current-change="onCurrentChange" ref="table" height="17vh"
+      :rowClickChecked="true" :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns"
+      :datasource="datasource" :selection.sync="selection" cache-key="StocktakingDataTabel">
       <!-- 表头工具栏 -->
       <template v-slot:toolbar>
         <!-- 搜索表单 -->
@@ -9,27 +11,45 @@
       </template>
 
       <!-- 操作列 -->
-      <template v-slot:action="{ row }">
-        <el-popconfirm class="ele-action" title="确定删除？" @confirm="remove(row)">
-          <template v-slot:reference>
-            <el-link type="danger" :underline="false" v-if="row.State==0" icon="el-icon-delete">
-              删除
-            </el-link>
-          </template>
-        </el-popconfirm>
-        <el-button v-if="row.State!=0" size="small" type="primary" class="ele-btn-icon" @click="ReturnStateBtn(row)"> 取消提交</el-button>
+      <template v-slot:ACTION="{ row }">
+        <el-button size="mini" :disabled="row.SUBMIT == 1" type="primary" class="ele-btn-icon"
+          @click="submitItem(row)">提交</el-button>
+        <el-button size="mini" :disabled="row.SUBMIT == 1" type="danger" class="ele-btn-icon"
+          @click="deleteItem(row)">删除</el-button>
       </template>
+
+      <!-- 操作列 -->
+      <template v-slot:PC_PERCENT="{ row }">
+        <el-tag size="small" v-if="parseFloat(row.PC_COUNT / row.COUNT).toFixed(2) >= 0.9" type="success">{{
+          numberToPercent(row.PC_COUNT / row.COUNT) }}</el-tag>
+        <el-tag size="small"
+          v-else-if="parseFloat(row.PC_COUNT / row.COUNT).toFixed(2) >= 0.8 && parseFloat(row.PC_COUNT / row.COUNT).toFixed(2) < 0.9"
+          type="warning">{{ numberToPercent(row.PC_COUNT / row.COUNT) }}</el-tag>
+        <el-tag size="small" v-else-if="parseFloat(row.PC_COUNT / row.COUNT).toFixed(2) < 0.8" type="danger">{{
+          numberToPercent(row.PC_COUNT / row.COUNT) }}</el-tag>
+        <el-tag size="small" v-else type="danger">{{ numberToPercent(0) }}</el-tag>
+      </template>
+
+      <!-- 状态列 -->
+      <template v-slot:STATUS="{ row }">
+        <el-tag size="small" v-if="row.SUBMIT == 1" type="success">{{ "已提交" }}</el-tag>
+        <el-tag size="small" v-else type="warning">{{ "暂未提交" }}</el-tag>
+      </template>
+
     </ele-pro-table>
   </div>
 </template>
 
 <script>
+import { numberToPercent } from '@/utils/number-percent';
 import StocktakingDataSearch from './StocktakingData-search.vue';
 import {
   SerachPlanList,
   DeletePlanList,
   SearchHistoryConsumedAndPurchaseDept,
-  ReturnInitState
+  ReturnInitState,
+  submitStockingDataItem,
+  deleteStockingDataItem
 } from '@/api/KSInventory/KSDepartmentalPlan';
 
 import { GetStockDataMain } from '@/api/KSInventory/StocktakingData';
@@ -75,6 +95,41 @@ export default {
           showOverflowTooltip: true,
           minWidth: 110
         },
+        {
+          prop: 'COUNT',
+          label: '库存数',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 60
+        },
+        {
+          prop: 'PC_COUNT',
+          label: '盘存数',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 60
+        },
+        {
+          slot: 'PC_PERCENT',
+          label: '盘存率',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 60
+        },
+        {
+          slot: 'STATUS',
+          label: '状态',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 60
+        },
+        {
+          slot: 'ACTION',
+          label: '操作',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 60
+        },
       ],
       toolbar: false,
       pageSize: 2,
@@ -102,6 +157,7 @@ export default {
     });
   },
   methods: {
+    numberToPercent,
     /* 表格数据源 */
     datasource({ page, limit, where, order }) {
       let data = GetStockDataMain({ page, limit, where, order }).then((res) => {
@@ -195,6 +251,32 @@ export default {
           loading.close();
           this.$message.error(err);
         });
+    },
+    submitItem(data){
+    this.$confirm('确定要提交吗？', '提示', {
+        type: 'warning'
+      }).then(()=>{
+        submitStockingDataItem(data).then((res) => {
+          this.$message.success(res.msg);
+          this.reload();
+          this.$forceUpdate();
+        }).catch((err) => {
+          this.$message.error(err);
+        });
+      })
+    },
+    deleteItem(data){
+      this.$confirm("确定要删除嘛？","提示",{
+        type:"warning"
+      }).then(()=>{
+        deleteStockingDataItem(data).then((res) => {
+          this.$message.success(res.msg);
+          this.reload();
+          this.$forceUpdate();
+        }).catch((err) => {
+          this.$message.error(err);
+        });
+      })
     }
   },
   watch: {

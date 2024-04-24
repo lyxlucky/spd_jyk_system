@@ -384,3 +384,31 @@ export async function deleteOneAuthVarWithDeptItems(data) {
         return Promise.reject(new Error(res.data.msg));
     }
 }
+
+export async function submitStockingDataItem(data) {
+    var data2 = {};
+    data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+    data2.GENERATE_MAN = data.GENERATE_MAN;
+    data2.GENERATE_DATE = data.GENERATE_DATE;
+    var rep = formdataify(data2);
+    const res = await request.post('/AJykDept/submitStockingDataItem', rep);
+    if (res.data.code == 200) {
+        return res.data;
+    } else {
+        return Promise.reject(new Error(res.data.msg));
+    }
+}
+
+export async function deleteStockingDataItem(data) {
+    var data2 = {};
+    data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+    data2.DEPT_TWO_CODE = data.DEPT_TWO_CODE;
+    data2.GENERATE_DATE = data.GENERATE_DATE;
+    var rep = formdataify(data2);
+    const res = await request.post('/AJykDept/deleteStockingDataItem', rep);
+    if (res.data.code == 200) {
+        return res.data;
+    } else {
+        return Promise.reject(new Error(res.data.msg));
+    }
+}

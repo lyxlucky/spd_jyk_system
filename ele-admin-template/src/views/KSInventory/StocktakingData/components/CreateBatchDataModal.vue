@@ -26,10 +26,10 @@
         </template>
 
         <template v-slot:PC_PERCENT="{ row }">
-          <el-tag v-if="parseFloat(row.PC_COUNT / row.COUNT).toFixed(2) >= 0.9" type="success">{{ numberToPercent(row.PC_COUNT / row.COUNT) }}</el-tag>
-          <el-tag v-else-if="parseFloat(row.PC_COUNT / row.COUNT).toFixed(2) >= 0.8 && parseFloat(row.PC_COUNT / row.COUNT).toFixed(2) < 0.9" type="warning">{{ numberToPercent(row.PC_COUNT / row.COUNT) }}</el-tag>
-          <el-tag v-else-if="parseFloat(row.PC_COUNT / row.COUNT).toFixed(2) < 0.8" type="danger">{{ numberToPercent(row.PC_COUNT / row.COUNT) }}</el-tag>
-          <el-tag v-else type="danger">{{ numberToPercent(0) }}</el-tag>
+          <el-tag size="small" v-if="parseFloat(row.PC_COUNT / row.COUNT).toFixed(2) >= 0.9" type="success">{{ numberToPercent(row.PC_COUNT / row.COUNT) }}</el-tag>
+          <el-tag size="small" v-else-if="parseFloat(row.PC_COUNT / row.COUNT).toFixed(2) >= 0.8 && parseFloat(row.PC_COUNT / row.COUNT).toFixed(2) < 0.9" type="warning">{{ numberToPercent(row.PC_COUNT / row.COUNT) }}</el-tag>
+          <el-tag size="small" v-else-if="parseFloat(row.PC_COUNT / row.COUNT).toFixed(2) < 0.8" type="danger">{{ numberToPercent(row.PC_COUNT / row.COUNT) }}</el-tag>
+          <el-tag size="small" v-else type="danger">{{ numberToPercent(0) }}</el-tag>
         </template>
 
         <!-- <template v-slot:PlanQty="{ row }">
