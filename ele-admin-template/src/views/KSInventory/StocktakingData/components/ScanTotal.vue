@@ -1,11 +1,16 @@
 <template>
     <div class="scan-total">
-        <ele-modal width="600px" :visible="visible" :close-on-click-modal="false" @close="closeModal" custom-class="ele-dialog-form"
+        <ele-modal width="400px" :visible="visible" :close-on-click-modal="false" @close="closeModal" custom-class="ele-dialog-form"
             title="扫码盘点" @update:visible="updateVisible">
-
-            <el-input style="" ref="input" v-model="form.code" placeholder="扫码获取定数码" @change="submitItem()">
-            </el-input>
-
+            <el-row type="flex" justify="center" :gutter="10">
+                <el-col v-bind="styleResponsive ? { lg:20, md: 4 } : { span: 4 }">
+                    <!-- @change="submitItem()" -->
+                    <!-- 输入框失去焦点触发提交 -->
+                    <el-input style="" ref="input" v-model="form.code" placeholder="扫码获取定数码">
+                    </el-input>
+                </el-col>
+                <el-button ref="button" type="primary" incon="el-icon-plus" @click="clikcSubmit()">提交</el-button>
+            </el-row>
         </ele-modal>
     </div>
 </template>
@@ -42,8 +47,17 @@ export default {
         closeModal(){
             this.$emit('closeModal', '');
         },
+
+        //点击提交定数码
+        clikcSubmit(){
+            this.submitItem()
+        },
         // 提交扫描的定数码
         submitItem(){
+            if(this.form.code == "" || this.form.code == undefined){
+                this.$refs.input.focus();
+                return this.$message.error('请输入定数码')
+            }
             let data = {
                 "code":this.form.code,
                 "GENERATE_DATE":this.KSDepartmentalPlanData.GENERATE_DATE,

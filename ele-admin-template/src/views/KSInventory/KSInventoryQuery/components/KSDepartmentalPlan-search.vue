@@ -238,7 +238,6 @@ export default {
         order: {},
         Nickname: this.$store.state.user.info.Nickname
       };
-      console.log(data);
       this.$confirm('是否生成盘点数据？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -257,7 +256,7 @@ export default {
             });
         })
         .catch((err) => {
-          this.$message.error(err);
+          this.$message.info(err);
         });
     }
   },
