@@ -57,7 +57,7 @@ export default {
   name: 'StocktakingData',
   props: ['IsReload'],
   components: {
-    StocktakingDataSearch
+    StocktakingDataSearch,
   },
   data() {
     return {
@@ -77,9 +77,9 @@ export default {
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110,
-          // formatter: (_row, _column, cellValue) => {
-          //   return this.$util.toDateString(cellValue, 'yyyy-MM');
-          // }
+          formatter: (_row, _column, cellValue) => {
+            return this.$util.toDateString(cellValue, 'yyyy-MM-dd HH:mm:ss');
+          }
         },
         {
           prop: 'GENERATE_MAN',
@@ -134,7 +134,7 @@ export default {
       toolbar: false,
       pageSize: 2,
       pagerCount: 2,
-      pageSizes: [10, 20, 50, 100, 9999999],
+      pageSizes: [2,5,10,20, 50, 100, 9999999],
       // 表格选中数据
       selection: [],
       // 当前编辑数据
@@ -148,7 +148,7 @@ export default {
       applyPlanSbz: 0,
       applyPlanXhz: 0,
       applyPlanBl: '0%',
-      key: 0
+      key: 0,
     };
   },
   mounted() {
@@ -277,7 +277,7 @@ export default {
           this.$message.error(err);
         });
       })
-    }
+    },
   },
   watch: {
     IsReload() {

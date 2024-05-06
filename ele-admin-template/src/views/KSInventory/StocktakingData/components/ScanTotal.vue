@@ -9,7 +9,7 @@
                     <el-input style="" ref="input" v-model="form.code" placeholder="扫码获取定数码">
                     </el-input>
                 </el-col>
-                <el-button ref="button" type="primary" incon="el-icon-plus" @click="clikcSubmit()">提交</el-button>
+                <el-button icon="el-icon-check" ref="button" type="primary" incon="el-icon-plus" @click="clikcSubmit()">提交</el-button>
             </el-row>
         </ele-modal>
     </div>

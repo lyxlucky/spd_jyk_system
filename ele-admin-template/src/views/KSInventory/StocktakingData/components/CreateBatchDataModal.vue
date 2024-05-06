@@ -11,14 +11,14 @@
         <template v-slot:toolbar>
           <el-form class="ele-form-search" @keyup.enter.native="search" @submit.native.prevent>
             <el-row :gutter="10">
-              <el-col :lg="10" :md="12">
+              <el-col v-bind="styleResponsive ? { lg: 5, md: 12 } : { span: 4 }">
                 <el-form-item label="">
                   <el-input v-model="where.VARIETIE_CODE_NEW" placeholder="请输入品种编码" clearable />
                 </el-form-item>
               </el-col>
-              <el-col :lg="5" :md="12">
+              <el-col v-bind="styleResponsive ? { lg: 5, md: 12 } : { span: 4 }">
                 <div class="ele-form-actions">
-                  <el-button type="primary" @click="search">查询</el-button>
+                  <el-button type="primary" icon="el-icon-search" @click="search">查询</el-button>
                   <el-button type="primary" icon="el-icon-download" class="ele-btn-icon" @click="exportData">
                     导出
                   </el-button>
@@ -77,7 +77,8 @@ export default {
   },
   data() {
     const defaultForm = {
-      VARIETIE_CODE_NEW: ''
+      VARIETIE_CODE_NEW: '',
+      date:[],
     };
     return {
       defaultForm,
@@ -376,7 +377,7 @@ export default {
           });
       });
     },
-    numberToPercent
+    numberToPercent,
   },
   watch: {},
   created() {

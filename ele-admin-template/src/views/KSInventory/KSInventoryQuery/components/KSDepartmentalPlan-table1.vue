@@ -148,7 +148,8 @@ export default {
           // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 160
+          minWidth: 160,
+          sortable: true
         },
         {
           prop: 'SPECIFICATION_OR_TYPE',
@@ -199,6 +200,7 @@ export default {
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110,
+          sortable: true
         },
         {
           prop: 'BATCH_ID',

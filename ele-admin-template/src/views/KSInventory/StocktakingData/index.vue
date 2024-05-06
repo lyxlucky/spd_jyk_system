@@ -18,8 +18,6 @@
         </el-card>
       </el-main>
     </el-container>
-
-    <!-- </el-card> -->
   </div>
 </template>
 
@@ -61,6 +59,6 @@ export default {
   },
   watch: {
     IsReload() {}
-  }
+  },
 };
 </script>
