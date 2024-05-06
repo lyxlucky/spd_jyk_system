@@ -403,6 +403,7 @@ export default {
                 '供应商名称',
                 '注册证号',
                 '计费编码',
+                '状态',
               ]
             ];
             res.result.forEach((d) => {
@@ -422,6 +423,7 @@ export default {
                 d.SUPPLIER_NAME,
                 d.APPROVAL_NUMBER,
                 d.CHARGING_CODE,
+                (d.STATE == 0 ? '缺失' : d.STATE == 1 ? '存在' : '盘溢')
                 // this.$util.toDateString(d.createTime)
               ]);
             });
