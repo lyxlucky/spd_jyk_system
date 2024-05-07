@@ -21,6 +21,26 @@ export async function GetStockDataMain(data){
 }
 
 
+export async function GetStockDataMainAll(data){
+    var data2 = {};
+    data2.page = data.page;
+    data2.size = data.limit;
+    data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+    data2.GENERATE_DATE = data.where.GENERATE_DATE ? data.where.GENERATE_DATE : '';
+    data2.DEPT_TWO_CODE = (store.state.user.info.userDept).map((item)=>{
+        return item.Dept_Two_Code;
+    }).join(",");
+    var data3 = formdataify(data2)
+
+    const res = await request.post('/AJykDept/GetStockDataMainAll', data3);
+    if (res.data.code == 200) {
+        return res.data;
+    } else {
+        return Promise.reject(new Error(res.data.msg));
+    }
+}
+
+
 export async function GenerateStockData(data) {
     var data2 = {};
     data2.page = data.page;

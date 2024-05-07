@@ -52,7 +52,7 @@ import {
   deleteStockingDataItem
 } from '@/api/KSInventory/KSDepartmentalPlan';
 
-import { GetStockDataMain } from '@/api/KSInventory/StocktakingData';
+import { GetStockDataMain,GetStockDataMainAll } from '@/api/KSInventory/StocktakingData';
 export default {
   name: 'StocktakingData',
   props: ['IsReload'],
@@ -152,15 +152,15 @@ export default {
     };
   },
   mounted() {
-    this.$bus.$on('handleCommand', (data) => {
-      this.reload();
-    });
+    // this.$bus.$on('handleCommand', (data) => {
+    //   this.reload();
+    // });
   },
   methods: {
     numberToPercent,
     /* 表格数据源 */
     datasource({ page, limit, where, order }) {
-      let data = GetStockDataMain({ page, limit, where, order }).then((res) => {
+      let data = GetStockDataMainAll({ page, limit, where, order }).then((res) => {
         var tData = {
           count: res.total,
           list: res.result
@@ -294,7 +294,7 @@ export default {
   // 取消监听bus事件
   destroyed() {
     // 取消对handleCommand事件的监听
-    this.$bus.$off('handleCommand');
+    // this.$bus.$off('handleCommand');
   }
 };
 </script>
