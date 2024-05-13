@@ -129,7 +129,9 @@ export async function GetStockDataDelHz(data) {
     data2.GENERATE_DATE = data.where.GENERATE_DATE ? data.where.GENERATE_DATE : '';
     data2.DEPT_TWO_CODE = (store.state.user.info.userDept).map((item)=>item.Dept_Two_Code).join(",");
     data2.VARIETIE_CODE_NEW = data.where.VARIETIE_CODE_NEW ? data.where.VARIETIE_CODE_NEW : '';
-
+    const [timeStart, timeEnd] = data.where.BETWEENDATE || '';
+    data2.startTime = timeStart ? timeStart : '';
+    data2.endTime = timeEnd ? timeEnd : '';
     var data3 = formdataify(data2)
 
     const res = await request.post('/AJykDept/GetStockDataDelHz', data3);

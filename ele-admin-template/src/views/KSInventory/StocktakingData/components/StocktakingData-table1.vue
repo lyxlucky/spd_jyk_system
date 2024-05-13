@@ -14,8 +14,8 @@
       <template v-slot:ACTION="{ row }">
         <el-button size="mini" :disabled="row.SUBMIT == 1" type="primary" icon="el-icon-check" class="ele-btn-icon"
           @click="submitItem(row)">提交</el-button>
-        <el-button size="mini" :disabled="row.SUBMIT == 1" type="danger" icon="el-icon-delete-solid" class="ele-btn-icon"
-          @click="deleteItem(row)">删除</el-button>
+        <el-button size="mini" :disabled="row.SUBMIT == 1" type="danger" icon="el-icon-delete-solid"
+          class="ele-btn-icon" @click="deleteItem(row)">删除</el-button>
       </template>
 
       <!-- 操作列 -->
@@ -52,7 +52,7 @@ import {
   deleteStockingDataItem
 } from '@/api/KSInventory/KSDepartmentalPlan';
 
-import { GetStockDataMain,GetStockDataMainAll } from '@/api/KSInventory/StocktakingData';
+import { GetStockDataMain, GetStockDataMainAll } from '@/api/KSInventory/StocktakingData';
 export default {
   name: 'StocktakingData',
   props: ['IsReload'],
@@ -134,7 +134,7 @@ export default {
       toolbar: false,
       pageSize: 2,
       pagerCount: 2,
-      pageSizes: [2,5,10,20, 50, 100, 9999999],
+      pageSizes: [2, 5, 10, 20, 50, 100, 9999999],
       // 表格选中数据
       selection: [],
       // 当前编辑数据
@@ -252,10 +252,10 @@ export default {
           this.$message.error(err);
         });
     },
-    submitItem(data){
-    this.$confirm('确定要提交吗？', '提示', {
+    submitItem(data) {
+      this.$confirm('确定要提交吗？', '提示', {
         type: 'warning'
-      }).then(()=>{
+      }).then(() => {
         submitStockingDataItem(data).then((res) => {
           this.$message.success(res.msg);
           this.reload();
@@ -265,10 +265,10 @@ export default {
         });
       })
     },
-    deleteItem(data){
-      this.$confirm("确定要删除嘛？","提示",{
-        type:"warning"
-      }).then(()=>{
+    deleteItem(data) {
+      this.$confirm("确定要删除嘛？", "提示", {
+        type: "warning"
+      }).then(() => {
         deleteStockingDataItem(data).then((res) => {
           this.$message.success(res.msg);
           this.reload();
@@ -289,7 +289,6 @@ export default {
   created() {
     // this.getdatasource();
     this.GetConsume();
-    console.log(this.$store.state.user.info);
   },
   // 取消监听bus事件
   destroyed() {

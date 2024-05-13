@@ -1,9 +1,9 @@
 <!-- 扫码盘点弹窗 -->
 <template>
   <div class="create-batch-data-modal">
-    <ele-modal width="1200px" :destroy-on-close="true" :visible="visible" :close-on-click-modal="true"
+    <ele-modal width="1400px" :destroy-on-close="true" :visible="visible" :close-on-click-modal="true"
       custom-class="ele-dialog-form" title="盘点汇总" @update:visible="updateVisible">
-      <ele-pro-table height='50vh' highlight-current-row @current-change="onCurrentChange" ref="CreateBatchDataTable"
+      <ele-pro-table height='60vh' highlight-current-row @current-change="onCurrentChange" ref="CreateBatchDataTable"
         :rowClickChecked="true" :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns"
         :datasource="datasource" :selection.sync="selection" cache-key="CreateBatchDataModal">
 
@@ -16,6 +16,24 @@
                   <el-input v-model="where.VARIETIE_CODE_NEW" placeholder="请输入品种编码" clearable />
                 </el-form-item>
               </el-col>
+
+              <!-- 日期筛选 -->
+              <el-col v-if="!KSDepartmentalPlanData.GENERATE_DATE"
+                v-bind="styleResponsive ? { lg: 8, md: 12 } : { span: 4 }">
+                <el-form-item label="">
+                  <el-date-picker v-model="where.date" 
+                  type="daterange" 
+                  range-separator="至" 
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期"
+                  value-format = "yyyy-MM-dd HH:mm:ss"
+                  :default-time="['00:00:00', '23:59:59']"
+                  :default-value = "where.defaultDate"
+                  >
+                  </el-date-picker>
+                </el-form-item>
+              </el-col>
+
               <el-col v-bind="styleResponsive ? { lg: 5, md: 12 } : { span: 4 }">
                 <div class="ele-form-actions">
                   <el-button type="primary" icon="el-icon-search" @click="search">查询</el-button>
@@ -78,7 +96,8 @@ export default {
   data() {
     const defaultForm = {
       VARIETIE_CODE_NEW: '',
-      date:[],
+      date: '',
+      defaultDate:[]
     };
     return {
       defaultForm,
@@ -111,9 +130,9 @@ export default {
           // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 120
+          minWidth: 150
           // formatter: (_row, _column, cellValue) => {
-          //   return this.$util.toDateString(cellValue, 'yyyy-MM-dd');
+          //   return this.$util.toDateString(cellValue, 'yyyy-MM-dd HH:mm:ss');
           // }
         },
         {
@@ -259,6 +278,7 @@ export default {
       where.GENERATE_DATE = this.KSDepartmentalPlanData.GENERATE_DATE;
       where.DEPT_TWO_CODE = this.KSDepartmentalPlanData.DEPT_TWO_CODE;
       where.VARIETIE_CODE_NEW = this.where.VARIETIE_CODE_NEW;
+      where.BETWEENDATE = this.where.date;
       let data = GetStockDataDelHz({ page, limit, where, order }).then(
         (res) => {
           var tData = {
@@ -382,7 +402,9 @@ export default {
   watch: {},
   created() {
   },
-  mounted() { },
+  mounted() {
+    console.log(this.KSDepartmentalPlanData.GENERATE_DATE)
+  },
   beforeDestroy() { }
 };
 </script>
