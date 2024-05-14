@@ -1,7 +1,7 @@
 <template>
   <div class="ele-body">
     <!-- 数据表格 -->
-    <ele-pro-table :key="key" highlight-current-row @current-change="onCurrentChange" ref="table" height="17vh"
+    <ele-pro-table :key="key" highlight-current-row @current-change="onCurrentChange" ref="table" :height="defaultHeight"
       :rowClickChecked="true" :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns"
       :datasource="datasource" :selection.sync="selection" @fullscreen-change="screenChange()" cache-key="StocktakingDataTabel">
       <!-- 表头工具栏 -->
@@ -149,6 +149,7 @@ export default {
       applyPlanXhz: 0,
       applyPlanBl: '0%',
       key: 0,
+      defaultHeight: '17vh'
     };
   },
   mounted() {
@@ -279,12 +280,11 @@ export default {
       })
     },
     screenChange() {
-      let height = this.$refs.table.height;
-      if(height == '17vh'){
-        this.$refs.table.height = window.innerHeight - 200 + 'px';
+      if(this.defaultHeight == '17vh'){
+        this.defaultHeight = window.innerHeight - 200 + 'px';
         this.$refs.table.reload({ page: 1,limit: 20 })
       }else{
-        this.$refs.table.height = '17vh'
+        this.defaultHeight = '17vh'
         this.$refs.table.reload({ page: 1,limit: 2 })
       }
     }
