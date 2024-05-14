@@ -3,7 +3,7 @@
     <!-- 数据表格 -->
     <ele-pro-table :key="key" highlight-current-row @current-change="onCurrentChange" ref="table" height="17vh"
       :rowClickChecked="true" :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns"
-      :datasource="datasource" :selection.sync="selection" cache-key="StocktakingDataTabel">
+      :datasource="datasource" :selection.sync="selection" @fullscreen-change="screenChange()" cache-key="StocktakingDataTabel">
       <!-- 表头工具栏 -->
       <template v-slot:toolbar>
         <!-- 搜索表单 -->
@@ -278,6 +278,16 @@ export default {
         });
       })
     },
+    screenChange() {
+      let height = this.$refs.table.height;
+      if(height == '17vh'){
+        this.$refs.table.height = window.innerHeight - 200 + 'px';
+        this.$refs.table.reload({ page: 1,limit: 20 })
+      }else{
+        this.$refs.table.height = '17vh'
+        this.$refs.table.reload({ page: 1,limit: 2 })
+      }
+    }
   },
   watch: {
     IsReload() {

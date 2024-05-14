@@ -84,11 +84,10 @@ export default {
       // 用户信息
       commit('setUserInfo', result);
       // 用户权限
-      // const authorities =
-      //   result.permission_group
-      //     // ?.filter((d) => !!d.authority)
-      //     // ?.map((d) => d.authority) ?? [];
-      // commit('setAuthorities', authorities);
+      const authorities = result.permission_group.map((item)=>{
+        return item.component;
+      });
+      commit('setAuthorities', authorities);
 
       // 用户角色
       // const roles = result.Group_Name?.map((d) => d.Group_ID) ?? [];

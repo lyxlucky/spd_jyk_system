@@ -28,7 +28,6 @@
                   end-placeholder="结束日期"
                   value-format = "yyyy-MM-dd HH:mm:ss"
                   :default-time="['00:00:00', '23:59:59']"
-                  :default-value = "where.defaultDate"
                   >
                   </el-date-picker>
                 </el-form-item>
@@ -97,7 +96,6 @@ export default {
     const defaultForm = {
       VARIETIE_CODE_NEW: '',
       date: '',
-      defaultDate:[]
     };
     return {
       defaultForm,
@@ -316,6 +314,7 @@ export default {
         where.GENERATE_DATE = this.KSDepartmentalPlanData.GENERATE_DATE;
         where.DEPT_TWO_CODE = this.KSDepartmentalPlanData.DEPT_TWO_CODE;
         where.VARIETIE_CODE_NEW = this.where.VARIETIE_CODE_NEW;
+        where.BETWEENDATE = this.where.date;
         GetStockDataDelHz({
           page: 1,
           limit: 999999,
