@@ -1,9 +1,10 @@
 <template>
   <div class="ele-body">
     <!-- 数据表格 -->
-    <ele-pro-table :key="key" highlight-current-row @current-change="onCurrentChange" ref="table" :height="defaultHeight"
-      :rowClickChecked="true" :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns"
-      :datasource="datasource" :selection.sync="selection" @fullscreen-change="screenChange()" cache-key="StocktakingDataTabel">
+    <ele-pro-table :key="key" highlight-current-row @current-change="onCurrentChange" ref="table"
+      :height="defaultHeight" :rowClickChecked="true" :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes"
+      :columns="columns" :datasource="datasource" :selection.sync="selection" @fullscreen-change="screenChange()"
+      cache-key="StocktakingDataTabel">
       <!-- 表头工具栏 -->
       <template v-slot:toolbar>
         <!-- 搜索表单 -->
@@ -280,12 +281,12 @@ export default {
       })
     },
     screenChange() {
-      if(this.defaultHeight == '17vh'){
+      if (this.defaultHeight == '17vh') {
         this.defaultHeight = window.innerHeight - 200 + 'px';
-        this.$refs.table.reload({ page: 1,limit: 20 })
-      }else{
+        this.$refs.table.reload({ page: 1, limit: 20 })
+      } else {
         this.defaultHeight = '17vh'
-        this.$refs.table.reload({ page: 1,limit: 2 })
+        this.$refs.table.reload({ page: 1, limit: 2 })
       }
     }
   },

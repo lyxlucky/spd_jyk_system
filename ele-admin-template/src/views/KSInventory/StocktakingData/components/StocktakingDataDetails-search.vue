@@ -44,6 +44,12 @@
           <el-button type="primary" size="small" icon="el-icon-data-analysis" class="ele-btn-icon" @click="createBatchData()">
             盘点汇总
           </el-button>
+
+          <!-- 盘点格式化 -->
+          <!-- <el-button type="primary" size="small" icon="el-icon-data-analysis" class="ele-btn-icon" @click="createBatchData()">
+            盘点视图
+          </el-button> -->
+
           <!-- 扫码盘点 -->
           <el-button type="primary" size="small" icon="el-icon-_scan" :disabled="IsScanVisiable" class="ele-btn-icon" @click="scanTotal()">
             扫码盘点

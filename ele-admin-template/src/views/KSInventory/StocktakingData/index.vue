@@ -6,6 +6,7 @@
           <!-- <div slot="header" class="clearfix">
             <span>申领计划单列表</span>
           </div> -->
+          <!-- :IsReload="IsReloadTag" -->
           <StocktakingDataTabel @getCurrent="getCurrent" :IsReload="IsReloadTag"></StocktakingDataTabel>
         </el-card>
       </el-header>
@@ -14,7 +15,8 @@
           <!-- <div slot="header" class="clearfix">
             <span>申领单详情</span>
           </div> -->
-          <StocktakingDataTabelDel :KSDepartmentalPlanData="KSDepartmentalPlanData" @clickReload="clickReload" v-if="isActive"></StocktakingDataTabelDel>
+          <!-- @clickReload="clickReload" v-if="isActive" -->
+          <StocktakingDataTabelDel :KSDepartmentalPlanData="KSDepartmentalPlanData" @clickReload="clickReload" v-if="isActive" ></StocktakingDataTabelDel>
         </el-card>
       </el-main>
     </el-container>
