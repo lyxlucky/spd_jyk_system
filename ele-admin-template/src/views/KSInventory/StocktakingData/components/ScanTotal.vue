@@ -6,7 +6,7 @@
                 <el-col v-bind="styleResponsive ? { lg:20, md: 4 } : { span: 4 }">
                     <!-- @change="submitItem()" -->
                     <!-- 输入框失去焦点触发提交 -->
-                    <el-input style="" ref="input" v-model="form.code" placeholder="扫码获取定数码">
+                    <el-input @keydown.enter.native="clikcSubmit" ref="input" v-model="form.code" placeholder="扫码获取定数码">
                     </el-input>
                 </el-col>
                 <el-button icon="el-icon-check" ref="button" type="primary" incon="el-icon-plus" @click="clikcSubmit()">提交</el-button>
