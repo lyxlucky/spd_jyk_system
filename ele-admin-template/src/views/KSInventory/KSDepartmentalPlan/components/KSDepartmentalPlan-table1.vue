@@ -31,7 +31,8 @@
             </el-link>
           </template>
         </el-popconfirm>
-        <el-button v-if="row.State!=0" size="small" type="primary" class="ele-btn-icon" @click="ReturnStateBtn(row)"> 取消提交</el-button>
+        <el-button v-if="row.State==1" size="small" type="primary" class="ele-btn-icon" @click="ReturnStateBtn(row)"> 取消提交</el-button>
+        <!-- <el-button v-else size="small" type="primary" class="ele-btn-icon" @click="ReturnStateBtn(row)" disabled> 取消提交</el-button> -->
       </template>
     </ele-pro-table>
   </div>
