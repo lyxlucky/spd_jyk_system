@@ -507,15 +507,21 @@ export default {
       this.showEdit = true;
     },
     exportData() {
+
+      var Dept_Two_CodeStr = [];
+      var userDeptList = this.$store.state.user.info.DeptNow.Dept_Two_Code;
+      Dept_Two_CodeStr.push(userDeptList);
+      
       const loading = this.$loading({ lock: true });
       this.$refs.table.doRequest(({ where, order }) => {
-        var Dept_Two_CodeStr = '';
-        var userDeptList = this.$store.state.user.info.userDept;
-        for (let i = 0; i < userDeptList.length; i++) {
-          Dept_Two_CodeStr =
-            Dept_Two_CodeStr + userDeptList[i].Dept_Two_Code + ',';
-        }
-        where.DeptCode = Dept_Two_CodeStr;
+        // var Dept_Two_CodeStr = '';
+        // var userDeptList = this.$store.state.user.info.userDept;
+        // for (let i = 0; i < userDeptList.length; i++) {
+        //   Dept_Two_CodeStr =
+        //     Dept_Two_CodeStr + userDeptList[i].Dept_Two_Code + ',';
+        // }
+        // where.DeptCode = Dept_Two_CodeStr;
+        where.deptTwoJson = Dept_Two_CodeStr;
         SearchDept({
           page: 1,
           limit: 999999,
