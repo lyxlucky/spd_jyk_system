@@ -145,7 +145,7 @@ export default {
         {
           prop: 'Dept_One_Name',
           label: '一级科室',
-          
+
           align: 'center',
           showOverflowTooltip: true,
           width: 100
@@ -153,7 +153,7 @@ export default {
         // {
         //   slot: 'Storage_ID',
         //   label: '业务发起库区',
-        //   
+        //
         //   align: 'center',
         //   howOverflowTooltip: true,
         //   width: 110
@@ -161,7 +161,7 @@ export default {
         // {
         //   prop: 'Dept_Two_Name',
         //   label: '二级科室',
-          
+
         //   align: 'center',
         //   showOverflowTooltip: true,
         //   width: 100,
@@ -170,7 +170,7 @@ export default {
         // {
         //   prop: 'Dept_Name',
         //   label: '计费科室',
-          
+
         //   align: 'center',
         //   showOverflowTooltip: true,
         //   width: 100,
@@ -179,7 +179,7 @@ export default {
         {
           prop: 'SPD_COST_DEPT_NAME',
           label: '成本科室',
-          
+
           align: 'center',
           showOverflowTooltip: true,
           width: 100
@@ -188,7 +188,7 @@ export default {
           prop: 'APPLY_DEPT',
           label: 'His领用科室',
           align: 'center',
-          
+
           showOverflowTooltip: true,
           width: 100,
           show: false
@@ -203,7 +203,7 @@ export default {
         //   prop: 'SPH_ERP_VARIETIE_CODE',
         //   label: '上药HERP编码',
         //   align: 'center',
-        //   
+        //
         //   width: 120,
         //   showOverflowTooltip: true
         //   // formatter: (_row, _column, cellValue) => {
@@ -342,25 +342,25 @@ export default {
         },
         {
           // slot: 'Consumption_Type',
-          prop:'Consumption_Type',
+          prop: 'Consumption_Type',
           label: '消耗方式',
           width: 120,
           align: 'center',
           showOverflowTooltip: true,
-          formatter: (row, column, cellValue) =>{
-            var type = "";
-            if(cellValue == 0){
-              type = "条码扫码消耗"
-            }else if(cellValue == 1){
-              type = "RFID读码消耗"
-            }else if(cellValue == 2){
-              type = "HIS计费消耗"
-            }else if(cellValue == 3){
-              type = "散货申领消耗"
-            }else if(cellValue == 4){
-              type = "HIS医嘱计费消耗"
-            }else if(cellValue == 5){
-              type = "超时默认消耗"
+          formatter: (row, column, cellValue) => {
+            var type = '';
+            if (cellValue == 0) {
+              type = '条码扫码消耗';
+            } else if (cellValue == 1) {
+              type = 'RFID读码消耗';
+            } else if (cellValue == 2) {
+              type = 'HIS计费消耗';
+            } else if (cellValue == 3) {
+              type = '散货申领消耗';
+            } else if (cellValue == 4) {
+              type = 'HIS医嘱计费消耗';
+            } else if (cellValue == 5) {
+              type = '超时默认消耗';
             }
             return type;
           }
@@ -506,12 +506,201 @@ export default {
       this.current = row;
       this.showEdit = true;
     },
-    exportData() {
+    // exportData() {
 
+    //   var Dept_Two_CodeStr = [];
+    //   var userDeptList = this.$store.state.user.info.DeptNow.Dept_Two_Code;
+    //   Dept_Two_CodeStr.push(userDeptList);
+
+    //   const loading = this.$loading({ lock: true });
+    //   this.$refs.table.doRequest(({ where, order }) => {
+    //     // var Dept_Two_CodeStr = '';
+    //     // var userDeptList = this.$store.state.user.info.userDept;
+    //     // for (let i = 0; i < userDeptList.length; i++) {
+    //     //   Dept_Two_CodeStr =
+    //     //     Dept_Two_CodeStr + userDeptList[i].Dept_Two_Code + ',';
+    //     // }
+    //     // where.DeptCode = Dept_Two_CodeStr;
+    //     where.deptTwoJson = Dept_Two_CodeStr;
+    //     SearchDept({
+    //       page: 1,
+    //       limit: 999999,
+    //       where: where,
+    //       order: order
+    //     })
+    //       .then((res) => {
+    //         loading.close();
+    //         const array = [
+    //           [
+    //             '合同类型',
+    //             '业务发起库区',
+    //             '科室/供应商名称',
+    //             '供应商名称',
+    //             '入库时间',
+    //             '品种(材料)编码',
+    //             '上药HERP编码',
+    //             '品种全称',
+    //             '型号/规格',
+    //             '单位',
+    //             '医保码',
+    //             '品牌',
+    //             '生产批号',
+    //             '生产时间',
+    //             '有效到期',
+    //             '灭菌批号',
+    //             '系数',
+    //             '入库数量',
+    //             '消耗价',
+    //             '采购价',
+    //             '散货数量',
+    //             '入库单号',
+    //             '入库备注',
+    //             '注册证号',
+    //             '高低值分类下级属性',
+    //             '是否中标',
+    //             '操作人'
+    //           ]
+    //         ];
+    //         res.result.forEach((d) => {
+    //           array.push([
+    //             ['中标', '临采', '未设置'][d.Contract_Type],
+    //             ['院内库区', '院外库区'][d.Storage_ID],
+    //             d.Supplier_Name,
+    //             d.From_Supplier_Name,
+    //             d.RECEIVING_TIME,
+    //             d.VARIETIE_CODE_NEW,
+    //             d.SPH_ERP_VARIETIE_CODE,
+    //             d.VARIETIE_NAME,
+    //             d.UNIT,
+    //             d.MANUFACTURING_ENT_NAME,
+    //             d.MEDICAL_CODE,
+    //             d.Brand,
+    //             d.BATCH,
+    //             d.BATCH_PRODUCTION_DATE,
+    //             d.BATCH_VALIDITY_PERIOD,
+    //             d.DISINFECTION_BATCH,
+    //             d.COEFFICIENT,
+    //             d.RECEIVING_QUANTITY,
+    //             d.SUPPLY_PRICE,
+    //             d.PURCHASE_PRICE,
+    //             d.GOODS_QTY,
+    //             d.BUSINESS_BILL,
+    //             d.MARK,
+    //             d.APPROVAL_NUMBER,
+    //             ['重点治理', '非重点治理', '未设置'][d.HIGH_OR_LOW_CLASS_TWO],
+    //             ['是', '否'][d.IS_BIDDING],
+    //             d.Operator
+    //             // this.$util.toDateString(d.createTime)
+    //           ]);
+    //         });
+    //         writeFile(
+    //           {
+    //             SheetNames: ['Sheet1'],
+    //             Sheets: {
+    //               Sheet1: utils.aoa_to_sheet(array)
+    //             }
+    //           },
+    //           '科室入库品种.xlsx'
+    //         );
+    //       })
+    //       .catch((e) => {
+    //         console.log(1);
+    //         loading.close();
+    //         this.$message.error(e.message);
+    //       });
+    //   });
+    //   // let data = GetDeptInStockDetail({
+    //   //   page: 1,
+    //   //   limit: 999999,
+    //   //   where: where,
+    //   //   order: null
+    //   // }).then((res) => {
+    //   //   this.fullscreenLoading = false;
+    //   //   if (res.code == 200) {
+    //   //     // var tData = {
+    //   //     //   count: res.total,
+    //   //     //   list: res.result
+    //   //     // };
+    //   //     const array = [
+    //   //       [
+    //   //         '合同类型',
+    //   //         '业务发起库区',
+    //   //         '科室/供应商名称',
+    //   //         '供应商名称',
+    //   //         '入库时间',
+    //   //         '品种(材料)编码',
+    //   //         '上药HERP编码',
+    //   //         '品种全称',
+    //   //         '型号/规格',
+    //   //         '单位',
+    //   //         '医保码',
+    //   //         '品牌',
+    //   //         '生产批号',
+    //   //         '生产时间',
+    //   //         '有效到期',
+    //   //         '灭菌批号',
+    //   //         '系数',
+    //   //         '入库数量',
+    //   //         '消耗价',
+    //   //         '采购价',
+    //   //         '散货数量',
+    //   //         '入库单号',
+    //   //         '入库备注',
+    //   //         '注册证号',
+    //   //         '高低值分类下级属性',
+    //   //         '是否中标',
+    //   //         '操作人'
+    //   //       ]
+    //   //     ];
+    //   //     res.result.forEach((d, i) => {
+    //   //       array.push([
+    //   //         d.Contract_Type,
+    //   //         d.Storage_ID,
+    //   //         d.SUPPLIER_NAME,
+    //   //         d.From_Supplier_Name,
+    //   //         d.RECEIVING_TIME,
+    //   //         d.VARIETIE_CODE_NEW,
+    //   //         d.SPH_ERP_VARIETIE_CODE,
+    //   //         d.VARIETIE_NAME,
+    //   //         d.UNIT,
+    //   //         d.MANUFACTURING_ENT_NAME,
+    //   //         d.MEDICAL_CODE,
+    //   //         d.Brand,
+    //   //         d.BATCH,
+    //   //         d.BATCH_PRODUCTION_DATE,
+    //   //         d.BATCH_VALIDITY_PERIOD,
+    //   //         d.DISINFECTION_BATCH,
+    //   //         d.COEFFICIENT,
+    //   //         d.RECEIVING_QUANTITY,
+    //   //         d.SUPPLY_PRICE,
+    //   //         d.PURCHASE_PRICE,
+    //   //         d.GOODS_QTY,
+    //   //         d.BUSINESS_BILL,
+    //   //         d.MARK,
+    //   //         d.APPROVAL_NUMBER,
+    //   //         d.HIGH_OR_LOW_CLASS_TWO,
+    //   //         d.IS_BIDDING,
+    //   //         d.Operator
+    //   //       ]);
+    //   //     });
+    //   //     const sheet = utils.aoa_to_sheet(array);
+    //   //     writeFile(
+    //   //       {
+    //   //         SheetNames: ['Sheet1'],
+    //   //         Sheets: {
+    //   //           Sheet1: sheet
+    //   //         }
+    //   //       },
+    //   //       '科室入库品种.xlsx'
+    //   //     );
+    //   //   }
+    //   // });
+    // },
+    exportData() {
       var Dept_Two_CodeStr = [];
       var userDeptList = this.$store.state.user.info.DeptNow.Dept_Two_Code;
       Dept_Two_CodeStr.push(userDeptList);
-      
+
       const loading = this.$loading({ lock: true });
       this.$refs.table.doRequest(({ where, order }) => {
         // var Dept_Two_CodeStr = '';
@@ -532,64 +721,70 @@ export default {
             loading.close();
             const array = [
               [
-                '合同类型',
-                '业务发起库区',
-                '科室/供应商名称',
-                '供应商名称',
-                '入库时间',
-                '品种(材料)编码',
-                '上药HERP编码',
+                '一级科室',
+                '成本科室',
+                '消耗时间',
+                '品种编码',
                 '品种全称',
                 '型号/规格',
                 '单位',
-                '医保码',
-                '品牌',
-                '生产批号',
-                '生产时间',
-                '有效到期',
-                '灭菌批号',
+                '生产企业名称',
+                '供应商',
+                '批号',
+                '生产日期',
+                '有效期日期',
+                '消耗数量',
+                '单价',
+                '金额',
                 '系数',
-                '入库数量',
-                '消耗价',
-                '采购价',
-                '散货数量',
-                '入库单号',
-                '入库备注',
-                '注册证号',
-                '高低值分类下级属性',
-                '是否中标',
-                '操作人'
+                '定数码',
+                '消耗方式',
+                '消耗人',
+                '高低值',
+                '国产/进口',
+                '医保编码',
+                '月结月份'
               ]
             ];
             res.result.forEach((d) => {
+              var cellValue = d.Consumption_Type;
+              if (d.cellValue == 0) {
+                d.Consumption_Type = '条码扫码消耗';
+              } else if (cellValue == 1) {
+                d.Consumption_Type = 'RFID读码消耗';
+              } else if (cellValue == 2) {
+                d.Consumption_Type = 'HIS计费消耗';
+              } else if (cellValue == 3) {
+                d.Consumption_Type = '散货申领消耗';
+              } else if (cellValue == 4) {
+                d.Consumption_Type = 'HIS医嘱计费消耗';
+              } else if (cellValue == 5) {
+                d.Consumption_Type = '超时默认消耗';
+              }
               array.push([
-                ['中标', '临采', '未设置'][d.Contract_Type],
-                ['院内库区', '院外库区'][d.Storage_ID],
-                d.SUPPLIER_NAME,
-                d.From_Supplier_Name,
-                d.RECEIVING_TIME,
-                d.VARIETIE_CODE_NEW,
-                d.SPH_ERP_VARIETIE_CODE,
-                d.VARIETIE_NAME,
-                d.UNIT,
-                d.MANUFACTURING_ENT_NAME,
+                d.Dept_One_Name,
+                d.SPD_COST_DEPT_NAME,
+                d.Consume_Time.substr(0, 10),
+                d.Varietie_Code_New,
+                d.Varietie_Name,
+                d.Specification_Or_Type,
+                d.Unit,
+                d.Manufacturing_Ent_Name,
+                d.Supplier_Name,
+                d.Batch,
+                d.Batch_Production_Date.substr(0, 10),
+                d.Batch_Validity_Period.substr(0, 10),
+                d.Goods_Qty,
+                d.Supply_Price,
+                d.Cost,
+                d.Coefficient,
+                d.Def_No_Pkg_Code,
+                d.Consumption_Type,
+                d.Operate_Person,
+                d.High_Or_Low_Class,
+                d.Trade_Type,
                 d.MEDICAL_CODE,
-                d.Brand,
-                d.BATCH,
-                d.BATCH_PRODUCTION_DATE,
-                d.BATCH_VALIDITY_PERIOD,
-                d.DISINFECTION_BATCH,
-                d.COEFFICIENT,
-                d.RECEIVING_QUANTITY,
-                d.SUPPLY_PRICE,
-                d.PURCHASE_PRICE,
-                d.GOODS_QTY,
-                d.BUSINESS_BILL,
-                d.MARK,
-                d.APPROVAL_NUMBER,
-                ['重点治理', '非重点治理', '未设置'][d.HIGH_OR_LOW_CLASS_TWO],
-                ['是', '否'][d.IS_BIDDING],
-                d.Operator
+                d.MONTHLY_TIME
                 // this.$util.toDateString(d.createTime)
               ]);
             });
@@ -775,13 +970,13 @@ export default {
   created() {
     // this.getdatasource();
   },
-  mounted(){
+  mounted() {
     this.$bus.$on('handleCommand', (data) => {
       this.reload();
     });
   },
-  destroyed(){
-    this.$bus.$off('handleCommand')
-  },
+  destroyed() {
+    this.$bus.$off('handleCommand');
+  }
 };
 </script>
