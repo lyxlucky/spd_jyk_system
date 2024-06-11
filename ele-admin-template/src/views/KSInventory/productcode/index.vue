@@ -180,7 +180,7 @@ export default {
                 },
                 {
                     prop: 'CODE',
-                    label: '产品主码',
+                    label: 'UDI主码',
                     align: 'center',
                     showOverflowTooltip: true,
                     minWidth: 110
