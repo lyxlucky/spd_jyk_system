@@ -159,7 +159,6 @@ export default {
         {
           prop: 'APPROVAL_NUMBER',
           label: '注册证号',
-
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 150
@@ -167,7 +166,6 @@ export default {
         {
           prop: 'SUPPLIER_NAME',
           label: '供应商名称',
-
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 180,
@@ -209,7 +207,13 @@ export default {
             return '是';
           }
         },
-        
+        {
+          prop: 'MANUFACTURING_ENT_NAME',
+          label: '生产企业',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 180
+        },
         {
           prop: 'BATCH_PRODUCTION_DATE',
           label: '生产日期',
@@ -230,13 +234,7 @@ export default {
             return this.$util.toDateString(cellValue, 'yyyy-MM-dd');
           }
         },
-        // {
-        //   prop: 'MANUFACTURING_ENT_NAME',
-        //   label: '生产企业',
-        //   align: 'center',
-        //   showOverflowTooltip: true,
-        //   minWidth: 180
-        // },
+      
        
         // {
         //   prop: 'DEPT_TWO_CODE',
@@ -247,13 +245,13 @@ export default {
         //   minWidth: 110
         // },
 
-        {
-          prop: 'CHARGING_CODE',
-          label: '计费编码',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 110
-        },
+        // {
+        //   prop: 'CHARGING_CODE',
+        //   label: '计费编码',
+        //   align: 'center',
+        //   showOverflowTooltip: true,
+        //   minWidth: 110
+        // },
       ],
       toolbar: false,
       pageSize: 15,

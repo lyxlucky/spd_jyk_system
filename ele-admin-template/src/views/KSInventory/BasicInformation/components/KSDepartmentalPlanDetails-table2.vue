@@ -193,7 +193,7 @@ export default {
           GG: '-',
           Manufacturing:"国械注进20163460089",
           SUPPLIER_NAME:"11230720172807181066097225",
-          Day_Consume_Qty:"85",
+          Day_Consume_Qty:"1",
         },
         {
           VarCode: 'C2024031280002042540000012',
@@ -202,7 +202,7 @@ export default {
           GG: '-',
           Manufacturing:"国械注进20173136653",
           SUPPLIER_NAME:"11220829173208261065573365",
-          Day_Consume_Qty:"55",
+          Day_Consume_Qty:"1",
         },
       ]
     };
