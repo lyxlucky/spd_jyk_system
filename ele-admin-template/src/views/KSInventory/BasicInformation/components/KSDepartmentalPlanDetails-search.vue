@@ -48,9 +48,9 @@
           <el-radio-button :label="false">收费汇总</el-radio-button>
         </el-radio-group> -->
         <el-radio-group v-model="radio1">
-          <el-radio-button label="材料登记"></el-radio-button>
-          <el-radio-button label="材料汇总"></el-radio-button>
-          <el-radio-button label="收费汇总"></el-radio-button>
+          <el-radio-button label="出库耗材登记"></el-radio-button>
+          <!-- <el-radio-button label="材料汇总"></el-radio-button>
+          <el-radio-button label="收费汇总"></el-radio-button> -->
         </el-radio-group>
       </el-col>
       <el-col :lg="18" :md="12">
@@ -140,7 +140,7 @@ export default {
       HidesubToExamine: false,
       visibleLine: 'none',
       isCollapse: true,
-      radio1: '材料登记'
+      radio1: '出库耗材登记'
     };
   },
   computed: {

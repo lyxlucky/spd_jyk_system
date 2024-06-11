@@ -1,142 +1,30 @@
 
 <template>
   <div class="ele-body">
-    <el-descriptions class="margin-top" :column="6" border>
+    <el-descriptions class="margin-top" :column="5" border>
       <!-- <template slot="extra">
         <el-button type="primary" size="small">操作</el-button>
       </template> -->
       <el-descriptions-item labelStyle="background: #D7E6FA;">
         <template slot="label">
-
-          病人来源
+          医院名称
         </template>
-        门诊
+        北京大学深圳医院
       </el-descriptions-item>
       <el-descriptions-item labelStyle="background: #D7E6FA;">
         <template slot="label">
-
-          病案号
-        </template>
-        18100000000
-      </el-descriptions-item>
-      <el-descriptions-item labelStyle="background: #D7E6FA;">
-        <template slot="label">
-
-          病人姓名
-        </template>
-        刘礼
-      </el-descriptions-item>
-      <el-descriptions-item labelStyle="background: #D7E6FA;">
-        <template slot="label">
-
-          病人性别
-        </template>
-        男
-      </el-descriptions-item>
-      <el-descriptions-item labelStyle="background: #D7E6FA;">
-        <template slot="label">
-
-          床号
-        </template>
-        25
-      </el-descriptions-item>
-      <el-descriptions-item labelStyle="background: #D7E6FA;">
-        <template slot="label">
-
-          收货单号
-        </template>
-        1825420120
-      </el-descriptions-item>
-
-      <el-descriptions-item labelStyle="background: #D7E6FA;">
-        <template slot="label">
-
-          医生使用科室
-        </template>
-        骨关节科 
-      </el-descriptions-item>
-      <el-descriptions-item labelStyle="background: #D7E6FA;">
-        <template slot="label">
-
-          核算科室
-        </template>
-        骨关节科 
-      </el-descriptions-item>
-      <el-descriptions-item labelStyle="background: #D7E6FA;">
-        <template slot="label">
-
-          住院科室
-        </template>
-        骨关节科 
-      </el-descriptions-item>
-      <el-descriptions-item labelStyle="background: #D7E6FA;">
-        <template slot="label">
-
-          HIS申请单号
+          配送单号
         </template>
         18544521520
       </el-descriptions-item>
       <el-descriptions-item labelStyle="background: #D7E6FA;">
         <template slot="label">
-
-          手术日期
+          配送日期
         </template>
         2023-05-08
       </el-descriptions-item>
       <el-descriptions-item labelStyle="background: #D7E6FA;">
         <template slot="label">
-
-          手术名称
-        </template>
-        心经导脏射
-      </el-descriptions-item>
-
-      <el-descriptions-item labelStyle="background: #D7E6FA;">
-        <template slot="label">
-
-          护士长
-        </template>
-        李静
-      </el-descriptions-item>
-      <el-descriptions-item labelStyle="background: #D7E6FA;">
-        <template slot="label">
-
-          巡回护士
-        </template>
-        王慧
-      </el-descriptions-item>
-      <el-descriptions-item labelStyle="background: #D7E6FA;">
-        <template slot="label">
-
-          洗手护士
-        </template>
-        王慧
-      </el-descriptions-item>
-      <el-descriptions-item labelStyle="background: #D7E6FA;">
-        <template slot="label">
-
-          手术医生
-        </template>
-        吴时
-      </el-descriptions-item>
-      <el-descriptions-item labelStyle="background: #D7E6FA;">
-        <template slot="label">
-
-          疾病名称
-        </template>
-
-      </el-descriptions-item>
-      <el-descriptions-item labelStyle="background: #D7E6FA;">
-        <template slot="label">
-
-          手术术间
-        </template>
-        H1
-      </el-descriptions-item>
-
-      <el-descriptions-item labelStyle="background: #D7E6FA;">
-        <template slot="label">
-
           审核人
         </template>
         李虎
@@ -150,50 +38,30 @@
       </el-descriptions-item>
       <el-descriptions-item labelStyle="background: #D7E6FA;">
         <template slot="label">
-
-          记账人
+          复核人
         </template>
         刘基
       </el-descriptions-item>
       <el-descriptions-item labelStyle="background: #D7E6FA;">
         <template slot="label">
-
           记账时间
         </template>
-
+        2023-05-15
       </el-descriptions-item>
       <el-descriptions-item labelStyle="background: #D7E6FA;">
         <template slot="label">
-
           制单人
         </template>
         孔入
       </el-descriptions-item>
       <el-descriptions-item labelStyle="background: #D7E6FA;">
         <template slot="label">
-
           制单时间
         </template>
         2023-05-15
       </el-descriptions-item>
-
       <el-descriptions-item labelStyle="background: #D7E6FA;">
         <template slot="label">
-
-          病人收费
-        </template>
-
-      </el-descriptions-item>
-      <el-descriptions-item labelStyle="background: #D7E6FA;">
-        <template slot="label">
-
-          是否急症
-        </template>
-        否
-      </el-descriptions-item>
-      <el-descriptions-item labelStyle="background: #D7E6FA;">
-        <template slot="label">
-
           备注
         </template>
 

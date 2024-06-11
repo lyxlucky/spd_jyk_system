@@ -125,7 +125,7 @@ export default {
         // },
         {
           prop: 'CONTRACT_DATE',
-          label: '计费编码',
+          label: '产品ID',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110,
