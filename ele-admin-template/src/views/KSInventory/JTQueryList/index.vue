@@ -148,14 +148,14 @@ export default {
           showOverflowTooltip: true,
           minWidth: 110
         },
-        {
-          prop: 'BATCH_ID',
-          label: '批号ID',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 110,
-          show: false
-        },
+        // {
+        //   prop: 'BATCH_ID',
+        //   label: '批号ID',
+        //   align: 'center',
+        //   showOverflowTooltip: true,
+        //   minWidth: 110,
+        //   show: false
+        // },
         {
           prop: 'APPROVAL_NUMBER',
           label: '注册证号',
