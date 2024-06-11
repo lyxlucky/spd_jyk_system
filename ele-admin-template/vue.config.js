@@ -7,8 +7,8 @@ function resolve(dir) {
 }
 
 module.exports = {
-  // publicPath: '/jyknw/',
-  // outputDir: 'jyknw',
+  // publicPath: '/jyk/',
+  // outputDir: 'jyk',
   productionSourceMap: false,
   transpileDependencies: ['element-ui', 'ele-admin', 'vue-i18n'],
   configureWebpack: {
