@@ -44,13 +44,13 @@
         </el-header>
         <el-main style="padding-top: 20px">
             <el-card shadow="always">
-                <el-steps :active="2" align-center>
-                    <el-step title="采购入库" description="2024-05-16"></el-step>
+                <el-steps :active="5" align-center>
+                    <el-step title="采购入库" description="2024-05-15"></el-step>
                     <!-- <el-step title="扫码出库" description="王凯锋 2023-11-10"></el-step> -->
-                    <el-step title="扫码出库" description="王凯锋 2024-05-16"></el-step>
-                    <el-step title="复合" description="晏江彬 2024-05-17"></el-step>
-                    <el-step title="配送调度" description="粤B23B7B 2024-05-18"></el-step>
-                    <el-step title="医院签收" description="2024-05-19"></el-step>
+                    <el-step title="扫码出库" description="王凯锋 2024-05-16 10:18:36"></el-step>
+                    <el-step title="复合" description="晏江彬 2024-05-16 14:10:42"></el-step>
+                    <el-step title="配送调度" description="粤B23B7B 2024-05-16 16:36:45"></el-step>
+                    <el-step title="医院签收" description="2024-05-15 16:49:39"></el-step>
                 </el-steps>
             </el-card>
         </el-main>
