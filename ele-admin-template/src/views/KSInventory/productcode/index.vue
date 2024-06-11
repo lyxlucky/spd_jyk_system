@@ -103,7 +103,7 @@
                                     生产标识包含
                                 </template>
                                 <el-checkbox-group v-model="checkList">
-                                    <el-checkbox label="产品主码"></el-checkbox>
+                                    <el-checkbox label="UDI主码"></el-checkbox>
                                     <el-checkbox label="批号"></el-checkbox>
                                     <el-checkbox label="生产效期"></el-checkbox>
                                     <el-checkbox label="有效期"></el-checkbox>
@@ -124,7 +124,19 @@
                                 <ele-pro-table :key="key" highlight-current-row ref="table" :height="defaultHeight"
                                     :rowClickChecked="true" :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes"
                                     :columns="columns" :datasource="datasource" :selection.sync="selection"
-                                    cache-key="productTable"></ele-pro-table>
+                                    cache-key="productTable">
+
+                                    <!-- 状态列 -->
+                                    <template v-slot:OPERATION="">
+                                        <el-tag size="small"  type="primary">编辑</el-tag>
+                                        <el-tag size="small" type="danger">删除</el-tag>
+                                    </template>
+
+                                    <template v-slot:OTHER="">
+                                        <el-tag size="small"  type="primary">上传</el-tag>
+                                    </template>
+
+                                </ele-pro-table>
                             </el-descriptions-item>
                         </el-descriptions>
 
@@ -141,7 +153,7 @@ export default {
         return {
             options: [{
                 value: '1',
-                label: 'UDI标准'
+                label: 'GS1编码'
             }, {
                 value: '123',
                 label: 'UDI标准'
@@ -175,7 +187,7 @@ export default {
                 },
                 {
                     prop: 'PRODUCT_SCANCODE',
-                    label: '产品识别码类型',
+                    label: 'GS1编码',
                     align: 'center',
                     showOverflowTooltip: true,
                     minWidth: 110
@@ -217,6 +229,7 @@ export default {
                 },
                 {
                     prop: 'OPERATION',
+                    slot: "OPERATION",
                     label: '操作',
                     align: 'center',
                     showOverflowTooltip: true,
@@ -252,18 +265,7 @@ export default {
                         "PRODUCT_NAME": "髋关节假体-陶瓷股骨头和衬垫-7927-Bioloxdelta股骨头",
                         "PLATFORM": "00-8775-032-02 DELTA CERAMIC FEM HEAD 0X32",
                         "OPERATION-TYPE": "手工添加",
-                        "PROD_REGISTRATION": "",
-                        "OTHER": "",
-                        "OPERATION": "",
-                    },
-                    {
-                        "CURRENT_STATE": "审核通过",
-                        "CODE": "0100885836071161",
-                        "PRODUCT_SCANCODE": "",
-                        "PRODUCT_NAME": "髋关节假体-陶瓷股骨头和衬垫-7927-Bioloxdelta股骨头",
-                        "PLATFORM": "00-8775-032-02 DELTA CERAMIC FEM HEAD 0X32",
-                        "OPERATION-TYPE": "手工添加",
-                        "PROD_REGISTRATION": "",
+                        "PROD_REGISTRATION": "国械注进20143135650",
                         "OTHER": "",
                         "OPERATION": "",
                     },
