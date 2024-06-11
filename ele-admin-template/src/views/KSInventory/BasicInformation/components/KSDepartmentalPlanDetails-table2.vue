@@ -158,7 +158,7 @@ export default {
 
         {
           prop: 'Day_Consume_Qty',
-          label: '收取金额（元）',
+          label: '数量',
 
           align: 'center',
           showOverflowTooltip: true,

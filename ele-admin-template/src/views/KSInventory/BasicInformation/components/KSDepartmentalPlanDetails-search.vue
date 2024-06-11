@@ -34,7 +34,7 @@
         </el-form-item>
       </el-col>
       <el-col :lg="5" :md="12">
-        <el-form-item label="产品自身码">
+        <el-form-item label="产品码">
           <el-input v-model="SerachName2" placeholder="" clearable style="width:240px" />
         </el-form-item>
       </el-col>
@@ -53,7 +53,7 @@
           <el-radio-button label="收费汇总"></el-radio-button> -->
         </el-radio-group>
       </el-col>
-      <el-col :lg="18" :md="12">
+      <!-- <el-col :lg="18" :md="12">
         <p style="display: flex;align-items: center;justify-content: flex-end;">
           合计使用鼓量: <b>2 </b>
           材料合计: <b>2 </b>
@@ -61,7 +61,7 @@
           收费材料: <b>140.00 </b>
           收费合计: <b>140.00 </b>
           供应商结算金额: <b>140.00</b></p>
-      </el-col>
+      </el-col> -->
     </el-row>
 
     <IntroduceUserDefinedTemp :visible.sync="showEdit" :IntroduceUserDefinedTempSearch="KSDepartmentalPlanDataSearch" />

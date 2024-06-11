@@ -14,7 +14,7 @@
       <template v-slot:toolbar>
         <!-- 搜索表单 -->
         <KSDepartmentalPlanDetails-search @search="reload" :KSDepartmentalPlanDataSearch='KSDepartmentalPlanDataSearch' :selection="selection" @showEditReoad="showEditReoad" :datasourceList="datasourceList" />
-        <label>出库数:<b>{{SumCount2}}</b> 入库数: <b>{{SumCount1}}</b>净入库:<b>{{netExport}}</b></label>
+        <!-- <label>出库数:<b>{{SumCount2}}</b> 入库数: <b>{{SumCount1}}</b>净入库:<b>{{netExport}}</b></label> -->
         <!-- <el-button size="small" type="danger" icon="el-icon-delete" class="ele-btn-icon" @click="removebatch">
           删除
         </el-button> -->
@@ -92,43 +92,7 @@ export default {
           showOverflowTooltip: true,
           fixed: 'left'
         },
-        // {
-        //   columnKey: 'action',
-        //   label: '操作',
-        //   width: 80,
-        //   align: 'center',
-        //   resizable: false,
-        //   slot: 'action',
-        //   showOverflowTooltip: true,
-        //   fixed: 'right'
-        // },
-
-        // {
-        //   prop: 'ID',
-        //   label: 'ID',
-        //   align: 'center',
-        //   showOverflowTooltip: true,
-        //   minWidth: 110,
-        //   show: false
-        // },
-        // {
-        //   prop: 'VARIETIE_CODE_NEW',
-        //   label: '编号',
-        //   align: 'center',
-        //   showOverflowTooltip: true,
-        //   minWidth: 130,
-        //   show: false
-        // },
-        {
-          prop: 'COUNT',
-          label: '公开版本号',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 120,
-          formatter: (_row, _column, cellValue) => {
-            return '1';
-          }
-        },
+    
         {
           prop: 'RECORD_TIME',
           label: '版本发布时间',
@@ -152,7 +116,7 @@ export default {
         },
         {
           prop: 'VARIETIE_CODE_NEW',
-          label: 'UDI',
+          label: 'DI',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 150
@@ -178,24 +142,45 @@ export default {
           }
         },
         {
+          prop: 'BATCH',
+          label: '批号',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 110
+        },
+        {
+          prop: 'BATCH_ID',
+          label: '批号ID',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 110,
+          show: false
+        },
+        {
+          prop: 'APPROVAL_NUMBER',
+          label: '注册证号',
+
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 150
+        },
+        {
+          prop: 'SUPPLIER_NAME',
+          label: '供应商名称',
+
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 180,
+          show: false
+        },
+        {
           prop: 'VARIETIE_NAME',
-          label: '最小销售单元中使用单元的数量',
+          label: '库存数量',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 150,
           formatter: (_row, _column, cellValue) => {
             return '1';
-          }
-        },
-        {
-          prop: 'SPECIFICATION_OR_TYPE',
-          label: '使阳单元产品椽锐',
-
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 150,
-          formatter: (_row, _column, cellValue) => {
-            return '-';
           }
         },
         {
@@ -224,21 +209,7 @@ export default {
             return '是';
           }
         },
-        {
-          prop: 'BATCH',
-          label: '批号',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 110
-        },
-        {
-          prop: 'BATCH_ID',
-          label: '批号ID',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 110,
-          show: false
-        },
+        
         {
           prop: 'BATCH_PRODUCTION_DATE',
           label: '生产日期',
@@ -259,65 +230,14 @@ export default {
             return this.$util.toDateString(cellValue, 'yyyy-MM-dd');
           }
         },
-        {
-          prop: 'MANUFACTURING_ENT_NAME',
-          label: '生产企业',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 180
-        },
-
-        {
-          prop: 'OPERATOR',
-          label: '操作人',
-
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 110
-        },
-        {
-          prop: 'DELIVERY_NUMBER',
-          label: '单号',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 110
-        },
-
-        {
-          prop: 'DEF_NO_PKG_CODE',
-          label: '定数码',
-
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 110
-        },
-        {
-          prop: 'APPROVAL_NUMBER',
-          label: '注册证号',
-
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 150
-        },
-
         // {
-        //   prop: 'SUPPLIER_CODE',
-        //   label: '供应商编码',
-
+        //   prop: 'MANUFACTURING_ENT_NAME',
+        //   label: '生产企业',
         //   align: 'center',
         //   showOverflowTooltip: true,
-        //   minWidth: 180,
-        //   show: false
+        //   minWidth: 180
         // },
-        {
-          prop: 'SUPPLIER_NAME',
-          label: '供应商名称',
-
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 180,
-          show: false
-        },
+       
         // {
         //   prop: 'DEPT_TWO_CODE',
         //   label: '科室编码',
@@ -334,20 +254,6 @@ export default {
           showOverflowTooltip: true,
           minWidth: 110
         },
-        {
-          prop: 'PATIENT_NUMBER',
-          label: '病患号',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 110
-        },
-        {
-          prop: 'HOSPITALIZATION_NUMBER',
-          label: '住院号',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 110
-        }
       ],
       toolbar: false,
       pageSize: 15,
