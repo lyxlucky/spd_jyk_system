@@ -22,28 +22,43 @@
         </el-date-picker>
       </el-col>
     </el-row>
-    <el-row :gutter="10">
-      <!-- <el-col :lg="6" :md="12">
+    <!-- <el-col :lg="6" :md="12">
         <el-form-item label="">
           <el-input v-model="where.SerachName" placeholder="请输入品种名称/品种编码/型号规格/生产企业搜索" clearable />
         </el-form-item>
       </el-col> -->
-      <el-row :gutter="10">
-        <el-col :lg="5" :md="12">
-          <el-form-item label="标签条码">
-            <el-input v-model="SerachName" placeholder="" clearable style="width:240px" />
-          </el-form-item>
-        </el-col>
-        <el-col :lg="5" :md="12">
-          <el-form-item label="产品自身码">
-            <el-input v-model="SerachName2" placeholder="" clearable style="width:240px"/>
-          </el-form-item>
-        </el-col>
-      </el-row>
-    
+    <el-row :gutter="10">
+      <el-col :lg="5" :md="12">
+        <el-form-item label="标签条码">
+          <el-input v-model="SerachName" placeholder="" clearable style="width:240px" />
+        </el-form-item>
+      </el-col>
+      <el-col :lg="5" :md="12">
+        <el-form-item label="产品自身码">
+          <el-input v-model="SerachName2" placeholder="" clearable style="width:240px" />
+        </el-form-item>
+      </el-col>
     </el-row>
-  
-  
+
+    <el-row :gutter="10">
+      <el-col :lg="5" :md="12">
+        <el-radio-group v-model="isCollapse" style="margin-bottom: 20px;">
+          <el-radio-button :label="true">材料登记</el-radio-button>
+          <el-radio-button :label="false">材料汇总</el-radio-button>
+          <el-radio-button :label="false">收费汇总</el-radio-button>
+        </el-radio-group>
+      </el-col>
+      <el-col :lg="12" :md="12">
+        <p style="display: flex;align-items: center;justify-content: center;">
+          合计使用鼓量: <b>8 </b>
+          材料合计: <b>126 </b>
+          未收费材料: <b>0.00 </b>
+          收费材料: <b>2152.23 </b>
+          收费合计: <b>2152.23 </b>
+          供应商结算金额: <b>2152.23</b></p>
+      </el-col>
+    </el-row>
+
     <IntroduceUserDefinedTemp :visible.sync="showEdit" :IntroduceUserDefinedTempSearch="KSDepartmentalPlanDataSearch" />
     <IntroduceDefinedTemp :visible.sync="showEdit2" />
     <BidVarInfoDept :visible.sync="BidListShowEdit" />
@@ -118,24 +133,18 @@ export default {
       VarietyDataLzhLookShow: false,
       DpetOneAuthWithDeptShow: false,
       HidesubToExamine: false,
-      visibleLine: 'none'
+      visibleLine: 'none',
+      isCollapse: true
     };
   },
   computed: {
     // 是否开启响应式布局
     styleResponsive() {
       return this.$store.state.theme.styleResponsive;
-    },
-
+    }
   },
-  watch: {
-    
-  },
-  methods: {
-  
-  },
-  created() {
-   
-  }
+  watch: {},
+  methods: {},
+  created() {}
 };
 </script>
