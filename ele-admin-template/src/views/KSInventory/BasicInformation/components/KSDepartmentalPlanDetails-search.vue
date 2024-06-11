@@ -29,7 +29,7 @@
       </el-col> -->
     <el-row :gutter="10">
       <el-col :lg="5" :md="12">
-        <el-form-item label="标签条码">
+        <el-form-item label="UDI码">
           <el-input v-model="SerachName" placeholder="" clearable style="width:240px" />
         </el-form-item>
       </el-col>
@@ -42,14 +42,19 @@
 
     <el-row :gutter="10">
       <el-col :lg="5" :md="12">
-        <el-radio-group v-model="isCollapse" style="margin-bottom: 20px;">
+        <!-- <el-radio-group v-model="isCollapse" style="margin-bottom: 20px;">
           <el-radio-button :label="true">材料登记</el-radio-button>
           <el-radio-button :label="false">材料汇总</el-radio-button>
           <el-radio-button :label="false">收费汇总</el-radio-button>
+        </el-radio-group> -->
+        <el-radio-group v-model="radio1">
+          <el-radio-button label="材料登记"></el-radio-button>
+          <el-radio-button label="材料汇总"></el-radio-button>
+          <el-radio-button label="收费汇总"></el-radio-button>
         </el-radio-group>
       </el-col>
-      <el-col :lg="12" :md="12">
-        <p style="display: flex;align-items: center;justify-content: center;">
+      <el-col :lg="18" :md="12">
+        <p style="display: flex;align-items: center;justify-content: flex-end;">
           合计使用鼓量: <b>8 </b>
           材料合计: <b>126 </b>
           未收费材料: <b>0.00 </b>
@@ -134,7 +139,8 @@ export default {
       DpetOneAuthWithDeptShow: false,
       HidesubToExamine: false,
       visibleLine: 'none',
-      isCollapse: true
+      isCollapse: true,
+      radio1: '材料登记'
     };
   },
   computed: {

@@ -53,7 +53,7 @@
         </el-popconfirm>
       </template>
     </ele-pro-table>
-    <p style="display: flex;justify-content: flex-end;">实际申领数量合计: <b>{{sumNumber}}</b> 实际申领金额合计: <b>{{sumAount}}</b> </p>
+    <!-- <p style="display: flex;justify-content: flex-end;">实际申领数量合计: <b>{{sumNumber}}</b> 实际申领金额合计: <b>{{sumAount}}</b> </p> -->
   </div>
 </template>
 
@@ -106,7 +106,7 @@ export default {
           label: '医保耗材编码',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 150
+          minWidth: 180
         },
         // {
         //   prop: 'DEPT_ZDY_VARIETIE_CODE',
@@ -125,7 +125,7 @@ export default {
         // },
         {
           prop: 'CONTRACT_DATE',
-          label: '灭菌日期',
+          label: '计费编码',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110,
@@ -133,18 +133,11 @@ export default {
         },
         {
           prop: 'CONTRACT_NUM',
-          label: '主营流水号',
+          label: '耗材名称',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 150
-        },
-        {
-          prop: 'GG',
-          label: '品牌',
-
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 110
+          minWidth: 150,
+          show: false
         },
         {
           prop: 'Manufacturing',
@@ -156,11 +149,11 @@ export default {
         },
         {
           prop: 'SUPPLIER_NAME',
-          label: 'SPD条码',
+          label: 'UDI码',
 
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 110
+          minWidth: 150
         },
 
         {
@@ -194,72 +187,72 @@ export default {
       sumAount: 0,
       tabelData: [
         {
-          VarCode: 'C2011400400002042540000005',
-          CONTRACT_DATE: '-',
-          CONTRACT_NUM: '-',
+          VarCode: 'C2024020480002042540000005',
+          CONTRACT_DATE: '1549852154',
+          CONTRACT_NUM: 'LCP腓骨远端外侧锁定接骨板',
           GG: '-',
-          Manufacturing:"国械注进20163011857",
+          Manufacturing:"国械注进20163011241",
           SUPPLIER_NAME:"0100763000586164172410061Q18610CPB9961",
           Day_Consume_Qty:"6582",
         },
         {
-          VarCode: 'C2011400400002042540000014',
-          CONTRACT_DATE: '-',
-          CONTRACT_NUM: '-',
+          VarCode: 'C2024031280002042540000005',
+          CONTRACT_DATE: '78513852154',
+          CONTRACT_NUM: '一次性使用负压吸引袋',
           GG: '-',
-          Manufacturing:"国械注进23163351857",
+          Manufacturing:"国械注进23163351572",
           SUPPLIER_NAME:"0100763000586164172410061Q18610CPB9961",
           Day_Consume_Qty:"1520",
         },
         {
-          VarCode: 'C2011400400002042540035605',
-          CONTRACT_DATE: '-',
-          CONTRACT_NUM: '-',
+          VarCode: 'C2024051380002042540000005',
+          CONTRACT_DATE: '4612852154',
+          CONTRACT_NUM: 'PE手套（非无菌）',
           GG: '-',
           Manufacturing:"国械注进20135461857",
           SUPPLIER_NAME:"010076300058366yh2410061Q18610CPB9961",
           Day_Consume_Qty:"4642",
         },
         {
-          VarCode: 'C201140040000204576500005',
-          CONTRACT_DATE: '-',
-          CONTRACT_NUM: '-',
+          VarCode: 'C2024041680002042540000005',
+          CONTRACT_DATE: '10245852154',
+          CONTRACT_NUM: '一次性利器盒',
           GG: '-',
-          Manufacturing:"国械注进20126511857",
+          Manufacturing:"国械注进20126511342",
           SUPPLIER_NAME:"0100763000586fg24510061Q18610CPB9961",
           Day_Consume_Qty:"350",
         },
         {
-          VarCode: 'C2011400400002042540000005',
-          CONTRACT_DATE: '-',
-          CONTRACT_NUM: '-',
+          VarCode: 'C2024042980002042540000005',
+          CONTRACT_DATE: '1523652154',
+          CONTRACT_NUM: '医用棉签',
           GG: '-',
-          Manufacturing:"国械注进20163011857",
+          Manufacturing:"国械注进20163011864",
           SUPPLIER_NAME:"01007630003465172410061Q18610CPB9961",
           Day_Consume_Qty:"890",
         },
         {
-          VarCode: 'C2011400400002042540000005',
-          CONTRACT_DATE: '-',
-          CONTRACT_NUM: '-',
+          VarCode: 'C2024021480002042540000005',
+          CONTRACT_DATE: '13548752154',
+          CONTRACT_NUM: '血压袖带',
           GG: '-',
-          Manufacturing:"国械注进20163011857",
+          Manufacturing:"国械注进20163011845",
           SUPPLIER_NAME:"01007630003465172410061Q18610CPB9961",
           Day_Consume_Qty:"462",
         },
         {
-          VarCode: 'C2011400400002042540000005',
-          CONTRACT_DATE: '-',
-          CONTRACT_NUM: '-',
+          VarCode: 'C2024031480002042540000005',
+          CONTRACT_DATE: '4587922154',
+          CONTRACT_NUM: '一次性使用口腔护理包',
           GG: '-',
           Manufacturing:"国械注进20163011857",
           SUPPLIER_NAME:"01007630003465172410061Q18610CPB9961",
           Day_Consume_Qty:"581",
         },
         {
-          VarCode: 'C2011400400002042540000005',
-          CONTRACT_DATE: '-',
-          CONTRACT_NUM: '-',
+          VarCode: 'C2024031680002042540000005',
+          CONTRACT_DATE: '84549852154',
+          CONTRACT_NUM: '一次性使用负压吸引袋',
           GG: '-',
           Manufacturing:"国械注进20163011857",
           SUPPLIER_NAME:"01007630003465172410061Q18610CPB9961",

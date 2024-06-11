@@ -24,7 +24,7 @@
 
           病人姓名
         </template>
-        刘二
+        刘礼
       </el-descriptions-item>
       <el-descriptions-item labelStyle="background: #D7E6FA;">
         <template slot="label">
@@ -53,21 +53,21 @@
 
           医生使用科室
         </template>
-        检验科
+        手术室
       </el-descriptions-item>
       <el-descriptions-item labelStyle="background: #D7E6FA;">
         <template slot="label">
 
           核算科室
         </template>
-        检验科
+        手术室
       </el-descriptions-item>
       <el-descriptions-item labelStyle="background: #D7E6FA;">
         <template slot="label">
 
           住院科室
         </template>
-        检验科
+        手术室
       </el-descriptions-item>
       <el-descriptions-item labelStyle="background: #D7E6FA;">
         <template slot="label">

@@ -3,9 +3,9 @@
   <el-form label-width="100px" class="ele-form-search" @keyup.enter.native="search" @submit.native.prevent>
     <el-row :gutter="10">
       <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 12 }">
-        <el-input clearable v-model="where.Name" placeholder="品种名称/品种编码" />
+        <el-input clearable v-model="where.Name" placeholder="UDI查询" />
       </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 5, md: 12 } : { span: 12 }">
+      <!-- <el-col v-bind="styleResponsive ? { lg: 5, md: 12 } : { span: 12 }">
         <el-form-item label="流向类型:">
           <el-select v-model="where.TYPE" @change="search()">
             <el-option label="全部" value=""></el-option>
@@ -13,10 +13,10 @@
             <el-option label="入库" value="1"></el-option>
           </el-select>
         </el-form-item>
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 12 }">
+      </el-col> -->
+      <!-- <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 12 }">
         <el-input clearable v-model="where.DELIVERY_NUMBER" placeholder="入库单号" />
-      </el-col>
+      </el-col> -->
       <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 12 }">
         <el-input clearable v-model="where.DEF_NO_PKG_CODE" placeholder="定数码" />
       </el-col>

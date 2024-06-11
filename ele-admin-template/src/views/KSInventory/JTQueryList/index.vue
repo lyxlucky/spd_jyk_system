@@ -111,14 +111,14 @@ export default {
         //   minWidth: 110,
         //   show: false
         // },
-        {
-          prop: 'VARIETIE_CODE_NEW',
-          label: '编号',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 130,
-          show: false
-        },
+        // {
+        //   prop: 'VARIETIE_CODE_NEW',
+        //   label: '编号',
+        //   align: 'center',
+        //   showOverflowTooltip: true,
+        //   minWidth: 130,
+        //   show: false
+        // },
         {
           prop: 'COUNT',
           label: '公开版本号',
@@ -151,8 +151,8 @@ export default {
           }
         },
         {
-          prop: '',
-          label: '最小销售单元产品标产品',
+          prop: 'VARIETIE_CODE_NEW',
+          label: 'UDI',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 150
@@ -205,7 +205,13 @@ export default {
           showOverflowTooltip: true,
           minWidth: 120,
           formatter: (_row, _column, cellValue) => {
-            return '二维码';
+            if (_row.ID % 3 == 0) {
+              return '一维码';
+            } else if (_row.ID % 4 == 0) {
+              return '二维码';
+            } else {
+              return '一维码,二维码';
+            }
           }
         },
         {
@@ -213,7 +219,7 @@ export default {
           label: '景否与注册/备案产品标识一致',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 80,
+          minWidth: 150,
           formatter: (_row, _column, cellValue) => {
             return '是';
           }
@@ -294,15 +300,15 @@ export default {
           minWidth: 150
         },
 
-        {
-          prop: 'SUPPLIER_CODE',
-          label: '供应商编码',
+        // {
+        //   prop: 'SUPPLIER_CODE',
+        //   label: '供应商编码',
 
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 180,
-          show: false
-        },
+        //   align: 'center',
+        //   showOverflowTooltip: true,
+        //   minWidth: 180,
+        //   show: false
+        // },
         {
           prop: 'SUPPLIER_NAME',
           label: '供应商名称',
