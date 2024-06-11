@@ -1,7 +1,6 @@
 <template>
   <div class="ele-body">
     <!-- 数据表格 -->
-
     <ele-pro-table ref="table" v-if="IsRefDefNoPkgDataTable==false" height="67vh" highlight-current-row :stripe="true" :rowClickChecked="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" cache-key="DefNoPkgDataTable">
       <template v-slot:KC_COUNT="{ row }">
         <el-tag v-if="row.KC_DEF_NO_PKG_CODE == null" type="info">未收货</el-tag>
@@ -214,8 +213,8 @@ export default {
     },
     datasource2({ page, limit, where, order }) {
       var where2 = {
-        page: 1,
-        limit: this.pageSize,
+        page: page,
+        limit: limit,
         state: where.State,
         dept_two_var_distribute_dtl_id: this.DefNoPkgDataData.ID,
         Varietie_Code: this.DefNoPkgDataData.Varietie_Code
