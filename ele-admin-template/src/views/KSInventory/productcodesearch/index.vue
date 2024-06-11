@@ -16,14 +16,14 @@
                                     <el-col style="padding-left: 0px"
                                         v-bind="styleResponsive ? { lg: 4, md: 4 } : { span: 4 }">
                                         <div class="block">
-                                            <el-input size="small" placeholder="请输入SPD条码">
+                                            <el-input size="small" placeholder="请输入产品UDI">
                                             </el-input>
                                         </div>
                                     </el-col>
                                     <el-col style="padding-left: 0px"
                                         v-bind="styleResponsive ? { lg: 4, md: 4 } : { span: 4 }">
                                         <div class="block">
-                                            <el-input size="small" value="0182389128748985445" placeholder="">
+                                            <el-input size="small" value="01008858360711611116103117260930102869847" placeholder="">
                                             </el-input>
                                         </div>
                                     </el-col>
@@ -45,12 +45,12 @@
         <el-main style="padding-top: 20px">
             <el-card shadow="always">
                 <el-steps :active="2" align-center>
-                    <el-step title="采购入库" description=""></el-step>
-                    <el-step title="扫码出库" description="陈志凯"></el-step>
-                    <el-step title="扫码出库" description="陈志凯"></el-step>
-                    <el-step title="物资入库" description=""></el-step>
-                    <el-step title="科室接收确认" description=""></el-step>
-                    <el-step title="物资消耗" description=""></el-step>
+                    <el-step title="采购入库" description="2024-05-16 09:01:18"></el-step>
+                    <!-- <el-step title="扫码出库" description="王凯锋 2023-11-10"></el-step> -->
+                    <el-step title="扫码出库" description="王凯锋 2024-05-16 09:01:18"></el-step>
+                    <el-step title="科室入库" description="王凯锋 2024-05-23 15:33:10"></el-step>
+                    <el-step title="科室领出" description=""></el-step>
+                    <el-step title="科室消耗" description=""></el-step>
                 </el-steps>
             </el-card>
         </el-main>
@@ -80,7 +80,7 @@ export default {
                 },
                 {
                     prop: 'CODE',
-                    label: 'SPD条码',
+                    label: '产品UDI',
                     align: 'center',
                     showOverflowTooltip: true,
                     minWidth: 110
@@ -172,28 +172,28 @@ export default {
                 "result": [
                     {
                         "CURRENT_STATE": "物资消耗",
-                        "CODE": "0182389128748985445",
-                        "PRODUCT_NAME": "一次性使用子宫颈扩张球囊导管",
-                        "PLATFORM": "1根/盒",
-                        "PC_NUM": "20241009",
-                        "LIVE_DATE": "2027-05-01",
-                        "UNIT": "套",
+                        "CODE": "01008858360711611116103117260930102869847",
+                        "PRODUCT_NAME": "髋关节假体-陶瓷股骨头和衬垫-7927-Bioloxdelta股骨头",
+                        "PLATFORM": "1个/盒",
+                        "PC_NUM": "2869847",
+                        "LIVE_DATE": "2026-09-30",
+                        "UNIT": "个",
                         "NUM": 1,
-                        "PRICE": "1340.00",
-                        "TOTAL_PRICE": "1340.00",
+                        "PRICE": "1984.00",
+                        "TOTAL_PRICE": "1984.00",
                         "BELONG": "高值",
                     },
                     {
                         "CURRENT_STATE": "物资入库",
-                        "CODE": "01912378989128982189",
-                        "PRODUCT_NAME": "一次性使用子宫颈扩张球囊导管",
-                        "PLATFORM": "1根/盒",
-                        "PC_NUM": "20241009",
-                        "LIVE_DATE": "2027-05-01",
-                        "UNIT": "套",
+                        "CODE": "01008858360711611116103117260930102869847",
+                        "PRODUCT_NAME": "髋关节假体-陶瓷股骨头和衬垫-7927-Bioloxdelta股骨头",
+                        "PLATFORM": "1个/盒",
+                        "PC_NUM": "2869847",
+                        "LIVE_DATE": "2026-09-30",
+                        "UNIT": "个",
                         "NUM": 1,
-                        "PRICE": "1340.00",
-                        "TOTAL_PRICE": "1340.00",
+                        "PRICE": "1984.00",
+                        "TOTAL_PRICE": "1984.00",
                         "BELONG": "高值",
                     }
                 ]

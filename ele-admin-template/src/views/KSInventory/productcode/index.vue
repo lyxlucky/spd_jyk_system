@@ -15,31 +15,31 @@
                                 <template slot="label">
                                     产品名称
                                 </template>
-                                一次性使用子宫颈扩张球囊导管
+                                髋关节假体-陶瓷股骨头和衬垫-7927-Bioloxdelta股骨头
                             </el-descriptions-item>
                             <el-descriptions-item>
                                 <template slot="label">
                                     注册证类型
                                 </template>
-                                182uohia
+                                Ⅲ类
                             </el-descriptions-item>
                             <el-descriptions-item>
                                 <template slot="label">
                                     规格
                                 </template>
-                                套
+                                个
                             </el-descriptions-item>
                             <el-descriptions-item>
                                 <template slot="label">
                                     型号
                                 </template>
-                                无
+                                00-8775-032-02 DELTA CERAMIC FEM HEAD 0X32
                             </el-descriptions-item>
                             <el-descriptions-item>
                                 <template slot="label">
                                     注册证编号
                                 </template>
-                                粤械注准20152080133
+                                国械注进20143135650
                             </el-descriptions-item>
                             <el-descriptions-item>
                                 <template slot="label">
@@ -52,21 +52,21 @@
                                 <template slot="label">
                                     品牌
                                 </template>
-                                BRAND
+                                无
                             </el-descriptions-item>
 
                             <el-descriptions-item>
                                 <template slot="label">
                                     生产厂家
                                 </template>
-                                广州维力医疗器械股份有限公司
+                                捷迈（上海）医疗国际贸易有限公司
                             </el-descriptions-item>
 
                             <el-descriptions-item>
                                 <template slot="label">
                                     医保耗材编码
                                 </template>
-                                e4f8c6487d80424da75eb75fcb48e5be
+                                C0344051070500007551
                             </el-descriptions-item>
                         </el-descriptions>
 
@@ -247,10 +247,10 @@ export default {
                 "result": [
                     {
                         "CURRENT_STATE": "审核通过",
-                        "CODE": "0182389128748985445",
+                        "CODE": "0100885836071161",
                         "PRODUCT_SCANCODE": "",
-                        "PRODUCT_NAME": "一次性使用子宫颈扩张球囊导管",
-                        "PLATFORM": "20241009",
+                        "PRODUCT_NAME": "髋关节假体-陶瓷股骨头和衬垫-7927-Bioloxdelta股骨头",
+                        "PLATFORM": "00-8775-032-02 DELTA CERAMIC FEM HEAD 0X32",
                         "OPERATION-TYPE": "手工添加",
                         "PROD_REGISTRATION": "",
                         "OTHER": "",
@@ -258,10 +258,10 @@ export default {
                     },
                     {
                         "CURRENT_STATE": "审核通过",
-                        "CODE": "0182389128748985445",
+                        "CODE": "0100885836071161",
                         "PRODUCT_SCANCODE": "",
-                        "PRODUCT_NAME": "一次性使用子宫颈扩张球囊导管",
-                        "PLATFORM": "20241009",
+                        "PRODUCT_NAME": "髋关节假体-陶瓷股骨头和衬垫-7927-Bioloxdelta股骨头",
+                        "PLATFORM": "00-8775-032-02 DELTA CERAMIC FEM HEAD 0X32",
                         "OPERATION-TYPE": "手工添加",
                         "PROD_REGISTRATION": "",
                         "OTHER": "",
