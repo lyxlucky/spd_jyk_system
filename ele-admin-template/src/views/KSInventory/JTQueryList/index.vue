@@ -350,9 +350,9 @@ export default {
         }
       ],
       toolbar: false,
-      pageSize: 20,
+      pageSize: 15,
       pagerCount: 2,
-      pageSizes: [10, 20, 30, 50, 100, 9999999],
+      pageSizes: [15, 20, 30, 50, 100, 9999999],
       // 表格选中数据
       selection: [],
       // 当前编辑数据
