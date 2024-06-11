@@ -46,8 +46,8 @@
             <el-card shadow="always">
                 <el-steps :active="2" align-center>
                     <el-step title="采购入库" description=""></el-step>
-                    <el-step title="扫码出库" description="彭于晏"></el-step>
-                    <el-step title="扫码出库" description="彭于晏"></el-step>
+                    <el-step title="扫码出库" description="陈志凯"></el-step>
+                    <el-step title="扫码出库" description="陈志凯"></el-step>
                     <el-step title="物资入库" description=""></el-step>
                     <el-step title="科室接收确认" description=""></el-step>
                     <el-step title="物资消耗" description=""></el-step>
