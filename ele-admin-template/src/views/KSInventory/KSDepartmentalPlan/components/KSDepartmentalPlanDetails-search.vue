@@ -58,9 +58,31 @@
           <el-button type="primary" size="small" @click="VarietyDataLzhLookShow=true">在用目录</el-button>
           <el-button type="primary" size="small" @click="DpetOneAuthWithDeptShow=true">科室目录</el-button>
           <el-button type="primary" size="small" @click="DownloadGuide">申领指引</el-button>
+
         </div>
       </el-col>
     </el-row>
+    <el-row>
+      <el-button type="primary" size="small" @click="dialogTableVisible2=true">导入模板</el-button>
+      <el-button type="primary" size="small" icon="el-icon-download" class="ele-btn-icon" @click="exportData">
+        导出
+      </el-button>
+    </el-row>
+
+    <el-dialog title="导入模板品种" :visible.sync="dialogTableVisible2" width='30%'>
+      <div style="width:100%;text-align:center">
+        <form action="" id="CreateBydFpform">
+          <input type="text" style="display:none;" name="TEMPLET_MAIN_ID" autocomplete="off" placeholder="" :value="TEMPLET_MAIN_ID">
+          <input type="text" style="display:none;" name="Token" autocomplete="off" placeholder="" :value="Token">
+
+          <div class="layui-form-item">
+            <label style="width:170px;">选择文件:</label>
+            <input id="FILE" style="height:30px;width:200px;display:inline;margin-left:5px;" name="FILE" type="file" value="" required="required" autocomplete="off">
+          </div>
+        </form>
+        <el-button type="primary" size="small" @click="importFile">确定</el-button>
+      </div>
+    </el-dialog>
     <!-- <el-row :gutter="10">
       <div class="ele-form-actions">
         <el-button type="primary" size="small" @click="openIntroduceUserDefinedTemp" :disabled='!IsDisabled'>自定义新增</el-button>
@@ -444,6 +466,9 @@ export default {
       } else {
         this.visibleLine = '';
       }
+    },
+    exportData() {
+      this.$emit('exportData', this.where);
     }
   },
   created() {
@@ -455,7 +480,7 @@ export default {
         break;
       }
     }
-    this.IsHide()
+    this.IsHide();
   }
 };
 </script>

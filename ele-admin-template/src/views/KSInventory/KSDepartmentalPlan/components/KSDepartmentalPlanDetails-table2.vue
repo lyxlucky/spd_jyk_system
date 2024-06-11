@@ -13,7 +13,7 @@
       <!-- 左表头 -->
       <template v-slot:toolbar>
         <!-- 搜索表单 -->
-        <KSDepartmentalPlanDetails-search @search="reload" @ClickReload="ClickReload" :KSDepartmentalPlanDataSearch='KSDepartmentalPlanDataSearch' :selection="selection" @showEditReoad="showEditReoad" :datasourceList="datasourceList" />
+        <KSDepartmentalPlanDetails-search @exportData="exportData" @search="reload" @ClickReload="ClickReload" :KSDepartmentalPlanDataSearch='KSDepartmentalPlanDataSearch' :selection="selection" @showEditReoad="showEditReoad" :datasourceList="datasourceList" />
       </template>
 
       <template v-slot:PlanQty="{ row }">
@@ -53,7 +53,7 @@
         </el-popconfirm>
       </template>
     </ele-pro-table>
-    <p style="display: flex;justify-content: flex-end;">实际申领数量合计: <b>{{sumNumber}}</b> 实际申领金额合计:  <b>{{sumAount}}</b> </p>
+    <p style="display: flex;justify-content: flex-end;">实际申领数量合计: <b>{{sumNumber}}</b> 实际申领金额合计: <b>{{sumAount}}</b> </p>
   </div>
 </template>
 
@@ -63,6 +63,7 @@ import {
   SerachPlanListDeta,
   UpdateApplyPlanBZ
 } from '@/api/KSInventory/KSDepartmentalPlan';
+import { utils, writeFile } from 'xlsx';
 export default {
   name: 'KSDepartmentalPlanTable',
   props: ['KSDepartmentalPlanData'],
@@ -321,8 +322,8 @@ export default {
       // 是否显示导入弹窗
       showImport: false,
       datasourceList: [],
-      sumNumber:0,
-      sumAount:0
+      sumNumber: 0,
+      sumAount: 0
     };
   },
   methods: {
@@ -351,6 +352,7 @@ export default {
     },
     /* 刷新表格 */
     reload(where) {
+      where.PlanNum = this.KSDepartmentalPlanData.PlanNum;
       this.$refs.table.reload({ page: 1, where: where });
     },
     ClickReload(IsReload) {
@@ -406,6 +408,69 @@ export default {
             message: '取消备注'
           });
         });
+    },
+    exportData(data) {
+      console.log(data)
+      const loading = this.$messageLoading('正在导出数据...');
+
+      var Dept_Two_CodeStr = '';
+      var userDeptList = this.$store.state.user.info.userDept;
+      for (let i = 0; i < userDeptList.length; i++) {
+        Dept_Two_CodeStr =
+          Dept_Two_CodeStr + userDeptList[i].Dept_Two_Code + ',';
+      }
+
+      this.$refs.table.doRequest(({ where, order }) => {
+        where.DeptCode = Dept_Two_CodeStr;
+        where.SerachName = data.SerachName;
+        SerachPlanListDeta({
+          page: 1,
+          limit: 999999,
+          where: where,
+          order: order
+        })
+          .then((res) => {
+            loading.close();
+            const array = [
+              [
+                '品种编码',
+                '品种全称',
+                '型号/规格',
+                '生产企业名称',
+                '申领数量',
+                '单位',
+                '结算价',
+                '供应商名称',
+              ]
+            ];
+            res.result.forEach((d) => {
+              array.push([
+                d.VarCode,
+                d.VarName,
+                d.GG,
+                d.Manufacturing,
+                d.PlanQty,
+                d.Unit,
+                d.Price,
+                d.SUPPLIER_NAME,
+              ]);
+            });
+            writeFile(
+              {
+                SheetNames: ['Sheet1'],
+                Sheets: {
+                  Sheet1: utils.aoa_to_sheet(array)
+                }
+              },
+              '科室计划详情.xlsx'
+            );
+            this.$message.success('导出成功');
+          })
+          .catch((e) => {
+            loading.close();
+            this.$message.error(e.message);
+          });
+      });
     }
   },
   computed: {
