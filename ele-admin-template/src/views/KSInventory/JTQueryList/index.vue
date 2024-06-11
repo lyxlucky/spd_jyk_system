@@ -124,7 +124,7 @@ export default {
           label: '公开版本号',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 80,
+          minWidth: 120,
           formatter: (_row, _column, cellValue) => {
             return '1';
           }
