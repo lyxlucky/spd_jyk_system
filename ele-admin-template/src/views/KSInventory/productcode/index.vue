@@ -222,6 +222,7 @@ export default {
                 },
                 {
                     prop: 'OTHER',
+                    slot:"OTHER",
                     label: '产品主码附件',
                     align: 'center',
                     showOverflowTooltip: true,
