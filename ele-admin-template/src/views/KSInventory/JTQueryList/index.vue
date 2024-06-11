@@ -114,13 +114,13 @@ export default {
             return '新增';
           }
         },
-        {
-          prop: 'VARIETIE_CODE_NEW',
-          label: 'DI',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 150
-        },
+        // {
+        //   prop: 'VARIETIE_CODE_NEW',
+        //   label: 'DI',
+        //   align: 'center',
+        //   showOverflowTooltip: true,
+        //   minWidth: 150
+        // },
         {
           prop: 'VARIETIE_CODE_NEW',
           label: '产品标识编列体系名粽',
