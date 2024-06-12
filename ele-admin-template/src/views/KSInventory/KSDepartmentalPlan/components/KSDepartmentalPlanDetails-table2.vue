@@ -410,7 +410,7 @@ export default {
         });
     },
     exportData(data) {
-      console.log(data)
+      console.log(data);
       const loading = this.$messageLoading('正在导出数据...');
 
       var Dept_Two_CodeStr = '';
@@ -440,7 +440,7 @@ export default {
                 '申领数量',
                 '单位',
                 '结算价',
-                '供应商名称',
+                '供应商名称'
               ]
             ];
             res.result.forEach((d) => {
@@ -452,7 +452,7 @@ export default {
                 d.PlanQty,
                 d.Unit,
                 d.Price,
-                d.SUPPLIER_NAME,
+                d.SUPPLIER_NAME
               ]);
             });
             writeFile(

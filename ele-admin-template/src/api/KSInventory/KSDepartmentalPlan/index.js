@@ -412,3 +412,13 @@ export async function deleteStockingDataItem(data) {
         return Promise.reject(new Error(res.data.msg));
     }
 }
+
+export async function ImportTempExcel(data) {
+    data.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+    const res = await request.post('/DeptApplyPlan/ImpApplyPlanV2Var', data);
+    if (res.data.code == 200) {
+        return res.data;
+    } else {
+        return Promise.reject(new Error(res.data.msg));
+    }
+}

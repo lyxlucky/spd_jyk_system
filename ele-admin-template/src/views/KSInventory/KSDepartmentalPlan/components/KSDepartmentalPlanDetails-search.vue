@@ -72,7 +72,7 @@
     <el-dialog title="导入模板品种" :visible.sync="dialogTableVisible2" width='30%'>
       <div style="width:100%;text-align:center">
         <form action="" id="CreateBydFpform">
-          <input type="text" style="display:none;" name="TEMPLET_MAIN_ID" autocomplete="off" placeholder="" :value="TEMPLET_MAIN_ID">
+          <input type="text" style="display:none;" name="PlanNum" autocomplete="off" placeholder="" :value="PlanNum">
           <input type="text" style="display:none;" name="Token" autocomplete="off" placeholder="" :value="Token">
 
           <div class="layui-form-item">
@@ -140,7 +140,8 @@ import {
   ToExamine,
   KeeptListDeta,
   isHaveZeroDel,
-  deleteZeroDel
+  deleteZeroDel,
+  ImportTempExcel
 } from '@/api/KSInventory/KSDepartmentalPlan';
 import IntroduceUserDefinedTemp from '@/views/KSInventory/IntroduceUserDefinedTemp/index.vue';
 import BidVarInfoDept from '@/views/KSInventory/ReferenceComponent/BidVarInfoDept/index.vue';
@@ -149,6 +150,7 @@ import VarietyDataLzhLook from '@/views/KSInventory/ReferenceComponent/VarietyDa
 import DpetOneAuthWithDept from '@/views/KSInventory/ReferenceComponent/DpetOneAuthWithDept/index.vue';
 import ApplyTemp from '@/views/KSInventory/ApplyTemp/index.vue';
 import IntroduceDefinedTemp from './aaaaccc.vue';
+import { TOKEN_STORE_NAME } from '@/config/setting';
 export default {
   props: ['KSDepartmentalPlanDataSearch', 'selection', 'datasourceList'],
   components: {
@@ -163,7 +165,6 @@ export default {
   data() {
     // 默认表单数据
     const defaultWhere = {
-      Token: '',
       PlanNum: '',
       is_second_app: '',
       SerachName: '',
@@ -182,7 +183,10 @@ export default {
       VarietyDataLzhLookShow: false,
       DpetOneAuthWithDeptShow: false,
       HidesubToExamine: false,
-      visibleLine: 'none'
+      visibleLine: 'none',
+      PlanNum: '',
+      dialogTableVisible2: false,
+      Token: sessionStorage.getItem(TOKEN_STORE_NAME)
     };
   },
   computed: {
@@ -236,6 +240,9 @@ export default {
       if (this.showEdit == false) {
         this.$emit('showEditReoad', false);
       }
+    },
+    KSDepartmentalPlanDataSearch() {
+      this.PlanNum = this.KSDepartmentalPlanDataSearch.PlanNum;
     }
   },
   methods: {
@@ -469,6 +476,26 @@ export default {
     },
     exportData() {
       this.$emit('exportData', this.where);
+    },
+    importFile() {
+      console.log(this.PlanNum);
+      if (this.PlanNum.length <= 0) {
+        this.$message.warning('请先选择计划单号');
+        return;
+      }
+      const loading = this.$messageLoading('导入中...');
+      var formData = new FormData(document.getElementById('CreateBydFpform'));
+      ImportTempExcel(formData)
+        .then((res) => {
+          loading.close();
+          this.dialogTableVisible2 = false;
+          this.$message.success(res.msg);
+          this.$emit('search', this.where);
+        })
+        .catch((err) => {
+          loading.close();
+          this.$message.error(err);
+        });
     }
   },
   created() {
