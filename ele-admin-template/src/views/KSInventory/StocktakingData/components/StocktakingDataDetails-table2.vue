@@ -120,10 +120,18 @@ export default {
         {
           columnKey: 'index',
           type: 'index',
-          width: 45,
+          label: '序号',
+          width: 60,
           align: 'center',
           showOverflowTooltip: true,
           fixed: 'left'
+        },
+        {
+          slot: 'STATE',
+          label: '状态',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 110
         },
         {
           prop: 'GENERATE_DATE',
@@ -190,7 +198,7 @@ export default {
           // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 80,
+          minWidth: 110,
           sortable: true
         },
         {
@@ -261,13 +269,6 @@ export default {
           prop: 'CHARGING_CODE',
           label: '计费编码',
           // sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 110
-        },
-        {
-          slot: 'STATE',
-          label: '状态',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110
