@@ -7,7 +7,7 @@
             <span>申领计划单列表</span>
           </div> -->
           <!-- :IsReload="IsReloadTag" -->
-          <StocktakingDataTabel @getCurrent="getCurrent" :IsReload="IsReloadTag"></StocktakingDataTabel>
+          <StocktakingDataTabel></StocktakingDataTabel>
         </el-card>
       </el-header>
       <el-main style="padding-top: 1px">
@@ -15,8 +15,10 @@
           <!-- <div slot="header" class="clearfix">
             <span>申领单详情</span>
           </div> -->
-          <!-- @clickReload="clickReload" v-if="isActive" -->
-          <StocktakingDataTabelDel :KSDepartmentalPlanData="KSDepartmentalPlanData" @clickReload="clickReload" v-if="isActive" ></StocktakingDataTabelDel>
+          <!-- @clickReload="clickReload" v-if="isActive" :KSDepartmentalPlanData="KSDepartmentalPlanData" -->
+           
+        <StocktakingDataTabelDel>
+        </StocktakingDataTabelDel>
         </el-card>
       </el-main>
     </el-container>
@@ -40,24 +42,20 @@ export default {
   },
   data() {
     return {
-      KSDepartmentalPlanData: {},
-      isActive: true,
-      IsReloadTag: false
+      // isActive: true,
+      // IsReloadTag: false
     };
   },
   methods: {
-    getCurrent(data) {
-      this.KSDepartmentalPlanData = data;
-    },
     reload() {
-      this.isActive = false;
-      this.$nextTick(() => {
-        this.isActive = true;
-      });
+      // this.isActive = false;
+      // this.$nextTick(() => {
+      //   this.isActive = true;
+      // });
     },
-    clickReload(data){
-      this.IsReloadTag = data
-    }
+    // clickReload(data){
+    //   this.IsReloadTag = data
+    // }
   },
   watch: {
     IsReload() {}

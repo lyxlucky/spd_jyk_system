@@ -56,7 +56,7 @@ import {
 import { GetStockDataMain, GetStockDataMainAll } from '@/api/KSInventory/StocktakingData';
 export default {
   name: 'StocktakingData',
-  props: ['IsReload'],
+  //props: ['IsReload'],
   components: {
     StocktakingDataSearch,
   },
@@ -187,8 +187,9 @@ export default {
     },
     onCurrentChange(current) {
       this.current = current;
-      // console.log(current);
-      this.$emit('getCurrent', current);
+      if(current){
+        this.$bus.$emit(`${this.$route.path}/TopTable/current`, current);
+      }
     },
 
     /* 删除数据 */
@@ -281,7 +282,7 @@ export default {
       })
     },
     screenChange() {
-      if (this.defaultHeight == '17vh') {
+      if (this.defaultHeight <= '17vh') {
         this.defaultHeight = window.innerHeight - 200 + 'px';
         this.$refs.table.reload({ page: 1, limit: 20 })
       } else {
@@ -291,15 +292,15 @@ export default {
     }
   },
   watch: {
-    IsReload() {
-      if (this.IsReload == true) {
-        this.reload(); // 调用刷新表格的方法
-      }
-    }
+    // IsReload() {
+    //   if (this.IsReload == true) {
+    //     this.reload(); // 调用刷新表格的方法
+    //   }
+    // }
   },
   created() {
     // this.getdatasource();
-    this.GetConsume();
+    //this.GetConsume();
   },
   // 取消监听bus事件
   destroyed() {

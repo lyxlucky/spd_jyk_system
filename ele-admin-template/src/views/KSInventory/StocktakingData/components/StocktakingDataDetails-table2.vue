@@ -2,7 +2,10 @@
   <div class="ele-body">
     <!-- <el-button type="danger" size="small" @click="aaa">aaa</el-button> -->
     <!-- 数据表格 -->
-    <ele-pro-table ref="table" :initLoad="false" :toolStyle="toolStyle" height="43vh" highlight-current-row :stripe="true" :rowClickChecked="true" :rowClickCheckedIntelligent="false" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" @selection-change="onSelectionChange" cache-key="StocktakingDataDetailsTabel">
+    <ele-pro-table ref="table" :initLoad="false" :toolStyle="toolStyle" height="43vh" highlight-current-row
+      :stripe="true" :rowClickChecked="true" :rowClickCheckedIntelligent="false" :pageSize="pageSize"
+      :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection"
+      @selection-change="onSelectionChange" cache-key="StocktakingDataDetailsTabel">
       <!-- 表头工具栏 -->
       <!-- 右表头 -->
       <!-- <template v-slot:toolkit>
@@ -11,21 +14,13 @@
         </el-button>
       </template> -->
       <!-- 左表头 -->
+      <!-- @ClickReload="ClickReload"  -->
       <template v-slot:toolbar>
         <!-- 搜索表单 -->
-        <StocktakingDataDetailsSearch 
-        @exportData="exportData" 
-        @search="reload" 
-        @ClickReload="ClickReload" 
-        :KSDepartmentalPlanDataSearch='KSDepartmentalPlanDataSearch' 
-        :KSDepartmentalPlanData='KSDepartmentalPlanData'
-        :selection="selection"
-        :current="current"
-        @showEditReoad="showEditReoad" 
-        :datasourceList="datasourceList"
-        @createBatchData="createBatchData"
-        @scanItem="scanItem"
-         />
+        <StocktakingDataDetailsSearch @exportData="exportData" @search="reload" @showEditReoad="showEditReoad"
+          :KSDepartmentalPlanDataSearch='KSDepartmentalPlanDataSearch' :KSDepartmentalPlanData='KSDepartmentalPlanData'
+          :selection="selection" :current="current" :datasourceList="datasourceList" @createBatchData="createBatchData"
+          @scanItem="scanItem" />
       </template>
 
       <template v-slot:PlanQty="{ row }">
@@ -33,21 +28,23 @@
         <!-- <el-input-number v-model="row.PlanQty" controls-position="right" @change="handleChange" :min="0" :max="9999" size="mini"></el-input-number> -->
       </template>
       <template v-slot:VarCode="{ row }">
-        <el-tag v-if="row.LEFT_APPLY_QTY==0" type="success">{{row.VarCode}}</el-tag>
-        <el-tag v-else type="danger">{{row.VarCode}}</el-tag>
+        <el-tag v-if="row.LEFT_APPLY_QTY == 0" type="success">{{ row.VarCode }}</el-tag>
+        <el-tag v-else type="danger">{{ row.VarCode }}</el-tag>
       </template>
       <template v-slot:REMARK="{ row }">
-        <el-link v-if="row.REMARK==null" type="info" @click="OpenUpApplyPlanBZBox(row.ID)">无</el-link>
-        <el-tag v-else type="primary" @click="OpenUpApplyPlanBZBox(row.ID)">{{row.REMARK}}</el-tag>
+        <el-link v-if="row.REMARK == null" type="info" @click="OpenUpApplyPlanBZBox(row.ID)">无</el-link>
+        <el-tag v-else type="primary" @click="OpenUpApplyPlanBZBox(row.ID)">{{ row.REMARK }}</el-tag>
       </template>
       <template v-slot:State="{ row }">
-        <el-tag v-if="row.State==0" type="success">新增</el-tag>
-        <el-tag v-if="row.State==1" type="success">已提交</el-tag>
-        <el-tag v-if="row.State==2" type="success">配送中</el-tag>
-        <el-tag v-if="row.State==5" type="success">已审核</el-tag>
-        <el-tag v-if="row.State==10" type="success">强制结束</el-tag>
-        <el-tag v-if="(row.State==6 || row.State==4) && row.SUM_Left_Apply_Qty == row.SUM_Apply_Qty" type="success">已审批</el-tag>
-        <el-tag v-if="(row.SUM_Left_Apply_Qty > 0 && row.SUM_Left_Apply_Qty != row.SUM_Apply_Qty)" type="success">未收全</el-tag>
+        <el-tag v-if="row.State == 0" type="success">新增</el-tag>
+        <el-tag v-if="row.State == 1" type="success">已提交</el-tag>
+        <el-tag v-if="row.State == 2" type="success">配送中</el-tag>
+        <el-tag v-if="row.State == 5" type="success">已审核</el-tag>
+        <el-tag v-if="row.State == 10" type="success">强制结束</el-tag>
+        <el-tag v-if="(row.State == 6 || row.State == 4) && row.SUM_Left_Apply_Qty == row.SUM_Apply_Qty"
+          type="success">已审批</el-tag>
+        <el-tag v-if="(row.SUM_Left_Apply_Qty > 0 && row.SUM_Left_Apply_Qty != row.SUM_Apply_Qty)"
+          type="success">未收全</el-tag>
         <!-- <el-tag v-if="(row.SUM_Left_Apply_Qty == 0)" type="success">已收全</el-tag> -->
         <el-tag v-if="(row.SUM_Left_Apply_Qty == 0)" type="success">已收全</el-tag>
         <!-- <el-tag v-for="(item) in row" :key="item.PlanNum" size="mini" type="primary" :disable-transitions="true">
@@ -66,23 +63,24 @@
       </template>
 
       <template v-slot:STATE="{ row }">
-        <el-tag v-if="row.STATE==0" type="danger">缺失</el-tag>
-        <el-tag v-if="row.STATE==1" type="success">存在</el-tag>
-        <el-tag v-if="row.STATE==2" type="warning">盘溢</el-tag>
+        <el-tag v-if="row.STATE == 0" type="danger">缺失</el-tag>
+        <el-tag v-if="row.STATE == 1" type="success">存在</el-tag>
+        <el-tag v-if="row.STATE == 2" type="warning">盘溢</el-tag>
       </template>
 
 
       <template v-slot:DEF_NO_PKG_CODE="{ row }">
-        <el-tag type="success">{{row.DEF_NO_PKG_CODE}}</el-tag>
+        <el-tag type="success">{{ row.DEF_NO_PKG_CODE }}</el-tag>
       </template>
 
     </ele-pro-table>
     <!-- 生成盘点数据 -->
-    <createBatchDataModal :KSDepartmentalPlanData="KSDepartmentalPlanData" 
-    :visible.sync="createBatchDataModalVisible"/>
+    <createBatchDataModal :KSDepartmentalPlanData="KSDepartmentalPlanData"
+      :visible.sync="createBatchDataModalVisible" />
 
     <!-- 扫码盘点 -->
-    <scanTotal @closeModal="closeModal" :visible.sync="scanTotalVisible" :KSDepartmentalPlanData="KSDepartmentalPlanData"/>
+    <scanTotal @closeModal="closeModal" :visible.sync="scanTotalVisible"
+      :KSDepartmentalPlanData="KSDepartmentalPlanData" />
 
     <!-- <p style="display: flex;justify-content: flex-end;">实际申领数量合计: <b>{{sumNumber}}</b> 实际申领金额合计: <b>{{sumAount}}</b> </p> -->
   </div>
@@ -100,7 +98,8 @@ import {
 import { GetStockDataDel } from '@/api/KSInventory/StocktakingData';
 export default {
   name: 'StocktakingDataDetails',
-  props: ['KSDepartmentalPlanData'],
+  //'KSDepartmentalPlanData'
+  props: [],
   components: {
     StocktakingDataDetailsSearch,
     createBatchDataModal,
@@ -162,7 +161,7 @@ export default {
         },
         {
           prop: 'DEF_NO_PKG_CODE',
-          slot:"DEF_NO_PKG_CODE",
+          slot: "DEF_NO_PKG_CODE",
           label: '定数码',
           align: 'center',
           showOverflowTooltip: true,
@@ -295,7 +294,8 @@ export default {
       sumNumber: 0,
       sumAount: 0,
       createBatchDataModalVisible: false,
-      scanTotalVisible:false,
+      scanTotalVisible: false,
+      KSDepartmentalPlanData: {},
     };
   },
   methods: {
@@ -316,13 +316,13 @@ export default {
     reload(where) {
       this.$refs.table.reload({ page: 1, where: where });
     },
-    ClickReload(IsReload) {
-      this.$emit('IsReload', IsReload);
-    },
+    // ClickReload(IsReload) {
+    //   this.$emit('IsReload', IsReload);
+    // },
     remove(row) {
       console.log(row);
     },
-    closeModal(){
+    closeModal() {
       this.reload();
     },
     onSelectionChange(selection) {
@@ -445,10 +445,10 @@ export default {
           });
       });
     },
-    createBatchData(){
+    createBatchData() {
       this.createBatchDataModalVisible = true;
     },
-    scanItem(){
+    scanItem() {
       this.scanTotalVisible = true;
     }
   },
@@ -458,8 +458,20 @@ export default {
     }
   },
   watch: {
-    KSDepartmentalPlanDataSearch() {
-      this.$forceUpdate();
+    // KSDepartmentalPlanDataSearch() {
+    //   this.$forceUpdate();
+    //   if (this.KSDepartmentalPlanData) {
+    //     var where = {
+    //       GENERATE_DATE: this.KSDepartmentalPlanData.GENERATE_DATE,
+    //       DEPT_TWO_CODE: this.KSDepartmentalPlanData.DEPT_TWO_CODE
+    //     };
+    //   }
+    //   this.$refs.table.reload({ page: 1, where: where });
+    // }
+  },
+  mounted() {
+    this.$bus.$on(`${this.$route.path}/TopTable/current`, (item) => {
+      this.KSDepartmentalPlanData = item;
       if (this.KSDepartmentalPlanData) {
         var where = {
           GENERATE_DATE: this.KSDepartmentalPlanData.GENERATE_DATE,
@@ -467,7 +479,10 @@ export default {
         };
       }
       this.$refs.table.reload({ page: 1, where: where });
-    }
+    })
+  },
+  beforeDestroy() {
+    this.$bus.$off(`${this.$route.path}/TopTable/current`);
   },
   created() {
     // this.getdatasource();

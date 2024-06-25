@@ -402,7 +402,6 @@ export default {
   created() {
   },
   mounted() {
-    console.log(this.KSDepartmentalPlanData.GENERATE_DATE)
   },
   beforeDestroy() { }
 };

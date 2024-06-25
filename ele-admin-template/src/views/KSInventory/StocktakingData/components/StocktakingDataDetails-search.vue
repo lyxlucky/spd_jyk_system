@@ -58,13 +58,15 @@
       </el-col>
     </el-row>
 
+    <!-- 
     <el-dialog title="提示" :visible.sync="centerDialogVisible" width="30%" center>
       <span>存在申领数量为0的明细</span>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="deleteZeroDelAndCommit">剔除并提交</el-button>
         <el-button @click="deleteZeroDelAndCommit2">取 消</el-button>
       </span>
-    </el-dialog>
+    </el-dialog> 
+    -->
 
   </el-form>
 </template>
