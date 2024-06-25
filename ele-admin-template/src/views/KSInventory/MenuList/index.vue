@@ -67,7 +67,10 @@ export default {
           res.title != '申领计划管理_审核按钮' &&
           res.title != '申领计划管理_审批按钮' &&
           res.title != '科室申领' &&
-          res.title != '菜单列表'
+          res.title != '菜单列表' &&
+          res.title != '入库管理' &&
+          res.title != 'UDI条码查询' &&
+          res.title != 'UDI主码管理' 
         );
       });
 
@@ -104,7 +107,7 @@ export default {
           }
         }
       }
-      console.log(permission_group2);
+      // console.log(permission_group2);
       this.MenuList = permission_group2;
     }
   },
