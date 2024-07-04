@@ -344,13 +344,15 @@ export default {
   methods: {
     /* 表格数据源 */
     datasource({ page, limit, where, order }) {
-      var Dept_Two_CodeStr = '';
-      var userDeptList = this.$store.state.user.info.userDept;
-      for (let i = 0; i < userDeptList.length; i++) {
-        Dept_Two_CodeStr =
-          Dept_Two_CodeStr + userDeptList[i].Dept_Two_Code + ',';
-      }
-      where.DeptCode = Dept_Two_CodeStr;
+      // var Dept_Two_CodeStr = '';
+      // var userDeptList = this.$store.state.user.info.userDept;
+      // //多部门
+      // for (let i = 0; i < userDeptList.length; i++) {
+      //   Dept_Two_CodeStr = Dept_Two_CodeStr + userDeptList[i].Dept_Two_Code + ',';
+      // }
+      //单部门
+      let currentDeptCode = this.$store.state.user.info.DeptNow.Dept_Two_Code + ",";
+      where.DeptCode = currentDeptCode;
       let data = GetJykDetailShelf({ page, limit, where, order }).then(
         (res) => {
           var tData = {
