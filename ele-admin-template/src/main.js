@@ -9,15 +9,24 @@ import VueClipboard from 'vue-clipboard2';
 import i18n from './i18n';
 import './styles/index.scss';
 import '@/assets'; // icon
+import VueViewer from 'v-viewer'
+import 'viewerjs/dist/viewer.css'
+import moment from 'moment';
 
+
+// 将 moment 挂载到 Vue 原型上
+Vue.prototype.$moment = moment;
 //事件总线
 export const EventBus = new Vue();
-
 //挂载事件总线
 Vue.prototype.$bus = EventBus
 Vue.config.productionTip = false;
 
-
+Vue.use(VueViewer,{
+  defaultOptions: {
+    zIndex: 9999, // 设置图片预览组件的层级，确保能在其他组件之上
+  },
+})
 Vue.use(EleAdmin, {
   response: {
     dataName: 'list'
