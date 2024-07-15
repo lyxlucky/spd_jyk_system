@@ -99,13 +99,13 @@
               @click="exportExcel()"
               >导出Excel</el-button
             >
-            <el-button
+            <!-- <el-button
               type="primary"
               icon="el-icon-_scan"
               size="mini"
               @click="scanInbound"
               >扫单入库</el-button
-            >
+            > -->
           </div>
         </el-col>
       </el-row>
