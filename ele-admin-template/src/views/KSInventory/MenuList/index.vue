@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import { API_BASE_URL, BACK_BASE_URL } from '@/config/setting';
+import { API_BASE_URL, BACK_BASE_URL,BLACK_ROUTER } from '@/config/setting';
 import { number } from 'echarts/core';
 
 export default {
@@ -37,23 +37,6 @@ export default {
   data() {
     return {
       MenuList: null,
-      icons: [
-        "saomashouhuo",
-        "light_batch_parallel",
-        "kucunxiangqing",
-        "churukujilu",
-        "keshiguanli",
-        "mobanguanli",
-        "mulu",
-        "kucuntixing",
-        "microscope",
-        "listtixing",
-        "liyongshuai",
-        "jiesuanxinxi",
-        "zonghejianguan_tongjifenxi_nor",
-        "jiance",
-        "keshi",
-      ]
     };
   },
   methods: {
@@ -62,21 +45,31 @@ export default {
     },
     permission_groupList() {
       var permission_group = this.$store.state.user.info.permission_group;
-      permission_group = permission_group.filter((res) => {
-        return (
-          res.title != '申领计划管理_审核按钮' &&
-          res.title != '申领计划管理_审批按钮' &&
-          res.title != '科室申领' &&
-          res.title != '菜单列表' &&
-          res.title != '入库管理' &&
-          res.title != 'UDI条码查询' &&
-          res.title != 'UDI主码管理' 
-        );
-      });
 
-      for (let i = 0; i < permission_group.length; i++) {
-        permission_group[i].icon = this.icons[i];
-      }
+      const blackList = 
+      [
+        '申领计划管理_审核按钮',
+        '申领计划管理_审批按钮',
+        '科室申领',
+        '菜单列表',
+        '入库管理',
+        'UDI条码查询',
+        'UDI主码管理',
+        'HIS使用计费',
+        '库存查询_',
+        '入库管理V2',
+        '医疗耗材验收',
+        'UDI院内流转查询',
+        '产品主码管理',
+        '利用率',
+        '新批号提醒',
+        '新资质审核',
+        '基础数据管理'
+      ]
+
+      permission_group = permission_group.filter((res) => {
+        return !blackList.includes(res.title);
+      });
 
       var ListCount = 7;
       var ListCount2 = parseInt(permission_group.length / ListCount);

@@ -2,7 +2,7 @@
  * 登录状态管理
  */
 import { formatMenus, toTreeData, formatTreeData,deepClone } from 'ele-admin';
-import { USER_MENUS } from '@/config/setting';
+import { USER_MENUS,BLACK_LIST_ROUTERS } from '@/config/setting';
 import { getUserInfo } from '@/api/layout';
 
 export default {
@@ -94,12 +94,16 @@ export default {
       const roles = result.Group_Name;
       commit('setRoles', roles);
       // 用户菜单, 过滤掉按钮类型并转为 children 形式
+      //过滤
+      const childrens = result.permission_group.filter((d) => {
+        return !BLACK_LIST_ROUTERS.includes(d.component);
+      });
 
       const { menus, homePath } = formatMenus(
         USER_MENUS ??
         toTreeData({
           // data: result.authorities?.filter((d) => d.menuType !== 1),
-          data: result.permission_group,
+          data: childrens,
           idField: 'ID',
           parentIdField: 'PID'
         })

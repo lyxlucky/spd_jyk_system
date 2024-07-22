@@ -30,6 +30,26 @@ export const HIDE_FOOTERS = [
   '/form/advanced'
 ];
 
+//路由黑名单
+export const BLACK_LIST_ROUTERS = [
+  //UDI院内流转查询
+  '/KSInventory/productcodesearch',
+  //医疗耗材验收
+  '/KSInventory/productcodescan',
+  //HIS使用计费
+  '/KSInventory/BasicInformation',
+  //产品主码管理
+  '/KSInventory/productcode',
+  //新批号提醒
+  '/KSInventory/KSNewBatchReminder',
+  //利用率
+  '/KSInventory/KSUtilizationRatio',
+  //入库管理V2
+  '/KSInventory/StorageManagementV2',
+  //库存查询
+  '/KSInventory/JTQueryList'
+]
+
 // 页签同路由不同参数可重复打开的路由
 export const REPEATABLE_TABS = [];
 
@@ -212,7 +232,7 @@ export const USER_MENUS = undefined;
 export const HOME_TITLE = undefined;
 
 // 首页路径, 为空则取第一个菜单的地址
-export const HOME_PATH = undefined;
+export const HOME_PATH = '/KSInventory/MenuList';
 // export const HOME_PATH = '/home/home';
 
 // 外层布局的路由地址
