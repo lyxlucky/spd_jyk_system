@@ -16,6 +16,7 @@
               查询
             </el-button>
             <el-button size="small" icon="el-icon-refresh-left" @click="reset">重置</el-button>
+            <el-button size="small" type="primary" icon="el-icon-paperclip" @click="syncData()">同步PDA盘点数据</el-button>
             <!-- 生成盘点数据 -->
             <el-button size="small" type="primary" icon="el-icon-refresh" @click="generateData()">生成盘点数据</el-button>
           </div>
@@ -27,7 +28,8 @@
 
 <script>
 import {
-  GenerateStockData
+  GenerateStockData,
+  syncStocktakingData
 } from '@/api/KSInventory/KSInventoryQuery';
 export default {
   components: {
@@ -58,6 +60,14 @@ export default {
     reset() {
       this.where = { ...this.defaultWhere };
       this.search();
+    },
+    syncData(){
+      syncStocktakingData().then((res)=>{
+        if (res.code != 200) return this.$message.error(res.msg)
+        this.$message.success(res.msg)
+      }).catch(err => {
+        this.$message.error(err)
+      })
     },
     //生成盘点数据
     generateData() {

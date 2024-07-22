@@ -163,4 +163,17 @@ export async function GenerateStockData(data) {
     }
 }
 
+export async function syncStocktakingData(data) {
+    var data2 = {};
+    data2.deptCode = store.state.user.info.DeptNow.Dept_Two_Code
+    data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+    var data3 = formdataify(data2)
+    const res = await request.post('/AJykDept/syncStocktakingData', data3);
+    if (res.data.code == 200) {
+        return res.data;
+    } else {
+        return Promise.reject(new Error(res.data.msg));
+    }
+}
+
 
