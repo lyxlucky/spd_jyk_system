@@ -55,7 +55,7 @@
     </template>
     <!-- 顶栏右侧区域 -->
     <template v-slot:right>
-      <p>版本号：V11.2.04</p> 
+      <!-- <p>版本号：V11.2.04</p>  -->
       <header-tools :fullscreen="fullscreen" @fullscreen="onFullscreen" />
     </template>
     <!-- 全局页脚 -->

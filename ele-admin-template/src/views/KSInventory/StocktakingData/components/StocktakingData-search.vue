@@ -65,6 +65,7 @@ export default {
       syncStocktakingData().then((res)=>{
         if (res.code != 200) return this.$message.error(res.msg)
         this.$message.success(res.msg)
+        this.search()
       }).catch(err => {
         this.$message.error(err)
       })

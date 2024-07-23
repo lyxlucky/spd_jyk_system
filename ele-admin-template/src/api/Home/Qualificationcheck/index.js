@@ -201,43 +201,38 @@ export async function GetRegulatoryListByMgmnID(data) {
     }
 }
 
-//TODO
 export async function UpDateProdInfo(data) {
     let formataData = {}
     formataData.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
-    formataData.PROD_REGISTRATION_CODE = data.where.current.PROD_REGISTRATION_CODE
-    formataData.PROD_REGISTRATION_NAME = data.where.current.PROD_REGISTRATION_NAME
-    formataData.MANUFACTURING_ENT_NAME = data.where.current.MANUFACTURING_ENT_NAME
-    formataData.ST_MANUFACTURING_ENT_NAME = data.where.current.ST_MANUFACTURING_ENT_NAME
-    formataData.APPROVAL_NUMBER = data.where.current.APPROVAL_NUMBER
+    formataData.PROD_REGISTRATION_CODE = data.where.current.PROD_REGISTRATION_CODE ?? '';
+    formataData.PROD_REGISTRATION_NAME = data.where.current.PROD_REGISTRATION_NAME ?? '';
+    formataData.MANUFACTURING_ENT_NAME = data.where.current.MANUFACTURING_ENT_NAME ?? '';
+    formataData.ST_MANUFACTURING_ENT_NAME = data.where.current.ST_MANUFACTURING_ENT_NAME ?? '';
+    formataData.APPROVAL_NUMBER = data.where.current.APPROVAL_NUMBER ?? '';
     formataData.REGISTRATION_ISSUING_DATE = toDateString(data.where.current.REGISTRATION_ISSUING_DATE,'yyyy-MM-dd')
     formataData.REGISTRATION_VALID_DATE = toDateString(data.where.current.REGISTRATION_VALID_DATE,'yyyy-MM-dd')
-    formataData.REGULATORY_CAT_CODE = data.where.current.REGULATORY_CAT_CODE
-    formataData.NOTE_DESCRIPTION = data.where.current.NOTE_DESCRIPTION
-    formataData.OLD_PROD_REGISTRATION_CODE = data.where.current.OLD_PROD_REGISTRATION_CODE
-    formataData.LICENCE_FILE_PATH = data.where.current.LICENCE_FILE_PATH
-    formataData.TRADE_TYPE = data.where.current.TRADE_TYPE
-    formataData.FOREIGN_REGIST_NAME = data.where.current.FOREIGN_REGIST_NAME
-    formataData.MANUFACTURING_LICENSE = data.where.current.MANUFACTURING_LICENSE
-    formataData.Brand = data.where.current.Brand
-    formataData.MEDICAL_CODE = data.where.current.MEDICAL_CODE
-    formataData.ChangVarName = data.where.current.ChangVarName
-    formataData.QXBZ = data.where.current.QXBZ
-    formataData.Nickname = store.state.user.info.Nickname
-    formataData.PRODUCTION_SITE = data.where.current.PRODUCTION_SITE
-    formataData.LEGAL_PERSON = data.where.current.LEGAL_PERSON
-    formataData.STRUCTURE_COMPOSITION = data.where.current.STRUCTURE_COMPOSITION
-    formataData.HIS_PROD_END_TIME = data.where.current.HIS_PROD_END_TIME
-    formataData.SCOPE_APPLICATION = data.where.current.SCOPE_APPLICATION
-    formataData.STORAGE_CONDITION = data.where.current.STORAGE_CONDITION
-    formataData.EDITPROD_PROD = data.EDITPROD_PROD
-    formataData.EDITPROD_MGMT = data.EDITPROD_MGMT
-    formataData.EDITPROD_REG = data.EDITPROD_REG
+    formataData.REGULATORY_CAT_CODE = data.where.current.SUPERVISE_CAT_CODE ?? '';
+    formataData.NOTE_DESCRIPTION = data.where.current.NOTE_DESCRIPTION ?? '';
+    formataData.OLD_PROD_REGISTRATION_CODE = data.where.current.OLD_PROD_REGISTRATION_CODE ?? '';
+    formataData.LICENCE_FILE_PATH = data.where.current.LICENCE_FILE_PATH ?? '';
+    formataData.TRADE_TYPE = data.where.current.TRADE_TYPE ?? '';
+    formataData.FOREIGN_REGIST_NAME = data.where.current.FOREIGN_REGIST_NAME ?? '';
+    formataData.MANUFACTURING_LICENSE = data.where.current.MANUFACTURING_LICENSE ?? '';
+    formataData.Brand = data.where.current.Brand ?? '';
+    formataData.MEDICAL_CODE = data.where.current.MEDICAL_CODE ?? '';
+    formataData.ChangVarName = data.where.current.ChangVarName ?? '';
+    formataData.QXBZ = data.where.current.QXBZ ?? '';
+    formataData.Nickname = store.state.user.info.Nickname ?? '';
+    formataData.PRODUCTION_SITE = data.where.current.PRODUCTION_SITE ?? '';
+    formataData.LEGAL_PERSON = data.where.current.LEGAL_PERSON ?? '';
+    formataData.STRUCTURE_COMPOSITION = data.where.current.STRUCTURE_COMPOSITION ?? '';
+    formataData.HIS_PROD_END_TIME = toDateString(data.where.current.HIS_PROD_END_TIME,"yyyy-MM-dd")
+    formataData.SCOPE_APPLICATION = data.where.current.SCOPE_APPLICATION ?? '';
+    formataData.STORAGE_CONDITION = data.where.current.STORAGE_CONDITION ?? '';
+    formataData.EDITPROD_PROD = data.EDITPROD_PROD ?? '';
+    formataData.EDITPROD_MGMT = data.EDITPROD_MGMT ?? '';
+    formataData.EDITPROD_REG = data.EDITPROD_REG ?? '';
     let req = formdataify(formataData);
     const res = await request.post('/ProdInfo/UpDateProdInfo',req);
-    if (res.data.code == 200) {
-        return res.data;
-    } else {
-        return Promise.reject(new Error(res.data.msg));
-    }
+    return res;
 }
