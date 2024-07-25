@@ -2,9 +2,9 @@
   <div class="ele-body">
     <el-card shadow="never">
       <!-- 搜索表单 -->
-      <user-search @search="reload" @exportData="exportData" />
+      <user-search @search="reload" @openEdit2="openEdit2" @exportData="exportData" />
       <!-- 数据表格 -->
-      <ele-pro-table ref="table" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" cache-key="KSInventoryBasicDataTable">
+      <ele-pro-table ref="table" :pageSize="pageSize" @current-change="onCurrentChange" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" cache-key="KSInventoryBasicDataTable">
         <!-- 表头工具栏 -->
         <!-- <template v-slot:toolbar>
           <el-button size="small" type="primary" icon="el-icon-plus" class="ele-btn-icon" @click="openEdit()">
@@ -17,13 +17,12 @@
             导入
           </el-button>
         </template> -->
-
         <!-- 操作列 -->
         <template v-slot:action="{ row }">
           <el-link type="primary" :underline="false" icon="el-icon-edit" @click="openEdit(row)">
             修改
           </el-link>
-          <el-button type="primary" size="mini" @click="openEdit2(row)">修改上下限</el-button>
+          <!-- <el-button type="primary" size="mini" @click="openEdit2(row)">修改上下限</el-button> -->
           <!-- <el-popconfirm class="ele-action" title="确定要删除此用户吗？" @confirm="remove(row)">
             <template v-slot:reference>
               <el-link type="danger" :underline="false" icon="el-icon-delete">
@@ -89,13 +88,23 @@ export default {
         {
           columnKey: 'action',
           label: '操作',
-          width: 200,
+          width: 100,
           align: 'center',
           resizable: false,
           slot: 'action',
           showOverflowTooltip: true,
           fixed: 'left'
         },
+        // {
+        //   label: '上限 / 下限',
+        //   sortable: 'custom',
+        //   align: 'center',
+        //   showOverflowTooltip: true,
+        //   minWidth: 150,
+        //   formatter(row, column, cellValue){
+        //     return row.up + ' / ' + row.down;
+        //   }
+        // },
         {
           prop: 'Varietie_Code_New',
           label: '品种编码',
@@ -126,7 +135,7 @@ export default {
           label: '品种名称',
           sortable: 'custom',
           align: 'center',
-          howOverflowTooltip: true,
+          showOverflowTooltip: true,
           minWidth: 180
         },
         {
@@ -254,14 +263,25 @@ export default {
       // this.isDeptTwoAuth = where.isDeptTwoAuth;
       this.$refs.table.reload({ page: 1, where: where });
     },
+    onCurrentChange(data) {
+      this.current = data;
+    },
     /* 打开编辑弹窗 */
     openEdit(row) {
       this.current = row;
       this.showEdit = true;
     },
-    openEdit2(row) {
-      this.current2 = row;
+    // openEdit2(row) {
+    //   this.current2 = row;
+    //   this.showEdit2 = true;
+    // },
+    openEdit2() {
+      if(this.selection.length == 0){
+        this.$message.error('请至少选择一条数据');
+        return;
+      }
       this.showEdit2 = true;
+      this.$bus.$emit(`${this.$route.path}/handleUpdate`, this.selection);
     },
     /* 打开导入弹窗 */
     openImport() {
@@ -435,6 +455,9 @@ export default {
   created() {
     // this.getdatasource();
     // console.log(this.$store.state.user.info)
+  },
+  beforeDestroy() {
+    this.$bus.$off(`${this.$route.path}/handleUpdate`)
   },
   mounted(){
     console.log(1)

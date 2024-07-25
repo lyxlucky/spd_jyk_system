@@ -5,7 +5,7 @@
       <!-- 表头工具栏 -->
       <template v-slot:toolbar>
         <!-- 搜索表单 -->
-        <KSDepartmentalPlan-search @search="reload" :sumCount ='sumCount'/>
+        <KSDepartmentalPlan-search @search="reload" @openEdit="openEdit" :current="current" :type="TYPE" :sumCount ='sumCount'/>
         <!-- <label>合计数量:<b>{{sumCount}}</b></label> -->
       </template>
 
@@ -34,14 +34,18 @@
       </template>
 
       <!-- 操作列 -->
-      <template v-slot:action="{ row }">
-        <el-button v-if="row.COUNT >=1 && row.DEF_NO_PKG_CODE == null && TYPE != ''" size="small" type="primary" icon="" class="ele-btn-icon" @click="openEdit(row)">
+      <!-- <template v-slot:action="{ row }"> -->
+        <!-- <el-button v-if="row.COUNT >=1 && row.DEF_NO_PKG_CODE == null && TYPE != ''" size="small" type="primary" icon="" class="ele-btn-icon" @click="openEdit(row)">
           散货出库
-        </el-button>
+        </el-button> -->
+
+        <!-- <el-button :disabled="!(row.COUNT >=1 && row.DEF_NO_PKG_CODE == null && TYPE != '')" size="small" type="primary" icon="" class="ele-btn-icon" @click="openEdit(row)">
+          散货出库
+        </el-button> -->
         <!-- <el-button v-else disabled>
         </el-button> -->
         <!-- <el-button type="primary" size="small" @click="dialogTableVisible = true">散货出库</el-button> -->
-      </template>
+      <!-- </template> -->
 
       <template v-slot:DEF_NO_PKG_CODE="{ row }">
         <el-tag v-if="row.COUNT>=1 && row.DEF_NO_PKG_CODE != null" type="success">{{row.DEF_NO_PKG_CODE}}</el-tag>
@@ -50,7 +54,7 @@
 
     </ele-pro-table>
 
-    <user-edit :visible.sync="showEdit" :data="rowData" @done="reload" />
+    <user-edit :visible.sync="showEdit" :data="rowData || current" @done="reload" />
   </div>
 </template>
 
@@ -98,16 +102,16 @@ export default {
           minWidth: 110,
           show: false
         },
-        {
-          columnKey: 'action',
-          label: '操作',
-          width: 150,
-          align: 'center',
-          resizable: false,
-          slot: 'action',
-          showOverflowTooltip: true,
-          fixed: 'left'
-        },
+        // {
+        //   columnKey: 'action',
+        //   label: '操作',
+        //   width: 150,
+        //   align: 'center',
+        //   resizable: false,
+        //   slot: 'action',
+        //   showOverflowTooltip: true,
+        //   fixed: 'left'
+        // },
         {
           prop: 'DEPT_TWO_NAME',
           label: '科室名称',
@@ -379,7 +383,7 @@ export default {
     },
     openEdit(row) {
       // console.log(row)
-      this.rowData = row;
+      // this.rowData = row;
       this.showEdit = true;
     },
     /* 删除数据 */

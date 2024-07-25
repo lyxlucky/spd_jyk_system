@@ -65,7 +65,7 @@
 <script>
 import KSDepartmentalPlanDetailsSearch from './components/KSDepartmentalPlanDetails-search';
 import { SerachPlanList } from '@/api/KSInventory/KSDepartmentalPlan';
-import { GetJykDetailShelf } from '@/api/KSInventory/KSInventoryQuery';
+import { GetJykDetailShelf,GetJykDetailShelfNew } from '@/api/KSInventory/KSInventoryQuery';
 export default {
   name: 'KSDepartmentalPlanTable',
   props: ['KSDepartmentalPlanData'],
@@ -353,7 +353,7 @@ export default {
       //单部门
       let currentDeptCode = this.$store.state.user.info.DeptNow.Dept_Two_Code + ",";
       where.DeptCode = currentDeptCode;
-      let data = GetJykDetailShelf({ page, limit, where, order }).then(
+      let data = GetJykDetailShelfNew({ page, limit, where, order }).then(
         (res) => {
           var tData = {
             count: res.total,

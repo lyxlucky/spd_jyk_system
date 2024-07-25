@@ -26,7 +26,8 @@
 import {
   GetClassificProp_Jy,
   UpdateVarietieBasicJyk,
-  UpDownKsQuery
+  UpDownKsQuery,
+  UpDownKsQueryNew
 } from '@/api/KSInventory/KSInventoryBasicData';
 
 export default {
@@ -46,6 +47,7 @@ export default {
       defaultForm,
       // 表单数据
       form: { ...defaultForm },
+      list:[],
       CLASS_NUM: [],
       CLASS_NUMVal: '',
       // 表单验证规则
@@ -82,33 +84,83 @@ export default {
       return this.$store.state.theme.styleResponsive;
     }
   },
+  mounted(){
+  },
   created() {
+    this.$bus.$on(`${this.$route.path}/handleUpdate`,this.handleUpdate)
     // console.log(this.data);
     // this.defaultForm.CONVERSION_RATIO = this.data.CONVERSION_RATIO;
     // this.defaultForm.CLASS_NUM = this.data.CLASS_NUM == null ? "0": this.data.CLASS_NUM;
     // this.defaultForm.DEVICE_REMARK = this.data.DEVICE_REMARK;
   },
   methods: {
+    handleUpdate(data){
+      this.list = data
+    },
     /* 保存编辑 */
+    // save() {
+    //   const loading = this.$messageLoading('正在保存...');
+    //   this.$refs.form.validate((valid) => {
+    //     if (!valid) {
+    //       return false;
+    //     }
+    //     var data = [{
+    //       dept_two_code: this.data.DEPT_TWO_CODE,
+    //       dept_two_name: this.data.DEPT_TWO_NAME,
+    //       VarietieCode: this.data.Varietie_Code,
+    //       Varietie_Name: this.data.Varietie_Name,
+    //       Varietie_Code_New: this.data.Varietie_Code_New,
+    //       Coefficient: this.data.Coefficient,
+    //       nickname: this.$store.state.user.info.UserName,
+    //       up: this.form.up,
+    //       down: this.form.down
+    //     }];
+    //     // this.loading = true;
+    //     UpDownKsQuery(data).then((res) => {
+    //       loading.close()
+    //       this.$emit('done');
+    //        this.$emit('update:visible', false);
+    //       this.$message.success(res.msg);
+    //     }).catch(err=>{
+    //       loading.close()
+    //       this.$message.error(err);
+    //     })
+    //   });
+    // },
+
     save() {
       const loading = this.$messageLoading('正在保存...');
       this.$refs.form.validate((valid) => {
         if (!valid) {
           return false;
         }
-        var data = [{
-          dept_two_code: this.data.DEPT_TWO_CODE,
-          dept_two_name: this.data.DEPT_TWO_NAME,
-          VarietieCode: this.data.Varietie_Code,
-          Varietie_Name: this.data.Varietie_Name,
-          Varietie_Code_New: this.data.Varietie_Code_New,
-          Coefficient: this.data.Coefficient,
-          nickname: this.$store.state.user.info.UserName,
-          up: this.form.up,
-          down: this.form.down
-        }];
+        // var data = [{
+        //   dept_two_code: this.list.DEPT_TWO_CODE,
+        //   dept_two_name: this.list.DEPT_TWO_NAME,
+        //   VarietieCode: this.data.Varietie_Code,
+        //   Varietie_Name: this.data.Varietie_Name,
+        //   Varietie_Code_New: this.data.Varietie_Code_New,
+        //   Coefficient: this.data.Coefficient,
+        //   nickname: this.$store.state.user.info.UserName,
+        //   up: this.form.up,
+        //   down: this.form.down
+        // }];
+
+        const props = this.list.map((item) => {
+            return {
+            dept_two_code: item.DEPT_TWO_CODE,
+            dept_two_name: item.DEPT_TWO_NAME,
+            VarietieCode: item.Varietie_Code,
+            Varietie_Name: item.Varietie_Name,
+            Varietie_Code_New: item.Varietie_Code_New,
+            Coefficient: item.Coefficient,
+            nickname: this.$store.state.user.info.UserName,
+            up: item.up,
+            down: item.down
+          }
+        })
         // this.loading = true;
-        UpDownKsQuery(data).then((res) => {
+        UpDownKsQueryNew(props).then((res) => {
           loading.close()
           this.$emit('done');
            this.$emit('update:visible', false);

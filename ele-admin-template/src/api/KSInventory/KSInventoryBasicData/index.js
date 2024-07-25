@@ -14,6 +14,7 @@ export async function getDeptAuthVarNew(data) {
     data2.CLASS_NUM = data.where.CLASS_NUM ? data.where.CLASS_NUM : '';
     data2.DEVICE_REMARK = data.where.DEVICE_REMARK ? data.where.DEVICE_REMARK : '';
     data2.isDeptTwoAuth = data.where.isDeptTwoAuth ? data.where.isDeptTwoAuth : '';
+    data2.type = data.where.type ? data.where.type : '';
     data2.order = data.order ? data.order : '';
     // data2.Dept_One_Code = data.where.Dept_One_Code ? data.where.Dept_One_Code : '';
     data2.Dept_One_Code = store.state.user.info.DeptNow.Dept_Two_Code ? store.state.user.info.DeptNow.Dept_Two_Code :""
@@ -96,6 +97,21 @@ export async function UpDownKsQuery(data) {
     var rep = formdataify(data2);
 
     const res = await request.post('/DeptTwoDefNoPackageStock/UpDownKsQuery', rep);
+    if (res.data.code == 200) {
+        return res.data;
+    } else {
+        return Promise.reject(new Error(res.data.msg));
+    }
+}
+
+export async function UpDownKsQueryNew(data) {
+    var data2 = {};
+    data2.json = JSON.stringify(data);
+    data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+
+    var rep = formdataify(data2);
+
+    const res = await request.post('/DeptTwoDefNoPackageStock/UpDownKsQueryNew', rep);
     if (res.data.code == 200) {
         return res.data;
     } else {

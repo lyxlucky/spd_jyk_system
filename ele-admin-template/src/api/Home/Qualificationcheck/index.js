@@ -236,3 +236,17 @@ export async function UpDateProdInfo(data) {
     const res = await request.post('/ProdInfo/UpDateProdInfo',req);
     return res;
 }
+
+export async function upPROD_REGISTRATION_BA_INFO(data) {
+    let formataData = {}
+    formataData.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+    formataData.type = data.type;
+    formataData.json = data.json;
+    let req = formdataify(formataData);
+    const res = await request.post('/VarietieBasicInfo/upPROD_REGISTRATION_BA_INFO',req);
+    if (res.data.code == 200) {
+        return res.data;
+    } else {
+        return Promise.reject(new Error(res.data.msg));
+    }
+}

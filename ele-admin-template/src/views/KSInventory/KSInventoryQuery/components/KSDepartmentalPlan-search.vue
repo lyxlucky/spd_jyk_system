@@ -100,6 +100,10 @@
 
           <el-button style="margin-left: 30px" size="small" type="primary" @click="GenerateStockData_btn()">生成盘点数据</el-button>
 
+          <el-button :disabled="outboundEnable" size="small" type="primary" icon="" class="ele-btn-icon" @click="openEdit()">
+            散货出库
+          </el-button>
+
           <label style="margin-left: 30px">合计数量:<b>{{sumCount}}</b></label>
 
         </div>
@@ -119,7 +123,7 @@ import {
 } from '@/api/KSInventory/KSInventoryQuery';
 import KSInventoryQuery2 from '@/views/KSInventory/ReferenceComponent/KSInventoryQuery/index.vue';
 export default {
-  props: ['sumCount'],
+  props: ['sumCount','current','type'],
   components: {
     KSInventoryQuery2
   },
@@ -153,9 +157,18 @@ export default {
     // 是否开启响应式布局
     styleResponsive() {
       return this.$store.state.theme.styleResponsive;
+    },
+    outboundEnable(){
+      if(this.current){
+        return !(this.current.COUNT >=1 && this.current.DEF_NO_PKG_CODE == null && this.type != '')
+      }
+      return true;
     }
   },
   methods: {
+    openEdit(){
+      this.$emit('openEdit', this.where);
+    },
     /* 搜索 */
     search() {
       this.$emit('search', this.where);

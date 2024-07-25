@@ -81,6 +81,33 @@ export async function GetJykDetailShelf(data) {
     }
 }
 
+export async function GetJykDetailShelfNew(data) {
+    var data2 = {};
+    data2.page = data.page;
+    data2.size = data.limit;
+    data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+    data2.Name = data.where.Name ? data.where.Name : '';
+    data2.TYPE = data.where.TYPE ? data.where.TYPE : '';
+    data2.DELIVERY_NUMBER = data.where.DELIVERY_NUMBER ? data.where.DELIVERY_NUMBER : '';
+    data2.DEF_NO_PKG_CODE = data.where.DEF_NO_PKG_CODE ? data.where.DEF_NO_PKG_CODE : '';
+    data2.MANUFACTURER = data.where.MANUFACTURER ? data.where.MANUFACTURER : '';
+    data2.PROD_REGISTRATION = data.where.PROD_REGISTRATION ? data.where.PROD_REGISTRATION : '';
+    data2.DEF_NO_PKG_CODE = data.where.DEF_NO_PKG_CODE ? data.where.DEF_NO_PKG_CODE : '';
+    data2.BATCH = data.where.BATCH ? data.where.BATCH : '';
+    // data2.DeptCode = store.state.user.info.DeptNow.Dept_Two_Code
+    // ? store.state.user.info.DeptNow.Dept_Two_Code : ""
+    data2.DeptCode = data.where.DeptCode ? data.where.DeptCode : '';
+
+    const res = await request.get('/AJykDept/GetJykDetailShelfNew', {
+        params: data2,
+    });
+    if (res.data.code == 200) {
+        return res.data;
+    } else {
+        return Promise.reject(new Error(res.data.msg));
+    }
+}
+
 export async function saveJykOutInfo(data) {
     var data2 = {};
     data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
