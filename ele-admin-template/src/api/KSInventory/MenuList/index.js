@@ -1,0 +1,20 @@
+import request from '@/utils/request';
+import { formdataify, DataToObject } from '@/utils/formdataify';
+import { TOKEN_STORE_NAME, } from '@/config/setting';
+import store from '@/store/index';
+
+export async function getStaticsDataHistogram(data) {
+    var Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+    var data2 = {}
+    //添加参数
+    data2.Token = Token;
+    data2.deptCode = store.state.user.info.DeptNow.Dept_Two_Code
+    data2.time = data.time
+    let data3 = formdataify(data2);
+    const res = await request.post('/DataStatics/getStaticsDataHistogram', data3);
+    if (res.data.code == 200) {
+      return res.data;
+    }
+    return Promise.reject(new Error(res.data.msg));
+  }
+
