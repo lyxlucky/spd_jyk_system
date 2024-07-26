@@ -43,24 +43,53 @@
         </div>
       </div>
     </el-card>
+    <!-- echarts 图表 -->
+    <el-card v-loading="loading" style="width: 50%">
+      <el-date-picker
+        v-model="year"
+        @change="getSaleroomData"
+        type="year"
+        value-format="yyyy-MM-dd"
+        placeholder="请选择年份"
+      >
+      </el-date-picker>
+      <span><h2>消耗统计柱状图</h2></span>
+      <ele-chart :option="saleChartOption" style="height: 285px" />
+    </el-card>
   </div>
 </template>
 
 <script>
   import { API_BASE_URL, BACK_BASE_URL, BLACK_ROUTER } from '@/config/setting';
+  import { getStaticsDataHistogram } from '@/api/KSInventory/MenuList/index';
   import { number } from 'echarts/core';
-
+  import EleChart from 'ele-admin/packages/ele-chart';
+import { load } from '@amap/amap-jsapi-loader';
   export default {
     name: 'MenuList',
     components: {
       // UserImport
+      EleChart
     },
     data() {
       return {
-        MenuList: null
+        MenuList: null,
+        saleroomData: [],
+        year: this.$moment().format('YYYY-MM-DD'),
+        loading: true
       };
     },
     methods: {
+      /* 获取数据 */
+      getSaleroomData() {
+        this.loading = true;
+        getStaticsDataHistogram({time:this.year}).then(res => {
+          this.loading = false;
+          this.saleroomData = res.result;
+        }).catch((err) => {
+          this.loading = false;
+        });
+      },
       changeRoute(data) {
         this.$router.push(this.$route?.query?.from ?? data);
       },
@@ -124,16 +153,50 @@
         this.MenuList = permission_group2;
       }
     },
+    mounted() {
+      //this.getSaleroomData();
+      this.$bus.$on("handleCommand",()=>{
+        this.getSaleroomData();
+      })
+    },
     computed: {
       // 是否开启响应式布局
       styleResponsive() {
         return this.$store.state.theme.styleResponsive;
+      },
+      /* 配置 */
+      saleChartOption() {
+        return {
+          tooltip: {
+            trigger: 'axis'
+          },
+          xAxis: [
+            {
+              type: 'category',
+              data: this.saleroomData.map((d) => d.TIME)
+            }
+          ],
+          yAxis: [
+            {
+              type: 'value'
+            }
+          ],
+          series: [
+            {
+              type: 'bar',
+              data: this.saleroomData.map((d) => d.COUNT)
+            }
+          ]
+        };
       }
     },
     created() {
       // this.getdatasource();
       this.permission_groupList();
+      this.getSaleroomData();
       // this.MenuList = this.$store.state.user.info.permission_group;
+
+      /* 获取数据 */
     }
   };
 </script>
