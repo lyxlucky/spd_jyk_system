@@ -44,27 +44,41 @@
       </div>
     </el-card>
     <!-- echarts 图表 -->
-    <el-card v-loading="loading" style="width: 50%">
-      <el-date-picker
-        v-model="year"
-        @change="getSaleroomData"
-        type="year"
-        value-format="yyyy-MM-dd"
-        placeholder="请选择年份"
-      >
-      </el-date-picker>
-      <span><h2>消耗统计柱状图</h2></span>
-      <ele-chart :option="saleChartOption" style="height: 285px" />
-    </el-card>
+    <div style="display: flex; justify-content: space-between;align-items: center;gap: 10px;">
+      <el-card v-loading="dataLoading" style="width: 50%;">
+        <el-date-picker
+          v-model="year"
+          @change="getSaleroomData"
+          type="year"
+          value-format="yyyy-MM-dd"
+          placeholder="请选择年份"
+        >
+        </el-date-picker>
+        <ele-chart :option="saleChartOption" style="height: 285px" />
+      </el-card>
+      <el-card v-loading="lineLoading" style="width: 50%;position: relative; bottom:7px">
+        <el-date-picker
+          v-model="year"
+          @change="getSaleroomData"
+          type="year"
+          value-format="yyyy-MM-dd"
+          placeholder="请选择年份"
+        >
+        </el-date-picker>
+        <ele-chart :option="lineChartOption" style="height: 285px" />
+      </el-card>
+    </div>
   </div>
 </template>
 
 <script>
   import { API_BASE_URL, BACK_BASE_URL, BLACK_ROUTER } from '@/config/setting';
-  import { getStaticsDataHistogram } from '@/api/KSInventory/MenuList/index';
+  import {
+    getStaticsDataHistogram,
+    getStaticsDataLineChart
+  } from '@/api/KSInventory/MenuList/index';
   import { number } from 'echarts/core';
   import EleChart from 'ele-admin/packages/ele-chart';
-import { load } from '@amap/amap-jsapi-loader';
   export default {
     name: 'MenuList',
     components: {
@@ -75,19 +89,40 @@ import { load } from '@amap/amap-jsapi-loader';
       return {
         MenuList: null,
         saleroomData: [],
-        year: this.$moment().format('YYYY-MM-DD'),
-        loading: true
+        lineChartData: [],
+        year: this.$moment().startOf('year').format('YYYY-MM-DD'),
+        dataLoading: true,
+        lineLoading: true
       };
     },
     methods: {
       /* 获取数据 */
       getSaleroomData() {
-        this.loading = true;
-        getStaticsDataHistogram({time:this.year}).then(res => {
-          this.loading = false;
-          this.saleroomData = res.result;
-        }).catch((err) => {
-          this.loading = false;
+        this.$nextTick(() => {
+          this.dataLoading = true;
+          getStaticsDataHistogram({ time: this.year })
+            .then((res) => {
+              this.dataLoading = false;
+              this.saleroomData = res.result;
+            })
+            .catch((err) => {
+              this.$message.error(err);
+              this.dataLoading = false;
+            });
+        });
+      },
+      getLineChartData() {
+        this.$nextTick(() => {
+          this.lineLoading = true;
+          getStaticsDataLineChart({ time: this.year })
+            .then((res) => {
+              this.lineLoading = false;
+              this.lineChartData = res.result;
+            })
+            .catch((err) => {
+              this.$message.error(err);
+              this.lineLoading = false;
+            });
         });
       },
       changeRoute(data) {
@@ -155,18 +190,61 @@ import { load } from '@amap/amap-jsapi-loader';
     },
     mounted() {
       //this.getSaleroomData();
-      this.$bus.$on("handleCommand",()=>{
+      this.$bus.$on('handleCommand', () => {
         this.getSaleroomData();
-      })
+        this.getLineChartData();
+      });
+    },
+    beforeDestroy() {
+      this.$bus.$off('handleCommand');
     },
     computed: {
       // 是否开启响应式布局
       styleResponsive() {
         return this.$store.state.theme.styleResponsive;
       },
+      lineChartOption() {
+        return {
+          title: {
+            text: '消耗增长折线图'
+          },
+          tooltip: {
+            trigger: 'axis'
+          },
+          legend: {
+            data: ['同比增长', '环比增长']
+          },
+          xAxis: [
+            {
+              type: 'category',
+              data: this.lineChartData.map((d) => d.TIME)
+            }
+          ],
+          yAxis: [
+            {
+              type: 'value'
+            }
+          ],
+          series: [
+            {
+              type: 'line',
+              name: '同比增长',
+              data: this.lineChartData.map((d) => d.YOY_CHANGE_PERCENT)
+            },
+            {
+              type: 'line',
+              name: '环比增长',
+              data: this.lineChartData.map((d) => d.MOM_CHANGE_PERCENT)
+            }
+          ]
+        };
+      },
       /* 配置 */
       saleChartOption() {
         return {
+          title: {
+            text: '消耗统计柱状图'
+          },
           tooltip: {
             trigger: 'axis'
           },
@@ -194,8 +272,8 @@ import { load } from '@amap/amap-jsapi-loader';
       // this.getdatasource();
       this.permission_groupList();
       this.getSaleroomData();
+      this.getLineChartData();
       // this.MenuList = this.$store.state.user.info.permission_group;
-
       /* 获取数据 */
     }
   };

@@ -18,3 +18,18 @@ export async function getStaticsDataHistogram(data) {
     return Promise.reject(new Error(res.data.msg));
   }
 
+  export async function getStaticsDataLineChart(data) {
+    var Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+    var data2 = {}
+    //添加参数
+    data2.Token = Token;
+    data2.deptCode = store.state.user.info.DeptNow.Dept_Two_Code
+    data2.time = data.time
+    let data3 = formdataify(data2);
+    const res = await request.post('/DataStatics/getStaticsDataLineChart', data3);
+    if (res.data.code == 200) {
+      return res.data;
+    }
+    return Promise.reject(new Error(res.data.msg));
+  }
+
