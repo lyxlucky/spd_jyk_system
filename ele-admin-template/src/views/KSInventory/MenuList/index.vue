@@ -47,7 +47,7 @@
     <div style="display: flex; justify-content: space-between;align-items: center;gap: 10px;">
       <el-card v-loading="dataLoading" style="width: 50%;">
         <el-date-picker
-          v-model="year"
+          v-model="dataYear"
           @change="getSaleroomData"
           type="year"
           value-format="yyyy-MM-dd"
@@ -58,8 +58,8 @@
       </el-card>
       <el-card v-loading="lineLoading" style="width: 50%;position: relative; bottom:7px">
         <el-date-picker
-          v-model="year"
-          @change="getSaleroomData"
+          v-model="lineYear"
+          @change="getLineChartData"
           type="year"
           value-format="yyyy-MM-dd"
           placeholder="请选择年份"
@@ -79,6 +79,7 @@
   } from '@/api/KSInventory/MenuList/index';
   import { number } from 'echarts/core';
   import EleChart from 'ele-admin/packages/ele-chart';
+import { data } from 'ele-admin/lib/ele-pro-table';
   export default {
     name: 'MenuList',
     components: {
@@ -90,7 +91,8 @@
         MenuList: null,
         saleroomData: [],
         lineChartData: [],
-        year: this.$moment().startOf('year').format('YYYY-MM-DD'),
+        dataYear: this.$moment().startOf('year').format('YYYY-MM-DD'),
+        lineYear: this.$moment().startOf('year').format('YYYY-MM-DD'),
         dataLoading: true,
         lineLoading: true
       };
@@ -100,7 +102,7 @@
       getSaleroomData() {
         this.$nextTick(() => {
           this.dataLoading = true;
-          getStaticsDataHistogram({ time: this.year })
+          getStaticsDataHistogram({ time: this.dataYear })
             .then((res) => {
               this.dataLoading = false;
               this.saleroomData = res.result;
@@ -114,7 +116,7 @@
       getLineChartData() {
         this.$nextTick(() => {
           this.lineLoading = true;
-          getStaticsDataLineChart({ time: this.year })
+          getStaticsDataLineChart({ time: this.lineYear })
             .then((res) => {
               this.lineLoading = false;
               this.lineChartData = res.result;
