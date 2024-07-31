@@ -16,6 +16,8 @@ export const BACK_BASE_URL = "http://localhost:16416";
 // 龙华妇幼内网
 // export const BACK_BASE_URL = "http://10.88.10.209:82/";
 
+// 华南医院外网
+// export const BACK_BASE_URL = "http://183.62.200.242:82/";
 
 // 项目名称
 export const PROJECT_NAME = process.env.VUE_APP_NAME;
