@@ -44,8 +44,15 @@
       </div>
     </el-card>
     <!-- echarts 图表 -->
-    <div style="display: flex; justify-content: space-between;align-items: center;gap: 10px;">
-      <el-card v-loading="dataLoading" style="width: 50%;">
+    <div
+      style="
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+      "
+    >
+      <el-card v-loading="dataLoading" style="width: 50%">
         <el-date-picker
           v-model="dataYear"
           @change="getSaleroomData"
@@ -56,7 +63,10 @@
         </el-date-picker>
         <ele-chart :option="saleChartOption" style="height: 285px" />
       </el-card>
-      <el-card v-loading="lineLoading" style="width: 50%;position: relative; bottom:7px">
+      <el-card
+        v-loading="lineLoading"
+        style="width: 50%; position: relative; bottom: 7px"
+      >
         <el-date-picker
           v-model="lineYear"
           @change="getLineChartData"
@@ -79,7 +89,6 @@
   } from '@/api/KSInventory/MenuList/index';
   import { number } from 'echarts/core';
   import EleChart from 'ele-admin/packages/ele-chart';
-import { data } from 'ele-admin/lib/ele-pro-table';
   export default {
     name: 'MenuList',
     components: {
@@ -149,7 +158,6 @@ import { data } from 'ele-admin/lib/ele-pro-table';
           'UDI院内流转查询',
           '产品主码管理',
           '利用率',
-          '新批号提醒',
           '新资质审核',
           '基础数据管理'
         ];

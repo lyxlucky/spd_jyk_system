@@ -4,6 +4,29 @@ export const API_BASE_URL = process.env.VUE_APP_API_BASE_URL;
 // 后端地址
 export const BACK_BASE_URL = "http://localhost:16416";
 
+//b2b后端地址
+export const B2B_BASE_URL = "http://47.106.243.154:802";
+
+// 计算b2b的的医院ID
+const caculateB2bCode = () => {
+  switch (HOME_HP ) {
+    case "zq":
+      return '81';
+    case "szhn":
+      return '161';
+    case "bd":
+      return '1';
+    case "lg":
+      return '2';
+    case "szlhfy":
+      return '221';
+    default:
+      return ''; // 默认值
+  }
+}
+
+export const B2B_BASE_CODE = caculateB2bCode();
+
 // 北大
 // export const BACK_BASE_URL = "http://47.106.243.154:9001";
 
@@ -42,8 +65,6 @@ export const BLACK_LIST_ROUTERS = [
   '/KSInventory/BasicInformation',
   //产品主码管理
   '/KSInventory/productcode',
-  //新批号提醒
-  '/KSInventory/KSNewBatchReminder',
   //利用率
   '/KSInventory/KSUtilizationRatio',
   //入库管理V2
@@ -63,172 +84,6 @@ export const KEEP_ALIVE_EXCLUDES = [];
 
 // 直接指定菜单数据
 export const USER_MENUS = undefined;
-// export const USER_MENUS = [
-//   {
-//     path: '/KSInventory',
-//     component: null,
-//     redirect: '/KSInventory/KSScanCodeRecGood',
-//     meta: {
-//       title: '科室申领',
-//       icon: 'el-icon-setting',
-//       routePath: '/KSInventory',
-//     },
-//     children: [
-//       {
-//         path: '/KSInventory/KSScanCodeRecGood',
-//         component: '/KSInventory/KSScanCodeRecGood',
-//         meta: {
-//           title: '扫码收货',
-//           icon: 'el-icon-_user-group',
-//         },
-//       },
-//       {
-//         path: '/KSInventory/ScanDefHis',
-//         component: '/KSInventory/ScanDefHis',
-//         meta: {
-//           title: '标签扫码出库',
-//           icon: 'el-icon-_user-group',
-//         },
-//       },
-//       {
-//         path: '/KSInventory/KSInventoryQuery',
-//         component: '/KSInventory/KSInventoryQuery',
-//         meta: {
-//           title: '库存详情',
-//           icon: 'el-icon-_user-group',
-//         },
-//       },
-//       {
-//         path: '/KSInventory/KSInventoryRecord',
-//         component: '/KSInventory/KSInventoryRecord',
-//         meta: {
-//           title: '出入库记录',
-//           icon: 'el-icon-_user-group',
-//         },
-//       },
-//       {
-//         path: '/KSInventory/KSDepartmentalPlan',
-//         component: '/KSInventory/KSDepartmentalPlan',
-//         meta: {
-//           title: '科室计划管理',
-//           icon: 'el-icon-_user-group',
-//         },
-//       },
-//       {
-//         path: '/KSInventory/ApplyTemp',
-//         component: '/KSInventory/ApplyTemp',
-//         meta: {
-//           title: '申领模板管理',
-//           icon: 'el-icon-_user-group',
-//         },
-//       },
-//       {
-//         path: '/KSInventory/KSInventoryBasicData',
-//         component: '/KSInventory/KSInventoryBasicData',
-//         meta: {
-//           title: '科室品种目录维护',
-//           icon: 'el-icon-_user-group',
-//         },
-//       },
-//       {
-//         path: '/KSInventory/KSExpirationReminder',
-//         component: '/KSInventory/KSExpirationReminder',
-//         meta: {
-//           title: '库存近效期提醒',
-//           icon: 'el-icon-_user-group',
-//         },
-//       },
-
-//       {
-//         path: '/KSInventory/InstrumentalAnalysis',
-//         component: '/KSInventory/InstrumentalAnalysis',
-//         meta: {
-//           title: '检验科仪器分析',
-//           icon: 'el-icon-_user-group',
-//         },
-//       },
-//       {
-//         path: '/KSInventory/KSNewBatchReminder',
-//         component: '/KSInventory/KSNewBatchReminder',
-//         meta: {
-//           title: '新批号提醒',
-//           icon: 'el-icon-_user-group',
-//         },
-//       },
-//       {
-//         path: '/KSInventory/KSUtilizationRatio',
-//         component: '/KSInventory/KSUtilizationRatio',
-//         meta: {
-//           title: '利用率',
-//           icon: 'el-icon-_user-group',
-//         },
-//       },
-//       // {
-//       //   path: '/KSInventory/DepaStorageQuery',
-//       //   component: '/KSInventory/DepaStorageQuery',
-//       //   meta: {
-//       //     title: 'SPD出库配送信息',
-//       //     icon: 'el-icon-_user-group',
-//       //   },
-//       // },
-//       {
-//         path: '/KSInventory/KSDeptConsumption',
-//         component: '/KSInventory/KSDeptConsumption',
-//         meta: {
-//           title: 'SPD结算信息',
-//           icon: 'el-icon-_user-group',
-//         },
-//       },
-//       // {
-//       //   path: '/KSInventory/KSInventoryStock',
-//       //   component: '/KSInventory/KSInventoryStock',
-//       //   meta: {
-//       //     title: '品种基础资料',
-//       //     icon: 'el-icon-_user-group',
-//       //   },
-//       // },
-//       // {
-//       //   path: '/KSInventory/KSStorageStatistics',
-//       //   component: '/KSInventory/KSStorageStatistics',
-//       //   meta: {
-//       //     title: '入库统计',
-//       //     icon: 'el-icon-_user-group',
-//       //   },
-//       // },
-//       // {
-//       //   path: '/KSInventory/KSOutgoingStatistics',
-//       //   component: '/KSInventory/KSOutgoingStatistics',
-//       //   meta: {
-//       //     title: '出库统计',
-//       //     icon: 'el-icon-_user-group',
-//       //   },
-//       // },
-//       // {
-//       //   path: '/KSInventory/KSTakeStock',
-//       //   component: '/KSInventory/KSTakeStock',
-//       //   meta: {
-//       //     title: '盘点库存',
-//       //     icon: 'el-icon-_user-group',
-//       //   },
-//       // },
-//     ],
-//   },
-//   // {
-//   //   path: '/demo',
-//   //   redirect: '/demo/test',
-//   //   meta: { title: '演示', icon: 'el-icon-setting' },
-//   //   children: [
-//   //     {
-//   //       path: '/demo/test',
-//   //       component: '/demo/test',
-//   //       meta: {
-//   //         title: '测试页面',
-//   //         icon: 'el-icon-setting'
-//   //       }
-//   //     }
-//   //   ]
-//   // }
-// ];
 
 // 首页名称, 为空则取第一个菜单的名称
 export const HOME_TITLE = undefined;

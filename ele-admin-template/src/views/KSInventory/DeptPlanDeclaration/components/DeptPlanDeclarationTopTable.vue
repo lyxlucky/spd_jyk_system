@@ -236,7 +236,7 @@ export default {
       this.reload();
     });
   },
-  destroyed(){
+  beforeDestroy(){
     this.$bus.$off('handleCommand')
   },
 };
