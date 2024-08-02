@@ -8,24 +8,24 @@ export const BACK_BASE_URL = "http://localhost:16416";
 export const B2B_BASE_URL = "http://47.106.243.154:802";
 
 // 计算b2b的的医院ID
-const caculateB2bCode = () => {
-  switch (HOME_HP ) {
-    case "zq":
-      return '81';
-    case "szhn":
-      return '161';
-    case "bd":
-      return '1';
-    case "lg":
-      return '2';
-    case "szlhfy":
-      return '221';
-    default:
-      return ''; // 默认值
-  }
-}
+// const caculateB2bCode = () => {
+//   switch (HOME_HP) {
+//     case "zq":
+//       return '81';
+//     case "szhn":
+//       return '161';
+//     case "bd":
+//       return '1';
+//     case "lg":
+//       return '2';
+//     case "szlhfy":
+//       return '221';
+//     default:
+//       return ''; // 默认值
+//   }
+// }
 
-export const B2B_BASE_CODE = caculateB2bCode();
+// export const B2B_BASE_CODE = caculateB2bCode();
 
 // 北大
 // export const BACK_BASE_URL = "http://47.106.243.154:9001";
