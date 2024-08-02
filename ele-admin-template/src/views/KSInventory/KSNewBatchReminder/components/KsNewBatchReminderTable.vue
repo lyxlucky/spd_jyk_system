@@ -176,7 +176,7 @@
         this.$refs.table.reload({ page: 1, where: where });
       },
       makeSure(){
-        const ids = this.selection.map((item) => item.ID).join(',');
+        const ids = this.selection.map((item) => `'${item.VARIETIE_CODE_NEW}'`).join(',');
         this.$confirm('确定定标吗?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
