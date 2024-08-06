@@ -57,7 +57,7 @@
           v-model="dataYear"
           @change="getSaleroomData"
           type="year"
-          value-format="yyyy-MM-dd"
+          value-format="yyyy"
           placeholder="请选择年份"
         >
         </el-date-picker>
@@ -71,7 +71,7 @@
           v-model="lineYear"
           @change="getLineChartData"
           type="year"
-          value-format="yyyy-MM-dd"
+          value-format="yyyy"
           placeholder="请选择年份"
         >
         </el-date-picker>
@@ -87,7 +87,6 @@
     getStaticsDataHistogram,
     getStaticsDataLineChart
   } from '@/api/KSInventory/MenuList/index';
-  import { number } from 'echarts/core';
   import EleChart from 'ele-admin/packages/ele-chart';
   export default {
     name: 'MenuList',
@@ -100,8 +99,8 @@
         MenuList: null,
         saleroomData: [],
         lineChartData: [],
-        dataYear: this.$moment().startOf('year').format('YYYY-MM-DD'),
-        lineYear: this.$moment().startOf('year').format('YYYY-MM-DD'),
+        dataYear: this.$moment().format('YYYY'),
+        lineYear: this.$moment().format('YYYY'),
         dataLoading: true,
         lineLoading: true
       };
@@ -159,7 +158,9 @@
           '产品主码管理',
           '利用率',
           '新资质审核',
-          '基础数据管理'
+          '基础数据管理',
+          '出库管理',
+          '库存管理'
         ];
         permission_group = permission_group.filter((res) => {
           return !blackList.includes(res.title);
@@ -194,7 +195,6 @@
             }
           }
         }
-        console.log(permission_group2);
         this.MenuList = permission_group2;
       }
     },
@@ -214,20 +214,76 @@
         return this.$store.state.theme.styleResponsive;
       },
       lineChartOption() {
+        const months = [
+          '一月',
+          '二月',
+          '三月',
+          '四月',
+          '五月',
+          '六月',
+          '七月',
+          '八月',
+          '九月',
+          '十月',
+          '十一月',
+          '十二月'
+        ];
+
+        // 初始化数据结构，默认填充为 0 或者 null
+        const initData = Array.from({ length: 12 }, () => ({
+          TOTAL_MONEY: 0,
+          PAST_TOTAL_MONEY: 0,
+          MON_CHANGE_PERCENT: 0,
+          YEAR_CHANGE_PERCENT: 0
+        }));
+
+        // 填充实际数据到对应的月份位置
+        this.lineChartData.forEach((item) => {
+          if (item.MONTH) {
+            const monthIndex = this.$moment(item.MONTH, 'YYYY-MM').month(); // 使用 moment.js 解析月份并转换为索引
+            initData[monthIndex].TOTAL_MONEY = item.TOTAL_MONEY;
+          }
+          if (item.PAST_MONTH) {
+            const pastMonthIndex = this.$moment(
+              item.PAST_MONTH,
+              'YYYY-MM'
+            ).month();
+            initData[pastMonthIndex].PAST_TOTAL_MONEY = item.PAST_TOTAL_MONEY;
+          }
+        });
+
+        // 计算同比和环比 计算环比时第一个月的上期默认为0，计算同比是需要考虑为0的情况
+        for (let i = 0; i < 12; i++) {
+          const current = initData[i].TOTAL_MONEY;
+          const previous = initData[i].PAST_TOTAL_MONEY;
+          const lastMonth = i > 0 ? initData[i - 1].TOTAL_MONEY : 0;
+
+          const yoy = previous ? ((current - previous) / previous) * 100 : 0;
+          const mom = lastMonth ? ((current - lastMonth) / lastMonth) * 100 : 0;
+
+          initData[i].YEAR_CHANGE_PERCENT = yoy.toFixed(2);
+          initData[i].MON_CHANGE_PERCENT = mom.toFixed(2);
+        }
+
+        const yoyChangePercentData = initData.map((d) => d.YEAR_CHANGE_PERCENT);
+        const momChangePercentData = initData.map((d) => d.MON_CHANGE_PERCENT);
+
         return {
           title: {
-            text: '消耗增长折线图'
+            text: '消耗折线图',
+            left: 'right',
+            top: 'top'
           },
           tooltip: {
             trigger: 'axis'
           },
           legend: {
-            data: ['同比增长', '环比增长']
+            data: ['同比', '环比']
           },
           xAxis: [
             {
               type: 'category',
-              data: this.lineChartData.map((d) => d.TIME)
+              data: months
             }
           ],
           yAxis: [
@@ -238,30 +294,75 @@
           series: [
             {
               type: 'line',
-              name: '同比增长',
-              data: this.lineChartData.map((d) => d.YOY_CHANGE_PERCENT)
+              name: '同比',
+              data: yoyChangePercentData
             },
             {
               type: 'line',
-              name: '环比增长',
-              data: this.lineChartData.map((d) => d.MOM_CHANGE_PERCENT)
+              name: '环比',
+              data: momChangePercentData
             }
           ]
         };
       },
       /* 配置 */
       saleChartOption() {
+        const months = [
+          '一月',
+          '二月',
+          '三月',
+          '四月',
+          '五月',
+          '六月',
+          '七月',
+          '八月',
+          '九月',
+          '十月',
+          '十一月',
+          '十二月'
+        ];
+
+        // 初始化数据结构，默认填充为 0 或者 null
+        const initData = Array.from({ length: 12 }, () => ({
+          TOTAL_MONEY: 0,
+          PAST_TOTAL_MONEY: 0
+        }));
+
+        // 填充实际数据到对应的月份位置
+        this.saleroomData.forEach((item) => {
+          if (item.MONTH) {
+            const monthIndex = this.$moment(item.MONTH, 'YYYY-MM').month(); // 使用 moment.js 解析月份并转换为索引
+            initData[monthIndex].TOTAL_MONEY = item.TOTAL_MONEY;
+          }
+          if (item.PAST_MONTH) {
+            const pastMonthIndex = this.$moment(
+              item.PAST_MONTH,
+              'YYYY-MM'
+            ).month();
+            initData[pastMonthIndex].PAST_TOTAL_MONEY = item.PAST_TOTAL_MONEY;
+          }
+        });
+
+        // 提取每个月的 TOTAL_MONEY 和 PAST_TOTAL_MONEY 数据
+        const totalMoneyData = initData.map((d) => d.TOTAL_MONEY);
+        const pastTotalMoneyData = initData.map((d) => d.PAST_TOTAL_MONEY);
+
         return {
           title: {
-            text: '消耗统计柱状图'
+            text: '消耗统计柱状图',
+            left: 'right',
+            top: 'top'
           },
           tooltip: {
             trigger: 'axis'
           },
+          legend: {
+            data: ['今年', '去年']
+          },
           xAxis: [
             {
               type: 'category',
-              data: this.saleroomData.map((d) => d.TIME)
+              data: months
             }
           ],
           yAxis: [
@@ -271,8 +372,14 @@
           ],
           series: [
             {
+              name: '今年',
               type: 'bar',
-              data: this.saleroomData.map((d) => d.COUNT)
+              data: totalMoneyData
+            },
+            {
+              name: '去年',
+              type: 'bar',
+              data: pastTotalMoneyData
             }
           ]
         };
