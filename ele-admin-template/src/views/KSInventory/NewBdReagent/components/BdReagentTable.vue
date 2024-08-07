@@ -67,43 +67,55 @@
             prop: 'dept_no',
             label: '科室名称',
             minWidth: 160,
-            align: 'center'
+            align: 'center',
+            showOverflowTooltip: true
           },
           {
             prop: 'dept_name',
             label: '用户名',
             minWidth: 130,
-            align: 'center'
+            align: 'center',
+            showOverflowTooltip: true
+
           },
           {
             prop: 'drugs_code',
             label: '品种编码',
             minWidth: 100,
-            align: 'center'
+            align: 'center',
+            showOverflowTooltip: true
+
           },
           {
             prop: 'drugs_name',
             label: '品种名称',
             minWidth: 120,
-            align: 'center'
+            align: 'center',
+            showOverflowTooltip: true
+
           },
           {
             prop: 'drugs_spec',
             label: '规格',
             minWidth: 60,
-            align: 'center'
+            align: 'center',
+            showOverflowTooltip: true
+
           },
           {
             prop: 'qty',
             label: '领出数量',
             minWidth: 60,
-            align: 'center'
+            align: 'center',
+            showOverflowTooltip: true
           },
           {
             prop: 'pick_time',
             label: '领出时间',
             minWidth: 60,
-            align: 'center'
+            align: 'center',
+            showOverflowTooltip: true
+
           }
         ],
         pageSize: 10,
@@ -125,7 +137,7 @@
         }).then((res) => {
           var tData = {
             count: res.total,
-            list: res.result
+            list: res.list
           };
           return tData;
         });

@@ -8,6 +8,8 @@ export async function queryPickAllDetail(data) {
     var Token = sessionStorage.getItem(TOKEN_STORE_NAME);
     var data2 = {}
     data2.Token = Token;
+    data2.page = data.page;
+    data2.size = data.limit;
     data2.dept_no = store.state.user.info.DeptNow.Dept_Two_Name
     data2.drugs_code = data.where.drugsCode ? data.where.drugsCode : '0';
     const [start_date, end_date] = data.where.date ? data.where.date : [moment().startOf('month').format('YYYY-MM-DD'), moment().endOf('month').format('YYYY-MM-DD')];
@@ -15,8 +17,12 @@ export async function queryPickAllDetail(data) {
     data2.end_date = end_date
     let data3 = formdataify(data2);
     const res = await request.post('/DepaStorageQuery/QueryPickAllDetail', data3);
-    if (res.data.code == 200) {
+    // const res = await fetch('http://47.106.243.154:9001/api/DepaStorageQuery/QueryPickAllDetail',{
+    //   method: 'POST',
+    //   body: data3
+    // }).then(response => response.json());
+    if (res.code == 1) {
       return res.data;
     }
-    return Promise.reject(new Error(res.data.msg));
+    return Promise.reject(new Error(res.msg));
   }
