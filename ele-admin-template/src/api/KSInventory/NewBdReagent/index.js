@@ -25,4 +25,8 @@ export async function queryPickAllDetail(data) {
       return res.data.data;
     }
     return Promise.reject(new Error(res.data.msg));
+    // if (res.code == 1) {
+    //   return res.data;
+    // }
+    // return Promise.reject(new Error(res.msg));
   }
