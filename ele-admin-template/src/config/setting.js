@@ -7,25 +7,28 @@ export const BACK_BASE_URL = "http://localhost:16416";
 //b2b后端地址
 export const B2B_BASE_URL = "http://47.106.243.154:802";
 
-// 计算b2b的的医院ID
-// const caculateB2bCode = () => {
-//   switch (HOME_HP) {
-//     case "zq":
-//       return '81';
-//     case "szhn":
-//       return '161';
-//     case "bd":
-//       return '1';
-//     case "lg":
-//       return '2';
-//     case "szlhfy":
-//       return '221';
-//     default:
-//       return ''; // 默认值
-//   }
-// }
+// 医院标识
+export const HOME_HP = 'bd'
 
-// export const B2B_BASE_CODE = caculateB2bCode();
+// 计算b2b的的医院ID
+const caculateB2bCode = () => {
+  switch (HOME_HP) {
+    case 'zq':
+      return '81';
+    case 'szhn':
+      return '161';
+    case 'bd':
+      return '1';
+    case 'lg':
+      return '2';
+    case 'szlhfy':
+      return '221';
+    default:
+      return ''; // 默认值
+  }
+}
+
+export const B2B_BASE_CODE = caculateB2bCode();
 
 // 北大
 // export const BACK_BASE_URL = "http://47.106.243.154:9001";
@@ -126,5 +129,3 @@ export const MAP_KEY = '006d995d433058322319fa797f2876f5';
 export const LICENSE_CODE =
   'dk9mcwJyetRWQlxWRiojIqJWdzJCLi4Wa0kjN3ojI0NWZBVmI6ICZpJCLiwiIkZGbph1N6Iibvl2cyVmdQfiETMuEjI0NW==';
 
-// 医院标识
-export const HOME_HP = 'bd'

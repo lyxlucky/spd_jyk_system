@@ -1,5 +1,6 @@
 import request from '@/utils/request';
 import { formdataify, DataToObject } from '@/utils/formdataify';
+import { B2B_BASE_CODE, B2B_BASE_URL } from '@/config/setting';
 import { TOKEN_STORE_NAME } from '@/config/setting';
 import { toDateString } from 'ele-admin';
 import store from '@/store/index';
@@ -248,5 +249,23 @@ export async function upPROD_REGISTRATION_BA_INFO(data) {
         return res.data;
     } else {
         return Promise.reject(new Error(res.data.msg));
+    }
+}
+
+export async function spdGetSupplierInfoForZong(data) {
+    let formataData = {}
+    formataData.page = data.page;
+    formataData.size = data.limit;
+    formataData.supName = data.where.supName ? data.where.supName : '';
+    formataData.hospitalName = data.where.hospitalName ? data.where.hospitalName : '';
+    formataData.hospitalId = B2B_BASE_CODE;
+    const res = await fetch(`${B2B_BASE_URL}/api/Supplier/spdGetSupplierInfoForZong`,{
+        method: 'POST',
+        body:formdataify(formataData)
+    }).then(response => response.json())
+    if (res.code == 200) {
+        return res;
+    } else {
+        return Promise.reject(new Error(res.msg));
     }
 }
