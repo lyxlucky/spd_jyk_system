@@ -21,8 +21,8 @@ export async function queryPickAllDetail(data) {
     //   method: 'POST',
     //   body: data3
     // }).then(response => response.json());
-    if (res.code == 1) {
-      return res.data;
+    if (res.data.code == 1) {
+      return res.data.data;
     }
-    return Promise.reject(new Error(res.msg));
+    return Promise.reject(new Error(res.data.msg));
   }
