@@ -43,6 +43,97 @@
         </div>
       </div>
     </el-card>
+
+    <div style="display: flex;justify-content: space-between;align-items: center;">
+      <el-card style="height: 110px; width: 49.6%" shadow="never">
+        <div class="demo-image" style="display: flex; flex-wrap: wrap">
+          <div
+            class="block"
+            style="margin: 10px"
+            v-for="(item, index) in StaticMenuList"
+            :Key="index"
+          >
+            <div
+              style="
+                width: 90px;
+                height: 70px;
+                border-radius: 2px;
+                margin-right: 20px;
+              "
+              @click="handleClickVisible(item.VISIBLE)"
+            >
+              <el-button type="text" class="button">
+                <div
+                  style="width: 100px; display: flex; justify-content: center"
+                >
+                  <svg-icon
+                    :icon-class="item.ICON"
+                    style="width: 40px; height: 40px"
+                  />
+                </div>
+                <div
+                  style="
+                    width: 100px;
+                    display: flex;
+                    justify-content: center;
+                    margin-top: 5px;
+                    color: #606266;
+                  "
+                >
+                  <div class="bottom clearfix">
+                    <span>{{ item.TITLE }}</span>
+                  </div>
+                </div>
+              </el-button>
+            </div>
+          </div>
+        </div>
+      </el-card>
+
+      <el-card style="height: 110px; width: 49.6%;position: relative; bottom: 7px" shadow="never">
+        <div class="demo-image" style="display: flex; flex-wrap: wrap">
+        <div
+          class="block"
+          v-for="(p,index) in NoticeMenuList"
+          :key="index"
+          style="margin: 10px"
+        >
+          <div
+            style="
+              width: 90px;
+              height: 70px;
+              border-radius: 2px;
+              margin-right: 20px;
+            "
+            @click="changeRoute(p.component)"
+          >
+            <el-button type="text" class="button">
+              <div style="width: 100px; display: flex; justify-content: center">
+                <svg-icon
+                  :icon-class="p.icon"
+                  style="width: 40px; height: 40px"
+                />
+              </div>
+              <div
+                style="
+                  width: 100px;
+                  display: flex;
+                  justify-content: center;
+                  margin-top: 5px;
+                  color: #606266;
+                "
+              >
+                <div class="bottom clearfix">
+                  <span>{{ p.title }}</span>
+                </div>
+              </div>
+            </el-button>
+          </div>
+        </div>
+      </div>
+      </el-card>
+    </div>
+
     <!-- echarts 图表 -->
     <div
       style="
@@ -78,10 +169,17 @@
         <ele-chart :option="lineChartOption" style="height: 285px" />
       </el-card>
     </div>
+
+    <BidVarInfoDept :visible.sync="BidListShowEdit" />
+    <VarietyDataLzhLook :visible.sync="VarietyDataLzhLookShow" />
+    <DpetOneAuthWithDept :visible.sync="DpetOneAuthWithDeptShow" />
   </div>
 </template>
 
 <script>
+  import BidVarInfoDept from '@/views/KSInventory/ReferenceComponent/BidVarInfoDept/index';
+  import VarietyDataLzhLook from '@/views/KSInventory/ReferenceComponent/VarietyDataLzhLook/index';
+  import DpetOneAuthWithDept from '@/views/KSInventory/ReferenceComponent/DpetOneAuthWithDept/index';
   import { API_BASE_URL, BACK_BASE_URL, BLACK_ROUTER } from '@/config/setting';
   import {
     getStaticsDataHistogram,
@@ -92,20 +190,56 @@
     name: 'MenuList',
     components: {
       // UserImport
-      EleChart
+      EleChart,
+      BidVarInfoDept,
+      VarietyDataLzhLook,
+      DpetOneAuthWithDept
     },
     data() {
       return {
         MenuList: null,
+        NoticeMenuList: null,
         saleroomData: [],
         lineChartData: [],
         dataYear: this.$moment().format('YYYY'),
         lineYear: this.$moment().format('YYYY'),
         dataLoading: true,
-        lineLoading: true
+        lineLoading: true,
+        BidListShowEdit: false,
+        VarietyDataLzhLookShow: false,
+        DpetOneAuthWithDeptShow: false,
+        StaticMenuList: [
+          {
+            ICON: 'zhongbiaomulu',
+            TITLE: '中标目录',
+            VISIBLE: 'BidListShowEdit'
+          },
+          {
+            ICON: 'zaiyongmulu',
+            TITLE: '在用目录',
+            VISIBLE: 'VarietyDataLzhLookShow'
+          },
+          {
+            ICON: 'keshimulu',
+            TITLE: '科室目录',
+            VISIBLE: 'DpetOneAuthWithDeptShow'
+          },
+          { ICON: 'shenglingzhiying', TITLE: '申领指引', VISIBLE: '' }
+        ]
       };
     },
     methods: {
+      handleClickVisible(visibleProperty) {
+        if (visibleProperty) {
+          this[visibleProperty] = true;
+        } else {
+          this.downloadGuide();
+        }
+      },
+      downloadGuide() {
+        var url = `${BACK_BASE_URL}/ZL/上药控股SPD科室操作手册.pdf`;
+        window.open(url.replace('/undefined', ''));
+      },
       /* 获取数据 */
       getSaleroomData() {
         this.$nextTick(() => {
@@ -164,6 +298,21 @@
         ];
         permission_group = permission_group.filter((res) => {
           return !blackList.includes(res.title);
+        });
+
+        //console.log(permission_group)
+
+        //控制菜单显示区域
+        const rightMenuList = [
+          '/KSInventory/KSNewBatchReminder',
+          '/KSInventory/KSExpirationReminder'
+        ]
+        this.NoticeMenuList = permission_group.filter((res) => {
+          return rightMenuList.includes(res.component);
+        });
+        
+        permission_group = permission_group.filter((res) => {
+          return !rightMenuList.includes(res.component);
         });
 
         var ListCount = 11;

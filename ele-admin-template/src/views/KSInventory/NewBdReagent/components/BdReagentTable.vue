@@ -35,7 +35,7 @@
                 <el-input
                   v-model="where.drugsCode"
                   size="mini"
-                  placeholder="请输入药品编码"
+                  placeholder="请输入耗材编码"
                 ></el-input>
               </el-col>
 
