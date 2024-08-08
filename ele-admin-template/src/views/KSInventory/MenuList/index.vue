@@ -44,7 +44,9 @@
       </div>
     </el-card>
 
-    <div style="display: flex;justify-content: space-between;align-items: center;">
+    <div
+      style="display: flex; justify-content: space-between; align-items: center"
+    >
       <el-card style="height: 110px; width: 49.6%" shadow="never">
         <div class="demo-image" style="display: flex; flex-wrap: wrap">
           <div
@@ -90,47 +92,52 @@
         </div>
       </el-card>
 
-      <el-card style="height: 110px; width: 49.6%;position: relative; bottom: 7px" shadow="never">
+      <el-card
+        style="height: 110px; width: 49.6%; position: relative; bottom: 7px"
+        shadow="never"
+      >
         <div class="demo-image" style="display: flex; flex-wrap: wrap">
-        <div
-          class="block"
-          v-for="(p,index) in NoticeMenuList"
-          :key="index"
-          style="margin: 10px"
-        >
           <div
-            style="
-              width: 90px;
-              height: 70px;
-              border-radius: 2px;
-              margin-right: 20px;
-            "
-            @click="changeRoute(p.component)"
+            class="block"
+            v-for="(p, index) in NoticeMenuList"
+            :key="index"
+            style="margin: 10px"
           >
-            <el-button type="text" class="button">
-              <div style="width: 100px; display: flex; justify-content: center">
-                <svg-icon
-                  :icon-class="p.icon"
-                  style="width: 40px; height: 40px"
-                />
-              </div>
-              <div
-                style="
-                  width: 100px;
-                  display: flex;
-                  justify-content: center;
-                  margin-top: 5px;
-                  color: #606266;
-                "
-              >
-                <div class="bottom clearfix">
-                  <span>{{ p.title }}</span>
+            <div
+              style="
+                width: 90px;
+                height: 70px;
+                border-radius: 2px;
+                margin-right: 20px;
+              "
+              @click="changeRoute(p.component)"
+            >
+              <el-button type="text" class="button">
+                <div
+                  style="width: 100px; display: flex; justify-content: center"
+                >
+                  <svg-icon
+                    :icon-class="p.icon"
+                    style="width: 40px; height: 40px"
+                  />
                 </div>
-              </div>
-            </el-button>
+                <div
+                  style="
+                    width: 100px;
+                    display: flex;
+                    justify-content: center;
+                    margin-top: 5px;
+                    color: #606266;
+                  "
+                >
+                  <div class="bottom clearfix">
+                    <span>{{ p.title }}</span>
+                  </div>
+                </div>
+              </el-button>
+            </div>
           </div>
         </div>
-      </div>
       </el-card>
     </div>
 
@@ -306,44 +313,40 @@
         const rightMenuList = [
           '/KSInventory/KSNewBatchReminder',
           '/KSInventory/KSExpirationReminder'
-        ]
+        ];
         this.NoticeMenuList = permission_group.filter((res) => {
           return rightMenuList.includes(res.component);
         });
-        
+
         permission_group = permission_group.filter((res) => {
           return !rightMenuList.includes(res.component);
         });
 
         var ListCount = 11;
-        var ListCount2 = parseInt(permission_group.length / ListCount);
-
-        var ListCount2Y = ListCount2;
+        var ListCount2 = Math.floor(permission_group.length / ListCount);
         var ListCount3 = permission_group.length % ListCount;
-        if (ListCount3 > 0) {
-          ListCount2Y++;
-        }
-
         var startCount = 0;
-        var permission_group2 = new Array();
+        var permission_group2 = [];
 
-        for (var i = 0; i <= ListCount2; i++) {
-          //一维
-          permission_group2[i] = new Array();
-          if (i == ListCount2) {
-            for (var k = 0; k < ListCount3; k++) {
-              //二维
-              permission_group2[i][k] = permission_group[startCount];
-              startCount++;
-            }
-          } else {
-            for (var j = 0; j < ListCount; j++) {
-              //二维
-              permission_group2[i][j] = permission_group[startCount];
-              startCount++;
-            }
+        // 主循环，用于处理完整的组
+        for (var i = 0; i < ListCount2; i++) {
+          permission_group2[i] = [];
+          for (var j = 0; j < ListCount; j++) {
+            permission_group2[i][j] = permission_group[startCount];
+            startCount++;
           }
         }
+
+        // 处理剩余的元素
+        if (ListCount3 > 0) {
+          var lastGroup = [];
+          for (var k = 0; k < ListCount3; k++) {
+            lastGroup[k] = permission_group[startCount];
+            startCount++;
+          }
+          permission_group2.push(lastGroup);
+        }
+
         this.MenuList = permission_group2;
       }
     },
