@@ -7,6 +7,7 @@
       @current-change="onCurrentChange"
       height="65vh"
       :rowClickChecked="true"
+      :initLoad="false"
       :stripe="true"
       :pageSize="pageSize"
       :pageSizes="pageSizes"
@@ -167,7 +168,7 @@
       // 是否开启响应式布局
       styleResponsive() {
         return this.$store.state.theme.styleResponsive;
-      }
+      },
     },
     mounted() {},
     beforeDestroy() {}

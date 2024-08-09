@@ -28,6 +28,7 @@
             type="danger"
             size="mini"
             icon="el-icon-delete"
+            :disabled="!isEnableDelete"
             @click="deleteItem()"
             >删除</el-button
           >
@@ -116,6 +117,7 @@
         return data;
       },
       onCurrentChange(row) {
+        this.$bus.$emit(`${this.$route.path}/LeftTableChange`, row);
         this.current = row;
       },
       reload(where) {
@@ -155,6 +157,9 @@
       // 是否开启响应式布局
       styleResponsive() {
         return this.$store.state.theme.styleResponsive;
+      },
+      isEnableDelete() {
+        return this.selection.length > 0;
       }
     },
     mounted(){

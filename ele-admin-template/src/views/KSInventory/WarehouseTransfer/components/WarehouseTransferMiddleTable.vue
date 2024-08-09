@@ -12,6 +12,7 @@
       :pageSizes="pageSizes"
       :columns="columns"
       :datasource="datasource"
+      :initLoad="false"
       :selection.sync="selection"
       cache-key="WarehouseTransferMiddleTable"
     >
@@ -21,30 +22,41 @@
             type="primary"
             size="mini"
             icon="el-icon-circle-plus-outline"
-            @click="createItem()"
+            :disabled="!isEnableCreate"
+            @click="WarehouseTransferCreateDetailVisible = true"
             >创建</el-button
           >
           <el-button
             type="danger"
             size="mini"
             icon="el-icon-delete"
+            :disabled="!isEnableDelete"
             @click="deleteItem()"
             >删除</el-button
           >
         </div>
       </template>
     </ele-pro-table>
+
+    <WarehouseTransferCreateDetail
+      :visible.sync="WarehouseTransferCreateDetailVisible"
+    />
   </div>
 </template>
 <script>
+  import WarehouseTransferCreateDetail from './WarehouseTransferCreateDetail';
   import {
     getDEPT_TK_Del,
     delDEPT_TK_VAR
   } from '@/api/KSInventory/WarehouseTransfer/index';
   export default {
     name: 'WarehouseTransferMiddleTable',
+    components: {
+      WarehouseTransferCreateDetail
+    },
     data() {
-      const defaultWhere = {};
+      const defaultWhere = {
+      };
       return {
         where: { ...defaultWhere },
         columns: [
@@ -125,7 +137,8 @@
         // 表格选中数据
         selection: [],
         // 当前编辑数据
-        current: null
+        current: null,
+        WarehouseTransferCreateDetailVisible: false
       };
     },
     methods: {
@@ -162,19 +175,22 @@
               TK_MAIN_ID: item.TK_MAIN_ID
             }))
           );
-          delDEPT_TK_VAR({json : ids}).then((res) => {
-            this.$message({
-              type: 'success',
-              message: res.msg
+          delDEPT_TK_VAR({ json: ids })
+            .then((res) => {
+              this.$message({
+                type: 'success',
+                message: res.msg
+              });
+            })
+            .catch((err) => {
+              this.$message({
+                type: 'error',
+                message: err
+              });
+            })
+            .finally(() => {
+              this.reload();
             });
-          }).catch((err) => {
-            this.$message({
-              type: 'error',
-              message: err
-            });
-          }).finally(() => {
-            this.reload()
-          });
         });
       }
     },
@@ -182,7 +198,24 @@
       // 是否开启响应式布局
       styleResponsive() {
         return this.$store.state.theme.styleResponsive;
+      },
+      isEnableCreate() {
+        return this.where.ID ? true : false;
+      },
+      isEnableDelete() {
+        return this.selection.length > 0 ? true : false;
       }
+    },
+    mounted() {
+      this.$bus.$on(`${this.$route.path}/LeftTableChange`, (row) => {
+        this.where = {
+          ID: row.ID
+        };
+        this.reload(this.where);
+      });
+    },
+    beforeDestroy() {
+      this.$bus.$off(`${this.$route.path}/LeftTableChange`);
     }
   };
 </script>

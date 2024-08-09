@@ -5,6 +5,7 @@ import store from '@/store/index';
 import moment from 'moment';
 
 export async function queryPickAllDetail(data) {
+    console.log(data)
     var Token = sessionStorage.getItem(TOKEN_STORE_NAME);
     var data2 = {}
     data2.Token = Token;
@@ -12,7 +13,7 @@ export async function queryPickAllDetail(data) {
     data2.size = data.limit;
     data2.dept_no = store.state.user.info.DeptNow.Dept_Two_Name
     data2.drugs_code = data.where.drugsCode ? data.where.drugsCode : '0';
-    const [start_date, end_date] = data.where.date ? data.where.date : [moment().startOf('month').format('YYYY-MM-DD'), moment().endOf('month').format('YYYY-MM-DD')];
+    const [start_date, end_date] = (data.where.date && data.where.date.length > 0) ? data.where.date : [moment().startOf('month').format('YYYY-MM-DD'), moment().endOf('month').format('YYYY-MM-DD')];
     data2.start_date = start_date
     data2.end_date = end_date
     let data3 = formdataify(data2);
