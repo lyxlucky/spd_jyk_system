@@ -4,8 +4,8 @@
       ['', 'login-form-right', 'login-form-left'][direction]
     ]">
     <el-form ref="form" size="large" :model="form" :rules="rules" class="login-form ele-bg-white" @keyup.enter.native="submit">
-      <div>
-        <img src="@/assets/logoBD.jpg" alt="some_text">
+      <div style=" width: 100%;text-align: center; ">
+        <img style=" max-width: 100%;height: auto;display: inline-block;" src="@/assets/logoBD.jpg" alt="some_text">
         <h4>医疗机构医疗器械供应链管理系统（SPD）</h4>
         <!-- <h4>北京大学深圳医院</h4> -->
       </div>
