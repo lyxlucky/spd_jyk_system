@@ -45,6 +45,9 @@ export const B2B_BASE_CODE = caculateB2bCode();
 // 华南医院外网
 // export const BACK_BASE_URL = "http://183.62.200.242:82/";
 
+// 萨米医院外网
+// export const BACK_BASE_URL = "http://120.78.226.92:18002/";
+
 // 项目名称
 export const PROJECT_NAME = process.env.VUE_APP_NAME;
 
