@@ -9,7 +9,8 @@
         <template slot="label">
           医院名称
         </template>
-        北京大学深圳医院
+        <!-- 北京大学深圳医院 -->
+        <!-- 深圳市萨米国际医疗中心 -->
       </el-descriptions-item>
       <el-descriptions-item labelStyle="background: #D7E6FA;">
         <template slot="label">
