@@ -19,13 +19,6 @@
       <template v-slot:toolbar>
         <div>
           <el-button
-            type="primary"
-            size="mini"
-            icon="el-icon-circle-plus-outline"
-            @click="createItem()"
-            >创建</el-button
-          >
-          <el-button
             type="danger"
             size="mini"
             icon="el-icon-delete"
@@ -47,7 +40,10 @@
   </div>
 </template>
 <script>
-  import { getDEPT_TK_DEF,delDEPT_TK_DEF } from '@/api/KSInventory/WarehouseTransfer/index';
+  import {
+    getDEPT_TK_DEF,
+    delDEPT_TK_DEF
+  } from '@/api/KSInventory/WarehouseTransfer/index';
   export default {
     name: 'WarehouseTransferRightTable',
     data() {
@@ -78,28 +74,14 @@
           },
           {
             prop: 'BATCH_PRODUCTION_DATE',
-            label: '效期开始时间',
+            label: '生产日期',
             minWidth: 100,
             align: 'center',
             showOverflowTooltip: true
           },
           {
             prop: 'BATCH_VALIDITY_PERIOD',
-            label: '效期结束时间',
-            minWidth: 100,
-            align: 'center',
-            showOverflowTooltip: true
-          },
-          {
-            prop: 'CREATE_MAN',
-            label: '创建人',
-            minWidth: 60,
-            align: 'center',
-            showOverflowTooltip: true
-          },
-          {
-            prop: 'CREATE_TIME',
-            label: '创建时间',
+            label: '有效期',
             minWidth: 100,
             align: 'center',
             showOverflowTooltip: true
@@ -121,13 +103,14 @@
           limit,
           where,
           order
-        }).then((res) => {
-          var tData = {
-            count: res.total,
-            list: res.result
-          };
-          return tData;
-        });
+        })
+          .then((res) => {
+            var tData = {
+              count: res.total,
+              list: res.result
+            };
+            return tData;
+          })
         return data;
       },
       onCurrentChange(row) {
@@ -136,7 +119,6 @@
       reload(where) {
         this.$refs.table.reload({ page: 1, where: where });
       },
-      createItem() {},
       deleteItem() {
         this.$confirm('是否删除选中数据?', '提示', {
           confirmButtonText: '确定',
@@ -145,22 +127,25 @@
         }).then(() => {
           const ids = JSON.stringify(
             this.selection.map((item) => ({
-              ID: item.ID,
+              ID: item.ID
             }))
           );
-          delDEPT_TK_DEF({json : ids}).then((res) => {
-            this.$message({
-              type: 'success',
-              message: res.msg
+          delDEPT_TK_DEF({ json: ids })
+            .then((res) => {
+              this.$message({
+                type: 'success',
+                message: res.msg
+              });
+            })
+            .catch((err) => {
+              this.$message({
+                type: 'error',
+                message: err
+              });
+            })
+            .finally(() => {
+              this.reload();
             });
-          }).catch((err) => {
-            this.$message({
-              type: 'error',
-              message: err
-            });
-          }).finally(() => {
-            this.reload()
-          });
         });
       }
     },
@@ -168,10 +153,22 @@
       // 是否开启响应式布局
       styleResponsive() {
         return this.$store.state.theme.styleResponsive;
-      },
+      }
     },
-    mounted() {},
-    beforeDestroy() {}
+    mounted() {
+      this.$bus.$on(`${this.$route.path}/MiddleTableChange`, ({ row }) => {
+        if (row) {
+          this.where = {
+            TK_MAIN_ID: row.TK_MAIN_ID,
+            TK_DEL_ID: row.ID
+          };
+          this.reload(this.where);
+        }
+      });
+    },
+    beforeDestroy() {
+      this.$bus.$off(`${this.$route.path}/MiddleTableChange`);
+    }
   };
 </script>
 <style lang=""></style>

@@ -36,15 +36,31 @@
           >
         </div>
       </template>
+
+      <template v-slot:action>
+        <el-button
+          type="primary"
+          size="mini"
+          icon="el-icon-circle-plus-outline"
+          @click="showCreateDefPkgModal"
+          >创建定数包</el-button
+        >
+      </template>
     </ele-pro-table>
 
     <WarehouseTransferCreateDetail
+      :TK_MAIN_ID="where.ID"
+      @reload="reload"
       :visible.sync="WarehouseTransferCreateDetailVisible"
     />
+
+    <WarehouseTransferDefPkgTable  :visible.sync='WarehouseTransferDefPkgTableVisible' />
+
   </div>
 </template>
 <script>
   import WarehouseTransferCreateDetail from './WarehouseTransferCreateDetail';
+  import WarehouseTransferDefPkgTable from './WarehouseTransferDefPkgTable';
   import {
     getDEPT_TK_Del,
     delDEPT_TK_VAR
@@ -52,10 +68,12 @@
   export default {
     name: 'WarehouseTransferMiddleTable',
     components: {
-      WarehouseTransferCreateDetail
+      WarehouseTransferCreateDetail,
+      WarehouseTransferDefPkgTable
     },
     data() {
       const defaultWhere = {
+        ID: null
       };
       return {
         where: { ...defaultWhere },
@@ -68,9 +86,16 @@
             fixed: 'left'
           },
           {
+            slot: 'action',
+            label: '操作',
+            minWidth: 140,
+            align: 'center',
+            showOverflowTooltip: true
+          },
+          {
             prop: 'VARIETIE_CODE_NEW',
             label: '品种编码',
-            minWidth: 100,
+            minWidth: 120,
             align: 'center',
             showOverflowTooltip: true
           },
@@ -83,7 +108,7 @@
           },
           {
             prop: 'SPECIFICATION_OR_TYPE',
-            label: '包装规格',
+            label: '包装型号',
             minWidth: 130,
             align: 'center',
             showOverflowTooltip: true
@@ -115,20 +140,6 @@
             minWidth: 120,
             align: 'center',
             showOverflowTooltip: true
-          },
-          {
-            prop: 'CREATE_MAN',
-            label: '创建人',
-            minWidth: 60,
-            align: 'center',
-            showOverflowTooltip: true
-          },
-          {
-            prop: 'CREATE_TIME',
-            label: '创建时间',
-            minWidth: 100,
-            align: 'center',
-            showOverflowTooltip: true
           }
         ],
         pageSize: 10,
@@ -138,7 +149,8 @@
         selection: [],
         // 当前编辑数据
         current: null,
-        WarehouseTransferCreateDetailVisible: false
+        WarehouseTransferCreateDetailVisible: false,
+        WarehouseTransferDefPkgTableVisible: false
       };
     },
     methods: {
@@ -157,7 +169,11 @@
         });
         return data;
       },
+      showCreateDefPkgModal(){
+        this.WarehouseTransferDefPkgTableVisible = true;
+      },
       onCurrentChange(row) {
+        this.$bus.$emit(`${this.$route.path}/MiddleTableChange`, { row: row });
         this.current = row;
       },
       reload(where) {
@@ -208,10 +224,12 @@
     },
     mounted() {
       this.$bus.$on(`${this.$route.path}/LeftTableChange`, (row) => {
-        this.where = {
-          ID: row.ID
-        };
-        this.reload(this.where);
+        if (row) {
+          this.where = {
+            ID: row.ID
+          };
+          this.reload(this.where);
+        }
       });
     },
     beforeDestroy() {
