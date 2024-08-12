@@ -8,6 +8,9 @@ export const BACK_BASE_URL = "http://localhost:16416";
 export const B2B_BASE_URL = "http://47.106.243.154:802";
 
 // 医院标识
+// bd 北大
+// sm 萨米
+// fy 龙华妇幼
 export const HOME_HP = 'bd'
 
 // 计算b2b的的医院ID

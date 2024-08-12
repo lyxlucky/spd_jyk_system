@@ -5,7 +5,8 @@
     ]">
     <el-form ref="form" size="large" :model="form" :rules="rules" class="login-form ele-bg-white" @keyup.enter.native="submit">
       <div style=" width: 100%;text-align: center; ">
-        <img style=" max-width: 100%;height: auto;display: inline-block;" src="@/assets/logoBD.jpg" alt="some_text">
+        <!-- src="@/assets/logoBD.jpg" -->
+        <img style=" max-width: 100%;height: auto;display: inline-block;" :src="logo" alt="some_text">
         <h4>医疗机构医疗器械供应链管理系统（SPD）</h4>
         <!-- <h4>北京大学深圳医院</h4> -->
       </div>
@@ -77,6 +78,7 @@ import CryptoJS from 'crypto-js';
 import I18nIcon from '@/layout/components/i18n-icon.vue';
 import { getToken } from '@/utils/token-util';
 import { login, getCaptcha } from '@/api/login';
+import { HOME_HP } from '@/config/setting';
 
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
@@ -122,6 +124,19 @@ export default {
           }
         ]
       };
+    },
+    // logo
+    logo() {
+      switch(HOME_HP) {
+        case 'bd':
+          return require('@/assets/logoBD.jpg');
+        case 'fy':
+          return require('@/assets/logoFY.jpg');
+        case 'sm':
+          return require('@/assets/logoSM.jpg');
+        default:
+          return require('@/assets/logoBD.jpg');
+      }
     }
   },
   created() {
