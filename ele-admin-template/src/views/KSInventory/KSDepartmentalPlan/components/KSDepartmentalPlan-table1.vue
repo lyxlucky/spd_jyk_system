@@ -165,7 +165,7 @@ export default {
       toolbar: false,
       pageSize: 2,
       pagerCount: 2,
-      pageSizes: [10, 20, 50, 100, 9999999],
+      pageSizes: [2, 10, 20,50, 100, 9999999],
       // 表格选中数据
       selection: [],
       // 当前编辑数据

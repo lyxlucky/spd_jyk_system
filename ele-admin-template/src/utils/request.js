@@ -41,7 +41,7 @@ service.interceptors.request.use(
 service.interceptors.response.use(
   (res) => {
     // 登录过期处理
-    if (res.data?.code === 401) {
+    if (res.data?.code === 301) {
       const currentPath = router.currentRoute.path;
       if (currentPath === LAYOUT_PATH) {
         logout(true);
