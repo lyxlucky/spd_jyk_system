@@ -86,6 +86,14 @@
             fixed: 'left'
           },
           {
+            label: '序号',
+            columnKey: 'index',
+            type: 'index',
+            width: 45,
+            align: 'center',
+            showOverflowTooltip: true
+          },
+          {
             slot: 'action',
             label: '操作',
             minWidth: 140,

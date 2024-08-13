@@ -44,7 +44,6 @@
     itemDefPkgTableList,
     createDEPT_TK_DEF
   } from '@/api/KSInventory/WarehouseTransfer/index';
-import { load } from '@amap/amap-jsapi-loader';
   export default {
     name: 'WarehouseTransferDefPkgTable',
     props: ['visible'],
@@ -173,7 +172,7 @@ import { load } from '@amap/amap-jsapi-loader';
           })
           .finally(() => {
             loading.close();
-            this.updateVisible(false)
+            this.updateVisible(false);
           });
       },
       // 表格选中数据
@@ -184,15 +183,15 @@ import { load } from '@amap/amap-jsapi-loader';
       updateVisible(visible) {
         this.$emit('update:visible', visible);
       },
-      reload(where) {
-        this.$refs.table.reload({ page: 1, where: where });
+      reload(where, limit) {
+        this.$refs.table.reload({ page: 1, where: where, limit: limit });
       }
     },
     mounted() {
       this.$bus.$on(`${this.$route.path}/MiddleTableChange`, ({ row }) => {
         this.where.middleTableCurrent = row;
         this.where.code = row.VARIETIE_CODE;
-        this.reload(this.where);
+        this.reload(this.where, row.QTY);
       });
     },
     beforeDestroy() {
