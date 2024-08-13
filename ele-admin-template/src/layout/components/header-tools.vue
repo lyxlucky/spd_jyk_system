@@ -27,9 +27,9 @@
             <el-dropdown-item command="profile" icon="el-icon-user">
               {{ $t('layout.header.profile') }}
             </el-dropdown-item>
-            <!-- <el-dropdown-item command="password" icon="el-icon-key">
+            <el-dropdown-item command="password" icon="el-icon-key">
               {{ $t('layout.header.password') }}
-            </el-dropdown-item> -->
+            </el-dropdown-item>
             <el-dropdown-item command="logout" icon="el-icon-switch-button" divided>
               {{ $t('layout.header.logout') }}
             </el-dropdown-item>
@@ -57,7 +57,7 @@
       <i class="el-icon-_more"></i>
     </div>
     <!-- 修改密码弹窗 -->
-    <!-- <password-modal :visible.sync="passwordVisible" /> -->
+    <password-modal :userCurrent = 'userCurrent' :username = "UserName" :visible.sync="passwordVisible" />
     <!-- 主题设置抽屉 -->
     <setting-drawer :visible.sync="settingVisible" />
   </div>
@@ -69,6 +69,7 @@ import PasswordModal from './password-modal.vue';
 import SettingDrawer from './setting-drawer.vue';
 import I18nIcon from './i18n-icon.vue';
 import { logout } from '@/utils/page-tab-util';
+import { getUserGroupByName } from '@/api/layout/index'
 
 export default {
   components: { HeaderNotice, PasswordModal, SettingDrawer, I18nIcon },
@@ -84,6 +85,7 @@ export default {
       settingVisible: false,
       //
       // userDept:[]
+      userCurrent:null,
     };
   },
   computed: {
@@ -104,8 +106,14 @@ export default {
   },
   created() {
     // this.userDept = this.$store.state.user.info.userDept;
+    this.getUserIdInfo();
   },
   methods: {
+    getUserIdInfo(){
+      getUserGroupByName({username:this.UserName}).then((res) => {
+        this.userCurrent = res;
+      });
+    },
     handleCommand(command) {
       let userDept = command.split(',');
       let userDeptName = userDept[0];

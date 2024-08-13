@@ -46,11 +46,14 @@
 </template>
 
 <script>
-  import { updatePassword } from '@/api/layout';
-
+  import { updatePassword, UpdatePassWordByUser } from '@/api/layout';
+  import { Encrypt, Decrypt } from '@/utils/aes-util';
+  import { logout } from '@/utils/page-tab-util'
   export default {
     props: {
-      visible: Boolean
+      visible: Boolean,
+      userCurrent: Object,
+      username: String
     },
     data() {
       return {
@@ -76,9 +79,72 @@
               required: true,
               message: '请输入新密码',
               trigger: 'blur'
+            },
+            {
+              min: 8,
+              message: '密码长度不能小于8位',
+              trigger: 'blur'
+            },
+            {
+              validator: (_rule, value, callback) => {
+                if (value === this.form.oldPassword) {
+                  return callback(new Error('新密码不能与旧密码相同'));
+                }
+                callback();
+              },
+              trigger: 'blur'
+            },
+            {
+              validator: (_rule, value, callback) => {
+                if (value === this.userCurrent.username) {
+                  return callback(new Error('新密码不能与用户名相同'));
+                }
+                callback();
+              },
+              trigger: 'blur'
+            },
+            {
+              pattern:
+                /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
+              message: '密码必须包含数字、字母和特殊符号',
+              trigger: 'blur'
             }
           ],
           password2: [
+            {
+              required: true,
+              message: '请输入新密码',
+              trigger: 'blur'
+            },
+            {
+              min: 6,
+              message: '密码长度不能小于6位',
+              trigger: 'blur'
+            },
+            {
+              validator: (_rule, value, callback) => {
+                if (value === this.form.oldPassword) {
+                  return callback(new Error('新密码不能与旧密码相同'));
+                }
+                callback();
+              },
+              trigger: 'blur'
+            },
+            {
+              validator: (_rule, value, callback) => {
+                if (value === this.userCurrent.username) {
+                  return callback(new Error('新密码不能与用户名相同'));
+                }
+                callback();
+              },
+              trigger: 'blur'
+            },
+            {
+              pattern:
+                /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
+              message: '密码必须包含数字、字母和特殊符号',
+              trigger: 'blur'
+            },
             {
               required: true,
               trigger: 'blur',
@@ -106,15 +172,23 @@
         this.$refs.form.validate((valid) => {
           if (valid) {
             this.loading = true;
-            updatePassword(this.form)
-              .then((msg) => {
+            UpdatePassWordByUser({
+              ID: this.userCurrent.ID,
+              username: this.username,
+              oldPassword: Encrypt(this.form.oldPassword),
+              newPassword: Encrypt(this.form.password),
+              reNewPassword: Encrypt(this.form.password2),
+              AesKey: this.$store.state.user.encrypted.KEY
+            })
+              .then((res) => {
                 this.loading = false;
-                this.$message.success(msg);
+                this.$message.success(res.msg);
                 this.updateVisible(false);
+                logout(true);
               })
               .catch((e) => {
                 this.loading = false;
-                this.$message.error(e.message);
+                this.$message.error(e);
               });
           } else {
             return false;
@@ -128,6 +202,7 @@
           password: '',
           password2: ''
         };
+        this.$refs.form.clearValidate();
         this.$refs.form.resetFields();
         this.loading = false;
       }
