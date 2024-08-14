@@ -156,6 +156,9 @@
       }
     },
     mounted() {
+      this.$bus.$on(`${this.$route.path}/TriggerRightTablleReload`,() => {
+        this.reload(this.where);
+      })
       this.$bus.$on(`${this.$route.path}/MiddleTableChange`, ({ row }) => {
         if (row) {
           this.where = {
@@ -168,6 +171,7 @@
     },
     beforeDestroy() {
       this.$bus.$off(`${this.$route.path}/MiddleTableChange`);
+      this.$bus.$off(`${this.$route.path}/TriggerRightTablleReload`);
     }
   };
 </script>

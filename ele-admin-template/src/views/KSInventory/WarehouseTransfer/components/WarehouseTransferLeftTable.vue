@@ -35,6 +35,16 @@
         </div>
       </template>
 
+      <template v-slot:SUBMIT = "{ row }">
+        <el-button
+          type="success"
+          size="mini"
+          icon="el-icon-circle-check"
+          @click="submit(row)"
+          >提交</el-button
+        >
+      </template>
+
       <template v-slot:TK_STAE="{ row }">
         <el-tag v-if="row.TK_STAE == 0" type="primary" size="small"
           >新增</el-tag
@@ -47,7 +57,12 @@
   </div>
 </template>
 <script>
-  import { getDEPT_TK_MAIN,createDEPT_TK_MAIN,deleteDEPT_TK_MAIN } from '@/api/KSInventory/WarehouseTransfer/index';
+  import {
+    getDEPT_TK_MAIN,
+    createDEPT_TK_MAIN,
+    deleteDEPT_TK_MAIN,
+    commitTkInfo
+  } from '@/api/KSInventory/WarehouseTransfer/index';
   export default {
     name: 'WarehouseTransferLeftTable',
     data() {
@@ -66,6 +81,13 @@
             prop: 'TK_ORDER',
             label: '调库订单',
             minWidth: 160,
+            align: 'center',
+            showOverflowTooltip: true
+          },
+          {
+            slot: 'SUBMIT',
+            label: '调库',
+            minWidth: 100,
             align: 'center',
             showOverflowTooltip: true
           },
@@ -123,16 +145,34 @@
       reload(where) {
         this.$refs.table.reload({ page: 1, where: where });
       },
+      submit(row) {
+        const loading = this.$messageLoading('请求中..');
+        const id = row.ID;
+        commitTkInfo({ ID: id })
+          .then((res) => {
+            this.$message.success(res.msg);
+          })
+          .catch((err) => {
+            this.$message.error(err);
+          })
+          .finally(() => {
+            loading.close();
+            this.reload();
+          });
+      },
       createItem() {
         const loading = this.$messageLoading('请求中..');
-        createDEPT_TK_MAIN().then((res) => {
-          this.reload();
-          this.$message.success(res.msg);
-        }).catch((err) => {
+        createDEPT_TK_MAIN()
+          .then((res) => {
+            this.reload();
+            this.$message.success(res.msg);
+          })
+          .catch((err) => {
             this.$message.error(err.msg);
-        }).finally(() => {
-          loading.close();
-        });
+          })
+          .finally(() => {
+            loading.close();
+          });
       },
       deleteItem() {
         this.$confirm('确定删除选中的数据吗?', '提示', {
@@ -141,15 +181,18 @@
           type: 'warning'
         }).then(() => {
           const loading = this.$messageLoading('请求中..');
-          const ids = this.selection.map((item) => item.ID).join(',')
-          deleteDEPT_TK_MAIN({ ID : ids }).then((res) => {
-            this.reload();
-            this.$message.success(res.msg);
-          }).catch((err) => {
+          const ids = this.selection.map((item) => item.ID).join(',');
+          deleteDEPT_TK_MAIN({ ID: ids })
+            .then((res) => {
+              this.reload();
+              this.$message.success(res.msg);
+            })
+            .catch((err) => {
               this.$message.error(err.msg);
-          }).finally(() => {
-            loading.close();
-          });
+            })
+            .finally(() => {
+              loading.close();
+            });
         });
       }
     },
@@ -162,10 +205,10 @@
         return this.selection.length > 0;
       }
     },
-    mounted(){
-      this.$bus.$on('handleCommand',() => {
+    mounted() {
+      this.$bus.$on('handleCommand', () => {
         this.reload();
-      })
+      });
     },
     beforeDestroy() {
       this.$bus.$off('handleCommand');

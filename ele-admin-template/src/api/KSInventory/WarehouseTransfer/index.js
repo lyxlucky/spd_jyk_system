@@ -177,3 +177,17 @@ export async function getDEPT_TK_MAIN(data) {
     }
     return Promise.reject(new Error(res.data.msg));
   }
+
+  export async function commitTkInfo(data) {
+    var Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+    var data2 = {}
+    //添加参数
+    data2.Token = Token;
+    data2.ID = data.ID;
+    let data3 = formdataify(data2);
+    const res = await request.post('/DeptConsume/commitTkInfo', data3);
+    if (res.data.code == 200) {
+      return res.data;
+    }
+    return Promise.reject(new Error(res.data.msg));
+  }

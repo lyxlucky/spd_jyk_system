@@ -37,12 +37,12 @@
         </div>
       </template>
 
-      <template v-slot:action>
+      <template v-slot:action = "{ row }">
         <el-button
           type="primary"
           size="mini"
           icon="el-icon-circle-plus-outline"
-          @click="showCreateDefPkgModal"
+          @click="showCreateDefPkgModal(row)"
           >创建定数包</el-button
         >
       </template>
@@ -177,7 +177,8 @@
         });
         return data;
       },
-      showCreateDefPkgModal(){
+      showCreateDefPkgModal(row){
+        this.$bus.$emit(`${this.$route.path}/MiddleTableSlotRow`, row);
         this.WarehouseTransferDefPkgTableVisible = true;
       },
       onCurrentChange(row) {

@@ -2,16 +2,16 @@
 export const API_BASE_URL = process.env.VUE_APP_API_BASE_URL;
 
 // 后端地址
-export const BACK_BASE_URL = "http://localhost:16416";
+// export const BACK_BASE_URL = "http://localhost:16416";
 
 //b2b后端地址
 export const B2B_BASE_URL = "http://47.106.243.154:802";
 
 // 医院标识
 // bd 北大
-// sm 萨米
-// fy 龙华妇幼
-export const HOME_HP = 'bd'
+// szsmyl 萨米
+// stzl 汕头肿瘤标识
+export const HOME_HP = 'szsmyl'
 
 // 计算b2b的的医院ID
 const caculateB2bCode = () => {
@@ -49,7 +49,13 @@ export const B2B_BASE_CODE = caculateB2bCode();
 // export const BACK_BASE_URL = "http://183.62.200.242:82/";
 
 // 萨米医院外网
-// export const BACK_BASE_URL = "http://120.78.226.92:18002/";
+export const BACK_BASE_URL = "http://120.78.226.92:18002/";
+
+// 肿瘤外网
+// export const BACK_BASE_URL = "http://113.106.170.118:82/";
+
+// 汕头肿瘤内网
+// export const BACK_BASE_URL = 'http://199.199.197.110:8001/';
 
 // 项目名称
 export const PROJECT_NAME = process.env.VUE_APP_NAME;

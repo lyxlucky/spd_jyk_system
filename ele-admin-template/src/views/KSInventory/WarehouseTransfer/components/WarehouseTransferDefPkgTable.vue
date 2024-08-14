@@ -151,6 +151,11 @@
           });
         return data;
       },
+      reload(where, limit) {
+        setTimeout(() => {
+          this.$refs.table.reload({ page: 1, where: where, limit: limit });
+        });
+      },
       batchCreateDefPkgCode() {
         const id = this.where.middleTableCurrent.ID;
         const currentDeptTwoCode =
@@ -173,31 +178,31 @@
           .finally(() => {
             loading.close();
             this.updateVisible(false);
+            this.$bus.$emit(`${this.$route.path}/TriggerRightTablleReload`);
           });
       },
       // 表格选中数据
       onCurrentChange(current) {
         this.current = current;
       },
-      // 更新弹窗状态
-      updateVisible(visible) {
-        this.$emit('update:visible', visible);
-      },
-      reload(where, limit) {
-        this.$refs.table.reload({ page: 1, where: where, limit: limit });
-      }
-    },
-    mounted() {
-      this.$bus.$on(`${this.$route.path}/MiddleTableChange`, ({ row }) => {
+      handleMiddleTableSlotRow(row) {
         this.where.middleTableCurrent = row;
         this.where.code = row.VARIETIE_CODE;
         this.reload(this.where, row.QTY);
+      },
+      // 更新弹窗状态
+      updateVisible(visible) {
+        this.$emit('update:visible', visible);
+      }
+    },
+    mounted() {
+      this.$bus.$on(`${this.$route.path}/MiddleTableSlotRow`, (row) => {
+        this.handleMiddleTableSlotRow(row);
       });
     },
     beforeDestroy() {
-      this.$bus.$off(`${this.$route.path}/MiddleTableChange`);
-    },
-    created() {}
+      this.$bus.$off(`${this.$route.path}/MiddleTableSlotRow`);
+    }
   };
 </script>
 <style lang=""></style>
