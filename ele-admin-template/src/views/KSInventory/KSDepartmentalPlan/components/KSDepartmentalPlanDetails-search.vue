@@ -125,7 +125,8 @@
       <span>存在申领数量为0的明细</span>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="deleteZeroDelAndCommit">剔除并提交</el-button>
-        <el-button @click="deleteZeroDelAndCommit2">取 消</el-button>
+        <!-- <el-button @click="deleteZeroDelAndCommit2">取 消</el-button> -->
+        <el-button @click="centerDialogVisible = false">取 消</el-button>
       </span>
     </el-dialog>
   </el-form>

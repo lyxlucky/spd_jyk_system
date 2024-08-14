@@ -1,7 +1,7 @@
 <template>
   <div class="ele-body" v-if='RenderTabel'>
     <!-- 数据表格 -->
-    <ele-pro-table :key="key" highlight-current-row @current-change="onCurrentChange" ref="table" height="18vh" :rowClickChecked="true" :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" cache-key="KSInventoryBasicDataTable">
+    <ele-pro-table :key="key" :reserve-selection="true" :row-key="row => row.PlanNum" highlight-current-row @current-change="onCurrentChange" ref="table" height="18vh" :rowClickChecked="true" :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" cache-key="KSInventoryBasicDataTable">
       <!-- 表头工具栏 -->
       <template v-slot:toolbar>
         <!-- 搜索表单 -->
@@ -290,14 +290,14 @@ export default {
         .then((res) => {
           loading.close();
           this.$message.success(res.msg);
-          // this.reload();
+          this.reload();
           // this.$forceUpdate();
-          this.key += 1;
+          // this.key += 1;
         })
         .catch((err) => {
           loading.close();
           this.$message.error(err);
-        });
+        })
     }
   },
   watch: {
