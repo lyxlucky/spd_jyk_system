@@ -1,9 +1,6 @@
 // 接口地址
 export const API_BASE_URL = process.env.VUE_APP_API_BASE_URL;
 
-// 后端地址
-export const BACK_BASE_URL = "http://localhost:16416";
-
 //b2b后端地址
 export const B2B_BASE_URL = "http://47.106.243.154:802";
 
@@ -34,6 +31,8 @@ const caculateB2bCode = () => {
 export const B2B_BASE_CODE = caculateB2bCode();
 
 
+// 后端地址
+// export const BACK_BASE_URL = "http://localhost:16416";
 
 // 北大
 // export const BACK_BASE_URL = "http://47.106.243.154:9001";
