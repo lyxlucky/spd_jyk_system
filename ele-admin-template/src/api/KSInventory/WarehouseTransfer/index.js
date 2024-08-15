@@ -178,16 +178,33 @@ export async function getDEPT_TK_MAIN(data) {
     return Promise.reject(new Error(res.data.msg));
   }
 
-  export async function commitTkInfo(data) {
-    var Token = sessionStorage.getItem(TOKEN_STORE_NAME);
-    var data2 = {}
-    //添加参数
-    data2.Token = Token;
-    data2.ID = data.ID;
-    let data3 = formdataify(data2);
-    const res = await request.post('/DeptConsume/commitTkInfo', data3);
-    if (res.data.code == 200) {
-      return res.data;
-    }
-    return Promise.reject(new Error(res.data.msg));
+export async function commitTkInfo(dataArray) {
+  try {
+    const Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+
+    // 创建一个包含所有请求的Promise数组
+    const requests = dataArray.map((item) => {
+      const data = {
+        Token,
+        ID: item.ID,
+      };
+      const formData = formdataify(data);
+      
+      // 发送请求并返回Promise
+      return request.post('/DeptConsume/commitTkInfo', formData)
+        .then((res) => {
+          if (res.data.code == 200) {
+            return res.data;
+          } else {
+            throw new Error(res.data.msg);
+          }
+        });
+    });
+
+    // 使用Promise.all等待所有请求完成
+    const results = await Promise.all(requests);
+    return results;
+  } catch (error) {
+    return Promise.reject(error);
   }
+}

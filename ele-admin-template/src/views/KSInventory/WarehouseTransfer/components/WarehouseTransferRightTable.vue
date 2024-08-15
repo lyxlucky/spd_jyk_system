@@ -22,6 +22,7 @@
             type="danger"
             size="mini"
             icon="el-icon-delete"
+            :disabled="!isDeleteEnable"
             @click="deleteItem()"
             >删除</el-button
           >
@@ -153,6 +154,9 @@
       // 是否开启响应式布局
       styleResponsive() {
         return this.$store.state.theme.styleResponsive;
+      },
+      isDeleteEnable(){
+        return this.selection.length > 0;
       }
     },
     mounted() {

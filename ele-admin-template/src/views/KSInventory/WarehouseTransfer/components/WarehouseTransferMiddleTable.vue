@@ -22,7 +22,7 @@
             type="primary"
             size="mini"
             icon="el-icon-circle-plus-outline"
-            :disabled="!isEnableCreate"
+            :disabled="isEnableCreate"
             @click="WarehouseTransferCreateDetailVisible = true"
             >创建</el-button
           >
@@ -42,6 +42,7 @@
           type="primary"
           size="mini"
           icon="el-icon-circle-plus-outline"
+          :disabled="isEnableCreate"
           @click="showCreateDefPkgModal(row)"
           >创建定数包</el-button
         >
@@ -73,7 +74,8 @@
     },
     data() {
       const defaultWhere = {
-        ID: null
+        ID: null,
+        STATE: null
       };
       return {
         where: { ...defaultWhere },
@@ -136,16 +138,16 @@
             showOverflowTooltip: true
           },
           {
-            prop: 'APPROVAL_NUMBER',
-            label: '批准文号',
-            minWidth: 80,
+            prop: 'MANUFACTURING_ENT_NAME',
+            label: '生产企业',
+            minWidth: 120,
             align: 'center',
             showOverflowTooltip: true
           },
           {
-            prop: 'MANUFACTURING_ENT_NAME',
-            label: '生产企业',
-            minWidth: 120,
+            prop: 'APPROVAL_NUMBER',
+            label: '批准文号',
+            minWidth: 80,
             align: 'center',
             showOverflowTooltip: true
           }
@@ -225,18 +227,17 @@
         return this.$store.state.theme.styleResponsive;
       },
       isEnableCreate() {
-        return this.where.ID ? true : false;
+        return (this.where.ID && this.where.STATE == 1);
       },
       isEnableDelete() {
-        return this.selection.length > 0 ? true : false;
+        return this.selection.length > 0;
       }
     },
     mounted() {
       this.$bus.$on(`${this.$route.path}/LeftTableChange`, (row) => {
         if (row) {
-          this.where = {
-            ID: row.ID
-          };
+          this.where.ID = row.ID;
+          this.where.STATE = row.TK_STAE
           this.reload(this.where);
         }
       });

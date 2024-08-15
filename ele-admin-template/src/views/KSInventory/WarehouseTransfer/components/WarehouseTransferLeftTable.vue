@@ -32,17 +32,16 @@
             @click="deleteItem()"
             >删除</el-button
           >
-        </div>
-      </template>
 
-      <template v-slot:SUBMIT = "{ row }">
-        <el-button
-          type="success"
-          size="mini"
-          icon="el-icon-circle-check"
-          @click="submit(row)"
-          >提交</el-button
-        >
+          <el-button
+            type="success"
+            size="mini"
+            icon="el-icon-circle-check"
+            :disabled="!isEnableDelete"
+            @click="submit()"
+            >确定调库</el-button
+          >
+        </div>
       </template>
 
       <template v-slot:TK_STAE="{ row }">
@@ -50,7 +49,7 @@
           >新增</el-tag
         >
         <el-tag v-if="row.TK_STAE == 1" type="success" size="small"
-          >确认</el-tag
+          >已调库</el-tag
         >
       </template>
     </ele-pro-table>
@@ -85,9 +84,9 @@
             showOverflowTooltip: true
           },
           {
-            slot: 'SUBMIT',
-            label: '调库',
-            minWidth: 100,
+            slot: 'TK_STAE',
+            label: '调库状态',
+            minWidth: 80,
             align: 'center',
             showOverflowTooltip: true
           },
@@ -102,13 +101,6 @@
             prop: 'TK_TIME',
             label: '调库时间',
             minWidth: 100,
-            align: 'center',
-            showOverflowTooltip: true
-          },
-          {
-            slot: 'TK_STAE',
-            label: '调库状态',
-            minWidth: 80,
             align: 'center',
             showOverflowTooltip: true
           }
@@ -145,15 +137,15 @@
       reload(where) {
         this.$refs.table.reload({ page: 1, where: where });
       },
-      submit(row) {
+      submit() {
+        const data = this.selection
         const loading = this.$messageLoading('请求中..');
-        const id = row.ID;
-        commitTkInfo({ ID: id })
+        commitTkInfo(data)
           .then((res) => {
-            this.$message.success(res.msg);
+            this.$message.success("处理成功");
           })
           .catch((err) => {
-            this.$message.error(err);
+            this.$message.error("处理失败");
           })
           .finally(() => {
             loading.close();

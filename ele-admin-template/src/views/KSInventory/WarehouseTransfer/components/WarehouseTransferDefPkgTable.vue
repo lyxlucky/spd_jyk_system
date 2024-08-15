@@ -107,15 +107,15 @@
             showOverflowTooltip: true
           },
           {
-            prop: 'APPROVAL_NUMBER',
-            label: '批准文号',
+            prop: 'MANUFACTURING_ENT_NAME',
+            label: '生产企业',
             minWidth: 100,
             align: 'center',
             showOverflowTooltip: true
           },
           {
-            prop: 'MANUFACTURING_ENT_NAME',
-            label: '生产企业',
+            prop: 'APPROVAL_NUMBER',
+            label: '批准文号',
             minWidth: 100,
             align: 'center',
             showOverflowTooltip: true

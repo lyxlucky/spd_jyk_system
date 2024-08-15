@@ -7,7 +7,7 @@
     <template v-slot:icon>
       <img
         alt=""
-        src="@/assets/ic-404.svg"
+        src="../../../assets/ic-404.svg"
         style="width: 305px; height: 245px"
       />
     </template>
