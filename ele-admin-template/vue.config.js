@@ -7,8 +7,8 @@ function resolve(dir) {
 }
 
 module.exports = {
-  // publicPath: '/jyk/',
-  // outputDir: 'jyk',
+  publicPath: '/jyknw/',
+  outputDir: 'jyknw',
   productionSourceMap: false,
   transpileDependencies: ['element-ui', 'ele-admin', 'vue-i18n'],
   configureWebpack: {
@@ -58,7 +58,7 @@ module.exports = {
     proxy: {
       '/api': {
         // 这里可以写你自己的后端接口地址，如：
-        target: 'http://localhost:16416/'
+        // target: 'http://localhost:16416/'
 
         // 北大
         // target: 'http://47.106.243.154:9001',
@@ -77,6 +77,9 @@ module.exports = {
 
         //萨米医院外网
         // target:'http://120.78.226.92:18002/',
+
+        //萨米医院内网
+        target:' http://192.168.8.90:18002',
 
         //肿瘤外网
         // target: 'http://113.106.170.118:82/'
