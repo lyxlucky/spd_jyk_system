@@ -104,6 +104,8 @@
             散货出库
           </el-button>
 
+          <el-button style="margin-left: 30px" size="small" type="primary" icon="el-icon-download" @click="exportDataExcel()">导出</el-button>
+
           <label style="margin-left: 30px">合计数量:<b>{{sumCount}}</b></label>
 
         </div>
@@ -218,6 +220,10 @@ export default {
 
     onProgress(event, file, fileList) {
       this.loading = this.$messageLoading('上传中...');
+    },
+    exportDataExcel(){
+      //导出为excel
+      this.$emit('exportDataExcel', this.where);
     },
     onSuccess(response, file, fileList) {
       this.loading.close();

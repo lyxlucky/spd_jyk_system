@@ -31,10 +31,11 @@
       </el-col>
       <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 6 }">
         <div class="ele-form-actions">
-          <el-button size="small" type="primary" icon="el-icon-search" class="ele-btn-icon" @click="search">
+          <el-button size="mini" type="primary" icon="el-icon-search" class="ele-btn-icon" @click="search">
             查询
           </el-button>
-          <el-button size="small" @click="reset">重置</el-button>
+          <el-button size="mini" type="primary" icon="el-icon-download" @click="exportData()">导出</el-button>
+          <el-button size="mini" @click="reset">重置</el-button>
         </div>
       </el-col>
     </el-row>
@@ -124,6 +125,9 @@ export default {
     /* 搜索 */
     search() {
       this.$emit('search', this.where);
+    },
+    exportData(){
+      this.$emit('exportData', this.where);
     },
     /*  重置 */
     reset() {

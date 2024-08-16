@@ -32,7 +32,7 @@ export const B2B_BASE_CODE = caculateB2bCode();
 
 
 // 后端地址
-// export const BACK_BASE_URL = "http://localhost:16416";
+export const BACK_BASE_URL = "http://localhost:16416";
 
 // 北大
 // export const BACK_BASE_URL = "http://47.106.243.154:9001";

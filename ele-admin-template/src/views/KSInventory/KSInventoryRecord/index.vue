@@ -13,7 +13,7 @@
       <!-- 左表头 -->
       <template v-slot:toolbar>
         <!-- 搜索表单 -->
-        <KSDepartmentalPlanDetails-search @search="reload" :KSDepartmentalPlanDataSearch='KSDepartmentalPlanDataSearch' :selection="selection" @showEditReoad="showEditReoad" :datasourceList="datasourceList" />
+        <KSDepartmentalPlanDetails-search @exportData="exportData" @search="reload" :KSDepartmentalPlanDataSearch='KSDepartmentalPlanDataSearch' :selection="selection" @showEditReoad="showEditReoad" :datasourceList="datasourceList" />
         <label>出库数:<b>{{SumCount2}}</b> 入库数: <b>{{SumCount1}}</b>净入库:<b>{{netExport}}</b></label>
         <!-- <el-button size="small" type="danger" icon="el-icon-delete" class="ele-btn-icon" @click="removebatch">
           删除
@@ -66,6 +66,7 @@
 import KSDepartmentalPlanDetailsSearch from './components/KSDepartmentalPlanDetails-search';
 import { SerachPlanList } from '@/api/KSInventory/KSDepartmentalPlan';
 import { GetJykDetailShelf,GetJykDetailShelfNew } from '@/api/KSInventory/KSInventoryQuery';
+import { utils, writeFile } from 'xlsx';
 export default {
   name: 'KSDepartmentalPlanTable',
   props: ['KSDepartmentalPlanData'],
@@ -371,6 +372,114 @@ export default {
     /* 刷新表格 */
     reload(where) {
       this.$refs.table.reload({ page: 1, where: where });
+    },
+    getTextForRecordType(recordType) {
+    switch (recordType) {
+        case '0':
+            return '库存初始化';
+        case '1':
+            return '申领入库';
+        case '2':
+            return '已入库';
+        case '3':
+            return '已出库';
+        case '4':
+            return '定数包退货';
+        case '5':
+            return '散货出库';
+        case '6':
+            return 'his计费';
+        default:
+            return '';
+    }
+},
+
+    exportData(){
+      const loading = this.$messageLoading('正在导出数据...');
+      this.$refs.table.doRequest(({ where, order }) => {
+        let currentDeptCode = this.$store.state.user.info.DeptNow.Dept_Two_Code + ",";
+        where.DeptCode = currentDeptCode;
+        GetJykDetailShelfNew({
+          page: 1,
+          limit: 999999,
+          where: where,
+          order: order
+        })
+          .then((res) => {
+            loading.close();
+            const array = [
+              [
+                '品种ID',
+                '类型',
+                '科室名称',
+                '品种编码',
+                '品种名称',
+                '规格型号',
+                '数量',
+                '单位',
+                '价格',
+                '批号',
+                '批号ID',
+                '生产日期',
+                '有效到期',
+                '生产企业',
+                '时间',
+                '操作人',
+                '单号',
+                '定数码',
+                '注册证号',
+                '供应商编码',
+                '供应商名称',
+                '计费编码',
+                '病患号',
+                '住院号',
+              ]
+            ];
+            res.result.forEach((d) => {
+              array.push([
+                d.VARIETIE_CODE,
+                this.getTextForRecordType(d.RECORD_TYPE),
+                d.DEPT_TWO_NAME,
+                d.VARIETIE_CODE_NEW,
+                d.VARIETIE_NAME,
+                d.SPECIFICATION_OR_TYPE,
+                d.COUNT,
+                d.UNIT,
+                d.PRICE,
+                d.BATCH,
+                d.BATCH_ID,
+                d.BATCH_PRODUCTION_DATE,
+                d.BATCH_VALIDITY_PERIOD,
+                d.MANUFACTURING_ENT_NAME,
+                d.RECORD_TIME,
+                d.OPERATOR,
+                d.DELIVERY_NUMBER,
+                d.DEF_NO_PKG_CODE,
+                d.APPROVAL_NUMBER,
+                d.SUPPLIER_CODE,
+                d.SUPPLIER_NAME,
+                d.CHARGING_CODE,
+                d.PATIENT_NUMBER,
+                d.HOSPITALIZATION_NUMBER,
+                // this.$util.toDateString(d.createTime)
+              ]);
+            });
+            writeFile(
+              {
+                SheetNames: ['Sheet1'],
+                Sheets: {
+                  Sheet1: utils.aoa_to_sheet(array)
+                }
+              },
+              '库存详情.xlsx'
+            );
+            this.$message.success('导出成功');
+          })
+          .catch((e) => {
+            loading.close();
+            this.$message.error(e.message);
+          });
+      });
     },
     remove(row) {
       console.log(row);
