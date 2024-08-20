@@ -5,7 +5,6 @@ import store from '@/store/index';
 import moment from 'moment';
 
 export async function queryPickAllDetail(data) {
-    console.log(data)
     var Token = sessionStorage.getItem(TOKEN_STORE_NAME);
     var data2 = {}
     data2.Token = Token;

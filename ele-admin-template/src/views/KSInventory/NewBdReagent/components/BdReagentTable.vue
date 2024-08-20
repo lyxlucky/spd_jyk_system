@@ -19,7 +19,7 @@
         <div>
           <el-form class="ele-form-search">
             <el-row :gutter="10">
-              <el-col v-bind="styleResponsive ? { lg: 7, md: 2 } : { span: 4 }">
+              <el-col v-bind="styleResponsive ? { lg: 6, md: 2 } : { span: 4 }">
                 <el-date-picker
                   v-model="where.date"
                   type="daterange"
@@ -39,8 +39,9 @@
                 ></el-input>
               </el-col>
 
-              <el-col v-bind="styleResponsive ? { lg: 2, md: 2 } : { span: 4 }">
+              <el-col v-bind="styleResponsive ? { lg: 3, md: 2 } : { span: 4 }">
                 <el-button type="primary" size="mini" icon="el-icon-search" @click="reload(where)">查询</el-button>
+                <el-button type="success" size="mini" icon="el-icon-download" @click="exportData()">导出</el-button>
               </el-col>
 
             </el-row>
@@ -51,6 +52,7 @@
   </div>
 </template>
 <script>
+  import { utils, writeFile } from 'xlsx';
   import { queryPickAllDetail } from '@/api/KSInventory/NewBdReagent/index';
   export default {
     name: 'BdReagentTable',
@@ -148,7 +150,57 @@
       },
       reload(where) {
         this.$refs.table.reload({ page: 1, where: where });
-      }
+      },
+      exportData() {
+        const loading = this.$messageLoading('正在导出数据...');
+        this.$refs.table.doRequest(({ where, order }) => {
+          queryPickAllDetail({
+            page: 1,
+            limit: 999999,
+            where: where,
+            order: order
+          })
+            .then((res) => {
+              loading.close();
+              const array = [
+                [
+                  '科室名称',
+                  '用户名',
+                  '品种编码',
+                  '品种名称',
+                  '规格',
+                  '领出数量',
+                  '领出时间',
+                ]
+              ];
+              res.list.forEach((d) => {
+                array.push([
+                  d.dept_no,
+                  d.dept_name,
+                  d.drugs_code,
+                  d.drugs_name,
+                  d.drugs_spec,
+                  d.qty,
+                  d.pick_time,
+                ]);
+              });
+              writeFile(
+                {
+                  SheetNames: ['Sheet1'],
+                  Sheets: {
+                    Sheet1: utils.aoa_to_sheet(array)
+                  }
+                },
+                '试剂柜.xlsx'
+              );
+              this.$message.success('导出成功');
+            })
+            .catch((e) => {
+              loading.close();
+              this.$message.error(e.message);
+            });
+        });
+      },
     },
     computed: {
       // 是否开启响应式布局
