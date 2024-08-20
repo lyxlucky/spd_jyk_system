@@ -84,6 +84,13 @@
             showOverflowTooltip: true
           },
           {
+            prop: 'DEPT_TWO_NAME',
+            label: '科室名称',
+            minWidth: 100,
+            align: 'center',
+            showOverflowTooltip: true
+          },
+          {
             slot: 'TK_STAE',
             label: '调库状态',
             minWidth: 80,

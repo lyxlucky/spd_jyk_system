@@ -161,7 +161,6 @@
             order: order
           })
             .then((res) => {
-              loading.close();
               const array = [
                 [
                   '科室名称',
@@ -196,9 +195,10 @@
               this.$message.success('导出成功');
             })
             .catch((e) => {
-              loading.close();
               this.$message.error(e.message);
-            });
+            }).finally(() => {
+              loading.close();
+            })
         });
       },
     },

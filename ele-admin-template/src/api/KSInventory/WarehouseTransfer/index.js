@@ -11,7 +11,10 @@ export async function getDEPT_TK_MAIN(data) {
     data2.Token = Token;
     data2.page = data.page;
     data2.size = data.limit;
-    data2.TK_DEPT_TWO_CODE = store.state.user.info.DeptNow.Dept_Two_Code
+    const userDepts = store.state.user.info.userDept.map((item) => {
+      return `'${item.Dept_Two_Code}'`;
+    }).join(',')
+    data2.TK_DEPT_TWO_CODE = userDepts
     data2.TK_ORDER = data.where.TK_ORDER ? data.where.TK_ORDER : '';
     data2.CREATE_TIME_START = data.where.CREATE_TIME_START ? data.where.CREATE_TIME_START : '';
     data2.CREATE_TIME_END = data.where.CREATE_TIME_END ? data.where.CREATE_TIME_END : '';
