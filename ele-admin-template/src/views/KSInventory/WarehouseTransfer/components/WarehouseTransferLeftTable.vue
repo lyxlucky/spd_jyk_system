@@ -205,12 +205,12 @@
       }
     },
     mounted() {
-      this.$bus.$on('handleCommand', () => {
-        this.reload();
-      });
+      // this.$bus.$on('handleCommand', () => {
+      //   this.reload();
+      // });
     },
     beforeDestroy() {
-      this.$bus.$off('handleCommand');
+      // this.$bus.$off('handleCommand');
     }
   };
 </script>

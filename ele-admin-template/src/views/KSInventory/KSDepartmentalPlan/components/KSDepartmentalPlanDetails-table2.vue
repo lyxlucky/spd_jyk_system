@@ -2,7 +2,20 @@
   <div class="ele-body">
     <!-- <el-button type="danger" size="small" @click="aaa">aaa</el-button> -->
     <!-- 数据表格 -->
-    <ele-pro-table ref="table" :toolStyle="toolStyle" height="40vh" highlight-current-row :stripe="true" :rowClickChecked="true" :rowClickCheckedIntelligent="false" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" @selection-change="onSelectionChange" cache-key="KSInventoryBasicDataTable">
+    <!-- :rowClickChecked="true"  -->
+    <!-- :rowClickCheckedIntelligent="false"  -->
+    <ele-pro-table ref="table" 
+      :toolStyle="toolStyle" 
+      height="40vh" 
+      highlight-current-row 
+      :stripe="true" 
+      :pageSize="pageSize" 
+      :pageSizes="pageSizes" 
+      :columns="columns" 
+      :datasource="datasource" 
+      :selection.sync="selection" 
+      @selection-change="onSelectionChange" 
+      cache-key="KSInventoryBasicDataTable">
       <!-- 表头工具栏 -->
       <!-- 右表头 -->
       <!-- <template v-slot:toolkit>
@@ -13,7 +26,7 @@
       <!-- 左表头 -->
       <template v-slot:toolbar>
         <!-- 搜索表单 -->
-        <KSDepartmentalPlanDetails-search @exportData="exportData" @search="reload" @ClickReload="ClickReload" :KSDepartmentalPlanDataSearch='KSDepartmentalPlanDataSearch' :selection="selection" @showEditReoad="showEditReoad" :datasourceList="datasourceList" />
+        <KSDepartmentalPlanDetails-search @exportData="exportData" @search="reload" @ClickReload="ClickReload" :KSDepartmentalPlanDataSearch='KSDepartmentalPlanDataSearch' :selection="datasource" @showEditReoad="showEditReoad" :datasourceList="datasourceList" />
       </template>
 
       <template v-slot:PlanQty="{ row }">
@@ -83,6 +96,7 @@ export default {
           fixed: 'left'
         },
         {
+          label: '序号',
           columnKey: 'index',
           type: 'index',
           width: 45,
@@ -213,7 +227,7 @@ export default {
 
           align: 'center',
           showOverflowTooltip: true,
-          width: 150,
+          width: 160,
           fixed: 'right'
         },
         {
@@ -310,9 +324,9 @@ export default {
         'flex-wrap': 'wrap',
         'align-items': 'flex-end'
       },
-      pageSize: 20,
+      pageSize: 9999999,
       pagerCount: 2,
-      pageSizes: [10, 20, 50, 100, 9999999],
+      pageSizes: [100, 9999999],
       // 表格选中数据
       selection: [],
       // 当前编辑数据
@@ -347,7 +361,7 @@ export default {
           this.sumAount = res.sumAount;
           return tData;
         }
-      );
+      )
       return data;
     },
     /* 刷新表格 */

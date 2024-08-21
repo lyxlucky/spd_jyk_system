@@ -3,14 +3,10 @@
     <div class="ele-body">
       <el-card shadow="never">
         <!-- 搜索表单 -->
-        <user-search @search="reload" />
+        <user-search @addKSKS="addKSKSDepartmentalPlanData" @search="reload" />
         <!-- 数据表格 -->
-        <ele-pro-table ref="table" height="500px" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :rowClickChecked="true" :rowClickCheckedIntelligent="false" :selection.sync="selection" @selection-change="onSelectionChange" cache-key="DepaStorageQuery">
-          <template v-slot:toolbar>
-            <el-button size="small" type="primary" icon="el-icon-plus" class="ele-btn-icon" @click="addKSKSDepartmentalPlanData()">
-              确定添加
-            </el-button>
-          </template>
+        <!-- :rowClickChecked="true" :rowClickCheckedIntelligent="false" -->
+        <ele-pro-table ref="table" height="500px" :row-key="(row) => row.VarID" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" @selection-change="onSelectionChange" cache-key="DepaStorageQuery">
           <!-- 操作列 -->
           <template v-slot:APPLY_QTY="{ row }">
             <el-form-item label="">
@@ -66,7 +62,8 @@ export default {
           type: 'selection',
           width: 45,
           align: 'center',
-          fixed: 'left'
+          fixed: 'left',
+          reserveSelection:true
         },
         {
           columnKey: 'index',

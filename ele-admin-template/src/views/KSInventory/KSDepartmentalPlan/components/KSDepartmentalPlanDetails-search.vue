@@ -435,7 +435,7 @@ export default {
     KeeptApplyDate() {
       const loading = this.$messageLoading('暂存中..');
       var list = [];
-      this.selection.forEach((element) => {
+      this.datasourceList.forEach((element) => {
         var data = {
           ID: element.ID,
           ENABLE: element.ENABLE,

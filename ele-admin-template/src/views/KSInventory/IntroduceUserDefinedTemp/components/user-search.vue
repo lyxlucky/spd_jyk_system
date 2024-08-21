@@ -2,15 +2,18 @@
 <template>
   <el-form label-width="77px" class="ele-form-search" @keyup.enter.native="search" @submit.native.prevent>
     <el-row :gutter="10" style="margin-top:10px">
-      <el-col v-bind="styleResponsive ? { lg: 8, md: 12 } : { span: 6 }">
+      <el-col v-bind="styleResponsive ? { lg: 6, md: 12 } : { span: 4 }">
         <el-input clearable v-model="where.SerachName" style="width:400px" placeholder="请输入品种编码/品种名称/型号规格/生产企业搜索" />
       </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 6, md: 12 } : { span: 6 }">
+      <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 4 }">
         <div class="ele-form-actions">
-          <el-button type="primary" icon="el-icon-search" class="ele-btn-icon" @click="search">
+          <el-button size="small" type="primary" icon="el-icon-search" class="ele-btn-icon" @click="search">
             查询
           </el-button>
-          <el-button @click="reset">重置</el-button>
+          <el-button size="small" type="primary" icon="el-icon-plus" class="ele-btn-icon" @click="addKSKS()">
+              确定添加
+            </el-button>
+          <el-button size="small" @click="reset">重置</el-button>
           <!-- <el-button type="primary" class="ele-btn-icon" @click="exportData" v-loading.fullscreen.lock="fullscreenLoading">
             导出
           </el-button> -->
@@ -49,6 +52,9 @@ export default {
       this.where = { ...this.defaultWhere };
       this.search();
     },
+    addKSKS(){
+      this.$emit('addKSKS');
+    }
   },
   created() {
     // 获取各种类型当前时间
