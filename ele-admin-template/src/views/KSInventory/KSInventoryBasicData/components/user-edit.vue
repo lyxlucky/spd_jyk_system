@@ -1,6 +1,6 @@
 <!-- 用户编辑弹窗 -->
 <template>
-  <ele-modal width="600px" :visible="visible" :append-to-body="true" :close-on-click-modal="true" custom-class="ele-dialog-form" :title="isUpdate ? '修改用户' : '添加用户'" @update:visible="updateVisible">
+  <ele-modal width="600px" :visible="visible" :append-to-body="true" :close-on-click-modal="true" custom-class="ele-dialog-form" title="修改品种" @update:visible="updateVisible">
     <el-form ref="form" :model="form" :rules="rules" label-width="82px">
       <el-row :gutter="12">
         <el-col v-bind="styleResponsive ? { sm: 20 } : { span: 20 }">
@@ -16,11 +16,11 @@
               <el-option label="耗材" value="5" /> -->
             </el-select>
           </el-form-item>
-          <el-form-item label="可换算比:" prop="CONVERSION_RATIO">
-            <el-input clearable :maxlength="20" v-model="form.CONVERSION_RATIO" placeholder="请输入可换算比" />
+          <el-form-item label="理论人次:" prop="CONVERSION_RATIO">
+            <el-input clearable :maxlength="20" v-model="form.CONVERSION_RATIO" placeholder="请输入理论人次" />
           </el-form-item>
-          <el-form-item label="仪器备注:" prop="DEVICE_REMARK">
-            <el-input clearable :maxlength="100" v-model="form.DEVICE_REMARK" placeholder="请输入仪器备注" />
+          <el-form-item label="备注:" prop="DEVICE_REMARK">
+            <el-input clearable :maxlength="100" v-model="form.DEVICE_REMARK" placeholder="请输入备注" />
           </el-form-item>
         </el-col>
       </el-row>

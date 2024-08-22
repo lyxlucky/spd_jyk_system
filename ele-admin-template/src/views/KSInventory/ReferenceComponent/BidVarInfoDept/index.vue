@@ -1,5 +1,5 @@
 <template >
-  <ele-modal :destroy-on-close="true" width="1600px" :centered="true" :visible="visible" :close-on-click-modal="true" custom-class="ele-dialog-form" title="中标目录" @update:visible="updateVisible">
+  <ele-modal :destroy-on-close="true" width="1700px" :centered="true" :visible="visible" :close-on-click-modal="true" custom-class="ele-dialog-form" title="中标目录" @update:visible="updateVisible">
     <div class="ele-body">
       <el-card shadow="never">
         <!-- 搜索表单 -->
@@ -143,12 +143,14 @@ export default {
           minWidth: 150
         },
         {
-          prop: 'SPECIFICATION_OR_TYPE',
           label: '型号/规格',
           // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 180
+          minWidth: 180,
+          formatter: (row, column, cellValue) => {
+            return row.XH + '/' + row.GG;
+          }
         },
         {
           prop: 'MANUFACTURING_ENT_NAME',
