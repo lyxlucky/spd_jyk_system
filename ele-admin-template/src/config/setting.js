@@ -89,7 +89,10 @@ export const BLACK_LIST_ROUTERS = [
   //入库管理V2
   '/KSInventory/StorageManagementV2',
   //库存查询
-  '/KSInventory/JTQueryList'
+  '/KSInventory/JTQueryList',
+  //调库
+  'tiaoku:left:submit',
+  'tiaoku:left:confirm'
 ]
 
 // 页签同路由不同参数可重复打开的路由

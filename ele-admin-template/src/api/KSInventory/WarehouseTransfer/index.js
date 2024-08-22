@@ -212,3 +212,17 @@ export async function commitTkInfo(dataArray) {
     return Promise.reject(error);
   }
 }
+
+export async function TjTkInfo(data) {
+  var Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+  //添加参数
+  var data2 = {}
+  data2.Token = Token;
+  data2.ID = data.ID;
+  let data3 = formdataify(data2);
+  const res = await request.post('/DeptConsume/TjTkInfo', data3);
+  if (res.data.code == 200) {
+    return res.data;
+  }
+  return Promise.reject(new Error(res.data.msg));
+}

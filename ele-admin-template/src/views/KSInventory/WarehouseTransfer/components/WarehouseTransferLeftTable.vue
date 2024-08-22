@@ -37,19 +37,32 @@
             type="success"
             size="mini"
             icon="el-icon-circle-check"
+            v-permission="'tiaoku:left:confirm'"
             :disabled="!isEnableDelete"
             @click="submit()"
             >确定调库</el-button
+          >
+          <el-button
+            type="success"
+            size="mini"
+            icon="el-icon-circle-check"
+            v-permission="'tiaoku:left:submit'"
+            :disabled="isCurrent"
+            @click="submitTransfer()"
+            >提交调库</el-button
           >
         </div>
       </template>
 
       <template v-slot:TK_STAE="{ row }">
-        <el-tag v-if="row.TK_STAE == 0" type="primary" size="small"
+        <el-tag v-if="row.TK_STAE == 0 && row.TJ_STATE == 0" type="primary" size="small"
           >新增</el-tag
         >
-        <el-tag v-if="row.TK_STAE == 1" type="success" size="small"
-          >已调库</el-tag
+        <el-tag v-if="row.TK_STAE == 0 && row.TJ_STATE == 1" type="success" size="small"
+          >已提交</el-tag
+        >
+        <el-tag v-if="row.TK_STAE == 1 && row.TJ_STATE == 1" type="success" size="small"
+          >已确定</el-tag
         >
       </template>
     </ele-pro-table>
@@ -60,7 +73,8 @@
     getDEPT_TK_MAIN,
     createDEPT_TK_MAIN,
     deleteDEPT_TK_MAIN,
-    commitTkInfo
+    commitTkInfo,
+    TjTkInfo
   } from '@/api/KSInventory/WarehouseTransfer/index';
   export default {
     name: 'WarehouseTransferLeftTable',
@@ -159,6 +173,15 @@
             this.reload();
           });
       },
+      submitTransfer(){
+        TjTkInfo({ID:this.current.ID}).then((res) => {
+          this.$message.success(res.msg);
+        }).catch((err) => {
+          this.$message.error(err);
+        }).finally(() => {
+          this.reload();
+        })
+      },
       createItem() {
         const loading = this.$messageLoading('请求中..');
         createDEPT_TK_MAIN()
@@ -196,6 +219,9 @@
       }
     },
     computed: {
+      isCurrent(){
+        return !this.current ? true : false;
+      },
       // 是否开启响应式布局
       styleResponsive() {
         return this.$store.state.theme.styleResponsive;

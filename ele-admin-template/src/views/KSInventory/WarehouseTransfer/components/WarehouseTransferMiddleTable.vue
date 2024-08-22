@@ -34,6 +34,13 @@
             @click="deleteItem()"
             >删除</el-button
           >
+          <!-- <el-button
+            type="primary"
+            size="mini"
+            icon="el-icon-position"
+            @click="quoteTemplateVisible = true"
+            >引用模板</el-button
+          > -->
         </div>
       </template>
 
@@ -56,12 +63,14 @@
     />
 
     <WarehouseTransferDefPkgTable  :visible.sync='WarehouseTransferDefPkgTableVisible' />
+    <QuoteTemplate :visible.sync='quoteTemplateVisible' />
 
   </div>
 </template>
 <script>
   import WarehouseTransferCreateDetail from './WarehouseTransferCreateDetail';
   import WarehouseTransferDefPkgTable from './WarehouseTransferDefPkgTable';
+  import QuoteTemplate from './QuoteTemplate';
   import {
     getDEPT_TK_Del,
     delDEPT_TK_VAR
@@ -70,7 +79,8 @@
     name: 'WarehouseTransferMiddleTable',
     components: {
       WarehouseTransferCreateDetail,
-      WarehouseTransferDefPkgTable
+      WarehouseTransferDefPkgTable,
+      QuoteTemplate
     },
     data() {
       const defaultWhere = {
@@ -160,7 +170,8 @@
         // 当前编辑数据
         current: null,
         WarehouseTransferCreateDetailVisible: false,
-        WarehouseTransferDefPkgTableVisible: false
+        WarehouseTransferDefPkgTableVisible: false,
+        quoteTemplateVisible: false
       };
     },
     methods: {
