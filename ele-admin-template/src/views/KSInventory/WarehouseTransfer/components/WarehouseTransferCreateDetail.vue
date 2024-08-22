@@ -1,7 +1,7 @@
 <template lang="">
   <div class="">
     <ele-modal
-      width="1000px"
+      width="90%"
       :destroy-on-close="true"
       :visible="visible"
       :close-on-click-modal="true"
@@ -11,7 +11,7 @@
       @update:visible="updateVisible"
     >
       <ele-pro-table
-        height="60vh"
+        height="65vh"
         highlight-current-row
         @current-change="onCurrentChange"
         ref="table"
@@ -35,8 +35,17 @@
 
         <template v-slot:toolbar>
           <div>
+            <el-input style="width:200px" v-model="where.search" size='mini' placeholder="请输入品种编码"></el-input>
             <el-button
               type="primary"
+              size="mini"
+              style="margin-left:10px"
+              icon="el-icon-search"
+              @click="searchItem()"
+              >搜索</el-button
+            >
+            <el-button
+              type="success"
               size="mini"
               icon="el-icon-circle-check"
               :disabled="!isCreateEnable"
@@ -59,7 +68,9 @@
     props: ['visible', 'TK_MAIN_ID'],
     components: {},
     data() {
-      const defaultWhere = {};
+      const defaultWhere = {
+        search:"",
+      };
       return {
         where: { ...defaultWhere },
         columns: [
@@ -133,7 +144,7 @@
             showOverflowTooltip: true
           }
         ],
-        pageSize: 10,
+        pageSize: 20,
         pagerCount: 2,
         pageSizes: [10, 20, 50, 100, 9999999],
         // 表格选中数据
@@ -154,6 +165,9 @@
           }
         );
         return data;
+      },
+      searchItem(){
+        this.reload(this.where);
       },
       createItem() {
         const isAllHaveCount = this.selection.every((item) => item.COUNT > 0);

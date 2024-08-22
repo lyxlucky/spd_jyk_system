@@ -123,6 +123,7 @@ export async function getDEPT_TK_MAIN(data) {
     //添加参数
     data2.Token = Token;
     data2.deptCode = store.state.user.info.DeptNow.Dept_Two_Code
+    data2.search = data.where.search ? data.where.search : '';
     data2.page = data.page;
     data2.size = data.limit;
     let data3 = formdataify(data2);
