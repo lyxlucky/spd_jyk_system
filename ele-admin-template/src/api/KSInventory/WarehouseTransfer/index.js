@@ -226,3 +226,36 @@ export async function TjTkInfo(data) {
   }
   return Promise.reject(new Error(res.data.msg));
 }
+
+export async function addTemplateVarietie(data) {
+  var Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+  //添加参数
+  var data2 = {}
+  data2.Token = Token;
+  data2.deptCode = store.state.user.info.DeptNow.Dept_Two_Code
+  data2.id = data.id;
+  data2.json = data.json;
+  let data3 = formdataify(data2);
+  const res = await request.post('/DeptConsume/addTemplateVarietie', data3);
+  if (res.data.code == 200) {
+    return res.data;
+  }
+  return Promise.reject(new Error(res.data.msg));
+}
+
+
+export async function templateVarietieList(data) {
+  var Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+  //添加参数
+  var data2 = {}
+  data2.Token = Token;
+  data2.id = data.where.id;
+  data2.page = data.page;
+  data2.size = data.limit;
+  let data3 = formdataify(data2);
+  const res = await request.post('/DeptConsume/templateVarietieList', data3);
+  if (res.data.code == 200) {
+    return res.data;
+  }
+  return Promise.reject(new Error(res.data.msg));
+}

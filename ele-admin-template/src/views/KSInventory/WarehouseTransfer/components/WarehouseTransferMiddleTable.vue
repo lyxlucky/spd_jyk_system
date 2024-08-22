@@ -34,13 +34,14 @@
             @click="deleteItem()"
             >删除</el-button
           >
-          <!-- <el-button
+          <el-button
             type="primary"
             size="mini"
             icon="el-icon-position"
+            :disabled="!isEnableImport"
             @click="quoteTemplateVisible = true"
             >引用模板</el-button
-          > -->
+          >
         </div>
       </template>
 
@@ -237,6 +238,9 @@
       styleResponsive() {
         return this.$store.state.theme.styleResponsive;
       },
+      isEnableImport() {
+        return this.where.ID;
+      },
       isEnableCreate() {
         return (this.where.ID && this.where.STATE == 1);
       },
@@ -251,6 +255,9 @@
           this.where.STATE = row.TK_STAE
           this.reload(this.where);
         }
+      });
+      this.$bus.$on('QuoteTemplateAllDone', () => {
+        this.reload(this.where);
       });
     },
     beforeDestroy() {

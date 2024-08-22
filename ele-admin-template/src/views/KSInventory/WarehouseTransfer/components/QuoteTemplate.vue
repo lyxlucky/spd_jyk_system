@@ -49,6 +49,13 @@ import QuoteTemplateRightTable from './QuoteTemplateRightTable';
       updateVisible(val) {
         this.$emit('update:visible', val);
       }
+    },
+    mounted(){
+      this.$bus.$on('QuoteTemplateAllDone', () => {
+        this.updateVisible(false)
+      });
+    },
+    beforeDestroy(){
     }
   };
 </script>

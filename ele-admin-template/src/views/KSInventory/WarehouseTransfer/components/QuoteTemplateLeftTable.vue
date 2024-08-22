@@ -234,7 +234,7 @@
       },
       onCurrentChange(current) {
         this.current = current;
-        this.$emit('getCurrent', current);
+        this.$bus.$emit('QuoteTemplateLeftTableChange', current);
       },
       /* 删除数据 */
       remove(row) {

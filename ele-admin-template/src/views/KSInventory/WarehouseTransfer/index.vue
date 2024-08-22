@@ -45,6 +45,9 @@ import WarehouseTransferRightTable from './components/WarehouseTransferRightTabl
       WarehouseTransferLeftTable,
       WarehouseTransferMiddleTable,
       WarehouseTransferRightTable
+    },
+    beforeDestroy(){
+      this.$bus.$off('QuoteTemplateAllDone')
     }
   };
 </script>
