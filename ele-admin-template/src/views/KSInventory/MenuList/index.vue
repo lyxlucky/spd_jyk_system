@@ -56,6 +56,7 @@
             :Key="index"
           >
             <div
+              v-permission="[item.PERMISSION]"
               style="
                 width: 90px;
                 height: 70px;
@@ -219,19 +220,27 @@
           {
             ICON: 'zhongbiaomulu',
             TITLE: '中标目录',
-            VISIBLE: 'BidListShowEdit'
+            VISIBLE: 'BidListShowEdit',
+            PERMISSION: 'zhongbiaomulu'
           },
           {
             ICON: 'zaiyongmulu',
             TITLE: '在用目录',
-            VISIBLE: 'VarietyDataLzhLookShow'
+            VISIBLE: 'VarietyDataLzhLookShow',
+            PERMISSION: 'zaiyongmulu'
           },
           {
             ICON: 'keshimulu',
             TITLE: '科室目录',
-            VISIBLE: 'DpetOneAuthWithDeptShow'
+            VISIBLE: 'DpetOneAuthWithDeptShow',
+            PERMISSION: 'keshimulu'
           },
-          { ICON: 'shenglingzhiying', TITLE: '申领指引', VISIBLE: '' }
+          {
+            ICON: 'shenglingzhiying',
+            TITLE: '申领指引',
+            VISIBLE: '',
+            PERMISSION: 'shenlinzhiyin'
+          }
         ]
       };
     },
@@ -303,7 +312,11 @@
           '出库管理',
           '库存管理',
           '调库主单-确认调库',
-          '调库主单-提交调库'
+          '调库主单-提交调库',
+          '科室目录',
+          '在用目录',
+          '中标目录',
+          '申领指引'
         ];
         permission_group = permission_group.filter((res) => {
           return !blackList.includes(res.title);
