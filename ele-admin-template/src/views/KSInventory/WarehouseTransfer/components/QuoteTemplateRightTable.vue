@@ -21,96 +21,223 @@
           size="mini"
           icon="el-icon-circle-plus-outline"
           :disabled="!isCreateEnable"
-          @click="addItemVisible = true"
-          >引入品种</el-button
-        >
-
-        <el-button
-          type="primary"
-          size="mini"
-          icon="el-icon-circle-plus-outline"
-          :disabled="!isCreateEnable"
           @click="importItem()"
           >导入品种</el-button
         >
       </template>
-
-      <template v-slot:APPLY_QTY="{ row }">
+      <!-- 操作列 -->
+      <template v-slot:TempletQty="{ row }">
         <el-input-number
-          v-model="row.APPLY_QTY"
-          size="mini"
+          style="width: 120px"
+          v-model="row.TempletQty"
           :min="0"
-          class="ele-fluid"
+          :max="999999999"
+          :step="1"
+          size="mini"
         />
       </template>
+      <template v-slot:AUTH="{ row }">
+        <el-input-number
+          style="width: 120px"
+          v-model="row.AUTH"
+          :min="0"
+          :max="999999999"
+          :step="1"
+          size="mini"
+        />
+      </template>
+      <template v-slot:action="{ row }">
+        <el-popconfirm
+          class="ele-action"
+          title="确定要删除此品种吗？"
+          @confirm="remove(row)"
+        >
+          <template v-slot:reference>
+            <el-link type="danger" :underline="false" icon="el-icon-delete">
+              删除
+            </el-link>
+          </template>
+        </el-popconfirm>
+      </template>
     </ele-pro-table>
-
-    <AddVarietieTable
-      :leftTableCurrent="leftTableCurrent"
-      :visible.sync="addItemVisible"
-    />
   </div>
 </template>
 <script>
-  import AddVarietieTable from './AddVarietieTable';
   import {
-    chooseDefPkgTableList,
-    templateVarietieList,
     createDEPT_TK_VAR
   } from '@/api/KSInventory/WarehouseTransfer/index';
+  import {
+  SerachTempletDeta,
+  DeleteTempletDeta
+} from '@/api/KSInventory/ApplyTemp';
   export default {
     name: 'QuoteTemplateRightTable',
-    components: {
-      AddVarietieTable
-    },
+    components: {},
+    props: ['mainId'],
     data() {
       const defaultWhere = {
-        id: ''
+        ID: ''
       };
       return {
         where: { ...defaultWhere },
         addItemVisible: false,
         columns: [
           {
-            slot: 'APPLY_QTY',
-            label: '数量',
-            minWidth: 120,
-            align: 'center'
+            columnKey: 'selection',
+            type: 'selection',
+            width: 45,
+            align: 'center',
+            fixed: 'left'
+          },
+          {
+            columnKey: 'index',
+            type: 'index',
+            width: 45,
+            align: 'center',
+            showOverflowTooltip: true,
+            fixed: 'left'
+          },
+          {
+            slot: 'TempletQty',
+            label: '模板申领数量',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 160,
+            fixed: 'left'
+          },
+
+          {
+            columnKey: 'action',
+            label: '操作',
+            width: 80,
+            align: 'center',
+            resizable: false,
+            slot: 'action',
+            showOverflowTooltip: true,
+            fixed: 'left'
           },
           {
             prop: 'VARIETIE_CODE_NEW',
             label: '品种编码',
-            minWidth: 110,
+
             align: 'center',
-            showOverflowTooltip: true
+            showOverflowTooltip: true,
+            minWidth: 130
           },
           {
-            prop: 'VARIETIE_NAME',
-            label: '品种名称',
-            minWidth: 110,
+            prop: 'VarName',
+            label: '品种全称',
+
             align: 'center',
-            showOverflowTooltip: true
+            showOverflowTooltip: true,
+            minWidth: 180
           },
           {
-            prop: 'SPECIFICATION_OR_TYPE',
-            label: '包装规格',
-            minWidth: 120,
+            prop: 'GG',
+            label: '型号/规格',
+
             align: 'center',
-            showOverflowTooltip: true
+            showOverflowTooltip: true,
+            minWidth: 150
           },
           {
-            prop: 'UNIT',
+            prop: 'Unit',
             label: '单位',
-            minWidth: 60,
+
             align: 'center',
-            showOverflowTooltip: true
+            showOverflowTooltip: true,
+            minWidth: 80
           },
           {
-            prop: 'MANUFACTURING_ENT_NAME',
-            label: '生产企业',
-            minWidth: 120,
+            prop: 'Price',
+            label: '结算价',
+
             align: 'center',
-            showOverflowTooltip: true
+            showOverflowTooltip: true,
+            minWidth: 80
+          },
+          {
+            prop: 'Manufacturing',
+            label: '生产企业名称',
+
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 150
+          },
+          {
+            prop: 'StockQty',
+            label: '散货库存',
+
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 80
+          },
+
+          {
+            prop: '月均用量',
+            label: '平均使用数量',
+
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 110
+          },
+          {
+            prop: 'BigBoxCount',
+            label: '大包装数量',
+
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 110,
+            show: false
+          },
+          {
+            prop: 'MinBoxCount',
+            label: '中包装数量',
+
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 110,
+            show: false
+          },
+          {
+            prop: 'PAG_TYPE',
+            label: '包装规格',
+
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 110
+          },
+          {
+            prop: 'ZB',
+            label: '是否中标',
+
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 90,
+            formatter: (row, column, cellValue) => {
+              if (cellValue == 0) {
+                return '否';
+              } else if (cellValue == 1) {
+                return '是';
+              } else {
+                return '未知';
+              }
+            }
+          },
+          {
+            slot: 'AUTH',
+            label: '排序',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 160
+          },
+          {
+            prop: 'SUPPLIER_NAME',
+            label: '供应商',
+
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 150
           }
         ],
         toolbar: false,
@@ -128,12 +255,16 @@
     },
     methods: {
       datasource({ page, limit, where, order }) {
-        let data = templateVarietieList({ page, limit, where, order }).then(
+        where.DeptCode = this.$store.state.user.info.DeptNow.Dept_Two_Code;
+        where.UserId = this.$store.state.user.info.ID;
+        where.TempletMasteID = this.where.ID;
+        let data = SerachTempletDeta({ page, limit, where, order }).then(
           (res) => {
             var tData = {
               count: res.total,
               list: res.result
             };
+            console.log(res.result)
             this.datasourceList = res.result;
             return tData;
           }
@@ -155,12 +286,12 @@
         // if (!isAllHaveCount) return this.$message.error('请填写数量');
         const json = this.datasourceList.map((item) => {
           return {
-            VARIETIE_CODE: item.VARIETIE_CODE,
-            QTY: item.COUNT
+            VARIETIE_CODE: item.VarID,
+            QTY: item.TempletQty
           };
         });
         const loading = this.$messageLoading('正在处理...');
-        createDEPT_TK_VAR({ json: json, TK_MAIN_ID: this.TK_MAIN_ID })
+        createDEPT_TK_VAR({ json: json, TK_MAIN_ID: this.mainId })
           .then((res) => {
             this.$message.success(res.msg);
           })
@@ -170,6 +301,22 @@
           .finally(() => {
             loading.close();
             this.$bus.$emit('QuoteTemplateAllDone');
+          });
+      },
+      remove(row) {
+        var data = {
+          ID: row.ID
+        };
+        const loading = this.$messageLoading('删除中...');
+        DeleteTempletDeta(data)
+          .then((res) => {
+            loading.close();
+            this.$message(res.msg);
+            this.reload();
+          })
+          .catch((err) => {
+            loading.close();
+            this.$message(err);
           });
       }
     },
@@ -182,12 +329,9 @@
       }
     },
     mounted() {
-      this.$bus.$on(`${this.$route.path}/LeftTableChange`, (row) =>{
-        this.TK_MAIN_ID = row.ID;
-      });
       this.$bus.$on('QuoteTemplateLeftTableChange', (data) => {
         this.leftTableCurrent = data;
-        this.where.id = data.ID;
+        this.where.ID = data.ID;
         this.reload(this.where);
       });
     },

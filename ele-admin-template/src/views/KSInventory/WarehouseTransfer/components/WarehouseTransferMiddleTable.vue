@@ -64,7 +64,7 @@
     />
 
     <WarehouseTransferDefPkgTable  :visible.sync='WarehouseTransferDefPkgTableVisible' />
-    <QuoteTemplate :visible.sync='quoteTemplateVisible' />
+    <QuoteTemplate :ID = "this.where.ID" :visible.sync='quoteTemplateVisible' />
 
   </div>
 </template>

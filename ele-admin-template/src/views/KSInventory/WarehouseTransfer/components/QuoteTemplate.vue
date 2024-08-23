@@ -24,7 +24,7 @@
               <div slot="header" class="clearfix">
                 <span>模板列表品种</span>
               </div>
-               <QuoteTemplateRightTable />
+               <QuoteTemplateRightTable :mainId = "ID"/>
             </el-card>
           </el-main>
         </el-container>
@@ -37,7 +37,7 @@ import QuoteTemplateLeftTable from './QuoteTemplateLeftTable';
 import QuoteTemplateRightTable from './QuoteTemplateRightTable';
   export default {
     name: 'QuoteTemplate',
-    props: ['visible'],
+    props: ['visible','ID'],
     components: {
         QuoteTemplateLeftTable,
         QuoteTemplateRightTable

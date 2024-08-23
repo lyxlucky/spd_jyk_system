@@ -14,41 +14,6 @@
       :selection.sync="selection"
       cache-key="QuoteTemplateLeftTableKey"
     >
-      <!-- 表头工具栏 -->
-      <template v-slot:toolbar>
-        <el-form
-          label-width="0px"
-          class="ele-form-search"
-          @keyup.enter.native="search"
-          @submit.native.prevent
-        >
-          <el-row :gutter="15">
-            <el-col v-bind="styleResponsive ? { lg: 12, md: 2 } : { span: 4 }">
-              <el-form-item prop="TempletName">
-                <el-input
-                  clearable
-                  size='mini'
-                  v-model="where.TempletName"
-                  placeholder="请输入模板名称"
-                />
-              </el-form-item>
-            </el-col>
-            <el-col v-bind="styleResponsive ? { lg: 2, md: 2 } : { span: 4 }">
-              <div class="ele-form-actions">
-                <el-button
-                  size="mini"
-                  type="primary"
-                  icon="el-icon-check"
-                  class="ele-btn-icon"
-                  @click="Temp_FoundPlanSingle()"
-                >
-                  确认创建
-                </el-button>
-              </div>
-            </el-col>
-          </el-row>
-        </el-form>
-      </template>
 
       <template v-slot:CommonState="{ row }">
         <el-tag v-if="row.CommonState == 0" type="success">新增</el-tag>
@@ -76,7 +41,6 @@
   import {
     SerachTempletList,
     DeleteTemplet,
-    CreateTemplet
   } from '@/api/KSInventory/ApplyTemp';
   export default {
     name: 'QuoteTemplateLeftTable',
@@ -251,30 +215,6 @@
             this.$message.error(err);
           });
       },
-      Temp_FoundPlanSingle() {
-        if (!this.where.TempletName) {
-          this.$message.warning('请输入模板名称');
-          return;
-        }
-        const loading = this.$messageLoading('添加中..');
-        var data = {
-          TempletName: this.where.TempletName,
-          DeptCode: this.$store.state.user.info.DeptNow.Dept_Two_Code,
-          Operater: this.$store.state.user.info.UserName
-        };
-        CreateTemplet(data)
-          .then((res) => {
-            loading.close();
-            this.$message.success(res.msg);
-            this.reload()
-          })
-          .catch((err) => {
-            loading.close();
-            this.$message.error(err);
-          }).finally(() => {
-            this.where.TempletName = '';
-          });
-      }
     },
     computed: {
       styleResponsive() {

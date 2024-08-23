@@ -8,7 +8,7 @@ export const B2B_BASE_URL = "http://47.106.243.154:802";
 // bd 北大
 // szsmyl 萨米
 // stzl 汕头肿瘤标识
-export const HOME_HP = 'szsmyl'
+export const HOME_HP = 'bd'
 
 // 计算b2b的的医院ID
 const caculateB2bCode = () => {
@@ -32,7 +32,7 @@ export const B2B_BASE_CODE = caculateB2bCode();
 
 
 // 后端地址
-// export const BACK_BASE_URL = "http://localhost:16416";
+export const BACK_BASE_URL = "http://localhost:16416";
 
 // 北大
 // export const BACK_BASE_URL = "http://47.106.243.154:9001";
@@ -53,7 +53,7 @@ export const B2B_BASE_CODE = caculateB2bCode();
 // export const BACK_BASE_URL = "http://120.78.226.92:18002/";
 
 // 萨米医院内网
-export const BACK_BASE_URL = "http://192.168.8.90:18002/";
+// export const BACK_BASE_URL = "http://192.168.8.90:18002/";
 
 // 肿瘤外网
 // export const BACK_BASE_URL = "http://113.106.170.118:82/";
