@@ -43,20 +43,20 @@
             />
           </el-form-item>
           <el-form-item label="仪器备注:" prop="DEVICE_REMARK">
-            <!-- <el-input clearable :maxlength="100" v-model="form.DEVICE_REMARK" placeholder="请输入仪器" /> -->
-            <el-select
-              style="width: 100%;"
-              v-model="form.DEVICE_REMARK"
-              filterable
-              placeholder="请选择仪器"
-            >
-              <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
+            <el-select style="width: 100%;" v-model="form.DEVICE_REMARK" placeholder="请选择仪器">
+              <el-option-group
+                v-for="group in options"
+                :key="group.WORKING_GROUP"
+                :label="group.WORKING_GROUP"
               >
-              </el-option>
+                <el-option
+                  v-for="item in group.INSTRUMENT_NAME"
+                  :key="item"
+                  :label="item"
+                  :value="item"
+                >
+                </el-option>
+              </el-option-group>
             </el-select>
           </el-form-item>
         </el-col>
@@ -74,7 +74,8 @@
 <script>
   import {
     GetClassificProp_Jy,
-    UpdateVarietieBasicJyk
+    UpdateVarietieBasicJyk,
+    jykDeviceOptionList
   } from '@/api/KSInventory/KSInventoryBasicData';
 
   export default {
@@ -135,6 +136,7 @@
       }
     },
     created() {
+      this.getJykDevices();
       // console.log(this.data);
       // this.defaultForm.CONVERSION_RATIO = this.data.CONVERSION_RATIO;
       // this.defaultForm.CLASS_NUM = this.data.CLASS_NUM == null ? "0": this.data.CLASS_NUM;
@@ -142,6 +144,11 @@
     },
     methods: {
       /* 保存编辑 */
+      getJykDevices() {
+        jykDeviceOptionList().then((res) => {
+          this.options = res.result;
+        });
+      },
       save() {
         this.$refs.form.validate((valid) => {
           if (!valid) {

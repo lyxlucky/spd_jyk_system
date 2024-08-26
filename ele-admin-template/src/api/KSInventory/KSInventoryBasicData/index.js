@@ -118,3 +118,15 @@ export async function UpDownKsQueryNew(data) {
         return Promise.reject(new Error(res.data.msg));
     }
 }
+
+export async function jykDeviceOptionList() {
+    var data2 = {};
+    data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+    var rep = formdataify(data2);
+    const res = await request.post('/DeptConsume/jykDeviceOptionList', rep);
+    if (res.data.code == 200) {
+        return res.data;
+    } else {
+        return Promise.reject(new Error(res.data.msg));
+    }
+}
