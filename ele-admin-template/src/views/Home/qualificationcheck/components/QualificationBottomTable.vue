@@ -3,6 +3,7 @@
     <ele-pro-table
       highlight-current-row
       ref="table"
+      :toolkit="[]"
       @current-change="onCurrentChange"
       height="30vh"
       :rowClickChecked="true"
@@ -44,12 +45,12 @@
         <el-link type='primary'>{{'详情'}}</el-link>
       </template> -->
 
-      <template v-slot:operation="">
+      <template v-slot:operation="{ row }">
         <el-button
           type="primary"
           size="mini"
           icon="el-icon-setting"
-          @click="viewBottomTableDetail"
+          @click="viewBottomTableDetail(row)"
           >详情</el-button
         >
       </template>

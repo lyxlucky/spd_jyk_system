@@ -1,6 +1,6 @@
 import request from '@/utils/request';
 import { formdataify, DataToObject } from '@/utils/formdataify';
-import { B2B_BASE_CODE, B2B_BASE_URL } from '@/config/setting';
+import { B2B_BASE_CODE, B2B_BASE_URL,HOME_HP } from '@/config/setting';
 import { TOKEN_STORE_NAME } from '@/config/setting';
 import { toDateString } from 'ele-admin';
 import store from '@/store/index';
@@ -173,7 +173,7 @@ export async function getFactory(data) {
 export async function GetMgmtListByProTypeID(data) {
     let formataData = {}
     formataData.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
-    formataData.Prod_Big_Class_Code = data;
+    formataData.Prod_Big_Class_Code = data ? data : '';
     const res = await request.get('/ProdBigClass/GetMgmtListByProTypeID', {
         params: formataData
       });
@@ -227,7 +227,7 @@ export async function UpDateProdInfo(data) {
     formataData.PRODUCTION_SITE = data.where.current.PRODUCTION_SITE ?? '';
     formataData.LEGAL_PERSON = data.where.current.LEGAL_PERSON ?? '';
     formataData.STRUCTURE_COMPOSITION = data.where.current.STRUCTURE_COMPOSITION ?? '';
-    formataData.HIS_PROD_END_TIME = toDateString(data.where.current.HIS_PROD_END_TIME,"yyyy-MM-dd")
+    formataData.HIS_PROD_END_TIME = data.where.current.HIS_PROD_END_TIME ? toDateString(data.where.current.HIS_PROD_END_TIME,"yyyy-MM-dd") : '1970-01-01'
     formataData.SCOPE_APPLICATION = data.where.current.SCOPE_APPLICATION ?? '';
     formataData.STORAGE_CONDITION = data.where.current.STORAGE_CONDITION ?? '';
     formataData.EDITPROD_PROD = data.EDITPROD_PROD ?? '';
@@ -267,5 +267,34 @@ export async function spdGetSupplierInfoForZong(data) {
         return res;
     } else {
         return Promise.reject(new Error(res.msg));
+    }
+}
+
+export async function DownZmlSup(data) {
+    let formataData = {}
+    formataData.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+    formataData.hp = HOME_HP;
+    formataData.json = data.json;
+    let req = formdataify(formataData);
+    const res = await request.post('/BtbGetVarietie/DownZmlSup',req);
+    if (res.data.code == 200) {
+        return res.data;
+    } else {
+        return Promise.reject(new Error(res.data.msg));
+    }
+}
+
+export async function appZongSupInfo(data) {
+    let formataData = {}
+    formataData.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+    formataData.state = data.state;
+    formataData.SUPPLIER_CODE = data.code;
+    formataData.mark = data.mark;
+    let req = formdataify(formataData);
+    const res = await request.post('/Supplier/appZongSupInfo',req);
+    if (res.data.code == 200) {
+        return res.data;
+    } else {
+        return Promise.reject(new Error(res.data.msg));
     }
 }

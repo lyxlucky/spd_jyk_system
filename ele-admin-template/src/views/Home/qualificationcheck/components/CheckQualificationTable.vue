@@ -7,6 +7,7 @@
       @update:visible="updateVisible"
       top="5vh"
       :resizable="true"
+      @close="closeModal"
       :maxable="true"
       :destroy-on-close="true"
     >
@@ -16,7 +17,6 @@
         ref="table"
         @current-change="onCurrentChange"
         height="60vh"
-        :rowClickChecked="true"
         :stripe="true"
         :pageSize="pageSize"
         :pageSizes="pageSizes"
@@ -27,7 +27,11 @@
       >
         <!-- 表格工具栏 -->
         <template v-slot:toolbar>
-          <CheckQualificationTableSearch @search="reload"/>
+          <CheckQualificationTableSearch
+            @approval="approval"
+            @deny="deny"
+            @search="reload"
+          />
         </template>
         <!-- 营业执照效期 -->
         <template v-slot:BUSINESS_LICENSE_DATE="{ row }">
@@ -145,12 +149,16 @@
   </div>
 </template>
 <script>
-  import { spdGetSupplierInfoForZong } from '@/api/Home/Qualificationcheck/index';
+  import {
+    spdGetSupplierInfoForZong,
+    DownZmlSup,
+    appZongSupInfo
+  } from '@/api/Home/Qualificationcheck/index';
   import CheckQualificationTableSearch from './CheckQualificationTableSearch';
   import { B2B_BASE_CODE, B2B_BASE_URL } from '@/config/setting';
   export default {
     name: 'ChekcQualificationTable',
-    components:{
+    components: {
       CheckQualificationTableSearch
     },
     props: ['visible'],
@@ -160,46 +168,34 @@
         where: { ...defaultWhere },
         columns: [
           {
-            width: 45,
-            type: 'selection',
-            columnKey: 'selection',
-            align: 'center'
-          },
-
-          {
             prop: 'SUPPLIER_CODE_SPD',
             label: '院内编码',
             width: 100,
             showOverflowTooltip: true
-
           },
           {
             prop: 'COMPANY',
             label: '供应商名称',
             width: 200,
             showOverflowTooltip: true
-
           },
           {
             prop: 'PEOPLE_ID',
             label: '社会统一信用代码',
             width: 150,
             showOverflowTooltip: true
-
           },
           {
             prop: 'ADDRESS',
             label: '企业地址',
             width: 100,
             showOverflowTooltip: true
-
           },
           {
             prop: 'PHONE',
             label: '企业电话',
             width: 120,
             showOverflowTooltip: true
-
           },
           {
             prop: 'BUSINESS_LICENSE_DATE',
@@ -208,7 +204,6 @@
             minWidth: 130,
             align: 'left',
             showOverflowTooltip: true
-
           },
           {
             prop: 'RODUCTION_CLASS_1_VALID_DATE',
@@ -217,7 +212,6 @@
             minWidth: 110,
             align: 'left',
             showOverflowTooltip: true
-
           },
           {
             prop: 'RODUCTION_CLASS_2_VALID_DATE',
@@ -226,7 +220,6 @@
             minWidth: 110,
             align: 'left',
             showOverflowTooltip: true
-
           },
           {
             prop: 'RODUCTION_CLASS_3_VALID_DATE',
@@ -235,7 +228,6 @@
             minWidth: 110,
             align: 'left',
             showOverflowTooltip: true
-
           },
           {
             prop: 'DR_VALID_DATE',
@@ -244,7 +236,6 @@
             minWidth: 110,
             align: 'left',
             showOverflowTooltip: true
-
           },
           {
             prop: 'WTS_VALID_DATE',
@@ -253,7 +244,6 @@
             minWidth: 110,
             align: 'left',
             showOverflowTooltip: true
-
           },
           {
             prop: 'YWY_NAME',
@@ -261,7 +251,6 @@
             width: 100,
             align: 'left',
             showOverflowTooltip: true
-
           },
           {
             prop: 'YWY_PEO_ID',
@@ -269,7 +258,6 @@
             minWidth: 170,
             align: 'left',
             showOverflowTooltip: true
-
           },
           {
             fiepropld: 'YWY_PHONE',
@@ -321,6 +309,46 @@
         this.$viewerApi({
           images: [imageSrc]
         });
+      },
+      closeModal() {
+        this.$emit('closeModal');
+      },
+      approval() {
+        if (!this.current) return this.$message.warning('请选择一条数据');
+        const json = JSON.stringify([this.current]);
+        DownZmlSup({ json: json })
+          .then((res) => {
+            if (res.code != 200) return this.$message.error(res.msg);
+            this.$message.success(res.msg);
+          })
+          .catch((err) => {
+            this.$message.error(err);
+          })
+          .finally(() => {
+            this.updateVisible(false);
+            this.reload(this.where);
+          });
+      },
+      deny() {
+        if (!this.current) return this.$message.warning('请选择一条数据');
+        this.$prompt('审核不通过备注', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+        })
+          .then(({ value }) => {
+            appZongSupInfo({state:2,mark:value,code:this.current.SUPPLIER_CODE_SPD}).then((res) => {
+              if (res.code != 200) return this.$message.error(res.msg);
+              this.$message.success(res.msg);
+            }).catch((err) => {
+              this.$message.error(err);
+            });
+          })
+          .catch(() => {
+            this.$message({
+              type: 'info',
+              message: '取消输入'
+            });
+          });
       }
     },
     computed: {},
