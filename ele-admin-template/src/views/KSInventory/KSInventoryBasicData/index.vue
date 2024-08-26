@@ -209,16 +209,30 @@ export default {
             return cellValue;
           }
         },
+        // {
+        //   prop: 'CONVERSION_RATIO',
+        //   label: '换算比(试剂)',
+        //   width: 100,
+        //   align: 'center',
+        //   showOverflowTooltip: true
+        // },
+        // {
+        //   prop: 'DEVICE_REMARK',
+        //   label: '仪器设备',
+        //   width: 100,
+        //   align: 'center',
+        //   showOverflowTooltip: true
+        // },
         {
-          prop: 'CONVERSION_RATIO',
-          label: '换算比(试剂)',
+          prop: 'JYK_ZHB',
+          label: '换算比',
           width: 100,
           align: 'center',
           showOverflowTooltip: true
         },
         {
-          prop: 'DEVICE_REMARK',
-          label: '仪器备注',
+          prop: 'JYK_YQM',
+          label: '仪器设备',
           width: 100,
           align: 'center',
           showOverflowTooltip: true

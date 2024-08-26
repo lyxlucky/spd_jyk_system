@@ -328,7 +328,7 @@ export default {
     addPutInListDeta2() {
       const loading = this.$messageLoading('提交中..');
       var list = [];
-      this.selection.forEach((element) => {
+      this.datasourceList.forEach((element) => {
         var data = {
           ID: element.ID,
           ENABLE: element.ENABLE,

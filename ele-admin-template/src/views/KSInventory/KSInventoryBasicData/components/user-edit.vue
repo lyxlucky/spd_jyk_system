@@ -42,8 +42,8 @@
               placeholder="请输入理论人次"
             />
           </el-form-item>
-          <el-form-item label="仪器备注:" prop="DEVICE_REMARK">
-            <el-select style="width: 100%;" v-model="form.DEVICE_REMARK" placeholder="请选择仪器">
+          <el-form-item label="仪器设备:" prop="DEVICE_REMARK">
+            <el-select style="width: 100%;" filterable v-model="form.DEVICE_REMARK" placeholder="请选择仪器设备">
               <el-option-group
                 v-for="group in options"
                 :key="group.WORKING_GROUP"

@@ -292,6 +292,7 @@
         var permission_group = this.$store.state.user.info.permission_group;
 
         //控制首页菜单显示
+        //'新资质审核',
         const blackList = [
           '申领计划管理_审核按钮',
           '申领计划管理_审批按钮',
@@ -307,7 +308,6 @@
           'UDI院内流转查询',
           '产品主码管理',
           '利用率',
-          '新资质审核',
           '基础数据管理',
           '出库管理',
           '库存管理',
