@@ -303,7 +303,9 @@
           '出库管理',
           '库存管理',
           '调库主单-确认调库',
-          '调库主单-提交调库'
+          '调库主单-提交调库',
+          '检验科仪器分析',
+          '检验科仪器信息',
         ];
         permission_group = permission_group.filter((res) => {
           return !blackList.includes(res.title);
