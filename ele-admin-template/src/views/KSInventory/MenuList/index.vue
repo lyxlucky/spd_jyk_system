@@ -316,7 +316,9 @@
           '科室目录',
           '在用目录',
           '中标目录',
-          '申领指引'
+          '申领指引',
+          '检验科仪器信息',
+          '新资质审核'
         ];
         permission_group = permission_group.filter((res) => {
           return !blackList.includes(res.title);
