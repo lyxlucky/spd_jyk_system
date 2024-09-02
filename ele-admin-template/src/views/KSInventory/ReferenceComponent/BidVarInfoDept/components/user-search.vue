@@ -112,7 +112,7 @@
             查询
           </el-button>
           <el-button @click="reset">重置</el-button>
-          <el-button type="primary" icon="el-icon-download" class="ele-btn-icon" @click="exportData">
+          <el-button v-permission="'zhongbiao-export'" type="primary" icon="el-icon-download" class="ele-btn-icon" @click="exportData">
             导出
           </el-button>
           <el-button type="primary" class="ele-btn-icon" @click="ApplyToVarietyDataLzhLook()">申请至在用目录</el-button>

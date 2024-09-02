@@ -41,6 +41,13 @@
               >定标</el-button
             >
 
+            <!-- <el-button
+              type="success"
+              size="mini"
+              icon="el-icon-upload"
+              >上传图片</el-button
+            > -->
+
           </el-form-item>
         </el-col>
 
