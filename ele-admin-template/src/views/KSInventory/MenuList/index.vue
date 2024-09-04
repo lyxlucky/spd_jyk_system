@@ -313,10 +313,8 @@
           '库存管理',
           '调库主单-确认调库',
           '调库主单-提交调库',
-<<<<<<< HEAD
           '检验科仪器分析',
           '检验科仪器信息',
-=======
           '科室目录',
           '在用目录',
           '中标目录',
@@ -325,7 +323,6 @@
           '新资质审核',
           "科室目录导出",
           "中标目录导出"
->>>>>>> aa8d5b73a4e2e8e8b336f03bee3f687535d885e4
         ];
         permission_group = permission_group.filter((res) => {
           return !blackList.includes(res.title);
