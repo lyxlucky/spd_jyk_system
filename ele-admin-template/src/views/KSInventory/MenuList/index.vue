@@ -56,6 +56,7 @@
             :Key="index"
           >
             <div
+              v-permission="[item.PERMISSION]"
               style="
                 width: 90px;
                 height: 70px;
@@ -219,19 +220,27 @@
           {
             ICON: 'zhongbiaomulu',
             TITLE: '中标目录',
-            VISIBLE: 'BidListShowEdit'
+            VISIBLE: 'BidListShowEdit',
+            PERMISSION: 'zhongbiaomulu'
           },
           {
             ICON: 'zaiyongmulu',
             TITLE: '在用目录',
-            VISIBLE: 'VarietyDataLzhLookShow'
+            VISIBLE: 'VarietyDataLzhLookShow',
+            PERMISSION: 'zaiyongmulu'
           },
           {
             ICON: 'keshimulu',
             TITLE: '科室目录',
-            VISIBLE: 'DpetOneAuthWithDeptShow'
+            VISIBLE: 'DpetOneAuthWithDeptShow',
+            PERMISSION: 'keshimulu'
           },
-          { ICON: 'shenglingzhiying', TITLE: '申领指引', VISIBLE: '' }
+          {
+            ICON: 'shenglingzhiying',
+            TITLE: '申领指引',
+            VISIBLE: '',
+            PERMISSION: 'shenlinzhiyin'
+          }
         ]
       };
     },
@@ -283,6 +292,7 @@
         var permission_group = this.$store.state.user.info.permission_group;
 
         //控制首页菜单显示
+        //'新资质审核',
         const blackList = [
           '申领计划管理_审核按钮',
           '申领计划管理_审批按钮',
@@ -298,14 +308,24 @@
           'UDI院内流转查询',
           '产品主码管理',
           '利用率',
-          '新资质审核',
           '基础数据管理',
           '出库管理',
           '库存管理',
           '调库主单-确认调库',
           '调库主单-提交调库',
+<<<<<<< HEAD
           '检验科仪器分析',
           '检验科仪器信息',
+=======
+          '科室目录',
+          '在用目录',
+          '中标目录',
+          '申领指引',
+          '检验科仪器信息',
+          '新资质审核',
+          "科室目录导出",
+          "中标目录导出"
+>>>>>>> aa8d5b73a4e2e8e8b336f03bee3f687535d885e4
         ];
         permission_group = permission_group.filter((res) => {
           return !blackList.includes(res.title);
