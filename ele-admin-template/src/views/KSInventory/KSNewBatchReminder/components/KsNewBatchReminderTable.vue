@@ -18,13 +18,22 @@
     >
       <!-- 表头工具栏 -->
       <template v-slot:toolbar>
-        <KsNewBatchReminderTableSearch @sure="makeSure" @search="reload"/>
+        <KsNewBatchReminderTableSearch @sure="makeSure" @search="reload" />
       </template>
+
+      <!-- <template v-slot:DB_FILE>
+        <div class="image-container" v-viewer>
+          <img class="image" src="https://list.lyxlucky.site/d/r2/xian.png" />
+        </div>
+      </template> -->
     </ele-pro-table>
   </div>
 </template>
 <script>
-  import { getTableList,confirmBatch } from '@/api/KSInventory/KSNewBatchReminder/index';
+  import {
+    getTableList,
+    confirmBatch
+  } from '@/api/KSInventory/KSNewBatchReminder/index';
   import KsNewBatchReminderTableSearch from './KsNewBatchReminderTableSearch';
   export default {
     name: 'KsNewBatchReminderTable',
@@ -132,7 +141,7 @@
             showOverflowTooltip: true,
             minWidth: 70,
             formatter: (_row, _column, cellValue) => {
-                return this.$util.toDateString(cellValue, 'yyyy-MM-dd HH:mm:ss');
+              return this.$util.toDateString(cellValue, 'yyyy-MM-dd HH:mm:ss');
             }
           },
           {
@@ -141,7 +150,14 @@
             align: 'center',
             showOverflowTooltip: true,
             minWidth: 70
-          }
+          },
+          // {
+          //   slot: 'DB_FILE',
+          //   label: '定标报告',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   minWidth: 70
+          // }
         ],
         toolbar: false,
         pageSize: 10,
@@ -175,28 +191,32 @@
       reload(where) {
         this.$refs.table.reload({ page: 1, where: where });
       },
-      makeSure(){
-        const ids = this.selection.map((item) => `'${item.VARIETIE_CODE_NEW}'`).join(',');
+      makeSure() {
+        const ids = this.selection
+          .map((item) => `'${item.VARIETIE_CODE_NEW}'`)
+          .join(',');
         this.$confirm('确定定标吗?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
-        }).then(() => {
-          const loading = this.$messageLoading('正在处理中..');
-          confirmBatch({code:ids}).then((res) => {
-            this.$message({
-              type: 'success',
-              message: '定标成功!'
+        })
+          .then(() => {
+            const loading = this.$messageLoading('正在处理中..');
+            confirmBatch({ code: ids }).then((res) => {
+              this.$message({
+                type: 'success',
+                message: '定标成功!'
+              });
+              loading.close();
+              this.reload();
             });
-            loading.close();
-            this.reload();
+          })
+          .catch((err) => {
+            this.$message({
+              type: 'info',
+              message: err
+            });
           });
-        }).catch((err) => {
-          this.$message({
-            type: 'info',
-            message: err
-          });
-        });
       },
       onCurrentChange(current) {
         this.current = current;
@@ -213,4 +233,17 @@
     }
   };
 </script>
-<style lang=""></style>
+<style scoped>
+  .image {
+    height: 28px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 5px; /* 图片之间的间距 */
+    max-width: 100%; /* 可根据需要设置最大宽度 */
+  }
+  .image-container {
+    display: flex; /* 使用 Flexbox 布局 */
+    flex-wrap: wrap; /* 允许图片换行 */
+  }
+</style>

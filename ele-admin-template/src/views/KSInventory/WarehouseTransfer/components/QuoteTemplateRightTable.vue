@@ -6,7 +6,6 @@
       ref="table"
       height="48vh"
       :initLoad="false"
-      :rowClickChecked="true"
       :stripe="false"
       :pageSize="pageSize"
       :pageSizes="pageSizes"
@@ -16,14 +15,44 @@
       cache-key="QuoteTemplateRightTableKey"
     >
       <template v-slot:toolbar>
-        <el-button
-          type="primary"
-          size="mini"
-          icon="el-icon-circle-plus-outline"
-          :disabled="!isCreateEnable"
-          @click="importItem()"
-          >导入品种</el-button
-        >
+        <el-form class="ele-form-search">
+          <el-row :gutter="10">
+            <el-col :lg="14" :md="4">
+              <el-form-item label="">
+                <el-input
+                  v-model="where.SerachName"
+                  size="mini"
+                  placeholder="请输入品种名称/品种编码/型号规格/生产企业搜索"
+                  clearable
+                />
+              </el-form-item>
+            </el-col>
+            <el-col :lg="2" :md="4">
+              <el-form-item label="">
+                <el-button
+                  type="primary"
+                  icon="el-icon-search"
+                  size="mini"
+                  @click="reload(where)"
+                  >查询</el-button
+                >
+              </el-form-item>
+            </el-col>
+
+            <el-col :lg="2" :md="4">
+              <el-form-item label="">
+                <el-button
+                  type="primary"
+                  size="mini"
+                  icon="el-icon-circle-plus-outline"
+                  :disabled="!isCreateEnable"
+                  @click="importItem()"
+                  >导入品种</el-button
+                >
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </el-form>
       </template>
       <!-- 操作列 -->
       <template v-slot:TempletQty="{ row }">
@@ -63,20 +92,19 @@
   </div>
 </template>
 <script>
+  import { createDEPT_TK_VAR } from '@/api/KSInventory/WarehouseTransfer/index';
   import {
-    createDEPT_TK_VAR
-  } from '@/api/KSInventory/WarehouseTransfer/index';
-  import {
-  SerachTempletDeta,
-  DeleteTempletDeta
-} from '@/api/KSInventory/ApplyTemp';
+    SerachTempletDeta,
+    DeleteTempletDeta
+  } from '@/api/KSInventory/ApplyTemp';
   export default {
     name: 'QuoteTemplateRightTable',
     components: {},
     props: ['mainId'],
     data() {
       const defaultWhere = {
-        ID: ''
+        ID: '',
+        SerachName: ''
       };
       return {
         where: { ...defaultWhere },
@@ -210,7 +238,6 @@
           {
             prop: 'ZB',
             label: '是否中标',
-
             align: 'center',
             showOverflowTooltip: true,
             minWidth: 90,
@@ -249,7 +276,6 @@
         // 当前编辑数据
         current: null,
         leftTableCurrent: null,
-        datasourceList: [],
         TK_MAIN_ID: ''
       };
     },
@@ -258,17 +284,17 @@
         where.DeptCode = this.$store.state.user.info.DeptNow.Dept_Two_Code;
         where.UserId = this.$store.state.user.info.ID;
         where.TempletMasteID = this.where.ID;
-        let data = SerachTempletDeta({ page, limit, where, order }).then(
-          (res) => {
+        let data = SerachTempletDeta({ page, limit, where, order })
+          .then((res) => {
             var tData = {
               count: res.total,
               list: res.result
             };
-            console.log(res.result)
-            this.datasourceList = res.result;
             return tData;
-          }
-        );
+          })
+          .finally(() => {
+            this.$refs.table.toggleAllSelection();
+          });
         return data;
       },
       /* 刷新表格 */
@@ -284,7 +310,7 @@
       importItem() {
         // const isAllHaveCount = this.selection.every((item) => item.COUNT > 0);
         // if (!isAllHaveCount) return this.$message.error('请填写数量');
-        const json = this.datasourceList.map((item) => {
+        const json = this.selection.map((item) => {
           return {
             VARIETIE_CODE: item.VarID,
             QTY: item.TempletQty

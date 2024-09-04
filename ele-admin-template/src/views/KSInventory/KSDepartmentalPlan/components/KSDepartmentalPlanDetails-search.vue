@@ -54,10 +54,10 @@
           </el-popconfirm>
 
           <el-button type="primary" size="small" @click="ApplyOperateTipShow=true">查看订单详情</el-button>
-          <el-button type="primary" size="small" @click="BidListShowEdit=true">中标目录</el-button>
-          <el-button type="primary" size="small" @click="VarietyDataLzhLookShow=true">在用目录</el-button>
-          <el-button type="primary" size="small" @click="DpetOneAuthWithDeptShow=true">科室目录</el-button>
-          <el-button type="primary" size="small" @click="DownloadGuide">申领指引</el-button>
+          <el-button type="primary" size="small" @click="BidListShowEdit=true" v-permission="'zhongbiaomulu'">中标目录</el-button>
+          <el-button type="primary" size="small" @click="VarietyDataLzhLookShow=true" v-permission="'zaiyongmulu'">在用目录</el-button>
+          <el-button type="primary" size="small" @click="DpetOneAuthWithDeptShow=true" v-permission="'keshimulu'">科室目录</el-button>
+          <el-button type="primary" size="small" @click="DownloadGuide" v-permission="'shenlinzhiyin'">申领指引</el-button>
 
         </div>
       </el-col>
@@ -328,7 +328,7 @@ export default {
     addPutInListDeta2() {
       const loading = this.$messageLoading('提交中..');
       var list = [];
-      this.selection.forEach((element) => {
+      this.datasourceList.forEach((element) => {
         var data = {
           ID: element.ID,
           ENABLE: element.ENABLE,

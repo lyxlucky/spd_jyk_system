@@ -92,7 +92,13 @@ export const BLACK_LIST_ROUTERS = [
   '/KSInventory/JTQueryList',
   //调库
   'tiaoku:left:submit',
-  'tiaoku:left:confirm'
+  'tiaoku:left:confirm',
+
+  //科室，在用，中标目录控制
+  'keshimulu',
+  'zaiyongmulu',
+  'zhongbiaomulu',
+  'shenlinzhiyin'
 ]
 
 // 页签同路由不同参数可重复打开的路由

@@ -5,25 +5,25 @@
         <el-col v-bind="styleResponsive ? { lg: 4, md: 2 } : { span: 4 }">
           <el-form-item label-width="0px">
             <el-input
-              v-model="where.code"
+              v-model="where.supName"
               size="mini"
-              placeholder="请输入品种编码"
+              placeholder="请输入供应商"
+              clearable
+            />
+          </el-form-item>
+        </el-col>
+        <el-col v-bind="styleResponsive ? { lg: 4, md: 2 } : { span: 4 }">
+          <el-form-item label-width="0px">
+            <el-input
+              v-model="where.hospitalName"
+              size="mini"
+              placeholder="请输入医院"
               clearable
             />
           </el-form-item>
         </el-col>
 
-      <el-col style="" v-bind="styleResponsive ? { lg: 7, md: 4 } : { span: 4 }">
-        <el-form-item label="是否定标">
-          <el-select size="mini" v-model="where.status" @change="search()">
-            <el-option label="全部" value=""></el-option>
-            <el-option label="否" value="0"></el-option>
-            <el-option label="是" value="1"></el-option>
-          </el-select>
-        </el-form-item>
-      </el-col>
-
-        <el-col v-bind="styleResponsive ? { lg: 4, md: 2 } : { span: 4 }">
+        <el-col v-bind="styleResponsive ? { lg: 12, md: 2 } : { span: 4 }">
           <el-form-item label-width="0px">
             <el-button
               type="primary"
@@ -32,48 +32,51 @@
               @click="search"
               >查询</el-button
             >
-
             <el-button
               type="success"
               size="mini"
-              icon="el-icon-check"
-              @click="sure"
-              >定标</el-button
+              @click="approval"
+              icon="el-icon-circle-check"
+              >审核通过</el-button
             >
-
-            <!-- <el-button
-              type="success"
+            <el-button
+              type="danger"
               size="mini"
-              icon="el-icon-upload"
-              >上传图片</el-button
-            > -->
-
+              @click="deny"
+              icon="el-icon-circle-close"
+              >审核不通过</el-button
+            >
           </el-form-item>
         </el-col>
-
       </el-row>
     </el-form>
   </div>
 </template>
 <script>
   export default {
-    name: 'KsNewBatchReminderTableSearch',
+    name: 'CheckQualificationTableSearch',
     data() {
       const defaultWhere = {
-        code: '',
-        status: ''
+        supName: '',
+        hospitalName: ''
       };
       return {
         where: { ...defaultWhere }
       };
     },
-    methods:{
-        search() {
-            this.$emit('search', this.where);
-        },
-        sure(){
-          this.$emit('sure', this.where);
-        }
+    methods: {
+      // 查询
+      search() {
+        this.$emit('search', this.where);
+      },
+      // 审核通过
+      approval() {
+        this.$emit('approval', this.where);
+      },
+      // 审核不通过
+      deny() {
+        this.$emit('deny', this.where);
+      }
     },
     computed: {
       // 是否开启响应式布局
