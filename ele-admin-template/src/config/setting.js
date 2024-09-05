@@ -98,7 +98,9 @@ export const BLACK_LIST_ROUTERS = [
   'keshimulu',
   'zaiyongmulu',
   'zhongbiaomulu',
-  'shenlinzhiyin'
+  'shenlinzhiyin',
+  'keshi-export',
+  'zhongbiao-export'
 ]
 
 // 页签同路由不同参数可重复打开的路由

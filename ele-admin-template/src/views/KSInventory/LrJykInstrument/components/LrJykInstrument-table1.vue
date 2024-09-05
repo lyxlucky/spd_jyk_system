@@ -29,7 +29,6 @@
 </template>
 
 <script>
-import VueQr from 'vue-qr';
 import LrJykInstrumentSearch from './LrJykInstrument-search.vue';
 import {
   SerachPlanList,
@@ -45,7 +44,6 @@ export default {
   components: {
     LrJykInstrumentSearch,
     UserEdit,
-    VueQr
   },
   data() {
     return {
