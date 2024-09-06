@@ -21,24 +21,38 @@
         <KsNewBatchReminderTableSearch @sure="makeSure" @search="reload" />
       </template>
 
-      <!-- <template v-slot:DB_FILE>
-        <div class="image-container" v-viewer>
-          <img class="image" src="https://list.lyxlucky.site/d/r2/xian.png" />
+      <template v-slot:operation="{ row }">
+        <el-button
+          type="success"
+          size="mini"
+          icon="el-icon-check"
+          @click="makeConfirmWithPic(row)"
+          >定标</el-button
+        >
+      </template>
+
+      <template v-slot:DB_FILE = "{ row }">
+        <div v-if='row.DB_FILE != null || row.DB_FILE != undefined' class="image-container" v-viewer>
+          <img class="image" :src="BACK_BASE_URL + row.DB_FILE" />
         </div>
-      </template> -->
+      </template>
     </ele-pro-table>
+    <KsNewBatchReminderUpload @search='reload' :visible.sync='uploadIsVisible'/>
   </div>
 </template>
 <script>
+import { BACK_BASE_URL } from '@/config/setting';
   import {
     getTableList,
     confirmBatch
   } from '@/api/KSInventory/KSNewBatchReminder/index';
   import KsNewBatchReminderTableSearch from './KsNewBatchReminderTableSearch';
+  import KsNewBatchReminderUpload from './KsNewBatchReminderUpload';
   export default {
     name: 'KsNewBatchReminderTable',
     components: {
-      KsNewBatchReminderTableSearch
+      KsNewBatchReminderTableSearch,
+      KsNewBatchReminderUpload
     },
     data() {
       return {
@@ -151,13 +165,20 @@
             showOverflowTooltip: true,
             minWidth: 70
           },
-          // {
-          //   slot: 'DB_FILE',
-          //   label: '定标报告',
-          //   align: 'center',
-          //   showOverflowTooltip: true,
-          //   minWidth: 70
-          // }
+          {
+            slot: 'DB_FILE',
+            label: '定标报告',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 70
+          },
+          {
+            slot: 'operation',
+            label: '操作',
+            showOverflowTooltip: true,
+            minWidth: 80,
+            align: 'center'
+          }
         ],
         toolbar: false,
         pageSize: 10,
@@ -167,7 +188,8 @@
         // 当前编辑数据
         current: null,
         data: [],
-        key: 0
+        key: 0,
+        uploadIsVisible:false,
       };
     },
     methods: {
@@ -191,10 +213,12 @@
       reload(where) {
         this.$refs.table.reload({ page: 1, where: where });
       },
+      makeConfirmWithPic(row){
+        this.$bus.$emit('makeConfirmWithPic', row);
+        this.uploadIsVisible = true;
+      },
       makeSure() {
-        const ids = this.selection
-          .map((item) => `'${item.VARIETIE_CODE_NEW}'`)
-          .join(',');
+        const ids = this.selection.map((item) => `'${item.VARIETIE_CODE_NEW}'`).join(',');
         this.$confirm('确定定标吗?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -208,7 +232,6 @@
                 message: '定标成功!'
               });
               loading.close();
-              this.reload();
             });
           })
           .catch((err) => {
@@ -216,6 +239,9 @@
               type: 'info',
               message: err
             });
+          })
+          .finally(() => {
+            this.reload();
           });
       },
       onCurrentChange(current) {
@@ -227,6 +253,11 @@
       this.$bus.$on('handleCommand', (data) => {
         this.reload();
       });
+    },
+    computed: {
+      BACK_BASE_URL() {
+        return BACK_BASE_URL;
+      }
     },
     beforeDestroy() {
       this.$bus.$off('handleCommand');
