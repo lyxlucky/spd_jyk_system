@@ -225,7 +225,7 @@ export default {
         // },
         {
           prop: 'JYK_ZHB',
-          label: '换算比',
+          label: '理论人次',
           width: 100,
           align: 'center',
           showOverflowTooltip: true

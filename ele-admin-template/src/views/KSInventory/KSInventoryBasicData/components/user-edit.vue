@@ -43,7 +43,12 @@
             />
           </el-form-item>
           <el-form-item label="仪器设备:" prop="DEVICE_REMARK">
-            <el-select style="width: 100%;" filterable v-model="form.DEVICE_REMARK" placeholder="请选择仪器设备">
+            <el-select
+              style="width: 100%"
+              filterable
+              v-model="form.DEVICE_REMARK"
+              placeholder="请选择仪器设备"
+            >
               <el-option-group
                 v-for="group in options"
                 :key="group.WORKING_GROUP"
@@ -105,7 +110,7 @@
         rules: {
           CONVERSION_RATIO: [
             {
-              message: '请输入换算比',
+              message: '请输入理论人次',
               trigger: 'blur'
             }
           ],
@@ -138,9 +143,9 @@
     created() {
       this.getJykDevices();
       // console.log(this.data);
-      // this.defaultForm.CONVERSION_RATIO = this.data.CONVERSION_RATIO;
-      // this.defaultForm.CLASS_NUM = this.data.CLASS_NUM == null ? "0": this.data.CLASS_NUM;
-      // this.defaultForm.DEVICE_REMARK = this.data.DEVICE_REMARK;
+      // this.defaultForm.CONVERSION_RATIO = this.data?.JYK_ZHB;
+      // this.defaultForm.CLASS_NUM = this.data?.CLASS_NUM == null ? "0": this.data?.CLASS_NUM;
+      // this.defaultForm.DEVICE_REMARK = this.data?.JYK_YQM;
     },
     methods: {
       /* 保存编辑 */
@@ -176,9 +181,15 @@
             this.CLASS_NUM = res.result;
           });
           if (this.data) {
-            this.$util.assignObject(this.form, {
-              ...this.data
-            });
+            // this.$util.assignObject(this.form, {
+            //   ...this.data
+            // });
+            this.form = {
+                    ...this.defaultForm,
+                    CONVERSION_RATIO: this.data.JYK_ZHB,
+                    CLASS_NUM: this.data.CLASS_NUM == null ? '0' : this.data.CLASS_NUM,
+                    DEVICE_REMARK: this.data.JYK_YQM
+                };
             this.isUpdate = true;
           } else {
             this.isUpdate = false;
