@@ -7,8 +7,11 @@ export const B2B_BASE_URL = "http://47.106.243.154:802";
 // 医院标识
 // bd 北大
 // szsmyl 萨米
+// lg 龙岗人民医院
 // stzl 汕头肿瘤标识
-export const HOME_HP = 'bd'
+// szhn 华南医院
+// stzx 汕头中心
+export const HOME_HP = 'lg'
 
 // 计算b2b的的医院ID
 const caculateB2bCode = () => {
@@ -49,6 +52,9 @@ export const BACK_BASE_URL = "http://localhost:16416";
 // 华南医院外网
 // export const BACK_BASE_URL = "http://183.62.200.242:82/";
 
+// 华南医院内网
+// export const BACK_BASE_URL = "http://172.16.4.59:82/";
+
 // 萨米医院外网
 // export const BACK_BASE_URL = "http://120.78.226.92:18002/";
 
@@ -60,6 +66,12 @@ export const BACK_BASE_URL = "http://localhost:16416";
 
 // 汕头肿瘤内网
 // export const BACK_BASE_URL = 'http://199.199.197.110:8001/';
+
+// 中心医院内网
+// export const BACK_BASE_URL = 'http://172.16.0.99:82/';
+
+// 龙岗医院外网
+// export const BACK_BASE_URL = 'http://218.17.60.162:10052/';
 
 // 项目名称
 export const PROJECT_NAME = process.env.VUE_APP_NAME;

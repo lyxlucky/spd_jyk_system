@@ -7,8 +7,8 @@ function resolve(dir) {
 }
 
 module.exports = {
-  // publicPath: '/jyknw/',
-  // outputDir: 'jyknw',
+  // publicPath: '/jyk/',
+  // outputDir: 'jyk',
   productionSourceMap: false,
   transpileDependencies: ['element-ui', 'ele-admin', 'vue-i18n'],
   configureWebpack: {
@@ -75,6 +75,9 @@ module.exports = {
         // 华南医院外网
         // target: 'http://183.62.200.242:82/',
 
+        //华南医院内网
+        // target:'http://172.16.4.59:82/'
+
         //萨米医院外网
         // target:'http://120.78.226.92:18002/',
 
@@ -87,6 +90,11 @@ module.exports = {
         //肿瘤内网
         // target: 'http://199.199.197.110:8001'
 
+        //中心医院内网
+        // target:"http://172.16.0.99:82/"
+
+        //龙岗医院外网
+        // target:"http://218.17.60.162:10052/"
       }
     }
     // port: 8060
