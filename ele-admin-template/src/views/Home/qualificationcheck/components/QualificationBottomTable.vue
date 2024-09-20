@@ -202,7 +202,8 @@
             slot: 'Supplier_Name',
             label: '登记表供应商',
             minWidth: 100,
-            align: 'left'
+            align: 'left',
+            showOverflowTooltip: true
           },
           {
             slot: 'CHECKTABLE',
@@ -213,29 +214,34 @@
           {
             prop: 'SB_SH_MAN',
             label: '设备审核人',
-            minWidth: 110
+            minWidth: 110,
+            showOverflowTooltip: true
           },
           {
             slot: 'SB_SH_STATE',
             label: '设备审核状态',
             minWidth: 120,
-            align: 'center'
+            align: 'center',
+            showOverflowTooltip: true
           },
           {
             prop: 'SB_SH_TIME',
             label: '设备审核时间',
-            minWidth: 120
+            minWidth: 120,
+            showOverflowTooltip: true
           },
           {
             prop: 'YG_SH_MAN',
             label: '院感审核人',
-            minWidth: 120
+            minWidth: 120,
+            showOverflowTooltip: true
           },
           {
             slot: 'YG_SH_STATE',
             label: '院感审核状态',
             minWidth: 120,
             align: 'center'
+
           },
           {
             prop: 'YG_SH_TIME',
