@@ -298,3 +298,19 @@ export async function appZongSupInfo(data) {
         return Promise.reject(new Error(res.data.msg));
     }
 }
+
+export async function getNewList(data) {
+    const formatData = {
+        Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+        page: data.page,
+        size: data.limit,
+        supCode: data.where.code,
+    }
+    let req = formdataify(formatData);
+    const res = await request.post('/Supplier/GetNewList',req);
+    if (res.data.code == 200) {
+        return res.data;
+    } else {
+        return Promise.reject(new Error(res.data.msg));
+    }
+}

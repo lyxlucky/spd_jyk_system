@@ -43,6 +43,7 @@ export async function SearchDept(data) {
     data2.SPDDEPTNAME = data.where.SPDDEPTNAME ? data.where.SPDDEPTNAME : ''
     data2.Operate_Person = data.where.Operate_Person ? data.where.Operate_Person : ''
     data2.ygCode = ''
+    data2.Hospitalization_Number = ''
     const res = await request.get('/DeptConsume/SearchDept', {
         params: data2
     });

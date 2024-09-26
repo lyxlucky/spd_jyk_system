@@ -11,7 +11,8 @@ export const B2B_BASE_URL = "http://47.106.243.154:802";
 // stzl 汕头肿瘤标识
 // szhn 华南医院
 // stzx 汕头中心
-export const HOME_HP = 'lg'
+// szlhfy 龙华妇幼
+export const HOME_HP = 'stzx'
 
 // 计算b2b的的医院ID
 const caculateB2bCode = () => {
@@ -35,7 +36,7 @@ export const B2B_BASE_CODE = caculateB2bCode();
 
 
 // 后端地址
-export const BACK_BASE_URL = "http://localhost:16416";
+// export const BACK_BASE_URL = "http://localhost:16416";
 
 // 北大
 // export const BACK_BASE_URL = "http://47.106.243.154:9001";
@@ -69,6 +70,9 @@ export const BACK_BASE_URL = "http://localhost:16416";
 
 // 中心医院内网
 // export const BACK_BASE_URL = 'http://172.16.0.99:82/';
+
+// 中心医院外网
+// export const BACK_BASE_URL = 'http://47.106.243.154:831/';
 
 // 龙岗医院外网
 // export const BACK_BASE_URL = 'http://218.17.60.162:10052/';
