@@ -284,6 +284,20 @@ export async function DownZmlSup(data) {
     }
 }
 
+export async function DownZmlSupJyk(data) {
+    let formataData = {}
+    formataData.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+    formataData.hp = HOME_HP;
+    formataData.json = data.json;
+    let req = formdataify(formataData);
+    const res = await request.post('/BtbGetVarietie/DownZmlSupJyk',req);
+    if (res.data.code == 200) {
+        return res.data;
+    } else {
+        return Promise.reject(new Error(res.data.msg));
+    }
+}
+
 export async function appZongSupInfo(data) {
     let formataData = {}
     formataData.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
@@ -308,6 +322,37 @@ export async function getNewList(data) {
     }
     let req = formdataify(formatData);
     const res = await request.post('/Supplier/GetNewList',req);
+    if (res.data.code == 200) {
+        return res.data;
+    } else {
+        return Promise.reject(new Error(res.data.msg));
+    }
+}
+
+export async function updatePushSupplierStatu(data) {
+    const formatData = {
+        Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+        ids: data.ids,
+        type: data.type,
+    }
+    let req = formdataify(formatData);
+    const res = await request.post('/Supplier/updatePushSupplierStatu',req);
+    if (res.data.code == 200) {
+        return res.data;
+    } else {
+        return Promise.reject(new Error(res.data.msg));
+    }
+}
+
+export async function GetLogInfoList(data) {
+    const formatData = {
+        Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+        page: data.page,
+        size: data.limit,
+        value: data.where.value,
+    }
+    let req = formdataify(formatData);
+    const res = await request.post('/Supplier/GetLogInfoList',req);
     if (res.data.code == 200) {
         return res.data;
     } else {

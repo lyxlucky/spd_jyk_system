@@ -13,6 +13,35 @@
           </el-form-item>
         </el-col>
 
+        <el-col v-bind="styleResponsive ? { lg: 3, md: 2 } : { span: 2 }">
+          <el-form-item label-width="0px">
+            <el-select v-model="where.supplierValue" size="mini" placeholder="供应商资料筛选">
+              <el-option
+                v-for="item in supplierOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              >
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+
+
+        <el-col v-bind="styleResponsive ? { lg: 3, md: 2 } : { span: 2 }">
+          <el-form-item label-width="0px">
+            <el-select v-model="where.varietieValue" size="mini" placeholder="品种资料审核筛选">
+              <el-option
+                v-for="item in varietieOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              >
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+
         <el-col v-bind="styleResponsive ? { lg: 2, md: 2 } : { span: 2 }">
           <el-form-item label-width="0px">
             <el-select v-model="where.value" size="mini" placeholder="请选择">
@@ -43,6 +72,13 @@
               @click="CheckQualificationTableVisible = true"
               >审核</el-button
             >
+            <el-button
+              type="info"
+              size="mini"
+              icon="el-icon-s-check"
+              @click="LogInfoTableVisible = true"
+              >日志</el-button
+            >
           </el-form-item>
         </el-col>
 
@@ -51,24 +87,61 @@
 
     <!-- 资质审核列表 -->
     <CheckQualificationTable @closeModal="search" :visible.sync="CheckQualificationTableVisible" />
+    <LogInfoTable :visible.sync="LogInfoTableVisible"/>
   </div>
 </template>
 <script>
-  import CheckQualificationTable from './CheckQualificationTable.vue';
+  import CheckQualificationTable from './CheckQualificationTable';
+  import LogInfoTable from './LogInfoTable';
   export default {
     name: 'QualificationTopTableSearch',
     components: {
-      CheckQualificationTable
+      CheckQualificationTable,
+      LogInfoTable
     },
     data() {
       // 默认表单数据
       const defaultWhere = {
         search: '',
-        value: '1'
+        value: '1',
+        supplierValue: '',
+        varietieValue:''
       };
       return {
         // 表单数据
         where: { ...defaultWhere },
+        varietieOptions:[
+          {
+            value:'1',
+            label:'含待审核',
+          },
+          {
+            value:'2',
+            label:'全部',
+          },
+          {
+            value:'3',
+            label:'已全部审核',
+          },
+        ],
+        supplierOptions:[
+          {
+            value: '1',
+            label:'含待审核'
+          },
+          {
+            value: '2',
+            label:'含缺失资料'
+          },
+          {
+            value: '3',
+            label:'已完全审核'
+          },
+          {
+            value: '4',
+            label:'审核不通过'
+          },
+        ],
         options: [
           {
             value: '1',
@@ -83,7 +156,8 @@
             label: '全部'
           }
         ],
-        CheckQualificationTableVisible: false
+        CheckQualificationTableVisible: false,
+        LogInfoTableVisible: false
       };
     },
     methods: {

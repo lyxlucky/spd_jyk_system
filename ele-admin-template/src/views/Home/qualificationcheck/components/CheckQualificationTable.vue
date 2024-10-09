@@ -1,3 +1,4 @@
+<!-- 暂时未使用组件 -->
 <template lang="">
   <div class="container">
     <ele-modal
@@ -333,15 +334,21 @@
         if (!this.current) return this.$message.warning('请选择一条数据');
         this.$prompt('审核不通过备注', '提示', {
           confirmButtonText: '确定',
-          cancelButtonText: '取消',
+          cancelButtonText: '取消'
         })
           .then(({ value }) => {
-            appZongSupInfo({state:2,mark:value,code:this.current.SUPPLIER_CODE_SPD}).then((res) => {
-              if (res.code != 200) return this.$message.error(res.msg);
-              this.$message.success(res.msg);
-            }).catch((err) => {
-              this.$message.error(err);
-            });
+            appZongSupInfo({
+              state: 2,
+              mark: value,
+              code: this.current.SUPPLIER_CODE_SPD
+            })
+              .then((res) => {
+                if (res.code != 200) return this.$message.error(res.msg);
+                this.$message.success(res.msg);
+              })
+              .catch((err) => {
+                this.$message.error(err);
+              });
           })
           .catch(() => {
             this.$message({

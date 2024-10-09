@@ -43,7 +43,7 @@
         </el-form-item>
       </el-col>
 
-      <el-col v-bind="styleResponsive ? { lg: 3, md: 3 } : { span: 3 }">
+      <!-- <el-col v-bind="styleResponsive ? { lg: 3, md: 3 } : { span: 3 }">
         <el-form-item label-width="0px">
           <el-select
             v-model="where.isEquipmentCheck"
@@ -75,7 +75,7 @@
             ></el-option>
           </el-select>
         </el-form-item>
-      </el-col>
+      </el-col> -->
 
       <!-- 查询按钮 -->
       <el-col v-bind="styleResponsive ? { lg: 6, md: 6 } : { span: 6 }">
@@ -87,18 +87,18 @@
             @click="search"
             >查询</el-button
           >
-          <el-button
+          <!-- <el-button
             type="primary"
             size="mini"
             @click="searchAll"
             icon="el-icon-search"
             >查询全部</el-button
-          >
+          > -->
         </el-form-item>
       </el-col>
 
       <!-- 设备审核按钮 -->
-      <el-col v-bind="styleResponsive ? { lg: 10, md: 2 } : { span: 4 }">
+      <!-- <el-col v-bind="styleResponsive ? { lg: 10, md: 2 } : { span: 4 }">
         <el-form-item label-width="0px">
           <el-button
             type="primary"
@@ -114,7 +114,6 @@
             icon="el-icon-circle-close"
             >（设备）不通过</el-button
           >
-           <!-- 院感审核按钮 -->
           <el-button
             type="primary"
             @click="feverApprove"
@@ -130,7 +129,7 @@
             >（院感）不通过</el-button
           >
         </el-form-item>
-      </el-col>
+      </el-col> -->
     </el-row>
   </el-form>
 </div>

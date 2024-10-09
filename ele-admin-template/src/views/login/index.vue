@@ -187,6 +187,8 @@
             return require('@/assets/logoLG.png');
           case 'stzx':
             return require('@/assets/logoSTZX.jpg');
+          case 'szlhfy':
+            return require('@/assets/logoFY.jpg');
           default:
             return require('@/assets/logoBD.jpg');
         }

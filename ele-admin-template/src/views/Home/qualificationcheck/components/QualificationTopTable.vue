@@ -30,9 +30,17 @@
       </template>
 
       <template v-slot:checkFile="{ row }">
-        <el-button size="mini" @click="viewMaterialDetail(row)"
-          >查看资料</el-button
+        <el-button size="mini" type='success' icon='el-icon-search' @click="viewMaterialDetail(row)"
+          >查看详细资料</el-button
         >
+      </template>
+
+      <template v-slot:downloadFile = "{ row }">
+        <div>
+          <el-button size="mini" type='primary' icon='el-icon-download' @click="downloadMaterial(row)"
+          >下载资料</el-button
+        >
+        </div>
       </template>
 
       <!-- 营业执照效期 -->
@@ -175,19 +183,24 @@
         <!-- 搜索表单 -->
         <QualificationTopTableSearch @search="reload" ref="topTableSearch" />
       </template>
+
+      <downloadMaterialTable :visible.sync='DownloadMaterialTableVisible' @closeModal='reload' />
+
     </ele-pro-table>
   </div>
 </template>
 <script>
   import { BACK_BASE_URL } from '@/config/setting';
   import { getSupplierList } from '@/api/Home/Qualificationcheck/index';
+  import downloadMaterialTable from './DownloadMaterialTable'
   import QualificationTopTableSearch from './QualificationTopTableSearch';
   import MaterialDetail from './MaterialDetail';
   export default {
     name: 'QualificationTopTable',
     components: {
       QualificationTopTableSearch,
-      MaterialDetail
+      MaterialDetail,
+      downloadMaterialTable
     },
 
     data() {
@@ -210,20 +223,26 @@
             prop: 'Enable',
             slot: 'Enable',
             label: '启用状态',
-            minWidth: 70,
+            minWidth: 80,
             align: 'center'
           },
+          // {
+          //   prop: 'ZML_SP_STATE',
+          //   slot: 'ZML_SP_STATE',
+          //   label: '资料审核状态',
+          //   minWidth: 90,
+          //   align: 'center'
+          // },
           {
-            prop: 'ZML_SP_STATE',
-            slot: 'ZML_SP_STATE',
-            label: '资料审核状态',
-            minWidth: 90,
+            slot: 'downloadFile',
+            label: '下载资料',
+            minWidth: 120,
             align: 'center'
           },
           {
             prop: 'checkFile',
             slot: 'checkFile',
-            label: '查看资料',
+            label: '查看详细资料',
             minWidth: 120,
             align: 'center'
           },
@@ -294,6 +313,7 @@
         current: null,
         imageSrcPre: '/Upload/ProPic/',
         MaterialDetaildialogVisible: false,
+        DownloadMaterialTableVisible: false
       };
     },
     methods: {
@@ -327,7 +347,14 @@
       },
       viewMaterialDetail(row) {
         this.MaterialDetaildialogVisible = true;
+      },
+      downloadMaterial(row){
+        this.$bus.$emit(`${this.$route.path}/QualificationTopTable/downloadMaterial`, row);
+        this.DownloadMaterialTableVisible = true
       }
+    },
+    beforeDestroy() {
+      this.$bus.$off(`${this.$route.path}/QualificationTopTable/downloadMaterial`);
     }
   };
 </script>
