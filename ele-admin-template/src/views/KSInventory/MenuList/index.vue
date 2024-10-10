@@ -106,7 +106,7 @@
           >
             <div
               style="
-                width: 90px;
+                width: 110px;
                 height: 70px;
                 border-radius: 2px;
                 margin-right: 20px;
@@ -132,7 +132,11 @@
                   "
                 >
                   <div class="bottom clearfix">
-                    <span>{{ p.title }}</span>
+                    <span>{{
+                      p.path == '/KSInventory/KSExpirationReminder'
+                        ? `${p.title}（${JYkDefRemindTotal}个）`
+                        : `${p.title}（${TableListTotal}个）`
+                    }}</span>
                   </div>
                 </div>
               </el-button>
@@ -189,6 +193,9 @@
   import VarietyDataLzhLook from '@/views/KSInventory/ReferenceComponent/VarietyDataLzhLook/index';
   import DpetOneAuthWithDept from '@/views/KSInventory/ReferenceComponent/DpetOneAuthWithDept/index';
   import { API_BASE_URL, BACK_BASE_URL, BLACK_ROUTER } from '@/config/setting';
+  import { getTableList } from '@/api/KSInventory/KSNewBatchReminder/index';
+  import { SearchDefRemind } from '@/api/KSInventory/KSExpirationReminder';
+
   import {
     getStaticsDataHistogram,
     getStaticsDataLineChart
@@ -207,6 +214,8 @@
       return {
         MenuList: null,
         NoticeMenuList: null,
+        JYkDefRemindTotal: 0,
+        TableListTotal: 0,
         saleroomData: [],
         lineChartData: [],
         dataYear: this.$moment().format('YYYY'),
@@ -245,6 +254,25 @@
       };
     },
     methods: {
+      getJYkDefRemindTotal() {
+        SearchDefRemind({
+          page: 1,
+          limit: 9999,
+          where: {
+            sourceFrom: this.$store.state.user.info.DeptNow.Dept_Two_Code
+          }
+        }).then((res) => {
+          this.JYkDefRemindTotal = res.total;
+        });
+      },
+      getTableListTotal() {
+        getTableList({
+          page: 1,
+          limit: 9999
+        }).then((res) => {
+          this.TableListTotal = res.total;
+        });
+      },
       handleClickVisible(visibleProperty) {
         if (visibleProperty) {
           this[visibleProperty] = true;
@@ -321,8 +349,8 @@
           '申领指引',
           '检验科仪器信息',
           '新资质审核',
-          "科室目录导出",
-          "中标目录导出"
+          '科室目录导出',
+          '中标目录导出'
         ];
         permission_group = permission_group.filter((res) => {
           return !blackList.includes(res.title);
@@ -374,6 +402,8 @@
     mounted() {
       //this.getSaleroomData();
       this.$bus.$on('handleCommand', () => {
+        this.getJYkDefRemindTotal();
+        this.getTableListTotal();
         this.getSaleroomData();
         this.getLineChartData();
       });
@@ -425,7 +455,7 @@
           }
         });
 
-        // 计算同比和环比 计算环比时第一个月的上期默认为0，计算同比是需要考虑为0的情况
+        // 计算同比和环比
         for (let i = 0; i < 12; i++) {
           const current = initData[i].TOTAL_MONEY;
           const previous = initData[i].PAST_TOTAL_MONEY;
@@ -448,7 +478,15 @@
             top: 'top'
           },
           tooltip: {
-            trigger: 'axis'
+            trigger: 'axis',
+            formatter: function (params) {
+              let result = params[0].name + '<br/>';
+              params.forEach(function (item) {
+                result +=
+                  item.marker + item.seriesName + ': ' + item.value + '%<br/>';
+              });
+              return result;
+            }
           },
           legend: {
             data: ['同比', '环比']
@@ -461,7 +499,10 @@
           ],
           yAxis: [
             {
-              type: 'value'
+              type: 'value',
+              axisLabel: {
+                formatter: '{value}%' // 添加百分比符号
+              }
             }
           ],
           series: [
@@ -560,6 +601,8 @@
     },
     created() {
       // this.getdatasource();
+      this.getJYkDefRemindTotal();
+      this.getTableListTotal();
       this.permission_groupList();
       this.getSaleroomData();
       this.getLineChartData();
