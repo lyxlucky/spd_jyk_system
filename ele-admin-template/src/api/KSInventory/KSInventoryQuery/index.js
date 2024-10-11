@@ -97,6 +97,9 @@ export async function GetJykDetailShelfNew(data) {
     // data2.DeptCode = store.state.user.info.DeptNow.Dept_Two_Code
     // ? store.state.user.info.DeptNow.Dept_Two_Code : ""
     data2.DeptCode = data.where.DeptCode ? data.where.DeptCode : '';
+    const [startTime, endTime] = data.where.date ? data.where.date : ['', ''];
+    data2.startTime = startTime ? startTime : '';
+    data2.endTime = endTime ? endTime : '';
 
     const res = await request.get('/AJykDept/GetJykDetailShelfNew', {
         params: data2,
