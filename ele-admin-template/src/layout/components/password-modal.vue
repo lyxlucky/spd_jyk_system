@@ -37,6 +37,13 @@
           placeholder="请再次输入新密码"
         />
       </el-form-item>
+      <el-form-item label="同步PDA">
+        <el-switch
+          v-model="form.pdaPassword"
+          active-color="#13ce66"
+          inactive-color="#ff4949">
+        </el-switch>
+      </el-form-item>
     </el-form>
     <template v-slot:footer>
       <el-button @click="updateVisible(false)">取消</el-button>
@@ -48,6 +55,8 @@
 <script>
   import { updatePassword, UpdatePassWordByUser } from '@/api/layout';
   import { Encrypt, Decrypt } from '@/utils/aes-util';
+  import { EncryptMd5 } from '@/utils/md5-util';
+  import { HOME_HP } from '@/config/setting';
   import { logout } from '@/utils/page-tab-util'
   export default {
     props: {
@@ -63,7 +72,8 @@
         form: {
           oldPassword: '',
           password: '',
-          password2: ''
+          password2: '',
+          pdaPassword: false
         },
         // 表单验证
         rules: {
@@ -171,6 +181,20 @@
       save() {
         this.$refs.form.validate((valid) => {
           if (valid) {
+            const level = this.getPwdStrength(this.form.password2);
+            if (
+              HOME_HP !== 'stzx' &&
+              HOME_HP !== 'stzl' &&
+              HOME_HP !== 'stse' &&
+              HOME_HP !== 'csyy'
+            ) {
+              if (level >= 9) {
+                // 强密码
+              } else {
+                this.$messsage.error('该账号密码为弱密码，密码应长度大于等于8位，包含大写、小写、特殊字符、阿拉伯数字其中3种');
+                return;
+              }
+            }
             this.loading = true;
             UpdatePassWordByUser({
               ID: this.userCurrent.ID,
@@ -178,7 +202,9 @@
               oldPassword: Encrypt(this.form.oldPassword),
               newPassword: Encrypt(this.form.password),
               reNewPassword: Encrypt(this.form.password2),
-              AesKey: this.$store.state.user.encrypted.KEY
+              AesKey: this.$store.state.user.encrypted.KEY,
+              isSync:this.form.pdaPassword,
+              pdaPassword:HOME_HP != 'stzl' ? EncryptMd5(this.form.password2 + 'QW1A5S2') : this.form.password2
             })
               .then((res) => {
                 this.loading = false;
@@ -205,7 +231,17 @@
         this.$refs.form.clearValidate();
         this.$refs.form.resetFields();
         this.loading = false;
-      }
+      },
+      getPwdStrength(password) {
+        // 假设你有这个方法来计算密码强度
+        let strength = 0;
+        if (password.length >= 8) strength += 3; // 长度 >= 8
+        if (/[A-Z]/.test(password)) strength += 3; // 包含大写字母
+        if (/[a-z]/.test(password)) strength += 3; // 包含小写字母
+        if (/[0-9]/.test(password)) strength += 3; // 包含数字
+        if (/[^A-Za-z0-9]/.test(password)) strength += 3; // 包含特殊字符
+        return strength;
+      },
     }
   };
 </script>
