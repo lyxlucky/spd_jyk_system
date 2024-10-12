@@ -22,7 +22,7 @@
           <el-input clearable v-model="where.deptTwoName" placeholder="请输入二级科室名称" />
         </el-col>
         <el-col v-bind="styleResponsive ? { lg: 12, md: 12 } : { span: 6 }">
-          <div class="ele-form-actions">
+          <div class="ele-form-actions" style="display: flex;">
             <el-button type="primary" icon="el-icon-search" class="ele-btn-icon" @click="search">
               查询
             </el-button>
@@ -40,23 +40,46 @@
                 <el-button type="success" size="small" :underline="false">消耗</el-button>
               </template>
             </el-popconfirm>
+            <div style="margin-left: 10px;width: 100px;">
+              <el-upload :on-success="uploadSuccess" :on-error="upError" :data=Updata :show-file-list="false" :action="uploadUrl" ref='Defupload' :limit="1">
+                <el-button size="small" icon="el-icon-_upload" type="primary">导入</el-button>
+              </el-upload>
+            </div>
+            <el-button type="primary" size="small" class="ele-btn-icon" @click="KSInventoryQueryShow=true">从库存中挑选</el-button>
+
           </div>
         </el-col>
 
       </el-row>
     </el-form>
     <!-- <h3 style="color:blue">{{msgTip}}</h3> -->
+    <KSInventoryQuery :visible.sync="KSInventoryQueryShow" />
   </div>
 </template>
 
 <script>
+import { API_BASE_URL, BACK_BASE_URL } from '@/config/setting';
 import {
   insertScanDef,
   delScanDef,
   spdScanConsume
 } from '@/api/KSInventory/ScanDefHis';
+
+import KSInventoryQuery from '@/views/KSInventory/ScanDefHis/KSInventoryQuery/index.vue';
+
 export default {
-  props: ['selection'],
+  // props: ['selection'],
+  props: {
+    // 弹窗是否打开
+    visible: Boolean,
+    // 修改回显的数据
+    data: Object,
+    IntroduceUserDefinedTempSearch: Object,
+    selection: Object
+  },
+  components: {
+    KSInventoryQuery
+  },
   data() {
     // 默认表单数据
     const defaultWhere = {
@@ -70,7 +93,12 @@ export default {
     return {
       // 表单数据
       where: { ...defaultWhere },
-      msgTip: ''
+      msgTip: '',
+      uploadUrl: `${BACK_BASE_URL}${API_BASE_URL}/DeptConsume/BatchInsertScanDef`,
+      Updata: {
+        Token: sessionStorage['Token']
+      },
+      KSInventoryQueryShow: false
     };
   },
   computed: {
@@ -99,16 +127,16 @@ export default {
       insertScanDef(this.where)
         .then((res) => {
           this.where.defNoPkgCode = '';
-          document.getElementById("idDefNoPkgCode").focus();
+          document.getElementById('idDefNoPkgCode').focus();
           loading.close();
           this.msgTip = 'Tip:' + res.msgTip;
-          this.$emit("getMsgTip",this.msgTip)
+          this.$emit('getMsgTip', this.msgTip);
           this.search();
           this.$message.success(res.msg);
         })
         .catch((err) => {
           this.where.defNoPkgCode = '';
-          document.getElementById("idDefNoPkgCode").focus();
+          document.getElementById('idDefNoPkgCode').focus();
           loading.close();
           this.$message.error(err);
         });
@@ -163,6 +191,16 @@ export default {
           loading.close();
           this.$message.error(err);
         });
+    },
+    uploadSuccess(response, file) {
+      console.log(response);
+      this.$refs.Defupload.clearFiles();
+      if (response.code == 200) {
+        this.$message.success(response.msg);
+        this.search();
+      } else {
+        this.$message.error(response.msg);
+      }
     }
   }
 };

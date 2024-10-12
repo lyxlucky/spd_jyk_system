@@ -1,0 +1,102 @@
+<template>
+  <ele-modal width="1600px" :destroy-on-close="true" :visible="visible" :close-on-click-modal="true" custom-class="ele-dialog-form" title="库存详情" @update:visible="updateVisible">
+    <!-- <el-card shadow="always"> -->
+    <!-- <el-container>
+      <el-header height="45vh" style="margin: 20px 0px 0px 0px;">
+        <el-card shadow="always" style="height:45vh">
+          <div slot="header" class="clearfix">
+            <span>申领计划单列表</span>
+          </div>
+          <KSDepartmentalPlantable @getCurrent="getCurrent"></KSDepartmentalPlantable>
+        </el-card>
+      </el-header>
+      <el-main height="40vh">
+        <el-card shadow="always" style="height:40vh">
+          <div slot="header" class="clearfix">
+            <span>申领单详情</span>
+          </div>
+          <KSDepartmentalPlanDetailstable2 :KSDepartmentalPlanData="KSDepartmentalPlanData" v-if="isActive"></KSDepartmentalPlanDetailstable2>
+        </el-card>
+      </el-main>
+    </el-container> -->
+    <!-- </el-card> -->
+
+    <!-- <el-tabs v-model="activeName" @tab-click="handleClick" type="border-card">
+      <el-tab-pane label="库存详情" name="first">
+        <div slot="header" class="clearfix">
+          <span>库存详情</span>
+        </div>
+        <KSDepartmentalPlantable @getCurrent="getCurrent"></KSDepartmentalPlantable>
+      </el-tab-pane>
+      <el-tab-pane label="出入库记录" name="second">
+        <div slot="header" class="clearfix">
+          <span>消耗详情</span>
+        </div>
+        <KSDepartmentalPlanDetailstable2 :KSDepartmentalPlanData="KSDepartmentalPlanData" v-if="isActive"></KSDepartmentalPlanDetailstable2>
+      </el-tab-pane>
+    </el-tabs> -->
+
+    <KSDepartmentalPlantable @getCurrent="getCurrent"></KSDepartmentalPlantable>
+  </ele-modal>
+</template>
+
+<script>
+import KSDepartmentalPlantable from './components/KSDepartmentalPlan-table1.vue';
+import KSDepartmentalPlanDetailstable2 from './components/KSDepartmentalPlanDetails-table2';
+
+export default {
+  name: 'KSDepartmentalPlan2',
+  props: {
+    // 弹窗是否打开
+    visible: Boolean,
+    // 修改回显的数据
+    data: Object,
+  },
+  components: {
+    KSDepartmentalPlantable,
+    KSDepartmentalPlanDetailstable2
+  },
+  provide() {
+    return {
+      reload: this.reload
+    };
+  },
+  data() {
+    return {
+      KSDepartmentalPlanData: {},
+      isActive: true,
+      activeName: 'first'
+    };
+  },
+  methods: {
+    getCurrent(data) {
+      this.KSDepartmentalPlanData = data;
+    },
+    reload() {
+      this.isActive = false;
+      this.$nextTick(() => {
+        this.isActive = true;
+      });
+    },
+    handleClick(tab, event) {
+      // console.log(tab, event);
+    },
+    updateVisible(value) {
+      this.$emit('update:visible', value);
+    }
+  }
+};
+</script>
+
+<style lang="scss" scoped>
+::v-deep .el-tabs__nav {
+  width: 100%;
+}
+::v-deep .el-tabs__item {
+  width: 50%;
+}
+
+::v-deep .el-tabs__item {
+  font-size: 20px;
+}
+</style>
