@@ -1,8 +1,8 @@
 /**
  * 登录状态管理
  */
-import { formatMenus, toTreeData, formatTreeData,deepClone } from 'ele-admin';
-import { USER_MENUS,BLACK_LIST_ROUTERS } from '@/config/setting';
+import { formatMenus, toTreeData, formatTreeData, deepClone } from 'ele-admin';
+import { USER_MENUS, BLACK_LIST_ROUTERS } from '@/config/setting';
 import { getUserInfo } from '@/api/layout';
 
 export default {
@@ -27,8 +27,8 @@ export default {
       IV: "1994112024000000"
       // IV: "2019062500000000"
     },
-    deptPlanNewMainId:"",
-    DeptDeclarAndApprovalMainId:""
+    deptPlanNewMainId: "",
+    DeptDeclarAndApprovalMainId: ""
 
   },
   mutations: {
@@ -85,7 +85,7 @@ export default {
       // 用户信息
       commit('setUserInfo', result);
       // 用户权限
-      const authorities = result.permission_group.map((item)=>{
+      const authorities = result.permission_group.map((item) => {
         return item.component;
       });
       commit('setAuthorities', authorities);

@@ -33,6 +33,9 @@
             </template>
           </el-popconfirm> -->
         </template>
+        <!-- <template v-slot:zkDay="{ row }">
+  
+        </template> -->
       </ele-pro-table>
     </el-card>
     <!-- 编辑弹窗 -->
@@ -155,6 +158,7 @@ export default {
           width: 150
         },
         {
+          // slot: 'zkDay',
           prop: '',
           label: '在库天数',
           align: 'center',

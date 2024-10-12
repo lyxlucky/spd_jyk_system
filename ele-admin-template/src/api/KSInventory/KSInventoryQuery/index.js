@@ -206,4 +206,18 @@ export async function syncStocktakingData(data) {
     }
 }
 
+export async function BatchInsertScanDef2(data) {
+    var data2 = {};
+    data2.DEP_STR =  data.DEP_STR;
+    data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+    var data3 = formdataify(data2)
+    const res = await request.post('/DeptConsume/BatchInsertScanDef2', data3);
+    if (res.data.code == 200) {
+        return res.data;
+    } else {
+        return Promise.reject(new Error(res.data.msg));
+    }
+}
+
+
 

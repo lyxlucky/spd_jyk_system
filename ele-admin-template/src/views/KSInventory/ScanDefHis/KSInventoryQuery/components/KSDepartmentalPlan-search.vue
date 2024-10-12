@@ -91,27 +91,13 @@
           </el-button>
           <el-button style="height: 32px;" size="small" @click="reset">重置</el-button>
 
-          <el-button style="height: 32px;" size="small" type="primary" class="ele-btn-icon" @click="KSInventoryQueryShow=true">库存汇总</el-button>
-
-          <div style="display: flex;">
-            <el-upload style="width: 100px;margin-left: 10px" class="upload-demo" :show-file-list="false" :action="actionUrl" :data="Updata" :on-success="onSuccess" :on-progress="onProgress">
-              <el-button size="small" type="primary">上传初始化库存</el-button>
-            </el-upload>
-
-            <el-button style="margin-left: 30px;height: 32px;" size="small" type="primary" @click="DownloadTemplate()">下载初始化模板</el-button>
-
-            <el-button style="margin-left: 30px;height: 32px;" size="small" type="primary" @click="GenerateStockData_btn()">生成盘点数据</el-button>
-
-            <el-button style="height: 32px;" :disabled="outboundEnable" size="small" type="primary" icon="" class="ele-btn-icon" @click="openEdit()">
-              散货出库
-            </el-button>
-
-            <el-button style="margin-left: 30px;height: 32px;" size="small" type="primary" icon="el-icon-download" @click="exportDataExcel()">导出</el-button>
-
-            <div>
-              <label style="margin-left: 30px;height: 32px;display: block;width: 100px;">合计数量:<b>{{sumCount}}</b></label>
-            </div>
-          </div>
+          <el-popconfirm class="ele-action" title="确定添加？" @confirm="addBatchInsertScanDef()">
+            <template v-slot:reference>
+              <el-button style="height: 32px;" size="small" type="primary" class="ele-btn-icon" >
+                添加
+              </el-button>
+            </template>
+          </el-popconfirm>
         </div>
 
         <!-- </div> -->
@@ -287,6 +273,9 @@ export default {
         .catch((err) => {
           this.$message.info(err);
         });
+    },
+    addBatchInsertScanDef() {
+      this.$emit('addBatchInsertScanDef');
     }
   },
   created() {
