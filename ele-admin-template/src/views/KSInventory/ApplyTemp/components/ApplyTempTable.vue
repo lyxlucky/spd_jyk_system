@@ -27,6 +27,11 @@
         <el-tag v-if="row.CommonState==1">已提交</el-tag>
       </template>
 
+      <template v-slot:TempletName="{ row }">
+        <el-link type="primary" @click="editTempletName(row.TempletCode)" v-if="row.TempletName" :underline="false">{{ row.TempletName }}</el-link>
+        <el-link type="primary" @click="editTempletName(row.TempletCode)" v-else :underline="false">无</el-link>
+      </template>
+
       <!-- 操作列 -->
       <template v-slot:action="{ row }">
         <!-- <el-button type="primary" size="small" @click="search(row)">设置为专属模板</el-button> -->
@@ -54,7 +59,7 @@
 
 <script>
 import ApplyTempSearch from './ApplyTempSearch.vue';
-import { SerachTempletList, DeleteTemplet } from '@/api/KSInventory/ApplyTemp';
+import { SerachTempletList, DeleteTemplet,EditTempName } from '@/api/KSInventory/ApplyTemp';
 export default {
   name: 'ApplyTempTable',
   components: {
@@ -90,7 +95,8 @@ export default {
           fixed: 'right'
         },
         {
-          prop: 'TempletName',
+          slot: 'TempletName',
+          //prop: 'TempletName',
           label: '模板名称',
           // sortable: 'custom',
           align: 'center',
@@ -218,6 +224,29 @@ export default {
     /* 刷新表格 */
     reload(where) {
       this.$refs.table.reload({ page: 1, where: where });
+    },
+    editTempletName(code){
+      this.$prompt('请输入模板名称', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+        }).then(({ value }) => {
+          EditTempName({
+            TempCode: code,
+            TempName: value
+          }).then((res) => {
+            if(res?.code != 200) return this.$message.error(res?.msg);
+            this.$message.success(res?.msg);
+          }).catch((err) =>{
+            this.$message.error(err);
+          }).finally(() => {
+            this.reload(this.where);
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '取消输入'
+          });       
+        });
     },
     onDone(res) {
       // console.log('res:', res);
