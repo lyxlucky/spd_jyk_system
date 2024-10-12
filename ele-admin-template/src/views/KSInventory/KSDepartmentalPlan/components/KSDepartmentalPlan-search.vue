@@ -166,6 +166,15 @@ export default {
     },
   },
 
-  created() {}
+  created() {},
+  mounted() {
+     // 页面加载时，计算近三个月的日期范围
+     const endDate = new Date(); // 当前日期
+    const startDate = new Date();
+    startDate.setMonth(startDate.getMonth() - 3); // 三个月前的日期
+    this.where.Start = startDate; // 绑定开始日期
+    this.where.End = endDate; // 绑定结束日期
+    //this.dateRange = [startDate, endDate]; // 绑定开始日期和结束日期
+  }
 };
 </script>

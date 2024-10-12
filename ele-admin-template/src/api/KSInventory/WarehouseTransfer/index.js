@@ -259,3 +259,16 @@ export async function templateVarietieList(data) {
   }
   return Promise.reject(new Error(res.data.msg));
 }
+
+export async function pullDataAsExcel() {
+  var Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+  //添加参数
+  var data2 = {}
+  data2.Token = Token;
+  let data3 = formdataify(data2);
+  const res = await request.post('/DeptConsume/pullDataAsExcel', data3);
+  if (res.data.code == 200) {
+    return res.data;
+  }
+  return Promise.reject(new Error(res.data.msg));
+}
