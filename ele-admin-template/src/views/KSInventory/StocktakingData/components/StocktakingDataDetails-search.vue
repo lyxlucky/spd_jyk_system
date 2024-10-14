@@ -112,7 +112,7 @@
             size="small"
             icon="el-icon-circle-check"
             class="ele-btn-icon"
-            :disabled="IsScanVisiable"
+            :disabled="this.selection == 0"
             @click="updateStatuById(1)"
           >
             标记存在
@@ -123,7 +123,7 @@
             size="small"
             icon="el-icon-circle-close"
             class="ele-btn-icon"
-            :disabled="IsScanVisiable"
+            :disabled="this.selection == 0"
             @click="updateStatuById(0)"
           >
             标记缺失

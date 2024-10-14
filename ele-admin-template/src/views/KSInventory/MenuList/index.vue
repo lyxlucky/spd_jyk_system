@@ -522,18 +522,8 @@
       /* 配置 */
       saleChartOption() {
         const months = [
-          '一月',
-          '二月',
-          '三月',
-          '四月',
-          '五月',
-          '六月',
-          '七月',
-          '八月',
-          '九月',
-          '十月',
-          '十一月',
-          '十二月'
+          '一月', '二月', '三月', '四月', '五月', '六月',
+          '七月', '八月', '九月', '十月', '十一月', '十二月'
         ];
 
         // 初始化数据结构，默认填充为 0 或者 null
@@ -546,14 +536,11 @@
         this.saleroomData.forEach((item) => {
           if (item.MONTH) {
             const monthIndex = this.$moment(item.MONTH, 'YYYY-MM').month(); // 使用 moment.js 解析月份并转换为索引
-            initData[monthIndex].TOTAL_MONEY = item.TOTAL_MONEY;
+            initData[monthIndex].TOTAL_MONEY = item.TOTAL_MONEY / 10000; // 转换为万元
           }
           if (item.PAST_MONTH) {
-            const pastMonthIndex = this.$moment(
-              item.PAST_MONTH,
-              'YYYY-MM'
-            ).month();
-            initData[pastMonthIndex].PAST_TOTAL_MONEY = item.PAST_TOTAL_MONEY;
+            const pastMonthIndex = this.$moment(item.PAST_MONTH, 'YYYY-MM').month();
+            initData[pastMonthIndex].PAST_TOTAL_MONEY = item.PAST_TOTAL_MONEY / 10000; // 转换为万元
           }
         });
 
@@ -568,7 +555,14 @@
             top: 'top'
           },
           tooltip: {
-            trigger: 'axis'
+            trigger: 'axis',
+            formatter: (params) => {
+              let result = `${params[0].axisValue}<br/>`;
+              params.forEach((item) => {
+                result += `${item.marker}${item.seriesName}: ${item.data} 万元<br/>`;
+              });
+              return result;
+            }
           },
           legend: {
             data: ['今年', '去年']
@@ -581,7 +575,10 @@
           ],
           yAxis: [
             {
-              type: 'value'
+              type: 'value',
+              axisLabel: {
+                formatter: '{value} 万元' // 设置 y 轴单位为“万元”
+              }
             }
           ],
           series: [
