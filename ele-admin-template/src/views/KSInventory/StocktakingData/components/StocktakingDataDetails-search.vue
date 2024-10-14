@@ -12,36 +12,81 @@
         </el-form-item>
       </el-col> -->
       <el-col v-bind="styleResponsive ? { lg: 11, md: 12 } : { span: 6 }">
-        <el-form-item label="平均用量时间段：" label-width='130px'>
-          <el-date-picker v-model="where.dateFrom" type="date" value-format="yyyy-MM-dd" placeholder="yyyy-MM-dd">
+        <el-form-item label="平均用量时间段：" label-width="130px">
+          <el-date-picker
+            v-model="where.dateFrom"
+            type="date"
+            value-format="yyyy-MM-dd"
+            placeholder="yyyy-MM-dd"
+          >
           </el-date-picker>
         </el-form-item>
       </el-col>
       <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 6 }">
-        <el-date-picker v-model="where.dateTo" type="date" value-format="yyyy-MM-dd" placeholder="yyyy-MM-dd">
+        <el-date-picker
+          v-model="where.dateTo"
+          type="date"
+          value-format="yyyy-MM-dd"
+          placeholder="yyyy-MM-dd"
+        >
         </el-date-picker>
       </el-col>
     </el-row>
     <el-row :gutter="10">
       <el-col :lg="6" :md="12">
         <el-form-item label="">
-          <el-input size="small" v-model="where.VARIETIE_CODE_NEW" placeholder="请输入品种名称/品种编码" clearable />
+          <el-input
+            size="small"
+            v-model="where.VARIETIE_CODE_NEW"
+            placeholder="请输入品种名称/品种编码"
+            clearable
+          />
         </el-form-item>
       </el-col>
       <el-col :lg="18" :md="12">
         <div class="ele-form-actions">
-          <el-button type="primary" size="small" @click="search" icon="el-icon-search">查询</el-button>
-          <el-button @click="reset" size="small" icon="el-icon-refresh-left">重置</el-button>
-          <el-popconfirm class="ele-action" title="确定删除？" @confirm="removeBatch()">
+          <el-button
+            type="primary"
+            size="small"
+            @click="search"
+            icon="el-icon-search"
+            >查询</el-button
+          >
+          <el-button @click="reset" size="small" icon="el-icon-refresh-left"
+            >重置</el-button
+          >
+          <el-popconfirm
+            class="ele-action"
+            title="确定删除？"
+            @confirm="removeBatch()"
+          >
             <template v-slot:reference>
-              <el-button type="danger" size="small" icon="el-icon-delete-solid" :underline="false">删除</el-button>
+              <el-button
+                type="danger"
+                size="small"
+                icon="el-icon-delete-solid"
+                :underline="false"
+                >删除</el-button
+              >
             </template>
           </el-popconfirm>
-          <el-button type="primary" size="small"  icon="el-icon-download" class="ele-btn-icon" @click="exportData">
+          <el-button
+            type="primary"
+            size="small"
+            icon="el-icon-download"
+            class="ele-btn-icon"
+            @click="exportData"
+          >
             导出
           </el-button>
           <!-- 盘点汇总 -->
-          <el-button type="primary" size="small" icon="el-icon-data-analysis" class="ele-btn-icon" @click="createBatchData()">
+          <el-button
+            type="primary"
+            size="small"
+            icon="el-icon-data-analysis"
+            class="ele-btn-icon"
+            @click="createBatchData()"
+          >
             盘点汇总
           </el-button>
 
@@ -51,8 +96,37 @@
           </el-button> -->
 
           <!-- 扫码盘点 -->
-          <el-button type="primary" size="small" icon="el-icon-_scan" :disabled="IsScanVisiable" class="ele-btn-icon" @click="scanTotal()">
+          <el-button
+            type="primary"
+            size="small"
+            icon="el-icon-_scan"
+            :disabled="IsScanVisiable"
+            class="ele-btn-icon"
+            @click="scanTotal()"
+          >
             扫码盘点
+          </el-button>
+
+          <el-button
+            type="primary"
+            size="small"
+            icon="el-icon-circle-check"
+            class="ele-btn-icon"
+            :disabled="IsScanVisiable"
+            @click="updateStatuById(1)"
+          >
+            标记存在
+          </el-button>
+
+          <el-button
+            type="primary"
+            size="small"
+            icon="el-icon-circle-close"
+            class="ele-btn-icon"
+            :disabled="IsScanVisiable"
+            @click="updateStatuById(0)"
+          >
+            标记缺失
           </el-button>
         </div>
       </el-col>
@@ -67,127 +141,154 @@
       </span>
     </el-dialog> 
     -->
-
   </el-form>
 </template>
 
 <script>
-import { DelBatchStockDataDel } from '@/api/KSInventory/StocktakingData';
+  import {
+    DelBatchStockDataDel,
+    updateStatu
+  } from '@/api/KSInventory/StocktakingData';
 
-export default {
-  props: ['KSDepartmentalPlanDataSearch', 'selection', 'datasourceList','current','KSDepartmentalPlanData'],
-  components: {},
-  data() {
-    // 默认表单数据
-    const defaultWhere = {
-      Token: '',
-      PlanNum: '',
-      is_second_app: '',
-      VARIETIE_CODE_NEW: '',
-      dateFrom: '',
-      dateTo: ''
-    };
-    return {
-      // 表单数据
-      where: { ...defaultWhere },
-      showEdit: false,
-      showEdit2: false,
-      ApplyTempPage: false,
-      centerDialogVisible: false,
-      BidListShowEdit: false,
-      ApplyOperateTipShow: false,
-      VarietyDataLzhLookShow: false,
-      DpetOneAuthWithDeptShow: false,
-      HidesubToExamine: false,
-      visibleLine: 'none'
-    };
-  },
-  computed: {
-    // 是否开启响应式布局
-    styleResponsive() {
-      return this.$store.state.theme.styleResponsive;
-    },
-
-    /* 保存提交 */
-    IsDisabled() {
-      if (this.KSDepartmentalPlanDataSearch) {
-        return this.KSDepartmentalPlanDataSearch.State == '0';
-      } else {
-        return false;
-      }
-      // return (
-      //   this.KSDepartmentalPlanDataSearch.State == '0' &&
-      //   (this.KSDepartmentalPlanDataSearch.PlanNum != null ||
-      //     this.KSDepartmentalPlanDataSearch.PlanNum != undefined ||
-      //     this.KSDepartmentalPlanDataSearch.PlanNum.length != 0)
-      // );
-    },
-    IsDisabledIsNot() {
-      return false;
-    },
-    /* 删除键 */
-    // IsCreatBatchDataDisable(){
-    //   return this.current != 0;
-    // }
-    IsScanVisiable(){
-      return Object.keys(this.KSDepartmentalPlanData).length == 0;
-    }
-  },
-  watch: {
-    showEdit() {
-      if (this.showEdit == false) {
-        this.$emit('showEditReoad', false);
-      }
-    }
-  },
-  methods: {
-    createBatchData(){
-      this.$emit('createBatchData','');
-    },
-    scanTotal(){
-      this.$emit('scanItem','');
-    },
-    /* 搜索 */
-    search() {
-      this.$emit('search', this.where);
-    },
-    /*  重置 */
-    reset() {
-      this.where = { ...this.defaultWhere };
-      this.search();
-    },
-    /* 批量删除 */
-    removeBatch() {
-      console.log(this.selection);
-      var ID = '';
-      this.selection.forEach((item) => {
-        ID += item.ID + ',';
-      });
-      ID = ID.substring(0, ID.length - 1);
-      var data = {
-        ID
+  export default {
+    props: [
+      'KSDepartmentalPlanDataSearch',
+      'selection',
+      'datasourceList',
+      'current',
+      'KSDepartmentalPlanData'
+    ],
+    components: {},
+    data() {
+      // 默认表单数据
+      const defaultWhere = {
+        Token: '',
+        PlanNum: '',
+        is_second_app: '',
+        VARIETIE_CODE_NEW: '',
+        dateFrom: '',
+        dateTo: ''
       };
-      const loading = this.$messageLoading('删除中..');
-
-      DelBatchStockDataDel(data)
-        .then((res) => {
-          loading.close();
-          this.search();
-          // var where = {
-          //   PlanNum: this.KSDepartmentalPlanDataSearch.PlanNum
-          // };
-          // this.$emit('search', where);
-          this.$message.success(res.msg);
-        })
-        .catch((err) => {
-          loading.close();
-          this.$message.error(err);
-        });
+      return {
+        // 表单数据
+        where: { ...defaultWhere },
+        showEdit: false,
+        showEdit2: false,
+        ApplyTempPage: false,
+        centerDialogVisible: false,
+        BidListShowEdit: false,
+        ApplyOperateTipShow: false,
+        VarietyDataLzhLookShow: false,
+        DpetOneAuthWithDeptShow: false,
+        HidesubToExamine: false,
+        visibleLine: 'none'
+      };
     },
-    exportData() {
-      this.$emit('exportData', this.where);
-    }
-  },
-  created() {}
-};
+    computed: {
+      // 是否开启响应式布局
+      styleResponsive() {
+        return this.$store.state.theme.styleResponsive;
+      },
+
+      /* 保存提交 */
+      IsDisabled() {
+        if (this.KSDepartmentalPlanDataSearch) {
+          return this.KSDepartmentalPlanDataSearch.State == '0';
+        } else {
+          return false;
+        }
+        // return (
+        //   this.KSDepartmentalPlanDataSearch.State == '0' &&
+        //   (this.KSDepartmentalPlanDataSearch.PlanNum != null ||
+        //     this.KSDepartmentalPlanDataSearch.PlanNum != undefined ||
+        //     this.KSDepartmentalPlanDataSearch.PlanNum.length != 0)
+        // );
+      },
+      IsDisabledIsNot() {
+        return false;
+      },
+      /* 删除键 */
+      // IsCreatBatchDataDisable(){
+      //   return this.current != 0;
+      // }
+      IsScanVisiable() {
+        return Object.keys(this.KSDepartmentalPlanData).length == 0;
+      }
+    },
+    watch: {
+      showEdit() {
+        if (this.showEdit == false) {
+          this.$emit('showEditReoad', false);
+        }
+      }
+    },
+    methods: {
+      updateStatuById(data) {
+        const ids = this.selection
+          .map((item) => {
+            return item.ID;
+          })
+          .join(',');
+        const loading = this.$messageLoading('更新中..');
+        updateStatu({ ids: ids, state: data })
+          .then((res) => {
+            this.$message.success(res.msg);
+          })
+          .catch((err) => {
+            this.$message.error(err);
+          })
+          .finally(() => {
+            loading.close();
+            this.search();
+          });
+      },
+      createBatchData() {
+        this.$emit('createBatchData', '');
+      },
+      scanTotal() {
+        this.$emit('scanItem', '');
+      },
+      /* 搜索 */
+      search() {
+        this.$emit('search', this.where);
+      },
+      /*  重置 */
+      reset() {
+        this.where = { ...this.defaultWhere };
+        this.search();
+      },
+      /* 批量删除 */
+      removeBatch() {
+        console.log(this.selection);
+        var ID = '';
+        this.selection.forEach((item) => {
+          ID += item.ID + ',';
+        });
+        ID = ID.substring(0, ID.length - 1);
+        var data = {
+          ID
+        };
+        const loading = this.$messageLoading('删除中..');
+
+        DelBatchStockDataDel(data)
+          .then((res) => {
+            loading.close();
+            this.search();
+            // var where = {
+            //   PlanNum: this.KSDepartmentalPlanDataSearch.PlanNum
+            // };
+            // this.$emit('search', where);
+            this.$message.success(res.msg);
+          })
+          .catch((err) => {
+            loading.close();
+            this.$message.error(err);
+          });
+      },
+      exportData() {
+        this.$emit('exportData', this.where);
+      }
+    },
+    created() {}
+  };
 </script>

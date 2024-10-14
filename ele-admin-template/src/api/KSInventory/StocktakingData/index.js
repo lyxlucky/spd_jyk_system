@@ -103,6 +103,20 @@ export async function DelBatchStockDataDel(data) {
     }
 }
 
+export async function updateStatu(data) {
+    var data2 = {};
+    data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+    data2.ids = data.ids ? data.ids : '';
+    data2.state = data.state;
+    var data3 = formdataify(data2)
+    const res = await request.post('/AJykDept/updateStatu', data3);
+    if (res.data.code == 200) {
+        return res.data;
+    } else {
+        return Promise.reject(new Error(res.data.msg));
+    }
+}
+
 export async function scanInventory(data) {
     var data2 = {};
     data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);

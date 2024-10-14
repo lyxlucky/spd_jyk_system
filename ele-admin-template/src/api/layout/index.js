@@ -74,6 +74,8 @@ export async function UpdatePassWordByUser(data) {
   formatData.password2 = data.newPassword;
   formatData.password3 = data.reNewPassword;
   formatData.AesKey = data.AesKey;
+  formatData.isSync = data.isSync;
+  formatData.pdaPassword = data.pdaPassword;
   let req = formdataify(formatData);
   const res = await request.post('/Commons/UpdatePassWordByUser',req);
   if (res.data.code == 200) {
