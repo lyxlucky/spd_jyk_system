@@ -2,7 +2,7 @@
   <div class="ele-body" v-if="RenderTabel">
     <template>
 
-      <el-dialog title="二维码" :visible.sync="dialogVisible" width="30%" :before-close="handleClose">
+      <el-dialog title="二维码" :visible.sync="dialogVisible" width="30%" >
         <div style="display: flex;justify-content: center;">
           <vue-qr :text="config.text" :size="200">
           </vue-qr>
@@ -38,12 +38,14 @@ import {
 } from '@/api/KSInventory/KSDepartmentalPlan';
 import { GetLrJykInstrument } from '@/api/KSInventory/LrJykInstrument';
 import UserEdit from './user-edit.vue';
+import vueQr from 'vue-qr'
 export default {
   name: 'KSDepartmentalPlanTable',
   props: ['IsReload'],
   components: {
     LrJykInstrumentSearch,
     UserEdit,
+    vueQr
   },
   data() {
     return {
