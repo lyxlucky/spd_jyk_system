@@ -37,8 +37,8 @@
 
       <template v-slot:downloadFile = "{ row }">
         <div>
-          <el-button size="mini" type='primary' icon='el-icon-download' @click="downloadMaterial(row)"
-          >下载资料</el-button
+          <el-button size="mini" type='primary' icon='el-icon-s-promotion' @click="downloadMaterial(row)"
+          >资料查看</el-button
         >
         </div>
       </template>

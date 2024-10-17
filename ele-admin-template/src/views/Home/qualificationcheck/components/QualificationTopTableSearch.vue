@@ -65,13 +65,13 @@
               @click="search"
               >查询</el-button
             >
-            <el-button
+            <!-- <el-button
               type="warning"
               size="mini"
               icon="el-icon-s-check"
               @click="CheckQualificationTableVisible = true"
               >审核</el-button
-            >
+            > -->
             <el-button
               type="info"
               size="mini"
