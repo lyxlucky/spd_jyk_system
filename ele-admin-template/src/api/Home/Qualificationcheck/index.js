@@ -15,9 +15,10 @@ export async function getSupplierList(data) {
     formataData.field = '';
     formataData.order = '';
     formataData.enable = data.where.value ? data.where.value : '1';
-    const res = await request.get('/Supplier/GetList', {
-        params: formataData
-      });
+    formataData.supZzState = data.where.supplierValue ? data.where.supplierValue : '';
+    formataData.varZzState = data.where.varietieValue ? data.where.varietieValue : '';
+    let req = formdataify(formataData);
+    const res = await request.post('/Supplier/GetListZzsh',req);
     if (res.data.code == 200) {
         return res.data;
     } else {

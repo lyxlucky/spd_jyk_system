@@ -132,6 +132,13 @@
             align: 'center'
           },
           {
+            prop: 'SUPPLIER_NAME',
+            label: '供应商',
+            minWidth: 130,
+            align: 'center',
+            showOverflowTooltip: true
+          },
+          {
             slot: 'TYPE',
             label: '类型',
             minWidth: 110,

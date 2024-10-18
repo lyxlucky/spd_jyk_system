@@ -191,6 +191,9 @@
               count: res.total,
               list: res.result
             };
+            if(Array.isArray(res.result) && res.result.length == 0) {
+              this.$message.error("B2B未推送该供应商资料");
+            }
             return tData;
           }
         );
