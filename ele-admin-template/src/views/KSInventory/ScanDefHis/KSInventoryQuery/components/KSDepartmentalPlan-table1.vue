@@ -1,7 +1,10 @@
 <template>
   <div class="ele-body">
     <!-- 数据表格 -->
-    <ele-pro-table highlight-current-row @current-change="onCurrentChange" ref="table" :rowClickChecked="true" :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" cache-key="KSInventoryBasicDataTable">
+    <ele-pro-table highlight-current-row @current-change="onCurrentChange" ref="table" :rowClickChecked="true" :stripe="true" 
+    :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" 
+    :initLoad="false" :rowClickCheckedIntelligent="false" @selection-change="onSelectionChange" 
+    :selection.sync="selection" cache-key="KSInventoryBasicDataTable">
       <!-- 表头工具栏 -->
       <template v-slot:toolbar>
         <!-- 搜索表单 -->
@@ -481,7 +484,6 @@ export default {
     },
     onSelectionChange(selection) {
       this.selection = selection;
-      console.log(selection);
     },
     onCurrentChange(current) {
       this.current = current;

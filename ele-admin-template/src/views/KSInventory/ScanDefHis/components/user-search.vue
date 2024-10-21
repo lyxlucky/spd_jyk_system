@@ -23,11 +23,11 @@
         </el-col>
         <el-col v-bind="styleResponsive ? { lg: 12, md: 12 } : { span: 6 }">
           <div class="ele-form-actions" style="display: flex;">
-            <el-button type="primary" icon="el-icon-search" class="ele-btn-icon" @click="search">
+            <el-button type="primary" size="small" icon="el-icon-search" class="ele-btn-icon" @click="search">
               查询
             </el-button>
-            <el-button @click="reset">重置</el-button>
-            <el-button type="primary" icon="el-icon-download" class="ele-btn-icon" @click="exportData">
+            <el-button @click="reset" size="small" >重置</el-button>
+            <el-button type="primary" size="small"  icon="el-icon-download" class="ele-btn-icon" @click="exportData">
               导出
             </el-button>
             <el-popconfirm class="ele-action" title="确定删除？" @confirm="removeBatch()">
@@ -201,6 +201,11 @@ export default {
       } else {
         this.$message.error(response.msg);
       }
+    },
+    upError(response, file) {
+      console.log(response);
+      this.$refs.Defupload.clearFiles();
+      this.$message.error(response.msg);
     }
   }
 };
