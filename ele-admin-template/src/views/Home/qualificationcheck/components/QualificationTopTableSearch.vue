@@ -7,7 +7,7 @@
             <el-input
               v-model="where.search"
               size="mini"
-              placeholder="搜索"
+              placeholder="搜索供应商"
               clearable
             />
           </el-form-item>
@@ -65,13 +65,13 @@
               @click="search"
               >查询</el-button
             >
-            <el-button
+            <!-- <el-button
               type="warning"
               size="mini"
               icon="el-icon-s-check"
               @click="CheckQualificationTableVisible = true"
               >审核</el-button
-            >
+            > -->
             <el-button
               type="info"
               size="mini"
@@ -104,8 +104,8 @@
       const defaultWhere = {
         search: '',
         value: '1',
-        supplierValue: '',
-        varietieValue:''
+        supplierValue: '0',
+        varietieValue:'1'
       };
       return {
         // 表单数据
@@ -116,29 +116,33 @@
             label:'含待审核',
           },
           {
-            value:'2',
+            value:'',
             label:'全部',
           },
           {
-            value:'3',
+            value:'2',
             label:'已全部审核',
           },
         ],
         supplierOptions:[
           {
-            value: '1',
+            value: '0',
             label:'含待审核'
           },
           {
-            value: '2',
+            value: '3',
             label:'含缺失资料'
           },
           {
-            value: '3',
+            value: '4',
             label:'已完全审核'
           },
           {
-            value: '4',
+            value: '5',
+            label:'重新提供'
+          },
+          {
+            value: '2',
             label:'审核不通过'
           },
         ],
