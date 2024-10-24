@@ -268,7 +268,8 @@
       getTableListTotal() {
         getTableList({
           page: 1,
-          limit: 9999
+          limit: 9999,
+          where:{}
         }).then((res) => {
           this.TableListTotal = res.total;
         });
