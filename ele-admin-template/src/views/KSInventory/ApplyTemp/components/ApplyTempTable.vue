@@ -28,8 +28,8 @@
       </template>
 
       <template v-slot:TempletName="{ row }">
-        <el-link type="primary" @click="editTempletName(row.TempletCode)" v-if="row.TempletName" :underline="false">{{ row.TempletName }}</el-link>
-        <el-link type="primary" @click="editTempletName(row.TempletCode)" v-else :underline="false">无</el-link>
+        <span style='color: #409eff;' type="primary" @dblclick="editTempletName(row.TempletCode)" v-if="row.TempletName" :underline="false">{{ row.TempletName }}</span>
+        <span style='color: #409eff;' type="primary" @dblclick="editTempletName(row.TempletCode)" v-else :underline="false">无</span>
       </template>
 
       <!-- 操作列 -->
@@ -100,7 +100,7 @@ export default {
           label: '模板名称',
           // sortable: 'custom',
           align: 'center',
-          showOverflowTooltip: true,
+          // showOverflowTooltip: true,
           minWidth: 100,
           formatter(row, column, cellValue) {
             if (cellValue == null) {
