@@ -15,7 +15,7 @@ export async function getSupplierList(data) {
     formataData.field = '';
     formataData.order = '';
     formataData.enable = data.where.value ? data.where.value : '1';
-    formataData.supZzState = data.where.supplierValue ? data.where.supplierValue : '';
+    formataData.supZzState = data.where.supplierValue ? data.where.supplierValue : '0';
     formataData.varZzState = data.where.varietieValue ? data.where.varietieValue : '';
     let req = formdataify(formataData);
     const res = await request.post('/Supplier/GetListZzsh',req);

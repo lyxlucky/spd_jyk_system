@@ -15,17 +15,133 @@
       <el-descriptions-item label="供应商编码">{{current?.Supplier_Code ? current?.Supplier_Code : '暂无'}}</el-descriptions-item>
       <el-descriptions-item label="冷链器械供应条件">{{(current?.Cold_Chain_Apparatus_Supply ? current?.Cold_Chain_Apparatus_Supply : '暂无') == '0' ? '具备' : '不具备'}}</el-descriptions-item>
       <el-descriptions-item label="停止配送">{{(current?.STOP_SEND ? current?.STOP_SEND : '暂无') == 1 ? '是' : '否' }}</el-descriptions-item>
+      <el-descriptions-item label="最大开票金额" :span='3'>{{(current?.INVOICE_LIMIT_PRICE ? current?.INVOICE_LIMIT_PRICE : '暂无') }}</el-descriptions-item>
+    </el-descriptions>
+
+    <el-descriptions title="许可证信息" :column="3" border>
+      <el-descriptions-item label="一类的许可证经营有效期" :span='1'>
+        <el-link
+          v-if="current.RODUCTION_CLASS_1_VALID_DATE == '0001-01-01T00:00:00'"
+        ></el-link>
+        <el-link
+          v-else-if="
+            current.RODUCTION_CLASS_1_PIC != '' &&
+            current.RODUCTION_CLASS_1_PIC != null &&
+            current.RODUCTION_CLASS_1_VALID_DATE != '0001-01-01T00:00:00'
+          "
+          type="primary"
+          @click="showImage(current.RODUCTION_CLASS_1_PIC)"
+          >{{ current.RODUCTION_CLASS_1_VALID_DATE.substring(0, 10) }}</el-link
+        >
+        <el-link v-else>{{
+          current.RODUCTION_CLASS_1_VALID_DATE.substring(0, 10)
+        }}</el-link>
+      </el-descriptions-item>
+      <el-descriptions-item label="二类的许可证经营有效期" :span='1'>
+        <el-link
+          v-if="current.Roduction_class_2_Valid_Date == '0001-01-01T00:00:00'"
+        ></el-link>
+        <el-link
+          v-else-if="
+            current.RODUCTION_CLASS_2_PIC != '' &&
+            current.RODUCTION_CLASS_2_PIC != null &&
+            current.Roduction_class_2_Valid_Date != '0001-01-01T00:00:00'
+          "
+          type="primary"
+          @click="showImage(current.RODUCTION_CLASS_2_PIC)"
+          >{{ current.Roduction_class_2_Valid_Date.substring(0, 10) }}</el-link
+        >
+        <el-link v-else>{{
+          current.Roduction_class_2_Valid_Date.substring(0, 10)
+        }}</el-link>
+      </el-descriptions-item>
+      <el-descriptions-item label="三类的许可证经营有效期" :span='1'>
+        <el-link
+          v-if="current.Roduction_class_3_Valid_Date == '0001-01-01T00:00:00'"
+        ></el-link>
+        <el-link
+          v-else-if="
+            current.RODUCTION_CLASS_3_PIC != '' &&
+            current.RODUCTION_CLASS_3_PIC != null &&
+            current.Roduction_class_3_Valid_Date != '0001-01-01T00:00:00'
+          "
+          type="primary"
+          @click="showImage(current.RODUCTION_CLASS_3_PIC)"
+          >{{ current.Roduction_class_3_Valid_Date.substring(0, 10) }}</el-link
+        >
+        <el-link v-else>{{
+          current.Roduction_class_3_Valid_Date.substring(0, 10)
+        }}</el-link>
+      </el-descriptions-item>
+      <el-descriptions-item label="体外诊断试剂经营许可证有效期" :span='1'>
+        <el-link v-if="current.DR_VALID_DATE == '0001-01-01T00:00:00'"></el-link>
+        <el-link
+          v-else-if="
+            current.DR_PIC != '' &&
+            current.DR_PIC != null &&
+            current.DR_VALID_DATE != '0001-01-01T00:00:00'
+          "
+          type="primary"
+          @click="showImage(current.DR_PIC)"
+          >{{ current.DR_VALID_DATE.substring(0, 10) }}</el-link
+        >
+        <el-link v-else>{{ current.DR_VALID_DATE.substring(0, 10) }}</el-link>
+      </el-descriptions-item>
+      <el-descriptions-item label="营业执照效期" :span='1'>
+        <el-link
+          v-if="current.Business_License_Valid_Date == '0001-01-01T00:00:00'"
+        ></el-link>
+        <el-link
+          v-else-if="
+            current.BUSINESS_LICENSE_PIC != '' &&
+            current.BUSINESS_LICENSE_PIC != null &&
+            current.Business_License_Valid_Date != '0001-01-01T00:00:00'
+          "
+          type="primary"
+          @click="showImage(current.BUSINESS_LICENSE_PIC)"
+          >{{ current.Business_License_Valid_Date.substring(0, 10) }}</el-link
+        >
+        <el-link v-else>{{
+          current.Business_License_Valid_Date.substring(0, 10)
+        }}</el-link>
+      </el-descriptions-item>
+      <el-descriptions-item label="业务员委托书有效期" :span='1'>
+        <el-link v-if="current.WTS_VALID_DATE == '0001-01-01T00:00:00'"></el-link>
+        <el-link
+          v-else-if="
+            current.WTS_PIC != '' &&
+            current.WTS_PIC != null &&
+            current.WTS_VALID_DATE != '0001-01-01T00:00:00'
+          "
+          type="primary"
+          @click="showImage(current.WTS_PIC)"
+          >{{ current.WTS_VALID_DATE.substring(0, 10) }}</el-link
+        >
+        <el-link v-else>{{ current.WTS_VALID_DATE.substring(0, 10) }}</el-link>
+      </el-descriptions-item>
     </el-descriptions>
   </div>
 </template>
 <script>
+  import { BACK_BASE_URL } from '@/config/setting';
   export default {
     name: 'MaterialDetail',
     props: ['current'],
     data() {
-      return {};
+      return {
+        imageSrcPre: '/Upload/ProPic/',
+      };
     },
-    methods: {},
+    methods: {
+      showImage(src) {
+        let imageSrc = BACK_BASE_URL + this.imageSrcPre + src;
+        this.$viewerApi({
+          images: [imageSrc]
+        })
+      },
+    },
+    computed: {
+    },
     created(){
     }
   };

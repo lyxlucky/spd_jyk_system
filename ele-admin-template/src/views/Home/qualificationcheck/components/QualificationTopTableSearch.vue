@@ -105,7 +105,7 @@
         search: '',
         value: '1',
         supplierValue: '0',
-        varietieValue:'1'
+        varietieValue:''
       };
       return {
         // 表单数据
@@ -113,37 +113,41 @@
         varietieOptions:[
           {
             value:'1',
-            label:'含待审核',
+            label:'品种资料-含待审核',
           },
           {
             value:'',
-            label:'全部',
+            label:'品种资料-全部',
           },
           {
             value:'2',
-            label:'已全部审核',
+            label:'品种资料-已全部审核',
           },
         ],
         supplierOptions:[
           {
+            value: '-1',
+            label:'供应商资料-全部'
+          },
+          {
             value: '0',
-            label:'含待审核'
+            label:'供应商资料-含待审核'
           },
           {
             value: '3',
-            label:'含缺失资料'
+            label:'供应商资料-含缺失资料'
           },
           {
             value: '4',
-            label:'已完全审核'
+            label:'供应商资料-已完全审核'
           },
           {
             value: '5',
-            label:'重新提供'
+            label:'供应商资料-重新提供'
           },
           {
             value: '2',
-            label:'审核不通过'
+            label:'供应商资料-审核不通过'
           },
         ],
         options: [

@@ -64,6 +64,28 @@
               </el-option-group>
             </el-select>
           </el-form-item>
+
+          <el-form-item label="是否定标:" prop="isDb">
+            <el-select
+              style="width: 100%"
+              filterable
+              v-model="form.IS_DB"
+              placeholder="请选择是否定标"
+            >
+          
+                <el-option
+                  label="是"
+                  value="1"
+                >
+                </el-option>
+                <el-option
+                  label="否"
+                  value="0"
+                >
+                </el-option>
+            </el-select>
+          </el-form-item>
+
         </el-col>
       </el-row>
     </el-form>
@@ -97,7 +119,8 @@
         varietie_code_new: '',
         CONVERSION_RATIO: '',
         CLASS_NUM: '',
-        DEVICE_REMARK: ''
+        DEVICE_REMARK: '',
+        IS_DB:''
       };
       return {
         defaultForm,
@@ -188,7 +211,8 @@
                     ...this.defaultForm,
                     CONVERSION_RATIO: this.data.JYK_ZHB,
                     CLASS_NUM: this.data.CLASS_NUM == null ? '0' : this.data.CLASS_NUM,
-                    DEVICE_REMARK: this.data.JYK_YQM
+                    DEVICE_REMARK: this.data.JYK_YQM,
+                    IS_DB: this.data.IS_DB
                 };
             this.isUpdate = true;
           } else {

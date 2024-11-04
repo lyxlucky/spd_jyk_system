@@ -13,7 +13,7 @@
           </el-form-item>
         </el-col>
 
-      <el-col style="" v-bind="styleResponsive ? { lg: 7, md: 4 } : { span: 4 }">
+      <el-col style="" v-bind="styleResponsive ? { lg:4, md: 4 } : { span: 4 }">
         <el-form-item label="是否定标">
           <el-select size="mini" v-model="where.status" @change="search()">
             <el-option label="全部" value=""></el-option>
@@ -33,13 +33,13 @@
               >查询</el-button
             >
 
-            <el-button
+            <!-- <el-button
               type="success"
               size="mini"
               icon="el-icon-check"
               @click="sure"
               >定标</el-button
-            >
+            > -->
 
             <!-- <el-button
               type="success"
