@@ -272,3 +272,18 @@ export async function pullDataAsExcel() {
   }
   return Promise.reject(new Error(res.data.msg));
 }
+
+export async function updateDEPT_TK_DelNum(data) {
+  var Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+  //添加参数
+  var data2 = {}
+  data2.Token = Token;
+  data2.tkIds = data.tkIds;
+  data2.num = data.num;
+  let data3 = formdataify(data2);
+  const res = await request.post('/DeptConsume/updateDEPT_TK_DelNum', data3);
+  if (res.data.code == 200) {
+    return res.data;
+  }
+  return Promise.reject(new Error(res.data.msg));
+}

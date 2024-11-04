@@ -27,7 +27,7 @@
           size="mini"
           icon="el-icon-check"
           @click="makeConfirmWithPic(row)"
-          >定标</el-button
+          >上传定标报告</el-button
         >
       </template>
 
