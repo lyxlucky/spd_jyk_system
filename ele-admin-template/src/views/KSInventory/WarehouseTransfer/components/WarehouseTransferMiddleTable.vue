@@ -52,13 +52,24 @@
             >修改数量</el-button
           >
 
-          <el-button
+          <!-- maybe can use in later -->
+          <!-- <el-button
             type="success"
             size="mini"
             icon="el-icon-download"
             @click="exportAsExcel"
             >导出</el-button
+          > -->
+
+          <el-button
+            type="info"
+            size="mini"
+            icon="el-icon-s-management"
+            @click="logCatVisible = true"
+            >日志</el-button
           >
+
+
         </div>
       </template>
 
@@ -84,12 +95,15 @@
       :visible.sync="WarehouseTransferDefPkgTableVisible"
     />
     <QuoteTemplate :ID="this.where.ID" :visible.sync="quoteTemplateVisible" />
+
+    <LogCat :visible.sync="logCatVisible"/>
   </div>
 </template>
 <script>
   import { utils, writeFile } from 'xlsx';
   import WarehouseTransferCreateDetail from './WarehouseTransferCreateDetail';
   import WarehouseTransferDefPkgTable from './WarehouseTransferDefPkgTable';
+  import LogCat from './LogCat';
   import QuoteTemplate from './QuoteTemplate';
   import {
     getDEPT_TK_Del,
@@ -102,7 +116,8 @@
     components: {
       WarehouseTransferCreateDetail,
       WarehouseTransferDefPkgTable,
-      QuoteTemplate
+      QuoteTemplate,
+      LogCat
     },
     data() {
       const defaultWhere = {
@@ -193,7 +208,8 @@
         current: null,
         WarehouseTransferCreateDetailVisible: false,
         WarehouseTransferDefPkgTableVisible: false,
-        quoteTemplateVisible: false
+        quoteTemplateVisible: false,
+        logCatVisible: false
       };
     },
     methods: {

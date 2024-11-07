@@ -12,6 +12,9 @@
         <el-input clearable v-model="where.Specification_Or_Type" placeholder="包装规格" />
       </el-col>
       <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 6 }">
+        <el-input clearable v-model="where.settlementDept" placeholder="结算有使用科室" />
+      </el-col>
+      <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 6 }">
         <el-form-item label="是否主动补货：" label-width="120px">
           <el-select v-model="where.isDeptTwoAuth" @change="search()">
             <el-option label="全部" value=""></el-option>
@@ -59,6 +62,7 @@ export default {
       Dept_One_Code: '',
       isDeptTwoAuth: '',
       type:'1',
+      settlementDept:""
     };
     return {
       // 表单数据
