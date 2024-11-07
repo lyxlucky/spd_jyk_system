@@ -79,6 +79,16 @@
               @click="LogInfoTableVisible = true"
               >日志</el-button
             >
+
+            <el-button
+              type="info"
+              size="mini"
+              icon="el-icon-s-order"
+              :disabled="!qxbzIsEnable"
+              @click="handleQxbz"
+              >缺项备注</el-button
+            >
+
           </el-form-item>
         </el-col>
 
@@ -99,6 +109,7 @@
       CheckQualificationTable,
       LogInfoTable
     },
+    props:['current'],
     data() {
       // 默认表单数据
       const defaultWhere = {
@@ -172,12 +183,18 @@
       /* 搜索 */
       search() {
         this.$emit('search', this.where);
+      },
+      handleQxbz(){
+        this.$emit('handleQxbz', this.where);
       }
     },
     computed: {
       // 是否开启响应式布局
       styleResponsive() {
         return this.$store.state.theme.styleResponsive;
+      },
+      qxbzIsEnable(){
+        return this.current != null || this.current != undefined;
       }
     }
   };
