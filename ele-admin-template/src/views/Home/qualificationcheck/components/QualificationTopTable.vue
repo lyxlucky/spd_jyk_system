@@ -181,7 +181,7 @@
       <!-- 表头工具栏 -->
       <template v-slot:toolbar>
         <!-- 搜索表单 -->
-        <QualificationTopTableSearch @search="reload" ref="topTableSearch" />
+        <QualificationTopTableSearch @search="reload" :current = 'current' @handleQxbz="handleQxbz" ref="topTableSearch" />
       </template>
 
       <downloadMaterialTable :visible.sync='DownloadMaterialTableVisible' @closeModal='reload' />
@@ -191,7 +191,7 @@
 </template>
 <script>
   import { BACK_BASE_URL } from '@/config/setting';
-  import { getSupplierList } from '@/api/Home/Qualificationcheck/index';
+  import { getSupplierList,updateQxbz } from '@/api/Home/Qualificationcheck/index';
   import downloadMaterialTable from './DownloadMaterialTable'
   import QualificationTopTableSearch from './QualificationTopTableSearch';
   import MaterialDetail from './MaterialDetail';
@@ -319,6 +319,26 @@
     methods: {
       reload(where) {
         this.$refs.table.reload({ page: 1, where: where });
+      },
+      handleQxbz(){
+        const supplierCode = this.current.Supplier_Code
+        this.$prompt('请输入缺项备注', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          inputErrorMessage: '请输入缺项备注'
+        }).then(({ value }) => {
+          //缺项备注
+          updateQxbz({id:supplierCode,qxbz:value}).then((res) => {
+            if(res?.code != 200) return this.$message.error(res?.msg)
+            this.$message.success(res?.msg)
+            this.reload()
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '取消输入'
+          });
+        });
       },
       datasource({ page, limit, where, order }) {
         let data = getSupplierList({ page, limit, where, order }).then(
