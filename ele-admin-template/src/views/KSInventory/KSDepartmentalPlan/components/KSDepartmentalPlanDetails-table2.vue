@@ -19,6 +19,9 @@
       <template v-slot:toolbar>
         <!-- 搜索表单 -->
         <KSDepartmentalPlanDetails-search @exportData="exportData" @search="reload" @ClickReload="ClickReload" :KSDepartmentalPlanDataSearch="KSDepartmentalPlanDataSearch" :selection="selection" @showEditReoad="showEditReoad" :datasourceList="datasourceList" />
+        <p style="display: flex; justify-content: flex-start;font-size: large;">实际申领数量合计: <b>{{ sumNumber }}</b> 实际申领金额合计:
+          <b>{{ sumAount }}</b>
+        </p>
       </template>
 
       <template v-slot:PlanQty="{ row }">
@@ -68,9 +71,6 @@
         </el-popconfirm>
       </template>
     </ele-pro-table>
-    <p style="display: flex; justify-content: flex-end">实际申领数量合计: <b>{{ sumNumber }}</b> 实际申领金额合计:
-      <b>{{ sumAount }}</b>
-    </p>
 
     <el-dialog title="包装规格" :visible.sync="dialogVisible" width="30%" :before-close="handleClose">
       <el-row :gutter="20">

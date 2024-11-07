@@ -103,6 +103,24 @@ export default {
           minWidth: 120
         },
         {
+          prop: 'CLINICAL_USE_SAFETY_LEVEL',
+          label: '临床使用安全级别',
+          sortable: 'custom',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 60,
+          formatter: (row, column, cellValue) => {
+            if(cellValue == '1'){
+              cellValue = '一级';
+            }else if(cellValue == '2'){
+              cellValue = '二级';
+            }else if(cellValue == '3'){
+              cellValue = '三级';
+            }
+            return cellValue;
+          }
+        },
+        {
           prop: 'CHARGING_CODE',
           label: '计费编码',
           sortable: 'custom',

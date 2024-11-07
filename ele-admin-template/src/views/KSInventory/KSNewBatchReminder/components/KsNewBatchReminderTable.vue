@@ -27,7 +27,7 @@
           size="mini"
           icon="el-icon-check"
           @click="makeConfirmWithPic(row)"
-          >定标</el-button
+          >上传定标报告</el-button
         >
       </template>
 
@@ -77,7 +77,7 @@ import { BACK_BASE_URL } from '@/config/setting';
             label: '数量',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 70
+            minWidth: 40
           },
           {
             prop: 'BATCH_PRODUCTION_DATE',
@@ -86,7 +86,7 @@ import { BACK_BASE_URL } from '@/config/setting';
             showOverflowTooltip: true,
             minWidth: 120,
             formatter: (_row, _column, cellValue) => {
-              return this.$util.toDateString(cellValue, 'yyyy-MM-dd HH:mm:ss');
+              return this.$util.toDateString(cellValue, 'yyyy-MM-dd');
             }
           },
           {
@@ -96,7 +96,7 @@ import { BACK_BASE_URL } from '@/config/setting';
             showOverflowTooltip: true,
             minWidth: 120,
             formatter: (_row, _column, cellValue) => {
-              return this.$util.toDateString(cellValue, 'yyyy-MM-dd HH:mm:ss');
+              return this.$util.toDateString(cellValue, 'yyyy-MM-dd');
             }
           },
           {
@@ -104,21 +104,21 @@ import { BACK_BASE_URL } from '@/config/setting';
             label: '品种编码',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 70
+            minWidth: 100
           },
           {
             prop: 'VARIETIE_NAME',
             label: '品种名称',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 70
+            minWidth: 240
           },
           {
             prop: 'SPECIFICATION_OR_TYPE',
             label: '包装规格',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 70
+            minWidth: 120
           },
           {
             prop: 'UNIT',

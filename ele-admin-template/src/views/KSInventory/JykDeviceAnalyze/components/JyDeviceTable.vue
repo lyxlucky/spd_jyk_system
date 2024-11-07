@@ -51,21 +51,21 @@ import { getJyDeviceTableList } from '@/api/KSInventory/JykDeviceAnalyze';
             label: '项目名',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 100
+            minWidth: 80
           },
           {
             prop: 'VARIETIE_CODE_NEW',
             label: '品种编码',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 100
+            minWidth: 80
           },
           {
             prop: 'VARIETIE_NAME',
             label: '品种名称',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 120
+            minWidth: 180
           },
           {
             prop: 'SPECIFICATION_OR_TYPE',
@@ -79,14 +79,14 @@ import { getJyDeviceTableList } from '@/api/KSInventory/JykDeviceAnalyze';
             label: '单位',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 80
+            minWidth: 20
           },
           {
             prop: 'JYK_ZHB',
             label: '理论人次',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 80
+            minWidth: 30
           },
           {
             prop: 'PROJECT_NAME',

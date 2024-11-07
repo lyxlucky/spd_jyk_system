@@ -44,6 +44,15 @@
           >
 
           <el-button
+            type="primary"
+            size="mini"
+            icon="el-icon-edit"
+            :disabled="!isEnableDelete"
+            @click="updateQty"
+            >修改数量</el-button
+          >
+
+          <el-button
             type="success"
             size="mini"
             icon="el-icon-download"
@@ -85,7 +94,8 @@
   import {
     getDEPT_TK_Del,
     delDEPT_TK_VAR,
-    pullDataAsExcel
+    pullDataAsExcel,
+    updateDEPT_TK_DelNum
   } from '@/api/KSInventory/WarehouseTransfer/index';
   export default {
     name: 'WarehouseTransferMiddleTable',
@@ -226,6 +236,34 @@
             }))
           );
           delDEPT_TK_VAR({ json: ids })
+            .then((res) => {
+              this.$message({
+                type: 'success',
+                message: res.msg
+              });
+            })
+            .catch((err) => {
+              this.$message({
+                type: 'error',
+                message: err
+              });
+            })
+            .finally(() => {
+              this.reload();
+            });
+        });
+      },
+      updateQty(){
+        this.$prompt('请输入修改数量', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          inputPattern: /^\d+$/,
+          inputErrorMessage: '请输入数字'
+        }).then(({ value }) => {
+          const ids = this.selection.map((item) => {
+            return item.ID
+          }).join(",");
+          updateDEPT_TK_DelNum({ tkIds:ids,num:value })
             .then((res) => {
               this.$message({
                 type: 'success',
