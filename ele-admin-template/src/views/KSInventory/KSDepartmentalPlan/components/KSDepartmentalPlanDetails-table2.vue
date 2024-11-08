@@ -18,7 +18,7 @@
       <!-- 左表头 -->
       <template v-slot:toolbar>
         <!-- 搜索表单 -->
-        <KSDepartmentalPlanDetails-search @exportData="exportData" @search="reload" @ClickReload="ClickReload" :KSDepartmentalPlanDataSearch="KSDepartmentalPlanDataSearch" :selection="selection" @showEditReoad="showEditReoad" :datasourceList="datasourceList" />
+        <KSDepartmentalPlanDetails-search @Approval = 'Approval' @exportData="exportData" @search="reload" @ClickReload="ClickReload" :KSDepartmentalPlanDataSearch="KSDepartmentalPlanDataSearch" :selection="selection" @showEditReoad="showEditReoad" :datasourceList="datasourceList" />
         <p style="display: flex; justify-content: flex-start;font-size: large;">实际申领数量合计: <b>{{ sumNumber }}</b> 实际申领金额合计:
           <b>{{ sumAount }}</b>
         </p>
@@ -115,7 +115,8 @@
 import KSDepartmentalPlanDetailsSearch from './KSDepartmentalPlanDetails-search.vue';
 import {
   SerachPlanListDeta,
-  UpdateApplyPlanBZ
+  UpdateApplyPlanBZ,
+  Approval
 } from '@/api/KSInventory/KSDepartmentalPlan';
 import { utils, writeFile } from 'xlsx';
 export default {
@@ -391,6 +392,22 @@ export default {
     };
   },
   methods: {
+    Approval(){
+      Approval({PlanNum:this.KSDepartmentalPlanData.PlanNum}).then((res) => {
+        if (res.code == 200) {
+          this.$message({
+            type: 'success',
+            message: '审批成功'
+          });
+        } else {
+          this.$message({
+            type: 'error',
+            message: res.message
+          });
+        }
+        this.reload();
+      });
+    },
     /* 表格数据源 */
     datasource({ page, limit, where, order }) {
       var Dept_Two_CodeStr = '';

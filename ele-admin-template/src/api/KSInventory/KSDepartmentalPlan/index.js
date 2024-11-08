@@ -2,6 +2,7 @@ import request from '@/utils/request';
 import { formdataify, DataToObject, formatDate } from '@/utils/formdataify';
 import { TOKEN_STORE_NAME } from '@/config/setting';
 import store from '@/store';
+import moment from 'moment';
 
 
 export async function getDeptAuthVarNew(data) {
@@ -41,8 +42,8 @@ export async function SerachPlanList(data) {
     // data2.DeptCode = data.where.DeptCode ? data.where.DeptCode : '';
     data2.State = data.where.State ? data.where.State : '-1'
     data2.SerachName = data.where.SerachName ? data.where.SerachName : ''
-    data2.Start = data.where.Start ? data.where.Start : ''
-    data2.End = data.where.End ? data.where.End : ''
+    data2.Start = data.where.Start ? data.where.Start : "";
+    data2.End = data.where.End ? data.where.End : "";
     data2.isTwoApp = data.where.isTwoApp ? data.where.DeptCode : ''
     data2.PlanNum = data.where.PlanNum ? data.where.PlanNum : ''
     data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
@@ -416,6 +417,21 @@ export async function deleteStockingDataItem(data) {
 export async function ImportTempExcel(data) {
     data.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
     const res = await request.post('/DeptApplyPlan/ImpApplyPlanV2Var', data);
+    if (res.data.code == 200) {
+        return res.data;
+    } else {
+        return Promise.reject(new Error(res.data.msg));
+    }
+}
+
+
+export async function Approval(data) {
+    var data2 = {};
+    data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+    data2.Operator = store.state.user.info.Nickname
+    data2.PlanNum = data.PlanNum;
+    var rep = formdataify(data2);
+    const res = await request.post('/DeptApplyPlan/Approval', rep);
     if (res.data.code == 200) {
         return res.data;
     } else {

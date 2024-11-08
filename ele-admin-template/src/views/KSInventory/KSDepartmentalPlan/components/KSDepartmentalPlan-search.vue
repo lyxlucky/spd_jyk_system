@@ -169,11 +169,11 @@ export default {
   created() {},
   mounted() {
      // 页面加载时，计算近三个月的日期范围
-     const endDate = new Date(); // 当前日期
-    const startDate = new Date();
-    startDate.setMonth(startDate.getMonth() - 3); // 三个月前的日期
-    this.where.Start = startDate; // 绑定开始日期
-    this.where.End = endDate; // 绑定结束日期
+     //请使用moment.js处理日期 update by liao
+     const currentDate = this.$moment().format("YYYY-MM-DD");
+    const threeMonthsAgo = this.$moment().subtract(3, 'months').format("YYYY-MM-DD");
+    this.where.Start = threeMonthsAgo; // 绑定开始日期
+    this.where.End = currentDate; // 绑定结束日期
     //this.dateRange = [startDate, endDate]; // 绑定开始日期和结束日期
   }
 };
