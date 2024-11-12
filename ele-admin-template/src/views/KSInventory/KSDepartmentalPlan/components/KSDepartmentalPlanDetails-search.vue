@@ -234,7 +234,7 @@ export default {
 
     /* 审批申领单 */
     IsToExamine() {
-      return this.KSDepartmentalPlanDataSearch.State == '6';
+      return this.KSDepartmentalPlanDataSearch.State == '6' || this.KSDepartmentalPlanDataSearch.State == '5';
     },
     HOME_HP() {
       return HOME_HP;

@@ -18,7 +18,7 @@ export async function getDeptAuthVarNew(data) {
     data2.order = data.order ? data.order : '';
     // data2.Dept_One_Code = data.where.Dept_One_Code ? data.where.Dept_One_Code : '';
     data2.Dept_One_Code = store.state.user.info.DeptNow.Dept_Two_Code ? store.state.user.info.DeptNow.Dept_Two_Code :""
-
+    data2.DEPT_TWO_NAME = data.where.settlementDept ? data.where.settlementDept : '';
     DataToObject(data, data2)
     if (data != null) {
         var data3 = formdataify(data);
