@@ -104,21 +104,21 @@ import { BACK_BASE_URL } from '@/config/setting';
             label: '品种编码',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 100
+            minWidth: 130
           },
           {
             prop: 'VARIETIE_NAME',
             label: '品种名称',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 240
+            minWidth: 500
           },
           {
             prop: 'SPECIFICATION_OR_TYPE',
             label: '包装规格',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 120
+            minWidth: 200
           },
           {
             prop: 'UNIT',
@@ -139,14 +139,14 @@ import { BACK_BASE_URL } from '@/config/setting';
             label: '生产企业',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 70
+            minWidth: 200
           },
           {
             prop: 'APPROVAL_NUMBER',
             label: '注册证',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 70
+            minWidth: 200
           },
           {
             prop: 'CREATE_TIME',

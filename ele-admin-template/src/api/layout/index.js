@@ -84,3 +84,16 @@ export async function UpdatePassWordByUser(data) {
     return Promise.error(new Error(res.data.msg));
   }
 }
+
+
+//根据key获取value
+export async function getConfig(data){
+  const formatData = {
+    "key":data,
+    "Token":sessionStorage.getItem(TOKEN_STORE_NAME)
+  }
+  const response = await request.get("commons/getConfig", {
+    params: formatData
+  })
+  return response
+}

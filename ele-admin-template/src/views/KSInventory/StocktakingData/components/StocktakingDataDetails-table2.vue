@@ -149,7 +149,7 @@ export default {
           label: '生成人',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 80
+          minWidth: 130
         },
         {
           prop: 'VARIETIE_CODE_NEW',
@@ -157,7 +157,7 @@ export default {
           // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 130
+          minWidth: 200
         },
         {
           prop: 'DEF_NO_PKG_CODE',
@@ -165,7 +165,7 @@ export default {
           label: '定数码',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 130
+          minWidth: 200
         },
         {
           prop: 'VARIETIE_NAME',
@@ -173,7 +173,7 @@ export default {
           // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 160
+          minWidth: 500
         },
         {
           prop: 'SPECIFICATION_OR_TYPE',
@@ -181,7 +181,7 @@ export default {
           // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 180
+          minWidth: 200
         },
         {
           prop: 'MANUFACTURING_ENT_NAME',
@@ -189,7 +189,7 @@ export default {
           // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 180
+          minWidth: 200
         },
         {
           prop: 'COUNT',
@@ -254,7 +254,7 @@ export default {
           // // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 150
+          minWidth: 200
         },
         {
           prop: 'APPROVAL_NUMBER',
@@ -262,7 +262,7 @@ export default {
           // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 110
+          minWidth: 200
         },
         {
           prop: 'CHARGING_CODE',

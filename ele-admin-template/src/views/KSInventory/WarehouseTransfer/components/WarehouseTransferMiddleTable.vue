@@ -152,14 +152,14 @@
           {
             prop: 'VARIETIE_CODE_NEW',
             label: '品种编码',
-            minWidth: 120,
+            minWidth: 200,
             align: 'center',
             showOverflowTooltip: true
           },
           {
             prop: 'VARIETIE_NAME',
             label: '品种名称',
-            minWidth: 100,
+            minWidth: 500,
             align: 'center',
             showOverflowTooltip: true
           },
@@ -187,14 +187,14 @@
           {
             prop: 'MANUFACTURING_ENT_NAME',
             label: '生产企业',
-            minWidth: 120,
+            minWidth: 200,
             align: 'center',
             showOverflowTooltip: true
           },
           {
             prop: 'APPROVAL_NUMBER',
             label: '批准文号',
-            minWidth: 80,
+            minWidth: 180,
             align: 'center',
             showOverflowTooltip: true
           }

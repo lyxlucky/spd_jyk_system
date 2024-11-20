@@ -4,6 +4,7 @@ import { B2B_BASE_CODE, B2B_BASE_URL,HOME_HP } from '@/config/setting';
 import { TOKEN_STORE_NAME } from '@/config/setting';
 import { toDateString } from 'ele-admin';
 import store from '@/store/index';
+import { Decrypt } from '@/utils/aes-util.js';
 
 export async function getSupplierList(data) {
     let formataData = {}
@@ -19,10 +20,23 @@ export async function getSupplierList(data) {
     formataData.varZzState = data.where.varietieValue ? data.where.varietieValue : '';
     let req = formdataify(formataData);
     const res = await request.post('/Supplier/GetListZzsh',req);
-    if (res.data.code == 200) {
-        return res.data;
-    } else {
-        return Promise.reject(new Error(res.data.msg));
+    const isEncrypt = store.state.user.isEncrypt;
+    if(isEncrypt){
+        const devData = JSON.parse(Decrypt(res.data.devData))
+        if (devData.code == 200) {
+            return devData;
+        } else {
+            return Promise.reject(new Error(devData.msg));
+        }
+
+    }else{
+
+        if (res.data.code == 200) {
+            return res.data;
+        } else {
+            return Promise.reject(new Error(res.data.msg));
+        }
+
     }
 }
 
@@ -39,10 +53,24 @@ export async function getRegistrationList(data){
     formataData.XZ_COUNT = data.where.isIncludeNewParticulars ? data.where.isIncludeNewParticulars : '1';
     let req = formdataify(formataData);
     const res = await request.post('/VarietieBasicInfo/getPROD_REGISTRATION_BA_INFO',req);
-    if (res.data.code == 200) {
-        return res.data;
-    } else {
-        return Promise.reject(new Error(res.data.msg));
+    const isEncrypt = store.state.user.isEncrypt;
+    if(isEncrypt){
+        
+        const devData = JSON.parse(Decrypt(res.data.devData))
+        if (devData.code == 200) {
+            return devData;
+        } else {
+            return Promise.reject(new Error(devData.msg));
+        }
+
+    }else{
+
+        if (res.data.code == 200) {
+            return res.data;
+        } else {
+            return Promise.reject(new Error(res.data.msg));
+        }
+
     }
 }
 

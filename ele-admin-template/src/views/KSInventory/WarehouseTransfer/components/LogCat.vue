@@ -43,6 +43,16 @@
               @click="searchItem()"
               >搜索</el-button
             >
+
+            <el-button
+              type="primary"
+              size="mini"
+              style="margin-left:10px"
+              icon="el-icon-download"
+              @click="exportLog()"
+              >导出</el-button
+            >
+
           </div>
         </template>
       </ele-pro-table>
@@ -50,6 +60,7 @@
   </div>
 </template>
 <script>
+import { utils, writeFile } from 'xlsx';
 import { getlogInfoTable } from '@/api/KSInventory/WarehouseTransfer/index';
 export default {
     name:"LogCat",
@@ -108,7 +119,7 @@ export default {
             label: '品种编码',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 100
+            minWidth: 120
           },
           {
             prop: 'VARIETIE_NAME',
@@ -184,6 +195,65 @@ export default {
       },
       searchItem(){
         this.reload(this.where);
+      },
+      exportLog(){
+        const loading = this.$messageLoading('正在处理..');
+        this.$refs.table.doRequest(({ where, order }) => {
+        getlogInfoTable({
+          page: 1,
+          limit: 999999,
+          where: where,
+          order: order
+        })
+          .then((res) => {
+            loading.close();
+            const array = [[
+              '调库订单',
+              '调库人',
+              '调库时间',
+              '提交人',
+              '提交时间',
+              '品种编码',
+              '品种名称',
+              '规格',
+              '数量',
+              '单位',
+              '批准文号',
+              '生产企业',
+              '定数码'
+            ]];
+            res.result.forEach((d) => {
+              array.push([
+               d.TK_ORDER,
+               d.TK_MAN,
+               d.TK_TIME,
+               d.TJ_MAN,
+               d.TJ_TIME,
+               d.VARIETIE_CODE_NEW,
+               d.VARIETIE_NAME,
+               d.SPECIFICATION_OR_TYPE,
+               d.QTY,
+               d.UNIT,
+               d.APPROVAL_NUMBER,
+               d.MANUFACTURING_ENT_NAME,
+               d.DEF_NO_PKG_CODE
+              ]);
+            });
+            writeFile(
+              {
+                SheetNames: ['Sheet1'],
+                Sheets: {
+                  Sheet1: utils.aoa_to_sheet(array)
+                }
+              },
+              '调库日志.xlsx'
+            );
+          })
+          .catch((e) => {
+            loading.close();
+            this.$message.error(e.message);
+          });
+      });
       },
       // 表格选中数据
       onCurrentChange(current) {

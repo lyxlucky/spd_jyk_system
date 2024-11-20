@@ -162,7 +162,7 @@ export default {
           label: '品种名称',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 150
+          minWidth: 500
         },
         {
           prop: 'SPECIFICATION_OR_TYPE',
@@ -233,7 +233,7 @@ export default {
           label: '生产企业',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 180
+          minWidth: 200
         },
         {
           prop: 'RECORD_TIME',

@@ -3,7 +3,7 @@
  */
 import { formatMenus, toTreeData, formatTreeData, deepClone } from 'ele-admin';
 import { USER_MENUS, BLACK_LIST_ROUTERS } from '@/config/setting';
-import { getUserInfo } from '@/api/layout';
+import { getUserInfo,getConfig } from '@/api/layout';
 
 export default {
   namespaced: true,
@@ -18,7 +18,8 @@ export default {
     roles: [],
     // 登录账号密码
     loginInfo: [],
-
+    //接口返参是否加密
+    isEncrypt: false,
     // 加密参数
     encrypted: {
       // 密钥
@@ -69,8 +70,17 @@ export default {
     setDeptDeclarAndApprovalMainId(state, info) {
       state.DeptDeclarAndApprovalMainId = info;
     },
+    setIsEncrypt(state, info){
+      state.isEncrypt = info;
+    }
   },
   actions: {
+    //获取接口反参是否加密
+    async fetchIsEncrypt({ commit }) {
+      await getConfig("IS_ENCRYPT").then((res) => {
+        commit('setIsEncrypt', res?.data?.data == 1)
+      })
+    },
     /**
      * 请求用户信息、权限、角色、菜单
      */

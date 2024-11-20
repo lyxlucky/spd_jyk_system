@@ -164,7 +164,7 @@ export default {
 
           align: 'center',
           showOverflowTooltip: true,
-          width: 120
+          width: 200
         },
         {
           prop: 'VARIETIE_NAME',
@@ -172,14 +172,14 @@ export default {
 
           align: 'center',
           showOverflowTooltip: true,
-          width: 120
+          width: 500
         },
         {
           prop: 'SPECIFICATION_OR_TYPE',
           label: '规格型号',
           align: 'center',
           showOverflowTooltip: true,
-          width: 160
+          width: 200
         },
         {
           prop: 'UNIT',

@@ -32,6 +32,7 @@ router.beforeEach((to, from, next) => {
   }
   // 判断是否登录
   if (getToken()) {
+    store.dispatch('user/fetchIsEncrypt')
     // 还未注册动态路由则先获取
     if (!store.state.user.menus) {
       store

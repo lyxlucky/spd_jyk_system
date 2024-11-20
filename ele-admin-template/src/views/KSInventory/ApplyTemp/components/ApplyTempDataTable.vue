@@ -125,7 +125,7 @@ export default {
 
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 180
+          minWidth: 500
         },
         {
           prop: 'GG',
@@ -133,7 +133,7 @@ export default {
 
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 150
+          minWidth: 200
         },
         {
           prop: 'Unit',
@@ -157,7 +157,7 @@ export default {
 
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 150
+          minWidth: 200
         },
         {
           prop: 'StockQty',
@@ -233,7 +233,7 @@ export default {
 
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 150
+          minWidth: 200
         }
       ],
       toolbar: false,

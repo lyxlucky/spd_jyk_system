@@ -235,7 +235,7 @@ export default {
         {
           prop: 'Varietie_Name',
           label: '品种全称',
-          width: 220,
+          width: 500,
           align: 'center',
           showOverflowTooltip: true
         },

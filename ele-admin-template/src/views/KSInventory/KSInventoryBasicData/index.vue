@@ -136,7 +136,7 @@ export default {
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 180
+          minWidth: 500
         },
         {
           prop: 'Specification_Or_Type',
@@ -254,12 +254,14 @@ export default {
       showImport: false,
       // datasource: [],
       data: [],
-      isDeptTwoAuth: null
+      isDeptTwoAuth: null,
+      currentpage: 1
     };
   },
   methods: {
     /* 表格数据源 */
     datasource({ page, limit, where, order }) {
+      this.currentpage = page;
       where.Dept_One_Code = this.$store.state.user.info.DeptNow.Dept_Two_Code;
       let data = getDeptAuthVarNew({ page, limit, where, order }).then(
         (res) => {
@@ -275,7 +277,7 @@ export default {
     /* 刷新表格 */
     reload(where) {
       // this.isDeptTwoAuth = where.isDeptTwoAuth;
-      this.$refs.table.reload({ page: 1, where: where });
+      this.$refs.table.reload({ page: this.currentpage, where: where });
     },
     onCurrentChange(data) {
       this.current = data;

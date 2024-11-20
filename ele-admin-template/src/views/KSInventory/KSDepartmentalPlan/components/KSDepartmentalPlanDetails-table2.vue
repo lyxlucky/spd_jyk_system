@@ -204,7 +204,7 @@ export default {
 
           align: 'center',
           showOverflowTooltip: true,
-          width: 150
+          width: 500
         },
         {
           prop: 'GG',
@@ -212,7 +212,7 @@ export default {
 
           align: 'center',
           showOverflowTooltip: true,
-          width: 110
+          width: 200
         },
         {
           prop: 'Manufacturing',
@@ -220,7 +220,7 @@ export default {
 
           align: 'center',
           showOverflowTooltip: true,
-          width: 110
+          width: 200
         },
         {
           prop: 'SUPPLIER_NAME',
@@ -228,7 +228,7 @@ export default {
 
           align: 'center',
           showOverflowTooltip: true,
-          width: 110
+          width: 200
         },
         // {
         //   prop: 'TempQty',
