@@ -2,7 +2,11 @@
   <div class="container">
     <ele-modal
       width="60%"
-      :title="factoryModalType == '0' ? '选择医疗器械注册人或备案人' : '选择受托医疗器械生产企业名称'"
+      :title="
+        factoryModalType == '0'
+          ? '选择医疗器械注册人或备案人'
+          : '选择受托医疗器械生产企业名称'
+      "
       :visible="visible"
       @update:visible="updateVisible"
       position="center"
@@ -28,46 +32,38 @@
       >
         <template v-slot:toolbar>
           <div>
-            <el-form class="ele-form-search">
-              <el-row :gutter="10">
-                <el-col :span="styleResponsive ? 6 : 8">
-                  <el-form-item label-width="0px">
-                    <el-input
-                      v-model="where.MANUFACTURING_ENT_NAME"
-                      placeholder="请输入生产企业名称"
-                      clearable
-                      size="mini"
-                    ></el-input>
-                  </el-form-item>
-                </el-col>
+            <el-form :inline="true" label-width="0px" class="ele-form-search">
+              <el-form-item>
+                <el-input
+                  v-model="where.MANUFACTURING_ENT_NAME"
+                  placeholder="请输入生产企业名称"
+                  clearable
+                  size="mini"
+                ></el-input>
+              </el-form-item>
 
-                <el-col :span="styleResponsive ? 10 : 12">
-                  <el-form-item label-width="0px">
-                    <el-date-picker
-                      v-model="where.date"
-                      type="daterange"
-                      size="mini"
-                      clearable
-                      value-format="yyyy-MM-dd"
-                      range-separator="至"
-                      start-placeholder="开始日期"
-                      end-placeholder="结束日期"
-                    ></el-date-picker>
-                  </el-form-item>
-                </el-col>
+              <el-form-item style="width: 350px">
+                <el-date-picker
+                  v-model="where.date"
+                  type="daterange"
+                  size="mini"
+                  clearable
+                  value-format="yyyy-MM-dd"
+                  range-separator="至"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期"
+                ></el-date-picker>
+              </el-form-item>
 
-                <el-col :span="styleResponsive ? 4 : 4">
-                  <el-form-item label-width="0px">
-                    <el-button
-                      type="primary"
-                      size="mini"
-                      @click="reload(where)"
-                      icon="el-icon-search"
-                      >搜索</el-button
-                    >
-                  </el-form-item>
-                </el-col>
-              </el-row>
+              <el-form-item>
+                <el-button
+                  type="primary"
+                  size="mini"
+                  @click="reload(where)"
+                  icon="el-icon-search"
+                  >搜索</el-button
+                >
+              </el-form-item>
             </el-form>
           </div>
         </template>
@@ -95,7 +91,7 @@
   import { getFactory } from '@/api/Home/Qualificationcheck/index';
   export default {
     name: 'Manufactory',
-    props: ['visible','factoryModalType'],
+    props: ['visible', 'factoryModalType'],
     data() {
       const defaultWhere = {
         MANUFACTURING_ENT_NAME: '',
@@ -108,7 +104,7 @@
             type: 'index',
             columnKey: 'index',
             minWidth: 60,
-            align: 'center',
+            align: 'center'
           },
           {
             label: '生产企业名称',
@@ -178,9 +174,12 @@
       updateVisible(value) {
         this.$emit('update:visible', value);
       },
-      chooseFacotory(){
-        this.$emit('chooseFacotory', {current:this.current,type:this.factoryModalType});
-      },
+      chooseFacotory() {
+        this.$emit('chooseFacotory', {
+          current: this.current,
+          type: this.factoryModalType
+        });
+      }
     },
     computed: {
       // 是否开启响应式布局

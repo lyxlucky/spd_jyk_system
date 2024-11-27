@@ -1,50 +1,87 @@
 <template lang="">
   <div>
-    <el-form class="ele-form-search">
-      <el-row :gutter="10">
-        <el-col v-bind="styleResponsive ? { lg: 4, md: 2 } : { span: 4 }">
-          <el-select
-            v-model="where.pictureState"
-            size='mini'
-            clearable
-            placeholder="请选择图片状态"
+    <el-form :inline="true" class="ele-form-search">
+      <!-- <el-row :gutter="10"> -->
+      <!-- <el-col v-bind="styleResponsive ? { lg: 4, md: 2 } : { span: 4 }"> -->
+      <el-form-item>
+        <el-select
+          v-model="where.pictureState"
+          size="mini"
+          clearable
+          placeholder="请选择图片状态"
+        >
+          <el-option
+            v-for="item in pictureOptions"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
           >
-            <el-option
-              v-for="item in pictureOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            >
-            </el-option>
-          </el-select>
-        </el-col>
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <!-- </el-col> -->
 
-        <el-col v-bind="styleResponsive ? { lg: 4, md: 2 } : { span: 4 }">
-          <el-select
-            v-model="where.pictureType"
-            size='mini'
-            clearable
-            placeholder="请选择图片类型"
+      <!-- <el-col v-bind="styleResponsive ? { lg: 4, md: 2 } : { span: 4 }"> -->
+      <el-form-item>
+        <el-select
+          v-model="where.pictureType"
+          size="mini"
+          clearable
+          placeholder="请选择图片类型"
+        >
+          <el-option
+            v-for="item in pictureTypeOptions"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
           >
-            <el-option
-              v-for="item in pictureTypeOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            >
-            </el-option>
-          </el-select>
-        </el-col>
+          </el-option>
+        </el-select>
+      </el-form-item>
 
-        <el-col v-bind="styleResponsive ? { lg: 10, md: 2 } : { span: 4 }" style="display: flex; gap: 10px;">
-          <el-button type="primary" size="mini" icon="el-icon-search" @click="search">查询</el-button>
-          <el-button type="success" size="mini" icon="el-icon-check" @click="approveItem">审批通过</el-button>
-          <el-button type="danger" size="mini" icon="el-icon-close" @click="denyItem">审批不通过</el-button>
-          <el-button type="warning" size="mini" icon="el-icon-toilet-paper" @click="dropItem">弃用</el-button>
-          <el-button type="danger" size="mini" icon="el-icon-delete" @click="deleteItem">删除</el-button>
-        </el-col>
-
-      </el-row>
+      <el-form-item>
+        <el-button
+          type="primary"
+          size="mini"
+          icon="el-icon-search"
+          @click="search"
+          >查询</el-button
+        >
+      </el-form-item>
+      <el-form-item>
+        <el-button
+          type="success"
+          size="mini"
+          icon="el-icon-check"
+          @click="approveItem"
+          >审批通过</el-button
+        >
+      </el-form-item>
+      <el-form-item>
+        <el-button
+          type="danger"
+          size="mini"
+          icon="el-icon-close"
+          @click="denyItem"
+          >审批不通过</el-button
+        >
+      </el-form-item>
+      <el-form-item>
+        <el-button
+          type="warning"
+          size="mini"
+          icon="el-icon-toilet-paper"
+          @click="dropItem"
+          >弃用</el-button
+        >
+        <el-button
+          type="danger"
+          size="mini"
+          icon="el-icon-delete"
+          @click="deleteItem"
+          >删除</el-button
+        >
+      </el-form-item>
     </el-form>
   </div>
 </template>
@@ -56,7 +93,7 @@
     data() {
       const defaultWhere = {
         pictureState: '',
-        pictureType:'',
+        pictureType: ''
       };
       return {
         where: { ...defaultWhere },
@@ -106,27 +143,26 @@
           {
             value: '6',
             label: '厂家生产许可证'
-          },
+          }
         ]
       };
     },
     methods: {
-        dropItem(){
-            this.$emit('dropItem', this.where);
-        },
-        denyItem(){
-            this.$emit('denyItem', this.where);
-        },
-        approveItem(){
-            this.$emit('approveItem', this.where);
-        },
-        search(){
-            this.$emit('search', this.where);
-        },
-        deleteItem(){
-            this.$emit('deleteItem', this.where);
-        }
-
+      dropItem() {
+        this.$emit('dropItem', this.where);
+      },
+      denyItem() {
+        this.$emit('denyItem', this.where);
+      },
+      approveItem() {
+        this.$emit('approveItem', this.where);
+      },
+      search() {
+        this.$emit('search', this.where);
+      },
+      deleteItem() {
+        this.$emit('deleteItem', this.where);
+      }
     },
     computed: {
       // 是否开启响应式布局

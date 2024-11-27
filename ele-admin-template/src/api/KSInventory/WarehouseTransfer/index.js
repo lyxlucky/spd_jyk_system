@@ -289,6 +289,7 @@ export async function updateDEPT_TK_DelNum(data) {
 }
 
 export async function getlogInfoTable(data) {
+  console.log(data)
   var Token = sessionStorage.getItem(TOKEN_STORE_NAME);
   var data2 = {}
   //添加参数
@@ -296,6 +297,11 @@ export async function getlogInfoTable(data) {
   data2.page = data.page;
   data2.size = data.limit;
   data2.tkOrder = data.where.search ? data.where.search : '';
+  const [startDate,endDate] = data.where.date ? data.where.date : '';
+  data2.startDate = startDate ? startDate : '';
+  data2.endDate = endDate ? endDate : '';
+  data2.sort = data.order.sort ? data.order.sort : '';
+  data2.order = data.order.order ? data.order.order : '';
   let data3 = formdataify(data2);
   const res = await request.post('/DeptConsume/getlogInfoList', data3);
   if (res.data.code == 200) {

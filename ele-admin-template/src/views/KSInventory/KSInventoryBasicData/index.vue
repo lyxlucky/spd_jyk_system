@@ -203,6 +203,8 @@ export default {
               cellValue = '耗材';
             } else if (cellValue == 1) {
               cellValue = '试剂';
+            }else if (cellValue == 21) {
+              cellValue = '手工项目试剂';
             } else {
               cellValue = '未定义';
             }

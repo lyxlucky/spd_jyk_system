@@ -1,9 +1,7 @@
 <template lang="">
   <div>
-    <el-form class="ele-form-search">
-      <el-row :gutter="10">
+    <el-form :inline='true' class="ele-form-search">
         <!-- 查询按钮 -->
-        <el-col v-bind="styleResponsive ? { lg: 12, md: 6 } : { span: 6 }">
           <el-form-item label-width="0px">
             <el-button
               type="success"
@@ -12,6 +10,9 @@
               @click="check(1)"
               >审核通过</el-button
             >
+          </el-form-item>
+          <el-form-item label-width="0px">
+
             <el-button
               type="danger"
               size="mini"
@@ -19,6 +20,9 @@
               @click="check(2)"
               >审核不通过</el-button
             >
+          </el-form-item>
+
+          <el-form-item label-width="0px">
             <el-button
               type="warning"
               size="mini"
@@ -26,6 +30,8 @@
               @click="check(3)"
               >资料缺失</el-button
             >
+          </el-form-item>
+          <el-form-item label-width="0px">
             <el-button
               type="primary"
               size="mini"
@@ -33,6 +39,8 @@
               @click="check(4)"
               >不需要提供</el-button
             >
+          </el-form-item>
+          <el-form-item label-width="0px">
             <el-button
               type="info"
               size="mini"
@@ -41,8 +49,6 @@
               >重新提供</el-button
             >
           </el-form-item>
-        </el-col>
-      </el-row>
     </el-form>
   </div>
 </template>

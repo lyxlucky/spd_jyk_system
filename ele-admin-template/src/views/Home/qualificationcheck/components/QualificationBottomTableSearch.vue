@@ -1,47 +1,39 @@
 <template lang="">
   <div>
-  <el-form class="ele-form-search">
-    <el-row :gutter="10">
-      <!-- 输入框部分 -->
-      <el-col v-bind="styleResponsive ? { lg: 4, md: 4 } : { span: 4 }">
-        <el-form-item label-width="0px">
-          <el-input
-            v-model="where.registrationNumber"
-            size="mini"
-            placeholder="请输入注册证号"
-            clearable
-          />
-        </el-form-item>
-      </el-col>
+    <el-form :inline="true" class="ele-form-search">
+      <el-form-item label-width="0px">
+        <el-input
+          v-model="where.registrationNumber"
+          size="mini"
+          placeholder="请输入注册证号"
+          clearable
+        />
+      </el-form-item>
 
-      <el-col v-bind="styleResponsive ? { lg: 4, md: 4 } : { span: 4 }">
-        <el-form-item label-width="0px">
-          <el-input
-            v-model="where.registrationName"
-            size="mini"
-            placeholder="请输入注册证名称"
-            clearable
-          />
-        </el-form-item>
-      </el-col>
+      <el-form-item label-width="0px">
+        <el-input
+          v-model="where.registrationName"
+          size="mini"
+          placeholder="请输入注册证名称"
+          clearable
+        />
+      </el-form-item>
 
       <!-- 选择器部分 -->
-      <el-col v-bind="styleResponsive ? { lg: 3, md: 3 } : { span: 3 }">
-        <el-form-item label-width="0px">
-          <el-select
-            v-model="where.isIncludeNewParticulars"
-            size="mini"
-            placeholder="请选择"
-          >
-            <el-option
-              v-for="item in isIncludeNewParticularsOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-      </el-col>
+      <el-form-item label-width="0px">
+        <el-select
+          v-model="where.isIncludeNewParticulars"
+          size="mini"
+          placeholder="请选择"
+        >
+          <el-option
+            v-for="item in isIncludeNewParticularsOptions"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          ></el-option>
+        </el-select>
+      </el-form-item>
 
       <!-- <el-col v-bind="styleResponsive ? { lg: 3, md: 3 } : { span: 3 }">
         <el-form-item label-width="0px">
@@ -78,24 +70,22 @@
       </el-col> -->
 
       <!-- 查询按钮 -->
-      <el-col v-bind="styleResponsive ? { lg: 6, md: 6 } : { span: 6 }">
-        <el-form-item label-width="0px">
-          <el-button
-            type="primary"
-            size="mini"
-            icon="el-icon-search"
-            @click="search"
-            >查询</el-button
-          >
-          <!-- <el-button
+      <el-form-item label-width="0px">
+        <el-button
+          type="primary"
+          size="mini"
+          icon="el-icon-search"
+          @click="search"
+          >查询</el-button
+        >
+        <!-- <el-button
             type="primary"
             size="mini"
             @click="searchAll"
             icon="el-icon-search"
             >查询全部</el-button
           > -->
-        </el-form-item>
-      </el-col>
+      </el-form-item>
 
       <!-- 设备审核按钮 -->
       <!-- <el-col v-bind="styleResponsive ? { lg: 10, md: 2 } : { span: 4 }">
@@ -130,9 +120,8 @@
           >
         </el-form-item>
       </el-col> -->
-    </el-row>
-  </el-form>
-</div>
+    </el-form>
+  </div>
 </template>
 <script>
   export default {
@@ -144,7 +133,7 @@
         isIncludeNewParticulars: '1',
         isEquipmentCheck: '',
         isHospitalAudioCheck: '',
-        Supplier_Code: '',
+        Supplier_Code: ''
       };
       return {
         // 表单数据
@@ -209,24 +198,27 @@
       searchAll() {
         this.$emit('searchAll', this.where);
       },
-      feverApprove(){
+      feverApprove() {
         this.$emit('feverApprove', this.where);
       },
-      feverDeny(){
+      feverDeny() {
         this.$emit('feverDeny', this.where);
       },
-      equipmentApprove(){
+      equipmentApprove() {
         this.$emit('equipmentApprove', this.where);
       },
-      equipmentDeny(){
+      equipmentDeny() {
         this.$emit('feverApprove', this.where);
-      },
+      }
     },
     mounted() {
-      this.$bus.$on(`${this.$route.path}/QualificationTopTable/Current`, (data) => {
-        this.where.Supplier_Code = data.Supplier_Code;
-        this.search()
-      });
+      this.$bus.$on(
+        `${this.$route.path}/QualificationTopTable/Current`,
+        (data) => {
+          this.where.Supplier_Code = data.Supplier_Code;
+          this.search();
+        }
+      );
     },
     computed: {
       // 是否开启响应式布局

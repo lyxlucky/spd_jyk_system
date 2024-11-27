@@ -105,6 +105,14 @@ export default {
           showOverflowTooltip: true,
           minWidth: 130
         },
+        {
+          prop: 'DeptQty',
+          label: '科室库存',
+          // sortable: 'custom',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 130
+        },
         // {
         //   prop: 'DEPT_ZDY_VARIETIE_CODE',
         //   label: '自定义编码',

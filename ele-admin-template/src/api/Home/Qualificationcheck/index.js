@@ -28,7 +28,6 @@ export async function getSupplierList(data) {
         } else {
             return Promise.reject(new Error(devData.msg));
         }
-
     }else{
 
         if (res.data.code == 200) {

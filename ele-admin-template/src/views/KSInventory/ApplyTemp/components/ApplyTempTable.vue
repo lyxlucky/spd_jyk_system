@@ -40,6 +40,9 @@
             <el-link type="danger" :underline="false" icon="el-icon-delete">
               删除
             </el-link>
+            <el-link @click="editTempletName(row.TempletCode)" type="primary" :underline="false" icon="el-icon-edit">
+              编辑
+            </el-link>
           </template>
         </el-popconfirm>
       </template>
@@ -87,7 +90,7 @@ export default {
         {
           columnKey: 'action',
           label: '操作',
-          width: 80,
+          width: 150,
           align: 'center',
           resizable: false,
           slot: 'action',

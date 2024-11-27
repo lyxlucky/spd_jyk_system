@@ -66,7 +66,7 @@
             size="mini"
             icon="el-icon-s-management"
             @click="logCatVisible = true"
-            >日志</el-button
+            >调库记录</el-button
           >
 
 

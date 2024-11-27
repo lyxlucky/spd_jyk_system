@@ -1,7 +1,7 @@
 <template lang="">
-    <div class="">
+  <div class="">
     <ele-modal
-      width="60%"
+      width="90%"
       :destroy-on-close="true"
       :visible="visible"
       :close-on-click-modal="true"
@@ -34,25 +34,60 @@
 
         <template v-slot:toolbar>
           <div>
-            <el-input style="width:200px" v-model="where.search" size='mini' placeholder="请输入调库订单"></el-input>
-            <el-button
-              type="primary"
-              size="mini"
-              style="margin-left:10px"
-              icon="el-icon-search"
-              @click="searchItem()"
-              >搜索</el-button
-            >
+            <el-form :inline="true" class="ele-form-search">
+              <!-- <el-row :gutter="10">
+                <el-col
+                  v-bind="styleResponsive ? { lg: 3, md: 2 } : { span: 4 }"
+                > -->
+              <el-form-item>
+                <el-input
+                  style="width: 200px"
+                  v-model="where.search"
+                  size="mini"
+                  placeholder="请输入调库订单"
+                ></el-input>
+              </el-form-item>
+              <!-- </el-col>
+                <el-col
+                  v-bind="styleResponsive ? { lg: 5, md: 2 } : { span: 4 }"
+                > -->
+              <el-form-item style="width: 350px">
+                <el-date-picker
+                  v-model="where.date"
+                  type="daterange"
+                  value-format="yyyy-MM-dd"
+                  size="mini"
+                  range-separator="至"
+                  start-placeholder="调库开始日期"
+                  end-placeholder="调库结束日期"
+                >
+                </el-date-picker>
+              </el-form-item>
+              <!-- </el-col>
+                <el-col
+                  v-bind="styleResponsive ? { lg: 3, md: 2 } : { span: 4 }"
+                > -->
+              <el-form-item>
+                <el-button
+                  type="primary"
+                  size="mini"
+                  icon="el-icon-search"
+                  @click="searchItem()"
+                  >搜索</el-button
+                >
 
-            <el-button
-              type="primary"
-              size="mini"
-              style="margin-left:10px"
-              icon="el-icon-download"
-              @click="exportLog()"
-              >导出</el-button
-            >
-
+                <el-button
+                  type="primary"
+                  size="mini"
+                  style="margin-left: 10px"
+                  icon="el-icon-download"
+                  @click="exportLog()"
+                  >导出</el-button
+                >
+                <!-- </el-col> -->
+                <!-- </el-row> -->
+              </el-form-item>
+            </el-form>
           </div>
         </template>
       </ele-pro-table>
@@ -60,19 +95,20 @@
   </div>
 </template>
 <script>
-import { utils, writeFile } from 'xlsx';
-import { getlogInfoTable } from '@/api/KSInventory/WarehouseTransfer/index';
-export default {
-    name:"LogCat",
+  import { utils, writeFile } from 'xlsx';
+  import { getlogInfoTable } from '@/api/KSInventory/WarehouseTransfer/index';
+  export default {
+    name: 'LogCat',
     props: ['visible'],
     data() {
       const defaultWhere = {
-        search:"",
+        search: '',
+        date: ''
       };
       return {
         where: { ...defaultWhere },
         columns: [
-        {
+          {
             columnKey: 'selection',
             type: 'selection',
             width: 45,
@@ -98,7 +134,8 @@ export default {
             label: '调库时间',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 120
+            minWidth: 120,
+            sortable: true
           },
           {
             prop: 'TJ_MAN',
@@ -136,8 +173,8 @@ export default {
             minWidth: 180
           },
           {
-            prop: 'QTY',
-            label: '数量',
+            prop: 'COEFFICIENT',
+            label: '系数',
             align: 'center',
             showOverflowTooltip: true,
             minWidth: 100
@@ -169,7 +206,7 @@ export default {
             align: 'center',
             showOverflowTooltip: true,
             minWidth: 160
-          },
+          }
         ],
         pageSize: 20,
         pagerCount: 2,
@@ -193,67 +230,69 @@ export default {
         );
         return data;
       },
-      searchItem(){
+      searchItem() {
         this.reload(this.where);
       },
-      exportLog(){
+      exportLog() {
         const loading = this.$messageLoading('正在处理..');
         this.$refs.table.doRequest(({ where, order }) => {
-        getlogInfoTable({
-          page: 1,
-          limit: 999999,
-          where: where,
-          order: order
-        })
-          .then((res) => {
-            loading.close();
-            const array = [[
-              '调库订单',
-              '调库人',
-              '调库时间',
-              '提交人',
-              '提交时间',
-              '品种编码',
-              '品种名称',
-              '规格',
-              '数量',
-              '单位',
-              '批准文号',
-              '生产企业',
-              '定数码'
-            ]];
-            res.result.forEach((d) => {
-              array.push([
-               d.TK_ORDER,
-               d.TK_MAN,
-               d.TK_TIME,
-               d.TJ_MAN,
-               d.TJ_TIME,
-               d.VARIETIE_CODE_NEW,
-               d.VARIETIE_NAME,
-               d.SPECIFICATION_OR_TYPE,
-               d.QTY,
-               d.UNIT,
-               d.APPROVAL_NUMBER,
-               d.MANUFACTURING_ENT_NAME,
-               d.DEF_NO_PKG_CODE
-              ]);
-            });
-            writeFile(
-              {
-                SheetNames: ['Sheet1'],
-                Sheets: {
-                  Sheet1: utils.aoa_to_sheet(array)
-                }
-              },
-              '调库日志.xlsx'
-            );
+          getlogInfoTable({
+            page: 1,
+            limit: 999999,
+            where: where,
+            order: order
           })
-          .catch((e) => {
-            loading.close();
-            this.$message.error(e.message);
-          });
-      });
+            .then((res) => {
+              loading.close();
+              const array = [
+                [
+                  '调库订单',
+                  '调库人',
+                  '调库时间',
+                  '提交人',
+                  '提交时间',
+                  '品种编码',
+                  '品种名称',
+                  '规格',
+                  '数量',
+                  '单位',
+                  '批准文号',
+                  '生产企业',
+                  '定数码'
+                ]
+              ];
+              res.result.forEach((d) => {
+                array.push([
+                  d.TK_ORDER,
+                  d.TK_MAN,
+                  d.TK_TIME,
+                  d.TJ_MAN,
+                  d.TJ_TIME,
+                  d.VARIETIE_CODE_NEW,
+                  d.VARIETIE_NAME,
+                  d.SPECIFICATION_OR_TYPE,
+                  d.QTY,
+                  d.UNIT,
+                  d.APPROVAL_NUMBER,
+                  d.MANUFACTURING_ENT_NAME,
+                  d.DEF_NO_PKG_CODE
+                ]);
+              });
+              writeFile(
+                {
+                  SheetNames: ['Sheet1'],
+                  Sheets: {
+                    Sheet1: utils.aoa_to_sheet(array)
+                  }
+                },
+                '调库日志.xlsx'
+              );
+            })
+            .catch((e) => {
+              loading.close();
+              this.$message.error(e.message);
+            });
+        });
       },
       // 表格选中数据
       onCurrentChange(current) {
@@ -270,10 +309,12 @@ export default {
     computed: {
       isCreateEnable() {
         return this.selection.length > 0 && this.selection;
+      },
+      // 是否开启响应式布局
+      styleResponsive() {
+        return this.$store.state.theme.styleResponsive;
       }
-    },
-}
+    }
+  };
 </script>
-<style lang="">
-    
-</style>
+<style lang=""></style>

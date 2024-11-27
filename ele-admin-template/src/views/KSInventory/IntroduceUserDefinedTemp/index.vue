@@ -91,6 +91,14 @@ export default {
           minWidth: 120
         },
         {
+          prop: 'DEPT_TWO_QTY',
+          label: '科室库存',
+          sortable: 'custom',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 120
+        },
+        {
           prop: 'DEPT_ZDY_VARIETIE_CODE',
           label: '自定义编码',
           sortable: 'custom',
