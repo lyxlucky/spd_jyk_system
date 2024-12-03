@@ -1,5 +1,5 @@
 <template >
-  <ele-modal :destroy-on-close="true" width="1900px" :visible="visible" :close-on-click-modal="true" custom-class="ele-dialog-form" title="自定义新增" @update:visible="updateVisible">
+  <ele-modal :destroy-on-close="true" width="90%" height="80%" :visible="visible" :close-on-click-modal="true" custom-class="ele-dialog-form" title="自定义新增" @update:visible="updateVisible">
     <div class="ele-body">
       <el-card shadow="never">
         <!-- 搜索表单 -->
@@ -91,14 +91,6 @@ export default {
           minWidth: 120
         },
         {
-          prop: 'DEPT_TWO_QTY',
-          label: '科室库存',
-          sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 120
-        },
-        {
           prop: 'DEPT_ZDY_VARIETIE_CODE',
           label: '自定义编码',
           sortable: 'custom',
@@ -184,6 +176,14 @@ export default {
           width: 100,
           align: 'center',
           showOverflowTooltip: true
+        },
+        {
+          prop: 'DEPT_TWO_QTY',
+          label: '科室库存',
+          sortable: 'custom',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 120
         },
         {
           prop: 'ZB',

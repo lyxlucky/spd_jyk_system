@@ -80,7 +80,7 @@
           icon="el-icon-circle-plus-outline"
           :disabled="isEnableCreate"
           @click="showCreateDefPkgModal(row)"
-          >创建定数包</el-button
+          >添加定数包</el-button
         >
       </template>
     </ele-pro-table>

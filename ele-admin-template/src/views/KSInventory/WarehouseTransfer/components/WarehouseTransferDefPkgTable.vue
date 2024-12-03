@@ -25,7 +25,27 @@
         cache-key="WarehouseTransferDefPkgTable"
       >
         <template v-slot:toolbar>
-          <div>
+          <el-form :inline='true' ref='codeFormRef' label-width='0px' class="ele-form-search">
+            <el-form-item>
+              <el-input
+                v-model="where.DEF_NO_PKG_CODE"
+                placeholder="请输入定数码"
+                @keyup.enter.native="tableReload"
+                size="mini"
+                clearable
+              ></el-input>
+            </el-form-item>
+            <el-form-item>
+              <el-button
+                type="primary"
+                size="mini"
+                icon="el-icon-circle-check"
+                @click="batchCreateDefPkgCode()"
+                >提交</el-button
+              >
+            </el-form-item>
+          </el-form>
+          <!-- <div>
             <el-button
               type="primary"
               size="mini"
@@ -33,7 +53,7 @@
               @click="batchCreateDefPkgCode()"
               >提交</el-button
             >
-          </div>
+          </div> -->
         </template>
       </ele-pro-table>
     </ele-modal>
@@ -51,7 +71,8 @@
     data() {
       const defaultWhere = {
         code: null,
-        middleTableCurrent: null
+        middleTableCurrent: null,
+        DEF_NO_PKG_CODE:""  // 定数码
       };
       return {
         where: { ...defaultWhere },
@@ -151,6 +172,12 @@
           });
         return data;
       },
+      tableReload() {
+        this.$refs.table.reload();
+      },
+      resetForm() {
+        this.$refs.codeFormRef.resetFields();
+      },
       reload(where, limit) {
         setTimeout(() => {
           this.$refs.table.reload({ page: 1, where: where, limit: limit });
@@ -201,6 +228,7 @@
       });
     },
     beforeDestroy() {
+      this.resetForm();
       this.$bus.$off(`${this.$route.path}/MiddleTableSlotRow`);
     }
   };

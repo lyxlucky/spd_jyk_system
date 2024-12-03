@@ -157,6 +157,7 @@ export async function getDEPT_TK_MAIN(data) {
     data2.Token = Token;
     data2.deptCode = store.state.user.info.DeptNow.Dept_Two_Code
     data2.code = data.where.code;
+    data2.defNoPkgCode = data.where.DEF_NO_PKG_CODE;
     data2.page = data.page;
     data2.size = data.limit;
     let data3 = formdataify(data2);

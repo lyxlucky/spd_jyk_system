@@ -88,16 +88,6 @@ export default {
           fixed: 'left'
         },
         {
-          columnKey: 'action',
-          label: '操作',
-          width: 150,
-          align: 'center',
-          resizable: false,
-          slot: 'action',
-          showOverflowTooltip: true,
-          fixed: 'right'
-        },
-        {
           slot: 'TempletName',
           //prop: 'TempletName',
           label: '模板名称',
@@ -181,6 +171,16 @@ export default {
               return '否';
             }
           }
+        },
+        {
+          columnKey: 'action',
+          label: '操作',
+          width: 150,
+          align: 'center',
+          resizable: false,
+          slot: 'action',
+          showOverflowTooltip: true,
+          //fixed: 'right'
         },
         {
           prop: 'ID',
