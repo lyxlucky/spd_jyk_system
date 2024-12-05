@@ -4,6 +4,7 @@
       <!-- 搜索表单 -->
       <!-- <user-search @search="reload" @getMsgTip="getMsgTip" @exportData="exportData" :selection="selection" /> -->
       <!-- 数据表格 -->
+      <span style="font-size: 20px;">当前设备： {{ bindMachine || '暂无' }}</span>
       <ele-pro-table ref="table" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" @selection-change="onSelectionChange" @done="done" cache-key="KSInventoryBasicDataTable">
         <!-- 表头工具栏 -->
         <template v-slot:toolbar>
@@ -253,7 +254,8 @@ export default {
       showImport: false,
       // datasource: [],
       data: [],
-      msgTip: ''
+      msgTip: '',
+      bindMachine:""
     };
   },
   methods: {
@@ -394,6 +396,14 @@ export default {
     // console.log(this.$store.state.user.info)
     this.$nextTick(() => {
       this.$refs.table.toggleAllSelection();
+    });
+  },
+  beforeDestroy(){
+    this.$bus.$off('bindMachine');
+  },
+  mounted() {
+    this.$bus.$on('bindMachine', (data) => {
+     this.bindMachine = data;
     });
   }
 };

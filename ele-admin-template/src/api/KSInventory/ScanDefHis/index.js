@@ -13,6 +13,7 @@ export async function SerachDef2Consume4PDA(data) {
     data2.defNoPkgCode = data.where.defNoPkgCode ? data.where.defNoPkgCode : '';
     data2.contractCode = data.where.contractCode ? data.where.contractCode : '';
     data2.supplierName = data.where.supplierName ? data.where.supplierName : '';
+    
 
     DataToObject(data, data2)
     if (data != null) {
@@ -30,7 +31,9 @@ export async function insertScanDef(data) {
     var data2 = {};
     data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
     data2.DEF_NO_PKG_CODE = data.defNoPkgCode ? data.defNoPkgCode : '';
-
+    const [code, description] = data.bindMachine.split("/");
+    data2.INSTRUMENT_CODE = code ? code : '';
+    data2.INSTRUMENT_NAME = description ? description : '';
     if (data2 != null) {
         var data3 = formdataify(data2);
     }

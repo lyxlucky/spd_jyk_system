@@ -4,11 +4,14 @@ import { TOKEN_STORE_NAME } from '@/config/setting';
 
 
 export async function getJyDeviceTableList(data) {
+    const [startDate,endDate] = data.where.date ? data.where.date : '';
     const formatData = {
         Token: sessionStorage.getItem(TOKEN_STORE_NAME),
         page: data.page,
         size: data.limit,
         code: data.where.code ? data.where.code : '',
+        startDate : startDate ? startDate : '',
+        endDate : endDate ? endDate : '',
     }
     const res = await request.post('/DataStatics/getJyDeviceTableList', formdataify(formatData));
     if (res.data.code == 200) {
