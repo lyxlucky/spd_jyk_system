@@ -84,7 +84,6 @@
         <el-input clearable v-model="where.DELIVERY_NUMBER" placeholder="入库单号" />
       </el-col>
       <el-col style="margin-left:10px;" v-bind="styleResponsive ? { lg: 12, md: 12 } : { span: 8 }">
-        <!-- <div class="ele-form-actions" > -->
         <div style="display: flex;">
           <el-button style="height: 32px;" size="small" type="primary" icon="el-icon-search" class="ele-btn-icon" @click="search">
             查询
@@ -108,6 +107,7 @@
 
             <el-button style="margin-left: 30px;height: 32px;" size="small" type="primary" icon="el-icon-download" @click="exportDataExcel()">导出</el-button>
 
+            <el-button style="margin-left: 30px;height: 32px;" size="small" type="primary" icon="el-icon-position" @click="outStockWithUDI()">UDI出库</el-button>
             <div>
               <label style="margin-left: 30px;height: 32px;display: block;width: 100px;">合计数量:<b>{{sumCount}}</b></label>
             </div>
@@ -119,21 +119,24 @@
     </el-row>
 
     <KSInventoryQuery2 :visible.sync="KSInventoryQueryShow" />
+    <udiOutStock :visible.sync="udiOutStockVisible" />
   </el-form>
 </template>
 
 <script>
 import { API_BASE_URL, BACK_BASE_URL } from '@/config/setting';
 import { CreatList } from '@/api/KSInventory/KSDepartmentalPlan';
+import udiOutStock from './udiOutStock';
 import {
   DeptReceivingScanOrder,
-  GenerateStockData
+  GenerateStockData,
 } from '@/api/KSInventory/KSInventoryQuery';
 import KSInventoryQuery2 from '@/views/KSInventory/ReferenceComponent/KSInventoryQuery/index.vue';
 export default {
   props: ['sumCount', 'current', 'type'],
   components: {
-    KSInventoryQuery2
+    KSInventoryQuery2,
+    udiOutStock
   },
   data() {
     // 默认表单数据
@@ -158,7 +161,8 @@ export default {
       KSInventoryQueryShow: false,
       actionUrl: '',
       Updata: {},
-      loading: null
+      loading: null,
+      udiOutStockVisible: false
     };
   },
   computed: {
@@ -178,6 +182,9 @@ export default {
     }
   },
   methods: {
+    outStockWithUDI(){
+      this.udiOutStockVisible = true;
+    },
     openEdit() {
       this.$emit('openEdit', this.where);
     },

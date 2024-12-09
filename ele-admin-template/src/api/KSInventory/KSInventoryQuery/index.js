@@ -220,4 +220,22 @@ export async function BatchInsertScanDef2(data) {
 }
 
 
+export async function getJykMainShelfWithUdi(data) {
+    var data2 = {};
+    data2.DEPT_TWO_CODE = store.state.user.info.DeptNow.Dept_Two_Code
+    data2.UDI = data.udi ? data.udi : '';
+    data2.page = '1';
+    data2.size = '9999';
+    data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+    const res = await request.get('/AJykDept/GetJykMainShelfWithUdi', {
+        params: data2,
+    });
+    if (res.data.code == 200) {
+        return res.data;
+    } else {
+        return Promise.reject(new Error(res.data.msg));
+    }
+}
+
+
 
