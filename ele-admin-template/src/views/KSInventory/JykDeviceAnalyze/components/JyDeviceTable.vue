@@ -40,32 +40,25 @@ import { getJyDeviceTableList } from '@/api/KSInventory/JykDeviceAnalyze';
         // 表格列配置
         columns: [
           {
-            prop: 'GOODS_QTY',
-            label: '耗材数量',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 80
-          },
-          {
             prop: 'JYK_YQM',
             label: '项目名',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 80
+            minWidth: 180
           },
           {
             prop: 'VARIETIE_CODE_NEW',
             label: '品种编码',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 80
+            minWidth: 160
           },
           {
             prop: 'VARIETIE_NAME',
             label: '品种名称',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 180
+            minWidth: 380
           },
           {
             prop: 'SPECIFICATION_OR_TYPE',
@@ -79,14 +72,14 @@ import { getJyDeviceTableList } from '@/api/KSInventory/JykDeviceAnalyze';
             label: '单位',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 20
+            minWidth: 60
           },
           {
             prop: 'JYK_ZHB',
             label: '理论人次',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 30
+            minWidth: 90
           },
           {
             prop: 'PROJECT_NAME',
@@ -96,12 +89,49 @@ import { getJyDeviceTableList } from '@/api/KSInventory/JykDeviceAnalyze';
             minWidth: 120
           },
           {
+            prop: 'GOODS_QTY',
+            label: '耗材数量',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 120
+          },
+          {
             prop: 'XM_COUNT',
             label: '项目数量',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 60
+            minWidth: 120
           },
+          // asda
+          {
+            label: '耗材使用人次数',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 120,
+            formatter: (row, column, cellValue) => {
+              return Number(row.GOODS_QTY) * Number(row.JYK_ZHB);
+            }
+          },
+          {
+            label: '利用率',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 80,
+            formatter: (row, column, cellValue) => {
+              const xmCount = Number(row.XM_COUNT) || 0;
+              const goodsQty = Number(row.GOODS_QTY) || 0;
+              const jykZhb = Number(row.JYK_ZHB) || 0;
+
+              // 避免除零错误
+              if (goodsQty === 0 || jykZhb === 0) {
+                return "0%";
+              }
+              // 计算百分比
+              const percentage = (xmCount / (goodsQty * jykZhb)) * 100;
+              // 保留两位小数
+              return percentage.toFixed(2) + "%";
+            }
+          }
         ],
         toolbar: false,
         pageSize: 10,

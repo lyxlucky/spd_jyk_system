@@ -19,10 +19,10 @@
           range-separator="至"
           start-placeholder="开始日期"
           end-placeholder="结束日期"
+          :picker-options="pickerOptions"
         >
         </el-date-picker>
       </el-form-item>
-
       <el-form-item label="" label-width="0px">
         <el-button
           type="primary"
@@ -31,6 +31,9 @@
           @click="search"
           >查询</el-button
         >
+      </el-form-item>
+      <el-form-item>
+        <span>LIS数据从2024-11-12开始接入</span>
       </el-form-item>
     </el-form>
   </div>
@@ -41,10 +44,17 @@
     data() {
       const defaultWhere = {
         code: '',
-        date:''
+        date: ''
       };
       return {
-        where: { ...defaultWhere }
+        where: { ...defaultWhere },
+        pickerOptions: {
+          disabledDate(time) {
+            // 限制从 2024-01-01 开始
+            const startDate = new Date('2024-11-12').getTime();
+            return time.getTime() < startDate;
+          }
+        }
       };
     },
     methods: {

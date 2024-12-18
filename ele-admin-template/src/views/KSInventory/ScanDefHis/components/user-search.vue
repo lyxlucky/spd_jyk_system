@@ -128,6 +128,7 @@
 
 <script>
   import { API_BASE_URL, BACK_BASE_URL } from '@/config/setting';
+  import { GetLrJykInstrument } from '@/api/KSInventory/LrJykInstrument';
   import {
     insertScanDef,
     delScanDef,
@@ -197,18 +198,39 @@
           cancelButtonText: '取消'
         })
           .then(({ value }) => {
-            this.where.bindMachine = value;
-            this.$bus.$emit('bindMachine', value);
-            this.$message({
-              type: 'success',
-              message: '绑定成功'
+            const loading = this.$messageLoading('处理中...');
+            let mechineCodeWithoutSlash;
+            if (!value.includes('/')) {
+              mechineCodeWithoutSlash = value;
+            }
+            const [machineCode] = value.split('/');
+            const submitMachineCode = mechineCodeWithoutSlash || machineCode;
+            GetLrJykInstrument({
+              where: { INSTRUMENT_NAME: submitMachineCode },
+              page: 1,
+              limit: 9999
+            }).then((res) => {
+              if (res?.code != 200) return this.$message.error(res.msg);
+              const returnValue = res.result[0];
+              this.where.bindMachine = `${returnValue.INSTRUMENT_CODE}/${returnValue.INSTRUMENT_NAME}`;
+              this.$bus.$emit(
+                'bindMachine',
+                `${returnValue.INSTRUMENT_CODE}/${returnValue.INSTRUMENT_NAME}`
+              );
+              this.$message({
+                type: 'success',
+                message: '绑定成功'
+              });
             });
+            loading.close();
           })
           .catch(() => {
             this.$message({
-            type: 'info',
-            message: '取消输入'
-          });
+              type: 'info',
+              message: '取消输入'
+            });
+          })
+          .finally(() => {
           });
       },
       /* 添加 */

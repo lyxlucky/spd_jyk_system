@@ -8,8 +8,8 @@ import { TOKEN_STORE_NAME } from '@/config/setting';
 export async function GetLrJykInstrument(data) {
     var data2 = {};
     data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
-    data2.page = data.page;
-    data2.size = data.limit;
+    data2.page = data.page ? data.page : 1;
+    data2.size = data.limit ? data.limit : 9999;
     data2.INSTRUMENT_NAME = data.where.INSTRUMENT_NAME ? data.where.INSTRUMENT_NAME : '';
     data2.WORKING_GROUP = data.where.WORKING_GROUP ? data.where.WORKING_GROUP : '';
 
