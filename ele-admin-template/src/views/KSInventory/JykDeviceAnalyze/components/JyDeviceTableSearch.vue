@@ -10,19 +10,28 @@
         />
       </el-form-item>
 
-      <el-form-item style="width: 350px">
+      <el-form-item>
         <el-date-picker
-          v-model="where.date"
-          type="daterange"
-          value-format="yyyy-MM-dd"
           size="mini"
-          range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          :picker-options="pickerOptions"
+          v-model="where.startDate"
+          type="date"
+          value-format="yyyy-MM-dd"
+          placeholder="选择开始日期"
         >
         </el-date-picker>
       </el-form-item>
+
+      <el-form-item style="margin-left: 15px">
+        <el-date-picker
+          size="mini"
+          v-model="where.endDate"
+          type="date"
+          value-format="yyyy-MM-dd"
+          placeholder="选择结束日期"
+        >
+        </el-date-picker>
+      </el-form-item>
+
       <el-form-item label="" label-width="0px">
         <el-button
           type="primary"
@@ -44,7 +53,8 @@
     data() {
       const defaultWhere = {
         code: '',
-        date: ''
+        startDate: '',
+        endDate: ''
       };
       return {
         where: { ...defaultWhere },

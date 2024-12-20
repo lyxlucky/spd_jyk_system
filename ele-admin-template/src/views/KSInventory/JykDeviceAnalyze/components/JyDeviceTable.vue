@@ -82,13 +82,6 @@ import { getJyDeviceTableList } from '@/api/KSInventory/JykDeviceAnalyze';
             minWidth: 90
           },
           {
-            prop: 'PROJECT_NAME',
-            label: '项目名称',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 120
-          },
-          {
             prop: 'GOODS_QTY',
             label: '耗材数量',
             align: 'center',
@@ -104,6 +97,7 @@ import { getJyDeviceTableList } from '@/api/KSInventory/JykDeviceAnalyze';
           },
           // asda
           {
+            prop:"HC_SYRS",
             label: '耗材使用人次数',
             align: 'center',
             showOverflowTooltip: true,
@@ -113,6 +107,7 @@ import { getJyDeviceTableList } from '@/api/KSInventory/JykDeviceAnalyze';
             }
           },
           {
+            prop:"LY_PERCENTAGE",
             label: '利用率',
             align: 'center',
             showOverflowTooltip: true,

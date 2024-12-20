@@ -192,6 +192,18 @@ export default {
           sortable: true
         },
         {
+          prop: 'INWAREHOUSE_DATE',
+          label: '在库天数',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 160,
+          sortable: true,
+          formatter: (row, column, cellValue) => {
+            const now = this.$moment();
+            return this.$moment(now,'YYYY-MM-DD').diff(row.RECORD_TIME, 'days') + '天';
+          }
+        },
+        {
           prop: 'SPECIFICATION_OR_TYPE',
           label: '规格型号',
           // sortable: 'custom',
