@@ -195,6 +195,18 @@ export default {
           sortable: true
         },
         {
+          prop: 'INWAREHOUSE_DATE',
+          label: '在库天数',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 160,
+          sortable: true,
+          formatter: (row, column, cellValue) => {
+            const now = this.$moment();
+            return this.$moment(now,'YYYY-MM-DD').diff(row.RECORD_TIME, 'days') + '天';
+          }
+        },
+        {
           prop: 'SPECIFICATION_OR_TYPE',
           label: '规格型号',
           // sortable: 'custom',
@@ -431,6 +443,7 @@ export default {
                 '品种ID',
                 '品种编码',
                 '品种名称',
+                '在库天数',
                 '规格型号',
                 '生产企业',
                 '库存数量',
@@ -446,12 +459,15 @@ export default {
               ]
             ];
             res.result.forEach((d) => {
+              const now = this.$moment();
+              const inwarehouseDate = this.$moment(now,'YYYY-MM-DD').diff(d.RECORD_TIME, 'days') + '天';
               array.push([
                 d.DEPT_TWO_NAME,
                 d.DEF_NO_PKG_CODE,
                 d.VARIETIE_CODE,
                 d.VARIETIE_CODE_NEW,
                 d.VARIETIE_NAME,
+                inwarehouseDate,
                 d.SPECIFICATION_OR_TYPE,
                 d.MANUFACTURING_ENT_NAME,
                 d.COUNT,
