@@ -37,8 +37,7 @@
       </el-tab-pane>
     </el-tabs> -->
 
-
-     <KSDepartmentalPlantable @getCurrent="getCurrent"></KSDepartmentalPlantable>
+    <KSDepartmentalPlantable @getCurrent="getCurrent"></KSDepartmentalPlantable>
   </div>
 </template>
 
@@ -61,7 +60,7 @@ export default {
     return {
       KSDepartmentalPlanData: {},
       isActive: true,
-      activeName: 'first'
+      activeName: 'first',
     };
   },
   methods: {
@@ -77,7 +76,7 @@ export default {
     handleClick(tab, event) {
       // console.log(tab, event);
     }
-  }
+  },
 };
 </script>
 

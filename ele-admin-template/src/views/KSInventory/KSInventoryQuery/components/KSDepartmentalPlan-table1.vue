@@ -7,6 +7,7 @@
         <!-- 搜索表单 -->
         <KSDepartmentalPlan-search @exportDataExcel="exportDataExcel" @search="reload" @openEdit="openEdit" :current="current" :type="TYPE" :sumCount="sumCount" />
         <!-- <label>合计数量:<b>{{sumCount}}</b></label> -->
+      <span style="font-size: 20px;">当前设备： {{ bindMachine || '暂无' }}</span>
       </template>
 
       <template v-slot:State="{ row }">
@@ -92,7 +93,7 @@
       </template>
     </ele-pro-table>
 
-    <user-edit :visible.sync="showEdit" :data="rowData || current" @done="reload" />
+    <user-edit :bindMachine="bindMachine" :visible.sync="showEdit" :data="rowData || current" @done="reload" />
   </div>
 </template>
 
@@ -207,6 +208,26 @@ export default {
           }
         },
         {
+          prop: 'BATCH_VALIDITY_PERIOD',
+          slot: 'BATCH_VALIDITY_PERIOD',
+          label: '有效到期',
+          // sortable: 'custom',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 150,
+          sortable: true
+        },
+        {
+          props: 'DAYS_DIFFERENCE',
+          slot: 'DAYS_DIFFERENCE',
+          label: '剩余天数',
+          // sortable: 'custom',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 100,
+          sortable: false
+        },
+        {
           prop: 'SPECIFICATION_OR_TYPE',
           label: '规格型号',
           // sortable: 'custom',
@@ -277,25 +298,6 @@ export default {
             return this.$util.toDateString(cellValue, 'yyyy-MM-dd');
           },
           sortable: true
-        },
-        {
-          prop: 'BATCH_VALIDITY_PERIOD',
-          slot: 'BATCH_VALIDITY_PERIOD',
-          label: '有效到期',
-          // sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 150,
-          sortable: true
-        },
-        {
-          slot: 'DAYS_DIFFERENCE',
-          label: '剩余天数',
-          // sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 100,
-          sortable: false
         },
         {
           prop: 'SUPPLIER_NAME',
@@ -395,7 +397,8 @@ export default {
       dateNow1: dayjs().format('YYYY-MM-DD'),
       dateNow2: dayjs().format('YYYY-MM-DD'),
       dateNow3: dayjs().format('YYYY-MM-DD'),
-      dateNow4: dayjs().format('YYYY-MM-DD')
+      dateNow4: dayjs().format('YYYY-MM-DD'),
+      bindMachine: ''
     };
   },
   methods: {
@@ -558,9 +561,13 @@ export default {
     this.$bus.$on('handleCommand', (data) => {
       this.reload();
     });
+    this.$bus.$on('bindMachineKSInventoryQuery', (data) => {
+     this.bindMachine = data;
+    });
   },
   destroyed() {
     this.$bus.$off('handleCommand');
+    this.$bus.$off('bindMachineKSInventoryQuery');
   }
 };
 </script>

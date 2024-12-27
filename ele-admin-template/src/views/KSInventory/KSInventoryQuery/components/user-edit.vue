@@ -49,7 +49,8 @@ export default {
     // 弹窗是否打开
     visible: Boolean,
     // 修改回显的数据
-    data: Object
+    data: Object,
+    bindMachine: Object
   },
   data() {
     const defaultForm = {
@@ -99,12 +100,13 @@ export default {
         }
         this.loading = true;
         const data = {
-          ...this.form
+          ...this.form,
+          bindMachine: this.bindMachine
         };
         saveJykOutInfo(data)
           .then((msg) => {
             this.loading = false;
-            this.$message.success(msg);
+            this.$message.success(msg.msg);
             this.updateVisible(false);
             this.$emit('done');
           })

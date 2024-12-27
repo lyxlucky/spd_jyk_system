@@ -89,7 +89,7 @@
 
         <el-tag
           v-if="
-            row.COUNT >= 1 && isExpiringWithin7Days(row.BATCH_VALIDITY_PERIOD)
+            row.COUNT >= 1 && isExpiringWithin15Days(row.BATCH_VALIDITY_PERIOD)
           "
           type="danger"
         >
@@ -246,7 +246,7 @@
             // sortable: 'custom',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 130
+            minWidth: 150
           },
           {
             prop: 'VARIETIE_CODE',
@@ -271,7 +271,7 @@
             // sortable: 'custom',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 160,
+            minWidth: 380,
             sortable: true
           },
           {
@@ -290,6 +290,16 @@
             }
           },
           {
+            prop: 'BATCH_VALIDITY_PERIOD',
+            slot: 'BATCH_VALIDITY_PERIOD',
+            label: '有效到期',
+            // sortable: 'custom',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 150,
+            sortable: true
+          },
+          {
             prop: 'SPECIFICATION_OR_TYPE',
             label: '规格型号',
             // sortable: 'custom',
@@ -303,7 +313,7 @@
             // sortable: 'custom',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 180
+            minWidth: 280
           },
           {
             prop: 'COUNT',
@@ -362,22 +372,12 @@
             sortable: true
           },
           {
-            prop: 'BATCH_VALIDITY_PERIOD',
-            slot: 'BATCH_VALIDITY_PERIOD',
-            label: '有效到期',
-            // sortable: 'custom',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 150,
-            sortable: true
-          },
-          {
             prop: 'SUPPLIER_NAME',
             label: '供应商名称',
             // // sortable: 'custom',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 150
+            minWidth: 280
           },
           {
             prop: 'APPROVAL_NUMBER',
@@ -385,7 +385,7 @@
             // sortable: 'custom',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 110
+            minWidth: 280
           },
           // {
           //   prop: 'OPERATOR',
@@ -475,9 +475,9 @@
       };
     },
     methods: {
-      isExpiringWithin7Days(validityPeriod) {
+      isExpiringWithin15Days(validityPeriod) {
         const now = dayjs(); // 当前时间
-        const future7Days = dayjs().add(7, 'day'); // 未来七天
+        const future7Days = dayjs().add(15, 'day'); // 未来七天
         const batchDate = dayjs(validityPeriod); // 有效期时间
 
         // 判断是否在当前日期和未来七天之间

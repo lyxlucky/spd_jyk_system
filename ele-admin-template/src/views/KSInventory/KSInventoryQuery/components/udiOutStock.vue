@@ -2,7 +2,11 @@
   <div class="">
     <ele-modal
       width="30%"
-      @opened="() => {this.$refs.firstUdi.focus()}"
+      @opened="
+        () => {
+          this.$refs.firstUdi.focus();
+        }
+      "
       :destroy-on-close="true"
       :visible="visible"
       :close-on-click-modal="false"
@@ -155,8 +159,17 @@
             },
             { pattern: /^[0-9]*$/, message: '请输入数字', trigger: 'blur' }
           ]
-        }
+        },
+        bindMachine:'',
       };
+    },
+    mounted() {
+      this.$bus.$on('bindMachineKSInventoryQuery', (data) => {
+        this.bindMachine = data;
+      });
+    },
+    beforeDestroy() {
+      this.$bus.$off('bindMachineKSInventoryQuery');
     },
     methods: {
       updateVisible(value) {
@@ -169,7 +182,8 @@
           }
           this.loading = true;
           const data = {
-            ...this.form
+            ...this.form,
+            bindMachine: this.bindMachine
           };
           saveJykOutInfo(data)
             .then((msg) => {
@@ -180,23 +194,30 @@
             .catch((e) => {
               this.loading = false;
               this.$message.error(e.message);
-            }).finally(() => {
-              this.where.isMultiUdi = false,
-              this.where.firstUdi = '',
-              this.where.secondUdi = ''
-              this.form.qty = ''
+            })
+            .finally(() => {
+              (this.where.isMultiUdi = false),
+                (this.where.firstUdi = ''),
+                (this.where.secondUdi = '');
+              this.form.qty = '';
             });
         });
       },
       getUdiInfo() {
         const loading = this.$messageLoading('请求中..');
-        getJykMainShelfWithUdi({udi:this.where.firstUdi + this.where.secondUdi})
+        getJykMainShelfWithUdi({
+          udi: this.where.firstUdi + this.where.secondUdi
+        })
           .then((res) => {
             if (res?.code != 200) return this.$message.error('处理失败');
             const data = res.result;
-            if(data){
+            if (data) {
               this.form.BATCH = data[0]?.BATCH;
-              this.form.BATCH_VALIDITY_PERIOD = data[0]?.BATCH_VALIDITY_PERIOD ? this.$moment(data[0]?.BATCH_VALIDITY_PERIOD).format('YYYY-MM-DD HH:mm:ss') : '';
+              this.form.BATCH_VALIDITY_PERIOD = data[0]?.BATCH_VALIDITY_PERIOD
+                ? this.$moment(data[0]?.BATCH_VALIDITY_PERIOD).format(
+                    'YYYY-MM-DD HH:mm:ss'
+                  )
+                : '';
               this.form.COUNT = data[0]?.COUNT;
               this.form.VARIETIE_CODE = data[0]?.VARIETIE_CODE;
               this.form.VARIETIE_CODE_NEW = data[0]?.VARIETIE_CODE_NEW;
