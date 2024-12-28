@@ -32,7 +32,7 @@
         </el-date-picker>
       </el-form-item>
 
-      <el-form-item label="" label-width="0px">
+      <el-form-item label="">
         <el-button
           type="primary"
           icon="el-icon-search"
@@ -41,6 +41,17 @@
           >查询</el-button
         >
       </el-form-item>
+
+      <el-form-item label="">
+        <el-button
+          type="success"
+          icon="el-icon-download"
+          size="mini"
+          @click="exportData"
+          >导出</el-button
+        >
+      </el-form-item>
+
       <el-form-item>
         <span>LIS数据从2024-11-12开始接入</span>
       </el-form-item>
@@ -71,6 +82,9 @@
       // 查询
       search() {
         this.$emit('search', this.where);
+      },
+      exportData() {
+        this.$emit('exportData', this.where);
       }
     },
     computed: {

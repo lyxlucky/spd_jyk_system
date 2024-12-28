@@ -18,13 +18,14 @@
     >
       <!-- 表头工具栏 -->
       <template v-slot:toolbar> 
-        <JyDeviceTableSearch  @search="reload"/>
+        <JyDeviceTableSearch @exportData=exportData  @search="reload"/>
       </template>
     </ele-pro-table>
   </div>
 </template>
 <script>
 import JyDeviceTableSearch from './JyDeviceTableSearch';
+import { utils, writeFile } from 'xlsx';
 import { getJyDeviceTableList } from '@/api/KSInventory/JykDeviceAnalyze';
   export default {
     name: 'JyDeviceTable',
@@ -155,6 +156,62 @@ import { getJyDeviceTableList } from '@/api/KSInventory/JykDeviceAnalyze';
       // 表格行点击事件
       onCurrentChange(row) {
         this.current = row;
+      },
+      exportData() {
+        const loading = this.$messageLoading('正在导出数据...');
+        this.$refs.table.doRequest(() => {
+        getJyDeviceTableList({
+          page: 1,
+          limit: 999999,
+          where: this.where,
+          order: this.order
+        })
+          .then((res) => {
+            loading.close();
+            const array = [
+              [
+                '项目名',
+                '品种编码',
+                '品种名称',
+                '包装规格',
+                '单位',
+                '理论人次',
+                '耗材数量',
+                '项目数量',
+                '耗材使用人次数',
+                '利用率'
+              ]
+            ];
+            res.result.forEach((d) => {
+              array.push([
+                d.JYK_YQM,
+                d.VARIETIE_CODE_NEW,
+                d.VARIETIE_NAME,
+                d.SPECIFICATION_OR_TYPE,
+                d.UNIT,
+                d.JYK_ZHB,
+                d.GOODS_QTY,
+                d.XM_COUNT,
+                Number(d.GOODS_QTY) * Number(d.JYK_ZHB),
+                (((Number(d.XM_COUNT) || 0) / (Number(d.GOODS_QTY) * Number(d.JYK_ZHB))) * 100).toFixed(2) + "%"
+              ]);
+            });
+            writeFile(
+              {
+                SheetNames: ['Sheet1'],
+                Sheets: {
+                  Sheet1: utils.aoa_to_sheet(array)
+                }
+              },
+              '检验仪器分析.xlsx'
+            );
+            this.$message.success('导出成功');
+          })
+          .catch((e) => {
+            loading.close();
+            this.$message.error(e.message);
+          });
+      });
       }
     }
   };
