@@ -11,6 +11,8 @@ export async function getJyDeviceTableList(data) {
         code: data.where.code ? data.where.code : '',
         startDate : data.where.startDate ? data.where.startDate : '',
         endDate : data.where.endDate ? data.where.endDate : '',
+        projectName: data.where.projectName ? data.where.projectName : '',
+        varName: data.where.varName ? data.where.varName : '',
     }
     const res = await request.post('/DataStatics/getJyDeviceTableList', formdataify(formatData));
     if (res.data.code == 200) {

@@ -18,7 +18,7 @@
     >
       <!-- 表头工具栏 -->
       <template v-slot:toolbar> 
-        <JyDeviceTableSearch @exportData=exportData  @search="reload"/>
+        <JyDeviceTableSearch @exportData="exportData"  @search="reload"/>
       </template>
     </ele-pro-table>
   </div>
@@ -157,14 +157,26 @@ import { getJyDeviceTableList } from '@/api/KSInventory/JykDeviceAnalyze';
       onCurrentChange(row) {
         this.current = row;
       },
-      exportData() {
+      calculatePercentage (xmCount, goodsQty, jykZhb) {
+        const count = Number(xmCount) || 0;
+        const qty = Number(goodsQty) || 0;
+        const zhb = Number(jykZhb) || 0;
+        
+        // 避免除以零或非数值导致的 NaN 或 Infinity
+        if (qty <= 0 || zhb <= 0 || !Number.isFinite(count) || !Number.isFinite(qty) || !Number.isFinite(zhb)) {
+          return "0%";
+        }
+
+        const percentage = (count / (qty * zhb)) * 100;
+        return isFinite(percentage) ? percentage.toFixed(2) + "%" : "0%";
+      },
+      exportData(data) {
         const loading = this.$messageLoading('正在导出数据...');
         this.$refs.table.doRequest(() => {
         getJyDeviceTableList({
           page: 1,
           limit: 999999,
-          where: this.where,
-          order: this.order
+          where: data,
         })
           .then((res) => {
             loading.close();
@@ -193,7 +205,7 @@ import { getJyDeviceTableList } from '@/api/KSInventory/JykDeviceAnalyze';
                 d.GOODS_QTY,
                 d.XM_COUNT,
                 Number(d.GOODS_QTY) * Number(d.JYK_ZHB),
-                (((Number(d.XM_COUNT) || 0) / (Number(d.GOODS_QTY) * Number(d.JYK_ZHB))) * 100).toFixed(2) + "%"
+                this.calculatePercentage(d.XM_COUNT, d.GOODS_QTY, d.JYK_ZHB)
               ]);
             });
             writeFile(

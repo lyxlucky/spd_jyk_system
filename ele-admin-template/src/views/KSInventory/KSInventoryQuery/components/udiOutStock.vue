@@ -89,7 +89,7 @@
             placeholder="请输入UDI"
             v-model="where.firstUdi"
             ref="firstUdi"
-            @blur="getUdiInfo"
+            @change="getUdiInfo"
             class="input-with-select"
           >
             <el-switch slot="prepend" v-model="where.isMultiUdi"></el-switch>
@@ -97,7 +97,7 @@
           <el-input
             placeholder="请输入第二段UDI"
             v-model="where.secondUdi"
-            @blur="getUdiInfo"
+            @change="getUdiInfo"
             ref="secondUdi"
             class="input-with-select"
           >
@@ -196,17 +196,33 @@
               this.$message.error(e.message);
             })
             .finally(() => {
-              (this.where.isMultiUdi = false),
-                (this.where.firstUdi = ''),
-                (this.where.secondUdi = '');
+              this.where = {
+                ...this.where,
+                firstUdi: '',
+                secondUdi: '',
+                isMultiUdi: false 
+              }
+              this.$refs.firstUdi.focus();
               this.form.qty = '';
             });
         });
       },
       getUdiInfo() {
         const loading = this.$messageLoading('请求中..');
+        const completeUdi = this.where.firstUdi.trim() + this.where.secondUdi.trim();
+        if(!completeUdi){
+          loading.close();
+          this.where = {
+            ...this.where,
+            firstUdi: '',
+            secondUdi: '',
+            isMultiUdi: false 
+          }
+          this.$refs.firstUdi.focus();
+          return this.$message.error('请输入UDI');
+        }
         getJykMainShelfWithUdi({
-          udi: this.where.firstUdi + this.where.secondUdi
+          udi: completeUdi
         })
           .then((res) => {
             if (res?.code != 200) return this.$message.error('处理失败');
@@ -229,6 +245,13 @@
             this.$message.error(err);
           })
           .finally(() => {
+            // this.where = {
+            //   ...this.where,
+            //   firstUdi: '',
+            //   secondUdi: '',
+            //   isMultiUdi: false 
+            // }
+            // this.$refs.firstUdi.focus();
             loading.close();
           });
       }

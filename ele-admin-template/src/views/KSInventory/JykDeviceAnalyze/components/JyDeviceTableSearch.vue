@@ -1,11 +1,27 @@
 <template lang="">
   <div>
     <el-form :inline="true" class="ele-form-search">
-      <el-form-item label="" label-width="0px">
+      <el-form-item label="">
+        <el-input
+          size="mini"
+          v-model="where.projectName"
+          placeholder="请输入项目名称"
+          clearable
+        />
+      </el-form-item>
+      <el-form-item label="">
         <el-input
           size="mini"
           v-model="where.code"
           placeholder="请输入品种编码"
+          clearable
+        />
+      </el-form-item>
+      <el-form-item label="">
+        <el-input
+          size="mini"
+          v-model="where.varName"
+          placeholder="请输入品种名称"
           clearable
         />
       </el-form-item>
@@ -65,7 +81,9 @@
       const defaultWhere = {
         code: '',
         startDate: '',
-        endDate: ''
+        endDate: '',
+        projectName:'',
+        varName:''
       };
       return {
         where: { ...defaultWhere },
