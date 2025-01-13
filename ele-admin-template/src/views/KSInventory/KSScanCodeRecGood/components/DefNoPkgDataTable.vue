@@ -1,7 +1,7 @@
 <template>
   <div class="ele-body">
     <!-- 数据表格 -->
-    <ele-pro-table ref="table" v-if="IsRefDefNoPkgDataTable==false" height="67vh" highlight-current-row :stripe="true" :rowClickChecked="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" cache-key="DefNoPkgDataTable">
+    <ele-pro-table ref="table" v-if="IsRefDefNoPkgDataTable==false" height="65vh" highlight-current-row :stripe="true" :rowClickChecked="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" cache-key="DefNoPkgDataTable">
       <template v-slot:KC_COUNT="{ row }">
         <el-tag v-if="row.KC_DEF_NO_PKG_CODE == null" type="info">未收货</el-tag>
         <el-tag v-else-if="row.KC_COUNT>0" type="success">在库</el-tag>
@@ -72,6 +72,7 @@ export default {
         //   fixed: 'left'
         // },
         {
+          label: '序',
           columnKey: 'index',
           type: 'index',
           width: 45,

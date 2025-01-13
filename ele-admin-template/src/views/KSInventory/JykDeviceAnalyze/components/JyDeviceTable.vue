@@ -52,7 +52,7 @@ import { getJyDeviceTableList } from '@/api/KSInventory/JykDeviceAnalyze';
             label: '品种编码',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 160
+            minWidth: 120
           },
           {
             prop: 'VARIETIE_NAME',
@@ -84,14 +84,14 @@ import { getJyDeviceTableList } from '@/api/KSInventory/JykDeviceAnalyze';
           },
           {
             prop: 'GOODS_QTY',
-            label: '耗材数量',
+            label: '耗材消耗数量',
             align: 'center',
             showOverflowTooltip: true,
             minWidth: 120
           },
           {
             prop: 'XM_COUNT',
-            label: '项目数量',
+            label: 'LIS项目数量',
             align: 'center',
             showOverflowTooltip: true,
             minWidth: 120
@@ -188,8 +188,8 @@ import { getJyDeviceTableList } from '@/api/KSInventory/JykDeviceAnalyze';
                 '包装规格',
                 '单位',
                 '理论人次',
-                '耗材数量',
-                '项目数量',
+                '耗材消耗数量',
+                'LIS项目数量',
                 '耗材使用人次数',
                 '利用率'
               ]

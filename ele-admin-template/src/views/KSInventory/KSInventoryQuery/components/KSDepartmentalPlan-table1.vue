@@ -1,13 +1,13 @@
 <template>
   <div class="ele-body">
+    <KSDepartmentalPlan-search @exportDataExcel="exportDataExcel" @search="reload" @openEdit="openEdit" :current="current" :type="TYPE" :sumCount="sumCount" />
     <!-- 数据表格 -->
     <ele-pro-table highlight-current-row @current-change="onCurrentChange" ref="table" :rowClickChecked="true" :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" cache-key="KSInventoryBasicDataTable">
       <!-- 表头工具栏 -->
       <template v-slot:toolbar>
         <!-- 搜索表单 -->
-        <KSDepartmentalPlan-search @exportDataExcel="exportDataExcel" @search="reload" @openEdit="openEdit" :current="current" :type="TYPE" :sumCount="sumCount" />
         <!-- <label>合计数量:<b>{{sumCount}}</b></label> -->
-      <span style="font-size: 20px;">当前设备： {{ bindMachine || '暂无' }}</span>
+      <span v-if="HOME_HP == 'stzx'" style="font-size: 20px;">当前设备： {{ bindMachine || '暂无' }}</span>
       </template>
 
       <template v-slot:State="{ row }">
@@ -167,7 +167,7 @@ export default {
           // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 130
+          minWidth: 150
         },
         {
           prop: 'VARIETIE_CODE',
@@ -225,7 +225,7 @@ export default {
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 100,
-          sortable: false
+          sortable: true
         },
         {
           prop: 'SPECIFICATION_OR_TYPE',
@@ -241,7 +241,7 @@ export default {
           // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 180
+          minWidth: 280
         },
         {
           prop: 'COUNT',
@@ -305,7 +305,7 @@ export default {
           // // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 150
+          minWidth: 280
         },
         {
           prop: 'APPROVAL_NUMBER',
@@ -313,7 +313,7 @@ export default {
           // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 110
+          minWidth: 250
         },
         // {
         //   prop: 'OPERATOR',

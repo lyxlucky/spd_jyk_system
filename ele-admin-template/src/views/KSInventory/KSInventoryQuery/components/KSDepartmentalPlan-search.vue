@@ -1,40 +1,43 @@
 <!-- 搜索表单 -->
 <template>
-  <el-form
-    label-width="77px"
-    class="ele-form-search"
-    @keyup.enter.native="search"
-    @submit.native.prevent
-  >
-    <!-- <el-row :gutter="15">
+  <div>
+    <el-form
+      class="ele-form-search"
+      @keyup.enter.native="search"
+      @submit.native.prevent
+    >
+      <!-- <el-row :gutter="15">
       <el-col v-bind="styleResponsive ? { lg: 12, md: 12 } : { span: 12 }">
         <el-button type="success" size="medium" @click="DeptReceivingScanOrderShow">扫码入库</el-button>
       </el-col>
     </el-row> -->
-    <el-row :gutter="10">
-      <!-- <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 12 }">
-        <el-input id="idDistributeNumber" clearable v-model="DistributeNumber" style=" border: solid #52c41a;" placeholder="请扫码入库" @change="onSubmit" />
-      </el-col> -->
-      <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 12 }">
-        <el-input clearable v-model="where.Name" placeholder="品种名称" />
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 12 }">
-        <el-input clearable v-model="where.SPEC" placeholder="规格型号" />
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 12 }">
-        <el-input
-          clearable
-          v-model="where.MANUFACTURING_ENT_NAME"
-          placeholder="生产企业"
-        />
-      </el-col>
-      <!-- <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 12 }">
-        <el-input clearable v-model="where.DEPTNAME" placeholder="科室名称" />
-      </el-col> -->
-
-      <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 12 }">
-        <el-form-item label="科室名称:">
-          <el-select v-model="where.DEPTNAME" @change="search()">
+      <el-row type="flex" :gutter="10">
+        <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 12 }">
+          <el-input
+            size="mini"
+            clearable
+            v-model="where.Name"
+            placeholder="品种名称"
+          />
+        </el-col>
+        <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 12 }">
+          <el-input
+            size="mini"
+            clearable
+            v-model="where.SPEC"
+            placeholder="规格型号"
+          />
+        </el-col>
+        <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 12 }">
+          <el-input
+            clearable
+            size="mini"
+            v-model="where.MANUFACTURING_ENT_NAME"
+            placeholder="生产企业"
+          />
+        </el-col>
+        <el-col v-bind="styleResponsive ? { lg: 2, md: 12 } : { span: 12 }">
+          <el-select size="mini" v-model="where.DEPTNAME" @change="search()">
             <el-option label="全部" value="">全部</el-option>
             <el-option
               v-for="item in userDept"
@@ -43,81 +46,53 @@
               >{{ item.Dept_Two_Name }}</el-option
             >
           </el-select>
-        </el-form-item>
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 12 }">
-        <el-input
-          clearable
-          v-model="where.DEF_NO_PKG_CODE"
-          placeholder="定数码"
-        />
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 12 }">
-        <el-form-item label="库存类型:">
-          <el-select v-model="where.TYPE" @change="search()">
+        </el-col>
+        <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 12 }">
+          <el-input
+            size="mini"
+            clearable
+            v-model="where.DEF_NO_PKG_CODE"
+            placeholder="定数码"
+          />
+        </el-col>
+        <el-col v-bind="styleResponsive ? { lg: 2, md: 12 } : { span: 12 }">
+          <el-select size="mini" v-model="where.TYPE" @change="search()">
             <el-option label="定数码" value="1"></el-option>
             <el-option label="散货" value="0"></el-option>
             <el-option label="全部" value=""></el-option>
           </el-select>
-        </el-form-item>
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 12 }">
-        <el-input
-          clearable
-          type="number"
-          v-model="where.xqDay"
-          placeholder="近效期/天"
-        />
-      </el-col>
-      <!-- <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 12 }">
-        <el-form-item label="数量:">
-          <el-select v-model="where.COUNT" @change="search()">
+        </el-col>
+        <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 12 }">
+          <el-input
+            size="mini"
+            clearable
+            type="number"
+            v-model="where.xqDay"
+            placeholder="近效期/天"
+          />
+        </el-col>
+        <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 12 }">
+          <el-select size="mini" v-model="where.COUNT" @change="search()">
             <el-option label="全部" value=""></el-option>
             <el-option label="未出库" value="1"></el-option>
             <el-option label="已出库" value="0"></el-option>
           </el-select>
-        </el-form-item>
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 12 }">
-        <el-input clearable v-model="where.DELIVERY_NUMBER" placeholder="入库单号" />
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 5, md: 12 } : { span: 8 }">
-        <div class="ele-form-actions">
-          <el-button size="small" type="primary" icon="el-icon-search" class="ele-btn-icon" @click="search">
-            查询
-          </el-button>
-          <el-button size="small" @click="reset">重置</el-button>
+        </el-col>
+      </el-row>
 
-          <el-button size="small" type="primary" class="ele-btn-icon" @click="KSInventoryQueryShow=true">库存汇总</el-button>
-        </div>
-      </el-col> -->
-    </el-row>
-
-    <el-row>
-      <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 12 }">
-        <el-form-item label="数量:">
-          <el-select v-model="where.COUNT" @change="search()">
-            <el-option label="全部" value=""></el-option>
-            <el-option label="未出库" value="1"></el-option>
-            <el-option label="已出库" value="0"></el-option>
-          </el-select>
-        </el-form-item>
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 12 }">
-        <el-input
-          clearable
-          v-model="where.DELIVERY_NUMBER"
-          placeholder="入库单号"
-        />
-      </el-col>
-      <el-col
-        style="margin-left: 10px"
-        v-bind="styleResponsive ? { lg: 12, md: 12 } : { span: 8 }"
-      >
-        <div style="display: flex">
+      <!-- 下一行 -->
+      <el-row type="flex" :gutter="10">
+        <el-col v-bind="styleResponsive ? { lg: 2, md: 2 } : { span: 2 }">
+          <el-input
+            clearable
+            size="mini"
+            v-model="where.DELIVERY_NUMBER"
+            placeholder="入库单号"
+          />
+        </el-col>
+        <el-col v-bind="styleResponsive ? { lg: 1, md: 2 } : { span: 1 }">
           <el-button
-            style="height: 32px"
-            size="small"
+            size="mini"
             type="primary"
             icon="el-icon-search"
             class="ele-btn-icon"
@@ -125,108 +100,110 @@
           >
             查询
           </el-button>
-          <el-button style="height: 32px" size="small" @click="reset"
-            >重置</el-button
-          >
+        </el-col>
 
+        <el-col v-bind="styleResponsive ? { lg: 1, md: 2 } : { span: 1 }">
+          <el-button size="mini" @click="reset">重置</el-button>
+        </el-col>
+
+        <el-col v-bind="styleResponsive ? { lg: 1, md: 2 } : { span: 1 }">
           <el-button
-            style="height: 32px"
-            size="small"
+            size="mini"
             type="primary"
             class="ele-btn-icon"
             @click="KSInventoryQueryShow = true"
             >库存汇总</el-button
           >
+        </el-col>
 
-          <div style="display: flex">
-            <el-upload
-              style="width: 100px; margin-left: 10px"
-              class="upload-demo"
-              :show-file-list="false"
-              :action="actionUrl"
-              :data="Updata"
-              :on-success="onSuccess"
-              :on-progress="onProgress"
+        <el-col v-bind="styleResponsive ? { lg: 2, md: 2 } : { span: 1 }">
+          <el-upload
+            :show-file-list="false"
+            :action="actionUrl"
+            :data="Updata"
+            :on-success="onSuccess"
+            :on-progress="onProgress"
+          >
+            <el-button size="mini" type="primary">上传初始化库存</el-button>
+          </el-upload>
+        </el-col>
+
+        <el-col v-bind="styleResponsive ? { lg: 2, md: 2 } : { span: 2 }">
+          <el-button size="mini" type="primary" @click="DownloadTemplate()"
+            >下载初始化模板</el-button
+          >
+        </el-col>
+
+        <el-col v-bind="styleResponsive ? { lg: 2, md: 2 } : { span: 2 }">
+          <el-button size="mini" type="primary" @click="GenerateStockData_btn()"
+            >生成盘点数据</el-button
+          >
+        </el-col>
+
+        <el-col v-bind="styleResponsive ? { lg: 2, md: 2 } : { span: 2 }">
+          <el-button
+            :disabled="outboundEnable"
+            size="mini"
+            type="primary"
+            icon=""
+            class="ele-btn-icon"
+            @click="openEdit()"
+          >
+            散货出库
+          </el-button>
+        </el-col>
+
+        <el-col v-bind="styleResponsive ? { lg: 1, md: 2 } : { span: 2 }">
+          <el-button
+            size="mini"
+            type="primary"
+            icon="el-icon-download"
+            @click="exportDataExcel()"
+            >导出</el-button
+          >
+        </el-col>
+
+        <el-col v-bind="styleResponsive ? { lg: 2, md: 2 } : { span: 2 }">
+          <el-button
+            size="mini"
+            type="primary"
+            v-if="HOME_HP == 'stzx'"
+            icon="el-icon-position"
+            @click="outStockWithUDI()"
+            >UDI出库</el-button
+          >
+        </el-col>
+
+        <el-col v-bind="styleResponsive ? { lg: 2, md: 2 } : { span: 2 }">
+          <el-button
+            type="success"
+            size="mini"
+            class="ele-btn-icon"
+            v-if="HOME_HP == 'stzx'"
+            @click="bindMachine"
+            icon="el-icon-link"
+            >绑定设备</el-button
+          >
+        </el-col>
+
+        <el-col v-bind="styleResponsive ? { lg: 1, md: 2 } : { span: 2 }">
+          <div>
+            <label
+              style="
+                margin-left: 30px;
+                height: 32px;
+                display: block;
+                width: 100px;
+              "
+              >合计数量:<b>{{ sumCount }}</b></label
             >
-              <el-button size="small" type="primary">上传初始化库存</el-button>
-            </el-upload>
-
-            <el-button
-              style="margin-left: 30px; height: 32px"
-              size="small"
-              type="primary"
-              @click="DownloadTemplate()"
-              >下载初始化模板</el-button
-            >
-
-            <el-button
-              style="margin-left: 30px; height: 32px"
-              size="small"
-              type="primary"
-              @click="GenerateStockData_btn()"
-              >生成盘点数据</el-button
-            >
-
-            <el-button
-              style="height: 32px"
-              :disabled="outboundEnable"
-              size="small"
-              type="primary"
-              icon=""
-              class="ele-btn-icon"
-              @click="openEdit()"
-            >
-              散货出库
-            </el-button>
-
-            <el-button
-              style="margin-left: 30px; height: 32px"
-              size="small"
-              type="primary"
-              icon="el-icon-download"
-              @click="exportDataExcel()"
-              >导出</el-button
-            >
-
-            <el-button
-              style="margin-left: 30px; height: 32px"
-              size="small"
-              type="primary"
-              icon="el-icon-position"
-              @click="outStockWithUDI()"
-              >UDI出库</el-button
-            >
-
-            <el-button
-              type="success"
-              size="small"
-              class="ele-btn-icon"
-              @click="bindMachine"
-              icon="el-icon-link"
-              >绑定设备</el-button
-            >
-
-            <div>
-              <label
-                style="
-                  margin-left: 30px;
-                  height: 32px;
-                  display: block;
-                  width: 100px;
-                "
-                >合计数量:<b>{{ sumCount }}</b></label
-              >
-            </div>
           </div>
-        </div>
-
-        <!-- </div> -->
-      </el-col>
-    </el-row>
-
+        </el-col>
+      </el-row>
+    </el-form>
     <KSInventoryQuery2 :visible.sync="KSInventoryQueryShow" />
     <udiOutStock :visible.sync="udiOutStockVisible" />
-  </el-form>
+  </div>
 </template>
 
 <script>
@@ -257,7 +234,7 @@
         COUNT: '1',
         DELIVERY_NUMBER: '',
         xqDay: null,
-        bindMachine:""
+        bindMachine: ''
       };
       return {
         // 表单数据
@@ -328,8 +305,7 @@
               message: '取消输入'
             });
           })
-          .finally(() => {
-          });
+          .finally(() => {});
       },
       outStockWithUDI() {
         this.udiOutStockVisible = true;
@@ -456,3 +432,11 @@
     }
   };
 </script>
+<style scoped>
+  .el-row {
+    margin-bottom: 10px;
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+</style>

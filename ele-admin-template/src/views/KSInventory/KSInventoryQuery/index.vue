@@ -1,5 +1,7 @@
 <template>
-  <div>
+  <div class="ele-body">
+    <el-card shadow="never">
+
     <!-- <el-card shadow="always"> -->
     <!-- <el-container>
       <el-header height="45vh" style="margin: 20px 0px 0px 0px;">
@@ -38,6 +40,7 @@
     </el-tabs> -->
 
     <KSDepartmentalPlantable @getCurrent="getCurrent"></KSDepartmentalPlantable>
+  </el-card>
   </div>
 </template>
 

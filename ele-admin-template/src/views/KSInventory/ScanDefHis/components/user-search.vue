@@ -14,6 +14,7 @@
             clearable
             v-model="where.defNoPkgCode"
             placeholder="请输入定数码"
+            size="mini"
             @change="addScanDef"
           />
         </el-col>
@@ -21,6 +22,7 @@
           <el-input
             clearable
             v-model="where.varietie"
+            size="mini"
             placeholder="请输入品种编码/品种名称"
           />
         </el-col>
@@ -28,6 +30,7 @@
           <el-input
             clearable
             v-model="where.specType"
+            size="mini"
             placeholder="请输入规格型号"
           />
         </el-col>
@@ -41,6 +44,7 @@
           <el-input
             clearable
             v-model="where.deptTwoName"
+            size="mini"
             placeholder="请输入二级科室名称"
           />
         </el-col>
@@ -48,17 +52,17 @@
           <div class="ele-form-actions" style="display: flex">
             <el-button
               type="primary"
-              size="small"
+              size="mini"
               icon="el-icon-search"
               class="ele-btn-icon"
               @click="search"
             >
               查询
             </el-button>
-            <el-button @click="reset" size="small">重置</el-button>
+            <el-button @click="reset" icon="el-icon-refresh" size="mini">重置</el-button>
             <el-button
               type="primary"
-              size="small"
+              size="mini"
               icon="el-icon-download"
               class="ele-btn-icon"
               @click="exportData"
@@ -71,7 +75,7 @@
               @confirm="removeBatch()"
             >
               <template v-slot:reference>
-                <el-button type="danger" size="small" :underline="false"
+                <el-button type="danger" icon="el-icon-delete" size="mini" :underline="false"
                   >删除</el-button
                 >
               </template>
@@ -82,12 +86,12 @@
               @confirm="consumption()"
             >
               <template v-slot:reference>
-                <el-button type="success" size="small" :underline="false"
+                <el-button type="success" size="mini" icon="el-icon-delete-solid" :underline="false"
                   >消耗</el-button
                 >
               </template>
             </el-popconfirm>
-            <div style="margin-left: 10px; width: 100px">
+            <div style="margin-left: 10px;width: 80px;">
               <el-upload
                 :on-success="uploadSuccess"
                 :on-error="upError"
@@ -97,22 +101,24 @@
                 ref="Defupload"
                 :limit="1"
               >
-                <el-button size="small" icon="el-icon-_upload" type="primary"
+                <el-button size="mini" icon="el-icon-_upload" type="primary"
                   >导入</el-button
                 >
               </el-upload>
             </div>
             <el-button
               type="primary"
-              size="small"
+              size="mini"
               class="ele-btn-icon"
+              icon="el-icon-goods"
               @click="KSInventoryQueryShow = true"
               >从库存中挑选</el-button
             >
             <el-button
               type="success"
-              size="small"
+              size="mini"
               class="ele-btn-icon"
+              v-if="HOME_HP == 'stzx'"
               @click="bindMachine"
               icon="el-icon-link"
               >绑定设备</el-button
@@ -127,7 +133,7 @@
 </template>
 
 <script>
-  import { API_BASE_URL, BACK_BASE_URL } from '@/config/setting';
+  import { API_BASE_URL, BACK_BASE_URL, HOME_HP } from '@/config/setting';
   import { GetLrJykInstrument } from '@/api/KSInventory/LrJykInstrument';
   import {
     insertScanDef,

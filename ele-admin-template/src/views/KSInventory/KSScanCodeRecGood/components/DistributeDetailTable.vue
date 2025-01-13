@@ -44,6 +44,7 @@ export default {
         //   fixed: 'left'
         // },
         {
+          label: '序',
           columnKey: 'index',
           type: 'index',
           width: 45,
@@ -108,7 +109,10 @@ export default {
           label: '价格',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 70,
+          minWidth: 90,
+          formatter: (row, column, cellValue) => {
+            return Number(row.PRICE).toFixed(2);
+          },
         },
          {
           prop: 'KC_COUNT',

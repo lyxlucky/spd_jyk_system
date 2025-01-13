@@ -1,7 +1,5 @@
 <template>
-  <div>
-    <!-- <el-card shadow="always"> -->
-    <el-container>
+  <div style="gap: 10px;">
       <!-- <el-aside width="400px" style="margin: 20px 0px 0px 20px;">
         <el-card shadow="always">
           <div slot="header" class="clearfix">
@@ -43,8 +41,6 @@
           <el-button type="primary" @click="addTempVar" :style="{ display: IsDisabled==true?'none':'' }">确定</el-button>
         </el-footer>
       </el-container>
-    </el-container>
-    <!-- </el-card> -->
 
   </div>
 </template>

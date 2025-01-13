@@ -69,7 +69,7 @@
       </el-form-item>
 
       <el-form-item>
-        <span>LIS数据从2024-11-12开始接入</span>
+        <span>LIS数据从2023-05-22开始接入</span>
       </el-form-item>
     </el-form>
   </div>

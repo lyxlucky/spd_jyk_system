@@ -3,20 +3,20 @@
   <el-form label-width="0px" class="ele-form-search" @keyup.enter.native="search" @submit.native.prevent>
     <el-row :gutter="15">
       <el-col v-bind="styleResponsive ? { lg: 12, md: 12 } : { span: 12 }">
-        <el-input id="idDistributeNumber" clearable v-model="DistributeNumber" style=" border: solid #52c41a;" placeholder="请扫码入库" @change="onSubmit" />
+        <el-input size="mini" id="idDistributeNumber" clearable v-model="DistributeNumber" style="border:1px solid black; border-radius: 5px;" placeholder="请扫码入库" @change="onSubmit" />
       </el-col>
 
     </el-row>
     <el-row :gutter="15">
       <el-col v-bind="styleResponsive ? { lg: 12, md: 12 } : { span: 12 }">
-        <el-input clearable v-model="where.stock_out_distribute_number" placeholder="请输入补货单号" />
+        <el-input size="mini" clearable v-model="where.stock_out_distribute_number" placeholder="请输入补货单号" />
       </el-col>
       <el-col v-bind="styleResponsive ? { lg: 12, md: 12 } : { span: 12 }">
         <div class="ele-form-actions">
-          <el-button size="small" type="primary" icon="el-icon-search" class="ele-btn-icon" @click="search">
+          <el-button size="mini" type="primary" icon="el-icon-search" class="ele-btn-icon" @click="search">
             查询
           </el-button>
-          <el-button size="small" @click="reset">重置</el-button>
+          <el-button icon="el-icon-refresh" size="mini" @click="reset">重置</el-button>
         </div>
       </el-col>
     </el-row>
@@ -107,3 +107,6 @@ export default {
   created() {}
 };
 </script>
+<style>
+
+</style>

@@ -4,11 +4,11 @@
       <!-- 搜索表单 -->
       <!-- <user-search @search="reload" @getMsgTip="getMsgTip" @exportData="exportData" :selection="selection" /> -->
       <!-- 数据表格 -->
-      <span style="font-size: 20px;">当前设备： {{ bindMachine || '暂无' }}</span>
+      <span v-if="HOME_HP == 'stzx'" style="font-size: 20px;margin-bottom: 5px;">当前设备： {{ bindMachine || '暂无' }}</span>
+      <user-search @search="reload" @getMsgTip="getMsgTip" @exportData="exportData" :selection="selection" />
       <ele-pro-table ref="table" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" @selection-change="onSelectionChange" @done="done" cache-key="KSInventoryBasicDataTable">
         <!-- 表头工具栏 -->
         <template v-slot:toolbar>
-          <user-search @search="reload" @getMsgTip="getMsgTip" @exportData="exportData" :selection="selection" />
           <!-- <el-button size="small" type="primary" icon="el-icon-plus" class="ele-btn-icon" @click="openEdit()">
             新建
           </el-button>
@@ -52,6 +52,7 @@ import { utils, writeFile } from 'xlsx';
 import UserSearch from './components/user-search.vue';
 import UserEdit from './components/user-edit.vue';
 import { SerachDef2Consume4PDA } from '@/api/KSInventory/ScanDefHis';
+import { HOME_HP } from '@/config/setting';
 export default {
   name: 'SystemUser',
   components: {
@@ -113,8 +114,8 @@ export default {
           prop: 'Varietie_Name',
           label: '品种名称',
           align: 'center',
-          howOverflowTooltip: true,
-          width: 180
+          showOverflowTooltip: true,
+          width: 240
         },
         {
           prop: 'Specification_Or_Type',
@@ -156,7 +157,7 @@ export default {
           label: '上架时间',
           align: 'center',
           showOverflowTooltip: true,
-          width: 150
+          width: 150,
         },
         {
           // slot: 'zkDay',
@@ -202,21 +203,21 @@ export default {
           label: '有效期',
           width: 150,
           align: 'center',
-          showOverflowTooltip: true
+          showOverflowTooltip: true,
         },
         {
           prop: 'Batch_Production_Date',
           label: '生产日期',
           width: 150,
           align: 'center',
-          showOverflowTooltip: true
+          showOverflowTooltip: true,
         },
         {
           prop: 'Supply_Price',
           label: '结算价',
           width: 80,
           align: 'center',
-          showOverflowTooltip: true
+          showOverflowTooltip: true,
         },
         {
           prop: 'Contract_Code',

@@ -1,11 +1,11 @@
 <template>
   <div class="ele-body">
+    <ReplenishGoodsSearch @search="reload" />
     <!-- 数据表格 -->
-    <ele-pro-table highlight-current-row @current-change="onCurrentChange" ref="table" height="55vh" :rowClickChecked="true" :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" cache-key="ReplenishGoodsTable">
+    <ele-pro-table highlight-current-row @current-change="onCurrentChange" ref="table" height="60vh" :rowClickChecked="true" :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" cache-key="ReplenishGoodsTable">
       <!-- 表头工具栏 -->
       <template v-slot:toolbar>
         <!-- 搜索表单 -->
-        <ReplenishGoodsSearch @search="reload" />
       </template>
 
       <template v-slot:State="{ row }">
@@ -56,6 +56,7 @@ export default {
         //   fixed: 'left'
         // },
         {
+          label: '序',
           columnKey: 'index',
           type: 'index',
           width: 45,

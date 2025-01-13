@@ -13,6 +13,14 @@
     name: 'JykDeviceAnalyze',
     components: {
       JyDeviceTable
+    },
+    created() {
+      this.$notify({
+          title: '字段含义',
+          dangerouslyUseHTMLString: true,
+          duration: 0,
+          message: '<div style = "color:red;font-size:15px"><span>耗材使用人次数 = 耗材数量 * 理论人次</span>，</br><span>利用率 = （项目数 / 耗材数量） * 理论人次</span></div>'
+        });
     }
   };
 </script>
