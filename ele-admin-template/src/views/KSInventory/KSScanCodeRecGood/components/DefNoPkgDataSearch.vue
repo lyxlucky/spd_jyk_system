@@ -5,7 +5,7 @@
       <el-row :gutter="5">
         <el-col :lg="12" :md="12">
           <el-form-item >
-            <el-select v-model="where.State" @change="search()">
+            <el-select size="mini" v-model="where.State" @change="search()">
               <el-option label="全部" value=""></el-option>
               <el-option label="在库" value="1"></el-option>
               <el-option label="已消耗" value="0"></el-option>

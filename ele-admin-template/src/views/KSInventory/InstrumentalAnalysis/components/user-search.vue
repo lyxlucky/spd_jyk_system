@@ -3,23 +3,20 @@
   <el-form label-width="77px" class="ele-form-search" @keyup.enter.native="search" @submit.native.prevent>
     <el-row :gutter="15">
       <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 6 }">
-        <el-input clearable v-model="where.BIND_MACHINE" placeholder="机械号" />
+        <el-input size="mini" clearable v-model="where.BIND_MACHINE" placeholder="机械号" />
       </el-col>
        <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 6 }">
-        <el-input clearable v-model="where.VARIETIE_CODE_NEW" placeholder="品种编码/品种名称" />
+        <el-input size="mini" clearable v-model="where.VARIETIE_CODE_NEW" placeholder="品种编码/品种名称" />
       </el-col>
       <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 6 }">
-        <el-input clearable v-model="where.SPECIFICATION_OR_TYPE" placeholder="规格型号" />
+        <el-input size="mini" clearable v-model="where.SPECIFICATION_OR_TYPE" placeholder="规格型号" />
       </el-col>
       <el-col v-bind="styleResponsive ? { lg: 6, md: 12 } : { span: 6 }">
         <div class="ele-form-actions">
-          <el-button type="primary" icon="el-icon-search" class="ele-btn-icon" @click="search">
+          <el-button size="mini" type="primary" icon="el-icon-search" class="ele-btn-icon" @click="search">
             查询
           </el-button>
-          <el-button @click="reset">重置</el-button>
-          <!-- <el-button type="primary" icon="el-icon-download" class="ele-btn-icon" @click="exportData">
-            导出
-          </el-button> -->
+          <el-button size="mini" icon="el-icon-refresh" @click="reset">重置</el-button>
         </div>
       </el-col>
     </el-row>

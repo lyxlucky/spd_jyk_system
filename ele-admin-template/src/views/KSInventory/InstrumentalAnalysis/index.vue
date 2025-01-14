@@ -4,10 +4,10 @@
       <!-- 搜索表单 -->
       <!-- <user-search @search="reload" @exportData="exportData" /> -->
       <!-- 数据表格 -->
+      <user-search @search="reload" @exportData="exportData" />
       <ele-pro-table ref="table" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" cache-key="KSInventoryBasicDataTable">
         <!-- 表头工具栏 -->
         <template v-slot:toolbar>
-          <user-search @search="reload" @exportData="exportData" />
         </template>
 
         <!-- 操作列 -->
@@ -59,6 +59,7 @@ export default {
           fixed: 'left'
         },
         {
+          label: '序',
           columnKey: 'index',
           type: 'index',
           width: 45,

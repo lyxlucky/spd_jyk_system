@@ -14,6 +14,7 @@
         <el-col v-bind="styleResponsive ? { sm: 20 } : { span: 20 }">
           <el-form-item label="品种类别:" prop="CLASS_NUM">
             <el-select
+            size="mini"
               clearable
               class="ele-block"
               v-model="form.CLASS_NUM"
@@ -36,6 +37,7 @@
           </el-form-item>
           <el-form-item label="理论人次:" prop="CONVERSION_RATIO">
             <el-input
+            size="mini"
               clearable
               :maxlength="20"
               v-model="form.CONVERSION_RATIO"
@@ -44,6 +46,7 @@
           </el-form-item>
           <el-form-item label="仪器设备:" prop="DEVICE_REMARK">
             <el-select
+            size="mini"
               style="width: 100%"
               filterable
               v-model="form.DEVICE_REMARK"
@@ -67,6 +70,7 @@
 
           <el-form-item label="是否定标:" prop="isDb">
             <el-select
+            size="mini"
               style="width: 100%"
               filterable
               v-model="form.IS_DB"
@@ -90,8 +94,8 @@
       </el-row>
     </el-form>
     <template v-slot:footer>
-      <el-button @click="updateVisible(false)">取消</el-button>
-      <el-button type="primary" :loading="loading" @click="save">
+      <el-button size="mini" icon="el-icon-close" @click="updateVisible(false)">取消</el-button>
+      <el-button size="mini" icon="el-icon-check" type="primary" :loading="loading" @click="save">
         保存
       </el-button>
     </template>
