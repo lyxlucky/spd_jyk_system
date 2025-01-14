@@ -5,11 +5,11 @@
       <el-card shadow="never">
         <!-- 搜索表单 -->
         <!-- 数据表格 -->
+        <user-search @search="reload" :selection='selection' />
         <ele-pro-table ref="table" height="600px" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns"
           :datasource="datasource" :rowClickChecked="true" :rowClickCheckedIntelligent="false" :selection.sync="selection"
           @selection-change="onSelectionChange" cache-key="VarietyDataLzhLook">
           <template v-slot:toolbar>
-            <user-search @search="reload" :selection='selection' />
           </template>
           <!-- 操作列 -->
           <template v-slot:APPLY_QTY="{ row }">
@@ -207,7 +207,10 @@ export default {
           label: '中标价',
           width: 80,
           align: 'center',
-          showOverflowTooltip: true
+          showOverflowTooltip: true,
+          formatter: (_row, _column, cellValue) => {
+            return Number(cellValue).toFixed(2);
+          }
         },
         {
           prop: 'Approval_Number',

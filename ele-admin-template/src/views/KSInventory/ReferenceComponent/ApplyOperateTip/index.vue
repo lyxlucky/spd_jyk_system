@@ -11,7 +11,7 @@
           <!-- 操作列 -->
           <template v-slot:APPLY_QTY="{ row }">
             <el-form-item label="">
-              <el-input v-model="row.APPLY_QTY"></el-input>
+              <el-input size="mini" v-model="row.APPLY_QTY"></el-input>
             </el-form-item>
           </template>
         </ele-pro-table>
@@ -67,6 +67,7 @@ export default {
         //   fixed: 'left'
         // },
         {
+          label: '序',
           columnKey: 'index',
           type: 'index',
           width: 45,
