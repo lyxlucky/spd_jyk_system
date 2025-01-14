@@ -33,7 +33,6 @@
 </template>
 
 <script>
-import { reloadPageTab, finishPageTab } from '@/utils/page-tab-util';
 import {
   DeletePlanDeta,
   PutInListDeta,

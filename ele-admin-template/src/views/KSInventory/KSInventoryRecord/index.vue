@@ -1,5 +1,7 @@
 <template>
   <div class="ele-body">
+    <label>出库数:<b>{{SumCount2}}</b> 入库数: <b>{{SumCount1}}</b>净入库:<b>{{netExport}}</b></label>
+    <KSDepartmentalPlanDetails-search @exportData="exportData" @search="reload" :KSDepartmentalPlanDataSearch='KSDepartmentalPlanDataSearch' :selection="selection" @showEditReoad="showEditReoad" :datasourceList="datasourceList" />
     <!-- <el-button type="danger" size="small" @click="aaa">aaa</el-button> -->
     <!-- 数据表格 -->
     <ele-pro-table ref="table" highlight-current-row :stripe="true" :rowClickChecked="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" @selection-change="onSelectionChange" cache-key="KSInventoryBasicDataTable">
@@ -13,8 +15,6 @@
       <!-- 左表头 -->
       <template v-slot:toolbar>
         <!-- 搜索表单 -->
-        <KSDepartmentalPlanDetails-search @exportData="exportData" @search="reload" :KSDepartmentalPlanDataSearch='KSDepartmentalPlanDataSearch' :selection="selection" @showEditReoad="showEditReoad" :datasourceList="datasourceList" />
-        <label>出库数:<b>{{SumCount2}}</b> 入库数: <b>{{SumCount1}}</b>净入库:<b>{{netExport}}</b></label>
         <!-- <el-button size="small" type="danger" icon="el-icon-delete" class="ele-btn-icon" @click="removebatch">
           删除
         </el-button> -->
@@ -162,7 +162,7 @@ export default {
           label: '品种名称',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 500
+          minWidth: 250
         },
         {
           prop: 'SPECIFICATION_OR_TYPE',
@@ -191,7 +191,10 @@ export default {
           label: '价格',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 80
+          minWidth: 80,
+          formatter: (_row, _column, cellValue) => {
+            return Number(cellValue).toFixed(2);
+          }
         },
         {
           prop: 'BATCH',

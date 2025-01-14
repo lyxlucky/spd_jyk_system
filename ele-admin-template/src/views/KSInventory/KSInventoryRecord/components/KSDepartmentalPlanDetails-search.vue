@@ -10,6 +10,7 @@
       <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 12 }">
         <el-input
           clearable
+          size="mini"
           v-model="where.Name"
           placeholder="品种名称/品种编码"
         />
@@ -17,6 +18,7 @@
       <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 12 }">
         <el-input
           clearable
+          size="mini"
           v-model="where.DELIVERY_NUMBER"
           placeholder="入库单号"
         />
@@ -24,6 +26,7 @@
       <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 12 }">
         <el-input
           clearable
+          size="mini"
           v-model="where.DEF_NO_PKG_CODE"
           placeholder="定数码"
         />
@@ -31,6 +34,7 @@
       <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 12 }">
         <el-input
           clearable
+          size="mini"
           v-model="where.MANUFACTURER"
           placeholder="生产企业"
         />
@@ -38,18 +42,20 @@
       <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 12 }">
         <el-input
           clearable
+          size="mini"
           v-model="where.PROD_REGISTRATION"
           placeholder="注册证"
         />
       </el-col>
       <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 12 }">
-        <el-input clearable v-model="where.BATCH" placeholder="批号" />
+        <el-input size="mini" clearable v-model="where.BATCH" placeholder="批号" />
       </el-col>
 
       <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 12 }">
         <el-date-picker
           v-model="where.date"
           type="daterange"
+          size="mini"
           align="right"
           unlink-panels
           value-format="yyyy-MM-dd"
@@ -89,7 +95,7 @@
               @click="exportData()"
               >导出</el-button
             >
-            <el-button size="mini" @click="reset">重置</el-button>
+            <el-button size="mini" icon="el-icon-refresh" @click="reset">重置</el-button>
           </div>
         </el-form-item>
       </el-col>
