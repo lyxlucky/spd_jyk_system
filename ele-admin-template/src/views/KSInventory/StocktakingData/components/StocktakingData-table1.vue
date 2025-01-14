@@ -1,10 +1,7 @@
 <template>
   <div class="ele-body">
     <!-- 数据表格 -->
-    <ele-pro-table :key="key" highlight-current-row @current-change="onCurrentChange" ref="table"
-      :height="defaultHeight" :rowClickChecked="true" :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes"
-      :columns="columns" :datasource="datasource" :selection.sync="selection" @fullscreen-change="screenChange()"
-      cache-key="StocktakingDataTabel">
+    <ele-pro-table :customStyle=customStyle :paginationStyle=paginationStyle :key="key" highlight-current-row @current-change="onCurrentChange" ref="table" :height="defaultHeight" :rowClickChecked="true" :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" @fullscreen-change="screenChange()" cache-key="StocktakingDataTabel">
       <!-- 表头工具栏 -->
       <template v-slot:toolbar>
         <!-- 搜索表单 -->
@@ -13,19 +10,15 @@
 
       <!-- 操作列 -->
       <template v-slot:ACTION="{ row }">
-        <el-button size="mini" :disabled="row.SUBMIT == 1" type="primary" icon="el-icon-check" class="ele-btn-icon"
-          @click="submitItem(row)">提交</el-button>
-        <el-button size="mini" :disabled="row.SUBMIT == 1" type="danger" icon="el-icon-delete-solid"
-          class="ele-btn-icon" @click="deleteItem(row)">删除</el-button>
+        <el-button size="mini" :disabled="row.SUBMIT == 1" type="primary" icon="el-icon-check" class="ele-btn-icon" @click="submitItem(row)">提交</el-button>
+        <el-button size="mini" :disabled="row.SUBMIT == 1" type="danger" icon="el-icon-delete-solid" class="ele-btn-icon" @click="deleteItem(row)">删除</el-button>
       </template>
 
       <!-- 操作列 -->
       <template v-slot:PC_PERCENT="{ row }">
         <el-tag size="small" v-if="parseFloat(row.PC_COUNT / row.COUNT).toFixed(2) >= 0.9" type="success">{{
           numberToPercent(row.PC_COUNT / row.COUNT) }}</el-tag>
-        <el-tag size="small"
-          v-else-if="parseFloat(row.PC_COUNT / row.COUNT).toFixed(2) >= 0.8 && parseFloat(row.PC_COUNT / row.COUNT).toFixed(2) < 0.9"
-          type="warning">{{ numberToPercent(row.PC_COUNT / row.COUNT) }}</el-tag>
+        <el-tag size="small" v-else-if="parseFloat(row.PC_COUNT / row.COUNT).toFixed(2) >= 0.8 && parseFloat(row.PC_COUNT / row.COUNT).toFixed(2) < 0.9" type="warning">{{ numberToPercent(row.PC_COUNT / row.COUNT) }}</el-tag>
         <el-tag size="small" v-else-if="parseFloat(row.PC_COUNT / row.COUNT).toFixed(2) < 0.8" type="danger">{{
           numberToPercent(row.PC_COUNT / row.COUNT) }}</el-tag>
         <el-tag size="small" v-else type="danger">{{ numberToPercent(0) }}</el-tag>
@@ -36,7 +29,6 @@
         <el-tag size="small" v-if="row.SUBMIT == 1" type="success">{{ "已提交" }}</el-tag>
         <el-tag size="small" v-else type="warning">{{ "暂未提交" }}</el-tag>
       </template>
-
     </ele-pro-table>
   </div>
 </template>
@@ -53,12 +45,15 @@ import {
   deleteStockingDataItem
 } from '@/api/KSInventory/KSDepartmentalPlan';
 
-import { GetStockDataMain, GetStockDataMainAll } from '@/api/KSInventory/StocktakingData';
+import {
+  GetStockDataMain,
+  GetStockDataMainAll
+} from '@/api/KSInventory/StocktakingData';
 export default {
   name: 'StocktakingData',
   //props: ['IsReload'],
   components: {
-    StocktakingDataSearch,
+    StocktakingDataSearch
   },
   data() {
     return {
@@ -130,8 +125,14 @@ export default {
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 80
-        },
+        }
       ],
+      paginationStyle: {
+        height: '18px',
+        padding: '0px 0px 5px 0px',
+        'margin-top': '-5px'
+      },
+      customStyle: {},
       toolbar: false,
       pageSize: 2,
       pagerCount: 2,
@@ -150,7 +151,7 @@ export default {
       applyPlanXhz: 0,
       applyPlanBl: '0%',
       key: 0,
-      defaultHeight: '17vh'
+      defaultHeight: '22vh'
     };
   },
   mounted() {
@@ -162,13 +163,15 @@ export default {
     numberToPercent,
     /* 表格数据源 */
     datasource({ page, limit, where, order }) {
-      let data = GetStockDataMainAll({ page, limit, where, order }).then((res) => {
-        var tData = {
-          count: res.total,
-          list: res.result
-        };
-        return tData;
-      });
+      let data = GetStockDataMainAll({ page, limit, where, order }).then(
+        (res) => {
+          var tData = {
+            count: res.total,
+            list: res.result
+          };
+          return tData;
+        }
+      );
       return data;
     },
     /* 刷新表格 */
@@ -187,7 +190,7 @@ export default {
     },
     onCurrentChange(current) {
       this.current = current;
-      if(current){
+      if (current) {
         this.$bus.$emit(`${this.$route.path}/TopTable/current`, current);
       }
     },
@@ -259,35 +262,39 @@ export default {
       this.$confirm('确定要提交吗？', '提示', {
         type: 'warning'
       }).then(() => {
-        submitStockingDataItem(data).then((res) => {
-          this.$message.success(res.msg);
-          this.reload();
-          this.$forceUpdate();
-        }).catch((err) => {
-          this.$message.error(err);
-        });
-      })
+        submitStockingDataItem(data)
+          .then((res) => {
+            this.$message.success(res.msg);
+            this.reload();
+            this.$forceUpdate();
+          })
+          .catch((err) => {
+            this.$message.error(err);
+          });
+      });
     },
     deleteItem(data) {
-      this.$confirm("确定要删除嘛？", "提示", {
-        type: "warning"
+      this.$confirm('确定要删除嘛？', '提示', {
+        type: 'warning'
       }).then(() => {
-        deleteStockingDataItem(data).then((res) => {
-          this.$message.success(res.msg);
-          this.reload();
-          this.$forceUpdate();
-        }).catch((err) => {
-          this.$message.error(err);
-        });
-      })
+        deleteStockingDataItem(data)
+          .then((res) => {
+            this.$message.success(res.msg);
+            this.reload();
+            this.$forceUpdate();
+          })
+          .catch((err) => {
+            this.$message.error(err);
+          });
+      });
     },
     screenChange() {
       if (this.defaultHeight <= '17vh') {
         this.defaultHeight = window.innerHeight - 200 + 'px';
-        this.$refs.table.reload({ page: 1, limit: 20 })
+        this.$refs.table.reload({ page: 1, limit: 20 });
       } else {
-        this.defaultHeight = '17vh'
-        this.$refs.table.reload({ page: 1, limit: 2 })
+        this.defaultHeight = '17vh';
+        this.$refs.table.reload({ page: 1, limit: 2 });
       }
     }
   },
