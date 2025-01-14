@@ -81,8 +81,8 @@
       </el-row>
 
       <!-- 下一行 -->
-      <el-row type="flex" :gutter="10">
-        <el-col v-bind="styleResponsive ? { lg: 2, md: 2 } : { span: 2 }">
+      <el-row type="flex" :gutter="5">
+        <el-col v-bind="styleResponsive ? { lg: 5, md: 12 } : { span: 12 }">
           <el-input
             clearable
             size="mini"
@@ -90,7 +90,7 @@
             placeholder="入库单号"
           />
         </el-col>
-        <el-col v-bind="styleResponsive ? { lg: 1, md: 2 } : { span: 1 }">
+        <el-col v-bind="styleResponsive ? { lg: 13, md: 12 } : { span: 12 }">
           <el-button
             size="mini"
             type="primary"
@@ -100,60 +100,27 @@
           >
             查询
           </el-button>
-        </el-col>
-
-        <el-col v-bind="styleResponsive ? { lg: 1, md: 2 } : { span: 1 }">
-          <el-button size="mini" @click="reset">重置</el-button>
-        </el-col>
-
-        <el-col v-bind="styleResponsive ? { lg: 1, md: 2 } : { span: 1 }">
+          <el-button size="mini" @click="reset" icon="el-icon-refresh"
+            >重置</el-button
+          >
           <el-button
             size="mini"
             type="primary"
             class="ele-btn-icon"
+            icon="el-icon-view"
             @click="KSInventoryQueryShow = true"
             >库存汇总</el-button
           >
-        </el-col>
-
-        <el-col v-bind="styleResponsive ? { lg: 2, md: 2 } : { span: 1 }">
-          <el-upload
-            :show-file-list="false"
-            :action="actionUrl"
-            :data="Updata"
-            :on-success="onSuccess"
-            :on-progress="onProgress"
-          >
-            <el-button size="mini" type="primary">上传初始化库存</el-button>
-          </el-upload>
-        </el-col>
-
-        <el-col v-bind="styleResponsive ? { lg: 2, md: 2 } : { span: 2 }">
-          <el-button size="mini" type="primary" @click="DownloadTemplate()"
-            >下载初始化模板</el-button
-          >
-        </el-col>
-
-        <el-col v-bind="styleResponsive ? { lg: 2, md: 2 } : { span: 2 }">
-          <el-button size="mini" type="primary" @click="GenerateStockData_btn()"
-            >生成盘点数据</el-button
-          >
-        </el-col>
-
-        <el-col v-bind="styleResponsive ? { lg: 2, md: 2 } : { span: 2 }">
           <el-button
             :disabled="outboundEnable"
             size="mini"
             type="primary"
-            icon=""
+            icon="el-icon-position"
             class="ele-btn-icon"
             @click="openEdit()"
           >
             散货出库
           </el-button>
-        </el-col>
-
-        <el-col v-bind="styleResponsive ? { lg: 1, md: 2 } : { span: 2 }">
           <el-button
             size="mini"
             type="primary"
@@ -161,9 +128,7 @@
             @click="exportDataExcel()"
             >导出</el-button
           >
-        </el-col>
 
-        <el-col v-bind="styleResponsive ? { lg: 2, md: 2 } : { span: 2 }">
           <el-button
             size="mini"
             type="primary"
@@ -172,9 +137,7 @@
             @click="outStockWithUDI()"
             >UDI出库</el-button
           >
-        </el-col>
 
-        <el-col v-bind="styleResponsive ? { lg: 2, md: 2 } : { span: 2 }">
           <el-button
             type="success"
             size="mini"
@@ -184,16 +147,56 @@
             icon="el-icon-link"
             >绑定设备</el-button
           >
+
+          <el-dropdown>
+            <el-button size="mini" icon="el-icon-setting" type="primary">
+              更多菜单<i class="el-icon-arrow-down el-icon--right"></i>
+            </el-button>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item>
+                <el-upload
+                  :show-file-list="false"
+                  :action="actionUrl"
+                  :data="Updata"
+                  :on-success="onSuccess"
+                  :on-progress="onProgress"
+                >
+                  <el-button size="mini" icon="el-icon-upload2" type="primary"
+                    >上传初始化库存</el-button
+                  >
+                </el-upload>
+              </el-dropdown-item>
+              <el-dropdown-item>
+                <el-button
+                  size="mini"
+                  type="primary"
+                  icon="el-icon-download"
+                  @click="DownloadTemplate()"
+                  >下载初始化模板</el-button
+                >
+              </el-dropdown-item>
+              <el-dropdown-item>
+                <el-button
+                  size="mini"
+                  type="primary"
+                  @click="GenerateStockData_btn()"
+                  icon="el-icon-refresh-right"
+                  >生成盘点数据</el-button
+                >
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
         </el-col>
 
-        <el-col v-bind="styleResponsive ? { lg: 1, md: 2 } : { span: 2 }">
+        <el-col>
           <div>
             <label
               style="
-                margin-left: 30px;
                 height: 32px;
-                display: block;
                 width: 100px;
+                font-size: 20px;
+                line-height: 32px;
+                justify-content: center;
               "
               >合计数量:<b>{{ sumCount }}</b></label
             >

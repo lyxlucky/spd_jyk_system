@@ -72,6 +72,7 @@ export default {
           fixed: 'left'
         },
         {
+          label:'序',
           columnKey: 'index',
           type: 'index',
           width: 45,
@@ -158,6 +159,9 @@ export default {
           align: 'center',
           showOverflowTooltip: true,
           width: 150,
+          formatter: (_row, _column, cellValue) => {
+            return cellValue.replace('T', ' ');
+          }
         },
         {
           // slot: 'zkDay',
@@ -204,6 +208,9 @@ export default {
           width: 150,
           align: 'center',
           showOverflowTooltip: true,
+          formatter: (_row, _column, cellValue) => {
+            return cellValue.replace('T', ' ');
+          }
         },
         {
           prop: 'Batch_Production_Date',
@@ -211,6 +218,9 @@ export default {
           width: 150,
           align: 'center',
           showOverflowTooltip: true,
+          formatter: (_row, _column, cellValue) => {
+            return cellValue.replace('T', ' ');
+          }
         },
         {
           prop: 'Supply_Price',
@@ -218,6 +228,9 @@ export default {
           width: 80,
           align: 'center',
           showOverflowTooltip: true,
+          formatter: (_row, _column, cellValue) => {
+            return Number(cellValue).toFixed(2);
+          }
         },
         {
           prop: 'Contract_Code',

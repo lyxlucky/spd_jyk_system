@@ -33,7 +33,6 @@
     "jsbarcode": "^3.11.5",
     "moment": "^2.30.1",
     "nprogress": "^0.2.0",
-    "numeral": "^2.0.6",
     "svgo": "^3.2.0",
     "svgo-loader": "^4.0.0",
     "tinymce": "^5.10.5",

@@ -31,12 +31,10 @@
       </template>
 
       <template v-slot:DAYS_DIFFERENCE="{ row }">
-
         <el-tag v-if="row.DAYS_DIFFERENCE > 60">{{row.DAYS_DIFFERENCE}}</el-tag>
         <el-tag v-else-if="row.DAYS_DIFFERENCE > 30" type="success">{{row.DAYS_DIFFERENCE}}</el-tag>
         <el-tag v-else-if="row.DAYS_DIFFERENCE>0 " type="danger">{{row.DAYS_DIFFERENCE}}</el-tag>
-        <el-tag v-else-if="row.DAYS_DIFFERENCE < 0" type="info">{{row.DAYS_DIFFERENCE}}</el-tag>
-
+        <el-tag v-else-if="row.DAYS_DIFFERENCE < 0" type="danger">{{row.DAYS_DIFFERENCE}}</el-tag>
       </template>
 
       <template v-slot:BATCH_VALIDITY_PERIOD="{ row }">
@@ -126,6 +124,7 @@ export default {
         //   fixed: 'left'
         // },
         {
+          label: '序',
           columnKey: 'index',
           type: 'index',
           width: 45,
@@ -133,15 +132,15 @@ export default {
           showOverflowTooltip: true,
           fixed: 'left'
         },
-        {
-          prop: 'ID',
-          label: 'ID',
-          // sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 110,
-          show: false
-        },
+        // {
+        //   prop: 'ID',
+        //   label: 'ID',
+        //   // sortable: 'custom',
+        //   align: 'center',
+        //   showOverflowTooltip: true,
+        //   minWidth: 110,
+        //   show: false
+        // },
         // {
         //   columnKey: 'action',
         //   label: '操作',
@@ -267,7 +266,10 @@ export default {
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 80,
-          sortable: true
+          sortable: true,
+          formatter: (row, column, cellValue) => {
+            return Number(cellValue).toFixed(2);
+          }
         },
         {
           prop: 'BATCH',
