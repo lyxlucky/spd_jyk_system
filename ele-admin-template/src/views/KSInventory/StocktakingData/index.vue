@@ -1,8 +1,8 @@
 <template>
   <div>
     <el-container>
-      <el-header height="350">
-        <el-card shadow="always">
+      <el-header height="370">
+        <el-card shadow="always" style="padding: 5px;">
           <!-- <div slot="header" class="clearfix">
             <span>申领计划单列表</span>
           </div> -->
@@ -11,7 +11,7 @@
         </el-card>
       </el-header>
       <el-main style="padding-top: 1px">
-        <el-card shadow="always">
+        <el-card shadow="always" style="padding: 5px;">
           <!-- <div slot="header" class="clearfix">
             <span>申领单详情</span>
           </div> -->

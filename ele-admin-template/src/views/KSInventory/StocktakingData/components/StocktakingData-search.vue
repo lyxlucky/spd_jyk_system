@@ -3,22 +3,22 @@
   <div>
     <el-form label-width="77px" class="ele-form-search" @keyup.enter.native="search" @submit.native.prevent>
       <el-row :gutter="10">
-        <el-col style="padding-left: 0px" v-bind="styleResponsive ? { lg: 4, md: 4 } : { span: 4 }">
+        <el-col style="padding-left: 0px" v-bind="styleResponsive ? { lg: 2, md: 4 } : { span: 4 }">
           <div class="block">
-            <el-date-picker size="small" v-model="where.GENERATE_DATE" type="date" style="width:200px"
+            <el-date-picker size="mini" v-model="where.GENERATE_DATE" type="date" style="width:140px"
               value-format="yyyy-MM-dd" placeholder="申领开始日期">
             </el-date-picker>
           </div>
         </el-col>
         <el-col v-bind="styleResponsive ? { lg: 10, md: 4 } : { span: 4 }">
           <div class="ele-form-actions">
-            <el-button size="small" type="primary" icon="el-icon-search" class="ele-btn-icon" @click="search">
+            <el-button size="mini" type="primary" icon="el-icon-search" class="ele-btn-icon" @click="search" style="margin-left: 5px;">
               查询
             </el-button>
-            <el-button size="small" icon="el-icon-refresh-left" @click="reset">重置</el-button>
-            <el-button size="small" type="primary" icon="el-icon-paperclip" @click="syncData()">同步PDA盘点数据</el-button>
+            <el-button size="mini" icon="el-icon-refresh-left" @click="reset">重置</el-button>
+            <el-button size="mini" type="primary" icon="el-icon-paperclip" @click="syncData()">同步PDA盘点数据</el-button>
             <!-- 生成盘点数据 -->
-            <el-button size="small" type="primary" icon="el-icon-refresh" @click="generateData()">生成盘点数据</el-button>
+            <el-button size="mini" type="primary" icon="el-icon-refresh" @click="generateData()">生成盘点数据</el-button>
           </div>
         </el-col>
       </el-row>
