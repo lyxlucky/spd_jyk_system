@@ -1,7 +1,8 @@
 <template>
   <div class="ele-body">
     <!-- 数据表格 -->
-    <ele-pro-table ref="table" :toolStyle="toolStyle" height="40vh" :toolkit="[]" highlight-current-row :stripe="true"
+    <!-- :toolkit="[]" -->
+    <ele-pro-table :paginationStyle=paginationStyle ref="table" :toolStyle="toolStyle" height="40vh" highlight-current-row :stripe="true"
       :rowClickChecked="true" :rowClickCheckedIntelligent="false" :pageSize="pageSize" :pageSizes="pageSizes"
       :columns="columns" :datasource="datasource" :initLoad="false" :current.sync="current" :selection.sync="selection"
       @selection-change="onSelectionChange" cache-key="DeptPlanDeclarationBottomTable">
@@ -138,6 +139,11 @@ export default {
           fixed: 'left'
         },
       ],
+      paginationStyle: {
+        height: '18px',
+        padding: '0px 0px 5px 0px',
+        'margin-top': '-5px'
+      },
       toolbar: false,
       toolStyle: {
         display: 'flex',

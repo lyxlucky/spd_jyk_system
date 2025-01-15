@@ -6,7 +6,7 @@
           <DeptPlanDeclarationTopTable @getCurrent="getCurrent" @TopTableSelection="TopTableSelection" :IsReload="IsReloadTag"></DeptPlanDeclarationTopTable>
         </el-card>
       </el-header>
-      <el-main style="padding-top: 10px">
+      <el-main style="padding-top: 3px">
         <el-card shadow="always">
           <DeptPlanDeclarationBottomTable :TopTableSelection="TopTableSelections" :DeptPlanDeclarationTopTableCurrent="DeptPlanDeclarationTopTableCurrent" @clickReload="clickReload" v-if="isActive">
           </DeptPlanDeclarationBottomTable>
