@@ -176,7 +176,7 @@ export default {
           prop: 'Supplier_Name',
           label: '供应商名称',
 
-          align: 'center',
+          align: 'left',
           showOverflowTooltip: true,
           minWidth: 220
         }

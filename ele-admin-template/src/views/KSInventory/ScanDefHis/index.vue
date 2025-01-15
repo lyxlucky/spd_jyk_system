@@ -114,16 +114,23 @@ export default {
         {
           prop: 'Varietie_Name',
           label: '品种名称',
-          align: 'center',
+          align: 'left',
           showOverflowTooltip: true,
           width: 240
         },
         {
           prop: 'Specification_Or_Type',
           label: '规格/型号',
-          align: 'center',
+          align: 'left',
           showOverflowTooltip: true,
           width: 200
+        },
+        {
+          prop: 'Supplier_Name',
+          label: '供应商名称',
+          width: 220,
+          align: 'left',
+          showOverflowTooltip: true
         },
         {
           prop: 'Unit',
@@ -236,13 +243,6 @@ export default {
           prop: 'Contract_Code',
           label: '合同编码',
           width: 150,
-          align: 'center',
-          showOverflowTooltip: true
-        },
-        {
-          prop: 'Supplier_Name',
-          label: '供应商名称',
-          width: 220,
           align: 'center',
           showOverflowTooltip: true
         },

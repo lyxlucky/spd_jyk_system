@@ -2,9 +2,22 @@
   <div class="ele-body">
     <el-card shadow="never">
       <!-- 搜索表单 -->
-      <user-search @search="reload" @openEdit2="openEdit2" @exportData="exportData" />
+      <user-search
+        @search="reload"
+        @openEdit2="openEdit2"
+        @exportData="exportData"
+      />
       <!-- 数据表格 -->
-      <ele-pro-table ref="table" :pageSize="pageSize" @current-change="onCurrentChange" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" cache-key="KSInventoryBasicDataTable">
+      <ele-pro-table
+        ref="table"
+        :pageSize="pageSize"
+        @current-change="onCurrentChange"
+        :pageSizes="pageSizes"
+        :columns="columns"
+        :datasource="datasource"
+        :selection.sync="selection"
+        cache-key="KSInventoryBasicDataTable"
+      >
         <!-- 表头工具栏 -->
         <!-- <template v-slot:toolbar>
           <el-button size="small" type="primary" icon="el-icon-plus" class="ele-btn-icon" @click="openEdit()">
@@ -18,8 +31,40 @@
           </el-button>
         </template> -->
         <!-- 操作列 -->
+
+        <template v-slot:Varietie_Pic="{ row }">
+          <div style="display: flex">
+            <img
+              style="width: 20px;height: 20px;"
+              v-if="row?.PIC_URL_1 != undefined"
+              @click="showImage(row.PIC_URL_1)"
+              :src="BACK_BASE_URL + '/Upload/ProPic/' + row.PIC_URL_1"
+              alt="品种注册证"
+            />
+            <img
+              style="width: 20px;height: 20px;"
+              v-if="row?.PIC_URL_2 != undefined"
+              @click="showImage(row.PIC_URL_2)"
+              :src="BACK_BASE_URL + '/Upload/ProPic/' + row.PIC_URL_2"
+              alt="品种说明书"
+            />
+            <img
+              style="width: 20px;height: 20px;"
+              v-if="row?.PIC_URL_3 != undefined"
+              @click="showImage(row.PIC_URL_3)"
+              :src="BACK_BASE_URL + '/Upload/ProPic/' + row.PIC_URL_3"
+              alt="品种包装"
+            />
+          </div>
+        </template>
+
         <template v-slot:action="{ row }">
-          <el-link type="primary" :underline="false" icon="el-icon-edit" @click="openEdit(row)">
+          <el-link
+            type="primary"
+            :underline="false"
+            icon="el-icon-edit"
+            @click="openEdit(row)"
+          >
             修改
           </el-link>
           <!-- <el-button type="primary" size="mini" @click="openEdit2(row)">修改上下限</el-button> -->
@@ -42,449 +87,472 @@
 </template>
 
 <script>
-import { reloadPageTab, finishPageTab } from '@/utils/page-tab-util';
-import { utils, writeFile } from 'xlsx';
-import UserSearch from './components/user-search.vue';
-import UserEdit from './components/user-edit.vue';
-import userEdit2 from './components/user-edit2.vue';
-import {
-  pageUsers,
-  removeUser,
-  removeUsers,
-  updateUserStatus,
-  updateUserPassword
-} from '@/api/system/user';
-import {
-  getDeptAuthVarNew,
-  UpDownKsQuery
-} from '@/api/KSInventory/KSInventoryBasicData';
-export default {
-  name: 'SystemUser',
-  components: {
-    UserSearch,
-    UserEdit,
-    userEdit2
-    // UserImport
-  },
-  data() {
-    return {
-      // 表格列配置
-      columns: [
-        {
-          columnKey: 'selection',
-          type: 'selection',
-          width: 45,
-          align: 'center',
-          fixed: 'left'
-        },
-        {
-          columnKey: 'index',
-          type: 'index',
-          width: 45,
-          align: 'center',
-          showOverflowTooltip: true,
-          fixed: 'left'
-        },
-        {
-          columnKey: 'action',
-          label: '操作',
-          width: 100,
-          align: 'center',
-          resizable: false,
-          slot: 'action',
-          showOverflowTooltip: true,
-          fixed: 'left'
-        },
-        // {
-        //   label: '上限 / 下限',
-        //   sortable: 'custom',
-        //   align: 'center',
-        //   showOverflowTooltip: true,
-        //   minWidth: 150,
-        //   formatter(row, column, cellValue){
-        //     return row.up + ' / ' + row.down;
-        //   }
-        // },
-        {
-          prop: 'Varietie_Code_New',
-          label: '品种编码',
-          sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 150
-        },
-         {
-          prop: 'CHARGING_CODE',
-          label: '计费编码',
-          sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 120
-        },
-        // {
-        //   prop: 'Varietie_Code',
-        //   label: '品种id',
-        //   sortable: 'custom',
-        //   align: 'center',
-        //   showOverflowTooltip: true,
-        //   minWidth: 150,
-        //   show: false
-        // },
-        {
-          prop: 'Varietie_Name',
-          label: '品种名称',
-          sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 500
-        },
-        {
-          prop: 'Specification_Or_Type',
-          label: '规格/型号',
-          sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 200
-        },
-        {
-          prop: 'Manufacturing_Ent_Name',
-          label: '生产企业名称',
-          sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 180
-        },
-        {
-          prop: 'APPROVAL_NUMBER',
-          label: '注册证号',
-          sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 180
-        },
-        {
-          prop: 'Unit',
-          label: '单位',
-          align: 'center',
-          sortable: 'custom',
-          showOverflowTooltip: true,
-          minWidth: 80
-        },
-        {
-          prop: 'Price',
-          label: '中标价',
-          align: 'center',
-          sortable: 'custom',
-          width: 100,
-          showOverflowTooltip: true
-        },
-        {
-          prop: 'SOURCE_FROM',
-          label: '来源',
-          align: 'center',
-          sortable: 'custom',
-          width: 100,
-          showOverflowTooltip: true
-        },
-        {
-          prop: 'CLASS_NUM',
-          label: '品种类别',
-          width: 120,
-          align: 'center',
-          showOverflowTooltip: true,
-          formatter: (_row, _column, cellValue) => {
-            if (cellValue == 5) {
-              cellValue = '有毒物品';
-            } else if (cellValue == 4) {
-              cellValue = '质控品';
-            } else if (cellValue == 3) {
-              cellValue = '校准品';
-            } else if (cellValue == 2) {
-              cellValue = '耗材';
-            } else if (cellValue == 1) {
-              cellValue = '试剂';
-            }else if (cellValue == 21) {
-              cellValue = '手工项目试剂';
-            } else {
-              cellValue = '未定义';
+  import { BACK_BASE_URL } from '@/config/setting';
+  import { reloadPageTab, finishPageTab } from '@/utils/page-tab-util';
+  import { utils, writeFile } from 'xlsx';
+  import UserSearch from './components/user-search.vue';
+  import UserEdit from './components/user-edit.vue';
+  import userEdit2 from './components/user-edit2.vue';
+  import {
+    pageUsers,
+    removeUser,
+    removeUsers,
+    updateUserStatus,
+    updateUserPassword
+  } from '@/api/system/user';
+  import {
+    getDeptAuthVarNew,
+    UpDownKsQuery
+  } from '@/api/KSInventory/KSInventoryBasicData';
+  export default {
+    name: 'SystemUser',
+    components: {
+      UserSearch,
+      UserEdit,
+      userEdit2
+      // UserImport
+    },
+    data() {
+      return {
+        // 表格列配置
+        columns: [
+          {
+            columnKey: 'selection',
+            type: 'selection',
+            width: 45,
+            align: 'center',
+            fixed: 'left'
+          },
+          {
+            columnKey: 'index',
+            type: 'index',
+            width: 45,
+            align: 'center',
+            showOverflowTooltip: true,
+            fixed: 'left'
+          },
+          {
+            columnKey: 'action',
+            label: '操作',
+            width: 100,
+            align: 'center',
+            resizable: false,
+            slot: 'action',
+            showOverflowTooltip: true,
+            fixed: 'left'
+          },
+          // {
+          //   label: '上限 / 下限',
+          //   sortable: 'custom',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   minWidth: 150,
+          //   formatter(row, column, cellValue){
+          //     return row.up + ' / ' + row.down;
+          //   }
+          // },
+          {
+            prop: 'Varietie_Code_New',
+            label: '品种编码',
+            sortable: 'custom',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 150
+          },
+          {
+            prop: 'CHARGING_CODE',
+            label: '计费编码',
+            sortable: 'custom',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 120
+          },
+          // {
+          //   prop: 'Varietie_Code',
+          //   label: '品种id',
+          //   sortable: 'custom',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   minWidth: 150,
+          //   show: false
+          // },
+          {
+            prop: 'Varietie_Pic',
+            slot: 'Varietie_Pic',
+            label: '品种图片',
+            sortable: 'custom',
+            align: 'left',
+            minWidth: 120
+          },
+          {
+            prop: 'Varietie_Name',
+            label: '品种名称',
+            sortable: 'custom',
+            align: 'left',
+            showOverflowTooltip: true,
+            minWidth: 250
+          },
+          {
+            prop: 'Specification_Or_Type',
+            label: '规格/型号',
+            sortable: 'custom',
+            align: 'left',
+            showOverflowTooltip: true,
+            minWidth: 200
+          },
+          {
+            prop: 'Manufacturing_Ent_Name',
+            label: '生产企业名称',
+            sortable: 'custom',
+            align: 'left',
+            showOverflowTooltip: true,
+            minWidth: 180
+          },
+          {
+            prop: 'APPROVAL_NUMBER',
+            label: '注册证号',
+            sortable: 'custom',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 180
+          },
+          {
+            prop: 'Unit',
+            label: '单位',
+            align: 'center',
+            sortable: 'custom',
+            showOverflowTooltip: true,
+            minWidth: 80
+          },
+          {
+            prop: 'Price',
+            label: '中标价',
+            align: 'center',
+            sortable: 'custom',
+            width: 100,
+            formatter: (_row, _column, cellValue) => {
+              return Number(cellValue).toFixed(2);
             }
-            return cellValue;
+          },
+          {
+            prop: 'SOURCE_FROM',
+            label: '来源',
+            align: 'center',
+            sortable: 'custom',
+            width: 100,
+            showOverflowTooltip: true
+          },
+          {
+            prop: 'CLASS_NUM',
+            label: '品种类别',
+            width: 120,
+            align: 'center',
+            showOverflowTooltip: true,
+            formatter: (_row, _column, cellValue) => {
+              if (cellValue == 5) {
+                cellValue = '有毒物品';
+              } else if (cellValue == 4) {
+                cellValue = '质控品';
+              } else if (cellValue == 3) {
+                cellValue = '校准品';
+              } else if (cellValue == 2) {
+                cellValue = '耗材';
+              } else if (cellValue == 1) {
+                cellValue = '试剂';
+              } else if (cellValue == 21) {
+                cellValue = '手工项目试剂';
+              } else {
+                cellValue = '未定义';
+              }
+              return cellValue;
+            }
+          },
+          // {
+          //   prop: 'CONVERSION_RATIO',
+          //   label: '换算比(试剂)',
+          //   width: 100,
+          //   align: 'center',
+          //   showOverflowTooltip: true
+          // },
+          // {
+          //   prop: 'DEVICE_REMARK',
+          //   label: '仪器设备',
+          //   width: 100,
+          //   align: 'center',
+          //   showOverflowTooltip: true
+          // },
+          {
+            prop: 'JYK_ZHB',
+            label: '理论人次',
+            width: 100,
+            align: 'center',
+            showOverflowTooltip: true
+          },
+          {
+            prop: 'JYK_YQM',
+            label: '仪器设备',
+            width: 100,
+            align: 'center',
+            showOverflowTooltip: true
           }
-        },
-        // {
-        //   prop: 'CONVERSION_RATIO',
-        //   label: '换算比(试剂)',
-        //   width: 100,
-        //   align: 'center',
-        //   showOverflowTooltip: true
-        // },
-        // {
-        //   prop: 'DEVICE_REMARK',
-        //   label: '仪器设备',
-        //   width: 100,
-        //   align: 'center',
-        //   showOverflowTooltip: true
-        // },
-        {
-          prop: 'JYK_ZHB',
-          label: '理论人次',
-          width: 100,
-          align: 'center',
-          showOverflowTooltip: true
-        },
-        {
-          prop: 'JYK_YQM',
-          label: '仪器设备',
-          width: 100,
-          align: 'center',
-          showOverflowTooltip: true
-        }
-      ],
-      toolbar: false,
-      pageSize: 20,
-      pageSizes: [10, 20, 50, 100, 9999999],
-      pagerCount: 5,
-      // 表格选中数据
-      selection: [],
-      // 当前编辑数据
-      current: null,
-      current2: null,
-      // 是否显示编辑弹窗
-      showEdit: false,
-      showEdit2: false,
-      // 是否显示导入弹窗
-      showImport: false,
-      // datasource: [],
-      data: [],
-      isDeptTwoAuth: null,
-      currentpage: 1
-    };
-  },
-  methods: {
-    /* 表格数据源 */
-    datasource({ page, limit, where, order }) {
-      this.currentpage = page;
-      where.Dept_One_Code = this.$store.state.user.info.DeptNow.Dept_Two_Code;
-      let data = getDeptAuthVarNew({ page, limit, where, order }).then(
-        (res) => {
-          var tData = {
-            count: res.total,
-            list: res.result
-          };
-          return tData;
-        }
-      );
-      return data;
+        ],
+        toolbar: false,
+        pageSize: 20,
+        pageSizes: [10, 20, 50, 100, 9999999],
+        pagerCount: 5,
+        // 表格选中数据
+        selection: [],
+        // 当前编辑数据
+        current: null,
+        current2: null,
+        // 是否显示编辑弹窗
+        showEdit: false,
+        showEdit2: false,
+        // 是否显示导入弹窗
+        showImport: false,
+        // datasource: [],
+        data: [],
+        isDeptTwoAuth: null,
+        currentpage: 1
+      };
     },
-    /* 刷新表格 */
-    reload(where) {
-      // this.isDeptTwoAuth = where.isDeptTwoAuth;
-      this.$refs.table.reload({ page: this.currentpage, where: where });
-    },
-    onCurrentChange(data) {
-      this.current = data;
-    },
-    /* 打开编辑弹窗 */
-    openEdit(row) {
-      this.current = row;
-      this.showEdit = true;
-    },
-    // openEdit2(row) {
-    //   this.current2 = row;
-    //   this.showEdit2 = true;
-    // },
-    openEdit2() {
-      if(this.selection.length == 0){
-        this.$message.error('请至少选择一条数据');
-        return;
+    computed: {
+      BACK_BASE_URL() {
+        return BACK_BASE_URL;
       }
-      this.showEdit2 = true;
-      this.$bus.$emit(`${this.$route.path}/handleUpdate`, this.selection);
     },
-    /* 打开导入弹窗 */
-    openImport() {
-      this.showImport = true;
-    },
-    /* 删除 */
-    remove(row) {
-      const loading = this.$loading({ lock: true });
-      removeUser(row.userId)
-        .then((msg) => {
-          loading.close();
-          this.$message.success(msg);
-          this.reload();
-        })
-        .catch((e) => {
-          loading.close();
-          this.$message.error(e.message);
-        });
-    },
-    /* 批量删除 */
-    removeBatch() {
-      if (!this.selection.length) {
-        this.$message.error('请至少选择一条数据');
-        return;
-      }
-      this.$confirm('确定要删除选中的用户吗?', '提示', {
-        type: 'warning'
-      })
-        .then(() => {
-          const loading = this.$loading({ lock: true });
-          removeUsers(this.selection.map((d) => d.userId))
-            .then((msg) => {
-              loading.close();
-              this.$message.success(msg);
-              this.reload();
-            })
-            .catch((e) => {
-              loading.close();
-              this.$message.error(e.message);
-            });
-        })
-        .catch(() => {});
-    },
-    /* 重置用户密码 */
-    resetPsw(row) {
-      this.$confirm('确定要重置此用户的密码为"123456"吗?', '提示', {
-        type: 'warning'
-      })
-        .then(() => {
-          const loading = this.$loading({ lock: true });
-          updateUserPassword(row.userId)
-            .then((msg) => {
-              loading.close();
-              this.$message.success(msg);
-            })
-            .catch((e) => {
-              loading.close();
-              this.$message.error(e.message);
-            });
-        })
-        .catch(() => {});
-    },
-    /* 更改状态 */
-    editStatus(row) {
-      const loading = this.$loading({ lock: true });
-      updateUserStatus(row.userId, row.status)
-        .then((msg) => {
-          loading.close();
-          this.$message.success(msg);
-        })
-        .catch((e) => {
-          loading.close();
-          row.status = !row.status ? 1 : 0;
-          this.$message.error(e.message);
-        });
-    },
-    exportData(data) {
-      const loading = this.$messageLoading('正在导出数据...');
-      this.$refs.table.doRequest(({ where, order }) => {
-        where = data;
+    methods: {
+      /* 表格数据源 */
+      datasource({ page, limit, where, order }) {
+        this.currentpage = page;
         where.Dept_One_Code = this.$store.state.user.info.DeptNow.Dept_Two_Code;
-        getDeptAuthVarNew({
-          page: 1,
-          limit: 999999,
-          where: where,
-          order: order
+        let data = getDeptAuthVarNew({ page, limit, where, order }).then(
+          (res) => {
+            var tData = {
+              count: res.total,
+              list: res.result
+            };
+            return tData;
+          }
+        );
+        return data;
+      },
+      showImage(src) {
+        let imageSrc = BACK_BASE_URL + '/Upload/ProPic/' + src;
+        this.$viewerApi({
+          images: [imageSrc]
         })
-          .then((res) => {
+      },
+      /* 刷新表格 */
+      reload(where) {
+        // this.isDeptTwoAuth = where.isDeptTwoAuth;
+        this.$refs.table.reload({ page: this.currentpage, where: where });
+      },
+      onCurrentChange(data) {
+        this.current = data;
+      },
+      /* 打开编辑弹窗 */
+      openEdit(row) {
+        this.current = row;
+        this.showEdit = true;
+      },
+      // openEdit2(row) {
+      //   this.current2 = row;
+      //   this.showEdit2 = true;
+      // },
+      openEdit2() {
+        if (this.selection.length == 0) {
+          this.$message.error('请至少选择一条数据');
+          return;
+        }
+        this.showEdit2 = true;
+        this.$bus.$emit(`${this.$route.path}/handleUpdate`, this.selection);
+      },
+      /* 打开导入弹窗 */
+      openImport() {
+        this.showImport = true;
+      },
+      /* 删除 */
+      remove(row) {
+        const loading = this.$loading({ lock: true });
+        removeUser(row.userId)
+          .then((msg) => {
             loading.close();
-            const array = [
-              [
-                '品种编码',
-                '品种id',
-                '品种名称',
-                '规格/型号',
-                '生产企业名称',
-                '注册证号',
-                '单位',
-                '中标价',
-                '品种类别',
-                '换算比(试剂)',
-                '仪器备注'
-              ]
-            ];
-            res.result.forEach((d) => {
-              array.push([
-                d.Varietie_Code_New,
-                d.Varietie_Code,
-                d.Varietie_Name,
-                d.Specification_Or_Type,
-                d.Manufacturing_Ent_Name,
-                d.APPROVAL_NUMBER,
-                d.UNIT,
-                d.Price,
-                d.CLASS_NUM,
-                d.CONVERSION_RATIO,
-                d.DEVICE_REMARK
-                // this.$util.toDateString(d.createTime)
-              ]);
-            });
-            writeFile(
-              {
-                SheetNames: ['Sheet1'],
-                Sheets: {
-                  Sheet1: utils.aoa_to_sheet(array)
-                }
-              },
-              '科室入库品种.xlsx'
-            );
-            this.$message.success('导出成功');
+            this.$message.success(msg);
+            this.reload();
           })
           .catch((e) => {
             loading.close();
             this.$message.error(e.message);
           });
-      });
-    }
-  },
-  watch: {
-    isDeptTwoAuth() {
-      var length = this.columns.length;
-      if (this.isDeptTwoAuth == 1) {
-        if (this.columns[length - 1].prop == 'DEVICE_REMARK') {
-          this.columns.push({
-            prop: 'Coefficient',
-            label: '系数',
-            width: 80,
-            align: 'center',
-            showOverflowTooltip: true
-          });
-          this.columns.push({
-            prop: 'up',
-            label: '上限',
-            width: 80,
-            align: 'center',
-            showOverflowTooltip: true
-          });
-          this.columns.push({
-            prop: 'down',
-            label: '下限',
-            width: 80,
-            align: 'center',
-            showOverflowTooltip: true
-          });
+      },
+      /* 批量删除 */
+      removeBatch() {
+        if (!this.selection.length) {
+          this.$message.error('请至少选择一条数据');
+          return;
         }
-      } else {
-        this.columns = this.columns.slice(1, 13);
+        this.$confirm('确定要删除选中的用户吗?', '提示', {
+          type: 'warning'
+        })
+          .then(() => {
+            const loading = this.$loading({ lock: true });
+            removeUsers(this.selection.map((d) => d.userId))
+              .then((msg) => {
+                loading.close();
+                this.$message.success(msg);
+                this.reload();
+              })
+              .catch((e) => {
+                loading.close();
+                this.$message.error(e.message);
+              });
+          })
+          .catch(() => {});
+      },
+      /* 重置用户密码 */
+      resetPsw(row) {
+        this.$confirm('确定要重置此用户的密码为"123456"吗?', '提示', {
+          type: 'warning'
+        })
+          .then(() => {
+            const loading = this.$loading({ lock: true });
+            updateUserPassword(row.userId)
+              .then((msg) => {
+                loading.close();
+                this.$message.success(msg);
+              })
+              .catch((e) => {
+                loading.close();
+                this.$message.error(e.message);
+              });
+          })
+          .catch(() => {});
+      },
+      /* 更改状态 */
+      editStatus(row) {
+        const loading = this.$loading({ lock: true });
+        updateUserStatus(row.userId, row.status)
+          .then((msg) => {
+            loading.close();
+            this.$message.success(msg);
+          })
+          .catch((e) => {
+            loading.close();
+            row.status = !row.status ? 1 : 0;
+            this.$message.error(e.message);
+          });
+      },
+      exportData(data) {
+        const loading = this.$messageLoading('正在导出数据...');
+        this.$refs.table.doRequest(({ where, order }) => {
+          where = data;
+          where.Dept_One_Code =
+            this.$store.state.user.info.DeptNow.Dept_Two_Code;
+          getDeptAuthVarNew({
+            page: 1,
+            limit: 999999,
+            where: where,
+            order: order
+          })
+            .then((res) => {
+              loading.close();
+              const array = [
+                [
+                  '品种编码',
+                  '品种id',
+                  '品种名称',
+                  '规格/型号',
+                  '生产企业名称',
+                  '注册证号',
+                  '单位',
+                  '中标价',
+                  '品种类别',
+                  '换算比(试剂)',
+                  '仪器备注'
+                ]
+              ];
+              res.result.forEach((d) => {
+                array.push([
+                  d.Varietie_Code_New,
+                  d.Varietie_Code,
+                  d.Varietie_Name,
+                  d.Specification_Or_Type,
+                  d.Manufacturing_Ent_Name,
+                  d.APPROVAL_NUMBER,
+                  d.UNIT,
+                  d.Price,
+                  d.CLASS_NUM,
+                  d.CONVERSION_RATIO,
+                  d.DEVICE_REMARK
+                  // this.$util.toDateString(d.createTime)
+                ]);
+              });
+              writeFile(
+                {
+                  SheetNames: ['Sheet1'],
+                  Sheets: {
+                    Sheet1: utils.aoa_to_sheet(array)
+                  }
+                },
+                '科室入库品种.xlsx'
+              );
+              this.$message.success('导出成功');
+            })
+            .catch((e) => {
+              loading.close();
+              this.$message.error(e.message);
+            });
+        });
       }
+    },
+    watch: {
+      isDeptTwoAuth() {
+        var length = this.columns.length;
+        if (this.isDeptTwoAuth == 1) {
+          if (this.columns[length - 1].prop == 'DEVICE_REMARK') {
+            this.columns.push({
+              prop: 'Coefficient',
+              label: '系数',
+              width: 80,
+              align: 'center',
+              showOverflowTooltip: true
+            });
+            this.columns.push({
+              prop: 'up',
+              label: '上限',
+              width: 80,
+              align: 'center',
+              showOverflowTooltip: true
+            });
+            this.columns.push({
+              prop: 'down',
+              label: '下限',
+              width: 80,
+              align: 'center',
+              showOverflowTooltip: true
+            });
+          }
+        } else {
+          this.columns = this.columns.slice(1, 13);
+        }
+      }
+    },
+    created() {
+      // this.getdatasource();
+      // console.log(this.$store.state.user.info)
+    },
+    beforeDestroy() {
+      this.$bus.$off(`${this.$route.path}/handleUpdate`);
+    },
+    mounted() {
+      console.log(1);
+      this.$bus.$on('handleCommand', (data) => {
+        this.reload();
+      });
+    },
+    destroyed() {
+      this.$bus.$off('handleCommand');
     }
-  },
-  created() {
-    // this.getdatasource();
-    // console.log(this.$store.state.user.info)
-  },
-  beforeDestroy() {
-    this.$bus.$off(`${this.$route.path}/handleUpdate`)
-  },
-  mounted(){
-    console.log(1)
-    this.$bus.$on('handleCommand', (data) => {
-      this.reload();
-    });
-  },
-  destroyed(){
-    this.$bus.$off('handleCommand')
-  },
-};
+  };
 </script>

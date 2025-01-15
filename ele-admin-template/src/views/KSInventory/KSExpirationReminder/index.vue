@@ -4,10 +4,10 @@
       <!-- 搜索表单 -->
       <!-- <user-search @search="reload" @exportData="exportData" /> -->
       <!-- 数据表格 -->
+      <user-search @search="reload" @exportData="exportData" />
       <ele-pro-table ref="table" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" cache-key="KSInventoryBasicDataTable">
         <!-- 表头工具栏 -->
         <template v-slot:toolbar>
-          <user-search @search="reload" @exportData="exportData" />
         </template>
 
         <!-- 操作列 -->
@@ -94,9 +94,58 @@ export default {
           prop: 'Varietie_Name',
           label: '品种名称',
           // sortable: 'custom',
-          align: 'center',
-          howOverflowTooltip: true,
+          align: 'left',
+          showOverflowTooltip: true,
           minWidth: 180
+        },
+        {
+          prop: 'Specification_Or_Type',
+          label: '规格/型号',
+          // sortable: 'custom',
+          align: 'left',
+          showOverflowTooltip: true,
+          minWidth: 180
+        },
+        {
+          prop: 'Supplier_Name',
+          label: '供应商',
+          // sortable: 'custom',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 180
+        },
+        {
+          prop: 'Manufacturing_Ent_Name',
+          label: '生产企业',
+          // sortable: 'custom',
+          align: 'left',
+          showOverflowTooltip: true,
+          minWidth: 180
+        },
+        {
+          prop: 'INVENTORY_NUM',
+          label: '在库天数',
+          // // sortable: 'custom',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 80,
+          formatter: (row, _column, cellValue) => {
+            const createTime = this.$moment(row.CREATE_TIME, "YYYY/MM/DD HH:mm:ss"); // 指定日期格式
+            const today = this.$moment(); // 获取当前时间
+            return today.diff(createTime, 'days');
+          }
+        },
+        {
+          prop:"Remaining_Days",
+          label: '剩余天数',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 80,
+          formatter: (row, _column, cellValue) => {
+            const batchValidDate = this.$moment(row.Batch_Validity_Period); // 指定日期格式
+            const today = this.$moment(); // 获取当前时间
+            return batchValidDate.diff(today, 'days');
+          }
         },
         {
           prop: 'CHARGING_CODE',
@@ -107,28 +156,12 @@ export default {
           minWidth: 120
         },
         {
-          prop: 'Specification_Or_Type',
-          label: '规格/型号',
-          // sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 200
-        },
-        {
           prop: 'Unit',
           label: '单位',
           align: 'center',
           // sortable: 'custom',
           showOverflowTooltip: true,
           minWidth: 80
-        },
-        {
-          prop: 'Supplier_Name',
-          label: '供应商',
-          // sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 180
         },
         {
           prop: 'Batch',

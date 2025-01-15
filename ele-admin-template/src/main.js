@@ -12,8 +12,11 @@ import '@/assets'; // icon
 import VueViewer from 'v-viewer'
 import 'viewerjs/dist/viewer.css'
 import moment from 'moment';
+import numeral from 'numeral';
 
 
+
+Vue.prototype.$numeral = numeral;
 // 将 moment 挂载到 Vue 原型上
 Vue.prototype.$moment = moment;
 //事件总线

@@ -10,7 +10,7 @@
           <!-- 操作列 -->
           <template v-slot:APPLY_QTY="{ row }">
             <el-form-item label="">
-              <el-input v-model="row.APPLY_QTY"></el-input>
+              <el-input size="mini" v-model="row.APPLY_QTY"></el-input>
             </el-form-item>
           </template>
         </ele-pro-table>
@@ -66,6 +66,7 @@ export default {
           reserveSelection:true
         },
         {
+          label: '序',
           columnKey: 'index',
           type: 'index',
           width: 45,
@@ -154,7 +155,10 @@ export default {
           label: '结算价',
           width: 100,
           align: 'center',
-          showOverflowTooltip: true
+          showOverflowTooltip: true,
+          formatter: (_row, _column, cellValue) => {
+            return Number(cellValue).toFixed(2);
+          }
         },
         {
           prop: 'MANUFACTURING_ENT_NAME',

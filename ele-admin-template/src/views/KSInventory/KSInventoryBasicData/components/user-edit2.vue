@@ -5,17 +5,17 @@
       <el-row :gutter="12">
         <el-col v-bind="styleResponsive ? { sm: 20 } : { span: 20 }">
           <el-form-item label="上限:" prop="CONVERSION_RATIO">
-            <el-input type="number" clearable :maxlength="20" v-model="form.up" placeholder="" />
+            <el-input size="mini" type="number" clearable :maxlength="20" v-model="form.up" placeholder="" />
           </el-form-item>
           <el-form-item label="下限:" prop="DEVICE_REMARK">
-            <el-input type="number" clearable :maxlength="100" v-model="form.down" placeholder="" />
+            <el-input size="mini" type="number" clearable :maxlength="100" v-model="form.down" placeholder="" />
           </el-form-item>
         </el-col>
       </el-row>
     </el-form>
     <template v-slot:footer>
-      <el-button @click="updateVisible(false)">取消</el-button>
-      <el-button type="primary" :loading="loading" @click="save">
+      <el-button size="mini" icon="el-icon-close" @click="updateVisible(false)">取消</el-button>
+      <el-button size="mini" icon="el-icon-check" type="primary" :loading="loading" @click="save">
         保存
       </el-button>
     </template>

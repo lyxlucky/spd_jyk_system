@@ -65,21 +65,21 @@ export default {
         {
           prop: 'Varietie_Code',
           label: '品种编码',
-          align: 'center',
+          align: 'left',
           showOverflowTooltip: true,
           minWidth: 130
         },
         {
           prop: 'Varietie_Name',
           label: '品种名称',
-          align: 'center',
+          align: 'left',
           showOverflowTooltip: true,
           minWidth: 200
         },
         {
           prop: 'Specification_Or_Type',
           label: '规格型号',
-          align: 'center',
+          align: 'left',
           showOverflowTooltip: true,
           minWidth: 200
         },
