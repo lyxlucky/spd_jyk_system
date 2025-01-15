@@ -119,25 +119,6 @@
             minWidth: 160,
             fixed: 'left'
           },
-
-          {
-            columnKey: 'action',
-            label: '操作',
-            width: 80,
-            align: 'center',
-            resizable: false,
-            slot: 'action',
-            showOverflowTooltip: true,
-            fixed: 'left'
-          },
-          {
-            prop: 'VARIETIE_CODE_NEW',
-            label: '品种编码',
-
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 130
-          },
           // {
           //   prop: 'DEPT_ZDY_VARIETIE_CODE',
           //   label: '自定义编码',
@@ -152,47 +133,6 @@
           //     return cellValue;
           //   }
           // },
-          {
-            prop: 'VarName',
-            label: '品种全称',
-
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 250
-          },
-          {
-            prop: 'GG',
-            label: '型号/规格',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 200
-          },
-          {
-            prop: 'Unit',
-            label: '单位',
-
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 80
-          },
-          {
-            prop: 'Price',
-            label: '结算价',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 80,
-            formatter: (row, column, cellValue) => {
-              return Number(cellValue).toFixed(2);
-            }
-          },
-          {
-            prop: 'Manufacturing',
-            label: '生产企业名称',
-
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 200
-          },
           {
             prop: 'DeptQty',
             label: '科室库存',
@@ -218,6 +158,52 @@
             minWidth: 110
           },
           {
+            prop: 'VarName',
+            label: '品种全称',
+
+            align: 'left',
+            showOverflowTooltip: true,
+            minWidth: 180
+          },
+          {
+            prop: 'GG',
+            label: '型号/规格',
+            align: 'left',
+            showOverflowTooltip: true,
+            minWidth: 180
+          },
+          {
+            prop: 'Manufacturing',
+            label: '生产企业名称',
+            align: 'left',
+            showOverflowTooltip: true,
+            minWidth: 180
+          },
+          {
+            prop: 'SUPPLIER_NAME',
+            label: '供应商',
+            align: 'left',
+            showOverflowTooltip: true,
+            minWidth: 180
+          },
+          {
+            prop: 'Unit',
+            label: '单位',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 80
+          },
+          {
+            prop: 'Price',
+            label: '结算价',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 80,
+            formatter: (row, column, cellValue) => {
+              return Number(cellValue).toFixed(2);
+            }
+          },
+          {
             prop: 'BigBoxCount',
             label: '大包装数量',
 
@@ -234,6 +220,13 @@
             showOverflowTooltip: true,
             minWidth: 110,
             show: false
+          },
+          {
+            prop: 'VARIETIE_CODE_NEW',
+            label: '品种编码',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 130
           },
           {
             prop: 'PAG_TYPE',
@@ -262,6 +255,7 @@
           },
           {
             // prop: 'TempletQty',
+            prop: 'AUTH',
             slot: 'AUTH',
             label: '排序',
             align: 'center',
@@ -269,12 +263,14 @@
             minWidth: 160
           },
           {
-            prop: 'SUPPLIER_NAME',
-            label: '供应商',
-
+            columnKey: 'action',
+            label: '操作',
+            width: 80,
             align: 'center',
+            resizable: false,
+            slot: 'action',
             showOverflowTooltip: true,
-            minWidth: 200
+            fixed: 'left'
           }
         ],
         toolbar: false,

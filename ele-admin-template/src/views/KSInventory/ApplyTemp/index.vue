@@ -16,7 +16,7 @@
             <div slot="header" class="clearfix">
               <span>申领模板列表品种</span>
             </div>
-            <el-button type="primary" @click="addTempVar" :style="{ display: IsDisabled==true?'none':'' }">确认申领</el-button>
+            <el-button type="primary" size="mini" @click="addTempVar" :style="{ display: IsDisabled==true?'none':'' }">确认申领</el-button>
             <ApplyTempDataTable :ApplyTempTableData="ApplyTempTableData" @selectionData="selectionData"></ApplyTempDataTable>
           </el-card>
         </el-main>

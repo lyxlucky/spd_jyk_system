@@ -53,7 +53,7 @@
       </template>
 
       <template v-slot:PlanQty="{ row }">
-        <el-input-number
+        <el-input
           v-model="row.PlanQty"
           :min="0"
           :max="99999999"
@@ -261,32 +261,30 @@
           {
             prop: 'VarName',
             label: '品种全称',
-            align: 'center',
+            align: 'left',
             showOverflowTooltip: true,
-            width: 250
+            width: 180
           },
           {
             prop: 'GG',
             label: '型号/规格',
-            align: 'center',
+            align: 'left',
             showOverflowTooltip: true,
-            width: 200
+            width: 180
           },
           {
             prop: 'Manufacturing',
             label: '生产企业名称',
-
-            align: 'center',
+            align: 'left',
             showOverflowTooltip: true,
-            width: 200
+            width: 180
           },
           {
             prop: 'SUPPLIER_NAME',
             label: '启用供应商',
-
-            align: 'center',
+            align: 'left',
             showOverflowTooltip: true,
-            width: 200
+            width: 180
           },
           // {
           //   prop: 'TempQty',
@@ -328,7 +326,7 @@
             align: 'center',
             showOverflowTooltip: true,
             width: 160,
-            fixed: 'right'
+            fixed: 'left'
           },
           {
             prop: 'Unit',
@@ -339,6 +337,17 @@
             width: 80
           },
           {
+            prop: 'Price',
+            label: '结算价',
+
+            align: 'center',
+            showOverflowTooltip: true,
+            width: 80,
+            formatter: (row, column, cellValue) => {
+              return Number(cellValue).toFixed(2);
+            }
+          },
+          {
             slot: 'PAG_TYPE',
             // prop: 'PAG_TYPE',
             label: '包装规格',
@@ -346,14 +355,6 @@
             align: 'center',
             showOverflowTooltip: true,
             width: 110
-          },
-          {
-            prop: 'Price',
-            label: '结算价',
-
-            align: 'center',
-            showOverflowTooltip: true,
-            width: 80
           },
           {
             prop: '',

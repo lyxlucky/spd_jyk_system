@@ -156,7 +156,6 @@
           //   showOverflowTooltip: true,
           //   fixed: 'right'
           // },
-
           // {
           //   prop: 'ID',
           //   label: 'ID',
@@ -213,17 +212,30 @@
           {
             prop: 'VARIETIE_NAME',
             label: '品种名称',
-            align: 'center',
+            align: 'left',
             showOverflowTooltip: true,
             minWidth: 250
           },
           {
             prop: 'SPECIFICATION_OR_TYPE',
             label: '规格型号',
-
-            align: 'center',
+            align: 'left',
             showOverflowTooltip: true,
             minWidth: 180
+          },
+          {
+            prop: 'MANUFACTURING_ENT_NAME',
+            label: '生产企业',
+            align: 'left',
+            showOverflowTooltip: true,
+            minWidth: 180
+          },
+          {
+            prop: 'SUPPLIER_NAME',
+            label: '供应商名称',
+            align: 'left',
+            showOverflowTooltip: true,
+            minWidth: 180,
           },
           {
             prop: 'COUNT',
@@ -285,13 +297,6 @@
             }
           },
           {
-            prop: 'MANUFACTURING_ENT_NAME',
-            label: '生产企业',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 200
-          },
-          {
             prop: 'RECORD_TIME',
             label: '时间',
             align: 'center',
@@ -334,15 +339,6 @@
           {
             prop: 'SUPPLIER_CODE',
             label: '供应商编码',
-
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 180,
-            show: false
-          },
-          {
-            prop: 'SUPPLIER_NAME',
-            label: '供应商名称',
 
             align: 'center',
             showOverflowTooltip: true,
