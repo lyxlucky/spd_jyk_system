@@ -108,7 +108,10 @@ export default {
           label: '中标价',
           align: 'center',
           showOverflowTooltip: true,
-          fixed: 'left'
+          fixed: 'left',
+          formatter: (row, column, cellValue) => {
+            return Number(cellValue).toFixed(2);
+          }
         },
         {
           prop: 'PLAN_NUM',

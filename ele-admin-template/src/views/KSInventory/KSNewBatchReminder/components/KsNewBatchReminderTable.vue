@@ -132,7 +132,10 @@ import { BACK_BASE_URL } from '@/config/setting';
             label: '价格',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 70
+            minWidth: 70,
+            formatter: (row, column, cellValue) => {
+            return Number(cellValue).toFixed(2);
+          }
           },
           {
             prop: 'MANUFACTURING_ENT_NAME',

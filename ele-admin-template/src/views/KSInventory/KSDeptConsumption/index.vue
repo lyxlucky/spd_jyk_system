@@ -324,7 +324,10 @@ export default {
           label: '金额',
           width: 80,
           align: 'center',
-          showOverflowTooltip: true
+          showOverflowTooltip: true,
+          formatter: (row, column, cellValue) => {
+            return Number(cellValue).toFixed(2);
+          }
         },
         {
           prop: 'Coefficient',

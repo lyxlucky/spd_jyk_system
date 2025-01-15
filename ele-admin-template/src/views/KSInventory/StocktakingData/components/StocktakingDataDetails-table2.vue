@@ -202,7 +202,10 @@ export default {
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 80,
-          sortable: true
+          sortable: true,
+          formatter: (row, column, cellValue) => {
+            return Number(cellValue).toFixed(2);
+          }
         },
         {
           prop: 'BATCH',
