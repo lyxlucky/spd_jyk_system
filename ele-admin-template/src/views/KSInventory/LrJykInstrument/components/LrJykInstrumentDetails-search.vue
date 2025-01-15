@@ -1,14 +1,12 @@
 <!-- 搜索表单 -->
 <template>
   <el-form class="ele-form-search">
-    <el-row :gutter="10">
+    <el-row :gutter="10" style="margin-bottom: 5px;">
       <el-col :lg="5" :md="12">
-        <el-form-item label="">
-          <el-input size="mini" v-model="where.BIND_DEF" placeholder="定数包" clearable />
-        </el-form-item>
+        <el-input size="mini" v-model="where.BIND_DEF" placeholder="定数包" clearable />
       </el-col>
       <el-col :lg="3" :md="12">
-        <el-button size="mini" type="primary" @click="search">查询</el-button>
+        <el-button size="mini" type="primary" icon="el-icon-search" @click="search">查询</el-button>
       </el-col>
     </el-row>
   </el-form>
@@ -304,5 +302,7 @@ export default {
 </script>
 
 <style scoped>
-
+::v-deep .ele-table-tool-default {
+  margin-bottom: 5px;
+}
 </style>

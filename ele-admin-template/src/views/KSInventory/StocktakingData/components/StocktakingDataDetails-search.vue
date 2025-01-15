@@ -31,7 +31,7 @@
       <el-col :lg="18" :md="12" style="padding-top: 5px;">
         <div class="ele-form-actions">
           <el-button type="primary" size="mini" @click="search" icon="el-icon-search">查询</el-button>
-          <el-button @click="reset" size="mini" icon="el-icon-refresh-left">重置</el-button>
+          <el-button @click="reset" size="mini" icon="el-icon-refresh">重置</el-button>
           <el-popconfirm class="ele-action" title="确定删除？" @confirm="removeBatch()">
             <template v-slot:reference>
               <el-button type="danger" size="mini" icon="el-icon-delete-solid" :underline="false">删除</el-button>

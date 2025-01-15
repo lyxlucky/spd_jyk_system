@@ -22,18 +22,18 @@
           </el-form-item>
         </el-col>
 
-        <el-col style="padding-top: 2px;" v-bind="styleResponsive ? { lg: 9, md: 2 } : { span: 6 }">
+        <el-col style="padding-top: 2px;" v-bind="styleResponsive ? { lg: 10, md: 2 } : { span: 6 }">
           <div class="ele-form-actions">
-            <el-button type="primary" size="mini" @click="search">查询</el-button>
-            <el-button type="primary" size="mini" @click="addPlanItemVisiable = true">添加计划品种</el-button>
-            <el-button type="primary" size="mini" @click="updateDeptPlantTableDetailVisible = true"
+            <el-button type="primary" size="mini" icon="el-icon-search" @click="search">查询</el-button>
+            <el-button type="primary" size="mini" icon="el-icon-plus" @click="addPlanItemVisiable = true">添加计划品种</el-button>
+            <el-button type="primary" size="mini" icon="el-icon-edit" @click="updateDeptPlantTableDetailVisible = true"
               :disabled='updateIsDisabled'>修改明细</el-button>
-            <el-button type="danger" size="mini" @click="deleteBottomTableItems" :disabled='IsDisabled'>剔除</el-button>
+            <el-button type="danger" icon="el-icon-delete" size="mini" @click="deleteBottomTableItems" :disabled='IsDisabled'>剔除</el-button>
             <!-- <el-button type="primary" size="mini" @click="exportPrintSheet">打印计划表</el-button> -->
-            <el-button type="primary" size="mini" @click="QuotationPlan()">引用计划模板</el-button>
+            <el-button type="primary" icon="el-icon-document-add" size="mini" @click="QuotationPlan()">引用计划模板</el-button>
             <!-- <el-button type="primary" size="mini" :disabled="excelBottomTableIsabled"
               @click="excelBottomTable">导出计划表</el-button> -->
-            <el-button type="primary" size="mini" :disabled='TopTableDisabled' @click="exportData">导出</el-button>
+            <el-button type="primary" icon="el-icon-download" size="mini" :disabled='TopTableDisabled' @click="exportData">导出</el-button>
             <el-upload :on-success="uploadSuccess" style="float: right;" :show-file-list="false" :action="uploadUrl" ref='upload' :limit="1">
               <el-button size="mini" icon="el-icon-_upload" type="primary">导入</el-button>
             </el-upload>

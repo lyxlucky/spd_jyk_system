@@ -37,7 +37,7 @@
           class="ele-cell-content ele-text-primary workplace-bottom-btn"
           @click="reset"
         >
-          <i class="el-icon-refresh-left"></i> 重置布局
+          <i class="el-icon-refresh"></i> 重置布局
         </div>
       </div>
     </el-card>

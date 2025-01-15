@@ -24,8 +24,8 @@
 
         <el-col v-bind="styleResponsive ? { lg: 5, md: 2 } : { span: 6 }">
           <div class="ele-form-actions">
-            <el-button type="primary" size="mini" @click="search">查询</el-button>
-            <el-button type="danger" size="mini" :disabled="IsDisabled" @click="deleteItem()">剔除</el-button>
+            <el-button type="primary" size="mini" icon="el-icon-search" @click="search">查询</el-button>
+            <el-button type="danger" size="mini" :disabled="IsDisabled" icon="el-icon-delete" @click="deleteItem()">剔除</el-button>
           </div>
         </el-col>
       </el-row>

@@ -21,12 +21,12 @@
         </div>
       </el-col>
 
-      <el-col v-bind="styleResponsive ? { lg: 4, md: 4 } : { span: 4 }" style="padding-left: 20px;padding-top: 2px;">
+      <el-col v-bind="styleResponsive ? { lg: 5, md: 4 } : { span: 4 }" style="padding-left: 20px;padding-top: 2px;">
         <div class="ele-form-actions">
           <el-button size="mini " type="primary" icon="el-icon-search" class="ele-btn-icon" @click="search">
             查询
           </el-button>
-          <el-button size="mini " type="primary" class="ele-btn-icon" @click="createItem">
+          <el-button size="mini " type="primary" icon="el-icon-plus" class="ele-btn-icon" @click="createItem">
             创建
           </el-button>
 
@@ -35,7 +35,7 @@
             剔除
           </el-button>
 
-          <el-button size="mini " type="primary" @click="submitItem" :disabled="isDisable" class="ele-btn-icon">
+          <el-button size="mini " type="primary" icon="el-icon-finished" @click="submitItem" :disabled="isDisable" class="ele-btn-icon">
             提交
           </el-button>
         </div>

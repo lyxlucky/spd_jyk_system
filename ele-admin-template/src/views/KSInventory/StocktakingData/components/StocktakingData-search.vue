@@ -15,7 +15,7 @@
             <el-button size="mini" type="primary" icon="el-icon-search" class="ele-btn-icon" @click="search" style="margin-left: 5px;">
               查询
             </el-button>
-            <el-button size="mini" icon="el-icon-refresh-left" @click="reset">重置</el-button>
+            <el-button size="mini" icon="el-icon-refresh" @click="reset">重置</el-button>
             <el-button size="mini" type="primary" icon="el-icon-paperclip" @click="syncData()">同步PDA盘点数据</el-button>
             <!-- 生成盘点数据 -->
             <el-button size="mini" type="primary" icon="el-icon-refresh" @click="generateData()">生成盘点数据</el-button>

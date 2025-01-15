@@ -360,7 +360,7 @@
         <el-button
           size="small"
           class="ele-fluid"
-          icon="el-icon-refresh-left"
+          icon="el-icon-refresh"
           @click="resetSetting"
         >
           {{ $t('layout.setting.reset') }}

@@ -14,7 +14,7 @@
           <el-button size="mini" type="primary" icon="el-icon-search" class="ele-btn-icon" @click="search">
             查询
           </el-button>
-          <el-button size="mini" @click="reset">重置</el-button>
+          <el-button size="mini" icon="el-icon-refresh" @click="reset">重置</el-button>
         </div>
       </el-col>
     </el-row>
