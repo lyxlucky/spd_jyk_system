@@ -48,7 +48,7 @@
         </el-date-picker>
       </el-form-item>
 
-      <el-form-item label="">
+      <el-form-item label="" style="margin-left: 15px">
         <el-button
           type="primary"
           icon="el-icon-search"
