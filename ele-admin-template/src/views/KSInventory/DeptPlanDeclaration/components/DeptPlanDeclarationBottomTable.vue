@@ -389,4 +389,13 @@ export default {
 .ele-body {
   padding: 0px;
 }
+
+::v-deep .ele-table-tool-default {
+  padding: 3px 0px 0px 5px;
+}
+
+::v-deep .ele-table-tool .ele-table-tool-title{
+  margin-bottom: 0;
+  margin-top: 0;
+}
 </style>

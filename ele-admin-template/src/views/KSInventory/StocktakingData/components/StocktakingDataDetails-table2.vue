@@ -490,4 +490,8 @@ export default {
 .ele-body {
   padding: 0px;
 }
+
+::v-deep .ele-table-tool-default {
+  padding: 0 0 0 5;
+}
 </style>

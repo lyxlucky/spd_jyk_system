@@ -2,13 +2,13 @@
 <template>
   <el-form class="ele-form-search">
     <el-row :gutter="10">
-      <el-col :lg="6" :md="12">
+      <el-col :lg="5" :md="12">
         <el-form-item label="">
-          <el-input v-model="where.BIND_DEF" placeholder="定数包" clearable />
+          <el-input size="mini" v-model="where.BIND_DEF" placeholder="定数包" clearable />
         </el-form-item>
       </el-col>
       <el-col :lg="3" :md="12">
-        <el-button type="primary" @click="search">查询</el-button>
+        <el-button size="mini" type="primary" @click="search">查询</el-button>
       </el-col>
     </el-row>
   </el-form>
@@ -302,3 +302,7 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+
+</style>

@@ -6,19 +6,19 @@
       <el-row :gutter="10">
         <el-col v-bind="styleResponsive ? { lg: 3, md: 2 } : { span: 4 }">
           <el-form-item label="">
-            <el-input v-model="where.VARIETIE_CODE_NEW" placeholder="编码/名称/规格" clearable />
+            <el-input size="mini" v-model="where.VARIETIE_CODE_NEW" placeholder="编码/名称/规格" clearable />
           </el-form-item>
         </el-col>
 
         <el-col v-bind="styleResponsive ? { lg: 3, md: 2 } : { span: 4 }">
           <el-form-item label="">
-            <el-input v-model="where.MANUFACTURING_ENT_NAME" placeholder="生产企业" clearable />
+            <el-input size="mini" v-model="where.MANUFACTURING_ENT_NAME" placeholder="生产企业" clearable />
           </el-form-item>
         </el-col>
 
         <el-col v-bind="styleResponsive ? { lg: 3, md: 2 } : { span: 4 }">
           <el-form-item label="">
-            <el-input v-model="where.APPROVAL_NUMBER" placeholder="注册证号" clearable />
+            <el-input size="mini" v-model="where.APPROVAL_NUMBER" placeholder="注册证号" clearable />
           </el-form-item>
         </el-col>
 

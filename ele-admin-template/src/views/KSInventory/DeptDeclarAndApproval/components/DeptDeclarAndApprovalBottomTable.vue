@@ -245,11 +245,11 @@ export default {
 }
 
 ::v-deep .ele-table-tool-default {
-  padding: 0;
-  margin-bottom: 0;
+  padding: 3px 0px 0px 5px;
 }
 
 ::v-deep .ele-table-tool .ele-table-tool-title{
   margin-bottom: 0;
+  margin-top: 0;
 }
 </style>

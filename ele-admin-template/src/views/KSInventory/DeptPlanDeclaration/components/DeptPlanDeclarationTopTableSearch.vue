@@ -43,7 +43,7 @@
 
       <el-col style="" v-bind="styleResponsive ? { lg: 5, md: 4 } : { span: 4 }">
         <el-form-item label="状态：">
-          <el-select v-model="where.status" @change="search()">
+          <el-select size="mini" v-model="where.status" @change="search()">
             <el-option label="全部" value=""></el-option>
             <el-option label="新增" value="0"></el-option>
             <el-option label="已提交" value="1"></el-option>

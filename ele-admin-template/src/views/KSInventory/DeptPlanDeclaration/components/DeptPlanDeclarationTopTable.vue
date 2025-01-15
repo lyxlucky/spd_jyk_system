@@ -6,7 +6,7 @@ yourFunctionName()
     <!-- @current-change="onCurrentChange" -->
     <!-- :toolkit="[]"  -->
     <ele-pro-table :paginationStyle=paginationStyle :key="key" highlight-current-row ref="table" 
-      @current-change="onCurrentChange" height="25vh" 
+      @current-change="onCurrentChange" height="29vh" 
       :rowClickChecked="true" :stripe="true"
       :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource"
       :selection.sync="selection" cache-key="DeptPlanDeclarationTopTable">
@@ -252,5 +252,13 @@ export default {
 <style scoped>
 .ele-body {
   padding: 0px;
+}
+
+::v-deep .ele-table-tool-default {
+  padding: 3px 0px 0px 5px;
+}
+
+::v-deep .ele-table-tool .ele-table-tool-title{
+  margin-bottom: 0;
 }
 </style>
