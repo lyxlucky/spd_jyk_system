@@ -26,7 +26,7 @@ export default {
         (key) => this.$t(key),
         this.$store.state.theme.tabs
       );
-    },
+    }
     // reloadAll() {
     //   this.isRouterAlive = false;
     //   this.$nextTick(() => {
@@ -46,4 +46,7 @@ export default {
 </script>
 
 <style lang='scss'>
+// ::v-deep .ele-table-tool-default {
+//   padding: 0;
+// }
 </style>

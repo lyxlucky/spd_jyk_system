@@ -2,7 +2,7 @@
   <div class="ele-body" v-if="RenderTabel">
     <template>
 
-      <el-dialog title="二维码" :visible.sync="dialogVisible" width="30%" >
+      <el-dialog title="二维码" :visible.sync="dialogVisible" width="30%">
         <div style="display: flex;justify-content: center;">
           <vue-qr :text="config.text" :size="200">
           </vue-qr>
@@ -13,7 +13,7 @@
     <user-edit :visible.sync="showEdit" :data="current" @done="reload" />
 
     <!-- 数据表格 -->
-    <ele-pro-table :key="key" :reserve-selection="true" highlight-current-row :row-key="(row) => row.PlanNum" @current-change="onCurrentChange" ref="table" height="18vh" :rowClickChecked="true" :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection">
+    <ele-pro-table :paginationStyle=paginationStyle :key="key" :reserve-selection="true" highlight-current-row :row-key="(row) => row.PlanNum" @current-change="onCurrentChange" ref="table" height="28vh" :rowClickChecked="true" :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" cache-key="KSInventoryBasicDataTable">
       <!-- 表头工具栏 -->
       <template v-slot:toolbar>
         <LrJykInstrument-search @search="reload" />
@@ -38,7 +38,7 @@ import {
 } from '@/api/KSInventory/KSDepartmentalPlan';
 import { GetLrJykInstrument } from '@/api/KSInventory/LrJykInstrument';
 import UserEdit from './user-edit.vue';
-import vueQr from 'vue-qr'
+import vueQr from 'vue-qr';
 export default {
   name: 'KSDepartmentalPlanTable',
   props: ['IsReload'],
@@ -108,6 +108,11 @@ export default {
           }
         }
       ],
+      paginationStyle: {
+        height: '18px',
+        padding: '0px 0px 5px 0px',
+        'margin-top': '-5px'
+      },
       dialogVisible: false,
       // 二维码
       config: {
@@ -229,5 +234,9 @@ export default {
 <style scoped>
 .ele-body {
   padding: 0px;
+}
+
+::v-deep .ele-table-tool-default {
+  padding: 0;
 }
 </style>

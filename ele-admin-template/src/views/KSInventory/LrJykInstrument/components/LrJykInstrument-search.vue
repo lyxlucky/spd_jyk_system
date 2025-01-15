@@ -3,18 +3,18 @@
   <el-form label-width="77px" class="ele-form-search" @keyup.enter.native="search" @submit.native.prevent>
     
     <el-row :gutter="20">
-      <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 8 }">
-        <el-input clearable v-model="where.INSTRUMENT_NAME" style="width:200px" placeholder="仪器名称/代码" />
+      <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 8 }">
+        <el-input size="mini" clearable v-model="where.INSTRUMENT_NAME" style="width:180px" placeholder="仪器名称/代码" />
       </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 8 }">
-        <el-input clearable v-model="where.WORKING_GROUP" placeholder="工作组" />
+      <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 8 }">
+        <el-input size="mini" clearable v-model="where.WORKING_GROUP" placeholder="工作组" />
       </el-col>
       <el-col v-bind="styleResponsive ? { lg: 3, md: 4 } : { span: 4 }">
         <div class="ele-form-actions">
-          <el-button size="small" type="primary" icon="el-icon-search" class="ele-btn-icon" @click="search">
+          <el-button size="mini" type="primary" icon="el-icon-search" class="ele-btn-icon" @click="search">
             查询
           </el-button>
-          <el-button size="small" @click="reset">重置</el-button>
+          <el-button size="mini" @click="reset">重置</el-button>
         </div>
       </el-col>
     </el-row>
