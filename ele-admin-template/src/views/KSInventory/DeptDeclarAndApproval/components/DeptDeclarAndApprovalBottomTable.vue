@@ -1,7 +1,7 @@
 <template>
   <div class="ele-body">
     <!-- 数据表格 -->
-    <ele-pro-table ref="table" :toolStyle="toolStyle" height="40vh" highlight-current-row :stripe="true"
+    <ele-pro-table :paginationStyle=paginationStyle ref="table" :toolStyle="toolStyle" height="40vh" highlight-current-row :stripe="true"
       :rowClickChecked="true" :rowClickCheckedIntelligent="false" :pageSize="pageSize" :pageSizes="pageSizes"
       :columns="columns" :datasource="datasource" :initLoad="false" :selection.sync="selection" @selection-change="onSelectionChange"
       cache-key="DeptDeclarAndApprovalBottomTable">
@@ -93,7 +93,10 @@ export default {
           label: '中标价',
           align: 'center',
           showOverflowTooltip: true,
-          fixed: 'left'
+          fixed: 'left',
+          formatter: (row, column, cellValue) => {
+            return Number(cellValue).toFixed(2);
+          }
         },
         {
           prop: 'PLAN_NUM',
@@ -131,6 +134,11 @@ export default {
           fixed: 'left'
         },
       ],
+      paginationStyle: {
+        height: '18px',
+        padding: '0px 0px 5px 0px',
+        'margin-top': '-5px'
+      },
       toolbar: false,
       toolStyle: {
         display: 'flex',
@@ -234,5 +242,14 @@ export default {
 <style scoped>
 .ele-body {
   padding: 0px;
+}
+
+::v-deep .ele-table-tool-default {
+  padding: 0;
+  margin-bottom: 0;
+}
+
+::v-deep .ele-table-tool .ele-table-tool-title{
+  margin-bottom: 0;
 }
 </style>

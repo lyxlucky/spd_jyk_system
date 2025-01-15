@@ -4,13 +4,11 @@ yourFunctionName()
   <div class="ele-body">
     <!-- 数据表格 -->
     <!-- @current-change="onCurrentChange" -->
-    <ele-pro-table :key="key" highlight-current-row ref="table" @current-change="onCurrentChange" height="15vh"
-      :rowClickChecked="true" :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns"
-      :datasource="datasource" :selection.sync="selection" cache-key="DeptDeclarAndApprovalTopTable">
+    <ele-pro-table :paginationStyle=paginationStyle :key="key" highlight-current-row ref="table" @current-change="onCurrentChange" height="30vh" :rowClickChecked="true" :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" cache-key="DeptDeclarAndApprovalTopTable">
       <!-- 表头工具栏 -->
       <template v-slot:toolbar>
         <!-- 搜索表单 -->
-        <DeptDeclarAndApprovalTopTableSearch ref="child" @reload="reload" :selection="selection"/>
+        <DeptDeclarAndApprovalTopTableSearch ref="child" @reload="reload" :selection="selection" style="margin-bottom: 0px;" />
       </template>
 
       <!-- 审批状态 -->
@@ -35,7 +33,10 @@ yourFunctionName()
 
 <script>
 import DeptDeclarAndApprovalTopTableSearch from '@/views/KSInventory/DeptDeclarAndApproval/components/DeptDeclarAndApprovalTopTableSearch';
-import { getDeptPlanDecList,getDeptPlanDecListInArray  } from "@/api/KSInventory/DeptDeclarAndApproval"
+import {
+  getDeptPlanDecList,
+  getDeptPlanDecListInArray
+} from '@/api/KSInventory/DeptDeclarAndApproval';
 export default {
   name: 'DeptDeclarAndApprovalTopTable',
   props: ['IsReload'],
@@ -58,7 +59,7 @@ export default {
           label: '科室名称',
           minWidth: 120,
           align: 'center',
-          showOverflowTooltip: true,
+          showOverflowTooltip: true
         },
         {
           prop: 'PLAN_MONTH_TIME',
@@ -68,9 +69,9 @@ export default {
           minWidth: 70,
           formatter(row, column, cellValue, index) {
             if (cellValue != null) {
-              return cellValue.substring(0, 7)
+              return cellValue.substring(0, 7);
             } else {
-              return ""
+              return '';
             }
           }
         },
@@ -78,7 +79,7 @@ export default {
           prop: 'CREATE_MAN',
           label: '创建人',
           align: 'center',
-          showOverflowTooltip: true,
+          showOverflowTooltip: true
         },
         // todo
         {
@@ -87,7 +88,7 @@ export default {
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 60,
-          slot:"APPROVE_STATE"
+          slot: 'APPROVE_STATE'
         },
         //todo
         {
@@ -96,7 +97,7 @@ export default {
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 80,
-          slot:"TYPE"
+          slot: 'TYPE'
         },
         {
           prop: 'CREATE_TIME',
@@ -118,7 +119,7 @@ export default {
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 70
-        },
+        }
         // {
         //   prop: 'Dept_One_Code',
         //   label: '计划单号',
@@ -127,6 +128,11 @@ export default {
         //   minWidth: 70
         // }
       ],
+      paginationStyle: {
+        height: '18px',
+        padding: '0px 0px 5px 0px',
+        'margin-top': '-5px'
+      },
       toolbar: false,
       pageSize: 10,
       pagerCount: 2,
@@ -136,19 +142,21 @@ export default {
       // 当前编辑数据
       current: null,
       data: [],
-      key: 0,
+      key: 0
     };
   },
   methods: {
     /* 表格数据源 */
     datasource({ page, limit, where, order }) {
-      let data = getDeptPlanDecListInArray({ page, limit, where, order }).then((res) => {
-        var tData = {
-          count: res.total,
-          list: res.result
-        };
-        return tData;
-      });
+      let data = getDeptPlanDecListInArray({ page, limit, where, order }).then(
+        (res) => {
+          var tData = {
+            count: res.total,
+            list: res.result
+          };
+          return tData;
+        }
+      );
       return data;
     },
     /* 刷新表格 */
@@ -158,7 +166,7 @@ export default {
     onCurrentChange(current) {
       this.current = current;
       this.$emit('getCurrent', current);
-    },
+    }
   },
   watch: {
     IsReload() {
@@ -167,20 +175,19 @@ export default {
       }
     },
     selection() {
-      this.$emit("TopTableSelection", this.selection)
+      this.$emit('TopTableSelection', this.selection);
     }
   },
-  mounted(){
+  mounted() {
     this.$bus.$on('submitDeptPlanTableDataItem', (data) => {
       this.reload();
-    })
+    });
   },
-  beforeDestroy(){
-    this.$bus.$off('submitDeptPlanTableDataItem')
+  beforeDestroy() {
+    this.$bus.$off('submitDeptPlanTableDataItem');
   },
 
-  created() {
-  },
+  created() {}
 };
 </script>
 
@@ -188,5 +195,14 @@ export default {
 <style scoped>
 .ele-body {
   padding: 0px;
+}
+
+::v-deep .ele-table-tool-default {
+  padding: 0;
+  margin-bottom: 0;
+}
+
+::v-deep .ele-table-tool .ele-table-tool-title{
+  margin-bottom: 0;
 }
 </style>

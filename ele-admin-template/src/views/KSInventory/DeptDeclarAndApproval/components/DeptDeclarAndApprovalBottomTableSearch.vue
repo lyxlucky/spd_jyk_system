@@ -6,26 +6,26 @@
       <el-row :gutter="10">
         <el-col v-bind="styleResponsive ? { lg: 3, md: 2 } : { span: 4 }">
           <el-form-item label="">
-            <el-input v-model="where.VARIETIE_CODE_NEW" placeholder="编码/名称/规格" clearable />
+            <el-input size="mini" v-model="where.VARIETIE_CODE_NEW" placeholder="编码/名称/规格" clearable />
           </el-form-item>
         </el-col>
 
         <el-col v-bind="styleResponsive ? { lg: 3, md: 2 } : { span: 4 }">
           <el-form-item label="">
-            <el-input v-model="where.MANUFACTURING_ENT_NAME" placeholder="生产企业" clearable />
+            <el-input  size="mini" v-model="where.MANUFACTURING_ENT_NAME" placeholder="生产企业" clearable />
           </el-form-item>
         </el-col>
 
         <el-col v-bind="styleResponsive ? { lg: 3, md: 2 } : { span: 4 }">
           <el-form-item label="">
-            <el-input v-model="where.APPROVAL_NUMBER" placeholder="注册证号" clearable />
+            <el-input  size="mini" v-model="where.APPROVAL_NUMBER" placeholder="注册证号" clearable />
           </el-form-item>
         </el-col>
 
         <el-col v-bind="styleResponsive ? { lg: 5, md: 2 } : { span: 6 }">
           <div class="ele-form-actions">
-            <el-button type="primary" size="medium" @click="search">查询</el-button>
-            <el-button type="danger" size="medium" :disabled="IsDisabled" @click="deleteItem()">剔除</el-button>
+            <el-button type="primary" size="mini" @click="search">查询</el-button>
+            <el-button type="danger" size="mini" :disabled="IsDisabled" @click="deleteItem()">剔除</el-button>
           </div>
         </el-col>
       </el-row>
