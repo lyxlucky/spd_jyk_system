@@ -118,7 +118,7 @@
               type="success"
               size="mini"
               class="ele-btn-icon"
-              v-if="HOME_HP == 'stzx'"
+              v-if="['stzl', 'stzx'].includes(HOME_HP) || ENV == 'development'"
               @click="bindMachine"
               icon="el-icon-link"
               >绑定设备</el-button
@@ -179,6 +179,12 @@
       };
     },
     computed: {
+      HOME_HP() {
+        return HOME_HP;
+      },
+      ENV(){
+        return process.env.NODE_ENV
+      },
       // 是否开启响应式布局
       styleResponsive() {
         return this.$store.state.theme.styleResponsive;
