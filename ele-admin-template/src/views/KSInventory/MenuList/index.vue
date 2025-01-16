@@ -182,6 +182,12 @@
       </el-card>
     </div>
 
+    <div>
+      <el-card v-loading="varLoading">
+        <ele-chart :option="varTopOption" style="height: 500px" />
+      </el-card>
+    </div>
+
     <BidVarInfoDept :visible.sync="BidListShowEdit" />
     <VarietyDataLzhLook :visible.sync="VarietyDataLzhLookShow" />
     <DpetOneAuthWithDept :visible.sync="DpetOneAuthWithDeptShow" />
@@ -198,7 +204,8 @@
 
   import {
     getStaticsDataHistogram,
-    getStaticsDataLineChart
+    getStaticsDataLineChart,
+    getCurrentDeptVarTop20
   } from '@/api/KSInventory/MenuList/index';
   import EleChart from 'ele-admin/packages/ele-chart';
   export default {
@@ -217,11 +224,13 @@
         JYkDefRemindTotal: 0,
         TableListTotal: 0,
         saleroomData: [],
+        varData: [],
         lineChartData: [],
         dataYear: this.$moment().format('YYYY'),
         lineYear: this.$moment().format('YYYY'),
         dataLoading: true,
         lineLoading: true,
+        varLoading: true,
         BidListShowEdit: false,
         VarietyDataLzhLookShow: false,
         DpetOneAuthWithDeptShow: false,
@@ -269,7 +278,7 @@
         getTableList({
           page: 1,
           limit: 9999,
-          where:{}
+          where: {}
         }).then((res) => {
           this.TableListTotal = res.total;
         });
@@ -284,6 +293,20 @@
       downloadGuide() {
         var url = `${BACK_BASE_URL}/ZL/上药控股SPD科室操作手册.pdf`;
         window.open(url.replace('/undefined', ''));
+      },
+      getVarTop20() {
+        this.$nextTick(() => {
+          this.varLoading = true;
+          getCurrentDeptVarTop20()
+            .then((res) => {
+              this.varLoading = false;
+              this.varData = res.result;
+            })
+            .catch((err) => {
+              this.$message.error(err);
+              this.varLoading = false;
+            });
+        });
       },
       /* 获取数据 */
       getSaleroomData() {
@@ -405,6 +428,7 @@
         this.getTableListTotal();
         this.getSaleroomData();
         this.getLineChartData();
+        this.getVarTop20();
       });
     },
     beforeDestroy() {
@@ -518,11 +542,65 @@
           ]
         };
       },
+
+      varTopOption() {
+        return {
+          title: {
+            text: '科室消耗排名 Top 20'
+          },
+          tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+              type: 'shadow'
+            },
+            formatter: function (params) {
+              // params 是一个数组，包含当前 hover 的柱子信息
+              const item = params[0];
+              return `
+                品种名称: ${item.name}<br/>
+                消耗金额: ${(Number(item.value)).toFixed(2)} 万元
+              `;
+            }
+          },
+          xAxis: {
+            type: 'value',
+            name: '消耗金额 (万元)'
+          },
+          yAxis: {
+            type: 'category',
+            data: this.varData.map((item) => item.VARIETIE_NAME),
+            inverse: true // 降序排列
+          },
+          series: [
+            {
+              type: 'bar',
+              data: this.varData.map((item) =>
+                (Number(item.TOTALMONEY) / 10000).toFixed(2)
+              ),
+              label: {
+                show: true,
+                position: 'right',
+                formatter: '{c} 万元' // 显示数值 + 单位
+              }
+            }
+          ]
+        };
+      },
       /* 配置 */
       saleChartOption() {
         const months = [
-          '一月', '二月', '三月', '四月', '五月', '六月',
-          '七月', '八月', '九月', '十月', '十一月', '十二月'
+          '一月',
+          '二月',
+          '三月',
+          '四月',
+          '五月',
+          '六月',
+          '七月',
+          '八月',
+          '九月',
+          '十月',
+          '十一月',
+          '十二月'
         ];
 
         // 初始化数据结构，默认填充为 0 或者 null
@@ -538,8 +616,12 @@
             initData[monthIndex].TOTAL_MONEY = item.TOTAL_MONEY / 10000; // 转换为万元
           }
           if (item.PAST_MONTH) {
-            const pastMonthIndex = this.$moment(item.PAST_MONTH, 'YYYY-MM').month();
-            initData[pastMonthIndex].PAST_TOTAL_MONEY = item.PAST_TOTAL_MONEY / 10000; // 转换为万元
+            const pastMonthIndex = this.$moment(
+              item.PAST_MONTH,
+              'YYYY-MM'
+            ).month();
+            initData[pastMonthIndex].PAST_TOTAL_MONEY =
+              item.PAST_TOTAL_MONEY / 10000; // 转换为万元
           }
         });
 
@@ -602,6 +684,7 @@
       this.permission_groupList();
       this.getSaleroomData();
       this.getLineChartData();
+      this.getVarTop20();
       // this.MenuList = this.$store.state.user.info.permission_group;
       /* 获取数据 */
     }
