@@ -184,6 +184,14 @@
 
     <div>
       <el-card v-loading="varLoading">
+        <el-date-picker
+          v-model="varTopTime"
+          @change="getVarTop20"
+          type="month"
+          value-format="yyyy-MM"
+          placeholder="请选择时间"
+        >
+        </el-date-picker>
         <ele-chart :option="varTopOption" style="height: 500px" />
       </el-card>
     </div>
@@ -228,6 +236,7 @@
         lineChartData: [],
         dataYear: this.$moment().format('YYYY'),
         lineYear: this.$moment().format('YYYY'),
+        varTopTime:this.$moment().format('YYYY-MM'),
         dataLoading: true,
         lineLoading: true,
         varLoading: true,
@@ -297,7 +306,7 @@
       getVarTop20() {
         this.$nextTick(() => {
           this.varLoading = true;
-          getCurrentDeptVarTop20()
+          getCurrentDeptVarTop20({time:this.varTopTime})
             .then((res) => {
               this.varLoading = false;
               this.varData = res.result;
@@ -546,7 +555,9 @@
       varTopOption() {
         return {
           title: {
-            text: '科室消耗排名 Top 20'
+            text: '科室消耗排名 Top 20',
+            left: 'right',
+            top: 'top'
           },
           tooltip: {
             trigger: 'axis',
