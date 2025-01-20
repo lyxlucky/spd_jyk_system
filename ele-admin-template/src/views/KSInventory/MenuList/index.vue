@@ -567,11 +567,13 @@
             formatter: function (params) {
               // params 是一个数组，包含当前 hover 的柱子信息
               const item = params[0];
+              const dataIndex = item.dataIndex;
+              const varItem = this.varData[dataIndex];
               return `
-                品种名称: ${item.name}<br/>
+                品种编码:${varItem.VARIETIE_CODE_NEW} 品种名称: ${item.name}<br/>
                 消耗金额: ${(Number(item.value)).toFixed(2)} 万元
               `;
-            }
+            }.bind(this)
           },
           xAxis: {
             type: 'value',
