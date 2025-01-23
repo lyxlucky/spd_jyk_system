@@ -7,7 +7,7 @@
       <template v-slot:toolbar>
         <!-- 搜索表单 -->
         <!-- <label>合计数量:<b>{{sumCount}}</b></label> -->
-      <span v-if="HOME_HP == 'stzx'" style="font-size: 20px;">当前设备： {{ bindMachine || '暂无' }}</span>
+      <span v-if="['stzl', 'stzx'].includes(HOME_HP) || ENV == 'development'" style="font-size: 20px;">当前设备： {{ bindMachine || '暂无' }}</span>
       </template>
 
       <template v-slot:State="{ row }">
@@ -106,6 +106,7 @@ import {
   DeletePlanList
 } from '@/api/KSInventory/KSDepartmentalPlan';
 import { GetJykMainShelf } from '@/api/KSInventory/KSInventoryQuery';
+import { HOME_HP } from '@/config/setting';
 export default {
   name: 'KSDepartmentalPlanTable',
   components: {
@@ -558,6 +559,14 @@ export default {
     dayjs(this.dateNow2).add(30, 'day');
     dayjs(this.dateNow3).add(60, 'day');
     dayjs(this.dateNow4).add(90, 'day');
+  },
+  computed: {
+    HOME_HP() {
+        return HOME_HP;
+      },
+      ENV(){
+        return process.env.NODE_ENV
+      },
   },
   mounted() {
     this.$bus.$on('handleCommand', (data) => {

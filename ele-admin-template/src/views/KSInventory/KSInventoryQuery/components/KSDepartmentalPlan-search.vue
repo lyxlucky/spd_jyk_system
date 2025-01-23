@@ -90,7 +90,7 @@
             placeholder="入库单号"
           />
         </el-col>
-        <el-col v-bind="styleResponsive ? { lg: 13, md: 12 } : { span: 12 }">
+        <el-col v-bind="styleResponsive ? { lg: 20, md: 12 } : { span: 12 }">
           <el-button
             size="mini"
             type="primary"
@@ -132,7 +132,7 @@
           <el-button
             size="mini"
             type="primary"
-            v-if="HOME_HP == 'stzx'"
+            v-if="['stzl', 'stzx'].includes(HOME_HP) || ENV == 'development'"
             icon="el-icon-position"
             @click="outStockWithUDI()"
             >UDI出库</el-button
@@ -142,7 +142,7 @@
             type="success"
             size="mini"
             class="ele-btn-icon"
-            v-if="HOME_HP == 'stzx'"
+            v-if="['stzl', 'stzx'].includes(HOME_HP) || ENV == 'development'"
             @click="bindMachine"
             icon="el-icon-link"
             >绑定设备</el-button
@@ -210,7 +210,7 @@
 </template>
 
 <script>
-  import { API_BASE_URL, BACK_BASE_URL } from '@/config/setting';
+  import { API_BASE_URL, BACK_BASE_URL,HOME_HP } from '@/config/setting';
   import { CreatList } from '@/api/KSInventory/KSDepartmentalPlan';
   import { GetLrJykInstrument } from '@/api/KSInventory/LrJykInstrument';
   import udiOutStock from './udiOutStock';
@@ -267,7 +267,13 @@
           );
         }
         return true;
-      }
+      },
+      HOME_HP() {
+        return HOME_HP;
+      },
+      ENV(){
+        return process.env.NODE_ENV
+      },
     },
     methods: {
       bindMachine() {

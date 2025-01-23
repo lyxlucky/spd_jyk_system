@@ -113,7 +113,7 @@
           <el-button
             type="primary"
             icon="el-icon-s-cooperation"
-            v-if="['stzl', 'stzx'].includes(HOME_HP)"
+            v-if="['stzl', 'stzx'].includes(HOME_HP) || ENV == 'development'"
             size="mini"
             @click="Approval"
             :disabled="!IsToExamine"
@@ -431,6 +431,9 @@
           this.KSDepartmentalPlanDataSearch.State == '6' ||
           this.KSDepartmentalPlanDataSearch.State == '5'
         );
+      },
+      ENV(){
+        return process.env.NODE_ENV
       },
       HOME_HP() {
         return HOME_HP;
