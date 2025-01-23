@@ -13,7 +13,7 @@
     <user-edit :visible.sync="showEdit" :data="current" @done="reload" />
 
     <!-- 数据表格 -->
-    <ele-pro-table :paginationStyle=paginationStyle :key="key" :reserve-selection="true" highlight-current-row :row-key="(row) => row.PlanNum" @current-change="onCurrentChange" ref="table" height="28vh" :rowClickChecked="true" :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" cache-key="KSInventoryBasicDataTable">
+    <ele-pro-table :paginationStyle=paginationStyle :key="key" :reserve-selection="true" highlight-current-row :row-key="(row) => row.PlanNum" @current-change="onCurrentChange" ref="table" height="30vh" :rowClickChecked="true" :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" cache-key="KSInventoryBasicDataTable">
       <!-- 表头工具栏 -->
       <template v-slot:toolbar>
         <LrJykInstrument-search @search="reload" />

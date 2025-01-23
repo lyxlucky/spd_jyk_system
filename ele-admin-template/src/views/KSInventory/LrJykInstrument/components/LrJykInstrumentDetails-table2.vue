@@ -4,7 +4,7 @@
     <!-- 数据表格 -->
     <!-- :rowClickChecked="true"  -->
     <!-- :rowClickCheckedIntelligent="false"  -->
-    <ele-pro-table :paginationStyle=paginationStyle ref="table" :toolStyle="toolStyle" height="40vh" highlight-current-row :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" @selection-change="onSelectionChange" cache-key="KSInventoryBasicDataTable">
+    <ele-pro-table :paginationStyle=paginationStyle ref="table" :toolStyle="toolStyle" height="42vh" highlight-current-row :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" @selection-change="onSelectionChange" cache-key="KSInventoryBasicDataTable">
       <!-- 表头工具栏 -->
       <!-- 右表头 -->
       <!-- <template v-slot:toolkit>
