@@ -207,7 +207,8 @@
       bindMachine() {
         this.$prompt('扫码绑定设备', '提示', {
           confirmButtonText: '确定',
-          cancelButtonText: '取消'
+          cancelButtonText: '取消',
+          closeOnClickModal:false
         })
           .then(({ value }) => {
             const loading = this.$messageLoading('处理中...');

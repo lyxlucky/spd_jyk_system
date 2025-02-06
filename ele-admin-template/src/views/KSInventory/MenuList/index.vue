@@ -236,7 +236,7 @@
         lineChartData: [],
         dataYear: this.$moment().format('YYYY'),
         lineYear: this.$moment().format('YYYY'),
-        varTopTime:this.$moment().format('YYYY-MM'),
+        varTopTime: this.$moment().format('YYYY-MM'),
         dataLoading: true,
         lineLoading: true,
         varLoading: true,
@@ -306,7 +306,7 @@
       getVarTop20() {
         this.$nextTick(() => {
           this.varLoading = true;
-          getCurrentDeptVarTop20({time:this.varTopTime})
+          getCurrentDeptVarTop20({ time: this.varTopTime })
             .then((res) => {
               this.varLoading = false;
               this.varData = res.result;
@@ -555,7 +555,7 @@
       varTopOption() {
         return {
           title: {
-            text: '科室消耗排名 Top 20',
+            text: `${this.$store.state.user.info.DeptNow.Dept_Two_Name}消耗排名 Top 20`,
             left: 'right',
             top: 'top'
           },
@@ -570,8 +570,9 @@
               const dataIndex = item.dataIndex;
               const varItem = this.varData[dataIndex];
               return `
-                品种编码:${varItem.VARIETIE_CODE_NEW} 品种名称: ${item.name}<br/>
-                消耗金额: ${(Number(item.value)).toFixed(2)} 万元
+                品种编码:${varItem.VARIETIE_CODE_NEW} <br/>
+                品种名称: ${item.name}<br/>
+                消耗金额: ${Number(item.value).toFixed(2)} 万元
               `;
             }.bind(this)
           },
@@ -581,6 +582,12 @@
           },
           yAxis: {
             type: 'category',
+            grid: {
+              left: '20%',
+              right: '3%',
+              bottom: '3%',
+              containLabel: true
+            },
             data: this.varData.map((item) => item.VARIETIE_NAME),
             inverse: true // 降序排列
           },
