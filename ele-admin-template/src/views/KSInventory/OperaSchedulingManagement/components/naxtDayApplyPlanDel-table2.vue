@@ -15,6 +15,8 @@
       :columns="columns"
       :datasource="datasource"
       :selection.sync="selection"
+      :rowClickChecked="true"
+      :rowClickCheckedIntelligent="false"
       @selection-change="onSelectionChange"
       cache-key="KSInventoryBasicDataTable"
     >
@@ -38,9 +40,7 @@
         <!-- 搜索表单 -->
        
         <naxtDayApplyPlanDelSearch
-          @Approval="Approval"
-          @exportData="exportData"
-          @search="reload"
+          @search="reload(data)"
           @ClickReload="ClickReload"
           :KSDepartmentalPlanDataSearch="KSDepartmentalPlanDataSearch"
           :selection="selection"
@@ -171,11 +171,6 @@
 <script>
   import naxtDayApplyPlanDelSearch from './naxtDayApplyPlanDel-search.vue';
   import {
-    SerachPlanListDeta,
-    UpdateApplyPlanBZ,
-    Approval
-  } from '@/api/KSInventory/KSDepartmentalPlan';
-  import {
     GetNaxtDayApplyPlanDel,
   } from '@/api/KSInventory/OperaSchedulingManagement';
   import { utils, writeFile } from 'xlsx';
@@ -218,7 +213,7 @@
           // },
           {
             // prop: 'VarCode',
-            slot: 'VARIETIE_CODE',
+            prop: 'VARIETIE_CODE',
             label: '品种编码',
             align: 'center',
             showOverflowTooltip: true,
@@ -274,12 +269,11 @@
             width: 150
           },
           {
-            slot: 'CREATE_TIME',
+            prop: 'CREATE_TIME',
             label: '申请时间',
             align: 'center',
             showOverflowTooltip: true,
-            width: 120,
-            fixed: 'left'
+            width: 150,
           },
           {
             prop: 'CREATE_MAN',
@@ -296,9 +290,9 @@
           'flex-wrap': 'wrap',
           'align-items': 'flex-end'
         },
-        pageSize: 9999999,
+        pageSize: 10,
         pagerCount: 2,
-        pageSizes: [100, 9999999],
+        pageSizes: [10, 20,50,100,999999],
         // 表格选中数据
         selection: [],
         // 当前编辑数据
@@ -321,24 +315,6 @@
       };
     },
     methods: {
-      Approval() {
-        Approval({ PlanNum: this.KSDepartmentalPlanData.PlanNum }).then(
-          (res) => {
-            if (res.code == 200) {
-              this.$message({
-                type: 'success',
-                message: '审批成功'
-              });
-            } else {
-              this.$message({
-                type: 'error',
-                message: res.message
-              });
-            }
-            this.reload();
-          }
-        );
-      },
       /* 表格数据源 */
       datasource({ page, limit, where, order }) {
         let data = GetNaxtDayApplyPlanDel({ page, limit, where, order }).then(
@@ -359,7 +335,8 @@
       },
       /* 刷新表格 */
       reload(where) {
-        where.PlanNum = this.KSDepartmentalPlanData.PlanNum;
+        // where.ID = this.KSDepartmentalPlanData.ID;
+        console.log(where)
         this.$refs.table.reload({ page: 1, where: where });
       },
       ClickReload(IsReload) {
@@ -379,43 +356,7 @@
           this.$refs.table.reload({ page: 1, where: where });
         }
       },
-      OpenUpApplyPlanBZBox(ID) {
-        this.$prompt('请输入备注信息', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消'
-          // inputPattern:
-          //   /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
-          // inputErrorMessage: '邮箱格式不正确'
-        })
-          .then(({ value }) => {
-            const loading = this.$messageLoading('备注提交中..');
-            var data = {
-              ID,
-              REMARK: value
-            };
-            UpdateApplyPlanBZ(data).then((res) => {
-              if (res.code == 200) {
-                this.$message({
-                  type: 'success',
-                  message: '备注成功'
-                });
-              } else {
-                this.$message({
-                  type: 'error',
-                  message: res.message
-                });
-              }
-              loading.close();
-              this.reload();
-            });
-          })
-          .catch(() => {
-            this.$message({
-              type: 'info',
-              message: '取消备注'
-            });
-          });
-      },
+    
       dialogVisibleFun(row) {
         this.dialogVisible = true;
         // row.PlanQty = this.count1*this.count2+
@@ -423,69 +364,7 @@
         this.changeSumByEN(row);
         this.rowData = row;
       },
-      exportData(data) {
-        console.log(data);
-        const loading = this.$messageLoading('正在导出数据...');
-
-        var Dept_Two_CodeStr = '';
-        var userDeptList = this.$store.state.user.info.userDept;
-        for (let i = 0; i < userDeptList.length; i++) {
-          Dept_Two_CodeStr =
-            Dept_Two_CodeStr + userDeptList[i].Dept_Two_Code + ',';
-        }
-
-        this.$refs.table.doRequest(({ where, order }) => {
-          where.DeptCode = Dept_Two_CodeStr;
-          where.SerachName = data.SerachName;
-          SerachPlanListDeta({
-            page: 1,
-            limit: 999999,
-            where: where,
-            order: order
-          })
-            .then((res) => {
-              loading.close();
-              const array = [
-                [
-                  '品种编码',
-                  '品种全称',
-                  '型号/规格',
-                  '生产企业名称',
-                  '申领数量',
-                  '单位',
-                  '结算价',
-                  '供应商名称'
-                ]
-              ];
-              res.result.forEach((d) => {
-                array.push([
-                  d.VarCode,
-                  d.VarName,
-                  d.GG,
-                  d.Manufacturing,
-                  d.PlanQty,
-                  d.Unit,
-                  d.Price,
-                  d.SUPPLIER_NAME
-                ]);
-              });
-              writeFile(
-                {
-                  SheetNames: ['Sheet1'],
-                  Sheets: {
-                    Sheet1: utils.aoa_to_sheet(array)
-                  }
-                },
-                '科室计划详情.xlsx'
-              );
-              this.$message.success('导出成功');
-            })
-            .catch((e) => {
-              loading.close();
-              this.$message.error(e.message);
-            });
-        });
-      },
+    
       handleClose(done) {
         done();
         // this.$confirm('确认关闭？')
@@ -514,9 +393,10 @@
     watch: {
       KSDepartmentalPlanDataSearch() {
         this.$forceUpdate();
+        // console.log(this.KSDepartmentalPlanData)
         if (this.KSDepartmentalPlanData) {
           var where = {
-            PlanNum: this.KSDepartmentalPlanData.PlanNum
+            MAIN_ID: this.KSDepartmentalPlanData.ID
           };
         }
         this.$refs.table.reload({ page: 1, where: where });

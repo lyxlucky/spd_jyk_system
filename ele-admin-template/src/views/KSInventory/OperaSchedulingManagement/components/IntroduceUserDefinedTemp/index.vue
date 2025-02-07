@@ -6,11 +6,16 @@
         <user-search @addKSKS="addKSKSDepartmentalPlanData" @search="reload" />
         <!-- 数据表格 -->
         <!-- :rowClickChecked="true" :rowClickCheckedIntelligent="false" -->
-        <ele-pro-table ref="table" height="500px" :row-key="(row) => row.VarID" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" @selection-change="onSelectionChange" cache-key="DepaStorageQuery">
+        <ele-pro-table ref="table" height="500px" :row-key="(row) => row.VarID" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" :rowClickChecked="true" :rowClickCheckedIntelligent="false" @selection-change="onSelectionChange" cache-key="DepaStorageQuery">
           <!-- 操作列 -->
           <template v-slot:APPLY_QTY="{ row }">
             <el-form-item label="">
-              <el-input size="mini" v-model="row.APPLY_QTY"></el-input>
+              <el-input size="mini" type="number" v-model="row.APPLY_QTY"></el-input>
+            </el-form-item>
+          </template>
+          <template v-slot:REMARK="{ row }">
+            <el-form-item label="">
+              <el-input size="mini" v-model="row.REMARK"></el-input>
             </el-form-item>
           </template>
         </ele-pro-table>
@@ -33,8 +38,8 @@
 import { utils, writeFile } from 'xlsx';
 import UserSearch from './components/user-search.vue';
 import UserEdit from './components/user-edit.vue';
+import { AddNaxtDayApplyPlanDelBatch } from '@/api/KSInventory/OperaSchedulingManagement';
 
-import { GetDeptInStockDetail } from '@/api/KSInventory/DepaStorageQuery';
 import {
   SerachPlanList,
   KeeptListDeta
@@ -214,6 +219,14 @@ export default {
           showOverflowTooltip: true
         },
         {
+          slot: 'REMARK',
+          label: '备注',
+          width: 120,
+          align: 'center',
+          fixed: 'right',
+          showOverflowTooltip: true
+        },
+        {
           prop: 'VARIETIE_CODE',
           label: 'VARIETIE_CODE',
           align: 'center',
@@ -279,6 +292,7 @@ export default {
     },
     /* 刷新表格 */
     reload(where) {
+      where.ID = this.IntroduceUserDefinedTempSearch.ID
       this.$refs.table.reload({ page: 1, where: where });
     },
     /* 打开编辑弹窗 */
@@ -295,15 +309,40 @@ export default {
       this.$emit('update:visible', value);
     },
     addKSKSDepartmentalPlanData() {
+      // console.log(this.IntroduceUserDefinedTempSearch)
+      // console.log(this.selection)
       const loading = this.$messageLoading('添加中..');
       this.selection.forEach((element) => {
-        element.PLAN_NUMBER = this.IntroduceUserDefinedTempSearch.PlanNum;
+        element.ID = this.IntroduceUserDefinedTempSearch.ID;
       });
-      KeeptListDeta(this.selection).then((res) => {
-        loading.close();
-        this.updateVisible(false);
-        this.$message.success(res.msg);
+
+      var list = [];
+      this.selection.forEach((element) => {
+        var data = {
+          MAIN_ID: element.ID,
+          VARIETIE_CODE: element.VARIETIE_CODE,
+          VARIETIE_NAME: element.VARIETIE_NAME,
+          SPECIFICATION_OR_TYPE: element.SPECIFICATION_OR_TYPE,
+          UNIT: element.UNIT,
+          MANUFACTURING_ENT_NAME: element.MANUFACTURING_ENT_NAME,
+          APPLY_QTY: element.APPLY_QTY,
+          JP_APPLY_QTY: element.JP_APPLY_QTY,
+          REMARK: element.REMARK,
+          CREATE_MAN: this.$store.state.user.info.Nickname
+        };
+        list.push(data);
       });
+
+      AddNaxtDayApplyPlanDelBatch(list)
+        .then((res) => {
+          loading.close();
+          this.updateVisible(false);
+          this.$message.success(res.msg);
+        })
+        .catch((res) => {
+          loading.close();
+          this.$message.error(res.msg);
+        });
     },
     onSelectionChange(selection) {
       this.selection = selection;

@@ -45,11 +45,68 @@ export async function GetNaxtDayApplyPlanDel(data){
     data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
     data2.VARIETIE_NAME = data.where.VARIETIE_NAME ? data.where.VARIETIE_NAME : '';
     data2.CREATE_MAN = data.where.CREATE_MAN ? data.where.CREATE_MAN : '';
+    data2.MAIN_ID = data.where.MAIN_ID ? data.where.MAIN_ID : '-1';
     data2.page = data.page ? data.page : 1;
     data2.size = data.limit ? data.limit : 10;
 
     var data3 = formdataify(data2);
     const res = await request.post('/DeptApplyPlan/GetNaxtDayApplyPlanDel', data3);
+    if (res.data.code == 200) {
+        return res.data;
+    } else {
+        return Promise.reject(new Error(res.data.msg));
+    }
+}
+
+export async function AddNaxtDayApplyPlanDel(data){
+    console.log(data)
+    var data2 = {};
+    data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+    data2.MAIN_ID = data.ID ? data.ID : '';
+    data2.VARIETIE_CODE = data.VARIETIE_CODE ? data.VARIETIE_CODE : '';
+    data2.VARIETIE_NAME = data.VARIETIE_NAME ? data.VARIETIE_NAME : '';
+    data2.SPECIFICATION_OR_TYPE = data.SPECIFICATION_OR_TYPE ? data.SPECIFICATION_OR_TYPE : '';
+    data2.UNIT = data.UNIT ? data.UNIT : '';
+    data2.MANUFACTURING_ENT_NAME = data.MANUFACTURING_ENT_NAME ? data.MANUFACTURING_ENT_NAME : '';
+    data2.APPLY_QTY = data.APPLY_QTY ? data.APPLY_QTY : '';
+    data2.JP_APPLY_QTY = data.JP_APPLY_QTY ? data.JP_APPLY_QTY : '';
+    data2.REMARK = data.REMARK ? data.REMARK : '';
+    data2.CREATE_MAN = data.CREATE_MAN ? data.CREATE_MAN : '';
+
+    var data3 = formdataify(data2);
+    const res = await request.post('/DeptApplyPlan/AddNaxtDayApplyPlanDel', data3);
+    if (res.data.code == 200) {
+        return res.data;
+    } else {
+        return Promise.reject(new Error(res.data.msg));
+    }
+}
+
+export async function AddNaxtDayApplyPlanDelBatch(data) {
+    var data2 = {};
+    data2.type = '0';
+    data2.json = JSON.stringify(data);
+    data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+
+    var rep = formdataify(data2);
+
+    const res = await request.post('/DeptApplyPlan/AddNaxtDayApplyPlanDelBatch', rep);
+    if (res.data.code == 200) {
+        return res.data;
+    } else {
+        return Promise.reject(new Error(res.data.msg));
+    }
+}
+
+
+export async function DeleteNaxtDayApplyPlanDel(data) {
+    var data2 = {};
+    data2.ID = data.ID ? data.ID : '';
+    data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+
+    var rep = formdataify(data2);
+
+    const res = await request.post('/DeptApplyPlan/DeleteNaxtDayApplyPlanDel', rep);
     if (res.data.code == 200) {
         return res.data;
     } else {

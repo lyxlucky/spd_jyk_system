@@ -103,19 +103,11 @@
   import naxtDayApplyPlanMainSearch from './naxtDayApplyPlanMain-search.vue';
   import userEdit from './user-edit.vue';
   import {
-    SerachPlanList,
-    DeletePlanList,
-    SearchHistoryConsumedAndPurchaseDept,
-    ReturnInitState
-  } from '@/api/KSInventory/KSDepartmentalPlan';
-
-  import {
     GetNaxtDayApplyPlanMain
   } from '@/api/KSInventory/OperaSchedulingManagement';
 
-  import { getDeptAuthVarNew } from '@/api/KSInventory/KSInventoryBasicData';
   export default {
-    name: 'KSDepartmentalPlanTable',
+    name: 'naxtDayApplyPlanMainTable',
     props: ['IsReload'],
     components: {
       naxtDayApplyPlanMainSearch,
@@ -287,71 +279,6 @@
         // console.log(current);
         this.$emit('getCurrent', current);
       },
-      /* 删除数据 */
-      remove(row) {
-        const loading = this.$loading({ lock: true });
-        DeletePlanList(row)
-          .then((res) => {
-            this.$message.success(res.msg);
-            loading.close();
-            // this.$refs.table.reRenderTable();
-            this.reload();
-            this.$forceUpdate();
-          })
-          .catch((err) => {
-            loading.close();
-            this.$message.error(err);
-          });
-      },
-      GetConsume() {
-        var data = {
-          deptTwoCode: this.$store.state.user.info.DeptNow.Dept_Two_Code
-        };
-        SearchHistoryConsumedAndPurchaseDept(data)
-          .then((res) => {
-            this.applyPlanSbz = res.result[0].Purchase_Cost.toFixed(2);
-            this.applyPlanXhz = res.result[0].Consumed_Cost.toFixed(2);
-            if (data.result[0].Purchase_Cost > 0) {
-              this.applyPlanBl =
-                (
-                  (data.result[0].Consumed_Cost /
-                    data.result[0].Purchase_Cost) *
-                  100
-                ).toFixed(2) + '%';
-            } else {
-              this.applyPlanBl = 0 + '%';
-            }
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      },
-      ReturnStateBtn(data) {
-        // var IDs = data.PlanNum;
-        // var IDStr = IDs + ',';
-        // IDs.forEach((item) => {
-        //   IDStr += item + ',';
-        // });
-        // IDStr.substring(0, IDStr.length - 1);
-
-        var data2 = {
-          IDs: data.PlanNum
-        };
-        const loading = this.$messageLoading('正在保存。。。');
-        ReturnInitState(data2)
-          .then((res) => {
-            loading.close();
-            this.$message.success(res.msg);
-            this.reload();
-            // this.$forceUpdate();
-            // this.key += 1;
-          })
-          .catch((err) => {
-            loading.close();
-            this.$message.error(err);
-          });
-      }
-      
     },
     watch: {
       IsReload() {

@@ -2,75 +2,27 @@
 <template>
   <el-form class="ele-form-search">
     <el-row :gutter="10">
-      <el-col :lg="6" :md="12">
-        <el-input size="mini" v-model="where.SerachName" placeholder="请输入品种名称/品种编码/型号规格/生产企业搜索" clearable />
+      <el-col :lg="4" :md="12">
+        <el-input size="mini" v-model="where.VARIETIE_NAME" placeholder="品种名称" clearable />
       </el-col>
-      <el-col :lg="18" :md="12">
+      <el-col :lg="4" :md="12">
+        <el-input size="mini" v-model="where.CREATE_MAN" placeholder="创建人" clearable />
+      </el-col>
+      <el-col :lg="16" :md="12">
         <div class="ele-form-actions">
           <el-button type="primary" icon="el-icon-search" size="mini" @click="search">查询</el-button>
           <el-button size="mini" icon="el-icon-refresh" @click="reset">重置</el-button>
-          <el-button type="primary" icon="el-icon-plus" size="mini" @click="openIntroduceUserDefinedTemp" >自定义新增</el-button>
-          <!-- <el-button type="primary" icon="el-icon-upload" size="mini" @click="showApplyTemp" >引入模板</el-button> -->
-          <!-- <el-dropdown>
-            <el-button size="mini" icon="el-icon-plus" type="primary">
-              新增<i class="el-icon-arrow-down el-icon--right"></i>
-            </el-button>
-            <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item>
-                <el-button
-                  type="primary"
-                  icon="el-icon-plus"
-                  size="mini"
-                  @click="openIntroduceUserDefinedTemp"
-                  :disabled="!IsDisabled"
-                  >自定义新增</el-button
-                >
-              </el-dropdown-item>
-              <el-dropdown-item>
-                <el-button
-                  type="primary"
-                  icon="el-icon-upload"
-                  size="mini"
-                  @click="showApplyTemp"
-                  :disabled="!IsDisabled"
-                  >引入模板</el-button
-                >
-              </el-dropdown-item>
-            </el-dropdown-menu>
-          </el-dropdown> -->
-
+          <el-button type="primary" icon="el-icon-plus" size="mini" @click="openIntroduceUserDefinedTemp">自定义新增</el-button>
           <el-popconfirm class="ele-action" title="确定删除？" @confirm="removeBatch()">
             <template v-slot:reference>
-              <!-- <el-link type="danger" :underline="false" icon="el-icon-delete">
-              删除
-            </el-link> -->
-              <el-button type="danger" icon="el-icon-delete" size="mini" :underline="false" :disabled="!IsDisabledByDel">删除</el-button>
+              <el-button type="danger" icon="el-icon-delete" size="mini" :underline="false" >删除</el-button>
             </template>
           </el-popconfirm>
         </div>
       </el-col>
     </el-row>
-    <el-dialog title="导入模板品种" :visible.sync="dialogTableVisible2" width="30%">
-      <div style="width: 100%; text-align: center">
-        <form action="" id="CreateBydFpform">
-          <input type="text" size="mini" style="display: none" name="PlanNum" autocomplete="off" placeholder="" :value="PlanNum" />
-          <input type="text" size="mini" style="display: none" name="Token" autocomplete="off" placeholder="" :value="Token" />
-
-          <div class="layui-form-item">
-            <label style="width: 170px">选择文件:</label>
-            <input id="FILE" size="mini" style="
-                height: 30px;
-                width: 200px;
-                display: inline;
-                margin-left: 5px;
-              " name="FILE" type="file" value="" required="required" autocomplete="off" />
-          </div>
-        </form>
-        <el-button type="primary" size="mini" @click="importFile">确定</el-button>
-      </div>
-    </el-dialog>
     <IntroduceUserDefinedTemp :visible.sync="showEdit" :IntroduceUserDefinedTempSearch="KSDepartmentalPlanDataSearch" />
-  
+
   </el-form>
 </template>
 
@@ -78,20 +30,21 @@
 import { HOME_HP } from '@/config/setting';
 import { API_BASE_URL, BACK_BASE_URL } from '@/config/setting';
 import { reloadPageTab, finishPageTab } from '@/utils/page-tab-util';
-import {
-  DeletePlanDeta,
-} from '@/api/KSInventory/KSDepartmentalPlan';
-import IntroduceUserDefinedTemp from '@/views/KSInventory/IntroduceUserDefinedTemp/index.vue';
+import { DeletePlanDeta } from '@/api/KSInventory/KSDepartmentalPlan';
+import { DeleteNaxtDayApplyPlanDel } from '@/api/KSInventory/OperaSchedulingManagement';
+import IntroduceUserDefinedTemp from '@/views/KSInventory/OperaSchedulingManagement/components/IntroduceUserDefinedTemp/index.vue';
 import { TOKEN_STORE_NAME } from '@/config/setting';
 export default {
   props: ['KSDepartmentalPlanDataSearch', 'selection', 'datasourceList'],
   components: {
-    IntroduceUserDefinedTemp,
+    IntroduceUserDefinedTemp
   },
   data() {
     // 默认表单数据
     const defaultWhere = {
-      PlanNum: '',
+      VARIETIE_NAME: '',
+      CREATE_MAN: '',
+      MAIN_ID: ''
     };
     return {
       // 表单数据
@@ -144,13 +97,13 @@ export default {
       var data = {
         ID
       };
-      DeletePlanDeta(data)
+      DeleteNaxtDayApplyPlanDel(data)
         .then((res) => {
           loading.close();
-          this.search();
           var where = {
-            PlanNum: this.KSDepartmentalPlanDataSearch.PlanNum
+            ID: this.KSDepartmentalPlanDataSearch.ID
           };
+          console.log(where)
           this.$emit('search', where);
           this.$message.success(res.msg);
         })
@@ -161,7 +114,15 @@ export default {
     },
     /* 打开自定义新增页面 */
     openIntroduceUserDefinedTemp() {
-      this.showEdit = true;
+      // console.log(this.KSDepartmentalPlanDataSearch);
+      if (
+        this.KSDepartmentalPlanDataSearch.ID == undefined ||
+        this.KSDepartmentalPlanDataSearch.ID == ''
+      ){
+        this.$message.info("请选择申请单！！！")
+        return;
+      }
+        this.showEdit = true;
     },
     showApplyTemp() {
       // console.log(this.KSDepartmentalPlanDataSearch);
@@ -172,12 +133,11 @@ export default {
       this.showEdit2 = true;
     },
     /* 保存并提交  */
-    
+
     exportData() {
       this.$emit('exportData', this.where);
-    },
+    }
   },
-  created() {
-  }
+  created() {}
 };
 </script>

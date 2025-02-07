@@ -56,6 +56,7 @@ export default {
       });
     },
     clickReload(data){
+      console.log(data)
       this.IsReloadTag = data
     }
   },

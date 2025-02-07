@@ -381,7 +381,11 @@
           '申领指引',
           '新资质审核',
           '科室目录导出',
-          '中标目录导出'
+          '中标目录导出',
+          
+          '溯源管理',
+          '溯源查询(新)',
+          '价格变动记录(新)',
         ];
         permission_group = permission_group.filter((res) => {
           return !blackList.includes(res.title);
