@@ -121,3 +121,21 @@ export async function DelNaxtDayApplyPlanTempDel(data) {
         return Promise.reject(new Error(res.data.msg));
     }
 }
+
+
+
+export async function ApplyTempNaxtDayApplyPlanDel(data) {
+    var data2 = {};
+    data2.ID = data.ID ? data.ID : '';
+    data2.MAIN_ID = data.MAIN_ID ? data.MAIN_ID : '';
+    data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+
+    var rep = formdataify(data2);
+
+    const res = await request.post('/DeptApplyPlan/ApplyTempNaxtDayApplyPlanDel', rep);
+    if (res.data.code == 200) {
+        return res.data;
+    } else {
+        return Promise.reject(new Error(res.data.msg));
+    }
+}

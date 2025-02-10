@@ -14,6 +14,7 @@
           <el-button size="mini" icon="el-icon-refresh" @click="reset">重置</el-button>
           <el-button type="primary" icon="el-icon-plus" size="mini" @click="openIntroduceUserDefinedTemp">自定义新增</el-button>
           <el-button type="primary" icon="el-icon-plus" size="mini" @click="openSurgerySchedulingTemp">引用自定义模板</el-button>
+
           <el-popconfirm class="ele-action" title="确定删除？" @confirm="removeBatch()">
             <template v-slot:reference>
               <el-button type="danger" icon="el-icon-delete" size="mini" :underline="false">删除</el-button>
@@ -23,8 +24,9 @@
       </el-col>
     </el-row>
     <IntroduceUserDefinedTemp :visible.sync="showEdit" :IntroduceUserDefinedTempSearch="KSDepartmentalPlanDataSearch" />
-    <SurgerySchedulingTemp :visible.sync="showEdit2" :IntroduceUserDefinedTempSearch="KSDepartmentalPlanDataSearch" />
-
+    <el-dialog title="引用自定义模板" :visible.sync="showEdit2" width="80%" height="60%">
+      <SurgerySchedulingTemp :IntroduceUserDefinedTempSearch="KSDepartmentalPlanDataSearch" @ApplyTempPageChange="ApplyTempPageChange"/>
+    </el-dialog>
   </el-form>
 </template>
 
@@ -138,7 +140,15 @@ export default {
         return;
       }
       this.showEdit2 = true;
-    }
+    },
+    ApplyTempPageChange(data) {
+      this.showEdit2 = false;
+        this.ApplyTempPage = data;
+        var where = {
+          MAIN_ID: this.KSDepartmentalPlanDataSearch.ID
+        };
+        this.$emit('search', where);
+      },
   },
   created() {}
 };
