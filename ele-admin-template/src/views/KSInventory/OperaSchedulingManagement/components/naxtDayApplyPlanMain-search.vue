@@ -21,7 +21,7 @@
       <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 8 }">
         <el-input size="mini" clearable v-model="where.CREATE_MAN" placeholder="申请人" />
       </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 4, md: 4 } : { span: 4 }">
+      <el-col v-bind="styleResponsive ? { lg: 6, md: 4 } : { span: 4 }">
         <div class="ele-form-actions">
           <el-button size="mini" type="primary" icon="el-icon-search" class="ele-btn-icon" @click="search">
             查询
@@ -30,15 +30,23 @@
           <el-button size="mini" type="primary" icon="el-icon-plus" class="ele-btn-icon" @click="openUserEdit()">
             创建申请单
           </el-button>
+          <el-button size="mini" type="primary" icon="el-icon-plus" class="ele-btn-icon" @click="openSurgicalScheduling()">
+            根据手术排期创建
+          </el-button>
         </div>
       </el-col>
     </el-row>
+    <SurgicalScheduling :visible.sync="showEdit" :SurgicalSchedulingSearch="KSDepartmentalPlanDataSearch" @reload="search"/>
   </el-form>
 </template>
 
 <script>
 import { GetNaxtDayApplyPlanMain } from '@/api/KSInventory/OperaSchedulingManagement';
+import SurgicalScheduling from '@/views/KSInventory/OperaSchedulingManagement/components/SurgicalScheduling/index.vue';
 export default {
+  components: {
+    SurgicalScheduling
+  },
   data() {
     // 默认表单数据
     const defaultWhere = {
@@ -47,7 +55,8 @@ export default {
     };
     return {
       // 表单数据
-      where: { ...defaultWhere }
+      where: { ...defaultWhere },
+      showEdit: false
     };
   },
   computed: {
@@ -68,7 +77,10 @@ export default {
     },
     /* 创建申领单 */
     openUserEdit() {
-       this.$emit('openUserEdit', this.where);
+      this.$emit('openUserEdit', this.where);
+    },
+    openSurgicalScheduling() {
+      this.showEdit = true;
     }
   },
 

@@ -43,7 +43,7 @@ export default {
   props: ['KSDepartmentalPlanDataSearch', 'selection', 'datasourceList'],
   components: {
     IntroduceUserDefinedTemp,
-    SurgerySchedulingTemp
+    SurgerySchedulingTemp,
   },
   data() {
     // 默认表单数据
@@ -57,6 +57,7 @@ export default {
       where: { ...defaultWhere },
       showEdit: false,
       showEdit2: false,
+      showEdit3: false,
       visibleLine: 'none',
       Token: sessionStorage.getItem(TOKEN_STORE_NAME)
     };
