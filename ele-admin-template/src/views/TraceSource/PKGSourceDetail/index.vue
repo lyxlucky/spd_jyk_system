@@ -36,7 +36,6 @@
 <script>
 import { utils, writeFile } from 'xlsx';
 import UserSearch from './components/user-search.vue';
-import UserEdit from './components/user-edit.vue';
 import {
   GetPDAList,
 } from '@/api/KSInventory/InstrumentalAnalysis';
@@ -44,8 +43,7 @@ export default {
   name: 'SystemUser',
   components: {
     UserSearch,
-    UserEdit
-    // UserImport
+   
   },
   data() {
     return {
