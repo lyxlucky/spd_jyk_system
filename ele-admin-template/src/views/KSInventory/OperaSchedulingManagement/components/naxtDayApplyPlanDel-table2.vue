@@ -277,7 +277,7 @@
           },
           {
             prop: 'CREATE_MAN',
-            label: '申请人',
+            label: '添加人',
             align: 'center',
             showOverflowTooltip: true,
             width: 80
