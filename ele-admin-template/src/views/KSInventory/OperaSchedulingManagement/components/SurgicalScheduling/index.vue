@@ -271,6 +271,7 @@ export default {
           SURGICAL_PLACE: element.SURGICAL_PLACE,
           SURGICAL_ROOM: element.SURGICAL_ROOM,
           REMARK: element.REMARK,
+          SURGICAL_SCHEDULING_ID: element.ST_ID,
           CREATE_MAN: this.$store.state.user.info.Nickname
         };
         AddNaxtDayApplyPlanMain(data)

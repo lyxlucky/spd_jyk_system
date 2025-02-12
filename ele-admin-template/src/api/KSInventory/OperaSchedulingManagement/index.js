@@ -26,6 +26,7 @@ export async function AddNaxtDayApplyPlanMain(data){
     var data2 = {};
     data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
     data2.REMARK = data.REMARK ? data.REMARK : '';
+    data2.SURGICAL_SCHEDULING_ID = data.SURGICAL_SCHEDULING_ID ? data.SURGICAL_SCHEDULING_ID : '';
     data2.SURGICAL_ROOM = data.SURGICAL_ROOM ? data.SURGICAL_ROOM : '';
     data2.SURGICAL_PLACE = data.SURGICAL_PLACE ? data.SURGICAL_PLACE : '';
     data2.CREATE_MAN = data.CREATE_MAN ? data.CREATE_MAN : '';
