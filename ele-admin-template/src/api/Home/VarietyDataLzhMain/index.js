@@ -7,6 +7,9 @@ import store from '@/store';
 import moment from 'moment';
 
 export async function QueryPageLayUI(data) {
+
+    console.log(data)
+
     var data2 = {};
     data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
     data2.varietieCode = data.where.varietieCode ? data.where.varietieCode : '';
@@ -59,7 +62,15 @@ export async function QueryPageLayUI(data) {
     data2.size = data.limit ? data.limit : 10;
     data2.field = data.field ? data.field : '';
 
-    var data3 = formdataify(data2);
+    
+    var pramsStr = Encrypt(JSON.stringify(data2))
+
+    var inArray = {
+        prams: pramsStr,
+        AesKey: store.state.user.encrypted.KEY
+    }
+    var data3 = formdataify(inArray);
+
     const res = await request.post('/VarietieBasicInfo/QueryPageLayUI', data3);
     if (res.data.code == 200) {
         return res.data;
