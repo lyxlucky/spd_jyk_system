@@ -89,14 +89,14 @@ export default {
         //   slot: 'action',
         //   showOverflowTooltip: true
         // },
-        {
-          prop: 'ST_ID',
-          label: '视图唯一ID',
-          sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 120
-        },
+        // {
+        //   prop: 'ST_ID',
+        //   label: '视图唯一ID',
+        //   sortable: 'custom',
+        //   align: 'center',
+        //   showOverflowTooltip: true,
+        //   minWidth: 120
+        // },
         {
           prop: 'HOSPITALIZATION_NUMBER',
           label: '住院号',
@@ -172,13 +172,13 @@ export default {
           showOverflowTooltip: true,
           minWidth: 120
         },
-        {
-          prop: 'WARD_CODE',
-          label: '病区编码',
-          width: 100,
-          align: 'center',
-          showOverflowTooltip: true
-        },
+        // {
+        //   prop: 'WARD_CODE',
+        //   label: '病区编码',
+        //   width: 100,
+        //   align: 'center',
+        //   showOverflowTooltip: true
+        // },
         {
           slot: 'EXECUTE_DEPT_NAME',
           label: '执行科室',

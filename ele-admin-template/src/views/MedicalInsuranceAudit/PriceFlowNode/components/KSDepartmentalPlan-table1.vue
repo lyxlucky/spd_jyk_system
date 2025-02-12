@@ -8,7 +8,7 @@
       :row-key="(row) => row.PlanNum"
       @current-change="onCurrentChange"
       ref="table"
-      height="18vh"
+      height="40vh"
       :rowClickChecked="true"
       :stripe="true"
       :pageSize="pageSize"
@@ -16,13 +16,19 @@
       :columns="columns"
       :datasource="datasource"
       :selection.sync="selection"
-      :needPage="true"
-      cache-key="naxtDayApplyPlanMainTable"
+      :needPage="false"
+      cache-key="KSInventoryBasicDataTable"
     >
       <!-- 表头工具栏 -->
       <template v-slot:toolbar>
         <!-- 搜索表单 -->
-        <naxtDayApplyPlanMainSearch @search="reload" @openUserEdit="openUserEdit"/>
+        <label
+          >当月-申报总金额:{{ applyPlanSbz }} 消耗总金额:{{
+            applyPlanXhz
+          }}
+          消耗/计划:{{ applyPlanBl }}</label
+        >
+        <KSDepartmentalPlan-search @search="reload" />
       </template>
 
       <template v-slot:State="{ row }">
@@ -94,24 +100,23 @@
         <!-- <el-button v-else size="small" type="primary" class="ele-btn-icon" @click="ReturnStateBtn(row)" disabled> 取消提交</el-button> -->
       </template>
     </ele-pro-table>
-
-    <user-edit :visible.sync="showEdit" :data="current" @done="reload" />
   </div>
 </template>
 
 <script>
-  import naxtDayApplyPlanMainSearch from './naxtDayApplyPlanMain-search.vue';
-  import userEdit from './user-edit.vue';
+  import KSDepartmentalPlanSearch from './KSDepartmentalPlan-search.vue';
   import {
-    GetNaxtDayApplyPlanMain
-  } from '@/api/KSInventory/OperaSchedulingManagement';
-
+    SerachPlanList,
+    DeletePlanList,
+    SearchHistoryConsumedAndPurchaseDept,
+    ReturnInitState
+  } from '@/api/KSInventory/KSDepartmentalPlan';
+  import { getDeptAuthVarNew } from '@/api/KSInventory/KSInventoryBasicData';
   export default {
-    name: 'naxtDayApplyPlanMainTable',
+    name: 'KSDepartmentalPlanTable',
     props: ['IsReload'],
     components: {
-      naxtDayApplyPlanMainSearch,
-      userEdit
+      KSDepartmentalPlanSearch
     },
     data() {
       return {
@@ -143,97 +148,87 @@
             fixed: 'right'
           },
           {
-            prop: 'NAXT_DAT_PLAN_NUM',
-            label: '申请单号',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 90
-          },
-          {
-            prop: 'CREATE_MAN',
-            label: '申请人',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 60
-          },
-          {
-            prop: 'CREATE_TIME',
-            label: '申请时间',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 100
-          },
-          {
-            prop: 'STATE',
-            // slot: 'STATE',
-            label: '状态',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 70,
-            formatter: (row, column, cellValue) => {
-              if (cellValue == 0) {
-                return '新增';
-              } else if (cellValue == 1) {
-                return '已提交';
-              } else if (cellValue == 2) {
-                return '已拣配';
-              } else if (cellValue == 3) {
-                return '已交接';
-              } else if (cellValue == 4) {
-                return '已完成';
-              } else {
-                return '';
-              }
-            }
-          },
-          {
-            prop: 'REMARK',
-            label: '备注',
+            prop: 'PlanNum',
+            label: '申领单号',
+
             align: 'center',
             showOverflowTooltip: true,
             minWidth: 110
           },
           {
-            prop: 'SURGICAL_ROOM',
-            label: '术间',
+            prop: 'Operater',
+            label: '申领人',
+
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 100
+            minWidth: 80
           },
           {
-            prop: 'SURGICAL_PLACE',
-            label: '院区',
+            // prop: 'State',
+            label: '状态',
+
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 100,
+            minWidth: 110,
+            slot: 'State'
+            // formatter: (row, column, cellValue) => {
+            //   if (cellValue === '0') {
+            //     return '新增';
+            //   } else if (cellValue === '1') {
+            //     return '已提交';
+            //   } else if (cellValue === '2') {
+            //     return '配送中';
+            //   } else if (cellValue === '5') {
+            //     return '已审核';
+            //   } else if (cellValue === '10') {
+            //     return '强制结束';
+            //   } else if (cellValue === '6' || cellValue === '4') {
+            //     return '已审批';
+            //   } else {
+            //     return '配送中';
+            //   }
+            // }
           },
           {
-            prop: 'SURGICAL_SCHEDULING_ID',
-            label: '病患号',
+            prop: 'DEPT_TWO_NAME',
+            label: '科室名称',
+
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 100
+            minWidth: 110
           },
           {
-            prop: 'SURGICAL_DEPT',
-            label: '手术科室',
+            prop: 'PlanTime',
+            label: '申领时间',
+
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 100
+            minWidth: 110
           },
           {
-            prop: 'SURGICAL_NAME',
-            label: '手术名称',
+            prop: 'Approval_Time',
+            label: '审批时间',
+
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 100
+            minWidth: 180,
+            formatter: (row, column, cellValue) => {
+              return this.$util.toDateString(cellValue);
+            }
+          },
+          {
+            prop: 'BZ',
+            label: '备注',
+
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 110
           }
-        
         ],
         toolbar: false,
-        pageSize: 5,
+        pageSize: 9999999,
         pagerCount: 2,
-        pageSizes: [5, 10, 20, 50, 100, 9999999],
+        pageSizes: [2, 10, 20, 50, 100, 9999999],
         // 表格选中数据
         selection: [],
         // 当前编辑数据
@@ -268,7 +263,14 @@
     methods: {
       /* 表格数据源 */
       datasource({ page, limit, where, order }) {
-        let data = GetNaxtDayApplyPlanMain({ page, limit, where, order }).then((res) => {
+        var Dept_Two_CodeStr = '';
+        var userDeptList = this.$store.state.user.info.userDept;
+        for (let i = 0; i < userDeptList.length; i++) {
+          Dept_Two_CodeStr =
+            Dept_Two_CodeStr + userDeptList[i].Dept_Two_Code + ',';
+        }
+        where.DeptCode = Dept_Two_CodeStr;
+        let data = SerachPlanList({ page, limit, where, order }).then((res) => {
           var tData = {
             count: res.total,
             list: res.result
@@ -276,10 +278,6 @@
           return tData;
         });
         return data;
-      },
-      openUserEdit(){
-        this.showEdit = true;
-        // this.$bus.$emit(`${this.$route.path}/handleUpdate`, this.selection);
       },
       /* 刷新表格 */
       reload(where) {
@@ -300,6 +298,70 @@
         // console.log(current);
         this.$emit('getCurrent', current);
       },
+      /* 删除数据 */
+      remove(row) {
+        const loading = this.$loading({ lock: true });
+        DeletePlanList(row)
+          .then((res) => {
+            this.$message.success(res.msg);
+            loading.close();
+            // this.$refs.table.reRenderTable();
+            this.reload();
+            this.$forceUpdate();
+          })
+          .catch((err) => {
+            loading.close();
+            this.$message.error(err);
+          });
+      },
+      GetConsume() {
+        var data = {
+          deptTwoCode: this.$store.state.user.info.DeptNow.Dept_Two_Code
+        };
+        SearchHistoryConsumedAndPurchaseDept(data)
+          .then((res) => {
+            this.applyPlanSbz = res.result[0].Purchase_Cost.toFixed(2);
+            this.applyPlanXhz = res.result[0].Consumed_Cost.toFixed(2);
+            if (data.result[0].Purchase_Cost > 0) {
+              this.applyPlanBl =
+                (
+                  (data.result[0].Consumed_Cost /
+                    data.result[0].Purchase_Cost) *
+                  100
+                ).toFixed(2) + '%';
+            } else {
+              this.applyPlanBl = 0 + '%';
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      },
+      ReturnStateBtn(data) {
+        // var IDs = data.PlanNum;
+        // var IDStr = IDs + ',';
+        // IDs.forEach((item) => {
+        //   IDStr += item + ',';
+        // });
+        // IDStr.substring(0, IDStr.length - 1);
+
+        var data2 = {
+          IDs: data.PlanNum
+        };
+        const loading = this.$messageLoading('正在保存。。。');
+        ReturnInitState(data2)
+          .then((res) => {
+            loading.close();
+            this.$message.success(res.msg);
+            this.reload();
+            // this.$forceUpdate();
+            // this.key += 1;
+          })
+          .catch((err) => {
+            loading.close();
+            this.$message.error(err);
+          });
+      }
     },
     watch: {
       IsReload() {

@@ -106,20 +106,20 @@ export default {
           showOverflowTooltip: true,
           minWidth: 130
         },
-        {
-          prop: 'DEPT_ZDY_VARIETIE_CODE',
-          label: '自定义编码',
-          // sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 110,
-          formatter: (row, column, cellValue) => {
-            if (cellValue == null) {
-              return '未定义';
-            }
-            return cellValue;
-          }
-        },
+        // {
+        //   prop: 'DEPT_ZDY_VARIETIE_CODE',
+        //   label: '自定义编码',
+        //   // sortable: 'custom',
+        //   align: 'center',
+        //   showOverflowTooltip: true,
+        //   minWidth: 110,
+        //   formatter: (row, column, cellValue) => {
+        //     if (cellValue == null) {
+        //       return '未定义';
+        //     }
+        //     return cellValue;
+        //   }
+        // },
         {
           prop: 'VARIETIE_NAME',
           label: '品种全称',
@@ -160,22 +160,22 @@ export default {
           showOverflowTooltip: true,
           minWidth: 150
         },
-        {
-          prop: 'SUPPLIER_NAME',
-          label: '供应商',
-          // sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 150
-        },
-        {
-          prop: 'StockQty',
-          label: '散货库存',
-          // sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 110
-        },
+        // {
+        //   prop: 'SUPPLIER_NAME',
+        //   label: '供应商',
+        //   // sortable: 'custom',
+        //   align: 'center',
+        //   showOverflowTooltip: true,
+        //   minWidth: 150
+        // },
+        // {
+        //   prop: 'StockQty',
+        //   label: '散货库存',
+        //   // sortable: 'custom',
+        //   align: 'center',
+        //   showOverflowTooltip: true,
+        //   minWidth: 110
+        // },
         // {
         //   prop: 'TempletQty',
         //   label: '模板申领数量',
@@ -200,23 +200,23 @@ export default {
         //   showOverflowTooltip: true,
         //   minWidth: 110
         // },
-        {
-          prop: 'ZB',
-          label: '是否中标',
-          // sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 110,
-          formatter: (row, column, cellValue) => {
-            if (cellValue == 0) {
-              return '否';
-            } else if (cellValue == 1) {
-              return '是';
-            } else {
-              return '未知';
-            }
-          }
-        }
+        // {
+        //   prop: 'ZB',
+        //   label: '是否中标',
+        //   // sortable: 'custom',
+        //   align: 'center',
+        //   showOverflowTooltip: true,
+        //   minWidth: 110,
+        //   formatter: (row, column, cellValue) => {
+        //     if (cellValue == 0) {
+        //       return '否';
+        //     } else if (cellValue == 1) {
+        //       return '是';
+        //     } else {
+        //       return '未知';
+        //     }
+        //   }
+        // }
       ],
       toolbar: false,
       pageSize: 10,

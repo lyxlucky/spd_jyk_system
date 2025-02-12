@@ -3,14 +3,6 @@
   <div>
     <el-form class="ele-form-search">
       <el-row :gutter="10">
-        <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 6 }">
-          <el-form-item>
-            <el-date-picker size="mini" v-model="where.dateTo" type="date" value-format="yyyy-MM-dd" placeholder="yyyy-MM-dd">
-            </el-date-picker>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row :gutter="10">
         <el-col :lg="8" :md="12">
           <el-input size="mini" v-model="where.VARIETIE_NAME" placeholder="请输入品种名称/生产企业搜索" clearable />
         </el-col>

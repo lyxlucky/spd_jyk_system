@@ -213,7 +213,7 @@
           // },
           {
             // prop: 'VarCode',
-            prop: 'VARIETIE_CODE',
+            prop: 'VARIETIE_CODE_NEW',
             label: '品种编码',
             align: 'center',
             showOverflowTooltip: true,

@@ -129,13 +129,14 @@ export default {
           fixed: 'left'
         },
         {
-          slot: 'JP_APPLY_QTY',
+          prop: 'JP_APPLY_QTY',
+          // slot: 'JP_APPLY_QTY',
           label: '拣配数量',
           // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 100,
-          fixed: 'left'
+          // fixed: 'left'
         },
         {
           prop: 'REMARK',

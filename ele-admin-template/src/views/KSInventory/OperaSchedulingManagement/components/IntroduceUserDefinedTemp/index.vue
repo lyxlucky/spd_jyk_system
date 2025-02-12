@@ -212,8 +212,8 @@ export default {
         },
         {
           slot: 'APPLY_QTY',
-          label: '实际申领数量',
-          width: 150,
+          label: '申请数量',
+          width: 120,
           align: 'center',
           fixed: 'right',
           showOverflowTooltip: true
