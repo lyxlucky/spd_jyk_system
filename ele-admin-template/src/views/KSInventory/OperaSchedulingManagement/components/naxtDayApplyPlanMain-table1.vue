@@ -147,14 +147,14 @@
             label: '申请单号',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 100
+            minWidth: 90
           },
           {
             prop: 'CREATE_MAN',
             label: '申请人',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 80
+            minWidth: 60
           },
           {
             prop: 'CREATE_TIME',
@@ -169,7 +169,7 @@
             slot: 'STATE',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 80,
+            minWidth: 70,
             formatter: (row, column, cellValue) => {
               if (cellValue == 0) {
                 return '0';
@@ -206,7 +206,7 @@
             label: '手术排期ID',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 60
+            minWidth: 100
           }
         ],
         toolbar: false,
