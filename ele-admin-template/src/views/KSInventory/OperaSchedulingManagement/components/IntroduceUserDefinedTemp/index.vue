@@ -96,20 +96,20 @@ export default {
           showOverflowTooltip: true,
           minWidth: 120
         },
-        {
-          prop: 'DEPT_ZDY_VARIETIE_CODE',
-          label: '自定义编码',
-          sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 150,
-          formatter: (_row, _column, cellValue) => {
-            if (cellValue == null) {
-              cellValue = '未定义';
-            }
-            return cellValue;
-          }
-        },
+        // {
+        //   prop: 'DEPT_ZDY_VARIETIE_CODE',
+        //   label: '自定义编码',
+        //   sortable: 'custom',
+        //   align: 'center',
+        //   showOverflowTooltip: true,
+        //   minWidth: 150,
+        //   formatter: (_row, _column, cellValue) => {
+        //     if (cellValue == null) {
+        //       cellValue = '未定义';
+        //     }
+        //     return cellValue;
+        //   }
+        // },
         {
           prop: 'VARIETIE_NAME',
           label: '品种全称',
@@ -172,44 +172,44 @@ export default {
           align: 'center',
           showOverflowTooltip: true
         },
-        {
-          prop: 'SUPPLIER_NAME',
-          label: '合同供应商',
-          width: 220,
-          align: 'center',
-          showOverflowTooltip: true
-        },
-        {
-          prop: 'StockQty',
-          label: '散货库存',
-          width: 100,
-          align: 'center',
-          showOverflowTooltip: true
-        },
-        {
-          prop: 'DEPT_TWO_QTY',
-          label: '科室库存',
-          sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 120
-        },
-        {
-          prop: 'ZB',
-          label: '是否中标',
-          width: 220,
-          align: 'center',
-          showOverflowTooltip: true,
-          formatter: (_row, _column, cellValue) => {
-            if (cellValue == 0) {
-              return '否';
-            } else if (cellValue == 1) {
-              return '是';
-            } else {
-              return '未知';
-            }
-          }
-        },
+        // {
+        //   prop: 'SUPPLIER_NAME',
+        //   label: '合同供应商',
+        //   width: 220,
+        //   align: 'center',
+        //   showOverflowTooltip: true
+        // },
+        // {
+        //   prop: 'StockQty',
+        //   label: '散货库存',
+        //   width: 100,
+        //   align: 'center',
+        //   showOverflowTooltip: true
+        // },
+        // {
+        //   prop: 'DEPT_TWO_QTY',
+        //   label: '科室库存',
+        //   sortable: 'custom',
+        //   align: 'center',
+        //   showOverflowTooltip: true,
+        //   minWidth: 120
+        // },
+        // {
+        //   prop: 'ZB',
+        //   label: '是否中标',
+        //   width: 220,
+        //   align: 'center',
+        //   showOverflowTooltip: true,
+        //   formatter: (_row, _column, cellValue) => {
+        //     if (cellValue == 0) {
+        //       return '否';
+        //     } else if (cellValue == 1) {
+        //       return '是';
+        //     } else {
+        //       return '未知';
+        //     }
+        //   }
+        // },
         {
           slot: 'APPLY_QTY',
           label: '申请数量',
