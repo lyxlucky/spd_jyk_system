@@ -21,7 +21,7 @@
       <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 8 }">
         <el-input size="mini" clearable v-model="where.CREATE_MAN" placeholder="申请人" />
       </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 6, md: 4 } : { span: 4 }">
+      <el-col v-bind="styleResponsive ? { lg: 7, md: 4 } : { span: 4 }">
         <div class="ele-form-actions">
           <el-button size="mini" type="primary" icon="el-icon-search" class="ele-btn-icon" @click="search">
             查询
@@ -33,17 +33,25 @@
           <el-button size="mini" type="primary" icon="el-icon-plus" class="ele-btn-icon" @click="openSurgicalScheduling()">
             根据手术排期创建
           </el-button>
+
+          <el-popconfirm class="ele-action" title="确定提交申请？" @confirm="upNaxtDayApplyPlanMainByState()">
+            <template v-slot:reference>
+              <el-button size="mini" type="primary" class="ele-btn-icon" :disabled="IS_disabled">
+                提交申请
+              </el-button>
+            </template>
+          </el-popconfirm>
         </div>
       </el-col>
     </el-row>
-    <SurgicalScheduling :visible.sync="showEdit" :SurgicalSchedulingSearch="KSDepartmentalPlanDataSearch" @reload="search"/>
+    <SurgicalScheduling :visible.sync="showEdit" :SurgicalSchedulingSearch="KSDepartmentalPlanDataSearch" @reload="search" />
   </el-form>
 </template>
 
 <script>
-import { GetNaxtDayApplyPlanMain } from '@/api/KSInventory/OperaSchedulingManagement';
 import SurgicalScheduling from '@/views/KSInventory/OperaSchedulingManagement/components/SurgicalScheduling/index.vue';
 export default {
+  props: ['KSDepartmentalPlanData'],
   components: {
     SurgicalScheduling
   },
@@ -56,7 +64,8 @@ export default {
     return {
       // 表单数据
       where: { ...defaultWhere },
-      showEdit: false
+      showEdit: false,
+      IS_disabled: true
     };
   },
   computed: {
@@ -81,9 +90,21 @@ export default {
     },
     openSurgicalScheduling() {
       this.showEdit = true;
+    },
+    upNaxtDayApplyPlanMainByState() {
+      this.$emit('upNaxtDayApplyPlanMainByState');
     }
   },
-
+  watch: {
+    KSDepartmentalPlanData() {
+      console.log(this.KSDepartmentalPlanData);
+      if (this.KSDepartmentalPlanData.STATE == 0) {
+        this.IS_disabled = false;
+      } else {
+        this.IS_disabled = true;
+      }
+    }
+  },
   created() {},
   mounted() {
     // 页面加载时，计算近三个月的日期范围

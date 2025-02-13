@@ -114,3 +114,36 @@ export async function DeleteNaxtDayApplyPlanDel(data) {
         return Promise.reject(new Error(res.data.msg));
     }
 }
+
+
+export async function upNaxtDayApplyPlanMainByState(data) {
+    var data2 = {};
+    data2.ID = data.ID ? data.ID : '';
+    data2.STATE = data.STATE ? data.STATE : '';
+    data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+
+    var rep = formdataify(data2);
+
+    const res = await request.post('/DeptApplyPlan/upNaxtDayApplyPlanMainByState', rep);
+    if (res.data.code == 200) {
+        return res.data;
+    } else {
+        return Promise.reject(new Error(res.data.msg));
+    }
+}
+
+
+export async function UpNaxtDayApplyPlanDel(data) {
+    var data2 = {};
+    data2.json = JSON.stringify(data);
+    data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+
+    var rep = formdataify(data2);
+
+    const res = await request.post('/DeptApplyPlan/UpNaxtDayApplyPlanDel', rep);
+    if (res.data.code == 200) {
+        return res.data;
+    } else {
+        return Promise.reject(new Error(res.data.msg));
+    }
+}

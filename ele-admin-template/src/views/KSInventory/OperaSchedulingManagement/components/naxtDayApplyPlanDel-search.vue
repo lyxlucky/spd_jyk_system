@@ -12,12 +12,12 @@
         <div class="ele-form-actions">
           <el-button type="primary" icon="el-icon-search" size="mini" @click="search">查询</el-button>
           <el-button size="mini" icon="el-icon-refresh" @click="reset">重置</el-button>
-          <el-button type="primary" icon="el-icon-plus" size="mini" @click="openIntroduceUserDefinedTemp">自定义新增</el-button>
-          <el-button type="primary" icon="el-icon-plus" size="mini" @click="openSurgerySchedulingTemp">引用自定义模板</el-button>
-
+          <el-button type="primary" icon="el-icon-plus" size="mini" :disabled="IS_disabled" @click="openIntroduceUserDefinedTemp">自定义新增</el-button>
+          <el-button type="primary" icon="el-icon-plus" size="mini" :disabled="IS_disabled" @click="openSurgerySchedulingTemp">引用自定义模板</el-button>
+          <el-button type="primary" icon="el-icon-plus" size="mini" :disabled="IS_disabled" @click="UpNaxtDayApplyPlanDel">保存</el-button>
           <el-popconfirm class="ele-action" title="确定删除？" @confirm="removeBatch()">
             <template v-slot:reference>
-              <el-button type="danger" icon="el-icon-delete" size="mini" :underline="false">删除</el-button>
+              <el-button type="danger" icon="el-icon-delete" size="mini" :disabled="IS_disabled" :underline="false">删除</el-button>
             </template>
           </el-popconfirm>
         </div>
@@ -25,7 +25,7 @@
     </el-row>
     <IntroduceUserDefinedTemp :visible.sync="showEdit" :IntroduceUserDefinedTempSearch="KSDepartmentalPlanDataSearch" />
     <el-dialog title="引用自定义模板" :visible.sync="showEdit2" width="80%" height="60%">
-      <SurgerySchedulingTemp :IntroduceUserDefinedTempSearch="KSDepartmentalPlanDataSearch" @ApplyTempPageChange="ApplyTempPageChange"/>
+      <SurgerySchedulingTemp :IntroduceUserDefinedTempSearch="KSDepartmentalPlanDataSearch" @ApplyTempPageChange="ApplyTempPageChange" />
     </el-dialog>
   </el-form>
 </template>
@@ -43,7 +43,7 @@ export default {
   props: ['KSDepartmentalPlanDataSearch', 'selection', 'datasourceList'],
   components: {
     IntroduceUserDefinedTemp,
-    SurgerySchedulingTemp,
+    SurgerySchedulingTemp
   },
   data() {
     // 默认表单数据
@@ -59,7 +59,8 @@ export default {
       showEdit2: false,
       showEdit3: false,
       visibleLine: 'none',
-      Token: sessionStorage.getItem(TOKEN_STORE_NAME)
+      Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+      IS_disabled: true
     };
   },
   computed: {
@@ -81,7 +82,11 @@ export default {
       }
     },
     KSDepartmentalPlanDataSearch() {
-      this.PlanNum = this.KSDepartmentalPlanDataSearch.PlanNum;
+      if (this.KSDepartmentalPlanDataSearch.STATE == 0) {
+        this.IS_disabled = false;
+      } else {
+        this.IS_disabled = true;
+      }
     }
   },
   methods: {
@@ -144,12 +149,15 @@ export default {
     },
     ApplyTempPageChange(data) {
       this.showEdit2 = false;
-        this.ApplyTempPage = data;
-        var where = {
-          MAIN_ID: this.KSDepartmentalPlanDataSearch.ID
-        };
-        this.$emit('search', where);
-      },
+      this.ApplyTempPage = data;
+      var where = {
+        MAIN_ID: this.KSDepartmentalPlanDataSearch.ID
+      };
+      this.$emit('search', where);
+    },
+    UpNaxtDayApplyPlanDel(){
+      this.$emit("UpNaxtDayApplyPlanDel")
+    }
   },
   created() {}
 };

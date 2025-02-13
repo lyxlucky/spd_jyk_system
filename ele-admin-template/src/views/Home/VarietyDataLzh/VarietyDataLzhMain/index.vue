@@ -4,16 +4,18 @@
     <!-- 数据表格 -->
     <!-- :rowClickChecked="true"  -->
     <!-- :rowClickCheckedIntelligent="false"  -->
+    <VarietyDataLzhMainSearch @search="reload" />
+
     <ele-pro-table ref="table" :toolStyle="toolStyle" height="40vh" highlight-current-row :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" @selection-change="onSelectionChange" cache-key="KSInventoryBasicDataTable">
 
       <template v-slot:PAG_TYPE="{ row }">
         <div :id="'PAG_TYPE' + row.ID" :key="row.id" @click="dialogVisibleFun(row)">{{ row.PAG_TYPE }}
         </div>
       </template>
+
       <!-- 左表头 -->
       <template v-slot:toolbar>
         <!-- 搜索表单 -->
-        <VarietyDataLzhMainSearch @search="reload" />
       </template>
 
       <template v-slot:PlanQty="{ row }">

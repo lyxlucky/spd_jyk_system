@@ -2,31 +2,94 @@
   <div class="ele-body">
     <el-card shadow="never">
       <!-- 搜索表单 -->
-      <el-form label-width="77px" class="ele-form-search">
-        <el-row :gutter="15">
-          <el-col :lg="6" :md="12">
-            <el-form-item label="">
-              <el-input v-model="where.username" placeholder="品种编码/品种名称" clearable />
-            </el-form-item>
-          </el-col>
-          <el-col :lg="6" :md="12">
-            <el-form-item label="">
-              <el-input v-model="where.username" placeholder="注册证号" clearable />
-            </el-form-item>
-            <!-- <el-form-item label="性别:">
-              <el-select clearable v-model="where.sex" placeholder="请选择" class="ele-fluid">
-                <el-option label="男" value="1" />
-                <el-option label="女" value="2" />
+      <el-form class="ele-form-search">
+        <el-row type="flex" :gutter="2">
+          <el-col :lg="2">
+            <el-form-item>
+              <el-select size="mini" clearable v-model="where.sex" placeholder="请选择">
+                <el-option label="全部筛选" value="0" />
+                <el-option label="防控物资女" value="1" />
+                <el-option label="阳光采购平台品种" value="2" />
               </el-select>
-            </el-form-item> -->
+            </el-form-item>
           </el-col>
-          <el-col :lg="6" :md="12">
+          <el-col :lg="3">
+            <el-form-item label="高低值分类：" label-width="40">
+              <el-select style="width:100px" size="mini" clearable v-model="where.sex" placeholder="请选择">
+                <el-option label="全部" value="-1" />
+                <el-option label="高值" value="1" />
+                <el-option label="低值" value="0" />
+                <el-option label="试剂" value="2" />
+                <el-option label="消毒" value="3" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :lg="2">
+            <el-form-item label="">
+              <el-select size="mini" clearable v-model="where.sex" placeholder="请选择">
+                <el-option label="重点分类-全部" value="-1" />
+                <el-option label="重点治理" value="1" />
+                <el-option label="非重点治理" value="2" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :lg="2">
+            <el-form-item label="">
+              <el-input size="mini" v-model="where.username" placeholder="高值序号" clearable />
+            </el-form-item>
+          </el-col>
+          <el-col :lg="2">
+            <el-form-item label="">
+              <el-select size="mini" clearable v-model="where.sex" placeholder="请选择">
+                <el-option label="物价-全部" value="" />
+                <el-option label="物价-已提交" value="1" />
+                <el-option label="物价-未提交" value="0" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :lg="3">
+            <el-form-item label="启用状态：" label-width="40">
+              <el-select style="width:100px" size="mini" clearable v-model="where.sex" placeholder="请选择">
+                <el-option label="全部" value="" />
+                <el-option label="启用" value="1" />
+                <el-option label="停用" value="0" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :lg="3">
+            <el-form-item label="计费编码：" label-width="40">
+              <el-select style="width:100px" size="mini" clearable v-model="where.sex" placeholder="请选择">
+                <el-option label="全部" value="" />
+                <el-option label="为空" value="1" />
+                <el-option label="不为空" value="0" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :lg="3">
+            <el-form-item label="修改时间：" label-width="40">
+              <el-select style="width:100px" size="mini" clearable v-model="where.sex" placeholder="请选择">
+                <el-option label="全部" value="" />
+                <el-option label="当天" value="1" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :lg="5">
+            <el-form-item label="审批时间：" label-width="40">
+              <el-col :span="9">
+                <el-date-picker size="mini" type="date" placeholder="选择日期" v-model="where.date1" style="width: 100%;"></el-date-picker>
+              </el-col>
+              <el-col :span="9">
+                <el-date-picker size="mini" type="date" placeholder="选择日期" v-model="where.date1" style="width: 100%;"></el-date-picker>
+              </el-col>
+            </el-form-item>
+          </el-col>
+          <!-- <el-col :lg="6">
             <div class="ele-form-actions">
               <el-button type="primary" @click="reload">查询</el-button>
               <el-button @click="reset">重置</el-button>
               <el-button type="danger" @click="removeBatch">批量删除</el-button>
             </div>
-          </el-col>
+          </el-col> -->
         </el-row>
       </el-form>
       <!-- 表格 -->
@@ -46,7 +109,8 @@ export default {
       // 搜索表单数据
       where: {
         username: '',
-        sex: undefined
+        sex: undefined,
+        date1: ''
       },
       // 分页参数
       pagination: {
@@ -65,8 +129,7 @@ export default {
       selection: []
     };
   },
-  created() {
-  },
+  created() {},
   methods: {
     /* 搜索 */
     reload() {
