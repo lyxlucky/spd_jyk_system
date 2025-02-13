@@ -271,7 +271,7 @@ export default {
     showEditReoad(data) {
       if (data == false) {
         var where = {
-          PlanNum: this.KSDepartmentalPlanData.PlanNum
+          MAIN_ID: this.KSDepartmentalPlanData.ID
         };
         this.$refs.table.reload({ page: 1, where: where });
       }

@@ -1,11 +1,11 @@
 <template>
   <div class="ele-body" v-if="RenderTabel">
     <!-- 数据表格 -->
-    <ele-pro-table :key="key" :reserve-selection="true" highlight-current-row :row-key="(row) => row.PlanNum" @current-change="onCurrentChange" ref="table" height="18vh" :rowClickChecked="true" :rowClickCheckedIntelligent="false" :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" :needPage="true" cache-key="naxtDayApplyPlanMainTable">
+    <ele-pro-table :key="key" highlight-current-row @selection-change="handleSelectionChange" :row-key="(row) => row.ID" @current-change="onCurrentChange" ref="table" height="18vh" :rowClickChecked="true" :rowClickCheckedIntelligent="false" :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" :needPage="true" cache-key="naxtDayApplyPlanMainTable">
       <!-- 表头工具栏 -->
       <template v-slot:toolbar>
         <!-- 搜索表单 -->
-        <naxtDayApplyPlanMainSearch :KSDepartmentalPlanData="current" @search="reload" @openUserEdit="openUserEdit" @upNaxtDayApplyPlanMainByState="upNaxtDayApplyPlanMainByStateFun" />
+        <naxtDayApplyPlanMainSearch @removeBatch="removeBatch" :KSDepartmentalPlanData="current" @search="reload" @openUserEdit="openUserEdit" @upNaxtDayApplyPlanMainByState="upNaxtDayApplyPlanMainByStateFun" />
       </template>
 
       <template v-slot:State="{ row }">
@@ -28,18 +28,9 @@
         </el-tag> -->
       </template>
       <!-- 操作列 -->
-      <template v-slot:action="{ row }">
-        <el-popconfirm class="ele-action" title="确定删除？" @confirm="remove(row)">
-          <template v-slot:reference>
-            <el-link type="danger" size="mini" :underline="false" v-if="row.State == 0" icon="el-icon-delete">
-              删除
-            </el-link>
-          </template>
-        </el-popconfirm>
-        <el-button v-if="row.State == 1" size="mini" type="primary" icon="el-icon-edit" class="ele-btn-icon" @click="ReturnStateBtn(row)">
-          取消提交</el-button>
-        <!-- <el-button v-else size="small" type="primary" class="ele-btn-icon" @click="ReturnStateBtn(row)" disabled> 取消提交</el-button> -->
-      </template>
+      <!-- <template v-slot:action="{ row }">
+        <el-button type="primary" icon="el-icon-plus" size="mini" @click="remove(row)">保存</el-button>
+      </template> -->
     </ele-pro-table>
 
     <user-edit :visible.sync="showEdit" :data="current" @done="reload" />
@@ -51,7 +42,8 @@ import naxtDayApplyPlanMainSearch from './naxtDayApplyPlanMain-search.vue';
 import userEdit from './user-edit.vue';
 import {
   GetNaxtDayApplyPlanMain,
-  upNaxtDayApplyPlanMainByState
+  upNaxtDayApplyPlanMainByState,
+  DeleteNaxtDayApplyPlanMain
 } from '@/api/KSInventory/OperaSchedulingManagement';
 
 export default {
@@ -83,7 +75,7 @@ export default {
         {
           columnKey: 'action',
           label: '操作',
-          width: 120,
+          width: 150,
           align: 'center',
           resizable: false,
           slot: 'action',
@@ -195,7 +187,8 @@ export default {
       applyPlanXhz: 0,
       applyPlanBl: '0%',
       key: 0,
-      RenderTabel: true
+      RenderTabel: true,
+      formData: []
     };
   },
   mounted() {
@@ -221,9 +214,11 @@ export default {
             count: res.total,
             list: res.result
           };
+          this.formData = res.result;
           return tData;
         }
       );
+
       return data;
     },
     openUserEdit() {
@@ -234,12 +229,24 @@ export default {
     reload(where) {
       this.$refs.table.reload({ page: 1, where: where });
     },
-    onDone(res) {
-      // console.log('res:', res);
-      // 例如选中第一条数据
-      if (res.data?.length) {
-        this.$refs.table.setCurrentRow(res.data[0]);
-      }
+    toggleSelection() {
+      this.$nextTick(() => {
+        // 回显 id 为 12、11、9 的数据的复选框
+        const ids = [0, 1, 385];
+        // this.selection.forEach((row) => {
+        //   this.$refs.table1.toggleRowSelection(row);
+        // });
+        this.$refs.table.toggleRowSelection(this.selection[0]);
+      });
+
+      // this.$refs.table1.clearSelection();
+    },
+
+    handleSelectionChange(val) {
+      this.formData = val;
+    },
+    remove(row) {
+      console.log(row);
     },
     onSelectionChange(selection) {
       this.selection = selection;
@@ -268,7 +275,35 @@ export default {
         .then((res) => {
           loading.close();
           this.$message.success(res.msg);
-          this.reload();
+          var where = {};
+          this.$refs.table.reload({ page: 1, where: where });
+        })
+        .catch((err) => {
+          loading.close();
+          this.$message.error(err);
+        });
+    },
+    removeBatch() {
+      if (this.selection.length <= 0) {
+        this.$message.warning('请选择一条数据');
+        return;
+      }
+      const loading = this.$messageLoading('处理中..');
+      var ID = '';
+      this.selection.forEach((item) => {
+        ID += item.ID + ',';
+      });
+      ID.substring(0, ID.length - 1);
+      var data = {
+        ID,
+        STATE: 1
+      };
+      DeleteNaxtDayApplyPlanMain(data)
+        .then((res) => {
+          loading.close();
+          this.$message.success(res.msg);
+          var where = {};
+          this.$refs.table.reload({ page: 1, where: where });
         })
         .catch((err) => {
           loading.close();

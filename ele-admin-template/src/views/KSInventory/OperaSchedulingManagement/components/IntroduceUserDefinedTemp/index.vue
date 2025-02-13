@@ -337,8 +337,9 @@ export default {
         .then((res) => {
           loading.close();
           this.updateVisible(false);
-          alert(res.msg)
-          // this.$message.success(res.msg);
+          // alert(res.msg)
+          this.$message.info(res.msg);
+          this.$emit("reload");
         })
         .catch((res) => {
           loading.close();

@@ -23,7 +23,7 @@
         </div>
       </el-col>
     </el-row>
-    <IntroduceUserDefinedTemp :visible.sync="showEdit" :IntroduceUserDefinedTempSearch="KSDepartmentalPlanDataSearch" />
+    <IntroduceUserDefinedTemp :visible.sync="showEdit" :IntroduceUserDefinedTempSearch="KSDepartmentalPlanDataSearch" @reload="search"/>
     <el-dialog title="引用自定义模板" :visible.sync="showEdit2" width="80%" height="60%">
       <SurgerySchedulingTemp :IntroduceUserDefinedTempSearch="KSDepartmentalPlanDataSearch" @ApplyTempPageChange="ApplyTempPageChange" />
     </el-dialog>

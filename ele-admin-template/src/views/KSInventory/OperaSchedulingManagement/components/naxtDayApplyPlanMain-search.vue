@@ -21,7 +21,7 @@
       <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 8 }">
         <el-input size="mini" clearable v-model="where.CREATE_MAN" placeholder="申请人" />
       </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 7, md: 4 } : { span: 4 }">
+      <el-col v-bind="styleResponsive ? { lg: 9, md: 4 } : { span: 4 }">
         <div class="ele-form-actions">
           <el-button size="mini" type="primary" icon="el-icon-search" class="ele-btn-icon" @click="search">
             查询
@@ -39,6 +39,12 @@
               <el-button size="mini" type="primary" class="ele-btn-icon" :disabled="IS_disabled">
                 提交申请
               </el-button>
+            </template>
+          </el-popconfirm>
+
+          <el-popconfirm class="ele-action" title="确定删除？" @confirm="removeBatch()">
+            <template v-slot:reference>
+              <el-button type="danger" icon="el-icon-delete" size="mini" :disabled="IS_disabled">删除</el-button>
             </template>
           </el-popconfirm>
         </div>
@@ -93,6 +99,9 @@ export default {
     },
     upNaxtDayApplyPlanMainByState() {
       this.$emit('upNaxtDayApplyPlanMainByState');
+    },
+    removeBatch() {
+      this.$emit('removeBatch');
     }
   },
   watch: {
