@@ -67,6 +67,7 @@ export default {
   },
   mounted() {},
   created() {
+    this.defaultForm = {};
     this.$bus.$on(`${this.$route.path}/handleUpdate`, this.handleUpdate);
   },
   methods: {
@@ -83,17 +84,19 @@ export default {
       data.CREATE_MAN = this.$store.state.user.info.Nickname;
       console.log(data);
 
-     
       // // this.loading = true;
-      AddNaxtDayApplyPlanMain(data).then((res) => {
-        // loading.close()
-        this.$emit('done');
-        this.$emit('update:visible', false);
-        this.$message.success(res.msg);
-      }).catch(err=>{
-        // loading.close()
-        this.$message.error(err);
-      })
+      AddNaxtDayApplyPlanMain(data)
+        .then((res) => {
+          // loading.close()
+          this.defaultForm = {};
+          this.$emit('done');
+          this.$emit('update:visible', false);
+          this.$message.success(res.msg);
+        })
+        .catch((err) => {
+          // loading.close()
+          this.$message.error(err);
+        });
       // });
     },
     /* 更新visible */
