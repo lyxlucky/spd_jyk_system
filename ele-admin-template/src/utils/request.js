@@ -25,7 +25,7 @@ service.interceptors.request.use(
       config.headers.common[TOKEN_HEADER_NAME] = token;
       // config.headers.common[TOKEN_HEADER_NAME] = 'text/html, application/xhtml+xml';
       // config.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
-      // config.headers.common['Content-Type'] = 'application/x-www-form-urlencoded';
+      // config.headers.common['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
     }
 
     return config;

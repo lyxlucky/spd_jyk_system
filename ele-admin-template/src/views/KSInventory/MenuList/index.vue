@@ -207,6 +207,7 @@
   import VarietyDataLzhLook from '@/views/KSInventory/ReferenceComponent/VarietyDataLzhLook/index';
   import DpetOneAuthWithDept from '@/views/KSInventory/ReferenceComponent/DpetOneAuthWithDept/index';
   import { API_BASE_URL, BACK_BASE_URL, BLACK_ROUTER } from '@/config/setting';
+  import { getAesKey } from '@/utils/aes-util';
   import { getTableList } from '@/api/KSInventory/KSNewBatchReminder/index';
   import { SearchDefRemind } from '@/api/KSInventory/KSExpirationReminder';
 
@@ -382,10 +383,9 @@
           '新资质审核',
           '科室目录导出',
           '中标目录导出',
-          
           '溯源管理',
           '溯源查询(新)',
-          '价格变动记录(新)',
+          '价格变动记录(新)'
         ];
         permission_group = permission_group.filter((res) => {
           return !blackList.includes(res.title);
@@ -476,22 +476,23 @@
           YEAR_CHANGE_PERCENT: 0
         }));
 
-        // 填充实际数据到对应的月份位置
+        // 填充实际数据到对应的月份位置, 并将金额转换为万元
         this.lineChartData.forEach((item) => {
           if (item.MONTH) {
             const monthIndex = this.$moment(item.MONTH, 'YYYY-MM').month(); // 使用 moment.js 解析月份并转换为索引
-            initData[monthIndex].TOTAL_MONEY = item.TOTAL_MONEY;
+            initData[monthIndex].TOTAL_MONEY = item.TOTAL_MONEY / 10000; // 将金额转换为万元
           }
           if (item.PAST_MONTH) {
             const pastMonthIndex = this.$moment(
               item.PAST_MONTH,
               'YYYY-MM'
             ).month();
-            initData[pastMonthIndex].PAST_TOTAL_MONEY = item.PAST_TOTAL_MONEY;
+            initData[pastMonthIndex].PAST_TOTAL_MONEY =
+              item.PAST_TOTAL_MONEY / 10000; // 将金额转换为万元
           }
         });
 
-        // 计算同比和环比
+        // 计算同比和环比 (注意：这里计算同比环比仍然基于万元单位的金额)
         for (let i = 0; i < 12; i++) {
           const current = initData[i].TOTAL_MONEY;
           const previous = initData[i].PAST_TOTAL_MONEY;
@@ -518,8 +519,26 @@
             formatter: function (params) {
               let result = params[0].name + '<br/>';
               params.forEach(function (item) {
+                let valueToDisplay = item.value; // 默认值
+
+                if (item.seriesName === '同比' || item.seriesName === '环比') {
+                  // 如果是同比或环比，保持百分比显示
+                  valueToDisplay = item.value + '%';
+                } else if (
+                  item.seriesName === '实际金额' ||
+                  item.seriesName === '去年同期金额'
+                ) {
+                  valueToDisplay = item.value.toFixed(2) + '万元'; //  直接显示万元，因为数据已经是万元单位
+                } else {
+                  valueToDisplay = item.value + '%'; // 默认情况仍然显示百分比
+                }
+
                 result +=
-                  item.marker + item.seriesName + ': ' + item.value + '%<br/>';
+                  item.marker +
+                  item.seriesName +
+                  ': ' +
+                  valueToDisplay +
+                  '<br/>';
               });
               return result;
             }
@@ -537,7 +556,7 @@
             {
               type: 'value',
               axisLabel: {
-                formatter: '{value}%' // 添加百分比符号
+                formatter: '{value}%' // y轴标签仍然显示百分比
               }
             }
           ],
@@ -586,14 +605,16 @@
           },
           yAxis: {
             type: 'category',
-            grid: {
-              left: '20%',
-              right: '3%',
-              bottom: '3%',
-              containLabel: true
-            },
+            interval: 0,
             data: this.varData.map((item) => item.VARIETIE_NAME),
-            inverse: true // 降序排列
+            inverse: true, // 降序排列
+          },
+          grid: {
+            // 添加 grid 属性
+            left: '10%', // 调整 left 值，例如设置为 20% 或更大的像素值
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
           },
           series: [
             {
@@ -711,6 +732,7 @@
       this.getVarTop20();
       // this.MenuList = this.$store.state.user.info.permission_group;
       /* 获取数据 */
+      localStorage.AesKey = getAesKey();
     }
   };
 </script>

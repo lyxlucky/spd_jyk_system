@@ -60,6 +60,9 @@ module.exports = {
         // 这里可以写你自己的后端接口地址，如：
         target: 'http://localhost:16416/'
 
+        // 线上测试
+        // target: 'http://120.79.135.98:82'
+
         // 北大
         // target: 'http://47.106.243.154:9001',
 
