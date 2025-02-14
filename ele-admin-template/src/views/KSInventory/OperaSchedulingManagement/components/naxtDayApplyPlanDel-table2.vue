@@ -28,11 +28,11 @@
         <!-- <el-input-number v-model="row.PlanQty" controls-position="right" @change="handleChange" :min="0" :max="9999" size="mini"></el-input-number> -->
       </template>
       <template v-slot:APPLY_QTY="{ row }">
-        <el-input v-if="row.STATE == 0" type="number" v-model="row.APPLY_QTY" :min="0" :max="99999999" :step="1" size="mini" />
+        <el-input v-if="row.STATE == 0" type="number"  @click.native.stop v-model="row.APPLY_QTY" :min="0" :max="99999999" :step="1" size="mini" />
         <el-input v-else disabled type="number" v-model="row.APPLY_QTY" :min="0" :max="99999999" :step="1" size="mini" />
       </template>
       <template v-slot:REMARK="{ row }">
-        <el-input v-if="row.STATE == 0" type="text" v-model="row.REMARK" size="mini" />
+        <el-input v-if="row.STATE == 0" @click.native.stop type="text" v-model="row.REMARK" size="mini" />
         <el-input v-else disabled type="text" v-model="row.REMARK" size="mini" />
       </template>
 

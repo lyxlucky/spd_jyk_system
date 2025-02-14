@@ -98,3 +98,13 @@ export function Decrypt(str) {
   var decryptedStr = decrypt.toString(CryptoJS.enc.Utf8);
   return decryptedStr.toString();
 }
+
+
+export async function getSTORAGE() {
+  const res = await request.get('/Commons/getSTORAGE');
+  if (res.data.code == 200) {
+    return res.data;
+  } else {
+    return Promise.reject(new Error(res.data.msg));
+  }
+}

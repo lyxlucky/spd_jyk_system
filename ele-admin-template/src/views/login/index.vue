@@ -1,61 +1,27 @@
 <template>
-  <div
-    :class="[
+  <div :class="[
       'login-wrapper',
       ['', 'login-form-right', 'login-form-left'][direction]
-    ]"
-  >
-    <el-form
-      ref="form"
-      size="large"
-      :model="form"
-      :rules="rules"
-      class="login-form ele-bg-white"
-      @keyup.enter.native="submit"
-    >
+    ]">
+    <el-form ref="form" size="large" :model="form" :rules="rules" class="login-form ele-bg-white" @keyup.enter.native="submit">
       <div style="width: 100%; text-align: center">
         <!-- src="@/assets/logoBD.jpg" -->
-        <img
-          style="max-width: 100%; height: auto; display: inline-block"
-          :src="logo"
-          alt="some_text"
-        />
+        <img style="max-width: 100%; height: auto; display: inline-block" :src="logo" alt="some_text" />
         <h4>医疗机构医疗器械供应链管理系统（SPD）</h4>
         <!-- <h4>北京大学深圳医院</h4> -->
       </div>
       <el-divider></el-divider>
       <h4>{{ $t('login.title') }}</h4>
       <el-form-item prop="username">
-        <el-input
-          clearable
-          v-model="form.username"
-          prefix-icon="el-icon-user"
-          :placeholder="$t('login.username')"
-        />
+        <el-input clearable v-model="form.username" prefix-icon="el-icon-user" :placeholder="$t('login.username')" />
       </el-form-item>
       <el-form-item prop="password">
-        <el-input
-          show-password
-          v-model="form.password"
-          prefix-icon="el-icon-lock"
-          :placeholder="$t('login.password')"
-        />
+        <el-input show-password v-model="form.password" prefix-icon="el-icon-lock" :placeholder="$t('login.password')" />
       </el-form-item>
       <el-form-item prop="code">
         <div class="login-input-group">
-          <el-input
-            clearable
-            v-model="form.code"
-            prefix-icon="el-icon-_vercode"
-            :placeholder="$t('login.code')"
-          />
-          <img
-            alt=""
-            v-if="captcha"
-            :src="captcha"
-            class="login-captcha"
-            @click="changeCaptcha"
-          />
+          <el-input clearable v-model="form.code" prefix-icon="el-icon-_vercode" :placeholder="$t('login.code')" />
+          <img alt="" v-if="captcha" :src="captcha" class="login-captcha" @click="changeCaptcha" />
         </div>
       </el-form-item>
       <div class="el-form-item">
@@ -72,13 +38,7 @@
         </el-link> -->
       </div>
       <div class="el-form-item">
-        <el-button
-          size="large"
-          type="primary"
-          class="login-btn"
-          :loading="loading"
-          @click="submit"
-        >
+        <el-button size="large" type="primary" class="login-btn" :loading="loading" @click="submit">
           {{ loading ? $t('login.loading') : $t('login.login') }}
         </el-button>
       </div>
@@ -99,15 +59,10 @@
     </div>
     <!-- 多语言切换 -->
     <div style="position: absolute; right: 30px; top: 20px">
-      <i18n-icon
-        :icon-style="{ fontSize: '22px', color: '#fff', cursor: 'pointer' }"
-      />
+      <i18n-icon :icon-style="{ fontSize: '22px', color: '#fff', cursor: 'pointer' }" />
     </div>
     <!-- 实际项目去掉这段 -->
-    <div
-      class="hidden-xs-only"
-      style="position: absolute; right: 30px; bottom: 20px; z-index: 9"
-    >
+    <div class="hidden-xs-only" style="position: absolute; right: 30px; bottom: 20px; z-index: 9">
       <el-radio-group v-model="direction" size="mini">
         <el-radio-button label="2">居左</el-radio-button>
         <el-radio-button label="0">居中</el-radio-button>
@@ -118,339 +73,342 @@
 </template>
 
 <script>
-  import { reloadPageTab } from '@/utils/page-tab-util';
-  import CryptoJS from 'crypto-js';
-  import I18nIcon from '@/layout/components/i18n-icon.vue';
-  import { getToken } from '@/utils/token-util';
-  import { login, getCaptcha } from '@/api/login';
-  import { HOME_HP } from '@/config/setting';
+import { reloadPageTab } from '@/utils/page-tab-util';
+import CryptoJS from 'crypto-js';
+import I18nIcon from '@/layout/components/i18n-icon.vue';
+import { getToken } from '@/utils/token-util';
+import { login, getCaptcha, getSTORAGE } from '@/api/login';
+import { HOME_HP } from '@/config/setting';
 
-  export default {
-    // eslint-disable-next-line vue/multi-word-component-names
-    name: 'Login',
-    components: { I18nIcon },
-    data() {
+export default {
+  // eslint-disable-next-line vue/multi-word-component-names
+  name: 'Login',
+  components: { I18nIcon },
+  data() {
+    return {
+      // 登录框方向, 0居中, 1居右, 2居左
+      direction: 0,
+      // 加载状态
+      loading: false,
+      // 表单数据
+      form: {
+        username: '',
+        password: '',
+        remember: true,
+        code: ''
+      },
+      // 验证码base64数据
+      captcha: '',
+      // 验证码内容, 实际项目去掉
+      text: ''
+    };
+  },
+  computed: {
+    // 表单验证规则
+    rules() {
       return {
-        // 登录框方向, 0居中, 1居右, 2居左
-        direction: 0,
-        // 加载状态
-        loading: false,
-        // 表单数据
-        form: {
-          username: '',
-          password: '',
-          remember: true,
-          code: ''
-        },
-        // 验证码base64数据
-        captcha: '',
-        // 验证码内容, 实际项目去掉
-        text: ''
+        username: [
+          {
+            required: true,
+            message: this.$t('login.username'),
+            type: 'string',
+            trigger: 'blur'
+          }
+        ],
+        password: [
+          {
+            required: true,
+            message: this.$t('login.password'),
+            type: 'string',
+            trigger: 'blur'
+          }
+        ]
       };
     },
-    computed: {
-      // 表单验证规则
-      rules() {
-        return {
-          username: [
-            {
-              required: true,
-              message: this.$t('login.username'),
-              type: 'string',
-              trigger: 'blur'
-            }
-          ],
-          password: [
-            {
-              required: true,
-              message: this.$t('login.password'),
-              type: 'string',
-              trigger: 'blur'
-            }
-          ]
-        };
-      },
-      // logo
-      logo() {
-        switch (HOME_HP) {
-          case 'bd':
-            return require('@/assets/logoBD.jpg');
-          case 'fy':
-            return require('@/assets/logoFY.jpg');
-          case 'szsmyl':
-            return require('@/assets/logoSM.jpg');
-          case 'stzl':
-            return require('@/assets/logoZL.jpg');
-          case 'szhn':
-            return require('@/assets/logoHN.jpg');
-          case 'lg':
-            return require('@/assets/logoLG.png');
-          case 'stzx':
-            return require('@/assets/logoSTZX.jpg');
-          case 'szlhfy':
-            return require('@/assets/logoFY.jpg');
-          default:
-            return require('@/assets/logoBD.jpg');
-        }
-      }
-    },
-    created() {
-      this.form.username =
-        localStorage.username != undefined
-          ? this.Decrypt(localStorage.username)
-          : '';
-      this.form.password =
-        localStorage.password != undefined
-          ? this.Decrypt(localStorage.password)
-          : '';
-
-      if (getToken()) {
-        this.goHome();
-      } else {
-        this.changeCaptcha();
-      }
-    },
-    methods: {
-      /* 提交 */
-      submit() {
-        this.$refs.form.validate((valid) => {
-          if (!valid) {
-            return false;
-          }
-          if (this.form.code.toLowerCase() !== this.text) {
-            this.$message.error('验证码错误');
-            return;
-          }
-          this.loading = true;
-          var data = this.form;
-          var data2 = {
-            username: data.username,
-            password: data.password,
-            code: this.form.code
-          };
-          login(data2)
-            .then((res) => {
-              this.$store.commit('user/setLoginInfo', data2);
-              if (this.form.remember == true) {
-                localStorage.username = this.Encrypt(data.username);
-                localStorage.password = this.Encrypt(data.password);
-              } else {
-                localStorage.removeItem('username');
-                localStorage.removeItem('password');
-              }
-              this.loading = false;
-              this.$message.success(res.msg);
-              // this.$router.push('/KSInventory/KSScanCodeRecGood').catch(() => {});
-              this.goHome();
-            })
-            .catch((e) => {
-              this.loading = false;
-              this.$message.error('请核对账号密码');
-            });
-        });
-      },
-      /* 跳转到首页 */
-      goHome() {
-        this.$router
-          .push(this.$route?.query?.from ?? '/')
-          .then((res) => {
-            location.reload();
-          })
-          .catch(() => {});
-      },
-      /* 更换图形验证码 */
-      changeCaptcha() {
-        // 这里演示的验证码是后端返回base64格式的形式, 如果后端地址直接是图片请参考忘记密码页面
-        getCaptcha()
-          .then((data) => {
-            this.captcha = data.base64;
-            // 实际项目后端一般会返回验证码的key而不是直接返回验证码的内容, 登录用key去验证, 可以根据自己后端接口修改
-            this.text = data.text.toLowerCase();
-            // 自动回填验证码, 实际项目去掉这个
-            this.form.code = this.text;
-            this.$refs?.form?.clearValidate();
-          })
-          .catch((e) => {
-            this.$message.error(e.message);
-          });
-      },
-      Encrypt(str) {
-        var KEY = this.$store.state.user.encrypted.KEY; //32位
-        var IV = this.$store.state.user.encrypted.IV; //16位
-
-        var key = CryptoJS.enc.Utf8.parse(KEY);
-        var iv = CryptoJS.enc.Utf8.parse(IV);
-
-        var encrypted = '';
-
-        var srcs = CryptoJS.enc.Utf8.parse(str);
-        encrypted = CryptoJS.AES.encrypt(srcs, key, {
-          iv: iv,
-          mode: CryptoJS.mode.CBC,
-          padding: CryptoJS.pad.Pkcs7
-        });
-
-        return encrypted.ciphertext.toString();
-      },
-
-      Decrypt(str) {
-        var KEY = this.$store.state.user.encrypted.KEY; //32位
-        var IV = this.$store.state.user.encrypted.IV; //16位
-
-        var key = CryptoJS.enc.Utf8.parse(KEY);
-        var iv = CryptoJS.enc.Utf8.parse(IV);
-        var encryptedHexStr = CryptoJS.enc.Hex.parse(str);
-        var srcs = CryptoJS.enc.Base64.stringify(encryptedHexStr);
-        var decrypt = CryptoJS.AES.decrypt(srcs, key, {
-          iv: iv,
-          mode: CryptoJS.mode.CBC,
-          padding: CryptoJS.pad.Pkcs7
-        });
-        var decryptedStr = decrypt.toString(CryptoJS.enc.Utf8);
-        return decryptedStr.toString();
+    // logo
+    logo() {
+      switch (HOME_HP) {
+        case 'bd':
+          return require('@/assets/logoBD.jpg');
+        case 'fy':
+          return require('@/assets/logoFY.jpg');
+        case 'szsmyl':
+          return require('@/assets/logoSM.jpg');
+        case 'stzl':
+          return require('@/assets/logoZL.jpg');
+        case 'szhn':
+          return require('@/assets/logoHN.jpg');
+        case 'lg':
+          return require('@/assets/logoLG.png');
+        case 'stzx':
+          return require('@/assets/logoSTZX.jpg');
+        case 'szlhfy':
+          return require('@/assets/logoFY.jpg');
+        default:
+          return require('@/assets/logoBD.jpg');
       }
     }
-  };
+  },
+  created() {
+    this.form.username =
+      localStorage.username != undefined
+        ? this.Decrypt(localStorage.username)
+        : '';
+    this.form.password =
+      localStorage.password != undefined
+        ? this.Decrypt(localStorage.password)
+        : '';
+
+    if (getToken()) {
+      this.goHome();
+    } else {
+      this.changeCaptcha();
+    }
+  },
+  methods: {
+    /* 提交 */
+    submit() {
+      this.$refs.form.validate((valid) => {
+        if (!valid) {
+          return false;
+        }
+        if (this.form.code.toLowerCase() !== this.text) {
+          this.$message.error('验证码错误');
+          return;
+        }
+        this.loading = true;
+        var data = this.form;
+        var data2 = {
+          username: data.username,
+          password: data.password,
+          code: this.form.code
+        };
+        login(data2)
+          .then((res) => {
+            this.$store.commit('user/setLoginInfo', data2);
+            if (this.form.remember == true) {
+              localStorage.username = this.Encrypt(data.username);
+              localStorage.password = this.Encrypt(data.password);
+            } else {
+              localStorage.removeItem('username');
+              localStorage.removeItem('password');
+            }
+            this.loading = false;
+            this.$message.success(res.msg);
+            // this.$router.push('/KSInventory/KSScanCodeRecGood').catch(() => {});
+            getSTORAGE().then((res) => {
+              this.$store.commit('user/setStorage', res.result);
+            });
+            this.goHome();
+          })
+          .catch((e) => {
+            this.loading = false;
+            this.$message.error('请核对账号密码');
+          });
+      });
+    },
+    /* 跳转到首页 */
+    goHome() {
+      this.$router
+        .push(this.$route?.query?.from ?? '/')
+        .then((res) => {
+          location.reload();
+        })
+        .catch(() => {});
+    },
+    /* 更换图形验证码 */
+    changeCaptcha() {
+      // 这里演示的验证码是后端返回base64格式的形式, 如果后端地址直接是图片请参考忘记密码页面
+      getCaptcha()
+        .then((data) => {
+          this.captcha = data.base64;
+          // 实际项目后端一般会返回验证码的key而不是直接返回验证码的内容, 登录用key去验证, 可以根据自己后端接口修改
+          this.text = data.text.toLowerCase();
+          // 自动回填验证码, 实际项目去掉这个
+          this.form.code = this.text;
+          this.$refs?.form?.clearValidate();
+        })
+        .catch((e) => {
+          this.$message.error(e.message);
+        });
+    },
+    Encrypt(str) {
+      var KEY = this.$store.state.user.encrypted.KEY; //32位
+      var IV = this.$store.state.user.encrypted.IV; //16位
+
+      var key = CryptoJS.enc.Utf8.parse(KEY);
+      var iv = CryptoJS.enc.Utf8.parse(IV);
+
+      var encrypted = '';
+
+      var srcs = CryptoJS.enc.Utf8.parse(str);
+      encrypted = CryptoJS.AES.encrypt(srcs, key, {
+        iv: iv,
+        mode: CryptoJS.mode.CBC,
+        padding: CryptoJS.pad.Pkcs7
+      });
+
+      return encrypted.ciphertext.toString();
+    },
+
+    Decrypt(str) {
+      var KEY = this.$store.state.user.encrypted.KEY; //32位
+      var IV = this.$store.state.user.encrypted.IV; //16位
+
+      var key = CryptoJS.enc.Utf8.parse(KEY);
+      var iv = CryptoJS.enc.Utf8.parse(IV);
+      var encryptedHexStr = CryptoJS.enc.Hex.parse(str);
+      var srcs = CryptoJS.enc.Base64.stringify(encryptedHexStr);
+      var decrypt = CryptoJS.AES.decrypt(srcs, key, {
+        iv: iv,
+        mode: CryptoJS.mode.CBC,
+        padding: CryptoJS.pad.Pkcs7
+      });
+      var decryptedStr = decrypt.toString(CryptoJS.enc.Utf8);
+      return decryptedStr.toString();
+    }
+  }
+};
 </script>
 
 <style lang="scss" scoped>
-  /* 背景 */
-  .login-wrapper {
-    padding: 50px 20px;
-    position: relative;
-    box-sizing: border-box;
-    background-image: url('@/assets/bg-login3.jpg');
-    background-repeat: no-repeat;
-    background-size: cover;
-    min-height: 100vh;
+/* 背景 */
+.login-wrapper {
+  padding: 50px 20px;
+  position: relative;
+  box-sizing: border-box;
+  background-image: url('@/assets/bg-login3.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  min-height: 100vh;
 
-    &:before {
-      content: '';
-      background-color: rgba(0, 0, 0, 0.2);
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-    }
+  &:before {
+    content: '';
+    background-color: rgba(0, 0, 0, 0.2);
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+}
+
+/* 卡片 */
+.login-form {
+  margin: 0 auto;
+  width: 400px;
+  max-width: 100%;
+  padding: 25px 30px;
+  position: relative;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+  box-sizing: border-box;
+  border-radius: 4px;
+  z-index: 2;
+
+  h4 {
+    text-align: center;
+    margin: 0 0 25px 0;
   }
 
-  /* 卡片 */
+  & > .el-form-item {
+    margin-bottom: 25px;
+  }
+}
+
+.login-form-right .login-form {
+  margin: 0 15% 0 auto;
+}
+
+.login-form-left .login-form {
+  margin: 0 auto 0 15%;
+}
+
+/* 验证码 */
+.login-input-group {
+  display: flex;
+  align-items: center;
+
+  :deep(.el-input) {
+    flex: 1;
+  }
+}
+
+.login-captcha {
+  height: 38px;
+  width: 102px;
+  margin-left: 10px;
+  border-radius: 4px;
+  border: 1px solid #dcdfe6;
+  text-align: center;
+  cursor: pointer;
+
+  &:hover {
+    opacity: 0.75;
+  }
+}
+
+.login-btn {
+  display: block;
+  width: 100%;
+}
+
+/* 第三方登录图标 */
+.login-oauth-icon {
+  color: #fff;
+  padding: 5px;
+  margin: 0 10px;
+  font-size: 18px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+/* 底部版权 */
+.login-copyright {
+  color: #eee;
+  padding-top: 20px;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+/* 响应式 */
+@media screen and (min-height: 550px) {
   .login-form {
-    margin: 0 auto;
-    width: 400px;
-    max-width: 100%;
-    padding: 25px 30px;
-    position: relative;
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
-    box-sizing: border-box;
-    border-radius: 4px;
-    z-index: 2;
-
-    h4 {
-      text-align: center;
-      margin: 0 0 25px 0;
-    }
-
-    & > .el-form-item {
-      margin-bottom: 25px;
-    }
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-top: -220px;
   }
 
-  .login-form-right .login-form {
-    margin: 0 15% 0 auto;
+  .login-form-right .login-form,
+  .login-form-left .login-form {
+    left: auto;
+    right: 15%;
+    transform: translateX(0);
+    margin: -220px auto auto auto;
   }
 
   .login-form-left .login-form {
-    margin: 0 auto 0 15%;
+    right: auto;
+    left: 15%;
   }
 
-  /* 验证码 */
-  .login-input-group {
-    display: flex;
-    align-items: center;
-
-    :deep(.el-input) {
-      flex: 1;
-    }
-  }
-
-  .login-captcha {
-    height: 38px;
-    width: 102px;
-    margin-left: 10px;
-    border-radius: 4px;
-    border: 1px solid #dcdfe6;
-    text-align: center;
-    cursor: pointer;
-
-    &:hover {
-      opacity: 0.75;
-    }
-  }
-
-  .login-btn {
-    display: block;
-    width: 100%;
-  }
-
-  /* 第三方登录图标 */
-  .login-oauth-icon {
-    color: #fff;
-    padding: 5px;
-    margin: 0 10px;
-    font-size: 18px;
-    border-radius: 50%;
-    cursor: pointer;
-  }
-
-  /* 底部版权 */
   .login-copyright {
-    color: #eee;
-    padding-top: 20px;
-    text-align: center;
-    position: relative;
-    z-index: 1;
+    position: absolute;
+    bottom: 20px;
+    right: 0;
+    left: 0;
   }
+}
 
-  /* 响应式 */
-  @media screen and (min-height: 550px) {
-    .login-form {
-      position: absolute;
-      top: 40%;
-      left: 50%;
-      transform: translateX(-50%);
-      margin-top: -220px;
-    }
-
-    .login-form-right .login-form,
-    .login-form-left .login-form {
-      left: auto;
-      right: 15%;
-      transform: translateX(0);
-      margin: -220px auto auto auto;
-    }
-
-    .login-form-left .login-form {
-      right: auto;
-      left: 15%;
-    }
-
-    .login-copyright {
-      position: absolute;
-      bottom: 20px;
-      right: 0;
-      left: 0;
-    }
+@media screen and (max-width: 768px) {
+  .login-form-right .login-form,
+  .login-form-left .login-form {
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    margin-right: auto;
   }
-
-  @media screen and (max-width: 768px) {
-    .login-form-right .login-form,
-    .login-form-left .login-form {
-      left: 50%;
-      right: auto;
-      transform: translateX(-50%);
-      margin-right: auto;
-    }
-  }
+}
 </style>

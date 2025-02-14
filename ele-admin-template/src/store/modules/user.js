@@ -3,10 +3,11 @@
  */
 import { formatMenus, toTreeData, formatTreeData, deepClone } from 'ele-admin';
 import { USER_MENUS, BLACK_LIST_ROUTERS } from '@/config/setting';
-import { getUserInfo,getConfig } from '@/api/layout';
+import { getUserInfo, getConfig } from '@/api/layout';
 
 export default {
   namespaced: true,
+  storage: null,
   state: {
     // 当前登录用户信息
     info: null,
@@ -36,6 +37,9 @@ export default {
     // 设置登录用户的信息
     setUserInfo(state, info) {
       state.info = deepClone(info)
+    },
+    setStorage(state, storage) {
+      state.storage = storage;
     },
     // 设置登录用户的菜单
     setMenus(state, menus) {
@@ -70,7 +74,7 @@ export default {
     setDeptDeclarAndApprovalMainId(state, info) {
       state.DeptDeclarAndApprovalMainId = info;
     },
-    setIsEncrypt(state, info){
+    setIsEncrypt(state, info) {
       state.isEncrypt = info;
     }
   },
