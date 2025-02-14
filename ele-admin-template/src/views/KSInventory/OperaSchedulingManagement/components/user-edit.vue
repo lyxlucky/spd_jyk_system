@@ -82,8 +82,7 @@ export default {
       //   }
       var data = this.form;
       data.CREATE_MAN = this.$store.state.user.info.Nickname;
-      console.log(data);
-
+      console.log(this.$store.state)
       // // this.loading = true;
       AddNaxtDayApplyPlanMain(data)
         .then((res) => {
