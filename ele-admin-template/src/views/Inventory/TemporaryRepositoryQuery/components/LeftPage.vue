@@ -4,29 +4,46 @@
       <!-- 搜索表单 -->
       <!-- <user-search @search="reload" @exportData="exportData" /> -->
       <!-- 数据表格 -->
-      <user-search @search="reload" @exportData="exportData" @markAsProcessed="markAsProcessed" />
+      <user-search @search="reload" @exportData="exportData" @returnData="returnData"/>
       <ele-pro-table ref="table" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" cache-key="KSInventoryBasicDataTable">
         <!-- 表头工具栏 -->
         <template v-slot:toolbar>
         </template>
+
+        <!-- 操作列 -->
+        <template v-slot:action="{ row }">
+          <el-link type="primary" :underline="false" icon="el-icon-edit" @click="openEdit(row)">
+            修改
+          </el-link>
+          <!-- <el-button type="primary" size="mini" @click="openEdit(row)">编辑</el-button> -->
+          <!-- <el-popconfirm class="ele-action" title="确定要删除此用户吗？" @confirm="remove(row)">
+            <template v-slot:reference>
+              <el-link type="danger" :underline="false" icon="el-icon-delete">
+                删除
+              </el-link>
+            </template>
+          </el-popconfirm> -->
+        </template>
       </ele-pro-table>
     </el-card>
-   
+    <!-- 编辑弹窗 -->
+    <user-edit :visible.sync="showEdit" :data="current" @done="reload" />
+    <!-- 导入弹窗 -->
+    <!-- <user-import :visible.sync="showImport" @done="reload" /> -->
   </div>
 </template>
 
 <script>
 import { utils, writeFile } from 'xlsx';
-import UserSearch from './components/user-search.vue';
-
+import UserSearch from './leftpage-search.vue';
 import {
-  GetPDAList,VarPriceRecodeCommit
-} from '@/api/TraceSource/VarPriceRecode';
+  GetPDAList,Temporary_supplyRevert
+} from '@/api/Inventory/TemporaryRepositoryQuery';
 export default {
-  name: 'VarPriceRecode',
+  name: 'SystemUser',
   components: {
     UserSearch,
-    // UserImport
+   
   },
   data() {
     return {
@@ -39,143 +56,127 @@ export default {
           align: 'center',
           fixed: 'left'
         },
-        {
-          label: '序',
-          columnKey: 'index',
-          type: 'index',
-          width: 45,
-          align: 'center',
+         {
+          prop: 'DEPT_TWO_NAME',
+          label: '科室名称',
+          sortable: false,
+          align: 'left',
           showOverflowTooltip: true,
-          fixed: 'left'
+          minWidth: 120
         },
         {
-          prop: 'STATE',
-          label: '处理状态',
-          sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 150,
-          formatter: (row) => {
-            return row.STATE === '1' ? '已处理' : '未处理';
-          }
-        },
-        {
-          prop: 'CREATE_TIME',
-          label: '记录时间',
-          sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          width: 150,
-          formatter: (row) => {
-            return row.CREATE_TIME.replace('T', ' ');
-          }
-        },
-        {
-          prop: 'VARIETIE_CODE_NEW',
-          label: '品种编码',
-          sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 150,
-          show: false
-        },
-        {
-          prop: 'CHARGING_CODE',
-          label: '计费编码',
-          sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          width: 80
-        },
-        {
-          prop: 'VARIETIE_NAME',
-          label: '品种名称',
-          sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 220
-        },
-        {
-          prop: 'SPECIFICATION_OR_TYPE',
-          label: '规格型号',
-          sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 220
-        },
-        {
-          prop: 'MANUFACTURING_ENT_NAME',
-          label: '生产企业',
-          sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 220
-        },
-        {
-          prop: 'APPROVAL_NUMBER',
-          label: '注册证号',
-          sortable: 'custom',
-          align: 'center',
+          prop: 'Varietie_Code',
+          label: '品种(材料)编码',
+          sortable: true,
+          align: 'left',
           showOverflowTooltip: true,
           width: 150
         },
         {
-          prop: 'UNIT',
+          prop: 'CHARGING_CODE',
+          label: '计费编码',
+          sortable: false,
+          align: 'left',
+          showOverflowTooltip: true,
+          minWidth: 200
+        },
+        {
+          prop: 'Varietie_Name',
+          label: '品种全称',
+          sortable: false,
+          align: 'left',
+          showOverflowTooltip: true,
+          minWidth: 200
+        },
+        {
+          prop: 'Specification_Or_Type',
+          label: '型号/规格',
+          sortable: false,
+          align: 'left',
+          showOverflowTooltip: true,
+          minWidth: 100
+        },
+        {
+          prop: 'Unit',
           label: '单位',
-          sortable: 'custom',
+          sortable: false,
           align: 'center',
-          showOverflowTooltip: true
-        },
-        {
-          prop: 'OLD_PRICE',
-          label: '旧价格',
-          sortable: 'custom',
-          align: 'right',
           showOverflowTooltip: true,
-          width: 80
+          width: 60
         },
         {
-          prop: 'NEW_PRICE',
-          label: '新价格',
-          sortable: 'custom',
-          align: 'right',
+          prop: 'Manufacturing_Ent_Name',
+          label: '生产企业名称',
+          sortable: false,
+          align: 'left',
           showOverflowTooltip: true,
-          width: 80
+          minWidth: 150
         },
         {
-          prop: 'UP_PRICE',
-          label: '收货价格',
-          sortable: 'custom',
-          align: 'right',
+          prop: 'Batch',
+          label: '生产批号',
+          sortable: true,
+          align: 'left',
           showOverflowTooltip: true,
-          width: 80
+          width: 90
         },
         {
-          prop: 'SUPPLIER_NAME',
-          label: '合同供应商',
-          sortable: 'custom',
-          align: 'right',
-          showOverflowTooltip: true,
-          width: 80
-        },
-        {
-          prop: 'DELIVERY_NOTE_NUMBER',
-          label: '收货单号',
-          sortable: 'custom',
+          prop: 'Coefficient',
+          label: '系数',
+          sortable: false,
           align: 'center',
+          showOverflowTooltip: true,
+          width: 60
+        },
+        {
+          prop: 'Def_No_Pkg_Code',
+          label: '定数码',
+          sortable: true,
+          align: 'left',
+          showOverflowTooltip: true,
+          width: 120
+        },
+        {
+          prop: 'Serial_Number',
+          label: 'UDI码',
+          sortable: true,
+          align: 'left',
           showOverflowTooltip: true,
           width: 100
         },
         {
-          prop: 'DELIVERY_TIME',
-          label: '价格变动第一次收货时间',
-          sortable: 'custom',
-          align: 'center',
+          prop: 'Rfid_Code',
+          label: 'RFID码',
+          sortable: true,
+          align: 'left',
           showOverflowTooltip: true,
-          width: 250,
+          width: 100
+        },
+        {
+          prop: 'Operate_Person',
+          label: '操作人',
+          sortable: false,
+          align: 'left',
+          showOverflowTooltip: true,
+          width: 90
+        },
+        {
+          prop: 'Operate_Time',
+          label: '暂借时间',
+          sortable: true,
+          align: 'left',
+          showOverflowTooltip: true,
+          width: 150,
           formatter: (row) => {
-            return row.DELIVERY_TIME === '0001-01-01T00:00:00' ? '' : row.DELIVERY_TIME.replace('T', ' ');
+            return row.Operate_Time.replace("T", " ");
           }
+        },
+        {
+          prop: 'Dept_Two_Up_Shelf_Id',
+          width: -2,
+          minWidth: -2,
+          type: 'space',
+          style: 'display: none'
         }
       ],
       toolbar: false,
@@ -217,19 +218,18 @@ export default {
     openImport() {
       this.showImport = true;
     },
-    /* 标记处理 */
-    async markAsProcessed(where) {
+    async returnData(where) {
       // 获取选中行的数据
       const selectedData = this.selection;
       // 判断是否有选中的数据
       if (selectedData.length === 0) {
-        this.$message.warning('请选择需要标记处理的行');
+        this.$message.warning('请选择需要归还的行');
         return;
       }
       try {
         // 显示确认框
         const confirmResult = await this.$confirm(
-          '确认标记已处理吗？',
+          '确认要归还吗？',
           '提示',
           {
             confirmButtonText: '确定',
@@ -246,11 +246,13 @@ export default {
           //   duration: 0
           // });
           // 调用封装的标记处理方法
-          const responseData = await VarPriceRecodeCommit(selectedData);
+          const responseData = await Temporary_supplyRevert(selectedData);
+
+          this.$message.success(responseData);
           // 关闭加载提示
           //loadingInstance.close();
           // 根据响应结果处理
-          if (responseData.code === 200) {
+          if (responseData.code == 200) {
             this.$message.success(responseData.msg);
             // 刷新表格
             this.reload(where);
@@ -304,7 +306,7 @@ export default {
                   Sheet1: utils.aoa_to_sheet(array)
                 }
               },
-              '价格变动记录.xlsx'
+              '暂借记录.xlsx'
             );
             this.$message.success("导出成功");
           })

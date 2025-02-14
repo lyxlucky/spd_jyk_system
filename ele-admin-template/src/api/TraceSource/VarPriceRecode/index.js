@@ -1,73 +1,41 @@
 import request from '@/utils/request';
 import { formdataify, DataToObject } from '@/utils/formdataify';
-import { TOKEN_STORE_NAME, } from '@/config/setting';
+import { TOKEN_STORE_NAME } from '@/config/setting';
 
-export async function GetPDAList(data) {
-  
-    var data2 ={};
-    data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
-    data2.page = data.page;
-    data2.size = data.limit;
-    data2.VARIETIE_SEARCH_VALUE=data.where.VARIETIE_SEARCH_VALUE?data.where.VARIETIE_SEARCH_VALUE:'',
-    data2.STATE=data.where.STATE?data.where.STATE:'',
-    data2.start_time= data.where.start_time?data.where.start_time:'',
-    data2.end_time=data.where.end_time?data.where.end_time:'',
-    data2.PriceIsEqual= data.where.PriceIsEqual?data.where.PriceIsEqual:'',
-    data2.order = data.order ? data.order : '';
-    data2.field = data.field ? data.field : '';
-
-    DataToObject(data,data2)
-  
-    if(data != null){
-        var data3 = formdataify(data);
-    }
-    const res = await request.post('/VarietieBasicInfo/getVarPriceRecode',data3);
+// 封装通用的请求函数
+async function sendRequest(url, data) {
+    const token = sessionStorage.getItem(TOKEN_STORE_NAME);
+    const requestData = { Token: token, ...data };
+    const formData = formdataify(requestData);
+    const res = await request.post(url, formData);
     if (res.data.code == 200) {
         return res.data;
     } else {
-        return Promise.reject(new Error(res.data.msg));
+        return Promise.reject(new Error(`请求 ${url} 失败: ${res.data.msg}`));
     }
-
 }
 
-// export async function VarPriceRecodeCommit(data) {
-//     // 构建请求数据对象
-//     const requestData = {
-//         Token: sessionStorage.getItem(TOKEN_STORE_NAME),
-//         json: JSON.stringify(data)
-//     };
-//     // 调用 DataToObject 函数（如果需要的话）
-//     DataToObject(data, requestData);
-//     // 使用 formdataify 处理请求数据
-//     const formData = formdataify(requestData);
-//     const response = await request.post(
-//         '/VarietieBasicInfo/varPriceRecodeCommit',
-//         formData,
-//         {
-//             timeout: 5000 // 设置超时时间为 5 秒
-//         }
-//     );
-//     if (response.data.code == 200) {
-//         return response.data;
-//     } else {
-//         return Promise.reject(new Error(response.data.msg));
-//     }
-// }
+// 获取价格记录列表
+export async function GetPDAList(data) {
+    const { page, limit, where = {}, order = '', field = '' } = data;
+    const requestData = {
+        page,
+        size: limit,
+        VARIETIE_SEARCH_VALUE: where.VARIETIE_SEARCH_VALUE || '',
+        STATE: where.STATE || '',
+        start_time: where.start_time || '',
+        end_time: where.end_time || '',
+        PriceIsEqual: where.PriceIsEqual || '',
+        order,
+        field
+    };
+    return sendRequest('/VarietieBasicInfo/getVarPriceRecode', requestData);
+}
 
+// 提交价格记录处理状态
 export async function VarPriceRecodeCommit(data) {
-
-    
-
-    var data2 = {};
-    data2.json =  JSON.stringify(data);
-    data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
-
-    var rep = formdataify(data2);
-
-    const res = await request.post('/VarietieBasicInfo/varPriceRecodeCommit', rep);
-    if (res.data.code == 200) {
-        return res.data;
-    } else {
-        return Promise.reject(new Error(res.data.msg));
-    }
-} 
+    const requestData = {
+        json: JSON.stringify(data)
+    };
+    return sendRequest('/VarietieBasicInfo/varPriceRecodeCommit', requestData);
+}
