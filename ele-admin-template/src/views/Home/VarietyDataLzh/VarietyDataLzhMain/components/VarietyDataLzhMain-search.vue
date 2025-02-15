@@ -83,13 +83,62 @@
               </el-col>
             </el-form-item>
           </el-col>
-          <!-- <el-col :lg="6">
-            <div class="ele-form-actions">
-              <el-button type="primary" @click="reload">查询</el-button>
-              <el-button @click="reset">重置</el-button>
-              <el-button type="danger" @click="removeBatch">批量删除</el-button>
-            </div>
-          </el-col> -->
+          <el-col :lg="3">
+            <el-form-item label="修改时间：" label-width="40">
+              <el-select style="width:100px" size="mini" clearable v-model="where.sex" placeholder="请选择">
+                <el-option label="全部" value="" />
+                <el-option label="当天" value="1" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :lg="3">
+            <el-form-item label="审批状态：" label-width="40">
+              <el-select style="width:100px" size="mini" clearable v-model="where.sex" placeholder="请选择">
+                <el-option label="全部" value="" />
+                <el-option label="审批通过" value="1" />
+                <el-option label="待审批" value="0" />
+                <el-option label="未通过" value="2" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :lg="3">
+            <el-form-item label="北大回传标记：" label-width="40">
+              <el-select style="width:100px" size="mini" clearable v-model="where.sex" placeholder="请选择">
+                <el-option label="全部" value="" />
+                <el-option label="未标记" value="0" />
+                <el-option label="已标记" value="1" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :lg="3">
+            <el-form-item label="临时挂起：" label-width="40">
+              <el-select style="width:100px" size="mini" clearable v-model="where.sex" placeholder="请选择">
+                <el-option label="全部" value="" />
+                <el-option label="否" value="0" />
+                <el-option label="是" value="1" />
+              </el-select>
+            </el-form-item>
+
+            <el-form-item label="设备科审批状态：" label-width="40" style="display: none;;">
+              <el-select style="width:100px" size="mini" clearable v-model="where.sex" placeholder="请选择">
+                <el-option label="全部" value="" />
+                <el-option label="否" value="0" />
+                <el-option label="是" value="1" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :lg="2">
+            <el-form-item>
+              <el-checkbox v-model="checked">是否过滤非库宝品种</el-checkbox>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col>
+
+          </el-col>
         </el-row>
       </el-form>
       <!-- 表格 -->
@@ -184,3 +233,8 @@ export default {
 };
 </script>
 
+<style scoped>
+.ele-form-search .el-form-item {
+  margin-bottom: 0;
+}
+</style>
