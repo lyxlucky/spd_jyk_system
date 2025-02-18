@@ -241,7 +241,7 @@ export default {
         state: '',
         IS_CHARGE: '-1',
         IS_BIDDING: '-1',
-        SPECIAL_PURCHASE: '',
+        SPECIAL_PURCHASE: '-1',
         ONEOFF_STERILIZATION_PACKAGING: '-1',
         STORAGE_TYPE: '-1',
         IS_EMBEDDED: '-1',

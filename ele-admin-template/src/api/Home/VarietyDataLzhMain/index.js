@@ -18,16 +18,16 @@ export async function QueryPageLayUI(data) {
     data2.enable = data.where.enable ? data.where.enable : '';
     data2.state = data.where.state ? data.where.state : '';
 
-    data2.IS_CHARGE = data.where.IS_CHARGE ? data.where.IS_CHARGE : '';
-    data2.HIGH_OR_LOW_CLASS = data.where.HIGH_OR_LOW_CLASS ? data.where.HIGH_OR_LOW_CLASS : '';
-    data2.IS_BIDDING = data.where.IS_BIDDING ? data.where.IS_BIDDING : '';
-    data2.SPECIAL_PURCHASE = data.where.SPECIAL_PURCHASE ? data.where.SPECIAL_PURCHASE : '';
-    data2.ONEOFF_STERILIZATION_PACKAGING = data.where.ONEOFF_STERILIZATION_PACKAGING ? data.where.ONEOFF_STERILIZATION_PACKAGING : '';
-    data2.STORAGE_TYPE = data.where.STORAGE_TYPE ? data.where.STORAGE_TYPE : '';
-    data2.IS_EMBEDDED = data.where.IS_EMBEDDED ? data.where.IS_EMBEDDED : '';
-    data2.IS_SERIAL_NUMBER = data.where.IS_SERIAL_NUMBER ? data.where.IS_SERIAL_NUMBER : '';
-    data2.IS_INTERVENED = data.where.IS_INTERVENED ? data.where.IS_INTERVENED : '';
-    data2.IS_PROTECT = data.where.IS_PROTECT ? data.where.IS_PROTECT : '';
+    data2.IS_CHARGE = data.where.IS_CHARGE ? data.where.IS_CHARGE : '-1';
+    data2.HIGH_OR_LOW_CLASS = data.where.HIGH_OR_LOW_CLASS ? data.where.HIGH_OR_LOW_CLASS : '-1';
+    data2.IS_BIDDING = data.where.IS_BIDDING ? data.where.IS_BIDDING : '-1';
+    data2.SPECIAL_PURCHASE = data.where.SPECIAL_PURCHASE ? data.where.SPECIAL_PURCHASE : '-1';
+    data2.ONEOFF_STERILIZATION_PACKAGING = data.where.ONEOFF_STERILIZATION_PACKAGING ? data.where.ONEOFF_STERILIZATION_PACKAGING : '-1';
+    data2.STORAGE_TYPE = data.where.STORAGE_TYPE ? data.where.STORAGE_TYPE : '-1';
+    data2.IS_EMBEDDED = data.where.IS_EMBEDDED ? data.where.IS_EMBEDDED : '-1';
+    data2.IS_SERIAL_NUMBER = data.where.IS_SERIAL_NUMBER ? data.where.IS_SERIAL_NUMBER : '-1';
+    data2.IS_INTERVENED = data.where.IS_INTERVENED ? data.where.IS_INTERVENED : '-1';
+    data2.IS_PROTECT = data.where.IS_PROTECT ? data.where.IS_PROTECT : '-1';
     data2.HIGH_OR_LOW_CLASS_TWO = data.where.HIGH_OR_LOW_CLASS_TWO ? data.where.HIGH_OR_LOW_CLASS_TWO : '';
     data2.IS_EQUIPMENT_CHANGE = data.where.IS_EQUIPMENT_CHANGE ? data.where.IS_EQUIPMENT_CHANGE : '';
     data2.PRICE_CHANGE_TIME = data.where.PRICE_CHANGE_TIME ? data.where.PRICE_CHANGE_TIME : '';

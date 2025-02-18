@@ -6,7 +6,7 @@
     <!-- :rowClickCheckedIntelligent="false"  -->
     <VarietyDataLzhMainSearch @search="reload" />
 
-    <ele-pro-table ref="table" :toolStyle="toolStyle" height="40vh" highlight-current-row :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" @selection-change="onSelectionChange" cache-key="KSInventoryBasicDataTable">
+    <ele-pro-table ref="table" :toolStyle="toolStyle" height="60vh" highlight-current-row :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" @selection-change="onSelectionChange" cache-key="KSInventoryBasicDataTable">
 
       <template v-slot:PAG_TYPE="{ row }">
         <div :id="'PAG_TYPE' + row.ID" :key="row.id" @click="dialogVisibleFun(row)">{{ row.PAG_TYPE }}
@@ -154,9 +154,8 @@ export default {
         // },
         {
           // prop: 'VarCode',
-          slot: 'VarCode',
+          slot: 'Varietie_Code_New',
           label: '品种编码',
-
           align: 'center',
           showOverflowTooltip: true,
           width: 150
@@ -176,106 +175,69 @@ export default {
         //     return cellValue;
         //   }
         // },
-        {
-          prop: 'CONTRACT_TYPE',
-          label: '合同类型',
+        // {
+        //   prop: 'CONTRACT_TYPE',
+        //   label: '合同类型',
 
-          align: 'center',
+        //   align: 'center',
+        //   showOverflowTooltip: true,
+        //   width: 110,
+        //   show: false,
+        //   formatter: (row, column, cellValue) => {
+        //     if (cellValue == 2) {
+        //       return '临采';
+        //     } else if (cellValue == 1) {
+        //       return '中标';
+        //     } else {
+        //       return '-';
+        //     }
+        //   }
+        // },
+        {
+          prop: 'Herp_ID',
+          label: '医商云ID',
+          align: 'left',
           showOverflowTooltip: true,
-          width: 110,
-          show: false,
-          formatter: (row, column, cellValue) => {
-            if (cellValue == 2) {
-              return '临采';
-            } else if (cellValue == 1) {
-              return '中标';
-            } else {
-              return '-';
-            }
-          }
+          width: 180
         },
         {
-          prop: 'VarName',
+          prop: 'CHARGING_CODE',
+          label: '计费编码',
+          align: 'left',
+          showOverflowTooltip: true,
+          width: 180
+        },
+        {
+          prop: 'PROD_REGISTRATION_NAME',
+          label: '注册证名称',
+          align: 'left',
+          showOverflowTooltip: true,
+          width: 180
+        },
+        {
+          prop: 'Varietie_Name',
           label: '品种全称',
           align: 'left',
           showOverflowTooltip: true,
           width: 180
         },
         {
-          prop: 'GG',
+          prop: 'Specification_Or_Type',
           label: '型号/规格',
-          align: 'left',
-          showOverflowTooltip: true,
-          width: 180
-        },
-        {
-          prop: 'Manufacturing',
-          label: '生产企业名称',
-          align: 'left',
-          showOverflowTooltip: true,
-          width: 180
-        },
-        {
-          prop: 'SUPPLIER_NAME',
-          label: '启用供应商',
-          align: 'left',
-          showOverflowTooltip: true,
-          width: 180
-        },
-        // {
-        //   prop: 'TempQty',
-        //   label: '中心库库存',
-
-        //   align: 'center',
-        //   showOverflowTooltip: true,
-        //   width: 110
-        // },
-        {
-          prop: 'Day_Consume_Qty',
-          label: '平均用量(默认近30天)  ',
-
           align: 'center',
           showOverflowTooltip: true,
           width: 110
         },
         {
-          prop: 'StockQty',
-          label: '中心库库存',
-
+          prop: 'manufacturing_ent_name',
+          label: '医疗器械注册人或备案人',
           align: 'center',
           showOverflowTooltip: true,
           width: 120
         },
         {
-          prop: 'TJ_QTY',
-          label: '提交数量',
-
-          align: 'center',
-          showOverflowTooltip: true,
-          width: 80
-        },
-        {
-          slot: 'PlanQty',
-          // prop: 'PlanQty',
-          label: '实际申领数量',
-
-          align: 'center',
-          showOverflowTooltip: true,
-          width: 160,
-          fixed: 'left'
-        },
-        {
           prop: 'Unit',
           label: '单位',
-
-          align: 'center',
-          showOverflowTooltip: true,
-          width: 80
-        },
-        {
-          prop: 'Price',
-          label: '结算价',
-
           align: 'center',
           showOverflowTooltip: true,
           width: 80,
@@ -284,78 +246,288 @@ export default {
           }
         },
         {
-          slot: 'PAG_TYPE',
-          // prop: 'PAG_TYPE',
-          label: '包装规格',
-
-          align: 'center',
-          showOverflowTooltip: true,
-          width: 110
-        },
-        {
-          prop: '',
-          label: '总金额',
+          prop: 'Price',
+          label: '中标价',
           align: 'center',
           showOverflowTooltip: true,
           width: 80,
+          fixed: 'left',
           formatter: (row, column, cellValue) => {
-            return this.$numeral(
-              Number(row.Price) * Number(row.PlanQty)
-            ).format('0,0.00');
+            return Number(cellValue).toFixed(2);
           }
         },
         {
-          prop: '',
-          label: '已收货数量',
+          prop: 'LAST_CHANGE_PRICE',
+          label: '历史中标价格',
+          align: 'center',
+          showOverflowTooltip: true,
+          width: 80
+        },
+        {
+          prop: 'Approval_Number',
+          label: '批准文号',
+          align: 'center',
+          showOverflowTooltip: true,
+          width: 80
+        },
+        {
+          prop: 'SUPPLIER_NAME',
+          label: '启用合同供应商',
 
+          align: 'center',
+          showOverflowTooltip: true,
+          width: 180
+        },
+        {
+          prop: 'CONTRACT_NAME',
+          label: '启用合同',
+          align: 'center',
+          showOverflowTooltip: true,
+          width: 150
+        },
+        {
+          prop: 'CONTRACT_TYPE',
+          label: '合同类型',
           align: 'center',
           showOverflowTooltip: true,
           width: 100,
           formatter: (row, column, cellValue) => {
-            return row.PlanQty - row.LEFT_APPLY_QTY;
+            if (cellValue == '1') {
+              return '中标';
+            } else if (cellValue == '0') {
+              return '临采';
+            } else {
+              return '未知';
+            }
           }
         },
         {
-          prop: 'IS_NEED_TWO_APP',
-          label: '二级审批',
-
+          prop: 'MIDDLE_PACKAGE_COUNT',
+          label: '中包装',
+          align: 'center',
+          showOverflowTooltip: true,
+          width: 80,
+        },
+        {
+          prop: 'BIG_BOX_COUNT',
+          label: '大包装',
+          align: 'center',
+          showOverflowTooltip: true,
+          width: 80
+        },
+        {
+          prop: 'STOREHOUSE_UPPPER',
+          label: '库存上限',
+          align: 'center',
+          showOverflowTooltip: true,
+          width: 80
+        },
+        {
+          prop: 'STOREHOUSE_LOWER',
+          label: '库存下限',
+          align: 'center',
+          showOverflowTooltip: true,
+          width: 80
+        },
+        {
+          prop: 'APPROVAL_STATE',
+          label: '审批状态',
+          align: 'center',
+          showOverflowTooltip: true,
+          width: 80,
+          formatter: (row, column, cellValue) => {
+            if (cellValue == '1') {
+              return '通过';
+            } else if (cellValue == '0') {
+              return '待审批';
+            }else if (cellValue == '2') {
+              return '未通过';
+            } else {
+              return '未知';
+            }
+          }
+        },
+        {
+          prop: 'Province_Platform_Code',
+          label: '省平台编码',
+          align: 'center',
+          showOverflowTooltip: true,
+          width: 80
+        },
+        {
+          prop: 'YG_CODE',
+          label: '阳光产品码',
+          align: 'center',
+          showOverflowTooltip: true,
+          width: 110
+        },
+        {
+          prop: 'SOURCE_FROM',
+          label: '来源',
+          align: 'center',
+          showOverflowTooltip: true,
+          width: 110
+        },
+        {
+          prop: 'MEDICAL_CODE',
+          label: '医保编码',
+          align: 'center',
+          showOverflowTooltip: true,
+          width: 180
+        },
+        {
+          prop: 'ONECODE',
+          label: '一级目录',
+          align: 'center',
+          showOverflowTooltip: true,
+          width: 110
+        },
+        {
+          prop: 'YG_QGLS_PRICE',
+          label: '全国历史最低价',
+          align: 'center',
+          showOverflowTooltip: true,
+          width: 110
+        },
+        {
+          prop: 'HIGH_OR_LOW_CLASS_TWO',
+          label: '高低值下级属性',
           align: 'center',
           showOverflowTooltip: true,
           width: 110,
           formatter: (row, column, cellValue) => {
-            var IS_NEED_TWO_APP = '';
-            var STATE = '';
-            if (row.IS_NEED_TWO_APP == 0) {
-              return '-';
+            if (cellValue == '1') {
+              return '重点治理';
+            } else if (cellValue == '2') {
+              return '非重点治理';
+            }else {
+              return '未设置';
             }
-            if (row.IS_NEED_TWO_APP == 1) {
-              IS_NEED_TWO_APP = '是';
-            }
-            if (row.SENCOND_APP_STATE == 0) {
-              STATE = '未审批';
-            }
-            if (row.SENCOND_APP_STATE == 1) {
-              STATE = '已审批';
-            }
-            return IS_NEED_TWO_APP + '/' + STATE;
           }
         },
         {
-          // prop: 'REMARK',
-          slot: 'REMARK',
-          label: '备注',
+          prop: 'IS_EQUIPMENT_CHANGE',
+          label: '设备科是否修改',
+          align: 'center',
+          showOverflowTooltip: true,
+          width: 110,
+          formatter: (row, column, cellValue) => {
+            if (cellValue == '1') {
+              return '是';
+            } else if (cellValue == '0') {
+              return '否';
+            }else {
+              return '未知';
+            }
+          }
+        },
+        {
+          prop: 'STORAGE_TWO_ID',
+          label: '仓库名称',
+          align: 'center',
+          showOverflowTooltip: true,
+          width: 110,
+          formatter: (row, column, cellValue) => {
+            if (cellValue == '1') {
+              return '老仓库';
+            } else if (cellValue == '0') {
+              return '新仓库';
+            }else {
+              return '未知';
+            }
+          }
+        },
+        {
+          prop: 'SYZ',
+          label: '适应症',
+          align: 'center',
+          showOverflowTooltip: true,
+          width: 80,
+          formatter: (row, column, cellValue) => {
+            if (cellValue == '1') {
+              return '是';
+            } else if (cellValue == '0') {
+              return '否';
+            }else {
+              return '未知';
+            }
+          }
+        },
+        {
+          prop: 'SYZ_TEXT',
+          label: '适应症提示',
+          align: 'center',
+          showOverflowTooltip: true,
+          width: 130
+        },
+
+        {
+          prop: 'SYZ',
+          label: '适应症',
+          align: 'center',
+          showOverflowTooltip: true,
+          width: 80,
+          formatter: (row, column, cellValue) => {
+            if (cellValue == '1') {
+              return '是';
+            } else if (cellValue == '0') {
+              return '否';
+            }else {
+              return '未知';
+            }
+          }
+        },
+        {
+          prop: 'YB_CLASS',
+          label: '医保分类',
+          align: 'center',
+          showOverflowTooltip: true,
+          width: 80,
+          formatter: (row, column, cellValue) => {
+            if (cellValue == '00') {
+              return '是';
+            } else if (cellValue == '0') {
+              return '否';
+            }else {
+              return '未知';
+            }
+          }
+        },
+        {
+          prop: 'ONECODE',
+          label: '一级目录',
           align: 'center',
           showOverflowTooltip: true,
           width: 110
         },
         {
-          prop: 'SPDBZ',
-          label: 'SPD备注',
-
+          prop: 'ONECODE',
+          label: '一级目录',
           align: 'center',
           showOverflowTooltip: true,
           width: 110
-        }
+        },
+        {
+          prop: 'ONECODE',
+          label: '一级目录',
+          align: 'center',
+          showOverflowTooltip: true,
+          width: 110
+        },
+        {
+          prop: 'ONECODE',
+          label: '一级目录',
+          align: 'center',
+          showOverflowTooltip: true,
+          width: 110
+        },
+        {
+          prop: 'ONECODE',
+          label: '一级目录',
+          align: 'center',
+          showOverflowTooltip: true,
+          width: 110
+        },
       ],
       toolbar: false,
       toolStyle: {
@@ -365,7 +537,7 @@ export default {
       },
       pageSize: 30,
       pagerCount: 1,
-      pageSizes: [10, 30,50,100,9999999],
+      pageSizes: [10, 30, 50, 100, 9999999],
       // 表格选中数据
       selection: [],
       // 当前编辑数据
