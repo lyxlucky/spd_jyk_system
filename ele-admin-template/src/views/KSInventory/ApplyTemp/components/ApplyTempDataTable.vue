@@ -150,9 +150,15 @@
             minWidth: 80
           },
           {
-            prop: '月均用量',
+            prop: 'Day_Consume_Qty',
             label: '平均使用数量',
-
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 110
+          },
+          {
+            prop: 'Day_Consume_Qty2',
+            label: '上月使用数量',
             align: 'center',
             showOverflowTooltip: true,
             minWidth: 110
