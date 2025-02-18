@@ -58,16 +58,18 @@ export async function QueryPageLayUI(data) {
     data2.JF_BJ = data.where.JF_BJ ? data.where.JF_BJ : '';
     data2.IS_HANG_UP = data.where.IS_HANG_UP ? data.where.IS_HANG_UP : '';
 
-    data2.page = data.page ? data.page : 1;
-    data2.size = data.limit ? data.limit : 10;
+    // data2.page = data.page ? data.page : 1;
+    // data2.size = data.limit ? data.limit : 30;
     data2.field = data.field ? data.field : '';
 
-    
+
     var pramsStr = Encrypt(JSON.stringify(data2))
 
     var inArray = {
         prams: pramsStr,
-        AesKey: store.state.user.encrypted.KEY
+        AesKey: store.state.user.encrypted.KEY,
+        page: data.page ? data.page : 1,
+        size: data.limit ? data.limit : 30,
     }
     var data3 = formdataify(inArray);
 

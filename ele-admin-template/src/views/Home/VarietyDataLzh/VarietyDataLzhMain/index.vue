@@ -363,9 +363,9 @@ export default {
         'flex-wrap': 'wrap',
         'align-items': 'flex-end'
       },
-      pageSize: 9999999,
-      pagerCount: 2,
-      pageSizes: [100, 9999999],
+      pageSize: 30,
+      pagerCount: 1,
+      pageSizes: [10, 30,50,100,9999999],
       // 表格选中数据
       selection: [],
       // 当前编辑数据
