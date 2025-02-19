@@ -153,71 +153,37 @@ export default {
         //   fixed: 'right'
         // },
         {
-          // prop: 'VarCode',
-          slot: 'Varietie_Code_New',
+          prop: 'Varietie_Code_New',
           label: '品种编码',
           align: 'center',
           showOverflowTooltip: true,
           width: 150
         },
-        // {
-        //   prop: 'DEPT_ZDY_VARIETIE_CODE',
-        //   label: '自定义编码',
-
-        //   align: 'center',
-        //   showOverflowTooltip: true,
-        //   width: 120,
-        //   show: false,
-        //   formatter: (row, column, cellValue) => {
-        //     if (cellValue == null) {
-        //       return '未定义';
-        //     }
-        //     return cellValue;
-        //   }
-        // },
-        // {
-        //   prop: 'CONTRACT_TYPE',
-        //   label: '合同类型',
-
-        //   align: 'center',
-        //   showOverflowTooltip: true,
-        //   width: 110,
-        //   show: false,
-        //   formatter: (row, column, cellValue) => {
-        //     if (cellValue == 2) {
-        //       return '临采';
-        //     } else if (cellValue == 1) {
-        //       return '中标';
-        //     } else {
-        //       return '-';
-        //     }
-        //   }
-        // },
         {
           prop: 'Herp_ID',
           label: '医商云ID',
-          align: 'left',
+          align: 'center',
           showOverflowTooltip: true,
           width: 180
         },
         {
           prop: 'CHARGING_CODE',
           label: '计费编码',
-          align: 'left',
+          align: 'center',
           showOverflowTooltip: true,
-          width: 180
+          width: 100
         },
         {
           prop: 'PROD_REGISTRATION_NAME',
           label: '注册证名称',
-          align: 'left',
+          align: 'center',
           showOverflowTooltip: true,
           width: 180
         },
         {
           prop: 'Varietie_Name',
           label: '品种全称',
-          align: 'left',
+          align: 'center',
           showOverflowTooltip: true,
           width: 180
         },
@@ -226,7 +192,7 @@ export default {
           label: '型号/规格',
           align: 'center',
           showOverflowTooltip: true,
-          width: 110
+          width: 200
         },
         {
           prop: 'manufacturing_ent_name',
@@ -241,9 +207,6 @@ export default {
           align: 'center',
           showOverflowTooltip: true,
           width: 80,
-          formatter: (row, column, cellValue) => {
-            return Number(cellValue).toFixed(2);
-          }
         },
         {
           prop: 'Price',
@@ -251,7 +214,6 @@ export default {
           align: 'center',
           showOverflowTooltip: true,
           width: 80,
-          fixed: 'left',
           formatter: (row, column, cellValue) => {
             return Number(cellValue).toFixed(2);
           }
@@ -268,12 +230,11 @@ export default {
           label: '批准文号',
           align: 'center',
           showOverflowTooltip: true,
-          width: 80
+          width: 180
         },
         {
           prop: 'SUPPLIER_NAME',
           label: '启用合同供应商',
-
           align: 'center',
           showOverflowTooltip: true,
           width: 180

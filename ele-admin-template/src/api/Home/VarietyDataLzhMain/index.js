@@ -28,8 +28,8 @@ export async function QueryPageLayUI(data) {
     data2.IS_SERIAL_NUMBER = data.where.IS_SERIAL_NUMBER ? data.where.IS_SERIAL_NUMBER : '-1';
     data2.IS_INTERVENED = data.where.IS_INTERVENED ? data.where.IS_INTERVENED : '-1';
     data2.IS_PROTECT = data.where.IS_PROTECT ? data.where.IS_PROTECT : '-1';
-    data2.HIGH_OR_LOW_CLASS_TWO = data.where.HIGH_OR_LOW_CLASS_TWO ? data.where.HIGH_OR_LOW_CLASS_TWO : '';
-    data2.IS_EQUIPMENT_CHANGE = data.where.IS_EQUIPMENT_CHANGE ? data.where.IS_EQUIPMENT_CHANGE : '';
+    data2.HIGH_OR_LOW_CLASS_TWO = data.where.HIGH_OR_LOW_CLASS_TWO ? data.where.HIGH_OR_LOW_CLASS_TWO : '-1';
+    data2.IS_EQUIPMENT_CHANGE = data.where.IS_EQUIPMENT_CHANGE ? data.where.IS_EQUIPMENT_CHANGE : '-1';
     data2.PRICE_CHANGE_TIME = data.where.PRICE_CHANGE_TIME ? data.where.PRICE_CHANGE_TIME : '';
     data2.priceChangeTimeStart = data.where.priceChangeTimeStart ? data.where.priceChangeTimeStart : '';
     data2.priceChangeTimeEnd = data.where.priceChangeTimeEnd ? data.where.priceChangeTimeEnd : '';
