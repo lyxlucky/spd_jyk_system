@@ -28,7 +28,7 @@
         <!-- <el-input-number v-model="row.PlanQty" controls-position="right" @change="handleChange" :min="0" :max="9999" size="mini"></el-input-number> -->
       </template>
       <template v-slot:APPLY_QTY="{ row }">
-        <el-input v-if="row.STATE == 0" type="number"  @click.native.stop v-model="row.APPLY_QTY" :min="0" :max="99999999" :step="1" size="mini" />
+        <el-input v-if="row.STATE == 0" type="number" @click.native.stop v-model="row.APPLY_QTY" :min="0" :max="99999999" :step="1" size="mini" />
         <el-input v-else disabled type="number" v-model="row.APPLY_QTY" :min="0" :max="99999999" :step="1" size="mini" />
       </template>
       <template v-slot:REMARK="{ row }">
@@ -306,7 +306,7 @@ export default {
       console.log(row.PlanQty);
     },
     UpNaxtDayApplyPlanDelFun() {
-      console.log(this.datasourceList)
+      console.log(this.datasourceList);
       const loading = this.$messageLoading('保存中..');
 
       var list = [];
@@ -360,6 +360,9 @@ export default {
         };
       }
       this.$refs.table.reload({ page: 1, where: where });
+    },
+    datasourceList() {
+      this.$bus.$emit('naxtDayApplyPlanDel',this.datasourceList)
     },
     count1() {
       this.sumAoumt();

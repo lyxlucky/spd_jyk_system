@@ -112,7 +112,15 @@ export default {
   },
   watch: {
     KSDepartmentalPlanData() {
-      console.log(this.KSDepartmentalPlanData);
+      this.$bus.$on('naxtDayApplyPlanDel', (data) => {
+        console.log(data)
+        if (data.length <= 0) {
+          this.IS_disabled = true;
+        } else {
+          this.IS_disabled = false;
+        }
+      });
+      // console.log(this.KSDepartmentalPlanData);
       if (this.KSDepartmentalPlanData.STATE == 0) {
         this.IS_disabled = false;
       } else {
