@@ -174,7 +174,7 @@
             }
           },
           {
-            prop: 'TEMPLATE_CODE',
+            prop: 'ID',
             label: '模板编码',
             // sortable: 'custom',
             align: 'center',

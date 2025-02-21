@@ -244,6 +244,7 @@ export default {
             count: res.total,
             list: res.result
           };
+          this.datasourceList = res.result;
           return tData;
         }
       );
@@ -305,10 +306,19 @@ export default {
       console.log(row.PlanQty);
     },
     UpNaxtDayApplyPlanDelFun() {
+      console.log(this.datasourceList)
       const loading = this.$messageLoading('保存中..');
 
       var list = [];
-      this.selection.forEach((element) => {
+      // this.selection.forEach((element) => {
+      //   var data = {
+      //     ID: element.ID,
+      //     APPLY_QTY: element.APPLY_QTY,
+      //     REMARK: element.REMARK
+      //   };
+      //   list.push(data);
+      // });
+      this.datasourceList.forEach((element) => {
         var data = {
           ID: element.ID,
           APPLY_QTY: element.APPLY_QTY,

@@ -10,8 +10,13 @@
           <el-form-item label="术间:" prop="SURGICAL_ROOM">
             <el-input size="mini" clearable :maxlength="100" v-model="form.SURGICAL_ROOM" placeholder="" />
           </el-form-item>
-          <el-form-item label="院区:" prop="SURGICAL_PLACE">
+          <!-- <el-form-item label="院区:" prop="SURGICAL_PLACE">
             <el-input size="mini" clearable :maxlength="100" v-model="form.SURGICAL_PLACE" placeholder="" />
+          </el-form-item> -->
+          <el-form-item label="院区:" prop="SURGICAL_PLACE">
+            <el-select v-model="form.SURGICAL_PLACE" placeholder="请选择院区">
+              <el-option v-for="(obj) in STORAGEF" :key="obj.ID" :label="obj.NAME" :value="obj.ID"></el-option>
+            </el-select>
           </el-form-item>
         </el-col>
       </el-row>
@@ -27,7 +32,7 @@
 
 <script>
 import { AddNaxtDayApplyPlanMain } from '@/api/KSInventory/OperaSchedulingManagement';
-
+import { getSTORAGE } from '@/api/Task/NewCentralinventoryPackage/index';
 export default {
   components: {},
   props: {
@@ -43,12 +48,13 @@ export default {
       SURGICAL_PLACE: ''
     };
     return {
-      defaultForm,
+      // defaultForm,
       // 表单数据
       form: { ...defaultForm },
       list: [],
       CLASS_NUM: [],
       CLASS_NUMVal: '',
+      STORAGEF: null,
       // 表单验证规则
       rules: {
         CONVERSION_RATIO: []
@@ -67,40 +73,48 @@ export default {
   },
   mounted() {},
   created() {
+    this.form = {};
     this.defaultForm = {};
     this.$bus.$on(`${this.$route.path}/handleUpdate`, this.handleUpdate);
+    this.getSTORAGEFun();
   },
   methods: {
     handleUpdate(data) {
       this.list = data;
     },
     save() {
-      // const loading = this.$messageLoading('正在保存...');
-      // this.$refs.form.validate((valid) => {
-      //   if (!valid) {
-      //     return false;
-      //   }
-      var data = this.form;
-      data.CREATE_MAN = this.$store.state.user.info.Nickname;
-      console.log(this.$store.state)
-      // // this.loading = true;
-      AddNaxtDayApplyPlanMain(data)
-        .then((res) => {
-          // loading.close()
-          this.defaultForm = {};
-          this.$emit('done');
-          this.$emit('update:visible', false);
-          this.$message.success(res.msg);
-        })
-        .catch((err) => {
-          // loading.close()
-          this.$message.error(err);
-        });
-      // });
+      const loading = this.$messageLoading('正在保存...');
+      this.$refs.form.validate((valid) => {
+        if (!valid) {
+          return false;
+        }
+        var data = this.form;
+        console.log(data);
+        data.CREATE_MAN = this.$store.state.user.info.Nickname;
+        console.log(this.$store.state);
+        // // this.loading = true;
+        AddNaxtDayApplyPlanMain(data)
+          .then((res) => {
+            loading.close();
+            this.defaultForm = {};
+            this.$emit('done');
+            this.$emit('update:visible', false);
+            this.$message.success(res.msg);
+          })
+          .catch((err) => {
+            loading.close();
+            this.$message.error(err);
+          });
+      });
     },
     /* 更新visible */
     updateVisible(value) {
       this.$emit('update:visible', value);
+    },
+    getSTORAGEFun() {
+      getSTORAGE().then((res) => {
+        this.STORAGEF = res.result;
+      });
     }
   },
   watch: {

@@ -197,8 +197,10 @@ export default {
             this.$message.success(res.msg);
             // this.$router.push('/KSInventory/KSScanCodeRecGood').catch(() => {});
             getSTORAGE().then((res) => {
+              console.log(res)
               this.$store.commit('user/setStorage', res.result);
             });
+            // console.log(this.$store.state)
             this.goHome();
           })
           .catch((e) => {

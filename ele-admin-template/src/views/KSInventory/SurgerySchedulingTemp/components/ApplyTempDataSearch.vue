@@ -11,7 +11,7 @@
             <el-button size="mini" icon="el-icon-search" type="primary" @click="search">查询</el-button>
             <el-button size="mini" icon="el-icon-refresh" @click="reset">重置</el-button>
 
-            <el-button type="primary" size="mini" @click="dialogTableVisible = true" icon="el-icon-plus">添加品种</el-button>
+            <el-button type="primary" size="mini" @click="showDialogTableVisible" icon="el-icon-plus">添加品种</el-button>
             <el-button type="primary" icon="el-icon-plus" size="mini" @click="saveApplyNum">保存</el-button>
             <!-- <el-button type="primary" size="small" @click="search">导入模板</el-button> -->
             <!-- <el-upload action="" :before-upload="importFile" :show-file-list="false" accept=".xls,.xlsx,.csv">
@@ -132,6 +132,13 @@ export default {
     },
     exportData() {
       this.$emit('exportData', this.where);
+    },
+    showDialogTableVisible() {
+      if (this.ApplyTempTableDataSearch.ID == undefined) {
+        this.$message.warning('请选择模板');
+        return;
+      }
+      this.dialogTableVisible = true;
     }
   },
   watch: {

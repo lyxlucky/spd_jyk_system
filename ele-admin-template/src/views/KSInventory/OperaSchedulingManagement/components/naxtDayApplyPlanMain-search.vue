@@ -21,7 +21,11 @@
       <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 8 }">
         <el-input size="mini" clearable v-model="where.CREATE_MAN" placeholder="申请人" />
       </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 9, md: 4 } : { span: 4 }">
+      <el-col v-bind="styleResponsive ? { lg: 5, md: 4 } : { span: 4 }">
+        <el-date-picker v-model="where.date" type="daterange" value-format="yyyy-MM-dd" size="mini" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
+        </el-date-picker>
+      </el-col>
+      <el-col style="margin-left: 15px;" v-bind="styleResponsive ? { lg: 9, md: 4 } : { span: 4 }">
         <div class="ele-form-actions">
           <el-button size="mini" type="primary" icon="el-icon-search" class="ele-btn-icon" @click="search">
             查询
@@ -49,6 +53,7 @@
           </el-popconfirm>
         </div>
       </el-col>
+
     </el-row>
     <SurgicalScheduling :visible.sync="showEdit" :SurgicalSchedulingSearch="KSDepartmentalPlanDataSearch" @reload="search" />
   </el-form>
@@ -65,7 +70,8 @@ export default {
     // 默认表单数据
     const defaultWhere = {
       NAXT_DAT_PLAN_NUM: '',
-      CREATE_MAN: ''
+      CREATE_MAN: '',
+      date: ''
     };
     return {
       // 表单数据

@@ -10,6 +10,8 @@ export async function GetNaxtDayApplyPlanMain(data){
     data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
     data2.NAXT_DAT_PLAN_NUM = data.where.NAXT_DAT_PLAN_NUM ? data.where.NAXT_DAT_PLAN_NUM : '';
     data2.CREATE_MAN = data.where.CREATE_MAN ? data.where.CREATE_MAN : '';
+    data2.START_TIME = data.where.date[0] ? data.where.date[0] : '';
+    data2.END_TIME = data.where.date[1] ? data.where.date[1] : '';
     data2.page = data.page ? data.page : 1;
     data2.size = data.limit ? data.limit : 10;
 

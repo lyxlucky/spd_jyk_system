@@ -82,7 +82,7 @@ export default {
           fixed: 'left'
         },
         {
-          prop: 'VARIETIE_CODE',
+          prop: 'VARIETIE_CODE_NEW',
           label: '品种编码',
           align: 'center',
           // showOverflowTooltip: true,
@@ -127,16 +127,6 @@ export default {
           showOverflowTooltip: true,
           minWidth: 100,
           fixed: 'left'
-        },
-        {
-          prop: 'JP_APPLY_QTY',
-          // slot: 'JP_APPLY_QTY',
-          label: '拣配数量',
-          // sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 100,
-          // fixed: 'left'
         },
         {
           prop: 'REMARK',

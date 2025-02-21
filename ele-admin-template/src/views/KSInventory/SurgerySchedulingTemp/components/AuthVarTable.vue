@@ -16,12 +16,12 @@
             <el-row :gutter="10">
               <el-col :lg="10" :md="12">
                 <el-form-item label="">
-                  <el-input v-model="SerachName" placeholder="请输入品种名称/品种编码/型号规格/生产企业搜索" clearable @change="reload"/>
+                  <el-input v-model="SerachName" placeholder="请输入品种名称/品种编码/型号规格/生产企业搜索" clearable @change="reload" />
                 </el-form-item>
               </el-col>
               <el-col :lg="14" :md="12">
                 <div class="ele-form-actions">
-                  <el-button type="primary" @click="reload">查询</el-button>
+                  <el-button type="primary" size="small" @click="reload">查询</el-button>
                   <el-button type="primary" size="small" @click="addTempVar">添加至选定模板</el-button>
                   <!-- <el-button type="primary" size="small" @click="search">导出目录</el-button> -->
                 </div>
@@ -60,9 +60,7 @@ import {
   SerachAuthVar,
   CreateTempletDeta
 } from '@/api/KSInventory/ApplyTemp';
-import {
-  AddNaxtDayApplyPlanTempDelBatch
-} from '@/api/KSInventory/SurgerySchedulingTemp';
+import { AddNaxtDayApplyPlanTempDelBatch } from '@/api/KSInventory/SurgerySchedulingTemp';
 export default {
   name: 'AuthVarTable',
   props: ['ApplyTempTableDataID', 'visible'],
@@ -159,7 +157,7 @@ export default {
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 150
-        },
+        }
         // {
         //   prop: 'SUPPLIER_NAME',
         //   label: '供应商',
@@ -281,14 +279,15 @@ export default {
       // console.log(this.selection);
     },
     addTempVar() {
-      console.log(this.ApplyTempTableDataID)
+      console.log(this.ApplyTempTableDataID);
+
       // const loading = this.$messageLoading('添加中...');
       this.selection.forEach((element) => {
         element.MAIN_ID = this.ApplyTempTableDataID.ID;
         element.JP_APPLY_QTY = this.ApplyTempTableDataID.APPLY_QTY;
-        element.CREATE_MAN =  this.$store.state.user.info.Nickname;
+        element.CREATE_MAN = this.$store.state.user.info.Nickname;
       });
-      console.log(this.selection)
+      console.log(this.selection);
       AddNaxtDayApplyPlanTempDelBatch(this.selection)
         .then((res) => {
           this.$message.success(res.msg);

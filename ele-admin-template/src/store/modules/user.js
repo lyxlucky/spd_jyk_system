@@ -7,8 +7,9 @@ import { getUserInfo, getConfig } from '@/api/layout';
 
 export default {
   namespaced: true,
-  storage: null,
   state: {
+    // 院区
+    storage: null,
     // 当前登录用户信息
     info: null,
     // 当前登录用户的菜单

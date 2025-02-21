@@ -39,6 +39,7 @@
 
 <script>
 import naxtDayApplyPlanMainSearch from './naxtDayApplyPlanMain-search.vue';
+
 import userEdit from './user-edit.vue';
 import {
   GetNaxtDayApplyPlanMain,
@@ -208,6 +209,7 @@ export default {
   methods: {
     /* 表格数据源 */
     datasource({ page, limit, where, order }) {
+      where.date = '';
       let data = GetNaxtDayApplyPlanMain({ page, limit, where, order }).then(
         (res) => {
           var tData = {
