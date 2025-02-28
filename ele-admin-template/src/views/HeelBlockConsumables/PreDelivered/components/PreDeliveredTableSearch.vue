@@ -44,11 +44,20 @@
     <el-row :gutter="5">
       <el-col v-bind="styleResponsive ? { lg: 24, md: 12 } : { span: 12 }">
         <div class="ele-form-actions">
-          <el-button size="mini" type="warning" class="ele-btn-icon" @click="UpdateCommon_btn">审批</el-button>
-          <el-button size="mini" type="primary" class="ele-btn-icon" @click="UpdateCommon2_btn">确认收货</el-button>
-          <el-button size="mini" type="primary" class="ele-btn-icon" @click="UpdateCommon2_btn">打印收货单</el-button>
-          <el-button size="mini" type="primary" class="ele-btn-icon" @click="UpdateCommon2_btn">导出</el-button>
-          <el-button size="mini" type="danger" class="ele-btn-icon" @click="UpdateCommon2_btn">删除</el-button>
+          <el-button size="mini" type="warning" class="ele-btn-icon" @click="Approve_btn">审批</el-button>
+          <el-popconfirm class="ele-action" title="确定收货？" @confirm="Confirm_btn()">
+            <template v-slot:reference>
+              <el-button size="mini" type="primary" class="ele-btn-icon">确认收货</el-button>
+            </template>
+          </el-popconfirm>
+          <!-- <el-button size="mini" type="primary" class="ele-btn-icon" @click="UpdateCommon2_btn">打印收货单</el-button> -->
+          <el-button size="mini" type="primary" class="ele-btn-icon" @click="exportData">导出</el-button>
+
+          <el-popconfirm class="ele-action" title="确定删除？" @confirm="Delete_btn()">
+            <template v-slot:reference>
+              <el-button type="danger" size="small">删除</el-button>
+            </template>
+          </el-popconfirm>
         </div>
       </el-col>
     </el-row>
@@ -80,6 +89,8 @@ import {
   UpdateCommon,
   UpdateCommon2
 } from '@/api/KSInventory/ApplyTemp';
+
+import { getDayOfDate } from '@/utils/date-util';
 export default {
   props: {
     // 修改回显的数据
@@ -90,9 +101,9 @@ export default {
     const defaultWhere = {
       state: '',
       condition: '',
-      date: '',
+      date: [getDayOfDate('yyyy-MM-dd', -7), getDayOfDate('yyyy-MM-dd', 1)],
       strApprove: '',
-      strYanShou: '',
+      strYanShou: ''
     };
     return {
       // 表单数据
@@ -119,7 +130,21 @@ export default {
   methods: {
     /* 搜索 */
     search() {
+      // console.log(this.$store.state.user.info.userDept)
+      console.log(this.where);
       this.$emit('search', this.where);
+    },
+    Approve_btn() {
+      this.$emit('Approve_btn');
+    },
+    Delete_btn() {
+      this.$emit('Delete_btn');
+    },
+    Confirm_btn() {
+      this.$emit('Confirm_btn');
+    },
+    exportData() {
+      this.$emit('exportData', this.where);
     },
     /*  重置 */
     reset() {
