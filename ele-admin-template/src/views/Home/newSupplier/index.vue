@@ -2,301 +2,335 @@
     <div class="ele-body">
         <el-card shadow="never">
             <!-- 搜索表单 -->
-            <el-form label-position="right" inline class="ele-form-search">
-                <el-form-item label="生产企业名称:">
-                    <el-input v-model="where.MANUFACTURING_ENT_NAME" placeholder="请输入" clearable />
-                </el-form-item>
-                <el-form-item label="开始时间:" >
-                    <el-date-picker v-model="where.startTime" type="date" placeholder="开始时间" />
+            <el-form class="form-box">
+                <el-form-item >
+                    <el-input size="mini" v-model="where.keyword" placeholder="请输入搜索内容" clearable />
                 </el-form-item>
                 <el-form-item>
-                    <el-date-picker v-model="where.endTime" type="date" placeholder="结束时间" />
+                    <el-select class="where-enable" size="mini" v-model="where.enable" placeholder="状态">
+                        <el-option label="启用" value="1"></el-option>
+                        <el-option label="全部" value=""></el-option>
+                        <el-option label="停用" value="0"></el-option>
+                    </el-select>
                 </el-form-item>
-                <div class="ele-form-actions">
-                    <el-button type="primary" icon="el-icon-search" class="ele-btn-icon" @click="reload">
-                        查询
+                <el-form-item >
+                    <el-button size="mini" type="primary" icon="el-icon-search" @click="getDataList">
+                        搜索
                     </el-button>
-                       <!--   <el-button @click="exportProdinfo">导出</el-button>
-                    <el-button @click="addProdinfo">新增</el-button>
-                    <el-button @click="updateProdinfo">修改</el-button>
-                    <el-button @click="delProdinfo">删除</el-button> -->
-                </div>
+                </el-form-item>
             </el-form>
             <!-- 数据表格 -->
-            <ele-pro-table ref="table" :columns="columns" :datasource="datasource" @selection-change="onSelectionChange">
+            <ele-pro-table ref="table" class="table-supplier" :columns="columns" :datasource="getDataList" @sort-change="handleSortChange" @current-change="onCurrentChange">
             </ele-pro-table>
         </el-card>
-
-        <!-- 新增/修改弹窗 -->
-        <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="30%">
-            <el-form :model="ProdinfoData" label-width="120px">
-                <el-form-item label="生产企业名称">
-                    <el-input v-model="ProdinfoData.MANUFACTURING_ENT_NAME" placeholder="请输入生产企业名称" />
-                </el-form-item>
-                <el-form-item label="生产许可证号">
-                    <el-input v-model="ProdinfoData.MANUFACTURING_LICENSE" placeholder="请输入生产许可证号" />
-                </el-form-item>
-                <el-form-item label="许可证有效期">
-                    <el-date-picker v-model="ProdinfoData.MANUFACTURING_LICENSE_TIME" type="date" placeholder="选择日期" />
-                </el-form-item>
-                <el-form-item label="生产企业地址">
-                    <el-input v-model="ProdinfoData.MANUFACTURING_ADDRES" placeholder="请输入生产企业地址" />
-                </el-form-item>
-                <!-- <el-form-item label="创建人">
-                    <el-input v-model="ProdinfoData.CREATE_MAN" placeholder="请输入创建人" />
-                </el-form-item> -->
-            </el-form>
-            <span slot="footer" class="dialog-footer">
-                <el-button @click="dialogVisible = false">取消</el-button>
-                <el-button type="primary" @click="handleDialogConfirm">确定</el-button>
-            </span>
-        </el-dialog>
     </div>
-</template><script>
-import { getMANUFACTURINGList, delMANUFACTURING_ENT, addMANUFACTURING_ENT, updateMANUFACTURING_ENT } from '@/api/Home/production';
-import { utils, writeFile } from 'xlsx';
+</template>
+
+<style scoped>
+    .form-box{
+        display: flex;
+        gap: 10px;
+    }
+    .where-enable{
+        width: 5rem;
+    }
+</style>
+
+<script>
+import { apiSupplierGetList } from '@/api/Home/newSupplier';
+import { Loading } from 'element-ui';
+
+
 export default {
-    name: 'production',
     data() {
         return {
-            // 表格列配置
-            columns: [
-                {
-                    width: 45,
-                    type: 'selection',
-                    columnKey: 'selection',
-                    align: 'center'
-                },
+            //表格数据源
+            supplierList :[],
+            // 条件
+            where:{
+                keyword:'',
+                enable:'1'
+            },
+            //页
+            page:{
+                current:1,
+            },
+            //字段列表
+            columns:[
+                // {
+                //     width: 45,
+                //     type: 'selection',
+                //     columnKey: 'selection',
+                //     align: 'center'
+                // },
                 {
                     columnKey: 'index',
                     type: 'index',
-                    width: 45,
+                    width:66,
+                    label: '序号',
                     align: 'center',
                     showOverflowTooltip: true
                 },
                 {
-                    prop: 'MANUFACTURING_ENT_NAME',
-                    label: '生产企业名称',
+                    prop: 'Enable',
+                    label: '启用状态',
+                    minWidth: 120,
                     sortable: 'custom',
-                    showOverflowTooltip: true
-                },
-                {
-                    prop: 'MANUFACTURING_LICENSE',
-                    label: '生产许可证号',
-                    sortable: 'custom',
-                    showOverflowTooltip: true
-                },
-                {
-                    prop: 'MANUFACTURING_LICENSE_TIME',
-                    label: '许可证有效期',
-                    sortable: 'custom',
+                    align: 'center',
                     showOverflowTooltip: true,
-                    formatter: (row, column, cellValue) => {
-                        return this.$util.toDateString(cellValue);
-                    }
+                    formatter: (row, column, value) => {
+                        if (value == 1) {
+                            return '是'
+                        } 
+                        return '否'
+                    },
                 },
                 {
-                    prop: 'MANUFACTURING_ADDRES',
-                    label: '生产企业地址',
+                    prop: 'Supplier_Code',
+                    label: '供应商编码',
+                    minWidth: 120,
                     sortable: 'custom',
+                    align: 'center',
                     showOverflowTooltip: true
                 },
                 {
-                    prop: 'CREATE_MAN',
-                    label: '创建人',
+                    prop: 'QXBZ',
+                    label: '缺项备注',
+                    minWidth: 120,
                     sortable: 'custom',
+                    align: 'center',
                     showOverflowTooltip: true
                 },
                 {
-                    prop: 'CREATE_TIME',
+                    prop: 'Supplier_Name',
+                    label: '供应商名称',
+                    minWidth: 320,
+                    sortable: 'custom',
+                    align: 'center',
+                    showOverflowTooltip: true
+                },
+                {
+                    prop: 'STOP_SEND',
+                    label: '停止配送',
+                    minWidth: 120,
+                    sortable: 'custom',
+                    align: 'center',
+                    showOverflowTooltip: true,
+                    
+                },
+                {
+                    prop: 'SOCIAL_CREDIT_CODE',
+                    label: '社会统一信用代码',
+                    minWidth: 120,
+                    sortable: 'custom',
+                    align: 'center',
+                    showOverflowTooltip: true
+                },
+                {
+                    prop: 'Licence_File_Full_Name',
+                    label: '企业地址',
+                    minWidth: 120,
+                    sortable: 'custom',
+                    align: 'center',
+                    showOverflowTooltip: true
+                },
+                {
+                    prop: 'Contact_Phone2',
+                    label: '企业电话',
+                    minWidth: 120,
+                    sortable: 'custom',
+                    align: 'center',
+                    showOverflowTooltip: true
+                },
+                {
+                    prop: 'OFFICIAL_SEAL_PICTURE',
+                    label: '送货章图片',
+                    minWidth: 120,
+                    sortable: 'custom',
+                    align: 'center',
+                    showOverflowTooltip: true
+                },
+                {
+                    prop: 'Business_License_Valid_Date',
+                    label: '营业执照效期',
+                    minWidth: 120,
+                    sortable: 'custom',
+                    align: 'center',
+                    showOverflowTooltip: true
+                },
+                {
+                    prop: 'RODUCTION_CLASS_1_VALID_DATE',
+                    label: '一类的许可证经营有效期',
+                    minWidth: 120,
+                    sortable: 'custom',
+                    align: 'center',
+                    showOverflowTooltip: true
+                },
+                {
+                    prop: 'Roduction_class_2_Valid_Date',
+                    label: '二类的许可证经营有效期',
+                    minWidth: 120,
+                    sortable: 'custom',
+                    align: 'center',
+                    showOverflowTooltip: true
+                },
+                {
+                    prop: 'Roduction_class_3_Valid_Date',
+                    label: '三类的许可证经营有效期',
+                    minWidth: 120,
+                    sortable: 'custom',
+                    align: 'center',
+                    showOverflowTooltip: true
+                },
+                {
+                    prop: 'DR_VALID_DATE',
+                    label: '体外诊断试剂经营许可证有效期',
+                    minWidth: 120,
+                    sortable: 'custom',
+                    align: 'center',
+                    showOverflowTooltip: true
+                },
+                {
+                    prop: 'WTS_VALID_DATE',
+                    label: '业务员委托书有效期',
+                    minWidth: 120,
+                    sortable: 'custom',
+                    align: 'center',
+                    showOverflowTooltip: true
+                },
+                {
+                    prop: 'Contact_Person',
+                    label: '业务员姓名',
+                    minWidth: 120,
+                    sortable: 'custom',
+                    align: 'center',
+                    showOverflowTooltip: true
+                },
+                {
+                    prop: 'YWY_PEO_ID',
+                    label: '业务员身份证号',
+                    minWidth: 120,
+                    sortable: 'custom',
+                    align: 'center',
+                    showOverflowTooltip: true
+                },
+                {
+                    prop: 'Contact_Phone',
+                    label: '业务员联系电话',
+                    minWidth: 120,
+                    sortable: 'custom',
+                    align: 'center',
+                    showOverflowTooltip: true
+                },
+                {
+                    prop: 'Supplier_Nature',
+                    label: '供应商性质',
+                    minWidth: 120,
+                    sortable: 'custom',
+                    align: 'center',
+                    showOverflowTooltip: true
+                },
+                {
+                    prop: 'Cold_Chain_Apparatus_Supply',
+                    label: '冷链器械供应条件',
+                    minWidth: 120,
+                    sortable: 'custom',
+                    align: 'center',
+                    showOverflowTooltip: true
+                },
+                {
+                    prop: 'SUP_CODE_TWO',
+                    label: 'hrp供应商编码2',
+                    minWidth: 120,
+                    sortable: 'custom',
+                    align: 'center',
+                    showOverflowTooltip: true
+                },
+                {
+                    prop: 'Supplier_Code_Charging',
+                    label: '财务科供应商编码',
+                    minWidth: 120,
+                    sortable: 'custom',
+                    align: 'center',
+                    showOverflowTooltip: true
+                },
+                {
+                    prop: 'File_Location',
+                    label: '档案位置',
+                    minWidth: 120,
+                    sortable: 'custom',
+                    align: 'center',
+                    showOverflowTooltip: true
+                },
+                {
+                    prop: 'YG_SUP_CODE',
+                    label: '阳光平台编码',
+                    minWidth: 120,
+                    sortable: 'custom',
+                    align: 'center',
+                    showOverflowTooltip: true
+                },
+                {
+                    prop: 'Create_Time',
+                    label: '创建时间',
+                    minWidth: 120,
+                    sortable: 'custom',
+                    align: 'center',
+                    showOverflowTooltip: true
+                },
+                {
+                    prop: 'Last_Update_Time',
                     label: '更新时间',
+                    minWidth: 120,
                     sortable: 'custom',
-                    showOverflowTooltip: true,
-                    formatter: (row, column, cellValue) => {
-                        return this.$util.toDateString(cellValue);
-                    }
+                    align: 'center',
+                    showOverflowTooltip: true
                 }
-            ],
-            // 表格搜索条件
-            where: {
-                MANUFACTURING_ENT_NAME: "",
-                startTime: undefined,
-                endTime: undefined
-            },
-            // 表单数据
-            ProdinfoData: {
-                ID: undefined,
-                MANUFACTURING_ENT_NAME: "",
-                MANUFACTURING_LICENSE: "",
-                MANUFACTURING_LICENSE_TIME: "",
-                MANUFACTURING_ADDRES: "",
-                CREATE_MAN: "",
-            },
-            // 表格选中数据
-            selection: [],
-            // 弹窗控制
-            dialogVisible: false,
-            dialogTitle: "新增生产企业",
-            isEdit: false // 是否为编辑模式,
-            ,
-      
-        };
+            ]
+        }
     },
-    methods: {
-        datasource({ page, limit, where, order }) {
-            let data = getMANUFACTURINGList({ page, limit, where, order }).then(
-                (res) => {
-                    var tData = {
-                        count: res.total,
-                        list: res.result
-                    };
-                    return tData;
-                }
-            );
-            return data;
-        },
-        /* 刷新表格 */
-        reload() {
-            this.$refs.table.reload({ page: 1, where: this.where });
-        },
-        /* 重置搜索 */
-        reset() {
-            this.where = {
-                MANUFACTURING_ENT_NAME: "",
-                startTime: undefined,
-                endTime: undefined
-            };
-            this.reload();
-        },
-        /* 删除操作 */
-        delProdinfo() {
-            if (this.selection.length === 1) {
-                this.$confirm('确认删除该项?', '提示', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    type: 'warning'
-                }).then(() => {
-                    var data = {
-                        ID: this.selection[0].ID,
-                        CREATE_MAN: this.$store.state.user.info.Nickname
-                    };
-                    delMANUFACTURING_ENT(data).then(() => {
-                        this.$message.success('删除成功');
-                        this.reload();
-                    });
-                }).catch(() => {
-                    console.log('用户取消了删除');
-                });
-            } else {
-                this.$message.error('请选择一项进行删除');
-                return;
-            }
-        },
-        /* 选中行变化 */
-        onSelectionChange(res) {
-            this.selection = res;
-        },
-        /* 新增操作 */
-        addProdinfo() {
-            this.dialogTitle = "新增生产企业";
-            this.isEdit = false;
-            this.ProdinfoData = {
-                ID: undefined,
-                MANUFACTURING_ENT_NAME: "",
-                MANUFACTURING_LICENSE: "",
-                MANUFACTURING_LICENSE_TIME: "",
-                MANUFACTURING_ADDRES: "",
-                CREATE_MAN: this.$store.state.user.info.Nickname
-            };
-            this.dialogVisible = true;
-        },
-        /* 修改操作 */
-        updateProdinfo() {
-            if (this.selection.length === 1) {
-                this.dialogTitle = "修改生产企业";
-                this.isEdit = true;
-                this.ProdinfoData = { ...this.selection[0] }; // 复制选中项的数据
-                this.dialogVisible = true;
-            } else {
-                this.$message.error('请选择一项进行修改');
-                return;
-            }
-        },
-        /* 弹窗确认操作 */
-        handleDialogConfirm() {
-            if (this.isEdit) {
-                // 修改操作
-                updateMANUFACTURING_ENT(this.ProdinfoData).then(() => {
-                    this.$message.success('修改成功');
-                    this.dialogVisible = false;
-                    this.reload();
-                });
-            } else {
-                // 新增操作
-                addMANUFACTURING_ENT(this.ProdinfoData).then(() => {
-                    this.$message.success('新增成功');
-                    this.dialogVisible = false;
-                    this.reload();
-                });
-            }
-        },
-        exportProdinfo() {        
-    const array = [
-        ['生产企业名称', '生产企业许可证号', '许可证有效期', '生产企业地址', '创建人', '更新时间']
-    ];
-
-    const data = {
-        where: {
-            MANUFACTURING_ENT_NAME: "",
-            startTime: "",
-            endTime: "",
-        },                        
-        page: 1,
-        limit: 999999,
-    };
-
-    getMANUFACTURINGList(data).then(exportData => {
-        exportData.result.forEach((d) => {
-            array.push([
-                d.MANUFACTURING_ENT_NAME, 
-                d.MANUFACTURING_LICENSE, 
-                this.$util.toDateString(d.MANUFACTURING_LICENSE_TIME) , 
-                d.MANUFACTURING_ADDRES, 
-                d.CREATE_MAN, 
-                this.$util.toDateString(d.CREATE_TIME)
-            ]);
-        });
-                   // 创建工作表
-        const sheet = utils.aoa_to_sheet(array);
+    mounted(){
         
-        // 设置列宽
-        sheet["!cols"] = [
-            { wch: 40 },
-            { wch: 22 },
-            { wch: 22 },
-            { wch: 22 },
-            { wch: 12 },
-            { wch: 22 },    
-        ];
+    },
+    methods:{
+        onCurrentChange(current){
+            console.log(current);
+            this.page.current = current;
+        },
+        handleSortChange(e){
+            console.log(e);
+            console.log(this.pagination);
+            
+        },
+        async getDataList(){
 
-        // 导出文件
-        writeFile(
-            {
-                SheetNames: ['生产企业'],
-                Sheets: {
-                    生产企业: sheet
+            let loadingInstance = Loading.service({
+                target:".table-supplier .el-table"
+            })
+
+            let dataList = await apiSupplierGetList({
+                keyword:this.where.keyword,
+                enable:this.where.enable,
+            }).then(res=>{
+               if (!res.data || !res.data.result) {
+                    return false
+               }
+                return {
+                    count:res.data.total,
+                    list:res.data.result
                 }
-            },
-            '生产企业.xlsx'
-        );
-
-        
-    }).catch(error => {
-        console.error('导出数据失败:', error);
-        this.$message.error('导出数据失败，请稍后重试。');
-    });
-}
-
+            }).finally(()=>{
+                loadingInstance.close()
+            })
+            if (!dataList) {
+                dataList = {
+                    count:0,
+                    list:[]
+                }
+            }
+            return dataList
+        }
     }
 }
 </script>
+
