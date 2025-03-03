@@ -20,7 +20,17 @@
                 </el-form-item>
             </el-form>
             <!-- 数据表格 -->
-            <ele-pro-table ref="table" class="table-supplier" :columns="columns" :datasource="getDataList" @sort-change="handleSortChange" @current-change="onCurrentChange">
+            <ele-pro-table 
+            ref="table" 
+            class="table-supplier" 
+            :columns="columns" 
+            :currentPage="page" 
+            :pageSize="size" 
+            :highlightCurrentRow="true"
+            :datasource="getDataList" 
+            @current-change="onCurrentChange"
+            @size-change="onSizeChange"
+            >
             </ele-pro-table>
         </el-card>
     </div>
@@ -49,12 +59,11 @@ export default {
             // 条件
             where:{
                 keyword:'',
-                enable:'1'
+                enable:'1',
             },
             //页
-            page:{
-                current:1,
-            },
+            page:1,
+            size:10,
             //字段列表
             columns:[
                 // {
@@ -116,6 +125,12 @@ export default {
                     sortable: 'custom',
                     align: 'center',
                     showOverflowTooltip: true,
+                    formatter(row,col,value){
+                        if (value == 1) {
+                            return '是'
+                        }
+                        return "否"
+                    }
                     
                 },
                 {
@@ -295,24 +310,25 @@ export default {
     methods:{
         onCurrentChange(current){
             console.log(current);
-            this.page.current = current;
         },
-        handleSortChange(e){
+        onSizeChange(e){
             console.log(e);
-            console.log(this.pagination);
-            
         },
-        async getDataList(){
-
+        async getDataList(option){
+            
             let loadingInstance = Loading.service({
                 target:".table-supplier .el-table"
             })
 
             let dataList = await apiSupplierGetList({
+                page:option.page,
+                size:option.limit,
                 keyword:this.where.keyword,
                 enable:this.where.enable,
+                order:option.order.order,
+                field:option.order.sort,
             }).then(res=>{
-               if (!res.data || !res.data.result) {
+               if (res.data.code != "200") {
                     return false
                }
                 return {

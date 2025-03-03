@@ -814,12 +814,13 @@ export default {
         //导出
         exportConsumeXlsx(e) {
             const loading = this.$messageLoading('正在导出数据...');
-            //将列表列出标题
+            //过滤有标题的
             let filterList = this.consumeColumns.filter(ele => {
                 if (ele.label) {
                     return ele.label
                 }
             })
+            //筛选出字段与标题
             let fields = []
             let titleList = []
 
@@ -827,6 +828,8 @@ export default {
                 fields.push(ele.prop)
                 titleList.push(ele.label)
             });
+
+            //请求数据并导出
             let where = this.consumeForm
             apiGetLoadGoodsDeliveryNumbers({
                 where
@@ -840,13 +843,14 @@ export default {
                 array.push(titleList)
                 console.log(data);
                 data.result.forEach(ele => {
+                    //根据字段列表，依次push数组。
                     let row = []
                     fields.forEach(fieldELe => {
                         row.push(ele[fieldELe])
                     })
                     array.push(row)
                 });
-                // utils.aoa_to_sheet
+                // 写出文件
                 writeFile(
                     {
                         SheetNames: ['Sheet1'],
