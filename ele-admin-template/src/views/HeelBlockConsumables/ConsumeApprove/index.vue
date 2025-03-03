@@ -6,7 +6,7 @@
                     <el-tabs :value="0">
                         <el-tab-pane label="预收货单号列表">
                             <div class="margin-top-10">
-                                <el-button type="primary" size="mini">导出</el-button>
+                                <el-button type="primary" size="mini" @click="exportConsumeXlsx">导出</el-button>
                                 <el-button size="mini" :disabled="!this.currentConsumeA1"
                                     @click="onStatusWithdrawn">状态撤回</el-button>
                                 <el-button type="primary" size="mini" @click="showUploadDialogVisible">上传植入单</el-button>
@@ -59,8 +59,7 @@
                             <div class="margin-top-10">
                                 <ele-pro-table height="500" :needPage="false" :toolbar="false" :pageSize="9999"
                                     class="receipt-order-list-table" size="mini" :columns="consumeColumns"
-                                    :highlightCurrentRow="true"
-                                    @current-change="onReceiptOrderCurrentChange"
+                                    :highlightCurrentRow="true" @current-change="onReceiptOrderCurrentChange"
                                     :datasource="ReceiptOrderList"></ele-pro-table>
                             </div>
                         </el-tab-pane>
@@ -81,8 +80,8 @@
                                                     placeholder="B2B品种编码、品种（材料）编码、品种全称、生产企业名称、型号/规格、供应商名称"></el-input>
                                             </el-col>
                                             <el-col :span="6">
-                                                <el-button size="mini" type="primary"
-                                                    icon="el-icon-search" @click="getDeliveryVarietieList">查询</el-button>
+                                                <el-button size="mini" type="primary" icon="el-icon-search"
+                                                    @click="getDeliveryVarietieList">查询</el-button>
                                             </el-col>
                                         </el-row>
                                     </el-form>
@@ -98,9 +97,8 @@
                             <div class="margin-top-10">
                                 <ele-pro-table height="300" class="receipt-delivery-varietie-table" :needPage="false"
                                     :toolbar="false" size="mini" :columns="deliveryVarietieColumns"
-                                    :highlightCurrentRow="true"
-                                    @current-change="onDeliveryVarietieCurrentChange" :pageSize="9999"
-                                    :datasource="DeliveryVarietieList"></ele-pro-table>
+                                    :highlightCurrentRow="true" @current-change="onDeliveryVarietieCurrentChange"
+                                    :pageSize="9999" :datasource="DeliveryVarietieList"></ele-pro-table>
                             </div>
                         </el-tab-pane>
                     </el-tabs>
@@ -110,8 +108,7 @@
                     <div>
                         <ele-pro-table height="300" class="receipt-varietie-info-table" :needPage="false"
                             :pageSize="9999" :toolbar="false" size="mini" :columns="consumeA3"
-                            :highlightCurrentRow="true"
-                            :datasource="LoadGeneratedVarietieInfo"></ele-pro-table>
+                            :highlightCurrentRow="true" :datasource="LoadGeneratedVarietieInfo"></ele-pro-table>
                     </div>
                 </el-card>
             </el-col>
@@ -139,8 +136,7 @@
             </el-row>
             <div class="margin-top-10">
                 <ele-pro-table height="500" :toolbar="false" size="mini" :columns="gtTbTable1gt"
-                    :highlightCurrentRow="true"
-                    class="gtTbTable1gt-table" @current-change="onGtTbTable1gtCurrentChange"
+                    :highlightCurrentRow="true" class="gtTbTable1gt-table" @current-change="onGtTbTable1gtCurrentChange"
                     :datasource="GtTbTable1gtList"></ele-pro-table>
             </div>
             <div slot="footer" class="">
@@ -148,14 +144,16 @@
             </div>
         </el-dialog>
 
+
         <!-- 上传植入单 -->
-        <el-dialog title="上传植入单" :visible.sync="uploadDialogVisible" width="50%" :before-close="handleCloseUploadDialogVisible">
-            <el-upload class="upload-demo" ref="upload" action=""
+        <el-dialog title="上传植入单" :visible.sync="uploadDialogVisible" width="50%"
+            :before-close="handleCloseUploadDialogVisible">
+            <el-upload class="upload-demo" ref="upload" action="" :limit="1" :on-change="handleFileChange"
                 :on-preview="handlePreview" :on-remove="handleRemove" :file-list="fileList" :auto-upload="false">
                 <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
                 <el-button style="margin-left: 10px;" size="small" type="success"
                     @click="submitUpload">上传到服务器</el-button>
-                <div slot="tip" class="el-upload__tip">只能上传jpg/png文件</div>
+                <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件</div> -->
             </el-upload>
         </el-dialog>
     </div>
@@ -163,9 +161,10 @@
 </template>
 
 <script>
-import { apiGetLoadGeneratedVarietieInfo, apiGetLoadGoodsDeliveryNumbers, apiGetSearchDeliveryVarietie, apiGetSearchTbMainZy, apiPostCreateDefTb, apiPostGtSbkSp, apiPostSearchTbMainZy } from '@/api/HeelBlockConsumables/ConsumeApprove';
+import { apiGetLoadGeneratedVarietieInfo, apiGetLoadGoodsDeliveryNumbers, apiGetSearchDeliveryVarietie, apiGetSearchTbMainZy, apiPostCreateDefTb, apiPostGtSbkSp, apiPostSearchTbMainZy, apiPostUploadGtPic } from '@/api/HeelBlockConsumables/ConsumeApprove';
 import { formatDate } from '@/utils/formdataify';
 import { Loading } from 'element-ui';
+import { utils, writeFile } from 'xlsx';
 
 export default {
     data() {
@@ -183,7 +182,7 @@ export default {
             uploadDialogVisible: false,
 
             //文件
-            fileList:[],
+            fileList: [],
 
             //搜索
             consumeA2Input: '',
@@ -543,7 +542,7 @@ export default {
 
     },
     methods: {
-
+        //获取收货单号
         async getReceiptOrderList() {
             let loadingInstance = Loading.service({
                 target: ".receipt-order-list-table .el-table"
@@ -686,10 +685,10 @@ export default {
         handleClose(e) {
             this.dialogVisible = false
         },
-        handleCloseUploadDialogVisible(e){
+        handleCloseUploadDialogVisible(e) {
             this.uploadDialogVisible = false
         },
-        showUploadDialogVisible(e){
+        showUploadDialogVisible(e) {
             this.uploadDialogVisible = true
         },
         //状态撤回
@@ -774,19 +773,102 @@ export default {
                 this.$message(data.msg);
             })
         },
-        submitUpload() {
-            console.log(this.fileList);
-            console.log(this.fileList[0]);
+        handleFileChange(file, fileList) {
+            console.log(fileList);
+            this.fileList = fileList
+        },
+        async submitUpload() {
+            if (this.fileList.length == 0) {
+                this.$message("请选择上传文件")
+                return
+            }
+            let file = this.fileList[0].raw
+
+            let fileData = await file.arrayBuffer()
+            fileData = new Blob(new Uint8Array(fileData))
+
+            let where = {
+                Delivery_Note_Number: this.currentConsumeA1 ? this.currentConsumeA1.Delivery_Note_Number : '',
+                FILE: fileData,
+                filename: file.name
+            }
+
+            apiPostUploadGtPic({
+                where
+            }).then(res => {
+                console.log(res);
+                let data = res.data
+                if (data.code == 200) {
+                    this.$message.success(data.msg)
+                    return
+                }
+                this.$message.error(data.msg)
+            })
         },
         handleRemove(file, fileList) {
             console.log(file, fileList);
         },
         handlePreview(file) {
             console.log(file);
+        },
+        //导出
+        exportConsumeXlsx(e) {
+            const loading = this.$messageLoading('正在导出数据...');
+            //将列表列出标题
+            let filterList = this.consumeColumns.filter(ele => {
+                if (ele.label) {
+                    return ele.label
+                }
+            })
+            let fields = []
+            let titleList = []
+
+            filterList.forEach(ele => {
+                fields.push(ele.prop)
+                titleList.push(ele.label)
+            });
+            let where = this.consumeForm
+            apiGetLoadGoodsDeliveryNumbers({
+                where
+            }).then((res) => {
+                loading.close()
+                let data = res.data
+                if (data.code != "200") {
+                    return false
+                }
+                const array = []
+                array.push(titleList)
+                console.log(data);
+                data.result.forEach(ele => {
+                    let row = []
+                    fields.forEach(fieldELe => {
+                        row.push(ele[fieldELe])
+                    })
+                    array.push(row)
+                });
+                // utils.aoa_to_sheet
+                writeFile(
+                    {
+                        SheetNames: ['Sheet1'],
+                        Sheets: {
+                            Sheet1: utils.aoa_to_sheet(array)
+                        }
+                    },
+                    '预收货单号列表.xlsx'
+                );
+                this.$message.success("导出成功");
+
+            }).finally(() => {
+                loading.close()
+            })
+
         }
     }
+
 }
 </script>
+
+
 <style scoped>
 .consume-box {
     display: flex;

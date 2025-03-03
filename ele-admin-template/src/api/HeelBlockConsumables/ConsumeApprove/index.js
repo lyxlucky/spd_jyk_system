@@ -141,7 +141,11 @@ export function apiPostUploadGtPic(data){
     //条件
     params.Delivery_Note_Number = data.where.Delivery_Note_Number || '' 
     params.FILE = data.where.FILE
-    let formdata = formdataify(params)
+
+    const formdata = new FormData()
+    formdata.append("Delivery_Note_Number",params.Delivery_Note_Number)
+    formdata.append("FILE",params.FILE, data.where.filename)
+    // let formdata = formdataify(params)
 
     let url = `/BtbGetVarietie/UploadGtPic`
     return request.post(url,formdata)
