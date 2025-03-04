@@ -12,7 +12,8 @@ export const B2B_BASE_URL = "http://47.106.243.154:802";
 // szhn 华南医院
 // stzx 汕头中心
 // szlhfy 龙华妇幼
-export const HOME_HP = 'bd'
+// bj 北京人民
+export const HOME_HP = 'bj'
 
 // 计算b2b的的医院ID
 const caculateB2bCode = () => {

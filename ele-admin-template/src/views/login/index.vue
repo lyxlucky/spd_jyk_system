@@ -144,6 +144,8 @@ export default {
           return require('@/assets/logoSTZX.jpg');
         case 'szlhfy':
           return require('@/assets/logoFY.jpg');
+        case 'bj':
+          return require('@/assets/logoBJ.jpg');
         default:
           return require('@/assets/logoBD.jpg');
       }
