@@ -66,7 +66,7 @@ export default {
         // {
         //   columnKey: 'action',
         //   label: '操作',
-        //   width: 120,
+        //   width: 180,
         //   align: 'center',
         //   resizable: false,
         //   slot: 'action',
@@ -74,15 +74,15 @@ export default {
         //   fixed: 'left'
         // },
         {
-          prop: 'BIND_MACHINE',
-          label: '机械号',
+          prop: 'MONTH_ID',
+          label: '月结ID',
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 150
+          minWidth: 80
         },
         {
-          prop: 'VARIETIE_CODE_NEW',
+          prop: 'MONTHLY_BALANCE_NUMBER',
           label: '品种编码',
           sortable: 'custom',
           align: 'center',
@@ -91,7 +91,7 @@ export default {
           show: false
         },
         {
-          prop: 'VARIETIE_NAME',
+          prop: 'MONTHLY_TIME',
           label: '品种名称',
           sortable: 'custom',
           align: 'center',
@@ -99,45 +99,329 @@ export default {
           minWidth: 180
         },
         {
-          prop: 'SPECIFICATION_OR_TYPE',
-          label: '规格/型号',
+          prop: 'MONTHBILLNUM',
+          label: '发票号',
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 200
         },
         {
-          prop: 'Manufacturing_Ent_Name',
-          label: '生产企业名称',
+          prop: 'BATCH_ID',
+          label: '批次号',
+          sortable: 'custom',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 80
+        },
+        {
+          prop: 'SUPPLIER_NAME',
+          label: '供应商名称',
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 180
         },
         {
-          prop: 'UNIT',
-          label: '单位',
-          sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 180
-        },
-        {
-          prop: 'SUM',
-          label: '数量',
+          prop: 'SUPPLIER_CODE',
+          label: '供应商编码',
           align: 'center',
           sortable: 'custom',
           showOverflowTooltip: true,
           minWidth: 80
         },
         {
-          prop: 'LIS_COUNT',
-          label: 'PAD扫码数量',
+          prop: 'PROVINCE_PLATFORM_CODE',
+          label: '省平台编码',
           align: 'center',
           sortable: 'custom',
-          width: 120,
+          width: 100,
           showOverflowTooltip: true
-        }
+        },
+        // {
+        //   prop: 'VARIETIE_CODE',
+        //   label: 'PAD扫码数量',
+        //   align: 'center',
+        //   sortable: 'custom',
+        //   width: 180,
+        //   showOverflowTooltip: true
+        // },
+        {
+          prop: 'VARIETIE_CODE_NEW',
+          label: '品种编码',
+          align: 'center',
+          sortable: 'custom',
+          width: 150,
+          showOverflowTooltip: true
+        },
+        {
+          prop: 'VARIETIE_NAME',
+          label: '品种名称',
+          align: 'center',
+          sortable: 'custom',
+          width: 150,
+          showOverflowTooltip: true
+        },
+        {
+          prop: 'CLASSIFIC_PROPERTIES',
+          label: '财务类别',
+          align: 'center',
+          sortable: 'custom',
+          width: 180,
+          showOverflowTooltip: true
+        },
+        {
+          prop: 'SPECIFICATION_OR_TYPE',
+          label: '规格型号',
+          align: 'center',
+          sortable: 'custom',
+          width: 180,
+          showOverflowTooltip: true
+        },
+        {
+          prop: 'UNIT',
+          label: '单位',
+          align: 'center',
+          sortable: 'custom',
+          width: 80,
+          showOverflowTooltip: true
+        },
+        {
+          prop: 'SPH_ERP_VARIETIE_CODE',
+          label: 'ERP品种编码',
+          align: 'center',
+          sortable: 'custom',
+          width: 180,
+          showOverflowTooltip: true
+        },
+        {
+          prop: 'MANUFACTURING_ENT_NAME',
+          label: '生产企业',
+          align: 'center',
+          sortable: 'custom',
+          width: 180,
+          showOverflowTooltip: true
+        },
+        {
+          prop: 'APPROVAL_NUMBER',
+          label: '注册证号',
+          align: 'center',
+          sortable: 'custom',
+          width: 180,
+          showOverflowTooltip: true
+        },
+        {
+          prop: 'BATCH',
+          label: '批号',
+          align: 'center',
+          sortable: 'custom',
+          width: 180,
+          showOverflowTooltip: true
+        },
+        {
+          prop: 'QSSTATE',
+          label: '中心库发票签收',
+          align: 'center',
+          sortable: 'custom',
+          width: 80,
+          showOverflowTooltip: true,
+          formatter: (row, column, cellValue) => {
+            if(cellValue == 0){
+              return "未签收"
+            }else if(cellValue == 1){
+              return "已签收"
+            }else{
+              return cellValue
+            }
+          }
+        },
+        {
+          prop: 'FP_DATE',
+          label: '开票日期',
+          align: 'center',
+          sortable: 'custom',
+          width: 180,
+          showOverflowTooltip: true
+        },
+        {
+          prop: 'FPQS_MAN',
+          label: '发送人',
+          align: 'center',
+          sortable: 'custom',
+          width: 100,
+          showOverflowTooltip: true
+        },
+        {
+          prop: 'FPQS_TIME',
+          label: '发送时间',
+          align: 'center',
+          sortable: 'custom',
+          width: 180,
+          showOverflowTooltip: true
+        },
+        {
+          prop: 'REMARKS',
+          label: '备注',
+          align: 'center',
+          sortable: 'custom',
+          width: 80,
+          showOverflowTooltip: true
+        },
+        {
+          prop: 'LS_IS_JC',
+          label: '是否集采(时限)',
+          align: 'center',
+          sortable: 'custom',
+          width: 80,
+          showOverflowTooltip: true,
+          formatter: (row, column, cellValue) => {
+            if(cellValue == 0){
+              return "非集采"
+            }else if(cellValue == 1){
+              return "集采"
+            }else{
+              return cellValue
+            }
+          }
+        },
+        {
+          prop: 'JC_REMARK',
+          label: '集采备注',
+          align: 'center',
+          sortable: 'custom',
+          width: 100,
+          showOverflowTooltip: true
+        },
+        {
+          prop: 'SEND_WXT_MARK',
+          label: '微讯通月份',
+          align: 'center',
+          sortable: 'custom',
+          width: 100,
+          showOverflowTooltip: true
+        },
+        {
+          prop: 'BATCH_PRODUCTION_DATE',
+          label: '生产日期',
+          align: 'center',
+          sortable: 'custom',
+          width: 180,
+          showOverflowTooltip: true
+        },
+        {
+          prop: 'BATCH_VALIDITY_PERIOD',
+          label: '有效期',
+          align: 'center',
+          sortable: 'custom',
+          width: 180,
+          showOverflowTooltip: true
+        },
+        {
+          prop: 'BILLFPNUM',
+          label: '发票',
+          align: 'center',
+          sortable: 'custom',
+          width: 180,
+          showOverflowTooltip: true
+        },
+        {
+          prop: 'PRICE',
+          label: '价格',
+          align: 'center',
+          sortable: 'custom',
+          width: 80,
+          showOverflowTooltip: true
+        },
+        {
+          prop: 'Examine_State',
+          label: '审批状态',
+          align: 'center',
+          sortable: 'custom',
+          width: 80,
+          showOverflowTooltip: true,
+          formatter: (row, column, cellValue) => {
+            if(cellValue == 0){
+              return "未审批"
+            }else if(cellValue == 1){
+              return "已审批审批"
+            }else{
+              return cellValue
+            }
+          }
+        },
+        {
+          prop: 'Examine_Time',
+          label: '审批时间',
+          align: 'center',
+          sortable: 'custom',
+          width: 180,
+          showOverflowTooltip: true
+        },
+        {
+          prop: 'QTY',
+          label: '数量',
+          align: 'center',
+          sortable: 'custom',
+          width: 70,
+          showOverflowTooltip: true
+        },
+        // {
+        //   prop: 'CONSUME_ID',
+        //   label: '消耗ID',
+        //   align: 'center',
+        //   sortable: 'custom',
+        //   width: 180,
+        //   showOverflowTooltip: true
+        // },
+        {
+          prop: 'Money',
+          label: '金额',
+          align: 'center',
+          sortable: 'custom',
+          width: 80,
+          showOverflowTooltip: true
+        },
+        {
+          prop: 'SOURCE_FROM',
+          label: '来源',
+          align: 'center',
+          sortable: 'custom',
+          width: 80,
+          showOverflowTooltip: true
+        },
+        {
+          prop: 'HIGH_OR_LOW_CLASS',
+          label: '高低值分类',
+          align: 'center',
+          sortable: 'custom',
+          width: 60,
+          showOverflowTooltip: true
+        },
+        {
+          prop: 'EBS_CAN_SEND_INVOICE',
+          label: '是否发送',
+          align: 'center',
+          sortable: 'custom',
+          width: 80,
+          showOverflowTooltip: true,
+          formatter: (row, column, cellValue) => {
+            if(cellValue == 0){
+              return "否"
+            }else if(cellValue == 1){
+              return "是"
+            }else{
+              return ""
+            }
+          }
+        },
+        // {
+        //   prop: 'EBS_DEPT_DEL_ID',
+        //   label: 'PAD扫码数量',
+        //   align: 'center',
+        //   sortable: 'custom',
+        //   width: 180,
+        //   showOverflowTooltip: true
+        // },
       ],
       toolbar: false,
       pageSize: 10,

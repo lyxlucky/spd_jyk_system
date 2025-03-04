@@ -18,22 +18,23 @@ import { formdataify, DataToObject } from '@/utils/formdataify';
 // }
 
 export async function GetInvoiceManagement(data) {
+  console.log(data)
   var data2 = {};
   data2.json = JSON.stringify(data);
   data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
   data2.page = data.page;
   data2.size = data.limit;
   data2.LS_IS_JC = data.where.LS_IS_JC ? data.where.LS_IS_JC : '';
-  data2.EXAMINE_TIMEEnd = data.where.EXAMINE_TIMEEnd ? data.where.EXAMINE_TIMEEnd : '';
-  data2.EXAMINE_TIMEStart = data.where.EXAMINE_TIMEStart ? data.where.EXAMINE_TIMEStart : '';
+  data2.EXAMINE_TIMEEnd = data.where.EXAMINE_TIME && data.where.EXAMINE_TIME.length > 0 ? data.where.EXAMINE_TIME[1] : '';
+  data2.EXAMINE_TIMEStart = data.where.EXAMINE_TIME && data.where.EXAMINE_TIME.length > 0 ? data.where.EXAMINE_TIME[0] : '';
   data2.VARIETIE_CODE_NEW = data.where.VARIETIE_CODE_NEW ? data.where.VARIETIE_CODE_NEW : '';
   data2.QSSTATE = data.where.QSSTATE ? data.where.QSSTATE : '';
   data2.EXAMINE_STATE = data.where.EXAMINE_STATE ? data.where.EXAMINE_STATE : '';
   data2.MONTHBILLNUM = data.where.MONTHBILLNUM ? data.where.MONTHBILLNUM : '';
   data2.SUPPLIER_NAME = data.where.SUPPLIER_NAME ? data.where.SUPPLIER_NAME : '';
-  data2.MONTHLY_TIMEStart = data.where.MONTHLY_TIMEStart ? data.where.MONTHLY_TIMEStart : '';
-  data2.MONTHLY_TIMEEnd = data.where.MONTHLY_TIMEEnd ? data.where.MONTHLY_TIMEEnd : '';
-  data2.EBS_CAN_SEND_INVOICE = data.where.EBS_CAN_SEND_INVOICE ? data.where.EBS_CAN_SEND_INVOICE : '';
+  data2.MONTHLY_TIMEStart = data.where.MONTHLY_TIME && data.where.MONTHLY_TIME.length > 0 ? data.where.MONTHLY_TIME[0] : '';
+  data2.MONTHLY_TIMEEnd = data.where.MONTHLY_TIME && data.where.MONTHLY_TIME.length > 0 ? data.where.MONTHLY_TIME[1] : '';
+  data2.EBS_CAN_SEND_INVOICE = data.where.EBS_CAN_SEND_INVOICE ? data.where.EBS_CAN_SEND_INVOICE : '0';
 
 
 
