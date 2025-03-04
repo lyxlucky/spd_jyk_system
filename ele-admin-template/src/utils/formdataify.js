@@ -17,6 +17,22 @@ export const formdataify = (params) => {
     return formData;
 };
 
+
+/**
+* 格式数据为 get参数字符串 
+* 
+*/
+export const formdataifyGet = (params) => {
+    
+    let getParamsStr = "?"
+    let arr = []
+    Object.keys(params).forEach(ele=>{
+        arr.push(`${ele}=${params[ele]}`)
+    })
+    getParamsStr += arr.join('&')
+    return getParamsStr;
+};
+
 /**
  * 结构赋值给Object
  * Data 要添加的原对象
