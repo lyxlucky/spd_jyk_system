@@ -1,13 +1,13 @@
 <template>
   <div>
     <!-- <el-card shadow="always"> -->
-    <el-container>
-      <el-aside width="600px" style="margin: 20px 0px 0px 20px;">
+    <el-container style="height: 55vh;">
+      <el-aside width="500px" style="margin: 20px 0px 0px 20px;">
         <el-card shadow="always">
           <div slot="header" class="clearfix">
             <span>预收货单号列表</span>
           </div>
-          <ApplyTempTable @getCurrent="getCurrent"></ApplyTempTable>
+          <AdvanceReceiptNumberTable @getCurrent="getCurrent"></AdvanceReceiptNumberTable>
         </el-card>
       </el-aside>
       <el-container>
@@ -16,51 +16,47 @@
             <div slot="header" class="clearfix">
               <span>预送货品种明细</span>
             </div>
-            <el-button type="primary" size="mini" @click="addTempVar" :style="{ display: IsDisabled==true?'none':'' }">确认申领</el-button>
-            <ApplyTempDataTable :ApplyTempTableData="ApplyTempTableData" @selectionData="selectionData"></ApplyTempDataTable>
+            <AdvanceReceiptNumberDelTable :ApplyTempTableData="ApplyTempTableData" @selectionData="selectionData"></AdvanceReceiptNumberDelTable>
           </el-card>
         </el-main>
-        <!-- <el-footer>
-          <el-button type="primary" @click="addTempVar" :style="{ display: IsDisabled==true?'none':'' }">确定</el-button>
-        </el-footer> -->
       </el-container>
     </el-container>
-    <!-- </el-card> -->
-
-    <!-- <el-container>
-      <el-header height="300" >
-         <el-card shadow="always" >
-          <div slot="header" class="clearfix">
-            <span>申领模板列表</span>
-          </div>
-          <ApplyTempTable @getCurrent="getCurrent"></ApplyTempTable>
-        </el-card>
-      </el-header>
-      <el-main>
+    <el-container style="height: 65vh;">
+      <el-aside width="1000px" style="margin: 20px 0px 0px 20px;">
         <el-card shadow="always">
           <div slot="header" class="clearfix">
-            <span>申领模板列表品种</span>
+            <span>品种消耗确认表</span>
           </div>
-           <ApplyTempDataTable :ApplyTempTableData="ApplyTempTableData" @selectionData="selectionData"></ApplyTempDataTable>
+          <VarietyConsumptionTable :ApplyTempTableData="ApplyTempTableData" />
         </el-card>
-      </el-main>
-      <el-footer style="display: flex;justify-content: center;height:''">
-          <el-button type="primary" @click="addTempVar" :style="{ display: IsDisabled==true?'none':'' }">确定</el-button>
-        </el-footer>
-    </el-container> -->
+      </el-aside>
+      <el-container>
+        <el-main width="500px">
+          <el-card shadow="always">
+            <div slot="header" class="clearfix">
+              <span>预送货品种明细</span>
+            </div>
+            <el-button type="primary" size="mini" @click="addTempVar" :style="{ display: IsDisabled==true?'none':'' }">确认申领</el-button>
+            <AdvanceReceiptNumberDelTable :ApplyTempTableData="ApplyTempTableData" @selectionData="selectionData" />
+          </el-card>
+        </el-main>
+      </el-container>
+    </el-container>
   </div>
 </template>
 
 <script>
-import ApplyTempTable from './components/ApplyTempTable.vue';
-import ApplyTempDataTable from './components/ApplyTempDataTable';
+import AdvanceReceiptNumberTable from './components/AdvanceReceiptNumberTable.vue';
+import AdvanceReceiptNumberDelTable from './components/AdvanceReceiptNumberDelTable';
+import VarietyConsumptionTable from './components/VarietyConsumptionTable';
 import { KeeptListDeta } from '@/api/KSInventory/ApplyTemp';
 export default {
   name: 'ApplyTemp',
   props: ['IntroduceUserDefinedTempSearch'],
   components: {
-    ApplyTempTable,
-    ApplyTempDataTable
+    AdvanceReceiptNumberTable,
+    AdvanceReceiptNumberDelTable,
+    VarietyConsumptionTable,
   },
   data() {
     return {

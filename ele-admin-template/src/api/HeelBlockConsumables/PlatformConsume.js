@@ -1,6 +1,6 @@
 import request from '@/utils/request';
 import { formdataify, DataToObject } from '@/utils/formdataify';
-import { B2B_BASE_CODE, B2B_BASE_URL,HOME_HP } from '@/config/setting';
+import { B2B_BASE_CODE, B2B_BASE_URL, HOME_HP } from '@/config/setting';
 import { TOKEN_STORE_NAME } from '@/config/setting';
 import { toDateString } from 'ele-admin';
 import store from '@/store/index';
@@ -19,16 +19,16 @@ export async function getSupplierList(data) {
     formataData.supZzState = data.where.supplierValue ? data.where.supplierValue : '0';
     formataData.varZzState = data.where.varietieValue ? data.where.varietieValue : '';
     let req = formdataify(formataData);
-    const res = await request.post('/Supplier/GetListZzsh',req);
+    const res = await request.post('/Supplier/GetListZzsh', req);
     const isEncrypt = store.state.user.isEncrypt;
-    if(isEncrypt){
+    if (isEncrypt) {
         const devData = JSON.parse(Decrypt(res.data.devData))
         if (devData.code == 200) {
             return devData;
         } else {
             return Promise.reject(new Error(devData.msg));
         }
-    }else{
+    } else {
 
         if (res.data.code == 200) {
             return res.data;
@@ -36,5 +36,68 @@ export async function getSupplierList(data) {
             return Promise.reject(new Error(res.data.msg));
         }
 
+    }
+}
+
+export async function SearchGoodsDeliveryNumbers(data) {
+    // console.log(data)
+    var data2 = {};
+    data2.page = data.page;
+    data2.size = data.limit;
+    data2.supplierId = data.where.supplierId ? data.where.supplierId : '0';
+    data2.condition = data.where.condition ? data.where.condition : '';
+    data2.state = data.where.state ? data.where.state : '';
+    data2.hp = data.where.hp ? data.where.hp : '';
+    data2.depts = data.where.depts ? data.where.depts : '';
+    data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+    // var rep = formdataify(data2);
+    const res = await request.get('/B2BConsumeMgmt/SearchGoodsDeliveryNumbers', {
+        params: data2
+    });
+    if (res.data.code == 200) {
+        return res.data;
+    } else {
+        return Promise.reject(new Error(res.data.msg));
+    }
+}
+
+export async function SearchDeliveryVarietie(data) {
+    // console.log(data)
+    var data2 = {};
+    data2.page = data.page;
+    data2.size = data.limit;
+    data2.supplierId = data.where.supplierId ? data.where.supplierId : '0';
+    data2.deliveryNumber = data.where.deliveryNumber ? data.where.deliveryNumber : '';
+    data2.condition = data.where.condition ? data.where.condition : '';
+    data2.zcz = data.where.zcz ? data.where.zcz : '';
+    data2.udi = data.where.udi ? data.where.udi : '';
+    data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+    // var rep = formdataify(data2);
+    const res = await request.get('/B2BConsumeMgmt/SearchDeliveryVarietie', {
+        params: data2
+    });
+    if (res.data.code == 200) {
+        return res.data;
+    } else {
+        return Promise.reject(new Error(res.data.msg));
+    }
+}
+
+export async function LoadDeliveryConsumedVarietie(data) {
+    // console.log(data)
+    var data2 = {};
+    data2.page = data.page;
+    data2.size = data.limit;
+    data2.supplierId = data.where.supplierId ? data.where.supplierId : '0';
+    data2.deliveryNumber = data.where.deliveryNumber ? data.where.deliveryNumber : '';
+    data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+    // var rep = formdataify(data2);
+    const res = await request.get('/B2BConsumeMgmt/LoadDeliveryConsumedVarietie', {
+        params: data2
+    });
+    if (res.data.code == 200) {
+        return res.data;
+    } else {
+        return Promise.reject(new Error(res.data.msg));
     }
 }
