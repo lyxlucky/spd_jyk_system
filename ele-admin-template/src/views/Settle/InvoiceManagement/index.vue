@@ -2,7 +2,7 @@
   <div class="ele-body">
     <el-card shadow="never">
       <!-- 数据表格 -->
-      <user-search @search="reload" @exportData="exportData" @ExamineBtn="ExamineFun" @CancelExamineBtn="CancelExamineFun" @ReceiptInvoiceBtn="ReceiptInvoiceFun" @CancelReceiptInvoiceBtn="CancelReceiptInvoiceFun" />
+      <user-search @search="reload" @BillingDdviceBtn="BillingDdviceFun" @exportData="exportData" @ExamineBtn="ExamineFun" @CancelExamineBtn="CancelExamineFun" @ReceiptInvoiceBtn="ReceiptInvoiceFun" @CancelReceiptInvoiceBtn="CancelReceiptInvoiceFun" />
       <ele-pro-table ref="table" :rowClickCheckedIntelligent="false" :rowClickChecked="true" :initLoad="false" :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" @selection-change="onSelectionChange" highlight-current-row cache-key="InvoiceManagementTable">
         <!-- 表头工具栏 -->
         <template v-slot:toolbar>
@@ -22,30 +22,37 @@
             </template>
           </el-popconfirm> -->
         </template>
+        <template v-slot:MONTHBILLNUM="{ row }">
+          <!-- <el-link>{{ row.MONTHBILLNUM}}</el-link> -->
+          <el-link target="_blank" @click="ShowMONTHBILLNUM(row.MONTHBILLNUM)">{{ row.MONTHBILLNUM}}</el-link>
+        </template>
       </ele-pro-table>
     </el-card>
     <!-- 编辑弹窗 -->
     <user-edit :visible.sync="showEdit" :data="current" @done="reload" />
     <!-- 导入弹窗 -->
     <!-- <user-import :visible.sync="showImport" @done="reload" /> -->
+    <AuthVarTable :visible.sync="dialogTableVisible" :MONTHBILLNUM="MONTHBILLNUM" />
   </div>
 </template>
 
 <script>
 import { utils, writeFile } from 'xlsx';
 import UserSearch from './components/user-search.vue';
-import { GetPDAList } from '@/api/KSInventory/InstrumentalAnalysis';
+import AuthVarTable from './components/AuthVarTable.vue';
 import {
   GetInvoiceManagement,
   SuerAuditNo,
   SuerAudit,
   SuerFPQS,
-  CencelFPQS
+  CencelFPQS,
+  BillingDdvice
 } from '@/api/Settle/InvoiceManagement';
 export default {
   name: 'InvoiceManagement',
   components: {
-    UserSearch
+    UserSearch,
+    AuthVarTable
   },
   data() {
     return {
@@ -80,7 +87,7 @@ export default {
         {
           prop: 'MONTH_ID',
           label: '月结ID',
-          sortable: 'custom',
+
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 80
@@ -88,7 +95,7 @@ export default {
         {
           prop: 'MONTHLY_BALANCE_NUMBER',
           label: '月结单号',
-          sortable: 'custom',
+
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 150,
@@ -97,15 +104,16 @@ export default {
         {
           prop: 'MONTHLY_TIME',
           label: '月结日期',
-          sortable: 'custom',
+
           align: 'center',
           howOverflowTooltip: true,
           minWidth: 180
         },
         {
-          prop: 'MONTHBILLNUM',
+          slot: 'MONTHBILLNUM',
+          // prop: 'MONTHBILLNUM',
           label: '发票号',
-          sortable: 'custom',
+
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 200
@@ -113,7 +121,7 @@ export default {
         {
           prop: 'BATCH_ID',
           label: '批次号',
-          sortable: 'custom',
+
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 80
@@ -121,7 +129,7 @@ export default {
         {
           prop: 'SUPPLIER_NAME',
           label: '供应商名称',
-          sortable: 'custom',
+
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 180
@@ -130,7 +138,7 @@ export default {
           prop: 'SUPPLIER_CODE',
           label: '供应商编码',
           align: 'center',
-          sortable: 'custom',
+
           showOverflowTooltip: true,
           minWidth: 80
         },
@@ -138,7 +146,7 @@ export default {
           prop: 'PROVINCE_PLATFORM_CODE',
           label: '省平台编码',
           align: 'center',
-          sortable: 'custom',
+
           width: 100,
           showOverflowTooltip: true
         },
@@ -146,7 +154,7 @@ export default {
         //   prop: 'VARIETIE_CODE',
         //   label: 'PAD扫码数量',
         //   align: 'center',
-        //   sortable: 'custom',
+        //
         //   width: 180,
         //   showOverflowTooltip: true
         // },
@@ -154,7 +162,7 @@ export default {
           prop: 'VARIETIE_CODE_NEW',
           label: '品种编码',
           align: 'center',
-          sortable: 'custom',
+
           width: 150,
           showOverflowTooltip: true
         },
@@ -162,7 +170,7 @@ export default {
           prop: 'VARIETIE_NAME',
           label: '品种名称',
           align: 'center',
-          sortable: 'custom',
+
           width: 150,
           showOverflowTooltip: true
         },
@@ -170,7 +178,7 @@ export default {
           prop: 'CLASSIFIC_PROPERTIES',
           label: '财务类别',
           align: 'center',
-          sortable: 'custom',
+
           width: 180,
           showOverflowTooltip: true
         },
@@ -178,7 +186,7 @@ export default {
           prop: 'SPECIFICATION_OR_TYPE',
           label: '规格型号',
           align: 'center',
-          sortable: 'custom',
+
           width: 180,
           showOverflowTooltip: true
         },
@@ -186,7 +194,7 @@ export default {
           prop: 'UNIT',
           label: '单位',
           align: 'center',
-          sortable: 'custom',
+
           width: 80,
           showOverflowTooltip: true
         },
@@ -194,7 +202,7 @@ export default {
           prop: 'SPH_ERP_VARIETIE_CODE',
           label: 'ERP品种编码',
           align: 'center',
-          sortable: 'custom',
+
           width: 180,
           showOverflowTooltip: true
         },
@@ -202,7 +210,7 @@ export default {
           prop: 'MANUFACTURING_ENT_NAME',
           label: '生产企业',
           align: 'center',
-          sortable: 'custom',
+
           width: 180,
           showOverflowTooltip: true
         },
@@ -210,7 +218,7 @@ export default {
           prop: 'APPROVAL_NUMBER',
           label: '注册证号',
           align: 'center',
-          sortable: 'custom',
+
           width: 180,
           showOverflowTooltip: true
         },
@@ -218,7 +226,7 @@ export default {
           prop: 'BATCH',
           label: '批号',
           align: 'center',
-          sortable: 'custom',
+
           width: 180,
           showOverflowTooltip: true
         },
@@ -226,7 +234,7 @@ export default {
           prop: 'QSSTATE',
           label: '中心库发票签收',
           align: 'center',
-          sortable: 'custom',
+
           width: 80,
           showOverflowTooltip: true,
           formatter: (row, column, cellValue) => {
@@ -243,7 +251,7 @@ export default {
           prop: 'FP_DATE',
           label: '开票日期',
           align: 'center',
-          sortable: 'custom',
+
           width: 180,
           showOverflowTooltip: true
         },
@@ -251,7 +259,7 @@ export default {
           prop: 'FPQS_MAN',
           label: '发送人',
           align: 'center',
-          sortable: 'custom',
+
           width: 100,
           showOverflowTooltip: true
         },
@@ -259,7 +267,7 @@ export default {
           prop: 'FPQS_TIME',
           label: '发送时间',
           align: 'center',
-          sortable: 'custom',
+
           width: 180,
           showOverflowTooltip: true
         },
@@ -267,7 +275,7 @@ export default {
           prop: 'REMARKS',
           label: '备注',
           align: 'center',
-          sortable: 'custom',
+
           width: 80,
           showOverflowTooltip: true
         },
@@ -275,7 +283,7 @@ export default {
           prop: 'LS_IS_JC',
           label: '是否集采(时限)',
           align: 'center',
-          sortable: 'custom',
+
           width: 80,
           showOverflowTooltip: true,
           formatter: (row, column, cellValue) => {
@@ -292,7 +300,7 @@ export default {
           prop: 'JC_REMARK',
           label: '集采备注',
           align: 'center',
-          sortable: 'custom',
+
           width: 100,
           showOverflowTooltip: true
         },
@@ -300,7 +308,7 @@ export default {
           prop: 'SEND_WXT_MARK',
           label: '微讯通月份',
           align: 'center',
-          sortable: 'custom',
+
           width: 100,
           showOverflowTooltip: true
         },
@@ -308,7 +316,7 @@ export default {
           prop: 'BATCH_PRODUCTION_DATE',
           label: '生产日期',
           align: 'center',
-          sortable: 'custom',
+
           width: 180,
           showOverflowTooltip: true
         },
@@ -316,7 +324,7 @@ export default {
           prop: 'BATCH_VALIDITY_PERIOD',
           label: '有效期',
           align: 'center',
-          sortable: 'custom',
+
           width: 180,
           showOverflowTooltip: true
         },
@@ -324,7 +332,7 @@ export default {
           prop: 'BILLFPNUM',
           label: '发票',
           align: 'center',
-          sortable: 'custom',
+
           width: 180,
           showOverflowTooltip: true
         },
@@ -332,7 +340,7 @@ export default {
           prop: 'PRICE',
           label: '价格',
           align: 'center',
-          sortable: 'custom',
+
           width: 80,
           showOverflowTooltip: true
         },
@@ -340,7 +348,7 @@ export default {
           prop: 'EXAMINE_STATE',
           label: '审批状态',
           align: 'center',
-          sortable: 'custom',
+
           width: 80,
           showOverflowTooltip: true,
           formatter: (row, column, cellValue) => {
@@ -357,7 +365,7 @@ export default {
           prop: 'EXAMINE_TIME',
           label: '审批时间',
           align: 'center',
-          sortable: 'custom',
+
           width: 180,
           showOverflowTooltip: true
         },
@@ -365,7 +373,7 @@ export default {
           prop: 'QTY',
           label: '数量',
           align: 'center',
-          sortable: 'custom',
+
           width: 70,
           showOverflowTooltip: true
         },
@@ -373,7 +381,7 @@ export default {
         //   prop: 'CONSUME_ID',
         //   label: '消耗ID',
         //   align: 'center',
-        //   sortable: 'custom',
+        //
         //   width: 180,
         //   showOverflowTooltip: true
         // },
@@ -381,7 +389,7 @@ export default {
           prop: 'Money',
           label: '金额',
           align: 'center',
-          sortable: 'custom',
+
           width: 80,
           showOverflowTooltip: true
         },
@@ -389,7 +397,7 @@ export default {
           prop: 'SOURCE_FROM',
           label: '来源',
           align: 'center',
-          sortable: 'custom',
+
           width: 80,
           showOverflowTooltip: true
         },
@@ -397,16 +405,15 @@ export default {
           prop: 'HIGH_OR_LOW_CLASS',
           label: '高低值分类',
           align: 'center',
-          sortable: 'custom',
-          width: 60,
+
+          width: 80,
           showOverflowTooltip: true
         },
         {
           prop: 'EBS_CAN_SEND_INVOICE',
           label: '是否发送',
           align: 'center',
-          sortable: 'custom',
-          width: 80,
+          width: 100,
           showOverflowTooltip: true,
           formatter: (row, column, cellValue) => {
             if (cellValue == 0) {
@@ -422,7 +429,7 @@ export default {
         //   prop: 'EBS_DEPT_DEL_ID',
         //   label: 'PAD扫码数量',
         //   align: 'center',
-        //   sortable: 'custom',
+        //
         //   width: 180,
         //   showOverflowTooltip: true
         // },
@@ -440,7 +447,9 @@ export default {
       // 是否显示导入弹窗
       showImport: false,
       // datasource: [],
-      data: []
+      data: [],
+      dialogTableVisible: false,
+      MONTHBILLNUM: ''
     };
   },
   methods: {
@@ -448,6 +457,7 @@ export default {
     datasource({ page, limit, where, order }) {
       let data = GetInvoiceManagement({ page, limit, where, order }).then(
         (res) => {
+          this.data = res.result;
           var data2 = {};
           data2.list = res.result;
           data2.count = res.total;
@@ -602,18 +612,28 @@ export default {
           });
       });
     },
-    CancelExamineFun() {
-      if (this.selection.length <= 0) {
+    CancelExamineFun(IS_EXAMINE) {
+      // console.log(IS_EXAMINE);
+
+      if (IS_EXAMINE == false && this.selection.length <= 0) {
         this.$message.warning('请选择数据!');
         return;
       }
       const loading = this.$messageLoading('处理中..');
 
       var data = [];
-      this.selection.forEach((item) => {
-        var dataStr = item.ID + ',' + this.$store.state.user.info.Nickname;
-        data.push(dataStr);
-      });
+      if (IS_EXAMINE == false) {
+        this.selection.forEach((item) => {
+          var dataStr = item.ID + ',' + this.$store.state.user.info.Nickname;
+          data.push(dataStr);
+        });
+      } else if (IS_EXAMINE == true) {
+        this.data.forEach((item) => {
+          var dataStr = item.ID + ',' + this.$store.state.user.info.Nickname;
+          data.push(dataStr);
+        });
+      }
+
       SuerAuditNo(data)
         .then((res) => {
           loading.close();
@@ -625,18 +645,25 @@ export default {
           this.$message.error(err);
         });
     },
-    ExamineFun() {
-      if (this.selection.length <= 0) {
+    ExamineFun(IS_EXAMINE) {
+      if (IS_EXAMINE == false && this.selection.length <= 0) {
         this.$message.warning('请选择数据!');
         return;
       }
       const loading = this.$messageLoading('处理中..');
 
       var data = [];
-      this.selection.forEach((item) => {
-        var dataStr = item.ID + ',' + this.$store.state.user.info.Nickname;
-        data.push(dataStr);
-      });
+      if (IS_EXAMINE == false) {
+        this.selection.forEach((item) => {
+          var dataStr = item.ID + ',' + this.$store.state.user.info.Nickname;
+          data.push(dataStr);
+        });
+      } else if (IS_EXAMINE == true) {
+        this.data.forEach((item) => {
+          var dataStr = item.ID + ',' + this.$store.state.user.info.Nickname;
+          data.push(dataStr);
+        });
+      }
       SuerAudit(data)
         .then((res) => {
           loading.close();
@@ -697,6 +724,37 @@ export default {
           loading.close();
           this.$message.error(err);
         });
+    },
+    BillingDdviceFun(state) {
+      if (this.selection.length <= 0) {
+        this.$message.warning('请选择数据!');
+        return;
+      }
+      const loading = this.$messageLoading('处理中..');
+
+      var data = [];
+      this.selection.forEach((item) => {
+        var dataStr = {
+          ID: item.ID,
+          STATE: state
+        };
+        data.push(dataStr);
+      });
+      BillingDdvice(data)
+        .then((res) => {
+          loading.close();
+          this.reload();
+          this.$message.success(res.msg);
+        })
+        .catch((err) => {
+          loading.close();
+          this.$message.error(err);
+        });
+    },
+    ShowMONTHBILLNUM(data) {
+      console.log(data);
+      this.dialogTableVisible = true;
+      this.MONTHBILLNUM = data;
     }
   },
   created() {

@@ -47,7 +47,7 @@
       </el-col>
     </el-row>
     <el-row :gutter="5" style="margin-top: 10px;">
-      <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 6 }">
+      <el-col v-bind="styleResponsive ? { lg: 5, md: 12 } : { span: 6 }">
         <label>
           供应商是否允许开票：
           <el-select style="width: 140px;" v-model="where.EBS_CAN_SEND_INVOICE" size="mini" placeholder="请选择状态">
@@ -55,8 +55,11 @@
             <el-option label="允许开票" value="1"></el-option>
           </el-select>
         </label>
+        <label>一键审批</label>
+        <el-switch v-model="IS_EXAMINE"></el-switch>
       </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 8, md: 12 } : { span: 6 }">
+      
+      <el-col v-bind="styleResponsive ? { lg: 15, md: 12 } : { span: 6 }">
         <div class="ele-form-actions">
           <el-button size="mini" type="primary" icon="el-icon-search" class="ele-btn-icon" @click="search">
             查询
@@ -73,14 +76,17 @@
           </el-popconfirm>
           <el-popconfirm class="ele-action" title="确定发票签收？" @confirm="ReceiptInvoiceBtn()">
             <template v-slot:reference>
-              <el-button type="success" size="mini" >发票签收</el-button>
+              <el-button type="success" size="mini">发票签收</el-button>
             </template>
           </el-popconfirm>
           <el-popconfirm class="ele-action" title="确定取消签收？" @confirm="CancelReceiptInvoiceBtn()">
             <template v-slot:reference>
-              <el-button type="warning" size="mini" >取消签收</el-button>
+              <el-button type="warning" size="mini">取消签收</el-button>
             </template>
           </el-popconfirm>
+
+          <el-button type="success" size="mini" @click="BillingDdviceBtn(1)">通知供应商开票通知</el-button>
+          <el-button type="warning" size="mini" @click="BillingDdviceBtn(0)">取消供应商开票通知</el-button>
           <el-button type="success" size="mini" icon="el-icon-download" @click="exportData()">导出</el-button>
         </div>
       </el-col>
@@ -103,7 +109,8 @@ export default {
     };
     return {
       // 表单数据
-      where: { ...defaultWhere }
+      where: { ...defaultWhere },
+      IS_EXAMINE: false
     };
   },
   computed: {
@@ -118,16 +125,19 @@ export default {
       this.$emit('search', this.where);
     },
     CancelExamineBtn() {
-      this.$emit('CancelExamineBtn');
+      this.$emit('CancelExamineBtn', this.IS_EXAMINE);
     },
     ExamineBtn() {
-      this.$emit('ExamineBtn');
+      this.$emit('ExamineBtn', this.IS_EXAMINE);
     },
     ReceiptInvoiceBtn() {
       this.$emit('ReceiptInvoiceBtn');
     },
     CancelReceiptInvoiceBtn() {
       this.$emit('CancelReceiptInvoiceBtn');
+    },
+    BillingDdviceBtn(data) {
+      this.$emit('BillingDdviceBtn', data);
     },
     /*  重置 */
     reset() {

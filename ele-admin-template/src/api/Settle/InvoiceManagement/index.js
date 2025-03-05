@@ -4,18 +4,7 @@ import { setToken } from '@/utils/token-util';
 import { TOKEN_STORE_NAME } from '@/config/setting';
 import { formdataify, DataToObject } from '@/utils/formdataify';
 
-// export async function getPekingApplication(data) {
-//   const formatData = {
-//     Token: sessionStorage.getItem(TOKEN_STORE_NAME)
-//   };
-//   const res = await request.get('/PekingApplication/getPekingApplication', {
-//     params: formatData
-//   });
-//   if (res.data.code == 200) {
-//     return res.data;
-//   }
-//   return Promise.reject(new Error(res.data.message));
-// }
+
 
 export async function GetInvoiceManagement(data) {
   var data2 = {};
@@ -98,6 +87,37 @@ export async function CencelFPQS(data) {
   var rep = formdataify(data2);
 
   const res = await request.post('/HrpMonthly/CencelFPQS', rep);
+  if (res.data.code == 200) {
+    return res.data;
+  } else {
+    return Promise.reject(new Error(res.data.msg));
+  }
+}
+
+export async function getFinanceAuditByItem(data) {
+  const formatData = {
+    page: data.page,
+    size: data.limit,
+    id: data.where.id || '',
+    Token: sessionStorage.getItem(TOKEN_STORE_NAME)
+  };
+  const res = await request.get('/HrpMonthly/getFinanceAuditByItem', {
+    params: formatData
+  });
+  if (res.data.code == 200) {
+    return res.data;
+  }
+  return Promise.reject(new Error(res.data.message));
+}
+
+export async function BillingDdvice(data) {
+  var data2 = {};
+  data2.json = JSON.stringify(data);
+  data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+  data2.nickname = store.state.user.info.Nickname;
+  var rep = formdataify(data2);
+
+  const res = await request.post('/HrpMonthly/BillingDdvice', rep);
   if (res.data.code == 200) {
     return res.data;
   } else {
