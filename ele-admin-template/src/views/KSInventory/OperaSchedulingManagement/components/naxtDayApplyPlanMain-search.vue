@@ -48,7 +48,7 @@
 
           <el-popconfirm class="ele-action" title="确定删除？" @confirm="removeBatch()">
             <template v-slot:reference>
-              <el-button type="danger" icon="el-icon-delete" size="mini" :disabled="IS_disabled">删除</el-button>
+              <el-button type="danger" icon="el-icon-delete" size="mini" :disabled="IS_delete">删除</el-button>
             </template>
           </el-popconfirm>
         </div>
@@ -77,7 +77,8 @@ export default {
       // 表单数据
       where: { ...defaultWhere },
       showEdit: false,
-      IS_disabled: true
+      IS_disabled: true,
+      IS_delete: true,
     };
   },
   computed: {
@@ -123,8 +124,10 @@ export default {
       // console.log(this.KSDepartmentalPlanData);
       if (this.KSDepartmentalPlanData.STATE == 0) {
         this.IS_disabled = false;
+        this.IS_delete = false;
       } else {
         this.IS_disabled = true;
+        this.IS_delete = true;
       }
     }
   },
