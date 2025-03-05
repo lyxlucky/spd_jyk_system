@@ -18,7 +18,6 @@ import { formdataify, DataToObject } from '@/utils/formdataify';
 // }
 
 export async function GetInvoiceManagement(data) {
-  console.log(data)
   var data2 = {};
   data2.json = JSON.stringify(data);
   data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
@@ -41,6 +40,64 @@ export async function GetInvoiceManagement(data) {
   var rep = formdataify(data2);
 
   const res = await request.post('/AJykDept/GetInvoiceManagement', rep);
+  if (res.data.code == 200) {
+    return res.data;
+  } else {
+    return Promise.reject(new Error(res.data.msg));
+  }
+}
+
+
+export async function SuerAuditNo(data) {
+  var data2 = {};
+  data2.json = JSON.stringify(data);
+  data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+  var rep = formdataify(data2);
+
+  const res = await request.post('/HrpMonthly/SuerAuditNo', rep);
+  if (res.data.code == 200) {
+    return res.data;
+  } else {
+    return Promise.reject(new Error(res.data.msg));
+  }
+}
+
+export async function SuerAudit(data) {
+  var data2 = {};
+  data2.json = JSON.stringify(data);
+  data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+  var rep = formdataify(data2);
+
+  const res = await request.post('/HrpMonthly/SuerAudit', rep);
+  if (res.data.code == 200) {
+    return res.data;
+  } else {
+    return Promise.reject(new Error(res.data.msg));
+  }
+}
+
+export async function SuerFPQS(data) {
+  var data2 = {};
+  data2.json = JSON.stringify(data);
+  data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+  var rep = formdataify(data2);
+
+  const res = await request.post('/HrpMonthly/SuerFPQS', rep);
+  if (res.data.code == 200) {
+    return res.data;
+  } else {
+    return Promise.reject(new Error(res.data.msg));
+  }
+}
+
+export async function CencelFPQS(data) {
+  var data2 = {};
+  data2.json = JSON.stringify(data);
+  data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+  data2.nickname = store.state.user.info.Nickname;
+  var rep = formdataify(data2);
+
+  const res = await request.post('/HrpMonthly/CencelFPQS', rep);
   if (res.data.code == 200) {
     return res.data;
   } else {

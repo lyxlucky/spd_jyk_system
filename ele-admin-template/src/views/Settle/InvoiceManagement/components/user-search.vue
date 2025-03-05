@@ -15,8 +15,7 @@
       <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 9 }">
         <label>
           审核日期:
-          <el-date-picker style="width:220px" v-model="where.EXAMINE_TIME" type="daterange" value-format="yyyy-MM-dd"
-            size="mini" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
+          <el-date-picker style="width:220px" v-model="where.EXAMINE_TIME" type="daterange" value-format="yyyy-MM-dd" size="mini" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
           </el-date-picker>
         </label>
       </el-col>
@@ -42,8 +41,7 @@
       <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 9 }">
         <label>
           月结日期:
-          <el-date-picker style="width:220px" v-model="where.MONTHLY_TIME" type="daterange" value-format="yyyy-MM-dd"
-            size="mini" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
+          <el-date-picker style="width:220px" v-model="where.MONTHLY_TIME" type="daterange" value-format="yyyy-MM-dd" size="mini" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
           </el-date-picker>
         </label>
       </el-col>
@@ -58,22 +56,31 @@
           </el-select>
         </label>
       </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 6, md: 12 } : { span: 6 }">
+      <el-col v-bind="styleResponsive ? { lg: 8, md: 12 } : { span: 6 }">
         <div class="ele-form-actions">
           <el-button size="mini" type="primary" icon="el-icon-search" class="ele-btn-icon" @click="search">
             查询
           </el-button>
-          <el-popconfirm class="ele-action" title="确定收货？" @confirm="Confirm_btn()">
+          <el-popconfirm class="ele-action" title="确定取消审批？" @confirm="CancelExamineBtn()">
             <template v-slot:reference>
-              <el-button type="warning" size="mini" @click="exportData()">取消审批</el-button>
+              <el-button type="warning" size="mini">取消审批</el-button>
             </template>
           </el-popconfirm>
-          <el-popconfirm class="ele-action" title="确定收货？" @confirm="Confirm_btn()">
+          <el-popconfirm class="ele-action" title="确定审批？" @confirm="ExamineBtn()">
             <template v-slot:reference>
-              <el-button type="warning" size="mini" @click="exportData()">取消审批</el-button>
+              <el-button type="success" size="mini">确定审批</el-button>
             </template>
           </el-popconfirm>
-          <el-button type="success" size="mini" @click="exportData()">标记处理</el-button>
+          <el-popconfirm class="ele-action" title="确定发票签收？" @confirm="ReceiptInvoiceBtn()">
+            <template v-slot:reference>
+              <el-button type="success" size="mini" >发票签收</el-button>
+            </template>
+          </el-popconfirm>
+          <el-popconfirm class="ele-action" title="确定取消签收？" @confirm="CancelReceiptInvoiceBtn()">
+            <template v-slot:reference>
+              <el-button type="warning" size="mini" >取消签收</el-button>
+            </template>
+          </el-popconfirm>
           <el-button type="success" size="mini" icon="el-icon-download" @click="exportData()">导出</el-button>
         </div>
       </el-col>
@@ -82,19 +89,17 @@
 </template>
 
 <script>
-
 export default {
   data() {
     // 默认表单数据
     const defaultWhere = {
       LS_IS_JC: '',
-      EXAMINE_TIME:[],
+      EXAMINE_TIME: [],
       EXAMINE_STATE: '',
       MONTHBILLNUM: '',
       SUPPLIER_NAME: '',
-      MONTHLY_TIME:[],
-      EBS_CAN_SEND_INVOICE: '0',
-
+      MONTHLY_TIME: [],
+      EBS_CAN_SEND_INVOICE: '0'
     };
     return {
       // 表单数据
@@ -112,13 +117,25 @@ export default {
     search() {
       this.$emit('search', this.where);
     },
+    CancelExamineBtn() {
+      this.$emit('CancelExamineBtn');
+    },
+    ExamineBtn() {
+      this.$emit('ExamineBtn');
+    },
+    ReceiptInvoiceBtn() {
+      this.$emit('ReceiptInvoiceBtn');
+    },
+    CancelReceiptInvoiceBtn() {
+      this.$emit('CancelReceiptInvoiceBtn');
+    },
     /*  重置 */
     reset() {
       this.where = { ...this.defaultWhere };
       this.search();
     },
     exportData() {
-      this.$emit('exportData', this.where)
+      this.$emit('exportData', this.where);
     }
   }
 };

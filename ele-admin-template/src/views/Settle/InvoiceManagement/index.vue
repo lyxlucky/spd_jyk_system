@@ -1,11 +1,9 @@
 <template>
   <div class="ele-body">
     <el-card shadow="never">
-      <!-- 搜索表单 -->
-      <!-- <user-search @search="reload" @exportData="exportData" /> -->
       <!-- 数据表格 -->
-      <user-search @search="reload" @exportData="exportData" />
-      <ele-pro-table ref="table" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" cache-key="KSInventoryBasicDataTable">
+      <user-search @search="reload" @exportData="exportData" @ExamineBtn="ExamineFun" @CancelExamineBtn="CancelExamineFun" @ReceiptInvoiceBtn="ReceiptInvoiceFun" @CancelReceiptInvoiceBtn="CancelReceiptInvoiceFun" />
+      <ele-pro-table ref="table" :rowClickCheckedIntelligent="false" :rowClickChecked="true" :initLoad="false" :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" @selection-change="onSelectionChange" highlight-current-row cache-key="InvoiceManagementTable">
         <!-- 表头工具栏 -->
         <template v-slot:toolbar>
         </template>
@@ -37,9 +35,15 @@
 import { utils, writeFile } from 'xlsx';
 import UserSearch from './components/user-search.vue';
 import { GetPDAList } from '@/api/KSInventory/InstrumentalAnalysis';
-import { GetInvoiceManagement } from '@/api/Settle/InvoiceManagement';
+import {
+  GetInvoiceManagement,
+  SuerAuditNo,
+  SuerAudit,
+  SuerFPQS,
+  CencelFPQS
+} from '@/api/Settle/InvoiceManagement';
 export default {
-  name: 'SystemUser',
+  name: 'InvoiceManagement',
   components: {
     UserSearch
   },
@@ -83,7 +87,7 @@ export default {
         },
         {
           prop: 'MONTHLY_BALANCE_NUMBER',
-          label: '品种编码',
+          label: '月结单号',
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
@@ -92,7 +96,7 @@ export default {
         },
         {
           prop: 'MONTHLY_TIME',
-          label: '品种名称',
+          label: '月结日期',
           sortable: 'custom',
           align: 'center',
           howOverflowTooltip: true,
@@ -226,12 +230,12 @@ export default {
           width: 80,
           showOverflowTooltip: true,
           formatter: (row, column, cellValue) => {
-            if(cellValue == 0){
-              return "未签收"
-            }else if(cellValue == 1){
-              return "已签收"
-            }else{
-              return cellValue
+            if (cellValue == 0) {
+              return '未签收';
+            } else if (cellValue == 1) {
+              return '已签收';
+            } else {
+              return cellValue;
             }
           }
         },
@@ -275,12 +279,12 @@ export default {
           width: 80,
           showOverflowTooltip: true,
           formatter: (row, column, cellValue) => {
-            if(cellValue == 0){
-              return "非集采"
-            }else if(cellValue == 1){
-              return "集采"
-            }else{
-              return cellValue
+            if (cellValue == 0) {
+              return '非集采';
+            } else if (cellValue == 1) {
+              return '集采';
+            } else {
+              return cellValue;
             }
           }
         },
@@ -333,24 +337,24 @@ export default {
           showOverflowTooltip: true
         },
         {
-          prop: 'Examine_State',
+          prop: 'EXAMINE_STATE',
           label: '审批状态',
           align: 'center',
           sortable: 'custom',
           width: 80,
           showOverflowTooltip: true,
           formatter: (row, column, cellValue) => {
-            if(cellValue == 0){
-              return "未审批"
-            }else if(cellValue == 1){
-              return "已审批审批"
-            }else{
-              return cellValue
+            if (cellValue == 0) {
+              return '未审批';
+            } else if (cellValue == 1) {
+              return '已审批';
+            } else {
+              return cellValue;
             }
           }
         },
         {
-          prop: 'Examine_Time',
+          prop: 'EXAMINE_TIME',
           label: '审批时间',
           align: 'center',
           sortable: 'custom',
@@ -405,15 +409,15 @@ export default {
           width: 80,
           showOverflowTooltip: true,
           formatter: (row, column, cellValue) => {
-            if(cellValue == 0){
-              return "否"
-            }else if(cellValue == 1){
-              return "是"
-            }else{
-              return ""
+            if (cellValue == 0) {
+              return '否';
+            } else if (cellValue == 1) {
+              return '是';
+            } else {
+              return '';
             }
           }
-        },
+        }
         // {
         //   prop: 'EBS_DEPT_DEL_ID',
         //   label: 'PAD扫码数量',
@@ -465,12 +469,13 @@ export default {
     openImport() {
       this.showImport = true;
     },
-    exportData(data) {
+    onSelectionChange(selection) {
+      this.selection = selection;
+    },
+    exportData() {
       const loading = this.$messageLoading('正在导出数据...');
       this.$refs.table.doRequest(({ where, order }) => {
-        where = data;
-        where.Dept_One_Code = this.$store.state.user.info.DeptNow.Dept_Two_Code;
-        GetPDAList({
+        GetInvoiceManagement({
           page: 1,
           limit: 999999,
           where: where,
@@ -478,34 +483,105 @@ export default {
         })
           .then((res) => {
             loading.close();
+
             const array = [
               [
+                '月结ID',
+                '月结单号',
+                '月结日期',
+                '发票号',
+                '批次号',
+                '供应商名称',
+                '供应商编码',
+                '省平台编码',
                 '品种编码',
-                '品种id',
                 '品种名称',
-                '规格/型号',
-                '生产企业名称',
-                '注册证号',
+                '财务类别',
+                '规格型号',
                 '单位',
-                '中标价',
-                '品种类别',
-                '换算比(试剂)',
-                '仪器备注'
+                'ERP品种编码',
+                '生产企业',
+                '注册证号',
+                '批号',
+                '中心库发票签收',
+                '开票日期',
+                '发送人',
+                '发送时间',
+                '备注',
+                '是否集采(时限)',
+                '集采备注',
+                '微讯通月份',
+                '生产日期',
+                '有效期',
+                '发票',
+                '价格',
+                '审批状态',
+                '审批时间',
+                '数量',
+                '金额',
+                '来源',
+                '高低值分类',
+                '是否发送'
               ]
             ];
             res.result.forEach((d) => {
+              if (d.QSSTATE == 0) {
+                d.QSSTATE = '未签收';
+              } else if (d.QSSTATE == 1) {
+                d.QSSTATE = '已签收';
+              }
+              if (d.LS_IS_JC == 0) {
+                d.LS_IS_JC = '非集采';
+              } else if (d.LS_IS_JC == 1) {
+                d.LS_IS_JC = '集采';
+              }
+              if (d.EXAMINE_STATE == 0) {
+                d.EXAMINE_STATE = '未审批';
+              } else if (d.EXAMINE_STATE == 1) {
+                d.EXAMINE_STATE = '已审批';
+              }
+              if (d.EBS_CAN_SEND_INVOICE == 0) {
+                d.EBS_CAN_SEND_INVOICE = '否';
+              } else if (d.EBS_CAN_SEND_INVOICE == 1) {
+                d.EBS_CAN_SEND_INVOICE = '是';
+              }
               array.push([
-                d.Varietie_Code_New,
-                d.Varietie_Code,
-                d.Varietie_Name,
-                d.Specification_Or_Type,
-                d.Manufacturing_Ent_Name,
-                d.APPROVAL_NUMBER,
+                d.MONTH_ID,
+                d.MONTHLY_BALANCE_NUMBER,
+                d.MONTHLY_TIME,
+                d.MONTHBILLNUM,
+                d.BATCH_ID,
+                d.SUPPLIER_NAME,
+                d.SUPPLIER_CODE,
+                d.PROVINCE_PLATFORM_CODE,
+                d.VARIETIE_CODE_NEW,
+                d.VARIETIE_NAME,
+                d.CLASSIFIC_PROPERTIES,
+                d.SPECIFICATION_OR_TYPE,
                 d.UNIT,
-                d.Price,
-                d.CLASS_NUM,
-                d.CONVERSION_RATIO,
-                d.DEVICE_REMARK
+                d.SPH_ERP_VARIETIE_CODE,
+                d.MANUFACTURING_ENT_NAME,
+                d.APPROVAL_NUMBER,
+                d.BATCH,
+                d.QSSTATE,
+                d.FP_DATE,
+                d.FPQS_MAN,
+                d.FPQS_TIME,
+                d.REMARKS,
+                d.LS_IS_JC,
+                d.JC_REMARK,
+                d.SEND_WXT_MARK,
+                d.BATCH_PRODUCTION_DATE,
+                d.BATCH_VALIDITY_PERIOD,
+                d.BILLFPNUM,
+                d.PRICE,
+                d.EXAMINE_STATE,
+                d.EXAMINE_TIME,
+                d.QTY,
+                d.Money,
+                d.SOURCE_FROM,
+                d.HIGH_OR_LOW_CLASS,
+                d.EBS_CAN_SEND_INVOICE
                 // this.$util.toDateString(d.createTime)
               ]);
             });
@@ -516,7 +592,7 @@ export default {
                   Sheet1: utils.aoa_to_sheet(array)
                 }
               },
-              '科室入库品种.xlsx'
+              '发票管理.xlsx'
             );
             this.$message.success('导出成功');
           })
@@ -525,6 +601,102 @@ export default {
             this.$message.error(e.message);
           });
       });
+    },
+    CancelExamineFun() {
+      if (this.selection.length <= 0) {
+        this.$message.warning('请选择数据!');
+        return;
+      }
+      const loading = this.$messageLoading('处理中..');
+
+      var data = [];
+      this.selection.forEach((item) => {
+        var dataStr = item.ID + ',' + this.$store.state.user.info.Nickname;
+        data.push(dataStr);
+      });
+      SuerAuditNo(data)
+        .then((res) => {
+          loading.close();
+          this.reload();
+          this.$message.success(res.msg);
+        })
+        .catch((err) => {
+          loading.close();
+          this.$message.error(err);
+        });
+    },
+    ExamineFun() {
+      if (this.selection.length <= 0) {
+        this.$message.warning('请选择数据!');
+        return;
+      }
+      const loading = this.$messageLoading('处理中..');
+
+      var data = [];
+      this.selection.forEach((item) => {
+        var dataStr = item.ID + ',' + this.$store.state.user.info.Nickname;
+        data.push(dataStr);
+      });
+      SuerAudit(data)
+        .then((res) => {
+          loading.close();
+          this.reload();
+          this.$message.success(res.msg);
+        })
+        .catch((err) => {
+          loading.close();
+          this.$message.error(err);
+        });
+    },
+    ReceiptInvoiceFun() {
+      if (this.selection.length <= 0) {
+        this.$message.warning('请选择数据!');
+        return;
+      }
+      const loading = this.$messageLoading('处理中..');
+
+      var data = [];
+      this.selection.forEach((item) => {
+        var dataStr = {
+          ID: item.ID
+        };
+        data.push(dataStr);
+      });
+      SuerFPQS(data)
+        .then((res) => {
+          loading.close();
+          this.reload();
+          this.$message.success(res.msg);
+        })
+        .catch((err) => {
+          loading.close();
+          this.$message.error(err);
+        });
+    },
+    CancelReceiptInvoiceFun() {
+      if (this.selection.length <= 0) {
+        this.$message.warning('请选择数据!');
+        return;
+      }
+      const loading = this.$messageLoading('处理中..');
+
+      var data = [];
+      this.selection.forEach((item) => {
+        var dataStr = {
+          ID: item.ID
+        };
+        data.push(dataStr);
+      });
+      CencelFPQS(data)
+        .then((res) => {
+          loading.close();
+          this.reload();
+          this.$message.success(res.msg);
+        })
+        .catch((err) => {
+          loading.close();
+          this.$message.error(err);
+        });
     }
   },
   created() {
