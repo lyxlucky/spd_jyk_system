@@ -183,22 +183,37 @@
     </div>
 
     <div>
-      <el-card v-loading="varLoading">
-        <el-date-picker
-          v-model="varTopTime"
-          @change="getVarTop20"
-          type="month"
-          value-format="yyyy-MM"
-          placeholder="请选择时间"
-        >
-        </el-date-picker>
-        <ele-chart :option="varTopOption" style="height: 500px" />
+      <el-card v-loading="top20Loading">
+        <div style="display: flex; gap: 10px">
+          <el-date-picker
+            v-model="varTopTime"
+            @change="getTop20"
+            type="month"
+            value-format="yyyy-MM"
+            placeholder="请选择时间"
+          >
+          </el-date-picker>
+          <el-button
+            type="primary"
+            size="mini"
+            icon="el-icon-open"
+            @click="getTop20"
+          >
+            切换
+          </el-button>
+        </div>
+
+        <ele-chart
+          :option="isVarOrUsed ? varTopOption : usedTopOption"
+          style="height: 500px"
+        />
       </el-card>
     </div>
 
     <BidVarInfoDept :visible.sync="BidListShowEdit" />
     <VarietyDataLzhLook :visible.sync="VarietyDataLzhLookShow" />
     <DpetOneAuthWithDept :visible.sync="DpetOneAuthWithDeptShow" />
+    <!-- <NewBatchReminder :visible.sync="NewBatchRemindervisible"/> -->
   </div>
 </template>
 
@@ -210,11 +225,13 @@
   import { getAesKey } from '@/utils/aes-util';
   import { getTableList } from '@/api/KSInventory/KSNewBatchReminder/index';
   import { SearchDefRemind } from '@/api/KSInventory/KSExpirationReminder';
+  // import NewBatchReminder from './components/NewBatchReminder';
 
   import {
     getStaticsDataHistogram,
     getStaticsDataLineChart,
-    getCurrentDeptVarTop20
+    getCurrentDeptVarTop20,
+    getJykUsedQty
   } from '@/api/KSInventory/MenuList/index';
   import EleChart from 'ele-admin/packages/ele-chart';
   export default {
@@ -225,6 +242,7 @@
       BidVarInfoDept,
       VarietyDataLzhLook,
       DpetOneAuthWithDept
+      // NewBatchReminder
     },
     data() {
       return {
@@ -234,16 +252,20 @@
         TableListTotal: 0,
         saleroomData: [],
         varData: [],
+        usedData: [],
         lineChartData: [],
         dataYear: this.$moment().format('YYYY'),
         lineYear: this.$moment().format('YYYY'),
         varTopTime: this.$moment().format('YYYY-MM'),
         dataLoading: true,
         lineLoading: true,
-        varLoading: true,
+        top20Loading: true,
+        // 为true时调用品种前三十为false时调用盒数前三十
+        isVarOrUsed: true,
         BidListShowEdit: false,
         VarietyDataLzhLookShow: false,
         DpetOneAuthWithDeptShow: false,
+        NewBatchRemindervisible: false,
         StaticMenuList: [
           {
             ICON: 'zhongbiaomulu',
@@ -304,19 +326,35 @@
         var url = `${BACK_BASE_URL}/ZL/上药控股SPD科室操作手册.pdf`;
         window.open(url.replace('/undefined', ''));
       },
-      getVarTop20() {
-        this.$nextTick(() => {
-          this.varLoading = true;
-          getCurrentDeptVarTop20({ time: this.varTopTime })
-            .then((res) => {
-              this.varLoading = false;
-              this.varData = res.result;
-            })
-            .catch((err) => {
-              this.$message.error(err);
-              this.varLoading = false;
-            });
-        });
+      getTop20() {
+        this.isVarOrUsed = !this.isVarOrUsed;
+        if (this.isVarOrUsed) {
+          this.$nextTick(() => {
+            this.top20Loading = true;
+            getCurrentDeptVarTop20({ time: this.varTopTime })
+              .then((res) => {
+                this.top20Loading = false;
+                this.varData = res.result;
+              })
+              .catch((err) => {
+                this.$message.error(err);
+                this.top20Loading = false;
+              });
+          });
+        } else {
+          this.$nextTick(() => {
+            this.top20Loading = true;
+            getJykUsedQty({ time: this.varTopTime })
+              .then((res) => {
+                this.top20Loading = false;
+                this.usedData = res.data;
+              })
+              .catch((err) => {
+                this.$message.error(err);
+                this.top20Loading = false;
+              });
+          });
+        }
       },
       /* 获取数据 */
       getSaleroomData() {
@@ -441,7 +479,7 @@
         this.getTableListTotal();
         this.getSaleroomData();
         this.getLineChartData();
-        this.getVarTop20();
+        this.getTop20();
       });
     },
     beforeDestroy() {
@@ -578,7 +616,7 @@
       varTopOption() {
         return {
           title: {
-            text: `${this.$store.state.user.info.DeptNow.Dept_Two_Name}消耗排名 Top 20`,
+            text: `${this.$store.state.user.info.DeptNow.Dept_Two_Name}-金额消耗排名Top 20`,
             left: 'right',
             top: 'top'
           },
@@ -606,14 +644,14 @@
           yAxis: {
             type: 'category',
             interval: 0,
+            axisLabel: {
+              color: 'black' // 设置 y 轴标签颜色为红色
+            },
             data: this.varData.map((item) => item.VARIETIE_NAME),
-            inverse: true, // 降序排列
+            inverse: true // 降序排列
           },
           grid: {
             // 添加 grid 属性
-            left: '10%', // 调整 left 值，例如设置为 20% 或更大的像素值
-            right: '4%',
-            bottom: '3%',
             containLabel: true
           },
           series: [
@@ -631,6 +669,61 @@
           ]
         };
       },
+      usedTopOption() {
+        return {
+          title: {
+            text: `${this.$store.state.user.info.DeptNow.Dept_Two_Name}-盒数消耗排名Top 20`,
+            left: 'right',
+            top: 'top'
+          },
+          tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+              type: 'shadow'
+            },
+            formatter: function (params) {
+              // params 是一个数组，包含当前 hover 的柱子信息
+              const item = params[0];
+              const dataIndex = item.dataIndex;
+              const usedItem = this.usedData[dataIndex];
+              return `
+                品种名称:${item.name} <br/>
+                品种规格: ${usedItem.SPECIFICATION_OR_TYPE}<br/>
+                消耗数量: ${Number(item.value)} 盒
+              `;
+            }.bind(this)
+          },
+          xAxis: {
+            type: 'value',
+            name: '消耗数量 (盒)'
+          },
+          yAxis: {
+            type: 'category',
+            axisLabel: {
+              color: 'black' // 设置 y 轴标签颜色为红色
+            },
+            interval: 0,
+            data: this.usedData.map((item) => item.VARIETIE_NAME),
+            inverse: true // 降序排列
+          },
+          grid: {
+            // 添加 grid 属性
+            containLabel: true
+          },
+          series: [
+            {
+              type: 'bar',
+              data: this.usedData.map((item) => Number(item.QTY)),
+              label: {
+                show: true,
+                position: 'right',
+                formatter: '{c} 盒' // 显示数值 + 单位
+              }
+            }
+          ]
+        };
+      },
+
       /* 配置 */
       saleChartOption() {
         const months = [
@@ -729,7 +822,8 @@
       this.permission_groupList();
       this.getSaleroomData();
       this.getLineChartData();
-      this.getVarTop20();
+      this.getTop20();
+      // this.NewBatchRemindervisible = true;
       // this.MenuList = this.$store.state.user.info.permission_group;
       /* 获取数据 */
       localStorage.AesKey = getAesKey();

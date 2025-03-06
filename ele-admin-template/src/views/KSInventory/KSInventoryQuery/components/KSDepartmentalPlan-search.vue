@@ -90,7 +90,17 @@
             placeholder="入库单号"
           />
         </el-col>
-        <el-col v-bind="styleResponsive ? { lg: 20, md: 12 } : { span: 12 }">
+
+        <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 12 }">
+          <el-input
+            clearable
+            size="mini"
+            v-model="where.batch"
+            placeholder="批号"
+          />
+        </el-col>
+
+        <el-col v-bind="styleResponsive ? { lg: 24, md: 12 } : { span: 12 }">
           <el-button
             size="mini"
             type="primary"
@@ -237,7 +247,8 @@
         COUNT: '1',
         DELIVERY_NUMBER: '',
         xqDay: null,
-        bindMachine: ''
+        bindMachine: '',
+        batch:''
       };
       return {
         // 表单数据

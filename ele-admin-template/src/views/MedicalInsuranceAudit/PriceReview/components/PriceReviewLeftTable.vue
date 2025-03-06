@@ -32,6 +32,14 @@
         where: { ...defaultWhere },
         // 表格列配置
         columns: [
+        {
+            columnKey: 'index',
+            type: 'index',
+            width: 45,
+            align: 'center',
+            showOverflowTooltip: true,
+            fixed: 'left'
+          },
           {
             prop: 'APPLICATION_NUMBER',
             label: '申请单号',

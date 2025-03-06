@@ -48,3 +48,17 @@ export async function getStaticsDataHistogram(data) {
     return Promise.reject(new Error(res.data.msg));
   }
 
+  export async function getJykUsedQty(data) {
+    var Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+    var data2 = {}
+    //添加参数
+    data2.Token = Token;
+    data2.time = data.time;
+    data2.deptCode = store.state.user.info.DeptNow.Dept_Two_Code
+    const res = await request.post('/DataStatics/getJykUsedQty', data2);
+    if (res.data.code == 200) {
+      return res.data;
+    }
+    return Promise.reject(new Error(res.data.msg));
+  }
+
