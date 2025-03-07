@@ -1,7 +1,7 @@
 <template>
   <div class="ele-body" v-if="RenderTabel">
     <!-- 数据表格 -->
-    <ele-pro-table :key="key" highlight-current-row @selection-change="handleSelectionChange" :row-key="(row) => row.ID" @current-change="onCurrentChange" ref="table" height="18vh" :rowClickChecked="true" :rowClickCheckedIntelligent="false" :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" :needPage="true" cache-key="naxtDayApplyPlanMainTable">
+    <ele-pro-table :key="key" highlight-current-row @selection-change="handleSelectionChange" :="(row) => row.ID" @current-change="onCurrentChange" ref="table" height="18vh" :rowClickChecked="true" :rowClickCheckedIntelligent="false" :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" :needPage="true" cache-key="naxtDayApplyPlanMainTable">
       <!-- 表头工具栏 -->
       <template v-slot:toolbar>
         <!-- 搜索表单 -->

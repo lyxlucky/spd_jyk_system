@@ -1,6 +1,5 @@
 import request from '@/utils/request';
 import { TOKEN_STORE_NAME } from '@/config/setting';
-import { formdataify, DataToObject } from '@/utils/formdataify';
 import { HOME_HP } from '@/config/setting';
 
 export async function listPekingInvoice(data) {
@@ -18,7 +17,7 @@ export async function listPekingInvoice(data) {
   if (res.data.code == 200) {
     return res;
   } else {
-    return Promise.reject(new Error(res.msg));
+    return Promise.reject(new Error(res.data.msg));
   }
 }
 
@@ -27,10 +26,44 @@ export async function deletePekingInvoice(data) {
     Token: sessionStorage.getItem(TOKEN_STORE_NAME),
     IFACE_ID: data.IFACE_ID
   };
-  const res = await request.post('/PekingApplication/deletePekingInvoice', formatData);
+  const res = await request.post(
+    '/PekingApplication/deletePekingInvoice',
+    formatData
+  );
   if (res.data.code == 200) {
     return res;
   } else {
-    return Promise.reject(new Error(res.msg));
+    return Promise.reject(new Error(res.data.msg));
+  }
+}
+
+export async function genneratePekingInvoice(data) {
+  const formatData = {
+    Token: sessionStorage.getItem(TOKEN_STORE_NAME)
+  };
+  const res = await request.post(
+    '/PekingApplication/genneratePekingInvoice',
+    formatData
+  );
+  if (res.data.code == 200) {
+    return res;
+  } else {
+    return Promise.reject(new Error(res.data.msg));
+  }
+}
+
+export async function pushPekingInvoice(data) {
+  const formatData = {
+    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+    IFACE_ID: data.ids
+  };
+  const res = await request.post(
+    '/PekingApplication/pushPekingInvoice',
+    formatData
+  );
+  if (res.data.code == 200) {
+    return res;
+  } else {
+    return Promise.reject(new Error(res.data.msg));
   }
 }

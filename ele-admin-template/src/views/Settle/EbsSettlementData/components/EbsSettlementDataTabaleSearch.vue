@@ -43,9 +43,28 @@
               type="danger"
               icon="el-icon-delete"
               @click="handleDelete"
-              :disabled="!isEnableDelete"
+              :disabled="!isSelected"
               >删除</el-button
             >
+
+            <el-button
+              size="mini"
+              type="primary"
+              icon="el-icon-refresh"
+              @click="handleGenerteInvoice"
+              >生成发票数据</el-button
+            >
+
+            <el-button
+              size="mini"
+              type="success"
+              icon="el-icon-position"
+              :disabled="!isSelected"
+              @click="handlePushInvoice"
+              >推送发票数据</el-button
+            >
+
+
           </el-form-item>
         </el-col>
       </el-row>
@@ -67,6 +86,12 @@
       },
       handleDelete() {
         this.$emit('delete');
+      },
+      handleGenerteInvoice(){
+        this.$emit('generteInvoice');
+      },
+      handlePushInvoice(){
+        this.$emit('pushInvoice');
       }
     },
     computed: {
@@ -74,7 +99,7 @@
       styleResponsive() {
         return this.$store.state.theme.styleResponsive;
       },
-      isEnableDelete(){
+      isSelected(){
         return this.selection.length > 0;
       }
     }
