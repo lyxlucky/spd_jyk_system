@@ -4,11 +4,15 @@
       :selection="selection"
       @search="reload"
       @delete="handleDelete"
+      @generteInvoice="handleGenerteInvoice"
+      @pushInvoice="handlePushInvoice"
     />
     <ele-pro-table
       :reserve-selection="true"
       highlight-current-row
+      :row-key="(row) => row.IFACE_ID"
       @current-change="onCurrentChange"
+      @selection-change="onSelectionChange"
       ref="table"
       height="70vh"
       :rowClickChecked="true"
@@ -28,7 +32,9 @@
   import EbsSettlementDataTabaleSearch from './EbsSettlementDataTabaleSearch';
   import {
     listPekingInvoice,
-    deletePekingInvoice
+    deletePekingInvoice,
+    genneratePekingInvoice,
+    pushPekingInvoice
   } from '@/api/Settle/EbsSettlementData/index';
   export default {
     name: 'EbsSettlementDataTabale',
@@ -230,11 +236,97 @@
         );
         return data;
       },
+      onSelectionChange(selection) {
+        this.selection = selection;
+      },
       reload(where) {
         this.$refs.table.reload({ page: 1, where: where });
       },
       onCurrentChange(row) {
         this.current = row;
+      },
+      handlePushInvoice() {
+        //二次确认
+        this.$confirm('此操作将推送发票数据, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        })
+          .then(() => {
+            const loading = this.$loading({
+              lock: true,
+              text: '正在推送发票数据...',
+              spinner: 'el-icon-loading',
+              background: 'rgba(0, 0, 0, 0.7)'
+            });
+            const ids = this.selection.map((item) => item.IFACE_ID).join(',');
+            pushPekingInvoice({ ids: ids })
+              .then((res) => {
+                console.log(JSON.stringify(res));
+                if (res.data.code != 200)
+                  return this.$message.error(res.data.msg);
+                this.$message({
+                  type: 'success',
+                  message: '推送成功!'
+                });
+              })
+              .catch((err) => {
+                this.$message.error(err);
+              })
+              .finally(() => {
+                loading.close();
+              });
+          })
+          .catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消推送发票数据'
+            });
+          });
+      },
+      handleGenerteInvoice() {
+        //二次确认
+        this.$confirm('此操作将生成发票数据, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        })
+          .then(() => {
+            const loading = this.$loading({
+              lock: true,
+              text: '正在生成发票数据...',
+              spinner: 'el-icon-loading',
+              background: 'rgba(0, 0, 0, 0.7)'
+            });
+            genneratePekingInvoice()
+              .then((res) => {
+                if (res.data.code == 200) {
+                  this.$message({
+                    type: 'success',
+                    message: '生成成功!'
+                  });
+                  this.$refs.table.reload();
+                } else {
+                  this.$message({
+                    type: 'error',
+                    message: res.msg
+                  });
+                }
+              })
+              .catch((err) => {
+                this.$message.error(err);
+              })
+              .finally(() => {
+                loading.close();
+              });
+          })
+          .catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消生成发票数据'
+            });
+          })
+          .finally(() => {});
       },
       handleDelete() {
         //二次确认
@@ -245,20 +337,33 @@
         })
           .then(() => {
             const ids = this.selection.map((item) => item.IFACE_ID).join(',');
-            deletePekingInvoice({ IFACE_ID: ids }).then((res) => {
-              if (res.data.code == 200) {
-                this.$message({
-                  type: 'success',
-                  message: '删除成功!'
-                });
-                this.$refs.table.reload();
-              } else {
-                this.$message({
-                  type: 'error',
-                  message: res.msg
-                });
-              }
+            const loading = this.$loading({
+              lock: true,
+              text: '正在删除...',
+              spinner: 'el-icon-loading',
+              background: 'rgba(0, 0, 0, 0.7)'
             });
+            deletePekingInvoice({ IFACE_ID: ids })
+              .then((res) => {
+                if (res.data.code == 200) {
+                  this.$message({
+                    type: 'success',
+                    message: '删除成功!'
+                  });
+                  this.$refs.table.reload();
+                } else {
+                  this.$message({
+                    type: 'error',
+                    message: res
+                  });
+                }
+              })
+              .catch((err) => {
+                this.$message.error(err);
+              })
+              .finally(() => {
+                loading.close();
+              });
           })
           .catch(() => {
             this.$message({
