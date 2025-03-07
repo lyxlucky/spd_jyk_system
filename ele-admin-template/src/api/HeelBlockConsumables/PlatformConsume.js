@@ -101,3 +101,36 @@ export async function LoadDeliveryConsumedVarietie(data) {
         return Promise.reject(new Error(res.data.msg));
     }
 }
+
+export async function LoadVarietieGS1(data) {
+    console.log(data)
+    var data2 = {};
+    data2.page = data.page;
+    data2.size = data.limit;
+    data2.id = data.where.id ? data.where.id : '';
+    data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+    // var rep = formdataify(data2);
+    const res = await request.get('/B2BConsumeMgmt/LoadVarietieGS1', {
+        params: data2
+    });
+    if (res.data.code == 200) {
+        return res.data;
+    } else {
+        return Promise.reject(new Error(res.data.msg));
+    }
+}
+
+
+
+export async function RemoveVarieties(data) {
+    let formataData = {}
+    formataData.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+    formataData.json = data;
+    let req = formdataify(formataData);
+    const res = await request.post('/B2BConsumeMgmt/RemoveVarieties', req);
+    if (res.data.code == 200) {
+        return res.data;
+    } else {
+        return Promise.reject(new Error(res.data.msg));
+    }
+}

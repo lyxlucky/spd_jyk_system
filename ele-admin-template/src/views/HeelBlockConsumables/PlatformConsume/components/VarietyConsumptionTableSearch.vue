@@ -14,7 +14,7 @@
         </div>
       </el-col>
     </el-row>
-    <el-row :gutter="5">
+    <!-- <el-row :gutter="5">
       <el-col v-bind="styleResponsive ? { lg: 24, md: 12 } : { span: 12 }">
         <div class="ele-form-actions">
           <el-button size="mini" type="primary" class="ele-btn-icon" @click="platformConsumeEditShow">编辑</el-button>
@@ -28,7 +28,7 @@
           </el-col>
         </div>
       </el-col>
-    </el-row>
+    </el-row> -->
   </el-form>
 </template>
 

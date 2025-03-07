@@ -4,7 +4,7 @@
     <!-- 自定义指令实现当pageSizes改变时触发 -->
     <!-- :pageSize="pageSize" :pageSizes="pageSizes" -->
     <AdvanceReceiptNumberDelSearch @search="reload" @exportData="exportData" :ApplyTempTableDataSearch="ApplyTempTableDataSearch" :selection="selection" @showEditReoad="showEditReoad" />
-    <ele-pro-table ref="table" :paginationStyle="paginationStyle" style="height: 30vh;" highlight-current-row :stripe="true" :rowClickChecked="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" @selection-change="onSelectionChange" cache-key="ApplyTempDataTable">
+    <ele-pro-table ref="table" :paginationStyle="paginationStyle" style="height: 35vh;" highlight-current-row :stripe="true" :rowClickChecked="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" @selection-change="onSelectionChange" cache-key="ApplyTempDataTable">
       <!-- 表头工具栏 -->
       <!-- 右表头 -->
       <!-- <template v-slot:toolkit>

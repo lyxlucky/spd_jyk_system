@@ -27,17 +27,17 @@
           <div slot="header" class="clearfix">
             <span>品种消耗确认表</span>
           </div>
-          <VarietyConsumptionTable :ApplyTempTableData="ApplyTempTableData" />
+          <VarietyConsumptionTable @getVarietyCurrent="getVarietyCurrent" :ApplyTempTableData="ApplyTempTableData" />
         </el-card>
       </el-aside>
       <el-container>
         <el-main width="500px">
           <el-card shadow="always">
             <div slot="header" class="clearfix">
-              <span>预送货品种明细</span>
+              <span>UDI码列表</span>
             </div>
             <el-button type="primary" size="mini" @click="addTempVar" :style="{ display: IsDisabled==true?'none':'' }">确认申领</el-button>
-            <AdvanceReceiptNumberDelTable :ApplyTempTableData="ApplyTempTableData" @selectionData="selectionData" />
+            <UDIListTable :ApplyTempTableData="VarietyTableData" @selectionData="selectionData" />
           </el-card>
         </el-main>
       </el-container>
@@ -49,6 +49,7 @@
 import AdvanceReceiptNumberTable from './components/AdvanceReceiptNumberTable.vue';
 import AdvanceReceiptNumberDelTable from './components/AdvanceReceiptNumberDelTable';
 import VarietyConsumptionTable from './components/VarietyConsumptionTable';
+import UDIListTable from './components/UDIListTable';
 import { KeeptListDeta } from '@/api/KSInventory/ApplyTemp';
 export default {
   name: 'ApplyTemp',
@@ -57,18 +58,24 @@ export default {
     AdvanceReceiptNumberTable,
     AdvanceReceiptNumberDelTable,
     VarietyConsumptionTable,
+    UDIListTable,
   },
   data() {
     return {
       // 主表数据
       ApplyTempTableData: {},
       // 详情表选择数据
-      ApplyTempDataSelData: []
+      ApplyTempDataSelData: [],
+      // 品种消耗确认表 
+      VarietyTableData: [],
     };
   },
   methods: {
     getCurrent(data) {
       this.ApplyTempTableData = data;
+    },
+    getVarietyCurrent(data) {
+      this.VarietyTableData = data;
     },
     addTempVar() {
       // console.log(this.IntroduceUserDefinedTempSearch);

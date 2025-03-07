@@ -1,13 +1,11 @@
 <template>
   <div class="ele-body">
-    <AdvanceReceiptNumberSearch @search="reload" @platformConsumeEditShow="platformConsumeEditShow" :rowData="current" />
-
-    <AdvanceReceiptNumberEdit :visible.sync="showEdit" :rowData="current" />
+    <!-- <AdvanceReceiptNumberSearch @search="reload" :rowData="current" /> -->
     <!-- 数据表格 -->
     <ele-pro-table style="height: 30vh;" highlight-current-row @current-change="onCurrentChange" :row-class-name="tableRowClassName" ref="table" :rowClickChecked="true" :stripe="false" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :needPage="true" :datasource="datasource" :selection.sync="selection" cache-key="ApplyTempTable">
       <!-- 表头工具栏 -->
       <template v-slot:toolbar>
-        <!-- 搜索表单 -->
+        <el-button size="mini" type="primary" class="ele-btn-icon" >管理或关联UDI码</el-button>
       </template>
 
       <template v-slot:State="{ row }">
@@ -70,19 +68,18 @@
 
 <script>
 import AdvanceReceiptNumberSearch from './AdvanceReceiptNumberSearch.vue';
-import AdvanceReceiptNumberEdit from './AdvanceReceiptNumberEdit.vue';
 import {
   SerachTempletList,
   DeleteTemplet,
   EditTempName
 } from '@/api/KSInventory/ApplyTemp';
 import { HOME_HP } from '@/config/setting';
-import { SearchGoodsDeliveryNumbers } from '@/api/HeelBlockConsumables/PlatformConsume';
+import { LoadVarietieGS1 } from '@/api/HeelBlockConsumables/PlatformConsume';
 export default {
   name: 'ApplyTempTable',
+  props: ['ApplyTempTableData'],
   components: {
-    AdvanceReceiptNumberSearch,
-    AdvanceReceiptNumberEdit
+    AdvanceReceiptNumberSearch
   },
   data() {
     return {
@@ -95,85 +92,33 @@ export default {
         //   align: 'center',
         //   fixed: 'left'
         // },
+        {
+          label: '序号',
+          columnKey: 'index',
+          type: 'index',
+          width: 60,
+          align: 'center',
+          showOverflowTooltip: true,
+          fixed: 'left'
+        },
+        {
+          prop: 'Serial_Number',
+          label: 'UDI码',
+          // sortable: 'custom',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 110
+        },
         // {
-        //   label: '序',
-        //   columnKey: 'index',
-        //   type: 'index',
-        //   width: 45,
+        //   columnKey: 'action',
+        //   label: '操作',
+        //   width: 150,
         //   align: 'center',
-        //   showOverflowTooltip: true,
-        //   fixed: 'left'
-        // },
-        {
-          prop: 'Delivery_Note_Number',
-          label: '收货单号',
-          // sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 110
-        },
-        {
-          prop: 'Hospitalization_Number',
-          label: '常规',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 110
-        },
-        {
-          prop: 'Operater',
-          label: '住院号',
-          // sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 70
-        },
-        {
-          prop: 'Patient',
-          label: '病患',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 70
-        },
-        {
-          prop: 'Dept_Two_Name',
-          label: '使用科室',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 80
-        },
-        {
-          prop: 'Receive_Receipt_State',
-          label: '确认状态',
-          // sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 80,
-          formatter(row, column, cellValue) {
-            if (cellValue == '0') {
-              return '待确认';
-            } else if (cellValue == '1') {
-              return '待提交';
-            } else if (cellValue == '2') {
-              return '已提交';
-            } else if (cellValue == '3') {
-              return '已审批';
-            } else if (cellValue == '4') {
-              return '已审批';
-            } else {
-              return cellValue;
-            }
-          }
-        },
-        {
-          columnKey: 'action',
-          label: '操作',
-          width: 150,
-          align: 'center',
-          resizable: false,
-          slot: 'action',
-          showOverflowTooltip: true
-          //fixed: 'right'
-        }
+        //   resizable: false,
+        //   slot: 'action',
+        //   showOverflowTooltip: true
+        //   //fixed: 'right'
+        // }
       ],
       paginationStyle: {
         height: '18px',
@@ -193,38 +138,31 @@ export default {
       // 是否显示导入弹窗
       showImport: false,
       // datasource: [],
-      data: []
+      data: [],
     };
   },
   methods: {
     /* 表格数据源 */
     datasource({ page, limit, where, order }) {
-      var deptTwoList = [];
-      var deptTwoJson = this.$store.state.user.info.userDept;
-
-      for (let i = 0; i < deptTwoJson.length; i++) {
-        deptTwoList.push(deptTwoJson[i].Dept_Two_Code);
-      }
-      where.depts = JSON.stringify(deptTwoList);
-      where.supplierId = 0;
-      where.hp = HOME_HP;
-      let data = SearchGoodsDeliveryNumbers({ page, limit, where, order }).then(
-        (res) => {
-          var tData = {
-            count: res.total,
-            list: res.result
-          };
-          return tData;
-        }
-      );
+      console.log(this.ApplyTempTableData)
+      where.id = this.ApplyTempTableData.Id;
+      let data = LoadVarietieGS1({
+        page,
+        limit,
+        where,
+        order
+      }).then((res) => {
+        var tData = {
+          count: res.total,
+          list: res.result
+        };
+        return tData;
+      });
       return data;
     },
     /* 刷新表格 */
     reload(where) {
       this.$refs.table.reload({ page: 1, where: where });
-    },
-    platformConsumeEditShow(data) {
-      this.showEdit = true;
     },
     editTempletName(code) {
       this.$prompt('请输入模板名称', '提示', {
@@ -293,6 +231,22 @@ export default {
       } else {
         return '';
       }
+    }
+  },
+  computed: {
+    ApplyTempTableDataSearch() {
+      return this.ApplyTempTableData;
+    }
+    // pageSize(){
+    //   return localStorage.getItem('SerachTempletDetaPageSize')?localStorage.getItem('SerachTempletDetaPageSize'):10
+    // }
+  },
+  watch: {
+    ApplyTempTableDataSearch() {
+      var where = {
+        deliveryNumber: this.ApplyTempTableData.Delivery_Note_Number
+      };
+      this.$refs.table.reload({ page: 1, where: where });
     }
   },
   mounted() {

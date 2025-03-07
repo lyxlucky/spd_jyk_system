@@ -38,16 +38,20 @@ import {
   UpdateCommon,
   UpdateCommon2
 } from '@/api/KSInventory/ApplyTemp';
+import AdvanceReceiptNumberEdit from './AdvanceReceiptNumberEdit.vue';
 export default {
   props: {
     // 修改回显的数据
     rowData: Object
   },
+  components: {
+    AdvanceReceiptNumberEdit
+  },
   data() {
     // 默认表单数据
     const defaultWhere = {
       state: '',
-      condition: '',
+      condition: ''
     };
     return {
       // 表单数据
@@ -80,6 +84,9 @@ export default {
     reset() {
       this.where = { ...this.defaultWhere };
       this.search();
+    },
+    platformConsumeEditShow() {
+      this.$emit('platformConsumeEditShow', true);
     },
     /* 创建申领单 */
     Temp_FoundPlanSingle() {

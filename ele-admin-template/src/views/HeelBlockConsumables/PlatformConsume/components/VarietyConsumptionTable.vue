@@ -2,11 +2,15 @@
   <div class="ele-body">
     <!-- <AdvanceReceiptNumberSearch @search="reload" :rowData="current" /> -->
     <!-- 数据表格 -->
-    <ele-pro-table style="height: 30vh;" highlight-current-row @current-change="onCurrentChange" :row-class-name="tableRowClassName" ref="table" :rowClickChecked="true" :stripe="false" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :needPage="true" :datasource="datasource" :selection.sync="selection" cache-key="ApplyTempTable">
+    <ele-pro-table style="height: 30vh;" highlight-current-row :rowClickCheckedIntelligent="false" @current-change="onCurrentChange" :row-class-name="tableRowClassName" ref="table" :rowClickChecked="true" :stripe="false" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :needPage="true" :datasource="datasource" :selection.sync="selection" cache-key="ApplyTempTable">
       <!-- 表头工具栏 -->
       <template v-slot:toolbar>
-        <el-button size="mini" type="primary" class="ele-btn-icon" @click="platformConsumeEditShow">提交</el-button>
-        <el-button size="mini" type="danger" class="ele-btn-icon" @click="platformConsumeEditShow">删除</el-button>
+        <el-button size="mini" type="primary" class="ele-btn-icon">提交</el-button>
+        <el-popconfirm class="ele-action" title="确定删除？" @confirm="remove">
+          <template v-slot:reference>
+            <el-button size="mini" type="danger" class="ele-btn-icon">删除</el-button>
+          </template>
+        </el-popconfirm>
       </template>
 
       <template v-slot:State="{ row }">
@@ -75,7 +79,10 @@ import {
   EditTempName
 } from '@/api/KSInventory/ApplyTemp';
 import { HOME_HP } from '@/config/setting';
-import { LoadDeliveryConsumedVarietie } from '@/api/HeelBlockConsumables/PlatformConsume';
+import {
+  LoadDeliveryConsumedVarietie,
+  RemoveVarieties
+} from '@/api/HeelBlockConsumables/PlatformConsume';
 export default {
   name: 'ApplyTempTable',
   props: ['ApplyTempTableData'],
@@ -86,13 +93,13 @@ export default {
     return {
       // 表格列配置
       columns: [
-        // {
-        //   columnKey: 'selection',
-        //   type: 'selection',
-        //   width: 45,
-        //   align: 'center',
-        //   fixed: 'left'
-        // },
+        {
+          columnKey: 'selection',
+          type: 'selection',
+          width: 45,
+          align: 'center',
+          fixed: 'left'
+        },
         // {
         //   label: '序',
         //   columnKey: 'index',
@@ -103,75 +110,120 @@ export default {
         //   fixed: 'left'
         // },
         {
-          prop: 'Delivery_Note_Number',
-          label: '收货单号',
+          prop: 'Varietie_Code',
+          label: '品种(材料)编码',
           // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110
         },
         {
-          prop: 'Hospitalization_Number',
-          label: '常规',
+          prop: 'Varietie_Name',
+          label: '品种全称',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 110
+          minWidth: 150
         },
         {
-          prop: 'Operater',
-          label: '住院号',
-          // sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 70
-        },
-        {
-          prop: 'Patient',
-          label: '病患',
+          prop: 'APPROVAL_NUMBER',
+          label: '注册证号',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 70
         },
         {
-          prop: 'Dept_Two_Name',
-          label: '使用科室',
+          prop: 'PROD_REGISTRATION_NAME',
+          label: '注册证名称',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 180
+        },
+        {
+          prop: 'Specification_Or_Type',
+          label: '型号/规格',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 180
+        },
+        {
+          prop: 'Manufacturing_Ent_Name',
+          label: '生产企业名称',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 180
+        },
+        {
+          prop: 'Unit',
+          label: '单位',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 60
+        },
+        {
+          prop: 'Manufacturing_Ent_Name',
+          label: '注册证号',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 180
+        },
+        {
+          prop: 'Consume_Count',
+          label: '消耗数量',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 180
+        },
+        {
+          prop: 'SN_Count',
+          label: '已关联UDI数量',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 80
         },
         {
-          prop: 'Receive_Receipt_State',
-          label: '确认状态',
-          // sortable: 'custom',
+          prop: 'Dept_Two_Name',
+          label: '注册证号',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 80,
+          minWidth: 180
+        },
+        {
+          prop: 'Batch',
+          label: '生产批号',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 180
+        },
+        {
+          prop: 'Batch_Production_Date',
+          label: '生产日期',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 180,
           formatter(row, column, cellValue) {
-            if (cellValue == '0') {
-              return '待确认';
-            } else if (cellValue == '1') {
-              return '待提交';
-            } else if (cellValue == '2') {
-              return '已提交';
-            } else if (cellValue == '3') {
-              return '已审批';
-            } else if (cellValue == '4') {
-              return '已审批';
-            } else {
-              return cellValue;
-            }
+            return cellValue.substr(0, 10);
           }
         },
         {
-          columnKey: 'action',
-          label: '操作',
-          width: 150,
+          prop: 'Batch_Validity_Period',
+          label: '生产日期',
           align: 'center',
-          resizable: false,
-          slot: 'action',
-          showOverflowTooltip: true
-          //fixed: 'right'
+          showOverflowTooltip: true,
+          minWidth: 180,
+          formatter(row, column, cellValue) {
+            return cellValue.substr(0, 10);
+          }
         }
+        // {
+        //   columnKey: 'action',
+        //   label: '操作',
+        //   width: 150,
+        //   align: 'center',
+        //   resizable: false,
+        //   slot: 'action',
+        //   showOverflowTooltip: true
+        //   //fixed: 'right'
+        // }
       ],
       paginationStyle: {
         height: '18px',
@@ -191,7 +243,7 @@ export default {
       // 是否显示导入弹窗
       showImport: false,
       // datasource: [],
-      data: [],
+      data: []
     };
   },
   methods: {
@@ -259,14 +311,19 @@ export default {
     onCurrentChange(current) {
       this.current = current;
       // console.log(current);
-      this.$emit('getCurrent', current);
+      this.$emit('getVarietyCurrent', current);
     },
 
     /* 删除数据 */
-    remove(row) {
+    remove() {
       // const loading = this.$loading({ lock: true });
       const loading = this.$messageLoading('删除中...');
-      DeleteTemplet(row)
+      var json = [];
+
+      this.selection.forEach((item) => {
+        json.push(item.Id);
+      });
+      RemoveVarieties(json)
         .then((res) => {
           this.$message.success(res.msg);
           loading.close();
