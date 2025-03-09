@@ -63,21 +63,21 @@ export default {
         {
           prop: 'VARIETIE_CODE_NEW',
           label: '品种编码',
-          align: 'left',
+          align: 'center',
           showOverflowTooltip: true,
           fixed: 'left'
         },
         {
           prop: 'VARIETIE_NAME',
           label: '品种名称',
-          align: 'left',
+          align: 'center',
           showOverflowTooltip: true,
           fixed: 'left'
         },
         {
           prop: 'SPECIFICATION_OR_TYPE',
           label: '规格型号',
-          align: 'left',
+          align: 'center',
           showOverflowTooltip: true,
           fixed: 'left'
         },
@@ -129,7 +129,7 @@ export default {
         {
           prop: 'ID',
           label: '序号',
-          align: 'left',
+          align: 'center',
           showOverflowTooltip: true,
           fixed: 'left'
         },

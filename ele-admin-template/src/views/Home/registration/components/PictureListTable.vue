@@ -95,7 +95,7 @@
             prop: 'TYPE',
             label: '类型',
             minWidth: 100,
-            align: 'left',
+            align: 'center',
             formatter: (row, column, cellValue) => {
               if (row.TYPE == 1) {
                 return '品种注册证';
@@ -122,7 +122,7 @@
           {
             prop: 'APPROVAL_NUMBER',
             label: '注册证',
-            align: 'left',
+            align: 'center',
             showOverflowTooltip: true
           },
           {
@@ -135,7 +135,7 @@
             prop: 'START_TIME',
             label: '起始时间',
             minWidth: 110,
-            align: 'left',
+            align: 'center',
             formatter: (row, column, cellValue) => {
               if (
                 row.START_TIME == '0001-01-01T00:00:00' ||
@@ -152,7 +152,7 @@
             prop: 'END_TIME',
             label: '有效期',
             minWidth: 110,
-            align: 'left',
+            align: 'center',
             formatter: (row, column, cellValue) => {
               if (
                 row.END_TIME == '0001-01-01T00:00:00' ||
@@ -175,7 +175,7 @@
             prop: 'PASS_REASON',
             label: '未通过原因',
             minWidth: 150,
-            align: 'left',
+            align: 'center',
             showOverflowTooltip: true
           },
           {
@@ -192,7 +192,7 @@
           {
             prop: 'CREATE_TIME',
             label: '创建时间',
-            align: 'left',
+            align: 'center',
             formatter: (row, column, cellValue) => {
               return this.$util.toDateString(
                 row.CREATE_TIME,
@@ -209,7 +209,7 @@
           {
             prop: 'APP_TIME',
             label: '审批时间',
-            align: 'left',
+            align: 'center',
             formatter: (row, column, cellValue) => {
               return this.$util.toDateString(
                 row.CREATE_TIME,

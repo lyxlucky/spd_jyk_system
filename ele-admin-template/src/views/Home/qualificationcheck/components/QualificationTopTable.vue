@@ -250,14 +250,14 @@
             prop: 'QXBZ',
             label: '缺项备注',
             minWidth: 130,
-            align: 'left',
+            align: 'center',
             showOverflowTooltip: true
           },
           {
             prop: 'Supplier_Name',
             label: '供应商',
             minWidth: 200,
-            align: 'left',
+            align: 'center',
             showOverflowTooltip: true
           },
           {

@@ -264,7 +264,7 @@
             prop: 'VARIETIE_CODE_NEW',
             label: '品种编码',
             // sortable: 'custom',
-            align: 'left',
+            align: 'center',
             showOverflowTooltip: true,
             minWidth: 130
           },
@@ -272,7 +272,7 @@
             prop: 'VARIETIE_NAME',
             label: '品种名称',
             // sortable: 'custom',
-            align: 'left',
+            align: 'center',
             showOverflowTooltip: true,
             minWidth: 150,
             sortable: true
@@ -281,7 +281,7 @@
             prop: 'SPECIFICATION_OR_TYPE',
             label: '规格型号',
             // sortable: 'custom',
-            align: 'left',
+            align: 'center',
             showOverflowTooltip: true,
             minWidth: 180
           },
@@ -289,7 +289,7 @@
             prop: 'MANUFACTURING_ENT_NAME',
             label: '生产企业',
             // sortable: 'custom',
-            align: 'left',
+            align: 'center',
             showOverflowTooltip: true,
             minWidth: 180
           },
@@ -297,7 +297,7 @@
             prop: 'SUPPLIER_NAME',
             label: '供应商名称',
             // // sortable: 'custom',
-            align: 'left',
+            align: 'center',
             showOverflowTooltip: true,
             minWidth: 280
           },

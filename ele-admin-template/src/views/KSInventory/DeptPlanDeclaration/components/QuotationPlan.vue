@@ -174,7 +174,7 @@ export default {
           label: '品种编码',
           width: 90,
           fixed: 'left',
-          align: 'left',
+          align: 'center',
           showOverflowTooltip: true
         },
         {
@@ -182,7 +182,7 @@ export default {
           label: '自定义编码',
           width: 100,
           fixed: 'left',
-          align: 'left',
+          align: 'center',
           formatter(row, column, cellValue) {
             if (row.DEPT_ZDY_VARIETIE_CODE == null) {
               return '未定义';

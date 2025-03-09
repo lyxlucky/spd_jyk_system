@@ -105,28 +105,28 @@ export default {
         {
           prop: 'PROD_REGISTRATION_NAME',
           label: '注册证名称',
-          align: 'left',
+          align: 'center',
           showOverflowTooltip: true,
           minWidth: 150
         },
         {
           prop: 'Specification_Or_Type',
           label: '型号/规格',
-          align: 'left',
+          align: 'center',
           showOverflowTooltip: true,
           minWidth: 180
         },
         {
           prop: 'Manufacturing_Ent_Name',
           label: '生产企业名称',
-          align: 'left',
+          align: 'center',
           showOverflowTooltip: true,
           minWidth: 180
         },
         {
           prop: 'PRICE',
           label: '价格',
-          align: 'left',
+          align: 'center',
           showOverflowTooltip: true,
           minWidth: 70
         },

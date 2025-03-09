@@ -94,7 +94,7 @@ export default {
           prop: 'Varietie_Name',
           label: '品种名称',
           // sortable: 'custom',
-          align: 'left',
+          align: 'center',
           showOverflowTooltip: true,
           minWidth: 180
         },
@@ -102,7 +102,7 @@ export default {
           prop: 'Specification_Or_Type',
           label: '规格/型号',
           // sortable: 'custom',
-          align: 'left',
+          align: 'center',
           showOverflowTooltip: true,
           minWidth: 180
         },
@@ -118,7 +118,7 @@ export default {
           prop: 'Manufacturing_Ent_Name',
           label: '生产企业',
           // sortable: 'custom',
-          align: 'left',
+          align: 'center',
           showOverflowTooltip: true,
           minWidth: 180
         },

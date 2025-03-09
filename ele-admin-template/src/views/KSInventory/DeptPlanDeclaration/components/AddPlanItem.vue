@@ -155,7 +155,7 @@ export default {
         {
           prop: 'Price',
           label: '中标价',
-          align: 'right',
+          align: 'center',
           width: 100,
           showOverflowTooltip: true
         },
@@ -175,7 +175,7 @@ export default {
           prop: 'PLAN_NUM',
           label: '计划数量',
           width: 130,
-          align: 'left',
+          align: 'center',
           showOverflowTooltip: true,
           slot: 'PLAN_NUM',
           fixed:'right'

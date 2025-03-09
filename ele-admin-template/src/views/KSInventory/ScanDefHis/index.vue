@@ -138,14 +138,14 @@
           {
             prop: 'Varietie_Name',
             label: '品种名称',
-            align: 'left',
+            align: 'center',
             showOverflowTooltip: true,
             width: 240
           },
           {
             prop: 'Specification_Or_Type',
             label: '规格/型号',
-            align: 'left',
+            align: 'center',
             showOverflowTooltip: true,
             width: 200
           },
@@ -153,7 +153,7 @@
             prop: 'Supplier_Name',
             label: '供应商名称',
             width: 220,
-            align: 'left',
+            align: 'center',
             showOverflowTooltip: true
           },
           {

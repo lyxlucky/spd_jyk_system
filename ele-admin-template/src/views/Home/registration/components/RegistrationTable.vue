@@ -101,7 +101,7 @@
             prop: 'QXBZ',
             label: '缺项备注',
             minWidth: 150,
-            align: 'left',
+            align: 'center',
             showOverflowTooltip: true
           },
           {

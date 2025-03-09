@@ -181,14 +181,14 @@
             slot: 'Varietie_Pic',
             label: '品种图片',
             sortable: 'custom',
-            align: 'left',
+            align: 'center',
             minWidth: 120
           },
           {
             prop: 'Varietie_Name',
             label: '品种名称',
             sortable: 'custom',
-            align: 'left',
+            align: 'center',
             showOverflowTooltip: true,
             minWidth: 250
           },
@@ -196,7 +196,7 @@
             prop: 'Specification_Or_Type',
             label: '规格/型号',
             sortable: 'custom',
-            align: 'left',
+            align: 'center',
             showOverflowTooltip: true,
             minWidth: 200
           },
@@ -204,7 +204,7 @@
             prop: 'Manufacturing_Ent_Name',
             label: '生产企业名称',
             sortable: 'custom',
-            align: 'left',
+            align: 'center',
             showOverflowTooltip: true,
             minWidth: 180
           },

@@ -225,7 +225,7 @@
           {
             prop: 'SUPPLY_PRICE',
             label: '消耗价',
-            align: 'right',
+            align: 'center',
             showOverflowTooltip: true,
             sortable: 'custom',
             minWidth: 90,
@@ -236,7 +236,7 @@
           {
             prop: 'PURCHASE_PRICE',
             label: '采购价',
-            align: 'right',
+            align: 'center',
             showOverflowTooltip: true,
             sortable: 'custom',
             minWidth: 90

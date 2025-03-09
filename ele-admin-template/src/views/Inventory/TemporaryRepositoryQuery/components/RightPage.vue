@@ -68,7 +68,7 @@ export default {
           prop: 'DEPT_TWO_NAME',
           label: '二级科室名称',
           sortable: false,
-          align: 'left',
+          align: 'center',
           showOverflowTooltip: true
         }
       ],
@@ -87,7 +87,7 @@ export default {
           prop: 'DEPT_TWO_NAME',
           label: '科室名称',
           sortable: false,
-          align: 'left',
+          align: 'center',
           showOverflowTooltip: true,
           minWidth: 120
         },
@@ -95,7 +95,7 @@ export default {
           prop: 'Varietie_Code',
           label: '品种(材料)编码',
           sortable: true,
-          align: 'left',
+          align: 'center',
           showOverflowTooltip: true,
           width: 150
         },

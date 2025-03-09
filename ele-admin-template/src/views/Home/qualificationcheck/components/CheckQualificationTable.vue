@@ -203,7 +203,7 @@
             slot: 'BUSINESS_LICENSE_DATE',
             label: '营业执照效期',
             minWidth: 130,
-            align: 'left',
+            align: 'center',
             showOverflowTooltip: true
           },
           {
@@ -211,7 +211,7 @@
             slot: 'RODUCTION_CLASS_1_VALID_DATE',
             label: '一类的许可证经营有效期',
             minWidth: 110,
-            align: 'left',
+            align: 'center',
             showOverflowTooltip: true
           },
           {
@@ -219,7 +219,7 @@
             slot: 'RODUCTION_CLASS_2_VALID_DATE',
             label: '二类的许可证经营有效期',
             minWidth: 110,
-            align: 'left',
+            align: 'center',
             showOverflowTooltip: true
           },
           {
@@ -227,7 +227,7 @@
             slot: 'RODUCTION_CLASS_3_VALID_DATE',
             label: '三类的许可证经营有效期',
             minWidth: 110,
-            align: 'left',
+            align: 'center',
             showOverflowTooltip: true
           },
           {
@@ -235,7 +235,7 @@
             slot: 'DR_VALID_DATE',
             label: '体外诊断试剂经营许可证有效期',
             minWidth: 110,
-            align: 'left',
+            align: 'center',
             showOverflowTooltip: true
           },
           {
@@ -243,28 +243,28 @@
             slot: 'WTS_VALID_DATE',
             label: '业务员委托书有效期',
             minWidth: 110,
-            align: 'left',
+            align: 'center',
             showOverflowTooltip: true
           },
           {
             prop: 'YWY_NAME',
             label: '业务员姓名',
             width: 100,
-            align: 'left',
+            align: 'center',
             showOverflowTooltip: true
           },
           {
             prop: 'YWY_PEO_ID',
             label: '业务员身份证号',
             minWidth: 170,
-            align: 'left',
+            align: 'center',
             showOverflowTooltip: true
           },
           {
             fiepropld: 'YWY_PHONE',
             label: '业务员联系电话',
             minWidth: 150,
-            align: 'left',
+            align: 'center',
             showOverflowTooltip: true
           }
         ],

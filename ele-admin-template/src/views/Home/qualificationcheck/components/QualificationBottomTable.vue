@@ -202,7 +202,7 @@
             slot: 'Supplier_Name',
             label: '登记表供应商',
             minWidth: 100,
-            align: 'left',
+            align: 'center',
             showOverflowTooltip: true
           },
           {

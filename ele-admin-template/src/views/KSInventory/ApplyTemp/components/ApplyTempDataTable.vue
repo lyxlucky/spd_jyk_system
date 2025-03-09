@@ -167,28 +167,28 @@
             prop: 'VarName',
             label: '品种全称',
 
-            align: 'left',
+            align: 'center',
             showOverflowTooltip: true,
             minWidth: 180
           },
           {
             prop: 'GG',
             label: '型号/规格',
-            align: 'left',
+            align: 'center',
             showOverflowTooltip: true,
             minWidth: 180
           },
           {
             prop: 'Manufacturing',
             label: '生产企业名称',
-            align: 'left',
+            align: 'center',
             showOverflowTooltip: true,
             minWidth: 180
           },
           {
             prop: 'SUPPLIER_NAME',
             label: '供应商',
-            align: 'left',
+            align: 'center',
             showOverflowTooltip: true,
             minWidth: 180
           },

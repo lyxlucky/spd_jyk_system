@@ -68,7 +68,7 @@ export default {
           prop: 'Name',
           label: '仓库名称',
           sortable: false,
-          align: 'left',
+          align: 'center',
           showOverflowTooltip: true,
           width: 110
         },
@@ -76,7 +76,7 @@ export default {
           prop: 'Varietie_Code',
           label: '品种编码',
           sortable: true,
-          align: 'left',
+          align: 'center',
           showOverflowTooltip: true,
           width: 110
         },
@@ -84,7 +84,7 @@ export default {
           prop: 'CHARGING_CODE',
           label: '计费编码',
           sortable: true,
-          align: 'left',
+          align: 'center',
           showOverflowTooltip: true,
           width: 110
         },
@@ -92,7 +92,7 @@ export default {
           prop: 'Varietie_Name',
           label: '品种全称',
           sortable: false,
-          align: 'left',
+          align: 'center',
           showOverflowTooltip: true,
           minWidth: 200
         },
@@ -100,7 +100,7 @@ export default {
           prop: 'Specification_Or_Type',
           label: '型号规格',
           sortable: false,
-          align: 'left',
+          align: 'center',
           showOverflowTooltip: true,
           minWidth: 190
         },
@@ -116,7 +116,7 @@ export default {
           prop: 'Manufacturing_Ent_Name',
           label: '生产企业名称',
           sortable: false,
-          align: 'left',
+          align: 'center',
           showOverflowTooltip: true,
           minWidth: 165
         },
@@ -124,7 +124,7 @@ export default {
           prop: 'Supplier_Name',
           label: '供应商名称',
           sortable: false,
-          align: 'left',
+          align: 'center',
           showOverflowTooltip: true,
           minWidth: 165
         },
@@ -132,7 +132,7 @@ export default {
           prop: 'Batch',
           label: '生产批号',
           sortable: true,
-          align: 'left',
+          align: 'center',
           showOverflowTooltip: true,
           width: 80
         },
@@ -140,7 +140,7 @@ export default {
           prop: 'Batch_Validity_Period',
           label: '有效到期',
           sortable: true,
-          align: 'left',
+          align: 'center',
           showOverflowTooltip: true,
           width: 80,
           formatter: (row) => {
@@ -159,7 +159,7 @@ export default {
           prop: 'Def_No_Pkg_Code',
           label: '定数码',
           sortable: true,
-          align: 'left',
+          align: 'center',
           showOverflowTooltip: true,
           width: 120
         },
@@ -167,7 +167,7 @@ export default {
           prop: 'Hospitalization_Number',
           label: '病患号',
           sortable: true,
-          align: 'left',
+          align: 'center',
           showOverflowTooltip: true,
           width: 120
         },
@@ -175,7 +175,7 @@ export default {
           prop: 'Serial_Number',
           label: 'UDI',
           sortable: true,
-          align: 'left',
+          align: 'center',
           showOverflowTooltip: true,
           width: 260
         },
@@ -183,7 +183,7 @@ export default {
           prop: 'Rfid_Code',
           label: 'RFID',
           sortable: true,
-          align: 'left',
+          align: 'center',
           showOverflowTooltip: true,
           width: 120
         },

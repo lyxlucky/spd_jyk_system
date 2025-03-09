@@ -130,7 +130,7 @@ export default {
           prop: 'OLD_PRICE',
           label: '旧价格',
           sortable: 'custom',
-          align: 'right',
+          align: 'center',
           showOverflowTooltip: true,
           width: 80
         },
@@ -138,7 +138,7 @@ export default {
           prop: 'NEW_PRICE',
           label: '新价格',
           sortable: 'custom',
-          align: 'right',
+          align: 'center',
           showOverflowTooltip: true,
           width: 80
         },
@@ -146,7 +146,7 @@ export default {
           prop: 'UP_PRICE',
           label: '收货价格',
           sortable: 'custom',
-          align: 'right',
+          align: 'center',
           showOverflowTooltip: true,
           width: 80
         },
@@ -154,7 +154,7 @@ export default {
           prop: 'SUPPLIER_NAME',
           label: '合同供应商',
           sortable: 'custom',
-          align: 'right',
+          align: 'center',
           showOverflowTooltip: true,
           width: 80
         },

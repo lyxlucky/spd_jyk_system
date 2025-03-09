@@ -212,28 +212,28 @@
           {
             prop: 'VARIETIE_NAME',
             label: '品种名称',
-            align: 'left',
+            align: 'center',
             showOverflowTooltip: true,
             minWidth: 250
           },
           {
             prop: 'SPECIFICATION_OR_TYPE',
             label: '规格型号',
-            align: 'left',
+            align: 'center',
             showOverflowTooltip: true,
             minWidth: 180
           },
           {
             prop: 'MANUFACTURING_ENT_NAME',
             label: '生产企业',
-            align: 'left',
+            align: 'center',
             showOverflowTooltip: true,
             minWidth: 180
           },
           {
             prop: 'SUPPLIER_NAME',
             label: '供应商名称',
-            align: 'left',
+            align: 'center',
             showOverflowTooltip: true,
             minWidth: 180,
           },
