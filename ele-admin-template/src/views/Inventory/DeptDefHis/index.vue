@@ -38,7 +38,7 @@ import { utils, writeFile } from 'xlsx';
 import UserSearch from './components/user-search.vue';
 import {
   GetPDAList,
-} from '@/api/KSInventory/InstrumentalAnalysis';
+} from '@/api/Inventory/DeptDefHis';
 export default {
   name: 'SystemUser',
   components: {
@@ -65,81 +65,58 @@ export default {
           showOverflowTooltip: true,
           fixed: 'left'
         },
-        // {
-        //   columnKey: 'action',
-        //   label: '操作',
-        //   width: 120,
-        //   align: 'center',
-        //   resizable: false,
-        //   slot: 'action',
-        //   showOverflowTooltip: true,
-        //   fixed: 'left'
-        // },
-        {
-          prop: 'BIND_MACHINE',
-          label: '机械号',
-          sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 150
-        },
-        {
-          prop: 'VARIETIE_CODE_NEW',
-          label: '品种编码',
-          sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 150,
-          show: false
-        },
-        {
-          prop: 'VARIETIE_NAME',
-          label: '品种名称',
-          sortable: 'custom',
-          align: 'center',
-          howOverflowTooltip: true,
-          minWidth: 180
-        },
-        {
-          prop: 'SPECIFICATION_OR_TYPE',
-          label: '规格/型号',
-          sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 200
-        },
-        {
-          prop: 'Manufacturing_Ent_Name',
-          label: '生产企业名称',
-          sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 180
-        },
-        {
-          prop: 'UNIT',
-          label: '单位',
-          sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 180
-        },
-        {
-          prop: 'SUM',
-          label: '数量',
-          align: 'center',
-          sortable: 'custom',
-          showOverflowTooltip: true,
-          minWidth: 80
-        },
-        {
-          prop: 'LIS_COUNT',
-          label: 'PAD扫码数量',
-          align: 'center',
-          sortable: 'custom',
-          width: 120,
-          showOverflowTooltip: true
-        },
+        
+  { prop: 'Dept_Two_Name', label: '二级科室名称',  align: 'center', minWidth: 170 },
+  { prop: 'Varietie_Code_New', label: '品种编码',  align: 'center', minWidth: 120 },
+  { prop: 'Varietie_Name', label: '品种名称', align: 'center',minWidth: 150 },
+  { prop: 'Specification_Or_Type', label: '规格型号',  align: 'center',  minWidth: 150 },
+  { prop: 'Unit', label: '单位',  align: 'center',  minWidth: 80 },
+  { prop: 'Dept_Two_Code', label: '二级科室编码',  align: 'center', minWidth: 120 },
+  { prop: 'Coefficient', label: '系数',  align: 'center', minWidth: 60 },
+  { prop: 'Batch', label: '批号', align: 'center',  minWidth: 80 },
+  { prop: 'Last_Update_Time', label: '上架时间',  align: 'center',  minWidth: 120 },
+  { 
+    prop: 'Last_Update_Time', 
+    label: '在库天数', 
+    align: 'center', 
+    minWidth: 80,
+    formatter: function (row, column) {
+      var bvp_date = row.Last_Update_Time.substr(0, 10);
+      var this_date = new Date(bvp_date).getTime();
+      var nowDate = new Date().getTime();                       
+      return parseInt(((nowDate - this_date) / (60 * 60 * 24 * 1000)).toFixed(0)) + "天";
+    }
+  },
+  { 
+    prop: 'Stock_State', 
+    label: '上架状态', 
+    align: 'center', 
+    minWidth: 80,
+    formatter: function (row, column) {
+      if (row.Stock_State == "0")
+        return "已退货";
+      else if (row.Stock_State == "1")
+        return "已上架";
+      else if (row.Stock_State == "2")
+        return "暂借";
+      else if (row.Stock_State == "3")
+        return "已出库";
+      else
+        return "未知";
+    }
+  },
+  { prop: 'Def_No_Pkg_Code', label: '定数码',  align: 'center',  minWidth: 120 },
+  { prop: 'Batch_Validity_Period', label: '有效期',  align: 'center',  minWidth: 120 },
+  { prop: 'Batch_Production_Date', label: '生产日期',  align: 'center',  minWidth: 120 },
+  { prop: 'Supply_Price', label: '结算价',  align: 'center',  minWidth: 80 },
+  { prop: 'Contract_Code', label: '合同编码',  align: 'center',  minWidth: 80 },
+  { prop: 'Supplier_Name', label: '供应商名称',  align: 'center',  minWidth: 120 },
+  { prop: 'Serial_Number', label: 'sn码',  align: 'center',  minWidth: 80 },
+  { prop: 'Rfid_Code', label: 'rfid码',  align: 'center',  minWidth: 80 },
+  { prop: 'Dept_Two_Up_Shelf_Id', label: '二级定数码上架id', align: 'center',  hidden:true},
+  { prop: 'Varietie_Code', label: '品种编码id',  align: 'center', hidden:true},
+  { prop: 'Supplier_Code', label: '供应商编码',  align: 'center', hidden:true}
+
       ],
       toolbar: false,
       pageSize: 10,
@@ -162,11 +139,27 @@ export default {
     datasource({ page, limit, where, order }) {
       let data = GetPDAList({ page, limit, where, order }).then(
         (res) => {
-          return res.result;
-        }
+            var tData = {
+              count: res.total,
+              list: res.result
+            };
+            return tData;
+          }
       );
       return data;
     },
+    // datasource({ page, limit, where, order }) {
+    //     let data = getFinacialTableData({ page, limit, where, order }).then(
+    //       (res) => {
+    //         var tData = {
+    //           count: res.total,
+    //           list: res.result
+    //         };
+    //         return tData;
+    //       }
+    //     );
+    //     return data;
+    //   },
     /* 刷新表格 */
     reload(where) {
       this.$refs.table.reload({ page: 1, where: where });
