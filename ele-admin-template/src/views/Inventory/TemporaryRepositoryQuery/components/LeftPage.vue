@@ -59,7 +59,6 @@ export default {
          {
           prop: 'DEPT_TWO_NAME',
           label: '科室名称',
-          sortable: false,
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 120
@@ -67,7 +66,6 @@ export default {
         {
           prop: 'Varietie_Code',
           label: '品种(材料)编码',
-          sortable: true,
           align: 'center',
           showOverflowTooltip: true,
           width: 150
@@ -75,15 +73,13 @@ export default {
         {
           prop: 'CHARGING_CODE',
           label: '计费编码',
-          sortable: false,
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 200
+          minWidth: 120
         },
         {
           prop: 'Varietie_Name',
           label: '品种全称',
-          sortable: false,
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 200
@@ -91,7 +87,6 @@ export default {
         {
           prop: 'Specification_Or_Type',
           label: '型号/规格',
-          sortable: false,
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 100
@@ -99,7 +94,6 @@ export default {
         {
           prop: 'Unit',
           label: '单位',
-          sortable: false,
           align: 'center',
           showOverflowTooltip: true,
           width: 60
@@ -107,7 +101,6 @@ export default {
         {
           prop: 'Manufacturing_Ent_Name',
           label: '生产企业名称',
-          sortable: false,
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 150
@@ -115,7 +108,6 @@ export default {
         {
           prop: 'Batch',
           label: '生产批号',
-          sortable: true,
           align: 'center',
           showOverflowTooltip: true,
           width: 90
@@ -123,7 +115,6 @@ export default {
         {
           prop: 'Coefficient',
           label: '系数',
-          sortable: false,
           align: 'center',
           showOverflowTooltip: true,
           width: 60
@@ -131,7 +122,6 @@ export default {
         {
           prop: 'Def_No_Pkg_Code',
           label: '定数码',
-          sortable: true,
           align: 'center',
           showOverflowTooltip: true,
           width: 120
@@ -139,7 +129,6 @@ export default {
         {
           prop: 'Serial_Number',
           label: 'UDI码',
-          sortable: true,
           align: 'center',
           showOverflowTooltip: true,
           width: 100
@@ -147,7 +136,6 @@ export default {
         {
           prop: 'Rfid_Code',
           label: 'RFID码',
-          sortable: true,
           align: 'center',
           showOverflowTooltip: true,
           width: 100
@@ -155,7 +143,6 @@ export default {
         {
           prop: 'Operate_Person',
           label: '操作人',
-          sortable: false,
           align: 'center',
           showOverflowTooltip: true,
           width: 90
@@ -163,7 +150,6 @@ export default {
         {
           prop: 'Operate_Time',
           label: '暂借时间',
-          sortable: true,
           align: 'center',
           showOverflowTooltip: true,
           width: 150,
@@ -200,8 +186,12 @@ export default {
     datasource({ page, limit, where, order }) {
       let data = GetPDAList({ page, limit, where, order }).then(
         (res) => {
-          return res.result;
-        }
+            var tData = {
+              count: res.total,
+              list: res.result
+            };
+            return tData;
+          }
       );
       return data;
     },

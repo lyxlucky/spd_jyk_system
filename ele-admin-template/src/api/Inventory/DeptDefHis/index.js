@@ -43,25 +43,3 @@ export async function GetPDAList(data) {
 }
 
 
-// 获取详情数据
-export async function getSourceDetail(data) {
-    // 从 data 中提取 Storage_Id 和 Def_No_Pkg_Code
-    const { Storage_Id, Def_No_Pkg_Code } = data;
-  
-    // 打印提示信息，显示提取的数据
-    //Message.info(Def_No_Pkg_Code);
-  
-    // 构建请求数据对象
-    const requestData = {
-        storageId:Storage_Id,
-        defNoPkgCode:Def_No_Pkg_Code
-    };
-  
-    try {
-      // 假设服务器端接口支持 GET 方法
-      return await sendRequest('/GS1/Trace', requestData, 'get'); 
-    } catch (error) {
-      console.error('请求详情数据时出错:', error);
-      throw error;
-    }
-  }

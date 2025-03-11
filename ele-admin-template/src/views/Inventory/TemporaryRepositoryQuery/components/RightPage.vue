@@ -1,105 +1,154 @@
 <template>
   <div class="ele-body">
-    <el-card shadow="never">
-      <!-- 搜索表单 -->
-      <user-search @search="reload" @exportData="exportData" @returnData="returnData"/>
-      <div class="table-container">
-        <!-- 新增表格 -->
-        <ele-pro-table 
-          ref="newTable" 
-          :pageSize="newPageSize" 
-          :pageSizes="newPageSizes" 
-          :columns="newColumns" 
-          :datasource="newDatasource" 
-          cache-key="NewTable"
-        >
-          <!-- 表头工具栏 -->
-          <template v-slot:toolbar>
-          </template>
-        </ele-pro-table>
-        <div class="table-separator"></div>
-
-      
-        <!-- 已有表格 -->
-        <ele-pro-table 
-          ref="table" 
-          :pageSize="pageSize" 
-          :pageSizes="pageSizes" 
-          :columns="columns" 
-          :datasource="datasource" 
-          :selection.sync="selection" 
-          cache-key="KSInventoryBasicDataTable"
-        >
-          <!-- 表头工具栏 -->
-          <template v-slot:toolbar>
-          </template>
-          <!-- 操作列 -->
-          <template v-slot:action="{ row }">
-            <el-link type="primary" :underline="false" icon="el-icon-edit" @click="openEdit(row)">
-              修改
-            </el-link>
-          </template>
-        </ele-pro-table>
+    <div class="card-container">
+      <div class="left-card">
+        <el-card shadow="never">
+          <!-- 数据表格 -->
+          <user-search @search="reload" />
+          <ele-pro-table ref="table1" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns1" :datasource="datasource" :selection.sync="selection" cache-key="KSInventoryBasicDataTable"  @row-click="handleTable1RowClick">
+            <!-- 表头工具栏 -->
+            <template v-slot:toolbar>
+            </template>
+          </ele-pro-table>
+        </el-card>
       </div>
-    </el-card>
-    <!-- 编辑弹窗 -->
-    <user-edit :visible.sync="showEdit" :data="current" @done="reload" />
+      <div class="right-card">
+        <el-card shadow="never">
+          <!-- 数据表格 -->
+          <UserSearch2 @search="reload2" />
+          <ele-pro-table ref="table2" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns2" :datasource="datasource2" :selection.sync="selection" cache-key="KSInventoryBasicDataTable">
+            <!-- 表头工具栏 -->
+            <template v-slot:toolbar>
+            </template>
+          </ele-pro-table>
+        </el-card>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import { utils, writeFile } from 'xlsx';
 import UserSearch from './rightpage-search.vue';
+import UserSearch2 from './rightpage-search2.vue';
 import {
-  GetPDAList,
-  Temporary_supplyRevert
+  GetPDAList,initTemporary1,initTemporary2
 } from '@/api/Inventory/TemporaryRepositoryQuery';
-
 export default {
   name: 'SystemUser',
   components: {
-    UserSearch
+    UserSearch,
+    UserSearch2
   },
   data() {
     return {
-      // 新增表格配置
-      newColumns: [
-        {
-          prop: 'DEPT_TWO_NAME',
+      // 表格列配置
+      columns1: [
+         {
+          prop: 'Dept_two_name',
           label: '二级科室名称',
-          sortable: false,
-          align: 'center',
-          showOverflowTooltip: true
-        }
-      ],
-      newPageSize: 10,
-      newPageSizes: [10, 20, 50, 100, 9999999],
-      // 已有表格配置
-      columns: [
-        {
-          columnKey: 'selection',
-          type: 'selection',
-          width: 45,
-          align: 'center',
-          fixed: 'left'
-        },
-        {
-          prop: 'DEPT_TWO_NAME',
-          label: '科室名称',
-          sortable: false,
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 120
+        }
+        
+      ],
+      columns2: [
+      {
+          prop: 'Varietie_Code',
+          label: '品种编码',
+          align: 'center',
+          showOverflowTooltip: true,
+          width: 90,
         },
         {
-          prop: 'Varietie_Code',
-          label: '品种(材料)编码',
-          sortable: true,
+          prop: 'Varietie_Name',
+          label: '品种名称',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 200
+        },
+        {
+          prop: 'Specification_Or_Type',
+          label: '型号/规格',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 100
+        },
+        {
+          prop: 'Unit',
+          label: '单位',
+          align: 'center',
+          showOverflowTooltip: true,
+          width: 50
+        },
+        {
+          prop: 'Manufacturing_Ent_Name',
+          label: '生产企业名称',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 150
+        },
+        {
+          prop: 'Batch',
+          label: '生产批号',
+          align: 'center',
+          showOverflowTooltip: true,
+          width: 90,
+        },
+        {
+          prop: 'Coefficient',
+          label: '系数',
+          align: 'center',
+          showOverflowTooltip: true,
+          width:60,
+        },
+        {
+          prop: 'Def_No_Pkg_Code',
+          label: '定数码',
+          align: 'center',
+          showOverflowTooltip: true,
+          width: 120,
+        },
+        {
+          prop: 'Serial_Number',
+          label: 'UDI码',
+          align: 'center',
+          showOverflowTooltip: true,
+          width: 100,
+        },
+        {
+          prop: 'Rfid_Code',
+          label: 'RFID码',
+          align: 'center',
+          showOverflowTooltip: true,
+          width: 100,
+        },
+        {
+          prop: 'Operate_Person',
+          label: '操作人',
+          align: 'center',
+          showOverflowTooltip: true,
+          width: 90
+        },
+        {
+          prop: 'Operate_Time',
+          label: '暂借时间',
           align: 'center',
           showOverflowTooltip: true,
           width: 150
         },
-        // 其他已有列配置...
+        {
+          prop: 'ID',
+          label: 'ID',
+          align: 'center',
+          showOverflowTooltip: true,
+          width: -2,
+          minWidth: -2,
+          type: 'space',
+          style: 'display: none'
+        }
+        
       ],
       toolbar: false,
       pageSize: 10,
@@ -113,99 +162,62 @@ export default {
       showEdit: false,
       // 是否显示导入弹窗
       showImport: false,
+      // datasource: [],
       data: []
     };
   },
   methods: {
-    /* 新增表格数据源 */
-    newDatasource({ page, limit, where, order }) {
-      let data = GetPDAList({ page, limit, where: where.leftWhere, order }).then(
+    /* 表格数据源 */
+    datasource({ page, limit, where, order }) {
+      let data = initTemporary1({ page, limit, where, order }).then(
         (res) => {
-          return res.result;
-        }
+            var tData = {
+              count: res.total,
+              list: res.result
+            };
+            return tData;
+          }
       );
       return data;
     },
-    /* 已有表格数据源 */
-    datasource({ page, limit, where, order }) {
-      let data = GetPDAList({ page, limit, where: where.rightWhere, order }).then(
+    datasource2({ page, limit, where, order }) {
+      if (this.selectedDeptTwoName) {
+     
+        where = { ...where, deptName: this.selectedDeptTwoName };
+      }
+      let data = initTemporary2({ page, limit, where, order }).then(
         (res) => {
-          return res.result;
-        }
+            var tData = {
+              count: res.total,
+              list: res.result
+            };
+            return tData;
+          }
       );
       return data;
     },
     /* 刷新表格 */
-    reload({ leftWhere, rightWhere }) {
-      this.$refs.newTable.reload({ page: 1, where: leftWhere });
-      this.$refs.table.reload({ page: 1, where: rightWhere });
+    reload(where) {
+      this.$refs.table1.reload({ page: 1, where: where });
     },
-    /* 打开编辑弹窗 */
-    openEdit(row) {
-      this.current = row;
-      this.showEdit = true;
+    reload2(where) {
+      this.$refs.table2.reload({ page: 1, where: where });
     },
-    /* 打开导入弹窗 */
-    openImport() {
-      this.showImport = true;
+    handleTable1RowClick(row) {
+      this.selectedDeptTwoName = row.Dept_two_name;
+    
+      this.reload2();
     },
-    async returnData(where) {
-      // 获取选中行的数据
-      const selectedData = this.selection;
-      // 判断是否有选中的数据
-      if (selectedData.length === 0) {
-        this.$message.warning('请选择需要归还的行');
-        return;
-      }
-      try {
-        // 显示确认框
-        const confirmResult = await this.$confirm(
-          '确认要归还吗？',
-          '提示',
-          {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
-          }
-        );
-
-        if (confirmResult) {
-          // 显示加载提示
-          // const loadingInstance = this.$message.loading({
-          //   message: '处理中...',
-          //   duration: 0
-          // });
-          // 调用封装的标记处理方法
-          const responseData = await Temporary_supplyRevert(selectedData);
-
-          this.$message.success(responseData);
-          // 关闭加载提示
-          //loadingInstance.close();
-          // 根据响应结果处理
-          if (responseData.code == 200) {
-            this.$message.success(responseData.msg);
-            // 刷新表格
-            this.reload({ leftWhere: {}, rightWhere: {} });
-          } else {
-            this.$message.error(responseData.msg);
-          }
-        }
-      } catch (error) {
-        if (error.message.includes('timeout')) {
-          // this.$message.error('请求超时，请检查网络');
-        } else {
-          //this.$message.error('请求出错，请检查网络');
-        }
-      }
-    },
-    exportData({ leftWhere, rightWhere }) {
+    
+    exportData(data) {
       const loading = this.$messageLoading('正在导出数据...');
-      // 这里假设只导出右侧表格数据，可按需修改
-      this.$refs.table.doRequest(({ order }) => {
+      this.$refs.table1.doRequest(({ where, order }) => {
+        where = data;
+        where.Dept_One_Code = this.$store.state.user.info.DeptNow.Dept_Two_Code;
         GetPDAList({
           page: 1,
           limit: 999999,
-          where: rightWhere,
+          where: where,
           order: order
         })
           .then((res) => {
@@ -252,21 +264,27 @@ export default {
 </script>
 
 <style scoped>
-.table-container {
+.card-container {
   display: flex;
-  gap: 10px; /* 中间分割间距 */
+  gap: 1mm;
+  height: 100%;
 }
 
-.table-container > ele-pro-table:first-child {
-  flex: 0 0 20%; /* 新增表格占 20% */
+.left-card {
+  width: 25%;
+  height: 100%;
 }
 
-.table-container > ele-pro-table:last-child {
-  flex: 1; /* 已有表格占剩余部分 */
+.right-card {
+  width: calc(75% - 1mm);
+  height: 100%;
 }
 
-.table-separator {
-  width: 10px;
-  background-color: transparent; /* 分割线颜色，可根据需要修改 */
+.ele-body.full-height {
+  height: 100vh;
 }
-</style>
+
+.ele-pro-table {
+  height: 75vh;/* 减去搜索框和其他元素的高度 */
+}
+</style>     

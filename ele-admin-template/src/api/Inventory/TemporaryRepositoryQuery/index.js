@@ -69,3 +69,35 @@ export async function Temporary_supplyRevert(data) {
         throw error;
     }
 }
+
+
+// 
+export async function initTemporary1(data) {
+    const { page, limit, where = {}, order = '', field = '' } = data;
+    const requestData = {
+        page,
+        size: limit,
+        Dept_two_Code: where.temporary2_search_inp2 || ''
+    };
+    // 假设服务器端接口支持 GET 方法
+    return sendRequest('/DeptTwoDefNoPkgTmpStorage/LoadDeptTwo', requestData, 'get'); 
+}
+
+
+// 
+export async function initTemporary2(data) {
+    const { page, limit, where = {}, order = '', field = '' } = data;
+    
+    const requestData = {
+        page,
+        size: limit,
+        condition: where.temporary2_search_inp || '',
+        deptName: where.deptName || '',
+        startDate: where.start_time || '',
+        endDate: where.end_time || '',
+        order:'',
+        field
+    };
+    // 假设服务器端接口支持 GET 方法
+    return sendRequest('/DeptTwoDefNoPkgTmpStorage/GetHistoryTmp', requestData, 'get'); 
+}
