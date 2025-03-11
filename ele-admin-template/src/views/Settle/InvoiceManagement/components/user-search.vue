@@ -47,7 +47,7 @@
       </el-col>
     </el-row>
     <el-row :gutter="5" style="margin-top: 10px;">
-      <el-col v-bind="styleResponsive ? { lg: 5, md: 12 } : { span: 6 }">
+      <el-col v-bind="styleResponsive ? { lg: 6, md: 12 } : { span: 6 }">
         <label>
           供应商是否允许开票：
           <el-select style="width: 140px;" v-model="where.EBS_CAN_SEND_INVOICE" size="mini" placeholder="请选择状态">
@@ -55,7 +55,7 @@
             <el-option label="允许开票" value="1"></el-option>
           </el-select>
         </label>
-        <label>一键审批</label>
+        <label style="margin-left: 10px;">一键审批</label>
         <el-switch v-model="IS_EXAMINE"></el-switch>
       </el-col>
       
@@ -66,28 +66,28 @@
           </el-button>
           <el-popconfirm class="ele-action" title="确定取消审批？" @confirm="CancelExamineBtn()">
             <template v-slot:reference>
-              <el-button type="warning" size="mini">取消审批</el-button>
+              <el-button type="danger" size="mini">取消审批</el-button>
             </template>
           </el-popconfirm>
           <el-popconfirm class="ele-action" title="确定审批？" @confirm="ExamineBtn()">
             <template v-slot:reference>
-              <el-button type="success" size="mini">确定审批</el-button>
+              <el-button type="primary" size="mini">确定审批</el-button>
             </template>
           </el-popconfirm>
           <el-popconfirm class="ele-action" title="确定发票签收？" @confirm="ReceiptInvoiceBtn()">
             <template v-slot:reference>
-              <el-button type="success" size="mini">发票签收</el-button>
+              <el-button type="primary" size="mini">发票签收</el-button>
             </template>
           </el-popconfirm>
           <el-popconfirm class="ele-action" title="确定取消签收？" @confirm="CancelReceiptInvoiceBtn()">
             <template v-slot:reference>
-              <el-button type="warning" size="mini">取消签收</el-button>
+              <el-button type="danger" size="mini">取消签收</el-button>
             </template>
           </el-popconfirm>
 
-          <el-button type="success" size="mini" @click="BillingDdviceBtn(1)">通知供应商开票通知</el-button>
-          <el-button type="warning" size="mini" @click="BillingDdviceBtn(0)">取消供应商开票通知</el-button>
-          <el-button type="success" size="mini" icon="el-icon-download" @click="exportData()">导出</el-button>
+          <el-button type="primary" size="mini" @click="BillingDdviceBtn(1)">通知供应商开票通知</el-button>
+          <el-button type="danger" size="mini" @click="BillingDdviceBtn(0)">取消供应商开票通知</el-button>
+          <el-button type="primary" size="mini" icon="el-icon-download" @click="exportData()">导出</el-button>
         </div>
       </el-col>
     </el-row>
@@ -105,7 +105,8 @@ export default {
       MONTHBILLNUM: '',
       SUPPLIER_NAME: '',
       MONTHLY_TIME: [],
-      EBS_CAN_SEND_INVOICE: '0'
+      EBS_CAN_SEND_INVOICE: '0',
+      QSSTATE: '',
     };
     return {
       // 表单数据
@@ -136,7 +137,11 @@ export default {
     CancelReceiptInvoiceBtn() {
       this.$emit('CancelReceiptInvoiceBtn');
     },
-    BillingDdviceBtn(data) {
+    BillingDdviceBtn(state) {
+      var data ={
+        state:state,
+        IS_EXAMINE:this.IS_EXAMINE
+      }
       this.$emit('BillingDdviceBtn', data);
     },
     /*  重置 */

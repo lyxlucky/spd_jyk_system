@@ -3,7 +3,7 @@
     <el-card shadow="never">
       <!-- 数据表格 -->
       <user-search @search="reload" @BillingDdviceBtn="BillingDdviceFun" @exportData="exportData" @ExamineBtn="ExamineFun" @CancelExamineBtn="CancelExamineFun" @ReceiptInvoiceBtn="ReceiptInvoiceFun" @CancelReceiptInvoiceBtn="CancelReceiptInvoiceFun" />
-      <ele-pro-table ref="table" :rowClickCheckedIntelligent="false" :rowClickChecked="true" :initLoad="false" :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" @selection-change="onSelectionChange" highlight-current-row cache-key="InvoiceManagementTable">
+      <ele-pro-table ref="table" height="65vh" :rowClickCheckedIntelligent="false" :rowClickChecked="true" :initLoad="true" :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" @selection-change="onSelectionChange" highlight-current-row cache-key="InvoiceManagementTable">
         <!-- 表头工具栏 -->
         <template v-slot:toolbar>
         </template>
@@ -26,6 +26,22 @@
           <!-- <el-link>{{ row.MONTHBILLNUM}}</el-link> -->
           <el-link target="_blank" @click="ShowMONTHBILLNUM(row.MONTHBILLNUM)">{{ row.MONTHBILLNUM}}</el-link>
         </template>
+
+        <template v-slot:PIC_URL="{ row }">
+          <div style="display: flex">
+
+            <a style="width: 20px;height: 20px;" v-if="row?.PIC_URL.indexOf('pdf') !=-1" :href="BACK_BASE_URL + '/Upload/InvoicePic/' + row.PIC_URL" target='_blank' lay-event="InovoIcPicPdf">pdf文件</a>
+            <img style="width: 20px;height: 20px;" v-else-if="row?.PIC_URL != undefined" @click="showImage(row.PIC_URL)" :src="BACK_BASE_URL + '/Upload/InvoicePic/' + row.PIC_URL" />
+            <label v-else>无图片</label>
+            <!-- <img
+              style="width: 20px;height: 20px;"
+              v-else-if="row?.PIC_URL != undefined"
+              @click="showImage(row.PIC_URL_1)"
+              :src="BACK_BASE_URL + '/Upload/InvoicePic/' + row.PIC_URL"
+              alt="品种注册证"
+            /> -->
+          </div>
+        </template>
       </ele-pro-table>
     </el-card>
     <!-- 编辑弹窗 -->
@@ -40,6 +56,7 @@
 import { utils, writeFile } from 'xlsx';
 import UserSearch from './components/user-search.vue';
 import AuthVarTable from './components/AuthVarTable.vue';
+import { B2B_BASE_URL } from '@/config/setting';
 import {
   GetInvoiceManagement,
   SuerAuditNo,
@@ -84,14 +101,14 @@ export default {
         //   showOverflowTooltip: true,
         //   fixed: 'left'
         // },
-        {
-          prop: 'MONTH_ID',
-          label: '月结ID',
+        // {
+        //   prop: 'MONTH_ID',
+        //   label: '月结ID',
 
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 80
-        },
+        //   align: 'center',
+        //   showOverflowTooltip: true,
+        //   minWidth: 80
+        // },
         {
           prop: 'MONTHLY_BALANCE_NUMBER',
           label: '月结单号',
@@ -113,19 +130,26 @@ export default {
           slot: 'MONTHBILLNUM',
           // prop: 'MONTHBILLNUM',
           label: '发票号',
-
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 200
         },
         {
-          prop: 'BATCH_ID',
-          label: '批次号',
-
+          slot: 'PIC_URL',
+          // prop: 'PIC_URL',
+          label: '发票图片',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 80
+          minWidth: 150
         },
+        // {
+        //   prop: 'BATCH_ID',
+        //   label: '批次号',
+
+        //   align: 'center',
+        //   showOverflowTooltip: true,
+        //   minWidth: 80
+        // },
         {
           prop: 'SUPPLIER_NAME',
           label: '供应商名称',
@@ -142,14 +166,14 @@ export default {
           showOverflowTooltip: true,
           minWidth: 80
         },
-        {
-          prop: 'PROVINCE_PLATFORM_CODE',
-          label: '省平台编码',
-          align: 'center',
+        // {
+        //   prop: 'PROVINCE_PLATFORM_CODE',
+        //   label: '省平台编码',
+        //   align: 'center',
 
-          width: 100,
-          showOverflowTooltip: true
-        },
+        //   width: 100,
+        //   showOverflowTooltip: true
+        // },
         // {
         //   prop: 'VARIETIE_CODE',
         //   label: 'PAD扫码数量',
@@ -253,7 +277,10 @@ export default {
           align: 'center',
 
           width: 180,
-          showOverflowTooltip: true
+          showOverflowTooltip: true,
+          formatter(row, column, cellValue) {
+            return cellValue.substr(0, 10);
+          }
         },
         {
           prop: 'FPQS_MAN',
@@ -281,7 +308,7 @@ export default {
         },
         {
           prop: 'LS_IS_JC',
-          label: '是否集采(时限)',
+          label: '是否集采',
           align: 'center',
 
           width: 80,
@@ -296,29 +323,32 @@ export default {
             }
           }
         },
-        {
-          prop: 'JC_REMARK',
-          label: '集采备注',
-          align: 'center',
+        // {
+        //   prop: 'JC_REMARK',
+        //   label: '集采备注',
+        //   align: 'center',
 
-          width: 100,
-          showOverflowTooltip: true
-        },
-        {
-          prop: 'SEND_WXT_MARK',
-          label: '微讯通月份',
-          align: 'center',
+        //   width: 100,
+        //   showOverflowTooltip: true
+        // },
+        // {
+        //   prop: 'SEND_WXT_MARK',
+        //   label: '微讯通月份',
+        //   align: 'center',
 
-          width: 100,
-          showOverflowTooltip: true
-        },
+        //   width: 100,
+        //   showOverflowTooltip: true
+        // },
         {
           prop: 'BATCH_PRODUCTION_DATE',
           label: '生产日期',
           align: 'center',
 
           width: 180,
-          showOverflowTooltip: true
+          showOverflowTooltip: true,
+          formatter(row, column, cellValue) {
+            return cellValue.substr(0, 10);
+          }
         },
         {
           prop: 'BATCH_VALIDITY_PERIOD',
@@ -326,16 +356,19 @@ export default {
           align: 'center',
 
           width: 180,
-          showOverflowTooltip: true
+          showOverflowTooltip: true,
+          formatter(row, column, cellValue) {
+            return cellValue.substr(0, 10);
+          }
         },
-        {
-          prop: 'BILLFPNUM',
-          label: '发票',
-          align: 'center',
+        // {
+        //   prop: 'BILLFPNUM',
+        //   label: '发票',
+        //   align: 'center',
 
-          width: 180,
-          showOverflowTooltip: true
-        },
+        //   width: 180,
+        //   showOverflowTooltip: true
+        // },
         {
           prop: 'PRICE',
           label: '价格',
@@ -401,14 +434,14 @@ export default {
           width: 80,
           showOverflowTooltip: true
         },
-        {
-          prop: 'HIGH_OR_LOW_CLASS',
-          label: '高低值分类',
-          align: 'center',
+        // {
+        //   prop: 'HIGH_OR_LOW_CLASS',
+        //   label: '高低值分类',
+        //   align: 'center',
 
-          width: 80,
-          showOverflowTooltip: true
-        },
+        //   width: 80,
+        //   showOverflowTooltip: true
+        // },
         {
           prop: 'EBS_CAN_SEND_INVOICE',
           label: '是否发送',
@@ -435,7 +468,7 @@ export default {
         // },
       ],
       toolbar: false,
-      pageSize: 10,
+      pageSize: 20,
       pageSizes: [10, 20, 50, 100, 9999999],
       pagerCount: 5,
       // 表格选中数据
@@ -465,6 +498,12 @@ export default {
         }
       );
       return data;
+    },
+    showImage(src) {
+      let imageSrc = B2B_BASE_URL + this.imageSrcPre + src;
+      this.$viewerApi({
+        images: [imageSrc]
+      });
     },
     /* 刷新表格 */
     reload(where) {
@@ -725,21 +764,37 @@ export default {
           this.$message.error(err);
         });
     },
-    BillingDdviceFun(state) {
-      if (this.selection.length <= 0) {
+    BillingDdviceFun(dataInarry) {
+      if (dataInarry.IS_EXAMINE == false && this.selection.length <= 0) {
         this.$message.warning('请选择数据!');
         return;
       }
+      // if (this.selection.length <= 0) {
+      //   this.$message.warning('请选择数据!');
+      //   return;
+      // }
       const loading = this.$messageLoading('处理中..');
 
       var data = [];
-      this.selection.forEach((item) => {
-        var dataStr = {
-          ID: item.ID,
-          STATE: state
-        };
-        data.push(dataStr);
-      });
+
+      if (dataInarry.IS_EXAMINE == false) {
+        this.selection.forEach((item) => {
+          var dataStr = {
+            ID: item.ID,
+            STATE: dataInarry.state
+          };
+          data.push(dataStr);
+        });
+      } else if (dataInarry.IS_EXAMINE == true) {
+        this.data.forEach((item) => {
+          var dataStr = {
+            ID: item.ID,
+            STATE: dataInarry.state
+          };
+          data.push(dataStr);
+        });
+      }
+
       BillingDdvice(data)
         .then((res) => {
           loading.close();
