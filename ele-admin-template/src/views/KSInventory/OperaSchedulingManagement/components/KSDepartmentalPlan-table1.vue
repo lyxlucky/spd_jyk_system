@@ -1,7 +1,7 @@
 <template>
   <div class="ele-body" v-if="RenderTabel">
     <!-- 数据表格 -->
-    <ele-pro-table :key="key" highlight-current-row @selection-change="handleSelectionChange" :="(row) => row.ID" @current-change="onCurrentChange" ref="table" height="18vh" :rowClickChecked="true" :rowClickCheckedIntelligent="false" :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" :needPage="true" cache-key="naxtDayApplyPlanMainTable">
+    <ele-pro-table :key="key" :reserve-selection="true" highlight-current-row :row-key="(row) => row.PlanNum" @current-change="onCurrentChange" ref="table" height="18vh" :rowClickChecked="true" :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" :needPage="false" cache-key="KSInventoryBasicDataTable">
       <!-- 表头工具栏 -->
       <template v-slot:toolbar>
         <!-- 搜索表单 -->
@@ -31,9 +31,8 @@
       <!-- <template v-slot:action="{ row }">
         <el-button type="primary" icon="el-icon-plus" size="mini" @click="remove(row)">保存</el-button>
       </template> -->
+      <user-edit :visible.sync="showEdit" :data="current" @done="reload" />
     </ele-pro-table>
-
-    <user-edit :visible.sync="showEdit" :data="current" @done="reload" />
   </div>
 </template>
 
@@ -47,10 +46,19 @@ import {
   DeleteNaxtDayApplyPlanMain
 } from '@/api/KSInventory/OperaSchedulingManagement';
 
+// import KSDepartmentalPlanSearch from './KSDepartmentalPlan-search.vue';
+import {
+  SerachPlanList,
+  DeletePlanList,
+  SearchHistoryConsumedAndPurchaseDept,
+  ReturnInitState
+} from '@/api/KSInventory/KSDepartmentalPlan';
+import { getDeptAuthVarNew } from '@/api/KSInventory/KSInventoryBasicData';
 export default {
-  name: 'naxtDayApplyPlanMainTable',
+  name: 'KSDepartmentalPlanTable',
   props: ['IsReload'],
   components: {
+    // KSDepartmentalPlanSearch,
     naxtDayApplyPlanMainSearch,
     userEdit
   },
@@ -171,9 +179,9 @@ export default {
         }
       ],
       toolbar: false,
-      pageSize: 5,
+      pageSize: 9999999,
       pagerCount: 2,
-      pageSizes: [5, 10, 20, 50, 100, 9999999],
+      pageSizes: [2, 10, 20, 50, 100, 9999999],
       // 表格选中数据
       selection: [],
       // 当前编辑数据
@@ -188,8 +196,7 @@ export default {
       applyPlanXhz: 0,
       applyPlanBl: '0%',
       key: 0,
-      RenderTabel: true,
-      formData: []
+      RenderTabel: true
     };
   },
   mounted() {
@@ -224,7 +231,9 @@ export default {
 
       return data;
     },
-    openUserEdit() {
+    openUserEdit(data) {
+      console.log(1)
+      console.log(data)
       this.showEdit = true;
       // this.$bus.$emit(`${this.$route.path}/handleUpdate`, this.selection);
     },
@@ -323,7 +332,6 @@ export default {
   },
   created() {
     // this.getdatasource();
-    this.GetConsume();
   },
   // 取消监听bus事件
   destroyed() {

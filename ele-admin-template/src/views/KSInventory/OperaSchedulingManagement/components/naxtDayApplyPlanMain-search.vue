@@ -55,7 +55,7 @@
       </el-col>
 
     </el-row>
-    <SurgicalScheduling :visible.sync="showEdit" :SurgicalSchedulingSearch="KSDepartmentalPlanDataSearch" @reload="search" />
+    <SurgicalScheduling :visible.sync="showEdit" @reload="search" />
   </el-form>
 </template>
 

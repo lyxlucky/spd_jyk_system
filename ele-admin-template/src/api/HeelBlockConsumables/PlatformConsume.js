@@ -134,3 +134,36 @@ export async function RemoveVarieties(data) {
         return Promise.reject(new Error(res.data.msg));
     }
 }
+
+export async function UpdatePatientInfo(data) {
+    let formataData = {}
+    formataData.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+    formataData.deliveryNoteNumber = data.deliveryNoteNumber;
+    formataData.hospitalizationNumber = data.hospitalizationNumber;
+    formataData.patient = data.patient;
+    let req = formdataify(formataData);
+    const res = await request.post('/B2BConsumeMgmt/UpdatePatientInfo', req);
+    if (res.data.code == 200) {
+        return res.data;
+    } else {
+        return Promise.reject(new Error(res.data.msg));
+    }
+}
+
+export async function SubmitConsumeVarieties(data) {
+    console.log(data)
+    var data2 = {};
+    data2.id = data.id ? data.id : '';
+    data2.staff = data.staff ? data.staff : '';
+    data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+    // var rep = formdataify(data2);
+    const res = await request.get('/B2BConsumeMgmt/SubmitConsumeVarieties', {
+        params: data2
+    });
+    if (res.data.code == 200) {
+        return res.data;
+    } else {
+        return Promise.reject(new Error(res.data.msg));
+    }
+}
+

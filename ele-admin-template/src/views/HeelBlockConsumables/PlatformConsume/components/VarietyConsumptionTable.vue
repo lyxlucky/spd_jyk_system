@@ -5,7 +5,7 @@
     <ele-pro-table style="height: 30vh;" highlight-current-row :rowClickCheckedIntelligent="false" @current-change="onCurrentChange" :row-class-name="tableRowClassName" ref="table" :rowClickChecked="true" :stripe="false" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :needPage="true" :datasource="datasource" :selection.sync="selection" cache-key="ApplyTempTable">
       <!-- 表头工具栏 -->
       <template v-slot:toolbar>
-        <el-button size="mini" type="primary" class="ele-btn-icon">提交</el-button>
+        <el-button size="mini" type="primary" class="ele-btn-icon" @click="SubmitConsumeVarietiesFun">提交</el-button>
         <el-popconfirm class="ele-action" title="确定删除？" @confirm="remove">
           <template v-slot:reference>
             <el-button size="mini" type="danger" class="ele-btn-icon">删除</el-button>
@@ -73,15 +73,11 @@
 
 <script>
 import AdvanceReceiptNumberSearch from './AdvanceReceiptNumberSearch.vue';
-import {
-  SerachTempletList,
-  DeleteTemplet,
-  EditTempName
-} from '@/api/KSInventory/ApplyTemp';
 import { HOME_HP } from '@/config/setting';
 import {
   LoadDeliveryConsumedVarietie,
-  RemoveVarieties
+  RemoveVarieties,
+  SubmitConsumeVarieties
 } from '@/api/HeelBlockConsumables/PlatformConsume';
 export default {
   name: 'ApplyTempTable',
@@ -269,34 +265,7 @@ export default {
     reload(where) {
       this.$refs.table.reload({ page: 1, where: where });
     },
-    editTempletName(code) {
-      this.$prompt('请输入模板名称', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消'
-      })
-        .then(({ value }) => {
-          EditTempName({
-            TempCode: code,
-            TempName: value
-          })
-            .then((res) => {
-              if (res?.code != 200) return this.$message.error(res?.msg);
-              this.$message.success(res?.msg);
-            })
-            .catch((err) => {
-              this.$message.error(err);
-            })
-            .finally(() => {
-              this.reload(this.where);
-            });
-        })
-        .catch(() => {
-          this.$message({
-            type: 'info',
-            message: '取消输入'
-          });
-        });
-    },
+
     onDone(res) {
       // console.log('res:', res);
       // 例如选中第一条数据
@@ -341,6 +310,38 @@ export default {
       } else {
         return '';
       }
+    },
+    SubmitConsumeVarietiesFun() {
+      if(this.ApplyTempTableData == undefined){
+        this.$message.warning("请选择一条数据!")
+        return;
+      }
+      let loading = this.$messageLoading('提交中...');
+      var data = {
+        id: this.ApplyTempTableData.Delivery_Note_Number_Id,
+        staff: this.$store.state.user.info.Nickname
+      };
+
+      SubmitConsumeVarieties(data)
+        .then((res) => {
+          loading.close();
+          if (res.code == 200) {
+            this.$message.success(res.msg);
+          } else {
+            this.$message.error(res.msg);
+            this.$emit('search');
+          }
+        })
+        .catch((err) => {
+          loading.close();
+          this.$message.error(err);
+        })
+        .finally((res) => {
+          this.$emit('search');
+          this.$nextTick(() => {
+            this.$refs.input.focus();
+          });
+        });
     }
   },
   computed: {
