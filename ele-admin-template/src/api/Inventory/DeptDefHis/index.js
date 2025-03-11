@@ -1,7 +1,7 @@
 import request from '@/utils/request';
 import { formdataify, DataToObject } from '@/utils/formdataify';
 import { TOKEN_STORE_NAME } from '@/config/setting';
-import { Message } from 'element-ui';
+import store from '@/store/index.js';
 // 封装通用的请求函数
 async function sendRequest(url, data, method = 'post') {
     const token = sessionStorage.getItem(TOKEN_STORE_NAME);
@@ -23,22 +23,23 @@ async function sendRequest(url, data, method = 'post') {
     }
 }
 
-// 获取溯源记录列表
+// 
 export async function GetPDAList(data) {
     const { page, limit, where = {}, order = '', field = '' } = data;
     const requestData = {
         page,
         size: limit,
-        condition: where.ks_gs1_search_inp || '',
-        bhOrYs: where.ks_gs1_search_bhOrYs || '',
-        startTime: where.ks_UseTimeStart || '',
-        endTime: where.ks_UseTimeEnd || '',
-        IsEnd: '',
-        order:'',
-        field
+        deptTwoName: where.deptTwoName || '',
+        varietie: where.varietie || '',
+        specType: where.specType || '',
+        defNoPkgCode: where.defNoPkgCode || '',
+        contractCode: where.contractCode || '',
+        supplierName: where.supplierName || '',
+        auth_dept_two_codes:'' // store.state.user.info.DeptNow.Dept_Two_Name,
+       
     };
     // 假设服务器端接口支持 GET 方法
-    return sendRequest('/GS1/Search', requestData, 'get'); 
+    return sendRequest('/DeptConsume/SerachDef2Consume4LuoHu', requestData, 'post'); 
 }
 
 
