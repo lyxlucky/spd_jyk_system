@@ -29,8 +29,8 @@
 
         <template v-slot:PIC_URL="{ row }">
           <div style="display: flex">
-
-            <a style="width: 20px;height: 20px;" v-if="row?.PIC_URL.indexOf('pdf') !=-1" :href="BACK_BASE_URL + '/Upload/InvoicePic/' + row.PIC_URL" target='_blank' lay-event="InovoIcPicPdf">pdf文件</a>
+            <label v-if="row?.PIC_URL == undefined">无图片</label>
+            <a style="width: 20px;height: 20px;" v-else-if="row?.PIC_URL.indexOf('pdf') !=-1" :href="BACK_BASE_URL + '/Upload/InvoicePic/' + row.PIC_URL" target='_blank' lay-event="InovoIcPicPdf">pdf文件</a>
             <img style="width: 20px;height: 20px;" v-else-if="row?.PIC_URL != undefined" @click="showImage(row.PIC_URL)" :src="BACK_BASE_URL + '/Upload/InvoicePic/' + row.PIC_URL" />
             <label v-else>无图片</label>
             <!-- <img
