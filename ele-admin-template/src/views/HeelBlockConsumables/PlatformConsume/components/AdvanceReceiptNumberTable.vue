@@ -2,7 +2,7 @@
   <div class="ele-body">
     <AdvanceReceiptNumberSearch @search="reload" @platformConsumeEditShow="platformConsumeEditShow" :rowData="current" />
 
-    <AdvanceReceiptNumberEdit :visible.sync="showEdit" :rowData="current" />
+    <AdvanceReceiptNumberEdit @search="reload" :visible.sync="showEdit" :rowData="current" />
     <!-- 数据表格 -->
     <ele-pro-table style="height: 30vh;" highlight-current-row @current-change="onCurrentChange" :row-class-name="tableRowClassName" ref="table" :rowClickChecked="true" :stripe="false" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :needPage="true" :datasource="datasource" :selection.sync="selection" cache-key="ApplyTempTable">
       <!-- 表头工具栏 -->
@@ -77,7 +77,10 @@ import {
   EditTempName
 } from '@/api/KSInventory/ApplyTemp';
 import { HOME_HP } from '@/config/setting';
-import { SearchGoodsDeliveryNumbers } from '@/api/HeelBlockConsumables/PlatformConsume';
+import {
+  SearchGoodsDeliveryNumbers,
+  UpdatePatientInfo
+} from '@/api/HeelBlockConsumables/PlatformConsume';
 export default {
   name: 'ApplyTempTable',
   components: {
@@ -114,19 +117,19 @@ export default {
         },
         {
           prop: 'Hospitalization_Number',
-          label: '常规',
+          label: '住院号',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110
         },
-        {
-          prop: 'Operater',
-          label: '住院号',
-          // sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 70
-        },
+        // {
+        //   prop: 'Operater',
+        //   label: '住院号',
+        //   // sortable: 'custom',
+        //   align: 'center',
+        //   showOverflowTooltip: true,
+        //   minWidth: 70
+        // },
         {
           prop: 'Patient',
           label: '病患',
@@ -139,7 +142,7 @@ export default {
           label: '使用科室',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 80
+          minWidth: 120
         },
         {
           prop: 'Receive_Receipt_State',
@@ -224,7 +227,12 @@ export default {
       this.$refs.table.reload({ page: 1, where: where });
     },
     platformConsumeEditShow(data) {
-      this.showEdit = true;
+      if (this.current == undefined) {
+        this.$message.info('请选择一条数据！');
+        return;
+      } else {
+        this.showEdit = true;
+      }
     },
     editTempletName(code) {
       this.$prompt('请输入模板名称', '提示', {

@@ -4,18 +4,21 @@
     <el-form ref="form" :model="form" label-width="130px">
       <el-row :gutter="18">
         <el-col v-bind="styleResponsive ? { sm: 20 } : { span: 20 }">
-          <el-form-item label="扫码绑定定数包：" prop="bindDef">
-            <el-input ref="input" v-model="form.bindDef"></el-input>
+          <el-form-item label="收货单号">
+            <el-input ref="input" v-model="form.deliveryNoteNumber"></el-input>
           </el-form-item>
-          <el-form-item label="类型：" prop="type">
-            <el-input ref="input" v-model="form.type"></el-input>
+          <el-form-item label="住院号">
+            <el-input ref="input" v-model="form.hospitalizationNumber"></el-input>
+          </el-form-item>
+          <el-form-item label="病患">
+            <el-input ref="input" v-model="form.patient"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
     </el-form>
     <template v-slot:footer>
       <el-button @click="updateVisible(false)">取消</el-button>
-      <el-button type="primary" @click="BindInstrument()">
+      <el-button type="primary" @click="BindInstrumentFun()">
         保存
       </el-button>
     </template>
@@ -23,7 +26,7 @@
 </template>
 
 <script>
-import { bindUseMachin } from '@/api/KSInventory/LrJykInstrument';
+import { UpdatePatientInfo } from '@/api/HeelBlockConsumables/PlatformConsume';
 
 export default {
   components: {},
@@ -37,8 +40,9 @@ export default {
     return {
       // 表单数据
       form: {
-        bindDef: null,
-        type: '0'
+        deliveryNoteNumber: null,
+        hospitalizationNumber: null,
+        patient: null
       },
       Title: '',
       // 表单验证规则
@@ -75,12 +79,8 @@ export default {
       return this.$store.state.theme.styleResponsive;
     }
   },
-  created() {
-    console.log(this.form);
-    // this.defaultForm.CONVERSION_RATIO = this.data.CONVERSION_RATIO;
-    // this.defaultForm.CLASS_NUM = this.data.CLASS_NUM == null ? "0": this.data.CLASS_NUM;
-    // this.defaultForm.DEVICE_REMARK = this.data.DEVICE_REMARK;
-  },
+  mounted() {},
+  created() {},
   methods: {
     /* 保存编辑 */
     save() {
@@ -104,42 +104,29 @@ export default {
       this.$emit('update:visible', value);
     },
 
-    BindInstrument() {
-      console.log(this.data);
-      // let loading = this.$messageLoading('绑定中...');
-      // let data = {
-      //   BIND_MACHINE: this.data.INSTRUMENT_CODE,
-      //   bindDef: this.form.bindDef,
-      //   type: this.form.type
-      // };
-      // bindUseMachin(data)
-      //   .then((res) => {
-      //     loading.close();
-      //     this.form = {
-      //       bindDef: '',
-      //       type: '0'
-      //     };
-      //     if (res.code == 200) {
-      //       // this.$message.success('绑定成功');
-      //       this.$message.success(res.msg);
-      //     } else {
-      //       this.$message.error(res.msg);
-      //       this.$emit('search');
-      //     }
-      //   })
-      //   .catch((err) => {
-      //     loading.close();
-      //     this.form = {
-      //       bindDef: '',
-      //       type: '0'
-      //     };
-      //     this.$message.error(err);
-      //   })
-      //   .finally((res) => {
-      //     this.$nextTick(() => {
-      //       this.$refs.input.focus();
-      //     });
-      //   });
+    BindInstrumentFun() {
+      let loading = this.$messageLoading('修改中...');
+
+      UpdatePatientInfo(this.form)
+        .then((res) => {
+          loading.close();
+          if (res.code == 200) {
+            this.$message.success(res.msg);
+          } else {
+            this.$message.error(res.msg);
+            this.$emit('search');
+          }
+        })
+        .catch((err) => {
+          loading.close();
+          this.$message.error(err);
+        })
+        .finally((res) => {
+          this.$emit('search');
+          this.$nextTick(() => {
+            this.$refs.input.focus();
+          });
+        });
     }
   },
   watch: {
@@ -148,9 +135,11 @@ export default {
     },
     visible(visible) {
       this.form = {
-        bindDef: '',
-        type: '0'
+        deliveryNoteNumber: this.rowData.Delivery_Note_Number,
+        hospitalizationNumber: this.rowData.Hospitalization_Number,
+        patient: this.rowData.Patient
       };
+
       this.$nextTick(() => {
         this.$refs.input.focus();
       });

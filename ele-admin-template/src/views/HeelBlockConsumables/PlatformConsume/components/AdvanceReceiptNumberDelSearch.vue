@@ -34,6 +34,12 @@
               @click="search"
               >UDI扫码添加</el-button
             >
+            <el-button
+              size="mini"
+              type="primary"
+              @click="search"
+              >添加</el-button
+            >
           </div>
         </el-col>
       </el-row>

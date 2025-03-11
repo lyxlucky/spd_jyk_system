@@ -3,17 +3,13 @@
     <el-container>
       <el-header height="350">
         <el-card shadow="always">
-          <!-- <div slot="header" class="clearfix">
-            <span>申领计划单列表</span>
-          </div> -->
+        
           <naxtDayApplyPlanMainTable @getCurrent="getCurrent" :IsReload="IsReloadTag"></naxtDayApplyPlanMainTable>
         </el-card>
       </el-header>
       <el-main style="padding-top: 1px">
         <el-card shadow="always">
-          <!-- <div slot="header" class="clearfix">
-            <span>申领单详情</span>
-          </div> -->
+      
           <naxtDayApplyPlanDelTable :KSDepartmentalPlanData="KSDepartmentalPlanData" @clickReload="clickReload" v-if="isActive"></naxtDayApplyPlanDelTable>
         </el-card>
       </el-main>
