@@ -28,6 +28,16 @@
           </el-form-item>
         </el-col>
 
+        <el-col v-bind="styleResponsive ? { lg: 2, md: 12 } : { span: 4 }">
+          <el-form-item>
+            <el-select v-model="where.spdState" size="mini" placeholder="请选择状态">
+              <el-option label="全部" value=""></el-option>
+              <el-option label="未发送" value="0"></el-option>
+              <el-option label="已发送" value="1"></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+
         <el-col v-bind="styleResponsive ? { lg: 12, md: 12 } : { span: 4 }">
           <el-form-item>
             <el-button
@@ -43,7 +53,7 @@
               type="danger"
               icon="el-icon-delete"
               @click="handleDelete"
-              :disabled="!isSelected"
+              :disabled="!isDeleted"
               >删除</el-button
             >
 
@@ -63,8 +73,6 @@
               @click="handlePushInvoice"
               >推送发票数据</el-button
             >
-
-
           </el-form-item>
         </el-col>
       </el-row>
@@ -74,10 +82,12 @@
 <script>
   export default {
     name: 'EbsSettlementDataTabaleSearch',
-    props:['selection'],
+    props: ['selection'],
     data() {
       return {
-        where: {}
+        where: {
+          spdState:"",
+        }
       };
     },
     methods: {
@@ -87,10 +97,10 @@
       handleDelete() {
         this.$emit('delete');
       },
-      handleGenerteInvoice(){
+      handleGenerteInvoice() {
         this.$emit('generteInvoice');
       },
-      handlePushInvoice(){
+      handlePushInvoice() {
         this.$emit('pushInvoice');
       }
     },
@@ -99,8 +109,11 @@
       styleResponsive() {
         return this.$store.state.theme.styleResponsive;
       },
-      isSelected(){
+      isSelected() {
         return this.selection.length > 0;
+      },
+      isDeleted() {
+        return this.selection.some(item => item.SPD_STATE == 0);
       }
     }
   };

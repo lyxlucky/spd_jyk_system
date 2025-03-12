@@ -65,14 +65,30 @@
             label: '业务实体',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 100
+            minWidth: 100,
+            formatter(row, column, cellValue) {
+              if (cellValue == 'PKUPH_OU') {
+                return '西直门';
+              }
+              if (cellValue == 'PKUPH_TZ_OU') {
+                return '通州';
+              }
+            }
           },
           {
             prop: 'INVOICE_TYPE',
             label: '发票类型',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 100
+            minWidth: 100,
+            formatter(row, column, cellValue) {
+              if (cellValue == 'STANDARD') {
+                return '标准发票';
+              }
+              if (cellValue == 'CREDIT') {
+                return '贷项通知单';
+              }
+            }
           },
           {
             prop: 'VENDOR_NUMBER',
@@ -107,7 +123,10 @@
             label: '发票入账日期',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 100
+            minWidth: 100,
+            formatter: (_row, _column, cellValue) => {
+              return this.$util.toDateString(cellValue, 'yyyy-MM-dd HH:mm:ss');
+            }
           },
           {
             prop: 'INVOICE_NUM',
@@ -162,7 +181,10 @@
             label: '推送时间',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 100
+            minWidth: 100,
+            formatter: (_row, _column, cellValue) => {
+              return this.$util.toDateString(cellValue, 'yyyy-MM-dd HH:mm:ss');
+            }
           },
           {
             prop: 'PROCESS_FLAG',
@@ -176,7 +198,10 @@
             label: '处理日期',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 100
+            minWidth: 100,
+            formatter: (_row, _column, cellValue) => {
+              return this.$util.toDateString(cellValue, 'yyyy-MM-dd HH:mm:ss');
+            }
           },
           {
             prop: 'ERROR_MESSAGE',
@@ -190,7 +215,10 @@
             label: 'SPD创建时间',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 100
+            minWidth: 100,
+            formatter: (_row, _column, cellValue) => {
+              return this.$util.toDateString(cellValue, 'yyyy-MM-dd HH:mm:ss');
+            }
           },
           {
             prop: 'SPD_CREATE_MAN',
@@ -204,6 +232,16 @@
             label: 'SPD发送时间',
             align: 'center',
             showOverflowTooltip: true,
+            minWidth: 100,
+            formatter: (_row, _column, cellValue) => {
+              return this.$util.toDateString(cellValue, 'yyyy-MM-dd HH:mm:ss');
+            }
+          },
+          {
+            prop: 'SPD_SEND_NAME',
+            label: 'SPD发送人',
+            align: 'center',
+            showOverflowTooltip: true,
             minWidth: 100
           },
           {
@@ -212,6 +250,21 @@
             align: 'center',
             showOverflowTooltip: true,
             minWidth: 100
+          },
+          {
+            prop: 'SPD_STATE',
+            label: 'SPD状态',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 100,
+            formatter(row, column, cellValue) {
+              if(cellValue == '0') {
+                return '未发送';
+              }
+              if(cellValue == '1'){
+                return '已发送';
+              }
+            }
           }
         ],
         toolbar: false,

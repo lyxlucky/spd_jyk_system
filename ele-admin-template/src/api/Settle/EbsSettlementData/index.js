@@ -9,7 +9,8 @@ export async function listPekingInvoice(data) {
     Token: sessionStorage.getItem(TOKEN_STORE_NAME),
     isHptx: data.where.isHptx ? data.where.isHptx : '',
     isYG: data.where.isYG ? data.where.isYG : '',
-    isDL: data.where.isDL ? data.where.isDL : ''
+    isDL: data.where.isDL ? data.where.isDL : '',
+    SPD_STATE: data.where.spdState ? data.where.spdState : ''
   };
   const res = await request.get('/PekingApplication/listPekingInvoice', {
     params: formatData
