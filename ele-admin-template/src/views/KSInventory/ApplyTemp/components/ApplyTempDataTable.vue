@@ -4,7 +4,10 @@
     <!-- 自定义指令实现当pageSizes改变时触发 -->
     <!-- :pageSize="pageSize" :pageSizes="pageSizes" -->
     <ApplyTempDataSearch
+      ref="Apply"
       @search="reload"
+      @addTempVar="$emit('addTempVar')" 
+      :IntroduceUserDefinedTempSearch="IntroduceUserDefinedTempSearch"
       @exportData="exportData"
       :ApplyTempTableDataSearch="ApplyTempTableDataSearch"
       :selection="selection"
@@ -86,7 +89,7 @@
   } from '@/api/KSInventory/ApplyTemp';
   export default {
     name: 'ApplyTempDataTable',
-    props: ['ApplyTempTableData'],
+    props: ['ApplyTempTableData','IntroduceUserDefinedTempSearch'],
     components: {
       ApplyTempDataSearch: ApplyTempDataSearch
     },
@@ -296,6 +299,21 @@
       };
     },
     methods: {
+      showDialogTableVisible() {
+        this.$refs.Apply.showDialogTableVisible();
+      },
+      showDialogTableVisible2() {
+        this.$refs.Apply.showDialogTableVisible2();
+      },
+      saveApplyNum() {
+        this.$refs.Apply.saveApplyNum();
+      },
+      exportChildData() {
+        this.$refs.Apply.exportData();
+      },
+      removeBatch() {
+        this.$refs.Apply.removeBatch();
+      },
       /* 表格数据源 */
       datasource({ page, limit, where, order }) {
         where.DeptCode = this.$store.state.user.info.DeptNow.Dept_Two_Code;
