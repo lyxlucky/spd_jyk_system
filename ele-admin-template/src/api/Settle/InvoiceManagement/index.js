@@ -22,7 +22,7 @@ export async function GetInvoiceManagement(data) {
   data2.SUPPLIER_NAME = data.where.SUPPLIER_NAME ? data.where.SUPPLIER_NAME : '';
   data2.MONTHLY_TIMEStart = data.where.MONTHLY_TIME && data.where.MONTHLY_TIME.length > 0 ? data.where.MONTHLY_TIME[0] : '';
   data2.MONTHLY_TIMEEnd = data.where.MONTHLY_TIME && data.where.MONTHLY_TIME.length > 0 ? data.where.MONTHLY_TIME[1] : '';
-  data2.EBS_CAN_SEND_INVOICE = data.where.EBS_CAN_SEND_INVOICE ? data.where.EBS_CAN_SEND_INVOICE : '0';
+  data2.EBS_CAN_SEND_INVOICE = data.where.EBS_CAN_SEND_INVOICE ? data.where.EBS_CAN_SEND_INVOICE : '';
 
 
 

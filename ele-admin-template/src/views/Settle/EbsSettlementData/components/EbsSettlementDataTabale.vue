@@ -102,7 +102,7 @@
             label: '供应商名称',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 100
+            minWidth: 180
           },
           {
             prop: 'VENDOR_SITE_CODE',
@@ -116,14 +116,17 @@
             label: '发票日期',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 100
+            minWidth: 120,
+            formatter: (_row, _column, cellValue) => {
+              return this.$util.toDateString(cellValue, 'yyyy-MM-dd');
+            }
           },
           {
             prop: 'GL_DATE',
             label: '发票入账日期',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 100,
+            minWidth: 120,
             formatter: (_row, _column, cellValue) => {
               return this.$util.toDateString(cellValue, 'yyyy-MM-dd HH:mm:ss');
             }
@@ -181,7 +184,7 @@
             label: '推送时间',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 100,
+            minWidth: 120,
             formatter: (_row, _column, cellValue) => {
               return this.$util.toDateString(cellValue, 'yyyy-MM-dd HH:mm:ss');
             }
@@ -198,7 +201,7 @@
             label: '处理日期',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 100,
+            minWidth: 120,
             formatter: (_row, _column, cellValue) => {
               return this.$util.toDateString(cellValue, 'yyyy-MM-dd HH:mm:ss');
             }
@@ -215,7 +218,7 @@
             label: 'SPD创建时间',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 100,
+            minWidth: 120,
             formatter: (_row, _column, cellValue) => {
               return this.$util.toDateString(cellValue, 'yyyy-MM-dd HH:mm:ss');
             }
@@ -232,17 +235,10 @@
             label: 'SPD发送时间',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 100,
+            minWidth: 120,
             formatter: (_row, _column, cellValue) => {
               return this.$util.toDateString(cellValue, 'yyyy-MM-dd HH:mm:ss');
             }
-          },
-          {
-            prop: 'SPD_SEND_NAME',
-            label: 'SPD发送人',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 100
           },
           {
             prop: 'SPD_SEND_NAME',
@@ -258,10 +254,10 @@
             showOverflowTooltip: true,
             minWidth: 100,
             formatter(row, column, cellValue) {
-              if(cellValue == '0') {
+              if (cellValue == '0') {
                 return '未发送';
               }
-              if(cellValue == '1'){
+              if (cellValue == '1') {
                 return '已发送';
               }
             }
@@ -299,6 +295,13 @@
         this.current = row;
       },
       handlePushInvoice() {
+        const ids = this.selection.map((item) => item.IFACE_ID).join(',');
+        if (this.selection.length == 0) {
+          return this.$message({
+            type: 'warning',
+            message: '请选择要推送的数据!'
+          });
+        }
         //二次确认
         this.$confirm('此操作将推送发票数据, 是否继续?', '提示', {
           confirmButtonText: '确定',
@@ -312,7 +315,6 @@
               spinner: 'el-icon-loading',
               background: 'rgba(0, 0, 0, 0.7)'
             });
-            const ids = this.selection.map((item) => item.IFACE_ID).join(',');
             pushPekingInvoice({ ids: ids })
               .then((res) => {
                 console.log(JSON.stringify(res));
@@ -382,6 +384,12 @@
           .finally(() => {});
       },
       handleDelete() {
+        if (this.selection.length == 0) {
+          return this.$message({
+            type: 'warning',
+            message: '请选择要删除的数据!'
+          });
+        }
         //二次确认
         this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
           confirmButtonText: '确定',

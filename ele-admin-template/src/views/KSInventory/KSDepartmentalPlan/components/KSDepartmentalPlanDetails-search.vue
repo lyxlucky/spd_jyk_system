@@ -113,7 +113,7 @@
           <el-button
             type="primary"
             icon="el-icon-s-cooperation"
-            v-if="['stzl', 'stzx'].includes(HOME_HP) || ENV == 'development'"
+            v-if="['stzl', 'stzx','bd'].includes(HOME_HP) || ENV == 'development'"
             size="mini"
             @click="Approval"
             :disabled="!IsToExamine"

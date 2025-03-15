@@ -53,7 +53,7 @@
               type="danger"
               icon="el-icon-delete"
               @click="handleDelete"
-              :disabled="!isDeleted"
+              :disabled="isDeleted"
               >删除</el-button
             >
 
@@ -69,7 +69,7 @@
               size="mini"
               type="success"
               icon="el-icon-position"
-              :disabled="!isSelected"
+              :disabled="isDeleted"
               @click="handlePushInvoice"
               >推送发票数据</el-button
             >
@@ -113,7 +113,10 @@
         return this.selection.length > 0;
       },
       isDeleted() {
-        return this.selection.some(item => item.SPD_STATE == 0);
+        if(this.selection.length == 0) {
+          return true;
+        }
+        return this.selection.some(item => item.SPD_STATE == '1');
       }
     }
   };

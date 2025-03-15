@@ -15,7 +15,7 @@
           </el-form-item> -->
           <el-form-item label="院区:" prop="SURGICAL_PLACE">
             <el-select v-model="form.SURGICAL_PLACE" placeholder="请选择院区">
-              <el-option v-for="(obj) in STORAGEF" :key="obj.ID" :label="obj.NAME" :value="obj.ID"></el-option>
+              <el-option v-for="(obj) in STORAGEF" :key="obj.ID" :label="obj.NAME" :value="obj.NAME"></el-option>
             </el-select>
           </el-form-item>
         </el-col>

@@ -218,6 +218,14 @@ export default {
           width: 90
         },
         {
+          prop: 'ZXK_UPSHELF',
+          label: '中心库库存',
+          width: 90,
+          formatter(row, column, cellValue) {
+            return Number(row.DefQty || 0) + Number(row.GoodsQty || 0);
+          }
+        },
+        {
           prop: 'Unit',
           label: '单位',
           width: 60
