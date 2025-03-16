@@ -14,7 +14,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item >
-                    <el-button size="mini" type="primary" icon="el-icon-search" @click="getDataList">
+                    <el-button size="mini" type="primary" icon="el-icon-search" @click="reload">
                         搜索
                     </el-button>
                 </el-form-item>
@@ -27,7 +27,7 @@
             :currentPage="page" 
             :pageSize="size" 
             :highlightCurrentRow="true"
-            :datasource="getDataList" 
+            :datasource="datasource" 
             @current-change="onCurrentChange"
             @size-change="onSizeChange"
             >
@@ -308,44 +308,61 @@ export default {
         
     },
     methods:{
+        datasource({ page, limit, where, order }) {
+            where.keyword = this.where.keyword
+            where.enable = this.where.enable
+            let data = apiSupplierGetList({ page, limit, where, order }).then(
+                (res) => {
+                    var tData = {
+                        count: res.total,
+                        list: res.result
+                    };
+                    return tData;
+                }
+            );
+            return data;
+        },
+        reload() {
+            this.$refs.table.reload({ page: 1, where: this.where });
+        },
         onCurrentChange(current){
             console.log(current);
         },
         onSizeChange(e){
             console.log(e);
         },
-        async getDataList(option){
+        // async getDataList(option){
             
-            let loadingInstance = Loading.service({
-                target:".table-supplier .el-table"
-            })
+        //     let loadingInstance = Loading.service({
+        //         target:".table-supplier .el-table"
+        //     })
 
-            let dataList = await apiSupplierGetList({
-                page:option.page,
-                size:option.limit,
-                keyword:this.where.keyword,
-                enable:this.where.enable,
-                order:option.order.order,
-                field:option.order.sort,
-            }).then(res=>{
-               if (res.data.code != "200") {
-                    return false
-               }
-                return {
-                    count:res.data.total,
-                    list:res.data.result
-                }
-            }).finally(()=>{
-                loadingInstance.close()
-            })
-            if (!dataList) {
-                dataList = {
-                    count:0,
-                    list:[]
-                }
-            }
-            return dataList
-        }
+        //     let dataList = await apiSupplierGetList({
+        //         page:option.page,
+        //         size:option.limit,
+        //         keyword:this.where.keyword,
+        //         enable:this.where.enable,
+        //         order:option.order.order,
+        //         field:option.order.sort,
+        //     }).then(res=>{
+        //        if (res.data.code != "200") {
+        //             return false
+        //        }
+        //         return {
+        //             count:res.data.total,
+        //             list:res.data.result
+        //         }
+        //     }).finally(()=>{
+        //         loadingInstance.close()
+        //     })
+        //     if (!dataList) {
+        //         dataList = {
+        //             count:0,
+        //             list:[]
+        //         }
+        //     }
+        //     return dataList
+        // }
     }
 }
 </script>

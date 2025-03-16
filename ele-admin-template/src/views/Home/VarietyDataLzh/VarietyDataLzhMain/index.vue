@@ -423,22 +423,6 @@ export default {
         },
 
         {
-          prop: 'SYZ',
-          label: '适应症',
-          align: 'center',
-          showOverflowTooltip: true,
-          width: 80,
-          formatter: (row, column, cellValue) => {
-            if (cellValue == '1') {
-              return '是';
-            } else if (cellValue == '0') {
-              return '否';
-            }else {
-              return '未知';
-            }
-          }
-        },
-        {
           prop: 'YB_CLASS',
           label: '医保分类',
           align: 'center',
@@ -454,41 +438,41 @@ export default {
             }
           }
         },
-        {
-          prop: 'ONECODE',
-          label: '一级目录',
-          align: 'center',
-          showOverflowTooltip: true,
-          width: 110
-        },
-        {
-          prop: 'ONECODE',
-          label: '一级目录',
-          align: 'center',
-          showOverflowTooltip: true,
-          width: 110
-        },
-        {
-          prop: 'ONECODE',
-          label: '一级目录',
-          align: 'center',
-          showOverflowTooltip: true,
-          width: 110
-        },
-        {
-          prop: 'ONECODE',
-          label: '一级目录',
-          align: 'center',
-          showOverflowTooltip: true,
-          width: 110
-        },
-        {
-          prop: 'ONECODE',
-          label: '一级目录',
-          align: 'center',
-          showOverflowTooltip: true,
-          width: 110
-        },
+        // {
+        //   prop: 'ONECODE',
+        //   label: '一级目录',
+        //   align: 'center',
+        //   showOverflowTooltip: true,
+        //   width: 110
+        // },
+        // {
+        //   prop: 'ONECODE',
+        //   label: '一级目录',
+        //   align: 'center',
+        //   showOverflowTooltip: true,
+        //   width: 110
+        // },
+        // {
+        //   prop: 'ONECODE',
+        //   label: '一级目录',
+        //   align: 'center',
+        //   showOverflowTooltip: true,
+        //   width: 110
+        // },
+        // {
+        //   prop: 'ONECODE',
+        //   label: '一级目录',
+        //   align: 'center',
+        //   showOverflowTooltip: true,
+        //   width: 110
+        // },
+        // {
+        //   prop: 'ONECODE',
+        //   label: '一级目录',
+        //   align: 'center',
+        //   showOverflowTooltip: true,
+        //   width: 110
+        // },
       ],
       toolbar: false,
       toolStyle: {

@@ -1,6 +1,6 @@
 <template>
   <div class="ele-body">
-    <el-tabs v-model="activeName" @tab-click="handleClick" style="width:100%">
+    <el-tabs v-model="activeName" @click="handleClick" style="width:100%">
       <el-tab-pane label="散货品种维护" name="first">
         <VarietyDataLzhMain />
       </el-tab-pane>
