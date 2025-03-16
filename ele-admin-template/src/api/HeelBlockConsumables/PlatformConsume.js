@@ -190,3 +190,19 @@ export async function delGtGoodsDeliveryNumber(data) {
     return Promise.reject(new Error(res.data.msg));
   }
 }
+
+
+export async function isHvaeChargCode(data) {
+  const formatData = {
+    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+    deliveryNumberId: data.DELIVERY_NOTE_NUMBER,
+    title:HOME_HP,
+    json:JSON.stringify(data.json)
+  };
+  const res = await request.get('/B2BVarietieConsumeApprove/isHvaeChargCode',{params: formatData});
+  if (res.data.code == 200) {
+    return res.data;
+  } else {
+    return Promise.reject(new Error(res.data.msg));
+  }
+}

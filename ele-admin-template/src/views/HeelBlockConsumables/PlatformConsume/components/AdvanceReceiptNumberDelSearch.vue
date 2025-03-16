@@ -55,7 +55,7 @@
 
 <script>
   import { utils, read } from 'xlsx';
-  import { TOKEN_STORE_NAME } from '@/config/setting';
+  import { BACK_BASE_URL, HOME_HP, TOKEN_STORE_NAME } from '@/config/setting';
   import {
     DeletePlanDeta
     // KeeptListDeta,
@@ -64,9 +64,14 @@
     KeepTempletDeta,
     ImportTempExcel
   } from '@/api/KSInventory/ApplyTemp';
+  import { isHvaeChargCode } from '@/api/HeelBlockConsumables/PlatformConsume';
   import AuthVarTable from './AuthVarTable.vue';
   export default {
-    props: ['ApplyTempTableDataSearch', 'selection'],
+    props: [
+      'ApplyTempTableDataSearch',
+      'selection',
+      'VarietyConsumeptionDataList'
+    ],
     components: {
       AuthVarTable: AuthVarTable
     },
@@ -103,8 +108,43 @@
       }
     },
     methods: {
+      handleIsHaveChargCode(jsonString) {
+        return new Promise((resolve, reject) => {
+          isHvaeChargCode({
+            json: jsonString,
+            DELIVERY_NOTE_NUMBER:
+              this.ApplyTempTableDataSearch?.Delivery_Note_Number
+          })
+            .then((res) => {
+              this.$message.success(res.msg);
+              resolve(res.data);
+            })
+            .catch((err) => {
+              this.$message.error(err);
+              reject(err);
+            })
+        });
+      },
+
+      handleDefNoPkgCodePrint(jsonString){
+        return new Promise((resolve, reject) => {
+          window.open(`${BACK_BASE_URL}/api/B2BVarietieConsumeApprove/GetTags?id=5&format=pdf&inline=true&json=${JSON.stringify(jsonString)}&deliveryNumberId=${this.ApplyTempTableDataSearch?.Delivery_Note_Number}&title=${HOME_HP}&Token=${sessionStorage.Token}`);
+          resolve();
+        });
+      },
+
+      //查看定数码标签
       handleCatDefNoPkgCode() {
-        
+        const loading = this.$messageLoading('加载中...');
+        const jsonString = this.VarietyConsumeptionDataList?.map((item) => {
+          return item?.Id;
+        });
+        this.handleIsHaveChargCode(jsonString).then((res) => {
+          this.handleDefNoPkgCodePrint(jsonString);
+        })
+        .finally(() => {
+          loading.close();
+        });
       },
       /* 搜索 */
       search() {
@@ -116,7 +156,6 @@
         this.search();
       },
       removeBatch() {
-        console.log(this.selection);
         var ID = '';
         this.selection.forEach((item) => {
           ID += item.ID + ',';

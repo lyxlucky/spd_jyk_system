@@ -9,6 +9,7 @@
       @exportData="exportData"
       :ApplyTempTableDataSearch="ApplyTempTableDataSearch"
       :selection="selection"
+      :VarietyConsumeptionDataList = "VarietyConsumeptionDataList"
       @showEditReoad="showEditReoad"
     />
     <ele-pro-table
@@ -256,7 +257,8 @@
         // 是否显示导入弹窗
         showImport: false,
         // datasource: [],
-        data: []
+        data: [],
+        VarietyConsumeptionDataList:[]
       };
     },
     methods: {
@@ -403,6 +405,11 @@
         };
         this.$refs.table.reload({ page: 1, where: where });
       }
+    },
+    mounted() {
+      this.$bus.$on('LoadDeliveryConsumedVarietie', (data) => {
+        this.VarietyConsumeptionDataList = data.list;
+      });
     },
     created() {
       // this.getdatasource();
