@@ -222,3 +222,33 @@ export async function AddVarieties(data) {
     return Promise.reject(new Error(res.data.msg));
   }
 }
+
+export async function scanUdiAddVarieties(data) {
+  const formatData = {
+    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+    json: data.json || '',
+    staff: '扫码添加'
+  };
+  var req = formdataify(formatData);
+  const res = await request.post('/B2BConsumeMgmt/scanUdiAddVarieties', req);
+  if (res.data.code == 200) {
+    return res.data;
+  } else {
+    return Promise.reject(new Error(res.data.msg));
+  }
+}
+
+export async function ModifyGS1(data) {
+  const formatData = {
+    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+    json: data.json,
+    batchId: data.batchId
+  };
+  var req = formdataify(formatData);
+  const res = await request.post('/B2BConsumeMgmt/ModifyGS1', req);
+  if (res.data.code == 200) {
+    return res.data;
+  } else {
+    return Promise.reject(new Error(res.data.msg));
+  }
+}

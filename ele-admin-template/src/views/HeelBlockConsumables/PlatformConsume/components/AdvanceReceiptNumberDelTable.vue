@@ -7,6 +7,7 @@
     <AdvanceReceiptNumberDelSearch
       @search="reload"
       @exportData="exportData"
+      @handleUdiScanAdd="handleUdiScanAdd"
       @handleAddConsumeItem="handleAddConsumeItem"
       :ApplyTempTableDataSearch="ApplyTempTableDataSearch"
       :selection="selection"
@@ -16,7 +17,7 @@
     <!-- :rowClickChecked="true" -->
     <ele-pro-table
       ref="table"
-      style="height: 35vh"
+      height="310"
       highlight-current-row
       :stripe="true"
       :pageSize="pageSize"
@@ -107,10 +108,15 @@
         </el-popconfirm>
       </template>
     </ele-pro-table>
+    <UDIScanAddDialog
+      :AdvanceReceiptNumberCurrent="ApplyTempTableData"
+      :visible.sync="UDIScanAddDialogVisiable"
+    ></UDIScanAddDialog>
   </div>
 </template>
 
 <script>
+  import UDIScanAddDialog from './UDIScanAddDialog.vue';
   import AdvanceReceiptNumberDelSearch from './AdvanceReceiptNumberDelSearch.vue';
   import { utils, writeFile } from 'xlsx';
   import {
@@ -121,11 +127,13 @@
     SearchDeliveryVarietie,
     AddVarieties
   } from '@/api/HeelBlockConsumables/PlatformConsume';
+  import AdvanceReceiptNumberTable from './AdvanceReceiptNumberTable.vue';
   export default {
     name: 'ApplyTempDataTable',
     props: ['ApplyTempTableData'],
     components: {
-      AdvanceReceiptNumberDelSearch
+      AdvanceReceiptNumberDelSearch,
+      UDIScanAddDialog
     },
     data() {
       return {
@@ -230,7 +238,8 @@
             label: '消耗数量',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 120
+            minWidth: 120,
+            fixed: 'right'
           },
           {
             slot: 'Batch',
@@ -278,7 +287,8 @@
         showImport: false,
         // datasource: [],
         data: [],
-        VarietyConsumeptionDataList: []
+        VarietyConsumeptionDataList: [],
+        UDIScanAddDialogVisiable: false
       };
     },
     methods: {
@@ -296,6 +306,9 @@
           }
         );
         return data;
+      },
+      handleUdiScanAdd() {
+        this.UDIScanAddDialogVisiable = true;
       },
       handleAddConsumeItem() {
         if (this.selection.length == 0) {
@@ -335,7 +348,7 @@
         const loading = this.$messageLoading('添加中...');
         AddVarieties({ json: JSON.stringify(jsonString) })
           .then((res) => {
-            this.$message.success('处理成功');
+            this.$message.success(!res?.msg ? '处理成功' : res?.msg);
           })
           .catch((err) => {
             this.$message.error(err);

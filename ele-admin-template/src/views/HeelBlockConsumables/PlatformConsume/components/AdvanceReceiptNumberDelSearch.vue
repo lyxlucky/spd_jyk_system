@@ -28,7 +28,11 @@
               @click="search"
               >查询</el-button
             >
-            <el-button size="mini" type="primary" @click="search"
+            <el-button
+              size="mini"
+              type="primary"
+              :disabled="!isLeftTableCurrent"
+              @click="handleUdiScanAdd"
               >UDI扫码添加</el-button
             >
             <el-button
@@ -99,12 +103,17 @@
     },
     computed: {
       isAddVarietieEnable() {
-        return (1 == Number(this?.ApplyTempTableDataSearch?.Receive_Receipt_State));
+        return (
+          1 == Number(this?.ApplyTempTableDataSearch?.Receive_Receipt_State)
+        );
       },
       isPrintDefNoPkgCodeEnable() {
         return [3, 4].includes(
           Number(this?.ApplyTempTableDataSearch?.Receive_Receipt_State)
         );
+      },
+      isLeftTableCurrent() {
+        return this?.ApplyTempTableDataSearch?.Receive_Receipt_State;
       },
       // 是否开启响应式布局
       styleResponsive() {
@@ -115,6 +124,9 @@
       }
     },
     methods: {
+      handleUdiScanAdd() {
+        this.$emit('handleUdiScanAdd');
+      },
       handleIsHaveChargCode(jsonString) {
         return new Promise((resolve, reject) => {
           isHvaeChargCode({
@@ -169,7 +181,7 @@
         this.where = { ...this.defaultWhere };
         this.search();
       },
-      handleAddConsumeItem(){
+      handleAddConsumeItem() {
         this.$emit('handleAddConsumeItem');
       },
       removeBatch() {

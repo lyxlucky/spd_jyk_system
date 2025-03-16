@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- <el-card shadow="always"> -->
-    <el-container style="height: 55vh;">
+    <el-container>
       <el-aside width="500px" style="margin: 20px 0px 0px 20px;">
         <el-card shadow="always">
           <div slot="header" class="clearfix">
@@ -21,7 +21,7 @@
         </el-main>
       </el-container>
     </el-container>
-    <el-container style="height: 65vh;">
+    <el-container>
       <el-aside width="1000px" style="margin: 20px 0px 0px 20px;">
         <el-card shadow="always">
           <div slot="header" class="clearfix">
@@ -37,7 +37,7 @@
               <span>UDI码列表</span>
             </div>
             <el-button type="primary" size="mini" @click="addTempVar" :style="{ display: IsDisabled==true?'none':'' }">确认申领</el-button>
-            <UDIListTable :ApplyTempTableData="VarietyTableData" @selectionData="selectionData" />
+            <UDIListTable :ApplyTempTableData="VarietyTableData" :mainTableData="ApplyTempTableData" @selectionData="selectionData" />
           </el-card>
         </el-main>
       </el-container>
