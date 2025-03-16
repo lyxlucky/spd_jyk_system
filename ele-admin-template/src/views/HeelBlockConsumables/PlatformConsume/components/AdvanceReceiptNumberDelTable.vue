@@ -43,6 +43,41 @@
       </template>
 
       <!-- 操作列 -->
+      <template v-slot:Consume_Count="{ row }">
+        <el-input
+          style="width: 80px"
+          v-model="row.Consume_Count"
+          :min="0"
+          :max="999999999"
+          :step="1"
+          size="mini"
+        />
+      </template>
+
+      <template v-slot:Batch="{ row }">
+        <el-input
+          style="width: 120px"
+          v-model="row.Batch"
+          size="mini"
+        />
+      </template>
+
+      <template v-slot:Batch_Production_Date="{ row }">
+        <el-input
+          style="width: 120px"
+          v-model="row.Batch_Production_Date"
+          size="mini"
+        />
+      </template>
+
+      <template v-slot:Batch_Validity_Period="{ row }">
+        <el-input
+          style="width: 120px"
+          v-model="row.Batch_Validity_Period"
+          size="mini"
+        />
+      </template>
+
       <template v-slot:TempletQty="{ row }">
         <el-input
           style="width: 120px"
@@ -182,44 +217,45 @@
             label: '预送数量',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 70
+            minWidth: 90
           },
           {
             prop: 'Netreceipts',
             label: '剩余数量',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 70
+            minWidth: 90
           },
           {
-            prop: '',
+            // prop: '',
+            slot: 'Consume_Count',
             label: '消耗数量',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 70,
-            formatter: (row, column, cellValue) => {
-              return '0';
-            }
+            minWidth: 90,
           },
           {
-            prop: 'Batch',
+            // prop: 'Batch',
+            slot: 'Batch',
             label: '生产批号',
             align: 'center',
             showOverflowTooltip: true,
             minWidth: 130
           },
           {
-            prop: 'Batch_Production_Date',
+            // prop: 'Batch_Production_Date',
+            slot: 'Batch_Production_Date',
             label: '生产日期',
             align: 'center',
             showOverflowTooltip: true,
             minWidth: 130,
-            formatter: (row, column, cellValue) => {
-              return cellValue.substr(0, 10);
-            }
+            // formatter: (row, column, cellValue) => {
+            //   return cellValue.substr(0, 10);
+            // }
           },
           {
-            prop: 'Batch_Validity_Period',
+            // prop: 'Batch_Validity_Period',
+            slot: 'Batch_Validity_Period',
             label: '失效日期',
             align: 'center',
             showOverflowTooltip: true,
