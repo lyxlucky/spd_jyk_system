@@ -7,17 +7,18 @@
     <AdvanceReceiptNumberDelSearch
       @search="reload"
       @exportData="exportData"
+      @handleAddConsumeItem="handleAddConsumeItem"
       :ApplyTempTableDataSearch="ApplyTempTableDataSearch"
       :selection="selection"
-      :VarietyConsumeptionDataList = "VarietyConsumeptionDataList"
+      :VarietyConsumeptionDataList="VarietyConsumeptionDataList"
       @showEditReoad="showEditReoad"
     />
+    <!-- :rowClickChecked="true" -->
     <ele-pro-table
       ref="table"
       style="height: 35vh"
       highlight-current-row
       :stripe="true"
-      :rowClickChecked="true"
       :pageSize="pageSize"
       :pageSizes="pageSizes"
       :columns="columns"
@@ -27,13 +28,6 @@
       @current-change="onCurrentChange"
       cache-key="ApplyTempDataTable"
     >
-      <!-- 表头工具栏 -->
-      <!-- 右表头 -->
-      <!-- <template v-slot:toolkit>
-        <el-button size="small" type="danger" icon="el-icon-delete" class="ele-btn-icon" @click="removebatch">
-          删除
-        </el-button>
-      </template> -->
       <!-- 左表头 -->
       <template v-slot:toolbar>
         <!-- 搜索表单 -->
@@ -42,42 +36,43 @@
         </el-button> -->
       </template>
 
-      <!-- 操作列 -->
-      <template v-slot:Consume_Count="{ row }">
+      <!-- 消耗数量 -->
+      <template v-slot:CONSUME_NUM="{ row }">
         <el-input
-          style="width: 80px"
-          v-model="row.Consume_Count"
-          :min="0"
-          :max="999999999"
-          :step="1"
+          :disabled="isCurrentRowInputEnabled(row)"
           size="mini"
-        />
+          v-model="row.Consume_Count"
+        ></el-input>
       </template>
 
+      <!-- 批号 -->
       <template v-slot:Batch="{ row }">
         <el-input
-          style="width: 120px"
-          v-model="row.Batch"
+          :disabled="isCurrentRowInputEnabled(row)"
           size="mini"
-        />
+          v-model="row.Batch"
+        ></el-input>
       </template>
 
+      <!-- 生产日期 -->
       <template v-slot:Batch_Production_Date="{ row }">
         <el-input
-          style="width: 120px"
-          v-model="row.Batch_Production_Date"
+          :disabled="isCurrentRowInputEnabled(row)"
           size="mini"
-        />
+          v-model="row.Batch_Production_Date"
+        ></el-input>
       </template>
 
+      <!-- 有效期 -->
       <template v-slot:Batch_Validity_Period="{ row }">
         <el-input
-          style="width: 120px"
-          v-model="row.Batch_Validity_Period"
+          :disabled="isCurrentRowInputEnabled(row)"
           size="mini"
-        />
+          v-model="row.Batch_Validity_Period"
+        ></el-input>
       </template>
 
+      <!-- 操作列 -->
       <template v-slot:TempletQty="{ row }">
         <el-input
           style="width: 120px"
@@ -122,7 +117,10 @@
     SerachTempletDeta,
     DeleteTempletDeta
   } from '@/api/KSInventory/ApplyTemp';
-  import { SearchDeliveryVarietie } from '@/api/HeelBlockConsumables/PlatformConsume';
+  import {
+    SearchDeliveryVarietie,
+    AddVarieties
+  } from '@/api/HeelBlockConsumables/PlatformConsume';
   export default {
     name: 'ApplyTempDataTable',
     props: ['ApplyTempTableData'],
@@ -217,69 +215,55 @@
             label: '预送数量',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 90
+            minWidth: 70
           },
           {
             prop: 'Netreceipts',
             label: '剩余数量',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 90
+            minWidth: 120
           },
           {
-            // prop: '',
-            slot: 'Consume_Count',
+            slot: 'CONSUME_NUM',
+            prop: 'Consume_Count',
             label: '消耗数量',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 90,
+            minWidth: 120
           },
           {
-            // prop: 'Batch',
             slot: 'Batch',
+            prop: 'Batch',
             label: '生产批号',
             align: 'center',
             showOverflowTooltip: true,
             minWidth: 130
           },
           {
-            // prop: 'Batch_Production_Date',
             slot: 'Batch_Production_Date',
+            prop: 'Batch_Production_Date',
             label: '生产日期',
             align: 'center',
             showOverflowTooltip: true,
             minWidth: 130,
-            // formatter: (row, column, cellValue) => {
-            //   return cellValue.substr(0, 10);
-            // }
+            formatter: (row, column, cellValue) => {
+              return this.$moment(cellValue).format('YYYY-MM-DD');
+              // return cellValue.substr(0, 10);
+            }
           },
           {
-            // prop: 'Batch_Validity_Period',
             slot: 'Batch_Validity_Period',
+            prop: 'Batch_Validity_Period',
             label: '失效日期',
             align: 'center',
             showOverflowTooltip: true,
             minWidth: 130,
             formatter: (row, column, cellValue) => {
-              return cellValue.substr(0, 10);
+              return this.$moment(cellValue).format('YYYY-MM-DD');
             }
           }
-          // {
-          //   columnKey: 'action',
-          //   label: '操作',
-          //   width: 80,
-          //   align: 'center',
-          //   resizable: false,
-          //   slot: 'action',
-          //   showOverflowTooltip: true,
-          //   fixed: 'left'
-          // }
         ],
-        // paginationStyle: {
-        //   height: '18px',
-        //   padding: '0px 0px 5px 0px',
-        //   'margin-top': '-5px'
-        // },
         toolbar: false,
         pageSize: 50,
         pagerCount: 2,
@@ -294,7 +278,7 @@
         showImport: false,
         // datasource: [],
         data: [],
-        VarietyConsumeptionDataList:[]
+        VarietyConsumeptionDataList: []
       };
     },
     methods: {
@@ -312,6 +296,55 @@
           }
         );
         return data;
+      },
+      handleAddConsumeItem() {
+        if (this.selection.length == 0) {
+          return this.$message.error('请选择要添加的品种');
+        }
+
+        for (const item of this.selection) {
+          if (item?.Consume_Count <= 0)
+            return this.$message.error(
+              `添加失败，品种 [${item.Varietie_Code}${item.Varietie_Name}] 的消耗数量不能为0`
+            );
+          if (!item?.Batch)
+            return this.$message.error(
+              `添加失败，品种 [${item.Varietie_Code}${item.Varietie_Name}] 的生产批号不能为空值`
+            );
+          if (!item?.Batch_Validity_Period)
+            return this.$message.error(
+              `添加失败，品种 [${item.Varietie_Code}${item.Varietie_Name}] 的有效日期不能为空值`
+            );
+          if (!item?.Batch_Production_Date)
+            return this.$message.error(
+              `添加失败，品种 [${item.Varietie_Code}${item.Varietie_Name}] 的生产日期不能为空值`
+            );
+        }
+
+        const jsonString = this.selection.map((item) => {
+          return {
+            Id: item.Id,
+            Netreceipts: item.Consume_Count,
+            Batch: item.Batch,
+            Batch_Validity_Period: item.Batch_Validity_Period,
+            Batch_Production_Date: item.Batch_Production_Date,
+            Varietie_Name: item.Varietie_Name
+          };
+        });
+
+        const loading = this.$messageLoading('添加中...');
+        AddVarieties({ json: JSON.stringify(jsonString) })
+          .then((res) => {
+            this.$message.success('处理成功');
+          })
+          .catch((err) => {
+            this.$message.error(err);
+          })
+          .finally(() => {
+            loading.close();
+            this.reload();
+            this.$bus.$emit('AdVanceReceiptNumberDelTableReload');
+          });
       },
       /* 刷新表格 */
       reload(where) {
@@ -350,6 +383,13 @@
           };
           this.$refs.table.reload({ page: 1, where: where });
         }
+      },
+      isCurrentRowInputEnabled(row) {
+        return !this.selection
+          .map((item) => {
+            return item?.Id;
+          })
+          .includes(row?.Id);
       },
       exportData(data) {
         const loading = this.$messageLoading('正在导出数据...');
@@ -449,6 +489,10 @@
     },
     created() {
       // this.getdatasource();
+    },
+    beforeDestroy() {
+      this.$bus.$off('LoadDeliveryConsumedVarietie');
+      this.$bus.$off('AdVanceReceiptNumberDelTableReload');
     }
   };
 </script>

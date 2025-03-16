@@ -19,7 +19,7 @@
         <div class="ele-form-actions">
           <el-button size="mini" type="primary" class="ele-btn-icon" @click="platformConsumeEditShow">编辑</el-button>
           <el-col v-bind="styleResponsive ? { lg: 12, md: 12 } : { span: 16 }">
-            <el-select v-model="where.state" size="mini" placeholder="">
+            <el-select @change="search" v-model="where.state" size="mini" placeholder="">
               <el-option label="全部" value=""></el-option>
               <el-option label="待确认" value="0"></el-option>
               <el-option label="待提交" value="1"></el-option>

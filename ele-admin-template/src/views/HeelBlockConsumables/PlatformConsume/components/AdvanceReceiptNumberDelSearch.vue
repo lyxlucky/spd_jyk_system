@@ -31,7 +31,11 @@
             <el-button size="mini" type="primary" @click="search"
               >UDI扫码添加</el-button
             >
-            <el-button size="mini" type="primary" @click="search"
+            <el-button
+              size="mini"
+              :disabled="!isAddVarietieEnable"
+              type="primary"
+              @click="handleAddConsumeItem"
               >添加</el-button
             >
 
@@ -94,6 +98,9 @@
       };
     },
     computed: {
+      isAddVarietieEnable() {
+        return (1 == Number(this?.ApplyTempTableDataSearch?.Receive_Receipt_State));
+      },
       isPrintDefNoPkgCodeEnable() {
         return [3, 4].includes(
           Number(this?.ApplyTempTableDataSearch?.Receive_Receipt_State)
@@ -122,13 +129,19 @@
             .catch((err) => {
               this.$message.error(err);
               reject(err);
-            })
+            });
         });
       },
 
-      handleDefNoPkgCodePrint(jsonString){
+      handleDefNoPkgCodePrint(jsonString) {
         return new Promise((resolve, reject) => {
-          window.open(`${BACK_BASE_URL}/api/B2BVarietieConsumeApprove/GetTags?id=5&format=pdf&inline=true&json=${JSON.stringify(jsonString)}&deliveryNumberId=${this.ApplyTempTableDataSearch?.Delivery_Note_Number}&title=${HOME_HP}&Token=${sessionStorage.Token}`);
+          window.open(
+            `${BACK_BASE_URL}/api/B2BVarietieConsumeApprove/GetTags?id=5&format=pdf&inline=true&json=${JSON.stringify(
+              jsonString
+            )}&deliveryNumberId=${
+              this.ApplyTempTableDataSearch?.Delivery_Note_Number
+            }&title=${HOME_HP}&Token=${sessionStorage.Token}`
+          );
           resolve();
         });
       },
@@ -139,12 +152,13 @@
         const jsonString = this.VarietyConsumeptionDataList?.map((item) => {
           return item?.Id;
         });
-        this.handleIsHaveChargCode(jsonString).then((res) => {
-          this.handleDefNoPkgCodePrint(jsonString);
-        })
-        .finally(() => {
-          loading.close();
-        });
+        this.handleIsHaveChargCode(jsonString)
+          .then((res) => {
+            this.handleDefNoPkgCodePrint(jsonString);
+          })
+          .finally(() => {
+            loading.close();
+          });
       },
       /* 搜索 */
       search() {
@@ -154,6 +168,9 @@
       reset() {
         this.where = { ...this.defaultWhere };
         this.search();
+      },
+      handleAddConsumeItem(){
+        this.$emit('handleAddConsumeItem');
       },
       removeBatch() {
         var ID = '';
