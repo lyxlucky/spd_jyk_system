@@ -23,6 +23,7 @@
       :datasource="datasource"
       :selection.sync="selection"
       @selection-change="onSelectionChange"
+      @current-change="onCurrentChange"
       cache-key="ApplyTempDataTable"
     >
       <!-- 表头工具栏 -->
@@ -298,6 +299,9 @@
       onSelectionChange(selection) {
         this.selection = selection;
         this.$emit('selectionData', selection);
+      },
+      onCurrentChange(current) {
+        this.current = current;
       },
       showEditReoad(data) {
         if (data == false) {

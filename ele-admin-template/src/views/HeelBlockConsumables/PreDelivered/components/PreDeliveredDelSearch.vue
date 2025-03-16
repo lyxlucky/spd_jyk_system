@@ -15,6 +15,7 @@
             <!-- <el-button type="primary" size="mini" @click="dialogTableVisible = true" icon="el-icon-plus">添加品种</el-button> -->
             <el-button type="primary" size="mini" @click="InspectionDtbgtTableVisible = true">套包检测</el-button>
             <el-button type="primary" size="mini" @click="SaveBtn">保存修改</el-button>
+            <span style="padding-left:10px">{{ '预送货总量：' + preTotal }}</span>
           </div>
         </el-col>
       </el-row>
@@ -36,7 +37,7 @@ import { KeepTempletDeta, ImportTempExcel } from '@/api/KSInventory/ApplyTemp';
 import AuthVarTable from './AuthVarTable.vue';
 import InspectionDtbgtTable from './InspectionDtbgtTable.vue';
 export default {
-  props: ['ApplyTempTableDataSearch', 'selection'],
+  props: ['ApplyTempTableDataSearch', 'selection','preTotal'],
   components: {
     AuthVarTable: AuthVarTable,
     InspectionDtbgtTable

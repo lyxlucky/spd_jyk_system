@@ -7,6 +7,7 @@ import { MessageBox } from 'element-ui';
 import { API_BASE_URL, TOKEN_HEADER_NAME, LAYOUT_PATH } from '@/config/setting';
 import { getToken, setToken } from './token-util';
 import { logout } from './page-tab-util';
+import RequestTimeoutManager from '@/utils/timeOut';
 
 // axios.defaults.headers.post['Content-Type'] = 'application/json;charset=UTF-8';
 const service = axios.create({
@@ -16,6 +17,7 @@ const service = axios.create({
 /**
  * 添加请求拦截器
  */
+const requestTimeoutManager = new RequestTimeoutManager(3600000, logout);
 
 service.interceptors.request.use(
   (config) => {
@@ -23,6 +25,7 @@ service.interceptors.request.use(
     const token = getToken();
     if (token && config.headers) {
       config.headers.common[TOKEN_HEADER_NAME] = token;
+      requestTimeoutManager.startTimer();
       // config.headers.common[TOKEN_HEADER_NAME] = 'text/html, application/xhtml+xml';
       // config.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
       // config.headers.common['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
@@ -59,6 +62,11 @@ service.interceptors.response.use(
         });
       }
       return Promise.reject(new Error(res.data.message));
+    }
+
+    const isHaveToken = getToken();
+    if(isHaveToken){
+      requestTimeoutManager.updateLastRequestTime();
     }
     // token 自动续期
     const token = res.headers[TOKEN_HEADER_NAME.toLowerCase()];

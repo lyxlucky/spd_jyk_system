@@ -28,17 +28,19 @@
               @click="search"
               >查询</el-button
             >
-            <el-button
-              size="mini"
-              type="primary"
-              @click="search"
+            <el-button size="mini" type="primary" @click="search"
               >UDI扫码添加</el-button
             >
+            <el-button size="mini" type="primary" @click="search"
+              >添加</el-button
+            >
+
             <el-button
               size="mini"
+              :disabled="!isPrintDefNoPkgCodeEnable"
               type="primary"
-              @click="search"
-              >添加</el-button
+              @click="handleCatDefNoPkgCode"
+              >查看定数码标签</el-button
             >
           </div>
         </el-col>
@@ -75,7 +77,7 @@
         condition: '',
         zcz: '',
         udi: '',
-        deliveryNumber: '',
+        deliveryNumber: ''
       };
       return {
         // 表单数据
@@ -87,6 +89,11 @@
       };
     },
     computed: {
+      isPrintDefNoPkgCodeEnable() {
+        return [3, 4].includes(
+          Number(this?.ApplyTempTableDataSearch?.Receive_Receipt_State)
+        );
+      },
       // 是否开启响应式布局
       styleResponsive() {
         return this.$store.state.theme.styleResponsive;
@@ -96,6 +103,9 @@
       }
     },
     methods: {
+      handleCatDefNoPkgCode() {
+        
+      },
       /* 搜索 */
       search() {
         this.$emit('search', this.where);
@@ -159,6 +169,7 @@
           });
       }
     },
+    created() {},
     watch: {
       ApplyTempTableDataSearch() {
         this.TEMPLET_MAIN_ID = this.ApplyTempTableDataSearch.ID;
