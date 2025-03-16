@@ -4,23 +4,28 @@
             <!-- 搜索表单 -->
             <el-form label-position="right" inline class="ele-form-search">
                 <el-form-item label="生产企业名称:">
-                    <el-input v-model="where.MANUFACTURING_ENT_NAME" placeholder="请输入" clearable />
+                    <el-input  size="mini" v-model="where.MANUFACTURING_ENT_NAME" placeholder="请输入" clearable />
                 </el-form-item>
                 <el-form-item label="开始时间:" >
-                    <el-date-picker v-model="where.startTime" type="date" placeholder="开始时间" />
+                    <el-date-picker size="mini" v-model="where.startTime" type="date" placeholder="开始时间" />
                 </el-form-item>
                 <el-form-item>
-                    <el-date-picker v-model="where.endTime" type="date" placeholder="结束时间" />
+                    <el-date-picker size="mini" v-model="where.endTime" type="date" placeholder="结束时间" />
                 </el-form-item>
-                <div class="ele-form-actions">
-                    <el-button type="primary" icon="el-icon-search" class="ele-btn-icon" @click="reload">
+                <el-form-item>
+                    <el-button size="mini" type="primary" icon="el-icon-search" class="ele-btn-icon" @click="reload">
                         查询
                     </el-button>
-                       <!--   <el-button @click="exportProdinfo">导出</el-button>
+                </el-form-item>
+                <!-- <div class="ele-form-actions">
+                    <el-button size="mini" type="primary" icon="el-icon-search" class="ele-btn-icon" @click="reload">
+                        查询
+                    </el-button>
+                         <el-button @click="exportProdinfo">导出</el-button>
                     <el-button @click="addProdinfo">新增</el-button>
                     <el-button @click="updateProdinfo">修改</el-button>
-                    <el-button @click="delProdinfo">删除</el-button> -->
-                </div>
+                    <el-button @click="delProdinfo">删除</el-button>
+                </div> -->
             </el-form>
             <!-- 数据表格 -->
             <ele-pro-table ref="table" :columns="columns" :datasource="datasource" @selection-change="onSelectionChange">

@@ -168,6 +168,7 @@ export default {
         return {
             supplierStatusValue: '1',
             supplierCodeOrName: "",
+            supplier_code:"",
             //供应商列表
             supplierList: [],
             //供应商合同搜索框:合同名称或者合同编号
@@ -463,6 +464,7 @@ export default {
             if (!Supplier.Supplier_Code) {
                 return false
             }
+            this.supplier_code = Supplier.Supplier_Code
             this.getContractList(Supplier.Supplier_Code)
         },
         onContractCurrentChange(Contract) {
@@ -476,8 +478,9 @@ export default {
                 target: '#contract-box'
             });
 
+            console.log()
             Get_Contractcode({
-                supplier_code,
+                supplier_code:this.supplier_code,
                 contract_code: this.contractCodeOrName,
                 contract_name: this.contractCodeOrName,
             }).then(res => {
