@@ -4,13 +4,13 @@
       <!-- 搜索表单 -->
       <user-search @search="reload" @exportData="exportData" />
       <!-- 数据表格 -->
-      <ele-pro-table ref="table" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" cache-key="KSInventoryBasicDataTable"  @row-click="handleRowClick">
+      <ele-pro-table ref="table" height="35vh" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" cache-key="KSInventoryBasicDataTable"  @row-click="handleRowClick">
         <!-- 表头工具栏 -->
         <template v-slot:toolbar>
         </template>
       </ele-pro-table>
       <UserSearch2 @search="reload2" />
-      <ele-pro-table ref="table2" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns2" :datasource="datasource2" :selection.sync="selection" cache-key="KSInventoryBasicDataTable2">
+      <ele-pro-table ref="table2" height="35vh" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns2" :datasource="datasource2" :selection.sync="selection" cache-key="KSInventoryBasicDataTable2">
         <!-- 表头工具栏 -->
         <template v-slot:toolbar>
         </template>
