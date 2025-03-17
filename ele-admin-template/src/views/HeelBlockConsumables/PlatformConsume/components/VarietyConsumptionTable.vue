@@ -3,21 +3,19 @@
     <!-- <AdvanceReceiptNumberSearch @search="reload" :rowData="current" /> -->
     <!-- 数据表格 -->
     <ele-pro-table
-      style="height: 30vh"
+      height="300"
       highlight-current-row
       :rowClickCheckedIntelligent="false"
       @current-change="onCurrentChange"
-      :row-class-name="tableRowClassName"
       ref="table"
       :rowClickChecked="true"
       :stripe="false"
       :pageSize="pageSize"
       :pageSizes="pageSizes"
       :columns="columns"
-      :needPage="true"
       :datasource="datasource"
       :selection.sync="selection"
-      cache-key="ApplyTempTable"
+      cache-key="VarietyConsumptionTableCacheKey"
     >
       <!-- 表头工具栏 -->
       <template v-slot:toolbar>
@@ -25,12 +23,17 @@
           size="mini"
           type="primary"
           class="ele-btn-icon"
+          :disabled="!isOperationEnable"
           @click="SubmitConsumeVarietiesFun"
           >提交</el-button
         >
         <el-popconfirm class="ele-action" title="确定删除？" @confirm="remove">
           <template v-slot:reference>
-            <el-button size="mini" type="danger" class="ele-btn-icon"
+            <el-button
+              size="mini"
+              :disabled="!isOperationEnable"
+              type="danger"
+              class="ele-btn-icon"
               >删除</el-button
             >
           </template>
@@ -40,49 +43,6 @@
       <template v-slot:CommonState="{ row }">
         <el-tag v-if="row.CommonState == 0" type="success">新增</el-tag>
         <el-tag v-if="row.CommonState == 1">已提交</el-tag>
-      </template>
-
-      <template v-slot:TempletName="{ row }">
-        <span
-          style="color: #409eff"
-          type="primary"
-          @dblclick="editTempletName(row.TempletCode)"
-          v-if="row.TempletName"
-          :underline="false"
-          >{{ row.TempletName }}</span
-        >
-        <span
-          style="color: #409eff"
-          type="primary"
-          @dblclick="editTempletName(row.TempletCode)"
-          v-else
-          :underline="false"
-          >无</span
-        >
-      </template>
-
-      <!-- 操作列 -->
-      <template v-slot:action="{ row }">
-        <!-- <el-button type="primary" size="small" @click="search(row)">设置为专属模板</el-button> -->
-        <el-popconfirm
-          class="ele-action"
-          title="确定要删除此用户吗？"
-          @confirm="remove(row)"
-        >
-          <template v-slot:reference>
-            <el-link type="danger" :underline="false" icon="el-icon-delete">
-              删除
-            </el-link>
-            <el-link
-              @click="editTempletName(row.TempletCode)"
-              type="primary"
-              :underline="false"
-              icon="el-icon-edit"
-            >
-              编辑
-            </el-link>
-          </template>
-        </el-popconfirm>
       </template>
     </ele-pro-table>
   </div>
@@ -116,20 +76,11 @@
       return {
         // 表格列配置
         columns: [
-          {
-            columnKey: 'selection',
-            type: 'selection',
-            width: 45,
-            align: 'center',
-            fixed: 'left'
-          },
           // {
-          //   label: '序',
-          //   columnKey: 'index',
-          //   type: 'index',
+          //   columnKey: 'selection',
+          //   type: 'selection',
           //   width: 45,
           //   align: 'center',
-          //   showOverflowTooltip: true,
           //   fixed: 'left'
           // },
           {
@@ -181,13 +132,6 @@
             align: 'center',
             showOverflowTooltip: true,
             minWidth: 60
-          },
-          {
-            prop: 'Manufacturing_Ent_Name',
-            label: '注册证号',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 180
           },
           {
             prop: 'Consume_Count',
@@ -303,11 +247,9 @@
       },
       onSelectionChange(selection) {
         this.selection = selection;
-        console.log(selection);
       },
       onCurrentChange(current) {
         this.current = current;
-        // console.log(current);
         this.$emit('getVarietyCurrent', current);
       },
 
@@ -344,37 +286,55 @@
           this.$message.warning('请选择一条数据!');
           return;
         }
-        let loading = this.$messageLoading('提交中...');
-        var data = {
-          id: this.ApplyTempTableData.Delivery_Note_Number_Id,
-          staff: this.$store.state.user.info.Nickname
-        };
 
-        SubmitConsumeVarieties(data)
-          .then((res) => {
-            loading.close();
-            if (res.code == 200) {
-              this.$message.success(res.msg);
-            } else {
-              this.$message.error(res.msg);
-              this.$emit('search');
-            }
+        this.$confirm(
+          `确定提交收货单号${this.ApplyTempTableData.Delivery_Note_Number}吗?`,
+          '提示',
+          {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }
+        )
+          .then(() => {
+            let loading = this.$messageLoading('提交中...');
+            var data = {
+              id: this.ApplyTempTableData.Delivery_Note_Number_Id,
+              staff: this.$store.state.user.info.Nickname
+            };
+
+            SubmitConsumeVarieties(data)
+              .then((res) => {
+                loading.close();
+                if (res.code == 200) {
+                  this.$message.success(res.msg);
+                } else {
+                  this.$message.error(res.msg);
+                }
+              })
+              .catch((err) => {
+                loading.close();
+                this.$message.error(err);
+              })
+              .finally(() => {
+                this.$bus.$emit(
+                  'handleSubmitConsumeVarietiesAndRefreshTopTable',
+                  null
+                );
+                this.reload();
+              });
           })
-          .catch((err) => {
-            loading.close();
-            this.$message.error(err);
-          })
-          .finally((res) => {
-            this.$emit('search');
-            this.$nextTick(() => {
-              this.$refs.input.focus();
-            });
+          .catch(() => {
+            this.$message.info('已取消提交');
           });
       }
     },
     computed: {
       ApplyTempTableDataSearch() {
         return this.ApplyTempTableData;
+      },
+      isOperationEnable() {
+        return 1 == Number(this.ApplyTempTableData?.Receive_Receipt_State);
       }
       // pageSize(){
       //   return localStorage.getItem('SerachTempletDetaPageSize')?localStorage.getItem('SerachTempletDetaPageSize'):10
@@ -400,6 +360,7 @@
     destroyed() {
       this.$bus.$off('handleCommand');
       this.$bus.$off('LoadDeliveryConsumedVarietie');
+      this.$bus.$off('handleSubmitConsumeVarietiesAndRefreshTopTable');
     },
     created() {}
   };

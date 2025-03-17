@@ -13,7 +13,7 @@
     />
     <!-- 数据表格 -->
     <ele-pro-table
-      style="height: 30vh"
+      height="260"
       highlight-current-row
       @current-change="onCurrentChange"
       :row-class-name="tableRowClassName"
@@ -254,7 +254,7 @@
     },
     methods: {
       /* 表格数据源 */
-      datasource({ page, limit, where, order }) {
+      async datasource({ page, limit, where, order }) {
         var deptTwoList = [];
         var deptTwoJson = this.$store.state.user.info.userDept;
         for (let i = 0; i < deptTwoJson.length; i++) {
@@ -263,19 +263,13 @@
         where.depts = JSON.stringify(deptTwoList);
         where.supplierId = 0;
         where.hp = HOME_HP;
-        let data = SearchGoodsDeliveryNumbers({
+        const res = await SearchGoodsDeliveryNumbers({
           page,
           limit,
           where,
           order
-        }).then((res) => {
-          var tData = {
-            count: res.total,
-            list: res.result
-          };
-          return tData;
         });
-        return data;
+        return { list: res.result, count: res.total };
       },
       /* 刷新表格 */
       reload(where) {
@@ -367,11 +361,9 @@
       },
       onSelectionChange(selection) {
         this.selection = selection;
-        console.log(selection);
       },
       onCurrentChange(current) {
         this.current = current;
-        // console.log(current);
         this.$emit('getCurrent', current);
       },
 
@@ -400,6 +392,12 @@
       }
     },
     mounted() {
+      this.$bus.$on(
+        'handleSubmitConsumeVarietiesAndRefreshTopTable',
+        (data) => {
+          this.reload();
+        }
+      );
       this.$bus.$on('handleCommand', (data) => {
         this.reload();
       });
