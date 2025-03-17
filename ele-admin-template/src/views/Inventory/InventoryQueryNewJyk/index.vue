@@ -108,7 +108,7 @@ export default {
         label: '品种编码',
         align: 'center',
         showOverflowTooltip: true,
-        minWidth: 80
+        minWidth: 100
     },
     {
         prop: 'Varietie_Name',
@@ -298,7 +298,7 @@ export default {
         label: '批准文号',
         align: 'center',
         showOverflowTooltip: true,
-        minWidth: 100
+        minWidth: 120
     },
     {
         prop: 'MEDICAL_CODE',
@@ -332,7 +332,8 @@ export default {
             var this_date = new Date(bvp_date).getTime();
             var nowDate = new Date().getTime();
             if (this_date <= nowDate) {
-                return '<span style="color:red">' + row.CONTRACT_END_TIME.substr(0, 10) + '</span>';
+              return  row.CONTRACT_END_TIME.substr(0, 10);
+                //return '<span style="color:red">' + row.CONTRACT_END_TIME.substr(0, 10) + '</span>';
             } else {
                 return row.CONTRACT_END_TIME.substr(0, 10) + "|" + parseInt(((this_date - nowDate) / (60 * 60 * 24 * 1000)).toFixed(0)) + "天";
             }
@@ -460,35 +461,35 @@ export default {
         label: '',
         align: 'center',
         showOverflowTooltip: true,
-        hidden: true
+        show: false
     },
     {
         prop: 'Source_From',
         label: '',
         align: 'center',
         showOverflowTooltip: true,
-        hidden: true
+        show: false
     },
     {
         prop: 'Batch_Id',
         label: '',
         align: 'center',
         showOverflowTooltip: true,
-        hidden: true
+        show: false
     },
     {
         prop: 'Up_Shelf_State',
         label: '',
         align: 'center',
         showOverflowTooltip: true,
-        hidden: true
+        show: false
     },
     {
         prop: 'Storage_Id',
         label: '',
         align: 'center',
         showOverflowTooltip: true,
-        hidden: true
+        show: false
     }
         
       ],
@@ -505,14 +506,14 @@ export default {
           label: '库房位置',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 70
+          minWidth: 90
         },
         {
           prop: 'Up_Shelf_State',
           label: '所属区域',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 70,
+          minWidth: 90,
           formatter: function (row) {
             if (row.Up_Shelf_State === 1) {
               return '合格区';
@@ -557,7 +558,7 @@ export default {
           label: '单位',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 45
+          minWidth: 60
         },
         {
           prop: 'Manufacturing_Ent_Name',
@@ -622,7 +623,7 @@ export default {
           label: '系数',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 45
+          minWidth: 60
         },
         {
           prop: 'Def_No_Pkg_Code',
@@ -630,7 +631,6 @@ export default {
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 120,
-          sortable: 'custom'
         },
         {
           prop: 'STOCK_OUT_DISTRIBUTE_NUMBER',
@@ -638,7 +638,6 @@ export default {
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 120,
-          sortable: 'custom'
         },
         {
           prop: 'Position',
@@ -653,7 +652,6 @@ export default {
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 80,
-          sortable: 'custom'
         },
         {
           prop: 'Brand',

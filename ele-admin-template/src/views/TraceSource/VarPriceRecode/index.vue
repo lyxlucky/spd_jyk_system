@@ -51,7 +51,6 @@ export default {
         {
           prop: 'STATE',
           label: '处理状态',
-          sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 150,
@@ -62,7 +61,6 @@ export default {
         {
           prop: 'CREATE_TIME',
           label: '记录时间',
-          sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
           width: 150,
@@ -73,7 +71,6 @@ export default {
         {
           prop: 'VARIETIE_CODE_NEW',
           label: '品种编码',
-          sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 150,
@@ -82,7 +79,6 @@ export default {
         {
           prop: 'CHARGING_CODE',
           label: '计费编码',
-          sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
           width: 80
@@ -90,7 +86,6 @@ export default {
         {
           prop: 'VARIETIE_NAME',
           label: '品种名称',
-          sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 220
@@ -98,7 +93,6 @@ export default {
         {
           prop: 'SPECIFICATION_OR_TYPE',
           label: '规格型号',
-          sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 220
@@ -106,7 +100,6 @@ export default {
         {
           prop: 'MANUFACTURING_ENT_NAME',
           label: '生产企业',
-          sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 220
@@ -114,7 +107,6 @@ export default {
         {
           prop: 'APPROVAL_NUMBER',
           label: '注册证号',
-          sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
           width: 150
@@ -122,14 +114,12 @@ export default {
         {
           prop: 'UNIT',
           label: '单位',
-          sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true
         },
         {
           prop: 'OLD_PRICE',
           label: '旧价格',
-          sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
           width: 80
@@ -137,7 +127,6 @@ export default {
         {
           prop: 'NEW_PRICE',
           label: '新价格',
-          sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
           width: 80
@@ -145,7 +134,6 @@ export default {
         {
           prop: 'UP_PRICE',
           label: '收货价格',
-          sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
           width: 80
@@ -153,15 +141,13 @@ export default {
         {
           prop: 'SUPPLIER_NAME',
           label: '合同供应商',
-          sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          width: 80
+          width: 100
         },
         {
           prop: 'DELIVERY_NOTE_NUMBER',
           label: '收货单号',
-          sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
           width: 100
@@ -169,7 +155,6 @@ export default {
         {
           prop: 'DELIVERY_TIME',
           label: '价格变动第一次收货时间',
-          sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
           width: 250,
