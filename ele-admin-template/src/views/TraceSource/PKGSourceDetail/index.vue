@@ -31,7 +31,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(item, index) in sourceDetailRows" :key="index">
+            <tr v-for="(item, index) in filteredSourceDetailRows" :key="index">
               <td>{{ item.Operatation_Staff || '' }}</td>
               <td>{{ item.Operate_Time_String || '' }}</td>
               <td>
@@ -75,7 +75,6 @@ export default {
         {
           prop: 'Varietie_Code',
           label: '品种编码',
-          sortable: true,
           align: 'center',
           showOverflowTooltip: true,
           width: 110
@@ -83,7 +82,6 @@ export default {
         {
           prop: 'CHARGING_CODE',
           label: '计费编码',
-          sortable: true,
           align: 'center',
           showOverflowTooltip: true,
           width: 110
@@ -91,7 +89,6 @@ export default {
         {
           prop: 'Varietie_Name',
           label: '品种全称',
-          sortable: false,
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 200
@@ -99,7 +96,6 @@ export default {
         {
           prop: 'Specification_Or_Type',
           label: '型号规格',
-          sortable: false,
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 190
@@ -107,7 +103,6 @@ export default {
         {
           prop: 'Unit',
           label: '单位',
-          sortable: false,
           align: 'center',
           showOverflowTooltip: true,
           width: 60
@@ -115,7 +110,6 @@ export default {
         {
           prop: 'Manufacturing_Ent_Name',
           label: '生产企业名称',
-          sortable: false,
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 165
@@ -123,7 +117,6 @@ export default {
         {
           prop: 'Supplier_Name',
           label: '供应商名称',
-          sortable: false,
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 165
@@ -131,7 +124,6 @@ export default {
         {
           prop: 'Batch',
           label: '生产批号',
-          sortable: true,
           align: 'center',
           showOverflowTooltip: true,
           width: 80
@@ -139,7 +131,6 @@ export default {
         {
           prop: 'Batch_Validity_Period',
           label: '有效到期',
-          sortable: true,
           align: 'center',
           showOverflowTooltip: true,
           width: 80,
@@ -150,15 +141,13 @@ export default {
         {
           prop: 'Coefficient',
           label: '系数',
-          sortable: false,
           align: 'center',
           showOverflowTooltip: true,
-          width: 45
+          width: 60
         },
         {
           prop: 'Def_No_Pkg_Code',
           label: '定数码',
-          sortable: true,
           align: 'center',
           showOverflowTooltip: true,
           width: 120
@@ -166,7 +155,6 @@ export default {
         {
           prop: 'Hospitalization_Number',
           label: '病患号',
-          sortable: true,
           align: 'center',
           showOverflowTooltip: true,
           width: 120
@@ -174,7 +162,6 @@ export default {
         {
           prop: 'Serial_Number',
           label: 'UDI',
-          sortable: true,
           align: 'center',
           showOverflowTooltip: true,
           width: 260
@@ -182,17 +169,14 @@ export default {
         {
           prop: 'Rfid_Code',
           label: 'RFID',
-          sortable: true,
           align: 'center',
           showOverflowTooltip: true,
           width: 120
         },
         {
           prop: 'Storage_Id',
-          width: -2,
-          minWidth: -2,
           type: 'space',
-          style: 'display: none'
+          show: false
         }
       ],
       toolbar: false,
@@ -206,6 +190,14 @@ export default {
       typeName: ['供应商送货', 'SPD中心库收货', 'SPD中心库上架散货调拨出库', 'SPD中心库上架散货调拨入库', 'SPD中心库制包', 'SPD中心库上架定数包调拨出库', 'SPD中心库上架定数包调拨出库', 'SPD中心库拣配', 'SPD中心库配送', '二级科室收货', '二级科室退货', '二级科室暂借', '二级科室归还', '二级科室使用登记（HIS）', '二级科室确认退费', '计费与消耗(采购)匹配', '二级科室PDA消耗', '逆向消耗', '定数包拆包', '结束标记', '巡回护士审批'],
       typeID: ['10', '20', '24', '25', '30', '34', '35', '40', '50', '60', '70', '80', '90', '100', '105', '110', '115', '65', '177', '120', '85']
     };
+  },
+  computed: {
+    filteredSourceDetailRows() {
+      return this.sourceDetailRows.filter((item, index) => {
+        const dotColor = this.getDotColor(item, index);
+        return dotColor!== 'status-dot-gray';
+      });
+    }
   },
   methods: {
     /* 表格数据源 */
@@ -267,7 +259,7 @@ export default {
         return matchedRow || defaultRow;
       });
 
-      if (isDone !== 1) {
+      if (isDone!== 1) {
         const lastTypeID = objs[objs.length - 1].Type_Id;
         const startIndex = this.typeID.indexOf(lastTypeID) + 1;
         const remaining = [];
@@ -363,4 +355,4 @@ export default {
 .ks-source td:last-child {
   text-align: left;
 }
-</style>
+</style>    
