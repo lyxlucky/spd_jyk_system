@@ -3,32 +3,38 @@
         <el-card>
             <div slot="header">状态汇总统计</div>
             <div>
-                <el-form :inline="true" class="ele-form-search">
-                    <el-row :gutter="10">
-                        <el-col :span="10">
-                            <el-date-picker size="mini" v-model="dateRange[0]" type="date" placeholder="yyyy-MM-dd"
+                <el-form :inline="true" size="mini">
+                    <el-form-item>
+                        <el-date-picker v-model="dateRange[0]" type="date" placeholder="yyyy-MM-dd"
                                 format="yyyy-MM-dd" value-format="yyyy-MM-dd" style="width: 100%">
                             </el-date-picker>
-                        </el-col>
-
-                        <el-col :span="1" style="text-align: center; line-height: 32px;">至</el-col>
-                        <el-col :span="10">
-                            <el-date-picker size="mini" v-model="dateRange[1]" type="date" placeholder="yyyy-MM-dd"
-                                format="yyyy-MM-dd" value-format="yyyy-MM-dd" style="width: 100%"></el-date-picker>
-                        </el-col>
-
-                    </el-row>
-                    <el-row :gutter="20">
-                        <!-- <el-col :span="6">
+                    </el-form-item>
+                    <el-form-item>
+                        <el-date-picker v-model="dateRange[1]" type="date" placeholder="yyyy-MM-dd"
+                                format="yyyy-MM-dd" value-format="yyyy-MM-dd" style="width: 100%">
+                            </el-date-picker>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button type="primary" @click="queryToday">查询当天</el-button>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button type="primary" @click="queryLast30Days">查询近30天</el-button>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button type="primary" @click="handleSearch">查询</el-button>
+                    </el-form-item>
+                    
+                    <!-- <el-row :gutter="20">
+                        <el-col :span="6">
                             <el-button type="primary">查询当天</el-button>
                         </el-col>
                         <el-col :span="6">
                             <el-button type="primary">查询近30天</el-button>
-                        </el-col> -->
+                        </el-col>
                         <el-col :span="6">
                             <el-button size="mini" type="primary" @click="handleSearch">查询</el-button>
                         </el-col>
-                    </el-row>
+                    </el-row> -->
 
                 </el-form>
 
@@ -114,6 +120,33 @@ export default {
         },
         handleRowClick(row, column, event) {
             this.$emit('onClickRow', row);
+        },
+        // 查询当天数据
+        queryToday() {
+            const today = new Date();
+            const formattedDate = today.getFullYear() + '-' + 
+                String(today.getMonth() + 1).padStart(2, '0') + '-' + 
+                String(today.getDate()).padStart(2, '0');
+            
+            this.dateRange = [formattedDate, formattedDate];
+            this.handleSearch();
+        },
+        // 查询近30天数据
+        queryLast30Days() {
+            const today = new Date();
+            const thirtyDaysAgo = new Date();
+            thirtyDaysAgo.setDate(today.getDate() - 29); // 设置为30天前（包括今天）
+            
+            const formattedToday = today.getFullYear() + '-' + 
+                String(today.getMonth() + 1).padStart(2, '0') + '-' + 
+                String(today.getDate()).padStart(2, '0');
+                
+            const formattedThirtyDaysAgo = thirtyDaysAgo.getFullYear() + '-' + 
+                String(thirtyDaysAgo.getMonth() + 1).padStart(2, '0') + '-' + 
+                String(thirtyDaysAgo.getDate()).padStart(2, '0');
+            
+            this.dateRange = [formattedThirtyDaysAgo, formattedToday];
+            this.handleSearch();
         },
         handleSearch() {
             // 刷新表格数据

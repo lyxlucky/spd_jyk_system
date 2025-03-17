@@ -61,6 +61,7 @@
 
       <ele-pro-table
         ref="table"
+        size="mini"
         height="400"
         :initLoad="false"
         highlight-current-row
@@ -74,7 +75,41 @@
         @current-change="onCurrentChange"
         cache-key="UDIScanAddDialogCacheKey"
       >
+      <template v-slot:Batch="{ row }">
+        <el-input
+          size="mini"
+          v-model="row.Batch"
+          placeholder="请输入批号"
+        ></el-input>
+      </template>
+
+      <template v-slot:Batch_Production_Date="{ row }">
+        <!-- <el-date-picker
+          v-model="row.Batch_Production_Date"
+          type="date"
+          size="mini"
+          value-format="yyyy-MM-dd"
+          :value="row.Batch_Production_Date && row.Batch_Production_Date.substr(0, 10) !== '0001-01-01' ? row.Batch_Production_Date : ''"
+          @input="val => row.Batch_Production_Date = val || '0001-01-01'"
+          placeholder="请输入生产日期">
+        </el-date-picker> -->
+        <el-input
+          size="mini"
+          v-model="row.Batch_Production_Date"
+          placeholder="请输入生产日期"
+        ></el-input>
+      </template>
+
+      <template v-slot:Batch_Validity_Period="{ row }">
+        <el-input
+          size="mini"
+          v-model="row.Batch_Validity_Period"
+          placeholder="请输入有效期"
+        ></el-input>
+      </template>
+        
       </ele-pro-table>
+      
 
       <template v-slot:footer>
         <el-button size="mini" @click="updateVisible(false)">取消</el-button>
@@ -144,6 +179,7 @@
             minWidth: 120
           },
           {
+            slot: 'Batch',
             prop: 'Batch',
             label: '批号',
             align: 'center',
@@ -151,9 +187,11 @@
             minWidth: 100
           },
           {
+            slot: 'Batch_Production_Date',
             prop: 'Batch_Production_Date',
             label: '生产日期',
             align: 'center',
+            width:180,
             showOverflowTooltip: true,
             minWidth: 100,
             formatter: (row, column, cellValue) => {
@@ -164,8 +202,10 @@
             }
           },
           {
+            slot: 'Batch_Validity_Period',
             prop: 'Batch_Validity_Period',
             label: '有效期',
+            width:180,
             align: 'center',
             showOverflowTooltip: true,
             minWidth: 100,
@@ -222,14 +262,18 @@
       };
     },
     methods: {
-      async datasource({ page, limit, where, order }) {
-        const res = await scanUdiAddVarieties({
+      datasource({ page, limit, where, order }) {
+        // console.log(page, limit, where, order);
+        return scanUdiAddVarieties({
           page,
           limit,
           where,
-          order
-        });
-        return { list: res.result, count: res.total };
+          order,
+          json: where.json
+        }).then(res=>{
+          let data = res.data
+          return { list: data.result, count: data.total };
+        })
       },
       reload(where) {
         this.$refs.table.reload({ page: 1, where: where });
@@ -282,20 +326,73 @@
         const loading = this.$messageLoading('加载中...');
         scanUdiAddVarieties({ json: JSON.stringify(jsonString) })
           .then((res) => {
-            this.$message.success(res?.msg);
-          })
-          .catch((err) => {
-            this.tips = err;
-            this.$message.error(err);
+            let data = res.data
+            if (data.code == "200") {
+              this.$message.success(data?.msg);
+              this.where.firstUdi = '';
+              this.where.secondUdi = '';
+              this.$refs.firstUdi.focus();
+              return true
+            }
+            this.tips = data?.msg;
+            this.$message.error(data?.msg);
+            this.$refs.table.reload({
+              where:{json: JSON.stringify(jsonString) }
+            });
           })
           .finally(() => {
-            this.where.firstUdi = '';
-            this.where.secondUdi = '';
-            this.$refs.firstUdi.focus();
             loading.close();
           });
       },
-      save() {}
+      save() {
+        console.log(this.current);
+        if (!this.current) {
+          this.$message.warning('请选择一条数据');
+        }
+        if (!this.current.Batch) {
+          this.$message.warning('请输入批号');
+          return;
+        }
+        if (!this.current.Batch_Production_Date || this.current.Batch_Production_Date.substr(0, 10) == '0001-01-01') {
+          this.$message.warning('请输入生产日期');
+          return;
+        }
+        if (!this.current.Batch_Validity_Period || this.current.Batch_Validity_Period.substr(0, 10) == '0001-01-01') {
+          this.$message.warning('请输入有效期');
+          return;
+        }
+
+        // this.scanUdi();
+        const jsonString = [
+          {
+            Id: '',
+            Varietie_Code: this.current.VARIETIE_ID,
+            udi: this.current.udi,
+            DELIVERY_NOTE_NUMBER:
+              this.current.Delivery_Note_Number,
+            Netreceipts: this.current.Netreceipts || '1',
+            Batch: this.current.Batch,
+            Batch_Production_Date: this.current.Batch_Production_Date,
+            Batch_Validity_Period: this.current.Batch_Validity_Period
+          }
+        ];
+        const loading = this.$messageLoading('加载中...');
+        scanUdiAddVarieties({ json: JSON.stringify(jsonString) })
+         .then((res) => {
+            let data = res.data
+            if (data.code == "200") {
+              this.$message.success(data?.msg);
+              this.$refs.firstUdi.focus();
+            }else{
+              this.$message.error(data?.msg);
+            }
+          })
+        .finally(() => {
+            loading.close();
+          });
+
+
+      }
     },
     computed: {
       styleResponsive() {

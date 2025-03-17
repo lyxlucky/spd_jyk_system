@@ -56,8 +56,8 @@ export function getStockUpList(data) {
     data2.send_state = data.where?.send_state || '';
     data2.coefficient = data.where?.coefficient || '';
     data2.order_pc = data.order?.order || 'desc';
-    data2.SENDHRP = data.where?.SENDHRP || 1;
-    data2.isQZJS = data.where?.isQZJS || 1;
+    data2.SENDHRP = data.where?.SENDHRP || '';
+    data2.isQZJS = data.where?.isQZJS || '';
     data2.CREATOR = data.where?.CREATOR || '';
     data2.BZ = data.where?.BZ || '';
     data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);

@@ -61,7 +61,7 @@
           :disabled="isCurrentRowInputEnabled(row)"
           size="mini"
           v-model="row.Batch_Production_Date"
-        ></el-input>
+        >2024-12-04T10</el-input>
       </template>
 
       <!-- 有效期 -->

@@ -9,7 +9,6 @@
       </el-col>
     </el-row>
     <el-row>
-      
       <el-col :span="24">
         <StockPlanOrderList ref="table3" :currentTableRow2="currentTableRow2" :currentTableRow="currentTableRow" @onRowClick="clickTableRow3"/>
       </el-col>

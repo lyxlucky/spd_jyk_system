@@ -3,7 +3,7 @@
     <el-card>
         <div slot="header">备货计划单号列表</div>
         <div>
-            <el-form :model="form" :inline="true" class="ele-form-search" size="mini">
+            <el-form :model="form" :inline="true" size="mini">
                 <!-- 供应商名称搜索 -->
                 <el-form-item>
                     <el-input v-model="form.supplier_name" placeholder="请输入供应商名称" clearable>
@@ -94,7 +94,6 @@
                     :datasource="datasource" 
                     :paging="false"
                     highlight-current-row
-                    
                     @row-click="handleRowClick"
                     @selection-change="handleSelectionChange">
                 </ele-pro-table>

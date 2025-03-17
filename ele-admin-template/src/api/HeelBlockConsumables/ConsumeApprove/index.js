@@ -95,9 +95,9 @@ export function apiGetSearchTbMainZy(data){
     let params = {};
     params.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
     //条件
-    params.deliveryNumberId = data.where.deliveryNumberId || ''
+    params.deliveryNumberId = data.where?.deliveryNumberId || ''
 
-    let url = `/B2BVarietieConsumeApprove/RejectCommit${formdataifyGet()}`
+    let url = `/B2BVarietieConsumeApprove/RejectCommit${formdataifyGet(params)}`
     return request.get(url)
 }
 
