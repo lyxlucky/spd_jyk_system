@@ -28,19 +28,19 @@
         </el-form-item>
         <el-form-item label="起始:">
           <!-- <el-input size="mini" v-model="where.statrTime" placeholder="起始" clearable /> -->
-          <el-date-picker size="mini" v-model="where.statrTime" type="date" placeholder="起始" format="YYYY-MM-DD" value-format="YYYY-MM-DD" />
+          <el-date-picker size="mini" v-model="where.statrTime" type="date" placeholder="起始" format="yyyy-MM-dd" value-format="yyyy-MM-dd" />
         </el-form-item>
-        <el-form-item label="至:">
-          <el-date-picker size="mini" v-model="where.endTime" type="date" placeholder="起始" format="YYYY-MM-DD" value-format="YYYY-MM-DD" />
+        <el-form-item label="至">
+          <el-date-picker size="mini" v-model="where.endTime" type="date" placeholder="起始" format="yyyy-MM-dd" value-format="yyyy-MM-dd" />
 
         </el-form-item>
         <el-form-item label="结束:">
-          <el-date-picker size="mini" v-model="where.statrTime2" type="date" placeholder="结束" format="YYYY-MM-DD" value-format="YYYY-MM-DD" />
+          <el-date-picker size="mini" v-model="where.statrTime2" type="date" placeholder="结束" format="yyyy-MM-dd" value-format="yyyy-MM-dd" />
         </el-form-item>
 
-        <el-form-item label="">
+        <el-form-item label="至">
           <!-- <el-input size="mini" v-model="where.endTime2" placeholder="至:" clearable /> -->
-          <el-date-picker size="mini" v-model="where.endTime2" type="date" placeholder="至" format="YYYY-MM-DD" value-format="YYYY-MM-DD" />
+          <el-date-picker size="mini" v-model="where.endTime2" type="date" placeholder="至" format="yyyy-MM-dd" value-format="yyyy-MM-dd" />
         </el-form-item>
         <!-- <el-form-item label="来源:">
                     <el-input size="mini" v-model="where.keyword" placeholder="来源" clearable />
@@ -48,11 +48,13 @@
                 <el-form-item label="价格:">
                     <el-input size="mini" v-model="where.keyword" placeholder="价格" clearable />
                 </el-form-item> -->
+                <p>
+
         <el-form-item>
           <el-input size="mini" v-model="where.SOURCE_FROM" placeholder="来源" clearable />
         </el-form-item>
 
-        <el-form-item label="价格:">
+        <el-form-item>
           <el-input size="mini" v-model="where.PRICE" placeholder="价格" clearable />
         </el-form-item>
         <el-form-item>
@@ -65,23 +67,24 @@
 
         <el-form-item>
 
-          <el-select size="mini" v-model="where.XM_NAME" id="PrchaseDataV2_XM_NAME" name="PrchaseDataV2_XM_NAME" lay-filter="PrchaseDataV2_XM_NAME" style="height:31px;width:200px;float:left" lay-search="" onchange="reloadPrchaseDataV2Table1Table1()">
+          <el-select size="mini" v-model="where.XM_NAME" 
+           onchange="reloadPrchaseDataV2Table1Table1()">
             <el-option value="" label="全部"></el-option>
-            <el-option v-for="item in XM_NAMEoptions" :key="item.value" :value="item.value" :label="item.label"></el-option>
+            <el-option v-for="item in XM_NAMEoptions" :key="item.value" :value="item.value" :title="item.label" :label="truncateLabel(item.label)"></el-option>
 
           </el-select>
         </el-form-item>
         <el-form-item>
 
-          <el-select size="mini" v-model="where.XM_NUM" id="PrchaseDataV2_XM_NUM" name="PrchaseDataV2_XM_NUM" lay-filter="PrchaseDataV2_XM_NUM" style="height:31px;width:200px;float:left" lay-search="" onchange="reloadPrchaseDataV2Table1Table1()">
+          <el-select size="mini" v-model="where.XM_NUM" onchange="reloadPrchaseDataV2Table1Table1()">
             <el-option value="" label="全部"></el-option>
-            <el-option v-for="item in XM_NUMoptions" :key="item.value" :value="item.value" :label="item.label"></el-option>
+            <el-option v-for="item in XM_NUMoptions" :key="item.value" :value="item.value" :title="item.label" :label="truncateLabel(item.label)"></el-option>
 
           </el-select>
         </el-form-item> <el-form-item>
-          <el-select size="mini" v-model="where.XM_TYPE" id="PrchaseDataV2_XM_TYPE" name="PrchaseDataV2_XM_TYPE" lay-filter="PrchaseDataV2_XM_TYPE" style="height:31px;width:200px;float:left" lay-search="" onchange="reloadPrchaseDataV2Table1Table1()">
+          <el-select size="mini" v-model="where.XM_TYPE" onchange="reloadPrchaseDataV2Table1Table1()">
             <el-option value="" label="全部"></el-option>
-            <el-option v-for="item in XM_TYPEoptions" :key="item.value" :value="item.value" :label="item.label"></el-option>
+            <el-option v-for="item in XM_TYPEoptions" :key="item.value" :value="item.value" :title="item.label" :label="truncateLabel(item.label)"></el-option>
 
           </el-select>
         </el-form-item>
@@ -98,6 +101,8 @@
             搜索
           </el-button>
         </el-form-item>
+      </p>
+
       </el-form>
       <!-- 数据表格 -->
       <ele-pro-table ref="table" class="table-PrchaseDataV2" :columns="columns" :currentPage="page" :pageSize="size" :highlightCurrentRow="true" :datasource="datasource" @current-change="onCurrentChange" @size-change="onSizeChange">
@@ -113,6 +118,11 @@
     } */
 .where-enable {
   width: 5rem;
+}
+.el-select-dropdown__item {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 </style>
 
@@ -229,7 +239,7 @@ export default {
         {
           prop: 'BUY_TIME',
           label: '起始日期',
-          minWidth: 320,
+          minWidth: 120,
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
@@ -419,7 +429,11 @@ export default {
     this.Xm_SELECTclikc();
   },
   mounted() {},
-  methods: {
+  methods: { 
+     truncateLabel(label) {
+      const maxLength = 20; // 最大显示长度
+      return label.length > maxLength ? label.slice(0, maxLength) + '...' : label;
+    },
     Xm_SELECTclikc() {
       InitVarLimitBuyXMClassV2().then((data) => {
         const datas = data.data;
