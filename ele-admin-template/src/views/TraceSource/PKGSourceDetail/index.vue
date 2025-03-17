@@ -31,7 +31,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(item, index) in sourceDetailRows" :key="index">
+            <tr v-for="(item, index) in filteredSourceDetailRows" :key="index">
               <td>{{ item.Operatation_Staff || '' }}</td>
               <td>{{ item.Operate_Time_String || '' }}</td>
               <td>
@@ -207,6 +207,14 @@ export default {
       typeID: ['10', '20', '24', '25', '30', '34', '35', '40', '50', '60', '70', '80', '90', '100', '105', '110', '115', '65', '177', '120', '85']
     };
   },
+  computed: {
+    filteredSourceDetailRows() {
+      return this.sourceDetailRows.filter((item, index) => {
+        const dotColor = this.getDotColor(item, index);
+        return dotColor!== 'status-dot-gray';
+      });
+    }
+  },
   methods: {
     /* 表格数据源 */
     async datasource({ page, limit, where, order }) {
@@ -267,7 +275,7 @@ export default {
         return matchedRow || defaultRow;
       });
 
-      if (isDone !== 1) {
+      if (isDone!== 1) {
         const lastTypeID = objs[objs.length - 1].Type_Id;
         const startIndex = this.typeID.indexOf(lastTypeID) + 1;
         const remaining = [];
@@ -363,4 +371,4 @@ export default {
 .ks-source td:last-child {
   text-align: left;
 }
-</style>
+</style>    
