@@ -12,6 +12,7 @@
       @opened="
         () => {
           this.$refs.firstUdi.focus();
+          this.tips = "";
         }
       "
     >
