@@ -28,80 +28,76 @@
         </el-form-item>
         <el-form-item label="起始:">
           <!-- <el-input size="mini" v-model="where.statrTime" placeholder="起始" clearable /> -->
-          <el-date-picker size="mini" v-model="where.statrTime" type="date" placeholder="起始" format="yyyy-MM-dd" value-format="yyyy-MM-dd" />
+          <el-date-picker size="mini" style="width:150px" v-model="where.statrTime" type="date" placeholder="起始" format="yyyy-MM-dd" value-format="yyyy-MM-dd" />
         </el-form-item>
         <el-form-item label="至">
-          <el-date-picker size="mini" v-model="where.endTime" type="date" placeholder="起始" format="yyyy-MM-dd" value-format="yyyy-MM-dd" />
-
-        </el-form-item>
-        <el-form-item label="结束:">
-          <el-date-picker size="mini" v-model="where.statrTime2" type="date" placeholder="结束" format="yyyy-MM-dd" value-format="yyyy-MM-dd" />
+          <el-date-picker size="mini" style="width:150px" v-model="where.endTime" type="date" placeholder="起始" format="yyyy-MM-dd" value-format="yyyy-MM-dd" />
         </el-form-item>
 
-        <el-form-item label="至">
-          <!-- <el-input size="mini" v-model="where.endTime2" placeholder="至:" clearable /> -->
-          <el-date-picker size="mini" v-model="where.endTime2" type="date" placeholder="至" format="yyyy-MM-dd" value-format="yyyy-MM-dd" />
-        </el-form-item>
-        <!-- <el-form-item label="来源:">
+        <el-row>
+          <el-form-item label="结束:">
+            <el-date-picker size="mini" style="width:150px" v-model="where.statrTime2" type="date" placeholder="结束" format="yyyy-MM-dd" value-format="yyyy-MM-dd" />
+          </el-form-item>
+
+          <el-form-item label="至">
+            <el-date-picker size="mini" style="width:150px" v-model="where.endTime2" type="date" placeholder="至" format="yyyy-MM-dd" value-format="yyyy-MM-dd" />
+          </el-form-item>
+          <!-- <el-form-item label="来源:">
                     <el-input size="mini" v-model="where.keyword" placeholder="来源" clearable />
                 </el-form-item>
                 <el-form-item label="价格:">
                     <el-input size="mini" v-model="where.keyword" placeholder="价格" clearable />
                 </el-form-item> -->
-                <p>
 
-        <el-form-item>
-          <el-input size="mini" v-model="where.SOURCE_FROM" placeholder="来源" clearable />
-        </el-form-item>
+          <el-form-item>
+            <el-input size="mini" v-model="where.SOURCE_FROM" placeholder="来源" clearable />
+          </el-form-item>
 
-        <el-form-item>
-          <el-input size="mini" v-model="where.PRICE" placeholder="价格" clearable />
-        </el-form-item>
-        <el-form-item>
-          <el-input size="mini" v-model="where.MANUFACTURING_ENT_NAME" placeholder="生产企业/备注" clearable />
-        </el-form-item>
-        <el-form-item>
+          <el-form-item>
+            <el-input size="mini" v-model="where.PRICE" placeholder="价格" clearable />
+          </el-form-item>
+          <el-form-item>
+            <el-input size="mini" v-model="where.MANUFACTURING_ENT_NAME" placeholder="生产企业/备注" clearable />
+          </el-form-item>
+          <el-form-item>
 
-          <el-input size="mini" v-model="where.VARIETIE_CODE_NEW" placeholder="品种名称/编码" clearable />
-        </el-form-item>
+            <el-input size="mini" v-model="where.VARIETIE_CODE_NEW" placeholder="品种名称/编码" clearable />
+          </el-form-item>
 
-        <el-form-item>
+          <el-form-item>
+            <el-select size="mini" style="width:150px" v-model="where.XM_NAME" onchange="reloadPrchaseDataV2Table1Table1()">
+              <el-option value="" label="全部"></el-option>
+              <el-option v-for="item in XM_NAMEoptions" :key="item.value" :value="item.value" :title="item.label" :label="truncateLabel(item.label)"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item>
 
-          <el-select size="mini" v-model="where.XM_NAME" 
-           onchange="reloadPrchaseDataV2Table1Table1()">
-            <el-option value="" label="全部"></el-option>
-            <el-option v-for="item in XM_NAMEoptions" :key="item.value" :value="item.value" :title="item.label" :label="truncateLabel(item.label)"></el-option>
+            <el-select size="mini" style="width:150px" v-model="where.XM_NUM" onchange="reloadPrchaseDataV2Table1Table1()">
+              <el-option value="" label="全部"></el-option>
+              <el-option v-for="item in XM_NUMoptions" :key="item.value" :value="item.value" :title="item.label" :label="truncateLabel(item.label)"></el-option>
 
-          </el-select>
-        </el-form-item>
-        <el-form-item>
+            </el-select>
+          </el-form-item> <el-form-item>
+            <el-select size="mini" style="width:150px"  v-model="where.XM_TYPE" onchange="reloadPrchaseDataV2Table1Table1()">
+              <el-option value="" label="全部"></el-option>
+              <el-option v-for="item in XM_TYPEoptions" :key="item.value" :value="item.value" :title="item.label" :label="truncateLabel(item.label)"></el-option>
 
-          <el-select size="mini" v-model="where.XM_NUM" onchange="reloadPrchaseDataV2Table1Table1()">
-            <el-option value="" label="全部"></el-option>
-            <el-option v-for="item in XM_NUMoptions" :key="item.value" :value="item.value" :title="item.label" :label="truncateLabel(item.label)"></el-option>
+            </el-select>
+          </el-form-item>
 
-          </el-select>
-        </el-form-item> <el-form-item>
-          <el-select size="mini" v-model="where.XM_TYPE" onchange="reloadPrchaseDataV2Table1Table1()">
-            <el-option value="" label="全部"></el-option>
-            <el-option v-for="item in XM_TYPEoptions" :key="item.value" :value="item.value" :title="item.label" :label="truncateLabel(item.label)"></el-option>
-
-          </el-select>
-        </el-form-item>
-
-        <!-- <el-form-item> -->
-        <!-- <el-select class="where-enable" size="mini" v-model="where.enable" placeholder="状态">
+          <!-- <el-form-item> -->
+          <!-- <el-select class="where-enable" size="mini" v-model="where.enable" placeholder="状态">
                         <el-option label="启用" value="1"></el-option>
                         <el-option label="全部" value=""></el-option>
                         <el-option label="停用" value="0"></el-option>
                     </el-select> -->
-        <!-- </el-form-item> -->
-        <el-form-item>
-          <el-button size="mini" type="primary" icon="el-icon-search" @click="reload">
-            搜索
-          </el-button>
-        </el-form-item>
-      </p>
+          <!-- </el-form-item> -->
+          <el-form-item>
+            <el-button size="mini" type="primary" icon="el-icon-search" @click="reload">
+              搜索
+            </el-button>
+          </el-form-item>
+        </el-row>
 
       </el-form>
       <!-- 数据表格 -->
@@ -429,10 +425,12 @@ export default {
     this.Xm_SELECTclikc();
   },
   mounted() {},
-  methods: { 
-     truncateLabel(label) {
+  methods: {
+    truncateLabel(label) {
       const maxLength = 20; // 最大显示长度
-      return label.length > maxLength ? label.slice(0, maxLength) + '...' : label;
+      return label.length > maxLength
+        ? label.slice(0, maxLength) + '...'
+        : label;
     },
     Xm_SELECTclikc() {
       InitVarLimitBuyXMClassV2().then((data) => {
