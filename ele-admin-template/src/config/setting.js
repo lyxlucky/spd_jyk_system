@@ -37,7 +37,10 @@ export const B2B_BASE_CODE = caculateB2bCode();
 
 
 // 后端地址
-export const BACK_BASE_URL = "http://localhost:16416";
+// export const BACK_BASE_URL = "http://localhost:16416";
+
+//北京内网
+export const BACK_BASE_URL = "http://10.8.5.36:10082";
 
 // 线上测试后端地址
 // export const BACK_BASE_URL = "http://120.79.135.98:82";
