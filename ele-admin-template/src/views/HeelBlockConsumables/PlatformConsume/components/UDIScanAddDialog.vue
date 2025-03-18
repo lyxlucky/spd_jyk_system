@@ -262,7 +262,7 @@
       },
       datasource({ page, limit, where, order }) {
         // console.log(page, limit, where, order);
-        return scanUdiAddVarieties({
+        scanUdiAddVarieties({
           page,
           limit,
           where,
