@@ -7,7 +7,7 @@
                         <el-tab-pane label="预收货单号列表">
                             <div class="margin-top-10">
                                 <el-button type="primary" size="mini" @click="exportConsumeXlsx">导出</el-button>
-                                <el-button size="mini" :disabled="!this.currentConsumeA1"
+                                <el-button size="mini" :disabled="this.currentConsumeA1Status"
                                     @click="onStatusWithdrawn">状态撤回</el-button>
                                 <el-button type="primary" size="mini" @click="showUploadDialogVisible">上传植入单</el-button>
                             </div>
@@ -60,6 +60,7 @@
                                 <ele-pro-table height="500" :needPage="false" :toolbar="false" :pageSize="9999"
                                     class="receipt-order-list-table" size="mini" :columns="consumeColumns"
                                     :highlightCurrentRow="true" @current-change="onReceiptOrderCurrentChange"
+                                    :row-class-name="tableRowClassName1"
                                     :datasource="ReceiptOrderList"></ele-pro-table>
                             </div>
                         </el-tab-pane>
@@ -108,6 +109,7 @@
                     <div>
                         <ele-pro-table height="300" class="receipt-varietie-info-table" :needPage="false"
                             :pageSize="9999" :toolbar="false" size="mini" :columns="consumeA3"
+                            @current-change="onTableCurrent3"
                             :highlightCurrentRow="true" :datasource="LoadGeneratedVarietieInfo"></ele-pro-table>
                     </div>
                 </el-card>
@@ -189,6 +191,7 @@ export default {
 
             //当前选择的表格行
             currentConsumeA1: null,
+            currentConsumeA1Status:true,
             currentConsumeA2: null,
             currentConsumeA3: null,
             currentGtTbTable1gt: null,
@@ -547,6 +550,8 @@ export default {
             let loadingInstance = Loading.service({
                 target: ".receipt-order-list-table .el-table"
             })
+            this.currentConsumeA1 = null
+            this.currentConsumeA1Status = true
             let where = this.consumeForm
             let dataSource = await apiGetLoadGoodsDeliveryNumbers({
                 where
@@ -667,6 +672,7 @@ export default {
         },
         onReceiptOrderCurrentChange(e) {
             console.log(e);
+            this.currentConsumeA1Status = e && e.Receive_Receipt_State != '2'
             this.currentConsumeA1 = e
             this.currentConsumeA2 = null
             this.getDeliveryVarietieList()
@@ -697,12 +703,35 @@ export default {
                 this.$message('请选择收货单号');
                 return false
             }
+            const loading = this.$messageLoading('提交中...');
+            console.log(this.currentConsumeA1);
+            let where = {
+                deliveryNumberId: this.currentConsumeA1.Delivery_Note_Number_Id
+            }
             apiGetSearchTbMainZy({
-                deliveryNumberId: this.currentConsumeA1.Delivery_Note_Number
+                where
             }).then(res => {
+                loading.close();
+                let data = res.data
+                if (data.code!= "200") {
+                    this.$message.warning(data.msg);
+                    return 
+                }
+                this.$message.success(data.msg);
+            }).finally(e=>{
                 this.getReceiptOrderList()
             })
+            
             this.currentConsumeA1 = null
+        },
+        onTableCurrent1(row){
+            this.currentConsumeA1 = row
+        },
+        onTableCurrent2(row){
+            this.currentConsumeA2 = row
+        },
+        onTableCurrent3(row){
+            this.currentConsumeA3 = row
         },
         onNurseApproval(e) {
             if (!this.currentConsumeA1) {
@@ -866,6 +895,11 @@ export default {
                 loading.close()
             })
 
+        },
+        tableRowClassName1({row}){
+            if (row.Receive_Receipt_State == '3') {
+                return 'success-row'
+            }
         }
     }
 
@@ -896,5 +930,21 @@ export default {
 
 ::v-deep(.el-form-item--mini.el-form-item) {
     margin-bottom: 0px;
+}
+
+::v-deep(.warning-row) {
+    background-color: #fdf6ec;
+}
+
+::v-deep(.success-row) {
+    background-color: #f0f9eb;
+}
+
+::v-deep(.info-row) {
+    background-color: #f4f4f5;
+}
+
+::v-deep(.danger-row) {
+    background-color: #fef0f0;
 }
 </style>

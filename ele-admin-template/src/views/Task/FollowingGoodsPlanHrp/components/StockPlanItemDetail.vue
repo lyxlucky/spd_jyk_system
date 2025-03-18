@@ -1,33 +1,54 @@
 <template>
   <div class="ele-body">
     <el-card>
-      
+
       <div slot="header">备货计划单品种明细</div>
       <div>
-        <el-form :model="form" class="form">
+        <el-form :model="form" :inline="true" size="mini">
           <!-- 表单元素 -->
-          <el-input size="mini" v-model="form.varietie_code" placeholder="品种编码/名称"></el-input>
-          <el-input size="mini" v-model="form.stock_up_plan_no" placeholder="备货计划编号"></el-input>
-          <el-input size="mini" v-model="form.supplier_name" placeholder="供应商名称"></el-input>
-          <el-input size="mini" v-model="form.Manufacturing_Ent_Name" placeholder="生产企业"></el-input>
-          <el-input size="mini" v-model="form.Specification_Or_Type" placeholder="规格型号"></el-input>
-          <el-input size="mini" v-model="form.PLAN_DEPT_TWO_NAME" placeholder="计划科室"></el-input>
-          <el-date-picker size="mini" v-model="form.start_time" type="date" placeholder="开始日期" format="yyyy-MM-dd"
-            value-format="yyyy-MM-dd"></el-date-picker>
-          <el-date-picker size="mini" v-model="form.end_time" type="date" placeholder="结束日期" format="yyyy-MM-dd"
-            value-format="yyyy-MM-dd"></el-date-picker>
-          <el-select size="mini" v-model="form.remark" placeholder="订单状态">
-            <el-option label="全部" value="">
-            </el-option>
-            <el-option label="已备注" value="0">
-            </el-option>
-            <el-option label="未备注" value="1">
-            </el-option>
-          </el-select>
-          <el-button size="mini" type="primary" @click="handleSearch">查询</el-button>
+          <el-form-item>
+            <el-input v-model="form.varietie_code" placeholder="品种编码/名称"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-input v-model="form.stock_up_plan_no" placeholder="备货计划编号"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-input v-model="form.supplier_name" placeholder="供应商名称"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-input v-model="form.Manufacturing_Ent_Name" placeholder="生产企业"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-input v-model="form.Specification_Or_Type" placeholder="规格型号"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-input v-model="form.PLAN_DEPT_TWO_NAME" placeholder="计划科室"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-date-picker v-model="form.start_time" type="date" placeholder="开始日期" format="yyyy-MM-dd"
+              value-format="yyyy-MM-dd"></el-date-picker>
+          </el-form-item>
+          <el-form-item>
+            <el-date-picker v-model="form.end_time" type="date" placeholder="结束日期" format="yyyy-MM-dd"
+              value-format="yyyy-MM-dd"></el-date-picker>
+          </el-form-item>
+          <el-form-item>
+            <el-select v-model="form.remark" placeholder="订单状态">
+              <el-option label="全部" value="">
+              </el-option>
+              <el-option label="已备注" value="0">
+              </el-option>
+              <el-option label="未备注" value="1">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="handleSearch">查询</el-button>
+          </el-form-item>
         </el-form>
-        <ele-pro-table size="mini" ref="table" height="250px" :columns="columns" :datasource="datasource"
+        <ele-pro-table ref="table" height="250px" :columns="columns" :datasource="datasource"
           highlight-current-row
+          size="mini"
           :paging="false" @row-click="handleRowClick">
         </ele-pro-table>
       </div>
@@ -377,15 +398,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.form {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.form>* {
-  width: 200px;
-}
 
 :deep(.no-wrap-cell) {
   white-space: nowrap;

@@ -231,11 +231,12 @@ export async function scanUdiAddVarieties(data) {
   };
   var req = formdataify(formatData);
   const res = await request.post('/B2BConsumeMgmt/scanUdiAddVarieties', req);
-  if (res.data.code == 200) {
-    return res.data;
-  } else {
-    return Promise.reject(new Error(res.data.msg));
-  }
+  return res
+  // if (res.data.code == 200) {
+  //   return res.data;
+  // } else {
+  //   return Promise.reject(new Error(res.data.msg));
+  // }
 }
 
 export async function ModifyGS1(data) {

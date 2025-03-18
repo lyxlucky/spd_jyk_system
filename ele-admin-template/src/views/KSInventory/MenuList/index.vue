@@ -468,7 +468,6 @@
           }
           permission_group2.push(lastGroup);
         }
-
         this.MenuList = permission_group2;
       }
     },
