@@ -2,7 +2,7 @@
   <div class="ele-body">
     <ApplyTempSearch @search="reload" :rowData="current" />
     <!-- 数据表格 -->
-    <ele-pro-table highlight-current-row ref="table" height="60vh" :rowClickChecked="true" :stripe="false" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :needPage="true" :datasource="datasource" :selection.sync="selection" cache-key="ApplyTempTable">
+    <ele-pro-table @current-change="onCurrentChange" highlight-current-row ref="table" height="60vh" :rowClickChecked="true" :stripe="false" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :needPage="true" :datasource="datasource" :selection.sync="selection" cache-key="">
       <!-- 表头工具栏 -->
       <template v-slot:toolbar>
         <!-- 搜索表单 -->
@@ -201,6 +201,11 @@ export default {
         }
       );
       return data;
+    },
+    onCurrentChange(current) {
+      this.current = current;
+      // console.log(current);
+      this.$emit('getCurrent', current);
     },
     /* 刷新表格 */
     reload(where) {
