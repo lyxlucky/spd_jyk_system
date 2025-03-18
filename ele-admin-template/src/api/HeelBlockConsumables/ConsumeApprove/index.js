@@ -1,6 +1,8 @@
 import request from '@/utils/request';
 import { formdataify, formdataifyGet } from '@/utils/formdataify';
-import { TOKEN_STORE_NAME } from '@/config/setting'
+import { TOKEN_STORE_NAME,HOME_HP } from '@/config/setting'
+import store from '@/store';
+
 
 // { page, limit, where, order }
 // page: 1
@@ -116,7 +118,7 @@ export function apiPostCreateDefTb(data){
     return request.post(url,formdata)
 }
 
-//护士审批
+
 // /B2BVarietieConsumeApprove/gtSbkSp
 // json: jsonStr, state: state
 export function apiPostGtSbkSp(data){
@@ -149,4 +151,34 @@ export function apiPostUploadGtPic(data){
 
     let url = `/BtbGetVarietie/UploadGtPic`
     return request.post(url,formdata)
+}
+
+
+//护士审批
+// B2BVarietieConsumeApprove/NurseApprove
+export function apiPostNurseApprove(data){
+    let params = {};
+    params.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+    //条件
+    params.deliveryNumberId = data.where?.deliveryNumberId || ''
+    params.staff = store.state.user.info.Nickname
+    params.account = store.state.user.info.UserName
+    let formdata = formdataify(params)
+    console.log(params)
+    let url = `/B2BVarietieConsumeApprove/NurseApprove`
+    return request.post(url,formdata)
+}
+
+//查看定数码是否合法
+// json: ["122833","122835"]
+// deliveryNumberId: 10091622378
+// title: stzx
+// Token: 69254469abdfb73c4314
+export function apiGetIsHvaeChargCode(data){
+    let params = {};
+    params.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+    params.json = data.where?.Batch_Id || ''
+    params.deliveryNumberId = data.where?.deliveryNumberId || ''
+    params.title = HOME_HP
+    return request.get(`/B2BVarietieConsumeApprove/IsHvaeChargCode${formdataifyGet(params)}`)
 }

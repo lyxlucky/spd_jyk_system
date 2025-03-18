@@ -7,7 +7,7 @@
                         <el-tab-pane label="预收货单号列表">
                             <div class="margin-top-10">
                                 <el-button type="primary" size="mini" @click="exportConsumeXlsx">导出</el-button>
-                                <el-button size="mini" :disabled="this.currentConsumeA1Status"
+                                <el-button size="mini" :disabled="!(this.currentConsumeA1Status == '2')"
                                     @click="onStatusWithdrawn">状态撤回</el-button>
                                 <el-button type="primary" size="mini" @click="showUploadDialogVisible">上传植入单</el-button>
                             </div>
@@ -89,11 +89,10 @@
                                 </el-col>
                                 <el-col :span="10" :push="2">
                                     <el-button size="mini" type="primary" @click="onGeneratePackage">生成套包</el-button>
-                                    <el-button size="mini" :disabled="true">查看定数码标签</el-button>
-                                    <el-button size="mini" :disabled="true" @click="onNurseApproval">护士审批</el-button>
+                                    <el-button size="mini" :disabled="!(this.currentConsumeA1Status == '3' || this.currentConsumeA1Status == '4')" @click="isHvaeChargCode">查看定数码标签</el-button>
+                                    <el-button size="mini" :disabled="!(this.currentConsumeA1Status == '2')" @click="onNurseApproval">护士审批</el-button>
                                 </el-col>
                             </el-row>
-
                             <!-- 表格 -->
                             <div class="margin-top-10">
                                 <ele-pro-table height="300" class="receipt-delivery-varietie-table" :needPage="false"
@@ -115,12 +114,6 @@
                 </el-card>
             </el-col>
         </el-row>
-
-
-
-
-
-
 
         <!-- 对话框 -->
         <el-dialog title="生成套包" :visible.sync="dialogVisible" width="80%" :before-close="handleClose">
@@ -163,10 +156,11 @@
 </template>
 
 <script>
-import { apiGetLoadGeneratedVarietieInfo, apiGetLoadGoodsDeliveryNumbers, apiGetSearchDeliveryVarietie, apiGetSearchTbMainZy, apiPostCreateDefTb, apiPostGtSbkSp, apiPostSearchTbMainZy, apiPostUploadGtPic } from '@/api/HeelBlockConsumables/ConsumeApprove';
+import { apiGetIsHvaeChargCode,apiGetLoadGeneratedVarietieInfo, apiGetLoadGoodsDeliveryNumbers, apiGetSearchDeliveryVarietie, apiGetSearchTbMainZy, apiPostCreateDefTb, apiPostGtSbkSp, apiPostSearchTbMainZy, apiPostUploadGtPic,apiPostNurseApprove } from '@/api/HeelBlockConsumables/ConsumeApprove';
 import { formatDate } from '@/utils/formdataify';
 import { Loading } from 'element-ui';
 import { utils, writeFile } from 'xlsx';
+import { HOME_HP,BACK_BASE_URL,TOKEN_STORE_NAME } from '@/config/setting';
 
 export default {
     data() {
@@ -578,7 +572,7 @@ export default {
             return dataSource
 
         },
-
+        
         //3
         async getLoadGeneratedVarietieInfo() {
             let loadingInstance = Loading.service({
@@ -586,7 +580,7 @@ export default {
             })
 
             let where = {
-                batchId: this.currentConsumeA2 ? this.currentConsumeA2.Varietie_Code : '',
+                batchId: this.currentConsumeA2 ? this.currentConsumeA2.Batch_Id : '',
                 deliveryNumber: this.currentConsumeA1 ? this.currentConsumeA1.Delivery_Note_Number : ''
             }
             let datasource = await apiGetLoadGeneratedVarietieInfo({
@@ -672,7 +666,7 @@ export default {
         },
         onReceiptOrderCurrentChange(e) {
             console.log(e);
-            this.currentConsumeA1Status = e && e.Receive_Receipt_State != '2'
+            this.currentConsumeA1Status = e.Receive_Receipt_State 
             this.currentConsumeA1 = e
             this.currentConsumeA2 = null
             this.getDeliveryVarietieList()
@@ -744,29 +738,20 @@ export default {
                 type: 'warning'
             }).then(() => {
                 let where = {
-                    json: JSON.stringify(this.currentConsumeA1),
-                    state: 1
+                    deliveryNumberId : this.currentConsumeA1.Delivery_Note_Number_Id
                 }
-
-                apiPostGtSbkSp({
-                    where
-                }).then(res => {
+                const loading = this.$messageLoading('提交中...');
+                apiPostNurseApprove({where}).then(res=>{
                     let data = res.data
-                    if (data.code == 200) {
-                        this.$message({
-                            message: data.msg,
-                            type: 'success'
-                        });
-                        return true
+                    if (data.code!= "200") {
+                        this.$message.warning(data.msg);
+                        return
                     }
-
-
-                    this.$message(data.msg);
-                    return false
+                    this.$message.success(data.msg);
+                }).finally(()=>{
+                    loading.close()
                 })
             });
-
-
         },
         //点击生成
         onGeneratePackage(e) {
@@ -900,7 +885,49 @@ export default {
             if (row.Receive_Receipt_State == '3') {
                 return 'success-row'
             }
-        }
+        },
+        //查看定数码标签
+        isHvaeChargCode(){
+            // console.log(this.DeliveryVarietieList);
+            if (!this.DeliveryVarietieList || this.DeliveryVarietieList.length == 0) {
+                this.$message.warning('请先查询或等待查询完成...');
+                return
+            }
+            //Batch_Id
+            const loading = this.$messageLoading("查询中...")
+            let Batch_Id = this.DeliveryVarietieList.map(ele => {
+                return ele.Batch_Id
+            })
+            let deliveryNumberId = this.currentConsumeA1? this.currentConsumeA1.Delivery_Note_Number : ''
+            let where = {
+                Batch_Id : JSON.stringify(Batch_Id),
+                deliveryNumberId
+            }
+            
+            apiGetIsHvaeChargCode({
+                where
+            }).then(res=>{
+                // console.log(BACK_BASE_URL + "/api/Commons/GetReportById_BDOne?id=3&format=pdf&inline=true&deliveryNumberId=" + deliveryNumberId + "&Token=" + localStorage.Token)
+                let data = res.data
+                if (data.code == 200) {
+                    if (HOME_HP=="zq" || HOME_HP == "stzx") {
+                        window.open(BACK_BASE_URL + "/api/Commons/GetReportById_BDOne?id=3&format=pdf&inline=true&deliveryNumberId=" + deliveryNumberId + "&Token=" + sessionStorage.getItem(TOKEN_STORE_NAME));
+                        window.open(BACK_BASE_URL + "/api/B2BVarietieConsumeApprove/GetTags?id=5&format=pdf&inline=true&json=" + where.Batch_Id + "&deliveryNumberId=" + deliveryNumberId + "&title=" + HOME_HP + "&Token=" + sessionStorage.getItem(TOKEN_STORE_NAME));
+                    }else if (HOME_HP == "stzl") {
+                        window.open(BACK_BASE_URL + "/api/Commons/GetReportById_BDOne?id=12&format=pdf&inline=true&deliveryNumberId=" + deliveryNumberId + "&Token=" + localStorage.Token);
+                        window.open(BACK_BASE_URL + "/api/B2BVarietieConsumeApprove/GetTags?id=5&format=pdf&inline=true&json=" + where.Batch_Id + "&deliveryNumberId=" + deliveryNumberId + "&title=" + HOME_HP + "&Token=" + sessionStorage.getItem(TOKEN_STORE_NAME));
+                    }else {
+                        window.open(BACK_BASE_URL + "/api/B2BVarietieConsumeApprove/GetTags?id=5&format=pdf&inline=true&json=" + where.Batch_Id + "&deliveryNumberId=" + deliveryNumberId + "&title=" + HOME_HP + "&Token=" + sessionStorage.getItem(TOKEN_STORE_NAME));
+                    }
+                    return 
+                }
+                console.log(data)
+                this.$message.warning(data.msg);
+            }).finally(()=>{
+                loading.close()
+            })
+            
+        },
     }
 
 }
