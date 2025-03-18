@@ -9,12 +9,7 @@
       :destroy-on-close="true"
       :close-on-click-modal="false"
       @update:visible="updateVisible"
-      @opened="
-        () => {
-          this.$refs.firstUdi.focus();
-          this.tips = "";
-        }
-      "
+      @opened="handleOpened"
     >
       <!-- udi扫描 -->
       <el-form ref="form" :model="where" @keyup.enter.native="save">
@@ -261,6 +256,10 @@
       };
     },
     methods: {
+      handleOpened() {
+        this.$refs.firstUdi.focus();
+        this.tips = '';
+      },
       datasource({ page, limit, where, order }) {
         // console.log(page, limit, where, order);
         return scanUdiAddVarieties({
