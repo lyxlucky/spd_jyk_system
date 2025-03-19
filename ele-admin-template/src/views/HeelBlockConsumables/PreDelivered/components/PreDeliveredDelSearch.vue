@@ -1,7 +1,7 @@
 <!-- 搜索表单 -->
 <template>
   <div>
-    <el-form class="ele-form-search">
+    <el-form class="ele-form-search" size="mini">
       <el-row :gutter="10">
         <el-col :lg="8" :md="12">
           <el-input size="mini" v-model="where.condition" placeholder="请输入品种名称/品种编码/型号规格/生产企业搜索/供应商名称" clearable />

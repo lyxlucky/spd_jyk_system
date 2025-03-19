@@ -21,7 +21,7 @@
             <el-button type="text" class="button">
               <div style="width: 100px; display: flex; justify-content: center">
                 <svg-icon
-                  :icon-class="p.icon"
+                  :icon-class="p.icon || ''"
                   style="width: 40px; height: 40px"
                 />
               </div>
@@ -70,7 +70,7 @@
                   style="width: 100px; display: flex; justify-content: center"
                 >
                   <svg-icon
-                    :icon-class="item.ICON"
+                    :icon-class="item.ICON || ''"
                     style="width: 40px; height: 40px"
                   />
                 </div>
@@ -118,7 +118,7 @@
                   style="width: 100px; display: flex; justify-content: center"
                 >
                   <svg-icon
-                    :icon-class="p.icon"
+                    :icon-class="p.icon || ''"
                     style="width: 40px; height: 40px"
                   />
                 </div>
