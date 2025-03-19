@@ -1,6 +1,6 @@
 <!-- 搜索表单 -->
 <template>
-  <el-form label-width="0px" class="ele-form-search" @keyup.enter.native="search" @submit.native.prevent>
+  <el-form size="mini" label-width="0px" class="ele-form-search" @keyup.enter.native="search" @submit.native.prevent>
     <el-row :gutter="5">
       <el-col v-bind="styleResponsive ? { lg: 5, md: 12 } : { span: 16 }">
         <el-select v-model="where.state" size="mini" placeholder="请选择状态">
@@ -55,7 +55,7 @@
 
           <el-popconfirm class="ele-action" title="确定删除？" @confirm="Delete_btn()">
             <template v-slot:reference>
-              <el-button type="danger" size="small">删除</el-button>
+              <el-button type="danger" size="mini">删除</el-button>
             </template>
           </el-popconfirm>
         </div>
@@ -202,14 +202,14 @@ export default {
       const loading = this.$messageLoading('设置中..');
       UpdateCommon2()
         .then((res) => {
-          loading.close();
           this.$message.success(res.msg);
           this.search();
         })
         .catch((err) => {
-          loading.close();
           this.$message.error(err);
           this.search();
+        }).finally(() => {
+          loading.close();
         });
     }
   },
