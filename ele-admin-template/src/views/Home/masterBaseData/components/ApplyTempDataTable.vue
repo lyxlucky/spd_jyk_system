@@ -98,7 +98,16 @@
             label: '状态',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 80
+            minWidth: 80,
+            formatter: (row, column, cellValue) => {
+              if(cellValue ==1){
+                return '是'
+              }else if(cellValue ==0){
+                return '否'
+              }else{
+                return cellValue
+              }
+            }
           },
           {
             prop: 'ERROR_MSG',
@@ -178,13 +187,6 @@
             minWidth: 180,
           },
           {
-            prop: 'VARIETIE_CODE_NEW',
-            label: '品种编码',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 130
-          },
-          {
             prop: 'ITEM_SPEC',
             label: '型号',
             align: 'center',
@@ -197,6 +199,15 @@
             align: 'center',
             showOverflowTooltip: true,
             minWidth: 90,
+            formatter: (row, column, cellValue) => {
+              if(cellValue ==1){
+                return '是'
+              }else if(cellValue ==0){
+                return '否'
+              }else{
+                return cellValue
+              }
+            }
           },
           {
             prop: 'UOM',
@@ -281,16 +292,6 @@
             minWidth: 130
           },
           {
-            prop: 'ZJ_DATE',
-            label: '证件有效期',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 130,
-            formatter: (row, column, cellValue) => {
-              return this.$moment(cellValue).format('YYYY-MM-DD');
-            }
-          },
-          {
             prop: 'ZCZ_NUMBER',
             label: '注册证编号',
             align: 'center',
@@ -298,31 +299,11 @@
             minWidth: 130
           },
           {
-            prop: 'ZCZ_DAT',
-            label: '证件有效期',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 130,
-            formatter: (row, column, cellValue) => {
-              return this.$moment(cellValue).format('YYYY-MM-DD');
-            }
-          },
-          {
             prop: 'ZJ_NAME',
             label: '证件名称（授权书）',
             align: 'center',
             showOverflowTooltip: true,
             minWidth: 120
-          },
-          {
-            prop: 'ZJ_DATE1',
-            label: '证件有效期',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 130,
-            formatter: (row, column, cellValue) => {
-              return this.$moment(cellValue).format('YYYY-MM-DD');
-            }
           },
           {
             prop: 'BAND',
@@ -732,10 +713,8 @@
         const loading = this.$messageLoading('正在导出数据...');
         this.$refs.table.doRequest(({ where, order }) => {
           where = data;
-          where.DeptCode = this.$store.state.user.info.DeptNow.Dept_Two_Code;
-          where.UserId = this.$store.state.user.info.ID;
-          where.TempletMasteID = this.ApplyTempTableData.ID;
-          SerachTempletDeta({
+          where.HEADER_IFACE_ID = this.ApplyTempTableData.HEADER_IFACE_ID;
+          GetSpdMainsjLinesIface({
             page: 1,
             limit: 999999,
             where: where,
@@ -745,19 +724,70 @@
               loading.close();
               const array = [
                 [
-                  '品种编码',
-                  '模板申领数量',
-                  '排序',
+                  '状态',
+                  '错误消息',
+                  '行号',
                   '品种全称',
-                  '规格/型号',
-                  '单位',
-                  '结算价',
-                  '生产企业名称',
+                  '申请单号',
+                  '耗材注册证名称',
+                  '注册证号',
+                  '科室名称',
                   '供应商',
-                  '散货库存',
-                  '平均使用数量',
-                  '包装规格',
-                  '是否中标'
+                  '申请类型',
+                  '物料编码',
+                  '物料名称',
+                  '规格',
+                  '型号',
+                  '是否中标',
+                  '单位',
+                  '医保耗材编码',
+                  '采购价格',
+                  '最小包装数',
+                  '申请科室',
+                  '是否收费',
+                  '类别',
+                  'VJ1总代经营许可证号',
+                  '证件有效期',
+                  'VJ供应商经营许可证号',
+                  '注册证编号',
+                  '证件名称（授权书）',
+                  '品牌',
+                  '产地',
+                  '生产商',
+                  '供应商名称',
+                  '是否是中小微型企业',
+                  '是否集采带量产品',
+                  '京津冀类别',
+                  '是否是临时采购',
+                  '联系人',
+                  '电话',
+                  '联系人邮箱',
+                  '试剂价格',
+                  '试剂检查项目名称',
+                  '试剂收费项目名称',
+                  '试剂收费编码',
+                  '试剂收费价格',
+                  '中包数量',
+                  '中包装单位',
+                  '大包装数量',
+                  '大包装单位',
+                  '高低值',
+                  '高值重点治理序号',
+                  '重点治理耗材名称',
+                  '是否植入',
+                  '是否介入',
+                  '京津冀类别编号',
+                  '集配商编号',
+                  '集配商编号',
+                  '重点治理耗材名称',
+                  '储存条件',
+                  'UDI_DI',
+                  '是否有效',
+                  '医学装备分类协会编码',
+                  '医学装备分类协会名称',
+                  '是否进口',
+                  'goodsID',
+                  '收费编码',
                 ]
               ];
               res.result.forEach((d) => {
@@ -769,19 +799,69 @@
                   d.ZB = '未知';
                 }
                 array.push([
-                  d.VARIETIE_CODE_NEW,
-                  d.TempletQty,
-                  d.AUTH,
-                  d.VarName,
-                  d.GG,
-                  d.Unit,
-                  d.Price,
-                  d.Manufacturing,
-                  d.SUPPLIER_NAME,
-                  d.StockQty,
-                  d.Day_Consume_Qty,
-                  d.PAG_TYPE,
-                  d.ZB
+                  d.PROCESS_STATUS,
+                  d.ERROR_MSG,
+                  d.LINE_NUMBER,
+                  d.HIGHVALUE_NO,
+                  d.REGISTRATION_NAME,
+                  d.REGISTRATION_NO,
+                  d.ORGANIZATION_NAME,
+                  d.FULL_NAME,
+                  d.URGENCYLEVEL,
+                  d.ITEM_NUMBER,
+                  d.ITEM_DESCRIPTION,
+                  d.STAND_VALUE,
+                  d.ITEM_SPEC,
+                  d.ZB,
+                  d.UOM,
+                  d.HC_NUMBER,
+                  d.UNIT_PRICE,
+                  d.PACK_MIN,
+                  d.APPLY_DEPT,
+                  d.IS_SF,
+                  d.CATEGORY,
+                  d.XK_NUMBER,
+                  d.XY_DATE,
+                  d.XK_JYNUMBER,
+                  d.ZCZ_NUMBER,
+                  d.ZJ_NAME,
+                  d.BAND,
+                  d.CD,
+                  d.SCS,
+                  d.SUPPLY_NAME,
+                  d.IS_XX,
+                  d.IS_CJ,
+                  d.JJJ_TYPE,
+                  d.IS_LS,
+                  d.CONTRACT_NAME,
+                  d.CONTRACT_PHONE,
+                  d.CONTRACT_EMAIL,
+                  d.SJ_PRICE,
+                  d.SJ_CHECKNAME,
+                  d.SJ_SFNAME,
+                  d.SJ_SWNUMBER,
+                  d.SJ_SWPRICE,
+                  d.MID_COUNT,
+                  d.MID_UOM,
+                  d.MAX_COUNT,
+                  d.MAX_UOM,
+                  d.ISGZ_DZ,
+                  d.GZ_XH,
+                  d.ZD_HCNAME,
+                  d.ISZR,
+                  d.ISJR,
+                  d.TYPE_NUMBER,
+                  d.JPS_NUMBER,
+                  d.JPS_NAME,
+                  d.ZD_HCNAME,
+                  d.ZC_ENVIRONMENT,
+                  d.UDI_DI,
+                  d.ISACTIVE,
+                  d.SB_CODE,
+                  d.SB_XHNAME,
+                  d.ISJK,
+                  d.goodsID,
+                  d.SF_CODE,
                   // this.$util.toDateString(d.createTime)
                 ]);
               });
