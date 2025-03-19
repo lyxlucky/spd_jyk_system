@@ -334,7 +334,7 @@ export default {
       this.$refs.table.reload();
     },
     handleRowClick(row) {
-      console.log(row)
+      // console.log(row)
       this.currentTableData = row;
       this.$emit('onRowClick', row);
     },
@@ -365,12 +365,12 @@ export default {
     handleSelectionChange(selection) {
       this.selectedRows = selection;
       this.hasSelection = selection.length > 0;
-      console.log(selection)
+      // console.log(selection)
     },
 
     // 审批不通过
     handleNoPass() {
-      console.log(this.currentTableData)
+      // console.log(this.currentTableData)
       if (!this.currentTableData) {
         this.$message.warning('请先选择要操作的数据');
         return 
@@ -396,7 +396,7 @@ export default {
 
     // 关闭订单
     handleCloseOrder() {
-      console.log(this.currentTableData)
+      // console.log(this.currentTableData)
       if (!this.currentTableData) {
         this.$message.warning('请先选择要操作的数据');
         return;
@@ -506,7 +506,7 @@ export default {
       // where.stock_up_plan_no = this.form.stock_up_plan_no;
       // where.approve_state = this.form.approve_state;
       // where.send_state = this.form.send_state;
-      console.log(this.form)
+      // console.log(this.form)
       return getStockUpList({
         page,
         limit,
