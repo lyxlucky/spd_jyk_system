@@ -385,7 +385,7 @@ export default {
       // console.log(this.$refs.table)
     },
     handleRowClick(row) {
-      console.log('表2',row)
+      // console.log('表2',row)
       this.$emit('onClickRow', row);
     },
     // 导出当前订单数据

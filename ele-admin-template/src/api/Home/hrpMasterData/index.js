@@ -5,6 +5,8 @@ import { TOKEN_STORE_NAME } from '@/config/setting'
 export async function getOAMainsHeaderIface(data){
     let params = {}
     params.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+    params.page = data.page || '1';
+    params.size = data.size || '10';
     
     let resData = await request.get(`HRPMasterData/getOAMainsHeaderIface${formdataifyGet(params)}`)
     if (resData.data.code == 200) {
@@ -16,6 +18,8 @@ export async function getOAMainsHeaderIface(data){
 export async function getOAMainsLinesIface(data){
     let params = {}
     params.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+    params.page = data.page || '1';
+    params.size = data.size || '10';
     
     let resData = await request.get(`HRPMasterData/getOAMainsLinesIface${formdataifyGet(params)}`)
    
