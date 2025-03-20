@@ -33,7 +33,7 @@
         <!-- <el-button size="mini" type="primary" class="ele-btn-icon" @click="showDialogTableVisible2">
           导入
         </el-button> -->
-        <el-button size="mini" type="primary" class="ele-btn-icon" @click="exportData">
+        <el-button size="mini" type="primary" class="ele-btn-icon" icon="el-icon-download" @click="exportData">
           导出
         </el-button>
       </el-col>

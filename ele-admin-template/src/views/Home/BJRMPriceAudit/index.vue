@@ -5,7 +5,7 @@
       <el-aside width="600px" style="margin: 20px 0px 0px 20px;">
         <el-card shadow="always">
           <div slot="header" class="clearfix">
-            <span>申请单信息</span>
+            <span>物价单信息</span>
           </div>
           <ApplyTempTable @getCurrent="getCurrent"></ApplyTempTable>
         </el-card>
@@ -14,7 +14,7 @@
         <el-main width="1000px">
           <el-card shadow="always">
             <div slot="header" class="clearfix">
-              <span>申请单详情</span>
+              <span>物价单详情</span>
             </div>
             <ApplyTempDataTable ref="Apply" @addTempVar="addTempVar" :IntroduceUserDefinedTempSearch="IntroduceUserDefinedTempSearch" :ApplyTempTableData="ApplyTempTableData" @selectionData="selectionData"></ApplyTempDataTable>
           </el-card>

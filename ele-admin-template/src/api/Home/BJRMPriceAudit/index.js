@@ -46,3 +46,14 @@ export async function GetSpdHisMainsjLinesIface(data) {
         return Promise.reject(new Error(res.data.msg));
     }
 }
+
+
+export async function ImportSpdHisMainsjLinesIfaceExcel(data) {
+    data.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+    const res = await request.post('/AJykDept/ImportSpdHisMainsjLinesIfaceExcel', data);
+    if (res.data.code == 200) {
+        return res.data;
+    } else {
+        return Promise.reject(new Error(res.data.msg));
+    }
+}

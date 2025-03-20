@@ -14,11 +14,15 @@
         <el-col :lg="3" :md="12">
           <el-input size="mini" v-model="where.HIS_STAND_VALUE" placeholder="规格" clearable />
         </el-col>
-        
+
         <el-col :lg="12" :md="12">
           <div class="ele-form-actions">
             <el-button size="mini" icon="el-icon-search" type="primary" @click="search">查询</el-button>
             <el-button size="mini" icon="el-icon-refresh" @click="reset">重置</el-button>
+            <el-button size="mini" type="primary" icon="el-icon-download" @click="exportData">导出</el-button>
+            <el-button size="mini" type="primary" class="ele-btn-icon" @click="showDialogTableVisible2">
+              导入
+            </el-button>
           </div>
         </el-col>
       </el-row>
@@ -26,10 +30,8 @@
     <el-dialog title="导入模板品种" :visible.sync="dialogTableVisible2" width="30%">
       <div style="width: 100%; text-align: center">
         <form action="" id="CreateBydFpform">
-          <input type="text" size="mini" style="display: none" name="TEMPLET_MAIN_ID" autocomplete="off" placeholder=""
-            :value="TEMPLET_MAIN_ID" />
-          <input type="text" size="mini" style="display: none" name="Token" autocomplete="off" placeholder=""
-            :value="Token" />
+          <input type="text" size="mini" style="display: none" name="TEMPLET_MAIN_ID" autocomplete="off" placeholder="" :value="TEMPLET_MAIN_ID" />
+          <input type="text" size="mini" style="display: none" name="Token" autocomplete="off" placeholder="" :value="Token" />
 
           <div class="layui-form-item">
             <label style="width: 170px">选择文件:</label>
@@ -51,17 +53,14 @@
 <script>
 import { utils, read } from 'xlsx';
 import { TOKEN_STORE_NAME } from '@/config/setting';
-import {
-  DeletePlanDeta
-  // KeeptListDeta,
-} from '@/api/KSInventory/KSDepartmentalPlan';
-import {
-  KeepTempletDeta,
-  ImportTempExcel
-} from '@/api/KSInventory/ApplyTemp';
+import { ImportSpdHisMainsjLinesIfaceExcel } from '@/api/Home/BJRMPriceAudit';
 import AuthVarTable from './AuthVarTable.vue';
 export default {
-  props: ['ApplyTempTableDataSearch', 'selection', 'IntroduceUserDefinedTempSearch'],
+  props: [
+    'ApplyTempTableDataSearch',
+    'selection',
+    'IntroduceUserDefinedTempSearch'
+  ],
   components: {
     AuthVarTable: AuthVarTable
   },
@@ -71,7 +70,7 @@ export default {
       Token: '',
       HIS_ITEM_NUMBER: '',
       HIS_ITEM_DESCRIPTION: '',
-      HIS_STAND_VALUE: '',
+      HIS_STAND_VALUE: ''
     };
     return {
       // 表单数据
@@ -95,10 +94,10 @@ export default {
     }
   },
   methods: {
-    showDialogTableVisible(){
+    showDialogTableVisible() {
       this.dialogTableVisible = true;
     },
-    showDialogTableVisible2(){
+    showDialogTableVisible2() {
       this.dialogTableVisible2 = true;
     },
     /* 搜索 */
@@ -110,49 +109,18 @@ export default {
       this.where = { ...this.defaultWhere };
       this.search();
     },
-    removeBatch() {
-      console.log(this.selection);
-      var ID = '';
-      this.selection.forEach((item) => {
-        ID += item.ID + ',';
-      });
-      ID.substring(0, ID.length - 1);
-      var data = {
-        ID
-      };
-      DeletePlanDeta(data).then((res) => {
-        console.log(res);
-      });
-    },
-    saveApplyNum() {
-      const loading = this.$messageLoading('保存中...');
-      var list = this.selection;
-      for (let i = 0; i < list.length; i++) {
-        list[i].BigBoxCount = '0';
-        list[i].MinBoxCount = '0';
-      }
-      KeepTempletDeta(list)
-        .then((res) => {
-          loading.close();
-          this.$emit('search', this.where);
-          this.$message.success(res.msg);
-        })
-        .catch((err) => {
-          loading.close();
-          this.$message.error(err);
-        });
-    },
+    removeBatch() {},
     exportData() {
       this.$emit('exportData', this.where);
     },
     importFile() {
-      if (this.TEMPLET_MAIN_ID == null) {
-        this.$message.warning('请先选择模板');
-        return;
-      }
+      // if (this.ApplyTempTableDataSearch.HEADER_IFACE_ID == null) {
+      //   this.$message.warning('请先选择主表单号');
+      //   return;
+      // }
       const loading = this.$messageLoading('导入中...');
       var formData = new FormData(document.getElementById('CreateBydFpform'));
-      ImportTempExcel(formData)
+      ImportSpdHisMainsjLinesIfaceExcel(formData)
         .then((res) => {
           loading.close();
           this.dialogTableVisible2 = false;
@@ -160,6 +128,7 @@ export default {
           this.$emit('search', this.where);
         })
         .catch((err) => {
+          loading.close();
           this.$message.error(err);
         });
     }
