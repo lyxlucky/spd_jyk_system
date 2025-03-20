@@ -47,3 +47,13 @@ export async function GetSpdMainsjLinesIface(data) {
         return Promise.reject(new Error(res.data.msg));
     }
 }
+
+export async function ImportSpdMainsjLinesIfaceExcel(data) {
+    data.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+    const res = await request.post('/AJykDept/ImportSpdMainsjLinesIfaceExcel', data);
+    if (res.data.code == 200) {
+        return res.data;
+    } else {
+        return Promise.reject(new Error(res.data.msg));
+    }
+}
