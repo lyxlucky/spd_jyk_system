@@ -23,27 +23,47 @@
         </el-select>
       </el-col>
       <el-col v-bind="styleResponsive ? { lg: 15, md: 12 } : { span: 12 }">
-        <el-button size="mini" type="primary" icon="el-icon-search" class="ele-btn-icon" @click="exportData">
+        <el-button size="mini" type="primary" icon="el-icon-search" class="ele-btn-icon" @click="search">
           查询
         </el-button>
         <el-button size="mini" icon="el-icon-refresh" @click="reset">重置</el-button>
         <el-button size="mini" type="primary" class="ele-btn-icon" @click="search">
           编辑
         </el-button>
+        <!-- <el-button size="mini" type="primary" class="ele-btn-icon" @click="showDialogTableVisible2">
+          导入
+        </el-button> -->
         <el-button size="mini" type="primary" class="ele-btn-icon" @click="exportData">
           导出
         </el-button>
       </el-col>
     </el-row>
+    <el-dialog title="导入模板品种" :visible.sync="dialogTableVisible2" width="30%">
+      <div style="width: 100%; text-align: center">
+        <form action="" id="CreateBydFpform">
+          <input type="text" size="mini" style="display: none" name="TEMPLET_MAIN_ID" autocomplete="off" placeholder="" :value="TEMPLET_MAIN_ID" />
+          <input type="text" size="mini" style="display: none" name="Token" autocomplete="off" placeholder="" :value="Token" />
+
+          <div class="layui-form-item">
+            <label style="width: 170px">选择文件:</label>
+            <input id="FILE" size="mini" style="
+                height: 30px;
+                width: 200px;
+                display: inline;
+                margin-left: 5px;
+              " name="FILE" type="file" value="" required="required" autocomplete="off" />
+          </div>
+        </form>
+        <el-button type="primary" size="mini" icon="el-icon-check" @click="importFile">确定</el-button>
+      </div>
+    </el-dialog>
   </el-form>
 </template>
 
 <script>
 import {
-  CreateTemplet,
-  UpdateCommon,
-  UpdateCommon2
-} from '@/api/KSInventory/ApplyTemp';
+  ImportTempExcel
+} from '@/api/Home/masterBaseData';
 export default {
   props: {
     // 修改回显的数据
@@ -55,11 +75,12 @@ export default {
       PROCESS_STATUS: '',
       REQUESTNOTEID: '',
       APPLYDEPT: '',
-      APPLYPEOPLE: '',
+      APPLYPEOPLE: ''
     };
     return {
       // 表单数据
       where: { ...defaultWhere },
+      dialogTableVisible2: false
     };
   },
   computed: {
@@ -79,67 +100,29 @@ export default {
       this.search();
     },
     exportData() {
-      this.$emit('exportData',this.where)
+      this.$emit('exportData', this.where);
     },
-    /* 创建申领单 */
-    Temp_FoundPlanSingle() {
-      if (!this.TempletName) {
-        this.$message.warning('请输入模板名称');
-        return;
-      }
-      // const loading = this.$loading({ lock: true });
-
-      const loading = this.$messageLoading('添加中..');
-      var data = {
-        TempletName: this.TempletName,
-        DeptCode: this.$store.state.user.info.DeptNow.Dept_Two_Code,
-        Operater: this.$store.state.user.info.UserName
-      };
-      CreateTemplet(data)
+    showDialogTableVisible2() {
+      this.dialogTableVisible2 = true;
+    },
+    importFile() {
+      // console.log(this.PlanNum);
+      // if (this.PlanNum.length <= 0) {
+      //   this.$message.warning('请先选择计划单号');
+      //   return;
+      // }
+      const loading = this.$messageLoading('导入中...');
+      var formData = new FormData(document.getElementById('CreateBydFpform'));
+      ImportTempExcel(formData)
         .then((res) => {
           loading.close();
+          this.dialogTableVisible2 = false;
           this.$message.success(res.msg);
           this.$emit('search', this.where);
         })
         .catch((err) => {
           loading.close();
           this.$message.error(err);
-        });
-    },
-    UpdateCommon_btn() {
-      if (this.rowData == null) {
-        this.$message.warning('请先选择模板');
-        return;
-      }
-      const loading = this.$messageLoading('设置中..');
-
-      var data = {
-        ID: this.rowData.ID
-      };
-      UpdateCommon(data)
-        .then((res) => {
-          loading.close();
-          this.$message.success(res.msg);
-          this.search();
-        })
-        .catch((err) => {
-          loading.close();
-          this.$message.error(err);
-          this.search();
-        });
-    },
-    UpdateCommon2_btn() {
-      const loading = this.$messageLoading('设置中..');
-      UpdateCommon2()
-        .then((res) => {
-          loading.close();
-          this.$message.success(res.msg);
-          this.search();
-        })
-        .catch((err) => {
-          loading.close();
-          this.$message.error(err);
-          this.search();
         });
     }
   },

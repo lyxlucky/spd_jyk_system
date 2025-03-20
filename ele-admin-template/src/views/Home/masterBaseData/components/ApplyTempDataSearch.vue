@@ -26,6 +26,9 @@
              <el-button size="mini" type="primary" class="ele-btn-icon" @click="search">
           编辑
         </el-button>
+        <el-button size="mini" type="primary" class="ele-btn-icon" @click="showDialogTableVisible2">
+          导入
+        </el-button>
         <el-button size="mini" type="primary" class="ele-btn-icon" @click="exportData">
           导出
         </el-button>
@@ -62,13 +65,8 @@
 import { utils, read } from 'xlsx';
 import { TOKEN_STORE_NAME } from '@/config/setting';
 import {
-  DeletePlanDeta
-  // KeeptListDeta,
-} from '@/api/KSInventory/KSDepartmentalPlan';
-import {
-  KeepTempletDeta,
-  ImportTempExcel
-} from '@/api/KSInventory/ApplyTemp';
+  ImportSpdMainsjLinesIfaceExcel
+} from '@/api/Home/masterBaseData';
 import AuthVarTable from './AuthVarTable.vue';
 export default {
   props: ['ApplyTempTableDataSearch', 'selection', 'IntroduceUserDefinedTempSearch'],
@@ -132,39 +130,21 @@ export default {
       var data = {
         ID
       };
-      DeletePlanDeta(data).then((res) => {
-        console.log(res);
-      });
-    },
-    saveApplyNum() {
-      const loading = this.$messageLoading('保存中...');
-      var list = this.selection;
-      for (let i = 0; i < list.length; i++) {
-        list[i].BigBoxCount = '0';
-        list[i].MinBoxCount = '0';
-      }
-      KeepTempletDeta(list)
-        .then((res) => {
-          loading.close();
-          this.$emit('search', this.where);
-          this.$message.success(res.msg);
-        })
-        .catch((err) => {
-          loading.close();
-          this.$message.error(err);
-        });
+      // DeletePlanDeta(data).then((res) => {
+      //   console.log(res);
+      // });
     },
     exportData() {
       this.$emit('exportData', this.where);
     },
     importFile() {
-      if (this.TEMPLET_MAIN_ID == null) {
-        this.$message.warning('请先选择模板');
-        return;
-      }
+      // if (this.TEMPLET_MAIN_ID == null) {
+      //   this.$message.warning('请先选择模板');
+      //   return;
+      // }
       const loading = this.$messageLoading('导入中...');
       var formData = new FormData(document.getElementById('CreateBydFpform'));
-      ImportTempExcel(formData)
+      ImportSpdMainsjLinesIfaceExcel(formData)
         .then((res) => {
           loading.close();
           this.dialogTableVisible2 = false;

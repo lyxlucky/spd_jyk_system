@@ -727,7 +727,6 @@
                   '状态',
                   '错误消息',
                   '行号',
-                  '品种全称',
                   '申请单号',
                   '耗材注册证名称',
                   '注册证号',
@@ -860,7 +859,7 @@
                   d.SB_CODE,
                   d.SB_XHNAME,
                   d.ISJK,
-                  d.goodsID,
+                  d.GOODSID,
                   d.SF_CODE,
                   // this.$util.toDateString(d.createTime)
                 ]);
@@ -872,7 +871,7 @@
                     Sheet1: utils.aoa_to_sheet(array)
                   }
                 },
-                '科室申领模板品种.xlsx'
+                '医保审核单.xlsx'
               );
               this.$message.success('导出成功');
             })
