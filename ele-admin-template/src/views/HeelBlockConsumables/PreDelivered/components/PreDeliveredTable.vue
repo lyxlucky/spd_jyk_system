@@ -7,6 +7,7 @@
       @Confirm_btn="ConfirmFun"
       :rowData="current"
       @exportData="exportData"
+      @prePrint="prePrintTable1"
     />
     <!-- 数据表格 -->
     <ele-pro-table
@@ -80,7 +81,8 @@
     LoadGoodsDeliveryNumbers,
     Approve,
     SoftDeleteDeliveryNumber,
-    Confirm
+    Confirm,
+    openPrePrintTable1
   } from '@/api/HeelBlockConsumables/PreDelivered';
   import { getDayOfDate } from '@/utils/date-util';
   import { utils, writeFile } from 'xlsx';
@@ -290,6 +292,18 @@
               message: '取消输入'
             });
           });
+      },
+      prePrintTable1() {
+        if (!this.current) {
+          return this.$message.warning('请选择一条数据');
+        }
+
+        let Delivery_Note_Number_Id = this.current.Delivery_Note_Number_Id;
+        let Delivery_Note_Number = this.current.Delivery_Note_Number;
+        openPrePrintTable1({
+          Delivery_Note_Number_Id: Delivery_Note_Number_Id,
+          Delivery_Note_Number: Delivery_Note_Number
+        });
       },
       onDone(res) {
         // console.log('res:', res);

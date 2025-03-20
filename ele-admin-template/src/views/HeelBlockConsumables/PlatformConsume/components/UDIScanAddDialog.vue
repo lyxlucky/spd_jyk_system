@@ -102,6 +102,7 @@
             v-model="row.Batch_Validity_Period"
             placeholder="请输入有效期"
           ></el-input>
+          <!-- 移除重复的输入框 -->
         </template>
       </ele-pro-table>
 
@@ -114,6 +115,9 @@
 </template>
 <script>
   import { scanUdiAddVarieties } from '@/api/HeelBlockConsumables/PlatformConsume';
+
+  // import { ImportSpdMainsjLinesIfaceExcel } from '@/api/Home/masterBaseData';
+
   export default {
     name: 'UDIScanAddDialog',
     props: ['visible', 'AdvanceReceiptNumberCurrent'],

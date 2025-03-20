@@ -1,7 +1,7 @@
 import request from '@/utils/request';
 import { formdataify, DataToObject } from '@/utils/formdataify';
 import { B2B_BASE_CODE, B2B_BASE_URL, HOME_HP } from '@/config/setting';
-import { TOKEN_STORE_NAME } from '@/config/setting';
+import { TOKEN_STORE_NAME,BACK_BASE_URL } from '@/config/setting';
 import { toDateString } from 'ele-admin';
 import store from '@/store/index';
 import { Decrypt } from '@/utils/aes-util.js';
@@ -151,4 +151,10 @@ export async function upDeliveryInfo(data) {
   } else {
     return Promise.reject(new Error(res.data.msg));
   }
+}
+
+export function openPrePrintTable1(data) {
+  window.open(
+    `${BACK_BASE_URL}/api/B2BVarietieConsumeApprove/GetTagsStzx?id=82&format=pdf&inline=true&deliveryNumberId=${data.Delivery_Note_Number}&deliveryID=${data.Delivery_Note_Number_Id}&title=${HOME_HP}&Token=${sessionStorage.getItem(TOKEN_STORE_NAME)}`
+  );
 }

@@ -107,18 +107,32 @@
             >
           </el-form-item>
 
-          <!-- <el-form-item>
-                    <el-button type="primary" :disabled="!hasSelection" @click="handleApproveAndSend">审批并发送备货单</el-button>
-                </el-form-item>
-                <el-form-item>
-                    <el-button type="primary" :disabled="!hasSelection" @click="handleResend">补发送备货单</el-button>
-                </el-form-item> -->
-          <!-- <el-form-item>
-                    <el-button type="primary" @click="handleBatchApprove">批量审批并发送</el-button>
-                </el-form-item>
-                <el-form-item>
-                    <el-button type="primary" @click="handleUpdateFunds">修改资金来源</el-button>
-                </el-form-item> -->
+          <el-form-item>
+            <el-button
+              type="primary"
+              :disabled="ApproveAndSendDisabled"
+              @click="handleApproveAndSend"
+              >审批并发送备货单</el-button
+            >
+          </el-form-item>
+          <el-form-item>
+            <el-button
+              type="primary"
+              :disabled="ResendDisabled"
+              @click="handleResend"
+              >补发送备货单</el-button
+            >
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="handleBatchApprove"
+              >批量审批并发送</el-button
+            >
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="handleUpdateFunds"
+              >修改资金来源</el-button
+            >
+          </el-form-item>
 
           <el-form-item>
             <el-button
@@ -179,7 +193,7 @@
     PostPrepareCloseOrderData
   } from '@/api/Task/FollowingGoodsPlanHrp';
   import { exportToExcel } from '@/utils/excel-util.js';
-  import { HOME_HP } from '@/config/setting'; //
+  import { HOME_HP } from '@/config/setting';
   export default {
     name: 'StockPlanOrderList',
     components: {},
@@ -395,7 +409,37 @@
         ]
       };
     },
-    computed: {},
+    computed: {
+      ApproveAndSendDisabled() {
+        // 当选中的行中存在未审批的行时，禁用按钮
+        if (!this.currentTableData) {
+          return true;
+        }
+        console.log(
+          this.currentTableData.SENDHRP,
+          this.currentTableData.APPROVE_STATE
+        );
+        let dis = false;
+        if (this.currentTableData.SENDHRP == '0') {
+          dis = true;
+        } else {
+          dis = false;
+        }
+        if (this.currentTableData.APPROVE_STATE != '0') {
+          dis = true;
+        }
+
+        return dis;
+      },
+      ResendDisabled() {
+        if (!this.currentTableData) {
+          return true;
+        }
+        if (this.currentTableData.APPROVE_STATE == '0') {
+          return true;
+        }
+      }
+    },
     watch: {},
     created() {},
     mounted() {},
