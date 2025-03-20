@@ -119,6 +119,7 @@ export default {
 
         },
         handleRowClick(row, column, event) {
+            // console.log('表1',row)
             this.$emit('onClickRow', row);
         },
         // 查询当天数据

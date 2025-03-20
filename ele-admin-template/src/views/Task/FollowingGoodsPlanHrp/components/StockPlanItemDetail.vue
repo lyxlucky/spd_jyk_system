@@ -45,10 +45,20 @@
           <el-form-item>
             <el-button type="primary" @click="handleSearch">查询</el-button>
           </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="searchCheckPlanDel">查询勾选计划</el-button>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="exportCurrentOrder">导出当前订单</el-button>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="exportSelectedOrders">导出勾选订单</el-button>
+          </el-form-item>
         </el-form>
         <ele-pro-table ref="table" height="250px" :columns="columns" :datasource="datasource"
           highlight-current-row
           size="mini"
+          @selection-change="handleSelectionChange"
           :paging="false" @row-click="handleRowClick">
         </ele-pro-table>
       </div>
@@ -58,6 +68,8 @@
 
 <script>
 import { getStockUpVarInfo } from '@/api/Task/FollowingGoodsPlanHrp'
+import { utils, writeFile } from 'xlsx'; // 添加xlsx库的引入
+
 export default {
   name: 'StockPlanItemDetail',
   props: {
@@ -77,7 +89,10 @@ export default {
 
   data() {
     return {
+      //选中对象
+      selection: [],
       // 数据对象
+
       form: {
         varietie_code: '', // 品种编码/名称
         stock_up_plan_no: '', // 备货计划编号
@@ -362,8 +377,109 @@ export default {
     handleSearch() {
       this.$refs.table.reload();
     },
+    searchCheckPlanDel(){
+      this.$refs.table.reload();
+    },
+    handleSelectionChange(selection) {
+      this.selection = selection;
+      // console.log(this.$refs.table)
+    },
     handleRowClick(row) {
+      console.log('表2',row)
       this.$emit('onClickRow', row);
+    },
+    // 导出当前订单数据
+    exportCurrentOrder() {
+      // const loading = this.$loading({
+      //   lock: true,
+      //   text: '正在导出数据...',
+      //   spinner: 'el-icon-loading',
+      //   background: 'rgba(0, 0, 0, 0.7)'
+      // });
+      const loading = this.$messageLoading('正在导出数据...');
+      
+      getStockUpVarInfo({
+        page: 1,
+        limit: this.$refs.table?.tableTotal || 99999,
+        where: {
+          ...this.form,
+          order_state: this.currentTableRow?.ORDER_STATE || '',
+          id: this.currentTableRow3?.ID || '',
+        }
+      }).then(res => {
+        loading.close();
+        let data = res.data;
+        if (data.code == "200" && data.result.length > 0) {
+          this.exportToExcel(data.result, '备货计划单品种明细');
+        } else {
+          this.$message.warning('没有数据可导出');
+        }
+      }).catch(() => {
+        loading.close();
+        this.$message.error('导出失败');
+      }).finally(() => {
+        loading.close();
+      });
+    },
+    // 导出选中的订单数据
+    exportSelectedOrders() {
+      if (this.selection.length === 0) {
+        this.$message.warning('请先选择要导出的数据');
+        return;
+      }
+      
+      this.exportToExcel(this.selection, '备货计划单品种明细-已选择');
+    },
+    // 通用的Excel导出方法
+    exportToExcel(data, fileName) {
+      try {
+        // 准备表头
+        const headers = this.columns
+          .filter(col => col.type !== 'selection' && col.label)
+          .map(col => col.label);
+        
+        // 准备字段名
+        const fields = this.columns
+          .filter(col => col.type !== 'selection' && col.prop)
+          .map(col => ({
+            prop: col.prop,
+            formatter: col.formatter
+          }));
+        
+        // 准备数据
+        const excelData = [];
+        excelData.push(headers); // 添加表头
+        
+        // 添加数据行
+        data.forEach(row => {
+          const rowData = [];
+          fields.forEach(field => {
+            if (field.formatter) {
+              // 如果有格式化函数，使用格式化后的值
+              rowData.push(field.formatter(row));
+            } else {
+              // 否则直接使用原始值
+              rowData.push(row[field.prop]);
+            }
+          });
+          excelData.push(rowData);
+        });
+        
+        // 创建工作簿和工作表
+        const wb = {
+          SheetNames: ['Sheet1'],
+          Sheets: {
+            Sheet1: utils.aoa_to_sheet(excelData)
+          }
+        };
+        
+        // 写入文件并下载
+        writeFile(wb, `${fileName}.xlsx`);
+        this.$message.success('导出成功');
+      } catch (error) {
+        console.error('导出Excel失败:', error);
+        this.$message.error('导出失败');
+      }
     },
     // 方法定义
     datasource({ page, limit, sort, where }) {

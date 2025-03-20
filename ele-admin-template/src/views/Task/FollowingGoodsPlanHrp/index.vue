@@ -42,17 +42,23 @@ export default {
       this.currentTableRow = row
       this.currentTableRow2 = {}
       this.currentTableRow3 = {}
-      this.$refs.table2.handleSearch()
-      this.$refs.table3.handleSearch()
+      this.$nextTick(() => {
+        this.$refs.table2.handleSearch()
+        this.$refs.table3.handleSearch()
+      })
     },
     clickTableRow2(row) {
       // console.log(row)
       this.currentTableRow2 = row
-      this.$refs.table3.handleSearch()
+      this.$nextTick(() => {
+        this.$refs.table3.handleSearch()
+      })
     },
     clickTableRow3(row) {
       this.currentTableRow3 = row
-      this.$refs.table2.handleSearch()
+      this.$nextTick(() => {
+        this.$refs.table2.handleSearch()
+      })
     },
 
   }

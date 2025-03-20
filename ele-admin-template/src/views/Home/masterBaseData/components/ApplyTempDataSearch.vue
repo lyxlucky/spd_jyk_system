@@ -23,6 +23,12 @@
           <div class="ele-form-actions">
             <el-button size="mini" icon="el-icon-search" type="primary" @click="search">查询</el-button>
             <el-button size="mini" icon="el-icon-refresh" @click="reset">重置</el-button>
+             <el-button size="mini" type="primary" class="ele-btn-icon" @click="search">
+          编辑
+        </el-button>
+        <el-button size="mini" type="primary" class="ele-btn-icon" @click="exportData">
+          导出
+        </el-button>
           </div>
         </el-col>
       </el-row>

@@ -22,13 +22,18 @@
           <el-option label="传入SPD失败" value="E"></el-option>
         </el-select>
       </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 10, md: 12 } : { span: 12 }">
-        <el-button size="mini" type="primary" icon="el-icon-search" class="ele-btn-icon" @click="search">
+      <el-col v-bind="styleResponsive ? { lg: 15, md: 12 } : { span: 12 }">
+        <el-button size="mini" type="primary" icon="el-icon-search" class="ele-btn-icon" @click="exportData">
           查询
         </el-button>
         <el-button size="mini" icon="el-icon-refresh" @click="reset">重置</el-button>
+        <el-button size="mini" type="primary" class="ele-btn-icon" @click="search">
+          编辑
+        </el-button>
+        <el-button size="mini" type="primary" class="ele-btn-icon" @click="exportData">
+          导出
+        </el-button>
       </el-col>
-
     </el-row>
   </el-form>
 </template>
@@ -72,6 +77,9 @@ export default {
     reset() {
       this.where = { ...this.defaultWhere };
       this.search();
+    },
+    exportData() {
+      this.$emit('exportData',this.where)
     },
     /* 创建申领单 */
     Temp_FoundPlanSingle() {
