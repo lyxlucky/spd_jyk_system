@@ -438,6 +438,7 @@
         if (this.currentTableData.APPROVE_STATE == '0') {
           return true;
         }
+        return true;
       }
     },
     watch: {},
