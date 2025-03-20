@@ -62,7 +62,7 @@
 
 <script>
 import {
-  ImportTempExcel
+  ImportSpdMainsjLinesIfaceExcel
 } from '@/api/Home/masterBaseData';
 export default {
   props: {
@@ -113,7 +113,7 @@ export default {
       // }
       const loading = this.$messageLoading('导入中...');
       var formData = new FormData(document.getElementById('CreateBydFpform'));
-      ImportTempExcel(formData)
+      ImportSpdMainsjLinesIfaceExcel(formData)
         .then((res) => {
           loading.close();
           this.dialogTableVisible2 = false;
