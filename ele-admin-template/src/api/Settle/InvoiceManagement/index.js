@@ -24,8 +24,6 @@ export async function GetInvoiceManagement(data) {
   data2.MONTHLY_TIMEEnd = data.where.MONTHLY_TIME && data.where.MONTHLY_TIME.length > 0 ? data.where.MONTHLY_TIME[1] : '';
   data2.EBS_CAN_SEND_INVOICE = data.where.EBS_CAN_SEND_INVOICE ? data.where.EBS_CAN_SEND_INVOICE : '';
 
-
-
   var rep = formdataify(data2);
 
   const res = await request.post('/AJykDept/GetInvoiceManagement', rep);
