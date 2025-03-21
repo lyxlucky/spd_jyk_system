@@ -69,11 +69,6 @@
             </el-select>
           </el-form-item>
 
-          <!-- 过滤强制关闭订单 -->
-          <!-- <el-form-item>
-                    <el-checkbox v-model="form.isQZJS" @change="handleSearch">过滤强制关闭订单</el-checkbox>
-                </el-form-item> -->
-
           <!-- 日期范围选择 -->
           <el-form-item label="订单创建日期：" style="display: none">
             <el-date-picker
@@ -447,10 +442,13 @@
         if (!this.currentTableData) {
           return true;
         }
+        let dis = false;
         if (this.currentTableData.APPROVE_STATE == '0') {
-          return true;
+          dis = true;
+        } else if (this.currentTableData.SEND_STATE != '0') {
+          dis = true;
         }
-        return true;
+        return dis;
       }
     },
     watch: {},
@@ -462,7 +460,6 @@
         this.$refs.table.reload({ page: 1 });
       },
       handleRowClick(row) {
-        // console.log(row)
         this.currentTableData = row;
         this.$emit('onRowClick', row);
       },
@@ -497,12 +494,10 @@
       handleSelectionChange(selection) {
         this.selectedRows = selection;
         this.hasSelection = selection.length > 0;
-        // console.log(selection)
       },
 
       // 审批不通过
       handleNoPass() {
-        // console.log(this.currentTableData)
         if (!this.currentTableData) {
           this.$message.warning('请先选择要操作的数据');
           return;
@@ -531,7 +526,6 @@
 
       // 关闭订单
       handleCloseOrder() {
-        // console.log(this.currentTableData)
         if (!this.currentTableData) {
           this.$message.warning('请先选择要操作的数据');
           return;
@@ -669,9 +663,9 @@
         return new Promise((resolve, reject) => {
           ReceiveSpdStockup({ json: data })
             .then((res) => {
-              if('true' == res){
+              if ('true' == res) {
                 this.$message.success('备货单发送成功');
-              }else{
+              } else {
                 this.$message.error('备货单发送失败');
               }
               resolve(res);
@@ -688,9 +682,9 @@
         return new Promise((resolve, reject) => {
           UpdateSendState({ ID: data })
             .then((res) => {
-              if('200' == res){
+              if ('200' == res) {
                 this.$message.success('更新成功');
-              }else{
+              } else {
                 this.$message.error('更新失败');
               }
               resolve(res);
@@ -759,8 +753,7 @@
                 this.handleReceiveSpdStockup(requsetData).then((res) => {
                   this.handleUpdateSendState(
                     this.currentTableData.STOCK_UP_PLAN_NO
-                  ).then(() => {
-                  });
+                  ).then(() => {});
                 });
               });
             });
@@ -770,20 +763,128 @@
           });
       },
 
+      // 审批并发送备货单请求
+      async handleApproveAndSendRequest(TableData) {
+        return await this.handleYesApprove(TableData.ID).then(() => {
+          this.handleCheckPlanPriceInfo(TableData.STOCK_UP_PLAN_NO).then(() => {
+            this.handleGetPickingInfo(TableData.STOCK_UP_PLAN_NO).then(
+              (res) => {
+                if (res?.result.length == 0) {
+                  return this.$message.error('数据有误，请检查');
+                }
+                //组装JSON
+                const planDetails = (res?.result || []).map((item) => ({
+                  VARIETIE_CODE: item.Varietie_Code,
+                  VARIETIE_CODE_NEW: item.Varietie_Code_New,
+                  VARIETIE_NAME: item.Varietie_Name,
+                  STOCK_UP_PLAN_GOODS_QUANTITY:
+                    item.Stock_Up_Plan_Goods_Quantity,
+                  SUPPLIER_CODE: item.supplier_code,
+                  CONTRACT_CODE: item.contract_code,
+                  SUPPLY_PRICE: item.Purchase_Price,
+                  Province_Platform_Code: item.Province_Platform_Code,
+                  Specification_Or_Type: item.Specification_Or_Type,
+                  Manufacturing_Ent_Name: item.Manufacturing_Ent_Name,
+                  ST_MANUFACTURING_ENT_NAME: item.ST_MANUFACTURING_ENT_NAME,
+                  UNIT: item.Unit,
+                  Approval_Number: item.Approval_Number,
+                  MANUFACTURING_LICENSE: item.MANUFACTURING_LICENSE,
+                  STORAGE_TYPE: item.STORAGE_TYPE,
+                  SPD_USE_PRICE: item.supply_price
+                }));
+                // 使用对象解构和简写语法
+                const [firstItem = {}] = res?.result || [];
+                const requsetData = JSON.stringify([
+                  {
+                    STOCK_UP_PLAN_NO: TableData.STOCK_UP_PLAN_NO,
+                    HOSPITALCODE: 'BH00261',
+                    ADDRESS: TableData.ADDRESS,
+                    CONTACT_PHONE: firstItem?.CONTACT_PHONE || '',
+                    CONTACT_PERSON: firstItem?.CONTACT_PERSON || '',
+                    STORAGE_ID: TableData.STORAGE_ID,
+                    REMARKS: TableData.REMARKS,
+                    STOCK_UP_PLAN_DET: planDetails
+                  }
+                ]);
+                this.handleReceiveSpdStockup(requsetData).then((res) => {
+                  this.handleUpdateSendState(TableData.STOCK_UP_PLAN_NO).then(
+                    () => {}
+                  );
+                });
+              }
+            );
+          });
+        });
+      },
+
       // 补发送备货单
       handleResend() {
-        if (!this.hasSelection) {
+        if (!this.currentTableData) {
           this.$message.warning('请先选择要操作的数据');
           return;
         }
+        const loading = this.$messageLoading('处理中...');
         // 实现补发送备货单的逻辑
-        this.$message.success('补发送备货单操作成功');
+        let data = {
+          order: this.currentTableData.STOCK_UP_PLAN_NO
+        };
+        CheckPlanPriceInfo(data)
+          .then((res) => {
+            loading.close();
+            const loadingConfirm = this.$messageLoading('处理中...');
+            GetPickingInfo({ order: data })
+              .then((res) => {
+                loadingConfirm.close();
+                this.$message.success('发送到B2B成功');
+                this.handleSearch();
+              })
+              .catch((err) => {
+                loadingConfirm.close();
+                this.$message.error(err);
+              });
+          })
+          .catch((errData) => {
+            loading.close();
+            if (errData?.code == 301) {
+              this.$message.warning(errData.msg);
+              return;
+            }
+            this.$message.error(errData.msg);
+            // this.$confirm(errData.msg + '推送失败', '提示', {
+            //   confirmButtonText: '确定',
+            //   cancelButtonText: '取消',
+            //   type: 'warning'
+            // }).then(() => {});
+          });
       },
 
       // 批量审批并发送
       handleBatchApprove() {
         // 实现批量审批并发送的逻辑
-        this.$message.success('批量审批并发送操作成功');
+        if (this.selectedRows.length == 0) {
+          this.$message.warning('请先勾选备货计划单号');
+          return;
+        }
+        const loading = this.$loading({
+          lock: true,
+          text: '批量审批并发送中...',
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)'
+        });
+        Promise.all(
+          this.selectedRows.map((item) => {
+            return this.handleApproveAndSendRequest(item);
+          })
+        )
+          .then(() => {
+            loading.close();
+            this.$message.success('批量审批并发送操作成功');
+            this.handleSearch();
+          })
+          .catch((err) => {
+            loading.close();
+            this.$message.error('批量审批并发送操作失败');
+          });
       },
 
       // 修改资金来源
@@ -803,7 +904,6 @@
         // where.stock_up_plan_no = this.form.stock_up_plan_no;
         // where.approve_state = this.form.approve_state;
         // where.send_state = this.form.send_state;
-        // console.log(this.form)
         return getStockUpList({
           page,
           limit,

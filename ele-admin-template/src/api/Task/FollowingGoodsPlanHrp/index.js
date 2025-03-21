@@ -223,10 +223,11 @@ export async function CheckPlanPriceInfo(data) {
   const res = await request.get('/CentralWarehouseMonitor/CheckPlanPriceInfo', {
     params: params
   });
+  console.log(res)
   if (res.data.code == 200) {
     return res.data;
   } else {
-    return Promise.reject(new Error(res.data.msg));
+    return Promise.reject(res.data);
   }
 }
 
@@ -235,7 +236,7 @@ export async function GetPickingInfo(data) {
     Stock_Up_Plan_No: data.order,
     Token: sessionStorage.getItem(TOKEN_STORE_NAME)
   };
-  const res = await request.get('/CentralWarehouseMonitor/GetPickingInfo', {
+  const res = await request.get(`/CentralWarehouseMonitor/GetPickingInfo`, {
     params: params
   });
   if (res.data.code == 200) {
@@ -271,3 +272,27 @@ export async function UpdateSendState(data) {
   );
   return res;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
