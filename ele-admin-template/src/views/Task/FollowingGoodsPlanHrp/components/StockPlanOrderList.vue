@@ -178,25 +178,40 @@
             highlight-current-row
             @row-click="handleRowClick"
             @selection-change="handleSelectionChange"
+            @current-change="onCurrentChange"
           >
           </ele-pro-table>
         </div>
       </div>
     </el-card>
+
+    <UpdateFundsDialog
+      @handleConfirmFunds="handleConfirmFunds"
+      :visible.sync="updateFundsDialogVisible"
+    ></UpdateFundsDialog>
   </div>
 </template>
 
 <script>
+  import UpdateFundsDialog from './UpdateFundsDialog';
   import {
     getStockUpList,
     postNoApprove,
-    PostPrepareCloseOrderData
+    PostPrepareCloseOrderData,
+    UpFundsSource,
+    YesApprove,
+    CheckPlanPriceInfo,
+    GetPickingInfo,
+    ReceiveSpdStockup,
+    UpdateSendState
   } from '@/api/Task/FollowingGoodsPlanHrp';
   import { exportToExcel } from '@/utils/excel-util.js';
   import { HOME_HP } from '@/config/setting';
   export default {
     name: 'StockPlanOrderList',
-    components: {},
+    components: {
+      UpdateFundsDialog
+    },
     props: {
       currentTableRow2: {
         type: Object,
@@ -228,6 +243,7 @@
         currentTableData: null,
         selectedRows: [], // 选中的行
         hasSelection: false, // 是否有选中的行
+        updateFundsDialogVisible: false,
         columns: [
           {
             type: 'selection',
@@ -415,10 +431,6 @@
         if (!this.currentTableData) {
           return true;
         }
-        console.log(
-          this.currentTableData.SENDHRP,
-          this.currentTableData.APPROVE_STATE
-        );
         let dis = false;
         if (this.currentTableData.SENDHRP == '0') {
           dis = true;
@@ -447,7 +459,7 @@
     methods: {
       // 处理查询
       handleSearch() {
-        this.$refs.table.reload();
+        this.$refs.table.reload({ page: 1 });
       },
       handleRowClick(row) {
         // console.log(row)
@@ -475,6 +487,10 @@
           dateRange: []
         };
         this.handleSearch();
+      },
+
+      onCurrentChange(current) {
+        this.currentTableData = current;
       },
 
       // 处理表格选择变化
@@ -549,7 +565,24 @@
             });
         });
       },
-
+      handleConfirmFunds(fundsType) {
+        // 实现修改资金来源的逻辑
+        const loading = this.$messageLoading('修改中...');
+        UpFundsSource({
+          type: fundsType
+        })
+          .then((res) => {
+            this.$message.success(res?.msg);
+          })
+          .catch((err) => {
+            this.$message.error(err);
+          })
+          .finally(() => {
+            this.handleSearch(); // 刷新列表
+            loading.close();
+            this.updateFundsDialogVisible = false;
+          });
+      },
       // 导出
       handleExport() {
         // 实现导出的逻辑
@@ -586,14 +619,155 @@
           });
       },
 
+      //1
+      handleYesApprove(data) {
+        return new Promise((resolve, reject) => {
+          YesApprove({ ID: data })
+            .then((res) => {
+              this.$message.success(res?.msg);
+              resolve();
+            })
+            .catch((err) => {
+              this.$message.error(err);
+              reject();
+            });
+        });
+      },
+
+      //2
+      handleCheckPlanPriceInfo(data) {
+        return new Promise((resolve, reject) => {
+          CheckPlanPriceInfo({ order: data })
+            .then((res) => {
+              this.$message.success(res?.msg);
+              resolve();
+            })
+            .catch((err) => {
+              this.$message.error(err);
+              reject();
+            });
+        });
+      },
+
+      //3
+      handleGetPickingInfo(data) {
+        return new Promise((resolve, reject) => {
+          GetPickingInfo({ order: data })
+            .then((res) => {
+              this.$message.success(res?.msg);
+              resolve(res);
+            })
+            .catch((err) => {
+              this.$message.error(err);
+              reject();
+            });
+        });
+      },
+
+      //4
+      handleReceiveSpdStockup(data) {
+        return new Promise((resolve, reject) => {
+          ReceiveSpdStockup({ json: data })
+            .then((res) => {
+              if('true' == res){
+                this.$message.success('备货单发送成功');
+              }else{
+                this.$message.error('备货单发送失败');
+              }
+              resolve(res);
+            })
+            .catch((err) => {
+              this.$message.error(err);
+              reject();
+            });
+        });
+      },
+
+      //5
+      handleUpdateSendState(data) {
+        return new Promise((resolve, reject) => {
+          UpdateSendState({ ID: data })
+            .then((res) => {
+              if('200' == res){
+                this.$message.success('更新成功');
+              }else{
+                this.$message.error('更新失败');
+              }
+              resolve(res);
+            })
+            .catch((err) => {
+              this.$message.error(err);
+              reject();
+            });
+        });
+      },
+
       // 审批并发送备货单
       handleApproveAndSend() {
-        if (!this.hasSelection) {
-          this.$message.warning('请先选择要操作的数据');
-          return;
+        if (!this.currentTableData) {
+          return this.$message.warning('请先选择要操作的数据');
         }
-        // 实现审批并发送备货单的逻辑
-        this.$message.success('审批并发送备货单操作成功');
+
+        const loading = this.$messageLoading('处理中...');
+        // 实现审批（暂时支持北京）并发送备货单的逻辑
+        this.handleYesApprove(this.currentTableData.ID)
+          .then(() => {
+            this.handleCheckPlanPriceInfo(
+              this.currentTableData.STOCK_UP_PLAN_NO
+            ).then(() => {
+              this.handleGetPickingInfo(
+                this.currentTableData.STOCK_UP_PLAN_NO
+              ).then((res) => {
+                if (res?.result.length == 0) {
+                  return this.$message.error('数据有误，请检查');
+                }
+                //组装JSON
+                const planDetails = (res?.result || []).map((item) => ({
+                  VARIETIE_CODE: item.Varietie_Code,
+                  VARIETIE_CODE_NEW: item.Varietie_Code_New,
+                  VARIETIE_NAME: item.Varietie_Name,
+                  STOCK_UP_PLAN_GOODS_QUANTITY:
+                    item.Stock_Up_Plan_Goods_Quantity,
+                  SUPPLIER_CODE: item.supplier_code,
+                  CONTRACT_CODE: item.contract_code,
+                  SUPPLY_PRICE: item.Purchase_Price,
+                  Province_Platform_Code: item.Province_Platform_Code,
+                  Specification_Or_Type: item.Specification_Or_Type,
+                  Manufacturing_Ent_Name: item.Manufacturing_Ent_Name,
+                  ST_MANUFACTURING_ENT_NAME: item.ST_MANUFACTURING_ENT_NAME,
+                  UNIT: item.Unit,
+                  Approval_Number: item.Approval_Number,
+                  MANUFACTURING_LICENSE: item.MANUFACTURING_LICENSE,
+                  STORAGE_TYPE: item.STORAGE_TYPE,
+                  SPD_USE_PRICE: item.supply_price
+                }));
+                // 使用对象解构和简写语法
+                const [firstItem = {}] = res?.result || [];
+                const requsetData = JSON.stringify([
+                  {
+                    STOCK_UP_PLAN_NO: this.currentTableData.STOCK_UP_PLAN_NO,
+                    HOSPITALCODE: 'BH00261',
+                    ADDRESS: this.currentTableData.ADDRESS,
+                    CONTACT_PHONE: firstItem?.CONTACT_PHONE || '',
+                    CONTACT_PERSON: firstItem?.CONTACT_PERSON || '',
+                    STORAGE_ID: this.currentTableData.STORAGE_ID,
+                    REMARKS: this.currentTableData.REMARKS,
+                    STOCK_UP_PLAN_DET: planDetails
+                  }
+                ]);
+
+                this.handleReceiveSpdStockup(requsetData).then((res) => {
+                  this.handleUpdateSendState(
+                    this.currentTableData.STOCK_UP_PLAN_NO
+                  ).then(() => {
+                  });
+                });
+              });
+            });
+          })
+          .finally(() => {
+            loading.close();
+          });
       },
 
       // 补发送备货单
@@ -615,7 +789,7 @@
       // 修改资金来源
       handleUpdateFunds() {
         // 实现修改资金来源的逻辑
-        this.$message.success('修改资金来源操作成功');
+        this.updateFundsDialogVisible = true;
       },
 
       // 数据源方法
@@ -672,4 +846,3 @@
 </script>
 
 <style lang="scss" scoped></style>
-@/utils/excel-util.js

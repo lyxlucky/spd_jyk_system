@@ -84,80 +84,80 @@ export function postNoApprove(data) {
  * @returns {boolean} 是否需要Send_State参数
  */
 export function needSendState(homehp) {
-  let dataJ, yycode
+  let dataJ, yycode;
   switch (homehp) {
-    case "lg":
-      dataJ = { HOSPITAL_CODE: 'BH00002', Send_State: true};
-      yycode = "BH00002";
+    case 'lg':
+      dataJ = { HOSPITAL_CODE: 'BH00002', Send_State: true };
+      yycode = 'BH00002';
       break;
-    case "stzl":
-      dataJ = { HOSPITAL_CODE: 'BH00003', Send_State: true};
-      yycode = "BH00003";
+    case 'stzl':
+      dataJ = { HOSPITAL_CODE: 'BH00003', Send_State: true };
+      yycode = 'BH00003';
       break;
-    case "nyd":
-      dataJ = { HOSPITAL_CODE: 'BH00004', Send_State: true};
-      yycode = "BH00004";
+    case 'nyd':
+      dataJ = { HOSPITAL_CODE: 'BH00004', Send_State: true };
+      yycode = 'BH00004';
       break;
-    case "szlh":
-      dataJ = { HOSPITAL_CODE: 'BH00005', Send_State: true};
-      yycode = "BH00005";
-      break
-    case "zq":
-      dataJ = { HOSPITAL_CODE: 'BH00006', Send_State: true};
-      yycode = "BH00006";
-      break
-    case "spd":
-      dataJ = { HOSPITAL_CODE: 'BH00041'};
-      yycode = "BH00041";
+    case 'szlh':
+      dataJ = { HOSPITAL_CODE: 'BH00005', Send_State: true };
+      yycode = 'BH00005';
       break;
-    case "bd":
-      dataJ = { HOSPITAL_CODE: 'BH00001'};
-      yycode = "BH00001";
+    case 'zq':
+      dataJ = { HOSPITAL_CODE: 'BH00006', Send_State: true };
+      yycode = 'BH00006';
       break;
-    case "bdrm":
-      dataJ = { HOSPITAL_CODE: 'BH00261'};
-      yycode = "BH00261";
+    case 'spd':
+      dataJ = { HOSPITAL_CODE: 'BH00041' };
+      yycode = 'BH00041';
       break;
-    case "stzx":
-      dataJ = { HOSPITAL_CODE: 'BH00007'};
-      yycode = "BH00007";
+    case 'bd':
+      dataJ = { HOSPITAL_CODE: 'BH00001' };
+      yycode = 'BH00001';
       break;
-    case "stse":
-      dataJ = { HOSPITAL_CODE: 'BH00008'};
-      yycode = "BH00008";
+    case 'bdrm':
+      dataJ = { HOSPITAL_CODE: 'BH00261' };
+      yycode = 'BH00261';
       break;
-    case "szhn":
-      dataJ = { HOSPITAL_CODE: 'BH00010'};
-      yycode = "BH00010";
+    case 'stzx':
+      dataJ = { HOSPITAL_CODE: 'BH00007' };
+      yycode = 'BH00007';
       break;
-    case "fszxy":
-      dataJ = { HOSPITAL_CODE: 'BH00009'};
-      yycode = "BH00009";
+    case 'stse':
+      dataJ = { HOSPITAL_CODE: 'BH00008' };
+      yycode = 'BH00008';
       break;
-    case "csyy":
-      dataJ = { HOSPITAL_CODE: 'BH00011'};
-      yycode = "BH00011";
+    case 'szhn':
+      dataJ = { HOSPITAL_CODE: 'BH00010' };
+      yycode = 'BH00010';
       break;
-    case "stzyyy":
-      dataJ = { HOSPITAL_CODE: 'BH00011'};
-      yycode = "BH00012";
+    case 'fszxy':
+      dataJ = { HOSPITAL_CODE: 'BH00009' };
+      yycode = 'BH00009';
       break;
-    case "szlhfy":
-      dataJ = { HOSPITAL_CODE: 'BH00011'};
-      yycode = "BH00014";
+    case 'csyy':
+      dataJ = { HOSPITAL_CODE: 'BH00011' };
+      yycode = 'BH00011';
       break;
-    case "szsmyl":
-      dataJ = { HOSPITAL_CODE: 'BH00011'};
-      yycode = "BH00015";
+    case 'stzyyy':
+      dataJ = { HOSPITAL_CODE: 'BH00011' };
+      yycode = 'BH00012';
       break;
-    case "fsdwrmyy":
-      dataJ = { HOSPITAL_CODE: 'BH00011'};
-      yycode = "BH00013";
+    case 'szlhfy':
+      dataJ = { HOSPITAL_CODE: 'BH00011' };
+      yycode = 'BH00014';
+      break;
+    case 'szsmyl':
+      dataJ = { HOSPITAL_CODE: 'BH00011' };
+      yycode = 'BH00015';
+      break;
+    case 'fsdwrmyy':
+      dataJ = { HOSPITAL_CODE: 'BH00011' };
+      yycode = 'BH00013';
       break;
     default:
       break;
   }
-  return {dataJ,yycode}
+  return { dataJ, yycode };
 }
 
 /**
@@ -166,16 +166,16 @@ export function needSendState(homehp) {
  * @returns {Object} 处理后的请求数据
  */
 export function PostPrepareCloseOrderData(data) {
-  let {dataJ,yycode} = needSendState(data.hp)
+  let { dataJ, yycode } = needSendState(data.hp);
   const requestData = {
-    HOSPITAL_CODE:dataJ?.HOSPITAL_CODE || '',
+    HOSPITAL_CODE: dataJ?.HOSPITAL_CODE || '',
     Token: sessionStorage.getItem(TOKEN_STORE_NAME),
     ID: data.ID,
     Person: data.Person || store.state.user.info.Nickname,
-    Approve_State : data.Approve_State
+    Approve_State: data.Approve_State
   };
   if (dataJ?.Send_State) {
-    requestData.Send_State= data.Send_State
+    requestData.Send_State = data.Send_State;
   }
 
   // 只有特定医院需要Send_State参数
@@ -183,5 +183,91 @@ export function PostPrepareCloseOrderData(data) {
     requestData.Approve_State = data.Approve_State;
   }
 
-  return request.post('ANewStockUp/UpOvertime', formdataify(requestData))
+  return request.post('ANewStockUp/UpOvertime', formdataify(requestData));
+}
+
+export async function UpFundsSource(data) {
+  let params = {
+    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+    FUNDS_SOURCE_TYPE: data.type
+  };
+  let formdata = formdataify(params);
+  const res = await request.post('/ANewStockUp/UpFundsSource', formdata);
+  if (res.data.code == 200) {
+    return res.data;
+  } else {
+    return Promise.reject(new Error(res.data.msg));
+  }
+}
+
+export async function YesApprove(data) {
+  const params = {
+    ID: data.ID,
+    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+    Person: store.state.user.info.Nickname
+  };
+  let formdata = formdataify(params);
+  const res = await request.post('/ANewStockUp/YesApprove', formdata);
+  if (res.data.code == 200) {
+    return res.data;
+  } else {
+    return Promise.reject(new Error(res.data.msg));
+  }
+}
+
+export async function CheckPlanPriceInfo(data) {
+  const params = {
+    Stock_Up_Plan_No: data.order,
+    Token: sessionStorage.getItem(TOKEN_STORE_NAME)
+  };
+  const res = await request.get('/CentralWarehouseMonitor/CheckPlanPriceInfo', {
+    params: params
+  });
+  if (res.data.code == 200) {
+    return res.data;
+  } else {
+    return Promise.reject(new Error(res.data.msg));
+  }
+}
+
+export async function GetPickingInfo(data) {
+  const params = {
+    Stock_Up_Plan_No: data.order,
+    Token: sessionStorage.getItem(TOKEN_STORE_NAME)
+  };
+  const res = await request.get('/CentralWarehouseMonitor/GetPickingInfo', {
+    params: params
+  });
+  if (res.data.code == 200) {
+    return res.data;
+  } else {
+    return Promise.reject(new Error(res.data.msg));
+  }
+}
+
+export async function ReceiveSpdStockup(data) {
+  const formatdata = {
+    json: data.json
+  };
+  const res = await fetch(
+    `http://39.107.78.98:18011/api/SpdBtb/ReceiveSpdStockup`,
+    {
+      method: 'POST',
+      body: formdataify(formatdata)
+    }
+  ).then((response) => response.json());
+  return res;
+}
+
+export async function UpdateSendState(data) {
+  const params = {
+    ID: data.ID,
+    Token: sessionStorage.getItem(TOKEN_STORE_NAME)
+  };
+  let formdata = formdataify(params);
+  const res = await request.post(
+    '/CentralWarehouseMonitor/UpdateSendState',
+    formdata
+  );
+  return res;
 }

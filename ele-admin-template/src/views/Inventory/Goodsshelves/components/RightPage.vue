@@ -36,8 +36,9 @@
 <script>
 import { utils, writeFile } from 'xlsx';
 import UserSearch from './rightpage-search.vue';
+// Temporary_supplyRevert
 import {
-  GetPDAList2,Temporary_supplyRevert
+  GetPDAList2
 } from '@/api/Inventory/Goodsshelves';
 export default {
   name: 'SystemUser',
@@ -467,25 +468,25 @@ export default {
 
         
         if (confirmResult) {
-          // 显示加载提示
-          // const loadingInstance = this.$message.loading({
-          //   message: '处理中...',
-          //   duration: 0
-          // });
-          // 调用封装的标记处理方法
-          const responseData = await Temporary_supplyRevert(selectedData);
+          // // 显示加载提示
+          // // const loadingInstance = this.$message.loading({
+          // //   message: '处理中...',
+          // //   duration: 0
+          // // });
+          // // 调用封装的标记处理方法
+          // const responseData = await Temporary_supplyRevert(selectedData);
 
-          this.$message.success(responseData);
-          // 关闭加载提示
-          //loadingInstance.close();
-          // 根据响应结果处理
-          if (responseData.code == 200) {
-            this.$message.success(responseData.msg);
-            // 刷新表格
-            this.reload(where);
-          } else {
-            this.$message.error(responseData.msg);
-          }
+          // this.$message.success(responseData);
+          // // 关闭加载提示
+          // //loadingInstance.close();
+          // // 根据响应结果处理
+          // if (responseData.code == 200) {
+          //   this.$message.success(responseData.msg);
+          //   // 刷新表格
+          //   this.reload(where);
+          // } else {
+          //   this.$message.error(responseData.msg);
+          // }
         }
       } catch (error) {
         if (error.message.includes('timeout')) {
