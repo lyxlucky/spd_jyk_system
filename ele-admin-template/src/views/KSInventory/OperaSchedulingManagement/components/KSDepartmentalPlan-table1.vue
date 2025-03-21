@@ -5,7 +5,7 @@
       <!-- 表头工具栏 -->
       <template v-slot:toolbar>
         <!-- 搜索表单 -->
-        <naxtDayApplyPlanMainSearch @removeBatch="removeBatch" :KSDepartmentalPlanData="current" @search="reload" @openUserEdit="openUserEdit" @upNaxtDayApplyPlanMainByState="upNaxtDayApplyPlanMainByStateFun" />
+        <naxtDayApplyPlanMainSearch @removeBatch="removeBatch" @exportData="exportData" :KSDepartmentalPlanData="current" @search="reload" @openUserEdit="openUserEdit" @upNaxtDayApplyPlanMainByState="upNaxtDayApplyPlanMainByStateFun" />
       </template>
 
       <template v-slot:State="{ row }">
@@ -38,22 +38,15 @@
 
 <script>
 import naxtDayApplyPlanMainSearch from './naxtDayApplyPlanMain-search.vue';
-
+import { HOME_HP,BACK_BASE_URL,TOKEN_STORE_NAME } from '@/config/setting';
 import userEdit from './user-edit.vue';
 import {
   GetNaxtDayApplyPlanMain,
   upNaxtDayApplyPlanMainByState,
-  DeleteNaxtDayApplyPlanMain
+  DeleteNaxtDayApplyPlanMain,
+  CreatePperationExcel
 } from '@/api/KSInventory/OperaSchedulingManagement';
 
-// import KSDepartmentalPlanSearch from './KSDepartmentalPlan-search.vue';
-import {
-  SerachPlanList,
-  DeletePlanList,
-  SearchHistoryConsumedAndPurchaseDept,
-  ReturnInitState
-} from '@/api/KSInventory/KSDepartmentalPlan';
-import { getDeptAuthVarNew } from '@/api/KSInventory/KSInventoryBasicData';
 export default {
   name: 'KSDepartmentalPlanTable',
   props: ['IsReload'],
@@ -232,8 +225,8 @@ export default {
       return data;
     },
     openUserEdit(data) {
-      console.log(1)
-      console.log(data)
+      console.log(1);
+      console.log(data);
       this.showEdit = true;
       // this.$bus.$emit(`${this.$route.path}/handleUpdate`, this.selection);
     },
@@ -321,6 +314,34 @@ export default {
           loading.close();
           this.$message.error(err);
         });
+    },
+    exportData(obj) {
+      if (this.current == null) {
+        this.$message.warning('请选择打印单号');
+        return;
+      }
+      const loading = this.$messageLoading('请求中..');
+
+      var data = {
+        NAXT_DAT_PLAN_NUM: this.current.NAXT_DAT_PLAN_NUM,
+        SURGICAL_DEPT: this.current.SURGICAL_DEPT,
+        CREATE_MAN_MAIN: this.current.CREATE_MAN,
+        VARIETIE_NAME: '',
+        CREATE_MAN: '',
+        MAIN_ID: this.current.ID,
+        page: 1,
+        size: 999999
+      };
+      CreatePperationExcel(data).then((res) => {
+        var url = BACK_BASE_URL + '/Excel/files/' + res.msg;
+        // console.log(url)
+        this.$message.success("导出成功")
+        window.open(url);
+      }).catch(err=>{
+        this.$message.error(err.msg)
+      }).finally(()=>{
+        loading.close();
+      });
     }
   },
   watch: {

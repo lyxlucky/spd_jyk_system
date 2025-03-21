@@ -51,6 +51,10 @@
               <el-button type="danger" icon="el-icon-delete" size="mini" :disabled="IS_delete">删除</el-button>
             </template>
           </el-popconfirm>
+
+          <el-button size="mini" type="primary" class="ele-btn-icon" @click="exportData">
+            导出
+          </el-button>
         </div>
       </el-col>
 
@@ -78,7 +82,7 @@ export default {
       where: { ...defaultWhere },
       showEdit: false,
       IS_disabled: true,
-      IS_delete: true,
+      IS_delete: true
     };
   },
   computed: {
@@ -97,6 +101,9 @@ export default {
       this.where = { ...this.defaultWhere };
       this.search();
     },
+    exportData() {
+      this.$emit('exportData', this.where);
+    },
     /* 创建申领单 */
     openUserEdit() {
       this.$emit('openUserEdit', this.where);
@@ -114,7 +121,7 @@ export default {
   watch: {
     KSDepartmentalPlanData() {
       this.$bus.$on('naxtDayApplyPlanDel', (data) => {
-        console.log(data)
+        console.log(data);
         if (data.length <= 0) {
           this.IS_disabled = true;
         } else {

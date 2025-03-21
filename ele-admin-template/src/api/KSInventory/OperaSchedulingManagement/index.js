@@ -164,3 +164,30 @@ export async function DeleteNaxtDayApplyPlanMain(data) {
         return Promise.reject(new Error(res.data.msg));
     }
 }
+
+
+export async function CreatePperationExcel(data) {
+    var data2 = {};
+    data2.ID = data.ID ? data.ID : '';
+    data2.NAXT_DAT_PLAN_NUM = data.NAXT_DAT_PLAN_NUM ? data.NAXT_DAT_PLAN_NUM : '';
+    data2.SURGICAL_DEPT = data.SURGICAL_DEPT ? data.SURGICAL_DEPT : '';
+    data2.MAIN_ID = data.MAIN_ID ? data.MAIN_ID : '';
+    data2.CREATE_MAN_MAIN = data.CREATE_MAN_MAIN ? data.CREATE_MAN_MAIN : '';
+
+    data2.VARIETIE_NAME = data.VARIETIE_NAME ? data.VARIETIE_NAME : '';
+    data2.CREATE_MAN = data.CREATE_MAN ? data.CREATE_MAN : '';
+    data2.page = data.page ? data.page : '1';
+    data2.size = data.limit ? data.limit : '999999';
+    data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+
+    var rep = formdataify(data2);
+
+    const res = await request.post('/DeptApplyPlan/CreatePperationExcel', rep);
+    if (res.data.code == 200) {
+        return res.data;
+    } else {
+        return Promise.reject(new Error(res.data.msg));
+    }
+}
+
+
