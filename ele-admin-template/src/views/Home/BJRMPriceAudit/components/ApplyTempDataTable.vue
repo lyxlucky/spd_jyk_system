@@ -24,23 +24,27 @@
       <template v-slot:TempletQty="{ row }">
         <el-input style="width: 120px" v-model="row.TempletQty" :min="0" :max="999999999" :step="1" size="mini" />
       </template>
+      <template v-slot:action="{ row }">
+        <el-link @click="openEdit(row)" size="mini" type="primary" :underline="false" icon="el-icon-edit">
+          编辑
+        </el-link>
+      </template>
     </ele-pro-table>
+    <UserEdit :visible.sync="showEdit" :data="current" @done="reload" />
   </div>
 </template>
 
 <script>
 import ApplyTempDataSearch from './ApplyTempDataSearch.vue';
+import UserEdit from './user-edit.vue';
 import { utils, writeFile } from 'xlsx';
-import {
-  SerachTempletDeta,
-  DeleteTempletDeta
-} from '@/api/KSInventory/ApplyTemp';
 import { GetSpdHisMainsjLinesIface } from '@/api/Home/BJRMPriceAudit';
 export default {
   name: 'ApplyTempDataTable',
   props: ['ApplyTempTableData', 'IntroduceUserDefinedTempSearch'],
   components: {
-    ApplyTempDataSearch: ApplyTempDataSearch
+    ApplyTempDataSearch: ApplyTempDataSearch,
+    UserEdit
   },
   data() {
     return {
@@ -62,19 +66,26 @@ export default {
         //   showOverflowTooltip: true,
         //   fixed: 'left'
         // },
+        // {
+        //   prop: 'HEADER_IFACE_ID',
+        //   label: '主表ID',
+        //   align: 'center',
+        //   showOverflowTooltip: true,
+        //   minWidth: 80
+        // },
+        // {
+        //   prop: 'LINE_IFACE_ID',
+        //   label: '明细ID',
+        //   align: 'center',
+        //   showOverflowTooltip: true,
+        //   minWidth: 80
+        // },
         {
-          prop: 'HEADER_IFACE_ID',
-          label: '主表ID',
+          slot: 'action',
+          label: '操作',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 80
-        },
-        {
-          prop: 'LINE_IFACE_ID',
-          label: '明细ID',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 80
+          minWidth: 100
         },
         {
           prop: 'HIS_CODE_TYPE',
@@ -328,17 +339,17 @@ export default {
         ID: row.ID
       };
 
-      const loading = this.$messageLoading('删除中...');
-      DeleteTempletDeta(data)
-        .then((res) => {
-          loading.close();
-          this.$message(res.msg);
-          this.reload();
-        })
-        .catch((err) => {
-          loading.close();
-          this.$message(err);
-        });
+      // const loading = this.$messageLoading('删除中...');
+      // DeleteTempletDeta(data)
+      //   .then((res) => {
+      //     loading.close();
+      //     this.$message(res.msg);
+      //     this.reload();
+      //   })
+      //   .catch((err) => {
+      //     loading.close();
+      //     this.$message(err);
+      //   });
     },
     onSelectionChange(selection) {
       this.selection = selection;
@@ -353,6 +364,10 @@ export default {
         };
         this.$refs.table.reload({ page: 1, where: where });
       }
+    },
+    openEdit(row) {
+      this.current = row;
+      this.showEdit = true;
     },
     exportData(data) {
       const loading = this.$messageLoading('正在导出数据...');
@@ -369,8 +384,8 @@ export default {
             loading.close();
             const array = [
               [
-                '主表ID',
-                '明细ID',
+                // '主表ID',
+                // '明细ID',
                 '申请单号',
                 '编码类型',
                 '项目名称',
@@ -428,8 +443,8 @@ export default {
                 'YYYY-MM-DD'
               );
               array.push([
-                d.HEADER_IFACE_ID,
-                d.LINE_IFACE_ID,
+                // d.HEADER_IFACE_ID,
+                // d.LINE_IFACE_ID,
                 d.HIS_HIGHVALUE_NO,
                 d.HIS_CODE_TYPE,
                 d.HIS_ITEM_DESCRIPTION,

@@ -27,7 +27,6 @@ export async function GetSpdMainsjHeaderIface(data) {
 }
 
 export async function GetSpdHisMainsjLinesIface(data) {
-    console.log(data)
     let formataData = {}
     formataData.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
     formataData.page = data.page ? data.page : '1';
@@ -51,6 +50,27 @@ export async function GetSpdHisMainsjLinesIface(data) {
 export async function ImportSpdHisMainsjLinesIfaceExcel(data) {
     data.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
     const res = await request.post('/AJykDept/ImportSpdHisMainsjLinesIfaceExcel', data);
+    if (res.data.code == 200) {
+        return res.data;
+    } else {
+        return Promise.reject(new Error(res.data.msg));
+    }
+}
+
+export async function UpSpdHisMainsjLinesIface(data) {
+    let formataData = {}
+    formataData.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+    formataData.HIS_CODE_TYPE = data.HIS_CODE_TYPE ? data.HIS_CODE_TYPE : '-1';
+    formataData.HIS_ITEM_DESCRIPTION = data.HIS_ITEM_DESCRIPTION ? data.HIS_ITEM_DESCRIPTION : '';
+    formataData.HIS_ISGZ_DZ = data.HIS_ISGZ_DZ ? data.HIS_ISGZ_DZ : '';
+    formataData.HIS_HC_NUMBER = data.HIS_HC_NUMBER ? data.HIS_HC_NUMBER : '';
+    formataData.HIS_NBM = data.HIS_NBM ? data.HIS_NBM : '';
+    formataData.HIS_SYFW = data.HIS_SYFW ? data.HIS_SYFW : '';
+    formataData.ID = data.ID ? data.ID : '';
+
+    let req = formdataify(formataData);
+    const res = await request.post('/AJykDept/UpSpdHisMainsjLinesIface', req);
+    console.log(res)
     if (res.data.code == 200) {
         return res.data;
     } else {
