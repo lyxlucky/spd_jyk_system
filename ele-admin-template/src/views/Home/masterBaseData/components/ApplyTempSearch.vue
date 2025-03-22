@@ -36,7 +36,7 @@
         <el-button size="mini" type="primary" class="ele-btn-icon" icon="el-icon-download" @click="exportData">
           导出
         </el-button>
-        <el-button size="mini" type="primary" class="ele-btn-icon" @click="search">
+        <el-button size="mini" type="primary" class="ele-btn-icon" @click="openEdit">
           审批
         </el-button>
       </el-col>
@@ -105,6 +105,9 @@ export default {
     },
     showDialogTableVisible2() {
       this.dialogTableVisible2 = true;
+    },
+    openEdit(){
+      this.$emit('openEdit');
     },
     importFile() {
       // console.log(this.PlanNum);

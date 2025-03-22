@@ -1,8 +1,8 @@
 <template>
   <div class="ele-body">
-    <ApplyTempSearch @search="reload" @exportData="exportData" :rowData="current" />
+    <ApplyTempSearch @search="reload" @exportData="exportData" @openEdit="openEdit" :rowData="current" />
     <!-- 数据表格 -->
-    <ele-pro-table @current-change="onCurrentChange" highlight-current-row ref="table" height="60vh" :rowClickChecked="true" :stripe="false" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :needPage="true" :datasource="datasource" :selection.sync="selection" cache-key="">
+    <ele-pro-table @current-change="onCurrentChange" :rowClickCheckedIntelligent="false"  highlight-current-row ref="table" height="60vh" :rowClickChecked="true" :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :needPage="true" :datasource="datasource" :selection.sync="selection" cache-key="">
       <!-- 表头工具栏 -->
       <template v-slot:toolbar>
         <!-- 搜索表单 -->
@@ -53,6 +53,7 @@
         </el-popconfirm>
       </template>
     </ele-pro-table>
+    <UserEdit :visible.sync="showEdit" :data="selection" @done="reload" />
   </div>
 </template>
 
@@ -67,18 +68,15 @@
 </style>
 
 <script>
+import UserEdit from './user-edit.vue';
 import { utils, writeFile } from 'xlsx';
 import ApplyTempSearch from './ApplyTempSearch.vue';
-import {
-  SerachTempletList,
-  DeleteTemplet,
-  EditTempName
-} from '@/api/KSInventory/ApplyTemp';
 import { GetSpdMainsjHeaderIface } from '@/api/Home/masterBaseData';
 export default {
   name: 'ApplyTempTable',
   components: {
-    ApplyTempSearch
+    ApplyTempSearch,
+    UserEdit
   },
   data() {
     return {
@@ -99,33 +97,33 @@ export default {
         //   showOverflowTooltip: true,
         //   fixed: 'left'
         // },
-        {
-          prop: 'PROCESS_STATUS',
-          label: '状态',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 80,
-          formatter: (row, column, cellValue) => {
-            if (cellValue == 'N') {
-              return '已传入中间表';
-            } else if (cellValue == 'S') {
-              return '已传入SPD';
-            } else if (cellValue == 'Y') {
-              return '已接收收费编码';
-            } else if (cellValue == 'E') {
-              return '传入SPD失败';
-            } else {
-              return '未知状态';
-            }
-          }
-        },
-        {
-          prop: 'ERROR_MSG',
-          label: '错误消息',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 100
-        },
+        // {
+        //   prop: 'PROCESS_STATUS',
+        //   label: '状态',
+        //   align: 'center',
+        //   showOverflowTooltip: true,
+        //   minWidth: 80,
+        //   formatter: (row, column, cellValue) => {
+        //     if (cellValue == 'N') {
+        //       return '已传入中间表';
+        //     } else if (cellValue == 'S') {
+        //       return '已传入SPD';
+        //     } else if (cellValue == 'Y') {
+        //       return '已接收收费编码';
+        //     } else if (cellValue == 'E') {
+        //       return '传入SPD失败';
+        //     } else {
+        //       return '未知状态';
+        //     }
+        //   }
+        // },
+        // {
+        //   prop: 'ERROR_MSG',
+        //   label: '错误消息',
+        //   align: 'center',
+        //   showOverflowTooltip: true,
+        //   minWidth: 100
+        // },
         {
           prop: 'REQUESTNOTEID',
           label: '申请单号',
@@ -146,6 +144,36 @@ export default {
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 110
+        },
+        {
+          prop: 'YB_SP_STATE',
+          label: '是否审批',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 100,
+          formatter: (row, column, cellValue) => {
+            if (cellValue == 1) {
+              return '已审批';
+            } else {
+              return '未审批';
+            }
+          }
+        },
+        {
+          prop: 'YB_SP_MARK',
+          label: '审批备注',
+          // sortable: 'custom',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 120
+        },
+        {
+          prop: 'YB_SP_MAN',
+          label: '审批人',
+          // sortable: 'custom',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 100
         },
         {
           prop: 'APPLYPEOPLE',
@@ -212,6 +240,13 @@ export default {
     reload(where) {
       this.$refs.table.reload({ page: 1, where: where });
     },
+    openEdit(row) {
+      if (this.selection.length <= 0) {
+        this.$message.warning('请选择要审批的数据');
+        return;
+      }
+      this.showEdit = true;
+    },
     exportData(data) {
       const loading = this.$messageLoading('正在导出数据...');
       this.$refs.table.doRequest(({ where, order }) => {
@@ -233,12 +268,12 @@ export default {
                 '申请日期',
                 '经办人',
                 '经办人工号',
-                '经办人电话',
+                '经办人电话'
               ]
             ];
             res.result.forEach((d) => {
               if (d.PROCESS_STATUS == 'N') {
-                  d.PROCESS_STATUS = '已传入中间表';
+                d.PROCESS_STATUS = '已传入中间表';
               } else if (d.PROCESS_STATUS == 'S') {
                 d.PROCESS_STATUS = '已传入SPD';
               } else if (d.PROCESS_STATUS == 'Y') {
@@ -256,7 +291,7 @@ export default {
                 d.APPLYDATE,
                 d.APPLYPEOPLE,
                 d.APPLYCODE,
-                d.APPLYPHONE ,
+                d.APPLYPHONE
                 // this.$util.toDateString(d.createTime)
               ]);
             });
@@ -269,14 +304,14 @@ export default {
               },
               '医保单.xlsx'
             );
-            this.$message.success("导出成功");
+            this.$message.success('导出成功');
           })
           .catch((e) => {
             loading.close();
             this.$message.error(e.message);
           });
       });
-    },
+    }
   },
   mounted() {},
   destroyed() {},

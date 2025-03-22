@@ -3,7 +3,7 @@
     <!-- 数据表格 -->
     <!-- 自定义指令实现当pageSizes改变时触发 -->
     <!-- :pageSize="pageSize" :pageSizes="pageSizes" -->
-    <ApplyTempDataSearch ref="Apply" @search="reload" @addTempVar="$emit('addTempVar')" :IntroduceUserDefinedTempSearch="IntroduceUserDefinedTempSearch" @exportData="exportData" :ApplyTempTableDataSearch="ApplyTempTableDataSearch" :selection="selection" @showEditReoad="showEditReoad" />
+    <ApplyTempDataSearch ref="Apply" :rowClickCheckedIntelligent="false" @search="reload" @addTempVar="$emit('addTempVar')" :IntroduceUserDefinedTempSearch="IntroduceUserDefinedTempSearch" @exportData="exportData" :ApplyTempTableDataSearch="ApplyTempTableDataSearch" :selection="selection" @showEditReoad="showEditReoad" />
     <ele-pro-table ref="table" height="60vh" highlight-current-row :stripe="true" :rowClickChecked="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" @selection-change="onSelectionChange" cache-key="ApplyTempDataTable">
       <!-- 表头工具栏 -->
       <!-- 右表头 -->
@@ -22,14 +22,7 @@
 
       <!-- 操作列 -->
       <template v-slot:TempletQty="{ row }">
-        <el-input
-          style="width: 120px"
-          v-model="row.TempletQty"
-          :min="0"
-          :max="999999999"
-          :step="1"
-          size="mini"
-        />
+        <el-input style="width: 120px" v-model="row.TempletQty" :min="0" :max="999999999" :step="1" size="mini" />
       </template>
       <template v-slot:action="{ row }">
         <el-link @click="openEdit(row)" size="mini" type="primary" :underline="false" icon="el-icon-edit">
@@ -43,17 +36,15 @@
 
 <script>
 import ApplyTempDataSearch from './ApplyTempDataSearch.vue';
+import UserEdit from './user-edit.vue';
 import { utils, writeFile } from 'xlsx';
-import {
-  SerachTempletDeta,
-  DeleteTempletDeta
-} from '@/api/KSInventory/ApplyTemp';
 import { GetSpdHisMainsjLinesIface } from '@/api/Home/BJRMPriceAudit';
 export default {
   name: 'ApplyTempDataTable',
   props: ['ApplyTempTableData', 'IntroduceUserDefinedTempSearch'],
   components: {
-    ApplyTempDataSearch: ApplyTempDataSearch
+    ApplyTempDataSearch: ApplyTempDataSearch,
+    UserEdit
   },
   data() {
     return {
@@ -75,19 +66,26 @@ export default {
         //   showOverflowTooltip: true,
         //   fixed: 'left'
         // },
+        // {
+        //   prop: 'HEADER_IFACE_ID',
+        //   label: '主表ID',
+        //   align: 'center',
+        //   showOverflowTooltip: true,
+        //   minWidth: 80
+        // },
+        // {
+        //   prop: 'LINE_IFACE_ID',
+        //   label: '明细ID',
+        //   align: 'center',
+        //   showOverflowTooltip: true,
+        //   minWidth: 80
+        // },
         {
-          prop: 'HEADER_IFACE_ID',
-          label: '主表ID',
+          slot: 'action',
+          label: '操作',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 80
-        },
-        {
-          prop: 'LINE_IFACE_ID',
-          label: '明细ID',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 80
+          minWidth: 100
         },
         {
           prop: 'HIS_CODE_TYPE',
@@ -326,31 +324,32 @@ export default {
             list: res.result
           };
           return tData;
-        });
-        return data;
-      },
-      /* 刷新表格 */
-      reload(where) {
-        // console.log(this.ApplyTempTableData);
-        // console.log(this.$store.state.user.info);
-        this.$refs.table.reload({ page: 1, where: where });
-      },
-      remove(row) {
-        var data = {
-          ID: row.ID
-        };
+        }
+      );
+      return data;
+    },
+    /* 刷新表格 */
+    reload(where) {
+      // console.log(this.ApplyTempTableData);
+      // console.log(this.$store.state.user.info);
+      this.$refs.table.reload({ page: 1, where: where });
+    },
+    remove(row) {
+      var data = {
+        ID: row.ID
+      };
 
-      const loading = this.$messageLoading('删除中...');
-      DeleteTempletDeta(data)
-        .then((res) => {
-          loading.close();
-          this.$message(res.msg);
-          this.reload();
-        })
-        .catch((err) => {
-          loading.close();
-          this.$message(err);
-        });
+      // const loading = this.$messageLoading('删除中...');
+      // DeleteTempletDeta(data)
+      //   .then((res) => {
+      //     loading.close();
+      //     this.$message(res.msg);
+      //     this.reload();
+      //   })
+      //   .catch((err) => {
+      //     loading.close();
+      //     this.$message(err);
+      //   });
     },
     onSelectionChange(selection) {
       this.selection = selection;
@@ -365,6 +364,10 @@ export default {
         };
         this.$refs.table.reload({ page: 1, where: where });
       }
+    },
+    openEdit(row) {
+      this.current = row;
+      this.showEdit = true;
     },
     exportData(data) {
       const loading = this.$messageLoading('正在导出数据...');
@@ -381,8 +384,8 @@ export default {
             loading.close();
             const array = [
               [
-                '主表ID',
-                '明细ID',
+                // '主表ID',
+                // '明细ID',
                 '申请单号',
                 '编码类型',
                 '项目名称',
@@ -418,13 +421,13 @@ export default {
                 d.HIS_ISGZ_DZ = '未知';
               }
 
-                if (d.HIS_CLBS == 0) {
-                  d.HIS_CLBS = '否';
-                } else if (d.HIS_CLBS == 1) {
-                  d.HIS_CLBS = '是';
-                } else {
-                  d.HIS_CLBS = '未知';
-                }
+              if (d.HIS_CLBS == 0) {
+                d.HIS_CLBS = '否';
+              } else if (d.HIS_CLBS == 1) {
+                d.HIS_CLBS = '是';
+              } else {
+                d.HIS_CLBS = '未知';
+              }
 
               if (d.HIS_LCFW == 0) {
                 d.HIS_LCFW = '否';
@@ -440,8 +443,8 @@ export default {
                 'YYYY-MM-DD'
               );
               array.push([
-                d.HEADER_IFACE_ID,
-                d.LINE_IFACE_ID,
+                // d.HEADER_IFACE_ID,
+                // d.LINE_IFACE_ID,
                 d.HIS_HIGHVALUE_NO,
                 d.HIS_CODE_TYPE,
                 d.HIS_ITEM_DESCRIPTION,

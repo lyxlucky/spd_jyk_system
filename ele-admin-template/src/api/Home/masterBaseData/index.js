@@ -55,3 +55,22 @@ export async function ImportSpdMainsjLinesIfaceExcel(data) {
         return Promise.reject(new Error(res.data.msg));
     }
 }
+
+
+export async function ApproveYBSpdMainsjLinesIface(data) {
+    let formataData = {}
+    formataData.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+    formataData.YB_SP_MAN = data.YB_SP_MAN ? data.YB_SP_MAN : '';
+    formataData.YB_SP_MARK = data.YB_SP_MARK ? data.YB_SP_MARK : '';
+    formataData.HEADER_IFACE_ID = data.HEADER_IFACE_ID ? data.HEADER_IFACE_ID : '';
+
+    let req = formdataify(formataData);
+    const res = await request.post('/AJykDept/ApproveYBSpdMainsjLinesIface', req);
+    console.log(res)
+    if (res.data.code == 200) {
+        return res.data;
+    } else {
+        return Promise.reject(new Error(res.data.msg));
+    }
+}
+

@@ -165,6 +165,14 @@ export default {
           minWidth: 120
         },
         {
+          prop: 'WJ_SP_MAN',
+          label: '审批人',
+          // sortable: 'custom',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 100
+        },
+        {
           prop: 'APPLYPEOPLE',
           label: '经办人',
           // sortable: 'custom',
