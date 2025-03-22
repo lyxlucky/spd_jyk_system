@@ -169,15 +169,15 @@ export default {
           showOverflowTooltip: true,
           minWidth: 150
         },
-        {
-          prop: 'VARIETIE_CODE',
-          label: '品种ID',
-          // sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 110,
-          show: false
-        },
+        // {
+        //   prop: 'VARIETIE_CODE',
+        //   label: '品种ID',
+        //   // sortable: 'custom',
+        //   align: 'center',
+        //   showOverflowTooltip: true,
+        //   minWidth: 110,
+        //   show: false
+        // },
         {
           prop: 'VARIETIE_CODE_NEW',
           label: '品种编码',
@@ -446,7 +446,7 @@ export default {
               [
                 '科室名称',
                 '定数码',
-                '品种ID',
+                // '品种ID',
                 '品种编码',
                 '品种名称',
                 '在库天数',
@@ -470,7 +470,7 @@ export default {
               array.push([
                 d.DEPT_TWO_NAME,
                 d.DEF_NO_PKG_CODE,
-                d.VARIETIE_CODE,
+                // d.VARIETIE_CODE,
                 d.VARIETIE_CODE_NEW,
                 d.VARIETIE_NAME,
                 inwarehouseDate,

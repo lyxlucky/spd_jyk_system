@@ -22,7 +22,7 @@
           <el-option label="传入SPD失败" value="E"></el-option>
         </el-select>
       </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 15, md: 12 } : { span: 12 }">
+      <el-col v-bind="styleResponsive ? { lg: 18, md: 12 } : { span: 12 }">
         <el-button size="mini" type="primary" icon="el-icon-search" class="ele-btn-icon" @click="search">
           查询
         </el-button>
@@ -35,6 +35,9 @@
         </el-button> -->
         <el-button size="mini" type="primary" class="ele-btn-icon" icon="el-icon-download" @click="exportData">
           导出
+        </el-button>
+        <el-button size="mini" type="primary" class="ele-btn-icon" @click="search">
+          审批
         </el-button>
       </el-col>
     </el-row>
@@ -61,9 +64,7 @@
 </template>
 
 <script>
-import {
-  ImportSpdMainsjLinesIfaceExcel
-} from '@/api/Home/masterBaseData';
+import { ImportSpdMainsjLinesIfaceExcel } from '@/api/Home/masterBaseData';
 export default {
   props: {
     // 修改回显的数据

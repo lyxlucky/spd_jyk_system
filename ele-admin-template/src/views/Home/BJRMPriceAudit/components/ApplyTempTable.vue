@@ -2,7 +2,10 @@
   <div class="ele-body">
     <ApplyTempSearch @search="reload" @exportData="exportData" :rowData="current" />
     <!-- 数据表格 -->
-    <ele-pro-table @current-change="onCurrentChange" highlight-current-row ref="table" height="60vh" :rowClickChecked="true" :stripe="false" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :needPage="true" :datasource="datasource" :selection.sync="selection" cache-key="">
+    <!-- <ele-pro-table @current-change="onCurrentChange" :reserve-selection="true" highlight-current-row ref="table" height="60vh" :rowClickChecked="true" :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :needPage="true" :datasource="datasource" :selection.sync="selection" cache-key="BJRMPriceAudit">
+     -->
+    <ele-pro-table :key="key" :reserve-selection="true" highlight-current-row :row-key="(row) => row.PlanNum" @current-change="onCurrentChange" ref="table" height="60vh" :rowClickChecked="true" :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" :needPage="true" cache-key="BJRMPriceAuditTable">
+
       <!-- 表头工具栏 -->
       <template v-slot:toolbar>
         <!-- 搜索表单 -->
@@ -76,7 +79,7 @@ import {
 import { GetSpdMainsjHeaderIface } from '@/api/Home/masterBaseData';
 import { exportToExcel } from '@/utils/excel-util';
 export default {
-  name: 'ApplyTempTable',
+  name: 'c',
   components: {
     ApplyTempSearch
   },

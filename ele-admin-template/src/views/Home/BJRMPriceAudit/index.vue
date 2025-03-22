@@ -2,7 +2,7 @@
   <div>
     <!-- <el-card shadow="always"> -->
     <el-container>
-      <el-aside width="400px" style="padding:0px;">
+      <el-aside width="450px" style="padding:0px;">
         <el-card shadow="always">
           <div slot="header" class="clearfix">
             <span>物价单信息</span>

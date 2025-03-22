@@ -109,13 +109,13 @@
               }
             }
           },
-          {
-            prop: 'ERROR_MSG',
-            label: '错误消息',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 120
-          },
+          // {
+          //   prop: 'ERROR_MSG',
+          //   label: '错误消息',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   minWidth: 120
+          // },
           {
             prop: 'LINE_NUMBER',
             label: '行号',
@@ -537,13 +537,6 @@
             minWidth: 120
           },
           {
-            prop: 'ZD_HCNAME',
-            label: '重点治理耗材名称',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 120
-          },
-          {
             prop: 'ZC_ENVIRONMENT',
             label: '储存条件',
             align: 'center',
@@ -725,7 +718,7 @@
               const array = [
                 [
                   '状态',
-                  '错误消息',
+                  // '错误消息',
                   '行号',
                   '申请单号',
                   '耗材注册证名称',
@@ -777,8 +770,7 @@
                   '是否介入',
                   '京津冀类别编号',
                   '集配商编号',
-                  '集配商编号',
-                  '重点治理耗材名称',
+                  '集配商名称',
                   '储存条件',
                   'UDI_DI',
                   '是否有效',
@@ -799,7 +791,7 @@
                 }
                 array.push([
                   d.PROCESS_STATUS,
-                  d.ERROR_MSG,
+                  // d.ERROR_MSG,
                   d.LINE_NUMBER,
                   d.HIGHVALUE_NO,
                   d.REGISTRATION_NAME,
@@ -852,7 +844,6 @@
                   d.TYPE_NUMBER,
                   d.JPS_NUMBER,
                   d.JPS_NAME,
-                  d.ZD_HCNAME,
                   d.ZC_ENVIRONMENT,
                   d.UDI_DI,
                   d.ISACTIVE,
