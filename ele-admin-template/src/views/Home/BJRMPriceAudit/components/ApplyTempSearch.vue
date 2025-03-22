@@ -28,7 +28,7 @@
         </el-button>
         <el-button size="mini" icon="el-icon-refresh" @click="reset">重置</el-button>
         <el-button size="mini" type="primary" icon="el-icon-download" @click="exportData">导出</el-button>
-        <el-button size="mini" type="primary" class="ele-btn-icon" @click="search">
+        <el-button size="mini" type="primary" class="ele-btn-icon" @click="openEdit">
           审批
         </el-button>
       </el-col>
@@ -81,6 +81,9 @@ export default {
     /* 导出 */
     exportData() {
       this.$emit('exportData', this.where);
+    },
+    openEdit(){
+      this.$emit('openEdit');
     },
     /* 创建申领单 */
     Temp_FoundPlanSingle() {

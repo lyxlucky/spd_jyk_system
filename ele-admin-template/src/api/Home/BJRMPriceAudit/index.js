@@ -6,7 +6,6 @@ import { TOKEN_STORE_NAME } from '@/config/setting'
 
 
 export async function GetSpdMainsjHeaderIface(data) {
-    console.log(data)
     let formataData = {}
     formataData.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
     formataData.page = data.page ? data.page : '1';
@@ -70,6 +69,23 @@ export async function UpSpdHisMainsjLinesIface(data) {
 
     let req = formdataify(formataData);
     const res = await request.post('/AJykDept/UpSpdHisMainsjLinesIface', req);
+    console.log(res)
+    if (res.data.code == 200) {
+        return res.data;
+    } else {
+        return Promise.reject(new Error(res.data.msg));
+    }
+}
+
+export async function ApproveSpdMainsjLinesIface(data) {
+    let formataData = {}
+    formataData.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+    formataData.WJ_SP_MAN = data.WJ_SP_MAN ? data.WJ_SP_MAN : '';
+    formataData.WJ_SP_MARK = data.WJ_SP_MARK ? data.WJ_SP_MARK : '';
+    formataData.HEADER_IFACE_ID = data.HEADER_IFACE_ID ? data.HEADER_IFACE_ID : '';
+
+    let req = formdataify(formataData);
+    const res = await request.post('/AJykDept/ApproveSpdMainsjLinesIface', req);
     console.log(res)
     if (res.data.code == 200) {
         return res.data;

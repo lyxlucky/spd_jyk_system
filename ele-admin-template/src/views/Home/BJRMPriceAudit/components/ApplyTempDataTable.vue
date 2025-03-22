@@ -3,7 +3,7 @@
     <!-- 数据表格 -->
     <!-- 自定义指令实现当pageSizes改变时触发 -->
     <!-- :pageSize="pageSize" :pageSizes="pageSizes" -->
-    <ApplyTempDataSearch ref="Apply" @search="reload" @addTempVar="$emit('addTempVar')" :IntroduceUserDefinedTempSearch="IntroduceUserDefinedTempSearch" @exportData="exportData" :ApplyTempTableDataSearch="ApplyTempTableDataSearch" :selection="selection" @showEditReoad="showEditReoad" />
+    <ApplyTempDataSearch ref="Apply" :rowClickCheckedIntelligent="false" @search="reload" @addTempVar="$emit('addTempVar')" :IntroduceUserDefinedTempSearch="IntroduceUserDefinedTempSearch" @exportData="exportData" :ApplyTempTableDataSearch="ApplyTempTableDataSearch" :selection="selection" @showEditReoad="showEditReoad" />
     <ele-pro-table ref="table" height="60vh" highlight-current-row :stripe="true" :rowClickChecked="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" @selection-change="onSelectionChange" cache-key="ApplyTempDataTable">
       <!-- 表头工具栏 -->
       <!-- 右表头 -->

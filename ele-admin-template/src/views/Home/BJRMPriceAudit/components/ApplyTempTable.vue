@@ -1,10 +1,10 @@
 <template>
   <div class="ele-body">
-    <ApplyTempSearch @search="reload" @exportData="exportData" :rowData="current" />
+    <ApplyTempSearch @search="reload" @exportData="exportData" @openEdit="openEdit" :rowData="current" />
     <!-- 数据表格 -->
     <!-- <ele-pro-table @current-change="onCurrentChange" :reserve-selection="true" highlight-current-row ref="table" height="60vh" :rowClickChecked="true" :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :needPage="true" :datasource="datasource" :selection.sync="selection" cache-key="BJRMPriceAudit">
      -->
-    <ele-pro-table :key="key" :reserve-selection="true" highlight-current-row :row-key="(row) => row.PlanNum" @current-change="onCurrentChange" ref="table" height="60vh" :rowClickChecked="true" :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" :needPage="true" cache-key="BJRMPriceAuditTable">
+    <ele-pro-table @selection-change="onSelectionChange" :rowClickCheckedIntelligent="false" :reserve-selection="true" highlight-current-row :row-key="(row) => row.PlanNum" @current-change="onCurrentChange" ref="table" height="60vh" :rowClickChecked="true" :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" :needPage="true" cache-key="BJRMPriceAuditTable">
 
       <!-- 表头工具栏 -->
       <template v-slot:toolbar>
@@ -36,11 +36,6 @@
         <el-tag v-if="row.CommonState == 1">已提交</el-tag>
       </template>
 
-      <template v-slot:TempletName="{ row }">
-        <span style="color: #409eff" type="primary" @dblclick="editTempletName(row.TempletCode)" v-if="row.TempletName" :underline="false">{{ row.TempletName }}</span>
-        <span style="color: #409eff" type="primary" @dblclick="editTempletName(row.TempletCode)" v-else :underline="false">无</span>
-      </template>
-
       <!-- 操作列 -->
       <template v-slot:action="{ row }">
         <!-- <el-button type="primary" size="small" @click="search(row)">设置为专属模板</el-button> -->
@@ -49,13 +44,11 @@
             <el-link type="danger" :underline="false" icon="el-icon-delete">
               删除
             </el-link>
-            <el-link @click="editTempletName(row.TempletCode)" type="primary" :underline="false" icon="el-icon-edit">
-              编辑
-            </el-link>
           </template>
         </el-popconfirm>
       </template>
     </ele-pro-table>
+    <UserEdit :visible.sync="showEdit" :data="selection" @done="reload" />
   </div>
 </template>
 
@@ -70,18 +63,15 @@
 </style>
 
 <script>
+import UserEdit from './user-edit2.vue';
 import ApplyTempSearch from './ApplyTempSearch.vue';
-import {
-  SerachTempletList,
-  DeleteTemplet,
-  EditTempName
-} from '@/api/KSInventory/ApplyTemp';
 import { GetSpdMainsjHeaderIface } from '@/api/Home/masterBaseData';
 import { exportToExcel } from '@/utils/excel-util';
 export default {
   name: 'c',
   components: {
-    ApplyTempSearch
+    ApplyTempSearch,
+    UserEdit
   },
   data() {
     return {
@@ -153,6 +143,28 @@ export default {
           minWidth: 110
         },
         {
+          prop: 'WJ_SP_STATE',
+          label: '是否审批',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 100,
+          formatter: (row, column, cellValue) => {
+            if (cellValue == 1) {
+              return '已审批';
+            } else {
+              return '未审批';
+            }
+          }
+        },
+        {
+          prop: 'WJ_SP_MARK',
+          label: '审批备注',
+          // sortable: 'custom',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 120
+        },
+        {
           prop: 'APPLYPEOPLE',
           label: '经办人',
           // sortable: 'custom',
@@ -197,7 +209,6 @@ export default {
     datasource({ page, limit, where, order }) {
       // where.DeptCode = this.$store.state.user.info.DeptNow.Dept_Two_Code;
       // where.UserId = this.$store.state.user.info.ID;
-      console.log(where);
       let data = GetSpdMainsjHeaderIface({ page, limit, where, order }).then(
         (res) => {
           var tData = {
@@ -226,6 +237,16 @@ export default {
           loading.close();
           this.$message.error(err.message);
         });
+    },
+    openEdit(row) {
+      if(this.selection.length<=0){
+        this.$message.warning("请选择要审批的数据")
+        return;
+      }
+      this.showEdit = true;
+    },
+    onSelectionChange(selection) {
+      this.selection = selection;
     },
     onCurrentChange(current) {
       this.current = current;

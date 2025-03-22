@@ -6,7 +6,6 @@ import { TOKEN_STORE_NAME } from '@/config/setting'
 
 
 export async function GetSpdMainsjHeaderIface(data) {
-    console.log(data)
     let formataData = {}
     formataData.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
     formataData.page = data.page ? data.page : '1';
@@ -27,7 +26,6 @@ export async function GetSpdMainsjHeaderIface(data) {
 }
 
 export async function GetSpdMainsjLinesIface(data) {
-    console.log(data)
     let formataData = {}
     formataData.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
     formataData.page = data.page ? data.page : '1';
