@@ -117,14 +117,16 @@ export default {
             } else {
               return '未知状态';
             }
-          }
+          },
+          show: false
         },
         {
           prop: 'ERROR_MSG',
           label: '错误消息',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 100
+          minWidth: 100,
+          show: false
         },
         {
           prop: 'REQUESTNOTEID',

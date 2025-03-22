@@ -47,7 +47,7 @@
           <el-option label="传入SPD失败" value="E"></el-option>
         </el-select>
       </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 15, md: 12 } : { span: 12 }">
+      <el-col v-bind="styleResponsive ? { lg: 18, md: 12 } : { span: 12 }">
         <el-button
           size="mini"
           type="primary"
