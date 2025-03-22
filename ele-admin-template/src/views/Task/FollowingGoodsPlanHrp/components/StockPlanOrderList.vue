@@ -1,5 +1,5 @@
 <template>
-  <div class="ele-body">
+  <div>
     <el-card>
       <div slot="header">备货计划单号列表</div>
       <div>
@@ -460,6 +460,7 @@
         this.$refs.table.reload({ page: 1 });
       },
       handleRowClick(row) {
+        console.log(row);
         this.currentTableData = row;
         this.$emit('onRowClick', row);
       },

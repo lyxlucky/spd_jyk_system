@@ -6,7 +6,7 @@
     <ApplyTempDataSearch
       ref="Apply"
       @search="reload"
-      @addTempVar="$emit('addTempVar')" 
+      @addTempVar="$emit('addTempVar')"
       :IntroduceUserDefinedTempSearch="IntroduceUserDefinedTempSearch"
       @exportData="exportData"
       :ApplyTempTableDataSearch="ApplyTempTableDataSearch"
@@ -64,12 +64,10 @@
     SerachTempletDeta,
     DeleteTempletDeta
   } from '@/api/KSInventory/ApplyTemp';
-  import {
-    GetSpdMainsjLinesIface
-  } from '@/api/Home/masterBaseData';
+  import { GetSpdMainsjLinesIface } from '@/api/Home/masterBaseData';
   export default {
     name: 'ApplyTempDataTable',
-    props: ['ApplyTempTableData','IntroduceUserDefinedTempSearch'],
+    props: ['ApplyTempTableData', 'IntroduceUserDefinedTempSearch'],
     components: {
       ApplyTempDataSearch: ApplyTempDataSearch
     },
@@ -100,12 +98,12 @@
             showOverflowTooltip: true,
             minWidth: 80,
             formatter: (row, column, cellValue) => {
-              if(cellValue ==1){
-                return '是'
-              }else if(cellValue ==0){
-                return '否'
-              }else{
-                return cellValue
+              if (cellValue == 1) {
+                return '是';
+              } else if (cellValue == 0) {
+                return '否';
+              } else {
+                return cellValue;
               }
             }
           },
@@ -170,21 +168,21 @@
             label: '物料编码',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 120,
+            minWidth: 120
           },
           {
             prop: 'ITEM_DESCRIPTION',
             label: '物料名称',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 110,
+            minWidth: 110
           },
           {
             prop: 'STAND_VALUE',
             label: '规格',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 180,
+            minWidth: 180
           },
           {
             prop: 'ITEM_SPEC',
@@ -200,12 +198,12 @@
             showOverflowTooltip: true,
             minWidth: 90,
             formatter: (row, column, cellValue) => {
-              if(cellValue ==1){
-                return '是'
-              }else if(cellValue ==0){
-                return '否'
-              }else{
-                return cellValue
+              if (cellValue == 1) {
+                return '是';
+              } else if (cellValue == 0) {
+                return '否';
+              } else {
+                return cellValue;
               }
             }
           },
@@ -251,12 +249,12 @@
             showOverflowTooltip: true,
             minWidth: 60,
             formatter: (row, column, cellValue) => {
-              if(cellValue ==1){
-                return '是'
-              }else if(cellValue ==0){
-                return '否'
-              }else{
-                return cellValue
+              if (cellValue == 1) {
+                return '是';
+              } else if (cellValue == 0) {
+                return '否';
+              } else {
+                return cellValue;
               }
             }
           },
@@ -279,7 +277,7 @@
             label: '证件有效期',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 120 ,
+            minWidth: 120,
             formatter: (row, column, cellValue) => {
               return this.$moment(cellValue).format('YYYY-MM-DD');
             }
@@ -340,10 +338,10 @@
             showOverflowTooltip: true,
             minWidth: 60,
             formatter: (row, column, cellValue) => {
-              if(cellValue == 1){
-                return '是'
-              }else {
-                return "否"
+              if (cellValue == 1) {
+                return '是';
+              } else {
+                return '否';
               }
             }
           },
@@ -354,10 +352,10 @@
             showOverflowTooltip: true,
             minWidth: 60,
             formatter: (row, column, cellValue) => {
-              if(cellValue == 1){
-                return '是'
-              }else {
-                return "否"
+              if (cellValue == 1) {
+                return '是';
+              } else {
+                return '否';
               }
             }
           },
@@ -375,10 +373,10 @@
             showOverflowTooltip: true,
             minWidth: 60,
             formatter: (row, column, cellValue) => {
-              if(cellValue == 1){
-                return '是'
-              }else {
-                return "否"
+              if (cellValue == 1) {
+                return '是';
+              } else {
+                return '否';
               }
             }
           },
@@ -494,10 +492,10 @@
             showOverflowTooltip: true,
             minWidth: 80,
             formatter: (row, column, cellValue) => {
-              if(cellValue == 1){
-                return '是'
-              }else {
-                return "否"
+              if (cellValue == 1) {
+                return '是';
+              } else {
+                return '否';
               }
             }
           },
@@ -508,10 +506,10 @@
             showOverflowTooltip: true,
             minWidth: 80,
             formatter: (row, column, cellValue) => {
-              if(cellValue == 1){
-                return '是'
-              }else {
-                return "否"
+              if (cellValue == 1) {
+                return '是';
+              } else {
+                return '否';
               }
             }
           },
@@ -564,10 +562,10 @@
             showOverflowTooltip: true,
             minWidth: 80,
             formatter: (row, column, cellValue) => {
-              if(cellValue == 1){
-                return '是'
-              }else {
-                return "否"
+              if (cellValue == 1) {
+                return '是';
+              } else {
+                return '否';
               }
             }
           },
@@ -592,10 +590,10 @@
             showOverflowTooltip: true,
             minWidth: 80,
             formatter: (row, column, cellValue) => {
-              if(cellValue == 1){
-                return '是'
-              }else {
-                return "否"
+              if (cellValue == 1) {
+                return '是';
+              } else {
+                return '否';
               }
             }
           },
@@ -612,7 +610,7 @@
             align: 'center',
             showOverflowTooltip: true,
             minWidth: 120
-          },
+          }
           // {
           //   columnKey: 'action',
           //   label: '操作',
@@ -786,7 +784,7 @@
                   '医学装备分类协会名称',
                   '是否进口',
                   'goodsID',
-                  '收费编码',
+                  '收费编码'
                 ]
               ];
               res.result.forEach((d) => {
@@ -860,7 +858,7 @@
                   d.SB_XHNAME,
                   d.ISJK,
                   d.GOODSID,
-                  d.SF_CODE,
+                  d.SF_CODE
                   // this.$util.toDateString(d.createTime)
                 ]);
               });
