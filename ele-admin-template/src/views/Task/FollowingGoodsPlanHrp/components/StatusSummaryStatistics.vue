@@ -1,5 +1,5 @@
 <template>
-  <div class="ele-body">
+  <div>
     <el-card>
       <div slot="header">状态汇总统计</div>
       <div>

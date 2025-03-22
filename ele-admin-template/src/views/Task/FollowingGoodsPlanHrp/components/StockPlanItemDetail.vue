@@ -1,5 +1,5 @@
 <template>
-  <div class="ele-body">
+  <div>
     <el-card>
       <div slot="header">备货计划单品种明细</div>
       <div>
