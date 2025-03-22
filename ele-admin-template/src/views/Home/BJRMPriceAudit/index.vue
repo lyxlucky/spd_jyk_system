@@ -2,11 +2,7 @@
   <div>
     <!-- <el-card shadow="always"> -->
     <el-container>
-<<<<<<< HEAD
       <el-aside width="450px" style="padding:0px;">
-=======
-      <el-aside width="400px" style="padding: 0px">
->>>>>>> 25a52ecfb883f7488b232b5ced212780056ebd9e
         <el-card shadow="always">
           <div slot="header" class="clearfix">
             <span>物价单信息</span>
@@ -20,13 +16,7 @@
             <div slot="header" class="clearfix">
               <span>物价单详情</span>
             </div>
-            <ApplyTempDataTable
-              ref="Apply"
-              @addTempVar="addTempVar"
-              :IntroduceUserDefinedTempSearch="IntroduceUserDefinedTempSearch"
-              :ApplyTempTableData="ApplyTempTableData"
-              @selectionData="selectionData"
-            ></ApplyTempDataTable>
+            <ApplyTempDataTable ref="Apply" @addTempVar="addTempVar" :IntroduceUserDefinedTempSearch="IntroduceUserDefinedTempSearch" :ApplyTempTableData="ApplyTempTableData" @selectionData="selectionData"></ApplyTempDataTable>
           </el-card>
         </el-main>
         <!-- <el-footer>
@@ -61,87 +51,87 @@
 </template>
 
 <script>
-  import ApplyTempTable from './components/ApplyTempTable.vue';
-  import ApplyTempDataTable from './components/ApplyTempDataTable';
-  import { KeeptListDeta } from '@/api/KSInventory/ApplyTemp';
-  export default {
-    name: 'ApplyTemp',
-    props: ['IntroduceUserDefinedTempSearch'],
-    components: {
-      ApplyTempTable,
-      ApplyTempDataTable
+import ApplyTempTable from './components/ApplyTempTable.vue';
+import ApplyTempDataTable from './components/ApplyTempDataTable';
+import { KeeptListDeta } from '@/api/KSInventory/ApplyTemp';
+export default {
+  name: 'ApplyTemp',
+  props: ['IntroduceUserDefinedTempSearch'],
+  components: {
+    ApplyTempTable,
+    ApplyTempDataTable
+  },
+  data() {
+    return {
+      // 主表数据
+      ApplyTempTableData: {},
+      // 详情表选择数据
+      ApplyTempDataSelData: []
+    };
+  },
+  methods: {
+    //调用孙组件事件
+    showDialogTableVisible() {
+      this.$refs.Apply.showDialogTableVisible();
     },
-    data() {
-      return {
-        // 主表数据
-        ApplyTempTableData: {},
-        // 详情表选择数据
-        ApplyTempDataSelData: []
-      };
+    //保存
+    saveApplyNum() {
+      this.$refs.Apply.saveApplyNum();
     },
-    methods: {
-      //调用孙组件事件
-      showDialogTableVisible() {
-        this.$refs.Apply.showDialogTableVisible();
-      },
-      //保存
-      saveApplyNum() {
-        this.$refs.Apply.saveApplyNum();
-      },
-      showDialogTableVisible2() {
-        this.$refs.Apply.showDialogTableVisible2();
-      },
-      exportData() {
-        this.$refs.Apply.exportChildData();
-      },
-      removeBatch() {
-        this.$refs.Apply.removeBatch();
-      },
+    showDialogTableVisible2() {
+      this.$refs.Apply.showDialogTableVisible2();
+    },
+    exportData() {
+      this.$refs.Apply.exportChildData();
+    },
+    removeBatch() {
+      this.$refs.Apply.removeBatch();
+    },
 
-      getCurrent(data) {
-        this.ApplyTempTableData = data;
-      },
-      addTempVar() {
-        // console.log(this.IntroduceUserDefinedTempSearch);
-        // console.log(this.ApplyTempDataSelData)
-        const loading = this.$messageLoading('添加中...');
-        var json = [];
-        this.ApplyTempDataSelData.forEach((element) => {
-          var data = {};
-          data.PLAN_NUMBER = this.IntroduceUserDefinedTempSearch.PlanNum;
-          data.ENABLE = element.VAR_ENABLE;
-          data.VARIETIE_CODE = element.VarID;
-          data.VARIETIE_NAME = element.VarName;
-          data.SPECIFICATION_OR_TYPE = element.GG;
-          data.UNIT = element.Unit;
-          data.MANUFACTURING_ENT_NAME = element.Manufacturing;
-          data.AUTH = element.AUTH;
-          data.APPLY_QTY = element.TempletQty;
-          json.push(data);
+    getCurrent(data) {
+      this.ApplyTempTableData = data;
+    },
+    addTempVar() {
+      // console.log(this.IntroduceUserDefinedTempSearch);
+      // console.log(this.ApplyTempDataSelData)
+      const loading = this.$messageLoading('添加中...');
+      var json = [];
+      this.ApplyTempDataSelData.forEach((element) => {
+        var data = {};
+        data.PLAN_NUMBER = this.IntroduceUserDefinedTempSearch.PlanNum;
+        data.ENABLE = element.VAR_ENABLE;
+        data.VARIETIE_CODE = element.VarID;
+        data.VARIETIE_NAME = element.VarName;
+        data.SPECIFICATION_OR_TYPE = element.GG;
+        data.UNIT = element.Unit;
+        data.MANUFACTURING_ENT_NAME = element.Manufacturing;
+        data.AUTH = element.AUTH;
+        data.APPLY_QTY = element.TempletQty;
+        json.push(data);
+      });
+      KeeptListDeta(json)
+        .then((res) => {
+          console.log(res);
+          this.$message.success('添加成功');
+          loading.close();
+          this.$emit('ApplyTempPageChange', false);
+        })
+        .catch((err) => {
+          console.log(err);
+          this.$message.error(err);
+          loading.close();
         });
-        KeeptListDeta(json)
-          .then((res) => {
-            console.log(res);
-            this.$message.success('添加成功');
-            loading.close();
-            this.$emit('ApplyTempPageChange', false);
-          })
-          .catch((err) => {
-            console.log(err);
-            this.$message.error(err);
-            loading.close();
-          });
-        console.log(json);
-      },
-      selectionData(data) {
-        this.ApplyTempDataSelData = data;
-      }
+      console.log(json);
     },
-
-    computed: {
-      IsDisabled() {
-        return this.IntroduceUserDefinedTempSearch == undefined ? true : false;
-      }
+    selectionData(data) {
+      this.ApplyTempDataSelData = data;
     }
-  };
+  },
+
+  computed: {
+    IsDisabled() {
+      return this.IntroduceUserDefinedTempSearch == undefined ? true : false;
+    }
+  }
+};
 </script>
