@@ -49,5 +49,4 @@
   // ::v-deep .ele-table-tool-default {
   //   padding: 0;
   // }
-  @import '@/styles/common.scss';
 </style>

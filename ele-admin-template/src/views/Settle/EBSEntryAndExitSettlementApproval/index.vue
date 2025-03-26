@@ -2,10 +2,15 @@
   <div class="ele-body">
     <el-row :gutter="10">
       <el-col :span="8">
-        <EBSEntryAndExitSettleTable1></EBSEntryAndExitSettleTable1>
+        <EBSEntryAndExitSettleTable1
+          @clickTableRow="handleCurrentChange1"
+        ></EBSEntryAndExitSettleTable1>
       </el-col>
       <el-col :span="16">
-        <EBSEntryAndExitSettleTable2></EBSEntryAndExitSettleTable2>
+        <EBSEntryAndExitSettleTable2
+          :currentTableItem1="currentTableItem1"
+          ref="table2"
+        ></EBSEntryAndExitSettleTable2>
       </el-col>
     </el-row>
   </div>
@@ -21,9 +26,19 @@
       EBSEntryAndExitSettleTable2
     },
     data() {
-      return {};
+      return {
+        currentTableItem1: {}
+      };
     },
-    methods: {}
+    methods: {
+      handleCurrentChange1(val) {
+        this.currentTableItem1 = val;
+        console.log(val);
+        this.$nextTick(() => {
+          this.$refs.table2.reloadTable();
+        });
+      }
+    }
   };
 </script>
 

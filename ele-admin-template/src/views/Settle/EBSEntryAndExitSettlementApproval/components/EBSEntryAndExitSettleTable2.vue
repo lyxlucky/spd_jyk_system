@@ -4,7 +4,25 @@
       <div slot="header" class="clearfix"> 主表数据详细列表 </div>
       <div>
         <el-form size="mini" :inline="true">
-          <el-form-item label="审批状态" prop="SP_STATE">
+          <el-form-item label="" prop="LEDGER_NAME">
+            <el-input
+              v-model="form.LEDGER_NAME"
+              placeholder="请输入账本名称"
+              clearable
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="交易时间" prop="TRANSACTION_DATE">
+            <el-date-picker
+              v-model="form.TRANSACTION_DATE"
+              type="daterange"
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+              value-format="yyyy-MM-dd"
+              style="width: 240px"
+            ></el-date-picker>
+          </el-form-item>
+          <el-form-item label="" prop="SP_STATE">
             <el-select
               class="el-select-width-100"
               v-model="form.SP_STATE"
@@ -12,8 +30,8 @@
               clearable
             >
               <el-option label="全部" value=""></el-option>
-              <el-option label="未审批" value="0"></el-option>
               <el-option label="已审批" value="1"></el-option>
+              <el-option label="未审批" value="0"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item>
@@ -25,9 +43,13 @@
       </div>
       <div>
         <ele-pro-table
+          ref="table"
+          size="mini"
           height="550"
+          highlight-current-row
           :columns="columns"
           :datasource="datasource"
+          row-key="TRANSACTION_IFACE_ID"
         ></ele-pro-table>
       </div>
     </el-card>
@@ -35,79 +57,57 @@
 </template>
 
 <script>
+  import { getSpdGlSpdTransactionIface } from '@/api/Settle/EBSEntryAndExitSettlementApproval';
+  import { formatDate } from '@/utils/formdataify';
   export default {
     name: 'EBSEntryAndExitSettleTable2',
     components: {},
-    props: {},
+    props: { currentTableItem1: { type: Object, default: () => {} } },
     data() {
       return {
         form: {
+          LEDGER_NAME: '',
+          TRANSACTION_DATE: ['', ''],
           SP_STATE: ''
         },
+        selectedRowKeys: [], // 存储选中行的key
         columns: [
-          //   {
-          //     prop: 'TRANSACTION_IFACE_ID',
-          //     label: '交易接口ID',
-          //     width: 120,
-          //     align: 'center',
-          //     search: true,
-          //     fieldProps: {
-          //       placeholder: '请输入交易接口ID'
-          //     }
-          //   },
-          //   {
-          //     prop: 'IFACE_BATCH_ID',
-          //     label: '接口批次ID',
-          //     width: 120,
-          //     align: 'center',
-          //     search: true,
-          //     fieldProps: {
-          //       placeholder: '请输入接口批次ID'
-          //     }
-          //   },
           {
-            prop: 'LEDGER_NAME',
-            label: '账本名称',
-            width: 150,
+            type: 'index',
+            title: '序号',
+            width: 60,
             align: 'center'
           },
           {
-            prop: 'SP_MAN',
-            label: '审批人',
+            prop: 'BILL_DEPT_CODE',
+            label: '开单部门代码',
             width: 120,
-            align: 'center'
-          },
-          {
-            prop: 'SP_TIME',
-            label: '审批时间',
-            width: 150,
-            align: 'center'
-          },
-          {
-            prop: 'SP_STATE',
-            label: '审批状态',
-            width: 100,
             align: 'center',
             search: true,
-            enum: [
-              { label: '未审批', value: '0' },
-              { label: '已审批', value: '1' },
-              { label: '审批拒绝', value: '2' }
-            ],
-            formatter: (row) => {
-              if (row.SP_STATE === '0') return '未审批';
-              if (row.SP_STATE === '1') return '已审批';
-              if (row.SP_STATE === '2') return '审批拒绝';
-              return row.SP_STATE || '';
-            },
             fieldProps: {
-              clearable: true
+              placeholder: '请输入开单部门代码'
+            }
+          },
+          {
+            prop: 'BILL_DEPT_DESC',
+            label: '开单部门描述',
+            width: 150,
+            align: 'center',
+            showOverflowTooltip: true
+          },
+          {
+            prop: 'AMOUNT',
+            label: '金额',
+            width: 120,
+            align: 'center',
+            formatter: (row) => {
+              return row.AMOUNT ? row.AMOUNT.toFixed(2) : '0.00';
             }
           },
           {
             prop: 'TRANSACTION_TYPE',
             label: '交易类型',
-            width: 120,
+            width: 200,
             align: 'center',
             search: true,
             fieldProps: {
@@ -119,13 +119,71 @@
             label: '交易日期',
             width: 150,
             align: 'center',
-            search: true,
-            valueType: 'dateRange',
-            fieldProps: {
-              startPlaceholder: '开始日期',
-              endPlaceholder: '结束日期'
+            formatter: (row) => {
+              if (row.TRANSACTION_DATE) {
+                return formatDate(row.TRANSACTION_DATE, 'yyyy-mm-dd');
+              }
+              return '';
             }
           },
+          {
+            prop: 'SYNC_DATE',
+            label: '同步日期',
+            width: 150,
+            align: 'center',
+            formatter: (row) => {
+              if (row.SYNC_DATE) {
+                return formatDate(row.SYNC_DATE, 'yyyy-mm-dd');
+              }
+              return '';
+            }
+          },
+          {
+            prop: 'DESCRIPTION',
+            label: '描述',
+            width: 200,
+            align: 'center',
+            showOverflowTooltip: true
+          },
+          {
+            prop: 'LEDGER_NAME',
+            label: '账本名称',
+            width: 150,
+            align: 'center'
+          },
+          //   {
+          //     prop: 'SP_MAN',
+          //     label: '审批人',
+          //     width: 120,
+          //     align: 'center'
+          //   },
+          //   {
+          //     prop: 'SP_TIME',
+          //     label: '审批时间',
+          //     width: 150,
+          //     align: 'center'
+          //   },
+          //   {
+          //     prop: 'SP_STATE',
+          //     label: '审批状态',
+          //     width: 100,
+          //     align: 'center',
+          //     search: true,
+          //     enum: [
+          //       { label: '未审批', value: '0' },
+          //       { label: '已审批', value: '1' }
+          //     ],
+          //     formatter: (row) => {
+          //       if (row.SP_STATE === '0') return '未审批';
+          //       if (row.SP_STATE === '1') return '已审批';
+          //       if (row.SP_STATE === '2') return '审批拒绝';
+          //       return row.SP_STATE || '';
+          //     },
+          //     fieldProps: {
+          //       clearable: true
+          //     }
+          //   },
+
           {
             prop: 'TYPE',
             label: '类型',
@@ -156,23 +214,7 @@
               clearable: true
             }
           },
-          {
-            prop: 'BILL_DEPT_CODE',
-            label: '开单部门代码',
-            width: 120,
-            align: 'center',
-            search: true,
-            fieldProps: {
-              placeholder: '请输入开单部门代码'
-            }
-          },
-          {
-            prop: 'BILL_DEPT_DESC',
-            label: '开单部门描述',
-            width: 150,
-            align: 'center',
-            showOverflowTooltip: true
-          },
+
           {
             prop: 'BILL_WARD_SN',
             label: '开单病区编号',
@@ -185,15 +227,6 @@
             width: 150,
             align: 'center',
             showOverflowTooltip: true
-          },
-          {
-            prop: 'AMOUNT',
-            label: '金额',
-            width: 120,
-            align: 'center',
-            formatter: (row) => {
-              return row.AMOUNT ? row.AMOUNT.toFixed(2) : '0.00';
-            }
           },
           {
             prop: 'COM_CODE',
@@ -216,20 +249,8 @@
             label: '项目代码',
             width: 120,
             align: 'center'
-          },
-          {
-            prop: 'DESCRIPTION',
-            label: '描述',
-            width: 200,
-            align: 'center',
-            showOverflowTooltip: true
-          },
-          {
-            prop: 'SYNC_DATE',
-            label: '同步日期',
-            width: 150,
-            align: 'center'
-          },
+          }
+
           //   {
           //     prop: 'ATTRIBUTE1',
           //     label: '属性1',
@@ -336,26 +357,46 @@
           //     hide: true
           //   },
 
-          {
-            prop: 'operation',
-            label: '操作',
-            fixed: 'right',
-            width: 150,
-            align: 'center'
-          }
+          //   {
+          //     prop: 'operation',
+          //     label: '操作',
+          //     fixed: 'right',
+          //     width: 150,
+          //     align: 'center'
+          //   }
         ]
       };
     },
     computed: {},
     methods: {
+      reloadTable() {
+        this.$refs.table.reload();
+      },
       datasource({ page, limit, where, order }) {
-        return {
-          count: 0,
-          list: []
-        };
+        return getSpdGlSpdTransactionIface({
+          page,
+          limit,
+          where: {
+            ...this.form,
+            IFACE_BATCH_ID: this.currentTableItem1.IFACE_BATCH_ID
+          },
+          order
+        })
+          .then((data) => {
+            return {
+              count: data.total,
+              list: data.data
+            };
+          })
+          .catch((err) => {
+            return {
+              count: 0,
+              list: []
+            };
+          });
       },
       search() {
-        this.$refs.table.search();
+        this.$refs.table.reload();
       }
     }
   };
