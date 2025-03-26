@@ -65,7 +65,7 @@ service.interceptors.response.use(
     }
 
     const isHaveToken = getToken();
-    if(isHaveToken){
+    if (isHaveToken) {
       requestTimeoutManager.updateLastRequestTime();
     }
     // token 自动续期
