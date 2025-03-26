@@ -234,12 +234,12 @@
       /* 表格数据源 */
       datasource({ page, limit, where, order }) {
         var deptTwoList = [];
-        var deptTwoJson = this.$store.state.user.info.userDept;
+        // var deptTwoJson = this.$store.state.user.info.userDept;
 
-        for (let i = 0; i < deptTwoJson.length; i++) {
-          deptTwoList.push(deptTwoJson[i].Dept_Two_Code);
-          // deptTwoList += deptTwoJson[i].Dept_Two_Code + ',';
-        }
+        // for (let i = 0; i < deptTwoJson.length; i++) {
+        //   deptTwoList.push(deptTwoJson[i].Dept_Two_Code);
+        //   // deptTwoList += deptTwoJson[i].Dept_Two_Code + ',';
+        // }
         // deptTwoList = deptTwoList.substring(0, deptTwoList.length - 1);
         where.deptTwoJson = JSON.stringify(deptTwoList);
         where.state = where.state ? where.state : '';
