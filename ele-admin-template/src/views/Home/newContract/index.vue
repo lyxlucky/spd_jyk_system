@@ -1,6 +1,6 @@
 <template>
     <div class="ele-body">
-        <el-row :gutter="20">
+        <el-row :gutter="10">
             <el-col :span="8">
                 <el-card shadow="never">
                     <el-tabs :value="0">
@@ -125,7 +125,7 @@
                 </el-card>
             </el-col>
         </el-row>
-        <el-row :gutter="20">
+        <el-row :gutter="10">
             <el-col :span="24">
                 <el-card shadow="never" class="varietie-card">
                     <el-tabs :value="0">
@@ -595,7 +595,7 @@ export default {
 }
 
 .varietie-card {
-    margin-top: 20px;
+    margin-top: 10px;
 }
 
 .el-pro-table .el-table__header th .cell {

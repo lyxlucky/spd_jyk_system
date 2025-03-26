@@ -25,28 +25,6 @@
       </el-container>
     </el-container>
     <!-- </el-card> -->
-
-    <!-- <el-container>
-      <el-header height="300" >
-         <el-card shadow="always" >
-          <div slot="header" class="clearfix">
-            <span>申领模板列表</span>
-          </div>
-          <ApplyTempTable @getCurrent="getCurrent"></ApplyTempTable>
-        </el-card>
-      </el-header>
-      <el-main>
-        <el-card shadow="always">
-          <div slot="header" class="clearfix">
-            <span>申领模板列表品种</span>
-          </div>
-           <ApplyTempDataTable :ApplyTempTableData="ApplyTempTableData" @selectionData="selectionData"></ApplyTempDataTable>
-        </el-card>
-      </el-main>
-      <el-footer style="display: flex;justify-content: center;height:''">
-          <el-button type="primary" @click="addTempVar" :style="{ display: IsDisabled==true?'none':'' }">确定</el-button>
-        </el-footer>
-    </el-container> -->
   </div>
 </template>
 

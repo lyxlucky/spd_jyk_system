@@ -1,6 +1,6 @@
 <template>
   <div class="search-container">
-    <el-form label-width="77px" class="ele-form-search" @keyup.enter.native="search" @submit.native.prevent>
+    <el-form size="mini" label-width="77px" class="ele-form-search" @keyup.enter.native="search" @submit.native.prevent>
       <el-row :gutter="15">
         <el-select v-model="where.ksConsumeDetailCreateType" size="mini" placeholder="跟台-全部" clearable style="width: 140px; margin-left: 10px; margin-right: 10px; vertical-align: top;">
           <el-option label="跟台-全部" value=""></el-option>
@@ -11,6 +11,11 @@
           <el-option label="器械-全部" value=""></el-option>
           <el-option label="器械-是" value="1"></el-option>
           <el-option label="器械-否" value="0"></el-option>
+        </el-select>
+        <el-select v-model="where.sfyj" size="mini" placeholder="月结-全部" clearable style="width: 140px; margin-left: 10px; margin-right: 10px; vertical-align: top;">
+          <el-option label="月结-全部" value=""></el-option>
+          <el-option label="月结-是" value="1"></el-option>
+          <el-option label="月结-否" value="0"></el-option>
         </el-select>
         <el-select v-model="where.ksConsumeSearch10" size="mini" placeholder="消耗类型-全部" clearable style="width: 110px; margin-left: 10px; margin-right: 10px; vertical-align: top;">
           <el-option label="消耗类型-全部" value=""></el-option>
@@ -95,7 +100,8 @@
         <el-date-picker
           v-model="where.KSConsumeBD_dayClearingDate"
           type="date"
-          placeholder="日清时间: yyyy-MM-dd"
+          size="mini"
+          placeholder="日期时间: yyyy-MM-dd"
           style="width: 200px; margin-left: 10px; margin-right: 10px; vertical-align: top;"
         ></el-date-picker>
       </el-row>
@@ -148,6 +154,7 @@
             <el-date-picker
               v-model="where.KSConsume_monthRange"
               type="monthrange"
+              size="mini"
               placeholder="请选择月结日期范围"
               :disabled="!where.KSConsume_cb"
               style="width: 140px;"
@@ -237,6 +244,7 @@ export default {
         ksConsumeDetailCreateType: '',
         ksConsumeQxfqx: '',
         ksConsumeSearch10: '',
+        sfyj: '',
         ksConsumeSearch7: '',
         ksConsumeIsProtect: '',
         highOrLowClassTwo1: '',
