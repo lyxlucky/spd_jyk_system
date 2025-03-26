@@ -140,3 +140,19 @@ export async function ApplyTempNaxtDayApplyPlanDel(data) {
         return Promise.reject(new Error(res.data.msg));
     }
 }
+
+
+export async function DeleteNaxtDayApplyPlanTemp(data) {
+    var data2 = {};
+    data2.ID = data.ID ? data.ID : '';
+    data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+
+    var rep = formdataify(data2);
+
+    const res = await request.post('/DeptApplyPlan/DeleteNaxtDayApplyPlanTemp', rep);
+    if (res.data.code == 200) {
+        return res.data;
+    } else {
+        return Promise.reject(new Error(res.data.msg));
+    }
+}
