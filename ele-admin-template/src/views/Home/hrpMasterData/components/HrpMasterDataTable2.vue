@@ -24,25 +24,92 @@
     data() {
       return {
         columns: [
+          // {
+          //   prop: 'LINE_IFACE_ID',
+          //   label: '行接口ID',
+          //   width: 120,
+          //   align: 'center',
+          //   search: true,
+          //   fieldProps: {
+          //     placeholder: '请输入行接口ID'
+          //   }
+          // },
+          // {
+          //   prop: 'HEADER_IFACE_ID',
+          //   label: '头接口ID',
+          //   width: 120,
+          //   align: 'center',
+          //   search: true,
+          //   fieldProps: {
+          //     placeholder: '请输入头接口ID'
+          //   }
+          // },
           {
-            prop: 'LINE_IFACE_ID',
-            label: '行接口ID',
+            prop: 'ITEM_NUMBER',
+            label: '物料编号',
             width: 120,
             align: 'center',
             search: true,
             fieldProps: {
-              placeholder: '请输入行接口ID'
+              placeholder: '请输入物料编号'
             }
           },
           {
-            prop: 'HEADER_IFACE_ID',
-            label: '头接口ID',
-            width: 120,
+            prop: 'ITEM_DESCRIPTION',
+            label: '物料描述',
+            width: 180,
             align: 'center',
+            showOverflowTooltip: true,
             search: true,
             fieldProps: {
-              placeholder: '请输入头接口ID'
+              placeholder: '请输入物料描述'
             }
+          },
+          {
+            prop: 'STAND_VALUE',
+            label: '标准值',
+            width: 100,
+            align: 'center'
+          },
+          {
+            prop: 'ITEM_SPEC',
+            label: '物料规格',
+            width: 150,
+            align: 'center',
+            showOverflowTooltip: true
+          },
+          {
+            prop: 'HC_NUMBER',
+            label: '耗材编号',
+            width: 120,
+            align: 'center'
+          },
+          {
+            prop: 'UOM',
+            label: '单位',
+            width: 80,
+            align: 'center'
+          },
+          {
+            prop: 'UNIT_PRICE',
+            label: '单价',
+            width: 100,
+            align: 'center',
+            formatter: (row) => {
+              return row.UNIT_PRICE ? row.UNIT_PRICE.toFixed(2) : '0.00';
+            }
+          },
+          {
+            prop: 'PACK_MIN',
+            label: '最小包装',
+            width: 100,
+            align: 'center'
+          },
+          {
+            prop: 'APPLY_DEPT',
+            label: '申请部门',
+            width: 120,
+            align: 'center'
           },
           {
             prop: 'PROCESS_STATUS',
@@ -123,73 +190,7 @@
             width: 100,
             align: 'center'
           },
-          {
-            prop: 'ITEM_NUMBER',
-            label: '物料编号',
-            width: 120,
-            align: 'center',
-            search: true,
-            fieldProps: {
-              placeholder: '请输入物料编号'
-            }
-          },
-          {
-            prop: 'ITEM_DESCRIPTION',
-            label: '物料描述',
-            width: 180,
-            align: 'center',
-            showOverflowTooltip: true,
-            search: true,
-            fieldProps: {
-              placeholder: '请输入物料描述'
-            }
-          },
-          {
-            prop: 'STAND_VALUE',
-            label: '标准值',
-            width: 100,
-            align: 'center'
-          },
-          {
-            prop: 'ITEM_SPEC',
-            label: '物料规格',
-            width: 150,
-            align: 'center',
-            showOverflowTooltip: true
-          },
-          {
-            prop: 'HC_NUMBER',
-            label: '耗材编号',
-            width: 120,
-            align: 'center'
-          },
-          {
-            prop: 'UOM',
-            label: '单位',
-            width: 80,
-            align: 'center'
-          },
-          {
-            prop: 'UNIT_PRICE',
-            label: '单价',
-            width: 100,
-            align: 'center',
-            formatter: (row) => {
-              return row.UNIT_PRICE ? row.UNIT_PRICE.toFixed(2) : '0.00';
-            }
-          },
-          {
-            prop: 'PACK_MIN',
-            label: '最小包装',
-            width: 100,
-            align: 'center'
-          },
-          {
-            prop: 'APPLY_DEPT',
-            label: '申请部门',
-            width: 120,
-            align: 'center'
-          },
+
           {
             prop: 'IS_SF',
             label: '是否收费',

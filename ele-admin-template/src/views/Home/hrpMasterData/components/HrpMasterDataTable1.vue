@@ -19,6 +19,7 @@
 
 <script>
   import { getOAMainsHeaderIface } from '@/api/Home/hrpMasterData';
+  import { formatDate } from '@/utils/formdataify';
   export default {
     name: 'HrpMasterDataTable1',
     data() {
@@ -68,7 +69,8 @@
             width: 120,
             align: 'center',
             formatter: (row) => {
-              return row.APPLYDATE ? row.APPLYDATE : '';
+              // return formatDate('yyyy-mm-dd', row.APPLYDATE);
+              return row.APPLYDATE;
             },
             search: true,
             valueType: 'dateRange',
@@ -98,14 +100,14 @@
             label: '申请电话',
             width: 120,
             align: 'center'
-          },
-          {
-            prop: 'operation',
-            label: '操作',
-            fixed: 'right',
-            width: 120,
-            align: 'center'
           }
+          // {
+          //   prop: 'operation',
+          //   label: '操作',
+          //   fixed: 'right',
+          //   width: 120,
+          //   align: 'center'
+          // }
         ]
       };
     },
