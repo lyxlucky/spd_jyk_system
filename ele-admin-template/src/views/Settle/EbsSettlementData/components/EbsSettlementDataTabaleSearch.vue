@@ -71,7 +71,7 @@
               icon="el-icon-position"
               :disabled="isDeleted"
               @click="handlePushInvoice"
-              >推送发票数据</el-button
+              >审批并推送发票数据</el-button
             >
           </el-form-item>
         </el-col>

@@ -14,7 +14,7 @@
               icon="el-icon-position"
               :disabled="isSelected"
               @click="handlePushPayablePending"
-              >推送数据</el-button
+              >审批并推送数据</el-button
             >
           </el-form-item>
         </el-col>
