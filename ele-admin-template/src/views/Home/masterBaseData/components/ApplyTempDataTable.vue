@@ -158,6 +158,13 @@
             minWidth: 110
           },
           {
+            prop: 'ITEM_SPEC',
+            label: '型号',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 110
+          },
+          {
             prop: 'STAND_VALUE',
             label: '规格',
             align: 'center',
@@ -181,13 +188,7 @@
               return cellValue ? Number(cellValue).toFixed(2) : '';
             }
           },
-          {
-            prop: 'ITEM_SPEC',
-            label: '型号',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 110
-          },
+
           {
             prop: 'ZB',
             label: '是否中标',
