@@ -15,6 +15,7 @@ export async function GetSpdMainsjHeaderIface(data) {
     formataData.APPLYDEPT = data.where.APPLYDEPT ? data.where.APPLYDEPT : '';
     formataData.APPLYPEOPLE = data.where.APPLYPEOPLE ? data.where.APPLYPEOPLE : '';
     formataData.YB_SP_STATE = data.where.YB_SP_STATE ? data.where.YB_SP_STATE : '';
+    formataData.WJ_SP_STATE = data.where.WJ_SP_STATE ? data.where.WJ_SP_STATE : '';
 
     console.log(formataData)
     let req = formdataify(formataData);
