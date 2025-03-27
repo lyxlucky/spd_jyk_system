@@ -16,6 +16,7 @@
     <ele-pro-table
       ref="table"
       height="60vh"
+      size="mini"
       highlight-current-row
       :stripe="true"
       :rowClickChecked="true"
@@ -91,22 +92,22 @@
           //   showOverflowTooltip: true,
           //   fixed: 'left'
           // },
-          {
-            prop: 'PROCESS_STATUS',
-            label: '状态',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 80,
-            formatter: (row, column, cellValue) => {
-              if (cellValue == 1) {
-                return '是';
-              } else if (cellValue == 0) {
-                return '否';
-              } else {
-                return cellValue;
-              }
-            }
-          },
+          // {
+          //   prop: 'PROCESS_STATUS',
+          //   label: '状态',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   minWidth: 80,
+          //   formatter: (row, column, cellValue) => {
+          //     if (cellValue == 1) {
+          //       return '是';
+          //     } else if (cellValue == 0) {
+          //       return '否';
+          //     } else {
+          //       return cellValue;
+          //     }
+          //   }
+          // },
           // {
           //   prop: 'ERROR_MSG',
           //   label: '错误消息',
@@ -114,13 +115,13 @@
           //   showOverflowTooltip: true,
           //   minWidth: 120
           // },
-          {
-            prop: 'LINE_NUMBER',
-            label: '行号',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 110
-          },
+          // {
+          //   prop: 'LINE_NUMBER',
+          //   label: '行号',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   minWidth: 110
+          // },
           {
             prop: 'HIGHVALUE_NO',
             label: '申请单号',
@@ -129,32 +130,11 @@
             minWidth: 130
           },
           {
-            prop: 'REGISTRATION_NAME',
-            label: '耗材注册证名称',
+            prop: 'SF_CODE',
+            label: '收费编码',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 180
-          },
-          {
-            prop: 'REGISTRATION_NO',
-            label: '注册证号',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 150
-          },
-          {
-            prop: 'ORGANIZATION_NAME',
-            label: '科室名称',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 100
-          },
-          {
-            prop: 'FULL_NAME',
-            label: '供应商',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 100
+            minWidth: 120
           },
           {
             prop: 'URGENCYLEVEL',
@@ -178,6 +158,13 @@
             minWidth: 110
           },
           {
+            prop: 'ITEM_SPEC',
+            label: '型号',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 110
+          },
+          {
             prop: 'STAND_VALUE',
             label: '规格',
             align: 'center',
@@ -185,12 +172,23 @@
             minWidth: 180
           },
           {
-            prop: 'ITEM_SPEC',
-            label: '型号',
+            prop: 'UOM',
+            label: '单位',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 110
+            width: 100
           },
+          {
+            prop: 'UNIT_PRICE',
+            label: '采购价格',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 100,
+            formatter: (row, column, cellValue) => {
+              return cellValue ? Number(cellValue).toFixed(2) : '';
+            }
+          },
+
           {
             prop: 'ZB',
             label: '是否中标',
@@ -207,13 +205,7 @@
               }
             }
           },
-          {
-            prop: 'UOM',
-            label: '单位',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 160
-          },
+
           {
             prop: 'HC_NUMBER',
             label: '医保耗材编码',
@@ -221,19 +213,13 @@
             showOverflowTooltip: true,
             minWidth: 160
           },
-          {
-            prop: 'UNIT_PRICE',
-            label: '采购价格',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 100
-          },
+
           {
             prop: 'PACK_MIN',
             label: '最小包装数',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 60
+            width: 100
           },
           {
             prop: 'APPLY_DEPT',
@@ -597,12 +583,34 @@
             showOverflowTooltip: true,
             minWidth: 120
           },
+
           {
-            prop: 'SF_CODE',
-            label: '收费编码',
+            prop: 'REGISTRATION_NAME',
+            label: '耗材注册证名称',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 120
+            minWidth: 180
+          },
+          {
+            prop: 'REGISTRATION_NO',
+            label: '注册证号',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 150
+          },
+          {
+            prop: 'ORGANIZATION_NAME',
+            label: '科室名称',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 100
+          },
+          {
+            prop: 'FULL_NAME',
+            label: '供应商',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 100
           }
           // {
           //   columnKey: 'action',
