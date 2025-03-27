@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-card shadow="never">
-      <div slot="header" class="clearfix"> 主表数据详细列表 </div>
+      <div slot="header" class="clearfix"> 结算详细列表 </div>
       <div>
         <el-form size="mini" :inline="true">
           <el-form-item label="" prop="LEDGER_NAME">
@@ -22,7 +22,7 @@
               style="width: 240px"
             ></el-date-picker>
           </el-form-item>
-          <el-form-item label="" prop="SP_STATE">
+          <!-- <el-form-item label="" prop="SP_STATE">
             <el-select
               class="el-select-width-100"
               v-model="form.SP_STATE"
@@ -33,7 +33,7 @@
               <el-option label="已审批" value="1"></el-option>
               <el-option label="未审批" value="0"></el-option>
             </el-select>
-          </el-form-item>
+          </el-form-item> -->
           <el-form-item>
             <el-button type="primary" icon="el-icon-search" @click="search"
               >查询</el-button
