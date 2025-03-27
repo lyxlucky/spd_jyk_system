@@ -1,10 +1,29 @@
 <template>
   <div>
     <el-card shadow="never">
-      <div slot="header" class="clearfix"> 主表数据列表 </div>
+      <div slot="header" class="clearfix"> 结算列表 </div>
       <div>
         <el-form size="mini" :inline="true">
           <el-form-item label="" prop="LEDGER_NAME">
+            <el-input
+              v-model="form.DESCRIPTION"
+              placeholder="请输入描述"
+              clearable
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="" prop="SP_STATE">
+            <el-select
+              class="el-select-width-100"
+              v-model="form.SP_STATE"
+              placeholder="请选择审批状态"
+              clearable
+            >
+              <el-option label="全部" value=""></el-option>
+              <el-option label="已审批" value="1"></el-option>
+              <el-option label="未审批" value="0"></el-option>
+            </el-select>
+          </el-form-item>
+          <!-- <el-form-item label="" prop="LEDGER_NAME">
             <el-input
               v-model="form.LEDGER_NAME"
               placeholder="请输入账本名称"
@@ -17,7 +36,7 @@
               placeholder="请输入推送人"
               clearable
             ></el-input>
-          </el-form-item>
+          </el-form-item> -->
           <!-- <el-form-item label="推送时间" prop="SPD_PUSH_TIME">
             <el-date-picker
               v-model="form.SPD_PUSH_TIME"
@@ -88,6 +107,8 @@
         selectedRows: [],
         currentTableItem1: {},
         form: {
+          DESCRIPTION: '',
+          SP_STATE: '',
           LEDGER_NAME: '',
           SPD_PUSH_MAN: '',
           SPD_PUSH_TIME: []

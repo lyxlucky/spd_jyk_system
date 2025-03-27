@@ -47,6 +47,8 @@ export async function getSpdGlSpdTranBatchIface(data) {
         page: data.page || 1,
         size: data.limit || 10,
         SPD_PUSH_MAN: data.where?.SPD_PUSH_MAN || '',
+        DESCRIPTION: data.where?.DESCRIPTION || '',
+        SP_STATE: data.where?.SP_STATE || '',
         LEDGER_NAME: data.where?.LEDGER_NAME || '',
         // SPD_PUSH_DATE_START: data.where?.SPD_PUSH_DATE[0] || '',
         // SPD_PUSH_DATE_END: data.where?.SPD_PUSH_DATE[1] || ''
