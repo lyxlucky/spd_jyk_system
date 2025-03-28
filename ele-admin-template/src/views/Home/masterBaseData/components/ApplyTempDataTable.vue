@@ -233,7 +233,7 @@
           },
           {
             prop: 'HIS_HC_NUMBER',
-            label: '医保编码',
+            label: '医保耗材编码',
             align: 'center',
             showOverflowTooltip: true,
             minWidth: 150
@@ -369,13 +369,14 @@
           //   showOverflowTooltip: true,
           //   minWidth: 110
           // },
-          // {
-          //   prop: 'HIGHVALUE_NO',
-          //   label: '申请单号',
-          //   align: 'center',
-          //   showOverflowTooltip: true,
-          //   minWidth: 130
-          // },
+          ,{
+            prop: 'HIS_HIGHVALUE_NO',
+            label: '申请单号',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 130,
+            show:false
+          },
           // {
           //   prop: 'SF_CODE',
           //   label: '收费编码',
