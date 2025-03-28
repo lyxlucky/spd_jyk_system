@@ -140,6 +140,7 @@
   import { TOKEN_STORE_NAME } from '@/config/setting';
   import { ImportSpdMainsjLinesIfaceExcel } from '@/api/Home/masterBaseData';
   import AuthVarTable from './AuthVarTable.vue';
+  import { ImportSpdHisMainsjLinesIfaceExcel } from '@/api/Home/BJRMPriceAudit';
   export default {
     props: [
       'ApplyTempTableDataSearch',
@@ -220,7 +221,9 @@
         // }
         const loading = this.$messageLoading('导入中...');
         var formData = new FormData(document.getElementById('CreateBydFpform'));
-        ImportSpdMainsjLinesIfaceExcel(formData)
+
+        // ImportSpdMainsjLinesIfaceExcel(formData)
+        ImportSpdHisMainsjLinesIfaceExcel(formData)
           .then((res) => {
             this.dialogTableVisible2 = false;
             this.$message.success(res.msg);
