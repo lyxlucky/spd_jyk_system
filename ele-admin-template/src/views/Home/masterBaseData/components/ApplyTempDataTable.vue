@@ -68,7 +68,21 @@
   import { GetSpdMainsjLinesIface } from '@/api/Home/masterBaseData';
   export default {
     name: 'ApplyTempDataTable',
-    props: ['ApplyTempTableData', 'IntroduceUserDefinedTempSearch'],
+    // props: ['ApplyTempTableData', 'IntroduceUserDefinedTempSearch'],
+    props: {
+      ApplyTempTableData: {
+        type: Object,
+        default: () => {
+          return {};
+        }
+      },
+      IntroduceUserDefinedTempSearch: {
+        type: Object,
+        default: () => {
+          return {};
+        }
+      }
+    },
     components: {
       ApplyTempDataSearch: ApplyTempDataSearch
     },
@@ -659,7 +673,7 @@
       datasource({ page, limit, where, order }) {
         // where.DeptCode = this.$store.state.user.info.DeptNow.Dept_Two_Code;
         // where.UserId = this.$store.state.user.info.ID;
-        where.HEADER_IFACE_ID = this.ApplyTempTableData.HEADER_IFACE_ID;
+        where.HEADER_IFACE_ID = this.ApplyTempTableData?.HEADER_IFACE_ID;
         let data = GetSpdMainsjLinesIface({ page, limit, where, order }).then(
           (res) => {
             var tData = {
@@ -703,7 +717,7 @@
           var where = {
             DeptCode: this.$store.state.user.info.DeptNow.Dept_Two_Code,
             UserId: this.$store.state.user.info.ID,
-            TempletMasteID: this.ApplyTempTableData.ID
+            TempletMasteID: this.ApplyTempTableData?.ID
           };
           this.$refs.table.reload({ page: 1, where: where });
         }
@@ -712,7 +726,7 @@
         const loading = this.$messageLoading('正在导出数据...');
         this.$refs.table.doRequest(({ where, order }) => {
           where = data;
-          where.HEADER_IFACE_ID = this.ApplyTempTableData.HEADER_IFACE_ID;
+          where.HEADER_IFACE_ID = this.ApplyTempTableData?.HEADER_IFACE_ID;
           GetSpdMainsjLinesIface({
             page: 1,
             limit: 999999,
@@ -892,7 +906,7 @@
         var where = {
           DeptCode: this.$store.state.user.info.DeptNow.Dept_Two_Code,
           UserId: this.$store.state.user.info.ID,
-          TempletMasteID: this.ApplyTempTableData.ID
+          TempletMasteID: this.ApplyTempTableData?.ID
         };
         this.$refs.table.reload({ page: 1, where: where });
       }

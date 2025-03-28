@@ -20,6 +20,7 @@ export async function getOAMainsLinesIface(data){
     params.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
     params.page = data.page || '1';
     params.size = data.size || '10';
+    params.HEADER_IFACE_ID = data.where?.HEADER_IFACE_ID || '';
     
     let resData = await request.get(`HRPMasterData/getOAMainsLinesIface${formdataifyGet(params)}`)
    

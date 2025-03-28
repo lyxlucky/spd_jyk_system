@@ -11,6 +11,7 @@
         :columns="columns"
         highlight-current-row
         :datasource="datasource"
+        @row-click="rowClick"
         :paging="false"
       ></ele-pro-table>
     </el-card>
@@ -112,6 +113,10 @@
       };
     },
     methods: {
+      rowClick(row) {
+        // 点击行事件
+        this.$emit('rowClick', row);
+      },
       datasource({ page, limit, sort, where }) {
         // 实现数据源方法
         return getOAMainsHeaderIface({

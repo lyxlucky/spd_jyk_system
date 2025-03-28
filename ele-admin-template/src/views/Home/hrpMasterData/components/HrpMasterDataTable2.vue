@@ -551,11 +551,16 @@
       };
     },
     methods: {
+      reload({ where }) {
+        this.$refs.table.reload({ page: 1, where: where });
+        console.log(where);
+      },
       datasource({ page, limit, sort, where }) {
         // 实现数据源方法
         return getOAMainsLinesIface({
           page,
-          size: limit
+          size: limit,
+          where
         })
           .then((res) => {
             console.log(res);
