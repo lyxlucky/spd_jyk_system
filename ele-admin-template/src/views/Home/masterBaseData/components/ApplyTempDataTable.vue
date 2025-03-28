@@ -66,6 +66,7 @@
     DeleteTempletDeta
   } from '@/api/KSInventory/ApplyTemp';
   import { GetSpdMainsjLinesIface } from '@/api/Home/masterBaseData';
+  import { GetSpdHisMainsjLinesIface } from '@/api/Home/BJRMPriceAudit';
   export default {
     name: 'ApplyTempDataTable',
     // props: ['ApplyTempTableData', 'IntroduceUserDefinedTempSearch'],
@@ -107,6 +108,236 @@
           //   fixed: 'left'
           // },
           // {
+          //   prop: 'HEADER_IFACE_ID',
+          //   label: '主表ID',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   minWidth: 80
+          // },
+          // {
+          //   prop: 'LINE_IFACE_ID',
+          //   label: '明细ID',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   minWidth: 80
+          // },
+          // {
+          //   slot: 'action',
+          //   label: '操作',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   minWidth: 100
+          // },
+          {
+            prop: 'HIS_CODE_TYPE',
+            label: '编码类型',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 100
+          },
+          {
+            prop: 'HIS_ITEM_DESCRIPTION',
+            label: '项目名称',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 130
+          },
+          {
+            prop: 'HIS_ITEM_NUMBER',
+            label: '物料编码',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 130
+          },
+          {
+            prop: 'HIS_UOM',
+            label: '收费单位',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 80
+          },
+          {
+            prop: 'HIS_UNIT_PRICE',
+            label: '项目单价',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 80
+          },
+          {
+            prop: 'HIS_PRICE_START',
+            label: '单价生效开始日期',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 130,
+            formatter: (row, column, cellValue) => {
+              return cellValue
+                ? this.$moment(cellValue).format('YYYY-MM-DD')
+                : '';
+            }
+          },
+          {
+            prop: 'HIS_PRICE_END',
+            label: '单价生效结束日期',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 130,
+            formatter: (row, column, cellValue) => {
+              return cellValue
+                ? this.$moment(cellValue).format('YYYY-MM-DD')
+                : '';
+            }
+          },
+          {
+            prop: 'HIS_ITEM_SPEC',
+            label: '型号',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 120
+          },
+          {
+            prop: 'HIS_STAND_VALUE',
+            label: '规格',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 120
+          },
+          {
+            prop: 'HIS_SF_DXM_BS',
+            label: '收费大项目标识',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 130
+          },
+          {
+            prop: 'HIS_SYFW',
+            label: '使用范围',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 180
+          },
+          {
+            prop: 'HIS_ISGZ_DZ',
+            label: '启用标志',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 80,
+            formatter: (row, column, cellValue) => {
+              if (cellValue == 1) {
+                return '是';
+              } else {
+                return '否';
+              }
+            }
+          },
+          {
+            prop: 'HIS_HC_NUMBER',
+            label: '医保编码',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 150
+          },
+          {
+            prop: 'HIS_NBM',
+            label: '内部码',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 90
+          },
+          {
+            prop: 'HIS_CLBS',
+            label: '材料标志',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 80,
+            formatter: (row, column, cellValue) => {
+              if (cellValue == 1) {
+                return '是';
+              } else {
+                return '否';
+              }
+            }
+          },
+          {
+            prop: 'HIS_SCS',
+            label: '生产厂商',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 160
+          },
+          {
+            prop: 'HIS_SFYJ',
+            label: '收费依据',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 100
+          },
+          {
+            prop: 'HIS_REGISTRATION_NO',
+            label: '注册证号',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 130
+          },
+          {
+            prop: 'HIS_REGISTRATION_NAME',
+            label: '注册证名称',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 130
+          },
+          {
+            prop: 'HIS_EXTEND',
+            label: '扩展属性',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 80
+          },
+          {
+            prop: 'HIS_LCFW',
+            label: '临床服务标志',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 80,
+            formatter: (row, column, cellValue) => {
+              if (cellValue == 1) {
+                return '是';
+              } else {
+                return '否';
+              }
+            }
+          },
+          {
+            prop: 'HIS_LCFW_TYPE',
+            label: '临床服务分类',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 130
+          },
+          {
+            prop: 'HIS_YBTYPE',
+            label: '医保分类',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 120
+          }
+
+          // {
+          //   columnKey: 'selection',
+          //   type: 'selection',
+          //   width: 45,
+          //   align: 'center',
+          //   fixed: 'left'
+          // },
+          // {
+          //   columnKey: 'index',
+          //   type: 'index',
+          //   label: '序',
+          //   width: 45,
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   fixed: 'left'
+          // },
+          // {
           //   prop: 'PROCESS_STATUS',
           //   label: '状态',
           //   align: 'center',
@@ -136,496 +367,496 @@
           //   showOverflowTooltip: true,
           //   minWidth: 110
           // },
-          {
-            prop: 'HIGHVALUE_NO',
-            label: '申请单号',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 130
-          },
-          {
-            prop: 'SF_CODE',
-            label: '收费编码',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 120
-          },
-          {
-            prop: 'URGENCYLEVEL',
-            label: '申请类型',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 80
-          },
-          {
-            prop: 'ITEM_NUMBER',
-            label: '物料编码',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 120
-          },
-          {
-            prop: 'ITEM_DESCRIPTION',
-            label: '物料名称',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 110
-          },
-          {
-            prop: 'ITEM_SPEC',
-            label: '型号',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 110
-          },
-          {
-            prop: 'STAND_VALUE',
-            label: '规格',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 180
-          },
-          {
-            prop: 'UOM',
-            label: '单位',
-            align: 'center',
-            showOverflowTooltip: true,
-            width: 100
-          },
-          {
-            prop: 'UNIT_PRICE',
-            label: '采购价格',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 100,
-            formatter: (row, column, cellValue) => {
-              return cellValue ? Number(cellValue).toFixed(2) : '';
-            }
-          },
+          // {
+          //   prop: 'HIGHVALUE_NO',
+          //   label: '申请单号',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   minWidth: 130
+          // },
+          // {
+          //   prop: 'SF_CODE',
+          //   label: '收费编码',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   minWidth: 120
+          // },
+          // {
+          //   prop: 'URGENCYLEVEL',
+          //   label: '申请类型',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   minWidth: 80
+          // },
+          // {
+          //   prop: 'ITEM_NUMBER',
+          //   label: '物料编码',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   minWidth: 120
+          // },
+          // {
+          //   prop: 'ITEM_DESCRIPTION',
+          //   label: '物料名称',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   minWidth: 110
+          // },
+          // {
+          //   prop: 'ITEM_SPEC',
+          //   label: '型号',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   minWidth: 110
+          // },
+          // {
+          //   prop: 'STAND_VALUE',
+          //   label: '规格',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   minWidth: 180
+          // },
+          // {
+          //   prop: 'UOM',
+          //   label: '单位',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   width: 100
+          // },
+          // {
+          //   prop: 'UNIT_PRICE',
+          //   label: '采购价格',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   minWidth: 100,
+          //   formatter: (row, column, cellValue) => {
+          //     return cellValue ? Number(cellValue).toFixed(2) : '';
+          //   }
+          // },
 
-          {
-            prop: 'ZB',
-            label: '是否中标',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 90,
-            formatter: (row, column, cellValue) => {
-              if (cellValue == 1) {
-                return '是';
-              } else if (cellValue == 0) {
-                return '否';
-              } else {
-                return cellValue;
-              }
-            }
-          },
+          // {
+          //   prop: 'ZB',
+          //   label: '是否中标',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   minWidth: 90,
+          //   formatter: (row, column, cellValue) => {
+          //     if (cellValue == 1) {
+          //       return '是';
+          //     } else if (cellValue == 0) {
+          //       return '否';
+          //     } else {
+          //       return cellValue;
+          //     }
+          //   }
+          // },
 
-          {
-            prop: 'HC_NUMBER',
-            label: '医保耗材编码',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 160
-          },
+          // {
+          //   prop: 'HC_NUMBER',
+          //   label: '医保耗材编码',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   minWidth: 160
+          // },
 
-          {
-            prop: 'PACK_MIN',
-            label: '最小包装数',
-            align: 'center',
-            showOverflowTooltip: true,
-            width: 100
-          },
-          {
-            prop: 'APPLY_DEPT',
-            label: '申请科室',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 100
-          },
-          {
-            prop: 'IS_SF',
-            label: '是否收费',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 60,
-            formatter: (row, column, cellValue) => {
-              if (cellValue == 1) {
-                return '是';
-              } else if (cellValue == 0) {
-                return '否';
-              } else {
-                return cellValue;
-              }
-            }
-          },
-          {
-            prop: 'CATEGORY',
-            label: '类别',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 80
-          },
-          {
-            prop: 'XK_NUMBER',
-            label: 'VJ1总代经营许可证号',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 130
-          },
-          {
-            prop: 'XY_DATE',
-            label: '证件有效期',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 120,
-            formatter: (row, column, cellValue) => {
-              return this.$moment(cellValue).format('YYYY-MM-DD');
-            }
-          },
-          {
-            prop: 'XK_JYNUMBER',
-            label: 'VJ供应商经营许可证号',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 130
-          },
-          {
-            prop: 'ZCZ_NUMBER',
-            label: '注册证编号',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 130
-          },
-          {
-            prop: 'ZJ_NAME',
-            label: '证件名称（授权书）',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 120
-          },
-          {
-            prop: 'BAND',
-            label: '品牌',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 100
-          },
-          {
-            prop: 'CD',
-            label: '产地',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 100
-          },
-          {
-            prop: 'SCS',
-            label: '生产商',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 130
-          },
-          {
-            prop: 'SUPPLY_NAME',
-            label: '供应商名称',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 130
-          },
-          {
-            prop: 'IS_XX',
-            label: '是否是中小微型企业',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 60,
-            formatter: (row, column, cellValue) => {
-              if (cellValue == 1) {
-                return '是';
-              } else {
-                return '否';
-              }
-            }
-          },
-          {
-            prop: 'IS_CJ',
-            label: '是否集采带量产品',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 60,
-            formatter: (row, column, cellValue) => {
-              if (cellValue == 1) {
-                return '是';
-              } else {
-                return '否';
-              }
-            }
-          },
-          {
-            prop: 'JJJ_TYPE',
-            label: '京津冀类别',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 100
-          },
-          {
-            prop: 'IS_LS',
-            label: '是否是临时采购',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 60,
-            formatter: (row, column, cellValue) => {
-              if (cellValue == 1) {
-                return '是';
-              } else {
-                return '否';
-              }
-            }
-          },
-          {
-            prop: 'CONTRACT_NAME',
-            label: '联系人',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 100
-          },
-          {
-            prop: 'CONTRACT_PHONE',
-            label: '电话',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 120
-          },
-          {
-            prop: 'CONTRACT_EMAIL',
-            label: '联系人邮箱',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 120
-          },
-          {
-            prop: 'SJ_PRICE',
-            label: '试剂价格',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 80
-          },
-          {
-            prop: 'SJ_CHECKNAME',
-            label: '试剂检查项目名称',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 120
-          },
-          {
-            prop: 'SJ_SFNAME',
-            label: '试剂收费项目名称',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 120
-          },
-          {
-            prop: 'SJ_SWNUMBER',
-            label: '试剂收费编码',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 110
-          },
-          {
-            prop: 'SJ_SWPRICE',
-            label: '试剂收费价格',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 100
-          },
-          {
-            prop: 'MID_COUNT',
-            label: '中包数量',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 80
-          },
-          {
-            prop: 'MID_UOM',
-            label: '中包装单位',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 80
-          },
-          {
-            prop: 'MAX_COUNT',
-            label: '大包装数量',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 80
-          },
-          {
-            prop: 'MAX_UOM',
-            label: '大包装单位',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 100
-          },
-          {
-            prop: 'ISGZ_DZ',
-            label: '高低值',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 100
-          },
-          {
-            prop: 'GZ_XH',
-            label: '高值重点治理序号',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 60
-          },
-          {
-            prop: 'ZD_HCNAME',
-            label: '重点治理耗材名称',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 120
-          },
-          {
-            prop: 'ISZR',
-            label: '是否植入',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 80,
-            formatter: (row, column, cellValue) => {
-              if (cellValue == 1) {
-                return '是';
-              } else {
-                return '否';
-              }
-            }
-          },
-          {
-            prop: 'ISJR',
-            label: '是否介入',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 80,
-            formatter: (row, column, cellValue) => {
-              if (cellValue == 1) {
-                return '是';
-              } else {
-                return '否';
-              }
-            }
-          },
-          {
-            prop: 'TYPE_NUMBER',
-            label: '京津冀类别编号',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 100
-          },
-          {
-            prop: 'JPS_NUMBER',
-            label: '集配商编号',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 100
-          },
-          {
-            prop: 'JPS_NAME',
-            label: '集配商名称',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 120
-          },
-          {
-            prop: 'ZC_ENVIRONMENT',
-            label: '储存条件',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 100
-          },
-          {
-            prop: 'UDI_DI',
-            label: 'UDI_DI',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 120
-          },
-          {
-            prop: 'ISACTIVE',
-            label: '是否有效',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 80,
-            formatter: (row, column, cellValue) => {
-              if (cellValue == 1) {
-                return '是';
-              } else {
-                return '否';
-              }
-            }
-          },
-          {
-            prop: 'SB_CODE',
-            label: '医学装备分类协会编码',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 80
-          },
-          {
-            prop: 'SB_XHNAME',
-            label: '医学装备分类协会名称',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 120
-          },
-          {
-            prop: 'ISJK',
-            label: '是否进口',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 80,
-            formatter: (row, column, cellValue) => {
-              if (cellValue == 1) {
-                return '是';
-              } else {
-                return '否';
-              }
-            }
-          },
-          {
-            prop: 'goodsID',
-            label: 'goodsID',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 120
-          },
+          // {
+          //   prop: 'PACK_MIN',
+          //   label: '最小包装数',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   width: 100
+          // },
+          // {
+          //   prop: 'APPLY_DEPT',
+          //   label: '申请科室',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   minWidth: 100
+          // },
+          // {
+          //   prop: 'IS_SF',
+          //   label: '是否收费',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   minWidth: 60,
+          //   formatter: (row, column, cellValue) => {
+          //     if (cellValue == 1) {
+          //       return '是';
+          //     } else if (cellValue == 0) {
+          //       return '否';
+          //     } else {
+          //       return cellValue;
+          //     }
+          //   }
+          // },
+          // {
+          //   prop: 'CATEGORY',
+          //   label: '类别',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   minWidth: 80
+          // },
+          // {
+          //   prop: 'XK_NUMBER',
+          //   label: 'VJ1总代经营许可证号',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   minWidth: 130
+          // },
+          // {
+          //   prop: 'XY_DATE',
+          //   label: '证件有效期',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   minWidth: 120,
+          //   formatter: (row, column, cellValue) => {
+          //     return this.$moment(cellValue).format('YYYY-MM-DD');
+          //   }
+          // },
+          // {
+          //   prop: 'XK_JYNUMBER',
+          //   label: 'VJ供应商经营许可证号',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   minWidth: 130
+          // },
+          // {
+          //   prop: 'ZCZ_NUMBER',
+          //   label: '注册证编号',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   minWidth: 130
+          // },
+          // {
+          //   prop: 'ZJ_NAME',
+          //   label: '证件名称（授权书）',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   minWidth: 120
+          // },
+          // {
+          //   prop: 'BAND',
+          //   label: '品牌',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   minWidth: 100
+          // },
+          // {
+          //   prop: 'CD',
+          //   label: '产地',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   minWidth: 100
+          // },
+          // {
+          //   prop: 'SCS',
+          //   label: '生产商',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   minWidth: 130
+          // },
+          // {
+          //   prop: 'SUPPLY_NAME',
+          //   label: '供应商名称',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   minWidth: 130
+          // },
+          // {
+          //   prop: 'IS_XX',
+          //   label: '是否是中小微型企业',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   minWidth: 60,
+          //   formatter: (row, column, cellValue) => {
+          //     if (cellValue == 1) {
+          //       return '是';
+          //     } else {
+          //       return '否';
+          //     }
+          //   }
+          // },
+          // {
+          //   prop: 'IS_CJ',
+          //   label: '是否集采带量产品',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   minWidth: 60,
+          //   formatter: (row, column, cellValue) => {
+          //     if (cellValue == 1) {
+          //       return '是';
+          //     } else {
+          //       return '否';
+          //     }
+          //   }
+          // },
+          // {
+          //   prop: 'JJJ_TYPE',
+          //   label: '京津冀类别',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   minWidth: 100
+          // },
+          // {
+          //   prop: 'IS_LS',
+          //   label: '是否是临时采购',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   minWidth: 60,
+          //   formatter: (row, column, cellValue) => {
+          //     if (cellValue == 1) {
+          //       return '是';
+          //     } else {
+          //       return '否';
+          //     }
+          //   }
+          // },
+          // {
+          //   prop: 'CONTRACT_NAME',
+          //   label: '联系人',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   minWidth: 100
+          // },
+          // {
+          //   prop: 'CONTRACT_PHONE',
+          //   label: '电话',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   minWidth: 120
+          // },
+          // {
+          //   prop: 'CONTRACT_EMAIL',
+          //   label: '联系人邮箱',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   minWidth: 120
+          // },
+          // {
+          //   prop: 'SJ_PRICE',
+          //   label: '试剂价格',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   minWidth: 80
+          // },
+          // {
+          //   prop: 'SJ_CHECKNAME',
+          //   label: '试剂检查项目名称',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   minWidth: 120
+          // },
+          // {
+          //   prop: 'SJ_SFNAME',
+          //   label: '试剂收费项目名称',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   minWidth: 120
+          // },
+          // {
+          //   prop: 'SJ_SWNUMBER',
+          //   label: '试剂收费编码',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   minWidth: 110
+          // },
+          // {
+          //   prop: 'SJ_SWPRICE',
+          //   label: '试剂收费价格',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   minWidth: 100
+          // },
+          // {
+          //   prop: 'MID_COUNT',
+          //   label: '中包数量',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   minWidth: 80
+          // },
+          // {
+          //   prop: 'MID_UOM',
+          //   label: '中包装单位',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   minWidth: 80
+          // },
+          // {
+          //   prop: 'MAX_COUNT',
+          //   label: '大包装数量',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   minWidth: 80
+          // },
+          // {
+          //   prop: 'MAX_UOM',
+          //   label: '大包装单位',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   minWidth: 100
+          // },
+          // {
+          //   prop: 'ISGZ_DZ',
+          //   label: '高低值',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   minWidth: 100
+          // },
+          // {
+          //   prop: 'GZ_XH',
+          //   label: '高值重点治理序号',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   minWidth: 60
+          // },
+          // {
+          //   prop: 'ZD_HCNAME',
+          //   label: '重点治理耗材名称',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   minWidth: 120
+          // },
+          // {
+          //   prop: 'ISZR',
+          //   label: '是否植入',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   minWidth: 80,
+          //   formatter: (row, column, cellValue) => {
+          //     if (cellValue == 1) {
+          //       return '是';
+          //     } else {
+          //       return '否';
+          //     }
+          //   }
+          // },
+          // {
+          //   prop: 'ISJR',
+          //   label: '是否介入',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   minWidth: 80,
+          //   formatter: (row, column, cellValue) => {
+          //     if (cellValue == 1) {
+          //       return '是';
+          //     } else {
+          //       return '否';
+          //     }
+          //   }
+          // },
+          // {
+          //   prop: 'TYPE_NUMBER',
+          //   label: '京津冀类别编号',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   minWidth: 100
+          // },
+          // {
+          //   prop: 'JPS_NUMBER',
+          //   label: '集配商编号',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   minWidth: 100
+          // },
+          // {
+          //   prop: 'JPS_NAME',
+          //   label: '集配商名称',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   minWidth: 120
+          // },
+          // {
+          //   prop: 'ZC_ENVIRONMENT',
+          //   label: '储存条件',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   minWidth: 100
+          // },
+          // {
+          //   prop: 'UDI_DI',
+          //   label: 'UDI_DI',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   minWidth: 120
+          // },
+          // {
+          //   prop: 'ISACTIVE',
+          //   label: '是否有效',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   minWidth: 80,
+          //   formatter: (row, column, cellValue) => {
+          //     if (cellValue == 1) {
+          //       return '是';
+          //     } else {
+          //       return '否';
+          //     }
+          //   }
+          // },
+          // {
+          //   prop: 'SB_CODE',
+          //   label: '医学装备分类协会编码',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   minWidth: 80
+          // },
+          // {
+          //   prop: 'SB_XHNAME',
+          //   label: '医学装备分类协会名称',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   minWidth: 120
+          // },
+          // {
+          //   prop: 'ISJK',
+          //   label: '是否进口',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   minWidth: 80,
+          //   formatter: (row, column, cellValue) => {
+          //     if (cellValue == 1) {
+          //       return '是';
+          //     } else {
+          //       return '否';
+          //     }
+          //   }
+          // },
+          // {
+          //   prop: 'goodsID',
+          //   label: 'goodsID',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   minWidth: 120
+          // },
 
-          {
-            prop: 'REGISTRATION_NAME',
-            label: '耗材注册证名称',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 180
-          },
-          {
-            prop: 'REGISTRATION_NO',
-            label: '注册证号',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 150
-          },
-          {
-            prop: 'ORGANIZATION_NAME',
-            label: '科室名称',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 100
-          },
-          {
-            prop: 'FULL_NAME',
-            label: '供应商',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 100
-          }
+          // {
+          //   prop: 'REGISTRATION_NAME',
+          //   label: '耗材注册证名称',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   minWidth: 180
+          // },
+          // {
+          //   prop: 'REGISTRATION_NO',
+          //   label: '注册证号',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   minWidth: 150
+          // },
+          // {
+          //   prop: 'ORGANIZATION_NAME',
+          //   label: '科室名称',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   minWidth: 100
+          // },
+          // {
+          //   prop: 'FULL_NAME',
+          //   label: '供应商',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   minWidth: 100
+          // }
           // {
           //   columnKey: 'action',
           //   label: '操作',
@@ -674,15 +905,19 @@
         // where.DeptCode = this.$store.state.user.info.DeptNow.Dept_Two_Code;
         // where.UserId = this.$store.state.user.info.ID;
         where.HEADER_IFACE_ID = this.ApplyTempTableData?.HEADER_IFACE_ID;
-        let data = GetSpdMainsjLinesIface({ page, limit, where, order }).then(
-          (res) => {
-            var tData = {
-              count: res.total,
-              list: res.result
-            };
-            return tData;
-          }
-        );
+        // let data = GetSpdMainsjLinesIface({ page, limit, where, order }).then(
+        let data = GetSpdHisMainsjLinesIface({
+          page,
+          limit,
+          where,
+          order
+        }).then((res) => {
+          var tData = {
+            count: res.total,
+            list: res.result
+          };
+          return tData;
+        });
         return data;
       },
       /* 刷新表格 */

@@ -10,6 +10,7 @@
     <!-- <ele-pro-table @current-change="onCurrentChange" :reserve-selection="true" highlight-current-row ref="table" height="60vh" :rowClickChecked="true" :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :needPage="true" :datasource="datasource" :selection.sync="selection" cache-key="BJRMPriceAudit">
      -->
     <ele-pro-table
+      size="mini"
       @selection-change="onSelectionChange"
       :rowClickCheckedIntelligent="false"
       :reserve-selection="true"
