@@ -18,6 +18,7 @@
 </template>
 
 <script>
+  import { formatDate } from '@/utils/formdataify';
   import { getOAMainsLinesIface } from '@/api/Home/hrpMasterData';
   export default {
     name: 'HrpMasterDataTable2',
@@ -46,7 +47,7 @@
           // },
           {
             prop: 'ITEM_NUMBER',
-            label: '物料编号',
+            label: '物料编码', // 更新
             width: 120,
             align: 'center',
             search: true,
@@ -56,7 +57,7 @@
           },
           {
             prop: 'ITEM_DESCRIPTION',
-            label: '物料描述',
+            label: '物料名称（产品注册证名称）', // 更新
             width: 180,
             align: 'center',
             showOverflowTooltip: true,
@@ -68,7 +69,7 @@
           {
             prop: 'STAND_VALUE',
             label: '标准值',
-            width: 100,
+            width: 140,
             align: 'center'
           },
           {
@@ -80,19 +81,19 @@
           },
           {
             prop: 'HC_NUMBER',
-            label: '耗材编号',
-            width: 120,
+            label: '医保耗材编码', // 更新
+            width: 240,
             align: 'center'
           },
           {
             prop: 'UOM',
-            label: '单位',
+            label: '单位', // 保持不变
             width: 80,
             align: 'center'
           },
           {
             prop: 'UNIT_PRICE',
-            label: '单价',
+            label: '采购价格', // 更新
             width: 100,
             align: 'center',
             formatter: (row) => {
@@ -101,99 +102,88 @@
           },
           {
             prop: 'PACK_MIN',
-            label: '最小包装',
+            label: '最小包装数', // 更新
             width: 100,
             align: 'center'
           },
           {
             prop: 'APPLY_DEPT',
-            label: '申请部门',
+            label: '申请科室', // 更新
             width: 120,
             align: 'center'
           },
           {
             prop: 'PROCESS_STATUS',
-            label: '处理状态',
+            label: '状态', // 更新
             width: 100,
-            align: 'center',
-            search: true,
-            enum: [
-              { label: '未处理', value: 'N' },
-              { label: '已处理', value: 'S' },
-              { label: '处理失败', value: 'E' }
-            ],
-            formatter: (row) => {
-              if (row.PROCESS_STATUS === 'N') return '未处理';
-              if (row.PROCESS_STATUS === 'S') return '已处理';
-              if (row.PROCESS_STATUS === 'E') return '处理失败';
-              return row.PROCESS_STATUS || '';
-            },
-            fieldProps: {
-              clearable: true
-            }
+            align: 'center'
           },
           {
             prop: 'ERROR_MSG',
-            label: '错误消息',
+            label: '错误消息', // 保持不变
             width: 180,
             align: 'center',
             showOverflowTooltip: true
           },
           {
             prop: 'LINE_NUMBER',
-            label: '行号',
+            label: '行号', // 保持不变
             width: 80,
             align: 'center'
           },
           {
             prop: 'DOC_TYPE',
-            label: '单据类型',
+            label: '单据类型', // 保持不变
             width: 100,
-            align: 'center'
+            align: 'center',
+            formatter: (row) => {
+              if (row.DOC_TYPE === 'GZ') return '高值';
+              if (row.DOC_TYPE === 'DZ') return '低值';
+            }
           },
           {
             prop: 'HIGHVALUE_NO',
-            label: '高值耗材编号',
+            label: '申请单号', // 更新
             width: 120,
             align: 'center'
           },
           {
             prop: 'REGISTRATION_NAME',
-            label: '注册名称',
+            label: '耗材注册证名称', // 更新
             width: 150,
             align: 'center',
             showOverflowTooltip: true
           },
           {
             prop: 'REGISTRATION_NO',
-            label: '注册号',
+            label: '注册证号', // 更新
             width: 120,
             align: 'center'
           },
           {
             prop: 'ORGANIZATION_NAME',
-            label: '组织名称',
+            label: '科室名称', // 更新
             width: 150,
             align: 'center',
             showOverflowTooltip: true
           },
           {
             prop: 'FULL_NAME',
-            label: '全名',
+            label: '申领人', // 更新
             width: 150,
             align: 'center',
             showOverflowTooltip: true
           },
           {
             prop: 'URGENCYLEVEL',
-            label: '紧急程度',
+            label: '申请类型', // 更新
             width: 100,
             align: 'center'
           },
 
           {
             prop: 'IS_SF',
-            label: '是否收费',
+            label: '是否收费', // 保持不变
             width: 100,
             align: 'center',
             formatter: (row) => {
@@ -204,110 +194,114 @@
           },
           {
             prop: 'SF_NUMBER',
-            label: '收费编号',
+            label: '收费编码', // 保持不变
             width: 120,
             align: 'center'
           },
           {
             prop: 'CATEGORY',
-            label: '类别',
-            width: 100,
+            label: '类别', // 保持不变
+            width: 140,
             align: 'center'
           },
           {
             prop: 'XK_NUMBER',
-            label: '许可证编号',
-            width: 120,
+            label: 'VJ1总代经营许可证号（国产产品填写生产许可证）', // 更新
+            width: 240,
             align: 'center'
           },
           {
             prop: 'XY_DATE',
-            label: '效期日期',
+            label: '证件有效期（YYYY-MM-DD)', // 更新
             width: 120,
             align: 'center',
             formatter: (row) => {
-              return row.XY_DATE ? row.XY_DATE : '';
+              return this.$moment(row.XK_DATE).format('YYYY-MM-DD');
             }
           },
           {
             prop: 'XK_JYNUMBER',
-            label: '许可证经营编号',
-            width: 150,
+            label: 'VJ供应商经营许可证号', // 更新
+            width: 240,
             align: 'center'
           },
           {
             prop: 'ZJ_DATE',
-            label: '注册日期',
+            label: '证件有效期', // 更新
             width: 120,
             align: 'center',
             formatter: (row) => {
-              return row.ZJ_DATE ? row.ZJ_DATE : '';
+              return row.ZJ_DATE ? formatDate(row.ZJ_DATE, 'yyyy-MM-dd') : '';
             }
           },
           {
             prop: 'ZCZ_NUMBER',
-            label: '注册证编号',
-            width: 120,
+            label: '注册证编号', // 保持不变
+            width: 160,
             align: 'center'
           },
           {
             prop: 'ZCZ_DATE',
-            label: '注册证日期',
+            label: '证件有效期', // 更新
             width: 120,
             align: 'center',
             formatter: (row) => {
-              return row.ZCZ_DATE ? row.ZCZ_DATE : '';
+              return row.ZCZ_DATE
+                ? this.$moment(row.ZCZ_DATE).format('YYYY-MM-DD')
+                : '';
             }
           },
           {
             prop: 'ZJ_NAME',
-            label: '注册人名称',
+            label: '证件名称（授权书）', // 更新
             width: 120,
             align: 'center'
           },
           {
             prop: 'ZJ_DATE1',
-            label: '注册日期1',
+            label: '证件有效期', // 更新
             width: 120,
             align: 'center',
             formatter: (row) => {
-              return row.ZJ_DATE1 ? row.ZJ_DATE1 : '';
+              return row.ZJ_DATE1
+                ? this.$moment(row.ZJ_DATE1).format('YYYY-MM-DD')
+                : '';
             }
           },
           {
             prop: 'BAND',
-            label: '品牌',
+            label: '品牌', // 保持不变
             width: 100,
             align: 'center'
           },
           {
             prop: 'CD',
-            label: '产地',
+            label: '产地', // 保持不变
             width: 100,
             align: 'center'
           },
           {
             prop: 'SCS',
-            label: '生产商',
-            width: 120,
+            label: '生产商', // 保持不变
+            width: 200,
             align: 'center'
           },
           {
             prop: 'SUPPLY_NUMBER',
-            label: '供应商编号',
+            label: '供应商编号（原科园供应商没有供应商编号，需要SPD编码）', // 更新
             width: 120,
             align: 'center'
           },
           {
             prop: 'SUPPLY_NAME',
-            label: '供应商名称',
+            label: '供应商名称', // 保持不变
             width: 150,
             align: 'center',
             showOverflowTooltip: true
           },
           {
             prop: 'IS_XX',
-            label: '是否新型',
+            label: '是否是中小微型企业', // 更新
             width: 100,
             align: 'center',
             formatter: (row) => {
@@ -318,7 +312,7 @@
           },
           {
             prop: 'IS_CJ',
-            label: '是否常见',
+            label: '是否集采带量产品', // 更新
             width: 100,
             align: 'center',
             formatter: (row) => {
@@ -329,13 +323,13 @@
           },
           {
             prop: 'JJJ_TYPE',
-            label: '急救类型',
+            label: '京津冀类别', // 更新
             width: 100,
             align: 'center'
           },
           {
             prop: 'IS_LS',
-            label: '是否临时',
+            label: '是否是临时采购', // 更新
             width: 100,
             align: 'center',
             formatter: (row) => {
@@ -346,25 +340,25 @@
           },
           {
             prop: 'CONTRACT_NAME',
-            label: '联系人姓名',
+            label: '联系人', // 更新
             width: 120,
             align: 'center'
           },
           {
             prop: 'CONTRACT_PHONE',
-            label: '联系人电话',
+            label: '电话', // 更新
             width: 120,
             align: 'center'
           },
           {
             prop: 'CONTRACT_EMAIL',
-            label: '联系人邮箱',
+            label: '联系人邮箱', // 保持不变
             width: 150,
             align: 'center'
           },
           {
             prop: 'SJ_PRICE',
-            label: '上架价格',
+            label: '试剂价格（每人份）', // 更新
             width: 100,
             align: 'center',
             formatter: (row) => {
@@ -373,26 +367,26 @@
           },
           {
             prop: 'SJ_CHECKNAME',
-            label: '上架审核人',
+            label: '试剂检查项目名称', // 更新
             width: 120,
             align: 'center'
           },
           {
             prop: 'SJ_SFNAME',
-            label: '上架收费名称',
+            label: '试剂收费项目名称', // 更新
             width: 150,
             align: 'center',
             showOverflowTooltip: true
           },
           {
             prop: 'SJ_SWNUMBER',
-            label: '上架税务编号',
+            label: '试剂收费编码', // 更新
             width: 120,
             align: 'center'
           },
           {
             prop: 'SJ_SWPRICE',
-            label: '上架税务价格',
+            label: '试剂收费价格', // 更新
             width: 120,
             align: 'center',
             formatter: (row) => {
@@ -401,7 +395,7 @@
           },
           {
             prop: 'MID_COUNT',
-            label: '中包数量',
+            label: '中包数量', // 保持不变
             width: 100,
             align: 'center',
             formatter: (row) => {
@@ -410,13 +404,13 @@
           },
           {
             prop: 'MID_UOM',
-            label: '中包单位',
+            label: '中包单位', // 更新
             width: 100,
             align: 'center'
           },
           {
             prop: 'MAX_COUNT',
-            label: '大包数量',
+            label: '大包数量', // 更新
             width: 100,
             align: 'center',
             formatter: (row) => {
@@ -425,13 +419,13 @@
           },
           {
             prop: 'MAX_UOM',
-            label: '大包单位',
+            label: '大包单位', // 更新
             width: 100,
             align: 'center'
           },
           {
             prop: 'ISGZ_DZ',
-            label: '是否跟踪到组',
+            label: '高低值', // 更新
             width: 120,
             align: 'center',
             formatter: (row) => {
@@ -442,20 +436,20 @@
           },
           {
             prop: 'GZ_XH',
-            label: '跟踪型号',
+            label: '高值重点治理序号', // 更新
             width: 120,
             align: 'center'
           },
           {
             prop: 'ZD_HCNAME',
-            label: '指定耗材名称',
+            label: '重点治理耗材名称', // 更新
             width: 150,
             align: 'center',
             showOverflowTooltip: true
           },
           {
             prop: 'ISZR',
-            label: '是否植入',
+            label: '是否植入', // 保持不变
             width: 100,
             align: 'center',
             formatter: (row) => {
@@ -466,7 +460,7 @@
           },
           {
             prop: 'ISJR',
-            label: '是否介入',
+            label: '是否介入', // 保持不变
             width: 100,
             align: 'center',
             formatter: (row) => {
@@ -477,38 +471,38 @@
           },
           {
             prop: 'TYPE_NUMBER',
-            label: '型号编码',
+            label: '京津冀类别编号', // 更新
             width: 120,
             align: 'center'
           },
           {
             prop: 'JPS_NUMBER',
-            label: '计价方式编号',
+            label: '集配商编号', // 更新
             width: 120,
             align: 'center'
           },
           {
             prop: 'JPS_NAME',
-            label: '计价方式名称',
+            label: '集配商名称', // 更新
             width: 150,
             align: 'center',
             showOverflowTooltip: true
           },
           {
             prop: 'ZC_ENVIRONMENT',
-            label: '注册环境',
+            label: '储存条件', // 更新
             width: 120,
             align: 'center'
           },
           {
             prop: 'UDI_DI',
-            label: 'UDI-DI',
+            label: 'UDI-DI', // 保持不变
             width: 120,
             align: 'center'
           },
           {
             prop: 'ISACTIVE',
-            label: '是否激活',
+            label: '是否有效', // 更新
             width: 100,
             align: 'center',
             formatter: (row) => {
@@ -519,31 +513,31 @@
           },
           {
             prop: 'SB_CODE',
-            label: '设备编码',
+            label: '医学装备分类协会编码', // 更新
             width: 120,
             align: 'center'
           },
           {
             prop: 'SB_XHNAME',
-            label: '设备XH名称',
+            label: '医学装备分类协会名称', // 更新
             width: 120,
             align: 'center'
           },
           {
             prop: 'ISJK',
-            label: 'ISJK',
+            label: '是否进口', // 更新
             width: 120,
             align: 'center'
           },
           {
             prop: 'GOODSID',
-            label: 'GOODSID',
+            label: 'goodsID', // 保持不变
             width: 120,
             align: 'center'
           },
           {
             prop: 'SF_CODE',
-            label: 'SF_CODE',
+            label: '收费编码', // 更新
             width: 120,
             align: 'center'
           }
