@@ -116,7 +116,21 @@
             prop: 'PROCESS_STATUS',
             label: '状态', // 更新
             width: 100,
-            align: 'center'
+            align: 'center',
+            formatter: (row) => {
+              switch (row.PROCESS_STATUS) {
+                case 'N':
+                  return '已传入中间表';
+                case 'S':
+                  return '已传入SPD';
+                case 'Y':
+                  return '已接收收费编码';
+                case 'E':
+                  return '传入SPD失败';
+                default:
+                  return row.PROCESS_STATUS;
+              }
+            }
           },
           {
             prop: 'ERROR_MSG',
