@@ -160,33 +160,15 @@
           //   showOverflowTooltip: true,
           //   fixed: 'left'
           // },
-          // {
-          //   prop: 'PROCESS_STATUS',
-          //   label: '状态',
-          //   align: 'center',
-          //   showOverflowTooltip: true,
-          //   minWidth: 80,
-          //   formatter: (row, column, cellValue) => {
-          //     if (cellValue == 'N') {
-          //       return '已传入中间表';
-          //     } else if (cellValue == 'S') {
-          //       return '已传入SPD';
-          //     } else if (cellValue == 'Y') {
-          //       return '已接收收费编码';
-          //     } else if (cellValue == 'E') {
-          //       return '传入SPD失败';
-          //     } else {
-          //       return '未知状态';
-          //     }
-          //   }
-          // },
-          // {
-          //   prop: 'ERROR_MSG',
-          //   label: '错误消息',
-          //   align: 'center',
-          //   showOverflowTooltip: true,
-          //   minWidth: 100
-          // },
+
+          {
+            prop: 'ERROR_MSG',
+            label: '错误消息',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 100,
+            show: false
+          },
           {
             prop: 'REQUESTNOTEID',
             label: '申请单号',
@@ -208,8 +190,7 @@
             showOverflowTooltip: true,
             width: 180,
             formatter: (row, column, cellValue) => {
-              //return formatDate('yyyy-mm-dd', row.APPLYDATE);
-              return row.APPLYDATE;
+              return this.$moment(row.APPLYDATE).format('YYYY-MM-DD');
             }
           },
           {
@@ -264,6 +245,27 @@
             align: 'center',
             showOverflowTooltip: true,
             minWidth: 110
+          },
+          {
+            prop: 'PROCESS_STATUS',
+            label: '状态',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 80,
+            formatter: (row, column, cellValue) => {
+              if (cellValue == 'N') {
+                return '已传入中间表';
+              } else if (cellValue == 'S') {
+                return '已传入SPD';
+              } else if (cellValue == 'Y') {
+                return '已接收收费编码';
+              } else if (cellValue == 'E') {
+                return '传入SPD失败';
+              } else {
+                return '未知状态';
+              }
+            },
+            show: true
           }
         ],
         toolbar: false,

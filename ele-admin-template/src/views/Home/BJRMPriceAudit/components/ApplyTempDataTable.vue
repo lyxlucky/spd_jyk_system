@@ -125,6 +125,20 @@
             minWidth: 100
           },
           {
+            prop: 'HIS_HIGHVALUE_NO',
+            label: '导入批次号',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 130
+          },
+          {
+            prop: 'LINE_NUMBER',
+            label: '导入顺序号',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 100
+          },
+          {
             prop: 'HIS_CODE_TYPE',
             label: '编码类型',
             align: 'center',
@@ -151,6 +165,13 @@
             align: 'center',
             showOverflowTooltip: true,
             minWidth: 80
+          },
+          {
+            prop: 'HIS_PRICE_DES',
+            label: '价格描述',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 100
           },
           {
             prop: 'HIS_UNIT_PRICE',
@@ -184,6 +205,13 @@
             }
           },
           {
+            prop: 'HIS_XMFL',
+            label: '项目分类',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 100
+          },
+          {
             prop: 'HIS_ITEM_SPEC',
             label: '型号',
             align: 'center',
@@ -193,6 +221,13 @@
           {
             prop: 'HIS_STAND_VALUE',
             label: '规格',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 120
+          },
+          {
+            prop: 'HIS_GHFY_BQ',
+            label: '挂号费用标签',
             align: 'center',
             showOverflowTooltip: true,
             minWidth: 120
@@ -212,7 +247,7 @@
             minWidth: 180
           },
           {
-            prop: 'HIS_ISGZ_DZ',
+            prop: 'HIS_ISACTIVE',
             label: '启用标志',
             align: 'center',
             showOverflowTooltip: true,
@@ -226,8 +261,22 @@
             }
           },
           {
+            prop: 'HIS_ISGZ_DZ',
+            label: '高值耗材标志',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 100,
+            formatter: (row, column, cellValue) => {
+              if (cellValue == 1) {
+                return '是';
+              } else {
+                return '否';
+              }
+            }
+          },
+          {
             prop: 'HIS_HC_NUMBER',
-            label: '医保编码',
+            label: '国家项目代码',
             align: 'center',
             showOverflowTooltip: true,
             minWidth: 150

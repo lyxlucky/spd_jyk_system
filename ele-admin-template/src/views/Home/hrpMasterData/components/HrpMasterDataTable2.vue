@@ -35,16 +35,16 @@
           //     placeholder: '请输入行接口ID'
           //   }
           // },
-          // {
-          //   prop: 'HEADER_IFACE_ID',
-          //   label: '头接口ID',
-          //   width: 120,
-          //   align: 'center',
-          //   search: true,
-          //   fieldProps: {
-          //     placeholder: '请输入头接口ID'
-          //   }
-          // },
+          {
+            prop: 'HEADER_IFACE_ID',
+            label: '头表ID',
+            width: 80,
+            align: 'center',
+            search: true,
+            fieldProps: {
+              placeholder: '请输入头表ID'
+            }
+          },
           {
             prop: 'ITEM_NUMBER',
             label: '物料编码', // 更新
@@ -68,13 +68,13 @@
           },
           {
             prop: 'STAND_VALUE',
-            label: '标准值',
+            label: '规格', // 修改为"规格"
             width: 140,
             align: 'center'
           },
           {
             prop: 'ITEM_SPEC',
-            label: '物料规格',
+            label: '型号', // 修改为"型号"
             width: 150,
             align: 'center',
             showOverflowTooltip: true
@@ -404,7 +404,7 @@
           },
           {
             prop: 'MID_UOM',
-            label: '中包单位', // 更新
+            label: '中包装单位', // 更新
             width: 100,
             align: 'center'
           },
@@ -419,7 +419,7 @@
           },
           {
             prop: 'MAX_UOM',
-            label: '大包单位', // 更新
+            label: '大包装单位', // 更新
             width: 100,
             align: 'center'
           },

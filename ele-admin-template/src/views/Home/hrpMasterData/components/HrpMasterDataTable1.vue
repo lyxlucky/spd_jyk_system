@@ -26,34 +26,23 @@
     data() {
       return {
         columns: [
-          //   {
-          //     prop: 'HEADER_IFACE_ID',
-          //     label: '头接口ID',
-          //     width: 150,
-          //     align: 'center',
-          //     search: true,
-          //     fieldProps: {
-          //       placeholder: '请输入头接口ID'
-          //     }
-          //   },
+          {
+            prop: 'HEADER_IFACE_ID',
+            label: '头表ID',
+            width: 80,
+            align: 'center',
+            search: true,
+            fieldProps: {
+              placeholder: '请输入头接口ID'
+            }
+          },
 
-          //   {
-          //     prop: 'ERROR_MSG',
-          //     label: '错误消息',
-          //     width: 180,
-          //     align: 'center',
-          //     showOverflowTooltip: true
-          //   },
-          //   {
-          //     prop: 'REQUESTNOTEID',
-          //     label: '请求单号ID',
-          //     width: 150,
-          //     align: 'center',
-          //     search: true,
-          //     fieldProps: {
-          //       placeholder: '请输入请求单号ID'
-          //     }
-          //   },
+          {
+            prop: 'REQUESTNOTEID',
+            label: '申请单号',
+            width: 150,
+            align: 'center'
+          },
           {
             prop: 'APPLYDEPT',
             label: '申请部门', // 保持不变
@@ -96,6 +85,12 @@
             align: 'center'
           },
           {
+            prop: 'ERROR_MSG',
+            label: '错误消息',
+            width: 180,
+            align: 'center'
+          },
+          {
             prop: 'PROCESS_STATUS',
             label: '状态', // 更新
             width: 120,
@@ -119,6 +114,10 @@
       };
     },
     methods: {
+      rowClick(row) {
+        // 实现行点击事件
+        this.$emit('rowClick', row);
+      },
       datasource({ page, limit, sort, where }) {
         // 实现数据源方法
         return getOAMainsHeaderIface({
