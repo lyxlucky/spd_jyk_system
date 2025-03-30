@@ -2,6 +2,7 @@
   <div>
     <EbsPayablePendingTopTableSearch
       @handlePushPayablePending="handlePushPayablePending"
+      @search="reload"
       :selection="selection"
     />
     <ele-pro-table

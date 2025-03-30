@@ -66,9 +66,6 @@ module.exports = {
         // 北京内网测试
         // target:"http://172.27.2.102:18002/",
 
-        //北京内网
-        // target: 'http://10.8.5.36:10082/'
-        
         //北京内网https
         // target: 'https://spd.pkuph.cn:10082/'
 

@@ -46,7 +46,7 @@
           size="mini"
           clearable
           v-model="where.TEMPLATE_NAME"
-          placeholder="请输入模板名称"
+          placeholder="请输入模板名称/类别"
         />
       </el-col>
       <el-col v-bind="styleResponsive ? { lg: 12, md: 12 } : { span: 12 }">

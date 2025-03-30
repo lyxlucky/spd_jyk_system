@@ -7,8 +7,8 @@ export async function listEbsPayablePending(data) {
     page: data.page,
     size: data.limit,
     Token: sessionStorage.getItem(TOKEN_STORE_NAME),
-    BatchType: data.BatchType || '',
-    ComCode: data.ComCode || ''
+    BatchType: data.where.BatchType || '',
+    ComCode: data.where.ComCode || ''
   };
   const res = await request.post(
     '/PekingApplication/listEbsPayablePending',

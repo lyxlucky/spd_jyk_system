@@ -6,7 +6,7 @@
     :append-to-body="true"
     :close-on-click-modal="true"
     custom-class="ele-dialog-form"
-    title="修改品种"
+    title="审批"
     @update:visible="updateVisible"
   >
     <el-form ref="form" :model="form" :rules="rules" label-width="82px">
@@ -27,13 +27,7 @@
       <el-button size="mini" icon="el-icon-close" @click="updateVisible(false)"
         >取消</el-button
       >
-      <el-button
-        size="mini"
-        icon="el-icon-check"
-        type="primary"
-        :loading="loading"
-        @click="save"
-      >
+      <el-button size="mini" icon="el-icon-check" type="primary" @click="save">
         保存
       </el-button>
     </template>
@@ -113,6 +107,7 @@
                 .finally(() => {
                   this.$emit('done');
                   loading.close();
+                  this.updateVisible(false);
                 });
             })
             .finally(() => {});

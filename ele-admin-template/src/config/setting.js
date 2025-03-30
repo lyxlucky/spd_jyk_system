@@ -42,9 +42,6 @@ export const BACK_BASE_URL = "http://localhost:16416";
 //北京外网
 // export const BACK_BASE_URL = "http://39.107.78.98:6049";
 
-//北京内网
-// export const BACK_BASE_URL = "http://10.8.5.36:10082";
-
 //北京内网测试
 // export const BACK_BASE_URL = "http://172.27.2.102:18002/";
 
