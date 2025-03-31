@@ -6,6 +6,10 @@ import store from '@/store';
 import moment from 'moment';
 
 export async function GetNaxtDayApplyPlanMain(data){
+    var authorities = store.state.user.authorities;
+    if(authorities.indexOf("ApplyPlan_搜索权限") !== -1){  
+        data.where.CREATE_MAN = ""
+    }
     var data2 = {};
     data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
     data2.NAXT_DAT_PLAN_NUM = data.where.NAXT_DAT_PLAN_NUM ? data.where.NAXT_DAT_PLAN_NUM : '';
