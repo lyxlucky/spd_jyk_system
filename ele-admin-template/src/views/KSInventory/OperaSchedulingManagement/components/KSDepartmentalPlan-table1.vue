@@ -326,6 +326,7 @@ export default {
         NAXT_DAT_PLAN_NUM: this.current.NAXT_DAT_PLAN_NUM,
         SURGICAL_DEPT: this.current.SURGICAL_DEPT,
         CREATE_MAN_MAIN: this.current.CREATE_MAN,
+        SURGICAL_ROOM: this.current.SURGICAL_ROOM,
         VARIETIE_NAME: '',
         CREATE_MAN: '',
         MAIN_ID: this.current.ID,
