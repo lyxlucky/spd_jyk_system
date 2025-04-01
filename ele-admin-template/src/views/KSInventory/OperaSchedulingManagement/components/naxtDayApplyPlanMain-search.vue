@@ -25,7 +25,7 @@
         <el-date-picker v-model="where.date" type="daterange" value-format="yyyy-MM-dd" size="mini" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
         </el-date-picker>
       </el-col>
-      <el-col style="margin-left: 15px;" v-bind="styleResponsive ? { lg: 9, md: 4 } : { span: 4 }">
+      <el-col style="margin-left: 15px;" v-bind="styleResponsive ? { lg: 10, md: 4 } : { span: 4 }">
         <div class="ele-form-actions">
           <el-button size="mini" type="primary" icon="el-icon-search" class="ele-btn-icon" @click="search">
             查询
@@ -53,6 +53,9 @@
           </el-popconfirm>
 
           <el-button size="mini" type="primary" class="ele-btn-icon" @click="exportData">
+            打印
+          </el-button>
+          <el-button size="mini" type="primary" class="ele-btn-icon" @click="exportData2">
             导出
           </el-button>
         </div>
@@ -104,6 +107,9 @@ export default {
     exportData() {
       this.$emit('exportData', this.where);
     },
+    exportData2() {
+      this.$emit('exportData2', this.where);
+    },
     /* 创建申领单 */
     openUserEdit() {
       this.$emit('openUserEdit', this.where);
@@ -121,7 +127,6 @@ export default {
   watch: {
     KSDepartmentalPlanData() {
       this.$bus.$on('naxtDayApplyPlanDel', (data) => {
-        console.log(data);
         if (data.length <= 0) {
           this.IS_disabled = true;
         } else {

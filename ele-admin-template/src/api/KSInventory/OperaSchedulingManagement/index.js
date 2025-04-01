@@ -28,6 +28,29 @@ export async function GetNaxtDayApplyPlanMain(data){
     }
 }
 
+export async function GetNaxtDayApplyPlanMainVar(data){
+    var authorities = store.state.user.authorities;
+    if(authorities.indexOf("ApplyPlan_搜索权限") !== -1){  
+        data.where.CREATE_MAN = ""
+    }
+    var data2 = {};
+    data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+    data2.NAXT_DAT_PLAN_NUM = data.where.NAXT_DAT_PLAN_NUM ? data.where.NAXT_DAT_PLAN_NUM : '';
+    data2.CREATE_MAN = data.where.CREATE_MAN ? data.where.CREATE_MAN : '';
+    data2.START_TIME = data.where.date[0] ? data.where.date[0] : '';
+    data2.END_TIME = data.where.date[1] ? data.where.date[1] : '';
+    data2.page = data.page ? data.page : 1;
+    data2.size = data.limit ? data.limit : 10;
+
+    var data3 = formdataify(data2);
+    const res = await request.post('/DeptApplyPlan/GetNaxtDayApplyPlanMainVar', data3);
+    if (res.data.code == 200) {
+        return res.data;
+    } else {
+        return Promise.reject(new Error(res.data.msg));
+    }
+}
+
 export async function AddNaxtDayApplyPlanMain(data){
     var data2 = {};
     data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);

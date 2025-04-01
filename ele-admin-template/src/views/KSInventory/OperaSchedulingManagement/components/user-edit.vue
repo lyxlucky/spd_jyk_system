@@ -8,7 +8,25 @@
             <el-input size="mini" clearable :maxlength="20" v-model="form.REMARK" placeholder="" />
           </el-form-item>
           <el-form-item label="术间:" prop="SURGICAL_ROOM">
-            <el-input size="mini" clearable :maxlength="100" v-model="form.SURGICAL_ROOM" placeholder="" />
+            <!-- <el-input size="mini" clearable type="number" :maxlength="100" v-model="form.SURGICAL_ROOM" placeholder="" /> -->
+            <el-select size="mini" v-model="form.SURGICAL_ROOM" >
+              <el-option label="1" value="1"></el-option>
+              <el-option label="2" value="2"></el-option>
+              <el-option label="3" value="3"></el-option>
+              <el-option label="4" value="4"></el-option>
+              <el-option label="5" value="5"></el-option>
+              <el-option label="6" value="6"></el-option>
+              <el-option label="7" value="7"></el-option>
+              <el-option label="8" value="8"></el-option>
+              <el-option label="9" value="9"></el-option>
+              <el-option label="10" value="10"></el-option>
+              <el-option label="11" value="11"></el-option>
+              <el-option label="12" value="12"></el-option>
+              <el-option label="13" value="13"></el-option>
+              <el-option label="14" value="314"></el-option>
+              <el-option label="15" value="15"></el-option>
+              <el-option label="16" value="16"></el-option>
+            </el-select>
           </el-form-item>
           <!-- <el-form-item label="院区:" prop="SURGICAL_PLACE">
             <el-input size="mini" clearable :maxlength="100" v-model="form.SURGICAL_PLACE" placeholder="" />
@@ -44,7 +62,7 @@ export default {
   data() {
     const defaultForm = {
       REMARK: '',
-      SURGICAL_ROOM: '',
+      SURGICAL_ROOM: '1',
       SURGICAL_PLACE: ''
     };
     return {

@@ -1,11 +1,11 @@
 <template>
   <div class="ele-body" v-if="RenderTabel">
     <!-- 数据表格 -->
-    <ele-pro-table :key="key" :reserve-selection="true" highlight-current-row :row-key="(row) => row.PlanNum" @current-change="onCurrentChange" ref="table" height="18vh" :rowClickChecked="true" :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" :needPage="false" cache-key="KSInventoryBasicDataTable">
+    <ele-pro-table :key="key" :reserve-selection="true" highlight-current-row :row-key="(row) => row.PlanNum" :rowClickCheckedIntelligent="false" @current-change="onCurrentChange" ref="table" height="18vh" :rowClickChecked="true" :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" :needPage="true" cache-key="KSInventoryBasicDataTable">
       <!-- 表头工具栏 -->
       <template v-slot:toolbar>
         <!-- 搜索表单 -->
-        <naxtDayApplyPlanMainSearch @removeBatch="removeBatch" @exportData="exportData" :KSDepartmentalPlanData="current" @search="reload" @openUserEdit="openUserEdit" @upNaxtDayApplyPlanMainByState="upNaxtDayApplyPlanMainByStateFun" />
+        <naxtDayApplyPlanMainSearch @exportData2="exportData2" @removeBatch="removeBatch" @exportData="exportData" :KSDepartmentalPlanData="current" @search="reload" @openUserEdit="openUserEdit" @upNaxtDayApplyPlanMainByState="upNaxtDayApplyPlanMainByStateFun" />
       </template>
 
       <template v-slot:State="{ row }">
@@ -38,15 +38,16 @@
 
 <script>
 import naxtDayApplyPlanMainSearch from './naxtDayApplyPlanMain-search.vue';
-import { HOME_HP,BACK_BASE_URL,TOKEN_STORE_NAME } from '@/config/setting';
+import { HOME_HP, BACK_BASE_URL, TOKEN_STORE_NAME } from '@/config/setting';
 import userEdit from './user-edit.vue';
 import {
   GetNaxtDayApplyPlanMain,
   upNaxtDayApplyPlanMainByState,
   DeleteNaxtDayApplyPlanMain,
-  CreatePperationExcel
+  CreatePperationExcel,
+  GetNaxtDayApplyPlanMainVar
 } from '@/api/KSInventory/OperaSchedulingManagement';
-
+import { utils, writeFile } from 'xlsx';
 export default {
   name: 'KSDepartmentalPlanTable',
   props: ['IsReload'],
@@ -172,9 +173,9 @@ export default {
         }
       ],
       toolbar: false,
-      pageSize: 9999999,
-      pagerCount: 2,
-      pageSizes: [2, 10, 20, 50, 100, 9999999],
+      pageSize: 5,
+      pagerCount: 1,
+      pageSizes: [2, 5, 10, 20, 50, 100, 9999999],
       // 表格选中数据
       selection: [],
       // 当前编辑数据
@@ -225,8 +226,6 @@ export default {
       return data;
     },
     openUserEdit(data) {
-      console.log(1);
-      console.log(data);
       this.showEdit = true;
       // this.$bus.$emit(`${this.$route.path}/handleUpdate`, this.selection);
     },
@@ -316,32 +315,125 @@ export default {
         });
     },
     exportData(obj) {
-      if (this.current == null) {
+      console.log(this.selection);
+      if (this.selection.length <= 0) {
         this.$message.warning('请选择打印单号');
         return;
       }
       const loading = this.$messageLoading('请求中..');
 
-      var data = {
-        NAXT_DAT_PLAN_NUM: this.current.NAXT_DAT_PLAN_NUM,
-        SURGICAL_DEPT: this.current.SURGICAL_DEPT,
-        CREATE_MAN_MAIN: this.current.CREATE_MAN,
-        SURGICAL_ROOM: this.current.SURGICAL_ROOM,
-        VARIETIE_NAME: '',
-        CREATE_MAN: '',
-        MAIN_ID: this.current.ID,
-        page: 1,
-        size: 999999
-      };
-      CreatePperationExcel(data).then((res) => {
-        var url = BACK_BASE_URL + '/Excel/files/' + res.msg;
-        // console.log(url)
-        this.$message.success("导出成功")
-        window.open(url);
-      }).catch(err=>{
-        this.$message.error(err.msg)
-      }).finally(()=>{
-        loading.close();
+      var count = 0;
+      this.selection.forEach((item) => {
+        var data = {
+          NAXT_DAT_PLAN_NUM: item.NAXT_DAT_PLAN_NUM,
+          SURGICAL_DEPT: item.SURGICAL_DEPT,
+          CREATE_MAN_MAIN: item.CREATE_MAN,
+          SURGICAL_ROOM: item.SURGICAL_ROOM,
+          VARIETIE_NAME: '',
+          CREATE_MAN: '',
+          MAIN_ID: item.ID,
+          page: 1,
+          size: 999999
+        };
+        CreatePperationExcel(data)
+          .then((res) => {
+            var url = BACK_BASE_URL + '/Excel/files/' + res.msg;
+            // console.log(url)
+            count++;
+            if (count == this.selection.length) {
+              loading.close();
+            }
+            window.open(url);
+          })
+          .catch((err) => {
+            this.$message.error(err.msg);
+          })
+          .finally(() => {});
+      });
+      // this.$message.success('导出成功');
+    },
+    exportData2(obj) {
+      const loading = this.$messageLoading('正在导出数据...');
+      obj.CREATE_MAN = this.$store.state.user.info.Nickname;
+      this.$refs.table.doRequest(() => {
+        GetNaxtDayApplyPlanMainVar({
+          page: 1,
+          limit: 999999,
+          where: obj
+        })
+          .then((res) => {
+            loading.close();
+            const array = [
+              [
+                '单号',
+                '创建人',
+                '创建时间',
+                '状态',
+                '备注',
+                '术间',
+                '品种编码',
+                '品种名称',
+                '规格型号',
+                '单位',
+                '生产企业',
+                '申请数量',
+                '数量',
+                '中心库散货',
+                '中心库库存',
+              ]
+            ];
+            res.result.forEach((d) => {
+              if (d.State == 0) {
+                d.State = '新增';
+              } else if (d.State == 1) {
+                d.State = '已提交';
+              }else if (d.State == 2) {
+                d.State = '配送中';
+              }else if (d.State == 5) {
+                d.State = '已审核';
+              }else if (d.State == 10) {
+                d.State = '强制结束';
+              }else if ((d.State == 6 || d.State == 4)&& d.SUM_Left_Apply_Qty == d.SUM_Apply_Qty) {
+                d.State = '已审批';
+              }else if ( d.SUM_Left_Apply_Qty > 0 && d.SUM_Left_Apply_Qty != d.SUM_Apply_Qty) {
+                d.State = '未收全';
+              }else if ( d.SUM_Left_Apply_Qty == 0) {
+                d.State = '已收全';
+              }
+
+              array.push([
+                d.NAXT_DAT_PLAN_NUM,
+                d.CREATE_MAN,
+                d.CREATE_TIME,
+                d.STATE,
+                d.REMARK,
+                d.SURGICAL_ROOM,
+                d.VARIETIE_CODE_NEW,
+                d.VARIETIE_NAME,
+                d.SPECIFICATION_OR_TYPE,
+                d.UNIT,
+                d.MANUFACTURING_ENT_NAME,
+                d.APPLY_QTY,
+                d.QTY,
+                d.UP_SHELF_QUANTITY,
+                d.ZXK_DEF,
+              ]);
+            });
+            writeFile(
+              {
+                SheetNames: ['Sheet1'],
+                Sheets: {
+                  Sheet1: utils.aoa_to_sheet(array)
+                }
+              },
+              '手术预约单详情.xlsx'
+            );
+            this.$message.success('导出成功');
+          })
+          .catch((e) => {
+            loading.close();
+            this.$message.error(e.message);
+          });
       });
     }
   },
