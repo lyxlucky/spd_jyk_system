@@ -344,7 +344,9 @@ export default {
             if (count == this.selection.length) {
               loading.close();
             }
-            window.open(url);
+            if (res.count > 0) {
+              window.open(url);
+            }
           })
           .catch((err) => {
             this.$message.error(err.msg);
@@ -380,7 +382,7 @@ export default {
                 '申请数量',
                 '数量',
                 '中心库散货',
-                '中心库库存',
+                '中心库库存'
               ]
             ];
             res.result.forEach((d) => {
@@ -388,17 +390,23 @@ export default {
                 d.State = '新增';
               } else if (d.State == 1) {
                 d.State = '已提交';
-              }else if (d.State == 2) {
+              } else if (d.State == 2) {
                 d.State = '配送中';
-              }else if (d.State == 5) {
+              } else if (d.State == 5) {
                 d.State = '已审核';
-              }else if (d.State == 10) {
+              } else if (d.State == 10) {
                 d.State = '强制结束';
-              }else if ((d.State == 6 || d.State == 4)&& d.SUM_Left_Apply_Qty == d.SUM_Apply_Qty) {
+              } else if (
+                (d.State == 6 || d.State == 4) &&
+                d.SUM_Left_Apply_Qty == d.SUM_Apply_Qty
+              ) {
                 d.State = '已审批';
-              }else if ( d.SUM_Left_Apply_Qty > 0 && d.SUM_Left_Apply_Qty != d.SUM_Apply_Qty) {
+              } else if (
+                d.SUM_Left_Apply_Qty > 0 &&
+                d.SUM_Left_Apply_Qty != d.SUM_Apply_Qty
+              ) {
                 d.State = '未收全';
-              }else if ( d.SUM_Left_Apply_Qty == 0) {
+              } else if (d.SUM_Left_Apply_Qty == 0) {
                 d.State = '已收全';
               }
 
@@ -417,7 +425,7 @@ export default {
                 d.APPLY_QTY,
                 d.QTY,
                 d.UP_SHELF_QUANTITY,
-                d.ZXK_DEF,
+                d.ZXK_DEF
               ]);
             });
             writeFile(
