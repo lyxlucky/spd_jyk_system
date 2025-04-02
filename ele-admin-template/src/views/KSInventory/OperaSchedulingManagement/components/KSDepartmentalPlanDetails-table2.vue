@@ -147,6 +147,12 @@ export default {
           // width: 300
         },
         {
+          prop: 'MEDICAL_NAME',
+          label: '通用名',
+          align: 'center',
+          showOverflowTooltip: true
+        },
+        {
           prop: 'SPECIFICATION_OR_TYPE',
           label: '型号/规格',
           align: 'center',
