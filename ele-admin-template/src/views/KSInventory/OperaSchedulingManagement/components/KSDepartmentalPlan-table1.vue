@@ -329,6 +329,7 @@ export default {
           SURGICAL_DEPT: item.SURGICAL_DEPT,
           CREATE_MAN_MAIN: item.CREATE_MAN,
           SURGICAL_ROOM: item.SURGICAL_ROOM,
+          REMARK: item.REMARK,
           VARIETIE_NAME: '',
           CREATE_MAN: '',
           MAIN_ID: item.ID,

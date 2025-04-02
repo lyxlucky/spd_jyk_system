@@ -199,6 +199,7 @@ export async function CreatePperationExcel(data) {
     data2.NAXT_DAT_PLAN_NUM = data.NAXT_DAT_PLAN_NUM ? data.NAXT_DAT_PLAN_NUM : '';
     data2.SURGICAL_DEPT = data.SURGICAL_DEPT ? data.SURGICAL_DEPT : '';
     data2.MAIN_ID = data.MAIN_ID ? data.MAIN_ID : '';
+    data2.REMARK = data.REMARK ? data.REMARK : '';
     data2.CREATE_MAN_MAIN = data.CREATE_MAN_MAIN ? data.CREATE_MAN_MAIN : '';
     data2.SURGICAL_ROOM = data.SURGICAL_ROOM ? data.SURGICAL_ROOM : '';
 
