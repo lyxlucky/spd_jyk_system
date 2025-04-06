@@ -1,14 +1,26 @@
 <template>
   <div class="ele-body">
-    <el-row :gutter="20" class="consume-box">
+    <el-row :gutter="10" class="consume-box">
       <el-col :span="6">
         <el-card shadow="never">
           <el-tabs :value="0">
             <el-tab-pane label="预收货单号列表">
               <div class="margin-top-10">
-                <el-button type="primary" size="mini" @click="exportConsumeXlsx">导出</el-button>
-                <el-button size="mini" :disabled="!(this.currentConsumeA1Status == '2')" @click="onStatusWithdrawn">状态撤回</el-button>
-                <el-button type="primary" size="mini" @click="showUploadDialogVisible">上传植入单</el-button>
+                <el-button type="primary" size="mini" @click="exportConsumeXlsx"
+                  >导出</el-button
+                >
+                <el-button
+                  size="mini"
+                  :disabled="!(this.currentConsumeA1Status == '2')"
+                  @click="onStatusWithdrawn"
+                  >状态撤回</el-button
+                >
+                <el-button
+                  type="primary"
+                  size="mini"
+                  @click="showUploadDialogVisible"
+                  >上传植入单</el-button
+                >
               </div>
               <el-form class="consume-form" :model="consumeForm" size="mini">
                 <el-form-item>
@@ -30,27 +42,61 @@
                 <el-form-item>
                   <el-row :gutter="0">
                     <el-col :span="18">
-                      <el-input v-model="consumeForm.condition" placeholder="可输入住院号、病患、使用科室检索"></el-input>
+                      <el-input
+                        v-model="consumeForm.condition"
+                        placeholder="可输入住院号、病患、使用科室检索"
+                      ></el-input>
                     </el-col>
                     <el-col :span="6">
-                      <el-button type="primary" icon="el-icon-search" @click="getReceiptOrderList">查询</el-button>
+                      <el-button
+                        type="primary"
+                        icon="el-icon-search"
+                        @click="getReceiptOrderList"
+                        >查询</el-button
+                      >
                     </el-col>
                   </el-row>
                 </el-form-item>
                 <el-form-item>
                   <el-row>
                     <el-col :span="11">
-                      <el-date-picker value-format="yyyy-MM-dd" type="date" placeholder="yyyy-MM-dd" v-model="consumeForm.dateFrom" style="width: 100%"></el-date-picker>
+                      <el-date-picker
+                        value-format="yyyy-MM-dd"
+                        type="date"
+                        placeholder="yyyy-MM-dd"
+                        v-model="consumeForm.dateFrom"
+                        style="width: 100%"
+                      ></el-date-picker>
                     </el-col>
-                    <el-col class="line" :span="2" style="text-align: center">-</el-col>
+                    <el-col class="line" :span="2" style="text-align: center"
+                      >-</el-col
+                    >
                     <el-col :span="11">
-                      <el-date-picker value-format="yyyy-MM-dd" type="date" placeholder="yyyy-MM-dd" v-model="consumeForm.dateTo" style="width: 100%"></el-date-picker>
+                      <el-date-picker
+                        value-format="yyyy-MM-dd"
+                        type="date"
+                        placeholder="yyyy-MM-dd"
+                        v-model="consumeForm.dateTo"
+                        style="width: 100%"
+                      ></el-date-picker>
                     </el-col>
                   </el-row>
                 </el-form-item>
               </el-form>
               <div class="margin-top-10">
-                <ele-pro-table height="500" :needPage="false" :toolbar="false" :pageSize="9999" class="receipt-order-list-table" size="mini" :columns="consumeColumns" :highlightCurrentRow="true" @current-change="onReceiptOrderCurrentChange" :row-class-name="tableRowClassName1" :datasource="ReceiptOrderList"></ele-pro-table>
+                <ele-pro-table
+                  height="500"
+                  :needPage="false"
+                  :toolbar="false"
+                  :pageSize="9999"
+                  class="receipt-order-list-table"
+                  size="mini"
+                  :columns="consumeColumns"
+                  :highlightCurrentRow="true"
+                  @current-change="onReceiptOrderCurrentChange"
+                  :row-class-name="tableRowClassName1"
+                  :datasource="ReceiptOrderList"
+                ></ele-pro-table>
               </div>
             </el-tab-pane>
           </el-tabs>
@@ -60,33 +106,73 @@
         <el-card shadow="never">
           <el-tabs :value="0">
             <el-tab-pane label="品种消耗审批表">
-              <el-row type="flex" class="row-bg margin-top-10" justify="space-between">
+              <el-row
+                type="flex"
+                class="row-bg margin-top-10"
+                justify="space-between"
+              >
                 <el-col :span="12">
                   <el-form size="mini">
                     <el-row>
                       <el-col :span="18">
-                        <el-input size="mini" v-model="consumeA2Input" placeholder="B2B品种编码、品种（材料）编码、品种全称、生产企业名称、型号/规格、供应商名称"></el-input>
+                        <el-input
+                          size="mini"
+                          v-model="consumeA2Input"
+                          placeholder="B2B品种编码、品种（材料）编码、品种全称、生产企业名称、型号/规格、供应商名称"
+                        ></el-input>
                       </el-col>
                       <el-col :span="6">
-                        <el-button size="mini" type="primary" icon="el-icon-search" @click="getDeliveryVarietieList">查询</el-button>
+                        <el-button
+                          size="mini"
+                          type="primary"
+                          icon="el-icon-search"
+                          @click="getDeliveryVarietieList"
+                          >查询</el-button
+                        >
                       </el-col>
                     </el-row>
                   </el-form>
                 </el-col>
                 <el-col :span="10" :push="2">
-                  <el-button size="mini" type="primary" @click="onGeneratePackage">生成套包</el-button>
-                  <el-button size="mini" :disabled="
+                  <el-button
+                    size="mini"
+                    type="primary"
+                    @click="onGeneratePackage"
+                    >生成套包</el-button
+                  >
+                  <el-button
+                    size="mini"
+                    :disabled="
                       !(
                         this.currentConsumeA1Status == '3' ||
                         this.currentConsumeA1Status == '4'
                       )
-                    " @click="isHvaeChargCode">查看定数码标签</el-button>
-                  <el-button size="mini" :disabled="!(this.currentConsumeA1Status == '2')" @click="onNurseApproval">护士审批</el-button>
+                    "
+                    @click="isHvaeChargCode"
+                    >查看定数码标签</el-button
+                  >
+                  <el-button
+                    size="mini"
+                    :disabled="!(this.currentConsumeA1Status == '2')"
+                    @click="onNurseApproval"
+                    >护士审批</el-button
+                  >
                 </el-col>
               </el-row>
               <!-- 表格 -->
               <div class="margin-top-10">
-                <ele-pro-table height="300" class="receipt-delivery-varietie-table" :needPage="false" :toolbar="false" size="mini" :columns="deliveryVarietieColumns" :highlightCurrentRow="true" @current-change="onDeliveryVarietieCurrentChange" :pageSize="9999" :datasource="DeliveryVarietieList"></ele-pro-table>
+                <ele-pro-table
+                  height="300"
+                  class="receipt-delivery-varietie-table"
+                  :needPage="false"
+                  :toolbar="false"
+                  size="mini"
+                  :columns="deliveryVarietieColumns"
+                  :highlightCurrentRow="true"
+                  @current-change="onDeliveryVarietieCurrentChange"
+                  :pageSize="9999"
+                  :datasource="DeliveryVarietieList"
+                ></ele-pro-table>
               </div>
             </el-tab-pane>
           </el-tabs>
@@ -94,14 +180,30 @@
 
         <el-card shadow="never" class="margin-top-10">
           <div>
-            <ele-pro-table height="300" class="receipt-varietie-info-table" :needPage="false" :pageSize="9999" :toolbar="false" size="mini" :columns="consumeA3" @current-change="onTableCurrent3" :highlightCurrentRow="true" :datasource="LoadGeneratedVarietieInfo"></ele-pro-table>
+            <ele-pro-table
+              height="300"
+              class="receipt-varietie-info-table"
+              :needPage="false"
+              :pageSize="9999"
+              :toolbar="false"
+              size="mini"
+              :columns="consumeA3"
+              @current-change="onTableCurrent3"
+              :highlightCurrentRow="true"
+              :datasource="LoadGeneratedVarietieInfo"
+            ></ele-pro-table>
           </div>
         </el-card>
       </el-col>
     </el-row>
 
     <!-- 对话框 -->
-    <el-dialog title="生成套包" :visible.sync="dialogVisible" width="80%" :before-close="handleClose">
+    <el-dialog
+      title="生成套包"
+      :visible.sync="dialogVisible"
+      width="80%"
+      :before-close="handleClose"
+    >
       <el-row>
         <el-col :span="4">
           <el-select size="mini" v-model="gtTbTB_TYPE2" placeholder="请选择">
@@ -110,22 +212,62 @@
           </el-select>
         </el-col>
         <el-col :span="4">
-          <el-button size="mini" icon="el-icon-search" type="primary" @click="getGtTbTable1gtList">查询</el-button>
+          <el-button
+            size="mini"
+            icon="el-icon-search"
+            type="primary"
+            @click="getGtTbTable1gtList"
+            >查询</el-button
+          >
         </el-col>
       </el-row>
       <div class="margin-top-10">
-        <ele-pro-table height="500" :toolbar="false" size="mini" :columns="gtTbTable1gt" :highlightCurrentRow="true" class="gtTbTable1gt-table" @current-change="onGtTbTable1gtCurrentChange" :datasource="GtTbTable1gtList"></ele-pro-table>
+        <ele-pro-table
+          height="500"
+          :toolbar="false"
+          size="mini"
+          :columns="gtTbTable1gt"
+          :highlightCurrentRow="true"
+          class="gtTbTable1gt-table"
+          @current-change="onGtTbTable1gtCurrentChange"
+          :datasource="GtTbTable1gtList"
+        ></ele-pro-table>
       </div>
       <div slot="footer" class="">
-        <el-button size="mini" type="primary" @click="onGeneratePackageSure">确定</el-button>
+        <el-button size="mini" type="primary" @click="onGeneratePackageSure"
+          >确定</el-button
+        >
       </div>
     </el-dialog>
 
     <!-- 上传植入单 -->
-    <el-dialog title="上传植入单" :visible.sync="uploadDialogVisible" width="50%" :before-close="handleCloseUploadDialogVisible">
-      <el-upload class="upload-demo" ref="upload" action="" :limit="1" :on-change="handleFileChange" :on-preview="handlePreview" :on-remove="handleRemove" :file-list="fileList" :auto-upload="false">
-        <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
-        <el-button style="margin-left: 10px" size="small" type="success" @click="submitUpload">上传到服务器</el-button>
+    <el-dialog
+      title="上传植入单"
+      :visible.sync="uploadDialogVisible"
+      width="50%"
+      :before-close="handleCloseUploadDialogVisible"
+    >
+      <el-upload
+        class="upload-demo"
+        ref="upload"
+        action=""
+        :limit="1"
+        :on-change="handleFileChange"
+        :on-preview="handlePreview"
+        :on-remove="handleRemove"
+        :file-list="fileList"
+        :auto-upload="false"
+      >
+        <el-button slot="trigger" size="small" type="primary"
+          >选取文件</el-button
+        >
+        <el-button
+          style="margin-left: 10px"
+          size="small"
+          type="success"
+          @click="submitUpload"
+          >上传到服务器</el-button
+        >
         <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件</div> -->
       </el-upload>
     </el-dialog>
@@ -728,9 +870,8 @@
         this.currentConsumeA3 = row;
       },
       onNurseApproval(e) {
+        // this.condition =this.currentConsumeA1.Delivery_Note_Number;
 
-              // this.condition =this.currentConsumeA1.Delivery_Note_Number;
-             
         if (!this.currentConsumeA1) {
           this.$message('请选择收货单号');
           return false;
@@ -750,28 +891,27 @@
               if (data.code != '200') {
                 this.$message.warning(data.msg);
                 return;
-              }else{
+              } else {
                 let where = {
-                condition :this.currentConsumeA1.Delivery_Note_Number,
-                state:""
-              };
-              apiGetLoadGoodsDeliveryNumbers({
-                where
-              })
-                .then((res) => {
-                  let data = res.data;
-                  console.log(data)
-                  this.currentConsumeA1Status = data.result[0].Receive_Receipt_State;
+                  condition: this.currentConsumeA1.Delivery_Note_Number,
+                  state: ''
+                };
+                apiGetLoadGoodsDeliveryNumbers({
+                  where
                 })
-                .finally(() => {
-                });
+                  .then((res) => {
+                    let data = res.data;
+                    console.log(data);
+                    this.currentConsumeA1Status =
+                      data.result[0].Receive_Receipt_State;
+                  })
+                  .finally(() => {});
               }
-              
+
               this.$message.success(data.msg);
             })
             .finally(() => {
               loading.close();
-              
             });
         });
       },
@@ -1007,42 +1147,43 @@
 </script>
 
 <style scoped>
-.consume-box {
-  display: flex;
-}
+  .consume-box {
+    display: flex;
+  }
 
-.consume-form {
-  margin-top: 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
+  .consume-form {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
 
-.margin-top-10 {
-  margin-top: 10px;
-}
+  .margin-top-10 {
+    margin-top: 10px;
+  }
 
-::v-deep(.consume-form .el-select) {
-  width: 100%;
-}
+  ::v-deep(.consume-form .el-select) {
+    width: 100%;
+  }
 
-::v-deep(.el-form-item--mini.el-form-item) {
-  margin-bottom: 0px;
-}
+  ::v-deep(.el-form-item--mini.el-form-item) {
+    margin-bottom: 0px;
+  }
 
-::v-deep(.warning-row) {
-  background-color: #fdf6ec;
-}
+  ::v-deep(.warning-row) {
+    background-color: #fdf6ec;
+  }
 
-::v-deep(.success-row) {
-  background-color: #f0f9eb;
-}
+  ::v-deep(.success-row) {
+    /* background-color: #f0f9eb; */
+    color: #67c23a;
+  }
 
-::v-deep(.info-row) {
-  background-color: #f4f4f5;
-}
+  ::v-deep(.info-row) {
+    background-color: #f4f4f5;
+  }
 
-::v-deep(.danger-row) {
-  background-color: #fef0f0;
-}
+  ::v-deep(.danger-row) {
+    background-color: #fef0f0;
+  }
 </style>
