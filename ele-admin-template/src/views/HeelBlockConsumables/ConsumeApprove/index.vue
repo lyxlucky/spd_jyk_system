@@ -1,6 +1,6 @@
 <template>
   <div class="ele-body">
-    <el-row :gutter="20" class="consume-box">
+    <el-row :gutter="10" class="consume-box">
       <el-col :span="6">
         <el-card shadow="never">
           <el-tabs :value="0">
