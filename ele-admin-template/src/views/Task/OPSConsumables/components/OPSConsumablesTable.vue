@@ -1,6 +1,7 @@
 <template>
   <div class="body">
     <el-card>
+      <div slot="header">手术排期</div>
       <!-- 筛选表单 -->
       <el-form :inline="true" :model="where" size="mini" class="filter-form">
         <el-form-item label="日期范围">
@@ -81,12 +82,6 @@
         ],
         // 表格列配置
         columns: [
-          //   {
-          //     prop: 'ID',
-          //     label: 'ID',
-          //     align: 'center',
-          //     width: 100
-          //   },
           {
             prop: 'MZZY',
             label: '门诊/住院',
@@ -104,18 +99,6 @@
             label: '病人姓名',
             align: 'center',
             width: 100
-          },
-          {
-            prop: 'BRXB',
-            label: '病人性别',
-            align: 'center',
-            width: 80
-          },
-          {
-            prop: 'CSNY',
-            label: '出生年月',
-            align: 'center',
-            width: 120
           },
           {
             prop: 'SSMC',
@@ -136,115 +119,6 @@
             align: 'center',
             width: 150
           }
-          //   {
-          //     prop: 'FYXH',
-          //     label: '费用序号',
-          //     align: 'center',
-          //     width: 100
-          //   },
-          //   {
-          //     prop: 'FYMC',
-          //     label: '费用名称',
-          //     align: 'center',
-          //     minWidth: 150,
-          //     showOverflowTooltip: true
-          //   },
-          //   {
-          //     prop: 'WJXMBM',
-          //     label: '物价项目编码',
-          //     align: 'center',
-          //     width: 120
-          //   },
-          //   {
-          //     prop: 'FYSL',
-          //     label: '费用数量',
-          //     align: 'center',
-          //     width: 100
-          //   },
-          //   {
-          //     prop: 'FYDJ',
-          //     label: '费用单价',
-          //     align: 'center',
-          //     width: 100
-          //   },
-          //   {
-          //     prop: 'VARIETIE_CODE',
-          //     label: '品种编码',
-          //     align: 'center',
-          //     width: 120
-          //   },
-          //   {
-          //     prop: 'VARIETIE_CODE_NEW',
-          //     label: '新品种编码',
-          //     align: 'center',
-          //     width: 120
-          //   },
-          //   {
-          //     prop: 'SPECIFICATION_OR_TYPE',
-          //     label: '规格/型号',
-          //     align: 'center',
-          //     width: 150,
-          //     showOverflowTooltip: true
-          //   },
-          //   {
-          //     prop: 'UNIT',
-          //     label: '单位',
-          //     align: 'center',
-          //     width: 80
-          //   },
-          //   {
-          //     prop: 'PRICE',
-          //     label: '价格',
-          //     align: 'center',
-          //     width: 100
-          //   },
-          //   {
-          //     prop: 'BATCH',
-          //     label: '批次',
-          //     align: 'center',
-          //     width: 100
-          //   },
-          //   {
-          //     prop: 'BATCH_ID',
-          //     label: '批次ID',
-          //     align: 'center',
-          //     width: 120
-          //   },
-          //   {
-          //     prop: 'BATCH_PRODUCTION_DATE',
-          //     label: '生产日期',
-          //     align: 'center',
-          //     width: 120
-          //   },
-          //   {
-          //     prop: 'BATCH_VALIDITY_PERIOD',
-          //     label: '有效期',
-          //     align: 'center',
-          //     width: 120
-          //   },
-          //   {
-          //     prop: 'APPROVAL_NUMBER',
-          //     label: '批准文号',
-          //     align: 'center',
-          //     width: 150,
-          //     showOverflowTooltip: true
-          //   },
-          //   {
-          //     prop: 'MANUFACTURING_ENT_NAME',
-          //     label: '生产企业名称',
-          //     align: 'center',
-          //     minWidth: 180,
-          //     showOverflowTooltip: true
-          //   },
-          //   {
-          //     prop: 'CREATE_TIME',
-          //     label: '创建时间',
-          //     align: 'center',
-          //     width: 160,
-          //     formatter: (row) => {
-          //       return row.CREATE_TIME ? this.$moment(row.CREATE_TIME).format('YYYY-MM-DD HH:mm:ss') : '';
-          //     }
-          //   }
         ],
         // 分页配置
         pageSize: 10,

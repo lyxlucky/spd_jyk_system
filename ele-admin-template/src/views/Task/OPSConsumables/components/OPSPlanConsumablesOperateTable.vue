@@ -5,6 +5,7 @@
       size="mini"
       :columns="columns"
       height="50vh"
+      highlight-current-row
       :datasource="datasource"
     >
     </ele-pro-table>
@@ -12,186 +13,127 @@
 </template>
 
 <script>
-  import { getBdszZgsjMainPsDel } from '@/api/Task/OPSConsumables';
+  import { searchVarietieBatchIds } from '@/api/Task/OPSConsumables';
   export default {
     name: 'OPSPlanConsumablesOperateTable',
+
     components: {},
-    props: {},
+    props: {
+      currentRow: {
+        type: Object,
+        default: () => {}
+      }
+    },
     data() {
       return {
         columns: [
           {
-            prop: 'ID',
-            label: 'ID',
+            prop: 'Id',
+            label: '上架表ID',
             align: 'center',
             width: 100
           },
           {
-            prop: 'MZZY',
-            label: '门诊/住院',
+            prop: 'Storage_Id',
+            label: '库区ID',
             align: 'center',
             width: 100
           },
           {
-            prop: 'ZYHM',
-            label: '住院号码',
+            prop: 'Name',
+            label: '库区名称',
             align: 'center',
             width: 120
           },
           {
-            prop: 'BRXM',
-            label: '病人姓名',
-            align: 'center',
-            width: 100
-          },
-          {
-            prop: 'BRXB',
-            label: '病人性别',
-            align: 'center',
-            width: 80
-          },
-          {
-            prop: 'CSNY',
-            label: '出生年月',
-            align: 'center',
-            width: 120
-          },
-          {
-            prop: 'SSMC',
-            label: '手术名称',
-            align: 'center',
-            minWidth: 180,
-            showOverflowTooltip: true
-          },
-          {
-            prop: 'SSRQ',
-            label: '手术日期',
-            align: 'center',
-            width: 100
-          },
-          {
-            prop: 'SSRQ_TIME',
-            label: '手术时间',
-            align: 'center',
-            width: 150
-          },
-          {
-            prop: 'FYXH',
-            label: '费用序号',
-            align: 'center',
-            width: 100
-          },
-          {
-            prop: 'FYMC',
-            label: '费用名称',
+            prop: 'Varietie_Name',
+            label: '品名',
             align: 'center',
             minWidth: 150,
             showOverflowTooltip: true
           },
           {
-            prop: 'WJXMBM',
-            label: '物价项目编码',
-            align: 'center',
-            width: 120
-          },
-          {
-            prop: 'FYSL',
-            label: '费用数量',
-            align: 'center',
-            width: 100
-          },
-          {
-            prop: 'FYDJ',
-            label: '费用单价',
-            align: 'center',
-            width: 100
-          },
-          {
-            prop: 'VARIETIE_CODE',
+            prop: 'Varietie_Code_New',
             label: '品种编码',
             align: 'center',
             width: 120
           },
           {
-            prop: 'VARIETIE_CODE_NEW',
-            label: '新品种编码',
+            prop: 'Varietie_Code',
+            label: '品种编码ID',
             align: 'center',
             width: 120
           },
           {
-            prop: 'SPECIFICATION_OR_TYPE',
-            label: '规格/型号',
+            prop: 'Batch_Id',
+            label: '批次号',
             align: 'center',
-            width: 150,
-            showOverflowTooltip: true
+            width: 120
           },
           {
-            prop: 'UNIT',
-            label: '单位',
-            align: 'center',
-            width: 80
-          },
-          {
-            prop: 'PRICE',
-            label: '价格',
-            align: 'center',
-            width: 100
-          },
-          {
-            prop: 'BATCH',
+            prop: 'Batch',
             label: '批次',
             align: 'center',
             width: 100
           },
           {
-            prop: 'BATCH_ID',
-            label: '批次ID',
+            prop: 'Supply_Price',
+            label: '结算价',
+            align: 'center',
+            width: 100
+          },
+          {
+            prop: 'Contract_Code',
+            label: '合同编码',
             align: 'center',
             width: 120
           },
           {
-            prop: 'BATCH_PRODUCTION_DATE',
+            prop: 'Supplier_Code',
+            label: '供应商编码',
+            align: 'center',
+            width: 120
+          },
+          {
+            prop: 'Supplier_Name',
+            label: '供应商名称',
+            align: 'center',
+            minWidth: 150,
+            showOverflowTooltip: true
+          },
+          {
+            prop: 'Up_Shelf_Quantity',
+            label: '上架数量',
+            align: 'center',
+            width: 100
+          },
+          {
+            prop: 'Batch_Production_Date',
             label: '生产日期',
             align: 'center',
-            width: 120
-          },
-          {
-            prop: 'BATCH_VALIDITY_PERIOD',
-            label: '有效期',
-            align: 'center',
-            width: 120
-          },
-          {
-            prop: 'APPROVAL_NUMBER',
-            label: '批准文号',
-            align: 'center',
-            width: 150,
-            showOverflowTooltip: true
-          },
-          {
-            prop: 'MANUFACTURING_ENT_NAME',
-            label: '生产企业名称',
-            align: 'center',
-            minWidth: 180,
-            showOverflowTooltip: true
-          },
-          {
-            prop: 'CREATE_TIME',
-            label: '创建时间',
-            align: 'center',
-            width: 160,
+            width: 120,
             formatter: (row) => {
-              return row.CREATE_TIME
-                ? this.$moment(row.CREATE_TIME).format('YYYY-MM-DD HH:mm:ss')
+              return row.Batch_Production_Date
+                ? this.$moment(row.Batch_Production_Date).format('YYYY-MM-DD')
                 : '';
             }
           },
           {
-            prop: 'operate',
-            label: '配置耗材',
+            prop: 'Batch_Validity_Period',
+            label: '有效期',
             align: 'center',
-            float: 'right',
-            minWidth: 180
+            width: 120,
+            formatter: (row) => {
+              return row.Batch_Validity_Period
+                ? this.$moment(row.Batch_Validity_Period).format('YYYY-MM-DD')
+                : '';
+            }
+          },
+          {
+            prop: 'Priority_Weight',
+            label: '优先权重',
+            align: 'center',
+            width: 100
           }
         ]
       };
@@ -199,7 +141,8 @@
     methods: {
       datasource({ page, limit, where }) {
         // 这里不实现具体方法，仅返回空数据结构
-        return getBdszZgsjMainPsDel({ where })
+        where.varietie = this.currentRow.VARIETIE_CODE;
+        return searchVarietieBatchIds({ where })
           .then((data) => {
             return {
               list: data.data || [],
@@ -214,7 +157,7 @@
           });
       },
       reload() {
-        this.$refs.table.reload();
+        this.$refs.table.reload({page: 1});
       }
     }
   };
