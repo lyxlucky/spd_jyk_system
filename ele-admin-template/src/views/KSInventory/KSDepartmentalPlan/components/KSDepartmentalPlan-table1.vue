@@ -59,10 +59,10 @@
             row.SUM_Left_Apply_Qty != row.SUM_Apply_Qty
           "
           type="danger"
-          >未收全</el-tag
+          >已审批</el-tag
         >
         <el-tag size="mini" v-else-if="row.SUM_Left_Apply_Qty == 0" type="success"
-          >已收全</el-tag
+          >已审批</el-tag
         >
         <!-- <el-tag v-for="(item) in row" :key="item.PlanNum" size="mini" type="primary" :disable-transitions="true">
           {{ item.State }}

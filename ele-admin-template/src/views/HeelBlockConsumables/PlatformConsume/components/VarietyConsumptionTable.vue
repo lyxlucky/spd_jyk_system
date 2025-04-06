@@ -173,7 +173,7 @@
           },
           {
             prop: 'Batch_Validity_Period',
-            label: '生产日期',
+            label: '失效日期',
             align: 'center',
             showOverflowTooltip: true,
             minWidth: 180,

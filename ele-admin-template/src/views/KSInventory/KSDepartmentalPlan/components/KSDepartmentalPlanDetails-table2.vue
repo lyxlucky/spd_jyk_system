@@ -310,17 +310,6 @@ export default {
           }
         },
         {
-          prop: '',
-          label: '已收货数量',
-
-          align: 'center',
-          showOverflowTooltip: true,
-          width: 100,
-          formatter: (row, column, cellValue) => {
-            return row.PlanQty - row.LEFT_APPLY_QTY;
-          }
-        },
-        {
           prop: 'IS_NEED_TWO_APP',
           label: '二级审批',
 

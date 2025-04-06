@@ -325,10 +325,10 @@
             return this.$message.error(
               `添加失败，品种 [${item.Varietie_Code}${item.Varietie_Name}] 的生产批号不能为空值`
             );
-          if (!item?.Batch_Validity_Period)
-            return this.$message.error(
-              `添加失败，品种 [${item.Varietie_Code}${item.Varietie_Name}] 的有效日期不能为空值`
-            );
+          // if (!item?.Batch_Validity_Period)
+          //   return this.$message.error(
+          //     `添加失败，品种 [${item.Varietie_Code}${item.Varietie_Name}] 的有效日期不能为空值`
+          //   );
           if (!item?.Batch_Production_Date)
             return this.$message.error(
               `添加失败，品种 [${item.Varietie_Code}${item.Varietie_Name}] 的生产日期不能为空值`
@@ -340,7 +340,7 @@
             Id: item.Id,
             Netreceipts: item.Consume_Count,
             Batch: item.Batch,
-            Batch_Validity_Period: item.Batch_Validity_Period,
+            Batch_Validity_Period: item.Batch_Validity_Period || '9999-12-31',
             Batch_Production_Date: item.Batch_Production_Date,
             Varietie_Name: item.Varietie_Name
           };
