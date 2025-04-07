@@ -5,7 +5,7 @@
       <el-aside width="500px" style="margin: 00px 0px 0px 0px;">
         <el-card shadow="always">
           <div slot="header" class="clearfix">
-            <span>预收货单号列表</span>
+            <span>手术排期</span>
           </div>
           <AdvanceReceiptNumberTable @getCurrent="getCurrent"></AdvanceReceiptNumberTable>
         </el-card>
@@ -14,18 +14,18 @@
         <el-main width="1000px" style="margin: 00px 0px 0px 0px; padding: 1px;">
           <el-card shadow="always">
             <div slot="header" class="clearfix">
-              <span>预送货品种明细</span>
+              <span>耗材详情</span>
             </div>
             <AdvanceReceiptNumberDelTable :ApplyTempTableData="ApplyTempTableData" @selectionData="selectionData">
             </AdvanceReceiptNumberDelTable>
           </el-card>
-
+<!-- 
           <el-card shadow="always" style="margin: 00px 0px 0px 0px;padding: 1px;">
             <div slot="header" class="clearfix">
               <span>品种消耗确认表</span>
             </div>
             <VarietyConsumptionTable @getVarietyCurrent="getVarietyCurrent" :ApplyTempTableData="ApplyTempTableData" />
-          </el-card>
+          </el-card> -->
 
         </el-main>
       </el-container>

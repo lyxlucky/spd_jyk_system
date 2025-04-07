@@ -1,14 +1,10 @@
 <template>
   <div class="ele-body">
-    <AdvanceReceiptNumberSearch @search="reload" @platformConsumeEditShow="platformConsumeEditShow" :rowData="current"
-      style="padding: 0px;" />
+    <AdvanceReceiptNumberSearch @search="reload" :rowData="current" style="padding: 0px;" />
 
     <AdvanceReceiptNumberEdit @search="reload" :visible.sync="showEdit" :rowData="current" />
     <!-- 数据表格 -->
-    <ele-pro-table height="60vh" :paginationStyle="paginationStyle" highlight-current-row
-      @current-change="onCurrentChange" :row-class-name="tableRowClassName" ref="table" :rowClickChecked="true"
-      :stripe="false" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :needPage="true"
-      :datasource="datasource" :selection.sync="selection" cache-key="ApplyTempTable">
+    <ele-pro-table height="60vh" :paginationStyle="paginationStyle" highlight-current-row @current-change="onCurrentChange" :row-class-name="tableRowClassName" ref="table" :rowClickChecked="true" :stripe="false" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :needPage="true" :datasource="datasource" :selection.sync="selection" cache-key="ApplyTempTable">
       <!-- 表头工具栏 -->
       <template v-slot:toolbar>
         <!-- 搜索表单 -->
@@ -40,10 +36,8 @@
       </template>
 
       <template v-slot:TempletName="{ row }">
-        <span style="color: #409eff" type="primary" @dblclick="editTempletName(row.TempletCode)" v-if="row.TempletName"
-          :underline="false">{{ row.TempletName }}</span>
-        <span style="color: #409eff" type="primary" @dblclick="editTempletName(row.TempletCode)" v-else
-          :underline="false">无</span>
+        <span style="color: #409eff" type="primary" @dblclick="editTempletName(row.TempletCode)" v-if="row.TempletName" :underline="false">{{ row.TempletName }}</span>
+        <span style="color: #409eff" type="primary" @dblclick="editTempletName(row.TempletCode)" v-else :underline="false">无</span>
       </template>
 
       <!-- 操作列 -->
@@ -73,17 +67,8 @@
 <script>
 import AdvanceReceiptNumberSearch from './AdvanceReceiptNumberSearch.vue';
 import AdvanceReceiptNumberEdit from './AdvanceReceiptNumberEdit.vue';
-import {
-  SerachTempletList,
-  DeleteTemplet,
-  EditTempName
-} from '@/api/KSInventory/ApplyTemp';
+import { getBdSzYyHisSs } from '@/api/Task/SurgicalVerification';
 import { HOME_HP } from '@/config/setting';
-import {
-  SearchGoodsDeliveryNumbers,
-  UpdatePatientInfo,
-  delGtGoodsDeliveryNumber
-} from '@/api/HeelBlockConsumables/PlatformConsume';
 export default {
   name: 'ApplyTempTable',
   components: {
@@ -111,75 +96,51 @@ export default {
         //   fixed: 'left'
         // },
         {
-          prop: 'Delivery_Note_Number',
-          label: '收货单号',
+          prop: 'MZZY',
+          label: '门诊',
           // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 110
+          minWidth: 100
         },
         {
-          prop: 'Hospitalization_Number',
+          prop: 'ZYHM',
           label: '住院号',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 110
+          minWidth: 130
         },
-        // {
-        //   prop: 'Operater',
-        //   label: '住院号',
-        //   // sortable: 'custom',
-        //   align: 'center',
-        //   showOverflowTooltip: true,
-        //   minWidth: 70
-        // },
         {
-          prop: 'Patient',
-          label: '病患',
+          prop: 'BRXM',
+          label: '姓名',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 70
+          minWidth: 80
         },
         {
-          prop: 'Dept_Two_Name',
-          label: '使用科室',
+          prop: 'SSRQ',
+          label: '手术时间',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 150
+        },
+        {
+          prop: 'SSMC',
+          label: '手术名称',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 120
-        },
-        {
-          prop: 'Receive_Receipt_State',
-          label: '确认状态',
-          // sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 80,
-          formatter(row, column, cellValue) {
-            if (cellValue == '0') {
-              return '待确认';
-            } else if (cellValue == '1') {
-              return '待提交';
-            } else if (cellValue == '2') {
-              return '已提交';
-            } else if (cellValue == '3') {
-              return '已审批';
-            } else if (cellValue == '4') {
-              return '已审批';
-            } else {
-              return cellValue;
-            }
-          }
-        },
-        {
-          columnKey: 'action',
-          label: '操作',
-          width: 150,
-          align: 'center',
-          resizable: false,
-          slot: 'action',
-          showOverflowTooltip: true
-          //fixed: 'right'
         }
+        // {
+        //   columnKey: 'action',
+        //   label: '操作',
+        //   width: 150,
+        //   align: 'center',
+        //   resizable: false,
+        //   slot: 'action',
+        //   showOverflowTooltip: true
+        //   //fixed: 'right'
+        // }
       ],
       paginationStyle: {
         height: '18px',
@@ -205,134 +166,22 @@ export default {
   methods: {
     /* 表格数据源 */
     async datasource({ page, limit, where, order }) {
-      var deptTwoList = [];
-      var deptTwoJson = this.$store.state.user.info.userDept;
-      for (let i = 0; i < deptTwoJson.length; i++) {
-        deptTwoList.push(deptTwoJson[i].Dept_Two_Code);
-      }
-      where.depts = JSON.stringify(deptTwoList);
-      where.supplierId = 0;
-      where.hp = HOME_HP;
-      const res = await SearchGoodsDeliveryNumbers({
+      const res = await getBdSzYyHisSs({
         page,
         limit,
         where,
         order
       });
-      return { list: res.result, count: res.total };
+      return { list: res.data, count: res.total };
     },
     /* 刷新表格 */
     reload(where) {
       this.$refs.table.reload({ page: 1, where: where });
     },
-    handleDelete(data) {
-      //二次确认
-      this.$confirm(
-        `此操作将删除${data.Delivery_Note_Number}数据, 是否继续?`,
-        '提示',
-        {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }
-      )
-        .then(() => {
-          // 删除数据
-          const loading = this.$messageLoading('删除中...');
-          delGtGoodsDeliveryNumber({
-            DELIVERY_NOTE_NUMBER: data.Delivery_Note_Number
-          })
-            .then((res) => {
-              this.$message({
-                type: 'success',
-                message: res?.msg
-              });
-            })
-            .catch((err) => {
-              this.$message({
-                type: 'error',
-                message: err
-              });
-            })
-            .finally(() => {
-              loading.close();
-              this.reload(this.where);
-            });
-        })
-        .catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          });
-        });
-    },
-    platformConsumeEditShow(data) {
-      if (this.current == undefined) {
-        this.$message.info('请选择一条数据！');
-        return;
-      } else {
-        this.showEdit = true;
-      }
-    },
-    editTempletName(code) {
-      this.$prompt('请输入模板名称', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消'
-      })
-        .then(({ value }) => {
-          EditTempName({
-            TempCode: code,
-            TempName: value
-          })
-            .then((res) => {
-              if (res?.code != 200) return this.$message.error(res?.msg);
-              this.$message.success(res?.msg);
-            })
-            .catch((err) => {
-              this.$message.error(err);
-            })
-            .finally(() => {
-              this.reload(this.where);
-            });
-        })
-        .catch(() => {
-          this.$message({
-            type: 'info',
-            message: '取消输入'
-          });
-        });
-    },
-    onDone(res) {
-      // console.log('res:', res);
-      // 例如选中第一条数据
-      if (res.data?.length) {
-        this.$refs.table.setCurrentRow(res.data[0]);
-      }
-    },
-    onSelectionChange(selection) {
-      this.selection = selection;
-    },
     onCurrentChange(current) {
       this.current = current;
       this.$emit('getCurrent', current);
     },
-
-    /* 删除数据 */
-    remove(row) {
-      // const loading = this.$loading({ lock: true });
-      const loading = this.$messageLoading('删除中...');
-      DeleteTemplet(row)
-        .then((res) => {
-          this.$message.success(res.msg);
-          loading.close();
-          this.reload();
-        })
-        .catch((err) => {
-          loading.close();
-          this.$message.error(err);
-        });
-    },
-
     tableRowClassName({ row, rowIndex }) {
       if (row.CommonState == 1) {
         return 'success-row';
@@ -342,12 +191,9 @@ export default {
     }
   },
   mounted() {
-    this.$bus.$on(
-      'handleSubmitConsumeVarietiesAndRefreshTopTable',
-      (data) => {
-        this.reload();
-      }
-    );
+    this.$bus.$on('handleSubmitConsumeVarietiesAndRefreshTopTable', (data) => {
+      this.reload();
+    });
     this.$bus.$on('handleCommand', (data) => {
       this.reload();
     });

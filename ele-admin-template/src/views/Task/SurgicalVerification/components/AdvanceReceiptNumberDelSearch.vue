@@ -4,15 +4,15 @@
     <el-form class="ele-form-search">
       <el-row :gutter="10">
         <el-col :lg="5" :md="12">
-          <el-input size="mini" v-model="where.condition" placeholder="请输入品种名称/品种编码/型号规格" clearable />
+          <el-input size="mini" v-model="where.VARIETIE_CODE_NEW" placeholder="请输入品种名称/品种编码" clearable />
         </el-col>
-        <el-col :lg="5" :md="12">
+        <!-- <el-col :lg="5" :md="12">
           <el-input size="mini" v-model="where.zcz" placeholder="请输入注册证/生产企业/批准文号" clearable />
-        </el-col>
+        </el-col> -->
         <el-col :lg="12" :md="12">
           <div class="ele-form-actions">
             <el-button size="mini" icon="el-icon-search" type="primary" @click="search">查询</el-button>
-            <el-button size="mini" type="primary" @click="handleAddConsumeItem">添加</el-button>
+            <el-button size="mini" type="primary" @click="handleAddConsumeItem">修改</el-button>
           </div>
         </el-col>
       </el-row>
@@ -31,10 +31,7 @@ import {
   DeletePlanDeta
   // KeeptListDeta,
 } from '@/api/KSInventory/KSDepartmentalPlan';
-import {
-  KeepTempletDeta,
-  ImportTempExcel
-} from '@/api/KSInventory/ApplyTemp';
+import { KeepTempletDeta, ImportTempExcel } from '@/api/KSInventory/ApplyTemp';
 import { isHvaeChargCode } from '@/api/HeelBlockConsumables/PlatformConsume';
 import AuthVarTable from './AuthVarTable.vue';
 export default {
@@ -50,10 +47,7 @@ export default {
     // 默认表单数据
     const defaultWhere = {
       Token: '',
-      condition: '',
-      zcz: '',
-      udi: '',
-      deliveryNumber: ''
+      VARIETIE_CODE_NEW: ''
     };
     return {
       // 表单数据
@@ -66,9 +60,7 @@ export default {
   },
   computed: {
     isAddVarietieEnable() {
-      return (
-        1 == Number(this?.ApplyTempTableDataSearch?.Receive_Receipt_State)
-      );
+      return 1 == Number(this?.ApplyTempTableDataSearch?.Receive_Receipt_State);
     },
     isPrintDefNoPkgCodeEnable() {
       return [3, 4].includes(
@@ -113,7 +105,8 @@ export default {
         window.open(
           `${BACK_BASE_URL}/api/B2BVarietieConsumeApprove/GetTags?id=5&format=pdf&inline=true&json=${JSON.stringify(
             jsonString
-          )}&deliveryNumberId=${this.ApplyTempTableDataSearch?.Delivery_Note_Number
+          )}&deliveryNumberId=${
+            this.ApplyTempTableDataSearch?.Delivery_Note_Number
           }&title=${HOME_HP}&Token=${sessionStorage.Token}`
         );
         resolve();
@@ -199,7 +192,7 @@ export default {
         });
     }
   },
-  created() { },
+  created() {},
   watch: {
     ApplyTempTableDataSearch() {
       this.TEMPLET_MAIN_ID = this.ApplyTempTableDataSearch.ID;
