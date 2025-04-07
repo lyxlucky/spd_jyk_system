@@ -57,21 +57,32 @@
 
       <!-- 生产日期 -->
       <template v-slot:Batch_Production_Date="{ row }">
-        <el-date-picker
+        <el-input
+          :disabled="isCurrentRowInputEnabled(row)"
+          size="mini"
+          v-model="row.Batch_Production_Date"
+        ></el-input>
+        <!-- <el-date-picker
           :disabled="isCurrentRowInputEnabled(row)"
           size="mini"
           type="date"
           v-model="row.Batch_Production_Date"
-        >2024-12-04</el-date-picker>
+        >2024-12-04</el-date-picker> -->
       </template>
 
       <!-- 有效期 -->
       <template v-slot:Batch_Validity_Period="{ row }">
-        <el-date-picker
+
+        <el-input
+          :disabled="isCurrentRowInputEnabled(row)"
+          size="mini"
+          v-model="row.Batch_Validity_Period"
+        ></el-input>
+        <!-- <el-date-picker
           size="mini"
           type="date"
           v-model="row.Batch_Validity_Period"
-        ></el-date-picker>
+        ></el-date-picker> -->
       </template>
 
       <!-- 操作列 -->

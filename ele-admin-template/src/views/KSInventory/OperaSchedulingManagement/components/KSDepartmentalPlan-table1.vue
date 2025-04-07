@@ -315,7 +315,6 @@ export default {
         });
     },
     exportData(obj) {
-      console.log(this.selection);
       if (this.selection.length <= 0) {
         this.$message.warning('请选择打印单号');
         return;
