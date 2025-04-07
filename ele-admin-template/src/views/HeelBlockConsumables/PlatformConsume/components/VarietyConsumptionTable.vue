@@ -76,13 +76,13 @@
       return {
         // 表格列配置
         columns: [
-          // {
-          //   columnKey: 'selection',
-          //   type: 'selection',
-          //   width: 45,
-          //   align: 'center',
-          //   fixed: 'left'
-          // },
+          {
+            columnKey: 'selection',
+            type: 'selection',
+            width: 45,
+            align: 'center',
+            fixed: 'left'
+          },
           {
             prop: 'Varietie_Code',
             label: '品种(材料)编码',
@@ -255,6 +255,10 @@
 
       /* 删除数据 */
       remove() {
+        if (this.selection.length == 0) {
+          this.$message.warning('请选择要删除的数据!');
+          return;
+        }
         // const loading = this.$loading({ lock: true });
         const loading = this.$messageLoading('删除中...');
         var json = [];
