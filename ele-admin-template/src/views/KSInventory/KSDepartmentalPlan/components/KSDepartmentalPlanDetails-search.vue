@@ -558,17 +558,24 @@
         KeeptListDeta(list)
           .then((res) => {
             loading.close();
+
             if (res.code == '200') {
               var data = {
                 PlanNum: this.KSDepartmentalPlanDataSearch.PlanNum
               };
-              isHaveZeroDel(data).then((res) => {
-                if (res.code == '200') {
-                  this.centerDialogVisible = true;
-                } else {
-                  this.deleteZeroDelAndCommit2();
-                }
-              });
+              const loading = this.$messageLoading('提交中..');
+              isHaveZeroDel(data)
+                .then((res) => {
+                  loading.close();
+                  if (res.code == '200') {
+                    this.centerDialogVisible = true;
+                  } else {
+                    this.deleteZeroDelAndCommit2();
+                  }
+                })
+                .finally(() => {
+                  loading.close();
+                });
 
               var where = {
                 PlanNum: this.KSDepartmentalPlanDataSearch.PlanNum
@@ -607,13 +614,16 @@
         var data = {
           PlanNum: this.KSDepartmentalPlanDataSearch.PlanNum
         };
+        const loading = this.$messageLoading('提交中..');
         PutInListDeta(data)
           .then((res) => {
+            loading.close();
             this.$message.success(res.msg);
             this.$emit('ClickReload', true);
-            reloadPageTab();
+            //reloadPageTab();
           })
           .catch((err) => {
+            loading.close();
             this.$message.error(err);
           });
       },

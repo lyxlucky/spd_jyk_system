@@ -6,7 +6,7 @@
     <ApplyTempDataSearch
       ref="Apply"
       @search="reload"
-      @addTempVar="$emit('addTempVar')" 
+      @addTempVar="$emit('addTempVar')"
       :IntroduceUserDefinedTempSearch="IntroduceUserDefinedTempSearch"
       @exportData="exportData"
       :ApplyTempTableDataSearch="ApplyTempTableDataSearch"
@@ -14,8 +14,9 @@
       @showEditReoad="showEditReoad"
     />
     <ele-pro-table
+      size="mini"
       ref="table"
-      height="60vh"
+      height="80vh"
       highlight-current-row
       :stripe="true"
       :rowClickChecked="true"
@@ -89,7 +90,7 @@
   } from '@/api/KSInventory/ApplyTemp';
   export default {
     name: 'ApplyTempDataTable',
-    props: ['ApplyTempTableData','IntroduceUserDefinedTempSearch'],
+    props: ['ApplyTempTableData', 'IntroduceUserDefinedTempSearch'],
     components: {
       ApplyTempDataSearch: ApplyTempDataSearch
     },
@@ -269,7 +270,7 @@
             label: '排序',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 160
+            minWidth: 75
           },
           {
             columnKey: 'action',
@@ -465,3 +466,17 @@
     }
   };
 </script>
+
+<style scoped lang="scss">
+  :deep(.el-table--mini .el-table__cell) {
+    padding: 2px 0px !important;
+  }
+
+  :deep(.el-table th.el-table__cell > .cell) {
+    padding-left: 0px !important;
+    padding-right: 0px !important;
+  }
+  :deep(.el-table__row .el-table__cell) {
+    padding: 2px 0px !important;
+  }
+</style>

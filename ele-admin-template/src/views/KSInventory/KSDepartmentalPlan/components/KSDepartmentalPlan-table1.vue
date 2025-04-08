@@ -28,24 +28,34 @@
           }}
           消耗/计划:{{ applyPlanBl }}</label
         >
-        <KSDepartmentalPlan-search @search="reload" />
+        <KSDepartmentalPlan-search @search="reload" ref="search" />
       </template>
 
       <template v-slot:State="{ row }">
         <el-tag size="mini" v-if="row.State == 0" type="primary">新增</el-tag>
-        <el-tag size="mini" v-else-if="row.State == 1" type="warning">已提交</el-tag>
-        <el-tag size="mini" v-else-if="row.State == 2" type="primary">配送中</el-tag>
-        <el-tag size="mini" v-else-if="row.State == 5" type="primary" color="#2ee693"
+        <el-tag size="mini" v-else-if="row.State == 1" type="warning"
+          >已提交</el-tag
+        >
+        <el-tag size="mini" v-else-if="row.State == 2" type="primary"
+          >配送中</el-tag
+        >
+        <el-tag
+          size="mini"
+          v-else-if="row.State == 5"
+          type="primary"
+          color="#2ee693"
           >已审核</el-tag
         >
-        <el-tag size="mini"
+        <el-tag
+          size="mini"
           v-else-if="row.State == 10"
           type="primary"
           color="#e60000"
           style="color: white"
           >强制结束</el-tag
         >
-        <el-tag size="mini"
+        <el-tag
+          size="mini"
           v-else-if="
             (row.State == 6 || row.State == 4) &&
             row.SUM_Left_Apply_Qty == row.SUM_Apply_Qty
@@ -53,7 +63,8 @@
           type="success"
           >已审批</el-tag
         >
-        <el-tag size="mini"
+        <el-tag
+          size="mini"
           v-else-if="
             row.SUM_Left_Apply_Qty > 0 &&
             row.SUM_Left_Apply_Qty != row.SUM_Apply_Qty
@@ -61,7 +72,10 @@
           type="danger"
           >已审批</el-tag
         >
-        <el-tag size="mini" v-else-if="row.SUM_Left_Apply_Qty == 0" type="success"
+        <el-tag
+          size="mini"
+          v-else-if="row.SUM_Left_Apply_Qty == 0"
+          type="success"
           >已审批</el-tag
         >
         <!-- <el-tag v-for="(item) in row" :key="item.PlanNum" size="mini" type="primary" :disable-transitions="true">
@@ -150,7 +164,6 @@
           {
             prop: 'PlanNum',
             label: '申领单号',
-
             align: 'center',
             showOverflowTooltip: true,
             minWidth: 110
@@ -200,10 +213,12 @@
           {
             prop: 'PlanTime',
             label: '申领时间',
-
             align: 'center',
             showOverflowTooltip: true,
             minWidth: 110
+            // formatter: (row, column, cellValue) => {
+            //   return this.$mount(cellValue).formatter('yyyy-MM-dd hh:mm:ss');
+            // }
           },
           {
             prop: 'Approval_Time',
@@ -275,6 +290,20 @@
             count: res.total,
             list: res.result
           };
+          if (
+            this.current &&
+            Array.isArray(res.result) &&
+            res.result.length > 0
+          ) {
+            let tmp = null;
+            res.result.forEach((item, index) => {
+              if (this.current.PlanNum == item.PlanNum) {
+                tmp = item;
+              }
+            });
+            this.onCurrentChange(tmp);
+          }
+
           return tData;
         });
         return data;
@@ -282,6 +311,9 @@
       /* 刷新表格 */
       reload(where) {
         this.$refs.table.reload({ page: 1, where: where });
+      },
+      reload2() {
+        this.$refs.search.search();
       },
       onDone(res) {
         // console.log('res:', res);
@@ -295,7 +327,6 @@
       },
       onCurrentChange(current) {
         this.current = current;
-        // console.log(current);
         this.$emit('getCurrent', current);
       },
       /* 删除数据 */
