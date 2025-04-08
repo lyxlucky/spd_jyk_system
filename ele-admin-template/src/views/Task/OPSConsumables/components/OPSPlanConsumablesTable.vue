@@ -14,7 +14,7 @@
         ref="table"
         size="mini"
         :columns="columns"
-        height="230px"
+        height="180px"
         row-click="handleRowClick"
         highlight-current-row
         :datasource="datasource"
@@ -41,6 +41,12 @@
   import OPSPlanConsumablesOperateTable from './OPSPlanConsumablesOperateTable.vue';
   export default {
     name: 'OPSPlanConsumablesTable',
+    props: {
+      MZZY: {
+        type: String,
+        default: ''
+      }
+    },
     components: {
       OPSPlanConsumablesOperateTable
     },
@@ -48,9 +54,7 @@
       return {
         isShowDialog: false,
         currentRow: {},
-        where: {
-          MZZY: '1'
-        },
+        where: {},
         columns: [
           {
             prop: 'VARIETIE_CODE',
@@ -116,6 +120,8 @@
     methods: {
       datasource({ page, limit, where }) {
         // 这里不实现具体方法，仅返回空数据结构
+        console.log(this.MZZY);
+        where.MZZY = this.MZZY;
         return getBdszgsjMainDel({ where })
           .then((data) => {
             return {

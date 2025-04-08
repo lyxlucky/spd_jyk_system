@@ -9,11 +9,19 @@
       :datasource="datasource"
     >
     </ele-pro-table>
+    <el-form size="mini">
+      <el-form-item>
+        <el-button type="primary" @click="sure"> 确定 </el-button>
+      </el-form-item>
+    </el-form>
   </div>
 </template>
 
 <script>
-  import { searchVarietieBatchIds } from '@/api/Task/OPSConsumables';
+  import {
+    searchVarietieBatchIds,
+    addBdszZqsjMainPsDel
+  } from '@/api/Task/OPSConsumables';
   export default {
     name: 'OPSPlanConsumablesOperateTable',
 
@@ -139,6 +147,13 @@
       };
     },
     methods: {
+      //确定
+      sure() {
+        console.log(this.$refs.table.tableData);
+        // addBdszZqsjMainPsDel(this.$refs.table.tableData).then((data) => {
+        //   this.$message.success(data.msg);
+        // });
+      },
       datasource({ page, limit, where }) {
         // 这里不实现具体方法，仅返回空数据结构
         where.varietie = this.currentRow.VARIETIE_CODE;
@@ -157,7 +172,7 @@
           });
       },
       reload() {
-        this.$refs.table.reload({page: 1});
+        this.$refs.table.reload({ page: 1 });
       }
     }
   };

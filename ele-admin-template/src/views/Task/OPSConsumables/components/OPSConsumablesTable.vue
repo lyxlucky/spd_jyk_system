@@ -21,6 +21,7 @@
             placeholder="请选择术间"
             clearable
             style="width: 160px"
+            @change="changeMZZY"
           >
             <el-option
               v-for="item in MZZYOptions"
@@ -49,7 +50,8 @@
       <ele-pro-table
         size="mini"
         ref="table"
-        height="calc(100vh - 350px)"
+        height="calc(100vh - 400px)"
+        row-click="handleRowClick"
         :columns="columns"
         :datasource="datasource"
         :pageSize="pageSize"
@@ -69,14 +71,16 @@
     name: 'OPSConsumablesTable',
     data() {
       return {
+        currentRow: {},
         // 查询参数
         where: {
           dateRange: [],
-          MZZY: '1',
+          MZZY: '',
           patientOrSurgeryName: ''
         },
         // 术间选项
         MZZYOptions: [
+          { value: '', label: '全部' },
           { value: '1', label: '门诊' },
           { value: '2', label: '住院' }
         ],
@@ -86,7 +90,10 @@
             prop: 'MZZY',
             label: '门诊/住院',
             align: 'center',
-            width: 100
+            width: 100,
+            formatter: (row, column, cellValue, index) => {
+              return cellValue === '1' ? '门诊' : '住院';
+            }
           },
           {
             prop: 'ZYHM',
@@ -111,7 +118,10 @@
             prop: 'SSRQ',
             label: '手术日期',
             align: 'center',
-            width: 100
+            width: 100,
+            formatter: (row, column, cellValue, index) => {
+              return this.$moment(cellValue).format('YYYY-MM-DD');
+            }
           },
           {
             prop: 'SSRQ_TIME',
@@ -126,10 +136,17 @@
       };
     },
     methods: {
+      changeMZZY(val) {
+        this.$emit('changeMZZY', val);
+      },
+      handleRowClick(row, column, event) {
+        this.currentRow = row;
+      },
       // 表格数据源
       datasource({ page, limit, where }) {
         // 这里不实现具体方法，仅返回空数据结构
-        return getBdSzYyHisSs({ where })
+        where.MZZY = this.where.MZZY;
+        return getBdSzYyHisSs({ page, limit, where })
           .then((data) => {
             return {
               list: data.data || [],

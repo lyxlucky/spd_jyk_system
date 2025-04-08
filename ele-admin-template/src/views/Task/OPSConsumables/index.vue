@@ -2,12 +2,12 @@
   <div class="ele-body">
     <el-row :gutter="10">
       <el-col :span="8">
-        <OPSConsumablesTable></OPSConsumablesTable>
+        <OPSConsumablesTable @changeMZZY="changeMZZY"></OPSConsumablesTable>
       </el-col>
       <el-col :span="16" type="flex">
-        <OPSPlanConsumablesTable />
+        <OPSPlanConsumablesTable :MZZY="MZZY" />
         <div style="height: 10px"></div>
-        <OPSDeliveryConsumablesTable />
+        <OPSDeliveryConsumablesTable :MZZY="MZZY" />
       </el-col>
     </el-row>
   </div>
@@ -25,9 +25,16 @@
       OPSDeliveryConsumablesTable
     },
     data() {
-      return {};
+      return {
+        MZZY: ''
+      };
     },
-    methods: {}
+    methods: {
+      changeMZZY(val) {
+        console.log(val);
+        this.MZZY = val;
+      }
+    }
   };
 </script>
 

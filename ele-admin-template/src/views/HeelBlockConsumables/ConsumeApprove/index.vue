@@ -1182,7 +1182,8 @@
   }
 
   ::v-deep(.success-row) {
-    background-color: #f0f9eb;
+    /* background-color: #f0f9eb; */
+    color: #67c23a;
   }
 
   ::v-deep(.info-row) {

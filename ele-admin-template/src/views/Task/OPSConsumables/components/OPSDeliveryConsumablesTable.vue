@@ -14,7 +14,7 @@
         ref="table"
         size="mini"
         :columns="columns"
-        height="230px"
+        height="180px"
         :datasource="datasource"
       />
     </el-card>
@@ -25,11 +25,15 @@
   import { getBdszZgsjMainPsDel } from '@/api/Task/OPSConsumables';
   export default {
     name: 'OPSDeliveryConsumablesTable',
+    props: {
+      MZZY: {
+        type: String,
+        default: ''
+      }
+    },
     data() {
       return {
-        where: {
-          MZZY: '1'
-        },
+        where: {},
 
         columns: [
           {
@@ -90,6 +94,7 @@
     methods: {
       datasource({ page, limit, where }) {
         // 这里不实现具体方法，仅返回空数据结构
+        where.MZZY = this.MZZY;
         return getBdszZgsjMainPsDel({ where })
           .then((data) => {
             return {

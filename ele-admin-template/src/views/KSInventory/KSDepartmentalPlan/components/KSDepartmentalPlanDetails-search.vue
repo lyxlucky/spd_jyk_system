@@ -113,7 +113,9 @@
           <el-button
             type="primary"
             icon="el-icon-s-cooperation"
-            v-if="['stzl', 'stzx','bd'].includes(HOME_HP) || ENV == 'development'"
+            v-if="
+              ['stzl', 'stzx', 'bd'].includes(HOME_HP) || ENV == 'development'
+            "
             size="mini"
             @click="Approval"
             :disabled="!IsToExamine"
@@ -297,7 +299,12 @@
     <ApplyOperateTip :visible.sync="ApplyOperateTipShow" />
     <VarietyDataLzhLook :visible.sync="VarietyDataLzhLookShow" />
     <DpetOneAuthWithDept :visible.sync="DpetOneAuthWithDeptShow" />
-    <el-dialog title="授权品种目录" :visible.sync="ApplyTempPage" width="95%">
+    <el-dialog
+      title="授权品种目录"
+      :visible.sync="ApplyTempPage"
+      width="95%"
+      append-to-body
+    >
       <!-- <AuthVarTable :dialogTableVisible="dialogTableVisible" :ApplyTempTableDataID="ApplyTempTableDataID" /> -->
       <ApplyTemp
         :IntroduceUserDefinedTempSearch="KSDepartmentalPlanDataSearch"
@@ -432,8 +439,8 @@
           this.KSDepartmentalPlanDataSearch.State == '5'
         );
       },
-      ENV(){
-        return process.env.NODE_ENV
+      ENV() {
+        return process.env.NODE_ENV;
       },
       HOME_HP() {
         return HOME_HP;
