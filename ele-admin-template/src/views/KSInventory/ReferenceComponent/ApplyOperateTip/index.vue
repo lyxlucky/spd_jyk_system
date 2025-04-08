@@ -307,9 +307,6 @@
             .then((res) => {
               if(res?.result.length == 0) return this.$message.error('没有数据可导出');
               const array = [[
-                '序',
-                '未配送',
-                '未收货',
                 '单号',
                 '时间',
                 '品种编码',
@@ -319,7 +316,10 @@
                 '批准文号',
                 '申请数量',
                 '配送中',
+                '未配送',
                 '已收货',
+                '未收货',
+                '单位'
               ]];
               res.result.forEach((d) => {
                 array.push([
