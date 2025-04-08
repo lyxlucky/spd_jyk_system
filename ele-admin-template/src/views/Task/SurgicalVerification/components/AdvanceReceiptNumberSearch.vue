@@ -1,7 +1,7 @@
 <!-- 搜索表单 -->
 <template>
   <el-form label-width="0px" class="ele-form-search" @keyup.enter.native="search" @submit.native.prevent>
-    <el-row :gutter="5" style="margin-top:5px;">
+    <!-- <el-row :gutter="5" style="margin-top:5px;">
       <el-col v-bind="styleResponsive ? { lg: 16, md: 12 } : { span: 12 }">
         <el-input size="mini" clearable v-model="where.condition" placeholder="请扫描或输入单号" />
       </el-col>
@@ -10,20 +10,21 @@
           <el-button size="mini" type="primary" icon="el-icon-search" class="ele-btn-icon" @click="search">
             查询
           </el-button>
-          <!-- <el-button size="mini" icon="el-icon-refresh" @click="reset">重置</el-button> -->
         </div>
       </el-col>
-    </el-row>
+    </el-row> -->
     <el-row :gutter="5">
       <el-col v-bind="styleResponsive ? { lg: 24, md: 12 } : { span: 12 }">
         <div class="ele-form-actions">
-          <el-button size="mini" type="primary" class="ele-btn-icon" @click="platformConsumeEditShow">编辑</el-button>
+          <!-- <el-button size="mini" type="primary" class="ele-btn-icon" @click="platformConsumeEditShow">编辑</el-button> -->
+          <el-button size="mini" type="primary" icon="el-icon-search" class="ele-btn-icon" @click="search">
+            查询
+          </el-button>
           <el-col v-bind="styleResponsive ? { lg: 12, md: 12 } : { span: 16 }">
-            <el-select @change="search" v-model="where.state" size="mini" placeholder="">
+            <el-select @change="search" v-model="where.MZZY" size="mini" placeholder="">
               <el-option label="全部" value=""></el-option>
-              <el-option label="待确认" value="0"></el-option>
-              <el-option label="待提交" value="1"></el-option>
-              <el-option label="已提交" value="2"></el-option>
+              <el-option label="门诊" value="1"></el-option>
+              <el-option label="住院" value="2"></el-option>
             </el-select>
           </el-col>
         </div>
@@ -50,8 +51,7 @@ export default {
   data() {
     // 默认表单数据
     const defaultWhere = {
-      state: '',
-      condition: ''
+      MZZY: '',
     };
     return {
       // 表单数据
@@ -85,9 +85,7 @@ export default {
       this.where = { ...this.defaultWhere };
       this.search();
     },
-    platformConsumeEditShow() {
-      this.$emit('platformConsumeEditShow', true);
-    },
+    
     /* 创建申领单 */
     Temp_FoundPlanSingle() {
       if (!this.TempletName) {
