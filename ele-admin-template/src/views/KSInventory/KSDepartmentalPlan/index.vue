@@ -88,7 +88,6 @@
         this.IsReloadTag = data;
       },
       clickReload2() {
-        console.log('clickReload2');
         this.$refs.table1.reload2();
       }
     },
