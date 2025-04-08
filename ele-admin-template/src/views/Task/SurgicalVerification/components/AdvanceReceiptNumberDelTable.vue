@@ -131,6 +131,13 @@ export default {
           showOverflowTooltip: true
         },
         {
+          prop: 'PS_COUNT',
+          label: '配送数量',
+          align: 'center',
+          minWidth: 80,
+          showOverflowTooltip: true
+        },
+        {
           slot: 'USE_COUNT',
           label: '使用数量',
           align: 'center',
