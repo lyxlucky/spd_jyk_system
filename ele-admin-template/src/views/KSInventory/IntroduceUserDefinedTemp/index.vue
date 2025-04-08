@@ -300,9 +300,12 @@ export default {
         element.PLAN_NUMBER = this.IntroduceUserDefinedTempSearch.PlanNum;
       });
       KeeptListDeta(this.selection).then((res) => {
-        loading.close();
         this.updateVisible(false);
         this.$message.success(res.msg);
+      }).catch((err) => {
+        this.$message.error(err);
+      }).finally(() => {
+        loading.close();
       });
     },
     onSelectionChange(selection) {
