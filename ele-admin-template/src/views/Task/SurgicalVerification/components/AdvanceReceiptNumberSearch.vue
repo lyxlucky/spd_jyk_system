@@ -20,6 +20,15 @@
           <el-button size="mini" type="primary" icon="el-icon-search" class="ele-btn-icon" @click="search">
             查询
           </el-button>
+
+          <el-button size="mini" type="primary" icon="el-icon-check" class="ele-btn-icon" @click="approve">
+            护士审批
+          </el-button>
+
+          <el-button size="mini" type="primary" class="ele-btn-icon" @click="catDefNoPkgCode">
+            查看定数码标签
+          </el-button>
+
           <el-col v-bind="styleResponsive ? { lg: 12, md: 12 } : { span: 16 }">
             <el-select @change="search" v-model="where.MZZY" size="mini" placeholder="">
               <el-option label="全部" value=""></el-option>
@@ -79,6 +88,12 @@ export default {
     /* 搜索 */
     search() {
       this.$emit('search', this.where);
+    },
+    approve(){
+      this.$emit('approve', this.where);
+    },
+    catDefNoPkgCode() {
+      this.$emit('catDefNoPkgCode', this.where);
     },
     /*  重置 */
     reset() {

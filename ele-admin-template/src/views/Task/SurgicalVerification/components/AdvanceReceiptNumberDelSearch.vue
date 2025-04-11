@@ -13,6 +13,7 @@
           <div class="ele-form-actions">
             <el-button size="mini" icon="el-icon-search" type="primary" @click="search">查询</el-button>
             <el-button size="mini" type="primary" @click="handleAddConsumeItem">修改</el-button>
+            <el-button size="mini" icon="el-icon-scan" type="primary" @click="handleUdiScanAdd">UDI添加</el-button>
           </div>
         </el-col>
       </el-row>
@@ -76,7 +77,7 @@ export default {
     },
     ApplyTempTableDataID() {
       return this.ApplyTempTableDataSearch;
-    }
+    },
   },
   methods: {
     handleUdiScanAdd() {
@@ -113,20 +114,6 @@ export default {
       });
     },
 
-    //查看定数码标签
-    handleCatDefNoPkgCode() {
-      const loading = this.$messageLoading('加载中...');
-      const jsonString = this.VarietyConsumeptionDataList?.map((item) => {
-        return item?.Id;
-      });
-      this.handleIsHaveChargCode(jsonString)
-        .then((res) => {
-          this.handleDefNoPkgCodePrint(jsonString);
-        })
-        .finally(() => {
-          loading.close();
-        });
-    },
     /* 搜索 */
     search() {
       this.$emit('search', this.where);

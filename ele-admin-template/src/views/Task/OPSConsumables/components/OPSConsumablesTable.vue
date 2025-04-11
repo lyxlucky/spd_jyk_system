@@ -51,7 +51,7 @@
         size="mini"
         ref="table"
         height="calc(100vh - 400px)"
-        row-click="handleRowClick"
+        @row-click="handleRowClick"
         :columns="columns"
         :datasource="datasource"
         :pageSize="pageSize"
@@ -94,6 +94,19 @@
             formatter: (row, column, cellValue, index) => {
               return cellValue === '1' ? '门诊' : '住院';
             }
+          },
+
+          {
+            prop: 'SSBH',
+            label: '手术编号',
+            align: 'center',
+            width: 120
+          },
+          {
+            prop: 'SSTH',
+            label: '手术台号',
+            align: 'center',
+            width: 120
           },
           {
             prop: 'ZYHM',
@@ -141,6 +154,7 @@
       },
       handleRowClick(row, column, event) {
         this.currentRow = row;
+        this.$bus.$emit('OPSConsumablesTableRowClick', row);
       },
       // 表格数据源
       datasource({ page, limit, where }) {

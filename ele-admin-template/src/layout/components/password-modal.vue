@@ -75,7 +75,7 @@
           oldPassword: '',
           password: '',
           password2: '',
-          pdaPassword: false
+          pdaPassword: true
         },
         // 表单验证
         rules: {

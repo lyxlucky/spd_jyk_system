@@ -39,7 +39,7 @@ export async function getBdSzYyHisSs(params) {
 export async function getBdszgsjMainDel(params) {
   const formatData = {
     Token: sessionStorage.getItem(TOKEN_STORE_NAME),
-    MZZY: params.where?.MZZY || '' ,
+    SSBH: params.where?.SSBH || '' ,
     page: params.page || 1,
     size: params.limit || 10,
   }
@@ -65,6 +65,7 @@ export async function getBdszZgsjMainPsDel(params) {
   const formatData = {
     Token: sessionStorage.getItem(TOKEN_STORE_NAME),
     MZZY: params.where?.MZZY || '',
+    SSBH: params.where?.SSBH || '',
     page: params.page || 1,
     size: params.limit || 10,
   }
@@ -117,23 +118,13 @@ export async function searchVarietieBatchIds(params) {
  * @returns {Promise} 返回请求结果
  */
 export async function addBdszZqsjMainPsDel(data) {
-  data.forEach(item => {
-    item.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
-    item.PS_MAN = store.getters.user.info.Nickname;
-  });
-  
   let res = await request.post(
     '/DeptPlanTransfer/AddBdszZqsjMainPsDel',
     data
   )
-  console.log(res.data)
   if (res.data.code == 200) {
     return res.data;
   }
   return Promise.reject(res.data);
 }
-
-
-
-
 

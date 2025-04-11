@@ -31,7 +31,6 @@
     },
     methods: {
       changeMZZY(val) {
-        console.log(val);
         this.MZZY = val;
       }
     }

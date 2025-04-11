@@ -15,20 +15,27 @@
         size="mini"
         :columns="columns"
         height="180px"
-        row-click="handleRowClick"
+        @row-click="handleRowClick"
         highlight-current-row
         :datasource="datasource"
       >
         <template v-slot:operate="{ row }">
-          <el-button type="primary" @click="handleEdit(row)"
-            >配置耗材</el-button
+          <el-button size="mini" type="primary" @click="handleEdit(row)"
+            >散货</el-button
+          >
+          <el-button
+            size="mini"
+            type="primary"
+            @click="handleAddDefNoPkgCode(row)"
+            >定数包</el-button
           >
         </template>
       </ele-pro-table>
     </el-card>
 
-    <el-dialog title="配置耗材" :visible.sync="isShowDialog" width="80%">
+    <el-dialog title="添加散货" :visible.sync="isShowDialog" width="80%">
       <OPSPlanConsumablesOperateTable
+        @OPSPlanConsumablesOperateCloseDialog="handleDialogClose"
         ref="OPSPlanConsumablesOperateTable"
         :currentRow="currentRow"
       ></OPSPlanConsumablesOperateTable>
@@ -37,7 +44,10 @@
 </template>
 
 <script>
-  import { getBdszgsjMainDel } from '@/api/Task/OPSConsumables';
+  import {
+    getBdszgsjMainDel,
+    addBdszZqsjMainPsDel
+  } from '@/api/Task/OPSConsumables';
   import OPSPlanConsumablesOperateTable from './OPSPlanConsumablesOperateTable.vue';
   export default {
     name: 'OPSPlanConsumablesTable',
@@ -57,19 +67,19 @@
         where: {},
         columns: [
           {
-            prop: 'VARIETIE_CODE',
+            prop: 'VARIETIE_CODE_NEW',
             label: '品种编码',
             align: 'center',
             width: 120
           },
           {
-            prop: 'WJXMBM',
+            prop: 'CHARGING_CODE',
             label: '计费编码',
             align: 'center',
             width: 120
           },
           {
-            prop: 'FYMC',
+            prop: 'VARIETIE_NAME',
             label: '品种名称',
             align: 'center',
             minWidth: 180,
@@ -112,7 +122,7 @@
             slot: 'operate',
             label: '操作',
             align: 'center',
-            width: 100
+            width: 200
           }
         ]
       };
@@ -120,7 +130,6 @@
     methods: {
       datasource({ page, limit, where }) {
         // 这里不实现具体方法，仅返回空数据结构
-        console.log(this.MZZY);
         where.MZZY = this.MZZY;
         return getBdszgsjMainDel({ where })
           .then((data) => {
@@ -136,8 +145,8 @@
             };
           });
       },
-      reload() {
-        this.$refs.table.reload({ page: 1, where: this.where });
+      reload(data) {
+        this.$refs.table.reload({ page: 1, where: data });
       },
       handleEdit(row) {
         this.currentRow = row;
@@ -147,9 +156,65 @@
         });
       },
       handleRowClick(row) {
-        console.log(row);
         this.currentRow = row;
+        this.$bus.$emit('OPSPlanConsumablesTableRowClick', row);
+      },
+      handleDialogClose() {
+        this.isShowDialog = false;
+        this.reload();
+      },
+      handleAddDefNoPkgCode(data) {
+        //二次确认
+        this.$prompt('请输入数量', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          inputPattern: /^\d+$/,
+          inputErrorMessage: '请输入正确的数量'
+        })
+          .then(({ value }) => {
+            const count = parseInt(value, 10); // 将输入字符串转成数字
+            const loading = this.$messageLoading('处理中...');
+            // const jsonData = Array.from({ length: count }, () => ({
+            //   Token: sessionStorage.Token,
+            //   BDSZ_ZQSJ_PS_ID: data.ID,
+            //   TYPE:"1",
+            //   PS_COUNT:value
+            // }));
+            const jsonData = [{
+              Token: sessionStorage.Token,
+              BDSZ_ZQSJ_ID: data.ID,
+              TYPE: '1',
+              PS_COUNT: value
+            }];
+
+            addBdszZqsjMainPsDel(jsonData)
+              .then((res) => {
+                this.$message.success(res.msg);
+              })
+              .catch((err) => {
+                this.$message.error(err.msg);
+              })
+              .finally(() => {
+                loading.close();
+              });
+            //this.doSomethingWith(value);
+          })
+          .catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消输入'
+            });
+          });
       }
+    },
+    mounted() {
+      this.$bus.$on('OPSConsumablesTableRowClick', (row) => {
+        //this.currentRow = row;
+        this.reload({ SSBH: row.SSBH });
+      });
+    },
+    beforeDestroy() {
+      this.$bus.$off('OPSConsumablesTableRowClick');
     }
   };
 </script>

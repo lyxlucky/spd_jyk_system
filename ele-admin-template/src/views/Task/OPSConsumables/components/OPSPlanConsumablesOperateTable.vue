@@ -5,13 +5,30 @@
       size="mini"
       :columns="columns"
       height="50vh"
+      @selection-change="onSelectionChange"
       highlight-current-row
       :datasource="datasource"
     >
+      <template v-slot:ACTION="{ row }">
+        <el-input-number
+          v-model="row.ADD_QTY"
+          :min="0"
+          :max="9999999"
+          size="mini"
+          style="width: 100px"
+        ></el-input-number>
+      </template>
     </ele-pro-table>
     <el-form size="mini">
       <el-form-item>
-        <el-button type="primary" @click="sure"> 确定 </el-button>
+        <el-button
+          type="primary"
+          :disabled="selection.length == 0"
+          size="mini"
+          @click="handleAddGoodsUpShelf"
+        >
+          确定
+        </el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -24,7 +41,6 @@
   } from '@/api/Task/OPSConsumables';
   export default {
     name: 'OPSPlanConsumablesOperateTable',
-
     components: {},
     props: {
       currentRow: {
@@ -36,16 +52,11 @@
       return {
         columns: [
           {
-            prop: 'Id',
-            label: '上架表ID',
+            columnKey: 'selection',
+            type: 'selection',
+            width: 45,
             align: 'center',
-            width: 100
-          },
-          {
-            prop: 'Storage_Id',
-            label: '库区ID',
-            align: 'center',
-            width: 100
+            fixed: 'left'
           },
           {
             prop: 'Name',
@@ -142,14 +153,22 @@
             label: '优先权重',
             align: 'center',
             width: 100
+          },
+          {
+            slot: 'ACTION',
+            prop: 'ACTION',
+            align: 'center',
+            label: '数量',
+            width: 150
           }
-        ]
+        ],
+        selection: [],
+        ParentCurrentRow: null
       };
     },
     methods: {
       //确定
       sure() {
-        console.log(this.$refs.table.tableData);
         // addBdszZqsjMainPsDel(this.$refs.table.tableData).then((data) => {
         //   this.$message.success(data.msg);
         // });
@@ -159,8 +178,12 @@
         where.varietie = this.currentRow.VARIETIE_CODE;
         return searchVarietieBatchIds({ where })
           .then((data) => {
+            const resultList = (data.result || []).map((item) => ({
+              ...item,
+              ADD_QTY: 0
+            }));
             return {
-              list: data.data || [],
+              list: resultList,
               count: data.total
             };
           })
@@ -173,7 +196,42 @@
       },
       reload() {
         this.$refs.table.reload({ page: 1 });
+      },
+      onSelectionChange(selection) {
+        this.selection = selection;
+      },
+      handleAddGoodsUpShelf() {
+        const loading = this.$messageLoading('提交中...');
+        const jsonData = this.selection.map((item) => {
+          return {
+            BDSZ_ZQSJ_ID: this.ParentCurrentRow.ID,
+            PS_COUNT: item.ADD_QTY,
+            BATCH_ID: item.Batch_Id,
+            Token: sessionStorage.Token,
+            TYPE:"0"
+          };
+        });
+        addBdszZqsjMainPsDel(jsonData)
+          .then((data) => {
+            this.$message.success(data.msg);
+            this.$emit("OPSPlanConsumablesOperateCloseDialog")
+          })
+          .catch((err) => {
+            this.$message.error(err.msg);
+          })
+          .finally(() => {
+            loading.close();
+          });
       }
+    },
+    mounted() {
+      this.$bus.$on('OPSPlanConsumablesTableRowClick', (row) => {
+        console.log(row);
+        this.ParentCurrentRow = row;
+      });
+    },
+    beforeDestroy() {
+      this.$bus.$off('OPSPlanConsumablesTableRowClick');
     }
   };
 </script>

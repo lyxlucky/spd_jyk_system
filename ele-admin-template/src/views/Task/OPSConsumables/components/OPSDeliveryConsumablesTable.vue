@@ -34,7 +34,6 @@
     data() {
       return {
         where: {},
-
         columns: [
           {
             prop: 'VARIETIE_CODE',
@@ -83,7 +82,7 @@
             showOverflowTooltip: true
           },
           {
-            prop: 'FYSL',
+            prop: 'PS_COUNT',
             label: '配送数量',
             align: 'center',
             width: 100
@@ -109,9 +108,18 @@
             };
           });
       },
-      reload() {
-        this.$refs.table.reload({ page: 1, where: this.where });
+      reload(where) {
+        this.$refs.table.reload({ page: 1, where: where });
       }
+    },
+    mounted() {
+      this.$bus.$on('OPSConsumablesTableRowClick', (row) => {
+        //this.currentRow = row;
+        this.reload({ SSBH: row.SSBH });
+      });
+    },
+    beforeDestroy() {
+      this.$bus.$off('OPSConsumablesTableRowClick');
     }
   };
 </script>
