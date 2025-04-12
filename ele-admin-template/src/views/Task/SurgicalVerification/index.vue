@@ -33,7 +33,8 @@
             <div slot="header" class="clearfix">
               <span>耗材消耗确认</span>
             </div>
-            <ConsumeablesUsageDetail :masterCurrentData="ApplyTempTableData"> </ConsumeablesUsageDetail>
+            <ConsumeablesUsageDetail :masterCurrentData="ApplyTempTableData">
+            </ConsumeablesUsageDetail>
           </el-card>
         </el-container>
       </el-main>
@@ -113,8 +114,10 @@
       IsDisabled() {
         return this.IntroduceUserDefinedTempSearch == undefined ? true : false;
       }
+    },
+    beforeDestroy() {
+      this.$bus.$off('UdiScanDialogClosed');
     }
   };
 </script>
-<style scoped>
-</style>
+<style scoped></style>

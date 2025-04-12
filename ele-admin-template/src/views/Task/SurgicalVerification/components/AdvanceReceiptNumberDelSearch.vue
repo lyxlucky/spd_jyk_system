@@ -56,12 +56,13 @@ export default {
       dialogTableVisible: false,
       dialogTableVisible2: false,
       TEMPLET_MAIN_ID: null,
-      Token: sessionStorage.getItem(TOKEN_STORE_NAME)
+      Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+      AdvanceNumberTableCurrent: null,
     };
   },
   computed: {
     isUdiScanEnabld(){
-      if(this?.ApplyTempTableDataSearch && this?.AdvanceReceiptDelcurrent){
+      if(this?.AdvanceNumberTableCurrent != null){
         return false;
       }
       return true;
@@ -195,6 +196,11 @@ export default {
         this.$emit('showEditReoad', false);
       }
     }
-  }
+  },
+  mounted() {
+    this.$bus.$on('AdvanceReceiptNumberTableCurrent', (data) => {
+      this.AdvanceNumberTableCurrent = data;
+    });
+  },
 };
 </script>

@@ -99,7 +99,6 @@ export async function addBdszZqsjMainPsDelUse(params) {
     Token: sessionStorage.getItem(TOKEN_STORE_NAME),
     ID: params.ID || '',
     UDI: params.UDI || '',
-    BDSZ_ZQSJ_PS_ID: params.BDSZ_ZQSJ_PS_ID || '',
     USE_COUNT: params.USE_COUNT,
     page: params.page || 1,
     size: params.limit || 10

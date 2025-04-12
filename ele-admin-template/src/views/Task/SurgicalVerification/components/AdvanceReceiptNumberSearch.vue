@@ -60,8 +60,10 @@
               placeholder=""
             >
               <el-option label="全部" value=""></el-option>
-              <el-option label="门诊" value="1"></el-option>
-              <el-option label="住院" value="2"></el-option>
+              <el-option label="已提交" value="1"></el-option>
+              <el-option label="已拣配" value="2"></el-option>
+              <el-option label="已交接" value="3"></el-option>
+              <el-option label="已完成" value="4"></el-option>
             </el-select>
           </el-col>
         </div>

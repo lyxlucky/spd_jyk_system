@@ -36,7 +36,7 @@
       </template>
 
       <template v-slot:ACTION="{ row }">
-        <el-button size="mini" type="primary" @click="handleUpdateCount(row)"
+        <el-button size="mini" type="primary" :disabled='isUpdateCountEnable' @click="handleUpdateCount(row)"
           >修改数量</el-button
         >
       </template>
@@ -45,7 +45,7 @@
       :AdvanceReceiptNumberCurrent="ApplyTempTableDataSearch"
       :AdvanceReceiptDelcurrent="current"
       :visible.sync="UDIScanAddDialogVisiable"
-      @handleClosed="handleClosed"
+      @udiScanDialogClose="handleClosed"
     >
     </UDIScanAddDialog>
   </div>
@@ -182,7 +182,7 @@
         return data;
       },
       handleClosed() {
-        this.$bus.$emit('AdVanceReceiptNumberDelTableReload');
+        this.$bus.$emit('UdiScanDialogClosed');
       },
       handleUpdateCount(data) {
         //prompt
@@ -247,6 +247,9 @@
     computed: {
       ApplyTempTableDataSearch() {
         return this.ApplyTempTableData;
+      },
+      isUpdateCountEnable(){
+        return this.current.TYPE == '1';
       }
       // pageSize(){
       //   return localStorage.getItem('SerachTempletDetaPageSize')?localStorage.getItem('SerachTempletDetaPageSize'):10
@@ -264,6 +267,9 @@
     mounted() {
       this.$bus.$on('LoadDeliveryConsumedVarietie', (data) => {
         this.VarietyConsumeptionDataList = data.list;
+      });
+      this.$bus.$on('UdiScanDialogClosed', (current) => {
+        this.reload()
       });
     },
     created() {

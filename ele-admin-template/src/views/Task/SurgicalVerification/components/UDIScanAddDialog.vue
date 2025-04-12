@@ -138,8 +138,7 @@
         //重写
         addBdszZqsjMainPsDelUse({
           UDI: udi,
-          ID: this.AdvanceReceiptNumberCurrent.SSBH,
-          BDSZ_ZQSJ_PS_ID: this.AdvanceReceiptDelcurrent.ID
+          ID: this.AdvanceReceiptNumberCurrent.SSBH
         })
           .then((data) => {
             this.$message.success(data?.msg);

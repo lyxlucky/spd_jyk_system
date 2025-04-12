@@ -66,7 +66,7 @@
           },
           {
             prop: 'Varietie_Name',
-            label: '品名',
+            label: '品种名称',
             align: 'center',
             minWidth: 150,
             showOverflowTooltip: true
@@ -78,26 +78,14 @@
             width: 120
           },
           {
-            prop: 'Varietie_Code',
-            label: '品种编码ID',
-            align: 'center',
-            width: 120
-          },
-          {
-            prop: 'Batch_Id',
-            label: '批次号',
-            align: 'center',
-            width: 120
-          },
-          {
             prop: 'Batch',
-            label: '批次',
+            label: '批号',
             align: 'center',
             width: 100
           },
           {
             prop: 'Supply_Price',
-            label: '结算价',
+            label: '单价',
             align: 'center',
             width: 100
           },
@@ -121,12 +109,6 @@
             showOverflowTooltip: true
           },
           {
-            prop: 'Up_Shelf_Quantity',
-            label: '上架数量',
-            align: 'center',
-            width: 100
-          },
-          {
             prop: 'Batch_Production_Date',
             label: '生产日期',
             align: 'center',
@@ -147,12 +129,6 @@
                 ? this.$moment(row.Batch_Validity_Period).format('YYYY-MM-DD')
                 : '';
             }
-          },
-          {
-            prop: 'Priority_Weight',
-            label: '优先权重',
-            align: 'center',
-            width: 100
           },
           {
             slot: 'ACTION',

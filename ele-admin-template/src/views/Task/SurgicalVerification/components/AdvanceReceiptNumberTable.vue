@@ -118,6 +118,26 @@
             align: 'center',
             showOverflowTooltip: true,
             minWidth: 120
+          },
+          {
+            prop: 'STATE',
+            label: '状态',
+            align: 'center',
+            width: 150,
+            formatter: (row, column, cellValue) => {
+              switch (cellValue) {
+                case '1':
+                  return '已提交';
+                case '2':
+                  return '已拣配';
+                case '3':
+                  return '已交接';
+                case '4':
+                  return '已完成';
+                default:
+                  return '未知状态';
+              }
+            }
           }
           // {
           //   columnKey: 'action',
@@ -169,6 +189,7 @@
       onCurrentChange(current) {
         this.current = current;
         this.$emit('getCurrent', current);
+        this.$bus.$emit('AdvanceReceiptNumberTableCurrent', current);
       },
       tableRowClassName({ row, rowIndex }) {
         if (row.CommonState == 1) {
@@ -221,6 +242,7 @@
       this.$bus.$off('handleCommand');
       this.$bus.$off('AdVanceReceiptNumberDelTableReload');
       this.$bus.$off('handleSubmitConsumeVarietiesAndRefreshTopTable');
+      this.$bus.$off('AdvanceReceiptNumberTableCurrent');
     },
     created() {
       // this.getdatasource();

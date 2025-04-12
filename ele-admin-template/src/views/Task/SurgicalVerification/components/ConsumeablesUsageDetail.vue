@@ -149,6 +149,9 @@
       this.$bus.$on('AdVanceReceiptNumberDelTableCurrentChange', () => {
         this.reload();
       });
+      this.$bus.$on('UdiScanDialogClosed', (current) => {
+        this.reload()
+      });
     },
     destroyed() {
       this.$bus.$off('AdVanceReceiptNumberDelTableCurrentChange');
