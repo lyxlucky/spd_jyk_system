@@ -208,30 +208,31 @@
             PS_COUNT: item.ADD_QTY,
             BATCH_ID: item.Batch_Id,
             Token: sessionStorage.Token,
-            TYPE:"0"
+            TYPE: '0'
           };
         });
         addBdszZqsjMainPsDel(jsonData)
           .then((data) => {
             this.$message.success(data.msg);
-            this.$emit("OPSPlanConsumablesOperateCloseDialog")
           })
           .catch((err) => {
             this.$message.error(err.msg);
           })
           .finally(() => {
+            this.$emit('OPSPlanConsumablesOperateCloseDialog');
+            this.$bus.$emit('OPSPlanConsumablesOperateTableDone', null);
             loading.close();
           });
       }
     },
     mounted() {
       this.$bus.$on('OPSPlanConsumablesTableRowClick', (row) => {
-        console.log(row);
         this.ParentCurrentRow = row;
       });
     },
     beforeDestroy() {
       this.$bus.$off('OPSPlanConsumablesTableRowClick');
+      this.$bus.$off('OPSPlanConsumablesOperateTableDone');
     }
   };
 </script>

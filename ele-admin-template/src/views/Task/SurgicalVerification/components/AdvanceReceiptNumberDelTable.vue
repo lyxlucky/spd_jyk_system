@@ -6,6 +6,7 @@
       @handleAddConsumeItem="handleAddConsumeItem"
       @handleUdiScanAdd="handleUdiScanAdd"
       :ApplyTempTableDataSearch="ApplyTempTableDataSearch"
+      :AdvanceReceiptDelcurrent="current"
       :selection="selection"
       :VarietyConsumeptionDataList="VarietyConsumeptionDataList"
     />
@@ -274,5 +275,3 @@
     }
   };
 </script>
-<style scoped>
-</style>

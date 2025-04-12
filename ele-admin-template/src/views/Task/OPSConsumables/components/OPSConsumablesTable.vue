@@ -1,10 +1,9 @@
 <template>
-  <div class="body" style="padding: 16px; background-color: #f5f7fa; min-height: calc(100vh - 32px);">
-    <el-card style="box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.05);">
+  <div class="body">
+    <el-card style="box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.05); margin-top: 20px;">
       <div slot="header" style="display: flex; justify-content: space-between; align-items: center;">
         <span>手术排期</span>
       </div>
-      
       <!-- 筛选表单 -->
       <el-form :inline="true" :model="where" size="mini" style="padding: 8px 0 16px 0; margin-bottom: 12px; border-bottom: 1px solid #ebeef5;">
         <el-form-item label="日期范围" style="margin-right: 16px; margin-bottom: 8px;">
@@ -44,23 +43,21 @@
         </el-form-item>
         <el-form-item style="margin-bottom: 8px;">
           <el-button type="primary" icon="el-icon-search" @click="reload" style="margin-right: 8px;">查询</el-button>
-          <!-- <el-button icon="el-icon-refresh-right" @click="resetFilters">重置</el-button> -->
         </el-form-item>
       </el-form>
       <!-- 数据表格 -->
       <ele-pro-table
         size="mini"
         ref="table"
-        height="calc(100vh - 420px)"
         @row-click="handleRowClick"
         :columns="columns"
+        height="50vh"
         :datasource="datasource"
         :pageSize="pageSize"
         :pageSizes="pageSizes"
         highlight-current-row
         :stripe="true"
         :needPage="true"
-        style="margin-top: 8px;"
       >
       </ele-pro-table>
     </el-card>
@@ -84,20 +81,22 @@
         // 术间选项
         MZZYOptions: [
           { value: '', label: '全部' },
-          { value: '1', label: '门诊' },
-          { value: '2', label: '住院' }
+          { value: '1', label: '已提交' },
+          { value: '2', label: '已拣配' },
+          { value: '3', label: '已交接'},
+          { value: '4', label: '已完成' }
         ],
         // 表格列配置
         columns: [
-          // {
-          //   prop: 'MZZY',
-          //   label: '门诊/住院',
-          //   align: 'center',
-          //   width: 100,
-          //   formatter: (row, column, cellValue, index) => {
-          //     return cellValue === '1' ? '门诊' : '住院';
-          //   }
-          // },
+          {
+            prop: 'MZZY',
+            label: '门诊/住院',
+            align: 'center',
+            width: 100,
+            formatter: (row, column, cellValue, index) => {
+              return cellValue === '1' ? '门诊' : '住院';
+            }
+          },
           {
             prop: 'SSBH',
             label: '手术编号',
@@ -143,6 +142,26 @@
             label: '手术时间',
             align: 'center',
             width: 150
+          },
+          {
+            prop: 'STATE',
+            label: '状态',
+            align: 'center',
+            width: 150,
+            formatter: (row, column, cellValue) => {
+              switch (cellValue) {
+                case '1':
+                  return '已提交';
+                case '2':
+                  return '已拣配';
+                case '3':
+                  return '已交接';
+                case '4':
+                  return '已完成';
+                default:
+                  return '未知状态';
+              }
+            }
           }
         ],
         // 分页配置

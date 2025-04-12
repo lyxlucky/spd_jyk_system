@@ -1,7 +1,7 @@
 <template>
   <div class="ele-body">
     <el-container>
-      <el-aside width="32%">
+      <el-aside width="30%">
         <OPSConsumablesTable @changeMZZY="changeMZZY"></OPSConsumablesTable>
       </el-aside>
       <el-main>

@@ -67,7 +67,11 @@
 
   export default {
     name: 'UDIScanAddDialog',
-    props: ['visible', 'AdvanceReceiptNumberCurrent','AdvanceReceiptDelcurrent'],
+    props: [
+      'visible',
+      'AdvanceReceiptNumberCurrent',
+      'AdvanceReceiptDelcurrent'
+    ],
     data() {
       const defaultWhere = {
         firstUdi: '',
@@ -132,14 +136,16 @@
           : this.where.firstUdi;
         const loading = this.$messageLoading('加载中...');
         //重写
-        addBdszZqsjMainPsDelUse({ UDI: udi,ID: this.AdvanceReceiptNumberCurrent.SSBH, BDSZ_ZQSJ_PS_ID: this.AdvanceReceiptDelcurrent.ID })
+        addBdszZqsjMainPsDelUse({
+          UDI: udi,
+          ID: this.AdvanceReceiptNumberCurrent.SSBH,
+          BDSZ_ZQSJ_PS_ID: this.AdvanceReceiptDelcurrent.ID
+        })
           .then((data) => {
-            if (data.code == '200') {
-              this.$message.success(data?.msg);
-              return true;
-            }
-            this.tips = data?.msg;
-            this.$message.error(data?.msg);
+            this.$message.success(data?.msg);
+          })
+          .catch((err) => {
+            this.$message.error(err.msg);
           })
           .finally(() => {
             this.where.firstUdi = '';
@@ -159,4 +165,3 @@
     created() {}
   };
 </script>
-<style scoped></style>

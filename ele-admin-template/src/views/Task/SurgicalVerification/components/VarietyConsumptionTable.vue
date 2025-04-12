@@ -366,4 +366,3 @@
     created() {}
   };
 </script>
-<style scoped></style>

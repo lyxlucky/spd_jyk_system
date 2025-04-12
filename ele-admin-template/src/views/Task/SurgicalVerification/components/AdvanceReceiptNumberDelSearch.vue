@@ -12,7 +12,7 @@
         <el-col :lg="12" :md="12">
           <div class="ele-form-actions">
             <el-button size="mini" icon="el-icon-search" type="primary" @click="search">查询</el-button>
-            <el-button size="mini" icon="el-icon-scan" type="primary" @click="handleUdiScanAdd">UDI添加</el-button>
+            <el-button size="mini" :disabled="isUdiScanEnabld" icon="el-icon-paperclip" type="primary" @click="handleUdiScanAdd">UDI添加</el-button>
           </div>
         </el-col>
       </el-row>
@@ -38,7 +38,8 @@ export default {
   props: [
     'ApplyTempTableDataSearch',
     'selection',
-    'VarietyConsumeptionDataList'
+    'VarietyConsumeptionDataList',
+    'AdvanceReceiptDelcurrent'
   ],
   components: {
     AuthVarTable: AuthVarTable
@@ -59,6 +60,12 @@ export default {
     };
   },
   computed: {
+    isUdiScanEnabld(){
+      if(this?.ApplyTempTableDataSearch && this?.AdvanceReceiptDelcurrent){
+        return false;
+      }
+      return true;
+    },
     isAddVarietieEnable() {
       return 1 == Number(this?.ApplyTempTableDataSearch?.Receive_Receipt_State);
     },
@@ -191,5 +198,3 @@ export default {
   }
 };
 </script>
-<style scoped>
-</style>

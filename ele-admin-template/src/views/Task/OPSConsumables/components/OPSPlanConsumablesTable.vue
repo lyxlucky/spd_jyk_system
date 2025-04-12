@@ -21,12 +21,17 @@
         size="mini"
         :columns="columns"
         height="180px"
+        :initLoad ="false"
         @row-click="handleRowClick"
         highlight-current-row
         :datasource="datasource"
       >
         <template v-slot:operate="{ row }">
-          <el-button size="mini" icon="el-icon-shopping-bag-2" type="primary" @click="handleEdit(row)"
+          <el-button
+            size="mini"
+            icon="el-icon-shopping-bag-2"
+            type="primary"
+            @click="handleEdit(row)"
             >散货</el-button
           >
           <el-button
@@ -40,7 +45,12 @@
       </ele-pro-table>
     </el-card>
 
-    <el-dialog title="添加散货" :visible.sync="isShowDialog" width="80%">
+    <el-dialog
+      title="添加散货"
+      @closed="handleOpsConsumablesDialogClosed"
+      :visible.sync="isShowDialog"
+      width="80%"
+    >
       <OPSPlanConsumablesOperateTable
         @OPSPlanConsumablesOperateCloseDialog="handleDialogClose"
         ref="OPSPlanConsumablesOperateTable"
@@ -72,6 +82,7 @@
         isShowDialog: false,
         currentRow: {},
         where: {},
+        OPSDeliveryConsumablesTableData: [],
         columns: [
           {
             prop: 'VARIETIE_CODE_NEW',
@@ -170,6 +181,7 @@
         this.isShowDialog = false;
         this.reload();
       },
+      handleOpsConsumablesDialogClosed() {},
       handleAddDefNoPkgCode(data) {
         //二次确认
         this.$prompt('请输入数量', '提示', {
@@ -181,6 +193,18 @@
           .then(({ value }) => {
             const count = parseInt(value, 10); // 将输入字符串转成数字
             const loading = this.$messageLoading('处理中...');
+
+            this.OPSDeliveryConsumablesTableData.forEach((element) => {
+              if (element.VARIETIE_CODE == data.VARIETIE_CODE) {
+                if (
+                  Number(element.PS_COUNT) > Number(data.FYSL) ||
+                  Number(value) > Number(data.FYSL)
+                ) {
+                  //
+                }
+              }
+            });
+
             // const jsonData = Array.from({ length: count }, () => ({
             //   Token: sessionStorage.Token,
             //   BDSZ_ZQSJ_PS_ID: data.ID,
@@ -205,6 +229,7 @@
               })
               .finally(() => {
                 loading.close();
+                this.$bus.$emit('OPSPlanConsumablesTableAddDefNoPkgCode', null);
               });
             //this.doSomethingWith(value);
           })
@@ -213,7 +238,8 @@
               type: 'info',
               message: '已取消输入'
             });
-          });
+          })
+          .finally(() => {});
       }
     },
     mounted() {
@@ -221,9 +247,13 @@
         //this.currentRow = row;
         this.reload({ SSBH: row.SSBH });
       });
+      this.$bus.$on('OPSDeliveryConsumablesTableData', (row) => {
+        this.OPSDeliveryConsumablesTableData = row;
+      });
     },
     beforeDestroy() {
       this.$bus.$off('OPSConsumablesTableRowClick');
+      this.$bus.$off('OPSPlanConsumablesTableAddDefNoPkgCode');
     }
   };
 </script>

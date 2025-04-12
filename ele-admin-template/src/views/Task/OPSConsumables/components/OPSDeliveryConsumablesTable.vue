@@ -2,16 +2,9 @@
   <div>
     <el-card>
       <div slot="header">手术配送耗材</div>
-      <el-form :inline="true" size="mini">
-        <el-form-item>
-          <el-input placeholder="编码/名称"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" size="mini" icon="el-icon-search" @click="reload">查询</el-button>
-        </el-form-item>
-      </el-form>
       <ele-pro-table
         ref="table"
+        :initLoad ="false"
         size="mini"
         :columns="columns"
         height="180px"
@@ -96,6 +89,7 @@
         where.MZZY = this.MZZY;
         return getBdszZgsjMainPsDel({ where })
           .then((data) => {
+            this.$bus.$emit("OPSDeliveryConsumablesTableData", data.data);
             return {
               list: data.data || [],
               count: data.total
@@ -117,14 +111,23 @@
         //this.currentRow = row;
         this.reload({ SSBH: row.SSBH });
       });
+      //
       this.$bus.$on('OPSPlanConsumablesTableRowClick', (row) => {
         this.reload();
       });
-
+      //
+      this.$bus.$on('OPSPlanConsumablesTableAddDefNoPkgCode', (row) => {
+        this.reload();
+      });
+      //
+      this.$bus.$on('OPSPlanConsumablesOperateTableDone', (row) => {
+        this.reload();
+      });
     },
     beforeDestroy() {
       this.$bus.$off('OPSConsumablesTableRowClick');
       this.$bus.$off('OPSPlanConsumablesTableRowClick');
+      this.$bus.$off('OPSDeliveryConsumablesTableData');
     }
   };
 </script>
