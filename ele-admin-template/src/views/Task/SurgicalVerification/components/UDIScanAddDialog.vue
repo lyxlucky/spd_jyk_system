@@ -159,4 +159,4 @@
     created() {}
   };
 </script>
-<style lang=""></style>
+<style scoped></style>

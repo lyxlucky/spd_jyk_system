@@ -1,10 +1,13 @@
 <template>
-  <div class="body">
-    <el-card>
-      <div slot="header">手术排期</div>
+  <div class="body" style="padding: 16px; background-color: #f5f7fa; min-height: calc(100vh - 32px);">
+    <el-card style="box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.05);">
+      <div slot="header" style="display: flex; justify-content: space-between; align-items: center;">
+        <span>手术排期</span>
+      </div>
+      
       <!-- 筛选表单 -->
-      <el-form :inline="true" :model="where" size="mini" class="filter-form">
-        <el-form-item label="日期范围">
+      <el-form :inline="true" :model="where" size="mini" style="padding: 8px 0 16px 0; margin-bottom: 12px; border-bottom: 1px solid #ebeef5;">
+        <el-form-item label="日期范围" style="margin-right: 16px; margin-bottom: 8px;">
           <el-date-picker
             v-model="where.dateRange"
             type="daterange"
@@ -12,15 +15,15 @@
             start-placeholder="开始日期"
             end-placeholder="结束日期"
             value-format="yyyy-MM-dd"
-            style="width: 240px"
+            style="width: 240px;"
           ></el-date-picker>
         </el-form-item>
-        <el-form-item>
+        <el-form-item style="margin-right: 16px; margin-bottom: 8px;">
           <el-select
             v-model="where.MZZY"
             placeholder="请选择术间"
             clearable
-            style="width: 160px"
+            style="width: 160px;"
             @change="changeMZZY"
           >
             <el-option
@@ -31,26 +34,24 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item>
+        <el-form-item style="margin-right: 16px; margin-bottom: 8px;">
           <el-input
             v-model="where.patientOrSurgeryName"
             placeholder="请输入患者姓名或手术名称"
             clearable
-            style="width: 200px"
+            style="width: 200px;"
           ></el-input>
         </el-form-item>
-        <el-form-item>
-          <el-button type="primary" icon="el-icon-search" @click="reload"
-            >查询</el-button
-          >
+        <el-form-item style="margin-bottom: 8px;">
+          <el-button type="primary" icon="el-icon-search" @click="reload" style="margin-right: 8px;">查询</el-button>
+          <!-- <el-button icon="el-icon-refresh-right" @click="resetFilters">重置</el-button> -->
         </el-form-item>
       </el-form>
-
       <!-- 数据表格 -->
       <ele-pro-table
         size="mini"
         ref="table"
-        height="calc(100vh - 400px)"
+        height="calc(100vh - 420px)"
         @row-click="handleRowClick"
         :columns="columns"
         :datasource="datasource"
@@ -59,11 +60,13 @@
         highlight-current-row
         :stripe="true"
         :needPage="true"
+        style="margin-top: 8px;"
       >
       </ele-pro-table>
     </el-card>
   </div>
 </template>
+
 
 <script>
   import { getBdSzYyHisSs } from '@/api/Task/OPSConsumables';
@@ -86,16 +89,15 @@
         ],
         // 表格列配置
         columns: [
-          {
-            prop: 'MZZY',
-            label: '门诊/住院',
-            align: 'center',
-            width: 100,
-            formatter: (row, column, cellValue, index) => {
-              return cellValue === '1' ? '门诊' : '住院';
-            }
-          },
-
+          // {
+          //   prop: 'MZZY',
+          //   label: '门诊/住院',
+          //   align: 'center',
+          //   width: 100,
+          //   formatter: (row, column, cellValue, index) => {
+          //     return cellValue === '1' ? '门诊' : '住院';
+          //   }
+          // },
           {
             prop: 'SSBH',
             label: '手术编号',

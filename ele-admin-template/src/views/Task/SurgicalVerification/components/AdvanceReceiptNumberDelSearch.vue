@@ -12,7 +12,6 @@
         <el-col :lg="12" :md="12">
           <div class="ele-form-actions">
             <el-button size="mini" icon="el-icon-search" type="primary" @click="search">查询</el-button>
-            <el-button size="mini" type="primary" @click="handleAddConsumeItem">修改</el-button>
             <el-button size="mini" icon="el-icon-scan" type="primary" @click="handleUdiScanAdd">UDI添加</el-button>
           </div>
         </el-col>
@@ -192,3 +191,5 @@ export default {
   }
 };
 </script>
+<style scoped>
+</style>

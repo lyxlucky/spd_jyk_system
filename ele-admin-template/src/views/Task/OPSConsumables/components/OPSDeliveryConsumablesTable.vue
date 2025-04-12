@@ -7,7 +7,7 @@
           <el-input placeholder="编码/名称"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="reload">查询</el-button>
+          <el-button type="primary" size="mini" icon="el-icon-search" @click="reload">查询</el-button>
         </el-form-item>
       </el-form>
       <ele-pro-table
@@ -36,19 +36,19 @@
         where: {},
         columns: [
           {
-            prop: 'VARIETIE_CODE',
+            prop: 'VARIETIE_CODE_NEW',
             label: '品种编码',
             align: 'center',
             width: 120
           },
           {
-            prop: 'WJXMBM',
+            prop: 'CHARGING_CODE',
             label: '计费编码',
             align: 'center',
             width: 120
           },
           {
-            prop: 'FYMC',
+            prop: 'VARIETIE_NAME',
             label: '品种名称',
             align: 'center',
             minWidth: 150,
@@ -117,9 +117,14 @@
         //this.currentRow = row;
         this.reload({ SSBH: row.SSBH });
       });
+      this.$bus.$on('OPSPlanConsumablesTableRowClick', (row) => {
+        this.reload();
+      });
+
     },
     beforeDestroy() {
       this.$bus.$off('OPSConsumablesTableRowClick');
+      this.$bus.$off('OPSPlanConsumablesTableRowClick');
     }
   };
 </script>

@@ -1,15 +1,15 @@
 <template>
   <div class="ele-body">
-    <el-row :gutter="10">
-      <el-col :span="8">
+    <el-container>
+      <el-aside width="32%">
         <OPSConsumablesTable @changeMZZY="changeMZZY"></OPSConsumablesTable>
-      </el-col>
-      <el-col :span="16" type="flex">
+      </el-aside>
+      <el-main>
         <OPSPlanConsumablesTable :MZZY="MZZY" />
         <div style="height: 10px"></div>
         <OPSDeliveryConsumablesTable :MZZY="MZZY" />
-      </el-col>
-    </el-row>
+      </el-main>
+    </el-container>
   </div>
 </template>
 

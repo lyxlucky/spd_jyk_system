@@ -7,7 +7,13 @@
           <el-input placeholder="编码/名称"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="reload">查询</el-button>
+          <el-button
+            type="primary"
+            icon="el-icon-search"
+            size="mini"
+            @click="reload"
+            >查询</el-button
+          >
         </el-form-item>
       </el-form>
       <ele-pro-table
@@ -20,12 +26,13 @@
         :datasource="datasource"
       >
         <template v-slot:operate="{ row }">
-          <el-button size="mini" type="primary" @click="handleEdit(row)"
+          <el-button size="mini" icon="el-icon-shopping-bag-2" type="primary" @click="handleEdit(row)"
             >散货</el-button
           >
           <el-button
             size="mini"
             type="primary"
+            icon="el-icon-box"
             @click="handleAddDefNoPkgCode(row)"
             >定数包</el-button
           >
@@ -180,12 +187,14 @@
             //   TYPE:"1",
             //   PS_COUNT:value
             // }));
-            const jsonData = [{
-              Token: sessionStorage.Token,
-              BDSZ_ZQSJ_ID: data.ID,
-              TYPE: '1',
-              PS_COUNT: value
-            }];
+            const jsonData = [
+              {
+                Token: sessionStorage.Token,
+                BDSZ_ZQSJ_ID: data.ID,
+                TYPE: '1',
+                PS_COUNT: value
+              }
+            ];
 
             addBdszZqsjMainPsDel(jsonData)
               .then((res) => {

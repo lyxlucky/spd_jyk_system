@@ -22,7 +22,7 @@
   import { GetBdszZqsjMainUseDel } from '@/api/Task/SurgicalVerification';
   export default {
     name: 'ConsumeablesUsageDetail',
-    props:['masterCurrentData'],
+    props: ['masterCurrentData'],
     data() {
       return {
         columns: [
@@ -50,13 +50,15 @@
             prop: 'VARIETIE_NAME',
             label: '品种名称',
             align: 'center',
-            width: 130
+            width: 130,
+            showOverflowTooltip: true
           },
           {
             prop: 'SPECIFICATION_OR_TYPE',
             label: '规格型号',
             align: 'center',
-            width: 130
+            width: 130,
+            showOverflowTooltip: true
           },
           {
             prop: 'UNIT',
@@ -80,25 +82,29 @@
             prop: 'BATCH_PRODUCTION_DATE',
             label: '生产日期',
             align: 'center',
-            width: 130
+            width: 130,
+            showOverflowTooltip: true
           },
           {
             prop: 'BATCH_VALIDITY_PERIOD',
             label: '有效日期',
             align: 'center',
-            width: 130
+            width: 130,
+            showOverflowTooltip: true
           },
           {
             prop: 'APPROVAL_NUMBER',
             label: '批准文号',
             align: 'center',
-            width: 130
+            width: 130,
+            showOverflowTooltip: true
           },
           {
             prop: 'MANUFACTURING_ENT_NAME',
             label: '生产企业',
             align: 'center',
-            width: 130
+            width: 130,
+            showOverflowTooltip: true
           }
         ],
         toolbar: false,
@@ -140,13 +146,13 @@
       }
     },
     created() {
-      this.$bus.$on('AdVanceReceiptNumberDelTableReload', () => {
+      this.$bus.$on('AdVanceReceiptNumberDelTableCurrentChange', () => {
         this.reload();
       });
     },
     destroyed() {
-      this.$bus.$off('AdVanceReceiptNumberDelTableReload');
+      this.$bus.$off('AdVanceReceiptNumberDelTableCurrentChange');
     }
   };
 </script>
-<style lang=""></style>
+<style scoped></style>

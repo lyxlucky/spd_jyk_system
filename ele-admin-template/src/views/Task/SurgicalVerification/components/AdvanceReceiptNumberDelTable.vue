@@ -93,7 +93,7 @@
             prop: 'VARIETIE_NAME',
             label: '品种名称',
             align: 'center',
-            minWidth: 150,
+            minWidth: 180,
             showOverflowTooltip: true
           },
           {
@@ -214,7 +214,6 @@
         }
         this.UDIScanAddDialogVisiable = true;
       },
-
       /* 刷新表格 */
       reload(where) {
         this.$refs.table.reload({ page: 1, where: where });
@@ -225,6 +224,7 @@
         this.$emit('selectionData', selection);
       },
       onCurrentChange(current) {
+        this.$bus.$emit('AdVanceReceiptNumberDelTableCurrentChange', current);
         this.current = current;
       },
 
@@ -270,7 +270,9 @@
     },
     beforeDestroy() {
       this.$bus.$off('LoadDeliveryConsumedVarietie');
-      this.$bus.$off('AdVanceReceiptNumberDelTableReload');
+      this.$bus.$off('AdVanceReceiptNumberDelTableCurrentChange');
     }
   };
 </script>
+<style scoped>
+</style>
