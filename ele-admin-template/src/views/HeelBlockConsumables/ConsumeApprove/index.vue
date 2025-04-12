@@ -1183,6 +1183,7 @@
 
   ::v-deep(.success-row) {
     /* background-color: #f0f9eb; */
+    background-color: #f0f9eb00;
     color: #67c23a;
   }
 

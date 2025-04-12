@@ -215,20 +215,19 @@
             label: '申领时间',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 110
-            // formatter: (row, column, cellValue) => {
-            //   return this.$mount(cellValue).formatter('yyyy-MM-dd hh:mm:ss');
-            // }
+            minWidth: 180,
+            formatter: (row, column, cellValue) => {
+              return this.$moment(cellValue).format('YYYY-MM-DD HH:mm:ss');
+            }
           },
           {
             prop: 'Approval_Time',
             label: '审批时间',
-
             align: 'center',
             showOverflowTooltip: true,
             minWidth: 180,
             formatter: (row, column, cellValue) => {
-              return this.$util.toDateString(cellValue);
+              return this.$moment(cellValue).format('YYYY-MM-DD HH:mm:ss');
             }
           },
           {

@@ -30,16 +30,21 @@
         >
       </template>
     </ele-pro-table>
-    <UdiLinkDetail @reload="reload" :UdiListTableDatasource="UdiListTableDatasource" :GrandParentTableCurrent="ApplyTempTableData" :visible.sync="UdiLinkDetailVisible"></UdiLinkDetail>
+    <UdiLinkDetail
+      @reload="reload"
+      :UdiListTableDatasource="UdiListTableDatasource"
+      :GrandParentTableCurrent="ApplyTempTableData"
+      :visible.sync="UdiLinkDetailVisible"
+    ></UdiLinkDetail>
   </div>
 </template>
 
-<style>
-  .el-table .warning-row {
+<style scoped>
+  :deep(.el-table .warning-row) {
     background: oldlace;
   }
 
-  .el-table .success-row {
+  :deep(.el-table .success-row) {
     background: #65bb37;
   }
 </style>
@@ -115,7 +120,7 @@
         // datasource: [],
         data: [],
         UdiLinkDetailVisible: false,
-        UdiListTableDatasource: []  
+        UdiListTableDatasource: []
       };
     },
     methods: {
@@ -165,8 +170,9 @@
         }
       },
       handleLinkUdi() {
-        console.log(this?.ApplyTempTableData)
-        if(this?.ApplyTempTableData.length == 0) return this.$message.warning('请先选择一条数据');
+        console.log(this?.ApplyTempTableData);
+        if (this?.ApplyTempTableData.length == 0)
+          return this.$message.warning('请先选择一条数据');
         this.UdiLinkDetailVisible = true;
       }
     },
@@ -206,5 +212,4 @@
     }
   };
 </script>
-<style scoped>
-</style>
+<style scoped></style>

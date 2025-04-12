@@ -49,12 +49,12 @@
   </div>
 </template>
 
-<style>
-  .el-table .warning-row {
+<style scoped>
+  :deep(.el-table .warning-row) {
     background: oldlace;
   }
 
-  .el-table .success-row {
+  :deep(.el-table .success-row) {
     background: #65bb37;
   }
 </style>
@@ -366,5 +366,4 @@
     created() {}
   };
 </script>
-<style scoped>
-</style>
+<style scoped></style>

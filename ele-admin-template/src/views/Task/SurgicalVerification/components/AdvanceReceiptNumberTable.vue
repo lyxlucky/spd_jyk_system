@@ -39,7 +39,7 @@
   </div>
 </template>
 
-<style>
+<style scoped>
   .el-table .warning-row {
     background: oldlace;
   }
@@ -48,7 +48,7 @@
     background: #65bb37;
   }
 
-  .el-card__body {
+  :deep(.el-card__body) {
     padding: 0px;
   }
 </style>
@@ -57,7 +57,7 @@
   import AdvanceReceiptNumberSearch from './AdvanceReceiptNumberSearch.vue';
   import AdvanceReceiptNumberEdit from './AdvanceReceiptNumberEdit.vue';
   import { getBdSzYyHisSs, BdSsApprove } from '@/api/Task/SurgicalVerification';
-  import { HOME_HP,BACK_BASE_URL } from '@/config/setting';
+  import { HOME_HP, BACK_BASE_URL } from '@/config/setting';
   export default {
     name: 'ApplyTempTable',
     components: {
@@ -197,8 +197,10 @@
         if (this.current == null) {
           return this.$message.warning('请先选择一条数据');
         }
-        window.open(`${BACK_BASE_URL}/api/Abdzczh/GetTagQdMx?id=67&format=pdf&inline=true&qdid=${this.current.SSBH}&Token=${sessionStorage.Token}`)
-      },
+        window.open(
+          `${BACK_BASE_URL}/api/Abdzczh/GetTagQdMx?id=67&format=pdf&inline=true&qdid=${this.current.SSBH}&Token=${sessionStorage.Token}`
+        );
+      }
     },
     mounted() {
       this.$bus.$on(
@@ -226,5 +228,4 @@
     }
   };
 </script>
-<style scoped>
-</style>
+<style scoped></style>
