@@ -2,76 +2,6 @@ import request from '@/utils/request';
 import { formdataify, DataToObject } from '@/utils/formdataify';
 import { TOKEN_STORE_NAME } from '@/config/setting';
 import store from '@/store';
-<<<<<<< HEAD
-import { Encrypt } from '@/utils/aes-util';
-
-export async function getBdSzYyHisSs(data) {
-  console.log(data);
-  const formatData = {
-    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
-    VarietieCode: data.where.keyword || '',
-    BHDate: data.where.date || '',
-    SenState: data.where.state || '-1',
-    PlanNum: data.where.planNo || ''
-  };
-  // const encriptData = {
-  //   prams: Encrypt(JSON.stringify(formatData)),
-  //   AesKey: store.state.user.encrypted.KEY,
-  //   page: data.page ? data.page : 1,
-  //   size: data.limit ? data.limit : 30
-  // };
-  const res = await request.post(
-    '/DeptPlanTransfer/getBdSzYyHisSs',
-    formdataify(formatData)
-  );
-  if (res.data.code == 200) {
-    return res.data;
-  } else {
-    return Promise.reject(new Error(res.data.msg));
-  }
-}
-
-
-export async function GetBdszgsjMainDel(data) {
-  console.log(data);
-  const formatData = {
-    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
-    // 1-门诊，2-住院
-    MZZY: 1
-  };
-
-  const res = await request.post(
-    '/DeptPlanTransfer/GetBdszgsjMainDel',
-    formdataify(formatData)
-  );
-  if (res.data.code == 200) {
-    return res.data;
-  } else {
-    return Promise.reject(new Error(res.data.msg));
-  }
-}
-
-
-
-export async function GetBdszZgsjMainPsDel(data) {
-  console.log(data);
-  const formatData = {
-    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
-    // 1-门诊，2-住院
-    MZZY: 1
-  };
-
-  const res = await request.post(
-    '/DeptPlanTransfer/GetBdszZgsjMainPsDel',
-    formdataify(formatData)
-  );
-  if (res.data.code == 200) {
-    return res.data;
-  } else {
-    return Promise.reject(new Error(res.data.msg));
-  }
-}
-=======
 
 export async function getBdSzYyHisSs(params) {
   const formatData = {
@@ -213,4 +143,3 @@ export async function deleteUsedQty(params) {
   return Promise.reject(res.data);
 }
 
->>>>>>> 6299298dce3c3a617262213a6a1853f91df066bd
