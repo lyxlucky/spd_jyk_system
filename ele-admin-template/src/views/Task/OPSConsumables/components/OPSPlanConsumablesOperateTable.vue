@@ -58,9 +58,15 @@
             align: 'center',
             fixed: 'left'
           },
+          // {
+          //   prop: 'Name',
+          //   label: '库区名称',
+          //   align: 'center',
+          //   width: 120
+          // },
           {
-            prop: 'Name',
-            label: '库区名称',
+            prop: 'Varietie_Code_New',
+            label: '品种编码',
             align: 'center',
             width: 120
           },
@@ -72,14 +78,15 @@
             showOverflowTooltip: true
           },
           {
-            prop: 'Varietie_Code_New',
-            label: '品种编码',
+            prop: 'SPECIFICATION_OR_TYPE',
+            label: '规格型号',
             align: 'center',
-            width: 120
+            minWidth: 150,
+            showOverflowTooltip: true
           },
           {
-            prop: 'Batch',
-            label: '批号',
+            prop: 'UNIT',
+            label: '单位',
             align: 'center',
             width: 100
           },
@@ -90,23 +97,10 @@
             width: 100
           },
           {
-            prop: 'Contract_Code',
-            label: '合同编码',
+            prop: 'Batch',
+            label: '批号',
             align: 'center',
-            width: 120
-          },
-          {
-            prop: 'Supplier_Code',
-            label: '供应商编码',
-            align: 'center',
-            width: 120
-          },
-          {
-            prop: 'Supplier_Name',
-            label: '供应商名称',
-            align: 'center',
-            minWidth: 150,
-            showOverflowTooltip: true
+            width: 100
           },
           {
             prop: 'Batch_Production_Date',
@@ -129,6 +123,20 @@
                 ? this.$moment(row.Batch_Validity_Period).format('YYYY-MM-DD')
                 : '';
             }
+          },
+          {
+            prop: 'Supplier_Name',
+            label: '供应商',
+            align: 'center',
+            minWidth: 150,
+            showOverflowTooltip: true
+          },
+          {
+            prop: 'Up_Shelf_Quantity',
+            label: '库存数量',
+            align: 'center',
+            minWidth: 80,
+            showOverflowTooltip: true
           },
           {
             slot: 'ACTION',

@@ -81,6 +81,26 @@ export async function getBdszZgsjMainPsDel(params) {
   return Promise.reject(res.data);
 }
 
+//打印
+export async function GetBdszZgsjMainPsDelExcel(params) {
+  const formatData = {
+    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+    SSBH: params?.SSBH || '',
+    page: params.page || 1,
+    size: params.limit || 999999,
+  }
+
+  let res = await request.post(
+    '/DeptPlanTransfer/GetBdszZgsjMainPsDelExcel',
+    formatData
+  )
+  
+  if (res.data.code == 200) {
+    return res.data;
+  }
+  return Promise.reject(res.data);
+}
+
 /**
  * 搜索品种批次ID
  * @param {Object} params 请求参数
@@ -127,4 +147,21 @@ export async function addBdszZqsjMainPsDel(data) {
   }
   return Promise.reject(res.data);
 }
+
+//删除配送明细
+export async function deleteBdszPsDetail(data) {
+  const formatData = {
+    ...data,
+    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+  }
+  let res = await request.post(
+    '/DeptPlanTransfer/deleteBdszPsDetail',
+    formatData
+  )
+  if (res.data.code == 200) {
+    return res.data;
+  }
+  return Promise.reject(res.data);
+}
+
 

@@ -15,11 +15,27 @@
       @current-change="onCurrentChange"
       cache-key="ConsumeablesUsageDetailCacheKey"
     >
+      <!-- 左表头 -->
+      <template v-slot:ACTION="{ row }">
+        <!-- 搜索表单 -->
+        <el-button
+          size="mini"
+          type="danger"
+          icon="el-icon-delete"
+          class="ele-btn-icon"
+          @click="handleRemove(row)"
+        >
+          剔除
+        </el-button>
+      </template>
     </ele-pro-table>
   </div>
 </template>
 <script>
-  import { GetBdszZqsjMainUseDel } from '@/api/Task/SurgicalVerification';
+  import {
+    GetBdszZqsjMainUseDel,
+    deleteUsedQty
+  } from '@/api/Task/SurgicalVerification';
   export default {
     name: 'ConsumeablesUsageDetail',
     props: ['masterCurrentData'],
@@ -83,14 +99,20 @@
             label: '生产日期',
             align: 'center',
             width: 130,
-            showOverflowTooltip: true
+            showOverflowTooltip: true,
+            formatter: (row, column, cellValue) => {
+              return this.$util.toDateString(cellValue, 'YYYY-MM-DD');
+            }
           },
           {
             prop: 'BATCH_VALIDITY_PERIOD',
             label: '有效日期',
             align: 'center',
             width: 130,
-            showOverflowTooltip: true
+            showOverflowTooltip: true,
+            formatter: (row, column, cellValue) => {
+              return this.$util.toDateString(cellValue, 'YYYY-MM-DD');
+            }
           },
           {
             prop: 'APPROVAL_NUMBER',
@@ -105,6 +127,13 @@
             align: 'center',
             width: 130,
             showOverflowTooltip: true
+          },
+          {
+            slot: 'ACTION',
+            prop: 'ACTION',
+            label: '操作',
+            align: 'center',
+            width: 130
           }
         ],
         toolbar: false,
@@ -142,7 +171,33 @@
       },
       /* 刷新表格 */
       reload(where) {
-        this.$refs.table.reload({ page: 1, where: where });
+        const formatWhere = {
+          ...where,
+          SSBH: this.masterCurrentData.SSBH
+        }
+        this.$refs.table.reload({ page: 1, where: formatWhere });
+      },
+      handleRemove(row) {
+        this.$confirm('是否剔除该记录？', '提示', {
+          type: 'warning'
+        })
+          .then(() => {
+            const loading = this.$messageLoading('剔除中...');
+            deleteUsedQty({
+              ID: row.ID
+            })
+              .then((res) => {
+                this.$message.success(res.msg);
+              })
+              .catch((err) => {
+                this.$message.error(err);
+              })
+              .finally(() => {
+                loading.close();
+                this.reload();
+              });
+          })
+          .catch(() => {});
       }
     },
     created() {
@@ -150,7 +205,10 @@
         this.reload();
       });
       this.$bus.$on('UdiScanDialogClosed', (current) => {
-        this.reload()
+        this.reload();
+      });
+      this.$bus.$on('AdvanceReceiptNumberTableCurrent', (current) => {
+        this.reload();
       });
     },
     destroyed() {

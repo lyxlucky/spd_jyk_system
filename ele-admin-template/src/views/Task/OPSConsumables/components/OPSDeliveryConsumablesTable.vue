@@ -4,18 +4,31 @@
       <div slot="header">手术配送耗材</div>
       <ele-pro-table
         ref="table"
-        :initLoad ="false"
+        :initLoad="false"
         size="mini"
         :columns="columns"
         height="180px"
         :datasource="datasource"
-      />
+      >
+        <template v-slot:ACTION="{ row }">
+          <el-button
+            size="mini"
+            icon="el-icon-delete"
+            @click="handleDeleteItem(row)"
+            type="danger"
+            >删除</el-button
+          >
+        </template>
+      </ele-pro-table>
     </el-card>
   </div>
 </template>
 
 <script>
-  import { getBdszZgsjMainPsDel } from '@/api/Task/OPSConsumables';
+  import {
+    getBdszZgsjMainPsDel,
+    deleteBdszPsDetail
+  } from '@/api/Task/OPSConsumables';
   export default {
     name: 'OPSDeliveryConsumablesTable',
     props: {
@@ -79,6 +92,13 @@
             label: '配送数量',
             align: 'center',
             width: 100
+          },
+          {
+            slot: 'ACTION',
+            prop: 'ACTION',
+            label: '操作',
+            align: 'center',
+            width: 100
           }
         ]
       };
@@ -89,7 +109,7 @@
         where.MZZY = this.MZZY;
         return getBdszZgsjMainPsDel({ where })
           .then((data) => {
-            this.$bus.$emit("OPSDeliveryConsumablesTableData", data.data);
+            this.$bus.$emit('OPSDeliveryConsumablesTableData', data.data);
             return {
               list: data.data || [],
               count: data.total
@@ -103,7 +123,28 @@
           });
       },
       reload(where) {
-        this.$refs.table.reload({ page: 1, where: where });
+        this.$refs.table.reload({ page: 1, where: where});
+      },
+
+      handleDeleteItem(row) {
+        this.$confirm('是否删除该行数据?', '提示', {
+          type: 'warning'
+        })
+          .then(() => {
+            deleteBdszPsDetail({ ID: row.ID, TYPE: row.TYPE })
+              .then(() => {
+                this.$message.success('删除成功!');
+              })
+              .catch(() => {
+                this.$message.error('删除失败!');
+              });
+          })
+          .catch(() => {
+            this.$message.info('已取消删除!');
+          })
+          .finally(() => {
+            this.reload();
+          });
       }
     },
     mounted() {

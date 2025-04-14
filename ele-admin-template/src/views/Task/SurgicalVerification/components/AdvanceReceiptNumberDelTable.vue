@@ -36,7 +36,7 @@
       </template>
 
       <template v-slot:ACTION="{ row }">
-        <el-button size="mini" type="primary" :disabled='isUpdateCountEnable' @click="handleUpdateCount(row)"
+        <el-button size="mini" type="primary" @click="handleUpdateCount(row)"
           >修改数量</el-button
         >
       </template>
@@ -125,7 +125,7 @@
             showOverflowTooltip: true
           },
           {
-            prop: 'PS_COUNT',
+            prop: 'TRUE_PS_QTY',
             label: '配送数量',
             align: 'center',
             minWidth: 80,
@@ -185,6 +185,7 @@
         this.$bus.$emit('UdiScanDialogClosed');
       },
       handleUpdateCount(data) {
+        if(data?.TYPE == '1') return this.$message.warning('此类型不允许修改数量');
         //prompt
         this.$prompt('请输入数量', '提示', {
           confirmButtonText: '确定',
@@ -249,25 +250,30 @@
         return this.ApplyTempTableData;
       },
       isUpdateCountEnable(){
-        return this.current.TYPE == '1';
+        return this?.current?.TYPE == '1';
       }
       // pageSize(){
       //   return localStorage.getItem('SerachTempletDetaPageSize')?localStorage.getItem('SerachTempletDetaPageSize'):10
       // }
     },
     watch: {
-      ApplyTempTableDataSearch() {
-        var where = {
-          deliveryNumber: this.ApplyTempTableData.Delivery_Note_Number,
-          SSBH: this.ApplyTempTableData.SSBH
-        };
-        this.$refs.table.reload({ page: 1, where: where });
-      }
+      // ApplyTempTableDataSearch() {
+      //   var where = {
+      //     deliveryNumber: this.ApplyTempTableData.Delivery_Note_Number,
+      //     SSBH: this.ApplyTempTableData.SSBH
+      //   };
+      //   this.$refs.table.reload({ page: 1, where: where });
+      // }
     },
     mounted() {
       this.$bus.$on('LoadDeliveryConsumedVarietie', (data) => {
         this.VarietyConsumeptionDataList = data.list;
       });
+
+      this.$bus.$on('AdvanceReceiptNumberTableCurrent',(data) => {
+        this.reload(data);
+      })
+
       this.$bus.$on('UdiScanDialogClosed', (current) => {
         this.reload()
       });

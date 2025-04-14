@@ -58,6 +58,7 @@
   import AdvanceReceiptNumberEdit from './AdvanceReceiptNumberEdit.vue';
   import { getBdSzYyHisSs, BdSsApprove } from '@/api/Task/SurgicalVerification';
   import { HOME_HP, BACK_BASE_URL } from '@/config/setting';
+import { load } from '@amap/amap-jsapi-loader';
   export default {
     name: 'ApplyTempTable',
     components: {
@@ -68,15 +69,35 @@
       return {
         // 表格列配置
         columns: [
+          // {
+          //   prop: 'MZZY',
+          //   label: '类别',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   minWidth: 100,
+          //   formatter: (_row, _column, cellValue) => {
+          //     if (cellValue == '1') return '门诊';
+          //     if (cellValue == '2') return '住院';
+          //   }
+          // },
           {
-            prop: 'MZZY',
-            label: '类别',
+            prop: 'STATE',
+            label: '状态',
             align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 100,
-            formatter: (_row, _column, cellValue) => {
-              if (cellValue == '1') return '门诊';
-              if (cellValue == '2') return '住院';
+            width: 150,
+            formatter: (row, column, cellValue) => {
+              switch (cellValue) {
+                case '1':
+                  return '已提交';
+                case '2':
+                  return '已拣配';
+                case '3':
+                  return '已交接';
+                case '4':
+                  return '已完成';
+                default:
+                  return '未知状态';
+              }
             }
           },
           {
@@ -103,14 +124,25 @@
             label: '姓名',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 80
+            minWidth: 80,
+            formatter: (row, column, cellValue) => {
+              if (!cellValue || cellValue.length == 2)
+                return cellValue[0] + '*';
+              const firstChar = cellValue[0];
+              const lastChar = cellValue[cellValue.length - 1];
+              const middleStars = '*'.repeat(cellValue.length - 2);
+              return firstChar + middleStars + lastChar;
+            }
           },
           {
             prop: 'SSRQ',
             label: '手术时间',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 150
+            width: 120,
+            formatter: (row, column, cellValue, index) => {
+              return this.$util.toDateString(cellValue, 'YYYY-MM-DD HH:mm:ss');
+            },
           },
           {
             prop: 'SSMC',
@@ -118,26 +150,6 @@
             align: 'center',
             showOverflowTooltip: true,
             minWidth: 120
-          },
-          {
-            prop: 'STATE',
-            label: '状态',
-            align: 'center',
-            width: 150,
-            formatter: (row, column, cellValue) => {
-              switch (cellValue) {
-                case '1':
-                  return '已提交';
-                case '2':
-                  return '已拣配';
-                case '3':
-                  return '已交接';
-                case '4':
-                  return '已完成';
-                default:
-                  return '未知状态';
-              }
-            }
           }
           // {
           //   columnKey: 'action',
@@ -202,6 +214,7 @@
         if (this.current == null) {
           return this.$message.warning('请先选择一条数据');
         }
+        const loading = this.$messageLoading('审批中...');
         //return
         BdSsApprove({ qdid: this.current.SSBH })
           .then((res) => {
@@ -211,6 +224,7 @@
             this.$message.error(err);
           })
           .finally(() => {
+            loading.close();
             this.reload();
           });
       },

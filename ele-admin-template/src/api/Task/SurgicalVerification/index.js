@@ -100,6 +100,7 @@ export async function addBdszZqsjMainPsDelUse(params) {
     ID: params.ID || '',
     UDI: params.UDI || '',
     USE_COUNT: params.USE_COUNT,
+    BDSZ_ZQSJ_PS_ID: params.BDSZ_ZQSJ_PS_ID || '',
     page: params.page || 1,
     size: params.limit || 10
   };
@@ -127,3 +128,18 @@ export async function BdSsApprove(params) {
   }
   return Promise.reject(res.data);
 }
+
+//删除确认明细
+export async function deleteUsedQty(params) {
+  const formatData = {
+    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+    ID: params.ID
+  };
+  let res = await request.post('/DeptPlanTransfer/deleteUsedQty', formatData);
+
+  if (res.data.code == 200) {
+    return res.data;
+  }
+  return Promise.reject(res.data);
+}
+
