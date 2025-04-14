@@ -57,21 +57,32 @@
 
       <!-- 生产日期 -->
       <template v-slot:Batch_Production_Date="{ row }">
-        <el-date-picker
+        <el-input
+          :disabled="isCurrentRowInputEnabled(row)"
+          size="mini"
+          v-model="row.Batch_Production_Date"
+        ></el-input>
+        <!-- <el-date-picker
           :disabled="isCurrentRowInputEnabled(row)"
           size="mini"
           type="date"
           v-model="row.Batch_Production_Date"
-        >2024-12-04</el-date-picker>
+        >2024-12-04</el-date-picker> -->
       </template>
 
       <!-- 有效期 -->
       <template v-slot:Batch_Validity_Period="{ row }">
-        <el-date-picker
+
+        <el-input
+          :disabled="isCurrentRowInputEnabled(row)"
+          size="mini"
+          v-model="row.Batch_Validity_Period"
+        ></el-input>
+        <!-- <el-date-picker
           size="mini"
           type="date"
           v-model="row.Batch_Validity_Period"
-        ></el-date-picker>
+        ></el-date-picker> -->
       </template>
 
       <!-- 操作列 -->
@@ -325,10 +336,10 @@
             return this.$message.error(
               `添加失败，品种 [${item.Varietie_Code}${item.Varietie_Name}] 的生产批号不能为空值`
             );
-          if (!item?.Batch_Validity_Period)
-            return this.$message.error(
-              `添加失败，品种 [${item.Varietie_Code}${item.Varietie_Name}] 的有效日期不能为空值`
-            );
+          // if (!item?.Batch_Validity_Period)
+          //   return this.$message.error(
+          //     `添加失败，品种 [${item.Varietie_Code}${item.Varietie_Name}] 的有效日期不能为空值`
+          //   );
           if (!item?.Batch_Production_Date)
             return this.$message.error(
               `添加失败，品种 [${item.Varietie_Code}${item.Varietie_Name}] 的生产日期不能为空值`
@@ -340,7 +351,7 @@
             Id: item.Id,
             Netreceipts: item.Consume_Count,
             Batch: item.Batch,
-            Batch_Validity_Period: item.Batch_Validity_Period,
+            Batch_Validity_Period: item.Batch_Validity_Period || '9999-12-31',
             Batch_Production_Date: item.Batch_Production_Date,
             Varietie_Name: item.Varietie_Name
           };

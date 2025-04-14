@@ -26,7 +26,11 @@
           <!-- <div slot="header" class="clearfix">
             <span>申领计划单列表</span>
           </div> -->
-          <KSDepartmentalPlantable @getCurrent="getCurrent" :IsReload="IsReloadTag"></KSDepartmentalPlantable>
+          <KSDepartmentalPlantable
+            ref="table1"
+            @getCurrent="getCurrent"
+            :IsReload="IsReloadTag"
+          ></KSDepartmentalPlantable>
         </el-card>
       </el-header>
       <el-main style="padding-top: 1px">
@@ -34,7 +38,12 @@
           <!-- <div slot="header" class="clearfix">
             <span>申领单详情</span>
           </div> -->
-          <KSDepartmentalPlanDetailstable2 :KSDepartmentalPlanData="KSDepartmentalPlanData" @clickReload="clickReload" v-if="isActive"></KSDepartmentalPlanDetailstable2>
+          <KSDepartmentalPlanDetailstable2
+            :KSDepartmentalPlanData="KSDepartmentalPlanData"
+            @clickReload="clickReload"
+            @clickReload2="clickReload2"
+            v-if="isActive"
+          ></KSDepartmentalPlanDetailstable2>
         </el-card>
       </el-main>
     </el-container>
@@ -44,43 +53,46 @@
 </template>
 
 <script>
-import KSDepartmentalPlantable from './components/KSDepartmentalPlan-table1.vue';
-import KSDepartmentalPlanDetailstable2 from './components/KSDepartmentalPlanDetails-table2';
+  import KSDepartmentalPlantable from './components/KSDepartmentalPlan-table1.vue';
+  import KSDepartmentalPlanDetailstable2 from './components/KSDepartmentalPlanDetails-table2';
 
-export default {
-  name: 'KSDepartmentalPlan',
-  components: {
-    KSDepartmentalPlantable,
-    KSDepartmentalPlanDetailstable2
-  },
-  provide() {
-    return {
-      reload: this.reload
-    };
-  },
-  data() {
-    return {
-      KSDepartmentalPlanData: {},
-      isActive: true,
-      IsReloadTag: false
-    };
-  },
-  methods: {
-    getCurrent(data) {
-      this.KSDepartmentalPlanData = data;
+  export default {
+    name: 'KSDepartmentalPlan',
+    components: {
+      KSDepartmentalPlantable,
+      KSDepartmentalPlanDetailstable2
     },
-    reload() {
-      this.isActive = false;
-      this.$nextTick(() => {
-        this.isActive = true;
-      });
+    provide() {
+      return {
+        reload: this.reload
+      };
     },
-    clickReload(data){
-      this.IsReloadTag = data
+    data() {
+      return {
+        KSDepartmentalPlanData: {},
+        isActive: true,
+        IsReloadTag: false
+      };
+    },
+    methods: {
+      getCurrent(data) {
+        this.KSDepartmentalPlanData = data;
+      },
+      reload() {
+        this.isActive = false;
+        this.$nextTick(() => {
+          this.isActive = true;
+        });
+      },
+      clickReload(data) {
+        this.IsReloadTag = data;
+      },
+      clickReload2() {
+        this.$refs.table1.reload2();
+      }
+    },
+    watch: {
+      IsReload() {}
     }
-  },
-  watch: {
-    IsReload() {}
-  }
-};
+  };
 </script>

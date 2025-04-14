@@ -52,7 +52,7 @@
           </el-date-picker>
         </el-form-item>
       </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 7, md: 12 } : { span: 6 }">
+      <el-col v-bind="styleResponsive ? { lg: 9, md: 12 } : { span: 6 }">
         <el-form-item label="收货状态:" label-width="80px">
           <el-select size="mini" v-model="where.STATE" @change="search()">
             <el-option label="全部" value=""></el-option>
@@ -70,6 +70,7 @@
           <el-button size="mini" icon="el-icon-refresh" @click="reset"
             >重置</el-button
           >
+          <el-button size="mini" type="success" icon="el-icon-download" @click="handleExportData">导出</el-button>
         </el-form-item>
       </el-col>
 
@@ -110,6 +111,9 @@
       /* 搜索 */
       search() {
         this.$emit('search', { ...this.where });
+      },
+      handleExportData() {
+        this.$emit('exportData', { ...this.where });
       },
       /*  重置 */
       reset() {

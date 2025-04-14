@@ -67,7 +67,6 @@ export async function spdScanConsume(data) {
     data2.deptTwoCode = data.deptTwoCode ? data.deptTwoCode : '';
     data2.user = data.user ? data.user : '';
     data2.password = data.password ? data.password : '';
-    // data2.AesKey = data.AesKey ? data.AesKey : GetGuid();
     data2.AesKey = data.AesKey ? data.AesKey : '';
     data2.hp = data.hp ? data.hp : 'bd';
     data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);

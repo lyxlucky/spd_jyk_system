@@ -426,7 +426,8 @@
           '价格变动记录(新)',
           '结算管理',
           '跟台耗材管理',
-          '作业管理'
+          '作业管理',
+          '手术室耗材预约_搜索权限'
         ];
         permission_group = permission_group.filter((res) => {
           return !blackList.includes(res.title);

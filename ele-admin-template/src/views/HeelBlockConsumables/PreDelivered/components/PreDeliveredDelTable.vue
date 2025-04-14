@@ -302,7 +302,7 @@
           Array.Receivable = this.selection[i].Receivable;
           Array.Batch = this.selection[i].Batch;
           Array.Batch_Production_Date = this.selection[i].Batch_Production_Date;
-          Array.Batch_Validity_Period = this.selection[i].Batch_Validity_Period;
+          Array.Batch_Validity_Period = this.selection[i].Batch_Validity_Period || '9999-12-31';
           arrList.push(Array);
         }
         var json = JSON.stringify(arrList);

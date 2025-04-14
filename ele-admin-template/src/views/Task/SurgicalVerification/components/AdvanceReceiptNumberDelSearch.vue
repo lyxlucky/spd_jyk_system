@@ -4,15 +4,15 @@
     <el-form class="ele-form-search">
       <el-row :gutter="10">
         <el-col :lg="5" :md="12">
-          <el-input size="mini" v-model="where.condition" placeholder="请输入品种名称/品种编码/型号规格" clearable />
+          <el-input size="mini" v-model="where.VARIETIE_CODE_NEW" placeholder="请输入品种名称/品种编码" clearable />
         </el-col>
-        <el-col :lg="5" :md="12">
+        <!-- <el-col :lg="5" :md="12">
           <el-input size="mini" v-model="where.zcz" placeholder="请输入注册证/生产企业/批准文号" clearable />
-        </el-col>
+        </el-col> -->
         <el-col :lg="12" :md="12">
           <div class="ele-form-actions">
             <el-button size="mini" icon="el-icon-search" type="primary" @click="search">查询</el-button>
-            <el-button size="mini" type="primary" @click="handleAddConsumeItem">添加</el-button>
+            <el-button size="mini" :disabled="isUdiScanEnabld" icon="el-icon-paperclip" type="primary" @click="handleUdiScanAdd">UDI添加</el-button>
           </div>
         </el-col>
       </el-row>
@@ -29,19 +29,16 @@ import { utils, read } from 'xlsx';
 import { BACK_BASE_URL, HOME_HP, TOKEN_STORE_NAME } from '@/config/setting';
 import {
   DeletePlanDeta
-  // KeeptListDeta,
 } from '@/api/KSInventory/KSDepartmentalPlan';
-import {
-  KeepTempletDeta,
-  ImportTempExcel
-} from '@/api/KSInventory/ApplyTemp';
+import { KeepTempletDeta, ImportTempExcel } from '@/api/KSInventory/ApplyTemp';
 import { isHvaeChargCode } from '@/api/HeelBlockConsumables/PlatformConsume';
 import AuthVarTable from './AuthVarTable.vue';
 export default {
   props: [
     'ApplyTempTableDataSearch',
     'selection',
-    'VarietyConsumeptionDataList'
+    'VarietyConsumeptionDataList',
+    'AdvanceReceiptDelcurrent'
   ],
   components: {
     AuthVarTable: AuthVarTable
@@ -50,10 +47,7 @@ export default {
     // 默认表单数据
     const defaultWhere = {
       Token: '',
-      condition: '',
-      zcz: '',
-      udi: '',
-      deliveryNumber: ''
+      VARIETIE_CODE_NEW: ''
     };
     return {
       // 表单数据
@@ -61,14 +55,19 @@ export default {
       dialogTableVisible: false,
       dialogTableVisible2: false,
       TEMPLET_MAIN_ID: null,
-      Token: sessionStorage.getItem(TOKEN_STORE_NAME)
+      Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+      AdvanceNumberTableCurrent: null,
     };
   },
   computed: {
+    isUdiScanEnabld(){
+      if(this?.AdvanceNumberTableCurrent != null){
+        return false;
+      }
+      return true;
+    },
     isAddVarietieEnable() {
-      return (
-        1 == Number(this?.ApplyTempTableDataSearch?.Receive_Receipt_State)
-      );
+      return 1 == Number(this?.ApplyTempTableDataSearch?.Receive_Receipt_State);
     },
     isPrintDefNoPkgCodeEnable() {
       return [3, 4].includes(
@@ -84,7 +83,7 @@ export default {
     },
     ApplyTempTableDataID() {
       return this.ApplyTempTableDataSearch;
-    }
+    },
   },
   methods: {
     handleUdiScanAdd() {
@@ -113,27 +112,14 @@ export default {
         window.open(
           `${BACK_BASE_URL}/api/B2BVarietieConsumeApprove/GetTags?id=5&format=pdf&inline=true&json=${JSON.stringify(
             jsonString
-          )}&deliveryNumberId=${this.ApplyTempTableDataSearch?.Delivery_Note_Number
+          )}&deliveryNumberId=${
+            this.ApplyTempTableDataSearch?.Delivery_Note_Number
           }&title=${HOME_HP}&Token=${sessionStorage.Token}`
         );
         resolve();
       });
     },
 
-    //查看定数码标签
-    handleCatDefNoPkgCode() {
-      const loading = this.$messageLoading('加载中...');
-      const jsonString = this.VarietyConsumeptionDataList?.map((item) => {
-        return item?.Id;
-      });
-      this.handleIsHaveChargCode(jsonString)
-        .then((res) => {
-          this.handleDefNoPkgCodePrint(jsonString);
-        })
-        .finally(() => {
-          loading.close();
-        });
-    },
     /* 搜索 */
     search() {
       this.$emit('search', this.where);
@@ -199,7 +185,7 @@ export default {
         });
     }
   },
-  created() { },
+  created() {},
   watch: {
     ApplyTempTableDataSearch() {
       this.TEMPLET_MAIN_ID = this.ApplyTempTableDataSearch.ID;
@@ -209,6 +195,11 @@ export default {
         this.$emit('showEditReoad', false);
       }
     }
-  }
+  },
+  mounted() {
+    this.$bus.$on('AdvanceReceiptNumberTableCurrent', (data) => {
+      this.AdvanceNumberTableCurrent = data;
+    });
+  },
 };
 </script>
