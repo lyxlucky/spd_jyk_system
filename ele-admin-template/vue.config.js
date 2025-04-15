@@ -7,8 +7,8 @@ function resolve(dir) {
 }
 
 module.exports = {
-  // publicPath: '/jyk/',
-  // outputDir: 'jyk',
+  // publicPath: '/jyknw/',
+  // outputDir: 'jyknw',
   productionSourceMap: false,
   transpileDependencies: ['element-ui', 'ele-admin', 'vue-i18n'],
   configureWebpack: {
@@ -52,7 +52,7 @@ module.exports = {
         }
       }
     }
-  }, 
+  },
   // 白名单，跨域问题
   devServer: {
     proxy: {
