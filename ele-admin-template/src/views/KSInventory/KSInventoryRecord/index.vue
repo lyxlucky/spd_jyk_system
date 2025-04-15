@@ -3,18 +3,16 @@
     <el-card shadown="never">
       <label>
         出库数:<b>{{ SumCount2 }}</b>
+        出库金额:<b>{{ CKSumAmount }}</b>
         入库数: <b>{{ SumCount1 }}</b>
+        入库金额: <b>{{ RKSumAmount }}</b>
         净入库:<b>{{ netExport }}</b>
         合计金额:<b>{{ SumAmount }}</b>
       </label>
-      <KSDepartmentalPlanDetails-search @exportData="exportData" @search="reload"
-        :KSDepartmentalPlanDataSearch="KSDepartmentalPlanDataSearch" :selection="selection"
-        @showEditReoad="showEditReoad" :datasourceList="datasourceList" />
+      <KSDepartmentalPlanDetails-search @exportData="exportData" @search="reload" :KSDepartmentalPlanDataSearch="KSDepartmentalPlanDataSearch" :selection="selection" @showEditReoad="showEditReoad" :datasourceList="datasourceList" />
       <!-- <el-button type="danger" size="small" @click="aaa">aaa</el-button> -->
       <!-- 数据表格 -->
-      <ele-pro-table ref="table" highlight-current-row :stripe="true" :rowClickChecked="true" :pageSize="pageSize"
-        :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection"
-        @selection-change="onSelectionChange" cache-key="KSInventoryBasicDataTable">
+      <ele-pro-table ref="table" highlight-current-row :stripe="true" :rowClickChecked="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" @selection-change="onSelectionChange" cache-key="KSInventoryBasicDataTable">
         <!-- 表头工具栏 -->
         <!-- 右表头 -->
         <!-- <template v-slot:toolkit>
@@ -202,7 +200,7 @@ export default {
           label: '供应商名称',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 180,
+          minWidth: 180
         },
         {
           prop: 'COUNT',
@@ -283,7 +281,17 @@ export default {
           label: '单号',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 110
+          minWidth: 110,
+          formatter: (row, column, cellValue) => {
+            console.log(row)
+            if (row.OPERATOR == 'HIS计费' && row.COUNT > 0  ) {
+              return '入库';
+            } else if (row.OPERATOR == 'HIS计费' && row.COUNT < 0) {
+              return '消耗';
+            } else {
+              return cellValue;
+            }
+          }
         },
 
         {
@@ -359,6 +367,8 @@ export default {
       SumCount1: 0,
       SumCount2: 0,
       SumAmount: 0,
+      CKSumAmount: 0,
+      RKSumAmount: 0,
       netExport: 0
     };
   },
@@ -384,7 +394,22 @@ export default {
           };
           for (let i = 0; i < res.result.length; i++) {
             this.SumAmount +=
-              res.result[i].COUNT * res.result[i].PRICE * 100 / 100;
+              (res.result[i].COUNT * res.result[i].PRICE * 100) / 100;
+
+            if (
+              res.result[i].COUNT > 0 &&
+              res.result[i].OPERATOR == 'HIS计费'
+            ) {
+              this.RKSumAmount +=
+                (res.result[i].COUNT * res.result[i].PRICE * 100) / 100;
+            }
+            if (
+              res.result[i].COUNT < 0 &&
+              res.result[i].OPERATOR == 'HIS计费'
+            ) {
+              this.CKSumAmount +=
+                (res.result[i].COUNT * res.result[i].PRICE * 100) / 100;
+            }
           }
           this.datasourceList = res.result;
           this.SumCount1 = Math.abs(res.SumCount1);
