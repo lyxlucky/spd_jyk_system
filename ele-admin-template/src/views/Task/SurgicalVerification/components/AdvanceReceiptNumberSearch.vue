@@ -6,18 +6,11 @@
     @keyup.enter.native="search"
     @submit.native.prevent
   >
-    <!-- <el-row :gutter="5" style="margin-top:5px;">
-      <el-col v-bind="styleResponsive ? { lg: 16, md: 12 } : { span: 12 }">
-        <el-input size="mini" clearable v-model="where.condition" placeholder="请扫描或输入单号" />
+    <el-row :gutter="5" style="margin-top:5px;">
+      <el-col v-bind="styleResponsive ? { lg: 14, md: 12 } : { span: 12 }">
+        <el-input size="mini" clearable v-model="where.condition" placeholder="请输入手术编号或住院号" />
       </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 8, md: 12 } : { span: 12 }">
-        <div class="ele-form-actions">
-          <el-button size="mini" type="primary" icon="el-icon-search" class="ele-btn-icon" @click="search">
-            查询
-          </el-button>
-        </div>
-      </el-col>
-    </el-row> -->
+    </el-row>
     <el-row :gutter="5">
       <el-col v-bind="styleResponsive ? { lg: 24, md: 12 } : { span: 12 }">
         <div class="ele-form-actions">
@@ -90,7 +83,8 @@
     data() {
       // 默认表单数据
       const defaultWhere = {
-        MZZY: ''
+        MZZY: '',
+        condition: '',
       };
       return {
         // 表单数据

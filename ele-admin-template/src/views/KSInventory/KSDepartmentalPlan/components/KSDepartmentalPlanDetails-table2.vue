@@ -63,10 +63,19 @@
         <!-- <el-input-number v-model="row.PlanQty" controls-position="right" @change="handleChange" :min="0" :max="9999" size="mini"></el-input-number> -->
       </template>
       <template v-slot:VarCode="{ row }">
-        <el-tag v-if="row.LEFT_APPLY_QTY == 0" type="success">{{
-          row.VarCode
-        }}</el-tag>
-        <el-tag v-else type="danger">{{ row.VarCode }}</el-tag>
+        <el-tooltip
+          class="item"
+          effect="dark"
+          :content="
+            row.VarCode + '中心库剩余库存 :' + row.StockQty
+          "
+          placement="top"
+        >
+          <el-tag v-if="row.StockQty == 0" type="danger">{{
+            row.VarCode
+          }}</el-tag>
+          <el-tag v-else type="success">{{ row.VarCode }}</el-tag>
+        </el-tooltip>
       </template>
       <template v-slot:REMARK="{ row }">
         <el-link
