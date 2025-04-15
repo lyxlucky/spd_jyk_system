@@ -11,19 +11,16 @@ import { Encrypt } from '@/utils/aes-util';
  * @returns {Promise} 返回请求结果
  */
 export async function getBdSzYyHisSs(params) {
-  console.log(params)
+  console.log(params);
   const formatData = {
     Token: sessionStorage.getItem(TOKEN_STORE_NAME),
-    MZZY: params.where?.MZZY || '' ,
+    MZZY: params.where?.MZZY || '',
     page: params.page || 1,
-    size: params.limit || 10,
-  }
+    size: params.limit || 10
+  };
 
-  let res = await request.post(
-    '/DeptPlanTransfer/getBdSzYyHisSs',
-    formatData
-  )
-  
+  let res = await request.post('/DeptPlanTransfer/getBdSzYyHisSs', formatData);
+
   if (res.data.code == 200) {
     return res.data;
   }
@@ -39,16 +36,16 @@ export async function getBdSzYyHisSs(params) {
 export async function getBdszgsjMainDel(params) {
   const formatData = {
     Token: sessionStorage.getItem(TOKEN_STORE_NAME),
-    SSBH: params.where?.SSBH || '' ,
+    SSBH: params.where?.SSBH || '',
     page: params.page || 1,
-    size: params.limit || 10,
-  }
+    size: params.limit || 10
+  };
 
   let res = await request.post(
     '/DeptPlanTransfer/GetBdszgsjMainDel',
     formatData
-  )
-  
+  );
+
   if (res.data.code == 200) {
     return res.data;
   }
@@ -67,14 +64,14 @@ export async function getBdszZgsjMainPsDel(params) {
     MZZY: params.where?.MZZY || '',
     SSBH: params.where?.SSBH || '',
     page: params.page || 1,
-    size: params.limit || 10,
-  }
+    size: params.limit || 10
+  };
 
   let res = await request.post(
     '/DeptPlanTransfer/GetBdszZgsjMainPsDel',
     formatData
-  )
-  
+  );
+
   if (res.data.code == 200) {
     return res.data;
   }
@@ -86,15 +83,20 @@ export async function GetBdszZgsjMainPsDelExcel(params) {
   const formatData = {
     Token: sessionStorage.getItem(TOKEN_STORE_NAME),
     SSBH: params?.SSBH || '',
+    SSTH: params?.SSTH || '',
+    ZYHM: params?.ZYHM || '',
+    BRXM: params?.BRXM || '',
+    SSMC: params?.SSMC || '',
+    SSRQ: params?.SSRQ || '',
     page: params.page || 1,
-    size: params.limit || 999999,
-  }
+    size: params.limit || 999999
+  };
 
   let res = await request.post(
     '/DeptPlanTransfer/GetBdszZgsjMainPsDelExcel',
     formatData
-  )
-  
+  );
+
   if (res.data.code == 200) {
     return res.data;
   }
@@ -111,16 +113,16 @@ export async function GetBdszZgsjMainPsDelExcel(params) {
  */
 export async function searchVarietieBatchIds(params) {
   const formData = new FormData();
-  formData.append("Token", sessionStorage.getItem(TOKEN_STORE_NAME));
-  formData.append("page", params.page || 1);
-  formData.append("size", params.limit || 10);
-  formData.append("varietie", params.where?.varietie || "");
+  formData.append('Token', sessionStorage.getItem(TOKEN_STORE_NAME));
+  formData.append('page', params.page || 1);
+  formData.append('size', params.limit || 10);
+  formData.append('varietie', params.where?.varietie || '');
 
   let res = await request.post(
     '/DeptPlanTransfer/SearchVarietieBatchIds',
-    formData,
+    formData
   );
-  
+
   if (res.data.code == 200) {
     return res.data;
   }
@@ -138,10 +140,7 @@ export async function searchVarietieBatchIds(params) {
  * @returns {Promise} 返回请求结果
  */
 export async function addBdszZqsjMainPsDel(data) {
-  let res = await request.post(
-    '/DeptPlanTransfer/AddBdszZqsjMainPsDel',
-    data
-  )
+  let res = await request.post('/DeptPlanTransfer/AddBdszZqsjMainPsDel', data);
   if (res.data.code == 200) {
     return res.data;
   }
@@ -152,16 +151,14 @@ export async function addBdszZqsjMainPsDel(data) {
 export async function deleteBdszPsDetail(data) {
   const formatData = {
     ...data,
-    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
-  }
+    Token: sessionStorage.getItem(TOKEN_STORE_NAME)
+  };
   let res = await request.post(
     '/DeptPlanTransfer/deleteBdszPsDetail',
     formatData
-  )
+  );
   if (res.data.code == 200) {
     return res.data;
   }
   return Promise.reject(res.data);
 }
-
-

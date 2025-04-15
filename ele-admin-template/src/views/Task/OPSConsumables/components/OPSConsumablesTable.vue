@@ -215,8 +215,6 @@
         this.$emit('changeMZZY', val);
       },
       handlePrint() {
-        // 这里不实现具体方法，仅返回空数据结构
-        console.log({ current: this.currentRow });
         if (this?.currentRow == undefined)
           return this.$message.error('请先选择一行数据！');
         const loading = this.$loading({
@@ -226,7 +224,12 @@
           background: 'rgba(0, 0, 0, 0.7)'
         });
         const params = {
-          SSBH: this.currentRow.SSBH
+          SSBH: this.currentRow.SSBH,
+          SSTH: this.currentRow.SSTH,
+          ZYHM: this.currentRow.ZYHM,
+          BRXM: this.currentRow.BRXM,
+          SSMC: this.currentRow.SSMC,
+          SSRQ: this.currentRow.SSRQ
         };
         GetBdszZgsjMainPsDelExcel(params)
           .then((res) => {

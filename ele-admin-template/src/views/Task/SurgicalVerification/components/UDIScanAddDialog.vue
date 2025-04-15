@@ -19,7 +19,7 @@
             <el-form-item prop="firstUdi">
               <el-input
                 ref="firstUdi"
-                @blur="handleUdiScan()"
+                @change="handleUdiScan()"
                 size="mini"
                 v-model="where.firstUdi"
                 placeholder="请输入UDI"
@@ -33,7 +33,7 @@
               <el-input
                 ref="secondUdi"
                 size="mini"
-                @blur="handleUdiScan()"
+                @change="handleUdiScan()"
                 v-model="where.secondUdi"
                 placeholder="请输入UDI"
               />
