@@ -21,7 +21,7 @@
         size="mini"
         :columns="columns"
         height="180px"
-        :initLoad ="false"
+        :initLoad="false"
         @row-click="handleRowClick"
         highlight-current-row
         :datasource="datasource"
@@ -149,7 +149,7 @@
       datasource({ page, limit, where }) {
         // 这里不实现具体方法，仅返回空数据结构
         where.MZZY = this.MZZY;
-        return getBdszgsjMainDel({ where })
+        return getBdszgsjMainDel({ where, page, limit })
           .then((data) => {
             return {
               list: data.data || [],
