@@ -639,7 +639,8 @@
           .then((res) => {
             loading.close();
             this.$message.success(res.msg);
-            reloadPageTab();
+            this.$emit('ClickReload', true);
+            // reloadPageTab();
           })
           .catch((err) => {
             loading.close();

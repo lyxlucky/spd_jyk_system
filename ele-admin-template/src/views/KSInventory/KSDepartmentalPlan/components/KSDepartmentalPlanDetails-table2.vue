@@ -66,9 +66,7 @@
         <el-tooltip
           class="item"
           effect="dark"
-          :content="
-            row.VarCode + '中心库剩余库存 :' + row.StockQty
-          "
+          :content="row.VarCode + '中心库剩余库存 :' + row.StockQty"
           placement="top"
         >
           <el-tag v-if="row.StockQty == 0" type="danger">{{
@@ -451,8 +449,15 @@
     },
     methods: {
       Approval() {
-        Approval({ PlanNum: this.KSDepartmentalPlanData.PlanNum }).then(
-          (res) => {
+        const loading = this.$loading({
+          lock: true,
+          text: 'Loading',
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)'
+        });
+        Approval({ PlanNum: this.KSDepartmentalPlanData.PlanNum })
+          .then((res) => {
+            loading.close();
             if (res.code == 200) {
               this.$message({
                 type: 'success',
@@ -464,9 +469,16 @@
                 message: res.message
               });
             }
+            this.ClickReload();
             this.reload();
-          }
-        );
+          })
+          .catch((err) => {
+            loading.close();
+            this.$message({
+              type: 'error',
+              message: err
+            });
+          });
       },
       /* 表格数据源 */
       datasource({ page, limit, where, order }) {
@@ -504,7 +516,6 @@
       },
       ClickReload(IsReload) {
         this.$emit('IsReload', IsReload);
-
         this.$emit('clickReload2');
       },
       remove(row) {
