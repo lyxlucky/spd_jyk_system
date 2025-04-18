@@ -5,15 +5,16 @@ import store from '@/store';
 //日期处理
 import moment from 'moment';
 
-export async function GetNaxtDayApplyPlanMain(data){
+export async function GetNaxtDayApplyPlanMain(data) {
     var authorities = store.state.user.authorities;
-    if(authorities.indexOf("ApplyPlan_搜索权限") !== -1){  
+    if (authorities.indexOf("ApplyPlan_搜索权限") !== -1) {
         data.where.CREATE_MAN = ""
     }
     var data2 = {};
     data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
     data2.NAXT_DAT_PLAN_NUM = data.where.NAXT_DAT_PLAN_NUM ? data.where.NAXT_DAT_PLAN_NUM : '';
     data2.CREATE_MAN = data.where.CREATE_MAN ? data.where.CREATE_MAN : '';
+    data2.YY_TYPE = data.where.YY_TYPE ? data.where.YY_TYPE : '';
     data2.START_TIME = data.where.date[0] ? data.where.date[0] : '';
     data2.END_TIME = data.where.date[1] ? data.where.date[1] : '';
     data2.page = data.page ? data.page : 1;
@@ -28,9 +29,9 @@ export async function GetNaxtDayApplyPlanMain(data){
     }
 }
 
-export async function GetNaxtDayApplyPlanMainVar(data){
+export async function GetNaxtDayApplyPlanMainVar(data) {
     var authorities = store.state.user.authorities;
-    if(authorities.indexOf("ApplyPlan_搜索权限") !== -1){  
+    if (authorities.indexOf("ApplyPlan_搜索权限") !== -1) {
         data.where.CREATE_MAN = ""
     }
     var data2 = {};
@@ -51,13 +52,14 @@ export async function GetNaxtDayApplyPlanMainVar(data){
     }
 }
 
-export async function AddNaxtDayApplyPlanMain(data){
+export async function AddNaxtDayApplyPlanMain(data) {
     var data2 = {};
     data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
     data2.REMARK = data.REMARK ? data.REMARK : '';
     data2.SURGICAL_SCHEDULING_ID = data.SURGICAL_SCHEDULING_ID ? data.SURGICAL_SCHEDULING_ID : '';
     data2.SURGICAL_ROOM = data.SURGICAL_ROOM ? data.SURGICAL_ROOM : '';
     data2.SURGICAL_PLACE = data.SURGICAL_PLACE ? data.SURGICAL_PLACE : '';
+    data2.YY_TYPE = data.YY_TYPE ? data.YY_TYPE : '';
     data2.CREATE_MAN = data.CREATE_MAN ? data.CREATE_MAN : '';
 
     var data3 = formdataify(data2);
@@ -70,7 +72,7 @@ export async function AddNaxtDayApplyPlanMain(data){
 }
 
 
-export async function GetNaxtDayApplyPlanDel(data){
+export async function GetNaxtDayApplyPlanDel(data) {
     var data2 = {};
     data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
     data2.VARIETIE_NAME = data.where.VARIETIE_NAME ? data.where.VARIETIE_NAME : '';
@@ -88,7 +90,7 @@ export async function GetNaxtDayApplyPlanDel(data){
     }
 }
 
-export async function AddNaxtDayApplyPlanDel(data){
+export async function AddNaxtDayApplyPlanDel(data) {
     console.log(data)
     var data2 = {};
     data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);

@@ -170,7 +170,23 @@ export default {
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 100
-        }
+        },
+        {
+          prop: 'YY_TYPE',
+          label: '类型',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 70,
+          formatter: (row, column, cellValue) => {
+            if (cellValue == 0) {
+              return '预约';
+            } else if (cellValue == 1) {
+              return '术中';
+            } else {
+              return '';
+            }
+          }
+        } 
       ],
       toolbar: false,
       pageSize: 5,

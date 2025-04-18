@@ -1,6 +1,7 @@
 <!-- 用户编辑弹窗 -->
 <template>
-  <ele-modal width="600px" :visible="visible" :append-to-body="true" :close-on-click-modal="true" custom-class="ele-dialog-form" title="创建申请单" @update:visible="updateVisible">
+  <ele-modal width="600px" :visible="visible" :append-to-body="true" :close-on-click-modal="true"
+    custom-class="ele-dialog-form" title="创建申请单" @update:visible="updateVisible">
     <el-form ref="form" :model="form" :rules="rules" label-width="82px">
       <el-row :gutter="12">
         <el-col v-bind="styleResponsive ? { sm: 20 } : { span: 20 }">
@@ -9,7 +10,7 @@
           </el-form-item>
           <el-form-item label="术间:" prop="SURGICAL_ROOM">
             <!-- <el-input size="mini" clearable type="number" :maxlength="100" v-model="form.SURGICAL_ROOM" placeholder="" /> -->
-            <el-select size="mini" v-model="form.SURGICAL_ROOM" >
+            <el-select size="mini" v-model="form.SURGICAL_ROOM">
               <el-option label="1" value="1"></el-option>
               <el-option label="2" value="2"></el-option>
               <el-option label="3" value="3"></el-option>
@@ -34,6 +35,12 @@
           <el-form-item label="院区:" prop="SURGICAL_PLACE">
             <el-select v-model="form.SURGICAL_PLACE" placeholder="请选择院区">
               <el-option v-for="(obj) in STORAGEF" :key="obj.ID" :label="obj.NAME" :value="obj.NAME"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="类型:" prop="YY_TYPE">
+            <el-select v-model="form.YY_TYPE" placeholder="请选择类型">
+              <el-option label="预约" value="0"></el-option>
+              <el-option label="术中" value="1"></el-option>
             </el-select>
           </el-form-item>
         </el-col>
@@ -63,7 +70,8 @@ export default {
     const defaultForm = {
       REMARK: '',
       SURGICAL_ROOM: '1',
-      SURGICAL_PLACE: ''
+      SURGICAL_PLACE: '',
+      YY_TYPE: '0',
     };
     return {
       // defaultForm,

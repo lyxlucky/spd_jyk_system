@@ -15,14 +15,22 @@
         </el-select>
       </el-col> -->
 
-      <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 8 }">
+      <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 8 }">
         <el-input size="mini" clearable v-model="where.NAXT_DAT_PLAN_NUM" placeholder="申请单号" />
       </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 8 }">
+      <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 8 }">
         <el-input size="mini" clearable v-model="where.CREATE_MAN" placeholder="申请人" />
       </el-col>
+      <el-col v-bind="styleResponsive ? { lg: 2, md: 12 } : { span: 8 }">
+        <el-select size="mini" v-model="where.YY_TYPE" @change="search()">
+          <el-option label="全部" value=""></el-option>
+          <el-option label="预约" value="0"></el-option>
+          <el-option label="术中" value="1"></el-option>
+        </el-select>
+      </el-col>
       <el-col v-bind="styleResponsive ? { lg: 5, md: 4 } : { span: 4 }">
-        <el-date-picker v-model="where.date" type="daterange" value-format="yyyy-MM-dd" size="mini" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
+        <el-date-picker v-model="where.date" type="daterange" value-format="yyyy-MM-dd" size="mini" range-separator="至"
+          start-placeholder="开始日期" end-placeholder="结束日期">
         </el-date-picker>
       </el-col>
       <el-col style="margin-left: 15px;" v-bind="styleResponsive ? { lg: 10, md: 4 } : { span: 4 }">
@@ -34,7 +42,8 @@
           <el-button size="mini" type="primary" icon="el-icon-plus" class="ele-btn-icon" @click="openUserEdit()">
             创建申请单
           </el-button>
-          <el-button size="mini" type="primary" icon="el-icon-plus" class="ele-btn-icon" @click="openSurgicalScheduling()">
+          <el-button size="mini" type="primary" icon="el-icon-plus" class="ele-btn-icon"
+            @click="openSurgicalScheduling()">
             根据手术排期创建
           </el-button>
 
@@ -78,7 +87,8 @@ export default {
     const defaultWhere = {
       NAXT_DAT_PLAN_NUM: '',
       CREATE_MAN: '',
-      date: ''
+      date: '',
+      YY_TYPE: '',
     };
     return {
       // 表单数据
