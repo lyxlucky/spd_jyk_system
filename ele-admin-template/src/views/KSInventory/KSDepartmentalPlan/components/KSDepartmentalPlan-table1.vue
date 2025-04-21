@@ -17,6 +17,7 @@
       :datasource="datasource"
       :selection.sync="selection"
       :needPage="false"
+      :toolkit="['reload', 'size', 'columns']"
       cache-key="KSInventoryBasicDataTable"
     >
       <!-- 表头工具栏 -->
@@ -32,7 +33,6 @@
       </template>
 
       <template v-slot:State="{ row }">
-
         <el-tag size="mini" v-if="row.State == 0" type="primary">新增</el-tag>
         <el-tag size="mini" v-else-if="row.State == 1" type="warning"
           >已提交</el-tag
@@ -57,10 +57,7 @@
         >
         <el-tag
           size="mini"
-          v-else-if="
-            (row.State == 6 || row.State == 4) &&
-            row.SUM_Left_Apply_Qty == row.SUM_Apply_Qty
-          "
+          v-else-if="row.State == 6 && row.QUANITY == 0"
           type="success"
           >已审批</el-tag
         >
@@ -68,64 +65,18 @@
           size="mini"
           v-else-if="
             row.SUM_Left_Apply_Qty > 0 &&
-            row.SUM_Left_Apply_Qty != row.SUM_Apply_Qty
-          "
-          type="success"
-          >已审批</el-tag
-        >
-        <el-tag
-          size="mini"
-          v-else-if="row.SUM_Left_Apply_Qty == 0"
-          type="success"
-          >已审批</el-tag
-        >
-
-        <!-- <el-tag size="mini" v-if="row.State == 0" type="primary">新增</el-tag>
-        <el-tag size="mini" v-else-if="row.State == 1" type="warning"
-          >已提交</el-tag
-        >
-        <el-tag size="mini" v-else-if="row.State == 2" type="primary"
-          >配送中</el-tag
-        >
-        <el-tag
-          size="mini"
-          v-else-if="row.State == 5"
-          type="primary"
-          color="#2ee693"
-          >已审核</el-tag
-        >
-        <el-tag
-          size="mini"
-          v-else-if="row.State == 10"
-          type="primary"
-          color="#e60000"
-          style="color: white"
-          >强制结束</el-tag
-        >
-        <el-tag
-          size="mini"
-          v-else-if="
-            (row.State == 6 || row.State == 4) &&
-            row.SUM_Left_Apply_Qty == row.SUM_Apply_Qty
-          "
-          type="success"
-          >已审批</el-tag
-        >
-        <el-tag
-          size="mini"
-          v-else-if="
-            row.SUM_Left_Apply_Qty > 0 &&
-            row.SUM_Left_Apply_Qty != row.SUM_Apply_Qty
+            row.SUM_Left_Apply_Qty != row.SUM_Apply_Qty &&
+            row.State != 6
           "
           type="danger"
-          >已审批</el-tag
+          >未收全</el-tag
         >
         <el-tag
           size="mini"
-          v-else-if="row.SUM_Left_Apply_Qty == 0"
+          v-else-if="row.SUM_Apply_Qty == row.QUANITY"
           type="success"
-          >已审批</el-tag
-        > -->
+          >已收全</el-tag
+        >
         <!-- <el-tag v-for="(item) in row" :key="item.PlanNum" size="mini" type="primary" :disable-transitions="true">
           {{ item.State }}
         </el-tag> -->
@@ -159,7 +110,6 @@
         >
           取消提交</el-button
         >
-        <!-- <el-button v-else size="small" type="primary" class="ele-btn-icon" @click="ReturnStateBtn(row)" disabled> 取消提交</el-button> -->
       </template>
     </ele-pro-table>
   </div>
@@ -282,6 +232,20 @@
             prop: 'BZ',
             label: '备注',
 
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 110
+          },
+          {
+            prop: 'SUM_Apply_Qty',
+            label: '申请总数',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 110
+          },
+          {
+            prop: 'QUANITY',
+            label: '已收货总数',
             align: 'center',
             showOverflowTooltip: true,
             minWidth: 110

@@ -16,6 +16,7 @@
       :datasource="datasource"
       :selection.sync="selection"
       @selection-change="onSelectionChange"
+      :toolkit="['reload', 'size', 'columns']"
       cache-key="KSInventoryBasicDataTable"
     >
       <!-- 表头工具栏 -->
@@ -33,6 +34,13 @@
           >{{ row.PAG_TYPE }}
         </div>
       </template>
+
+      <template v-slot:QUANITY="{ row }">
+        <el-link type="primary" @click="handleQuanityDetail(row)">{{
+          row.QUANITY
+        }}</el-link>
+      </template>
+
       <!-- 左表头 -->
       <template v-slot:toolbar>
         <!-- 搜索表单 -->
@@ -175,11 +183,16 @@
         >
       </span>
     </el-dialog>
+    <QuanityDetailDialog
+      :visible.sync="QuanityDetailDialogVisible"
+      :quanityInlineCurrent="quanityInlineCurrent"
+    ></QuanityDetailDialog>
   </div>
 </template>
 
 <script>
   import KSDepartmentalPlanDetailsSearch from './KSDepartmentalPlanDetails-search.vue';
+  import QuanityDetailDialog from './QuanityDetailDialog.vue';
   import {
     SerachPlanListDeta,
     UpdateApplyPlanBZ,
@@ -191,7 +204,8 @@
     props: ['KSDepartmentalPlanData'],
     // inject: ['reload'],
     components: {
-      KSDepartmentalPlanDetailsSearch: KSDepartmentalPlanDetailsSearch
+      KSDepartmentalPlanDetailsSearch: KSDepartmentalPlanDetailsSearch,
+      QuanityDetailDialog
     },
     data() {
       return {
@@ -228,6 +242,15 @@
             slot: 'VarCode',
             label: '品种编码',
 
+            align: 'center',
+            showOverflowTooltip: true,
+            width: 150
+          },
+          {
+            // prop: 'VarCode',
+            slot: 'QUANITY',
+            prop: 'QUANITY',
+            label: '收货数量',
             align: 'center',
             showOverflowTooltip: true,
             width: 150
@@ -444,10 +467,16 @@
         count3: 0,
         count4: 0,
         sum: 0,
-        rowData: null
+        rowData: null,
+        QuanityDetailDialogVisible: false,
+        quanityInlineCurrent: null,
       };
     },
     methods: {
+      handleQuanityDetail(data) {
+        this.quanityInlineCurrent = data;
+        this.QuanityDetailDialogVisible = true;
+      },
       Approval() {
         const loading = this.$loading({
           lock: true,

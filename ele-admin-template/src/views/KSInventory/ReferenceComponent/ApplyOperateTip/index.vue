@@ -237,7 +237,6 @@
     methods: {
       /* 表格数据源 */
       datasource({ page, limit, where, order }) {
-        console.log(this.$store.state.user.info.userDept);
         var Dept_Two_CodeArray = this.$store.state.user.info.userDept;
 
         var DEPT_TWO_CODEStr = '';
@@ -295,6 +294,7 @@
           DEPT_TWO_CODEStr += Dept_Two_CodeArray[i].Dept_Two_Code + ',';
         }
         const localWhere = {
+          ...data,
           DEPT_TWO_CODE: DEPT_TWO_CODEStr
         };
         this.$refs.table.doRequest(({ where, order }) => {

@@ -143,12 +143,13 @@
         // 表格选中数据
         selection: [],
         // 当前编辑数据
-        current: null
+        current: null,
+        parentCurrent:null
       };
     },
     methods: {
       datasource({ page, limit, where, order }) {
-        where.SSBH = this.masterCurrentData.SSBH;
+        where.SSBH = this.parentCurrent.SSBH;
         let data = GetBdszZqsjMainUseDel({
           page,
           limit,
@@ -173,7 +174,7 @@
       reload(where) {
         const formatWhere = {
           ...where,
-          SSBH: this.masterCurrentData.SSBH
+          SSBH: this.parentCurrent.SSBH
         }
         this.$refs.table.reload({ page: 1, where: formatWhere });
       },
@@ -208,6 +209,7 @@
         this.reload();
       });
       this.$bus.$on('AdvanceReceiptNumberTableCurrent', (current) => {
+        this.parentCurrent = current;
         this.reload();
       });
     },
