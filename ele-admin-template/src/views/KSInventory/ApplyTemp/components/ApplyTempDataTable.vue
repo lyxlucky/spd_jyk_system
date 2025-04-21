@@ -469,14 +469,14 @@
 
 <style scoped lang="scss">
   :deep(.el-table--mini .el-table__cell) {
-    padding: 2px 0px !important;
+    padding: 1px 0px !important;
   }
 
   :deep(.el-table th.el-table__cell > .cell) {
-    padding-left: 0px !important;
-    padding-right: 0px !important;
+    padding-left: 1px !important;
+    padding-right: 1px !important;
   }
   :deep(.el-table__row .el-table__cell) {
-    padding: 2px 0px !important;
+    padding: 1px 0px !important;
   }
 </style>
