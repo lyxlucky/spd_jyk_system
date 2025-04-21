@@ -470,7 +470,10 @@
               });
             }
             this.ClickReload();
-            this.reload();
+            let where = {
+              PlanNum: this.KSDepartmentalPlanData.PlanNum
+            };
+            this.reload({ page: 1, where: where });
           })
           .catch((err) => {
             loading.close();

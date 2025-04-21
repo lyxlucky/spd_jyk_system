@@ -435,6 +435,6 @@ export async function Approval(data) {
     if (res.data.code == 200) {
         return res.data;
     } else {
-        return Promise.reject(new Error(res.data.msg));
+        return Promise.reject(res.data.msg);
     }
 }
