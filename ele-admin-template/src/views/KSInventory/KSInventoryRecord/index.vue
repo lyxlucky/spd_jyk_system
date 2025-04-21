@@ -415,6 +415,10 @@ export default {
           this.SumCount1 = Math.abs(res.SumCount1);
           this.SumCount2 = Math.abs(res.SumCount2);
           this.netExport = res.SumCount1 + res.SumCount2;
+
+          this.SumAmount = this.SumAmount.toFixed(2);
+          this.RKSumAmount = this.RKSumAmount.toFixed(2);
+          this.CKSumAmount = this.CKSumAmount.toFixed(2);
           return tData;
         }
       );
