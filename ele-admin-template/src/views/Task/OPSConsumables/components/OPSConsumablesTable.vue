@@ -1,9 +1,7 @@
 <template>
-  <div class="body">
-    <el-card
-      style="box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.05); margin-top: 20px"
-    >
-      <div
+  <div class="ele-box">
+    <!-- <el-card> -->
+    <!-- <div
         slot="header"
         style="
           display: flex;
@@ -12,9 +10,9 @@
         "
       >
         <span>手术排期</span>
-      </div>
-      <!-- 筛选表单 -->
-      <el-form
+      </div> -->
+    <!-- 筛选表单 -->
+    <!-- <el-form
         :inline="true"
         :model="where"
         size="mini"
@@ -79,23 +77,79 @@
             >打印</el-button
           >
         </el-form-item>
-      </el-form>
-      <!-- 数据表格 -->
-      <ele-pro-table
-        size="mini"
-        ref="table"
-        @row-click="handleRowClick"
-        :columns="columns"
-        height="50vh"
-        :datasource="datasource"
-        :pageSize="pageSize"
-        :pageSizes="pageSizes"
-        highlight-current-row
-        :stripe="true"
-        :needPage="true"
-      >
-      </ele-pro-table>
-    </el-card>
+      </el-form> -->
+    <!-- 数据表格 -->
+    <ele-pro-table
+      size="mini"
+      ref="table"
+      @row-click="handleRowClick"
+      :columns="columns"
+      height="50vh"
+      :datasource="datasource"
+      :pageSize="pageSize"
+      :pageSizes="pageSizes"
+      highlight-current-row
+      :stripe="true"
+      :needPage="true"
+    >
+      <template v-slot:toolbar>
+        <el-form :inline="true" :model="where" size="mini">
+          <el-form-item label="日期范围">
+            <el-date-picker
+              v-model="where.dateRange"
+              type="daterange"
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+              value-format="yyyy-MM-dd"
+              style="width: 240px"
+            ></el-date-picker>
+          </el-form-item>
+          <el-form-item style="margin-right: 16px; margin-bottom: 8px">
+            <el-select
+              v-model="where.MZZY"
+              placeholder="请选择术间"
+              clearable
+              style="width: 160px"
+              @change="changeMZZY"
+            >
+              <el-option
+                v-for="item in MZZYOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item style="margin-right: 16px; margin-bottom: 8px">
+            <el-input
+              v-model="where.patientOrSurgeryName"
+              placeholder="请输入患者姓名或手术名称"
+              clearable
+              style="width: 200px"
+            ></el-input>
+          </el-form-item>
+          <el-form-item style="margin-bottom: 8px">
+            <el-button
+              type="primary"
+              icon="el-icon-search"
+              @click="reload"
+              style="margin-right: 8px"
+              >查询</el-button
+            >
+
+            <el-button
+              type="primary"
+              icon="el-icon-download"
+              @click="handlePrint"
+              style="margin-right: 8px"
+              >打印</el-button
+            >
+          </el-form-item>
+        </el-form>
+      </template>
+    </ele-pro-table>
+    <!-- </el-card> -->
   </div>
 </template>
 
@@ -136,10 +190,20 @@
           //   }
           // },
           {
+            prop: 'SSRQ',
+            label: '手术日期',
+            align: 'center',
+            width: 120,
+            formatter: (row, column, cellValue, index) => {
+              return this.$util.toDateString(cellValue, 'YYYY-MM-DD HH:mm:ss');
+            },
+            showOverflowTooltip: true
+          },
+          {
             prop: 'STATE',
             label: '状态',
             align: 'center',
-            width: 150,
+            width: 75,
             formatter: (row, column, cellValue) => {
               switch (cellValue) {
                 case '1':
@@ -159,25 +223,25 @@
             prop: 'SSBH',
             label: '手术编号',
             align: 'center',
-            width: 120
+            width: 70
           },
           {
             prop: 'SSTH',
             label: '手术台号',
             align: 'center',
-            width: 120
+            width: 75
           },
           {
             prop: 'ZYHM',
             label: '住院号码',
             align: 'center',
-            width: 120
+            width: 70
           },
           {
             prop: 'BRXM',
             label: '病人姓名',
             align: 'center',
-            width: 100,
+            width: 70,
             formatter: (row, column, cellValue) => {
               if (!cellValue || cellValue.length == 2)
                 return cellValue[0] + '*';
@@ -192,16 +256,6 @@
             label: '手术名称',
             align: 'center',
             minWidth: 180,
-            showOverflowTooltip: true
-          },
-          {
-            prop: 'SSRQ',
-            label: '手术日期',
-            align: 'center',
-            width: 120,
-            formatter: (row, column, cellValue, index) => {
-              return this.$util.toDateString(cellValue, 'YYYY-MM-DD HH:mm:ss');
-            },
             showOverflowTooltip: true
           }
         ],
@@ -277,15 +331,29 @@
 </script>
 
 <style lang="scss" scoped>
-  //   .body {
-  //     padding: 10px;
-  //     background-color: #fff;
-  //   }
-
-  //   .filter-form {
-  //     margin-bottom: 15px;
-  //     padding: 15px;
-  //     background-color: #f5f7fa;
-  //     border-radius: 4px;
-  //   }
+  .ele-box {
+    padding: 15px;
+    background-color: white;
+  }
+  .ele-box,
+  :deep(.el-card__body),
+  :deep(.ele-pro-table),
+  .el-card {
+    height: 100%;
+    box-sizing: border-box;
+  }
+  :deep(.ele-pro-table) {
+    display: flex;
+    flex-direction: column;
+  }
+  :deep(.el-table) {
+    flex: 1;
+    flex-basis: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  :deep(.el-table .el-table__body-wrapper) {
+    flex: 1;
+    overflow: auto;
+  }
 </style>

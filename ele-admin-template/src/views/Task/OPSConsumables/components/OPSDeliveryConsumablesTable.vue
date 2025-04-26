@@ -1,26 +1,26 @@
 <template>
-  <div>
-    <el-card>
-      <div slot="header">手术配送耗材</div>
-      <ele-pro-table
-        ref="table"
-        :initLoad="false"
-        size="mini"
-        :columns="columns"
-        height="180px"
-        :datasource="datasource"
-      >
-        <template v-slot:ACTION="{ row }">
-          <el-button
-            size="mini"
-            icon="el-icon-delete"
-            @click="handleDeleteItem(row)"
-            type="danger"
-            >删除</el-button
-          >
-        </template>
-      </ele-pro-table>
-    </el-card>
+  <div class="ele-box">
+    <!-- <el-card> -->
+    <!-- <div slot="header">手术配送耗材</div> -->
+    <ele-pro-table
+      ref="table"
+      :initLoad="false"
+      size="mini"
+      :columns="columns"
+      height="180px"
+      :datasource="datasource"
+    >
+      <template v-slot:ACTION="{ row }">
+        <el-button
+          size="mini"
+          icon="el-icon-delete"
+          @click="handleDeleteItem(row)"
+          type="danger"
+          >删除</el-button
+        >
+      </template>
+    </ele-pro-table>
+    <!-- </el-card> -->
   </div>
 </template>
 
@@ -123,7 +123,7 @@
           });
       },
       reload(where) {
-        this.$refs.table.reload({ page: 1, where: where});
+        this.$refs.table.reload({ page: 1, where: where });
       },
 
       handleDeleteItem(row) {
@@ -173,4 +173,33 @@
   };
 </script>
 
-<style scoped></style>
+<style scoped>
+  /**
+    以后不要复制，尽量写到全局样式中，这里是临时的。
+  */
+  .ele-box {
+    padding: 15px;
+    background-color: white;
+  }
+  .ele-box,
+  :deep(.el-card__body),
+  :deep(.ele-pro-table),
+  .el-card {
+    height: 100%;
+    box-sizing: border-box;
+  }
+  :deep(.ele-pro-table) {
+    display: flex;
+    flex-direction: column;
+  }
+  :deep(.el-table) {
+    flex: 1;
+    flex-basis: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  :deep(.el-table .el-table__body-wrapper) {
+    flex: 1;
+    overflow: auto;
+  }
+</style>

@@ -1,6 +1,7 @@
 <template lang="">
-  <div>
+  <div class="ele-box">
     <ele-pro-table
+      size="mini"
       ref="table"
       :rowClickCheckedIntelligent="false"
       height="50%"
@@ -31,6 +32,34 @@
     </ele-pro-table>
   </div>
 </template>
+<style scoped>
+  .ele-box {
+    background-color: white;
+    padding: 15px;
+  }
+
+  .ele-box,
+  :deep(.el-card__body),
+  :deep(.ele-pro-table),
+  .el-card {
+    height: 100%;
+    box-sizing: border-box;
+  }
+  :deep(.ele-pro-table) {
+    display: flex;
+    flex-direction: column;
+  }
+  :deep(.el-table) {
+    flex: 1;
+    flex-basis: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  :deep(.el-table .el-table__body-wrapper) {
+    flex: 1;
+    overflow: auto;
+  }
+</style>
 <script>
   import {
     GetBdszZqsjMainUseDel,
@@ -144,12 +173,12 @@
         selection: [],
         // 当前编辑数据
         current: null,
-        parentCurrent:null
+        parentCurrent: null
       };
     },
     methods: {
       datasource({ page, limit, where, order }) {
-        where.SSBH = this.parentCurrent.SSBH;
+        where.SSBH = this.parentCurrent?.SSBH;
         let data = GetBdszZqsjMainUseDel({
           page,
           limit,
@@ -174,8 +203,8 @@
       reload(where) {
         const formatWhere = {
           ...where,
-          SSBH: this.parentCurrent.SSBH
-        }
+          SSBH: this.parentCurrent?.SSBH
+        };
         this.$refs.table.reload({ page: 1, where: formatWhere });
       },
       handleRemove(row) {

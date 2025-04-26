@@ -1,8 +1,8 @@
 <template>
-  <div>
-    <el-card>
-      <div slot="header">手术计划耗材</div>
-      <el-form :inline="true" size="mini">
+  <div class="ele-box">
+    <!-- <el-card> -->
+    <!-- <div slot="header">手术计划耗材</div> -->
+    <!-- <el-form :inline="true" size="mini">
         <el-form-item>
           <el-input placeholder="编码/名称"></el-input>
         </el-form-item>
@@ -15,35 +15,51 @@
             >查询</el-button
           >
         </el-form-item>
-      </el-form>
-      <ele-pro-table
-        ref="table"
-        size="mini"
-        :columns="columns"
-        height="180px"
-        :initLoad="false"
-        @row-click="handleRowClick"
-        highlight-current-row
-        :datasource="datasource"
-      >
-        <template v-slot:operate="{ row }">
-          <el-button
-            size="mini"
-            icon="el-icon-shopping-bag-2"
-            type="primary"
-            @click="handleEdit(row)"
-            >散货</el-button
-          >
-          <el-button
-            size="mini"
-            type="primary"
-            icon="el-icon-box"
-            @click="handleAddDefNoPkgCode(row)"
-            >定数包</el-button
-          >
-        </template>
-      </ele-pro-table>
-    </el-card>
+      </el-form> -->
+    <ele-pro-table
+      ref="table"
+      size="mini"
+      :columns="columns"
+      height="180px"
+      :initLoad="false"
+      @row-click="handleRowClick"
+      highlight-current-row
+      :datasource="datasource"
+    >
+      <template v-slot:toolbar>
+        <el-form :inline="true" size="mini">
+          <el-form-item>
+            <el-input placeholder="编码/名称"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-button
+              type="primary"
+              icon="el-icon-search"
+              size="mini"
+              @click="reload"
+              >查询</el-button
+            >
+          </el-form-item>
+        </el-form>
+      </template>
+      <template v-slot:operate="{ row }">
+        <el-button
+          size="mini"
+          icon="el-icon-shopping-bag-2"
+          type="primary"
+          @click="handleEdit(row)"
+          >散货</el-button
+        >
+        <el-button
+          size="mini"
+          type="primary"
+          icon="el-icon-box"
+          @click="handleAddDefNoPkgCode(row)"
+          >定数包</el-button
+        >
+      </template>
+    </ele-pro-table>
+    <!-- </el-card> -->
 
     <el-dialog
       title="添加散货"
@@ -258,4 +274,30 @@
   };
 </script>
 
-<style scoped></style>
+<style scoped>
+  .ele-box {
+    padding: 15px;
+    background-color: white;
+  }
+  .ele-box,
+  :deep(.el-card__body),
+  :deep(.ele-pro-table),
+  .el-card {
+    height: 100%;
+    box-sizing: border-box;
+  }
+  :deep(.ele-pro-table) {
+    display: flex;
+    flex-direction: column;
+  }
+  :deep(.el-table) {
+    flex: 1;
+    flex-basis: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  :deep(.el-table .el-table__body-wrapper) {
+    flex: 1;
+    overflow: auto;
+  }
+</style>

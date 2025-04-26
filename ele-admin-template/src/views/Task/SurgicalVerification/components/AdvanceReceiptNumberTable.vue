@@ -1,20 +1,8 @@
 <template>
-  <div class="ele-body">
-    <AdvanceReceiptNumberSearch
-      @search="reload"
-      @approve="handleApprove"
-      @catDefNoPkgCode="handleCatDefNoPkgCode"
-      :rowData="current"
-      style="padding: 0px"
-    />
-
-    <AdvanceReceiptNumberEdit
-      @search="reload"
-      :visible.sync="showEdit"
-      :rowData="current"
-    />
+  <div class="ele-box">
     <!-- 数据表格 -->
     <ele-pro-table
+      size="mini"
       height="60vh"
       :paginationStyle="paginationStyle"
       highlight-current-row
@@ -34,6 +22,21 @@
       <!-- 表头工具栏 -->
       <template v-slot:toolbar>
         <!-- 搜索表单 -->
+        <div class="search-toolbar">
+          <AdvanceReceiptNumberSearch
+            @search="reload"
+            @approve="handleApprove"
+            @catDefNoPkgCode="handleCatDefNoPkgCode"
+            :rowData="current"
+            style="padding: 0px"
+          />
+
+          <AdvanceReceiptNumberEdit
+            @search="reload"
+            :visible.sync="showEdit"
+            :rowData="current"
+          />
+        </div>
       </template>
     </ele-pro-table>
   </div>
@@ -51,6 +54,35 @@
   :deep(.el-card__body) {
     padding: 0px;
   }
+  .ele-box {
+    background-color: white;
+    padding: 15px;
+  }
+
+  .ele-box,
+  :deep(.el-card__body),
+  :deep(.ele-pro-table),
+  .el-card {
+    height: 100%;
+    box-sizing: border-box;
+  }
+  :deep(.ele-pro-table) {
+    display: flex;
+    flex-direction: column;
+  }
+  :deep(.el-table) {
+    flex: 1;
+    flex-basis: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  :deep(.el-table .el-table__body-wrapper) {
+    flex: 1;
+    overflow: auto;
+  }
+  .search-toolbar {
+    display: flex;
+  }
 </style>
 
 <script>
@@ -58,7 +90,7 @@
   import AdvanceReceiptNumberEdit from './AdvanceReceiptNumberEdit.vue';
   import { getBdSzYyHisSs, BdSsApprove } from '@/api/Task/SurgicalVerification';
   import { HOME_HP, BACK_BASE_URL } from '@/config/setting';
-import { load } from '@amap/amap-jsapi-loader';
+  import { load } from '@amap/amap-jsapi-loader';
   export default {
     name: 'ApplyTempTable',
     components: {
@@ -81,10 +113,20 @@ import { load } from '@amap/amap-jsapi-loader';
           //   }
           // },
           {
+            prop: 'SSRQ',
+            label: '手术时间',
+            align: 'center',
+            showOverflowTooltip: true,
+            width: 120,
+            formatter: (row, column, cellValue, index) => {
+              return this.$util.toDateString(cellValue, 'YYYY-MM-DD HH:mm:ss');
+            }
+          },
+          {
             prop: 'STATE',
             label: '状态',
             align: 'center',
-            width: 150,
+            width: 75,
             formatter: (row, column, cellValue) => {
               switch (cellValue) {
                 case '1':
@@ -104,27 +146,27 @@ import { load } from '@amap/amap-jsapi-loader';
             prop: 'SSBH',
             label: '手术编号',
             align: 'center',
-            width: 120
+            width: 70
           },
           {
             prop: 'SSTH',
             label: '手术台号',
             align: 'center',
-            width: 120
+            width: 75
           },
           {
             prop: 'ZYHM',
             label: '住院号',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 130
+            minWidth: 70
           },
           {
             prop: 'BRXM',
             label: '姓名',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 80,
+            minWidth: 70,
             formatter: (row, column, cellValue) => {
               if (!cellValue || cellValue.length == 2)
                 return cellValue[0] + '*';
@@ -134,22 +176,13 @@ import { load } from '@amap/amap-jsapi-loader';
               return firstChar + middleStars + lastChar;
             }
           },
-          {
-            prop: 'SSRQ',
-            label: '手术时间',
-            align: 'center',
-            showOverflowTooltip: true,
-            width: 120,
-            formatter: (row, column, cellValue, index) => {
-              return this.$util.toDateString(cellValue, 'YYYY-MM-DD HH:mm:ss');
-            },
-          },
+
           {
             prop: 'SSMC',
             label: '手术名称',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 120
+            minWidth: 180
           }
           // {
           //   columnKey: 'action',

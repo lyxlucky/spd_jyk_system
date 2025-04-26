@@ -5,16 +5,80 @@
     class="ele-form-search"
     @keyup.enter.native="search"
     @submit.native.prevent
+    size="mini"
+    :inline="true"
   >
-    <el-row :gutter="5" style="margin-top:5px;">
+    <el-form-item>
+      <el-input
+        size="mini"
+        clearable
+        v-model="where.condition"
+        placeholder="请输入手术编号或住院号"
+      />
+    </el-form-item>
+    <el-form-item>
+      <el-select
+        @change="search"
+        v-model="where.MZZY"
+        size="mini"
+        placeholder=""
+        style="width: 100px"
+      >
+        <el-option label="全部" value=""></el-option>
+        <el-option label="已提交" value="1"></el-option>
+        <el-option label="已拣配" value="2"></el-option>
+        <el-option label="已交接" value="3"></el-option>
+        <el-option label="已完成" value="4"></el-option>
+      </el-select>
+    </el-form-item>
+    <el-form-item>
+      <el-button
+        size="mini"
+        type="primary"
+        icon="el-icon-search"
+        class="ele-btn-icon"
+        @click="search"
+      >
+        查询
+      </el-button>
+    </el-form-item>
+    <el-form-item>
+      <el-button
+        size="mini"
+        type="primary"
+        icon="el-icon-check"
+        class="ele-btn-icon"
+        @click="approve"
+      >
+        护士审批
+      </el-button>
+    </el-form-item>
+    <el-form-item>
+      <el-button
+        size="mini"
+        type="primary"
+        class="ele-btn-icon"
+        icon="el-icon-reading"
+        @click="catDefNoPkgCode"
+      >
+        查看定数码标签
+      </el-button>
+    </el-form-item>
+
+    <!-- <el-row :gutter="5" style="margin-top: 5px">
       <el-col v-bind="styleResponsive ? { lg: 14, md: 12 } : { span: 12 }">
-        <el-input size="mini" clearable v-model="where.condition" placeholder="请输入手术编号或住院号" />
+        <el-input
+          size="mini"
+          clearable
+          v-model="where.condition"
+          placeholder="请输入手术编号或住院号"
+        />
       </el-col>
-    </el-row>
-    <el-row :gutter="5">
+    </el-row> -->
+    <!-- <el-row :gutter="5">
       <el-col v-bind="styleResponsive ? { lg: 24, md: 12 } : { span: 12 }">
         <div class="ele-form-actions">
-          <!-- <el-button size="mini" type="primary" class="ele-btn-icon" @click="platformConsumeEditShow">编辑</el-button> -->
+          <el-button size="mini" type="primary" class="ele-btn-icon" @click="platformConsumeEditShow">编辑</el-button>
           <el-button
             size="mini"
             type="primary"
@@ -61,7 +125,7 @@
           </el-col>
         </div>
       </el-col>
-    </el-row>
+    </el-row> -->
   </el-form>
 </template>
 
@@ -84,7 +148,7 @@
       // 默认表单数据
       const defaultWhere = {
         MZZY: '',
-        condition: '',
+        condition: ''
       };
       return {
         // 表单数据

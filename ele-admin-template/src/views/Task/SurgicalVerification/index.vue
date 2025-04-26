@@ -1,7 +1,31 @@
 <template>
-  <div>
-    <el-container style="margin: 20px; gap: 20px">
-      <!-- Left Column: Surgery Schedule -->
+  <div class="ele-box">
+    <el-row :gutter="0" type="flex" style="height: 100%">
+      <el-col :span="8">
+        <AdvanceReceiptNumberTable
+          @getCurrent="getCurrent"
+        ></AdvanceReceiptNumberTable>
+      </el-col>
+      <el-col :span="16">
+        <el-row :gutter="0" style="height: 50%">
+          <el-col :span="24" style="height: 100%">
+            <AdvanceReceiptNumberDelTable
+              :ApplyTempTableData="ApplyTempTableData"
+              @selectionData="selectionData"
+            >
+            </AdvanceReceiptNumberDelTable>
+          </el-col>
+        </el-row>
+        <el-row :gutter="0" style="height: 50%">
+          <el-col :span="24" style="height: 100%">
+            <ConsumeablesUsageDetail :masterCurrentData="ApplyTempTableData">
+            </ConsumeablesUsageDetail>
+          </el-col>
+        </el-row>
+      </el-col>
+    </el-row>
+
+    <!-- <el-container style="margin: 20px; gap: 20px">
       <el-aside width="500px">
         <el-card shadow="always" style="height: 100%">
           <div slot="header" class="clearfix">
@@ -13,10 +37,8 @@
         </el-card>
       </el-aside>
 
-      <!-- Right Column: Two stacked tables -->
       <el-main style="padding: 0; width: calc(100% - 500px - 20px)">
         <el-container direction="vertical" style="height: 100%; gap: 20px">
-          <!-- Top Right: Consumables Confirmation Details -->
           <el-card shadow="always" style="margin-bottom: 0">
             <div slot="header" class="clearfix">
               <span>耗材确认明细</span>
@@ -28,7 +50,6 @@
             </AdvanceReceiptNumberDelTable>
           </el-card>
 
-          <!-- Bottom Right: Variety Consumption Confirmation -->
           <el-card shadow="always">
             <div slot="header" class="clearfix">
               <span>耗材消耗确认</span>
@@ -38,7 +59,7 @@
           </el-card>
         </el-container>
       </el-main>
-    </el-container>
+    </el-container> -->
   </div>
 </template>
 
@@ -120,4 +141,8 @@
     }
   };
 </script>
-<style scoped></style>
+<style scoped>
+  .ele-box {
+    height: 100%;
+  }
+</style>

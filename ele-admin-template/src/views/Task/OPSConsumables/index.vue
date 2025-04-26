@@ -1,6 +1,23 @@
 <template>
-  <div class="ele-body">
-    <el-container>
+  <div class="body-box">
+    <el-row :gutter="0" type="flex" style="height: 100%">
+      <el-col :span="8">
+        <OPSConsumablesTable @changeMZZY="changeMZZY"></OPSConsumablesTable>
+      </el-col>
+      <el-col :span="16">
+        <el-row :gutter="0" style="height: 50%">
+          <el-col :span="24" style="height: 100%">
+            <OPSPlanConsumablesTable :MZZY="MZZY" />
+          </el-col>
+        </el-row>
+        <el-row :gutter="0" style="height: 50%">
+          <el-col :span="24" style="height: 100%">
+            <OPSDeliveryConsumablesTable :MZZY="MZZY" />
+          </el-col>
+        </el-row>
+      </el-col>
+    </el-row>
+    <!-- <el-container>
       <el-aside width="30%">
         <OPSConsumablesTable @changeMZZY="changeMZZY"></OPSConsumablesTable>
       </el-aside>
@@ -9,7 +26,7 @@
         <div style="height: 10px"></div>
         <OPSDeliveryConsumablesTable :MZZY="MZZY" />
       </el-main>
-    </el-container>
+    </el-container> -->
   </div>
 </template>
 
@@ -37,4 +54,8 @@
   };
 </script>
 
-<style scoped></style>
+<style scoped>
+  .body-box {
+    height: 100%;
+  }
+</style>
