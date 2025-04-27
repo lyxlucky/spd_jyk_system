@@ -153,6 +153,18 @@
             width: 100
           },
           {
+            prop: 'SH_QTY',
+            label: '散货库存',
+            align: 'center',
+            width: 100
+          },
+          {
+            prop: 'DEF_QTY',
+            label: '定数包库存',
+            align: 'center',
+            width: 100
+          },
+          {
             slot: 'operate',
             label: '操作',
             align: 'center',

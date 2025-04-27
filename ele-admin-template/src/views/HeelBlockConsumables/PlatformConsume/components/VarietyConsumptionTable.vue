@@ -180,6 +180,13 @@
             formatter(row, column, cellValue) {
               return cellValue.substr(0, 10);
             }
+          },
+          {
+            prop: 'DISINFECTION_VALID_DATE',
+            label: '灭菌有效期',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 180,
           }
           // {
           //   columnKey: 'action',

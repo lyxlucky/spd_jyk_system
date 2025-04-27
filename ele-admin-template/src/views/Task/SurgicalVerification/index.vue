@@ -24,8 +24,9 @@
         </el-row>
       </el-col>
     </el-row>
+  </div>
 
-    <!-- <el-container style="margin: 20px; gap: 20px">
+  <!-- <el-container style="margin: 20px; gap: 20px">
       <el-aside width="500px">
         <el-card shadow="always" style="height: 100%">
           <div slot="header" class="clearfix">
@@ -60,7 +61,6 @@
         </el-container>
       </el-main>
     </el-container> -->
-  </div>
 </template>
 
 <script>
@@ -144,5 +144,14 @@
 <style scoped>
   .ele-box {
     height: 100%;
+    overflow: hidden;
+  }
+
+  .el-row {
+    margin: 0 !important;
+  }
+
+  .el-col {
+    padding: 0 !important;
   }
 </style>
