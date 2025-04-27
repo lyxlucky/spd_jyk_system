@@ -167,7 +167,7 @@
         // 查询参数
         where: {
           dateRange: [],
-          MZZY: '',
+          MZZY: '1',
           patientOrSurgeryName: ''
         },
         // 术间选项

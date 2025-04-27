@@ -310,6 +310,13 @@
             width: 180
           },
           {
+            prop: 'Brand',
+            label: '品牌',
+            align: 'center',
+            showOverflowTooltip: true,
+            width: 180
+          },
+          {
             prop: 'SUPPLIER_NAME',
             label: '启用供应商',
             align: 'center',

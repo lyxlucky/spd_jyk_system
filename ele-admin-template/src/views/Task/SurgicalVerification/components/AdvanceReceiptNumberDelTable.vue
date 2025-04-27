@@ -8,7 +8,6 @@
       :rowClickCheckedIntelligent="false"
       :rowClickChecked="true"
       height="50%"
-      :paginationStyle="paginationStyle"
       highlight-current-row
       :stripe="true"
       :pageSize="pageSize"

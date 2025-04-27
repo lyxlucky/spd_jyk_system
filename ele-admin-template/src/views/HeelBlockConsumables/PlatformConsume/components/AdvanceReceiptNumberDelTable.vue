@@ -62,27 +62,24 @@
           size="mini"
           v-model="row.Batch_Production_Date"
         ></el-input>
-        <!-- <el-date-picker
-          :disabled="isCurrentRowInputEnabled(row)"
-          size="mini"
-          type="date"
-          v-model="row.Batch_Production_Date"
-        >2024-12-04</el-date-picker> -->
       </template>
 
       <!-- 有效期 -->
       <template v-slot:Batch_Validity_Period="{ row }">
-
         <el-input
           :disabled="isCurrentRowInputEnabled(row)"
           size="mini"
           v-model="row.Batch_Validity_Period"
         ></el-input>
-        <!-- <el-date-picker
+      </template>
+
+      <!-- MJ有效期 -->
+      <template v-slot:DISINFECTION_VALID_DATE="{ row }">
+        <el-input
+          :disabled="isCurrentRowInputEnabled(row)"
           size="mini"
-          type="date"
-          v-model="row.Batch_Validity_Period"
-        ></el-date-picker> -->
+          v-model="row.DISINFECTION_VALID_DATE"
+        ></el-input>
       </template>
 
       <!-- 操作列 -->
@@ -139,7 +136,6 @@
     SearchDeliveryVarietie,
     AddVarieties
   } from '@/api/HeelBlockConsumables/PlatformConsume';
-  import AdvanceReceiptNumberTable from './AdvanceReceiptNumberTable.vue';
   export default {
     name: 'ApplyTempDataTable',
     props: ['ApplyTempTableData'],
@@ -283,6 +279,17 @@
             formatter: (row, column, cellValue) => {
               return this.$moment(cellValue).format('YYYY-MM-DD');
             }
+          },
+          {
+            slot: 'DISINFECTION_VALID_DATE',
+            prop: 'DISINFECTION_VALID_DATE',
+            label: '灭菌有效期',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 130,
+            formatter: (row, column, cellValue) => {
+              return this.$moment(cellValue).format('YYYY-MM-DD');
+            }
           }
         ],
         toolbar: false,
@@ -353,7 +360,8 @@
             Batch: item.Batch,
             Batch_Validity_Period: item.Batch_Validity_Period || '9999-12-31',
             Batch_Production_Date: item.Batch_Production_Date,
-            Varietie_Name: item.Varietie_Name
+            Varietie_Name: item.Varietie_Name,
+            DISINFECTION_VALID_DATE: item.DISINFECTION_VALID_DATE,
           };
         });
 

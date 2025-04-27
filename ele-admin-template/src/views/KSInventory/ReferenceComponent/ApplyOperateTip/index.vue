@@ -27,7 +27,7 @@
           cache-key="ApplyOperateTip"
         >
           <template v-slot:toolbar>
-            <user-search @exportData="handleExportData" @search="reload" />
+            <user-search @exportData="handleNewExportData" @search="reload" />
           </template>
           <!-- 操作列 -->
           <template v-slot:APPLY_QTY="{ row }">
@@ -55,9 +55,16 @@
   import { utils, writeFile } from 'xlsx';
   import UserSearch from './components/user-search.vue';
   import UserEdit from './components/user-edit.vue';
-
+  import { API_BASE_URL, BACK_BASE_URL } from '@/config/setting';
+  import {
+    getFileNameFromResponseHeaders,
+    downloadBlob
+  } from '@/utils/downloadfile';
   import { searchBID_VAR_INFO } from '@/api/KSInventory/BidVarInfoDept';
-  import { getApplyOperateTip } from '@/api/KSInventory/KSDepartmentalPlan';
+  import {
+    getApplyOperateTip,
+    getApplyOperateTipExcel
+  } from '@/api/KSInventory/KSDepartmentalPlan';
   import {
     SerachPlanList,
     KeeptListDeta
@@ -286,6 +293,35 @@
       onSelectionChange(selection) {
         this.selection = selection;
       },
+
+      handleNewExportData(data) {
+        const loading = this.$messageLoading('正在导出数据...');
+        var Dept_Two_CodeArray = this.$store.state.user.info.userDept;
+        var DEPT_TWO_CODEStr = '';
+        for (let i = 0; i < Dept_Two_CodeArray.length; i++) {
+          DEPT_TWO_CODEStr += Dept_Two_CodeArray[i].Dept_Two_Code + ',';
+        }
+        const localWhere = {
+          ...data,
+          DEPT_TWO_CODE: DEPT_TWO_CODEStr
+        };
+        this.$refs.table.doRequest(({ where, order }) => {
+          getApplyOperateTipExcel({
+            page: 1,
+            limit: 999999,
+            where: localWhere,
+            order: order
+          })
+            .then((res) => {
+              var url = `${BACK_BASE_URL}/Excel/files/${res.msg}`;
+              window.open(url.replace('/undefined', ''));
+            })
+            .finally(() => {
+              loading.close();
+            });
+        });
+      },
+
       handleExportData(data) {
         const loading = this.$messageLoading('正在导出数据...');
         var Dept_Two_CodeArray = this.$store.state.user.info.userDept;
@@ -305,22 +341,25 @@
             order: order
           })
             .then((res) => {
-              if(res?.result.length == 0) return this.$message.error('没有数据可导出');
-              const array = [[
-                '单号',
-                '时间',
-                '品种编码',
-                '品种名称',
-                '型号/规格',
-                '生产厂家',
-                '批准文号',
-                '申请数量',
-                '配送中',
-                '未配送',
-                '已收货',
-                '未收货',
-                '单位'
-              ]];
+              if (res?.result.length == 0)
+                return this.$message.error('没有数据可导出');
+              const array = [
+                [
+                  '单号',
+                  '时间',
+                  '品种编码',
+                  '品种名称',
+                  '型号/规格',
+                  '生产厂家',
+                  '批准文号',
+                  '申请数量',
+                  '配送中',
+                  '未配送',
+                  '已收货',
+                  '未收货',
+                  '单位'
+                ]
+              ];
               res.result.forEach((d) => {
                 array.push([
                   d.PLAN_NUMBER,
@@ -351,7 +390,8 @@
             })
             .catch((e) => {
               this.$message.error(e.message);
-            }).finally(() => {
+            })
+            .finally(() => {
               loading.close();
             });
         });

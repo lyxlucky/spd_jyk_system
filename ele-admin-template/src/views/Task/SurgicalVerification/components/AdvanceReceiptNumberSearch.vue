@@ -13,6 +13,7 @@
         size="mini"
         clearable
         v-model="where.condition"
+        style="width: 150px"
         placeholder="请输入手术编号或住院号"
       />
     </el-form-item>
@@ -147,7 +148,7 @@
     data() {
       // 默认表单数据
       const defaultWhere = {
-        MZZY: '',
+        MZZY: '3',
         condition: ''
       };
       return {

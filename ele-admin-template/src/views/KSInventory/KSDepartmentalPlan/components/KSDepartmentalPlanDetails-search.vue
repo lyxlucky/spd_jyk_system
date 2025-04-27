@@ -1,8 +1,8 @@
 <!-- 搜索表单 -->
 <template>
   <el-form class="ele-form-search">
-    <el-row :gutter="10" style="display: none">
-      <!-- <el-col v-bind="styleResponsive ? { lg: 6, md: 12 } : { span: 6 }">
+    <!-- <el-row :gutter="10" style="display: none">
+      <el-col v-bind="styleResponsive ? { lg: 6, md: 12 } : { span: 6 }">
         <el-form-item label="状态：">
           <el-select v-model="where.State" @change="search()">
             <el-option label="显示所有申领品种" value="-1"></el-option>
@@ -10,7 +10,7 @@
             <el-option label="仅显示实际申领非空品种" value="1"></el-option>
           </el-select>
         </el-form-item>
-      </el-col> -->
+      </el-col>
       <el-col v-bind="styleResponsive ? { lg: 11, md: 12 } : { span: 6 }">
         <el-form-item label="平均用量时间段：" label-width="130px">
           <el-date-picker
@@ -31,9 +31,9 @@
         >
         </el-date-picker>
       </el-col>
-    </el-row>
+    </el-row> -->
     <el-row :gutter="10">
-      <el-col :lg="6" :md="12">
+      <el-col :lg="5" :md="12">
         <el-input
           size="mini"
           v-model="where.SerachName"
@@ -41,7 +41,7 @@
           clearable
         />
       </el-col>
-      <el-col :lg="18" :md="12">
+      <el-col :lg="19" :md="12">
         <div class="ele-form-actions">
           <el-button
             type="primary"

@@ -293,6 +293,31 @@ export async function getApplyOperateTip(data) {
   }
 }
 
+
+export async function getApplyOperateTipExcel(data) {
+  var data2 = {};
+  data2.VARIETIE_SEARCH_VALUE = data.where.VARIETIE_SEARCH_VALUE
+    ? data.where.VARIETIE_SEARCH_VALUE
+    : '';
+  data2.STATE = data.where.STATE ? data.where.STATE : '';
+  data2.DEPT_TWO_CODE = data.where.DEPT_TWO_CODE
+    ? data.where.DEPT_TWO_CODE
+    : '';
+  data2.PLAN_NUMBER = data.where.PLAN_NUMBER ? data.where.PLAN_NUMBER : '';
+  data2.PLAN_TIME_START = data.where.PLAN_TIME_START
+    ? data.where.PLAN_TIME_START
+    : '';
+  data2.PLAN_TIME_END = data.where.PLAN_TIME_END
+    ? data.where.PLAN_TIME_END
+    : '';
+  data2.page = data.page ? data.page : '';
+  data2.size = data.limit ? data.limit : '';
+  data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+  var rep = formdataify(data2);
+  const res = await request.post('/DeptApplyPlan/getApplyOperateTipExcel', rep);
+  return res.data;
+}
+
 export async function QueryPageLayUIByJYK(data) {
   var data2 = {};
   data2.varietieCode = data.where.varietieCode ? data.where.varietieCode : '';

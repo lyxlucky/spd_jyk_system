@@ -19,7 +19,6 @@
             <el-form-item prop="firstUdi">
               <el-input
                 ref="firstUdi"
-                @change="handleUdiScan()"
                 size="mini"
                 v-model="where.firstUdi"
                 placeholder="请输入UDI"
@@ -27,7 +26,7 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row :gutter="20">
+        <!-- <el-row :gutter="20">
           <el-col v-bind="styleResponsive ? { lg: 20, md: 8 } : { span: 6 }">
             <el-form-item prop="secondUdi">
               <el-input
@@ -44,7 +43,7 @@
               <el-checkbox v-model="where.isMultiPart">多段UDI</el-checkbox>
             </el-form-item>
           </el-col>
-        </el-row>
+        </el-row> -->
         <el-row>
           <el-col v-bind="styleResponsive ? { lg: 24, md: 8 } : { span: 6 }">
             <el-form-item>
@@ -55,6 +54,7 @@
       </el-form>
 
       <template v-slot:footer>
+        <el-button size="mini" @click="handleUdiScan">确定</el-button>
         <el-button size="mini" @click="updateVisible(false)">取消</el-button>
       </template>
     </ele-modal>

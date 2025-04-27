@@ -392,25 +392,28 @@ export default {
             count: res.total,
             list: res.result
           };
-          for (let i = 0; i < res.result.length; i++) {
-            this.SumAmount +=
-              (res.result[i].COUNT * res.result[i].PRICE * 100) / 100;
+          // for (let i = 0; i < res.result.length; i++) {
+          //   this.SumAmount +=
+          //     (res.result[i].COUNT * res.result[i].PRICE * 100) / 100;
 
-            if (
-              res.result[i].COUNT > 0 &&
-              res.result[i].OPERATOR == 'HIS计费'
-            ) {
-              this.RKSumAmount +=
-                (res.result[i].COUNT * res.result[i].PRICE * 100) / 100;
-            }
-            if (
-              res.result[i].COUNT < 0 &&
-              res.result[i].OPERATOR == 'HIS计费'
-            ) {
-              this.CKSumAmount +=
-                (res.result[i].COUNT * res.result[i].PRICE * 100) / 100;
-            }
-          }
+          //   if (
+          //     res.result[i].COUNT > 0 &&
+          //     res.result[i].OPERATOR == 'HIS计费'
+          //   ) {
+          //     this.RKSumAmount +=
+          //       (res.result[i].COUNT * res.result[i].PRICE * 100) / 100;
+          //   }
+          //   if (
+          //     res.result[i].COUNT < 0 &&
+          //     res.result[i].OPERATOR == 'HIS计费'
+          //   ) {
+          //     this.CKSumAmount +=
+          //       (res.result[i].COUNT * res.result[i].PRICE * 100) / 100;
+          //   }
+          // }
+          this.RKSumAmount = res.rkTotalPrice,
+          this.CKSumAmount = res.ckTotalPrice;
+          this.SumAmount = Number(res.rkTotalPrice) + Number(res.ckTotalPrice);
           this.datasourceList = res.result;
           this.SumCount1 = Math.abs(res.SumCount1);
           this.SumCount2 = Math.abs(res.SumCount2);

@@ -100,11 +100,6 @@
           //   //fixed: 'right'
           // }
         ],
-        paginationStyle: {
-          height: '18px',
-          padding: '0px 0px 5px 0px',
-          'margin-top': '-5px'
-        },
         toolbar: false,
         pageSize: 100,
         pagerCount: 2,
