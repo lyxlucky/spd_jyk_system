@@ -4,7 +4,6 @@
     <ele-pro-table
       size="mini"
       height="60vh"
-      :paginationStyle="paginationStyle"
       highlight-current-row
       @current-change="onCurrentChange"
       :row-class-name="tableRowClassName"
@@ -54,32 +53,7 @@
   :deep(.el-card__body) {
     padding: 0px;
   }
-  .ele-box {
-    background-color: white;
-    padding: 15px;
-  }
 
-  .ele-box,
-  :deep(.el-card__body),
-  :deep(.ele-pro-table),
-  .el-card {
-    height: 100%;
-    box-sizing: border-box;
-  }
-  :deep(.ele-pro-table) {
-    display: flex;
-    flex-direction: column;
-  }
-  :deep(.el-table) {
-    flex: 1;
-    flex-basis: 0;
-    display: flex;
-    flex-direction: column;
-  }
-  :deep(.el-table .el-table__body-wrapper) {
-    flex: 1;
-    overflow: auto;
-  }
   .search-toolbar {
     display: flex;
   }

@@ -330,30 +330,4 @@
   };
 </script>
 
-<style lang="scss" scoped>
-  .ele-box {
-    padding: 15px;
-    background-color: white;
-  }
-  .ele-box,
-  :deep(.el-card__body),
-  :deep(.ele-pro-table),
-  .el-card {
-    height: 100%;
-    box-sizing: border-box;
-  }
-  :deep(.ele-pro-table) {
-    display: flex;
-    flex-direction: column;
-  }
-  :deep(.el-table) {
-    flex: 1;
-    flex-basis: 0;
-    display: flex;
-    flex-direction: column;
-  }
-  :deep(.el-table .el-table__body-wrapper) {
-    flex: 1;
-    overflow: auto;
-  }
-</style>
+<style lang="scss" scoped></style>

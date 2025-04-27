@@ -1,5 +1,5 @@
 <template>
-  <div class="body-box">
+  <div class="ele-box">
     <el-row :gutter="0" type="flex" style="height: 100%">
       <el-col :span="8">
         <OPSConsumablesTable @changeMZZY="changeMZZY"></OPSConsumablesTable>

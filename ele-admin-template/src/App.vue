@@ -49,4 +49,34 @@
   // ::v-deep .ele-table-tool-default {
   //   padding: 0;
   // }
+  .ele-box {
+    background-color: white;
+  }
+  .ele-box .ele-box {
+    padding: 10px;
+  }
+
+  .ele-box,
+  .ele-box .ele-pro-table {
+    height: 100%;
+    box-sizing: border-box;
+  }
+  .ele-box .ele-pro-table {
+    display: flex;
+    flex-direction: column;
+  }
+  .ele-box .el-table {
+    flex: 1;
+    flex-basis: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .ele-box .el-table .el-table__body-wrapper {
+    flex: 1;
+    overflow: auto;
+  }
+  .ele-box .ele-pro-table .el-pagination {
+    margin-top: 6px !important;
+    flex-basis: 0;
+  }
 </style>
