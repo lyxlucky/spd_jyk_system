@@ -51,6 +51,8 @@
   // }
   .ele-box {
     background-color: white;
+    height: 100%;
+    box-sizing: border-box;
   }
   .ele-box .ele-box {
     padding: 10px;
@@ -59,24 +61,21 @@
   .ele-box,
   .ele-box .ele-pro-table {
     height: 100%;
-    box-sizing: border-box;
-  }
-  .ele-box .ele-pro-table {
     display: flex;
     flex-direction: column;
   }
   .ele-box .el-table {
-    flex: 1;
-    flex-basis: 0;
+    flex: 1; // 移除 flex-basis: 0
     display: flex;
     flex-direction: column;
   }
   .ele-box .el-table .el-table__body-wrapper {
     flex: 1;
     overflow: auto;
+    max-height: calc(100vh - 200px); // 添加最大高度限制
   }
   .ele-box .ele-pro-table .el-pagination {
-    margin-top: 6px !important;
-    flex-basis: 0;
+    margin-top: 7px !important;
+    padding: 10px 0; // 使用padding替代flex-basis
   }
 </style>

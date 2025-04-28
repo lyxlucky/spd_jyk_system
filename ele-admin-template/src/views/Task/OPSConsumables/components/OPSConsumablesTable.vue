@@ -110,7 +110,7 @@
               v-model="where.MZZY"
               placeholder="请选择术间"
               clearable
-              style="width: 160px"
+              style="width: 100px"
               @change="changeMZZY"
             >
               <el-option

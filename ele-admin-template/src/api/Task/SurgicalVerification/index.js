@@ -167,8 +167,8 @@ export async function GetBdszZqsjMainNoUseDel(data) {
 
   const formatData = {
     Token: sessionStorage.getItem(TOKEN_STORE_NAME),
-    page: params.page || 1,
-    size: params.limit || 10,
+    page: data.page || 1,
+    size: data.limit || 10,
     SSBH: data.where.SSBH || '',
     VARIETIE_CODE_NEW: data.where.VARIETIE_CODE_NEW || '',
   };
