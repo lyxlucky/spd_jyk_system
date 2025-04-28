@@ -55,7 +55,7 @@
 </script>
 
 <style scoped>
-  .body-box {
+  .ele-box {
     height: 100%;
   }
 </style>

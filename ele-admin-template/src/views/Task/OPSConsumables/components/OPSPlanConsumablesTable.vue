@@ -286,4 +286,36 @@
   };
 </script>
 
-<style scoped></style>
+<style scoped>
+  .ele-box {
+    background-color: white;
+    height: 100%;
+    box-sizing: border-box;
+  }
+  .ele-box .ele-box {
+    padding: 10px;
+  }
+
+  .ele-box,
+  .ele-box .ele-pro-table {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  .ele-box .el-table {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  .ele-box .el-table .el-table__body-wrapper {
+    flex: 1;
+    overflow: auto;
+    flex-basis: 0;
+    max-height: calc(100vh - 200px);
+  }
+  .ele-box .ele-pro-table .el-pagination {
+    margin-top: 7px !important;
+    padding: 0px 0;
+    box-sizing: border-box;
+  }
+</style>

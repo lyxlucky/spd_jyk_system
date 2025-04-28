@@ -34,7 +34,6 @@
           @handleSelectAdd="handleSelectAdd"
           :VarietyConsumeptionDataList="VarietyConsumeptionDataList"
         />
-        
       </template>
 
       <!-- <template v-slot:ACTION="{ row }">
@@ -57,7 +56,39 @@
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+  .ele-box {
+    background-color: white;
+    height: 100%;
+    box-sizing: border-box;
+  }
+  .ele-box .ele-box {
+    padding: 10px;
+  }
+
+  .ele-box,
+  .ele-box .ele-pro-table {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  .ele-box .el-table {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  .ele-box .el-table .el-table__body-wrapper {
+    flex: 1;
+    overflow: auto;
+    flex-basis: 0;
+    max-height: calc(100vh - 200px);
+  }
+  .ele-box .ele-pro-table .el-pagination {
+    margin-top: 7px !important;
+    padding: 0px 0;
+    box-sizing: border-box;
+  }
+</style>
 
 <script>
   import UDIScanAddDialog from './UDIScanAddDialog.vue';
@@ -139,7 +170,7 @@
             label: '使用数量',
             align: 'center',
             width: 100
-          },
+          }
         ],
         toolbar: false,
         pageSize: 50,
@@ -164,7 +195,7 @@
       /* 表格数据源 */
       async datasource({ page, limit, where, order }) {
         console.log(this.ApplyTempTableData);
-        where.BDSZ_ZQSJ_ID = this.ApplyTempTableData.ID;
+        where.BDSZ_ZQSJ_ID = this.ApplyTempTableData?.ID;
         let data = getBdszZgsjMainPsDel({ page, limit, where, order }).then(
           (res) => {
             var tData = {

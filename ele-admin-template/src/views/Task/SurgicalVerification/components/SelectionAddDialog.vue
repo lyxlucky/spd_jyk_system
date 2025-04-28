@@ -158,11 +158,23 @@
           ...where,
           SSBH: this.AdvanceNumberTableCurrent?.SSBH
         };
+
         const res = await GetBdszZqsjMainNoUseDel({
           page,
           limit,
           where,
           order
+        }).then((res) => {
+          if (res.code !== 200) {
+            return {
+              total: 0,
+              data: []
+            };
+          }
+          return {
+            total: res.total,
+            data: res.data
+          };
         });
         return {
           count: res.total,
