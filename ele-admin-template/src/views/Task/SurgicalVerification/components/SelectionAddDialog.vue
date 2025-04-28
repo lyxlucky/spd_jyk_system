@@ -3,7 +3,8 @@
     <ele-modal
       title="勾选添加"
       :destroy-on-close="true"
-      width="1000px"
+      width="90%"
+      height="90%"
       :visible="visible"
       :close-on-click-modal="true"
       @update:visible="updateVisible(false)"
@@ -43,7 +44,10 @@
   </div>
 </template>
 <script>
-  import { GetBdszZqsjMainNoUseDel } from '@/api/Task/SurgicalVerification';
+  import {
+    GetBdszZqsjMainNoUseDel,
+    addBdszZqsjMainPsDelUseV2
+  } from '@/api/Task/SurgicalVerification';
   export default {
     name: 'selectionAddDialog',
     props: ['visible'],
@@ -53,7 +57,7 @@
           {
             columnKey: 'selection',
             type: 'selection',
-            width: 45,
+            minWidth: 45,
             align: 'center',
             fixed: 'left'
           },
@@ -61,70 +65,81 @@
             prop: 'DEF_NO_PKG_CODE',
             label: '定数码',
             align: 'center',
-            width: 130
+            minWidth: 130,
+            showOverflowTooltip: true
           },
           {
             prop: 'VARIETIE_CODE_NEW',
             label: '品种编码',
             align: 'center',
-            width: 130
+            minWidth: 130,
+            showOverflowTooltip: true
           },
           {
             prop: 'VARIETIE_NAME',
             label: '品种名称',
             align: 'center',
-            width: 130
+            minWidth: 130,
+            showOverflowTooltip: true
           },
           {
             prop: 'SPECIFICATION_OR_TYPE',
             label: '规格型号',
             align: 'center',
-            width: 130
+            minWidth: 130,
+            showOverflowTooltip: true
           },
           {
-            prop: '单位',
-            label: 'UNIT',
+            prop: 'UNIT',
+            label: '单位',
             align: 'center',
-            width: 130
+            minWidth: 130,
+            showOverflowTooltip: true
           },
           {
             prop: 'PRICE',
             label: '价格',
             align: 'center',
-            width: 130
+            minWidth: 130,
+            showOverflowTooltip: true
           },
           {
             prop: 'BATCH',
             label: '批号',
             align: 'center',
-            width: 130
+            minWidth: 130,
+            showOverflowTooltip: true
           },
 
           {
             prop: 'BATCH_PRODUCTION_DATE',
             label: '生产日期',
             align: 'center',
-            width: 130
+            minWidth: 130,
+            showOverflowTooltip: true
           },
 
           {
             prop: 'BATCH_VALIDITY_PERIOD',
             label: '有效期',
             align: 'center',
-            width: 130
+            minWidth: 130,
+            showOverflowTooltip: true
           },
 
           {
             prop: 'APPROVAL_NUMBER',
             label: '批准文号',
             align: 'center',
-            width: 130
+            minWidth: 130,
+            showOverflowTooltip: true
           },
           {
             prop: 'MANUFACTURING_ENT_NAME',
             label: '生产企业',
             align: 'center',
-            width: 130
+            minWidth: 130,
+            showOverflowTooltip: true
           }
         ],
         pageSize: 50,
@@ -139,10 +154,10 @@
     },
     methods: {
       async datasource({ page, limit, where, order }) {
-        // where = {
-        //   ...where,
-        //   SSBH: this.AdvanceNumberTableCurrent?.SSBH
-        // };
+        where = {
+          ...where,
+          SSBH: this.AdvanceNumberTableCurrent?.SSBH
+        };
         const res = await GetBdszZqsjMainNoUseDel({
           page,
           limit,
@@ -164,13 +179,48 @@
         this.$emit('update:visible', val);
       },
       submitItem() {
-        this.$emit('submitItem');
+        if (this.selection.length === 0) {
+          this.$message({
+            message: '请至少选择一条数据',
+            type: 'warning'
+          });
+          return;
+        }
+        const loading = this.$messageLoading('处理中...');
+        const ids = this.selection.map((item) => {
+          return {
+            ID: item.ID
+          };
+        });
+        addBdszZqsjMainPsDelUseV2({
+          json: ids
+        })
+          .then((res) => {
+            this.$message({
+              message: '添加成功',
+              type: 'success'
+            });
+          })
+          .catch((err) => {
+            this.$message({
+              message: err.message,
+              type: 'error'
+            });
+          })
+          .finally(() => {
+            this.updateVisible(false);
+            this.$bus.$emit('SelectionAddDialogRefresh');
+            loading.close();
+          });
       }
     },
     mounted() {
       this.$bus.$on('AdvanceReceiptNumberTableCurrent', (data) => {
         this.AdvanceNumberTableCurrent = data;
       });
+    },
+    beforeDestroy() {
+      this.$bus.$off('SelectionAddDialogRefresh');
     }
   };
 </script>

@@ -7,8 +7,8 @@
         ></AdvanceReceiptNumberTable>
       </el-col>
       <el-col :span="16">
-        <el-row :gutter="0" style="height: 50%">
-          <el-col :span="24" style="height: 100%">
+        <el-row :gutter="0">
+          <el-col :span="24">
             <AdvanceReceiptNumberDelTable
               :ApplyTempTableData="ApplyTempTableData"
               @selectionData="selectionData"
@@ -16,8 +16,8 @@
             </AdvanceReceiptNumberDelTable>
           </el-col>
         </el-row>
-        <el-row :gutter="0" style="height: 50%">
-          <el-col :span="24" style="height: 100%">
+        <el-row :gutter="0">
+          <el-col :span="24">
             <ConsumeablesUsageDetail :masterCurrentData="ApplyTempTableData">
             </ConsumeablesUsageDetail>
           </el-col>

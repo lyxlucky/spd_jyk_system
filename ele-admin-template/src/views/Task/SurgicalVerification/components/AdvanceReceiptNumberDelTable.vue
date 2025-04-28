@@ -5,9 +5,7 @@
     <ele-pro-table
       size="mini"
       ref="table"
-      :rowClickCheckedIntelligent="false"
-      :rowClickChecked="true"
-      height="50%"
+      height="12vh"
       highlight-current-row
       :stripe="true"
       :pageSize="pageSize"
@@ -36,6 +34,7 @@
           @handleSelectAdd="handleSelectAdd"
           :VarietyConsumeptionDataList="VarietyConsumeptionDataList"
         />
+        
       </template>
 
       <!-- <template v-slot:ACTION="{ row }">
@@ -82,13 +81,6 @@
       return {
         // 表格列配置
         columns: [
-          {
-            columnKey: 'selection',
-            type: 'selection',
-            width: 45,
-            align: 'center',
-            fixed: 'left'
-          },
           {
             prop: 'VARIETIE_CODE_NEW',
             label: '品种编码',
@@ -146,17 +138,8 @@
             prop: 'USE_COUNT',
             label: '使用数量',
             align: 'center',
-            fixed: 'right',
             width: 100
           },
-          {
-            slot: 'ACTION',
-            prop: 'ACTION',
-            label: '操作',
-            align: 'center',
-            fixed: 'right',
-            width: 100
-          }
         ],
         toolbar: false,
         pageSize: 50,
@@ -297,6 +280,10 @@
       });
 
       this.$bus.$on('UdiScanDialogClosed', (current) => {
+        this.reload();
+      });
+
+      this.$bus.$on('SelectionAddDialogRefresh', () => {
         this.reload();
       });
     },

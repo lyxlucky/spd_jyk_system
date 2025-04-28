@@ -1,13 +1,11 @@
 import request from '@/utils/request';
 import { formdataify, DataToObject } from '@/utils/formdataify';
 import { TOKEN_STORE_NAME } from '@/config/setting';
-import store from '@/store';
 
 export async function getBdSzYyHisSs(params) {
-  console.log({ params });
   const formatData = {
     Token: sessionStorage.getItem(TOKEN_STORE_NAME),
-    MZZY: params.where.MZZY || '',
+    MZZY: params.where.MZZY == '-1' ? '' : params.where.MZZY ? params.where.MZZY : '3',
     condition: params.where.condition || '',
     page: params.page || 1,
     size: params.limit || 10
@@ -164,17 +162,33 @@ export async function commitBdszSsyyInfo(data) {
 
 // 勾选确认数据源
 export async function GetBdszZqsjMainNoUseDel(data) {
-
   const formatData = {
     Token: sessionStorage.getItem(TOKEN_STORE_NAME),
     page: data.page || 1,
     size: data.limit || 10,
     SSBH: data.where.SSBH || '',
-    VARIETIE_CODE_NEW: data.where.VARIETIE_CODE_NEW || '',
+    VARIETIE_CODE_NEW: data.where.VARIETIE_CODE_NEW || ''
   };
 
   let res = await request.post(
     '/DeptPlanTransfer/GetBdszZqsjMainNoUseDel',
+    formatData
+  );
+
+  if (res.data.code == 200) {
+    return res.data;
+  }
+  return Promise.reject(res.data);
+}
+
+export async function addBdszZqsjMainPsDelUseV2(data) {
+  const formatData = {
+    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+    data: data.json
+  };
+
+  let res = await request.post(
+    '/DeptPlanTransfer/addBdszZqsjMainPsDelUseV2',
     formatData
   );
 

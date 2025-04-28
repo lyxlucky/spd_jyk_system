@@ -1,9 +1,26 @@
 <template>
   <div class="ele-box">
     <!-- 数据表格 -->
+
+    <div class="search-toolbar">
+      <AdvanceReceiptNumberSearch
+        @search="reload"
+        @approve="handleApprove"
+        @catDefNoPkgCode="handleCatDefNoPkgCode"
+        @handleScanQrCode="handleScanQrCode"
+        :rowData="current"
+        style="padding: 0px"
+      />
+      <AdvanceReceiptNumberEdit
+        @search="reload"
+        :visible.sync="showEdit"
+        :rowData="current"
+      />
+    </div>
+
     <ele-pro-table
       size="mini"
-      height="60vh"
+      height="30vh"
       highlight-current-row
       @current-change="onCurrentChange"
       :row-class-name="tableRowClassName"
@@ -16,11 +33,11 @@
       :needPage="true"
       :datasource="datasource"
       :selection.sync="selection"
+      :toolkit="[]"
       cache-key="ApplyTempTable"
     >
       <!-- 表头工具栏 -->
-      <template v-slot:toolbar>
-        <!-- 搜索表单 -->
+      <!-- <template v-slot:toolbar>
         <div class="search-toolbar">
           <AdvanceReceiptNumberSearch
             @search="reload"
@@ -30,14 +47,13 @@
             :rowData="current"
             style="padding: 0px"
           />
-
           <AdvanceReceiptNumberEdit
             @search="reload"
             :visible.sync="showEdit"
             :rowData="current"
           />
         </div>
-      </template>
+      </template> -->
     </ele-pro-table>
   </div>
 </template>
@@ -208,6 +224,7 @@
       },
       /* 刷新表格 */
       reload(where) {
+        console.log({ where: where });
         this.$refs.table.reload({ page: 1, where: where });
       },
       onCurrentChange(current) {

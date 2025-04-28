@@ -8,75 +8,81 @@
     size="mini"
     :inline="true"
   >
-    <el-form-item>
-      <el-input
-        size="mini"
-        clearable
-        v-model="where.condition"
-        style="width: 150px"
-        placeholder="请输入手术编号或住院号"
-      />
-    </el-form-item>
-    <el-form-item>
-      <el-select
-        @change="search"
-        v-model="where.MZZY"
-        size="mini"
-        placeholder=""
-        style="width: 100px"
-      >
-        <el-option label="全部" value=""></el-option>
-        <el-option label="已提交" value="1"></el-option>
-        <el-option label="已拣配" value="2"></el-option>
-        <el-option label="已交接" value="3"></el-option>
-        <el-option label="已完成" value="4"></el-option>
-      </el-select>
-    </el-form-item>
-    <el-form-item>
-      <el-button
-        size="mini"
-        type="primary"
-        icon="el-icon-search"
-        class="ele-btn-icon"
-        @click="search"
-      >
-        查询
-      </el-button>
-    </el-form-item>
-    <el-form-item>
-      <el-button
-        size="mini"
-        type="primary"
-        icon="el-icon-check"
-        class="ele-btn-icon"
-        @click="approve"
-      >
-        护士审批
-      </el-button>
-    </el-form-item>
-    <el-form-item>
-      <el-button
-        size="mini"
-        type="primary"
-        class="ele-btn-icon"
-        icon="el-icon-reading"
-        @click="catDefNoPkgCode"
-      >
-        查看定数码标签
-      </el-button>
-    </el-form-item>
+    <el-row :gutter="10">
+      <el-col :lg="18" :md="2">
+        <el-form-item>
+          <el-input
+            size="mini"
+            clearable
+            v-model="where.condition"
+            style="width: 180px"
+            placeholder="请输入手术编号或住院号"
+          />
+        </el-form-item>
+        <el-form-item>
+          <el-select
+            @change="search"
+            v-model="where.MZZY"
+            size="mini"
+            placeholder=""
+            style="width: 100px"
+          >
+            <el-option label="全部" value="-1"></el-option>
+            <el-option label="已提交" value="1"></el-option>
+            <el-option label="已拣配" value="2"></el-option>
+            <el-option label="已交接" value="3"></el-option>
+            <el-option label="已完成" value="4"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-button
+            size="mini"
+            type="primary"
+            icon="el-icon-search"
+            class="ele-btn-icon"
+            @click="search"
+          >
+            查询
+          </el-button>
+        </el-form-item>
+      </el-col>
 
-    <el-form-item>
-      <el-button
-        type="primary"
-        size="mini"
-        icon="el-icon-thumb"
-        @click="handleScanQrCode"
-        >扫码交接</el-button
-      >
-    </el-form-item>
+      <el-col :lg="15" :md="12">
+        <el-form-item>
+          <el-button
+            size="mini"
+            type="primary"
+            icon="el-icon-check"
+            class="ele-btn-icon"
+            @click="approve"
+          >
+            护士审批
+          </el-button>
+        </el-form-item>
+        <el-form-item>
+          <el-button
+            size="mini"
+            type="primary"
+            class="ele-btn-icon"
+            icon="el-icon-reading"
+            @click="catDefNoPkgCode"
+          >
+            查看定数码标签
+          </el-button>
+        </el-form-item>
 
-    <!-- <el-row :gutter="5" style="margin-top: 5px">
+        <el-form-item>
+          <el-button
+            type="primary"
+            size="mini"
+            icon="el-icon-thumb"
+            @click="handleScanQrCode"
+            >扫码交接</el-button
+          >
+        </el-form-item>
+      </el-col>
+
+      <!-- <el-row :gutter="5" style="margin-top: 5px">
       <el-col v-bind="styleResponsive ? { lg: 14, md: 12 } : { span: 12 }">
         <el-input
           size="mini"
@@ -86,7 +92,7 @@
         />
       </el-col>
     </el-row> -->
-    <!-- <el-row :gutter="5">
+      <!-- <el-row :gutter="5">
       <el-col v-bind="styleResponsive ? { lg: 24, md: 12 } : { span: 12 }">
         <div class="ele-form-actions">
           <el-button size="mini" type="primary" class="ele-btn-icon" @click="platformConsumeEditShow">编辑</el-button>
@@ -137,6 +143,7 @@
         </div>
       </el-col>
     </el-row> -->
+    </el-row>
   </el-form>
 </template>
 

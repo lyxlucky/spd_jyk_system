@@ -3,8 +3,7 @@
     <ele-pro-table
       size="mini"
       ref="table"
-      :rowClickCheckedIntelligent="false"
-      height="50%"
+      height="12vh"
       highlight-current-row
       :stripe="true"
       :pageSize="pageSize"
@@ -44,13 +43,6 @@
     data() {
       return {
         columns: [
-          {
-            columnKey: 'selection',
-            type: 'selection',
-            width: 45,
-            align: 'center',
-            fixed: 'left'
-          },
           {
             prop: 'DEF_NO_PKG_CODE',
             label: '定数码',
@@ -212,6 +204,9 @@
       });
       this.$bus.$on('AdvanceReceiptNumberTableCurrent', (current) => {
         this.parentCurrent = current;
+        this.reload();
+      });
+      this.$bus.$on('SelectionAddDialogRefresh', () => {
         this.reload();
       });
     },
