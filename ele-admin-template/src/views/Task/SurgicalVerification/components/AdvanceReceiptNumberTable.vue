@@ -26,6 +26,7 @@
             @search="reload"
             @approve="handleApprove"
             @catDefNoPkgCode="handleCatDefNoPkgCode"
+            @handleScanQrCode="handleScanQrCode"
             :rowData="current"
             style="padding: 0px"
           />
@@ -62,7 +63,11 @@
 <script>
   import AdvanceReceiptNumberSearch from './AdvanceReceiptNumberSearch.vue';
   import AdvanceReceiptNumberEdit from './AdvanceReceiptNumberEdit.vue';
-  import { getBdSzYyHisSs, BdSsApprove } from '@/api/Task/SurgicalVerification';
+  import {
+    getBdSzYyHisSs,
+    BdSsApprove,
+    commitBdszSsyyInfo
+  } from '@/api/Task/SurgicalVerification';
   import { HOME_HP, BACK_BASE_URL } from '@/config/setting';
   import { load } from '@amap/amap-jsapi-loader';
   export default {
@@ -242,6 +247,34 @@
         window.open(
           `${BACK_BASE_URL}/api/Abdzczh/GetTagQdMx?id=67&format=pdf&inline=true&qdid=${this.current.SSBH}&Token=${sessionStorage.Token}`
         );
+      },
+      //不为空
+      handleScanQrCode(data) {
+        this.$prompt('请输入手术编号', '扫码交接', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          inputPlaceholder: '请输入手术编号'
+        })
+          .then(({ value }) => {
+            if (value == undefined)
+              return this.$message.error('请输入手术编号');
+            commitBdszSsyyInfo({
+              spd: 'PDA123#1',
+              pdaMan: this.$store.state.user.info.UserName,
+              ID: value,
+              TJ_STATE: 2
+            })
+              .then((res) => {
+                this.$message.success(res.msg);
+              })
+              .catch((err) => {
+                this.$message.error(err);
+              });
+          })
+          .catch(() => {})
+          .finally(() => {
+            this.reload();
+          });
       }
     },
     mounted() {

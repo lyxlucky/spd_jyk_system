@@ -4,7 +4,7 @@ import { TOKEN_STORE_NAME } from '@/config/setting';
 import store from '@/store';
 
 export async function getBdSzYyHisSs(params) {
-  console.log({params})
+  console.log({ params });
   const formatData = {
     Token: sessionStorage.getItem(TOKEN_STORE_NAME),
     MZZY: params.where.MZZY || '',
@@ -145,3 +145,41 @@ export async function deleteUsedQty(params) {
   return Promise.reject(res.data);
 }
 
+// 扫码交接
+export async function commitBdszSsyyInfo(data) {
+  const formatData = {
+    ...data,
+    Token: sessionStorage.getItem(TOKEN_STORE_NAME)
+  };
+
+  const reFormatData = formdataify(formatData);
+
+  let res = await request.post('/DeptConsume/commitBdszSsyyInfo', reFormatData);
+
+  if (res.data.code == 200) {
+    return res.data;
+  }
+  return Promise.reject(res.data);
+}
+
+// 勾选确认数据源
+export async function GetBdszZqsjMainNoUseDel(data) {
+
+  const formatData = {
+    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+    page: params.page || 1,
+    size: params.limit || 10,
+    SSBH: data.where.SSBH || '',
+    VARIETIE_CODE_NEW: data.where.VARIETIE_CODE_NEW || '',
+  };
+
+  let res = await request.post(
+    '/DeptPlanTransfer/GetBdszZqsjMainNoUseDel',
+    formatData
+  );
+
+  if (res.data.code == 200) {
+    return res.data;
+  }
+  return Promise.reject(res.data);
+}

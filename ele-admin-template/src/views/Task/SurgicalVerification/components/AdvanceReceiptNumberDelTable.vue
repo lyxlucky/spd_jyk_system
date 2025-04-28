@@ -33,15 +33,16 @@
           :ApplyTempTableDataSearch="ApplyTempTableDataSearch"
           :AdvanceReceiptDelcurrent="current"
           :selection="selection"
+          @handleSelectAdd="handleSelectAdd"
           :VarietyConsumeptionDataList="VarietyConsumeptionDataList"
         />
       </template>
 
-      <template v-slot:ACTION="{ row }">
+      <!-- <template v-slot:ACTION="{ row }">
         <el-button size="mini" type="primary" @click="handleUpdateCount(row)"
           >修改数量</el-button
         >
-      </template>
+      </template> -->
     </ele-pro-table>
     <UDIScanAddDialog
       :AdvanceReceiptNumberCurrent="ApplyTempTableDataSearch"
@@ -50,6 +51,10 @@
       @udiScanDialogClose="handleClosed"
     >
     </UDIScanAddDialog>
+
+    <SelectionAddDialog
+      :visible.sync="selectionDialogVisible"
+    ></SelectionAddDialog>
   </div>
 </template>
 
@@ -58,6 +63,7 @@
 <script>
   import UDIScanAddDialog from './UDIScanAddDialog.vue';
   import AdvanceReceiptNumberDelSearch from './AdvanceReceiptNumberDelSearch.vue';
+  import SelectionAddDialog from './SelectionAddDialog';
   import { addBdszZqsjMainPsDelUse } from '@/api/Task/SurgicalVerification';
   import { utils, writeFile } from 'xlsx';
   import {
@@ -69,7 +75,8 @@
     props: ['ApplyTempTableData'],
     components: {
       AdvanceReceiptNumberDelSearch,
-      UDIScanAddDialog
+      UDIScanAddDialog,
+      SelectionAddDialog
     },
     data() {
       return {
@@ -166,7 +173,8 @@
         // datasource: [],
         data: [],
         VarietyConsumeptionDataList: [],
-        UDIScanAddDialogVisiable: false
+        UDIScanAddDialogVisiable: false,
+        selectionDialogVisible: false
       };
     },
     methods: {
@@ -188,6 +196,12 @@
       handleClosed() {
         this.$bus.$emit('UdiScanDialogClosed');
       },
+
+      //勾选添加
+      handleSelectAdd() {
+        this.selectionDialogVisible = true;
+      },
+
       handleUpdateCount(data) {
         if (data?.TYPE == '1')
           return this.$message.warning('此类型不允许修改数量');

@@ -162,3 +162,4 @@ export async function deleteBdszPsDetail(data) {
   }
   return Promise.reject(res.data);
 }
+

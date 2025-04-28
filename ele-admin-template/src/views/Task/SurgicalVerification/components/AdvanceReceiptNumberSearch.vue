@@ -66,6 +66,16 @@
       </el-button>
     </el-form-item>
 
+    <el-form-item>
+      <el-button
+        type="primary"
+        size="mini"
+        icon="el-icon-thumb"
+        @click="handleScanQrCode"
+        >扫码交接</el-button
+      >
+    </el-form-item>
+
     <!-- <el-row :gutter="5" style="margin-top: 5px">
       <el-col v-bind="styleResponsive ? { lg: 14, md: 12 } : { span: 12 }">
         <el-input
@@ -183,6 +193,9 @@
       },
       catDefNoPkgCode() {
         this.$emit('catDefNoPkgCode', this.where);
+      },
+      handleScanQrCode() {
+        this.$emit('handleScanQrCode', this.where);
       },
       /*  重置 */
       reset() {
