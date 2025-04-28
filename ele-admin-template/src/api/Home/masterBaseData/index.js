@@ -24,7 +24,6 @@ export async function GetSpdMainsjHeaderIface(data) {
     ? data.where.WJ_SP_STATE
     : '';
 
-  console.log(formataData);
   let req = formdataify(formataData);
   const res = await request.post('/AJykDept/GetSpdMainsjHeaderIface', req);
   if (res.data.code == 200) {

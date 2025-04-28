@@ -280,18 +280,18 @@
         const loading = this.$messageLoading('正在导出数据...');
         GetSpdMainsjHeaderIface({
           page: 1,
-          limit: this.$refs.table.tableTotal * 2,
+          limit: 999999,
           where,
           order: ''
         })
           .then((res) => {
-            loading.close();
             exportToExcel(res.result, this.columns, '物价单信息');
             this.$message.success('导出成功');
           })
           .catch((err) => {
-            loading.close();
             this.$message.error(err.message);
+          }).finally(() => {
+            loading.close();
           });
       },
       openEdit(row) {

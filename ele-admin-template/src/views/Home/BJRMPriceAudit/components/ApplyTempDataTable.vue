@@ -252,13 +252,13 @@
             align: 'center',
             showOverflowTooltip: true,
             minWidth: 80,
-            formatter: (row, column, cellValue) => {
-              if (cellValue == 1) {
-                return '是';
-              } else {
-                return '否';
-              }
-            }
+            // formatter: (row, column, cellValue) => {
+            //   if (cellValue == 1) {
+            //     return '是';
+            //   } else {
+            //     return '否';
+            //   }
+            // }
           },
           {
             prop: 'HIS_ISGZ_DZ',
@@ -295,11 +295,7 @@
             showOverflowTooltip: true,
             minWidth: 80,
             formatter: (row, column, cellValue) => {
-              if (cellValue == 1) {
-                return '是';
-              } else {
-                return '否';
-              }
+              return '是';
             }
           },
           {
@@ -317,14 +313,16 @@
             minWidth: 100
           },
           {
-            prop: 'HIS_REGISTRATION_NO',
+            // prop: 'HIS_REGISTRATION_NO',
+            prop: 'HIS_ZCZ_NUMBER',
             label: '注册证号',
             align: 'center',
             showOverflowTooltip: true,
             minWidth: 130
           },
           {
-            prop: 'HIS_REGISTRATION_NAME',
+            // prop: 'HIS_REGISTRATION_NAME',
+            prop: 'HIS_ITEM_DESCRIPTION',
             label: '注册证名称',
             align: 'center',
             showOverflowTooltip: true,
@@ -347,7 +345,8 @@
               if (cellValue == 1) {
                 return '是';
               } else {
-                return '否';
+                return '是';
+                // return '否';
               }
             }
           },
@@ -511,11 +510,12 @@
                 }
 
                 if (d.HIS_CLBS == 0) {
-                  d.HIS_CLBS = '否';
+                  // d.HIS_CLBS = '否';
+                  d.HIS_CLBS = '是';
                 } else if (d.HIS_CLBS == 1) {
                   d.HIS_CLBS = '是';
                 } else {
-                  d.HIS_CLBS = '未知';
+                  d.HIS_CLBS = '是';
                 }
 
                 if (d.HIS_LCFW == 0) {
@@ -525,6 +525,7 @@
                 } else {
                   d.HIS_LCFW = '未知';
                 }
+
                 d.HIS_PRICE_START = this.$moment(d.HIS_PRICE_START).format(
                   'YYYY-MM-DD'
                 );
@@ -546,19 +547,18 @@
                   d.HIS_STAND_VALUE,
                   d.HIS_SF_DXM_BS,
                   d.HIS_SYFW,
-                  d.HIS_ISGZ_DZ,
+                  d.HIS_ISACTIVE ?? '否',
                   d.HIS_HC_NUMBER,
                   d.HIS_NBM,
                   d.HIS_CLBS,
                   d.HIS_SCS,
                   d.HIS_SFYJ,
-                  d.HIS_REGISTRATION_NO,
-                  d.HIS_REGISTRATION_NAME,
+                  d.HIS_ZCZ_NUMBER,
+                  d.HIS_ITEM_DESCRIPTION,
                   d.HIS_EXTEND,
-                  d.HIS_LCFW,
+                  d.HIS_LCFW ?? '是',
                   d.HIS_LCFW_TYPE,
                   d.HIS_YBTYPE
-                  // this.$util.toDateString(d.createTime)
                 ]);
               });
               writeFile(

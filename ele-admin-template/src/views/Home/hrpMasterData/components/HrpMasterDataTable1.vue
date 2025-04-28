@@ -27,17 +27,6 @@
       return {
         columns: [
           {
-            prop: 'HEADER_IFACE_ID',
-            label: '头表ID',
-            width: 80,
-            align: 'center',
-            search: true,
-            fieldProps: {
-              placeholder: '请输入头接口ID'
-            }
-          },
-
-          {
             prop: 'REQUESTNOTEID',
             label: '申请单号',
             width: 150,

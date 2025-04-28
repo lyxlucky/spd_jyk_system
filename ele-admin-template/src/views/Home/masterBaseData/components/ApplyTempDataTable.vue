@@ -257,14 +257,7 @@
             label: '启用标志',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 80,
-            formatter: (row, column, cellValue) => {
-              if (cellValue == 1) {
-                return '是';
-              } else {
-                return '否';
-              }
-            }
+            minWidth: 80
           },
           {
             prop: 'HIS_ISGZ_DZ',
@@ -300,13 +293,13 @@
             align: 'center',
             showOverflowTooltip: true,
             minWidth: 80,
-            formatter: (row, column, cellValue) => {
-              if (cellValue == 1) {
-                return '是';
-              } else {
-                return '否';
-              }
-            }
+            // formatter: (row, column, cellValue) => {
+            //   if (cellValue == 1) {
+            //     return '是';
+            //   } else {
+            //     return '是';
+            //   }
+            // }
           },
           {
             prop: 'HIS_SCS',
@@ -323,14 +316,14 @@
             minWidth: 100
           },
           {
-            prop: 'HIS_REGISTRATION_NO',
+            prop: 'HIS_ZCZ_NUMBER',
             label: '注册证号',
             align: 'center',
             showOverflowTooltip: true,
             minWidth: 130
           },
           {
-            prop: 'HIS_REGISTRATION_NAME',
+            prop: 'HIS_ITEM_DESCRIPTION',
             label: '注册证名称',
             align: 'center',
             showOverflowTooltip: true,
@@ -353,7 +346,7 @@
               if (cellValue == 1) {
                 return '是';
               } else {
-                return '否';
+                return '是';
               }
             }
           },
@@ -475,162 +468,97 @@
             order: order
           })
             .then((res) => {
-              loading.close();
-              // const array = [
-              //   [
-              //     '状态',
-              //     // '错误消息',
-              //     '行号',
-              //     '申请单号',
-              //     '耗材注册证名称',
-              //     '注册证号',
-              //     '科室名称',
-              //     '供应商',
-              //     '申请类型',
-              //     '物料编码',
-              //     '物料名称',
-              //     '规格',
-              //     '型号',
-              //     '是否中标',
-              //     '单位',
-              //     '医保耗材编码',
-              //     '采购价格',
-              //     '最小包装数',
-              //     '申请科室',
-              //     '是否收费',
-              //     '类别',
-              //     'VJ1总代经营许可证号',
-              //     '证件有效期',
-              //     'VJ供应商经营许可证号',
-              //     '注册证编号',
-              //     '证件名称（授权书）',
-              //     '品牌',
-              //     '产地',
-              //     '生产商',
-              //     '供应商名称',
-              //     '是否是中小微型企业',
-              //     '是否集采带量产品',
-              //     '京津冀类别',
-              //     '是否是临时采购',
-              //     '联系人',
-              //     '电话',
-              //     '联系人邮箱',
-              //     '试剂价格',
-              //     '试剂检查项目名称',
-              //     '试剂收费项目名称',
-              //     '试剂收费编码',
-              //     '试剂收费价格',
-              //     '中包数量',
-              //     '中包装单位',
-              //     '大包装数量',
-              //     '大包装单位',
-              //     '高低值',
-              //     '高值重点治理序号',
-              //     '重点治理耗材名称',
-              //     '是否植入',
-              //     '是否介入',
-              //     '京津冀类别编号',
-              //     '集配商编号',
-              //     '集配商名称',
-              //     '储存条件',
-              //     'UDI_DI',
-              //     '是否有效',
-              //     '医学装备分类协会编码',
-              //     '医学装备分类协会名称',
-              //     '是否进口',
-              //     'goodsID',
-              //     '收费编码'
-              //   ]
-              // ];
-              // res.result.forEach((d) => {
-              //   if (d.ZB == 0) {
-              //     d.ZB = '否';
-              //   } else if (d.ZB == 1) {
-              //     d.ZB = '是';
-              //   } else {
-              //     d.ZB = '未知';
-              //   }
-              //   array.push([
-              //     d.PROCESS_STATUS,
-              //     // d.ERROR_MSG,
-              //     d.LINE_NUMBER,
-              //     d.HIGHVALUE_NO,
-              //     d.REGISTRATION_NAME,
-              //     d.REGISTRATION_NO,
-              //     d.ORGANIZATION_NAME,
-              //     d.FULL_NAME,
-              //     d.URGENCYLEVEL,
-              //     d.ITEM_NUMBER,
-              //     d.ITEM_DESCRIPTION,
-              //     d.STAND_VALUE,
-              //     d.ITEM_SPEC,
-              //     d.ZB,
-              //     d.UOM,
-              //     d.HC_NUMBER,
-              //     d.UNIT_PRICE,
-              //     d.PACK_MIN,
-              //     d.APPLY_DEPT,
-              //     d.IS_SF,
-              //     d.CATEGORY,
-              //     d.XK_NUMBER,
-              //     d.XY_DATE,
-              //     d.XK_JYNUMBER,
-              //     d.ZCZ_NUMBER,
-              //     d.ZJ_NAME,
-              //     d.BAND,
-              //     d.CD,
-              //     d.SCS,
-              //     d.SUPPLY_NAME,
-              //     d.IS_XX,
-              //     d.IS_CJ,
-              //     d.JJJ_TYPE,
-              //     d.IS_LS,
-              //     d.CONTRACT_NAME,
-              //     d.CONTRACT_PHONE,
-              //     d.CONTRACT_EMAIL,
-              //     d.SJ_PRICE,
-              //     d.SJ_CHECKNAME,
-              //     d.SJ_SFNAME,
-              //     d.SJ_SWNUMBER,
-              //     d.SJ_SWPRICE,
-              //     d.MID_COUNT,
-              //     d.MID_UOM,
-              //     d.MAX_COUNT,
-              //     d.MAX_UOM,
-              //     d.ISGZ_DZ,
-              //     d.GZ_XH,
-              //     d.ZD_HCNAME,
-              //     d.ISZR,
-              //     d.ISJR,
-              //     d.TYPE_NUMBER,
-              //     d.JPS_NUMBER,
-              //     d.JPS_NAME,
-              //     d.ZC_ENVIRONMENT,
-              //     d.UDI_DI,
-              //     d.ISACTIVE,
-              //     d.SB_CODE,
-              //     d.SB_XHNAME,
-              //     d.ISJK,
-              //     d.GOODSID,
-              //     d.SF_CODE
-              //     // this.$util.toDateString(d.createTime)
-              //   ]);
-              // });
-              // writeFile(
-              //   {
-              //     SheetNames: ['Sheet1'],
-              //     Sheets: {
-              //       Sheet1: utils.aoa_to_sheet(array)
-              //     }
-              //   },
-              //   '医保审核单.xlsx'
-              // );
-              exportToExcel(res.result, this.columns, '医保审核单');
+              const array = [
+                [
+                  '导入批次号',
+                  '导入顺序号',
+                  '编码类型',
+                  '项目名称',
+                  '物料编码',
+                  '收费单位',
+                  '价格描述',
+                  '项目单价',
+                  '单价生效开始日期',
+                  '单价生效结束日期',
+                  '项目分类',
+                  '型号',
+                  '规格',
+                  '挂号费用标签',
+                  '收费大项目标识',
+                  '使用范围',
+                  '启用标志',
+                  '高值耗材标志',
+                  '国家项目代码',
+                  '内部码',
+                  '材料标志',
+                  '生产厂商',
+                  '收费依据',
+                  '注册证号',
+                  '注册证名称',
+                  '扩展属性',
+                  '临床服务标志',
+                  '临床服务分类',
+                  '医保分类'
+                ]
+              ];
+              res.result.forEach((d) => {
+                if (d.ZB == 0) {
+                  d.ZB = '否';
+                } else if (d.ZB == 1) {
+                  d.ZB = '是';
+                } else {
+                  d.ZB = '未知';
+                }
+                array.push([
+                  d.HIS_HIGHVALUE_NO,
+                  d.LINE_NUMBER,
+                  d.HIS_CODE_TYPE,
+                  d.HIS_ITEM_DESCRIPTION,
+                  d.HIS_ITEM_NUMBER,
+                  d.HIS_UOM,
+                  d.HIS_PRICE_DES,
+                  d.HIS_UNIT_PRICE,
+                  this.$util.toDateString(d.HIS_PRICE_START,'yyyy-MM-dd'),
+                  this.$util.toDateString(d.HIS_PRICE_END,'yyyy-MM-dd'),
+                  d.HIS_XMFL,
+                  d.HIS_ITEM_SPEC,
+                  d.HIS_STAND_VALUE,
+                  d.HIS_GHFY_BQ,
+                  d.HIS_SF_DXM_BS,
+                  d.HIS_SYFW,
+                  d.HIS_ISACTIVE,
+                  d.HIS_ISGZ_DZ == 1 ? '是' : '否',
+                  d.HIS_HC_NUMBER,
+                  d.HIS_NBM,
+                  d.HIS_CLBS,
+                  d.HIS_SCS,
+                  d.HIS_SFYJ,
+                  d.HIS_ZCZ_NUMBER,
+                  d.HIS_ITEM_DESCRIPTION,
+                  d.HIS_EXTEND,
+                  d.HIS_LCFW == 1 ? '是' : '否',
+                  d.HIS_LCFW_TYPE,
+                  d.HIS_YBTYPE
+                  // this.$util.toDateString(d.createTime)
+                ]);
+              });
+              writeFile(
+                {
+                  SheetNames: ['Sheet1'],
+                  Sheets: {
+                    Sheet1: utils.aoa_to_sheet(array)
+                  }
+                },
+                '医保审核单.xlsx'
+              );
+              // exportToExcel(res.result, this.columns, '医保审核单');
               this.$message.success('导出成功');
             })
             .catch((e) => {
-              loading.close();
               this.$message.error(e.message);
+            })
+            .finally(() => {
+              loading.close();
             });
         });
       }

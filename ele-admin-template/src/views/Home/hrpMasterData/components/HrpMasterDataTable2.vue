@@ -36,24 +36,11 @@
           //   }
           // },
           {
-            prop: 'HEADER_IFACE_ID',
-            label: '头表ID',
-            width: 80,
-            align: 'center',
-            search: true,
-            fieldProps: {
-              placeholder: '请输入头表ID'
-            }
-          },
-          {
             prop: 'ITEM_NUMBER',
             label: '物料编码', // 更新
             width: 120,
             align: 'center',
             search: true,
-            fieldProps: {
-              placeholder: '请输入物料编号'
-            }
           },
           {
             prop: 'ITEM_DESCRIPTION',
@@ -62,9 +49,6 @@
             align: 'center',
             showOverflowTooltip: true,
             search: true,
-            fieldProps: {
-              placeholder: '请输入物料描述'
-            }
           },
           {
             prop: 'STAND_VALUE',
@@ -230,7 +214,7 @@
             width: 120,
             align: 'center',
             formatter: (row) => {
-              return this.$moment(row.XK_DATE).format('YYYY-MM-DD');
+              return this.$moment(row.XY_DATE).format('YYYY-MM-DD');
             }
           },
           {
