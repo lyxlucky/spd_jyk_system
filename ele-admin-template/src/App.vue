@@ -72,10 +72,12 @@
   .ele-box .el-table .el-table__body-wrapper {
     flex: 1;
     overflow: auto;
+    flex-basis: 0;
     max-height: calc(100vh - 200px); // 添加最大高度限制
   }
   .ele-box .ele-pro-table .el-pagination {
     margin-top: 7px !important;
-    padding: 10px 0; // 使用padding替代flex-basis
+    padding: 0px 0; // 使用padding替代flex-basis
+    box-sizing: border-box;
   }
 </style>
