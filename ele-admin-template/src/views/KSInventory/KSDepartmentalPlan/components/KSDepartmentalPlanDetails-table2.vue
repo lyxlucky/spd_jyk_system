@@ -476,7 +476,7 @@
         sum: 0,
         rowData: null,
         QuanityDetailDialogVisible: false,
-        quanityInlineCurrent: null,
+        quanityInlineCurrent: null
       };
     },
     methods: {
@@ -536,7 +536,8 @@
             };
             this.datasourceList = res.result;
             this.sumNumber = res.sumNumber;
-            this.sumAount = res.sumAount;
+            this.sumAount = Number(res.sumAount).toFixed(2);
+
             return tData;
           }
         );
