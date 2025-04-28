@@ -196,6 +196,7 @@
       async datasource({ page, limit, where, order }) {
         console.log(this.ApplyTempTableData);
         where.BDSZ_ZQSJ_ID = this.ApplyTempTableData?.ID;
+        where.SSBH = where.SSBH || this.ApplyTempTableData?.SSBH;
         let data = getBdszZgsjMainPsDel({ page, limit, where, order }).then(
           (res) => {
             var tData = {
