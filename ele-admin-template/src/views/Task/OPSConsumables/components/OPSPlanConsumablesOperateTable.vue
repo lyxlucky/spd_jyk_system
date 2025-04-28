@@ -4,7 +4,7 @@
       ref="table"
       size="mini"
       :columns="columns"
-      height="50vh"
+      width="90%"
       @selection-change="onSelectionChange"
       highlight-current-row
       :datasource="datasource"
@@ -58,12 +58,6 @@
             align: 'center',
             fixed: 'left'
           },
-          // {
-          //   prop: 'Name',
-          //   label: '库区名称',
-          //   align: 'center',
-          //   width: 120
-          // },
           {
             prop: 'Varietie_Code_New',
             label: '品种编码',
@@ -160,7 +154,7 @@
       datasource({ page, limit, where }) {
         // 这里不实现具体方法，仅返回空数据结构
         where.varietie = this.currentRow.VARIETIE_CODE;
-        return searchVarietieBatchIds({ where })
+        return searchVarietieBatchIds({ page, limit, where })
           .then((data) => {
             const resultList = (data.result || []).map((item) => ({
               ...item,

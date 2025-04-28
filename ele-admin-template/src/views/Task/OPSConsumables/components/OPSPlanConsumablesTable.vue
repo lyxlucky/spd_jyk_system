@@ -133,13 +133,6 @@
             width: 80
           },
           {
-            prop: 'APPROVAL_NUMBER',
-            label: '注册证号',
-            align: 'center',
-            width: 150,
-            showOverflowTooltip: true
-          },
-          {
             prop: 'MANUFACTURING_ENT_NAME',
             label: '生产企业',
             align: 'center',
@@ -163,6 +156,13 @@
             label: '定数包库存',
             align: 'center',
             width: 100
+          },
+          {
+            prop: 'APPROVAL_NUMBER',
+            label: '注册证号',
+            align: 'center',
+            width: 150,
+            showOverflowTooltip: true
           },
           {
             slot: 'operate',

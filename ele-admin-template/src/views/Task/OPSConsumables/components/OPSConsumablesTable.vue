@@ -173,7 +173,7 @@
         // 术间选项
         MZZYOptions: [
           { value: '', label: '全部' },
-          { value: '1', label: '已提交' },
+          { value: '1', label: '新增' },
           { value: '2', label: '已拣配' },
           { value: '3', label: '已交接' },
           { value: '4', label: '已完成' }
@@ -207,7 +207,7 @@
             formatter: (row, column, cellValue) => {
               switch (cellValue) {
                 case '1':
-                  return '已提交';
+                  return '新增';
                 case '2':
                   return '已拣配';
                 case '3':
@@ -260,7 +260,7 @@
           }
         ],
         // 分页配置
-        pageSize: 10,
+        pageSize: 100,
         pageSizes: [10, 20, 50, 100]
       };
     },
