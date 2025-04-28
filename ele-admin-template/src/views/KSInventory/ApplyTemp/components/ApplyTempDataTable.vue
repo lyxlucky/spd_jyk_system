@@ -1,5 +1,5 @@
 <template>
-  <div class="ele-body">
+  <div>
     <!-- 数据表格 -->
     <!-- 自定义指令实现当pageSizes改变时触发 -->
     <!-- :pageSize="pageSize" :pageSizes="pageSizes" -->
@@ -16,9 +16,10 @@
     <ele-pro-table
       size="mini"
       ref="table"
-      height="80vh"
+      height="60vh"
       highlight-current-row
       :stripe="true"
+      :rowClickCheckedIntelligent="false"
       :rowClickChecked="true"
       :pageSize="pageSize"
       :pageSizes="pageSizes"
@@ -46,7 +47,7 @@
       <!-- 操作列 -->
       <template v-slot:TempletQty="{ row }">
         <el-input
-          style="width: 120px"
+          style="width: 90%"
           v-model="row.TempletQty"
           :min="0"
           :max="999999999"
@@ -120,7 +121,7 @@
             label: '模板申领数量',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 160,
+            minWidth: 140,
             fixed: 'left'
           },
           // {
@@ -143,7 +144,7 @@
             // sortable: 'custom',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 130
+            minWidth: 80
           },
           {
             prop: 'StockQty',
@@ -158,19 +159,18 @@
             label: '平均使用数量',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 110
+            minWidth: 90
           },
           {
             prop: 'Day_Consume_Qty2',
             label: '上月使用数量',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 110
+            minWidth: 90
           },
           {
             prop: 'VarName',
             label: '品种全称',
-
             align: 'center',
             showOverflowTooltip: true,
             minWidth: 180
@@ -180,7 +180,7 @@
             label: '型号/规格',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 180
+            width: 90
           },
           {
             prop: 'Manufacturing',
@@ -194,14 +194,14 @@
             label: '供应商',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 180
+            minWidth: 150
           },
           {
             prop: 'Unit',
             label: '单位',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 80
+            minWidth: 60
           },
           {
             prop: 'Price',
@@ -236,15 +236,7 @@
             label: '品种编码',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 130
-          },
-          {
-            prop: 'PAG_TYPE',
-            label: '包装规格',
-
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 110
+            minWidth: 120
           },
           {
             prop: 'ZB',
@@ -252,7 +244,7 @@
 
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 90,
+            minWidth: 70,
             formatter: (row, column, cellValue) => {
               if (cellValue == 0) {
                 return '否';
@@ -262,6 +254,13 @@
                 return '未知';
               }
             }
+          },
+          {
+            prop: 'PAG_TYPE',
+            label: '包装规格',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 110
           },
           {
             // prop: 'TempletQty',

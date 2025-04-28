@@ -302,8 +302,11 @@
     <el-dialog
       title="授权品种目录"
       :visible.sync="ApplyTempPage"
-      width="95%"
+      width="98%"
+      :close-on-click-modal="false"
       append-to-body
+      top="1vh"
+      class="apply-temp"
     >
       <!-- <AuthVarTable :dialogTableVisible="dialogTableVisible" :ApplyTempTableDataID="ApplyTempTableDataID" /> -->
       <ApplyTemp
@@ -331,6 +334,14 @@
     </el-dialog>
   </el-form>
 </template>
+
+<style scoped lang="scss">
+  .apply-temp {
+    :deep(.el-dialog__body) {
+      padding: 0;
+    }
+  }
+</style>
 
 <script>
   import { HOME_HP } from '@/config/setting';

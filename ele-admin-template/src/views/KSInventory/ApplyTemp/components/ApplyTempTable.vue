@@ -1,8 +1,9 @@
 <template>
-  <div class="ele-body">
+  <div>
     <ApplyTempSearch @search="reload" :rowData="current" />
     <!-- 数据表格 -->
     <ele-pro-table
+      size="mini"
       highlight-current-row
       @current-change="onCurrentChange"
       :row-class-name="tableRowClassName"
