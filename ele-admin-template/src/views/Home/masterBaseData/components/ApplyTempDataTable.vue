@@ -292,7 +292,7 @@
             label: '材料标志',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 80,
+            minWidth: 80
             // formatter: (row, column, cellValue) => {
             //   if (cellValue == 1) {
             //     return '是';
@@ -518,8 +518,8 @@
                   d.HIS_UOM,
                   d.HIS_PRICE_DES,
                   d.HIS_UNIT_PRICE,
-                  this.$util.toDateString(d.HIS_PRICE_START,'yyyy-MM-dd'),
-                  this.$util.toDateString(d.HIS_PRICE_END,'yyyy-MM-dd'),
+                  this.$util.toDateString(d.HIS_PRICE_START, 'yyyy-MM-dd'),
+                  this.$util.toDateString(d.HIS_PRICE_END, 'yyyy-MM-dd'),
                   d.HIS_XMFL,
                   d.HIS_ITEM_SPEC,
                   d.HIS_STAND_VALUE,

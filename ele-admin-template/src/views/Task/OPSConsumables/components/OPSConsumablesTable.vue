@@ -167,7 +167,7 @@
         // 查询参数
         where: {
           dateRange: [],
-          MZZY: '1',
+          MZZY: '-1',
           patientOrSurgeryName: ''
         },
         // 术间选项
@@ -176,7 +176,8 @@
           { value: '1', label: '新增' },
           { value: '2', label: '已拣配' },
           { value: '3', label: '已交接' },
-          { value: '4', label: '已完成' }
+          { value: '4', label: '已完成' },
+          { value: '-1', label: '已交接/已完成' }
         ],
         // 表格列配置
         columns: [
@@ -300,6 +301,7 @@
       handleRowClick(row, column, event) {
         this.currentRow = row;
         this.$bus.$emit('OPSConsumablesTableRowClick', row);
+        this.$emit('TableRow1', row);
       },
       // 表格数据源
       datasource({ page, limit, where }) {

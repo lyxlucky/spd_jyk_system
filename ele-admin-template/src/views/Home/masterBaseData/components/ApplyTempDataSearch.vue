@@ -221,9 +221,8 @@
         // }
         const loading = this.$messageLoading('导入中...');
         var formData = new FormData(document.getElementById('CreateBydFpform'));
-
         ImportSpdMainsjLinesIfaceExcel(formData)
-        // ImportSpdHisMainsjLinesIfaceExcel(formData)
+          // ImportSpdHisMainsjLinesIfaceExcel(formData)
           .then((res) => {
             this.dialogTableVisible2 = false;
             this.$message.success(res.msg);
@@ -239,6 +238,7 @@
     },
     watch: {
       ApplyTempTableDataSearch() {
+        console.log(this.ApplyTempTableDataSearch);
         this.TEMPLET_MAIN_ID = this.ApplyTempTableDataSearch?.ID;
       },
       dialogTableVisible() {
