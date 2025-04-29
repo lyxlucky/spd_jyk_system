@@ -2,12 +2,18 @@
   <div class="ele-box">
     <el-row :gutter="0" type="flex" style="height: 100%">
       <el-col :span="8">
-        <OPSConsumablesTable @changeMZZY="changeMZZY"></OPSConsumablesTable>
+        <OPSConsumablesTable
+          @changeMZZY="changeMZZY"
+          @TableRow1="TableRow1"
+        ></OPSConsumablesTable>
       </el-col>
       <el-col :span="16">
         <el-row :gutter="0" style="height: 50%">
           <el-col :span="24" style="height: 100%">
-            <OPSPlanConsumablesTable :MZZY="MZZY" />
+            <OPSPlanConsumablesTable
+              :MZZY="MZZY"
+              :TableRowData1="TableRowData1"
+            />
           </el-col>
         </el-row>
         <el-row :gutter="0" style="height: 50%">
@@ -43,12 +49,16 @@
     },
     data() {
       return {
-        MZZY: ''
+        MZZY: '',
+        TableRowData1: {}
       };
     },
     methods: {
       changeMZZY(val) {
         this.MZZY = val;
+      },
+      TableRow1(val) {
+        this.TableRowData1 = val;
       }
     }
   };

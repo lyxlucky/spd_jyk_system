@@ -25,6 +25,9 @@
       @row-click="handleRowClick"
       highlight-current-row
       :datasource="datasource"
+      :selection.sync="selection"
+      :rowClickCheckedIntelligent="false"
+      :rowClickChecked="true"
     >
       <template v-slot:toolbar>
         <el-form :inline="true" size="mini">
@@ -38,6 +41,23 @@
               size="mini"
               @click="reload"
               >查询</el-button
+            >
+          </el-form-item>
+          <el-form-item>
+            <el-button
+              :disabled="isEnabld"
+              icon="el-icon-circle-check"
+              type="primary"
+              @click="handleSelectAdd"
+              >勾选添加</el-button
+            >
+          </el-form-item>
+          <el-form-item>
+            <el-button
+              type="primary"
+              :disabled="!selection.length"
+              @click="handleConfirmAdd"
+              >确认添加</el-button
             >
           </el-form-item>
         </el-form>
@@ -73,6 +93,9 @@
         :currentRow="currentRow"
       ></OPSPlanConsumablesOperateTable>
     </el-dialog>
+    <SelectionAddDialog
+      :visible.sync="selectionDialogVisible"
+    ></SelectionAddDialog>
   </div>
 </template>
 
@@ -82,16 +105,22 @@
     addBdszZqsjMainPsDel
   } from '@/api/Task/OPSConsumables';
   import OPSPlanConsumablesOperateTable from './OPSPlanConsumablesOperateTable.vue';
+  import SelectionAddDialog from '@/views/Task/SurgicalVerification/components/SelectionAddDialog.vue';
   export default {
     name: 'OPSPlanConsumablesTable',
     props: {
       MZZY: {
         type: String,
         default: ''
+      },
+      TableRowData1: {
+        type: Object,
+        default: null
       }
     },
     components: {
-      OPSPlanConsumablesOperateTable
+      OPSPlanConsumablesOperateTable,
+      SelectionAddDialog
     },
     data() {
       return {
@@ -99,7 +128,15 @@
         currentRow: {},
         where: {},
         OPSDeliveryConsumablesTableData: [],
+        selectionDialogVisible: false,
+        selection: [],
         columns: [
+          {
+            type: 'selection',
+            width: 55,
+            align: 'center',
+            fixed: 'left'
+          },
           {
             prop: 'VARIETIE_CODE_NEW',
             label: '品种编码',
@@ -149,13 +186,19 @@
             prop: 'SH_QTY',
             label: '散货库存',
             align: 'center',
-            width: 100
+            width: 90
           },
           {
             prop: 'DEF_QTY',
             label: '定数包库存',
             align: 'center',
-            width: 100
+            width: 90
+          },
+          {
+            prop: 'PS_COUNT',
+            label: '数量',
+            align: 'center',
+            width: 90
           },
           {
             prop: 'APPROVAL_NUMBER',
@@ -163,22 +206,28 @@
             align: 'center',
             width: 150,
             showOverflowTooltip: true
-          },
-          {
-            slot: 'operate',
-            label: '操作',
-            align: 'center',
-            width: 200
           }
+          // {
+          //   slot: 'operate',
+          //   label: '操作',
+          //   align: 'center',
+          //   width: 200
+          // }
         ]
       };
     },
     methods: {
+      handleSelectAdd() {
+        this.selectionDialogVisible = true;
+      },
       datasource({ page, limit, where }) {
         // 这里不实现具体方法，仅返回空数据结构
         where.MZZY = this.MZZY;
+        console.log(this.TableRowData1);
+        where.SSBH = this.TableRowData1.SSBH;
         return getBdszgsjMainDel({ where, page, limit })
           .then((data) => {
+            console.log(data.data);
             return {
               list: data.data || [],
               count: data.total
@@ -268,12 +317,53 @@
             });
           })
           .finally(() => {});
+      },
+      handleConfirmAdd() {
+        if (this.selection.length === 0) {
+          this.$message({
+            message: '请至少选择一条数据',
+            type: 'warning'
+          });
+          return;
+        }
+
+        const loading = this.$messageLoading('处理中...');
+        const jsonData = this.selection.map((item) => {
+          item.BDSZ_ZQSJ_ID = item.ID;
+          return item;
+        });
+
+        addBdszZqsjMainPsDel(jsonData)
+          .then((res) => {
+            this.$message.success(res.msg || '添加成功');
+            this.reload(); // 刷新表格数据
+          })
+          .catch((err) => {
+            this.$message.error(err.message || '添加失败');
+          })
+          .finally(() => {
+            loading.close();
+            this.selection = []; // 清空选择
+          });
+      }
+    },
+    computed: {
+      isEnabld() {
+        console.log(this.TableRowData1);
+        return this?.TableRowData1?.SSBH ? false : true;
+      }
+    },
+    watch: {
+      TableRowData1() {
+        this.$bus.$emit('AdvanceReceiptNumberTableCurrent', this.TableRowData1);
       }
     },
     mounted() {
       this.$bus.$on('OPSConsumablesTableRowClick', (row) => {
         //this.currentRow = row;
-        this.reload({ SSBH: row.SSBH });
+        this.$nextTick(() => {
+          this.reload({ SSBH: row.SSBH });
+        });
       });
       this.$bus.$on('OPSDeliveryConsumablesTableData', (row) => {
         this.OPSDeliveryConsumablesTableData = row;

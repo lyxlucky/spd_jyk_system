@@ -6,6 +6,7 @@ export async function getBdSzYyHisSs(params) {
   const formatData = {
     Token: sessionStorage.getItem(TOKEN_STORE_NAME),
     MZZY: params.where.MZZY == '-1' ? '' : params.where.MZZY ? params.where.MZZY : '3',
+    SSFJ: params.where.SSFJ || '',
     condition: params.where.condition || '',
     page: params.page || 1,
     size: params.limit || 10

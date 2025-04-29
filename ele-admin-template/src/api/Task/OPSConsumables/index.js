@@ -140,6 +140,9 @@ export async function searchVarietieBatchIds(params) {
  * @returns {Promise} 返回请求结果
  */
 export async function addBdszZqsjMainPsDel(data) {
+  data.forEach((item) => {
+    item.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+  });
   let res = await request.post('/DeptPlanTransfer/AddBdszZqsjMainPsDel', data);
   if (res.data.code == 200) {
     return res.data;

@@ -176,6 +176,12 @@
             width: 70
           },
           {
+            prop: 'SSFJ',
+            label: '术间',
+            align: 'center',
+            width: 70
+          },
+          {
             prop: 'SSTH',
             label: '手术台号',
             align: 'center',
@@ -262,7 +268,6 @@
       onCurrentChange(current) {
         this.current = current;
         this.$emit('getCurrent', current);
-        this.$bus.$emit('AdvanceReceiptNumberTableCurrent', current);
       },
       tableRowClassName({ row, rowIndex }) {
         if (row.CommonState == 1) {
