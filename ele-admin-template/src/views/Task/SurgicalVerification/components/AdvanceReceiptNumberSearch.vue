@@ -8,83 +8,92 @@
     size="mini"
     :inline="true"
   >
-    <el-form-item>
-      <el-input
-        size="mini"
-        clearable
-        v-model="where.condition"
-        style="width: 180px"
-        placeholder="请输入手术编号或住院号"
-      />
-    </el-form-item>
-    <el-form-item>
-      <el-input
-        size="mini"
-        clearable
-        v-model="where.SSFJ"
-        style="width: 120px"
-        placeholder="请输入术间"
-      />
-    </el-form-item>
-    <el-form-item>
-      <el-select
-        @change="search"
-        v-model="where.MZZY"
-        size="mini"
-        placeholder=""
-        style="width: 100px"
-      >
-        <el-option label="全部" value="-1"></el-option>
-        <el-option label="已提交" value="1"></el-option>
-        <el-option label="已拣配" value="2"></el-option>
-        <el-option label="已交接" value="3"></el-option>
-        <el-option label="已完成" value="4"></el-option>
-      </el-select>
-    </el-form-item>
-    <el-form-item>
-      <el-button
-        size="mini"
-        type="primary"
-        icon="el-icon-search"
-        class="ele-btn-icon"
-        @click="search"
-      >
-        查询
-      </el-button>
-    </el-form-item>
+    <el-row>
+      <el-col>
+        <el-form-item>
+          <el-input
+            size="mini"
+            clearable
+            v-model="where.condition"
+            style="width: 180px"
+            placeholder="请输入手术编号或住院号"
+          />
+        </el-form-item>
+        <el-form-item>
+          <el-select
+            @change="search"
+            v-model="where.MZZY"
+            size="mini"
+            placeholder=""
+            style="width: 100px"
+          >
+            <el-option label="全部" value="ALL"></el-option>
+            <el-option label="已提交" value="1"></el-option>
+            <el-option label="已拣配" value="2"></el-option>
+            <el-option label="已交接" value="3"></el-option>
+            <el-option label="已完成" value="4"></el-option>
+            <el-option label="已交接/已完成" value="-1"></el-option>
+          </el-select>
+        </el-form-item>
 
-    <el-form-item>
-      <el-button
-        size="mini"
-        type="primary"
-        icon="el-icon-check"
-        class="ele-btn-icon"
-        @click="approve"
-      >
-        护士审批
-      </el-button>
-    </el-form-item>
-    <el-form-item>
-      <el-button
-        size="mini"
-        type="primary"
-        class="ele-btn-icon"
-        icon="el-icon-reading"
-        @click="catDefNoPkgCode"
-      >
-        查看定数码标签
-      </el-button>
-    </el-form-item>
+        <el-form-item>
+          <el-input
+            size="mini"
+            clearable
+            v-model="where.SSFJ"
+            style="width: 120px"
+            placeholder="请输入术间"
+          />
+        </el-form-item>
 
-    <el-form-item>
-      <el-button
-        type="primary"
-        size="mini"
-        icon="el-icon-thumb"
-        @click="handleScanQrCode"
-        >扫码交接</el-button
-      >
-    </el-form-item>
+        <el-form-item>
+          <el-button
+            size="mini"
+            type="primary"
+            icon="el-icon-search"
+            class="ele-btn-icon"
+            @click="search"
+          >
+            查询
+          </el-button>
+        </el-form-item>
+      </el-col>
+
+      <el-col>
+        <el-form-item>
+          <el-button
+            size="mini"
+            type="primary"
+            icon="el-icon-check"
+            class="ele-btn-icon"
+            @click="approve"
+          >
+            护士审批
+          </el-button>
+        </el-form-item>
+        <el-form-item>
+          <el-button
+            size="mini"
+            type="primary"
+            class="ele-btn-icon"
+            icon="el-icon-reading"
+            @click="catDefNoPkgCode"
+          >
+            查看定数码标签
+          </el-button>
+        </el-form-item>
+
+        <el-form-item>
+          <el-button
+            type="primary"
+            size="mini"
+            icon="el-icon-thumb"
+            @click="handleScanQrCode"
+            >扫码交接</el-button
+          >
+        </el-form-item>
+      </el-col>
+    </el-row>
 
     <!-- <el-row :gutter="5" style="margin-top: 5px">
       <el-col v-bind="styleResponsive ? { lg: 14, md: 12 } : { span: 12 }">
@@ -168,7 +177,7 @@
     data() {
       // 默认表单数据
       const defaultWhere = {
-        MZZY: '3',
+        MZZY: '-1',
         condition: '',
         SSFJ: ''
       };
