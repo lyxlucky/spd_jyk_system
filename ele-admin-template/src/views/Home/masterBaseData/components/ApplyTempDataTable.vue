@@ -43,6 +43,16 @@
         </el-button> -->
       </template>
 
+      <template v-slot:action="{ row }">
+        <el-button
+          size="mini"
+          icon="el-icon-edit"
+          @click="handleEditCurrentRow(row)"
+          type="primary"
+          >编辑</el-button
+        >
+      </template>
+
       <!-- 操作列 -->
       <template v-slot:TempletQty="{ row }">
         <el-input
@@ -55,6 +65,32 @@
         />
       </template>
     </ele-pro-table>
+
+    <el-dialog
+      title="请选择一个分类"
+      :visible.sync="typeDialogVisible"
+      width="30%"
+      :before-close="handleClose"
+    >
+      <el-select
+        v-model="typeSelectedValue"
+        placeholder="请选择分类"
+        style="width: 100%"
+      >
+        <el-option label="甲类" value="甲类"></el-option>
+        <el-option label="乙类" value="乙类"></el-option>
+        <el-option label="自费" value="自费"></el-option>
+      </el-select>
+
+      <span slot="footer" class="dialog-footer">
+        <el-button size="mini" @click="typeDialogVisible = false"
+          >取&nbsp;消</el-button
+        >
+        <el-button size="mini" type="primary" @click="handleConfirm"
+          >确&nbsp;定</el-button
+        >
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -67,7 +103,10 @@
     SerachTempletDeta,
     DeleteTempletDeta
   } from '@/api/KSInventory/ApplyTemp';
-  import { GetSpdMainsjLinesIface } from '@/api/Home/masterBaseData';
+  import {
+    GetSpdMainsjLinesIface,
+    UpdateYbTypeById
+  } from '@/api/Home/masterBaseData';
   import { GetSpdHisMainsjLinesIface } from '@/api/Home/BJRMPriceAudit';
   export default {
     name: 'ApplyTempDataTable',
@@ -125,6 +164,7 @@
           // },
           {
             slot: 'action',
+            prop: 'action',
             label: '操作',
             align: 'center',
             showOverflowTooltip: true,
@@ -265,13 +305,6 @@
             align: 'center',
             showOverflowTooltip: true,
             minWidth: 100,
-            formatter: (row, column, cellValue) => {
-              if (cellValue == 1) {
-                return '是';
-              } else {
-                return '否';
-              }
-            }
           },
           {
             prop: 'HIS_HC_NUMBER',
@@ -292,14 +325,7 @@
             label: '材料标志',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 80,
-            // formatter: (row, column, cellValue) => {
-            //   if (cellValue == 1) {
-            //     return '是';
-            //   } else {
-            //     return '是';
-            //   }
-            // }
+            minWidth: 80
           },
           {
             prop: 'HIS_SCS',
@@ -342,13 +368,6 @@
             align: 'center',
             showOverflowTooltip: true,
             minWidth: 80,
-            formatter: (row, column, cellValue) => {
-              if (cellValue == 1) {
-                return '是';
-              } else {
-                return '是';
-              }
-            }
           },
           {
             prop: 'HIS_LCFW_TYPE',
@@ -378,10 +397,61 @@
         // 是否显示导入弹窗
         showImport: false,
         // datasource: [],
-        data: []
+        data: [],
+        typeDialogVisible: false,
+        typeSelectedValue: ''
       };
     },
     methods: {
+      handleClose() {
+        this.typeSelectedValue = '';
+      },
+      handleConfirm() {
+        const loading = this.$messageLoading('正在修改...');
+        UpdateYbTypeById({
+          ID: this.current.LINE_IFACE_ID,
+          PARENTID : this.current.HEADER_IFACE_ID,
+          YbType: this.typeSelectedValue
+        })
+          .then((res) => {
+            this.$message.success(res?.msg);
+          })
+          .catch((err) => {
+            this.$message.error(err?.msg);
+          })
+          .finally(() => {
+            loading.close();
+            this.reload();
+            this.typeDialogVisible = false;
+          });
+      },
+
+      handleEditCurrentRow(row) {
+        //二次确认
+        //prompt
+        this.typeSelectedValue = row.HIS_YBTYPE;
+        this.typeDialogVisible = true;
+        this.current = row;
+        // this.$prompt('请输入医保分类', '提示', {
+        //   type: 'warning',
+        //   // 限制只能输入 甲类 乙类 自费,
+        //   inputPattern: /^(甲类|乙类|自费)$/,
+        //   inputErrorMessage: '请输入甲类 乙类 自费'
+        // })
+        //   .then(({ value }) => {
+        //     UpdateYbTypeById({ ID: row.ID, YbType: value })
+        //       .then((res) => {
+        //         this.$message.success(res?.msg);
+        //       })
+        //       .catch((err) => {
+        //         this.$message.error(err?.msg);
+        //       });
+        //   })
+        //   .finally(() => {
+        //     this.reload();
+        //   });
+      },
+
       showDialogTableVisible() {
         this.$refs.Apply.showDialogTableVisible();
       },
@@ -460,7 +530,6 @@
           where = data;
           where.HEADER_IFACE_ID = this.ApplyTempTableData?.HEADER_IFACE_ID;
           // GetSpdMainsjLinesIface({
-
           GetSpdHisMainsjLinesIface({
             page: 1,
             limit: 999999,
@@ -470,6 +539,8 @@
             .then((res) => {
               const array = [
                 [
+                  '主表ID',
+                  '明细ID',
                   '导入批次号',
                   '导入顺序号',
                   '编码类型',
@@ -510,6 +581,8 @@
                   d.ZB = '未知';
                 }
                 array.push([
+                  d.HEADER_IFACE_ID,
+                  d.LINE_IFACE_ID,
                   d.HIS_HIGHVALUE_NO,
                   d.LINE_NUMBER,
                   d.HIS_CODE_TYPE,
@@ -518,8 +591,8 @@
                   d.HIS_UOM,
                   d.HIS_PRICE_DES,
                   d.HIS_UNIT_PRICE,
-                  this.$util.toDateString(d.HIS_PRICE_START,'yyyy-MM-dd'),
-                  this.$util.toDateString(d.HIS_PRICE_END,'yyyy-MM-dd'),
+                  this.$util.toDateString(d.HIS_PRICE_START, 'yyyy-MM-dd'),
+                  this.$util.toDateString(d.HIS_PRICE_END, 'yyyy-MM-dd'),
                   d.HIS_XMFL,
                   d.HIS_ITEM_SPEC,
                   d.HIS_STAND_VALUE,
@@ -530,13 +603,13 @@
                   d.HIS_ISGZ_DZ == 1 ? '是' : '否',
                   d.HIS_HC_NUMBER,
                   d.HIS_NBM,
-                  d.HIS_CLBS,
+                  d.HIS_CLBS ?? '是',
                   d.HIS_SCS,
                   d.HIS_SFYJ,
                   d.HIS_ZCZ_NUMBER,
                   d.HIS_ITEM_DESCRIPTION,
                   d.HIS_EXTEND,
-                  d.HIS_LCFW == 1 ? '是' : '否',
+                  d.HIS_LCFW,
                   d.HIS_LCFW_TYPE,
                   d.HIS_YBTYPE
                   // this.$util.toDateString(d.createTime)

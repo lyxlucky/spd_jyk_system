@@ -263,11 +263,14 @@
       exportData(data) {
         const loading = this.$messageLoading('正在导出数据...');
         this.$refs.table.doRequest(({ where, order }) => {
-          where = data;
+          const formatWhere = {
+            ...data,
+            WJ_SP_STATE: 1
+          };
           GetSpdMainsjHeaderIface({
             page: 1,
             limit: 999999,
-            where: where,
+            where: formatWhere,
             order: order
           })
             .then((res) => {

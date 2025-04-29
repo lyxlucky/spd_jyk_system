@@ -32,65 +32,7 @@
       <template v-slot:toolbar>
         <!-- 搜索表单 -->
       </template>
-
-      <template v-slot:State="{ row }">
-        <el-tag v-if="row.State == 0" type="success">新增</el-tag>
-        <el-tag v-if="row.State == 1">已提交</el-tag>
-        <el-tag v-if="row.State == 2" type="primary">配送中</el-tag>
-        <el-tag v-if="row.State == 5" type="primary" color="#2ee693"
-          >已审核</el-tag
-        >
-        <el-tag
-          v-if="row.State == 10"
-          type="primary"
-          color="#e60000"
-          style="color: white"
-          >强制结束</el-tag
-        >
-        <el-tag
-          v-if="
-            (row.State == 6 || row.State == 4) &&
-            row.SUM_Left_Apply_Qty == row.SUM_Apply_Qty
-          "
-          type="success"
-          >已审批</el-tag
-        >
-        <el-tag
-          v-if="
-            row.SUM_Left_Apply_Qty > 0 &&
-            row.SUM_Left_Apply_Qty != row.SUM_Apply_Qty
-          "
-          type="danger"
-          >未收全</el-tag
-        >
-        <el-tag v-if="row.SUM_Left_Apply_Qty == 0" type="success"
-          >已收全</el-tag
-        >
-        <!-- <el-tag v-for="(item) in row" :key="item.PlanNum" size="mini" type="primary" :disable-transitions="true">
-          {{ item.State }}
-        </el-tag> -->
-      </template>
-
-      <template v-slot:CommonState="{ row }">
-        <el-tag v-if="row.CommonState == 0" type="success">新增</el-tag>
-        <el-tag v-if="row.CommonState == 1">已提交</el-tag>
-      </template>
-
-      <!-- 操作列 -->
-      <template v-slot:action="{ row }">
-        <!-- <el-button type="primary" size="small" @click="search(row)">设置为专属模板</el-button> -->
-        <el-popconfirm
-          class="ele-action"
-          title="确定要删除此用户吗？"
-          @confirm="remove(row)"
-        >
-          <template v-slot:reference>
-            <el-link type="danger" :underline="false" icon="el-icon-delete">
-              删除
-            </el-link>
-          </template>
-        </el-popconfirm>
-      </template>
+      
     </ele-pro-table>
     <UserEdit :visible.sync="showEdit" :data="selection" @done="reload" />
   </div>

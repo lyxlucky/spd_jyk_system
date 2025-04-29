@@ -187,6 +187,9 @@
             align: 'center',
             showOverflowTooltip: true,
             minWidth: 180,
+            formatter: (row, column, cellValue) => {
+              return this.$moment(cellValue).format('YYYY-MM-DD');
+            }
           }
           // {
           //   columnKey: 'action',

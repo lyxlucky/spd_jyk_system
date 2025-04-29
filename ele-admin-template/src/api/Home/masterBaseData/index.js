@@ -112,3 +112,22 @@ export async function BatchPushChargeItemToHis(data) {
     return Promise.reject(new Error(res.data.msg));
   }
 }
+
+
+export async function UpdateYbTypeById(data) {
+  const formatData = {
+    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+    ID: data.ID,
+    PARENTID: data.PARENTID,
+    YbType: data.YbType,
+  };
+  const res = await request.post(
+    '/PekingApplication/UpdateYbTypeById',
+    formatData
+  );
+  if (res.data.code == 200) {
+    return res.data;
+  } else {
+    return Promise.reject(new Error(res.data.msg));
+  }
+}

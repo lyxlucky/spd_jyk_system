@@ -119,6 +119,7 @@
           // },
           {
             slot: 'action',
+            prop: 'action',
             label: '操作',
             align: 'center',
             showOverflowTooltip: true,
@@ -252,13 +253,6 @@
             align: 'center',
             showOverflowTooltip: true,
             minWidth: 80,
-            // formatter: (row, column, cellValue) => {
-            //   if (cellValue == 1) {
-            //     return '是';
-            //   } else {
-            //     return '否';
-            //   }
-            // }
           },
           {
             prop: 'HIS_ISGZ_DZ',
@@ -294,9 +288,6 @@
             align: 'center',
             showOverflowTooltip: true,
             minWidth: 80,
-            formatter: (row, column, cellValue) => {
-              return '是';
-            }
           },
           {
             prop: 'HIS_SCS',
@@ -341,14 +332,6 @@
             align: 'center',
             showOverflowTooltip: true,
             minWidth: 80,
-            formatter: (row, column, cellValue) => {
-              if (cellValue == 1) {
-                return '是';
-              } else {
-                return '是';
-                // return '否';
-              }
-            }
           },
           {
             prop: 'HIS_LCFW_TYPE',
@@ -469,12 +452,15 @@
             order: order
           })
             .then((res) => {
-              loading.close();
+              if (res.result.length == 0) {
+                this.$message.error('没有数据可导出');
+                return;
+              }
               const array = [
                 [
-                  // '主表ID',
-                  // '明细ID',
-                  '申请单号',
+                  '主表ID',
+                  '明细ID',
+                  '导入批次号',
                   '编码类型',
                   '项目名称',
                   '物料编码',
@@ -523,26 +509,29 @@
                 } else if (d.HIS_LCFW == 1) {
                   d.HIS_LCFW = '是';
                 } else {
-                  d.HIS_LCFW = '未知';
+                  d.HIS_LCFW = '是';
                 }
-
-                d.HIS_PRICE_START = this.$moment(d.HIS_PRICE_START).format(
-                  'YYYY-MM-DD'
-                );
-                d.HIS_PRICE_END = this.$moment(d.HIS_PRICE_END).format(
-                  'YYYY-MM-DD'
-                );
+                // d.HIS_PRICE_START = this.$moment(d.HIS_PRICE_START).format(
+                //   'YYYY-MM-DD'
+                // );
+                // d.HIS_PRICE_END = this.$moment(d.HIS_PRICE_END).format(
+                //   'YYYY-MM-DD'
+                // );
                 array.push([
-                  // d.HEADER_IFACE_ID,
-                  // d.LINE_IFACE_ID,
+                  d.HEADER_IFACE_ID,
+                  d.LINE_IFACE_ID,
                   d.HIS_HIGHVALUE_NO,
                   d.HIS_CODE_TYPE,
                   d.HIS_ITEM_DESCRIPTION,
                   d.HIS_ITEM_NUMBER,
                   d.HIS_UOM,
                   d.HIS_UNIT_PRICE,
-                  d.HIS_PRICE_START,
-                  d.HIS_PRICE_END,
+                  d?.HIS_PRICE_START == undefined
+                    ? this.$util.toDateString(new Date(), 'yyyy-MM-dd HH:mm:ss')
+                    : d?.HIS_PRICE_START,
+                  d?.HIS_PRICE_END == undefined
+                    ? '9999-12-31 00:00:00'
+                    : d?.HIS_PRICE_END,
                   d.HIS_ITEM_SPEC,
                   d.HIS_STAND_VALUE,
                   d.HIS_SF_DXM_BS,
@@ -556,7 +545,7 @@
                   d.HIS_ZCZ_NUMBER,
                   d.HIS_ITEM_DESCRIPTION,
                   d.HIS_EXTEND,
-                  d.HIS_LCFW ?? '是',
+                  d.HIS_LCFW,
                   d.HIS_LCFW_TYPE,
                   d.HIS_YBTYPE
                 ]);
@@ -573,8 +562,10 @@
               this.$message.success('导出成功');
             })
             .catch((e) => {
-              loading.close();
               this.$message.error(e.message);
+            })
+            .finally(() => {
+              loading.close();
             });
         });
       }
