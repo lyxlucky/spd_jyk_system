@@ -4,7 +4,7 @@
       title="勾选添加"
       :destroy-on-close="true"
       width="90%"
-      height="90%"
+      top="1vh"
       :visible="visible"
       :close-on-click-modal="true"
       @update:visible="updateVisible(false)"
@@ -13,6 +13,7 @@
         size="mini"
         ref="table"
         highlight-current-row
+        height="70vh"
         :stripe="true"
         :pageSize="pageSize"
         :pageSizes="pageSizes"
@@ -23,9 +24,24 @@
         @current-change="onCurrentChange"
         cache-key="SelectionAddDialogTableCacheKey"
       >
+        <template slot="toolbar">
+          <el-button
+            size="mini"
+            icon="el-icon-close"
+            @click="updateVisible(false)"
+            >取 消</el-button
+          >
+          <el-button
+            size="mini"
+            icon="el-icon-check"
+            type="primary"
+            @click="submitItem"
+            >确 定</el-button
+          >
+        </template>
       </ele-pro-table>
 
-      <span slot="footer" class="dialog-footer">
+      <!-- <span slot="footer" class="dialog-footer">
         <el-button
           size="mini"
           icon="el-icon-close"
@@ -39,7 +55,7 @@
           @click="submitItem"
           >确 定</el-button
         >
-      </span>
+      </span> -->
     </ele-modal>
   </div>
 </template>

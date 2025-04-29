@@ -268,6 +268,7 @@
       onCurrentChange(current) {
         this.current = current;
         this.$emit('getCurrent', current);
+        this.$bus.$emit('AdvanceReceiptNumberTableCurrent', current);
       },
       tableRowClassName({ row, rowIndex }) {
         if (row.CommonState == 1) {

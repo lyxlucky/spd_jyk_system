@@ -194,7 +194,6 @@
     methods: {
       /* 表格数据源 */
       async datasource({ page, limit, where, order }) {
-        console.log(this.ApplyTempTableData);
         where.BDSZ_ZQSJ_ID = this.ApplyTempTableData?.ID;
         where.SSBH = where.SSBH || this.ApplyTempTableData?.SSBH;
         let data = getBdszZgsjMainPsDel({ page, limit, where, order }).then(
@@ -294,13 +293,13 @@
       // }
     },
     watch: {
-      // ApplyTempTableDataSearch() {
-      //   var where = {
-      //     deliveryNumber: this.ApplyTempTableData.Delivery_Note_Number,
-      //     SSBH: this.ApplyTempTableData.SSBH
-      //   };
-      //   this.$refs.table.reload({ page: 1, where: where });
-      // }
+      ApplyTempTableDataSearch() {
+        var where = {
+          deliveryNumber: this.ApplyTempTableData?.Delivery_Note_Number,
+          SSBH: this.ApplyTempTableData?.SSBH
+        };
+        this.$refs.table.reload({ page: 1, where: where });
+      }
     },
     mounted() {
       this.$bus.$on('LoadDeliveryConsumedVarietie', (data) => {

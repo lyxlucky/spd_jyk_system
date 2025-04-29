@@ -220,7 +220,7 @@
     created() {},
     watch: {
       ApplyTempTableDataSearch() {
-        this.TEMPLET_MAIN_ID = this.ApplyTempTableDataSearch.ID;
+        this.TEMPLET_MAIN_ID = this.ApplyTempTableDataSearch?.ID;
       },
       dialogTableVisible() {
         if (this.dialogTableVisible == false) {
