@@ -53,7 +53,12 @@
             >
           </el-form-item>
           <el-form-item>
-            <el-button type="primary">确认添加</el-button>
+            <el-button
+              type="primary"
+              :disabled="!selection.length"
+              @click="handleConfirmAdd"
+              >确认添加</el-button
+            >
           </el-form-item>
         </el-form>
       </template>
@@ -181,13 +186,19 @@
             prop: 'SH_QTY',
             label: '散货库存',
             align: 'center',
-            width: 100
+            width: 90
           },
           {
             prop: 'DEF_QTY',
             label: '定数包库存',
             align: 'center',
-            width: 100
+            width: 90
+          },
+          {
+            prop: 'PS_COUNT',
+            label: '数量',
+            align: 'center',
+            width: 90
           },
           {
             prop: 'APPROVAL_NUMBER',
@@ -306,6 +317,34 @@
             });
           })
           .finally(() => {});
+      },
+      handleConfirmAdd() {
+        if (this.selection.length === 0) {
+          this.$message({
+            message: '请至少选择一条数据',
+            type: 'warning'
+          });
+          return;
+        }
+
+        const loading = this.$messageLoading('处理中...');
+        const jsonData = this.selection.map((item) => {
+          item.BDSZ_ZQSJ_ID = item.ID;
+          return item;
+        });
+
+        addBdszZqsjMainPsDel(jsonData)
+          .then((res) => {
+            this.$message.success(res.msg || '添加成功');
+            this.reload(); // 刷新表格数据
+          })
+          .catch((err) => {
+            this.$message.error(err.message || '添加失败');
+          })
+          .finally(() => {
+            loading.close();
+            this.selection = []; // 清空选择
+          });
       }
     },
     computed: {
