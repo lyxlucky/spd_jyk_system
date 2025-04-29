@@ -314,6 +314,11 @@
         return this?.TableRowData1?.SSBH ? false : true;
       }
     },
+    watch: {
+      TableRowData1() {
+        this.$bus.$emit('AdvanceReceiptNumberTableCurrent', this.TableRowData1);
+      }
+    },
     mounted() {
       this.$bus.$on('OPSConsumablesTableRowClick', (row) => {
         //this.currentRow = row;
