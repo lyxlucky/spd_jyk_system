@@ -1,8 +1,84 @@
 <!-- 搜索表单 -->
 <template>
   <div>
-    <el-form class="ele-form-search">
-      <el-row :gutter="10">
+    <el-form class="ele-form-search" :inline="true">
+      <el-form-item>
+        <el-input
+          size="mini"
+          v-model="where.REGISTRATION_NAME"
+          placeholder="耗材注册证名称"
+          clearable
+        />
+      </el-form-item>
+      <el-form-item>
+        <el-input
+          size="mini"
+          v-model="where.REGISTRATION_NO"
+          placeholder="注册证号"
+          clearable
+        />
+      </el-form-item>
+      <el-form-item>
+        <el-input
+          size="mini"
+          v-model="where.ITEM_NUMBER"
+          placeholder="物料编码"
+          clearable
+        />
+      </el-form-item>
+      <el-form-item>
+        <el-input
+          size="mini"
+          v-model="where.STAND_VALUE"
+          placeholder="规格"
+          clearable
+        />
+      </el-form-item>
+      <el-form-item>
+        <el-button
+          size="mini"
+          icon="el-icon-search"
+          type="primary"
+          @click="search"
+          >查询</el-button
+        >
+      </el-form-item>
+      <el-form-item>
+        <el-button size="mini" icon="el-icon-refresh" @click="reset"
+          >重置</el-button
+        >
+      </el-form-item>
+      <el-form-item>
+        <el-button
+          size="mini"
+          type="primary"
+          class="ele-btn-icon"
+          @click="showDialogTableVisible2"
+        >
+          导入
+        </el-button>
+      </el-form-item>
+      <el-form-item>
+        <el-button
+          size="mini"
+          type="primary"
+          class="ele-btn-icon"
+          @click="exportData"
+        >
+          导出
+        </el-button>
+      </el-form-item>
+      <el-form-item>
+        <el-button
+          size="mini"
+          type="primary"
+          class="ele-btn-icon"
+          @click="exportFileData"
+        >
+          文件导出
+        </el-button>
+      </el-form-item>
+      <!-- <el-row :gutter="10">
         <el-col :lg="3" :md="12">
           <el-input
             size="mini"
@@ -50,11 +126,11 @@
             >
             <el-button size="mini" icon="el-icon-refresh" @click="reset"
               >重置</el-button
-            >
-            <!-- <el-button size="mini" type="primary" class="ele-btn-icon" @click="search">
+            > -->
+      <!-- <el-button size="mini" type="primary" class="ele-btn-icon" @click="search">
           编辑
         </el-button> -->
-            <el-button
+      <!-- <el-button
               size="mini"
               type="primary"
               class="ele-btn-icon"
@@ -72,7 +148,7 @@
             </el-button>
           </div>
         </el-col>
-      </el-row>
+      </el-row> -->
     </el-form>
     <el-dialog
       title="导入模板品种"
@@ -182,6 +258,9 @@
       }
     },
     methods: {
+      exportFileData() {
+        this.$emit('exportFileData');
+      },
       showDialogTableVisible() {
         this.dialogTableVisible = true;
       },

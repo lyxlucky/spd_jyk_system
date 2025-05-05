@@ -131,3 +131,13 @@ export async function UpdateYbTypeById(data) {
     return Promise.reject(new Error(res.data.msg));
   }
 }
+
+export async function PrintinFile(data) {
+  
+  let res = await request.post('/Abdzczh/PrintinFile', data)
+  // console.log(res);
+  if (res.data.code == "200") {
+    return res.data;
+  }
+  return Promise.reject(res.data);
+}

@@ -6,6 +6,7 @@
     <ApplyTempDataSearch
       ref="Apply"
       @search="reload"
+      @exportFileData="exportFileData"
       @addTempVar="$emit('addTempVar')"
       :IntroduceUserDefinedTempSearch="IntroduceUserDefinedTempSearch"
       @exportData="exportData"
@@ -95,10 +96,11 @@
 </template>
 
 <script>
+  import { PrintinFile } from '@/api/Home/masterBaseData';
   import ApplyTempDataSearch from './ApplyTempDataSearch.vue';
   import { utils, writeFile } from 'xlsx';
   import { exportToExcel } from '@/utils/excel-util';
-
+  import { BACK_BASE_URL } from '@/config/setting';
   import {
     SerachTempletDeta,
     DeleteTempletDeta
@@ -304,7 +306,7 @@
             label: '高值耗材标志',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 100,
+            minWidth: 100
           },
           {
             prop: 'HIS_HC_NUMBER',
@@ -367,7 +369,7 @@
             label: '临床服务标志',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 80,
+            minWidth: 80
           },
           {
             prop: 'HIS_LCFW_TYPE',
@@ -403,6 +405,24 @@
       };
     },
     methods: {
+      // 文件导出
+      exportFileData() {
+        let data = this.selection.map((item) => {
+          return {
+            LINE_IFACE_ID: item.LINE_IFACE_ID,
+            HEADER_IFACE_ID: item.HEADER_IFACE_ID
+          };
+        });
+        PrintinFile(data)
+          .then((res) => {
+            console.log(res);
+            window.open(BACK_BASE_URL + '/Excel/files/' + res.msg, '_blank');
+          })
+          .catch((err) => {
+            console.error(err);
+            this.$message.error(err?.msg);
+          });
+      },
       handleClose() {
         this.typeSelectedValue = '';
       },
@@ -410,7 +430,7 @@
         const loading = this.$messageLoading('正在修改...');
         UpdateYbTypeById({
           ID: this.current.LINE_IFACE_ID,
-          PARENTID : this.current.HEADER_IFACE_ID,
+          PARENTID: this.current.HEADER_IFACE_ID,
           YbType: this.typeSelectedValue
         })
           .then((res) => {
