@@ -252,7 +252,7 @@
             label: '启用标志',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 80,
+            minWidth: 80
           },
           {
             prop: 'HIS_ISGZ_DZ',
@@ -287,7 +287,7 @@
             label: '材料标志',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 80,
+            minWidth: 80
           },
           {
             prop: 'HIS_SCS',
@@ -331,7 +331,7 @@
             label: '临床服务标志',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 80,
+            minWidth: 80
           },
           {
             prop: 'HIS_LCFW_TYPE',
@@ -387,7 +387,7 @@
         where.HEADER_IFACE_ID = this.ApplyTempTableData.HEADER_IFACE_ID;
         let data = GetSpdHisMainsjLinesIface({
           page,
-          limit,
+          size: limit,
           where,
           order
         }).then((res) => {

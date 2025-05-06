@@ -105,7 +105,6 @@ export async function BatchPushChargeItemToHis(data) {
     '/PekingApplication/BatchPushChargeItemToHis',
     formData
   );
-  console.log(res);
   if (res.data.code == 200) {
     return res.data;
   } else {
