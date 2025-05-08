@@ -129,6 +129,22 @@
               style="width: 200px"
             ></el-input>
           </el-form-item>
+          <el-form-item style="margin-right: 16px; margin-bottom: 8px">
+            <el-input
+              v-model="where.SSBH"
+              placeholder="手术编号"
+              clearable
+              style="width: 140px"
+            ></el-input>
+          </el-form-item>
+          <el-form-item style="margin-right: 16px; margin-bottom: 8px">
+            <el-input
+              v-model="where.SSTH"
+              placeholder="手术台号"
+              clearable
+              style="width: 140px"
+            ></el-input>
+          </el-form-item>
           <el-form-item style="margin-bottom: 8px">
             <el-button
               type="primary"
@@ -145,6 +161,7 @@
               style="margin-right: 8px"
               >打印</el-button
             >
+            <el-button type="primary" @click="handleExport">导出</el-button>
           </el-form-item>
         </el-form>
       </template>
@@ -155,6 +172,7 @@
 
 <script>
   import { BACK_BASE_URL } from '@/config/setting';
+  import { exportToExcel } from '@/utils/excel-util.js';
   import {
     getBdSzYyHisSs,
     GetBdszZgsjMainPsDelExcel
@@ -168,7 +186,9 @@
         where: {
           dateRange: [],
           MZZY: '-1',
-          patientOrSurgeryName: ''
+          patientOrSurgeryName: '',
+          SSBH: '',
+          SSTH: ''
         },
         // 术间选项
         MZZYOptions: [
@@ -244,6 +264,9 @@
             align: 'center',
             width: 70,
             formatter: (row, column, cellValue) => {
+              if (!cellValue) {
+                return '';
+              }
               if (!cellValue || cellValue.length == 2)
                 return cellValue[0] + '*';
               const firstChar = cellValue[0];
@@ -266,6 +289,18 @@
       };
     },
     methods: {
+      handleExport() {
+        let loading = this.$messageLoading('导出中');
+        getBdSzYyHisSs({ page: 1, limit: 999999, where: this.where })
+          .then((data) => {
+            loading.close();
+            exportToExcel(data.data, this.columns, '手术排期');
+          })
+          .catch(() => {
+            loading.close();
+            this.$message.error('导出失败！');
+          });
+      },
       changeMZZY(val) {
         this.$emit('changeMZZY', val);
       },
