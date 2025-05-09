@@ -290,15 +290,20 @@
     },
     methods: {
       handleExport() {
-        let loading = this.$messageLoading('导出中');
+        const loading = this.$loading({
+          lock: true,
+          text: '导出中...',
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)'
+        });
         getBdSzYyHisSs({ page: 1, limit: 999999, where: this.where })
           .then((data) => {
-            loading.close();
             exportToExcel(data.data, this.columns, '手术排期');
+            loading.close();
           })
           .catch(() => {
-            loading.close();
             this.$message.error('导出失败！');
+            loading.close();
           });
       },
       changeMZZY(val) {
