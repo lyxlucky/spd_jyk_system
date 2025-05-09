@@ -2,7 +2,6 @@ import request from '@/utils/request';
 import { formdataify, DataToObject } from '@/utils/formdataify';
 import { TOKEN_STORE_NAME } from '@/config/setting';
 import store from '@/store';
-import { Encrypt } from '@/utils/aes-util';
 
 /**
  * 获取手术信息

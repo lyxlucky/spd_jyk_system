@@ -117,7 +117,6 @@
     commitBdszSsyyInfo
   } from '@/api/Task/SurgicalVerification';
   import { HOME_HP, BACK_BASE_URL } from '@/config/setting';
-  import { load } from '@amap/amap-jsapi-loader';
   export default {
     name: 'ApplyTempTable',
     components: {
@@ -262,7 +261,6 @@
       },
       /* 刷新表格 */
       reload(where) {
-        console.log({ where: where });
         this.$refs.table.reload({ page: 1, where: where });
       },
       onCurrentChange(current) {
@@ -317,7 +315,7 @@
               spd: 'PDA123#1',
               pdaMan: this.$store.state.user.info.UserName,
               ID: value,
-              TJ_STATE: 2
+              TJ_STATE: 3
             })
               .then((res) => {
                 this.$message.success(res.msg);

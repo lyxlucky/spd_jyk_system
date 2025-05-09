@@ -78,6 +78,17 @@
           >定数包</el-button
         >
       </template>
+
+      <template v-slot:PS_COUNT="{ row }">
+        <div style="display: flex; gap: 2px">
+          <el-input size="mini" v-model="row.PS_COUNT"></el-input>
+
+          <el-select v-model="row.TYPE" size="mini">
+            <el-option label="定数包" value="1"></el-option>
+            <el-option label="散货" value="0"></el-option>
+          </el-select>
+        </div>
+      </template>
     </ele-pro-table>
     <!-- </el-card> -->
 
@@ -195,10 +206,11 @@
             width: 90
           },
           {
+            slot: 'PS_COUNT',
             prop: 'PS_COUNT',
             label: '数量',
             align: 'center',
-            width: 90
+            width: 180
           },
           {
             prop: 'APPROVAL_NUMBER',
@@ -221,15 +233,22 @@
         this.selectionDialogVisible = true;
       },
       datasource({ page, limit, where }) {
-        // 这里不实现具体方法，仅返回空数据结构
+        // 设置查询参数
         where.MZZY = this.MZZY;
-        console.log(this.TableRowData1);
         where.SSBH = this.TableRowData1.SSBH;
         return getBdszgsjMainDel({ where, page, limit })
           .then((data) => {
-            console.log(data.data);
+            // 确保 data.data 是数组
+            const list = (data.data || []).map((item) => {
+              // 如果没有 TYPE 字段，则默认设置为 '1'
+              return {
+                ...item,
+                TYPE: item.TYPE ?? '1'
+              };
+            });
+
             return {
-              list: data.data || [],
+              list,
               count: data.total
             };
           })
@@ -336,7 +355,6 @@
         addBdszZqsjMainPsDel(jsonData)
           .then((res) => {
             this.$message.success(res.msg || '添加成功');
-            this.reload(); // 刷新表格数据
           })
           .catch((err) => {
             this.$message.error(err.message || '添加失败');
@@ -344,6 +362,7 @@
           .finally(() => {
             loading.close();
             this.selection = []; // 清空选择
+            this.reload(); // 刷新表格数据
           });
       }
     },
