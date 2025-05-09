@@ -197,7 +197,7 @@
           { value: '2', label: '已拣配' },
           { value: '3', label: '已交接' },
           { value: '4', label: '已完成' },
-          { value: '-1', label: '已交接/已完成' }
+          // { value: '-1', label: '已交接/已完成' }
         ],
         // 表格列配置
         columns: [

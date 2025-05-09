@@ -173,6 +173,15 @@
         parentCurrent: null
       };
     },
+    watch: {
+      masterCurrentData: {
+        handler(newVal) {
+          this.parentCurrent = newVal;
+          this.reload();
+        },
+        immediate: true
+      }
+    },
     methods: {
       datasource({ page, limit, where, order }) {
         where.SSBH = this.parentCurrent?.SSBH;

@@ -112,7 +112,6 @@
   import { GetSpdHisMainsjLinesIface } from '@/api/Home/BJRMPriceAudit';
   export default {
     name: 'ApplyTempDataTable',
-    // props: ['ApplyTempTableData', 'IntroduceUserDefinedTempSearch'],
     props: {
       ApplyTempTableData: {
         type: Object,
@@ -447,7 +446,6 @@
       },
 
       handleEditCurrentRow(row) {
-        //二次确认
         //prompt
         this.typeSelectedValue = row.HIS_YBTYPE;
         this.typeDialogVisible = true;
