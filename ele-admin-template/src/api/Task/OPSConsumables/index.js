@@ -10,7 +10,6 @@ import store from '@/store';
  * @returns {Promise} 返回请求结果
  */
 export async function getBdSzYyHisSs(params) {
-  console.log(params);
   const formatData = {
     Token: sessionStorage.getItem(TOKEN_STORE_NAME),
     start_time: params.where?.dateRange[0] || '',

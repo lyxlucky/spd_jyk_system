@@ -145,13 +145,6 @@
             width: 80
           },
           {
-            prop: 'APPROVAL_NUMBER',
-            label: '注册证号',
-            align: 'center',
-            width: 160,
-            showOverflowTooltip: true
-          },
-          {
             prop: 'MANUFACTURING_ENT_NAME',
             label: '生产企业',
             align: 'center',
