@@ -15,6 +15,29 @@
       @current-change="onCurrentChange"
       cache-key="ConsumeablesUsageDetailCacheKey"
     >
+      <template v-slot:toolbar>
+        <div>
+          <el-button
+            size="mini"
+            type="primary"
+            icon="el-icon-check"
+            class="ele-btn-icon"
+            @click="approve"
+          >
+            护士审批
+          </el-button>
+          <!-- <el-button
+            size="mini"
+            type="primary"
+            class="ele-btn-icon"
+            icon="el-icon-reading"
+            @click="catDefNoPkgCode"
+          >
+            查看定数码标签
+          </el-button> -->
+        </div>
+      </template>
+
       <!-- 左表头 -->
       <template v-slot:ACTION="{ row }">
         <!-- 搜索表单 -->
@@ -198,6 +221,9 @@
       onCurrentChange(current) {
         this.current = current;
       },
+      approve() {
+        this.$bus.$emit('ConsumeableUsageDetailApprove', this.current);
+      },
       /* 刷新表格 */
       reload(where) {
         const formatWhere = {
@@ -246,6 +272,7 @@
     },
     destroyed() {
       this.$bus.$off('AdVanceReceiptNumberDelTableCurrentChange');
+      this.$bus.$off('ConsumeableUsageDetailApprove');
     }
   };
 </script>

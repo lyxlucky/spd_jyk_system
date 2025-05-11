@@ -14,6 +14,16 @@
       :stripe="true"
       :needPage="true"
     >
+      <template v-slot:ACTION="{ row }">
+        <el-button
+          size="mini"
+          icon="el-icon-edit"
+          @click="handleEditItem(row)"
+          type="primary"
+          >修改</el-button
+        >
+      </template>
+
       <template v-slot:toolbar>
         <el-form :inline="true" :model="where" size="mini">
           <el-form-item label="日期范围">
@@ -89,10 +99,14 @@
       </template>
     </ele-pro-table>
     <!-- </el-card> -->
+    <UpdateUserInfoDialog @reload="reload"
+      :visible.sync="updateUserInfoDialogVisible"
+    ></UpdateUserInfoDialog>
   </div>
 </template>
 
 <script>
+  import UpdateUserInfoDialog from './UpdateUserInfoDialog';
   import { BACK_BASE_URL } from '@/config/setting';
   import { exportToExcel } from '@/utils/excel-util.js';
   import {
@@ -101,6 +115,9 @@
   } from '@/api/Task/OPSConsumables';
   export default {
     name: 'OPSConsumablesTable',
+    components: {
+      UpdateUserInfoDialog
+    },
     data() {
       return {
         currentRow: null,
@@ -203,14 +220,25 @@
             align: 'center',
             minWidth: 180,
             showOverflowTooltip: true
+          },
+          {
+            slot: 'ACTION',
+            label: '操作',
+            align: 'center',
+            minWidth: 120
           }
         ],
         // 分页配置
         pageSize: 100,
-        pageSizes: [10, 20, 50, 100]
+        pageSizes: [10, 20, 50, 100],
+        updateUserInfoDialogVisible: false
       };
     },
     methods: {
+      handleEditItem(data) {
+        this.$bus.$emit('OPSConsumablesTableRowCurrent', data);
+        this.updateUserInfoDialogVisible = true;
+      },
       handleExport() {
         let loading = this.$messageLoading('导出中');
         getBdSzYyHisSs({ page: 1, limit: 999999, where: this.where })
@@ -286,6 +314,9 @@
     created() {
       // 初始化时加载数据
       // this.reload();
+    },
+    beforeDestroy() {
+      this.$bus.$off('OPSConsumablesTableRowCurrent');
     }
   };
 </script>

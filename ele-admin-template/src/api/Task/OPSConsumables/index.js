@@ -167,3 +167,26 @@ export async function deleteBdszPsDetail(data) {
   return Promise.reject(res.data);
 }
 
+
+export async function updateBdSzHisSurgery(params) {
+  const formatData = {
+    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+    SSBH: params.where?.SSBH,
+    SSTH: params.where?.SSTH,
+    SSFJ: params.where?.SSFJ,
+    ZYHM: params.where?.ZYHM,
+    BRXM: params.where?.BRXM,
+    SSMC: params.where?.SSMC,
+  };
+
+  let res = await request.post(
+    '/DeptPlanTransfer/updateBdSzHisSurgery',
+    formatData
+  );
+
+  if (res.data.code == 200) {
+    return res.data;
+  }
+  return Promise.reject(res.data);
+}
+

@@ -60,7 +60,7 @@
       </el-col>
 
       <el-col>
-        <el-form-item>
+        <!-- <el-form-item>
           <el-button
             size="mini"
             type="primary"
@@ -81,7 +81,7 @@
           >
             查看定数码标签
           </el-button>
-        </el-form-item>
+        </el-form-item> -->
 
         <el-form-item>
           <el-button
@@ -207,12 +207,12 @@
       search() {
         this.$emit('search', this.where);
       },
-      approve() {
-        this.$emit('approve', this.where);
-      },
-      catDefNoPkgCode() {
-        this.$emit('catDefNoPkgCode', this.where);
-      },
+      // approve() {
+      //   this.$emit('approve', this.where);
+      // },
+      // catDefNoPkgCode() {
+      //   this.$emit('catDefNoPkgCode', this.where);
+      // },
       handleScanQrCode() {
         this.$emit('handleScanQrCode', this.where);
       },

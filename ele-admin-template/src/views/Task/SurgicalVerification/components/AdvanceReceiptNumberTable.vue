@@ -2,11 +2,13 @@
   <div class="ele-box">
     <!-- 数据表格 -->
 
+    <!-- 
+      @approve="handleApprove"
+      @catDefNoPkgCode="handleCatDefNoPkgCode" 
+    -->
     <div class="search-toolbar">
       <AdvanceReceiptNumberSearch
         @search="reload"
-        @approve="handleApprove"
-        @catDefNoPkgCode="handleCatDefNoPkgCode"
         @handleScanQrCode="handleScanQrCode"
         :rowData="current"
         style="padding: 0px"
@@ -54,7 +56,22 @@
           />
         </div>
       </template> -->
+
+      <template v-slot:ACTION="{ row }">
+        <el-button
+          size="mini"
+          icon="el-icon-edit"
+          @click="handleEditItem(row)"
+          type="primary"
+          >修改</el-button
+        >
+      </template>
     </ele-pro-table>
+
+    <UpdateUserInfoDialog
+      @reload="reload"
+      :visible.sync="updateUserInfoDialogVisible"
+    ></UpdateUserInfoDialog>
   </div>
 </template>
 
@@ -111,6 +128,9 @@
 <script>
   import AdvanceReceiptNumberSearch from './AdvanceReceiptNumberSearch.vue';
   import AdvanceReceiptNumberEdit from './AdvanceReceiptNumberEdit.vue';
+
+  import UpdateUserInfoDialog from '@/views/Task/OPSConsumables/components/UpdateUserInfoDialog';
+
   import {
     getBdSzYyHisSs,
     BdSsApprove,
@@ -121,7 +141,8 @@
     name: 'ApplyTempTable',
     components: {
       AdvanceReceiptNumberSearch,
-      AdvanceReceiptNumberEdit
+      AdvanceReceiptNumberEdit,
+      UpdateUserInfoDialog
     },
     data() {
       return {
@@ -215,23 +236,14 @@
             align: 'center',
             showOverflowTooltip: true,
             minWidth: 180
+          },
+          {
+            label: '操作',
+            width: 150,
+            align: 'center',
+            slot: 'ACTION'
           }
-          // {
-          //   columnKey: 'action',
-          //   label: '操作',
-          //   width: 150,
-          //   align: 'center',
-          //   resizable: false,
-          //   slot: 'action',
-          //   showOverflowTooltip: true
-          //   //fixed: 'right'
-          // }
         ],
-        paginationStyle: {
-          height: '18px',
-          padding: '0px 0px 5px 0px',
-          'margin-top': '-5px'
-        },
         toolbar: false,
         pageSize: 100,
         pagerCount: 2,
@@ -245,7 +257,8 @@
         // 是否显示导入弹窗
         showImport: false,
         // datasource: [],
-        data: []
+        data: [],
+        updateUserInfoDialogVisible: false
       };
     },
     methods: {
@@ -275,31 +288,42 @@
           return '';
         }
       },
+      handleEditItem(data) {
+        this.$bus.$emit('AdvanceReceiptNumberTableDialogCurrent', data);
+        this.updateUserInfoDialogVisible = true;
+      },
       handleApprove() {
-        if (this.current == null) {
-          return this.$message.warning('请先选择一条数据');
-        }
-        const loading = this.$messageLoading('审批中...');
-        //return
-        BdSsApprove({ qdid: this.current.SSBH })
-          .then((res) => {
-            this.$message.success(res.msg);
-          })
-          .catch((err) => {
-            this.$message.error(err);
-          })
-          .finally(() => {
-            loading.close();
-            this.reload();
-          });
+        return new Promise((resolve, reject) => {
+          if (this.current == null) {
+            return this.$message.warning('请先选择一条数据');
+          }
+          const loading = this.$messageLoading('审批中...');
+          //return
+          BdSsApprove({ qdid: this.current.SSBH })
+            .then((res) => {
+              resolve();
+              this.$message.success(res.msg);
+            })
+            .catch((err) => {
+              reject();
+              this.$message.error(err);
+            })
+            .finally(() => {
+              loading.close();
+              this.reload();
+            });
+        });
       },
       handleCatDefNoPkgCode() {
-        if (this.current == null) {
-          return this.$message.warning('请先选择一条数据');
-        }
-        window.open(
-          `${BACK_BASE_URL}/api/Abdzczh/GetTagQdMx?id=67&format=pdf&inline=true&qdid=${this.current.SSBH}&Token=${sessionStorage.Token}`
-        );
+        return new Promise((resolve, reject) => {
+          if (this.current == null) {
+            return this.$message.warning('请先选择一条数据');
+          }
+          window.open(
+            `${BACK_BASE_URL}/api/Abdzczh/GetTagQdMx?id=67&format=pdf&inline=true&qdid=${this.current.SSBH}&Token=${sessionStorage.Token}`
+          );
+          resolve();
+        });
       },
       //不为空
       handleScanQrCode(data) {
@@ -341,6 +365,12 @@
         this.reload();
       });
 
+      this.$bus.$on('ConsumeableUsageDetailApprove', () => {
+        this.handleApprove().then(() => {
+          this.handleCatDefNoPkgCode();
+        });
+      });
+
       this.$bus.$on('AdVanceReceiptNumberDelTableReload', () => {
         this.reload();
       });
@@ -350,6 +380,7 @@
       this.$bus.$off('AdVanceReceiptNumberDelTableReload');
       this.$bus.$off('handleSubmitConsumeVarietiesAndRefreshTopTable');
       this.$bus.$off('AdvanceReceiptNumberTableCurrent');
+      this.$bus.$off('AdvanceReceiptNumberTableDialogCurrent');
     },
     created() {
       // this.getdatasource();
