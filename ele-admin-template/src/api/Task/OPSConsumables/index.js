@@ -12,15 +12,14 @@ import store from '@/store';
 export async function getBdSzYyHisSs(params) {
   const formatData = {
     Token: sessionStorage.getItem(TOKEN_STORE_NAME),
-    start_time: params.where?.dateRange[0] || '',
-    end_time: params.where?.dateRange[1] || '',
+    start_time: params.where?.dateRange? params.where?.dateRange[0] : '',
+    end_time: params.where?.dateRange ? params.where?.dateRange[1] : '',
     MZZY: params.where?.MZZY || '',
     SSBH: params.where?.SSBH || '',
     SSTH: params.where?.SSTH || '',
     page: params.page || 1,
     size: params.limit || 10
-  };
-
+  }
   let res = await request.post('/DeptPlanTransfer/getBdSzYyHisSs', formatData);
 
   if (res.data.code == 200) {

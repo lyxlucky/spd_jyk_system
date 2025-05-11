@@ -1,83 +1,5 @@
 <template>
   <div class="ele-box">
-    <!-- <el-card> -->
-    <!-- <div
-        slot="header"
-        style="
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-        "
-      >
-        <span>手术排期</span>
-      </div> -->
-    <!-- 筛选表单 -->
-    <!-- <el-form
-        :inline="true"
-        :model="where"
-        size="mini"
-        style="
-          padding: 8px 0 16px 0;
-          margin-bottom: 12px;
-          border-bottom: 1px solid #ebeef5;
-        "
-      >
-        <el-form-item
-          label="日期范围"
-          style="margin-right: 16px; margin-bottom: 8px"
-        >
-          <el-date-picker
-            v-model="where.dateRange"
-            type="daterange"
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            value-format="yyyy-MM-dd"
-            style="width: 240px"
-          ></el-date-picker>
-        </el-form-item>
-        <el-form-item style="margin-right: 16px; margin-bottom: 8px">
-          <el-select
-            v-model="where.MZZY"
-            placeholder="请选择术间"
-            clearable
-            style="width: 160px"
-            @change="changeMZZY"
-          >
-            <el-option
-              v-for="item in MZZYOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item style="margin-right: 16px; margin-bottom: 8px">
-          <el-input
-            v-model="where.patientOrSurgeryName"
-            placeholder="请输入患者姓名或手术名称"
-            clearable
-            style="width: 200px"
-          ></el-input>
-        </el-form-item>
-        <el-form-item style="margin-bottom: 8px">
-          <el-button
-            type="primary"
-            icon="el-icon-search"
-            @click="reload"
-            style="margin-right: 8px"
-            >查询</el-button
-          >
-
-          <el-button
-            type="primary"
-            icon="el-icon-download"
-            @click="handlePrint"
-            style="margin-right: 8px"
-            >打印</el-button
-          >
-        </el-form-item>
-      </el-form> -->
     <!-- 数据表格 -->
     <ele-pro-table
       size="mini"
@@ -184,8 +106,8 @@
         currentRow: null,
         // 查询参数
         where: {
-          dateRange: [],
-          MZZY: '',
+          dateRange: ['', ''],
+          MZZY: '-1',
           patientOrSurgeryName: '',
           SSBH: '',
           SSTH: ''
@@ -196,8 +118,8 @@
           { value: '1', label: '新增' },
           { value: '2', label: '已拣配' },
           { value: '3', label: '已交接' },
-          { value: '4', label: '已完成' }
-          // { value: '-1', label: '已交接/已完成' }
+          { value: '4', label: '已完成' },
+          { value: '-1', label: '已交接/已完成' }
         ],
         // 表格列配置
         columns: [
@@ -290,20 +212,15 @@
     },
     methods: {
       handleExport() {
-        const loading = this.$loading({
-          lock: true,
-          text: '导出中...',
-          spinner: 'el-icon-loading',
-          background: 'rgba(0, 0, 0, 0.7)'
-        });
+        let loading = this.$messageLoading('导出中');
         getBdSzYyHisSs({ page: 1, limit: 999999, where: this.where })
           .then((data) => {
-            exportToExcel(data.data, this.columns, '手术排期');
             loading.close();
+            exportToExcel(data.data, this.columns, '手术排期');
           })
           .catch(() => {
-            this.$message.error('导出失败！');
             loading.close();
+            this.$message.error('导出失败！');
           });
       },
       changeMZZY(val) {
@@ -367,7 +284,8 @@
       }
     },
     created() {
-      // 不实现具体方法
+      // 初始化时加载数据
+      // this.reload();
     }
   };
 </script>
