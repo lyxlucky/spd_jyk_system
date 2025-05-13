@@ -3,6 +3,7 @@
     <!-- <AdvanceReceiptNumberSearch @search="reload" :rowData="current" /> -->
     <!-- 数据表格 -->
     <ele-pro-table
+      size="mini"
       height="25vh"
       :paginationStyle="paginationStyle"
       highlight-current-row

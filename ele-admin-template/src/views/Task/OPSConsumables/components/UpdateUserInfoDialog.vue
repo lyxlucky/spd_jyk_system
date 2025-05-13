@@ -87,6 +87,7 @@
         parentCurrentRow: null
       };
       return {
+        styleResponsive: false,
         where: {
           ...defaultWhere
         }

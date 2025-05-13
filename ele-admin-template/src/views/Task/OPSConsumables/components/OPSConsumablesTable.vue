@@ -99,7 +99,8 @@
       </template>
     </ele-pro-table>
     <!-- </el-card> -->
-    <UpdateUserInfoDialog @reload="reload"
+    <UpdateUserInfoDialog
+      @reload="reload"
       :visible.sync="updateUserInfoDialogVisible"
     ></UpdateUserInfoDialog>
   </div>
@@ -219,13 +220,19 @@
             label: '手术名称',
             align: 'center',
             minWidth: 180,
-            showOverflowTooltip: true
+            showOverflowTooltip: true,
+            excelConfig: {
+              wrapText: true
+            }
           },
           {
             slot: 'ACTION',
             label: '操作',
             align: 'center',
-            minWidth: 120
+            minWidth: 120,
+            excelConfig: {
+              hide: true
+            }
           }
         ],
         // 分页配置
