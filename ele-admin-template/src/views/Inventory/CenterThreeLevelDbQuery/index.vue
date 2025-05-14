@@ -19,6 +19,6 @@
   };
 </script>
 
-<style scoped>
+<style scoped lang='scss'>
   @import url('@/styles/common.scss');
 </style>
