@@ -5,7 +5,10 @@
       :columns="columns"
       :datasource="datasource"
       size="mini"
+      :pageSize="pageSize"
+      :pageSizes="pageSizes"
       highlight-current-row
+      cache-key="CenterThreeLevelDbQueryTable1"
     >
       <template v-slot:toolbar>
         <el-form
@@ -88,6 +91,8 @@
     props: {},
     data() {
       return {
+        pageSize: 10,
+        pageSizes: [10, 20, 50, 100, 9999999],
         form: {
           MONTHLY_TIME: '', // 年份(SPD)
           OPEARTION_CHARGING_TIME: '', // 年份(HIS)
@@ -204,7 +209,7 @@
 
 <style lang="scss" scoped>
   @import '@/styles/common';
-  :deep(.el-input--mini .el-input__inner) {
-    width: 160px;
+  :deep(.ele-form-search .el-input--mini .el-input__inner) {
+    width: 140px;
   }
 </style>
