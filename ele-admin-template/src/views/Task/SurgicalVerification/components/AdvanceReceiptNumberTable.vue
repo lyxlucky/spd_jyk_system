@@ -21,6 +21,7 @@
     </div>
 
     <ele-pro-table
+      class="style-table"
       size="mini"
       height="30vh"
       highlight-current-row
@@ -65,6 +66,12 @@
           type="primary"
           >修改</el-button
         >
+        <el-button
+          size="mini"
+          type="primary"
+          @click="handleIntraoperativeHandover(row)"
+          >术中交接</el-button
+        >
       </template>
     </ele-pro-table>
 
@@ -75,8 +82,9 @@
   </div>
 </template>
 
-<style scoped>
-  .el-table .warning-row {
+<style scoped lang="scss">
+  @import '@/styles/common.scss';
+  /* .el-table .warning-row {
     background: oldlace;
   }
 
@@ -96,6 +104,7 @@
     background-color: white;
     height: 100%;
     box-sizing: border-box;
+    max-height: 100%;
   }
   .ele-box .ele-box {
     padding: 10px;
@@ -107,22 +116,25 @@
     display: flex;
     flex-direction: column;
   }
-  .ele-box .el-table {
+  :deep(.ele-box .el-table) {
     flex: 1;
     display: flex;
     flex-direction: column;
+    flex-basis: 0;
   }
   .ele-box .el-table .el-table__body-wrapper {
+    display: none !important;
     flex: 1;
     overflow: auto;
     flex-basis: 0;
+    flex-shrink: 0;
     max-height: calc(100vh - 200px);
   }
   .ele-box .ele-pro-table .el-pagination {
     margin-top: 7px !important;
     padding: 0px 0;
     box-sizing: border-box;
-  }
+  } */
 </style>
 
 <script>
@@ -134,11 +146,14 @@
   import {
     getBdSzYyHisSs,
     BdSsApprove,
-    commitBdszSsyyInfo
+    commitBdszSsyyInfo,
+    addBdSzHisInSurgery
   } from '@/api/Task/SurgicalVerification';
   import { HOME_HP, BACK_BASE_URL } from '@/config/setting';
+
   export default {
     name: 'ApplyTempTable',
+    props: {},
     components: {
       AdvanceReceiptNumberSearch,
       AdvanceReceiptNumberEdit,
@@ -239,12 +254,13 @@
           },
           {
             label: '操作',
-            width: 150,
+            width: 300,
             align: 'center',
             slot: 'ACTION'
           }
         ],
         toolbar: false,
+
         pageSize: 100,
         pagerCount: 2,
         pageSizes: [10, 20, 50, 100, 9999999],
@@ -276,6 +292,7 @@
       reload(where) {
         this.$refs.table.reload({ page: 1, where: where });
       },
+
       onCurrentChange(current) {
         this.current = current;
         this.$emit('getCurrent', current);
@@ -325,7 +342,36 @@
           resolve();
         });
       },
-      //不为空
+      //术中交接
+      handleIntraoperativeHandover(row) {
+        console.log(row);
+        if (!row) {
+          return this.$message.warning('请先选择一条数据');
+        }
+        this.$prompt('请输入备注信息', '术中交接', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          inputPlaceholder: '请输入备注信息'
+        })
+          .then(({ value }) => {
+            let loading = this.$messageLoading('正在处理中...');
+            addBdSzHisInSurgery({
+              SSBH: row.SSBH,
+              REMARK: value || ''
+            })
+              .then((res) => {
+                loading.close();
+                this.$message.success('术中交接成功');
+                this.reload();
+              })
+              .catch((err) => {
+                loading.close();
+                this.$message.error(err);
+              });
+          })
+          .catch(() => {});
+      },
+
       handleScanQrCode(data) {
         this.$prompt('请输入手术编号', '扫码交接', {
           confirmButtonText: '确定',

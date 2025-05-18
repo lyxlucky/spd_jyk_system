@@ -1,32 +1,34 @@
-.ele-container {
+.ele-container,.ele-box {
   background-color: white;
   height: 100%;
   box-sizing: border-box;
+  max-height: 100vh;
   
-  
-  > .ele-container {
+  > .ele-container,.ele-box {
     padding: 10px;
   }
   
   &,
-  > .ele-pro-table {
+  > .style-table {
     height: 100%;
     display: flex;
     flex-direction: column;
-  }
-  
-  > .el-table {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    
-    > .el-table__body-wrapper {
+    > .el-table {
       flex: 1;
-      overflow: auto;
+      display: flex;
+      flex-direction: column;
       flex-basis: 0;
-      max-height: calc(100vh - 200px);
+      
+      > .el-table__body-wrapper {
+        flex: 1;
+        overflow: auto;
+        flex-basis: 0;
+        max-height: calc(100vh - 200px);
+      }
     }
   }
+  
+  
   
   > .ele-pro-table > .el-pagination {
     margin-top: 7px !important;

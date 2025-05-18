@@ -198,3 +198,65 @@ export async function addBdszZqsjMainPsDelUseV2(data) {
   }
   return Promise.reject(res.data);
 }
+
+// 术中交接
+export async function addBdSzHisInSurgery(data) {
+  const formatData = {
+    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+    SSBH: data.SSBH,
+    REMARK: data.REMARK
+  };
+
+  let res = await request.post(
+    '/Commons/BdSzHisInSurgery',
+    formatData
+  );
+
+  if (res.data.code == 200) {
+    return res.data;
+  }
+  return Promise.reject(res.data);
+}
+
+// 获取交接记录
+export async function ListBdSzHisInSurgery(data) {
+  const formatData = {
+    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+    SSBH: data.where?.SSBH || '',
+    page: data.page || 1,
+    size: data.size || 10
+  };
+
+  let res = await request.post(
+    '/Commons/ListBdSzHisInSurgery',
+    formatData
+  );
+
+  if (res.data.code == 200) {
+    return res.data;
+  }
+  return Promise.reject(res.data);
+}
+
+// 新增使用
+export async function addNewBdszZq(data) {
+  const formatData = {
+    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+    SJBH: data.SJBH || '',
+    ZYHM: data.ZYHM || '',
+    BRXM: data.BRXM || '',
+    SSMC: data.SSMC || '',
+    data: data.data || []
+  };
+
+  let res = await request.post(
+    '/DeptPlanTransfer/addNewBdszZq',
+    formatData
+  );
+
+  if (res.data.code == 200) {
+    return res.data;
+  }
+  return Promise.reject(res.data);
+}
+

@@ -1,47 +1,51 @@
 <!-- 搜索表单 -->
 <template>
   <div>
-    <el-form class="ele-form-search">
-      <el-row :gutter="10">
-        <el-col :lg="5" :md="12">
-          <el-input
-            size="mini"
-            v-model="where.VARIETIE_CODE_NEW"
-            placeholder="请输入品种名称/品种编码"
-            clearable
-          />
-        </el-col>
-        <!-- <el-col :lg="5" :md="12">
+    <el-form class="ele-form-search" :inline="true" size="mini">
+      <el-form-item>
+        <el-input
+          v-model="where.VARIETIE_CODE_NEW"
+          placeholder="请输入品种名称/品种编码"
+          clearable
+        />
+      </el-form-item>
+      <!-- <el-col :lg="5" :md="12">
           <el-input size="mini" v-model="where.zcz" placeholder="请输入注册证/生产企业/批准文号" clearable />
         </el-col> -->
-        <el-col :lg="12" :md="12">
-          <div class="ele-form-actions">
-            <el-button
-              size="mini"
-              icon="el-icon-search"
-              type="primary"
-              @click="search"
-              >查询</el-button
-            >
-            <el-button
-              size="mini"
-              :disabled="isUdiScanEnabld"
-              icon="el-icon-paperclip"
-              type="primary"
-              @click="handleUdiScanAdd"
-              >扫码添加</el-button
-            >
-            <el-button
-              size="mini"
-              :disabled="isUdiScanEnabld"
-              icon="el-icon-circle-check"
-              type="primary"
-              @click="handleSelectAdd"
-              >勾选添加</el-button
-            >
-          </div>
-        </el-col>
-      </el-row>
+      <el-form-item>
+        <el-button icon="el-icon-search" type="primary" @click="search"
+          >查询</el-button
+        >
+      </el-form-item>
+      <el-form-item>
+        <el-button
+          :disabled="isUdiScanEnabld"
+          icon="el-icon-paperclip"
+          type="primary"
+          @click="handleUdiScanAdd"
+          >扫码添加</el-button
+        >
+      </el-form-item>
+      <el-form-item>
+        <el-button
+          :disabled="isUdiScanEnabld"
+          icon="el-icon-circle-check"
+          type="primary"
+          @click="handleSelectAdd"
+          >勾选添加</el-button
+        >
+      </el-form-item>
+      <div
+        v-show="
+          ApplyTempTableData && Object.keys(ApplyTempTableData).length != 0
+        "
+      >
+        术间:<el-tag size="mini">{{ ApplyTempTableData?.SSFJ }}</el-tag
+        >手术台号:<el-tag size="mini">{{ ApplyTempTableData?.SSTH }}</el-tag
+        >住院号:<el-tag size="mini">{{ ApplyTempTableData?.ZYHM }}</el-tag
+        >姓名:<el-tag size="mini">{{ ApplyTempTableData?.BRXM }}</el-tag
+        >手术名称:<el-tag size="mini">{{ ApplyTempTableData?.SSMC }}</el-tag>
+      </div>
     </el-form>
     <!-- <AuthVarTable
       :visible.sync="dialogTableVisible"
@@ -65,7 +69,8 @@
       'ApplyTempTableDataSearch',
       'selection',
       'VarietyConsumeptionDataList',
-      'AdvanceReceiptDelcurrent'
+      'AdvanceReceiptDelcurrent',
+      'ApplyTempTableData'
     ],
     components: {
       AuthVarTable: AuthVarTable

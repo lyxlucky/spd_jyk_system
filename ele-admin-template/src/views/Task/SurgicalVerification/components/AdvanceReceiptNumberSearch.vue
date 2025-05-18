@@ -8,59 +8,53 @@
     size="mini"
     :inline="true"
   >
-    <el-row>
-      <el-col>
-        <el-form-item>
-          <el-input
-            size="mini"
-            clearable
-            v-model="where.condition"
-            style="width: 180px"
-            placeholder="请输入手术编号或住院号"
-          />
-        </el-form-item>
-        <el-form-item>
-          <el-select
-            @change="search"
-            v-model="where.MZZY"
-            size="mini"
-            placeholder=""
-            style="width: 100px"
-          >
-            <el-option label="全部" value="ALL"></el-option>
-            <el-option label="已提交" value="1"></el-option>
-            <el-option label="已拣配" value="2"></el-option>
-            <el-option label="已交接" value="3"></el-option>
-            <el-option label="已完成" value="4"></el-option>
-            <el-option label="已交接/已完成" value="-1"></el-option>
-          </el-select>
-        </el-form-item>
+    <el-form-item>
+      <el-input
+        clearable
+        v-model="where.condition"
+        style="width: 180px"
+        placeholder="请输入手术编号或住院号"
+      />
+    </el-form-item>
+    <el-form-item>
+      <el-select
+        @change="search"
+        v-model="where.MZZY"
+        size="mini"
+        placeholder=""
+        style="width: 100px"
+      >
+        <el-option label="全部" value="ALL"></el-option>
+        <el-option label="已提交" value="1"></el-option>
+        <el-option label="已拣配" value="2"></el-option>
+        <el-option label="已交接" value="3"></el-option>
+        <el-option label="已完成" value="4"></el-option>
+        <el-option label="已交接/已完成" value="-1"></el-option>
+      </el-select>
+    </el-form-item>
 
-        <el-form-item>
-          <el-input
-            size="mini"
-            clearable
-            v-model="where.SSFJ"
-            style="width: 120px"
-            placeholder="请输入术间"
-          />
-        </el-form-item>
+    <el-form-item>
+      <el-input
+        size="mini"
+        clearable
+        v-model="where.SSFJ"
+        style="width: 120px"
+        placeholder="请输入术间"
+      />
+    </el-form-item>
 
-        <el-form-item>
-          <el-button
-            size="mini"
-            type="primary"
-            icon="el-icon-search"
-            class="ele-btn-icon"
-            @click="search"
-          >
-            查询
-          </el-button>
-        </el-form-item>
-      </el-col>
-
-      <el-col>
-        <!-- <el-form-item>
+    <el-form-item>
+      <el-button
+        size="mini"
+        type="primary"
+        icon="el-icon-search"
+        class="ele-btn-icon"
+        @click="search"
+      >
+        查询
+      </el-button>
+    </el-form-item>
+    <!-- <el-form-item>
           <el-button
             size="mini"
             type="primary"
@@ -83,17 +77,23 @@
           </el-button>
         </el-form-item> -->
 
-        <el-form-item>
-          <el-button
-            type="primary"
-            size="mini"
-            icon="el-icon-thumb"
-            @click="handleScanQrCode"
-            >扫码交接</el-button
-          >
-        </el-form-item>
-      </el-col>
-    </el-row>
+    <el-form-item>
+      <el-button
+        type="primary"
+        size="mini"
+        icon="el-icon-thumb"
+        @click="handleScanQrCode"
+        >扫码交接</el-button
+      >
+    </el-form-item>
+    <el-form-item>
+      <el-button
+        type="primary"
+        :disabled="!rowData"
+        @click="showViewHandoverRecords()"
+        >查看交接记录</el-button
+      >
+    </el-form-item>
     <!-- <el-row :gutter="5" style="margin-top: 5px">
       <el-col v-bind="styleResponsive ? { lg: 14, md: 12 } : { span: 12 }">
         <el-input
@@ -155,6 +155,17 @@
         </div>
       </el-col>
     </el-row> -->
+    <el-dialog
+      title="交接记录"
+      :visible.sync="isShowViewHandoverRecords"
+      width="80%"
+      top="5vh"
+    >
+      <ViewHandoverRecords
+        :rowData="rowData"
+        :visible="isShowViewHandoverRecords"
+      ></ViewHandoverRecords>
+    </el-dialog>
   </el-form>
 </template>
 
@@ -165,13 +176,15 @@
     UpdateCommon2
   } from '@/api/KSInventory/ApplyTemp';
   import AdvanceReceiptNumberEdit from './AdvanceReceiptNumberEdit.vue';
+  import ViewHandoverRecords from './ViewHandoverRecords.vue';
   export default {
     props: {
       // 修改回显的数据
       rowData: Object
     },
     components: {
-      AdvanceReceiptNumberEdit
+      AdvanceReceiptNumberEdit,
+      ViewHandoverRecords
     },
     data() {
       // 默认表单数据
@@ -181,6 +194,7 @@
         SSFJ: ''
       };
       return {
+        isShowViewHandoverRecords: false,
         // 表单数据
         where: { ...defaultWhere },
         BZ: '',
@@ -203,6 +217,9 @@
       }
     },
     methods: {
+      showViewHandoverRecords() {
+        this.isShowViewHandoverRecords = true;
+      },
       /* 搜索 */
       search() {
         this.$emit('search', this.where);

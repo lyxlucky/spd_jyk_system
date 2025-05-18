@@ -1,6 +1,7 @@
 <template>
   <div class="ele-container">
     <ele-pro-table
+      class="style-table"
       ref="table"
       :columns="columns"
       :datasource="datasource"

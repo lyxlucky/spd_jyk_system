@@ -50,7 +50,7 @@
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
   :deep(.el-table .warning-row) {
     background: oldlace;
   }

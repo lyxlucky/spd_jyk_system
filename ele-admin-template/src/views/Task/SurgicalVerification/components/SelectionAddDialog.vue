@@ -38,6 +38,9 @@
             @click="submitItem"
             >确 定</el-button
           >
+          <el-button size="mini" type="success" @click="showNewUse"
+            >新增使用</el-button
+          >
         </template>
       </ele-pro-table>
 
@@ -57,6 +60,10 @@
         >
       </span> -->
     </ele-modal>
+
+    <el-dialog title="新增使用" :visible.sync="isShowNewUse" width="40%">
+      <NewUse :selection="selection"></NewUse>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -64,8 +71,12 @@
     GetBdszZqsjMainNoUseDel,
     addBdszZqsjMainPsDelUseV2
   } from '@/api/Task/SurgicalVerification';
+  import NewUse from './NewUse.vue';
   export default {
     name: 'selectionAddDialog',
+    components: {
+      NewUse
+    },
     props: ['visible'],
     data() {
       return {
@@ -165,7 +176,8 @@
         selection: [],
         // 当前编辑数据
         current: null,
-        AdvanceNumberTableCurrent: null
+        AdvanceNumberTableCurrent: null,
+        isShowNewUse: false
       };
     },
     methods: {
@@ -240,6 +252,9 @@
             this.$bus.$emit('SelectionAddDialogRefresh');
             loading.close();
           });
+      },
+      showNewUse() {
+        this.isShowNewUse = true;
       }
     },
     mounted() {

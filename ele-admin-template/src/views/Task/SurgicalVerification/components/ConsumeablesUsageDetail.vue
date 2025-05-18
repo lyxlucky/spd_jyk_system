@@ -1,6 +1,7 @@
 <template lang="">
   <div class="ele-box">
     <ele-pro-table
+      class="style-table"
       size="mini"
       ref="table"
       height="12vh"
@@ -54,8 +55,9 @@
     </ele-pro-table>
   </div>
 </template>
-<style scoped>
-  .ele-box {
+<style scoped lang="scss">
+  @import '@/styles/common.scss';
+  /* .ele-box {
     background-color: white;
     height: 100%;
     box-sizing: border-box;
@@ -85,7 +87,7 @@
     margin-top: 7px !important;
     padding: 0px 0;
     box-sizing: border-box;
-  }
+  } */
 </style>
 <script>
   import {

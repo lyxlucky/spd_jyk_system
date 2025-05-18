@@ -25,42 +25,6 @@
       </el-col>
     </el-row>
   </div>
-
-  <!-- <el-container style="margin: 20px; gap: 20px">
-      <el-aside width="500px">
-        <el-card shadow="always" style="height: 100%">
-          <div slot="header" class="clearfix">
-            <span>手术排期</span>
-          </div>
-          <AdvanceReceiptNumberTable
-            @getCurrent="getCurrent"
-          ></AdvanceReceiptNumberTable>
-        </el-card>
-      </el-aside>
-
-      <el-main style="padding: 0; width: calc(100% - 500px - 20px)">
-        <el-container direction="vertical" style="height: 100%; gap: 20px">
-          <el-card shadow="always" style="margin-bottom: 0">
-            <div slot="header" class="clearfix">
-              <span>耗材确认明细</span>
-            </div>
-            <AdvanceReceiptNumberDelTable
-              :ApplyTempTableData="ApplyTempTableData"
-              @selectionData="selectionData"
-            >
-            </AdvanceReceiptNumberDelTable>
-          </el-card>
-
-          <el-card shadow="always">
-            <div slot="header" class="clearfix">
-              <span>耗材消耗确认</span>
-            </div>
-            <ConsumeablesUsageDetail :masterCurrentData="ApplyTempTableData">
-            </ConsumeablesUsageDetail>
-          </el-card>
-        </el-container>
-      </el-main>
-    </el-container> -->
 </template>
 
 <script>
@@ -70,6 +34,7 @@
   import VarietyConsumptionTable from './components/VarietyConsumptionTable';
   import UDIListTable from './components/UDIListTable';
   import { KeeptListDeta } from '@/api/KSInventory/ApplyTemp';
+
   export default {
     name: 'ApplyTemp',
     props: ['IntroduceUserDefinedTempSearch'],
@@ -141,7 +106,8 @@
     }
   };
 </script>
-<style scoped>
+<style scoped lang="scss">
+  // @import '@/styles/common.scss';
   .ele-box {
     height: 100%;
     overflow: hidden;
