@@ -284,6 +284,13 @@
     methods: {
       /* 表格数据源 */
       async datasource({ page, limit, where, order }) {
+        //获取当前日期
+        if (!where.dateRange) {
+          where.dateRange = [
+            new Date().toISOString().split('T')[0],
+            new Date().toISOString().split('T')[0]
+          ];
+        }
         const res = await getBdSzYyHisSs({
           page,
           limit,
@@ -294,6 +301,7 @@
       },
       /* 刷新表格 */
       reload(where) {
+        console.log(where);
         this.$refs.table.reload({ page: 1, where: where });
       },
 

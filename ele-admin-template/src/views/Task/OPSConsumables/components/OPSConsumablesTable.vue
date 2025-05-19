@@ -124,7 +124,10 @@
         currentRow: null,
         // 查询参数
         where: {
-          dateRange: ['', ''],
+          dateRange: [
+            new Date().toISOString().split('T')[0],
+            new Date().toISOString().split('T')[0]
+          ],
           MZZY: '1',
           patientOrSurgeryName: '',
           SSBH: '',
@@ -301,6 +304,14 @@
       datasource({ page, limit, where }) {
         // 这里不实现具体方法，仅返回空数据结构
         where.MZZY = this.where.MZZY;
+        console.log(where.dateRange);
+        if (!where.dateRange) {
+          where.dateRange = [
+            new Date().toISOString().split('T')[0],
+            new Date().toISOString().split('T')[0]
+          ];
+        }
+
         return getBdSzYyHisSs({ page, limit, where })
           .then((data) => {
             return {

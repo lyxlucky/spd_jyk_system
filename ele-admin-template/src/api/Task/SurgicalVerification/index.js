@@ -7,6 +7,8 @@ export async function getBdSzYyHisSs(params) {
     Token: sessionStorage.getItem(TOKEN_STORE_NAME),
     MZZY: params.where.MZZY == 'ALL' ? '' : params.where.MZZY || '-1',
     SSFJ: params.where.SSFJ || '',
+    start_time: params.where?.dateRange ? params.where?.dateRange[0] : '',
+    end_time: params.where?.dateRange ? params.where?.dateRange[1] : '',
     condition: params.where.condition || '',
     page: params.page || 1,
     size: params.limit || 10
