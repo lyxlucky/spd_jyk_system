@@ -94,6 +94,9 @@
               >打印</el-button
             >
             <el-button type="primary" @click="handleExport">导出</el-button>
+            <el-button type="primary" @click="handleExportCurrent"
+              >导出当前</el-button
+            >
           </el-form-item>
         </el-form>
       </template>
@@ -112,7 +115,8 @@
   import { exportToExcel } from '@/utils/excel-util.js';
   import {
     getBdSzYyHisSs,
-    GetBdszZgsjMainPsDelExcel
+    GetBdszZgsjMainPsDelExcel,
+    GetBdszZgsjMainPsDelExcelDetail
   } from '@/api/Task/OPSConsumables';
   export default {
     name: 'OPSConsumablesTable',
@@ -234,7 +238,7 @@
             width: 120,
             formatter: (row, column, cellValue, index) => {
               // return this.$util.toDateString(cellValue, 'YYYY-MM-DD HH:mm:ss');
-              return this.$moment(cellValue).format('YYYY-MM-DD');
+              return this.$moment(cellValue).format('YYYYY-MM-DD HH:mm:ss');
             },
             showOverflowTooltip: true
           },
@@ -264,6 +268,22 @@
       handleEditItem(data) {
         this.$bus.$emit('OPSConsumablesTableRowCurrent', data);
         this.updateUserInfoDialogVisible = true;
+      },
+      handleExportCurrent() {
+        if (!this.currentRow) {
+          this.$message.error('请先选择一行数据！');
+        }
+        let loading = this.$messageLoading('导出中');
+        GetBdszZgsjMainPsDelExcelDetail({ ID: this.currentRow?.ID })
+          .then((res) => {
+            loading.close();
+            const url = `${BACK_BASE_URL}/Excel/files/${res.msg}`;
+            window.open(url.replace('/undefined', ''));
+          })
+          .catch(() => {
+            loading.close();
+            this.$message.error('导出失败！');
+          });
       },
       handleExport() {
         let loading = this.$messageLoading('导出中');

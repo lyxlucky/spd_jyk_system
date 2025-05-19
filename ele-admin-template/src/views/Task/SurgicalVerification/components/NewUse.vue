@@ -78,9 +78,14 @@
           this.$message.warning('请选择数据');
           return;
         }
+        if (!this.ApplyTempTableData?.SSBH) {
+          this.$message.warning('请先选择术间');
+          return;
+        }
         let loading = this.$messageLoading('新增中');
         addNewBdszZq({
           ...this.form,
+          SSBH: this.ApplyTempTableData?.SSBH,
           data: this.selection
         })
           .then((res) => {

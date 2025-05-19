@@ -190,3 +190,25 @@ export async function updateBdSzHisSurgery(params) {
   return Promise.reject(res.data);
 }
 
+
+//导出当前
+export async function GetBdszZgsjMainPsDelExcelDetail(params) {
+  const formatData = {
+    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+    ID: params.ID || '',
+  };
+
+  let res = await request.post(
+    '/DeptPlanTransfer/GetBdszZgsjMainPsDelExcelDetail',
+    formatData
+  );
+
+  if (res.data.code == 200) {
+    return res.data;
+  }
+  return Promise.reject(res.data);
+}
+
+
+
+
