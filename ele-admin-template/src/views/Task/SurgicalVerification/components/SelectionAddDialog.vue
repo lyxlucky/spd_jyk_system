@@ -25,22 +25,28 @@
         cache-key="SelectionAddDialogTableCacheKey"
       >
         <template slot="toolbar">
-          <el-button
-            size="mini"
-            icon="el-icon-close"
-            @click="updateVisible(false)"
-            >取 消</el-button
-          >
-          <el-button
-            size="mini"
-            icon="el-icon-check"
-            type="primary"
-            @click="submitItem"
-            >确认使用</el-button
-          >
-          <el-button size="mini" type="success" @click="showNewUse"
-            >转移至新手术单</el-button
-          >
+          <div class="form-box">
+            <div>
+              <el-button
+                size="mini"
+                icon="el-icon-close"
+                @click="updateVisible(false)"
+                >取 消</el-button
+              >
+              <el-button
+                size="mini"
+                icon="el-icon-check"
+                type="primary"
+                @click="submitItem"
+                >确认使用</el-button
+              >
+            </div>
+            <div>
+              <el-button size="mini" type="success" @click="showNewUse"
+                >转移至新手术单</el-button
+              >
+            </div>
+          </div>
         </template>
       </ele-pro-table>
 
@@ -277,4 +283,11 @@
     }
   };
 </script>
-<style lang=""></style>
+<style lang="scss">
+  .form-box {
+    display: flex;
+    justify-content: space-between;
+    padding-right: 5px;
+    flex-wrap: wrap;
+  }
+</style>
