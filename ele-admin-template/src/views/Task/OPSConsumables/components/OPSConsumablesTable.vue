@@ -124,13 +124,18 @@
       UpdateUserInfoDialog
     },
     data() {
+      const today = new Date();
+      const yesterday = new Date(today);
+      yesterday.setDate(today.getDate() - 1);
+      const tomorrow = new Date(today);
+      tomorrow.setDate(today.getDate() + 1);
       return {
         currentRow: null,
         // 查询参数
         where: {
           dateRange: [
-            new Date().toISOString().split('T')[0],
-            new Date().toISOString().split('T')[0]
+            yesterday.toISOString().split('T')[0],
+            tomorrow.toISOString().split('T')[0]
           ],
           MZZY: '1',
           patientOrSurgeryName: '',
@@ -274,7 +279,10 @@
           this.$message.error('请先选择一行数据！');
         }
         let loading = this.$messageLoading('导出中');
-        GetBdszZgsjMainPsDelExcelDetail({ ID: this.currentRow?.ID })
+        GetBdszZgsjMainPsDelExcelDetail({
+          SSBH: this.currentRow?.SSBH,
+          FYXH: this.currentRow?.FYXH
+        })
           .then((res) => {
             loading.close();
             const url = `${BACK_BASE_URL}/Excel/files/${res.msg}`;

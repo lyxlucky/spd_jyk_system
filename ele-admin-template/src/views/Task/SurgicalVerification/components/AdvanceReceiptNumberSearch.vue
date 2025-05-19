@@ -207,9 +207,16 @@
     },
     data() {
       // 默认表单数据
-      const today = new Date().toISOString().split('T')[0];
+      const today = new Date();
+      const yesterday = new Date(today);
+      yesterday.setDate(today.getDate() - 1);
+      const tomorrow = new Date(today);
+      tomorrow.setDate(today.getDate() + 1);
       const defaultWhere = {
-        dateRange: [today, today],
+        dateRange: [
+          yesterday.toISOString().split('T')[0],
+          tomorrow.toISOString().split('T')[0]
+        ],
         MZZY: '-1',
         condition: '',
         SSFJ: ''

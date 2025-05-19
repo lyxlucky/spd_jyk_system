@@ -195,7 +195,8 @@ export async function updateBdSzHisSurgery(params) {
 export async function GetBdszZgsjMainPsDelExcelDetail(params) {
   const formatData = {
     Token: sessionStorage.getItem(TOKEN_STORE_NAME),
-    ID: params.ID || '',
+    SSBH:params?.SSBH || '',
+    FYXH:params?.FYXH || ''
   };
 
   let res = await request.post(

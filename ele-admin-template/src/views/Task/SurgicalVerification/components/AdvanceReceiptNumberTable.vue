@@ -239,18 +239,19 @@
               return firstChar + middleStars + lastChar;
             }
           },
-          {
-            label: '操作',
-            width: 160,
-            align: 'center',
-            slot: 'ACTION'
-          },
+
           {
             prop: 'SSMC',
             label: '手术名称',
             align: 'center',
             showOverflowTooltip: true,
             minWidth: 180
+          },
+          {
+            label: '操作',
+            width: 160,
+            align: 'center',
+            slot: 'ACTION'
           },
           {
             prop: 'SSRQ',

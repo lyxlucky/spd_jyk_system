@@ -213,7 +213,7 @@
             width: 180
           },
           {
-            prop: 'UDI',
+            prop: 'UDI_TOP',
             label: 'UDI',
             align: 'center',
             width: 120
