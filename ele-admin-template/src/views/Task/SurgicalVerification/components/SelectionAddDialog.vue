@@ -68,7 +68,7 @@
     </ele-modal>
 
     <el-dialog
-      title="新增使用"
+      title="转移至新手术单"
       :visible.sync="isShowNewUse"
       width="40%"
       top="1vh"

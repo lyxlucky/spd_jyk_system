@@ -174,7 +174,12 @@
               }
             }
           },
-
+          {
+            prop: 'SSFJ',
+            label: '术间',
+            align: 'center',
+            width: 70
+          },
           {
             prop: 'SSTH',
             label: '手术台号',
@@ -196,12 +201,20 @@
               if (!cellValue) {
                 return '';
               }
+              if (cellValue.length == 1) {
+                return cellValue + '*';
+              }
               if (!cellValue || cellValue.length == 2)
                 return cellValue[0] + '*';
               const firstChar = cellValue[0];
               const lastChar = cellValue[cellValue.length - 1];
               const middleStars = '*'.repeat(cellValue.length - 2);
               return firstChar + middleStars + lastChar;
+            },
+            excelConfig: {
+              formatter: (cellValue) => {
+                return cellValue;
+              }
             }
           },
           {
@@ -220,7 +233,8 @@
             align: 'center',
             width: 120,
             formatter: (row, column, cellValue, index) => {
-              return this.$util.toDateString(cellValue, 'YYYY-MM-DD HH:mm:ss');
+              // return this.$util.toDateString(cellValue, 'YYYY-MM-DD HH:mm:ss');
+              return this.$moment(cellValue).format('YYYY-MM-DD');
             },
             showOverflowTooltip: true
           },

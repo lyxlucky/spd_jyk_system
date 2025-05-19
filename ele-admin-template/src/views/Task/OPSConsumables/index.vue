@@ -18,7 +18,7 @@
         </el-row>
         <el-row :gutter="0" style="height: 50%">
           <el-col :span="24" style="height: 100%">
-            <OPSDeliveryConsumablesTable :MZZY="MZZY" />
+            <OPSDeliveryConsumablesTable :MZZY="MZZY" ref="table3" />
           </el-col>
         </el-row>
       </el-col>
@@ -67,5 +67,6 @@
 <style scoped>
   .ele-box {
     height: 100%;
+    max-height: 100vh;
   }
 </style>

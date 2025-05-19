@@ -44,15 +44,7 @@
           术间:<el-tag size="mini">{{ ApplyTempTableData?.SSFJ }}</el-tag
           >手术台号:<el-tag size="mini">{{ ApplyTempTableData?.SSTH }}</el-tag
           >住院号:<el-tag size="mini">{{ ApplyTempTableData?.ZYHM }}</el-tag
-          >姓名:<el-tag size="mini">{{
-            ApplyTempTableData?.BRXM
-              ? ApplyTempTableData.BRXM.length === 2
-                ? ApplyTempTableData.BRXM[0] + '*'
-                : ApplyTempTableData.BRXM[0] +
-                  '*'.repeat(ApplyTempTableData.BRXM.length - 2) +
-                  ApplyTempTableData.BRXM[ApplyTempTableData.BRXM.length - 1]
-              : ''
-          }}</el-tag>
+          >姓名:<el-tag size="mini">{{ tipsContent }}</el-tag>
         </div>
       </el-form-item>
     </el-form>
@@ -112,6 +104,29 @@
           return false;
         }
         return true;
+      },
+      tipsContent() {
+        if (
+          !this.ApplyTempTableData &&
+          Object.keys(this.ApplyTempTableData).length == 0
+        ) {
+          return '';
+        }
+        let BRXM = this.ApplyTempTableData?.BRXM;
+        if (!BRXM) {
+          return '';
+        }
+        if (BRXM.length == 1) {
+          return BRXM + '*';
+        }
+        if (BRXM.length == 2) {
+          return BRXM[0] + '*';
+        }
+
+        const firstChar = BRXM[0];
+        const lastChar = BRXM[BRXM.length - 1];
+        const middleStars = '*'.repeat(BRXM.length - 2);
+        return firstChar + middleStars + lastChar;
       },
       isAddVarietieEnable() {
         return (

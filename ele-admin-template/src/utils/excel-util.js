@@ -76,27 +76,28 @@ import { utils, writeFile } from 'xlsx'; // 添加xlsx库的引入
     ws['!cols'] = colsArray
 
     // 设置单元格样式
-    for (let row = 0; row < excelData.length; row++) {
-      for (let col = 0; col < fields.length; col++) {
-        const cellRef = utils.encode_cell({ r: row, c: col });
-        if (row === 0) {
-          // 表头样式
-          ws[cellRef].s = {
-            font: { bold: true },
-            alignment: { horizontal: 'center', vertical: 'center', wrapText: false },
-            fill: { fgColor: { rgb: "CCCCCC" } }
-          };
-        } else if (fields[col].style) {
-          // 数据单元格自定义样式
-          ws[cellRef].s = fields[col].style;
-        } else {
-          // 默认数据单元格样式 - 根据配置决定是否自动换行
-          ws[cellRef].s = {
-            alignment: { horizontal: 'left', vertical: 'center', wrapText: fields[col].wrapText }
-          };
-        }
-      }
-    }
+    // for (let row = 0; row < excelData.length; row++) {
+    //   for (let col = 0; col < fields.length; col++) {
+    //     const cellRef = utils.encode_cell({ r: row, c: col });
+    //     console.log(cellRef)
+    //     if (row === 0) {
+    //       // 表头样式
+    //       ws[cellRef].s = {
+    //         font: { bold: true },
+    //         alignment: { horizontal: 'center', vertical: 'center', wrapText: false },
+    //         fill: { fgColor: { rgb: "CCCCCC" } }
+    //       };
+    //     } else if (fields[col].style) {
+    //       // 数据单元格自定义样式
+    //       ws[cellRef].s = fields[col].style;
+    //     } else {
+    //       // 默认数据单元格样式 - 根据配置决定是否自动换行
+    //       ws[cellRef].s = {
+    //         alignment: { horizontal: 'left', vertical: 'center', wrapText: fields[col].wrapText }
+    //       };
+    //     }
+    //   }
+    // }
     
     // 创建工作簿
     const wb = {

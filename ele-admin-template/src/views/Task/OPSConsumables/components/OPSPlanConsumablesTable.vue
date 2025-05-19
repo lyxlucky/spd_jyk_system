@@ -213,6 +213,12 @@
             width: 180
           },
           {
+            prop: 'UDI',
+            label: 'UDI',
+            align: 'center',
+            width: 120
+          },
+          {
             prop: 'APPROVAL_NUMBER',
             label: '注册证号',
             align: 'center',
@@ -363,6 +369,8 @@
             loading.close();
             this.selection = []; // 清空选择
             this.reload(); // 刷新表格数据
+            //刷新下面表格
+            this.$bus.$emit('OPSPlanConsumablesTableAddDefNoPkgCode', null);
           });
       }
     },

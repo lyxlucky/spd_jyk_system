@@ -224,15 +224,27 @@
             showOverflowTooltip: true,
             minWidth: 70,
             formatter: (row, column, cellValue) => {
+              if (!cellValue) {
+                return '';
+              }
+              if (cellValue.length == 1) {
+                return cellValue + '*';
+              }
               if (!cellValue || cellValue.length == 2)
                 return cellValue[0] + '*';
+
               const firstChar = cellValue[0];
               const lastChar = cellValue[cellValue.length - 1];
               const middleStars = '*'.repeat(cellValue.length - 2);
               return firstChar + middleStars + lastChar;
             }
           },
-
+          {
+            label: '操作',
+            width: 160,
+            align: 'center',
+            slot: 'ACTION'
+          },
           {
             prop: 'SSMC',
             label: '手术名称',
@@ -255,12 +267,6 @@
             label: '手术编号',
             align: 'center',
             width: 70
-          },
-          {
-            label: '操作',
-            width: 300,
-            align: 'center',
-            slot: 'ACTION'
           }
         ],
         toolbar: false,
@@ -360,7 +366,7 @@
         if (!row) {
           return this.$message.warning('请先选择一条数据');
         }
-        this.$prompt('请输入备注信息', '术中交接', {
+        this.$prompt('请输入备注信息', '接班', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           inputPlaceholder: '请输入备注信息'
