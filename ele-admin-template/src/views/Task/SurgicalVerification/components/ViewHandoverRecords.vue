@@ -120,6 +120,55 @@
             }
           },
           {
+            prop: 'VARIETIE_CODE_NEW',
+            label: '品种编码',
+            align: 'center',
+            width: 120
+          },
+          {
+            prop: 'VARIETIE_NAME',
+            label: '品种名称',
+            align: 'center',
+            width: 120
+          },
+          {
+            prop: 'CHARGING_CODE',
+            label: '收费编码',
+            align: 'center',
+            width: 120
+          },
+          {
+            prop: 'SPECIFICATION_OR_TYPE',
+            label: '规格型号',
+            align: 'center',
+            width: 120
+          },
+          {
+            prop: 'MANUFACTURING_ENT_NAME',
+            label: '生产企业',
+            align: 'center',
+            width: 120
+          },
+          //   {
+          //     prop: 'BATCH',
+          //     label: '批号',
+          //     align: 'center',
+          //     width: 120
+          //   },
+          {
+            prop: 'BATCH_PRODUCTION_DATE',
+            label: '生产日期',
+            align: 'center',
+            width: 120
+          },
+          {
+            prop: 'BATCH_VALIDITY_PERIOD',
+            label: '有效期',
+            align: 'center',
+            width: 120
+          },
+
+          {
             prop: 'HANDOVER_REMARK',
             label: '交接备注',
             align: 'center',

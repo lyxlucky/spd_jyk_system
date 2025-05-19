@@ -35,17 +35,26 @@
           >勾选添加</el-button
         >
       </el-form-item>
-      <div
-        v-show="
-          ApplyTempTableData && Object.keys(ApplyTempTableData).length != 0
-        "
-      >
-        术间:<el-tag size="mini">{{ ApplyTempTableData?.SSFJ }}</el-tag
-        >手术台号:<el-tag size="mini">{{ ApplyTempTableData?.SSTH }}</el-tag
-        >住院号:<el-tag size="mini">{{ ApplyTempTableData?.ZYHM }}</el-tag
-        >姓名:<el-tag size="mini">{{ ApplyTempTableData?.BRXM }}</el-tag
-        >手术名称:<el-tag size="mini">{{ ApplyTempTableData?.SSMC }}</el-tag>
-      </div>
+      <el-form-item class="info-box">
+        <div
+          v-show="
+            ApplyTempTableData && Object.keys(ApplyTempTableData).length != 0
+          "
+        >
+          术间:<el-tag size="mini">{{ ApplyTempTableData?.SSFJ }}</el-tag
+          >手术台号:<el-tag size="mini">{{ ApplyTempTableData?.SSTH }}</el-tag
+          >住院号:<el-tag size="mini">{{ ApplyTempTableData?.ZYHM }}</el-tag
+          >姓名:<el-tag size="mini">{{
+            ApplyTempTableData?.BRXM
+              ? ApplyTempTableData.BRXM.length === 2
+                ? ApplyTempTableData.BRXM[0] + '*'
+                : ApplyTempTableData.BRXM[0] +
+                  '*'.repeat(ApplyTempTableData.BRXM.length - 2) +
+                  ApplyTempTableData.BRXM[ApplyTempTableData.BRXM.length - 1]
+              : ''
+          }}</el-tag>
+        </div>
+      </el-form-item>
     </el-form>
     <!-- <AuthVarTable
       :visible.sync="dialogTableVisible"
@@ -53,6 +62,12 @@
     /> -->
   </div>
 </template>
+
+<style lang="scss" scoped>
+  :deep(.info-box > .el-form-item__content) {
+    max-width: none !important;
+  }
+</style>
 
 <script>
   import { utils, read } from 'xlsx';

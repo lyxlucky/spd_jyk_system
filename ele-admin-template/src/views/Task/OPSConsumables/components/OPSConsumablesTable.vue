@@ -125,7 +125,7 @@
         // 查询参数
         where: {
           dateRange: ['', ''],
-          MZZY: '-1',
+          MZZY: '1',
           patientOrSurgeryName: '',
           SSBH: '',
           SSTH: ''
@@ -150,16 +150,7 @@
           //     return cellValue === '1' ? '门诊' : '住院';
           //   }
           // },
-          {
-            prop: 'SSRQ',
-            label: '手术日期',
-            align: 'center',
-            width: 120,
-            formatter: (row, column, cellValue, index) => {
-              return this.$util.toDateString(cellValue, 'YYYY-MM-DD HH:mm:ss');
-            },
-            showOverflowTooltip: true
-          },
+
           {
             prop: 'STATE',
             label: '状态',
@@ -180,12 +171,7 @@
               }
             }
           },
-          {
-            prop: 'SSBH',
-            label: '手术编号',
-            align: 'center',
-            width: 70
-          },
+
           {
             prop: 'SSTH',
             label: '手术台号',
@@ -224,6 +210,22 @@
             excelConfig: {
               wrapText: true
             }
+          },
+          {
+            prop: 'SSRQ',
+            label: '手术日期',
+            align: 'center',
+            width: 120,
+            formatter: (row, column, cellValue, index) => {
+              return this.$util.toDateString(cellValue, 'YYYY-MM-DD HH:mm:ss');
+            },
+            showOverflowTooltip: true
+          },
+          {
+            prop: 'SSBH',
+            label: '手术编号',
+            align: 'center',
+            width: 70
           },
           {
             slot: 'ACTION',

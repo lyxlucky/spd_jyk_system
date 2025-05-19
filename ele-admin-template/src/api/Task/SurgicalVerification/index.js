@@ -241,12 +241,17 @@ export async function ListBdSzHisInSurgery(data) {
 // 新增使用
 export async function addNewBdszZq(data) {
   const formatData = {
-    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
-    SJBH: data.SJBH || '',
-    ZYHM: data.ZYHM || '',
-    BRXM: data.BRXM || '',
-    SSMC: data.SSMC || '',
-    data: data.data || []
+    Token: sessionStorage.getItem(TOKEN_STORE_NAME), 
+    SSBH: data.SSBH || '', // 手术编号
+    SSFJ: data.SSFJ || '', // 手术房间
+    SSTH: data.SSTH || '', // 手术台号
+    ZYHM: data.ZYHM || '', // 住院号码
+    BRXM: data.BRXM || '', // 病人姓名
+    BRXB: data.BRXB || '', // 病人性别
+    SSMC: data.SSMC || '', // 手术名称
+    SSRQ: data.SSRQ || '', // 手术日期
+    KSMC: data.KSMC || '', // 科室名称
+    data: data.data || [] // 数据列表
   };
 
   let res = await request.post(

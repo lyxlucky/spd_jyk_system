@@ -128,6 +128,12 @@
             showOverflowTooltip: true
           },
           {
+            prop: 'USE_COUNT',
+            label: '数量',
+            align: 'center',
+            width: 80
+          },
+          {
             prop: 'UNIT',
             label: '单位',
             align: 'center',

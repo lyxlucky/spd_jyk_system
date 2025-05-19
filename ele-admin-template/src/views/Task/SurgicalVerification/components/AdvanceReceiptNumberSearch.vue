@@ -9,6 +9,17 @@
     :inline="true"
   >
     <el-form-item>
+      <el-date-picker
+        v-model="where.dateRange"
+        type="daterange"
+        range-separator="至"
+        start-placeholder="开始日期"
+        end-placeholder="结束日期"
+        value-format="yyyy-MM-dd"
+        style="width: 240px"
+      ></el-date-picker>
+    </el-form-item>
+    <el-form-item>
       <el-input
         clearable
         v-model="where.condition"
@@ -87,12 +98,20 @@
       >
     </el-form-item>
     <el-form-item>
-      <el-button
-        type="primary"
-        :disabled="!rowData"
-        @click="showViewHandoverRecords()"
+      <el-button type="primary" @click="showViewHandoverRecords()"
         >查看交接记录</el-button
       >
+    </el-form-item>
+    <el-form-item>
+      <el-button
+        size="mini"
+        type="primary"
+        class="ele-btn-icon"
+        icon="el-icon-reading"
+        @click="catDefNoPkgCode"
+      >
+        查看定数码标签
+      </el-button>
     </el-form-item>
     <!-- <el-row :gutter="5" style="margin-top: 5px">
       <el-col v-bind="styleResponsive ? { lg: 14, md: 12 } : { span: 12 }">
@@ -188,7 +207,9 @@
     },
     data() {
       // 默认表单数据
+      const today = new Date().toISOString().split('T')[0];
       const defaultWhere = {
+        dateRange: [today, today],
         MZZY: '-1',
         condition: '',
         SSFJ: ''
@@ -227,9 +248,9 @@
       // approve() {
       //   this.$emit('approve', this.where);
       // },
-      // catDefNoPkgCode() {
-      //   this.$emit('catDefNoPkgCode', this.where);
-      // },
+      catDefNoPkgCode() {
+        this.$emit('catDefNoPkgCode', this.where);
+      },
       handleScanQrCode() {
         this.$emit('handleScanQrCode', this.where);
       },

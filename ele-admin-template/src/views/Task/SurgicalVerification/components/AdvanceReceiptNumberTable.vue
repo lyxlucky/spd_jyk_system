@@ -10,6 +10,7 @@
       <AdvanceReceiptNumberSearch
         @search="reload"
         @handleScanQrCode="handleScanQrCode"
+        @catDefNoPkgCode="handleCatDefNoPkgCode"
         :rowData="current"
         style="padding: 0px"
       />
@@ -64,13 +65,14 @@
           icon="el-icon-edit"
           @click="handleEditItem(row)"
           type="primary"
-          >修改</el-button
+          >转单</el-button
         >
         <el-button
           size="mini"
           type="primary"
+          :disabled="row.STATE == '4'"
           @click="handleIntraoperativeHandover(row)"
-          >术中交接</el-button
+          >接班</el-button
         >
       </template>
     </ele-pro-table>
@@ -174,16 +176,7 @@
           //     if (cellValue == '2') return '住院';
           //   }
           // },
-          {
-            prop: 'SSRQ',
-            label: '手术时间',
-            align: 'center',
-            showOverflowTooltip: true,
-            width: 120,
-            formatter: (row, column, cellValue, index) => {
-              return this.$util.toDateString(cellValue, 'YYYY-MM-DD HH:mm:ss');
-            }
-          },
+
           {
             prop: 'STATE',
             label: '状态',
@@ -204,12 +197,7 @@
               }
             }
           },
-          {
-            prop: 'SSBH',
-            label: '手术编号',
-            align: 'center',
-            width: 70
-          },
+
           {
             prop: 'SSFJ',
             label: '术间',
@@ -251,6 +239,22 @@
             align: 'center',
             showOverflowTooltip: true,
             minWidth: 180
+          },
+          {
+            prop: 'SSRQ',
+            label: '手术时间',
+            align: 'center',
+            showOverflowTooltip: true,
+            width: 120,
+            formatter: (row, column, cellValue, index) => {
+              return this.$util.toDateString(cellValue, 'YYYY-MM-DD HH:mm:ss');
+            }
+          },
+          {
+            prop: 'SSBH',
+            label: '手术编号',
+            align: 'center',
+            width: 70
           },
           {
             label: '操作',

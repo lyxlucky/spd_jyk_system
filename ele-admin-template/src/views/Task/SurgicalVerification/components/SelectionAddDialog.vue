@@ -36,10 +36,10 @@
             icon="el-icon-check"
             type="primary"
             @click="submitItem"
-            >确 定</el-button
+            >确认使用</el-button
           >
           <el-button size="mini" type="success" @click="showNewUse"
-            >新增使用</el-button
+            >转移至新手术单</el-button
           >
         </template>
       </ele-pro-table>
@@ -61,8 +61,18 @@
       </span> -->
     </ele-modal>
 
-    <el-dialog title="新增使用" :visible.sync="isShowNewUse" width="40%">
-      <NewUse :selection="selection"></NewUse>
+    <el-dialog
+      title="新增使用"
+      :visible.sync="isShowNewUse"
+      width="40%"
+      top="1vh"
+      destroy-on-close
+    >
+      <NewUse
+        :selection="selection"
+        @close="isShowNewUse = false"
+        :ApplyTempTableData="ApplyTempTableData"
+      ></NewUse>
     </el-dialog>
   </div>
 </template>
@@ -77,7 +87,7 @@
     components: {
       NewUse
     },
-    props: ['visible'],
+    props: ['visible', 'ApplyTempTableData'],
     data() {
       return {
         columns: [

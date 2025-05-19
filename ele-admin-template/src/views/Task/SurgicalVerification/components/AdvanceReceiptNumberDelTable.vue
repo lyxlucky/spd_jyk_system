@@ -53,6 +53,7 @@
     </UDIScanAddDialog>
 
     <SelectionAddDialog
+      :ApplyTempTableData="ApplyTempTableData"
       :visible.sync="selectionDialogVisible"
     ></SelectionAddDialog>
   </div>
