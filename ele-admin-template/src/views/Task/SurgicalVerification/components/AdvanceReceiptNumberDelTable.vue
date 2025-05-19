@@ -164,7 +164,7 @@
             showOverflowTooltip: true
           },
           {
-            prop: 'USE_COUNT',
+            prop: 'DEF_USE_QTY',
             label: '使用数量',
             align: 'center',
             width: 100
