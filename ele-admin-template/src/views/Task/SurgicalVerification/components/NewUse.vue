@@ -1,9 +1,6 @@
 <template>
   <div class="ele-box">
     <el-form size="mini" label-position="left">
-      <el-form-item label="术间编号">
-        <el-input v-model="form.SJBH" placeholder="请输入术间编号" clearable />
-      </el-form-item>
       <el-form-item label="住院号">
         <el-input v-model="form.ZYHM" placeholder="请输入住院号" clearable />
       </el-form-item>
@@ -60,7 +57,6 @@
     data() {
       return {
         form: {
-          SJBH: '', // 术间编号
           SSFJ: '', // 手术房间
           SSTH: '', // 手术台号
           ZYHM: '', // 住院号
