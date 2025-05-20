@@ -26,6 +26,7 @@
       class="style-table"
       size="mini"
       height="30vh"
+      :initLoad="false"
       highlight-current-row
       @current-change="onCurrentChange"
       :row-class-name="tableRowClassName"

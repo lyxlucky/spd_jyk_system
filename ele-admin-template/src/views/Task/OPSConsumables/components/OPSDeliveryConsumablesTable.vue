@@ -107,7 +107,7 @@
       datasource({ page, limit, where }) {
         // 这里不实现具体方法，仅返回空数据结构
         where.MZZY = this.MZZY;
-        return getBdszZgsjMainPsDel({ where })
+        return getBdszZgsjMainPsDel({ page, limit, where })
           .then((data) => {
             this.$bus.$emit('OPSDeliveryConsumablesTableData', data.data);
             return {

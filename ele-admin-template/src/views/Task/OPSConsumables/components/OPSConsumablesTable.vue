@@ -4,7 +4,7 @@
     <ele-pro-table
       size="mini"
       ref="table"
-      :auto-reload="false"
+      :initLoad="false"
       @row-click="handleRowClick"
       :columns="columns"
       height="50vh"

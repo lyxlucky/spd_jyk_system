@@ -181,7 +181,7 @@
       };
     },
     created() {
-      this.where.SSBH = this.rowData?.SSBH;
+      // this.where.SSBH = this.rowData?.SSBH;
     },
 
     methods: {
