@@ -1,7 +1,7 @@
 <template>
   <div class="ele-box">
     <el-form size="mini" label-position="left">
-      <el-form-item label="术间">
+      <el-form-item label="术间编号">
         <el-input v-model="form.SJBH" placeholder="请输入术间编号" clearable />
       </el-form-item>
       <el-form-item label="住院号">

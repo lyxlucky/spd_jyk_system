@@ -106,6 +106,7 @@
     </el-dialog>
     <SelectionAddDialog
       :visible.sync="selectionDialogVisible"
+      :ApplyTempTableData="TableRowData1"
     ></SelectionAddDialog>
   </div>
 </template>

@@ -4,6 +4,7 @@
     <ele-pro-table
       size="mini"
       ref="table"
+      :auto-reload="false"
       @row-click="handleRowClick"
       :columns="columns"
       height="50vh"
@@ -95,7 +96,7 @@
             >
             <el-button type="primary" @click="handleExport">导出</el-button>
             <el-button type="primary" @click="handleExportCurrent"
-              >导出当前</el-button
+              >打印2</el-button
             >
           </el-form-item>
         </el-form>
@@ -243,7 +244,10 @@
             width: 120,
             formatter: (row, column, cellValue, index) => {
               // return this.$util.toDateString(cellValue, 'YYYY-MM-DD HH:mm:ss');
-              return this.$moment(cellValue).format('YYYYY-MM-DD HH:mm:ss');
+              if (!cellValue) {
+                return '';
+              }
+              return this.$moment(cellValue).format('YYYY-MM-DD HH:mm:ss');
             },
             showOverflowTooltip: true
           },
@@ -275,8 +279,9 @@
         this.updateUserInfoDialogVisible = true;
       },
       handleExportCurrent() {
-        if (!this.currentRow) {
+        if (!this.currentRow || Object.keys(this.currentRow).length === 0) {
           this.$message.error('请先选择一行数据！');
+          return;
         }
         let loading = this.$messageLoading('导出中');
         GetBdszZgsjMainPsDelExcelDetail({
@@ -307,6 +312,17 @@
       },
       changeMZZY(val) {
         this.$emit('changeMZZY', val);
+      },
+      getInitDate() {
+        const today = new Date();
+        const yesterday = new Date(today);
+        yesterday.setDate(today.getDate() - 1);
+        const tomorrow = new Date(today);
+        tomorrow.setDate(today.getDate() + 1);
+        return [
+          yesterday.toISOString().split('T')[0],
+          tomorrow.toISOString().split('T')[0]
+        ];
       },
       handlePrint() {
         if (this?.currentRow == undefined)
@@ -347,12 +363,6 @@
         // 这里不实现具体方法，仅返回空数据结构
         where.MZZY = this.where.MZZY;
         console.log(where.dateRange);
-        if (!where.dateRange) {
-          where.dateRange = [
-            new Date().toISOString().split('T')[0],
-            new Date().toISOString().split('T')[0]
-          ];
-        }
 
         return getBdSzYyHisSs({ page, limit, where })
           .then((data) => {
@@ -376,6 +386,9 @@
     created() {
       // 初始化时加载数据
       // this.reload();
+      this.$nextTick(() => {
+        this.reload();
+      });
     },
     beforeDestroy() {
       this.$bus.$off('OPSConsumablesTableRowCurrent');

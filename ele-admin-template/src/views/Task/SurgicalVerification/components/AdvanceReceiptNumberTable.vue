@@ -8,6 +8,7 @@
     -->
     <div class="search-toolbar">
       <AdvanceReceiptNumberSearch
+        ref="formRef"
         @search="reload"
         @handleScanQrCode="handleScanQrCode"
         @catDefNoPkgCode="handleCatDefNoPkgCode"
@@ -292,12 +293,6 @@
       /* 表格数据源 */
       async datasource({ page, limit, where, order }) {
         //获取当前日期
-        if (!where.dateRange) {
-          where.dateRange = [
-            new Date().toISOString().split('T')[0],
-            new Date().toISOString().split('T')[0]
-          ];
-        }
         const res = await getBdSzYyHisSs({
           page,
           limit,
@@ -308,7 +303,6 @@
       },
       /* 刷新表格 */
       reload(where) {
-        console.log(where);
         this.$refs.table.reload({ page: 1, where: where });
       },
 
@@ -419,6 +413,7 @@
           });
       }
     },
+
     mounted() {
       this.$bus.$on(
         'handleSubmitConsumeVarietiesAndRefreshTopTable',
@@ -450,6 +445,9 @@
     created() {
       // this.getdatasource();
       // console.log(this.$store.state.user.info.DeptNow.Dept_Two_Code);
+      this.$nextTick(() => {
+        this.$refs.formRef.search();
+      });
     }
   };
 </script>
