@@ -104,7 +104,7 @@
         >查看交接记录</el-button
       >
     </el-form-item>
-    <el-form-item>
+    <!-- <el-form-item>
       <el-button
         size="mini"
         type="primary"
@@ -114,7 +114,7 @@
       >
         查看定数码标签
       </el-button>
-    </el-form-item>
+    </el-form-item> -->
     <!-- <el-row :gutter="5" style="margin-top: 5px">
       <el-col v-bind="styleResponsive ? { lg: 14, md: 12 } : { span: 12 }">
         <el-input

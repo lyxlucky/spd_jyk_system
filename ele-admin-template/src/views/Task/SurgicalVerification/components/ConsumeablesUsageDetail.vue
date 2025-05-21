@@ -27,7 +27,7 @@
           >
             护士审批
           </el-button>
-          <!-- <el-button
+          <el-button
             size="mini"
             type="primary"
             class="ele-btn-icon"
@@ -35,7 +35,7 @@
             @click="catDefNoPkgCode"
           >
             查看定数码标签
-          </el-button> -->
+          </el-button>
         </div>
       </template>
 
@@ -94,6 +94,7 @@
     GetBdszZqsjMainUseDel,
     deleteUsedQty
   } from '@/api/Task/SurgicalVerification';
+  import { BACK_BASE_URL } from '@/config/setting';
   export default {
     name: 'ConsumeablesUsageDetail',
     props: ['masterCurrentData'],
@@ -224,6 +225,18 @@
           return tData;
         });
         return data;
+      },
+      catDefNoPkgCode() {
+        console.log(this.parentCurrent);
+        if (
+          this.parentCurrent == null ||
+          Object.keys(this.parentCurrent).length == 0
+        ) {
+          return this.$message.warning('请先选择一条数据');
+        }
+        window.open(
+          `${BACK_BASE_URL}/api/Abdzczh/GetTagQdMx?id=67&format=pdf&inline=true&qdid=${this.parentCurrent.SSBH}&Token=${sessionStorage.Token}`
+        );
       },
       onSelectionChange(selection) {
         this.selection = selection;
