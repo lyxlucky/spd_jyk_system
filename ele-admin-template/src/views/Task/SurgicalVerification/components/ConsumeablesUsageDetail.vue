@@ -128,10 +128,12 @@
             showOverflowTooltip: true
           },
           {
-            prop: 'USE_COUNT',
             label: '数量',
             align: 'center',
-            width: 80
+            width: 80,
+            formatter: (row, column, cellValue) => {
+              return 1;
+            }
           },
           {
             prop: 'UNIT',

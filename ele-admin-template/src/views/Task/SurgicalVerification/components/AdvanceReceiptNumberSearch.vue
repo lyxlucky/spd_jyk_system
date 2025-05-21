@@ -8,7 +8,9 @@
     size="mini"
     :inline="true"
   >
-    <el-form-item>
+    <el-form-item
+    style="width: 240px"
+    >
       <el-date-picker
         v-model="where.dateRange"
         type="daterange"
