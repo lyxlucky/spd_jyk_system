@@ -247,10 +247,12 @@
           .then((data) => {
             // 确保 data.data 是数组
             const list = (data.data || []).map((item) => {
+              // 批量初始化 PS_COUNT 字段为 FYSL
               // 如果没有 TYPE 字段，则默认设置为 '1'
               return {
                 ...item,
-                TYPE: item.TYPE ?? '1'
+                TYPE: item.TYPE ?? '1',
+                PS_COUNT: item.FYSL
               };
             });
 

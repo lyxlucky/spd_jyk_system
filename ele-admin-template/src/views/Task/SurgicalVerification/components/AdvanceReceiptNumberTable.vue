@@ -265,15 +265,16 @@
               return this.$util.toDateString(cellValue, 'YYYY-MM-DD HH:mm:ss');
             }
           },
+
           {
-            prop: 'KSMC',
-            label: '科室',
+            prop: 'SSBH',
+            label: '手术编号',
             align: 'center',
             width: 70
           },
           {
-            prop: 'SSBH',
-            label: '手术编号',
+            prop: 'KSMC',
+            label: '科室',
             align: 'center',
             width: 70
           }

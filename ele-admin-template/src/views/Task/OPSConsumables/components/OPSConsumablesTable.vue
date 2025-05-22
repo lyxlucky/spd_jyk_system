@@ -208,18 +208,19 @@
             align: 'center',
             width: 70,
             formatter: (row, column, cellValue) => {
-              if (!cellValue) {
-                return '';
-              }
-              if (cellValue.length == 1) {
-                return cellValue + '*';
-              }
-              if (!cellValue || cellValue.length == 2)
-                return cellValue[0] + '*';
-              const firstChar = cellValue[0];
-              const lastChar = cellValue[cellValue.length - 1];
-              const middleStars = '*'.repeat(cellValue.length - 2);
-              return firstChar + middleStars + lastChar;
+              return cellValue;
+              // if (!cellValue) {
+              //   return '';
+              // }
+              // if (cellValue.length == 1) {
+              //   return cellValue + '*';
+              // }
+              // if (!cellValue || cellValue.length == 2)
+              //   return cellValue[0] + '*';
+              // const firstChar = cellValue[0];
+              // const lastChar = cellValue[cellValue.length - 1];
+              // const middleStars = '*'.repeat(cellValue.length - 2);
+              // return firstChar + middleStars + lastChar;
             },
             excelConfig: {
               formatter: (cellValue) => {
@@ -251,15 +252,16 @@
             },
             showOverflowTooltip: true
           },
+
           {
-            prop: 'KSMC',
-            label: '科室',
+            prop: 'SSBH',
+            label: '手术编号',
             align: 'center',
             width: 70
           },
           {
-            prop: 'SSBH',
-            label: '手术编号',
+            prop: 'KSMC',
+            label: '科室',
             align: 'center',
             width: 70
           },
@@ -271,6 +273,12 @@
             excelConfig: {
               hide: true
             }
+          },
+          {
+            prop: 'KSMC',
+            label: '科室',
+            align: 'center',
+            width: 70
           }
         ],
         // 分页配置
