@@ -138,6 +138,22 @@
           </template>
         </el-popconfirm>
       </template>
+      <template v-slot:SKU="{ row }">
+        <el-select
+          @visible-change="(visible) => getSKUSList(row, visible)"
+          v-model="row.SKU"
+          clearable
+          placeholder="请选择"
+        >
+          <el-option
+            v-for="item in row?.SKUS"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          >
+          </el-option>
+        </el-select>
+      </template>
     </ele-pro-table>
 
     <el-dialog
@@ -196,9 +212,11 @@
   import {
     SerachPlanListDeta,
     UpdateApplyPlanBZ,
-    Approval
+    Approval,
+    getVarietieSku
   } from '@/api/KSInventory/KSDepartmentalPlan';
   import { utils, writeFile } from 'xlsx';
+  import { HOME_HP } from '@/config/setting';
   export default {
     name: 'KSDepartmentalPlanTable',
     props: ['KSDepartmentalPlanData'],
@@ -439,6 +457,15 @@
             width: 110
           },
           {
+            // prop: 'REMARK',
+            slot: 'SKU',
+            label: 'SKU',
+            align: 'center',
+            showOverflowTooltip: true,
+            width: 110,
+            show: HOME_HP == 'bdrm'
+          },
+          {
             prop: 'SPDBZ',
             label: 'SPD备注',
 
@@ -480,6 +507,37 @@
       };
     },
     methods: {
+      async getSKUSList(row, visible) {
+        if (!visible) return;
+        if (!row.VarCode) return;
+
+        try {
+          const res = await getVarietieSku({
+            where: {
+              VARIETIE_CODE: row.VarCode
+            }
+          });
+          // if (res.data && Array.isArray(res.result)) {
+          //   res.result.map((item) => ({
+          //     value: item.SKU,
+          //     label: item.SKU_NAME
+          //   }));
+          // }
+          if (res.data && Array.isArray(res.data)) {
+            // 使用 Vue.set 或 this.$set 确保响应式
+            this.$set(
+              row,
+              'SKUS',
+              res.data.map((item) => ({
+                value: item.SKU_NAME,
+                label: item.SKU_NAME
+              }))
+            );
+          }
+        } catch (error) {
+          this.$message.error(error.message || '获取SKU列表失败');
+        }
+      },
       handleQuanityDetail(data) {
         this.quanityInlineCurrent = data;
         this.QuanityDetailDialogVisible = true;
@@ -562,6 +620,7 @@
         console.log(row);
       },
       onSelectionChange(selection) {
+        // console.log(selection);
         this.selection = selection;
       },
       showEditReoad(data) {

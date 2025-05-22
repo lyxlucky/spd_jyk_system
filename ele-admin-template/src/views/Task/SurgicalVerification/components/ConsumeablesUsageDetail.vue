@@ -7,6 +7,7 @@
       height="12vh"
       highlight-current-row
       :stripe="true"
+      :toolkit="['reload', 'columns']"
       :pageSize="pageSize"
       :pageSizes="pageSizes"
       :columns="columns"
@@ -36,6 +37,12 @@
           >
             查看定数码标签
           </el-button>
+        </div>
+      </template>
+
+      <template v-slot:toolkit>
+        <div>
+          <span>耗材总数量:{{ totalCount }}</span>
         </div>
       </template>
 
@@ -189,6 +196,7 @@
             width: 130
           }
         ],
+        totalCount: 0,
         toolbar: false,
         pageSize: 50,
         pagerCount: 2,
@@ -210,9 +218,9 @@
       }
     },
     methods: {
-      datasource({ page, limit, where, order }) {
+      async datasource({ page, limit, where, order }) {
         where.SSBH = this.parentCurrent?.SSBH;
-        let data = GetBdszZqsjMainUseDel({
+        let data = await GetBdszZqsjMainUseDel({
           page,
           limit,
           where,
@@ -224,6 +232,9 @@
           };
           return tData;
         });
+        this.totalCount = data.list.reduce((pre, cur) => {
+          return pre + cur.TRUE_PS_QTY;
+        }, 0);
         return data;
       },
       catDefNoPkgCode() {

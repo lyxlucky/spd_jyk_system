@@ -39,8 +39,8 @@
       :needPage="true"
       :datasource="datasource"
       :selection.sync="selection"
-      :toolkit="[]"
       cache-key="ApplyTempTable"
+      :toolbar="false"
     >
       <!-- 表头工具栏 -->
       <!-- <template v-slot:toolbar>
@@ -224,22 +224,22 @@
             label: '姓名',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 70,
-            formatter: (row, column, cellValue) => {
-              if (!cellValue) {
-                return '';
-              }
-              if (cellValue.length == 1) {
-                return cellValue + '*';
-              }
-              if (!cellValue || cellValue.length == 2)
-                return cellValue[0] + '*';
+            minWidth: 70
+            // formatter: (row, column, cellValue) => {
+            //   if (!cellValue) {
+            //     return '';
+            //   }
+            //   if (cellValue.length == 1) {
+            //     return cellValue + '*';
+            //   }
+            //   if (!cellValue || cellValue.length == 2)
+            //     return cellValue[0] + '*';
 
-              const firstChar = cellValue[0];
-              const lastChar = cellValue[cellValue.length - 1];
-              const middleStars = '*'.repeat(cellValue.length - 2);
-              return firstChar + middleStars + lastChar;
-            }
+            //   const firstChar = cellValue[0];
+            //   const lastChar = cellValue[cellValue.length - 1];
+            //   const middleStars = '*'.repeat(cellValue.length - 2);
+            //   return firstChar + middleStars + lastChar;
+            // }
           },
 
           {
@@ -264,6 +264,12 @@
             formatter: (row, column, cellValue, index) => {
               return this.$util.toDateString(cellValue, 'YYYY-MM-DD HH:mm:ss');
             }
+          },
+          {
+            prop: 'KSMC',
+            label: '科室',
+            align: 'center',
+            width: 70
           },
           {
             prop: 'SSBH',

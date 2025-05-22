@@ -106,27 +106,28 @@
         return true;
       },
       tipsContent() {
-        if (
-          !this.ApplyTempTableData &&
-          Object.keys(this.ApplyTempTableData).length == 0
-        ) {
-          return '';
-        }
-        let BRXM = this.ApplyTempTableData?.BRXM;
-        if (!BRXM) {
-          return '';
-        }
-        if (BRXM.length == 1) {
-          return BRXM + '*';
-        }
-        if (BRXM.length == 2) {
-          return BRXM[0] + '*';
-        }
+        return this.ApplyTempTableData?.BRXM;
+        // if (
+        //   !this.ApplyTempTableData &&
+        //   Object.keys(this.ApplyTempTableData).length == 0
+        // ) {
+        //   return '';
+        // }
+        // let BRXM = this.ApplyTempTableData?.BRXM;
+        // if (!BRXM) {
+        //   return '';
+        // }
+        // if (BRXM.length == 1) {
+        //   return BRXM + '*';
+        // }
+        // if (BRXM.length == 2) {
+        //   return BRXM[0] + '*';
+        // }
 
-        const firstChar = BRXM[0];
-        const lastChar = BRXM[BRXM.length - 1];
-        const middleStars = '*'.repeat(BRXM.length - 2);
-        return firstChar + middleStars + lastChar;
+        // const firstChar = BRXM[0];
+        // const lastChar = BRXM[BRXM.length - 1];
+        // const middleStars = '*'.repeat(BRXM.length - 2);
+        // return firstChar + middleStars + lastChar;
       },
       isAddVarietieEnable() {
         return (

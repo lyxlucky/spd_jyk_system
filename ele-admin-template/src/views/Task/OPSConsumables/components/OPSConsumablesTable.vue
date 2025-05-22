@@ -252,6 +252,12 @@
             showOverflowTooltip: true
           },
           {
+            prop: 'KSMC',
+            label: '科室',
+            align: 'center',
+            width: 70
+          },
+          {
             prop: 'SSBH',
             label: '手术编号',
             align: 'center',

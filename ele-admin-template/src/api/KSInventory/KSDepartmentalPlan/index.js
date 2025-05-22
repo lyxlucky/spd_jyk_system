@@ -534,3 +534,17 @@ export async function GetOrderNumById(data) {
     return Promise.reject(new Error(res.data.msg));
   }
 }
+
+//获取品种列表
+export async function getVarietieSku(data) {
+  const formatData = {
+    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+    VARIETIE_CODE: data.where.VARIETIE_CODE
+  }
+  const res = await request.post('/VarietieBasicInfo/getVarietieSku', formatData);
+  if (res.data.code == 200) {
+    return res.data;
+  } else {
+    return Promise.reject(res.data.msg);
+  }
+}

@@ -20,7 +20,6 @@
       highlight-current-row
       :stripe="true"
       :rowClickCheckedIntelligent="false"
-      :rowClickChecked="true"
       :pageSize="pageSize"
       :pageSizes="pageSizes"
       :columns="columns"
@@ -283,7 +282,7 @@
           }
         ],
         toolbar: false,
-        pageSize: 50,
+        pageSize: 9999999,
         pagerCount: 2,
         pageSizes: [10, 20, 50, 100, 9999999],
         // 表格选中数据
@@ -325,6 +324,9 @@
               count: res.total,
               list: res.result
             };
+            this.$nextTick(() => {
+              this.$refs.table.toggleAllSelection();
+            });
             return tData;
           }
         );

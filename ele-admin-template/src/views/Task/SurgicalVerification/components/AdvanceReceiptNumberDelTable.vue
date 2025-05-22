@@ -14,6 +14,7 @@
       :columns="columns"
       :datasource="datasource"
       :selection.sync="selection"
+      :toolkit="['reload', 'columns']"
       @selection-change="onSelectionChange"
       @current-change="onCurrentChange"
       cache-key="ApplyTempDataTable"
@@ -36,6 +37,11 @@
           @handleSelectAdd="handleSelectAdd"
           :VarietyConsumeptionDataList="VarietyConsumeptionDataList"
         />
+      </template>
+      <template v-slot:toolkit>
+        <div>
+          <span>耗材总数量:{{ totalCount }}</span>
+        </div>
       </template>
 
       <!-- <template v-slot:ACTION="{ row }">
@@ -170,6 +176,8 @@
             width: 100
           }
         ],
+        //耗材总数量
+        totalCount: 0,
         toolbar: false,
         pageSize: 50,
         pagerCount: 2,
@@ -194,15 +202,22 @@
       async datasource({ page, limit, where, order }) {
         where.BDSZ_ZQSJ_ID = this.ApplyTempTableData?.ID;
         where.SSBH = where.SSBH || this.ApplyTempTableData?.SSBH;
-        let data = getBdszZgsjMainPsDel({ page, limit, where, order }).then(
-          (res) => {
-            var tData = {
-              count: res.total,
-              list: res.data
-            };
-            return tData;
-          }
-        );
+        let data = await getBdszZgsjMainPsDel({
+          page,
+          limit,
+          where,
+          order
+        }).then((res) => {
+          var tData = {
+            count: res.total,
+            list: res.data
+          };
+          return tData;
+        });
+        //计算总数量
+        this.totalCount = data.list.reduce((pre, cur) => {
+          return pre + cur.TRUE_PS_QTY;
+        }, 0);
         return data;
       },
       handleClosed() {
