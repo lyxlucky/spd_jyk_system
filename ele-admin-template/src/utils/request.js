@@ -51,6 +51,7 @@ service.interceptors.response.use(
       } else {
         MessageBox.alert('登录状态已过期, 请退出重新登录!', '系统提示', {
           confirmButtonText: '重新登录',
+          showClose: false,
           callback: (action) => {
             if (action === 'confirm') {
               logout(false, currentPath);

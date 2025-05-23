@@ -40,6 +40,7 @@
                 @click="submitItem"
                 >确认使用</el-button
               >
+              <span>已勾选:<el-tag size="mini" effect="plain">{{selection?.length || 0}}</el-tag></span>
             </div>
             <div>
               <el-button size="mini" type="success" @click="showNewUse"

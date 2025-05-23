@@ -47,6 +47,29 @@
           color="#2ee693"
           >已审核</el-tag
         >
+        
+        <el-tag
+          size="mini"
+          v-else-if="row.State == 6 && row.QUANITY == 0"
+          type="success"
+          >已审批</el-tag
+        >
+        <el-tag
+          size="mini"
+          v-else-if="
+            row.QUANITY > 0 &&
+            row.QUANITY != row.SUM_Apply_Qty &&
+            row.State != 10
+          "
+          type="danger"
+          >未收全</el-tag
+        >
+        <el-tag
+          size="mini"
+          v-else-if="row.SUM_Apply_Qty == row.QUANITY"
+          type="success"
+          >已收全</el-tag
+        >
         <el-tag
           size="mini"
           v-else-if="row.State == 10"
@@ -55,13 +78,7 @@
           style="color: white"
           >强制结束</el-tag
         >
-        <el-tag
-          size="mini"
-          v-else-if="row.State == 6 && row.QUANITY == 0"
-          type="success"
-          >已审批</el-tag
-        >
-        <el-tag
+        <!-- <el-tag
           size="mini"
           v-else-if="
             row.SUM_Left_Apply_Qty > 0 &&
@@ -76,7 +93,8 @@
           v-else-if="row.SUM_Apply_Qty == row.QUANITY"
           type="success"
           >已收全</el-tag
-        >
+        > -->
+
         <!-- <el-tag v-for="(item) in row" :key="item.PlanNum" size="mini" type="primary" :disable-transitions="true">
           {{ item.State }}
         </el-tag> -->
