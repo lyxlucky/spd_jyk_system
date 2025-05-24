@@ -267,3 +267,23 @@ export async function addNewBdszZq(data) {
   return Promise.reject(res.data);
 }
 
+// 扫码查询信息
+export async function getBdszScanInfo(data) {
+  const formatData = {
+    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+    SSBH: data.SSBH || '', // 手术编号
+    UDI: data.UDI || '' // 条码
+  };
+
+  let res = await request.post(
+    '/DeptPlanTransfer/getBdszScanInfo',
+    formatData
+  );
+
+  if (res.data.code == 200) {
+    return res.data;
+  }
+  return Promise.reject(res.data);
+}
+
+
