@@ -42,7 +42,7 @@
 
       <template v-slot:toolkit>
         <div>
-          <span>耗材总数量:{{ totalCount }}</span>
+          <span>耗材总数量:<el-tag type="success">{{ totalCount }}</el-tag></span>
         </div>
       </template>
 
