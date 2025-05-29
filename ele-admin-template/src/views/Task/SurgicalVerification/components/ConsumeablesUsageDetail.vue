@@ -232,9 +232,10 @@
           };
           return tData;
         });
-        this.totalCount = data.list.reduce((pre, cur) => {
-          return pre + cur.TRUE_PS_QTY;
-        }, 0);
+        // this.totalCount = data.list.reduce((pre, cur) => {
+        //   return pre + cur.TRUE_PS_QTY;
+        // }, 0);
+        this.totalCount = data?.list.length
         return data;
       },
       catDefNoPkgCode() {
