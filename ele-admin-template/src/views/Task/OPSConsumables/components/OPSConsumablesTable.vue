@@ -55,6 +55,18 @@
             </el-select>
           </el-form-item>
           <el-form-item style="margin-right: 16px; margin-bottom: 8px">
+            <el-select
+              v-model="where.IS_ADD"
+              placeholder="添加状态"
+              clearable
+              style="width: 100px"
+            >
+              <el-option label="全部" value=""></el-option>
+              <el-option label="已添加" value="1"></el-option>
+              <el-option label="未添加" value="0"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item style="margin-right: 16px; margin-bottom: 8px">
             <el-input
               v-model="where.patientOrSurgeryName"
               placeholder="请输入患者姓名或手术名称"
@@ -138,7 +150,8 @@
             yesterday.toISOString().split('T')[0],
             tomorrow.toISOString().split('T')[0]
           ],
-          MZZY: '1',
+          MZZY: '',
+          IS_ADD: '',
           patientOrSurgeryName: '',
           SSBH: '',
           SSTH: ''
