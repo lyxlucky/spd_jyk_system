@@ -15,6 +15,7 @@ export async function getBdSzYyHisSs(params) {
     start_time: params.where?.dateRange? params.where?.dateRange[0] : '',
     end_time: params.where?.dateRange ? params.where?.dateRange[1] : '',
     MZZY: params.where?.MZZY || '',
+    BRXM_OR_SSMC: params.where?.BRXM_OR_SSMC || '',
     SSBH: params.where?.SSBH || '',
     SSTH: params.where?.SSTH || '',
     SSFJ: params.where?.SSFJ || '',

@@ -216,7 +216,8 @@
             showOverflowTooltip: true
           },
           {
-            prop: 'CHARGING_CODE',
+            // prop: 'CHARGING_CODE',
+            prop: 'FYXH',
             label: '计费编码',
             align: 'center',
             width: 120

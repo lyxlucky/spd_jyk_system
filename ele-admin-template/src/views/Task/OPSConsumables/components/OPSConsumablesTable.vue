@@ -70,7 +70,7 @@
           </el-form-item>
           <el-form-item style="margin-right: 16px; margin-bottom: 8px">
             <el-input
-              v-model="where.patientOrSurgeryName"
+              v-model="where.BRXM_OR_SSMC"
               placeholder="请输入患者姓名或手术名称"
               clearable
               style="width: 200px"
@@ -173,7 +173,7 @@
           ],
           MZZY: '',
           IS_ADD: '',
-          patientOrSurgeryName: '',
+          BRXM_OR_SSMC: '',
           SSBH: '',
           SSTH: '',
           SSFJ: ''
@@ -401,7 +401,7 @@
       datasource({ page, limit, where }) {
         // 这里不实现具体方法，仅返回空数据结构
         where.MZZY = this.where.MZZY;
-        console.log(where.dateRange);
+        console.log(where);
 
         return getBdSzYyHisSs({ page, limit, where })
           .then((data) => {
