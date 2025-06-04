@@ -7,7 +7,6 @@
       height="12vh"
       highlight-current-row
       :stripe="true"
-      :toolkit="['reload', 'columns']"
       :pageSize="pageSize"
       :pageSizes="pageSizes"
       :columns="columns"
@@ -28,6 +27,16 @@
           >
             护士审批
           </el-button>
+
+          <el-button
+            size="mini"
+            type="primary"
+            class="ele-btn-icon"
+            @click="cancel"
+          >
+            取消审批
+          </el-button>
+
           <el-button
             size="mini"
             type="primary"
@@ -42,7 +51,9 @@
 
       <template v-slot:toolkit>
         <div>
-          <span>耗材总数量:<el-tag type="success">{{ totalCount }}</el-tag></span>
+          <span
+            >耗材总数量:<el-tag type="success">{{ totalCount }}</el-tag></span
+          >
         </div>
       </template>
 
@@ -109,19 +120,6 @@
       return {
         columns: [
           {
-            prop: 'DEF_NO_PKG_CODE',
-            label: '定数码',
-            align: 'center',
-            width: 130
-          },
-          {
-            prop: 'VARIETIE_CODE_NEW',
-            label: '品种编码',
-            align: 'center',
-            width: 130
-          },
-
-          {
             prop: 'VARIETIE_NAME',
             label: '品种名称',
             align: 'center',
@@ -187,6 +185,18 @@
             align: 'center',
             width: 130,
             showOverflowTooltip: true
+          },
+          {
+            prop: 'DEF_NO_PKG_CODE',
+            label: '定数码',
+            align: 'center',
+            width: 130
+          },
+          {
+            prop: 'VARIETIE_CODE_NEW',
+            label: '品种编码',
+            align: 'center',
+            width: 130
           },
           {
             slot: 'ACTION',
@@ -256,6 +266,9 @@
       onCurrentChange(current) {
         this.current = current;
       },
+      cancel() {
+        this.$bus.$emit('ConsumeableUsageDetailCancel', this.current);
+      },
       approve() {
         this.$bus.$emit('ConsumeableUsageDetailApprove', this.current);
       },
@@ -308,6 +321,7 @@
     destroyed() {
       this.$bus.$off('AdVanceReceiptNumberDelTableCurrentChange');
       this.$bus.$off('ConsumeableUsageDetailApprove');
+      this.$bus.$off('ConsumeableUsageDetailCancel');
     }
   };
 </script>

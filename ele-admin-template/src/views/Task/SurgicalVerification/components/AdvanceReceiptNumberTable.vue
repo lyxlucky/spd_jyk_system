@@ -144,14 +144,14 @@
 <script>
   import AdvanceReceiptNumberSearch from './AdvanceReceiptNumberSearch.vue';
   import AdvanceReceiptNumberEdit from './AdvanceReceiptNumberEdit.vue';
-
   import UpdateUserInfoDialog from '@/views/Task/OPSConsumables/components/UpdateUserInfoDialog';
 
   import {
     getBdSzYyHisSs,
     BdSsApprove,
     commitBdszSsyyInfo,
-    addBdSzHisInSurgery
+    addBdSzHisInSurgery,
+    cancelBdszApprove
   } from '@/api/Task/SurgicalVerification';
   import { HOME_HP, BACK_BASE_URL } from '@/config/setting';
 
@@ -417,9 +417,31 @@
           })
           .catch(() => {})
           .finally(() => {
-            this.reload();
           });
-      }
+      },
+      handleCancel(){
+        if(this.current == null) return this.$message.warning('请先选择一条数据');
+        this.$confirm('是否确定取消审批？', '提示', {
+          type: 'warning'
+        })
+          .then(() => {
+            const loading = this.$messageLoading('取消中...');
+            cancelBdszApprove({
+              SSBH: this.current.SSBH
+            })
+              .then((res) => {
+                this.$message.success(res.msg);
+              })
+              .catch((err) => {
+                this.$message.error(err);
+              })
+              .finally(() => {
+                loading.close();
+                this.reload();
+              });
+          })
+          .catch(() => {});
+      },
     },
 
     mounted() {
@@ -437,6 +459,10 @@
         this.handleApprove().then(() => {
           this.handleCatDefNoPkgCode();
         });
+      });
+
+      this.$bus.$on('ConsumeableUsageDetailCancel', () => {
+        this.handleCancel();
       });
 
       this.$bus.$on('AdVanceReceiptNumberDelTableReload', () => {

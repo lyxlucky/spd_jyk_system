@@ -287,3 +287,20 @@ export async function getBdszScanInfo(data) {
 }
 
 
+// 北大深圳取消预约
+export async function cancelBdszApprove(data) {
+  const formatData = {
+    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+    SSBH: data.SSBH,
+  };
+
+  let res = await request.post(
+    '/DeptPlanTransfer/cancelBdszApprove',
+    formatData
+  );
+
+  if (res.data.code == 200) {
+    return res.data;
+  }
+  return Promise.reject(res.data);
+}

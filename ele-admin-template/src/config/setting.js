@@ -13,7 +13,7 @@ export const B2B_BASE_URL = "http://47.106.243.154:802";
 // stzx 汕头中心
 // szlhfy 龙华妇幼
 // bdrm 北京人民
-export const HOME_HP = 'bd'
+export const HOME_HP = 'bdrm'
 
 // 计算b2b的的医院ID
 const caculateB2bCode = () => {
@@ -49,7 +49,7 @@ export const BACK_BASE_URL = "http://localhost:16416";
 // export const BACK_BASE_URL = "https://spd.pkuph.cn:10082";
 
 // 线上测试后端地址
-// export const BACK_BASE_URL = "http://120.79.135.98:82";
+// export const BACK_BASE_URL = "http://120.79.135.98:891";
 
 // 北大
 // export const BACK_BASE_URL = "http://47.106.243.154:9001";

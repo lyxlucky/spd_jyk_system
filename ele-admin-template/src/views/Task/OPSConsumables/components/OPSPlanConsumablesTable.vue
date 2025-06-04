@@ -149,18 +149,7 @@
             align: 'center',
             fixed: 'left'
           },
-          {
-            prop: 'VARIETIE_CODE_NEW',
-            label: '品种编码',
-            align: 'center',
-            width: 120
-          },
-          {
-            prop: 'CHARGING_CODE',
-            label: '计费编码',
-            align: 'center',
-            width: 120
-          },
+
           {
             prop: 'VARIETIE_NAME',
             label: '品种名称',
@@ -225,6 +214,18 @@
             align: 'center',
             width: 150,
             showOverflowTooltip: true
+          },
+          {
+            prop: 'CHARGING_CODE',
+            label: '计费编码',
+            align: 'center',
+            width: 120
+          },
+          {
+            prop: 'VARIETIE_CODE_NEW',
+            label: '品种编码',
+            align: 'center',
+            width: 120
           }
           // {
           //   slot: 'operate',

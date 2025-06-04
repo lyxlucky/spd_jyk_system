@@ -287,12 +287,6 @@
               hide: true
             }
           },
-          {
-            prop: 'KSMC',
-            label: '科室',
-            align: 'center',
-            width: 70
-          }
         ],
         // 分页配置
         pageSize: 100,

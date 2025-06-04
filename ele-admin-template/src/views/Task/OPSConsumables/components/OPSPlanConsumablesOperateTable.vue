@@ -59,12 +59,6 @@
             fixed: 'left'
           },
           {
-            prop: 'Varietie_Code_New',
-            label: '品种编码',
-            align: 'center',
-            width: 120
-          },
-          {
             prop: 'Varietie_Name',
             label: '品种名称',
             align: 'center',
@@ -131,6 +125,12 @@
             align: 'center',
             minWidth: 80,
             showOverflowTooltip: true
+          },
+          {
+            prop: 'Varietie_Code_New',
+            label: '品种编码',
+            align: 'center',
+            width: 120
           },
           {
             slot: 'ACTION',

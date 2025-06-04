@@ -562,7 +562,8 @@
             SPECIFICATION_OR_TYPE: element.GG,
             UNIT: element.Unit,
             MANUFACTURING_ENT_NAME: element.Manufacturing,
-            APPLY_QTY: element.PlanQty
+            APPLY_QTY: element.PlanQty,
+            SELECTED_SKU_ID: element.SELECTED_SKU_ID
           };
           list.push(data);
         });

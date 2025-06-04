@@ -140,16 +140,16 @@
       </template>
       <template v-slot:SKU="{ row }">
         <el-select
-          @visible-change="(visible) => getSKUSList(row, visible)"
-          v-model="row.SKU"
+          v-model="row.SELECTED_SKU_ID"
           clearable
+          size="mini"
           placeholder="请选择"
         >
           <el-option
             v-for="item in row?.SKUS"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
+            :key="item.ID"
+            :label="item.SKU_NAME"
+            :value="item.ID"
           >
           </el-option>
         </el-select>
@@ -509,12 +509,12 @@
     methods: {
       async getSKUSList(row, visible) {
         if (!visible) return;
-        if (!row.VarCode) return;
+        if (!row.VARIETIE_CODE) return;
 
         try {
           const res = await getVarietieSku({
             where: {
-              VARIETIE_CODE: row.VarCode
+              VARIETIE_CODE: row.VARIETIE_CODE
             }
           });
           // if (res.data && Array.isArray(res.result)) {
@@ -588,11 +588,17 @@
         where.DeptCode = Dept_Two_CodeStr;
         let data = SerachPlanListDeta({ page, limit, where, order }).then(
           (res) => {
+            const processedResult = res.result.map((item) => ({
+              ...item,
+              SELECTED_SKU_NAME: '',
+              SELECTED_SKU_ID: ''
+            }));
+
             var tData = {
               count: res.total,
-              list: res.result
+              list: processedResult
             };
-            this.datasourceList = res.result;
+            this.datasourceList = processedResult;
             this.sumNumber = res.sumNumber;
             this.sumAount = Number(res.sumAount).toFixed(2);
 

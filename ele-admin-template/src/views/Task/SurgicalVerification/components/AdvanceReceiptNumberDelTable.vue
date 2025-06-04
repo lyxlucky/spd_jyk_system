@@ -14,7 +14,6 @@
       :columns="columns"
       :datasource="datasource"
       :selection.sync="selection"
-      :toolkit="['reload', 'columns']"
       @selection-change="onSelectionChange"
       @current-change="onCurrentChange"
       cache-key="ApplyTempDataTable"
@@ -40,7 +39,9 @@
       </template>
       <template v-slot:toolkit>
         <div>
-          <span>耗材总数量:<el-tag type="success">{{ totalCount }}</el-tag></span>
+          <span
+            >耗材总数量:<el-tag type="success">{{ totalCount }}</el-tag></span
+          >
         </div>
       </template>
 
@@ -106,7 +107,6 @@
   import AdvanceReceiptNumberDelSearch from './AdvanceReceiptNumberDelSearch.vue';
   import SelectionAddDialog from './SelectionAddDialog';
   import { addBdszZqsjMainPsDelUse } from '@/api/Task/SurgicalVerification';
-  import { utils, writeFile } from 'xlsx';
   import {
     getBdszZgsjMainPsDel,
     updateBdszZqsjMainPsDelUse
@@ -123,18 +123,6 @@
       return {
         // 表格列配置
         columns: [
-          {
-            prop: 'VARIETIE_CODE_NEW',
-            label: '品种编码',
-            align: 'center',
-            width: 130
-          },
-          {
-            prop: 'CHARGING_CODE',
-            label: '计费编码',
-            align: 'center',
-            width: 120
-          },
           {
             prop: 'VARIETIE_NAME',
             label: '品种名称',
@@ -168,6 +156,18 @@
             align: 'center',
             minWidth: 80,
             showOverflowTooltip: true
+          },
+          {
+            prop: 'CHARGING_CODE',
+            label: '计费编码',
+            align: 'center',
+            width: 120
+          },
+          {
+            prop: 'VARIETIE_CODE_NEW',
+            label: '品种编码',
+            align: 'center',
+            width: 130
           },
           {
             prop: 'DEF_USE_QTY',

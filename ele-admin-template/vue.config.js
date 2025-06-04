@@ -7,8 +7,8 @@ function resolve(dir) {
 }
 
 module.exports = {
-  // publicPath: '/jyknw/',
-  // outputDir: 'jyknw',
+  publicPath: '/jyk/',
+  outputDir: 'jyk',
   productionSourceMap: false,
   transpileDependencies: ['element-ui', 'ele-admin', 'vue-i18n'],
   configureWebpack: {
@@ -58,7 +58,7 @@ module.exports = {
     proxy: {
       '/api': {
         // 这里可以写你自己的后端接口地址，如：
-        target: 'http://localhost:16416/'
+        // target: 'http://localhost:16416/'
 
         // 北京外网
         // target:"http://39.107.78.98:6049/",
@@ -70,13 +70,13 @@ module.exports = {
         // target: 'https://spd.pkuph.cn:10082/'
 
         // 线上测试
-        // target: 'http://120.79.135.98:82'
+        // target: 'http://120.79.135.98:891'
 
         // 北大
-        // target: 'http://47.106.243.154:9001',
+        target: 'http://47.106.243.154:9001',
 
         // 北大内网
-        //  target: 'http://100.100.100.45:8001',
+        // target: 'http://100.100.100.45:8001',
 
         // 龙华妇幼外网
         // target: 'http://61.145.158.182:10082',

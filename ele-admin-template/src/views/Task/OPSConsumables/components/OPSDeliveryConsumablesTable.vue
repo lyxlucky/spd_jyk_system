@@ -42,18 +42,6 @@
         where: {},
         columns: [
           {
-            prop: 'VARIETIE_CODE_NEW',
-            label: '品种编码',
-            align: 'center',
-            width: 120
-          },
-          {
-            prop: 'CHARGING_CODE',
-            label: '计费编码',
-            align: 'center',
-            width: 120
-          },
-          {
             prop: 'VARIETIE_NAME',
             label: '品种名称',
             align: 'center',
@@ -92,6 +80,18 @@
             label: '配送数量',
             align: 'center',
             width: 100
+          },
+          {
+            prop: 'CHARGING_CODE',
+            label: '计费编码',
+            align: 'center',
+            width: 120
+          },
+          {
+            prop: 'VARIETIE_CODE_NEW',
+            label: '品种编码',
+            align: 'center',
+            width: 120
           },
           {
             slot: 'ACTION',
