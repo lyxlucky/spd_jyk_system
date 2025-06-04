@@ -17,6 +17,7 @@ export async function getBdSzYyHisSs(params) {
     MZZY: params.where?.MZZY || '',
     SSBH: params.where?.SSBH || '',
     SSTH: params.where?.SSTH || '',
+    SSFJ: params.where?.SSFJ || '',
     IS_ADD: params.where?.IS_ADD || '',
     page: params.page || 1,
     size: params.limit || 10
@@ -28,6 +29,29 @@ export async function getBdSzYyHisSs(params) {
   }
   return Promise.reject(res.data);
 }
+
+/**
+ * 查看汇总
+ * @param {Object} params 请求参数
+ * @param {string} params.MZZY 门诊住院标识，1-住院，2-门诊
+ * @returns {Promise} 返回请求结果
+ */
+export async function getBdSzYyHisSsHz(params) {
+  const formatData = {
+    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+    SSBH: params.where?.SSBH || '',
+    page: params.page || 1,
+    size: params.limit || 10
+  }
+  let res = await request.post('/DeptPlanTransfer/getBdSzYyHisSsHz', formatData);
+
+  if (res.data.code == 200) {
+    return res.data;
+  }
+  return Promise.reject(res.data);
+}
+
+
 
 /**
  * 获取手术明细信息

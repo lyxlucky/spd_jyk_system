@@ -14,6 +14,8 @@
       highlight-current-row
       :stripe="true"
       :needPage="true"
+      :selection.sync="selection"
+      @selection-change="handleSelectionChange"
     >
       <template v-slot:ACTION="{ row }">
         <el-button
@@ -90,6 +92,14 @@
               style="width: 140px"
             ></el-input>
           </el-form-item>
+          <el-form-item style="margin-right: 16px; margin-bottom: 8px">
+            <el-input
+              v-model="where.SSFJ"
+              placeholder="手术房间"
+              clearable
+              style="width: 140px"
+            ></el-input>
+          </el-form-item>
           <el-form-item style="margin-bottom: 8px">
             <el-button
               type="primary"
@@ -110,6 +120,9 @@
             <el-button type="primary" @click="handleExportCurrent"
               >打印2</el-button
             >
+            <el-button type="primary" @click="handleShowSummary"
+              >查看汇总</el-button
+            >
           </el-form-item>
         </el-form>
       </template>
@@ -119,11 +132,16 @@
       @reload="reload"
       :visible.sync="updateUserInfoDialogVisible"
     ></UpdateUserInfoDialog>
+    <SummaryDialog
+      :visible.sync="summaryDialogVisible"
+      :selectedSSBH="selection.map(item => item.SSBH)"
+    ></SummaryDialog>
   </div>
 </template>
 
 <script>
   import UpdateUserInfoDialog from './UpdateUserInfoDialog';
+  import SummaryDialog from './SummaryDialog';
   import { BACK_BASE_URL } from '@/config/setting';
   import { exportToExcel } from '@/utils/excel-util.js';
   import {
@@ -134,7 +152,8 @@
   export default {
     name: 'OPSConsumablesTable',
     components: {
-      UpdateUserInfoDialog
+      UpdateUserInfoDialog,
+      SummaryDialog
     },
     data() {
       const today = new Date();
@@ -144,6 +163,8 @@
       tomorrow.setDate(today.getDate() + 1);
       return {
         currentRow: null,
+        selection: [], // 选中的行
+        summaryDialogVisible: false, // 汇总对话框显示状态
         // 查询参数
         where: {
           dateRange: [
@@ -154,7 +175,8 @@
           IS_ADD: '',
           patientOrSurgeryName: '',
           SSBH: '',
-          SSTH: ''
+          SSTH: '',
+          SSFJ: ''
         },
         // 术间选项
         MZZYOptions: [
@@ -167,16 +189,12 @@
         ],
         // 表格列配置
         columns: [
-          // {
-          //   prop: 'MZZY',
-          //   label: '门诊/住院',
-          //   align: 'center',
-          //   width: 100,
-          //   formatter: (row, column, cellValue, index) => {
-          //     return cellValue === '1' ? '门诊' : '住院';
-          //   }
-          // },
-
+          {
+            type: 'selection',
+            width: 55,
+            align: 'center',
+            fixed: 'left'
+          },
           {
             prop: 'STATE',
             label: '状态',
@@ -286,11 +304,11 @@
             excelConfig: {
               hide: true
             }
-          },
+          }
         ],
         // 分页配置
         pageSize: 100,
-        pageSizes: [10, 20, 50, 100],
+        pageSizes: [10, 20,30,40, 50, 100,999999],
         updateUserInfoDialogVisible: false
       };
     },
@@ -402,6 +420,16 @@
       // 查询按钮点击事件
       reload() {
         this.$refs.table.reload({ page: 1, where: this.where });
+      },
+      handleSelectionChange(selection) {
+        this.selection = selection;
+      },
+      handleShowSummary() {
+        if (this.selection.length === 0) {
+          this.$message.warning('请至少选择一条数据');
+          return;
+        }
+        this.summaryDialogVisible = true;
       }
     },
     created() {
