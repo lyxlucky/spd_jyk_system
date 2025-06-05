@@ -14,6 +14,8 @@ export async function getBdSzYyHisSs(params) {
     Token: sessionStorage.getItem(TOKEN_STORE_NAME),
     start_time: params.where?.dateRange? params.where?.dateRange[0] : '',
     end_time: params.where?.dateRange ? params.where?.dateRange[1] : '',
+    SSRQ_start_time: params.where?.SSRQDateRange ? params.where?.SSRQDateRange[0] : '',
+    SSRQ_end_time: params.where?.SSRQDateRange ? params.where?.SSRQDateRange[1] : '',
     MZZY: params.where?.MZZY || '',
     BRXM_OR_SSMC: params.where?.BRXM_OR_SSMC || '',
     SSBH: params.where?.SSBH || '',
