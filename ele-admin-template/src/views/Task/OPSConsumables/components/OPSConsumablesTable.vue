@@ -273,6 +273,7 @@
             prop: 'SSRQ',
             label: '手术日期',
             align: 'center',
+            sortable:true,
             width: 120,
             formatter: (row, column, cellValue, index) => {
               // return this.$util.toDateString(cellValue, 'YYYY-MM-DD HH:mm:ss');
@@ -398,12 +399,12 @@
         this.$emit('TableRow1', row);
       },
       // 表格数据源
-      datasource({ page, limit, where }) {
+      datasource({ page, limit, where,order }) {
         // 这里不实现具体方法，仅返回空数据结构
         where.MZZY = this.where.MZZY;
         console.log(where);
 
-        return getBdSzYyHisSs({ page, limit, where })
+        return getBdSzYyHisSs({ page, limit, where,order })
           .then((data) => {
             return {
               list: data.data || [],

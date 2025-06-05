@@ -134,6 +134,7 @@ export default {
           label: '手术日期',
           width: 100,
           align: 'center',
+          sortable: true,
           showOverflowTooltip: true
         },
         {
