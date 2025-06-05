@@ -127,29 +127,41 @@ export default {
     },
     // logo
     logo() {
+      let logoPath;
       switch (HOME_HP) {
-        case 'bd':
-          return require(`@/assets/logoBD.jpg?t=${Date.now()}`);
-        case 'fy':
-          return require(`@/assets/logoFY.jpg?t=${Date.now()}`);
-        case 'szsmyl':
-          return require(`@/assets/logoSM.jpg?t=${Date.now()}`);
-        case 'stzl':
-          return require(`@/assets/logoZL.jpg?t=${Date.now()}`);
-        case 'szhn':
-          return require(`@/assets/logoHN.jpg?t=${Date.now()}`);
-        case 'lg':
-          return require(`@/assets/logoLG.png?t=${Date.now()}`);
-        case 'stzx':
-          return require(`@/assets/logoSTZX.jpg?t=${Date.now()}`);
-        case 'szlhfy':
-          return require(`@/assets/logoFY.jpg?t=${Date.now()}`);
-        case 'bdrm':
-          return require(`@/assets/logoBJ.jpg?t=${Date.now()}`);
-        default:
-          return require(`@/assets/logoBD.jpg?t=${Date.now()}`);
+      case 'bd':
+        logoPath = require('@/assets/logoBD.jpg');
+        break;
+      case 'fy':
+        logoPath = require('@/assets/logoFY.jpg');
+        break;
+      case 'szsmyl':
+        logoPath = require('@/assets/logoSM.jpg');
+        break;
+      case 'stzl':
+        logoPath = require('@/assets/logoZL.jpg');
+        break;
+      case 'szhn':
+        logoPath = require('@/assets/logoHN.jpg');
+        break;
+      case 'lg':
+        logoPath = require('@/assets/logoLG.png');
+        break;
+      case 'stzx':
+        logoPath = require('@/assets/logoSTZX.jpg');
+        break;
+      case 'szlhfy':
+        logoPath = require('@/assets/logoFY.jpg');
+        break;
+      case 'bdrm':
+        logoPath = require('@/assets/logoBJ.jpg');
+        break;
+      default:
+        logoPath = require('@/assets/logoBD.jpg');
       }
+      return `${logoPath}?_t=${new Date().getTime()}`;
     }
+
   },
   created() {
     this.form.username =
