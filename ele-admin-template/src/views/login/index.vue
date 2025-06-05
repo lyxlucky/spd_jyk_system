@@ -129,25 +129,25 @@ export default {
     logo() {
       switch (HOME_HP) {
         case 'bd':
-          return require('@/assets/logoBD.jpg');
+          return require(`@/assets/logoBD.jpg?t=${Date.now()}`);
         case 'fy':
-          return require('@/assets/logoFY.jpg');
+          return require(`@/assets/logoFY.jpg?t=${Date.now()}`);
         case 'szsmyl':
-          return require('@/assets/logoSM.jpg');
+          return require(`@/assets/logoSM.jpg?t=${Date.now()}`);
         case 'stzl':
-          return require('@/assets/logoZL.jpg');
+          return require(`@/assets/logoZL.jpg?t=${Date.now()}`);
         case 'szhn':
-          return require('@/assets/logoHN.jpg');
+          return require(`@/assets/logoHN.jpg?t=${Date.now()}`);
         case 'lg':
-          return require('@/assets/logoLG.png');
+          return require(`@/assets/logoLG.png?t=${Date.now()}`);
         case 'stzx':
-          return require('@/assets/logoSTZX.jpg');
+          return require(`@/assets/logoSTZX.jpg?t=${Date.now()}`);
         case 'szlhfy':
-          return require('@/assets/logoFY.jpg');
+          return require(`@/assets/logoFY.jpg?t=${Date.now()}`);
         case 'bdrm':
-          return require('@/assets/logoBJ.jpg');
+          return require(`@/assets/logoBJ.jpg?t=${Date.now()}`);
         default:
-          return require('@/assets/logoBD.jpg');
+          return require(`@/assets/logoBD.jpg?t=${Date.now()}`);
       }
     }
   },

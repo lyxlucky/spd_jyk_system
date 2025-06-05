@@ -3,6 +3,7 @@ import { formdataify, DataToObject } from '@/utils/formdataify';
 import { TOKEN_STORE_NAME } from '@/config/setting';
 
 export async function getBdSzYyHisSs(params) {
+  console.log(params);
   const formatData = {
     Token: sessionStorage.getItem(TOKEN_STORE_NAME),
     MZZY: params.where.MZZY == 'ALL' ? '' : params.where.MZZY || '-1',
@@ -11,7 +12,9 @@ export async function getBdSzYyHisSs(params) {
     end_time: params.where?.dateRange ? params.where?.dateRange[1] : '',
     condition: params.where.condition || '',
     page: params.page || 1,
-    size: params.limit || 10
+    size: params.limit || 10,
+    sort: params.order.sort || '',
+    order: params.order.order || ''
   };
 
   let res = await request.post('/DeptPlanTransfer/getBdSzYyHisSs', formatData);
@@ -209,10 +212,7 @@ export async function addBdSzHisInSurgery(data) {
     REMARK: data.REMARK
   };
 
-  let res = await request.post(
-    '/Commons/BdSzHisInSurgery',
-    formatData
-  );
+  let res = await request.post('/Commons/BdSzHisInSurgery', formatData);
 
   if (res.data.code == 200) {
     return res.data;
@@ -229,10 +229,7 @@ export async function ListBdSzHisInSurgery(data) {
     size: data.size || 10
   };
 
-  let res = await request.post(
-    '/Commons/ListBdSzHisInSurgery',
-    formatData
-  );
+  let res = await request.post('/Commons/ListBdSzHisInSurgery', formatData);
 
   if (res.data.code == 200) {
     return res.data;
@@ -243,7 +240,7 @@ export async function ListBdSzHisInSurgery(data) {
 // 新增使用
 export async function addNewBdszZq(data) {
   const formatData = {
-    Token: sessionStorage.getItem(TOKEN_STORE_NAME), 
+    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
     SSBH: data.SSBH || '', // 手术编号
     SSFJ: data.SSFJ || '', // 手术房间
     SSTH: data.SSTH || '', // 手术台号
@@ -256,10 +253,7 @@ export async function addNewBdszZq(data) {
     data: data.data || [] // 数据列表
   };
 
-  let res = await request.post(
-    '/DeptPlanTransfer/addNewBdszZq',
-    formatData
-  );
+  let res = await request.post('/DeptPlanTransfer/addNewBdszZq', formatData);
 
   if (res.data.code == 200) {
     return res.data;
@@ -275,10 +269,7 @@ export async function getBdszScanInfo(data) {
     UDI: data.UDI || '' // 条码
   };
 
-  let res = await request.post(
-    '/DeptPlanTransfer/getBdszScanInfo',
-    formatData
-  );
+  let res = await request.post('/DeptPlanTransfer/getBdszScanInfo', formatData);
 
   if (res.data.code == 200) {
     return res.data;
@@ -286,12 +277,11 @@ export async function getBdszScanInfo(data) {
   return Promise.reject(res.data);
 }
 
-
 // 北大深圳取消预约
 export async function cancelBdszApprove(data) {
   const formatData = {
     Token: sessionStorage.getItem(TOKEN_STORE_NAME),
-    SSBH: data.SSBH,
+    SSBH: data.SSBH
   };
 
   let res = await request.post(

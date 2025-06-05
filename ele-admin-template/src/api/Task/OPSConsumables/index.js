@@ -10,9 +10,10 @@ import store from '@/store';
  * @returns {Promise} 返回请求结果
  */
 export async function getBdSzYyHisSs(params) {
+  console.log(params);
   const formatData = {
     Token: sessionStorage.getItem(TOKEN_STORE_NAME),
-    start_time: params.where?.dateRange? params.where?.dateRange[0] : '',
+    start_time: params.where?.dateRange ? params.where?.dateRange[0] : '',
     end_time: params.where?.dateRange ? params.where?.dateRange[1] : '',
     SSRQ_start_time: params.where?.SSRQDateRange ? params.where?.SSRQDateRange[0] : '',
     SSRQ_end_time: params.where?.SSRQDateRange ? params.where?.SSRQDateRange[1] : '',
@@ -23,8 +24,10 @@ export async function getBdSzYyHisSs(params) {
     SSFJ: params.where?.SSFJ || '',
     IS_ADD: params.where?.IS_ADD || '',
     page: params.page || 1,
-    size: params.limit || 10
-  }
+    size: params.limit || 10,
+    sort:params.order.sort || '',
+    order: params.order.order || '',
+  };
   let res = await request.post('/DeptPlanTransfer/getBdSzYyHisSs', formatData);
 
   if (res.data.code == 200) {
@@ -45,16 +48,17 @@ export async function getBdSzYyHisSsHz(params) {
     SSBH: params.where?.SSBH || '',
     page: params.page || 1,
     size: params.limit || 10
-  }
-  let res = await request.post('/DeptPlanTransfer/getBdSzYyHisSsHz', formatData);
+  };
+  let res = await request.post(
+    '/DeptPlanTransfer/getBdSzYyHisSsHz',
+    formatData
+  );
 
   if (res.data.code == 200) {
     return res.data;
   }
   return Promise.reject(res.data);
 }
-
-
 
 /**
  * 获取手术明细信息
@@ -195,7 +199,6 @@ export async function deleteBdszPsDetail(data) {
   return Promise.reject(res.data);
 }
 
-
 export async function updateBdSzHisSurgery(params) {
   const formatData = {
     Token: sessionStorage.getItem(TOKEN_STORE_NAME),
@@ -204,7 +207,7 @@ export async function updateBdSzHisSurgery(params) {
     SSFJ: params.where?.SSFJ,
     ZYHM: params.where?.ZYHM,
     BRXM: params.where?.BRXM,
-    SSMC: params.where?.SSMC,
+    SSMC: params.where?.SSMC
   };
 
   let res = await request.post(
@@ -218,13 +221,12 @@ export async function updateBdSzHisSurgery(params) {
   return Promise.reject(res.data);
 }
 
-
 //导出当前
 export async function GetBdszZgsjMainPsDelExcelDetail(params) {
   const formatData = {
     Token: sessionStorage.getItem(TOKEN_STORE_NAME),
-    SSBH:params?.SSBH || '',
-    FYXH:params?.FYXH || ''
+    SSBH: params?.SSBH || '',
+    FYXH: params?.FYXH || ''
   };
 
   let res = await request.post(
@@ -237,7 +239,3 @@ export async function GetBdszZgsjMainPsDelExcelDetail(params) {
   }
   return Promise.reject(res.data);
 }
-
-
-
-
