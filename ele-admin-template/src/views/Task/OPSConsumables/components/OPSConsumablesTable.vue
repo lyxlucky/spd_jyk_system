@@ -37,6 +37,19 @@
               start-placeholder="开始日期"
               end-placeholder="结束日期"
               value-format="yyyy-MM-dd"
+              :picker-options="pickerOptions"
+              style="width: 240px"
+            ></el-date-picker>
+          </el-form-item>
+          <el-form-item label="手术日期">
+            <el-date-picker
+              v-model="where.SSRQDateRange"
+              type="daterange"
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+              value-format="yyyy-MM-dd"
+              :picker-options="pickerOptions"
               style="width: 240px"
             ></el-date-picker>
           </el-form-item>
@@ -161,15 +174,63 @@
       yesterday.setDate(today.getDate() - 1);
       const tomorrow = new Date(today);
       tomorrow.setDate(today.getDate() + 1);
+      
+      // 计算近3天的日期范围
+      const threeDaysAgo = new Date(today);
+      threeDaysAgo.setDate(today.getDate() - 2); // 减2天，加上今天就是3天
+      
       return {
         currentRow: null,
         selection: [], // 选中的行
         summaryDialogVisible: false, // 汇总对话框显示状态
+        // 日期选择器快捷选项
+        pickerOptions: {
+          shortcuts: [
+            {
+              text: '当天',
+              onClick(picker) {
+                const today = new Date();
+                picker.$emit('pick', [today, today]);
+              }
+            },
+            {
+              text: '近3天',
+              onClick(picker) {
+                const today = new Date();
+                const threeDaysAgo = new Date(today);
+                threeDaysAgo.setDate(today.getDate() - 2);
+                picker.$emit('pick', [threeDaysAgo, today]);
+              }
+            },
+            {
+              text: '近一周',
+              onClick(picker) {
+                const today = new Date();
+                const weekAgo = new Date(today);
+                weekAgo.setDate(today.getDate() - 6);
+                picker.$emit('pick', [weekAgo, today]);
+              }
+            },
+            {
+              text: '近一个月',
+              onClick(picker) {
+                const today = new Date();
+                const monthAgo = new Date(today);
+                monthAgo.setDate(today.getDate() - 29);
+                picker.$emit('pick', [monthAgo, today]);
+              }
+            }
+          ]
+        },
         // 查询参数
         where: {
           dateRange: [
-            yesterday.toISOString().split('T')[0],
-            tomorrow.toISOString().split('T')[0]
+            threeDaysAgo.toISOString().split('T')[0],
+            today.toISOString().split('T')[0]
+          ],
+          SSRQDateRange: [
+            threeDaysAgo.toISOString().split('T')[0],
+            today.toISOString().split('T')[0]
           ],
           MZZY: '',
           IS_ADD: '',
