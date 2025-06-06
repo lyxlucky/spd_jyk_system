@@ -10,7 +10,7 @@ import store from '@/store';
  * @returns {Promise} 返回请求结果
  */
 export async function getBdSzYyHisSs(params) {
-  console.log(params);
+  // console.log(params);
   const formatData = {
     Token: sessionStorage.getItem(TOKEN_STORE_NAME),
     start_time: params.where?.dateRange ? params.where?.dateRange[0] : '',
@@ -25,11 +25,11 @@ export async function getBdSzYyHisSs(params) {
     IS_ADD: params.where?.IS_ADD || '',
     page: params.page || 1,
     size: params.limit || 10,
-    sort:params.order.sort || '',
-    order: params.order.order || '',
+    sort:params.order?.sort || '',
+    order: params.order?.order || '',
   };
   let res = await request.post('/DeptPlanTransfer/getBdSzYyHisSs', formatData);
-
+  // console.log(res)
   if (res.data.code == 200) {
     return res.data;
   }

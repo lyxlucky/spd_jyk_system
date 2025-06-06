@@ -406,8 +406,9 @@
             loading.close();
             exportToExcel(data.data, this.columns, '手术排期');
           })
-          .catch(() => {
+          .catch((e) => {
             loading.close();
+            console.log(e)
             this.$message.error('导出失败！');
           });
       },
