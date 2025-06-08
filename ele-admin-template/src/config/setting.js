@@ -13,7 +13,34 @@ export const B2B_BASE_URL = "http://47.106.243.154:802";
 // stzx 汕头中心
 // szlhfy 龙华妇幼
 // bdrm 北京人民
-export const HOME_HP = 'bdrm'
+
+// 根据环境自动获取医院标识
+const getHomeHp = () => {
+  const env = process.env.VUE_APP_ENV;
+  const envHpMap = {
+    'local': 'bdrm',
+    'test': 'bdrm',
+    'bjww': 'bdrm',
+    'bjnw': 'bdrm',
+    'bjnwhttps': 'bdrm',
+    'bdww': 'bd',
+    'bdnw': 'bd',
+    'lhfyww': 'szlhfy',
+    'lhfynw': 'szlhfy',
+    'hnww': 'szhn',
+    'hnnw': 'szhn',
+    'smww': 'szsmyl',
+    'smnw': 'szsmyl',
+    'stzlww': 'stzl',
+    'stzlnw': 'stzl',
+    'zxww': 'stzx',
+    'zxnw': 'stzx',
+    'lgww': 'lg'
+  };
+  return envHpMap[env] || 'bdrm';
+}
+
+export const HOME_HP = getHomeHp();
 
 // 计算b2b的的医院ID
 const caculateB2bCode = () => {
@@ -37,58 +64,32 @@ export const B2B_BASE_CODE = caculateB2bCode();
 
 
 // 后端地址
-export const BACK_BASE_URL = "http://localhost:16416";
+const getBackBaseUrl = () => {
+  const env = process.env.VUE_APP_ENV;
+  const envMap = {
+    'local': 'http://localhost:16416',
+    'test': 'http://120.79.135.98:891',
+    'bjww': 'http://39.107.78.98:6049',
+    'bjnw': 'http://172.27.2.102:18002',
+    'bjnwhttps': 'https://spd.pkuph.cn:10082',
+    'bdww': 'http://47.106.243.154:9001',
+    'bdnw': 'http://100.100.100.45:8001',
+    'lhfyww': 'http://61.145.158.182:10082',
+    'lhfynw': 'http://10.88.10.209:82',
+    'hnww': 'http://183.62.200.242:82',
+    'hnnw': 'http://172.16.4.59:82',
+    'smww': 'http://120.78.226.92:18002',
+    'smnw': 'http://192.168.8.90:18002',
+    'stzlww': 'http://113.106.170.118:82',
+    'stzlnw': 'http://199.199.197.110:8001',
+    'zxww': 'http://47.106.243.154:831',
+    'zxnw': 'http://172.16.0.99:82',
+    'lgww': 'http://218.17.60.162:10052'
+  };
+  return envMap[env] || 'http://localhost:16416';
+}
 
-//北京外网
-// export const BACK_BASE_URL = "http://39.107.78.98:6049";
-
-//北京内网测试
-// export const BACK_BASE_URL = "http://172.27.2.102:18002/";
-
-//北京内网https
-// export const BACK_BASE_URL = "https://spd.pkuph.cn:10082";
-
-// 线上测试后端地址
-// export const BACK_BASE_URL = "http://120.79.135.98:891";
-
-// 北大
-// export const BACK_BASE_URL = "http://47.106.243.154:9001";
-
-// 北大内网
-// export const BACK_BASE_URL = "http://100.100.100.45:8001";
-
-// 龙华妇幼外网
-// export const BACK_BASE_URL = "http://61.145.158.182:10082";
-
-// 龙华妇幼内网
-// export const BACK_BASE_URL = "http://10.88.10.209:82/";
-
-// 华南医院外网
-// export const BACK_BASE_URL = "http://183.62.200.242:82/";
-
-// 华南医院内网
-// export const BACK_BASE_URL = "http://172.16.4.59:82/";
-
-// 萨米医院外网
-// export const BACK_BASE_URL = "http://120.78.226.92:18002/";
-
-// 萨米医院内网
-// export const BACK_BASE_URL = "http://192.168.8.90:18002/";
-
-// 肿瘤外网
-// export const BACK_BASE_URL = "http://113.106.170.118:82/";
-
-// 汕头肿瘤内网
-// export const BACK_BASE_URL = 'http://199.199.197.110:8001/';
-
-// 中心医院内网
-// export const BACK_BASE_URL = 'http://172.16.0.99:82/';
-
-// 中心医院外网
-// export const BACK_BASE_URL = 'http://47.106.243.154:831/';
-
-// 龙岗医院外网
-// export const BACK_BASE_URL = 'http://218.17.60.162:10052/';
+export const BACK_BASE_URL = getBackBaseUrl();
 
 // 项目名称
 export const PROJECT_NAME = process.env.VUE_APP_NAME;

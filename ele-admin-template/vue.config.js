@@ -6,9 +6,106 @@ function resolve(dir) {
   return path.join(__dirname, dir)
 }
 
+// 环境配置映射
+const envConfig = {
+  local: {
+    target: 'http://localhost:16416/',
+    publicPath: '/',
+    outputDir: 'dist'
+  },
+  test: {
+    target: 'http://120.79.135.98:891/',
+    publicPath: '/jyk/',
+    outputDir: 'jyk'
+  },
+  bjww: {
+    target: 'http://39.107.78.98:6049/',
+    publicPath: '/jyk/',
+    outputDir: 'jyk'
+  },
+  bjnw: {
+    target: 'http://172.27.2.102:18002/',
+    publicPath: '/jyknw/',
+    outputDir: 'jyknw'
+  },
+  bjnwhttps: {
+    target: 'https://spd.pkuph.cn:10082/',
+    publicPath: '/jyknw/',
+    outputDir: 'jyknw'
+  },
+  bdww: {
+    target: 'http://47.106.243.154:9001/',
+    publicPath: '/jyk/',
+    outputDir: 'jyk'
+  },
+  bdnw: {
+    target: 'http://100.100.100.45:8001/',
+    publicPath: '/jyknw/',
+    outputDir: 'jyknw'
+  },
+  lhfyww: {
+    target: 'http://61.145.158.182:10082/',
+    publicPath: '/jyk/',
+    outputDir: 'jyk'
+  },
+  lhfynw: {
+    target: 'http://10.88.10.209:82/',
+    publicPath: '/jyknw/',
+    outputDir: 'jyknw'
+  },
+  hnww: {
+    target: 'http://183.62.200.242:82/',
+    publicPath: '/jyk/',
+    outputDir: 'jyk'
+  },
+  hnnw: {
+    target: 'http://172.16.4.59:82/',
+    publicPath: '/jyknw/',
+    outputDir: 'jyknw'
+  },
+  smww: {
+    target: 'http://120.78.226.92:18002/',
+    publicPath: '/jyk/',
+    outputDir: 'jyk'
+  },
+  smnw: {
+    target: 'http://192.168.8.90:18002/',
+    publicPath: '/jyknw/',
+    outputDir: 'jyknw'
+  },
+  stzlww: {
+    target: 'http://113.106.170.118:82/',
+    publicPath: '/jyk/',
+    outputDir: 'jyk'
+  },
+  stzlnw: {
+    target: 'http://199.199.197.110:8001/',
+    publicPath: '/jyknw/',
+    outputDir: 'jyknw'
+  },
+  zxww: {
+    target: 'http://47.106.243.154:831/',
+    publicPath: '/jyk/',
+    outputDir: 'jyk'
+  },
+  zxnw: {
+    target: 'http://172.16.0.99:82/',
+    publicPath: '/jyknw/',
+    outputDir: 'jyknw'
+  },
+  lgww: {
+    target: 'http://218.17.60.162:10052/',
+    publicPath: '/jyk/',
+    outputDir: 'jyk'
+  }
+}
+
+const currentEnv = process.env.VUE_APP_ENV || 'local';
+const config = envConfig[currentEnv] || envConfig.local;
+
 module.exports = {
-  publicPath: '/jyk/',
-  outputDir: 'jyk',
+  publicPath: process.env.VUE_APP_BASE_URL || config.publicPath,
+  outputDir: config.outputDir,
   productionSourceMap: false,
   transpileDependencies: ['element-ui', 'ele-admin', 'vue-i18n'],
   configureWebpack: {
@@ -52,64 +149,16 @@ module.exports = {
         }
       }
     }
-  },
-  // 白名单，跨域问题
+  },  // 白名单，跨域问题
   devServer: {
     proxy: {
       '/api': {
-        // 这里可以写你自己的后端接口地址，如：
-        // target: 'http://localhost:16416/'
-
-        // 北京外网
-        // target:"http://39.107.78.98:6049/",
-
-        // 北京内网测试
-        // target:"http://172.27.2.102:18002/",
-
-        //北京内网https
-        // target: 'https://spd.pkuph.cn:10082/'
-
-        // 线上测试
-        // target: 'http://120.79.135.98:891'
-
-        // 北大
-        target: 'http://47.106.243.154:9001',
-
-        // 北大内网
-        // target: 'http://100.100.100.45:8001',
-
-        // 龙华妇幼外网
-        // target: 'http://61.145.158.182:10082',
-
-        // 龙华妇幼内网
-        // target: 'http://10.88.10.209:82/',
-
-        // 华南医院外网
-        // target: 'http://183.62.200.242:82/',
-
-        //华南医院内网
-        // target:'http://172.16.4.59:82/'
-
-        //萨米医院外网
-        // target:'http://120.78.226.92:18002/',
-
-        //萨米医院内网
-        // target:'http://192.168.8.90:18002',
-
-        //肿瘤外网
-        // target: 'http://113.106.170.118:82/'
-
-        //肿瘤内网
-        // target: 'http://199.199.197.110:8001'
-
-        //中心医院内网
-        // target:"http://172.16.0.99:82/"
-
-        //中心医院外网
-        // target:"http://47.106.243.154:831/"
-
-        //龙岗医院外网
-        // target:"http://218.17.60.162:10052/"
+        target: config.target,
+        changeOrigin: true,
+        secure: false,
+        pathRewrite: {
+          '^/api': '/api'
+        }
       }
     }
     // port: 8060
