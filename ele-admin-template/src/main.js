@@ -13,6 +13,7 @@ import VueViewer from 'v-viewer'
 import 'viewerjs/dist/viewer.css'
 import moment from 'moment';
 import numeral from 'numeral';
+import dateShortcuts from './directives/dateShortcuts';
 
 
 
@@ -40,6 +41,9 @@ Vue.use(EleAdmin, {
 });
 Vue.use(permission);
 Vue.use(VueClipboard);
+
+// 注册全局指令
+Vue.directive('date-shortcuts', dateShortcuts);
 
 new Vue({
   router,

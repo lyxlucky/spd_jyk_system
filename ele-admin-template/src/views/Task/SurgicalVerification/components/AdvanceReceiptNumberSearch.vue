@@ -9,14 +9,14 @@
     :inline="true"
   >
     <el-form-item
-    style="width: 240px"
+    class="SSRQ-form-item"
+    style="width: 240px;"
     >
       <el-date-picker
-        v-model="where.SSRQStartTime"
-        type="date"
-        placeholder="选择日期"
-        value-format="yyyy-MM-dd"
-        style="width: 240px"
+        class="SSRQ-range"
+        v-model="where.SSRQDateRange"
+        v-date-shortcuts
+        style="width: 100%;"
       ></el-date-picker>
     </el-form-item>
     <el-form-item>
@@ -188,6 +188,8 @@
   </el-form>
 </template>
 
+
+
 <script>
   import {
     CreateTemplet,
@@ -196,6 +198,8 @@
   } from '@/api/KSInventory/ApplyTemp';
   import AdvanceReceiptNumberEdit from './AdvanceReceiptNumberEdit.vue';
   import ViewHandoverRecords from './ViewHandoverRecords.vue';
+  import { DATE_SHORTCUTS } from '@/directives/dateShortcuts';
+
   export default {
     props: {
       // 修改回显的数据
@@ -209,8 +213,8 @@
       // 默认表单数据
       const today = new Date();
       const defaultWhere = {
-        // dateRange: today.toISOString().split('T')[0],
-        SSRQStartTime: new Date(),
+        SSRQDateRange: [today.toISOString().split('T')[0], today.toISOString().split('T')[0]],
+        // SSRQStartTime: new Date(),
         MZZY: '-1',
         condition: '',
         SSFJ: ''
@@ -229,6 +233,9 @@
               message: '请输入模板名称'
             }
           ]
+        },
+        pickerOptions: {
+          shortcuts: DATE_SHORTCUTS
         }
       };
     },
@@ -326,3 +333,9 @@
     created() {}
   };
 </script>
+
+<style lang="scss" scoped>
+:deep(.SSRQ-form-item .el-form-item__content) {
+  max-width: max-content !important;
+}
+</style>
