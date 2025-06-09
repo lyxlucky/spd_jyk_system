@@ -74,12 +74,6 @@
             align: 'center'
           },
           {
-            prop: 'ERROR_MSG',
-            label: '错误消息',
-            width: 180,
-            align: 'center'
-          },
-          {
             prop: 'PROCESS_STATUS',
             label: '状态', // 更新
             width: 120,

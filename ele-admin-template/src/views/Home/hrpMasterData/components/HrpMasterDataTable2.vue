@@ -52,7 +52,7 @@
           },
           {
             prop: 'STAND_VALUE',
-            label: '规格', // 修改为"规格"
+            label: '标准值',
             width: 140,
             align: 'center'
           },
@@ -100,21 +100,7 @@
             prop: 'PROCESS_STATUS',
             label: '状态', // 更新
             width: 100,
-            align: 'center',
-            formatter: (row) => {
-              switch (row.PROCESS_STATUS) {
-                case 'N':
-                  return '已传入中间表';
-                case 'S':
-                  return '已传入SPD';
-                case 'Y':
-                  return '已接收收费编码';
-                case 'E':
-                  return '传入SPD失败';
-                default:
-                  return row.PROCESS_STATUS;
-              }
-            }
+            align: 'center'
           },
           {
             prop: 'ERROR_MSG',
@@ -214,7 +200,7 @@
             width: 120,
             align: 'center',
             formatter: (row) => {
-              return this.$moment(row.XY_DATE).format('YYYY-MM-DD');
+              return this.$moment(row.XK_DATE).format('YYYY-MM-DD');
             }
           },
           {
@@ -402,7 +388,7 @@
           },
           {
             prop: 'MID_UOM',
-            label: '中包装单位', // 更新
+            label: '中包单位', // 更新
             width: 100,
             align: 'center'
           },
@@ -417,7 +403,7 @@
           },
           {
             prop: 'MAX_UOM',
-            label: '大包装单位', // 更新
+            label: '大包单位', // 更新
             width: 100,
             align: 'center'
           },
