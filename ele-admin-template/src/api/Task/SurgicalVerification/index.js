@@ -10,6 +10,8 @@ export async function getBdSzYyHisSs(params) {
     SSFJ: params.where.SSFJ || '',
     start_time: params.where?.dateRange ? params.where?.dateRange[0] : '',
     end_time: params.where?.dateRange ? params.where?.dateRange[1] : '',
+    SSRQ_start_time: params.where?.SSRQDateRange ? params.where?.SSRQDateRange[0] : params.where?.SSRQStartTime || '',
+    SSRQ_end_time: params.where?.SSRQDateRange ? params.where?.SSRQDateRange[1] : '',
     condition: params.where.condition || '',
     page: params.page || 1,
     size: params.limit || 10,

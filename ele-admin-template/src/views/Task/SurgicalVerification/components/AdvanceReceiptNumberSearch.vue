@@ -12,11 +12,9 @@
     style="width: 240px"
     >
       <el-date-picker
-        v-model="where.dateRange"
-        type="daterange"
-        range-separator="至"
-        start-placeholder="开始日期"
-        end-placeholder="结束日期"
+        v-model="where.SSRQStartTime"
+        type="date"
+        placeholder="选择日期"
         value-format="yyyy-MM-dd"
         style="width: 240px"
       ></el-date-picker>
@@ -210,15 +208,9 @@
     data() {
       // 默认表单数据
       const today = new Date();
-      const yesterday = new Date(today);
-      yesterday.setDate(today.getDate() - 1);
-      const tomorrow = new Date(today);
-      tomorrow.setDate(today.getDate() + 1);
       const defaultWhere = {
-        dateRange: [
-          yesterday.toISOString().split('T')[0],
-          tomorrow.toISOString().split('T')[0]
-        ],
+        // dateRange: today.toISOString().split('T')[0],
+        SSRQStartTime: new Date(),
         MZZY: '-1',
         condition: '',
         SSFJ: ''
