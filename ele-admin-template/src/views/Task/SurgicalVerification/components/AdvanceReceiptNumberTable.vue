@@ -204,7 +204,8 @@
             prop: 'SSFJ',
             label: '术间',
             align: 'center',
-            width: 70
+            width: 70,
+            sortable: true
           },
           {
             prop: 'SSTH',

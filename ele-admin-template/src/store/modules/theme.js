@@ -79,7 +79,9 @@ const DEFAULT_STATE = Object.freeze({
   // 内容区域高度
   contentHeight: contentHeight(),
   // 是否开启响应式
-  styleResponsive: true
+  styleResponsive: true,
+  // 字体大小
+  fontSize: '14px'
 });
 // 延时操作定时器
 let disableTransitionTimer, updateContentSizeTimer;
@@ -411,7 +413,8 @@ export default {
           'styleResponsive',
           'weakMode',
           'darkMode',
-          'color'
+          'color',
+          'fontSize'
         ].forEach((key) => {
           commit('SET', { key, value: DEFAULT_STATE[key] });
         });
@@ -625,6 +628,12 @@ export default {
             .concat(state.tabs.slice(i + 1))
         );
       }
+    },
+    setFontSize({ commit }, value) {
+      console.log('Setting font size in store:', value);
+      commit('SET', { key: 'fontSize', value });
+      cacheSetting('fontSize', value);
+      return Promise.resolve();
     }
   }
 };

@@ -45,13 +45,27 @@
     </el-form-item>
 
     <el-form-item>
-      <el-input
+      <el-select
+        v-model="where.SSFJ"
+        filterable
+        remote
+        reserve-keyword
+        placeholder="请输入术间"
+        :remote-method="remoteSearch"
+        :loading="loading"
+        style="width: 120px"
         size="mini"
         clearable
-        v-model="where.SSFJ"
-        style="width: 120px"
-        placeholder="请输入术间"
-      />
+        @focus="handleFocus"
+        ref="ssfjSelect"
+      >
+        <el-option
+          v-for="item in ssfjOptions"
+          :key="item"
+          :label="item"
+          :value="item">
+        </el-option>
+      </el-select>
     </el-form-item>
 
     <el-form-item>
@@ -196,6 +210,7 @@
     UpdateCommon,
     UpdateCommon2
   } from '@/api/KSInventory/ApplyTemp';
+  import { getBdszZqsjSsfjList } from '@/api/Task/SurgicalVerification';
   import AdvanceReceiptNumberEdit from './AdvanceReceiptNumberEdit.vue';
   import ViewHandoverRecords from './ViewHandoverRecords.vue';
   import { DATE_SHORTCUTS } from '@/directives/dateShortcuts';
@@ -225,6 +240,9 @@
         where: { ...defaultWhere },
         BZ: '',
         TempletName: '',
+        loading: false,
+        ssfjOptions: [],
+        searchTimer: null,
         rules: {
           TempletName: [
             {
@@ -328,9 +346,38 @@
             this.$message.error(err);
             this.search();
           });
-      }
+      },
+      // 处理选择框获得焦点事件
+      handleFocus() {
+        this.remoteSearch('');
+      },
+
+      // 远程搜索方法（带节流）
+      remoteSearch(query) {
+        if (this.searchTimer) {
+          clearTimeout(this.searchTimer);
+        }
+        
+        this.loading = true;
+        this.searchTimer = setTimeout(() => {
+          getBdszZqsjSsfjList({ SSFJ: query })
+            .then(res => {
+              this.ssfjOptions = res.data || [];
+            })
+            .catch(err => {
+              this.$message.error(err.msg || '获取术间列表失败');
+              this.ssfjOptions = [];
+            })
+            .finally(() => {
+              this.loading = false;
+            });
+        }, 300); // 300ms 的节流时间
+      },
     },
-    created() {}
+    mounted() {
+      // 组件挂载后立即获取数据
+      this.remoteSearch('');
+    }
   };
 </script>
 

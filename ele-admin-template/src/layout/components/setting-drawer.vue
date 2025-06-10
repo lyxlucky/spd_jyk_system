@@ -278,6 +278,24 @@
           <el-switch :value="theme.weakMode" @change="updateWeakMode" />
         </div>
       </div>
+      <!-- 字体大小 -->
+      <div class="ele-setting-item">
+        <div class="setting-item-title">
+          {{ $t('layout.setting.fontSize') }}
+        </div>
+        <div class="setting-item-control" style="width: 110px">
+          <el-select
+            size="mini"
+            v-model="theme.fontSize"
+            @change="updateFontSize"
+          >
+            <el-option label="12px" value="12px" />
+            <el-option label="14px" value="14px" />
+            <el-option label="16px" value="16px" />
+            <el-option label="18px" value="18px" />
+          </el-select>
+        </div>
+      </div>
       <!-- 页签 -->
       <div class="ele-setting-item">
         <div class="setting-item-title">
@@ -499,6 +517,14 @@
       },
       updateColor(value) {
         this.doWithLoading(() => this.$store.dispatch('theme/setColor', value));
+      },
+      updateFontSize(value) {
+        console.log('Font size changed:', value);
+        this.$store.dispatch('theme/setFontSize', value).then(() => {
+          console.log('Font size updated in store');
+        }).catch(err => {
+          console.error('Failed to update font size:', err);
+        });
       },
       resetSetting() {
         this.doWithLoading(() => this.$store.dispatch('theme/resetSetting'));

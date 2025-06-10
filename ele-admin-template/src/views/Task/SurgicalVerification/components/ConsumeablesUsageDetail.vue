@@ -30,7 +30,7 @@
 
           <el-button
             size="mini"
-            type="primary"
+            type="danger"
             class="ele-btn-icon"
             @click="cancel"
           >

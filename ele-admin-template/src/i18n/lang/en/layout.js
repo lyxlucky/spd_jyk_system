@@ -58,6 +58,7 @@ export default {
     showFooter: 'Show Footer',
     showTabs: 'Show Tabs',
     tabStyle: 'Tab Style',
+    fontSize: 'Font Size',
     tabStyles: {
       default: 'Default',
       dot: 'Dot',

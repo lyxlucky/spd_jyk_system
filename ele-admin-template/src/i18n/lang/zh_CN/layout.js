@@ -58,6 +58,7 @@ export default {
     showFooter: '开启全局页脚',
     showTabs: '开启多页签栏',
     tabStyle: '页签显示风格',
+    fontSize: '字体大小',
     tabStyles: {
       default: '默认',
       dot: '圆点',

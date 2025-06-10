@@ -296,3 +296,18 @@ export async function cancelBdszApprove(data) {
   }
   return Promise.reject(res.data);
 }
+
+// 获取手术房间列表
+export async function getBdszZqsjSsfjList(params) {
+  const formatData = {
+    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+    SSFJ: params.SSFJ || ''
+  };
+
+  let res = await request.post('/DeptPlanTransfer/GetBdszZqsjSsfjList', formatData);
+
+  if (res.data.code == 200) {
+    return res.data;
+  }
+  return Promise.reject(res.data);
+}

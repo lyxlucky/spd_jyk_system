@@ -58,6 +58,7 @@ export default {
     showFooter: '開啟全域頁腳',
     showTabs: '開啟多頁簽欄',
     tabStyle: '頁簽顯示風格',
+    fontSize: '字體大小',
     tabStyles: {
       default: '默認',
       dot: '圓點',
