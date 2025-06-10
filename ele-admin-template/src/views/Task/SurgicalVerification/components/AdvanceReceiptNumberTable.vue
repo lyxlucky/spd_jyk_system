@@ -204,21 +204,21 @@
             prop: 'SSFJ',
             label: '术间',
             align: 'center',
-            width: 70,
+            width: 85,
             sortable: true
           },
           {
             prop: 'SSTH',
             label: '手术台号',
             align: 'center',
-            width: 75
+            width: 90
           },
           {
             prop: 'ZYHM',
             label: '住院号',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 70
+            minWidth: 90
           },
           {
             prop: 'BRXM',
