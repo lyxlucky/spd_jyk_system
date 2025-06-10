@@ -81,7 +81,7 @@ const DEFAULT_STATE = Object.freeze({
   // 是否开启响应式
   styleResponsive: true,
   // 字体大小
-  fontSize: '14px'
+  fontSize: '16px'
 });
 // 延时操作定时器
 let disableTransitionTimer, updateContentSizeTimer;

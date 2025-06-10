@@ -91,11 +91,11 @@
 
 <style lang="scss">
   html {
-    font-size: 14px;
+    font-size: 16px;
   }
   
   body {
-    font-size: 14px;
+    font-size: 16px;
   }
 
   .el-table {
