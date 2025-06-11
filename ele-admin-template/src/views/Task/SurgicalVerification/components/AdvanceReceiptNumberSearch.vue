@@ -15,7 +15,6 @@
       <el-date-picker
         class="SSRQ-range"
         v-model="where.SSRQDateRange"
-        v-date-shortcuts
         style="width: 100%;"
       ></el-date-picker>
     </el-form-item>
@@ -227,8 +226,9 @@
     data() {
       // 默认表单数据
       const today = new Date();
+      const startTime = today.toDateString("yyyy-mm-dd");
       const defaultWhere = {
-        SSRQDateRange: [today.toISOString().split('T')[0], today.toISOString().split('T')[0]],
+        SSRQDateRange: startTime,
         // SSRQStartTime: new Date(),
         MZZY: '-1',
         condition: '',

@@ -1,17 +1,18 @@
 import request from '@/utils/request';
 import { formdataify, DataToObject } from '@/utils/formdataify';
 import { TOKEN_STORE_NAME } from '@/config/setting';
+import { toDateString } from 'ele-admin';
+import moment from 'moment';
 
 export async function getBdSzYyHisSs(params) {
-  console.log(params);
   const formatData = {
     Token: sessionStorage.getItem(TOKEN_STORE_NAME),
     MZZY: params.where.MZZY == 'ALL' ? '' : params.where.MZZY || '-1',
     SSFJ: params.where.SSFJ || '',
     start_time: params.where?.dateRange ? params.where?.dateRange[0] : '',
     end_time: params.where?.dateRange ? params.where?.dateRange[1] : '',
-    SSRQ_start_time: params.where?.SSRQDateRange ? params.where?.SSRQDateRange[0] : params.where?.SSRQStartTime || '',
-    SSRQ_end_time: params.where?.SSRQDateRange ? params.where?.SSRQDateRange[1] : '',
+    SSRQ_start_time: params.where?.SSRQDateRange ? moment(params.where?.SSRQDateRange).format('YYYY-MM-DD') : params.where?.SSRQStartTime || '',
+    SSRQ_end_time: params.where?.SSRQDateRange ? moment(params.where?.SSRQDateRange).format('YYYY-MM-DD') : '',
     condition: params.where.condition || '',
     page: params.page || 1,
     size: params.limit || 10,
