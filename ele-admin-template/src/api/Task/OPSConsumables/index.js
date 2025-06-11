@@ -240,3 +240,12 @@ export async function GetBdszZgsjMainPsDelExcelDetail(params) {
   }
   return Promise.reject(res.data);
 }
+
+export async function GetBdszZgsjMainPsDelExcelDetail2(params) {
+  let res = await request.get(`/Commons/GetReportById_BJ_SHD?format=pdf&inline=true&SSBH=${params?.SSBH}`);
+  if (res.data.code == 200) {
+    return res.data;
+  }
+  return Promise.reject(res.data);
+}
+

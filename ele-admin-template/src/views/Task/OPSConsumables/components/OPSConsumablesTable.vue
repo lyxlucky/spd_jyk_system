@@ -411,20 +411,24 @@
           this.$message.error('请先选择一行数据！');
           return;
         }
-        let loading = this.$messageLoading('导出中');
-        GetBdszZgsjMainPsDelExcelDetail({
-          SSBH: this.currentRow?.SSBH,
-          FYXH: this.currentRow?.FYXH
-        })
-          .then((res) => {
-            loading.close();
-            const url = `${BACK_BASE_URL}/Excel/files/${res.msg}`;
-            window.open(url.replace('/undefined', ''));
-          })
-          .catch(() => {
-            loading.close();
-            this.$message.error('导出失败！');
-          });
+        // let loading = this.$messageLoading('导出中');
+        window.open(
+          `${BACK_BASE_URL}/api/Commons/GetReportById_BJ_SHD?format=pdf&inline=true&SSBH=${this.currentRow?.SSBH}`,
+          '_blank'
+        );
+        // GetBdszZgsjMainPsDelExcelDetail({
+        //   SSBH: this.currentRow?.SSBH,
+        //   FYXH: this.currentRow?.FYXH
+        // })
+        //   .then((res) => {
+        //     loading.close();
+        //     const url = `${BACK_BASE_URL}/Excel/files/${res.msg}`;
+        //     window.open(url.replace('/undefined', ''));
+        //   })
+        //   .catch(() => {
+        //     loading.close();
+        //     this.$message.error('导出失败！');
+        //   });
       },
       handleExport() {
         let loading = this.$messageLoading('导出中');
