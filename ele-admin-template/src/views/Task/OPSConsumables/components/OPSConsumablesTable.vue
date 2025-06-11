@@ -81,6 +81,18 @@
               <el-option label="未添加" value="0"></el-option>
             </el-select>
           </el-form-item>
+          <el-form-item style="margin-right: 16px; margin-bottom: 8px" label="打印状态2">
+            <el-select
+              v-model="where.IS_PRINT2"
+              placeholder="打印状态2"
+              clearable
+              style="width: 100px"
+            >
+              <el-option label="全部" value=""></el-option>
+              <el-option label="未打印" value="0"></el-option>
+              <el-option label="已打印" value="1"></el-option>
+            </el-select>
+          </el-form-item>
           <el-form-item style="margin-right: 16px; margin-bottom: 8px">
             <el-input
               v-model="where.BRXM_OR_SSMC"
@@ -139,6 +151,13 @@
           </el-form-item>
         </el-form>
       </template>
+
+      <template v-slot:IS_PRINT2="{ row }">
+        <el-tag :type="row.IS_PRINT2 == '1' ? 'success' : 'danger'" size="mini">
+          {{ row.IS_PRINT2 == '1' ? '已打印' : '未打印' }}
+        </el-tag>
+      </template>
+
     </ele-pro-table>
     <!-- </el-card> -->
     <UpdateUserInfoDialog
@@ -234,6 +253,7 @@
           ],
           MZZY: '',
           IS_ADD: '',
+          IS_PRINT2: '',
           BRXM_OR_SSMC: '',
           SSBH: '',
           SSTH: '',
@@ -358,6 +378,13 @@
             align: 'center',
             width: 70
           },
+          // {
+          //   prop: 'IS_PRINT2',
+          //   slot: 'IS_PRINT2',
+          //   label: '打印2',
+          //   align: 'center',
+          //   width: 70
+          // },
           {
             slot: 'ACTION',
             label: '操作',

@@ -23,6 +23,7 @@ export async function getBdSzYyHisSs(params) {
     SSTH: params.where?.SSTH || '',
     SSFJ: params.where?.SSFJ || '',
     IS_ADD: params.where?.IS_ADD || '',
+    IS_PRINT2: params.where?.IS_PRINT2 || '',
     page: params.page || 1,
     size: params.limit || 10,
     sort:params.order?.sort || '',
