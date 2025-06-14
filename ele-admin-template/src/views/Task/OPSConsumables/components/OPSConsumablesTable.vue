@@ -439,8 +439,7 @@
           })
           .catch((e) => {
             loading.close();
-            console.log(e)
-            this.$message.error('导出失败！');
+            this.$message.error(e.msg || '导出失败！');
           });
       },
       changeMZZY(val) {
