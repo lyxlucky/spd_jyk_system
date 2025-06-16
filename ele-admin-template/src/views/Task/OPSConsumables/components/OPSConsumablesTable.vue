@@ -98,7 +98,7 @@
           </el-form-item>
           <el-form-item
             style="margin-right: 16px; margin-bottom: 8px"
-            label="打印状态2"
+            label="是否临时"
           >
             <el-select
               v-model="where.IS_LS"
