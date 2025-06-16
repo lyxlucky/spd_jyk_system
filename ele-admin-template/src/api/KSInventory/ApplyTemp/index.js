@@ -98,6 +98,8 @@ export async function SerachAuthVar(data) {
   data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
   data2.page = data.page;
   data2.size = data.limit;
+  data2.SPECIFICATION_OR_TYPE = data.where.SerachName ? data.where.SerachName : '';
+  data2.MANUFACTURING_ENT_NAME = data.where.SerachName ? data.where.SerachName : '';
 
   // var data2 = DataToObject(data);
   // var rep = formdataify(data2)
