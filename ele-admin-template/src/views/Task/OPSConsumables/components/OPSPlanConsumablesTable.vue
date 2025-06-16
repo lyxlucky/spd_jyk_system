@@ -28,6 +28,8 @@
       :selection.sync="selection"
       :rowClickCheckedIntelligent="false"
       :rowClickChecked="true"
+      :pageSize="pageSize"
+      :pageSizes="pageSizes"
     >
       <template v-slot:toolbar>
         <el-form :inline="true" size="mini">
@@ -142,6 +144,8 @@
         OPSDeliveryConsumablesTableData: [],
         selectionDialogVisible: false,
         selection: [],
+        pageSize: 100,
+        pageSizes: [10, 20, 30, 40, 50, 100],
         columns: [
           {
             type: 'selection',

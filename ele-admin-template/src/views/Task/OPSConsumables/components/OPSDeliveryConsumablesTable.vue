@@ -9,6 +9,8 @@
       :columns="columns"
       height="180px"
       :datasource="datasource"
+      :pageSize="pageSize"
+      :pageSizes="pageSizes"
     >
       <template v-slot:ACTION="{ row }">
         <el-button
@@ -40,6 +42,8 @@
     data() {
       return {
         where: {},
+        pageSize: 100,
+        pageSizes: [10, 20, 30, 40, 50, 100],
         columns: [
           {
             prop: 'VARIETIE_NAME',
@@ -135,8 +139,8 @@
               .then(() => {
                 this.$message.success('删除成功!');
               })
-              .catch(() => {
-                this.$message.error('删除失败!');
+              .catch((err) => {
+                this.$message.error(err.msg || '删除失败!');
               });
           })
           .catch(() => {

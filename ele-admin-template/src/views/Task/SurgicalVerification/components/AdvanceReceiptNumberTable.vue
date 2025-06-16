@@ -340,12 +340,12 @@
           //return
           BdSsApprove({ qdid: this.current.SSBH })
             .then((res) => {
-              resolve();
               this.$message.success(res.msg);
+              resolve();
             })
             .catch((err) => {
+              this.$message.error(err.msg);
               reject();
-              this.$message.error(err);
             })
             .finally(() => {
               loading.close();
@@ -417,11 +417,11 @@
               });
           })
           .catch(() => {})
-          .finally(() => {
-          });
+          .finally(() => {});
       },
-      handleCancel(){
-        if(this.current == null) return this.$message.warning('请先选择一条数据');
+      handleCancel() {
+        if (this.current == null)
+          return this.$message.warning('请先选择一条数据');
         this.$confirm('是否确定取消审批？', '提示', {
           type: 'warning'
         })
@@ -442,7 +442,7 @@
               });
           })
           .catch(() => {});
-      },
+      }
     },
 
     mounted() {
@@ -457,9 +457,13 @@
       });
 
       this.$bus.$on('ConsumeableUsageDetailApprove', () => {
-        this.handleApprove().then(() => {
-          this.handleCatDefNoPkgCode();
-        });
+        this.handleApprove()
+          .then(() => {
+            this.handleCatDefNoPkgCode();
+          })
+          .catch((e) => {
+            console.log(e);
+          });
       });
 
       this.$bus.$on('ConsumeableUsageDetailCancel', () => {
