@@ -24,6 +24,7 @@ export async function getBdSzYyHisSs(params) {
     MZZY: params.where?.MZZY || '',
     BRXM_OR_SSMC: params.where?.BRXM_OR_SSMC || '',
     SSBH: params.where?.SSBH || '',
+    ZFBZ: params.where?.ZFBZ || '',
     IS_LS: params.where?.IS_LS || '',
     SSTH: params.where?.SSTH || '',
     SSFJ: params.where?.SSFJ || '',

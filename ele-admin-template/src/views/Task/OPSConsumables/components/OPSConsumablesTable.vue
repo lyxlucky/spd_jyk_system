@@ -96,6 +96,7 @@
               <el-option label="已打印" value="1"></el-option>
             </el-select>
           </el-form-item>
+          
           <el-form-item
             style="margin-right: 16px; margin-bottom: 8px"
             label="是否临时"
@@ -109,6 +110,21 @@
               <el-option label="全部" value=""></el-option>
               <el-option label="临时" value="1"></el-option>
               <el-option label="非临时" value="0"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item
+            style="margin-right: 16px; margin-bottom: 8px"
+            label="是否作废"
+          >
+            <el-select
+              v-model="where.ZFBZ"
+              placeholder="是否作废"
+              clearable
+              style="width: 100px"
+            >
+              <el-option label="全部" value=""></el-option>
+              <el-option label="未作废" value="0"></el-option>
+              <el-option label="已作废" value="1"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item style="margin-right: 16px; margin-bottom: 8px">
@@ -269,6 +285,7 @@
             today.toISOString().split('T')[0]
           ],
           MZZY: '',
+          ZFBZ: '',
           IS_ADD: '',
           IS_LS: '',
           IS_PRINT2: '',
