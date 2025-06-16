@@ -15,19 +15,24 @@ export async function getBdSzYyHisSs(params) {
     Token: sessionStorage.getItem(TOKEN_STORE_NAME),
     start_time: params.where?.dateRange ? params.where?.dateRange[0] : '',
     end_time: params.where?.dateRange ? params.where?.dateRange[1] : '',
-    SSRQ_start_time: params.where?.SSRQDateRange ? params.where?.SSRQDateRange[0] : '',
-    SSRQ_end_time: params.where?.SSRQDateRange ? params.where?.SSRQDateRange[1] : '',
+    SSRQ_start_time: params.where?.SSRQDateRange
+      ? params.where?.SSRQDateRange[0]
+      : '',
+    SSRQ_end_time: params.where?.SSRQDateRange
+      ? params.where?.SSRQDateRange[1]
+      : '',
     MZZY: params.where?.MZZY || '',
     BRXM_OR_SSMC: params.where?.BRXM_OR_SSMC || '',
     SSBH: params.where?.SSBH || '',
+    IS_LS: params.where?.IS_LS || '',
     SSTH: params.where?.SSTH || '',
     SSFJ: params.where?.SSFJ || '',
     IS_ADD: params.where?.IS_ADD || '',
     IS_PRINT2: params.where?.IS_PRINT2 || '',
     page: params.page || 1,
     size: params.limit || 10,
-    sort:params.order?.sort || '',
-    order: params.order?.order || '',
+    sort: params.order?.sort || '',
+    order: params.order?.order || ''
   };
   let res = await request.post('/DeptPlanTransfer/getBdSzYyHisSs', formatData);
   // console.log(res)
@@ -242,10 +247,11 @@ export async function GetBdszZgsjMainPsDelExcelDetail(params) {
 }
 
 export async function GetBdszZgsjMainPsDelExcelDetail2(params) {
-  let res = await request.get(`/Commons/GetReportById_BJ_SHD?format=pdf&inline=true&SSBH=${params?.SSBH}`);
+  let res = await request.get(
+    `/Commons/GetReportById_BJ_SHD?format=pdf&inline=true&SSBH=${params?.SSBH}`
+  );
   if (res.data.code == 200) {
     return res.data;
   }
   return Promise.reject(res.data);
 }
-

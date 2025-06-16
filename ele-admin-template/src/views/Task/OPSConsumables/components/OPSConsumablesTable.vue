@@ -29,7 +29,7 @@
 
       <template v-slot:toolbar>
         <el-form :inline="true" :model="where" size="mini">
-          <el-form-item label="日期范围">
+          <!-- <el-form-item label="日期范围">
             <el-date-picker
               v-model="where.dateRange"
               type="daterange"
@@ -40,7 +40,7 @@
               :picker-options="pickerOptions"
               style="width: 240px"
             ></el-date-picker>
-          </el-form-item>
+          </el-form-item> -->
           <el-form-item label="手术日期">
             <el-date-picker
               v-model="where.SSRQDateRange"
@@ -81,7 +81,10 @@
               <el-option label="未添加" value="0"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item style="margin-right: 16px; margin-bottom: 8px" label="打印状态2">
+          <el-form-item
+            style="margin-right: 16px; margin-bottom: 8px"
+            label="打印状态2"
+          >
             <el-select
               v-model="where.IS_PRINT2"
               placeholder="打印状态2"
@@ -91,6 +94,21 @@
               <el-option label="全部" value=""></el-option>
               <el-option label="未打印" value="0"></el-option>
               <el-option label="已打印" value="1"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item
+            style="margin-right: 16px; margin-bottom: 8px"
+            label="打印状态2"
+          >
+            <el-select
+              v-model="where.IS_LS"
+              placeholder="是否临时"
+              clearable
+              style="width: 100px"
+            >
+              <el-option label="全部" value=""></el-option>
+              <el-option label="临时" value="1"></el-option>
+              <el-option label="非临时" value="0"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item style="margin-right: 16px; margin-bottom: 8px">
@@ -157,7 +175,6 @@
           {{ row.IS_PRINT2 == '1' ? '已打印' : '未打印' }}
         </el-tag>
       </template>
-
     </ele-pro-table>
     <!-- </el-card> -->
     <UpdateUserInfoDialog
@@ -166,7 +183,7 @@
     ></UpdateUserInfoDialog>
     <SummaryDialog
       :visible.sync="summaryDialogVisible"
-      :selectedSSBH="selection.map(item => item.SSBH)"
+      :selectedSSBH="selection.map((item) => item.SSBH)"
     ></SummaryDialog>
   </div>
 </template>
@@ -193,11 +210,11 @@
       yesterday.setDate(today.getDate() - 1);
       const tomorrow = new Date(today);
       tomorrow.setDate(today.getDate() + 1);
-      
+
       // 计算近3天的日期范围
       const threeDaysAgo = new Date(today);
       threeDaysAgo.setDate(today.getDate() - 2); // 减2天，加上今天就是3天
-      
+
       return {
         currentRow: null,
         selection: [], // 选中的行
@@ -243,16 +260,17 @@
         },
         // 查询参数
         where: {
-          dateRange: [
-            threeDaysAgo.toISOString().split('T')[0],
-            today.toISOString().split('T')[0]
-          ],
+          // dateRange: [
+          //   threeDaysAgo.toISOString().split('T')[0],
+          //   today.toISOString().split('T')[0]
+          // ],
           SSRQDateRange: [
             threeDaysAgo.toISOString().split('T')[0],
             today.toISOString().split('T')[0]
           ],
           MZZY: '',
           IS_ADD: '',
+          IS_LS: '',
           IS_PRINT2: '',
           BRXM_OR_SSMC: '',
           SSBH: '',
@@ -354,7 +372,7 @@
             prop: 'SSRQ',
             label: '手术日期',
             align: 'center',
-            sortable:true,
+            sortable: true,
             width: 120,
             formatter: (row, column, cellValue, index) => {
               // return this.$util.toDateString(cellValue, 'YYYY-MM-DD HH:mm:ss');
@@ -397,7 +415,7 @@
         ],
         // 分页配置
         pageSize: 100,
-        pageSizes: [10, 20,30,40, 50, 100,999999],
+        pageSizes: [10, 20, 30, 40, 50, 100, 999999],
         updateUserInfoDialogVisible: false
       };
     },
@@ -491,12 +509,12 @@
         this.$emit('TableRow1', row);
       },
       // 表格数据源
-      datasource({ page, limit, where,order }) {
+      datasource({ page, limit, where, order }) {
         // 这里不实现具体方法，仅返回空数据结构
         where.MZZY = this.where.MZZY;
         console.log(where);
 
-        return getBdSzYyHisSs({ page, limit, where,order })
+        return getBdSzYyHisSs({ page, limit, where, order })
           .then((data) => {
             return {
               list: data.data || [],

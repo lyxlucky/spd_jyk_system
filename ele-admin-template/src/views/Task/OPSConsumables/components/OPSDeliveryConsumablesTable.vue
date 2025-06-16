@@ -9,6 +9,8 @@
       :columns="columns"
       height="180px"
       :datasource="datasource"
+      :pageSize="pageSize"
+      :pageSizes="pageSizes"
     >
       <template v-slot:ACTION="{ row }">
         <el-button
@@ -40,6 +42,8 @@
     data() {
       return {
         where: {},
+        pageSize: 100,
+        pageSizes: [10, 20, 30, 40, 50, 100],
         columns: [
           {
             prop: 'VARIETIE_NAME',
