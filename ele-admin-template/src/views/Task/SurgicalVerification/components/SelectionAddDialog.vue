@@ -286,13 +286,13 @@
         })
           .then((res) => {
             this.$message({
-              message: '添加成功',
+              message: res?.msg,
               type: 'success'
             });
           })
           .catch((err) => {
             this.$message({
-              message: err.message,
+              message: err,
               type: 'error'
             });
           })

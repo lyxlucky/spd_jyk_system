@@ -5,14 +5,20 @@ import { toDateString } from 'ele-admin';
 import moment from 'moment';
 
 export async function getBdSzYyHisSs(params) {
+  console.log(params)
   const formatData = {
     Token: sessionStorage.getItem(TOKEN_STORE_NAME),
     MZZY: params.where.MZZY == 'ALL' ? '' : params.where.MZZY || '-1',
     SSFJ: params.where.SSFJ || '',
+    SSBH: params.where?.SSBH || '',
     start_time: params.where?.dateRange ? params.where?.dateRange[0] : '',
     end_time: params.where?.dateRange ? params.where?.dateRange[1] : '',
-    SSRQ_start_time: params.where?.SSRQDateRange ? moment(params.where?.SSRQDateRange).format('YYYY-MM-DD') : params.where?.SSRQStartTime || '',
-    SSRQ_end_time: params.where?.SSRQDateRange ? moment(params.where?.SSRQDateRange).format('YYYY-MM-DD') : '',
+    SSRQ_start_time: params.where?.SSRQDateRange
+      ? moment(params.where?.SSRQDateRange).format('YYYY-MM-DD')
+      : params.where?.SSRQStartTime || '',
+    SSRQ_end_time: params.where?.SSRQDateRange
+      ? moment(params.where?.SSRQDateRange).format('YYYY-MM-DD')
+      : '',
     condition: params.where.condition || '',
     page: params.page || 1,
     size: params.limit || 10,
@@ -305,7 +311,10 @@ export async function getBdszZqsjSsfjList(params) {
     SSFJ: params.SSFJ || ''
   };
 
-  let res = await request.post('/DeptPlanTransfer/GetBdszZqsjSsfjList', formatData);
+  let res = await request.post(
+    '/DeptPlanTransfer/GetBdszZqsjSsfjList',
+    formatData
+  );
 
   if (res.data.code == 200) {
     return res.data;

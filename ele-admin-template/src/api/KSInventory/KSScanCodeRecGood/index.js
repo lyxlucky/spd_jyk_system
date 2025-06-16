@@ -11,6 +11,8 @@ export async function SearchDistributeListJYK(data) {
     data2.page = data.page;
     data2.size = data.limit;
     data2.stock_out_distribute_number = data.where.stock_out_distribute_number ? data.where.stock_out_distribute_number : '';
+    data2.delivery_start_date = data.where.delivery_start_date ? data.where.delivery_start_date : '';
+    data2.delivery_end_date = data.where.delivery_end_date ? data.where.delivery_end_date : '';
     data2.dept_two_code = store.state.user.info.DeptNow.Dept_Two_Code
     ? store.state.user.info.DeptNow.Dept_Two_Code
     : '';

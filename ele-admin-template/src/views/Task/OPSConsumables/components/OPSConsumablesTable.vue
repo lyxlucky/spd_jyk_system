@@ -407,13 +407,18 @@
         this.updateUserInfoDialogVisible = true;
       },
       handleExportCurrent() {
-        if (!this.currentRow || Object.keys(this.currentRow).length === 0) {
+        // if (!this.currentRow || Object.keys(this.currentRow).length === 0) {
+        //   this.$message.error('请先选择一行数据！');
+        //   return;
+        // }
+        if(this.selection.length == 0) {
           this.$message.error('请先选择一行数据！');
           return;
         }
+        const idStr = this.selection.map(item => `'${item.SSBH}'`).join(',');
         // let loading = this.$messageLoading('导出中');
         window.open(
-          `${BACK_BASE_URL}/api/Commons/GetReportById_BJ_SHD?format=pdf&inline=true&SSBH=${this.currentRow?.SSBH}`,
+          `${BACK_BASE_URL}/api/Commons/GetReportById_BJ_SHD?format=pdf&inline=true&SSBH=${idStr}`,
           '_blank'
         );
         // GetBdszZgsjMainPsDelExcelDetail({
