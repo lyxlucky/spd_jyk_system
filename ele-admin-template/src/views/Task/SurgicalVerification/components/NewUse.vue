@@ -1,103 +1,3 @@
-<!-- <template>
-  <div class="ele-box">
-    <el-form size="mini" label-position="left">
-      <el-form-item label="住院号">
-        <el-input v-model="form.ZYHM" placeholder="请输入住院号" clearable />
-      </el-form-item>
-      <el-form-item label="姓名">
-        <el-input v-model="form.BRXM" placeholder="请输入病人姓名" clearable />
-      </el-form-item>
-      <el-form-item label="手术房间">
-        <el-input v-model="form.SSFJ" placeholder="请输入手术房间" clearable />
-      </el-form-item>
-      <el-form-item label="手术台号">
-        <el-input v-model="form.SSTH" placeholder="请输入手术台号" clearable />
-      </el-form-item>
-      <el-form-item label="病人性别">
-        <el-select v-model="form.BRXB" placeholder="请选择性别" clearable>
-          <el-option label="男" value="男"></el-option>
-          <el-option label="女" value="女"></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="手术名称">
-        <el-input v-model="form.SSMC" placeholder="请输入手术名称" clearable />
-      </el-form-item>
-      <el-form-item label="手术日期">
-        <el-date-picker
-          v-model="form.SSRQ"
-          type="date"
-          placeholder="请选择手术日期"
-          value-format="yyyy-MM-dd"
-        ></el-date-picker>
-      </el-form-item>
-      <el-form-item label="科室名称">
-        <el-input v-model="form.KSMC" placeholder="请输入科室名称" clearable />
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="handleSubmit">提交</el-button>
-      </el-form-item>
-    </el-form>
-  </div>
-</template>
-
-<script>
-  import { addNewBdszZq } from '@/api/Task/SurgicalVerification';
-  export default {
-    name: 'NewUse',
-    props: {
-      selection: {
-        type: Array,
-        default: () => []
-      },
-      ApplyTempTableData: {
-        type: Object,
-        default: () => null
-      }
-    },
-    data() {
-      return {
-        form: {
-          SSFJ: '', // 手术房间
-          SSTH: '', // 手术台号
-          ZYHM: '', // 住院号
-          BRXM: '', // 病人姓名
-          BRXB: '', // 病人性别
-          SSMC: '', // 手术名称
-          SSRQ: '', // 手术日期
-          KSMC: '' // 科室名称
-        }
-      };
-    },
-    methods: {
-      handleSubmit() {
-        if (this.selection.length === 0) {
-          this.$message.warning('请选择数据');
-          return;
-        }
-        if (!this.ApplyTempTableData?.SSBH) {
-          this.$message.warning('请先选择术间');
-          return;
-        }
-        let loading = this.$messageLoading('新增中');
-        addNewBdszZq({
-          ...this.form,
-          SSBH: this.ApplyTempTableData?.SSBH,
-          data: this.selection
-        })
-          .then((res) => {
-            loading.close();
-            this.$message.success('新增成功');
-          })
-          .catch((err) => {
-            loading.close();
-            this.$message.error(err.message);
-          });
-      }
-    }
-  };
-</script>
-<style scoped></style> -->
-
 <template lang="">
   <div>
     <ele-pro-table
@@ -116,22 +16,83 @@
       cache-key="NewUseCacheTableKey"
     >
       <template slot="toolbar">
-        <div style='display: flex; align-items: center;'>
-          <el-input
-            v-model="where.SSBH"
-            placeholder="请输入手术编号"
-            style="width: 200px; margin-right: 10px"
-            size='mini'
-            clearable
-          ></el-input>
-          <div class="form-box">
-            <div>
-              <el-button size="mini" type="primary" @click="reload()"
-                >搜索</el-button
+        <el-form
+          label-width="0px"
+          class="ele-form-search"
+          @keyup.enter.native="search"
+          @submit.native.prevent
+          size="mini"
+          :inline="true"
+        >
+          <el-form-item class="SSRQ-form-item" style="width: 240px">
+            <el-date-picker
+              class="SSRQ-range"
+              v-model="where.SSRQDateRange"
+              style="width: 100%"
+            ></el-date-picker>
+          </el-form-item>
+          <el-form-item>
+            <el-input
+              clearable
+              v-model="where.condition"
+              style="width: 180px"
+              placeholder="请输入手术编号或住院号"
+            />
+          </el-form-item>
+          <el-form-item>
+            <el-select
+              @change="search"
+              v-model="where.MZZY"
+              size="mini"
+              placeholder=""
+              style="width: 100px"
+            >
+              <el-option label="全部" value="ALL"></el-option>
+              <el-option label="已提交" value="1"></el-option>
+              <el-option label="已拣配" value="2"></el-option>
+              <el-option label="已交接" value="3"></el-option>
+              <el-option label="已完成" value="4"></el-option>
+              <el-option label="已交接/已完成" value="-1"></el-option>
+            </el-select>
+          </el-form-item>
+
+          <el-form-item>
+            <el-select
+              v-model="where.SSFJ"
+              filterable
+              remote
+              reserve-keyword
+              placeholder="请输入术间"
+              :remote-method="remoteSearch"
+              :loading="loading"
+              style="width: 120px"
+              size="mini"
+              clearable
+              @focus="handleFocus"
+              ref="ssfjSelect"
+            >
+              <el-option
+                v-for="item in ssfjOptions"
+                :key="item"
+                :label="item"
+                :value="item"
               >
-            </div>
-          </div>
-        </div>
+              </el-option>
+            </el-select>
+          </el-form-item>
+
+          <el-form-item>
+            <el-button
+              size="mini"
+              type="primary"
+              icon="el-icon-search"
+              class="ele-btn-icon"
+              @click="reload"
+            >
+              查询
+            </el-button>
+          </el-form-item>
+        </el-form>
       </template>
 
       <template v-slot:STATU="{ row }">
@@ -150,13 +111,24 @@
 </template>
 <script>
   import {
-    getBdSzYyHisSs,
+    getBdSzYyHisSsWithNoUse,
     addNewBdszZq
   } from '@/api/Task/SurgicalVerification';
+  import { getBdszZqsjSsfjList } from '@/api/Task/SurgicalVerification';
   export default {
     name: 'NewUse',
     props: ['selection', 'ApplyTempTableData', 'visible'],
     data() {
+      // 默认表单数据
+      const today = new Date();
+      const startTime = today.toDateString('yyyy-mm-dd');
+      const defaultWhere = {
+        SSRQDateRange: startTime,
+        // SSRQStartTime: new Date(),
+        MZZY: '-1',
+        condition: '',
+        SSFJ: ''
+      };
       return {
         columns: [
           {
@@ -260,14 +232,29 @@
         current: null,
         radioSelection: null,
         where: {
+          ...defaultWhere,
           SSBH: ''
+        },
+        BZ: '',
+        TempletName: '',
+        loading: false,
+        ssfjOptions: [],
+        searchTimer: null,
+        rules: {
+          TempletName: [
+            {
+              required: true,
+              trigger: 'blur',
+              message: '请输入模板名称'
+            }
+          ]
         }
       };
     },
     methods: {
       async datasource({ page, limit, where, order }) {
         //获取当前日期
-        const res = await getBdSzYyHisSs({
+        const res = await getBdSzYyHisSsWithNoUse({
           page,
           limit,
           where: {
@@ -300,7 +287,7 @@
           return;
         }
         if (!this.ApplyTempTableData?.SSBH) {
-          this.$message.warning('请先选择术间');
+          this.$message.warning('请先选择原手术编号');
           return;
         }
         if (this.current == undefined) {
@@ -308,27 +295,49 @@
           return;
         }
 
-        if (this.current?.SSRQ == undefined || this.current?.SSRQ == null) {
-          this.$message.warning('手术日期不能为空');
-          return;
-        }
-
         let loading = this.$messageLoading('新增中');
         addNewBdszZq({
           ...this.current,
           SSBH: this.ApplyTempTableData?.SSBH,
+          TG_SSBH: this.current.SSBH,
           data: this.selection
         })
           .then((res) => {
-            this.$message.success('新增成功');
+            this.$message.success(res.msg || '新增成功');
           })
           .catch((err) => {
-            this.$message.error(err.message);
+            this.$message.error(err?.msg || '新增失败');
           })
           .finally(() => {
             loading.close();
             this.$emit('close', '');
           });
+      },
+      remoteSearch(query) {
+        if (this.searchTimer) {
+          clearTimeout(this.searchTimer);
+        }
+
+        this.loading = true;
+        this.searchTimer = setTimeout(() => {
+          getBdszZqsjSsfjList({ SSFJ: query })
+            .then((res) => {
+              this.ssfjOptions = res.data || [];
+            })
+            .catch((err) => {
+              this.$message.error(err.msg || '获取术间列表失败');
+              this.ssfjOptions = [];
+            })
+            .finally(() => {
+              this.loading = false;
+            });
+        }, 300); // 300ms 的节流时间
+      }
+    },
+    computed: {
+      // 是否开启响应式布局
+      styleResponsive() {
+        return this.$store.state.theme.styleResponsive;
       }
     }
   };
