@@ -28,6 +28,8 @@
             <el-date-picker
               class="SSRQ-range"
               v-model="where.SSRQDateRange"
+              format="yyyy-MM-dd"
+              value-format="yyyy-MM-dd"
               style="width: 100%"
             ></el-date-picker>
           </el-form-item>
@@ -120,10 +122,9 @@
     props: ['selection', 'ApplyTempTableData', 'visible'],
     data() {
       // 默认表单数据
-      const today = new Date();
-      const startTime = today.toDateString('yyyy-mm-dd');
+      const today = this.$moment().format("YYYY-MM-DD")
       const defaultWhere = {
-        SSRQDateRange: startTime,
+        SSRQDateRange: today,
         // SSRQStartTime: new Date(),
         MZZY: '-1',
         condition: '',
@@ -259,8 +260,7 @@
           limit,
           where: {
             ...where,
-            SSBH: this.where.SSBH,
-            MZZY: '-1'
+            SSBH: this.where.SSBH
           },
           order
         });
