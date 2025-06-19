@@ -81,7 +81,9 @@ const DEFAULT_STATE = Object.freeze({
   // 是否开启响应式
   styleResponsive: true,
   // 字体大小
-  fontSize: '16px'
+  fontSize: '16px',
+  // 表格密度
+  density: 'default'
 });
 // 延时操作定时器
 let disableTransitionTimer, updateContentSizeTimer;
@@ -414,7 +416,8 @@ export default {
           'weakMode',
           'darkMode',
           'color',
-          'fontSize'
+          'fontSize',
+          'density'
         ].forEach((key) => {
           commit('SET', { key, value: DEFAULT_STATE[key] });
         });
@@ -634,6 +637,14 @@ export default {
       commit('SET', { key: 'fontSize', value });
       cacheSetting('fontSize', value);
       return Promise.resolve();
+    },
+    /**
+     * 设置表格密度
+     * @param value 密度
+     */
+    setDensity({ commit }, value) {
+      commit('SET', { key: 'density', value });
+      cacheSetting('density', value);
     }
   }
 };

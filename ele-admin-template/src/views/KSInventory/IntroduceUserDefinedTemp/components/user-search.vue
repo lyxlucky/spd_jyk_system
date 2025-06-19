@@ -5,8 +5,61 @@
     class="ele-form-search"
     @keyup.enter.native="search"
     @submit.native.prevent
+    :inline="true"
+    size="mini"
   >
-    <el-row :gutter="1" style="margin-top: 10px">
+    <el-form-item label="">
+      <el-input v-model="where.SerachName" placeholder="请输入品种编码/品种名称/型号规格/生产企业搜索" />
+    </el-form-item>
+    <el-form-item label="">
+      <el-input
+            v-model="where.spec"
+            size="mini"
+            placeholder="请输入规格型号"
+            clearable
+            @change="reload"
+          />
+    </el-form-item>
+    <el-form-item label="">
+      <el-input
+        v-model="where.manufacturer"
+        placeholder="请输入生产企业"
+        clearable
+        size="mini"
+        @change="reload"
+      />
+    </el-form-item>
+
+    <el-form-item label="">
+      <el-button
+        size="mini"
+        type="primary"
+        icon="el-icon-search"
+        class="ele-btn-icon"
+        @click="search"
+      >
+        查询
+      </el-button>
+      
+      
+    </el-form-item>
+    <el-form-item label="">
+      <el-button
+        size="mini"
+        type="primary"
+        icon="el-icon-plus"
+        class="ele-btn-icon"
+        @click="addKSKS()"
+      >
+        确定添加
+      </el-button>
+    </el-form-item>
+    <el-form-item label="">
+      <el-button size="mini" icon="el-icon-refresh" @click="reset"
+        >重置</el-button
+      >
+    </el-form-item>
+    <!-- <el-row :gutter="1" style="margin-top: 10px">
       <el-col v-bind="styleResponsive ? { lg: 6, md: 4 } : { span: 4 }">
         <el-input
           clearable
@@ -62,13 +115,13 @@
           </el-button>
           <el-button size="mini" icon="el-icon-refresh" @click="reset"
             >重置</el-button
-          >
+          > -->
           <!-- <el-button type="primary" class="ele-btn-icon" @click="exportData" v-loading.fullscreen.lock="fullscreenLoading">
             导出
           </el-button> -->
-        </div>
+        <!-- </div>
       </el-col>
-    </el-row>
+    </el-row> -->
   </el-form>
 </template>
 

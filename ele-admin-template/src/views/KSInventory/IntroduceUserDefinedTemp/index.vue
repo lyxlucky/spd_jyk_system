@@ -1,5 +1,5 @@
 <template >
-  <ele-modal :destroy-on-close="true" width="90%" height="80%" :visible="visible" :close-on-click-modal="true" custom-class="ele-dialog-form" title="自定义新增" @update:visible="updateVisible">
+  <ele-modal top="1vh" :destroy-on-close="true" width="90%" height="80%" :visible="visible" :close-on-click-modal="false" custom-class="ele-dialog-form" title="自定义新增" @update:visible="updateVisible">
     <div class="ele-body">
       <el-card shadow="never">
         <!-- 搜索表单 -->
@@ -9,9 +9,10 @@
         <ele-pro-table ref="table" height="500px" :row-key="(row) => row.VarID" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" @selection-change="onSelectionChange" cache-key="DepaStorageQuery">
           <!-- 操作列 -->
           <template v-slot:APPLY_QTY="{ row }">
-            <el-form-item label="">
+            <!-- <el-form-item label="">
               <el-input size="mini" v-model="row.APPLY_QTY"></el-input>
-            </el-form-item>
+            </el-form-item> -->
+            <el-input size="mini" v-model="row.APPLY_QTY"></el-input>
           </template>
         </ele-pro-table>
       </el-card>

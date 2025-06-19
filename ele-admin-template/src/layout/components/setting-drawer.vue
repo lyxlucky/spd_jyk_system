@@ -296,6 +296,23 @@
           </el-select>
         </div>
       </div>
+      <!-- 表格密度 -->
+      <div class="ele-setting-item">
+        <div class="setting-item-title">
+          {{ $t('layout.setting.density') }}
+        </div>
+        <div class="setting-item-control" style="width: 110px">
+          <el-select
+            size="mini"
+            v-model="theme.density"
+            @change="updateDensity"
+          >
+            <el-option :label="$t('layout.setting.densities.default')" value="default" />
+            <el-option :label="$t('layout.setting.densities.middle')" value="middle" />
+            <el-option :label="$t('layout.setting.densities.compact')" value="compact" />
+          </el-select>
+        </div>
+      </div>
       <!-- 页签 -->
       <div class="ele-setting-item">
         <div class="setting-item-title">
@@ -525,6 +542,9 @@
         }).catch(err => {
           console.error('Failed to update font size:', err);
         });
+      },
+      updateDensity(value) {
+        this.$store.dispatch('theme/setDensity', value);
       },
       resetSetting() {
         this.doWithLoading(() => this.$store.dispatch('theme/resetSetting'));

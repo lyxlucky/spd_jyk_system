@@ -59,6 +59,12 @@ export default {
     showTabs: 'Show Tabs',
     tabStyle: 'Tab Style',
     fontSize: 'Font Size',
+    density: 'Table Density',
+    densities: {
+      default: 'Default',
+      middle: 'Middle',
+      compact: 'Compact'
+    },
     tabStyles: {
       default: 'Default',
       dot: 'Dot',
