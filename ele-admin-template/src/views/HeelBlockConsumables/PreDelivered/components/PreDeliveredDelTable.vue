@@ -199,9 +199,6 @@
             align: 'center',
             showOverflowTooltip: true,
             minWidth: 120,
-            formatter: (row, column, cellValue) => {
-              return this.$util.toDateString(cellValue,'YYYY-MM-DD');
-            }
           },
           {
             slot: 'Batch_Validity_Period',
@@ -209,9 +206,6 @@
             align: 'center',
             showOverflowTooltip: true,
             minWidth: 120,
-            formatter: (row, column, cellValue) => {
-              return this.$util.toDateString(cellValue,'YYYY-MM-DD');
-            }
           },
           {
             slot: 'Receivable',
@@ -233,7 +227,7 @@
                 return '线上采购';
               }
             }
-          },
+          }
         ],
         toolbar: false,
         pageSize: 50,
@@ -259,14 +253,17 @@
           this.PreDeliveredTableData.Delivery_Note_Number_Id;
         let data = SearchDeliveryVarietie({ page, limit, where, order }).then(
           (res) => {
-            this.preTotal = res.result.reduce((acc,curr) => acc + Number(curr.Receivable), 0);
+            this.preTotal = res.result.reduce(
+              (acc, curr) => acc + Number(curr.Receivable),
+              0
+            );
             for (let i = 0; i < res.result.length; i++) {
               res.result[i].Batch_Production_Date = res.result[
                 i
               ].Batch_Production_Date.substring(0, 10);
               res.result[i].Batch_Validity_Period = res.result[
                 i
-              ].Batch_Production_Date.substring(0, 10);
+              ].Batch_Validity_Period.substring(0, 10);
             }
             var tData = {
               count: res.total,
@@ -302,7 +299,8 @@
           Array.Receivable = this.selection[i].Receivable;
           Array.Batch = this.selection[i].Batch;
           Array.Batch_Production_Date = this.selection[i].Batch_Production_Date;
-          Array.Batch_Validity_Period = this.selection[i].Batch_Validity_Period || '9999-12-31';
+          Array.Batch_Validity_Period =
+            this.selection[i].Batch_Validity_Period || '9999-12-31';
           arrList.push(Array);
         }
         var json = JSON.stringify(arrList);

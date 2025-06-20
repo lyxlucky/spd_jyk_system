@@ -34,3 +34,17 @@ export async function confirmBatch(data) {
         return Promise.reject(new Error(res.data.msg));
     }
 }
+
+
+export async function makeItemRead(data) {
+    var data2 = {};
+    data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+    data2.ids = data.code ? data.code : '';
+    const formatData = formdataify(data2);
+    const res = await request.post('BatchReminder/makeItemRead',formatData);
+    if (res.data.code == 200) {
+        return res.data;
+    } else {
+        return Promise.reject(new Error(res.data.msg));
+    }
+}
