@@ -200,7 +200,7 @@
             showOverflowTooltip: true,
             minWidth: 120,
             formatter: (row, column, cellValue) => {
-              return this.$util.toDateString(cellValue);
+              return this.$util.toDateString(cellValue,'YYYY-MM-DD');
             }
           },
           {
@@ -210,7 +210,7 @@
             showOverflowTooltip: true,
             minWidth: 120,
             formatter: (row, column, cellValue) => {
-              return this.$util.toDateString(cellValue);
+              return this.$util.toDateString(cellValue,'YYYY-MM-DD');
             }
           },
           {
