@@ -85,6 +85,7 @@
 <script>
   import ApplyTempDataSearch from './ApplyTempDataSearch.vue';
   import { utils, writeFile } from 'xlsx';
+  import { HOME_HP } from '@/config/setting';
   import {
     SerachTempletDeta,
     DeleteTempletDeta
@@ -112,8 +113,8 @@
             label: '序',
             width: 45,
             align: 'center',
-            showOverflowTooltip: true,
-            fixed: 'left'
+            fixed: 'left',
+            showOverflowTooltip: true
           },
           {
             // prop: 'TempletQty',
@@ -121,8 +122,8 @@
             label: '模板申领数量',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 140,
-            fixed: 'left'
+            fixed: 'left',
+            minWidth: 140
           },
           // {
           //   prop: 'DEPT_ZDY_VARIETIE_CODE',
@@ -187,7 +188,8 @@
             label: '生产企业名称',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 180
+            minWidth: 180,
+            show: this.isHideDeptSup
           },
           {
             prop: 'SUPPLIER_NAME',
@@ -278,8 +280,7 @@
             align: 'center',
             resizable: false,
             slot: 'action',
-            showOverflowTooltip: true,
-            fixed: 'left'
+            showOverflowTooltip: true
           }
         ],
         toolbar: false,
@@ -295,7 +296,8 @@
         // 是否显示导入弹窗
         showImport: false,
         // datasource: [],
-        data: []
+        data: [],
+        isHideDeptSup: true,
       };
     },
     methods: {
@@ -313,6 +315,23 @@
       },
       removeBatch() {
         this.$refs.Apply.removeBatch();
+      },
+      // 检查是否需要隐藏生产企业名称列
+      checkHideManufacturingColumn() {
+        const homehp = HOME_HP;
+        let isHideDeptSup = true;
+        console.log('HOME_HP:', homehp);
+        if (homehp == "csyy" || homehp == "stzx" || homehp == "stse" || homehp == "stzl" || homehp == "stzyyy" || homehp == "fsdwrmyy") {
+          isHideDeptSup = false;
+        }
+        this.isHideDeptSup = isHideDeptSup;
+        console.log('isHideDeptSup:', isHideDeptSup);
+        
+        // 找到生产企业名称列并设置show属性
+        const manufacturingColumn = this.columns.find(col => col.prop === 'Manufacturing');
+        if (manufacturingColumn) {
+          manufacturingColumn.show = isHideDeptSup;
+        }
       },
       /* 表格数据源 */
       datasource({ page, limit, where, order }) {
@@ -448,7 +467,7 @@
     computed: {
       ApplyTempTableDataSearch() {
         return this.ApplyTempTableData;
-      }
+      },
       // pageSize(){
       //   return localStorage.getItem('SerachTempletDetaPageSize')?localStorage.getItem('SerachTempletDetaPageSize'):10
       // }
@@ -465,6 +484,7 @@
     },
     created() {
       // this.getdatasource();
+      this.checkHideManufacturingColumn();
     }
   };
 </script>

@@ -78,6 +78,7 @@
           style="color: white"
           >强制结束</el-tag
         >
+        
         <!-- <el-tag
           size="mini"
           v-else-if="
