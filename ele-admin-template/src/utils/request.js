@@ -4,7 +4,7 @@
 import axios from 'axios';
 import router from '@/router';
 import { MessageBox } from 'element-ui';
-import { API_BASE_URL, TOKEN_HEADER_NAME, LAYOUT_PATH } from '@/config/setting';
+import { API_BASE_URL, TOKEN_HEADER_NAME, LAYOUT_PATH, REQUEST_TIMEOUT } from '@/config/setting';
 import { getToken, setToken } from './token-util';
 import { logout } from './page-tab-util';
 import RequestTimeoutManager from '@/utils/timeOut';
@@ -17,7 +17,7 @@ const service = axios.create({
 /**
  * 添加请求拦截器
  */
-const requestTimeoutManager = new RequestTimeoutManager(3600000, logout);
+const requestTimeoutManager = new RequestTimeoutManager(REQUEST_TIMEOUT, logout);
 
 service.interceptors.request.use(
   (config) => {
