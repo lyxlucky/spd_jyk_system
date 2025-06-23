@@ -8,7 +8,7 @@ export const B2B_BASE_URL = "http://47.106.243.154:802";
 const getRequestTimeout = () => {
   const env = process.env.VUE_APP_ENV;
   const envTimeoutMap = {
-    'local': 5 * 1000, // 1小时
+    'local': 3600000, // 1小时
     'test': 3600000,  // 1小时
     'bjww': 3600000,  // 1小时
     'bjnw': 3600000,  // 1小时
