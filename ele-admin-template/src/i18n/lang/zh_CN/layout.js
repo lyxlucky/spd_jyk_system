@@ -59,6 +59,12 @@ export default {
     showTabs: '开启多页签栏',
     tabStyle: '页签显示风格',
     fontSize: '字体大小',
+    density: '表格密度',
+    densities: {
+      default: '默认',
+      middle: '中等',
+      compact: '紧凑'
+    },
     tabStyles: {
       default: '默认',
       dot: '圆点',

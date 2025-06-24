@@ -4,6 +4,35 @@ export const API_BASE_URL = process.env.VUE_APP_API_BASE_URL;
 //b2b后端地址
 export const B2B_BASE_URL = "http://47.106.243.154:802";
 
+// 请求超时时间配置（毫秒）
+const getRequestTimeout = () => {
+  const env = process.env.VUE_APP_ENV;
+  const envTimeoutMap = {
+    'local': 3600000, // 1小时
+    'test': 3600000,  // 1小时
+    'bjww': 3600000,  // 1小时
+    'bjnw': 3600000,  // 1小时
+    'bjnwhttps': 3600000, // 1小时
+    'bdww': 4*60*60*1000,  // 4小时
+    'bdnw': 4*60*60*1000,  // 4小时
+    'lhfyww': 3600000, // 1小时
+    'lhfynw': 3600000, // 1小时
+    'hnww': 3600000,  // 1小时
+    'hnnw': 3600000,  // 1小时
+    'smww': 3600000,  // 1小时
+    'smnw': 3600000,  // 1小时
+    'stzlww': 3600000, // 1小时
+    'stzlnw': 3600000, // 1小时
+    'zxww': 3600000,  // 1小时
+    'zxnw': 3600000,  // 1小时
+    'lgww': 3600000   // 1小时
+  };
+  console.log(env,envTimeoutMap[env]);
+  return envTimeoutMap[env] || 3600000; 
+}
+
+export const REQUEST_TIMEOUT = getRequestTimeout();
+
 // 医院标识
 // bd 北大
 // szsmyl 萨米

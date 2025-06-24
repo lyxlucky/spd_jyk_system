@@ -37,8 +37,8 @@
         <!-- 左表头 -->
         <template v-slot:toolbar>
           <el-form class="ele-form-search" size="mini">
-            <el-row :gutter="10">
-              <el-col :lg="10" :md="12">
+            <el-row :gutter="4">
+              <el-col :lg="8" :md="4">
                 <el-form-item label="">
                   <el-input
                     v-model="SerachName"
@@ -47,7 +47,26 @@
                     @change="reload"
                   />
                 </el-form-item>
+
+                <el-form-item label="">
+                  <el-input
+                    v-model="spec"
+                    placeholder="请输入规格型号"
+                    clearable
+                    @change="reload"
+                  />
+                </el-form-item>
+
+                <el-form-item label="">
+                  <el-input
+                    v-model="manufacturer"
+                    placeholder="请输入生产企业"
+                    clearable
+                    @change="reload"
+                  />
+                </el-form-item>
               </el-col>
+
               <el-col :lg="14" :md="12">
                 <div class="ele-form-actions">
                   <el-button size="mini" type="primary" @click="reload"
@@ -267,7 +286,9 @@
         // datasource: [],
         data: [],
         SerachName: '',
-        isUpdate: false
+        isUpdate: false,
+        spec: '',
+        manufacturer: ''
       };
     },
     methods: {
@@ -275,6 +296,8 @@
       datasource({ page, limit, where, order }) {
         where.DeptCode = this.$store.state.user.info.DeptNow.Dept_Two_Code;
         where.SerachName = this.SerachName;
+        where.spec = this.spec;
+        where.manufacturer = this.manufacturer;
         let data = SerachAuthVar({ page, limit, where, order }).then((res) => {
           var tData = {
             count: res.total,

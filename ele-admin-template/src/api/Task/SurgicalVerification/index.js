@@ -34,6 +34,33 @@ export async function getBdSzYyHisSs(params) {
   return Promise.reject(res.data);
 }
 
+export async function getBdSzYyHisSsWithNoUse(params) {
+  console.log(params)
+  const formatData = {
+    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+    MZZY: params.where.MZZY == 'ALL' ? '' : params.where.MZZY || '-1',
+    SSFJ: params.where.SSFJ || '',
+    SSBH: params.where?.SSBH || '',
+    start_time: params.where?.dateRange ? params.where?.dateRange[0] : '',
+    end_time: params.where?.dateRange ? params.where?.dateRange[1] : '',
+    SSRQ_start_time: params.where?.SSRQDateRange || moment().format('YYYY-MM-DD'),
+    SSRQ_end_time: params.where?.SSRQDateRange || moment().format('YYYY-MM-DD'),
+    condition: params.where.condition || '',
+    page: params.page || 1,
+    size: params.limit || 10,
+    sort: params.order.sort || '',
+    order: params.order.order || ''
+  };
+
+  let res = await request.post('/DeptPlanTransfer/getBdSzYyHisSs', formatData);
+
+  if (res.data.code == 200) {
+    return res.data;
+  }
+  return Promise.reject(res.data);
+}
+
+
 export async function getBdszgsjMainDel(params) {
   const formatData = {
     Token: sessionStorage.getItem(TOKEN_STORE_NAME),
@@ -251,14 +278,15 @@ export async function addNewBdszZq(data) {
   const formatData = {
     Token: sessionStorage.getItem(TOKEN_STORE_NAME),
     SSBH: data.SSBH || '', // 手术编号
-    SSFJ: data.SSFJ || '', // 手术房间
-    SSTH: data.SSTH || '', // 手术台号
-    ZYHM: data.ZYHM || '', // 住院号码
-    BRXM: data.BRXM || '', // 病人姓名
-    BRXB: data.BRXB || '', // 病人性别
-    SSMC: data.SSMC || '', // 手术名称
-    SSRQ: data.SSRQ || '', // 手术日期
-    KSMC: data.KSMC || '', // 科室名称
+    // SSFJ: data.SSFJ || '', // 手术房间
+    // SSTH: data.SSTH || '', // 手术台号
+    // ZYHM: data.ZYHM || '', // 住院号码
+    // BRXM: data.BRXM || '', // 病人姓名
+    // BRXB: data.BRXB || '', // 病人性别
+    // SSMC: data.SSMC || '', // 手术名称
+    // SSRQ: data.SSRQ || '', // 手术日期
+    // KSMC: data.KSMC || '', // 科室名称
+    TG_SSBH:data.TG_SSBH || '',
     data: data.data || [] // 数据列表
   };
 

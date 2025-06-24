@@ -18,7 +18,11 @@
     >
       <!-- 表头工具栏 -->
       <template v-slot:toolbar>
-        <KsNewBatchReminderTableSearch @sure="makeSure" @search="reload" />
+        <KsNewBatchReminderTableSearch
+          @sure="makeSure"
+          @makeRead="makeRead"
+          @search="reload"
+        />
       </template>
 
       <template v-slot:operation="{ row }">
@@ -31,20 +35,28 @@
         >
       </template>
 
-      <template v-slot:DB_FILE = "{ row }">
-        <div v-if='row.DB_FILE != null || row.DB_FILE != undefined' class="image-container" v-viewer>
+      <template v-slot:DB_FILE="{ row }">
+        <div
+          v-if="row.DB_FILE != null || row.DB_FILE != undefined"
+          class="image-container"
+          v-viewer
+        >
           <img class="image" :src="BACK_BASE_URL + row.DB_FILE" />
         </div>
       </template>
     </ele-pro-table>
-    <KsNewBatchReminderUpload @search='reload' :visible.sync='uploadIsVisible'/>
+    <KsNewBatchReminderUpload
+      @search="reload"
+      :visible.sync="uploadIsVisible"
+    />
   </div>
 </template>
 <script>
-import { BACK_BASE_URL } from '@/config/setting';
+  import { BACK_BASE_URL } from '@/config/setting';
   import {
     getTableList,
-    confirmBatch
+    confirmBatch,
+    makeItemRead
   } from '@/api/KSInventory/KSNewBatchReminder/index';
   import KsNewBatchReminderTableSearch from './KsNewBatchReminderTableSearch';
   import KsNewBatchReminderUpload from './KsNewBatchReminderUpload';
@@ -134,8 +146,8 @@ import { BACK_BASE_URL } from '@/config/setting';
             showOverflowTooltip: true,
             minWidth: 70,
             formatter: (row, column, cellValue) => {
-            return Number(cellValue).toFixed(2);
-          }
+              return Number(cellValue).toFixed(2);
+            }
           },
           {
             prop: 'MANUFACTURING_ENT_NAME',
@@ -169,6 +181,15 @@ import { BACK_BASE_URL } from '@/config/setting';
             minWidth: 70
           },
           {
+            prop: 'CREATE_TIME',
+            label: '创建时间',
+            align: 'center',
+            minWidth: 120,
+            formatter: (_row, _column, cellValue) => {
+              return this.$util.toDateString(cellValue, 'yyyy-MM-dd HH:mm:ss');
+            }
+          },
+          {
             slot: 'DB_FILE',
             label: '定标报告',
             align: 'center',
@@ -192,7 +213,7 @@ import { BACK_BASE_URL } from '@/config/setting';
         current: null,
         data: [],
         key: 0,
-        uploadIsVisible:false,
+        uploadIsVisible: false
       };
     },
     methods: {
@@ -216,12 +237,48 @@ import { BACK_BASE_URL } from '@/config/setting';
       reload(where) {
         this.$refs.table.reload({ page: 1, where: where });
       },
-      makeConfirmWithPic(row){
+      makeConfirmWithPic(row) {
         this.$bus.$emit('makeConfirmWithPic', row);
         this.uploadIsVisible = true;
       },
+      makeRead() {
+        if (this.selection.length === 0) {
+          this.$message({
+            type: 'warning',
+            message: '请至少选择一条数据!'
+          });
+          return;
+        }
+        const ids = this.selection.map((item) => `${item.ID}`).join(',');
+        this.$confirm('确定已读吗?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        })
+          .then(() => {
+            const loading = this.$messageLoading('正在处理中..');
+            makeItemRead({ code: ids }).then((res) => {
+              this.$message({
+                type: 'success',
+                message: '已读成功!'
+              });
+              loading.close();
+            });
+          })
+          .catch((err) => {
+            this.$message({
+              type: 'info',
+              message: err
+            });
+          })
+          .finally(() => {
+            this.reload();
+          });
+      },
       makeSure() {
-        const ids = this.selection.map((item) => `'${item.VARIETIE_CODE_NEW}'`).join(',');
+        const ids = this.selection
+          .map((item) => `'${item.VARIETIE_CODE_NEW}'`)
+          .join(',');
         this.$confirm('确定定标吗?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
