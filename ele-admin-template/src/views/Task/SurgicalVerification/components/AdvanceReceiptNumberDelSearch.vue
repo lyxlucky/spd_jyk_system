@@ -17,7 +17,7 @@
           >查询</el-button
         >
       </el-form-item>
-      <el-form-item>
+      <!-- <el-form-item>
         <el-button
           :disabled="isUdiScanEnabld"
           icon="el-icon-paperclip"
@@ -25,7 +25,7 @@
           @click="handleUdiScanAdd"
           >扫码添加</el-button
         >
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item>
         <el-button
           :disabled="isUdiScanEnabld"

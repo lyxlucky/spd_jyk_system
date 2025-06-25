@@ -3,6 +3,7 @@
     <ele-modal
       title="勾选添加"
       :destroy-on-close="true"
+      @open="handleOpen"
       width="90%"
       top="1vh"
       :visible="visible"
@@ -45,7 +46,7 @@
                 type="primary"
                 icon="el-icon-scan"
                 @click="handleScanCode"
-                >扫码反选</el-button
+                >扫UDI码</el-button
               >
               <span>已勾选:<el-tag size="mini" effect="plain">{{selection?.length || 0}}</el-tag></span>
             </div>
@@ -261,6 +262,11 @@
       onCurrentChange(current) {
         this.current = current;
       },
+
+      handleOpen(){
+        this.selection = [];
+      },
+
       onSelectionChange(selection) {
         this.selection = selection;
       },

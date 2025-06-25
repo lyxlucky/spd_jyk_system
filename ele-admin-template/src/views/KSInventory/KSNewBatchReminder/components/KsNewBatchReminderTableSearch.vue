@@ -31,7 +31,7 @@
           </el-form-item>
         </el-col>
 
-        <el-col v-bind="styleResponsive ? { lg: 2, md: 2 } : { span: 4 }">
+        <el-col v-bind="styleResponsive ? { lg: 4, md: 2 } : { span: 4 }">
           <el-form-item label-width="0px">
             <el-button
               type="primary"

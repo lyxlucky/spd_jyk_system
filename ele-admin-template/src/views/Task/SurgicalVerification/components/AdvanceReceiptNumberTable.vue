@@ -62,13 +62,13 @@
       </template> -->
 
       <template v-slot:ACTION="{ row }">
-        <el-button
+        <!-- <el-button
           size="mini"
           icon="el-icon-edit"
           @click="handleEditItem(row)"
           type="primary"
           >转单</el-button
-        >
+        > -->
         <el-button
           size="mini"
           type="primary"
