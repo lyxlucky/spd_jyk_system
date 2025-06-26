@@ -79,7 +79,7 @@
     <el-dialog
       title="转移至新手术单"
       :visible.sync="isShowNewUse"
-      width="40%"
+      width="80%"
       top="1vh"
       destroy-on-close
     >

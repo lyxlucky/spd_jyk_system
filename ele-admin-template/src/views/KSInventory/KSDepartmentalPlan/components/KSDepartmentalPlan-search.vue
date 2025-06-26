@@ -81,6 +81,7 @@
           <el-option label="已提交" value="1"></el-option>
           <el-option label="已审核" value="5"></el-option>
           <el-option label="已审批" value="6"></el-option>
+          <el-option label="未审批" value="-6"></el-option>
           <el-option label="未收全" value="3"></el-option>
           <el-option label="已收全" value="4"></el-option>
           <el-option label="强制结束" value="10"></el-option>
