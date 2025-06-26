@@ -349,3 +349,21 @@ export async function getBdszZqsjSsfjList(params) {
   }
   return Promise.reject(res.data);
 }
+
+
+export async function getTransferedSSBH(params) {
+  const formatData = {
+    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+    SSBH: params.where.SSBH || ''
+  };
+
+  let res = await request.post(
+    '/DeptPlanTransfer/getTransferedSSBH',
+    formatData
+  );
+
+  if (res.data.code == 200) {
+    return res.data;
+  }
+  return Promise.reject(res.data);
+}

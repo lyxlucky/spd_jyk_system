@@ -35,6 +35,17 @@
           >勾选添加</el-button
         >
       </el-form-item>
+
+      <el-form-item>
+        <el-button
+          :disabled="isUdiScanEnabld"
+          icon="el-icon-check"
+          type="info"
+          @click="handleCatTransferLog"
+          >转单记录</el-button
+        >
+      </el-form-item>
+
       <el-form-item class="info-box">
         <div
           v-show="
@@ -153,6 +164,9 @@
     methods: {
       handleUdiScanAdd() {
         this.$emit('handleUdiScanAdd');
+      },
+      handleCatTransferLog() {
+        this.$emit('handleCatTransferLog');
       },
       handleSelectAdd() {
         this.$emit('handleSelectAdd');

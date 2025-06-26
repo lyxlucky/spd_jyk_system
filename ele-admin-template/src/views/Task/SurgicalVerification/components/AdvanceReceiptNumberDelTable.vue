@@ -1,7 +1,6 @@
 <template>
   <div class="ele-box">
     <!-- 数据表格 -->
-
     <ele-pro-table
       size="mini"
       class="style-table"
@@ -27,6 +26,7 @@
 
         <AdvanceReceiptNumberDelSearch
           @search="reload"
+          @handleCatTransferLog="TransferedLogVisible = true"
           @handleAddConsumeItem="handleAddConsumeItem"
           @handleUdiScanAdd="handleUdiScanAdd"
           :ApplyTempTableDataSearch="ApplyTempTableDataSearch"
@@ -63,6 +63,9 @@
       :ApplyTempTableData="ApplyTempTableData"
       :visible.sync="selectionDialogVisible"
     ></SelectionAddDialog>
+
+    <TransferedLog :visible.sync="TransferedLogVisible"></TransferedLog>
+
   </div>
 </template>
 
@@ -103,6 +106,7 @@
 </style>
 
 <script>
+import TransferedLog from './TransferedLog';
   import UDIScanAddDialog from './UDIScanAddDialog.vue';
   import AdvanceReceiptNumberDelSearch from './AdvanceReceiptNumberDelSearch.vue';
   import SelectionAddDialog from './SelectionAddDialog';
@@ -117,7 +121,8 @@
     components: {
       AdvanceReceiptNumberDelSearch,
       UDIScanAddDialog,
-      SelectionAddDialog
+      SelectionAddDialog,
+      TransferedLog
     },
     data() {
       return {
@@ -186,6 +191,7 @@
         selection: [],
         // 当前编辑数据
         current: null,
+        TransferedLogVisible: false,
         // 是否显示编辑弹窗
         showEdit: false,
         // 是否显示导入弹窗
