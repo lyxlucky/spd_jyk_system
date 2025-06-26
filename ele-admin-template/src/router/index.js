@@ -13,14 +13,14 @@ import { routes, getMenuRoutes } from './routes';
 Vue.use(VueRouter);
 
 const router = new VueRouter({
-  base: '/jyk/', // 二级目录(本地把它注释掉) 
+  base: '/jyk/', // 二级目录(本地把它注释掉)
   mode: 'hash',
   routes,
   // history: createWebHistory("/gis/"),
   scrollBehavior() {
     return { y: 0 };
   }
-})
+});
 
 /**
  * 路由守卫
@@ -32,7 +32,6 @@ router.beforeEach((to, from, next) => {
   }
   // 判断是否登录
   if (getToken()) {
-    store.dispatch('user/fetchIsEncrypt')
     // 还未注册动态路由则先获取
     if (!store.state.user.menus) {
       store
@@ -40,11 +39,15 @@ router.beforeEach((to, from, next) => {
         .then(({ menus, homePath }) => {
           if (menus) {
             router.addRoute(getMenuRoutes(menus, homePath));
-            next({ ...to, replace: true });
           }
+          // 必须调用 next() 重定向，否则导航会挂起
+          next({ ...to, replace: true });
         })
-        .catch((e) => {
-          next();
+        .catch(() => {
+          // 获取用户信息失败, 则注销并跳转至登录页
+          localStorage.removeItem('Token');
+          sessionStorage.removeItem('Token');
+          next({ path: '/login', replace: true });
         });
     } else {
       next();
@@ -52,9 +55,7 @@ router.beforeEach((to, from, next) => {
   } else if (WHITE_LIST.includes(to.path)) {
     next();
   } else {
-    if (getToken()) {
-      alert('登录已过期，请重新登录!');
-    }
+    // 未登录且目标页不在白名单, 跳转到登录页
     next({
       path: '/login',
       query: to.path === LAYOUT_PATH ? {} : { from: to.path }
