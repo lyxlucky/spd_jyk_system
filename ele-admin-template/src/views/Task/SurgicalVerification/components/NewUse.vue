@@ -4,7 +4,7 @@
       size="mini"
       ref="table"
       highlight-current-row
-      height="70vh"
+      height="60vh"
       :stripe="true"
       :pageSize="pageSize"
       :pageSizes="pageSizes"
@@ -16,85 +16,91 @@
       cache-key="NewUseCacheTableKey"
     >
       <template slot="toolbar">
-        <el-form
-          label-width="0px"
-          class="ele-form-search"
-          @keyup.enter.native="search"
-          @submit.native.prevent
-          size="mini"
-          :inline="true"
-        >
-          <el-form-item class="SSRQ-form-item" style="width: 240px">
-            <el-date-picker
-              class="SSRQ-range"
-              v-model="where.SSRQDateRange"
-              format="yyyy-MM-dd"
-              value-format="yyyy-MM-dd"
-              style="width: 100%"
-            ></el-date-picker>
-          </el-form-item>
-          <el-form-item>
-            <el-input
-              clearable
-              v-model="where.condition"
-              style="width: 180px"
-              placeholder="请输入手术编号或住院号"
-            />
-          </el-form-item>
-          <el-form-item>
-            <el-select
-              @change="search"
-              v-model="where.MZZY"
-              size="mini"
-              placeholder=""
-              style="width: 100px"
-            >
-              <el-option label="全部" value="ALL"></el-option>
-              <el-option label="已提交" value="1"></el-option>
-              <el-option label="已拣配" value="2"></el-option>
-              <el-option label="已交接" value="3"></el-option>
-              <el-option label="已完成" value="4"></el-option>
-              <el-option label="已交接/已完成" value="-1"></el-option>
-            </el-select>
-          </el-form-item>
-
-          <el-form-item>
-            <el-select
-              v-model="where.SSFJ"
-              filterable
-              remote
-              reserve-keyword
-              placeholder="请输入术间"
-              :remote-method="remoteSearch"
-              :loading="loading"
-              style="width: 120px"
-              size="mini"
-              clearable
-              @focus="handleFocus"
-              ref="ssfjSelect"
-            >
-              <el-option
-                v-for="item in ssfjOptions"
-                :key="item"
-                :label="item"
-                :value="item"
+        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+          <el-form
+            label-width="0px"
+            class="ele-form-search"
+            @keyup.enter.native="search"
+            @submit.native.prevent
+            size="mini"
+            :inline="true"
+            style="flex: 1;"
+          >
+            <el-form-item class="SSRQ-form-item" style="width: 240px">
+              <el-date-picker
+                class="SSRQ-range"
+                v-model="where.SSRQDateRange"
+                format="yyyy-MM-dd"
+                value-format="yyyy-MM-dd"
+                style="width: 100%"
+              ></el-date-picker>
+            </el-form-item>
+            <el-form-item>
+              <el-input
+                clearable
+                v-model="where.condition"
+                style="width: 180px"
+                placeholder="请输入手术编号或住院号"
+              />
+            </el-form-item>
+            <el-form-item>
+              <el-select
+                @change="search"
+                v-model="where.MZZY"
+                size="mini"
+                placeholder=""
+                style="width: 100px"
               >
-              </el-option>
-            </el-select>
-          </el-form-item>
-
-          <el-form-item>
-            <el-button
-              size="mini"
-              type="primary"
-              icon="el-icon-search"
-              class="ele-btn-icon"
-              @click="reload"
-            >
-              查询
-            </el-button>
-          </el-form-item>
-        </el-form>
+                <el-option label="全部" value="ALL"></el-option>
+                <el-option label="已提交" value="1"></el-option>
+                <el-option label="已拣配" value="2"></el-option>
+                <el-option label="已交接" value="3"></el-option>
+                <el-option label="已完成" value="4"></el-option>
+                <el-option label="已交接/已完成" value="-1"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item>
+              <el-select
+                v-model="where.SSFJ"
+                filterable
+                remote
+                reserve-keyword
+                placeholder="请输入术间"
+                :remote-method="remoteSearch"
+                :loading="loading"
+                style="width: 120px"
+                size="mini"
+                clearable
+                @focus="handleFocus"
+                ref="ssfjSelect"
+              >
+                <el-option
+                  v-for="item in ssfjOptions"
+                  :key="item"
+                  :label="item"
+                  :value="item"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item>
+              <el-button
+                size="mini"
+                type="primary"
+                icon="el-icon-search"
+                class="ele-btn-icon"
+                @click="reload"
+              >
+                查询
+              </el-button>
+            </el-form-item>
+          </el-form>
+          <div style="display: flex; gap: 0px;">
+            <el-button size="mini" type="primary" @click="handleSave">保存</el-button>
+            <!-- <el-button size="mini" @click="cancel">取消</el-button> -->
+            
+          </div>
+        </div>
       </template>
 
       <template v-slot:STATU="{ row }">
@@ -107,8 +113,6 @@
         </el-radio>
       </template>
     </ele-pro-table>
-    <el-button @click="cancel">取消</el-button>
-    <el-button type="primary" @click="handleSave">保存</el-button>
   </div>
 </template>
 <script>

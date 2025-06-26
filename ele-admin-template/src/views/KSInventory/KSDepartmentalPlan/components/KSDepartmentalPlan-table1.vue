@@ -56,6 +56,12 @@
         >
         <el-tag
           size="mini"
+          v-else-if="row.State == -6"
+          type="danger"
+          >未审批</el-tag
+        >
+        <el-tag
+          size="mini"
           v-else-if="
             row.QUANITY > 0 &&
             row.QUANITY != row.SUM_Apply_Qty &&

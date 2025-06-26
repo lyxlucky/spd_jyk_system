@@ -413,6 +413,7 @@
           inputPlaceholder: '请输入手术编号'
         })
           .then(({ value }) => {
+            
             if (value == undefined)
               return this.$message.error('请输入手术编号');
             commitBdszSsyyInfo({
@@ -423,6 +424,10 @@
             })
               .then((res) => {
                 this.$message.success(res.msg);
+                this.$refs.formRef.where.MZZY = '3';
+                this.$nextTick(() => {
+                  this.$refs.formRef.catDefNoPkgCode();
+                });
               })
               .catch((err) => {
                 this.$message.error(err);
