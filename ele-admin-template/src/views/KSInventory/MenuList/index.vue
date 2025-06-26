@@ -310,9 +310,21 @@
         getTableList({
           page: 1,
           limit: 9999,
-          where: {}
+          where: {
+            isShow: '0',
+          }
         }).then((res) => {
           this.TableListTotal = res.total;
+          let exists = this.$store.state.user.info.permission_group.some((item) => {
+            return item.path === '/KSInventory/KSNewBatchReminder';
+          });
+          if (exists && this.TableListTotal > 0) {
+            this.$notify({
+              title: '新批号提醒',
+              message: `有${this.TableListTotal}个新批号`,
+              duration: 5000
+            });
+          }
         });
       },
       handleClickVisible(visibleProperty) {
