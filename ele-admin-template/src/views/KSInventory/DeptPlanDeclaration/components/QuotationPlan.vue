@@ -1,15 +1,15 @@
 <template>
   <div class="quotation-plan">
-    <ele-modal width="1500px" :destroy-on-close="true" :centered="true" :visible="visible" :close-on-click-modal="true" custom-class="ele-dialog-form" title="引入模板品种" @update:visible="updateVisible">
+    <ele-modal width="90%" top="1vh" :destroy-on-close="false" :centered="true" :visible="visible" :close-on-click-modal="false" custom-class="ele-dialog-form" title="引入模板品种" @update:visible="updateVisible">
       <el-container>
-        <el-aside width="350px" style="margin: 20px 0px 0px 20px;">
+        <el-aside width="25%" >
           <el-card shadow="always">
             <div slot="header" class="clearfix">
               <span>模板列表</span>
             </div>
-            <ele-pro-table :toolkit="[]" ref="leftTable" :selection.sync="leftSelection" height="500px" :pageSize="leftPageSize" :pageSizes="leftPageSizes" :columns="leftColumns" :datasource="leftDatasource" :rowClickChecked="true" :rowClickCheckedIntelligent="false" @current-change="onLeftSelectionChange" cache-key="leftTableKey">
+            <ele-pro-table :toolkit="[]" ref="leftTable" :selection.sync="leftSelection" height="60vh" :pageSize="leftPageSize" :pageSizes="leftPageSizes" :columns="leftColumns" :datasource="leftDatasource" :rowClickChecked="true" :rowClickCheckedIntelligent="false" @current-change="onLeftSelectionChange" cache-key="leftTableKey">
               <template v-slot:toolbar>
-                <el-form class="ele-form-search" @keyup.enter.native="search" @submit.native.prevent>
+                <el-form size="mini" class="ele-form-search" @keyup.enter.native="search" @submit.native.prevent>
                   <el-row>
                     <el-col v-bind="styleResponsive ? { lg: 14, md: 4 } : { span: 6 }">
                       <el-form-item>
@@ -19,7 +19,7 @@
                     </el-col>
                     <el-col style='padding-left: 10px;' v-bind="styleResponsive ? { lg: 4, md: 4 } : { span: 6 }">
                       <el-form-item>
-                        <el-button size="small" type="primary" icon="el-icon-search" class="ele-btn-icon" @click="leftTableReload">
+                        <el-button size="mini" type="primary" icon="el-icon-search" class="ele-btn-icon" @click="leftTableReload">
                           查询
                         </el-button>
                       </el-form-item>
@@ -36,7 +36,7 @@
             <div slot="header" class="clearfix">
               <span>历史申领单详情</span>
             </div>
-            <ele-pro-table :toolkit="[]" ref="rightTable" :selection.sync="rightSelection" height="500px" :pageSize="rightPageSize" :pageSizes="rightPageSizes" :columns="rightColumns" :datasource="rightDatasource" :rowClickChecked="true" :rowClickCheckedIntelligent="false" @current-change="onRightSelectionChange" cache-key="rightTableKey">
+            <ele-pro-table :toolkit="[]" ref="rightTable" :selection.sync="rightSelection" height="60vh" :pageSize="rightPageSize" :pageSizes="rightPageSizes" :columns="rightColumns" :datasource="rightDatasource" :rowClickChecked="false" :rowClickCheckedIntelligent="false" @current-change="onRightSelectionChange" cache-key="rightTableKey">
 
               <template v-slot:planCount="{ row }">
                 <el-input-number style="width: 100px" v-model="row.PLAN_NUM" :min="0" :max="999999999" :step="1" size="mini" />
@@ -49,7 +49,7 @@
               </template>
 
               <template v-slot:toolbar>
-                <el-form class="ele-form-search" @keyup.enter.native="search" @submit.native.prevent>
+                <el-form size="mini" class="ele-form-search" @keyup.enter.native="search" @submit.native.prevent>
                   <el-row>
                     <el-col v-bind="styleResponsive ? { lg: 10, md: 4 } : { span: 6 }">
                       <el-form-item>
@@ -58,14 +58,14 @@
                     </el-col>
                     <el-col style='padding-left: 10px;' v-bind="styleResponsive ? { lg: 2, md: 4 } : { span: 6 }">
                       <el-form-item>
-                        <el-button size="small" type="primary" icon="el-icon-search" class="ele-btn-icon" @click="rightTableReload">
+                        <el-button size="mini" type="primary" icon="el-icon-search" class="ele-btn-icon" @click="rightTableReload">
                           查询
                         </el-button>
                       </el-form-item>
                     </el-col>
                     <el-col style='padding-left: 10px;' v-bind="styleResponsive ? { lg: 2, md: 4 } : { span: 6 }">
                       <el-form-item>
-                        <el-button size="small" :disabled="rightSelectionIsable" type="primary" icon="" class="ele-btn-icon" @click="submitItem()">
+                        <el-button size="mini" :disabled="rightSelectionIsable" type="primary" icon="" class="ele-btn-icon" @click="submitItem()">
                           确定
                         </el-button>
                       </el-form-item>
@@ -242,11 +242,13 @@ export default {
         {
           prop: 'Manufacturing',
           label: '生产企业名称',
+          showOverflowTooltip: true,
           width: 140
         },
         {
           prop: 'SUPPLIER_NAME',
           label: '启用供应商',
+          showOverflowTooltip: true,
           width: 140
         },
         {
@@ -294,7 +296,7 @@ export default {
         }
       ],
       rightToolbar: false,
-      rightPageSize: 15,
+      rightPageSize: 9999999,
       rightPageSizes: [15, 50, 100, 200, 9999999],
       rightPagerCount: 5,
       rightSelection: [],
@@ -329,8 +331,13 @@ export default {
       this.where.TempletMasteID = selection.ID;
       this.rightTableReload();
     },
-    onRightSelectionChange(selection) {
-      this.rightCurrent = selection;
+    onRightSelectionChange(row) {
+      // 判断当前行是否已被勾选
+      const isChecked = this.rightSelection.some(item => item === row || item.ID === row.ID);
+      if (!isChecked && this.$refs.rightTable && this.$refs.rightTable.toggleRowSelection) {
+        this.$refs.rightTable.toggleRowSelection(row, true);
+      }
+      this.rightCurrent = row;
     },
     leftTableReload() {
       this.$refs.leftTable.reload({ page: 1, where: this.where });
@@ -345,6 +352,11 @@ export default {
             count: res.total,
             list: res.result
           };
+          // this.$nextTick(() => {
+          //   if (this.$refs.rightTable && this.$refs.rightTable.toggleAllSelection) {
+          //     this.$refs.rightTable.toggleAllSelection();
+          //   }
+          // });
           return tData;
         }
       );
@@ -383,4 +395,7 @@ export default {
 
 <style scoped>
 /* Your styles go here */
+.el-main{
+  padding: 0px;
+}
 </style>
