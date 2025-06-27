@@ -192,3 +192,14 @@ export async function batchImportSuppliers(data) {
         return Promise.reject(new Error(res.data.msg));
     }
 }
+
+// 同步供应商
+export async function syncSuppliers(deptCode) {
+    const token = sessionStorage.getItem(TOKEN_STORE_NAME);
+    const res = await request.post(`/VendorInfo/SyncSuppliers?token=${token}&deptCode=${deptCode}`); 
+    if (res.data.code === 200) {
+        return res.data;
+    } else {
+        return Promise.reject(new Error(res.data.msg));
+    }
+}

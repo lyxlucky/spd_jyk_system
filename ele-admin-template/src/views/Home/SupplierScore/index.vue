@@ -52,6 +52,17 @@
               @click="openScoreDialog"
             >评分</el-button>
           </el-form-item>
+          <el-form-item v-if="where.vendorType === '供应商'">
+            <el-button
+              size="mini"
+              type="info"
+              icon="el-icon-refresh"
+              :loading="syncLoading"
+              @click="syncSuppliers"
+            >
+              同步
+            </el-button>
+          </el-form-item>
           <el-form-item>
             <el-button
               size="mini"
@@ -476,6 +487,7 @@
     getVendorScoreRules,
     createVendorScoreRecord,
     batchImportSuppliers,
+    syncSuppliers,
   } from '@/api/Home/supplierScore';
   import { Loading } from 'element-ui';
   import * as XLSX from 'xlsx';
@@ -534,9 +546,17 @@
             showOverflowTooltip: true
           },
           {
+            prop: 'SUPPLIER_CODE',
+            label: '供应商编码',
+            minWidth: 160,
+            sortable: 'custom',
+            align: 'center',
+            showOverflowTooltip: true
+          },
+          {
             prop: 'REGISTER_NO',
             label: '注册编码',
-            minWidth: 160,
+            minWidth: 120,
             sortable: 'custom',
             align: 'center',
             showOverflowTooltip: true
@@ -544,7 +564,7 @@
           {
             prop: 'VENDOR_NAME',
             label: '服务机构或供应商名称',
-            minWidth: 320,
+            minWidth: 300,
             sortable: 'custom',
             align: 'center',
             showOverflowTooltip: true
@@ -576,20 +596,21 @@
           {
             prop: 'CREATE_TIME',
             label: '创建时间',
-            minWidth: 125,
+            minWidth: 120,
             sortable: 'custom',
             align: 'center',
             showOverflowTooltip: true,
             formatter: (row) => this.formatDateTime(row.CREATE_TIME)
           },
-          // {
-          //   prop: 'UPDATE_TIME',
-          //   label: '更新时间',
-          //   minWidth: 120,
-          //   sortable: 'custom',
-          //   align: 'center',
-          //   showOverflowTooltip: true
-          // },
+          {
+            prop: 'UPDATE_TIME',
+            label: '更新时间',
+            minWidth: 120,
+            sortable: 'custom',
+            align: 'center',
+            showOverflowTooltip: true,
+            formatter: (row) => this.formatDateTime(row.UPDATE_TIME)
+          },
           {
             columnKey: 'action',
             label: '操作',
@@ -631,6 +652,7 @@
         scoreRulesLoading: false,
         groupedScoreRules: [],
         scoreDetailLoading: false,
+        syncLoading: false,
       };
     },
     computed: {
@@ -1165,6 +1187,26 @@
       formatDateTime(dateTime) {
         if (!dateTime) return '';
         return dateTime.replace('T', ' ');
+      },
+      async syncSuppliers() {
+        this.syncLoading = true;
+        try {
+          const deptCode = this.$store.state.user.info.DeptNow.Dept_Two_Code;
+          const res = await syncSuppliers(deptCode);
+          if (res.code === 200) {
+            this.$message.success(`同步成功：总数 ${res.data.TotalCount}，成功 ${res.data.SuccessCount}，失败 ${res.data.FailedCount}`);
+            if (res.data.FailedCount > 0 && res.data.FailedSuppliers && res.data.FailedSuppliers.length > 0) {
+              this.$alert('失败明细：<br>' + res.data.FailedSuppliers.join('<br>'), '部分同步失败', { dangerouslyUseHTMLString: true });
+            }
+            this.reload();
+          } else {
+            this.$message.error('同步失败：' + (res.msg || '未知错误'));
+          }
+        } catch (e) {
+          this.$message.error('同步异常：' + (e.message || e));
+        } finally {
+          this.syncLoading = false;
+        }
       },
     }
   };
