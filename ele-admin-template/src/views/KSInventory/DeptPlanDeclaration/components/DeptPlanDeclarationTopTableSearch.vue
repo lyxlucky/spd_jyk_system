@@ -49,6 +49,7 @@
             <el-option label="已提交" value="1"></el-option>
             <el-option label="已审核" value="2"></el-option>
             <el-option label="已审批" value="3"></el-option>
+            <el-option label="未审批" value="1"></el-option>
             <el-option label="审核不通过" value="4"></el-option>
             <el-option label="审批不通过" value="5"></el-option>
           </el-select>

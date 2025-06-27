@@ -79,7 +79,7 @@
     <el-dialog
       title="转移至新手术单"
       :visible.sync="isShowNewUse"
-      width="40%"
+      width="80%"
       top="1vh"
       destroy-on-close
     >
@@ -92,7 +92,7 @@
 
     <!-- 扫码反选弹窗 -->
     <el-dialog
-      title="扫码反选"
+      title="扫UDI"
       :visible.sync="scanDialogVisible"
       width="30%"
       :close-on-click-modal="false"

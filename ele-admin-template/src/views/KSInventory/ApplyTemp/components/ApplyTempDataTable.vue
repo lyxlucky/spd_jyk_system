@@ -26,7 +26,6 @@
       :datasource="datasource"
       :selection.sync="selection"
       @selection-change="onSelectionChange"
-      cache-key="ApplyTempDataTable"
     >
       <!-- 表头工具栏 -->
       <!-- 右表头 -->
@@ -170,6 +169,13 @@
             minWidth: 90
           },
           {
+            prop: 'VARIETIE_CODE_NEW',
+            label: '品种编码',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 120
+          },
+          {
             prop: 'VarName',
             label: '品种全称',
             align: 'center',
@@ -183,21 +189,7 @@
             showOverflowTooltip: true,
             width: 90
           },
-          {
-            prop: 'Manufacturing',
-            label: '生产企业名称',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 180,
-            show: this.isHideDeptSup
-          },
-          {
-            prop: 'SUPPLIER_NAME',
-            label: '供应商',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 150
-          },
+          
           {
             prop: 'Unit',
             label: '单位',
@@ -214,6 +206,21 @@
             formatter: (row, column, cellValue) => {
               return Number(cellValue).toFixed(2);
             }
+          },
+          {
+            prop: 'Manufacturing',
+            label: '生产企业名称',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 180,
+            show: this.isHideDeptSup
+          },
+          {
+            prop: 'SUPPLIER_NAME',
+            label: '供应商',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 150
           },
           {
             prop: 'BigBoxCount',
@@ -233,13 +240,7 @@
             minWidth: 110,
             show: false
           },
-          {
-            prop: 'VARIETIE_CODE_NEW',
-            label: '品种编码',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 120
-          },
+          
           {
             prop: 'ZB',
             label: '是否中标',

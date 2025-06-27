@@ -32,7 +32,6 @@
       :row-class-name="tableRowClassName"
       ref="table"
       :rowClickChecked="true"
-      :stripe="false"
       :pageSize="pageSize"
       :pageSizes="pageSizes"
       :columns="columns"
@@ -300,16 +299,29 @@
     },
     methods: {
       /* 表格数据源 */
-      async datasource({ page, limit, where, order }) {
+      datasource({ page, limit, where, order }) {
         //获取当前日期
-        const res = await getBdSzYyHisSs({
+        return getBdSzYyHisSs({
           page,
           limit,
           where,
           order
+        }).then((data) => {
+          const sortedList = (data.data || []).sort((a, b) => {
+            const aHasLS = a.SSBH.includes('LS');
+            const bHasLS = b.SSBH.includes('LS');
+            // 两个都包含LS或都不包含LS - 保持原顺序
+            if (aHasLS == bHasLS) return 0;
+            // 仅a包含LS - a排在前面
+            if (aHasLS) return -1;
+            // 仅b包含LS - b排在前面
+            return 1;
+          });
+
+          return { list: sortedList, count: data.total };
         });
-        return { list: res.data, count: res.total };
       },
+
       /* 刷新表格 */
       reload(where) {
         this.$refs.table.reload({ page: 1, where: where });
@@ -321,8 +333,8 @@
         this.$bus.$emit('AdvanceReceiptNumberTableCurrent', current);
       },
       tableRowClassName({ row, rowIndex }) {
-        if (row.CommonState == 1) {
-          return 'success-row';
+        if (row?.SSBH.indexOf('LS') != -1) {
+          return 'danger-row';
         } else {
           return '';
         }
@@ -401,6 +413,7 @@
           inputPlaceholder: '请输入手术编号'
         })
           .then(({ value }) => {
+            
             if (value == undefined)
               return this.$message.error('请输入手术编号');
             commitBdszSsyyInfo({
@@ -411,6 +424,10 @@
             })
               .then((res) => {
                 this.$message.success(res.msg);
+                this.$refs.formRef.where.MZZY = '3';
+                this.$nextTick(() => {
+                  this.$refs.formRef.catDefNoPkgCode();
+                });
               })
               .catch((err) => {
                 this.$message.error(err);
@@ -490,3 +507,25 @@
     }
   };
 </script>
+<style scoped>
+  ::v-deep(.warning-row) {
+    background-color: #fdf6ec;
+  }
+
+  ::v-deep(.success-row) {
+    /* background-color: #f0f9eb; */
+    background-color: #f0f9eb00;
+    color: #67c23a;
+  }
+
+  ::v-deep(.info-row) {
+    background-color: #f4f4f5;
+  }
+
+  ::v-deep(.danger-row) > td,
+  ::v-deep(.el-table--striped .danger-row.el-table__row--striped > td),
+  ::v-deep(.danger-row.hover-row > td),
+  ::v-deep(.danger-row:hover > td) {
+    background-color: #fef0f0;
+  }
+</style>

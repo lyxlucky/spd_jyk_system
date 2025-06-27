@@ -9,10 +9,10 @@
       :columns="columns"
       height="50vh"
       :datasource="datasource"
+      :row-class-name="tableRowClassName"
       :pageSize="pageSize"
       :pageSizes="pageSizes"
       highlight-current-row
-      :stripe="true"
       :needPage="true"
       :selection.sync="selection"
       @selection-change="handleSelectionChange"
@@ -96,7 +96,7 @@
               <el-option label="已打印" value="1"></el-option>
             </el-select>
           </el-form-item>
-          
+
           <el-form-item
             style="margin-right: 16px; margin-bottom: 8px"
             label="是否临时"
@@ -441,16 +441,24 @@
         this.$bus.$emit('OPSConsumablesTableRowCurrent', data);
         this.updateUserInfoDialogVisible = true;
       },
+      tableRowClassName({ row, rowIndex }) {
+        const ssbh = String(row.SSBH).trim();
+        if (ssbh.toUpperCase().includes('LS')) {
+          return 'danger-row';
+        } else {
+          return '';
+        }
+      },
       handleExportCurrent() {
         // if (!this.currentRow || Object.keys(this.currentRow).length === 0) {
         //   this.$message.error('请先选择一行数据！');
         //   return;
         // }
-        if(this.selection.length == 0) {
+        if (this.selection.length == 0) {
           this.$message.error('请先选择一行数据！');
           return;
         }
-        const idStr = this.selection.map(item => `'${item.SSBH}'`).join(',');
+        const idStr = this.selection.map((item) => `'${item.SSBH}'`).join(',');
         // let loading = this.$messageLoading('导出中');
         window.open(
           `${BACK_BASE_URL}/api/Commons/GetReportById_BJ_SHD?format=pdf&inline=true&SSBH=${idStr}`,
@@ -532,14 +540,29 @@
       },
       // 表格数据源
       datasource({ page, limit, where, order }) {
-        // 这里不实现具体方法，仅返回空数据结构
         where.MZZY = this.where.MZZY;
         console.log(where);
 
         return getBdSzYyHisSs({ page, limit, where, order })
           .then((data) => {
+            // 自定义排序逻辑
+            const sortedList = (data.data || []).sort((a, b) => {
+              const aHasLS = String(a.SSBH || '')
+                .toUpperCase()
+                .includes('LS'); // 请将 entryName 替换为您实际的关键字段
+              const bHasLS = String(b.SSBH || '')
+                .toUpperCase()
+                .includes('LS'); // 请将 entryName 替换为您实际的关键字段
+
+              // 两个都包含LS或都不包含LS - 保持原顺序
+              if (aHasLS == bHasLS) return 0;
+              // 仅a包含LS - a排在前面
+              if (aHasLS) return -1;
+              // 仅b包含LS - b排在前面
+              return 1;
+            });
             return {
-              list: data.data || [],
+              list: sortedList,
               count: data.total
             };
           })
@@ -609,5 +632,26 @@
     margin-top: 7px !important;
     padding: 0px 0;
     box-sizing: border-box;
+  }
+
+  ::v-deep(.warning-row) {
+    background-color: #fdf6ec;
+  }
+
+  ::v-deep(.success-row) {
+    /* background-color: #f0f9eb; */
+    background-color: #f0f9eb00;
+    color: #67c23a;
+  }
+
+  ::v-deep(.info-row) {
+    background-color: #f4f4f5;
+  }
+
+  ::v-deep(.danger-row) > td,
+  ::v-deep(.el-table--striped .danger-row.el-table__row--striped > td),
+  ::v-deep(.danger-row.hover-row > td),
+  ::v-deep(.danger-row:hover > td) {
+    background-color: #fef0f0;
   }
 </style>
