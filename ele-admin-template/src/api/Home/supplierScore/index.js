@@ -5,13 +5,14 @@ import { TOKEN_STORE_NAME } from '@/config/setting'
 import store from '@/store/index';
 
 // 获取供应商列表 - 使用现有的 GetAllVendorInfo 接口
-export async function apiSupplierScoreGetList(data) {
+export async function apiSupplierScoreGetList(data, deptCode) {
     let formataData = {}
     formataData.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
     formataData.pageIndex = data.page ? data.page : 1;
     formataData.pageSize = data.size ? data.size : 10;
     formataData.vendorName = data.where.keyword ? data.where.keyword : '';
     formataData.vendorType = data.where.vendorType ? data.where.vendorType : '';
+    formataData.deptCode = deptCode;
     
     const res = await request.get('/VendorInfo/GetAllVendorInfo', {
         params: formataData

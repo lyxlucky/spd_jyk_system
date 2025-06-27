@@ -695,7 +695,8 @@
       datasource({ page, limit, where, order }) {
         where.keyword = this.where.keyword;
         where.vendorType = this.where.vendorType;
-        let data = apiSupplierScoreGetList({ page, limit, where, order }).then(
+        const deptCode = this.$store.state.user.info.DeptNow.Dept_Two_Code;
+        let data = apiSupplierScoreGetList({ page, limit, where, order }, deptCode).then(
           (res) => {
             var tData = {
               count: res.total,
