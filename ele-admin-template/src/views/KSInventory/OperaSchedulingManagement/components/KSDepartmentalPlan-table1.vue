@@ -226,7 +226,6 @@ export default {
   methods: {
     /* 表格数据源 */
     datasource({ page, limit, where, order }) {
-      where.date = '';
       // where.CREATE_MAN = this.$store.state.user.info.Nickname;
       let data = GetNaxtDayApplyPlanMain({ page, limit, where, order }).then(
         (res) => {

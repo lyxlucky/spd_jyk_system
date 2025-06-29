@@ -159,7 +159,7 @@
       const defaultWhere = {
         NAXT_DAT_PLAN_NUM: '',
         CREATE_MAN: '',
-        date: '',
+        date: [],
         YY_TYPE: '',
         STORAGE: ''
       };

@@ -6,7 +6,7 @@ import store from '@/store';
 import moment from 'moment';
 
 export async function GetNaxtDayApplyPlanMain(data) {
-  console.log(data)
+  console.log(data);
   var data2 = {};
   data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
   data2.NAXT_DAT_PLAN_NUM = data.where.NAXT_DAT_PLAN_NUM
@@ -14,8 +14,10 @@ export async function GetNaxtDayApplyPlanMain(data) {
     : '';
   data2.CREATE_MAN = data.where.CREATE_MAN ? data.where.CREATE_MAN : '';
   data2.YY_TYPE = data.where.YY_TYPE ? data.where.YY_TYPE : '';
-  data2.START_TIME = data.where.date[0] ? data.where.date[0] : '';
-  data2.END_TIME = data.where.date[1] ? data.where.date[1] : '';
+  if (data.where.date && data.where.date.length > 0) {
+    data2.START_TIME = data?.where?.date[0] ? data?.where?.date[0] : '';
+    data2.END_TIME = data?.where?.date[1] ? data?.where?.date[1] : '';
+  }
   data2.page = data.page ? data.page : 1;
   data2.size = data.limit ? data.limit : 10;
   data2.STORAGE = data.where.STORAGE ? data.where.STORAGE : '';
