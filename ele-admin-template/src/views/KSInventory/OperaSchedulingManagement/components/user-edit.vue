@@ -11,22 +11,39 @@
           <el-form-item label="术间:" prop="SURGICAL_ROOM">
             <!-- <el-input size="mini" clearable type="number" :maxlength="100" v-model="form.SURGICAL_ROOM" placeholder="" /> -->
             <el-select size="mini" v-model="form.SURGICAL_ROOM">
-              <el-option label="1" value="1"></el-option>
-              <el-option label="2" value="2"></el-option>
-              <el-option label="3" value="3"></el-option>
-              <el-option label="4" value="4"></el-option>
-              <el-option label="5" value="5"></el-option>
-              <el-option label="6" value="6"></el-option>
-              <el-option label="7" value="7"></el-option>
-              <el-option label="8" value="8"></el-option>
-              <el-option label="9" value="9"></el-option>
-              <el-option label="10" value="10"></el-option>
-              <el-option label="11" value="11"></el-option>
-              <el-option label="12" value="12"></el-option>
-              <el-option label="13" value="13"></el-option>
-              <el-option label="14" value="314"></el-option>
-              <el-option label="15" value="15"></el-option>
-              <el-option label="16" value="16"></el-option>
+              <el-option label="术间1" value="术间1"></el-option>
+              <el-option label="术间2" value="术间2"></el-option>
+              <el-option label="术间3" value="术间3"></el-option>
+              <el-option label="术间4" value="术间4"></el-option>
+              <el-option label="术间5" value="术间5"></el-option>
+              <el-option label="术间6" value="术间6"></el-option>
+              <el-option label="术间7" value="术间7"></el-option>
+              <el-option label="术间8" value="术间8"></el-option>
+              <el-option label="术间9" value="术间9"></el-option>
+              <el-option label="术间10" value="术间10"></el-option>
+              <el-option label="术间11" value="术间11"></el-option>
+              <el-option label="术间12" value="术间12"></el-option>
+              <el-option label="术间13" value="术间13"></el-option>
+              <el-option label="术间14" value="术间14"></el-option>
+              <el-option label="术间15" value="术间15"></el-option>
+              <el-option label="术间16" value="术间16"></el-option>
+              <el-option label="术间17" value="术间17"></el-option>
+              <el-option label="术间18" value="术间18"></el-option>
+              <el-option label="术间19" value="术间19"></el-option>
+              <el-option label="术间20" value="术间20"></el-option>
+              <el-option label="术间21" value="术间21"></el-option>
+              <el-option label="术间22" value="术间22"></el-option>
+              <el-option label="术间23" value="术间23"></el-option>
+              <el-option label="术间24" value="术间24"></el-option>
+              <el-option label="术间25" value="术间25"></el-option>
+              <el-option label="术间26" value="术间26"></el-option>
+              <el-option label="术间27" value="术间27"></el-option>
+              <el-option label="术间28" value="术间28"></el-option>
+              <el-option label="术间29" value="术间29"></el-option>
+              <el-option label="术间30" value="术间30"></el-option>
+              <el-option label="术间31" value="术间31"></el-option>
+              <el-option label="术间32" value="术间32"></el-option>
+              <el-option label="术间33" value="术间33"></el-option>
             </el-select>
           </el-form-item>
           <!-- <el-form-item label="院区:" prop="SURGICAL_PLACE">
