@@ -38,7 +38,6 @@
       :needPage="true"
       :datasource="datasource"
       :selection.sync="selection"
-      cache-key="ApplyTempTable"
       :toolbar="false"
     >
       <!-- 表头工具栏 -->
@@ -516,7 +515,7 @@
 
   ::v-deep(.success-row) {
     /* background-color: #f0f9eb; */
-    background-color: #f0f9eb00;
+    background-color: #ffffff;
     color: #67c23a;
   }
 
