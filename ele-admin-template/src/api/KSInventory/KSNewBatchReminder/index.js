@@ -11,6 +11,7 @@ export async function getTableList(data) {
     data2.varietieCodeNew = data.where.code ? data.where.code : '';
     data2.deptCode = store.state.user.info.DeptNow.Dept_Two_Code;
     data2.batchConfirm = data.where.status ? data.where.status : '';
+    data2.isShow = data.where.isShow;
     const res = await request.get('BatchReminder/getTableList', {
         params:data2
     });

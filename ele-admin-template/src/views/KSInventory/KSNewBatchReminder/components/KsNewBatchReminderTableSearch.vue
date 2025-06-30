@@ -43,8 +43,8 @@
               style="width: 110px"
             >
               <el-option label="全部" value=""></el-option>
-              <el-option label="已读" value="0"></el-option>
-              <el-option label="未读" value="1"></el-option>
+              <el-option label="已读" value="1"></el-option>
+              <el-option label="未读" value="0"></el-option>
             </el-select>
           </el-form-item>
         </el-col>
@@ -110,6 +110,10 @@
       sure() {
         this.$emit('sure', this.where);
       }
+    },
+    mounted() {
+      // 组件挂载后主动触发一次搜索，确保默认查询条件生效 需要取消el-table-pro的initLoad
+      this.search();
     },
     computed: {
       // 是否开启响应式布局

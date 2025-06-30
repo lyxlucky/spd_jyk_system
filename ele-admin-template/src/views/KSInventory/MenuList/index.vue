@@ -319,10 +319,14 @@
             return item.path === '/KSInventory/KSNewBatchReminder';
           });
           if (exists && this.TableListTotal > 0) {
-            this.$notify({
+            this.$notify.info({
               title: '新批号提醒',
-              message: `有${this.TableListTotal}个新批号`,
-              duration: 5000
+              message: `有${this.TableListTotal}个新批号，点击查看详情`,
+              duration: 5000,
+              onClick: () => {
+                // 点击通知时跳转到新批号提醒页面
+                this.$router.push('/KSInventory/KSNewBatchReminder');
+              }
             });
           }
         });

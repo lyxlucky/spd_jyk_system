@@ -1,4 +1,4 @@
-<template lang="">
+<template>
   <div class="ele-body">
     <!-- 数据表格 -->
     <ele-pro-table
@@ -14,6 +14,7 @@
       :columns="columns"
       :datasource="datasource"
       :selection.sync="selection"
+      :initLoad="false"
       cache-key="KsNewBatchReminderTable"
     >
       <!-- 表头工具栏 -->
