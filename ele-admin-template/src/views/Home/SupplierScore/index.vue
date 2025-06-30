@@ -690,6 +690,16 @@
 
     mounted() {
       // 页面初始不自动选中供应商
+      // 监听科室切换事件
+      if (this.$bus && this.$bus.$on) {
+        this.$bus.$on('handleCommand', this.handleDeptChange);
+      }
+    },
+    beforeDestroy() {
+      // 注销事件监听，防止内存泄漏
+      if (this.$bus && this.$bus.$off) {
+        this.$bus.$off('handleCommand', this.handleDeptChange);
+      }
     },
     methods: {
       datasource({ page, limit, where, order }) {
@@ -709,6 +719,10 @@
       },
       reload() {
         this.$refs.table.reload({ page: 1, where: this.where });
+      },
+      handleDeptChange() {
+        this.selectedSupplier = null;
+        this.reload();
       },
       onCurrentChange(current) {
         // 只有当真正选择了不同的供应商时才刷新评分记录
@@ -1064,7 +1078,7 @@
           let scoreIdx = 1;
           let remarkIdx = 1;
           let textIdx = 1;
-          
+
           detail.Records.forEach((item) => {
             if (item.ITEM_TYPE === '选择') {
               if (item.SCORE === 1 || item.SCORE === '是') {
