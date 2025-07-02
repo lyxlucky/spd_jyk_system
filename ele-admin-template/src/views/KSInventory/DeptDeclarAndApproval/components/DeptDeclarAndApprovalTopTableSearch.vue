@@ -1,19 +1,22 @@
 <!-- 搜索表单 -->
 
 <template>
-  <el-form class="ele-form-search" @keyup.enter.native="search" @submit.native.prevent>
-    <el-row :gutter="10"  style="padding-top: 5px;">
-      <el-col v-bind="styleResponsive ? { lg: 10, md: 4 } : { span: 4 }" style="padding-left: 40px;">
-        <div class="ele-form-actions">
+  <el-form class="ele-form-search" @keyup.enter.native="search" @submit.native.prevent :inline="true">
+    <el-form-item>
           <el-button size="mini " :disabled="isDisable" type="primary" class="ele-btn-icon" icon="el-icon-s-order" @click="approval">
             审批通过
           </el-button>
           <el-button size="mini" :disabled="isDisable" type="danger" class="ele-btn-icon" icon="el-icon-s-order" @click="denyApproval">
             审批不通过
           </el-button>
-        </div>
-      </el-col>
-    </el-row>
+      </el-form-item>
+      <el-form-item label="审批状态">
+        <el-select v-model="where.APPROVE_STATE" placeholder="全部" clearable size="mini" style="width: 120px;" @change="onApproveStateChange">
+          <el-option label="全部" value="" />
+          <el-option label="未审批" :value="1" />
+          <el-option label="已审批" :value="3" />
+        </el-select>
+      </el-form-item>
   </el-form>
 </template>
 
@@ -24,6 +27,7 @@ export default {
   data() {
     // 默认表单数据
     const defaultWhere = {
+      APPROVE_STATE: ""
     };
     return {
       // 表单数据
@@ -40,6 +44,9 @@ export default {
     }
   },
   methods: {
+    onApproveStateChange() {
+      this.$emit('reload', { ...this.where });
+    },
     approval() {
       this.$confirm('确认要提交数据嘛？', '提示', {
         confirmButtonText: '确定',

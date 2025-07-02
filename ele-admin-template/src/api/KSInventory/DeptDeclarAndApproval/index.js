@@ -102,6 +102,7 @@ export async function getDeptPlanDecListInArray(data) {
   data2.size = data.limit;
   data2.DEPT_TWO_CODE = (store.state.user.info.userDept).map((item)=>item.Dept_Two_Code).join(",");
   data2.PLAN_MONTH_TIME = data.PLAN_MONTH_TIME ? data.PLAN_MONTH_TIME : '';
+  data2.APPROVE_STATE = data.where.APPROVE_STATE || '';
   var data3 = formdataify(data2);
   const res = await request.post('DeptPlanDec/GetDeptPlanDecByODeptInArray', data3);
   if (res.data.code == 200) {

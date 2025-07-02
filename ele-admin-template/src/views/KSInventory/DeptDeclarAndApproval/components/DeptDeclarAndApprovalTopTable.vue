@@ -134,7 +134,7 @@ export default {
         'margin-top': '-5px'
       },
       toolbar: false,
-      pageSize: 10,
+      pageSize: 9999999,
       pagerCount: 2,
       pageSizes: [10, 20, 50, 100, 9999999],
       // 表格选中数据
@@ -161,6 +161,7 @@ export default {
     },
     /* 刷新表格 */
     reload(where) {
+      console.log(where);
       this.$refs.table.reload({ page: 1, where: where });
     },
     onCurrentChange(current) {
