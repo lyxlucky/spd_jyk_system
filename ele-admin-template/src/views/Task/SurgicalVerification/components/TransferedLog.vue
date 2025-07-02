@@ -58,8 +58,22 @@
             showOverflowTooltip: true
           },
           {
+            prop: 'ZD_ORIGIN_NAME',
+            label: '源病人姓名',
+            align: 'center',
+            minWidth: 80,
+            showOverflowTooltip: true
+          },
+          {
             prop: 'TG_SSBH',
             label: '转入手术编号',
+            align: 'center',
+            minWidth: 80,
+            showOverflowTooltip: true
+          },
+          {
+            prop: 'TG_NAME',
+            label: '转入病人姓名',
             align: 'center',
             minWidth: 80,
             showOverflowTooltip: true
