@@ -38,7 +38,6 @@
       :needPage="true"
       :datasource="datasource"
       :selection.sync="selection"
-      cache-key="ApplyTempTable"
       :toolbar="false"
     >
       <!-- 表头工具栏 -->
@@ -413,9 +412,12 @@
           inputPlaceholder: '请输入手术编号'
         })
           .then(({ value }) => {
-            
             if (value == undefined)
               return this.$message.error('请输入手术编号');
+            this.$bus.$emit(
+              'AdvanceReceiptNumberTableDialogCurrentSSBHChange',
+              value
+            );
             commitBdszSsyyInfo({
               spd: 'PDA123#1',
               pdaMan: this.$store.state.user.info.UserName,
@@ -425,9 +427,7 @@
               .then((res) => {
                 this.$message.success(res.msg);
                 this.$refs.formRef.where.MZZY = '3';
-                this.$nextTick(() => {
-                  this.$refs.formRef.catDefNoPkgCode();
-                });
+                this.reload({ SSBH: value });
               })
               .catch((err) => {
                 this.$message.error(err);
@@ -497,6 +497,7 @@
       this.$bus.$off('handleSubmitConsumeVarietiesAndRefreshTopTable');
       this.$bus.$off('AdvanceReceiptNumberTableCurrent');
       this.$bus.$off('AdvanceReceiptNumberTableDialogCurrent');
+      this.$bus.$off('AdvanceReceiptNumberTableDialogCurrentSSBHChange');
     },
     created() {
       // this.getdatasource();
@@ -514,7 +515,7 @@
 
   ::v-deep(.success-row) {
     /* background-color: #f0f9eb; */
-    background-color: #f0f9eb00;
+    background-color: #ffffff;
     color: #67c23a;
   }
 

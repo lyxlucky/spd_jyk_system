@@ -130,7 +130,7 @@
       const defaultWhere = {
         SSRQDateRange: today,
         // SSRQStartTime: new Date(),
-        MZZY: '-1',
+        MZZY: '3',
         condition: '',
         SSFJ: ''
       };

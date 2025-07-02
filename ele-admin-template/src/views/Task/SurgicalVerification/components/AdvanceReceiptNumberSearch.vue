@@ -377,6 +377,9 @@
     mounted() {
       // 组件挂载后立即获取数据
       this.remoteSearch('');
+      this.$bus.$on('AdvanceReceiptNumberTableDialogCurrentSSBHChange', (data) => {
+        this.where.condition = data;
+      });
     }
   };
 </script>
