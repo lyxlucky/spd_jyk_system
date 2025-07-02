@@ -43,7 +43,7 @@
               新增
             </el-button>
           </el-form-item>
-          <el-form-item>
+          <el-form-item v-if="scoreButtonPermission">
             <el-button
               size="mini"
               type="warning"
@@ -96,7 +96,7 @@
           @current-change="onCurrentChange"
           @size-change="onSizeChange"
           @row-click="onRowClick"
-          height="100%"
+          height="35vh"
         >
           <template v-slot:action="{ row }">
             <el-button
@@ -132,7 +132,7 @@
           :pageSize="scoreRecordPageSize"
           @size-change="onScoreRecordPageSizeChange"
           :empty-text="selectedSupplier ? '暂无评分记录' : '请选择供应商'"
-          height="100%"
+          height="30vh"
         >
           <template v-slot:scoreRecordAction="{ row }">
             <el-button
@@ -339,7 +339,8 @@
 </template>
 
 <style scoped lang="scss">
-  .supplier-score-page {
+  .half-table {
+    margin-bottom: 20px;
   }
   .vendor-type-tabs {
     display: flex;
@@ -370,55 +371,12 @@
     height: 2px;
     background-color: #007bff;
   }
-  .half-table {
-    margin-bottom: 16px;
-  }
-  .half-table:last-child {
-    margin-bottom: 0;
-  }
-  .half-table > .el-card {
-    flex: 1 1 0;
-    display: flex;
-    flex-direction: column;
-    min-height: 0;
-    height: 100%;
-  }
-  .half-table .el-card__body {
-    flex: 1 1 0;
-    display: flex;
-    flex-direction: column;
-    min-height: 0;
-    height: 100%;
-    padding: 0 20px 20px 20px;
-  }
-  .half-table .ele-pro-table {
-    flex: 1 1 0;
-    min-height: 0;
-    height: 100%;
-    overflow: auto;
-    display: flex;
-    flex-direction: column;
-  }
   .form-box {
     display: flex;
     gap: 10px;
   }
   .where-type {
     width: 10rem;
-  }
-  .table-supplier-score {
-    flex: 1 1 0;
-    min-height: 0;
-    height: 100%;
-    overflow: auto;
-    display: flex;
-    flex-direction: column;
-  }
-  .el-table {
-    flex: 1 1 0;
-    min-height: 0;
-    height: 100%;
-    overflow: auto;
   }
 
   // 评分弹窗样式
@@ -507,7 +465,7 @@
         },
         //页
         page: 1,
-        size: 10,
+        size: 20,
         // 弹窗相关
         dialogVisible: false,
         dialogTitle: '新增供应商',
@@ -685,6 +643,22 @@
             _categoryRowspan: categoryInfo.count
           };
         });
+      },
+      scoreButtonPermission() {
+        // 权限控制逻辑
+        const deptCode = this.$store.state.user.info.DeptNow.Dept_Two_Code;
+        const vendorType = this.where.vendorType;
+        // 检验科本部
+        if (deptCode === '501') {
+          return vendorType === '服务商' || vendorType === '计量供应商' || vendorType === '第三方检验机构';
+        }
+        // 检验科下属专业组
+        const subGroupCodes = ['1722', '1730', '1726', '1725', '1723', '1724', '1727', '1728', '1731'];
+        if (subGroupCodes.includes(deptCode)) {
+          return vendorType === '供应商';
+        }
+        // 其他科室默认不可评分
+        return false;
       }
     },
 
@@ -1209,9 +1183,13 @@
           const deptCode = this.$store.state.user.info.DeptNow.Dept_Two_Code;
           const res = await syncSuppliers(deptCode);
           if (res.code === 200) {
-            this.$message.success(`同步成功：总数 ${res.data.TotalCount}，成功 ${res.data.SuccessCount}，失败 ${res.data.FailedCount}`);
-            if (res.data.FailedCount > 0 && res.data.FailedSuppliers && res.data.FailedSuppliers.length > 0) {
-              this.$alert('失败明细：<br>' + res.data.FailedSuppliers.join('<br>'), '部分同步失败', { dangerouslyUseHTMLString: true });
+            if (res.data.TotalCount) {
+              this.$message.success(`同步成功：总数 ${res.data.TotalCount}，成功 ${res.data.SuccessCount}，失败 ${res.data.FailedCount}`);
+              if (res.data.FailedCount > 0 && res.data.FailedSuppliers && res.data.FailedSuppliers.length > 0) {
+                this.$alert('失败明细：<br>' + res.data.FailedSuppliers.join('<br>'), '部分同步失败', { dangerouslyUseHTMLString: true });
+              }
+            } else {
+              this.$message.info('暂无需要同步的供应商数据');
             }
             this.reload();
           } else {
