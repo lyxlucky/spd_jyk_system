@@ -31,6 +31,17 @@
       </el-col>
 
       <el-col v-bind="styleResponsive ? { lg: 2, md: 12 } : { span: 8 }">
+        <el-select size="mini" v-model="where.JP_STATE" @change="search()">
+          <el-option label="全部" value=""></el-option>
+          <el-option label="新增" value="0"></el-option>
+          <el-option label="已提交" value="1"></el-option>
+          <el-option label="已拣配" value="2"></el-option>
+          <el-option label="已交接" value="3"></el-option>
+          <el-option label="已完成" value="4"></el-option>
+        </el-select>
+      </el-col>
+
+      <el-col v-bind="styleResponsive ? { lg: 2, md: 12 } : { span: 8 }">
         <el-select size="mini" v-model="where.STORAGE" @change="search()">
           <el-option
             v-for="item in storageOptions"
@@ -54,8 +65,10 @@
         >
         </el-date-picker>
       </el-col>
+    </el-row>
+
+    <el-row style="padding: 10px 0;" :gutter="10">
       <el-col
-        style="margin-left: 15px"
         v-bind="styleResponsive ? { lg: 10, md: 4 } : { span: 4 }"
       >
         <div class="ele-form-actions">
@@ -161,7 +174,8 @@
         CREATE_MAN: '',
         date: [],
         YY_TYPE: '',
-        STORAGE: ''
+        STORAGE: '',
+        JP_STATE: ''
       };
       return {
         // 表单数据

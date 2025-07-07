@@ -197,6 +197,7 @@ export default {
     },
     /* 刷新表格 */
     reload(where) {
+      console.log(where);
       this.$refs.table.reload({ page: 1, where: where });
     },
     /* 打开编辑弹窗 */

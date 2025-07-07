@@ -26,11 +26,14 @@ async function sendRequest(url, data, method = 'post') {
 // 暂存库定数包明细列表
 export async function GetPDAList(data) {
     const { page, limit, where = {}, order = '', field = '' } = data;
+    const [startTime = '', endTime = ''] = where?.timerange || [];
     const requestData = {
         page,
         size: limit,
         condition: where.divrjks2_search_inp || '',
         deptTwoCode: where.divrjks2_search_inpName || '',
+        startTime: startTime || '',
+        endTime: endTime || '',
         order:'',
         field
     };
