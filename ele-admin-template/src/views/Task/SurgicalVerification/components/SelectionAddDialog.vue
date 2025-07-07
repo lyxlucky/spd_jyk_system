@@ -191,7 +191,10 @@
             label: '生产日期',
             align: 'center',
             minWidth: 130,
-            showOverflowTooltip: true
+            showOverflowTooltip: true,
+            formatter: (row) => {
+              return this.$moment(row.BATCH_PRODUCTION_DATE).format('YYYY-MM-DD');
+            }
           },
 
           {
@@ -199,7 +202,10 @@
             label: '有效期',
             align: 'center',
             minWidth: 130,
-            showOverflowTooltip: true
+            showOverflowTooltip: true,
+            formatter: (row) => {
+              return this.$moment(row.BATCH_VALIDITY_PERIOD).format('YYYY-MM-DD');
+            }
           },
 
           {
