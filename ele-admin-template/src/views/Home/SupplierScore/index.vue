@@ -83,6 +83,9 @@
               <el-button size="mini" icon="el-icon-upload2">导入</el-button>
             </el-upload>
           </el-form-item>
+          <el-form-item>
+            <el-button size="mini" type="success" icon="el-icon-download" @click="handleExportAll">导出</el-button>
+          </el-form-item>
         </el-form>
         <!-- 数据表格 -->
         <ele-pro-table
@@ -93,6 +96,8 @@
           :pageSize="size"
           :highlightCurrentRow="true"
           :datasource="datasource"
+          :row-class-name="tableRowClassName"
+          :selection.sync="selection"
           @current-change="onCurrentChange"
           @size-change="onSizeChange"
           @row-click="onRowClick"
@@ -105,17 +110,19 @@
               @click.stop="editItem(row)"
               style="margin-right: 4px;"
             >编辑</el-button>
+
             <el-popconfirm
-              title="确定删除？"
-              @confirm="deleteItem(row)"
+              title="确定撤回？"
+              @confirm="handleRevoke(row)"
             >
               <template v-slot:reference>
                 <el-button
                   size="mini"
                   type="danger"
+                  :disabled="row.STATUS !== '1'"
                   style="margin-right: 4px;"
                   @click.stop
-                >删除</el-button>
+                >撤回</el-button>
               </template>
             </el-popconfirm>
           </template>
@@ -279,6 +286,23 @@
         </div>
 
         <div v-if="selectedSupplier && scoreRules.length > 0">
+          <!-- 评分规则和实时分数显示 -->
+          <el-descriptions title="评分信息" :column="2" border style="margin-bottom: 16px;" v-if="showCurrentScore">
+            <el-descriptions-item label="评分标准">
+              <div class="score-standard">
+                <el-tag type="primary" size="small">80-100分：合格供应商</el-tag>
+                <el-tag type="success" size="small">60-80分：供应商须改进</el-tag>
+                <el-tag type="danger" size="small">60分以下：不合格供应商</el-tag>
+              </div>
+            </el-descriptions-item>
+            <el-descriptions-item label="当前总分">
+              <div class="score-display">
+                <span class="score-number">{{ currentTotalScore }}</span>
+                <span class="score-unit">分</span>
+              </div>
+            </el-descriptions-item>
+          </el-descriptions>
+
           <el-table :data="groupedScoreRules" border height="500px">
             <el-table-column prop="CATEGORY_NAME" label="评审内容" min-width="120" align="center" />
             <el-table-column label="评分项" min-width="580">
@@ -339,6 +363,12 @@
 </template>
 
 <style scoped lang="scss">
+  ::v-deep .row-disabled {
+    background: #f5f5f5 !important;
+    color: #b0b0b0 !important;
+  }
+
+
   .half-table {
     margin-bottom: 20px;
   }
@@ -430,6 +460,41 @@
     font-size: 12px;
   }
 
+  // 评分标准样式
+  .score-standard {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .score-standard .el-tag {
+    margin: 2px 0;
+  }
+
+  // 分数显示样式
+  .score-display {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .score-number {
+    font-size: 20px;
+    font-weight: bold;
+    color: #409eff;
+  }
+
+  .score-unit {
+    font-size: 14px;
+    color: #606266;
+  }
+
+  .score-progress {
+    font-size: 12px;
+    color: #909399;
+    margin-left: 8px;
+  }
+
 
 </style>
 
@@ -446,6 +511,7 @@
     createVendorScoreRecord,
     batchImportSuppliers,
     syncSuppliers,
+    updateVendorStatus
   } from '@/api/Home/supplierScore';
   import { Loading } from 'element-ui';
   import * as XLSX from 'xlsx';
@@ -458,6 +524,7 @@
         vendorTypes: ['供应商', '服务商', '计量供应商', '第三方检验机构'],
         //表格数据源
         supplierScoreList: [],
+        selection: [],
         // 条件
         where: {
           keyword: '',
@@ -495,6 +562,13 @@
         },
         //字段列表
         columns: [
+          {
+            columnKey: 'selection',
+            type: 'selection',
+            width: 45,
+            align: 'center',
+            fixed: 'left'
+          },
           {
             columnKey: 'index',
             type: 'index',
@@ -659,7 +733,25 @@
         }
         // 其他科室默认不可评分
         return false;
-      }
+      },
+      showCurrentScore () {
+        const vendorType = this.where.vendorType;
+        return vendorType === '供应商' || vendorType === '第三方检验机构评分';
+      },
+      // 计算当前总分
+      currentTotalScore() {
+        if (!this.scoreRules || this.scoreRules.length === 0) {
+          return 0;
+        }
+
+        return this.scoreRules.reduce((total, rule) => {
+          // 只统计评分型的项目，且必须有分数
+          if (rule.ITEM_TYPE === '评分' && rule.score !== null && rule.score !== undefined && rule.score !== '') {
+            return total + (Number(rule.score) || 0);
+          }
+          return total;
+        }, 0);
+      },
     },
 
     mounted() {
@@ -679,7 +771,10 @@
       datasource({ page, limit, where, order }) {
         where.keyword = this.where.keyword;
         where.vendorType = this.where.vendorType;
-        const deptCode = this.$store.state.user.info.DeptNow.Dept_Two_Code;
+        let deptCode = null;
+        if (this.where.vendorType === '供应商') {
+          deptCode = this.$store.state.user.info.DeptNow.Dept_Two_Code;
+        }
         let data = apiSupplierScoreGetList({ page, limit, where, order }, deptCode).then(
           (res) => {
             var tData = {
@@ -777,6 +872,7 @@
         this.$refs.form.validate((valid) => {
           if (valid) {
             const submitData = {
+
               ...this.formData
             };
 
@@ -1018,6 +1114,7 @@
 
           // 刷新评分记录列表
           this.$nextTick(() => {
+            this.selectedSupplier.STATUS = '1';
             this.$refs.scoreTable && this.$refs.scoreTable.reload();
           });
         } catch (error) {
@@ -1199,6 +1296,73 @@
           this.$message.error('同步异常：' + (e.message || e));
         } finally {
           this.syncLoading = false;
+        }
+      },
+      tableRowClassName({ row }) {
+        return row.STATUS === '1' ? 'row-disabled' : '';
+      },
+      async handleRevoke(row) {
+        try {
+          const res = await updateVendorStatus({ id: row.ID, status: '0' });
+          if (res.code === 200) {
+            this.$message.success('撤回成功');
+            this.reload();
+          } else {
+            this.$message.error(res.msg || '撤回失败');
+          }
+        } catch (e) {
+          this.$message.error('撤回异常：' + (e.message || e));
+        }
+      },
+      handleExport(row) {
+        // 只导出关键信息
+        const exportData = [
+          {
+            '供应商名称': row.VENDOR_NAME,
+            '供应商编码': row.SUPPLIER_CODE,
+            '注册编码': row.REGISTER_NO,
+            '类型': row.VENDOR_TYPE,
+            '服务或供应项目': row.SUPPLY_ITEMS,
+            '地址': row.ADDRESS,
+            '联系方式': row.CONTACT_INFO
+          }
+        ];
+        const worksheet = XLSX.utils.json_to_sheet(exportData);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, '供应商信息');
+        const wbout = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+        saveAs(new Blob([wbout], { type: 'application/octet-stream' }), `${row.VENDOR_NAME}_信息导出.xlsx`);
+      },
+      async handleExportAll() {
+        try {
+          let exportRows = [];
+          if (this.selection && this.selection.length > 0) {
+            exportRows = this.selection;
+          } else {
+            const deptCode = this.where.vendorType === '供应商' ? this.$store.state.user.info.DeptNow.Dept_Two_Code : null;
+            const res = await apiSupplierScoreGetList({ page: 1, limit: 99999, where: this.where }, deptCode);
+            exportRows = res.result || [];
+          }
+          const exportData = exportRows.map(row => ({
+            '供应商名称': row.VENDOR_NAME,
+            '供应商编码': row.SUPPLIER_CODE,
+            '注册编码': row.REGISTER_NO,
+            '类型': row.VENDOR_TYPE,
+            '服务或供应项目': row.SUPPLY_ITEMS,
+            '地址': row.ADDRESS,
+            '联系方式': row.CONTACT_INFO
+          }));
+          if (!exportData.length) {
+            this.$message.warning('没有可导出的数据');
+            return;
+          }
+          const worksheet = XLSX.utils.json_to_sheet(exportData);
+          const workbook = XLSX.utils.book_new();
+          XLSX.utils.book_append_sheet(workbook, worksheet, `${this.where.vendorType}信息`);
+          const wbout = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+          saveAs(new Blob([wbout], { type: 'application/octet-stream' }), `${this.where.vendorType}信息导出.xlsx`);
+        } catch (e) {
+          this.$message.error('导出失败：' + (e.message || e));
         }
       },
     }

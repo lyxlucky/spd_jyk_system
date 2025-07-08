@@ -13,7 +13,7 @@ export async function apiSupplierScoreGetList(data, deptCode) {
     formataData.vendorName = data.where.keyword ? data.where.keyword : '';
     formataData.vendorType = data.where.vendorType ? data.where.vendorType : '';
     formataData.deptCode = deptCode;
-    
+
     const res = await request.get('/VendorInfo/GetAllVendorInfo', {
         params: formataData
     });
@@ -30,7 +30,7 @@ export async function apiSupplierScoreGetList(data, deptCode) {
 // 添加供应商 - 使用现有的 CreateVendorInfo 接口
 export async function addSupplierScore(data) {
     const token = sessionStorage.getItem(TOKEN_STORE_NAME);
-    
+
     // 直接发送JSON数据，因为后端使用[FromBody]接收
     const jsonData = {
         VENDOR_NAME: data.Supplier_Name,
@@ -40,9 +40,9 @@ export async function addSupplierScore(data) {
         ADDRESS: data.ADDRESS,
         CONTACT_INFO: data.CONTACT_INFO
     };
-    
+
     try {
-        const res = await request.post(`/VendorInfo/CreateVendorInfo?token=${token}`, jsonData);      
+        const res = await request.post(`/VendorInfo/CreateVendorInfo?token=${token}`, jsonData);
         return res.data;
     } catch (error) {
         console.error("请求数据时出错:", error);
@@ -53,7 +53,7 @@ export async function addSupplierScore(data) {
 // 更新供应商 - 使用现有的 UpdateVendorInfo 接口
 export async function updateSupplierScore(data) {
     const token = sessionStorage.getItem(TOKEN_STORE_NAME);
-    
+
     // 直接发送JSON数据，因为后端使用[FromBody]接收
     const jsonData = {
         ID: data.ID,
@@ -66,7 +66,7 @@ export async function updateSupplierScore(data) {
     };
 
     try {
-        const res = await request.post(`/VendorInfo/UpdateVendorInfo?token=${token}`, jsonData);      
+        const res = await request.post(`/VendorInfo/UpdateVendorInfo?token=${token}`, jsonData);
         return res.data;
     } catch (error) {
         console.error("请求数据时出错:", error);
@@ -77,9 +77,9 @@ export async function updateSupplierScore(data) {
 // 删除供应商 - 使用现有的 DeleteVendorInfo 接口
 export async function deleteSupplierScore(data) {
     const token = sessionStorage.getItem(TOKEN_STORE_NAME);
-    
+
     try {
-        const res = await request.get(`/VendorInfo/DeleteVendorInfo?token=${token}&id=${data.ID}`);      
+        const res = await request.get(`/VendorInfo/DeleteVendorInfo?token=${token}&id=${data.ID}`);
         return res.data;
     } catch (error) {
         console.error("请求数据时出错:", error);
@@ -186,7 +186,7 @@ export async function createVendorScoreRecord(data) {
 // 批量导入供应商
 export async function batchImportSuppliers(data) {
     const token = sessionStorage.getItem(TOKEN_STORE_NAME);
-    const res = await request.post(`/VendorInfo/ImportSuppliers?token=${token}`, data); 
+    const res = await request.post(`/VendorInfo/ImportSuppliers?token=${token}`, data);
     if (res.data.code === 200) {
         return res.data;
     } else {
@@ -197,7 +197,18 @@ export async function batchImportSuppliers(data) {
 // 同步供应商
 export async function syncSuppliers(deptCode) {
     const token = sessionStorage.getItem(TOKEN_STORE_NAME);
-    const res = await request.post(`/VendorInfo/SyncSuppliers?token=${token}&deptCode=${deptCode}`); 
+    const res = await request.post(`/VendorInfo/SyncSuppliers?token=${token}&deptCode=${deptCode}`);
+    if (res.data.code === 200) {
+        return res.data;
+    } else {
+        return Promise.reject(new Error(res.data.msg));
+    }
+}
+
+// 更新供应商状态（撤回）
+export async function updateVendorStatus({ id, status }) {
+    const token = sessionStorage.getItem(TOKEN_STORE_NAME);
+    const res = await request.post(`/VendorInfo/UpdateVendorStatus?token=${token}&id=${id}&status=${status}`);
     if (res.data.code === 200) {
         return res.data;
     } else {
