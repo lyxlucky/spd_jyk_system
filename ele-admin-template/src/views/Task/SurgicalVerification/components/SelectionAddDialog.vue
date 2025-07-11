@@ -24,6 +24,7 @@
         @selection-change="onSelectionChange"
         @current-change="onCurrentChange"
         cache-key="SelectionAddDialogTableCacheKey"
+        :row-class-name="tableRowClassName"
       >
         <template slot="toolbar">
           <div class="form-box">
@@ -365,6 +366,10 @@
           this.$message.error('操作失败');
           console.error(error);
         }
+      },
+      tableRowClassName({ row }) {
+        // 只要该行被勾选，返回 selected-row
+        return this.selection && this.selection.find(item => item.ID === row.ID) ? 'selected-row' : '';
       }
     },
     mounted() {
@@ -383,5 +388,10 @@
     justify-content: space-between;
     padding-right: 5px;
     flex-wrap: wrap;
+  }
+  // 选中行高亮，使用主题色
+  .el-table .selected-row {
+    background-color: var(--el-color-primary, #409EFF) !important;
+    color: #fff;
   }
 </style>
