@@ -22,6 +22,7 @@
         :datasource="datasource"
         :selection.sync="selection"
         @selection-change="onSelectionChange"
+        @select-all="onSelectAll"
         @current-change="onCurrentChange"
         cache-key="SelectionAddDialogTableCacheKey"
         :row-class-name="tableRowClassName"
@@ -229,20 +230,58 @@
         pageSizes: [10, 20, 50, 100, 9999999],
         // 表格选中数据
         selection: [],
+        isSelectAll: false,
         // 当前编辑数据
         current: null,
         AdvanceNumberTableCurrent: null,
         isShowNewUse: false,
         scanDialogVisible: false,
-        scanCode: ''
+        scanCode: '',
+        isMock: false, // 是否使用假数据，开发时可开启,
       };
     },
     methods: {
+      onSelectAll(selection) {
+        const tableData = this.$refs.table.tableData || [];
+        if (selection.length) {
+          // 全选
+          this.selection = tableData;
+        } else {
+          // 取消全选
+          this.$refs.table.clearSelection();
+        }
+      },
       async datasource({ page, limit, where, order }) {
         where = {
           ...where,
           SSBH: this.AdvanceNumberTableCurrent?.SSBH
         };
+        // 判断是否用假数据
+        if (this.isMock) {
+          // 生成假数据
+          const mockList = [];
+          for (let i = 0; i < limit; i++) {
+            mockList.push({
+              ID: i + 1 + (page - 1) * limit,
+              DEF_NO_PKG_CODE: 'PKG' + (1000 + i),
+              VARIETIE_CODE_NEW: 'VCN' + (2000 + i),
+              VARIETIE_NAME: '品种' + (i + 1),
+              SPECIFICATION_OR_TYPE: '型号' + (i + 1),
+              UNIT: '个',
+              PRICE: (Math.random() * 100).toFixed(2),
+              BATCH: 'BATCH' + (i + 1),
+              BATCH_PRODUCTION_DATE: new Date().toISOString(),
+              BATCH_VALIDITY_PERIOD: new Date(Date.now() + 1000 * 60 * 60 * 24 * 365).toISOString(),
+              APPROVAL_NUMBER: 'APPROVAL' + (i + 1),
+              MANUFACTURING_ENT_NAME: '企业' + (i + 1),
+              //canSelect: Math.random() > 0.5 // 随机可选/不可选
+            });
+          }
+          return {
+            count: 100,
+            list: mockList
+          };
+        }
 
         const res = await GetBdszZqsjMainNoUseDel({
           page,
@@ -275,7 +314,21 @@
       },
 
       onSelectionChange(selection) {
-        this.selection = selection;
+        const tableData = this.$refs.table.tableData || [];
+        // 如果是全选，不做过滤
+        if (selection.length === tableData.length) {
+          this.selection = selection;
+          return;
+        }
+        // 单独勾选时，过滤掉 canSelect 为 false 的行
+        const valid = selection.filter(row => row.canSelect);
+        if (selection.length !== valid.length) {
+          this.$refs.table.clearSelection();
+          valid.forEach(row => this.$refs.table.toggleRowSelection(row, true));
+          this.selection = valid;
+        } else {
+          this.selection = selection;
+        }
       },
       updateVisible(val) {
         this.$emit('update:visible', val);
@@ -392,6 +445,6 @@
   // 选中行高亮，使用主题色
   .el-table .selected-row {
     background-color: var(--el-color-primary, #409EFF) !important;
-    color: #fff;
+    // color: #fff;
   }
 </style>
