@@ -138,20 +138,7 @@
             align: 'center',
             fixed: 'left'
           },
-          {
-            prop: 'DEF_NO_PKG_CODE',
-            label: '定数码',
-            align: 'center',
-            minWidth: 130,
-            showOverflowTooltip: true
-          },
-          {
-            prop: 'VARIETIE_CODE_NEW',
-            label: '品种编码',
-            align: 'center',
-            minWidth: 130,
-            showOverflowTooltip: true
-          },
+          
           {
             prop: 'VARIETIE_NAME',
             label: '品种名称',
@@ -223,7 +210,21 @@
             align: 'center',
             minWidth: 130,
             showOverflowTooltip: true
-          }
+          },
+          {
+            prop: 'DEF_NO_PKG_CODE',
+            label: '定数码',
+            align: 'center',
+            minWidth: 130,
+            showOverflowTooltip: true
+          },
+          {
+            prop: 'VARIETIE_CODE_NEW',
+            label: '品种编码',
+            align: 'center',
+            minWidth: 130,
+            showOverflowTooltip: true
+          },
         ],
         pageSize: 50,
         pagerCount: 2,
