@@ -1,7 +1,7 @@
 <template lang="">
   <div>
     <ele-modal
-      title="勾选添加"
+      title="耗材清单"
       :destroy-on-close="true"
       @open="handleOpen"
       width="90%"
@@ -15,7 +15,6 @@
         ref="table"
         highlight-current-row
         height="70vh"
-        :stripe="true"
         :pageSize="pageSize"
         :pageSizes="pageSizes"
         :columns="columns"
@@ -231,6 +230,7 @@
         pageSizes: [10, 20, 50, 100, 9999999],
         // 表格选中数据
         selection: [],
+        lastSelection: [],
         isSelectAll: false,
         // 当前编辑数据
         current: null,
@@ -307,6 +307,7 @@
         };
       },
       onCurrentChange(current) {
+        console.log(current)
         this.current = current;
       },
 
@@ -319,17 +320,46 @@
         // 如果是全选，不做过滤
         if (selection.length === tableData.length) {
           this.selection = selection;
+          this.lastSelection = selection.slice();
           return;
         }
-        // 单独勾选时，过滤掉 canSelect 为 false 的行
-        const valid = selection.filter(row => row.canSelect);
-        if (selection.length !== valid.length) {
-          this.$refs.table.clearSelection();
-          valid.forEach(row => this.$refs.table.toggleRowSelection(row, true));
-          this.selection = valid;
-        } else {
-          this.selection = selection;
+        if (selection.length == 0) {
+          this.selection = [];
+          this.lastSelection = selection.slice();
+          return;
         }
+        const prevSelection = this.lastSelection || [];
+        // 新增的（本次勾选的）
+        const added = selection.filter(row => !prevSelection.some(item => item.ID === row.ID));
+        // 移除的（本次取消勾选的）
+        const removed = prevSelection.filter(row => !selection.some(item => item.ID === row.ID));
+
+        if (added.length > 0) {
+          // console.log('勾选了', added[0]);
+          if (!added[0].canSelect) {
+            this.$refs.table.toggleRowSelection(added[0], false);
+            return;
+          }
+        }
+        if (removed.length > 0) {
+          // console.log('取消勾选了', removed[0]);
+          if (!removed[0].canSelect) {
+            this.$refs.table.toggleRowSelection(removed[0], true);
+            return;
+          }
+        }
+
+        
+        // 单独勾选时，过滤掉 canSelect 为 false 的行
+        // const valid = selection.filter(row => row.canSelect);
+        // if (selection.length !== valid.length) {
+        //   valid.forEach(row => this.$refs.table.toggleRowSelection(row, true));
+        //   this.selection = valid;
+        // } else {
+        //   this.selection = selection;
+        // }
+        this.selection = selection;
+        this.lastSelection = selection.slice();
       },
       updateVisible(val) {
         this.$emit('update:visible', val);
@@ -395,7 +425,9 @@
             const index = this.$refs.table.tableData.findIndex(item => item.ID === res.data.ID);
             
             if (index !== -1) {
-              // 如果找到对应的行，进行反选
+              // 如果找到对应的行，给该行加上canSelect=true
+              this.$refs.table.tableData[index].canSelect = true;
+              // 进行反选
               const row = this.$refs.table.tableData[index];
               const selectedIndex = this.selection.findIndex(item => item.ID === res.data.ID);
               if (selectedIndex !== -1) {
@@ -436,7 +468,7 @@
     }
   };
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
   .form-box {
     display: flex;
     justify-content: space-between;
@@ -444,8 +476,12 @@
     flex-wrap: wrap;
   }
   // 选中行高亮，使用主题色
-  .el-table .selected-row {
+  ::v-deep(.el-table .selected-row) {
     background-color: var(--el-color-primary, #409EFF) !important;
-    // color: #fff;
+    color: #fff;
+  }
+
+  ::v-deep(.el-table__row:hover) {
+    color: rgb(11, 18, 21) !important;
   }
 </style>
