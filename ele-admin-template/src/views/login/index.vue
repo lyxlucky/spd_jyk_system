@@ -94,7 +94,7 @@ export default {
       form: {
         username: '',
         password: '',
-        remember: true,
+        remember: false,
         code: ''
       },
       // 验证码base64数据
@@ -157,7 +157,7 @@ export default {
         logoPath = require('@/assets/logoBJ.jpg');
         break;
       default:
-        logoPath = require('@/assets/logoBD.jpg');
+        logoPath = require('@/assets/logoBJ.jpg');
       }
       return `${logoPath}?_t=${new Date().getTime()}`;
     }
