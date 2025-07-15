@@ -145,71 +145,71 @@
             minWidth: 130,
             showOverflowTooltip: true
           },
-          {
-            prop: 'SPECIFICATION_OR_TYPE',
-            label: '规格型号',
-            align: 'center',
-            minWidth: 130,
-            showOverflowTooltip: true
-          },
-          {
-            prop: 'UNIT',
-            label: '单位',
-            align: 'center',
-            minWidth: 130,
-            showOverflowTooltip: true
-          },
-          {
-            prop: 'PRICE',
-            label: '价格',
-            align: 'center',
-            minWidth: 130,
-            showOverflowTooltip: true
-          },
-          {
-            prop: 'BATCH',
-            label: '批号',
-            align: 'center',
-            minWidth: 130,
-            showOverflowTooltip: true
-          },
+          // {
+          //   prop: 'SPECIFICATION_OR_TYPE',
+          //   label: '规格型号',
+          //   align: 'center',
+          //   minWidth: 130,
+          //   showOverflowTooltip: true
+          // },
+          // {
+          //   prop: 'UNIT',
+          //   label: '单位',
+          //   align: 'center',
+          //   minWidth: 130,
+          //   showOverflowTooltip: true
+          // },
+          // {
+          //   prop: 'PRICE',
+          //   label: '价格',
+          //   align: 'center',
+          //   minWidth: 130,
+          //   showOverflowTooltip: true
+          // },
+          // {
+          //   prop: 'BATCH',
+          //   label: '批号',
+          //   align: 'center',
+          //   minWidth: 130,
+          //   showOverflowTooltip: true
+          // },
 
-          {
-            prop: 'BATCH_PRODUCTION_DATE',
-            label: '生产日期',
-            align: 'center',
-            minWidth: 130,
-            showOverflowTooltip: true,
-            formatter: (row) => {
-              return this.$moment(row.BATCH_PRODUCTION_DATE).format('YYYY-MM-DD');
-            }
-          },
+          // {
+          //   prop: 'BATCH_PRODUCTION_DATE',
+          //   label: '生产日期',
+          //   align: 'center',
+          //   minWidth: 130,
+          //   showOverflowTooltip: true,
+          //   formatter: (row) => {
+          //     return this.$moment(row.BATCH_PRODUCTION_DATE).format('YYYY-MM-DD');
+          //   }
+          // },
 
-          {
-            prop: 'BATCH_VALIDITY_PERIOD',
-            label: '有效期',
-            align: 'center',
-            minWidth: 130,
-            showOverflowTooltip: true,
-            formatter: (row) => {
-              return this.$moment(row.BATCH_VALIDITY_PERIOD).format('YYYY-MM-DD');
-            }
-          },
+          // {
+          //   prop: 'BATCH_VALIDITY_PERIOD',
+          //   label: '有效期',
+          //   align: 'center',
+          //   minWidth: 130,
+          //   showOverflowTooltip: true,
+          //   formatter: (row) => {
+          //     return this.$moment(row.BATCH_VALIDITY_PERIOD).format('YYYY-MM-DD');
+          //   }
+          // },
 
-          {
-            prop: 'APPROVAL_NUMBER',
-            label: '批准文号',
-            align: 'center',
-            minWidth: 130,
-            showOverflowTooltip: true
-          },
-          {
-            prop: 'MANUFACTURING_ENT_NAME',
-            label: '生产企业',
-            align: 'center',
-            minWidth: 130,
-            showOverflowTooltip: true
-          },
+          // {
+          //   prop: 'APPROVAL_NUMBER',
+          //   label: '批准文号',
+          //   align: 'center',
+          //   minWidth: 130,
+          //   showOverflowTooltip: true
+          // },
+          // {
+          //   prop: 'MANUFACTURING_ENT_NAME',
+          //   label: '生产企业',
+          //   align: 'center',
+          //   minWidth: 130,
+          //   showOverflowTooltip: true
+          // },
           {
             prop: 'DEF_NO_PKG_CODE',
             label: '定数码',
@@ -217,13 +217,13 @@
             minWidth: 130,
             showOverflowTooltip: true
           },
-          {
-            prop: 'VARIETIE_CODE_NEW',
-            label: '品种编码',
-            align: 'center',
-            minWidth: 130,
-            showOverflowTooltip: true
-          },
+          // {
+          //   prop: 'VARIETIE_CODE_NEW',
+          //   label: '品种编码',
+          //   align: 'center',
+          //   minWidth: 130,
+          //   showOverflowTooltip: true
+          // },
         ],
         pageSize: 50,
         pagerCount: 2,
@@ -238,7 +238,7 @@
         isShowNewUse: false,
         scanDialogVisible: false,
         scanCode: '',
-        isMock: false, // 是否使用假数据，开发时可开启,
+        isMock: true, // 是否使用假数据，开发时可开启,
       };
     },
     methods: {
@@ -316,50 +316,41 @@
       },
 
       onSelectionChange(selection) {
-        const tableData = this.$refs.table.tableData || [];
-        // 如果是全选，不做过滤
-        if (selection.length === tableData.length) {
-          this.selection = selection;
-          this.lastSelection = selection.slice();
-          return;
-        }
-        if (selection.length == 0) {
-          this.selection = [];
-          this.lastSelection = selection.slice();
-          return;
-        }
-        const prevSelection = this.lastSelection || [];
-        // 新增的（本次勾选的）
-        const added = selection.filter(row => !prevSelection.some(item => item.ID === row.ID));
-        // 移除的（本次取消勾选的）
-        const removed = prevSelection.filter(row => !selection.some(item => item.ID === row.ID));
-
-        if (added.length > 0) {
-          // console.log('勾选了', added[0]);
-          if (!added[0].canSelect) {
-            this.$refs.table.toggleRowSelection(added[0], false);
-            return;
-          }
-        }
-        if (removed.length > 0) {
-          // console.log('取消勾选了', removed[0]);
-          if (!removed[0].canSelect) {
-            this.$refs.table.toggleRowSelection(removed[0], true);
-            return;
-          }
-        }
-
-        
-        // 单独勾选时，过滤掉 canSelect 为 false 的行
-        // const valid = selection.filter(row => row.canSelect);
-        // if (selection.length !== valid.length) {
-        //   valid.forEach(row => this.$refs.table.toggleRowSelection(row, true));
-        //   this.selection = valid;
-        // } else {
+        // const tableData = this.$refs.table.tableData || [];
+        // // 如果是全选，不做过滤
+        // if (selection.length === tableData.length) {
         //   this.selection = selection;
+        //   this.lastSelection = selection.slice();
+        //   return;
         // }
+        // if (selection.length == 0) {
+        //   this.selection = [];
+        //   this.lastSelection = selection.slice();
+        //   return;
+        // }
+        // const prevSelection = this.lastSelection || [];
+        // // 新增的（本次勾选的）
+        // const added = selection.filter(row => !prevSelection.some(item => item.ID === row.ID));
+        // // 移除的（本次取消勾选的）
+        // const removed = prevSelection.filter(row => !selection.some(item => item.ID === row.ID));
+
+        // if (added.length > 0) {
+        //   // console.log('勾选了', added[0]);
+        //   if (!added[0].canSelect) {
+        //     this.$refs.table.toggleRowSelection(added[0], false);
+        //     return;
+        //   }
+        // }
+        // if (removed.length > 0) {
+        //   // console.log('取消勾选了', removed[0]);
+        //   if (!removed[0].canSelect) {
+        //     this.$refs.table.toggleRowSelection(removed[0], true);
+        //     return;
+        //   }
+        // }
+
         this.selection = selection;
-        this.lastSelection = selection.slice();
+        // this.lastSelection = selection.slice();
       },
       updateVisible(val) {
         this.$emit('update:visible', val);
