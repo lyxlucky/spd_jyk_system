@@ -215,7 +215,8 @@
     <DpetOneAuthWithDept :visible.sync="DpetOneAuthWithDeptShow" />
     <!-- <NewBatchReminder :visible.sync="NewBatchRemindervisible"/> -->
     <ele-modal
-     :close-on-click-modal="true"
+      :close-on-click-modal="true"
+      @update:visible="updateKSExpirationReminderVisible"
       width="90%"
       :visible="KSExpirationReminderVisible"
       title="库存近效期提醒"
@@ -262,6 +263,7 @@
     data() {
       return {
         MenuList: null,
+        KSExpirationReminderVisible: true,
         NoticeMenuList: null,
         JYkDefRemindTotal: 0,
         TableListTotal: 0,
@@ -310,6 +312,9 @@
       };
     },
     methods: {
+      updateKSExpirationReminderVisible(){
+        this.KSExpirationReminderVisible = !this.KSExpirationReminderVisible;
+      },
       getJYkDefRemindTotal() {
         SearchDefRemind({
           page: 1,
@@ -523,9 +528,6 @@
       // 是否开启响应式布局
       styleResponsive() {
         return this.$store.state.theme.styleResponsive;
-      },
-      KSExpirationReminderVisible() {
-          return true;
       },
       lineChartOption() {
         const months = [
