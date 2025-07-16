@@ -145,71 +145,79 @@
             minWidth: 130,
             showOverflowTooltip: true
           },
-          // {
-          //   prop: 'SPECIFICATION_OR_TYPE',
-          //   label: '规格型号',
-          //   align: 'center',
-          //   minWidth: 130,
-          //   showOverflowTooltip: true
-          // },
-          // {
-          //   prop: 'UNIT',
-          //   label: '单位',
-          //   align: 'center',
-          //   minWidth: 130,
-          //   showOverflowTooltip: true
-          // },
-          // {
-          //   prop: 'PRICE',
-          //   label: '价格',
-          //   align: 'center',
-          //   minWidth: 130,
-          //   showOverflowTooltip: true
-          // },
-          // {
-          //   prop: 'BATCH',
-          //   label: '批号',
-          //   align: 'center',
-          //   minWidth: 130,
-          //   showOverflowTooltip: true
-          // },
+          {
+            prop: 'SPECIFICATION_OR_TYPE',
+            label: '规格型号',
+            align: 'center',
+            minWidth: 130,
+            show: false,
+            showOverflowTooltip: true
+          },
+          {
+            prop: 'UNIT',
+            label: '单位',
+            align: 'center',
+            minWidth: 130,
+            show: false,
+            showOverflowTooltip: true
+          },
+          {
+            prop: 'PRICE',
+            label: '价格',
+            align: 'center',
+            minWidth: 130,
+            show: false,
+            showOverflowTooltip: true
+          },
+          {
+            prop: 'BATCH',
+            label: '批号',
+            align: 'center',
+            minWidth: 130,
+            show: false,
+            showOverflowTooltip: true
+          },
 
-          // {
-          //   prop: 'BATCH_PRODUCTION_DATE',
-          //   label: '生产日期',
-          //   align: 'center',
-          //   minWidth: 130,
-          //   showOverflowTooltip: true,
-          //   formatter: (row) => {
-          //     return this.$moment(row.BATCH_PRODUCTION_DATE).format('YYYY-MM-DD');
-          //   }
-          // },
+          {
+            prop: 'BATCH_PRODUCTION_DATE',
+            label: '生产日期',
+            align: 'center',
+            minWidth: 130,
+            show: false,
+            showOverflowTooltip: true,
+            formatter: (row) => {
+              return this.$moment(row.BATCH_PRODUCTION_DATE).format('YYYY-MM-DD');
+            }
+          },
 
-          // {
-          //   prop: 'BATCH_VALIDITY_PERIOD',
-          //   label: '有效期',
-          //   align: 'center',
-          //   minWidth: 130,
-          //   showOverflowTooltip: true,
-          //   formatter: (row) => {
-          //     return this.$moment(row.BATCH_VALIDITY_PERIOD).format('YYYY-MM-DD');
-          //   }
-          // },
+          {
+            prop: 'BATCH_VALIDITY_PERIOD',
+            label: '有效期',
+            align: 'center',
+            minWidth: 130,
+            show: false,
+            showOverflowTooltip: true,
+            formatter: (row) => {
+              return this.$moment(row.BATCH_VALIDITY_PERIOD).format('YYYY-MM-DD');
+            }
+          },
 
-          // {
-          //   prop: 'APPROVAL_NUMBER',
-          //   label: '批准文号',
-          //   align: 'center',
-          //   minWidth: 130,
-          //   showOverflowTooltip: true
-          // },
-          // {
-          //   prop: 'MANUFACTURING_ENT_NAME',
-          //   label: '生产企业',
-          //   align: 'center',
-          //   minWidth: 130,
-          //   showOverflowTooltip: true
-          // },
+          {
+            prop: 'APPROVAL_NUMBER',
+            label: '批准文号',
+            align: 'center',
+            minWidth: 130,
+            show: false,
+            showOverflowTooltip: true
+          },
+          {
+            prop: 'MANUFACTURING_ENT_NAME',
+            label: '生产企业',
+            align: 'center',
+            minWidth: 130,
+            show: false,
+            showOverflowTooltip: true
+          },
           {
             prop: 'DEF_NO_PKG_CODE',
             label: '定数码',
@@ -217,13 +225,14 @@
             minWidth: 130,
             showOverflowTooltip: true
           },
-          // {
-          //   prop: 'VARIETIE_CODE_NEW',
-          //   label: '品种编码',
-          //   align: 'center',
-          //   minWidth: 130,
-          //   showOverflowTooltip: true
-          // },
+          {
+            prop: 'VARIETIE_CODE_NEW',
+            label: '品种编码',
+            align: 'center',
+            minWidth: 130,
+            show: false,
+            showOverflowTooltip: true
+          },
         ],
         pageSize: 50,
         pagerCount: 2,
