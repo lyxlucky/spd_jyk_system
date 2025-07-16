@@ -9,6 +9,7 @@
       @current-change="onCurrentChange"
       ref="table"
       height="18vh"
+      fullHeight="80vh"
       :rowClickChecked="true"
       :stripe="true"
       :pageSize="pageSize"
@@ -17,7 +18,6 @@
       :datasource="datasource"
       :selection.sync="selection"
       :needPage="false"
-      :toolkit="['reload', 'size', 'columns']"
       cache-key="KSInventoryBasicDataTable"
     >
       <!-- 表头工具栏 -->
