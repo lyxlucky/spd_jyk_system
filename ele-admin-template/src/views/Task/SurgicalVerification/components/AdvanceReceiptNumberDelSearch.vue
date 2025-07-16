@@ -32,7 +32,7 @@
           icon="el-icon-circle-check"
           type="primary"
           @click="handleSelectAdd"
-          >勾选添加</el-button
+          >耗材清单</el-button
         >
       </el-form-item>
 

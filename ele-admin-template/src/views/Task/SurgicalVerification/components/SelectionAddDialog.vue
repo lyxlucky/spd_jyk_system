@@ -238,7 +238,7 @@
         isShowNewUse: false,
         scanDialogVisible: false,
         scanCode: '',
-        isMock: true, // 是否使用假数据，开发时可开启,
+        isMock: false, // 是否使用假数据，开发时可开启,
       };
     },
     methods: {
