@@ -214,6 +214,14 @@
     <VarietyDataLzhLook :visible.sync="VarietyDataLzhLookShow" />
     <DpetOneAuthWithDept :visible.sync="DpetOneAuthWithDeptShow" />
     <!-- <NewBatchReminder :visible.sync="NewBatchRemindervisible"/> -->
+    <ele-modal
+     :close-on-click-modal="true"
+      width="90%"
+      :visible="KSExpirationReminderVisible"
+      title="库存近效期提醒"
+    >
+      <KSExpirationReminder></KSExpirationReminder>
+    </ele-modal>
   </div>
 </template>
 
@@ -221,7 +229,13 @@
   import BidVarInfoDept from '@/views/KSInventory/ReferenceComponent/BidVarInfoDept/index';
   import VarietyDataLzhLook from '@/views/KSInventory/ReferenceComponent/VarietyDataLzhLook/index';
   import DpetOneAuthWithDept from '@/views/KSInventory/ReferenceComponent/DpetOneAuthWithDept/index';
-  import { API_BASE_URL, BACK_BASE_URL, BLACK_ROUTER } from '@/config/setting';
+  import KSExpirationReminder from '@/views/KSInventory/KSExpirationReminder/index';
+  import {
+    API_BASE_URL,
+    BACK_BASE_URL,
+    BLACK_ROUTER,
+    HOME_HP
+  } from '@/config/setting';
   import { getAesKey } from '@/utils/aes-util';
   import { getTableList } from '@/api/KSInventory/KSNewBatchReminder/index';
   import { SearchDefRemind } from '@/api/KSInventory/KSExpirationReminder';
@@ -241,7 +255,8 @@
       EleChart,
       BidVarInfoDept,
       VarietyDataLzhLook,
-      DpetOneAuthWithDept
+      DpetOneAuthWithDept,
+      KSExpirationReminder
       // NewBatchReminder
     },
     data() {
@@ -311,13 +326,15 @@
           page: 1,
           limit: 9999,
           where: {
-            isShow: '0',
+            isShow: '0'
           }
         }).then((res) => {
           this.TableListTotal = res.total;
-          let exists = this.$store.state.user.info.permission_group.some((item) => {
-            return item.path === '/KSInventory/KSNewBatchReminder';
-          });
+          let exists = this.$store.state.user.info.permission_group.some(
+            (item) => {
+              return item.path === '/KSInventory/KSNewBatchReminder';
+            }
+          );
           if (exists && this.TableListTotal > 0) {
             this.$notify.info({
               title: '新批号提醒',
@@ -506,6 +523,9 @@
       // 是否开启响应式布局
       styleResponsive() {
         return this.$store.state.theme.styleResponsive;
+      },
+      KSExpirationReminderVisible() {
+          return true;
       },
       lineChartOption() {
         const months = [
