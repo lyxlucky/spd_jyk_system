@@ -6,7 +6,6 @@
       :columns="columns"
       :datasource="datasource"
       size="mini"
-      :initLoad="false"
       :pageSize="pageSize"
       :pageSizes="pageSizes"
       highlight-current-row
@@ -77,12 +76,58 @@
           </el-form-item>
         </el-form>
       </template>
+      <template v-slot:action="{ row }">
+        <el-button
+          type="primary"
+          size="mini"
+          @click="showFlowDialog(row)"
+          >流向记录</el-button
+        >
+      </template>
     </ele-pro-table>
+
+    <el-dialog
+      title="流向记录"
+      :visible.sync="flowDialogVisible"
+      width="80%"
+      :close-on-click-modal="false"
+    >
+      <div>
+        <ele-pro-table
+          class="style-table"
+          ref="flowTable"
+          height="50vh"
+          full-height="calc(100vh - 116px)"
+          :columns="flowColumns"
+          :datasource="flowDatasource"
+          :init-load="false"
+          size="mini"
+          :pageSize="pageSize"
+          :pageSizes="pageSizes"
+          highlight-current-row
+          cache-key="ThreeLevelDbBDFlowTable"
+        >
+          <template v-slot:toolbar>
+            <h1>
+              总计费数量: {{flowRow.JF_QTY}} 总库存数: {{flowRow.KS_QTY}}
+            </h1>
+          </template>
+          <template v-slot:action="{ row }">
+            <el-button
+              type="primary"
+              size="mini"
+              @click="showFlowDialog(row)"
+            >流向记录</el-button
+            >
+          </template>
+        </ele-pro-table>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-  import { getThirdStockInfo } from '@/api/Inventory/ThreeLevelDbBD';
+import { getThirdStockInfo, getThirdStockInfoFlow } from '@/api/Inventory/ThreeLevelDbBD';
   import { utils, writeFile } from 'xlsx';
   export default {
     name: 'ThreeLevelDbBD',
@@ -192,8 +237,106 @@
             align: 'center',
             showOverflowTooltip: true,
             minWidth: 100
-          }
-        ]
+          },
+          {
+            columnKey: 'action',
+            label: '操作',
+            width: 120,
+            align: 'center',
+            resizable: false,
+            slot: 'action',
+            showOverflowTooltip: true
+            //fixed: 'right'
+          },
+        ],
+        flowDialogVisible: false,
+        flowRow : {},
+        flowColumns: [
+          {
+            prop: 'VARIETIE_CODE_NEW',
+            label: '品种编码',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 120
+          },
+          {
+            prop: 'CHARGING_CODE',
+            label: '计费编码',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 120
+          },
+          {
+            prop: 'VARIETIE_NAME',
+            label: '品种名称',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 150
+          },
+          {
+            prop: 'SPECIFICATION_OR_TYPE',
+            label: '规格型号',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 120
+          },
+          {
+            prop: 'UNIT',
+            label: '单位',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 80
+          },
+          {
+            prop: 'HIS_ZHB',
+            label: '转换比',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 100
+          },
+          {
+            prop: 'APPROVAL_NUMBER',
+            label: '批准文号',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 150
+          },
+          {
+            prop: 'MANUFACTURING_ENT_NAME',
+            label: '生产企业',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 150
+          },
+          {
+            prop: 'CONSUMER',
+            label: '消耗人',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 120
+          },
+          {
+            prop: 'PATIENT_NUMBER',
+            label: '病患号',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 100
+          },
+          {
+            prop: 'HOSPITALIZATION_NUMBER',
+            label: '住院号',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 100
+          },
+          {
+            prop: 'QTY',
+            label: '消耗数量',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 100
+          },
+        ],
       };
     },
     methods: {
@@ -266,7 +409,7 @@
                     Sheet1: utils.aoa_to_sheet(dataArray)
                   }
                 },
-                '北大三级库存信息.xlsx'
+                '三级库存信息.xlsx'
               );
               this.$message.success('导出成功');
             })
@@ -280,6 +423,37 @@
           console.error('导出数据失败:', error);
           this.$message.error('导出数据失败，请稍后重试');
         }
+      },
+      showFlowDialog(row) {
+        this.flowDialogVisible = true;
+        this.flowRow = row;
+        this.flowDatasource({ page: 1, limit: 10 })
+          .then((res) => {
+            this.$refs.flowTable.reload({ list: res.list, count: res.count });
+          })
+          .catch(() => {
+            this.$refs.flowTable.reload({ list: [], count: 0 });
+          });
+      },
+      flowDatasource({ page, limit }) {
+        // 这里可以实现流向记录的查询逻辑
+        const where = {
+          varCode: this.flowRow.VARIETIE_CODE_NEW,
+          chargingCode: this.flowRow.CHARGE_CODE
+        }
+        return getThirdStockInfoFlow({ page, limit, where})
+          .then((res) => {
+            return {
+              list: res.data || [],
+              count: res.total || 0
+            };
+          })
+          .catch(() => {
+            return {
+              list: [],
+              count: 0
+            };
+          });
       }
     }
   };

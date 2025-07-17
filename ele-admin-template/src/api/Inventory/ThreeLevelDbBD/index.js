@@ -37,3 +37,29 @@ export async function getThirdStockInfo(data) {
     }
     return Promise.reject(res.data.msg);
 }
+
+/**
+ * 获取三级库存流向记录信息
+ * @param {Object} data - 请求参数
+ * @param {string} data.varCode - 品种编码
+ * @param {string} data.chargingCode - 计费编码
+ * @param {string} [data.page='1'] - 当前页码
+ * @param {string} [data.size='10'] - 每页显示条数
+ * @returns {Promise<Object>} 返回查询结果
+ * @throws {Error} 当请求失败时抛出错误
+ */
+export async function getThirdStockInfoFlow(data) {
+    let requestData = {};
+    requestData.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+    requestData.varCode = data.where?.varCode;
+    requestData.chargingCode = data.where?.chargingCode;
+    requestData.page = parseInt(data.page) || 1;
+    requestData.size = parseInt(data.size) || 10;
+
+    const res = await request.post(`/PekingApplication/getThirdStockInfoFlow`, requestData);
+
+    if (res.data.code === 200) {
+        return res.data;
+    }
+    return Promise.reject(res.data.msg);
+}
