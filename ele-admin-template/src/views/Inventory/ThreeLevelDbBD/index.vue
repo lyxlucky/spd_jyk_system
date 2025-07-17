@@ -6,6 +6,7 @@
       :columns="columns"
       :datasource="datasource"
       size="mini"
+      :initLoad="false"
       :pageSize="pageSize"
       :pageSizes="pageSizes"
       highlight-current-row
@@ -109,13 +110,6 @@
             minWidth: 120
           },
           {
-            prop: 'APPROVAL_NUMBER',
-            label: '批准文号',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 150
-          },
-          {
             prop: 'VARIETIE_CODE_NEW',
             label: '品种编码',
             align: 'center',
@@ -165,6 +159,13 @@
             minWidth: 100
           },
           {
+            prop: 'APPROVAL_NUMBER',
+            label: '批准文号',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 150
+          },
+          {
             prop: 'JF_QTY',
             label: '计费数量',
             align: 'center',
@@ -172,8 +173,22 @@
             minWidth: 100
           },
           {
-            prop: 'STOCK_QTY',
+            prop: 'KS_QTY',
             label: '库存数量',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 100
+          },
+          {
+            prop: 'XH_QTY',
+            label: '消耗数量',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 100
+          },
+          {
+            prop: 'JS_QTY',
+            label: '结算数量',
             align: 'center',
             showOverflowTooltip: true,
             minWidth: 100
@@ -208,52 +223,58 @@
             page: 1,
             limit: 999999,
             where: this.form
-          }).then((response) => {
-            loading.close();
-            const headers = [
-              '二级科室名称',
-              '批准文号',
-              '品种编码',
-              '计费编码',
-              '品种名称',
-              '规格型号',
-              '生产企业',
-              '单位',
-              '转换比',
-              '计费数量',
-              '库存数量'
-            ];
-            const dataArray = [headers];
-            response.data.forEach((d) => {
-              dataArray.push([
-                d.DEPT_TWO_NAME || '',
-                d.APPROVAL_NUMBER || '',
-                d.VARIETIE_CODE_NEW || '',
-                d.CHARGE_CODE || '',
-                d.VARIETIE_NAME || '',
-                d.SPECIFICATION_OR_TYPE || '',
-                d.MANUFACTURING_ENT_NAME || '',
-                d.UNIT || '',
-                d.HIS_ZHB || '',
-                d.JF_QTY || '',
-                d.STOCK_QTY || ''
-              ]);
+          })
+            .then((response) => {
+              loading.close();
+              const headers = [
+                '二级科室名称',
+                '批准文号',
+                '品种编码',
+                '计费编码',
+                '品种名称',
+                '规格型号',
+                '生产企业',
+                '单位',
+                '转换比',
+                '计费数量',
+                '库存数量',
+                '消耗数量',
+                '结算数量'
+              ];
+              const dataArray = [headers];
+              response.data.forEach((d) => {
+                dataArray.push([
+                  d.DEPT_TWO_NAME || '',
+                  d.APPROVAL_NUMBER || '',
+                  d.VARIETIE_CODE_NEW || '',
+                  d.CHARGE_CODE || '',
+                  d.VARIETIE_NAME || '',
+                  d.SPECIFICATION_OR_TYPE || '',
+                  d.MANUFACTURING_ENT_NAME || '',
+                  d.UNIT || '',
+                  d.HIS_ZHB || '',
+                  d.JF_QTY || '',
+                  d.KS_QTY || '',
+                  d.XH_QTY || '',
+                  d.JS_QTY || ''
+                ]);
+              });
+              writeFile(
+                {
+                  SheetNames: ['Sheet1'],
+                  Sheets: {
+                    Sheet1: utils.aoa_to_sheet(dataArray)
+                  }
+                },
+                '北大三级库存信息.xlsx'
+              );
+              this.$message.success('导出成功');
+            })
+            .catch((error) => {
+              loading.close();
+              console.error('导出数据失败:', error);
+              this.$message.error('导出数据失败，请稍后重试');
             });
-            writeFile(
-              {
-                SheetNames: ['Sheet1'],
-                Sheets: {
-                  Sheet1: utils.aoa_to_sheet(dataArray)
-                }
-              },
-              '北大三级库存信息.xlsx'
-            );
-            this.$message.success('导出成功');
-          }).catch((error) => {
-            loading.close();
-            console.error('导出数据失败:', error);
-            this.$message.error('导出数据失败，请稍后重试');
-          });
         } catch (error) {
           loading.close();
           console.error('导出数据失败:', error);
@@ -266,26 +287,26 @@
 
 <style lang="scss" scoped>
   @import '@/styles/common';
-  
+
   .ele-container {
     height: 100%;
     display: flex;
     flex-direction: column;
   }
-  
+
   :deep(.ele-form-search .el-input--mini .el-input__inner) {
     width: 140px;
   }
-  
+
   :deep(.ele-pro-table) {
     flex: 1;
     overflow: hidden;
   }
-  
+
   :deep(.ele-pro-table .el-table) {
     height: 100%;
   }
-  
+
   :deep(.ele-pro-table .el-table__body-wrapper) {
     overflow-y: auto;
   }
