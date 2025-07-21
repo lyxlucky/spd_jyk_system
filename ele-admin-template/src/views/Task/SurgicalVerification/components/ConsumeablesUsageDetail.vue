@@ -343,9 +343,9 @@
           this.$message.warning('请先选择要设置为不收费的记录');
           return;
         }
-        // const ids = this.selection.map(row => ({ ID: row.ID }));
+        const ids = this.selection.map(row => ({ ID: row.ID }));
         const loading = this.$messageLoading('设置中...');
-        upIS_XM({ data: this.selection, state: '1' })
+        upIS_XM({ data: ids, state: '1' })
           .then(res => {
             this.$message.success(res.msg || '设置成功');
             this.reload();
@@ -362,9 +362,9 @@
           this.$message.warning('请先选择要设置为收费的记录');
           return;
         }
-        // const ids = this.selection.map(row => ({ ID: row.ID }));
+        const ids = this.selection.map(row => ({ ID: row.ID }));
         const loading = this.$messageLoading('设置中...');
-        upIS_XM({ data: this.selection, state: '0' })
+        upIS_XM({ data: ids, state: '0' })
           .then(res => {
             this.$message.success(res.msg || '设置成功');
             this.reload();
