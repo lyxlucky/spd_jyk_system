@@ -46,6 +46,24 @@
           >
             查看定数码标签
           </el-button>
+          <el-button
+            size="mini"
+            type="warning"
+            class="ele-btn-icon"
+            icon="el-icon-remove"
+            @click="setNoCharge"
+          >
+            设置不收费
+          </el-button>
+          <el-button
+            size="mini"
+            type="success"
+            icon="el-icon-circle-plus"
+            class="ele-btn-icon"
+            @click="setCharge"
+          >
+            设置收费
+          </el-button>
         </div>
       </template>
 
@@ -110,7 +128,8 @@
 <script>
   import {
     GetBdszZqsjMainUseDel,
-    deleteUsedQty
+    deleteUsedQty,
+    upIS_XM
   } from '@/api/Task/SurgicalVerification';
   import { BACK_BASE_URL } from '@/config/setting';
   export default {
@@ -119,6 +138,12 @@
     data() {
       return {
         columns: [
+          {
+            type: 'selection',
+            width: 45,
+            align: 'center',
+            fixed: 'left'
+          },
           {
             prop: 'VARIETIE_NAME',
             label: '品种名称',
@@ -185,6 +210,17 @@
             align: 'center',
             width: 130,
             showOverflowTooltip: true
+          },
+          {
+            prop: 'IS_XM',
+            label: '是否收费',
+            align: 'center',
+            width: 100,
+            formatter: (row) => {
+              if (row.IS_XM === 0 || row.IS_XM === '0') return '是';
+              if (row.IS_XM === 1 || row.IS_XM === '1') return '否';
+              return row.IS_XM;
+            },
           },
           {
             prop: 'DEF_NO_PKG_CODE',
@@ -301,7 +337,45 @@
               });
           })
           .catch(() => {});
-      }
+      },
+      setNoCharge() {
+        if (!this.selection.length) {
+          this.$message.warning('请先选择要设置为不收费的记录');
+          return;
+        }
+        // const ids = this.selection.map(row => ({ ID: row.ID }));
+        const loading = this.$messageLoading('设置中...');
+        upIS_XM({ data: this.selection, state: '1' })
+          .then(res => {
+            this.$message.success(res.msg || '设置成功');
+            this.reload();
+          })
+          .catch(err => {
+            this.$message.error(err.msg || err || '设置失败');
+          })
+          .finally(() => {
+            loading.close();
+          });
+      },
+      setCharge() {
+        if (!this.selection.length) {
+          this.$message.warning('请先选择要设置为收费的记录');
+          return;
+        }
+        // const ids = this.selection.map(row => ({ ID: row.ID }));
+        const loading = this.$messageLoading('设置中...');
+        upIS_XM({ data: this.selection, state: '0' })
+          .then(res => {
+            this.$message.success(res.msg || '设置成功');
+            this.reload();
+          })
+          .catch(err => {
+            this.$message.error(err.msg || err || '设置失败');
+          })
+          .finally(() => {
+            loading.close();
+          });
+      },
     },
     created() {
       this.$bus.$on('AdVanceReceiptNumberDelTableCurrentChange', () => {

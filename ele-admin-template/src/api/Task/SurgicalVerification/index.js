@@ -367,3 +367,18 @@ export async function getTransferedSSBH(params) {
   }
   return Promise.reject(res.data);
 }
+
+
+// 批量更新IS_XM字段
+export async function upIS_XM(params) {
+  const formatData = {
+    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+    data: params.data || [],
+    state: params.state || ''
+  };
+  let res = await request.post('/DeptPlanTransfer/upIS_XM', formatData);
+  if (res.data.code == 200) {
+    return res.data;
+  }
+  return Promise.reject(res.data);
+}
