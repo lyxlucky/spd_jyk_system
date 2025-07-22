@@ -94,7 +94,7 @@ export default {
       form: {
         username: '',
         password: '',
-        remember: false,
+        remember: true,
         code: ''
       },
       // 验证码base64数据

@@ -15,7 +15,6 @@
         <!-- 搜索表单 -->
         <user-search @addKSKS="addKSKSDepartmentalPlanData" @search="reload" />
         <!-- 数据表格 -->
-        <!-- :rowClickChecked="true" :rowClickCheckedIntelligent="false" -->
         <ele-pro-table
           ref="table"
           height="500px"
@@ -112,14 +111,13 @@
           //   slot: 'action',
           //   showOverflowTooltip: true
           // },
-          {
-            prop: 'STOCK_QTY',
-            slot: 'STOCK_QTY',
-            align: 'center',
-            label: '中心库剩余库存',
-            minWidth: 120,
-            show: this.HOME_HP == 'bj'
-          },
+          // {
+          //   prop: 'STOCK_QTY',
+          //   slot: 'STOCK_QTY',
+          //   align: 'center',
+          //   label: '中心库剩余库存',
+          //   minWidth: 120,
+          // },
           {
             prop: 'VARIETIE_CODE_NEW',
             label: '材料编码',
