@@ -66,7 +66,7 @@ const getHomeHp = () => {
     'zxnw': 'stzx',
     'lgww': 'lg'
   };
-  return envHpMap[env] || 'bdrm';
+  return envHpMap[env] || 'bd';
 }
 
 export const HOME_HP = getHomeHp();

@@ -9,16 +9,19 @@
     size="mini"
   >
     <el-form-item label="">
-      <el-input v-model="where.SerachName" placeholder="请输入品种编码/品种名称/型号规格/生产企业搜索" />
+      <el-input
+        v-model="where.SerachName"
+        placeholder="请输入品种编码/品种名称/型号规格/生产企业搜索"
+      />
     </el-form-item>
     <el-form-item label="">
       <el-input
-            v-model="where.spec"
-            size="mini"
-            placeholder="请输入规格型号"
-            clearable
-            @change="reload"
-          />
+        v-model="where.spec"
+        size="mini"
+        placeholder="请输入规格型号"
+        clearable
+        @change="reload"
+      />
     </el-form-item>
     <el-form-item label="">
       <el-input
@@ -28,6 +31,14 @@
         size="mini"
         @change="reload"
       />
+    </el-form-item>
+
+    <el-form-item v-if="HOME_HP == 'bdrm'" label="">
+      <el-select size="mini" v-model="where.varType">
+        <el-option label="全部" value="" />
+        <el-option label="高值" value="1" />
+        <el-option label="试剂" value="2" />
+      </el-select>
     </el-form-item>
 
     <el-form-item label="">
@@ -40,8 +51,6 @@
       >
         查询
       </el-button>
-      
-      
     </el-form-item>
     <el-form-item label="">
       <el-button
@@ -116,27 +125,30 @@
           <el-button size="mini" icon="el-icon-refresh" @click="reset"
             >重置</el-button
           > -->
-          <!-- <el-button type="primary" class="ele-btn-icon" @click="exportData" v-loading.fullscreen.lock="fullscreenLoading">
+    <!-- <el-button type="primary" class="ele-btn-icon" @click="exportData" v-loading.fullscreen.lock="fullscreenLoading">
             导出
           </el-button> -->
-        <!-- </div>
+    <!-- </div>
       </el-col>
     </el-row> -->
   </el-form>
 </template>
 
 <script>
+  import { HOME_HP } from '@/config/setting';
   export default {
     data() {
       // 默认表单数据
       const defaultWhere = {
         SerachName: '',
         spec: '',
-        manufacturer: ''
+        manufacturer: '',
+        varType: ''
       };
       return {
         // 表单数据
-        where: { ...defaultWhere }
+        where: { ...defaultWhere },
+        HOME_HP: HOME_HP
       };
     },
     computed: {

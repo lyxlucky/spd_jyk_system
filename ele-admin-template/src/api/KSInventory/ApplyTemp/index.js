@@ -100,6 +100,8 @@ export async function SerachAuthVar(data) {
   data2.size = data.limit;
   data2.SPECIFICATION_OR_TYPE = data.where.spec ? data.where.spec : '';
   data2.MANUFACTURING_ENT_NAME = data.where.manufacturer ? data.where.manufacturer : '';
+  data2.varType = '';
+
 
   // var data2 = DataToObject(data);
   // var rep = formdataify(data2)

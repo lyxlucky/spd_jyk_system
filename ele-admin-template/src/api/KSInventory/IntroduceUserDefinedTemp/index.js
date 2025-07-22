@@ -11,6 +11,7 @@ export async function SerachPlanList(data) {
   data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
   data2.SPECIFICATION_OR_TYPE = data.where.spec ? data.where.spec : '';
   data2.MANUFACTURING_ENT_NAME = data.where.manufacturer ? data.where.manufacturer : '';
+  data2.varType = data.where.varType ? data.where.varType : '';
 
   const res = await request.get('/DeptApplyPlan/SerachAuthVar', {
     params: data2
