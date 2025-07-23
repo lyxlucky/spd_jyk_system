@@ -31,6 +31,11 @@
       <template v-slot:TempletQty="{ row }">
         <el-input style="width: 120px" v-model="row.TempletQty" :min="0" :max="999999999" :step="1" size="mini" />
       </template>
+
+      <template v-slot:SORT="{ row }">
+        <el-input v-model="row.SORT" :min="0" :max="999999999" :step="1" size="mini" />
+      </template>
+
       <template v-slot:AUTH="{ row }">
         <el-input style="width: 120px" v-model="row.AUTH" :min="0" :max="999999999" :step="1" size="mini" />
       </template>
@@ -148,6 +153,14 @@ export default {
           prop: 'CREATE_MAN',
           label: '创建人',
           // sortable: 'custom',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 80
+        },
+        {
+          slot:"SORT",
+          prop: 'SORT',
+          label: '顺序',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 80
