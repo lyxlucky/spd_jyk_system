@@ -564,35 +564,40 @@
             label: '注册证到期',
             align: 'center',
             showOverflowTooltip: true,
-            width: 120
+            width: 120,
+            show: HOME_HP == 'bdrm'
           },
           {
             slot: 'MAN_XKZ_END',
             label: '生产许可证到期',
             align: 'center',
             showOverflowTooltip: true,
-            width: 140
+            width: 140,
+            show: HOME_HP == 'bdrm'
           },
           {
             slot: 'AUTH_VALID',
             label: '品种授权到期',
             align: 'center',
             showOverflowTooltip: true,
-            width: 120
+            width: 120,
+            show: HOME_HP == 'bdrm'
           },
           {
             slot: 'BUSINESS_LICENSE_VALID_DATE2',
             label: '供应商经营许可证',
             align: 'center',
             showOverflowTooltip: true,
-            width: 150
+            width: 150,
+            show: HOME_HP == 'bdrm'
           },
           {
             slot: 'BUSINESS_LICENSE_VALID_DATE',
             label: '集配商经营许可证',
             align: 'center',
             showOverflowTooltip: true,
-            width: 150
+            width: 150,
+            show: HOME_HP == 'bdrm'
           }
         ],
         toolbar: false,
