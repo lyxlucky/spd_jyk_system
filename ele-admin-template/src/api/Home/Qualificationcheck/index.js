@@ -123,9 +123,11 @@ export async function getVarPic2(data) {
     formataData.page = data.page;
     formataData.size = data.limit;
     formataData.PROD_REGISTRATION_CODE = data.code ? data.code : '';
+    formataData.VARIETIE_CODE = data.where.VARIETIE_CODE ? data.where.VARIETIE_CODE : '';
     formataData.TYPE = data.where.type ? data.where.type : '';
     formataData.SUPPLIER_CODE = '';
     formataData.STATE = data.where.state ? data.where.state : '';
+    formataData.isUse = data.where.isUse ? data.where.isUse : '';
     let req = formdataify(formataData);
     const res = await request.post('/BtbGetVarietie/getVarPic',req);
     if (res.data.code == 200) {

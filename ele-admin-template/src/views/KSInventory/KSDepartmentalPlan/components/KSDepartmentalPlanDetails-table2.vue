@@ -154,6 +154,66 @@
           </el-option>
         </el-select>
       </template>
+      <template v-slot:REGISTRATION_VALID_DATE="{ row }">
+        <span v-if="!row.REGISTRATION_VALID_DATE">-</span>
+        <span
+          v-else
+          :style="{
+            color: isDateExpired(row.REGISTRATION_VALID_DATE) ? 'red' : 'black'
+          }"
+        >
+          {{ formatDate(row.REGISTRATION_VALID_DATE) }}
+        </span>
+      </template>
+      <template v-slot:MAN_XKZ_END="{ row }">
+        <span v-if="!row.MAN_XKZ_END">-</span>
+        <span
+          v-else
+          :style="{ color: isDateExpired(row.MAN_XKZ_END) ? 'red' : 'black' }"
+        >
+          {{ formatDate(row.MAN_XKZ_END) }}
+        </span>
+      </template>
+      <template v-slot:AUTH_VALID="{ row }">
+        <span v-if="!row.AUTH_VALID">-</span>
+        <span
+          v-else
+          :style="{ color: isDateExpired(row.AUTH_VALID) ? 'red' : 'black' }"
+        >
+          {{ formatDate(row.AUTH_VALID) }}
+        </span>
+      </template>
+      <template v-slot:BUSINESS_LICENSE_VALID_DATE2="{ row }">
+        <span v-if="!row.BUSINESS_LICENSE_VALID_DATE2">-</span>
+        <span
+          v-else
+          :style="{
+            color: isDateExpired(row.BUSINESS_LICENSE_VALID_DATE2)
+              ? 'red'
+              : 'black'
+          }"
+        >
+          {{ formatDate(row.BUSINESS_LICENSE_VALID_DATE2) }}
+        </span>
+      </template>
+      <template v-slot:BUSINESS_LICENSE_VALID_DATE="{ row }">
+        <span v-if="!row.BUSINESS_LICENSE_VALID_DATE">-</span>
+        <span
+          v-else
+          :style="{
+            color: isDateExpired(row.BUSINESS_LICENSE_VALID_DATE)
+              ? 'red'
+              : 'black'
+          }"
+        >
+          {{ formatDate(row.BUSINESS_LICENSE_VALID_DATE) }}
+        </span>
+      </template>
+      <template v-slot:IMAGE_BUTTON="{ row }">
+        <el-button type="primary" size="mini" @click="openImageDialog(row)"
+          >图片</el-button
+        >
+      </template>
     </ele-pro-table>
 
     <el-dialog
@@ -199,6 +259,24 @@
         >
       </span>
     </el-dialog>
+
+    <!-- 图片对话框 -->
+    <el-dialog
+      title="图片查看"
+      :visible.sync="imageDialogVisible"
+      top="1vh"
+      width="90%"
+      :before-close="closeImageDialog"
+    >
+      <ImageViewComponent
+        v-if="imageDialogVisible"
+        :row-data="currentImageRow"
+      />
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="closeImageDialog">关 闭</el-button>
+      </span>
+    </el-dialog>
+
     <QuanityDetailDialog
       :visible.sync="QuanityDetailDialogVisible"
       :quanityInlineCurrent="quanityInlineCurrent"
@@ -209,6 +287,7 @@
 <script>
   import KSDepartmentalPlanDetailsSearch from './KSDepartmentalPlanDetails-search.vue';
   import QuanityDetailDialog from './QuanityDetailDialog.vue';
+  import ImageViewComponent from './ImageViewComponent.vue';
   import {
     SerachPlanListDeta,
     UpdateApplyPlanBZ,
@@ -223,7 +302,8 @@
     // inject: ['reload'],
     components: {
       KSDepartmentalPlanDetailsSearch: KSDepartmentalPlanDetailsSearch,
-      QuanityDetailDialog
+      QuanityDetailDialog,
+      ImageViewComponent
     },
     data() {
       return {
@@ -449,6 +529,12 @@
             }
           },
           {
+            slot: 'IMAGE_BUTTON',
+            label: '图片',
+            align: 'center',
+            width: 80
+          },
+          {
             // prop: 'REMARK',
             slot: 'REMARK',
             label: '备注',
@@ -472,6 +558,41 @@
             align: 'center',
             showOverflowTooltip: true,
             width: 110
+          },
+          {
+            slot: 'REGISTRATION_VALID_DATE',
+            label: '注册证到期',
+            align: 'center',
+            showOverflowTooltip: true,
+            width: 120
+          },
+          {
+            slot: 'MAN_XKZ_END',
+            label: '生产许可证到期',
+            align: 'center',
+            showOverflowTooltip: true,
+            width: 140
+          },
+          {
+            slot: 'AUTH_VALID',
+            label: '品种授权到期',
+            align: 'center',
+            showOverflowTooltip: true,
+            width: 120
+          },
+          {
+            slot: 'BUSINESS_LICENSE_VALID_DATE2',
+            label: '供应商经营许可证',
+            align: 'center',
+            showOverflowTooltip: true,
+            width: 150
+          },
+          {
+            slot: 'BUSINESS_LICENSE_VALID_DATE',
+            label: '集配商经营许可证',
+            align: 'center',
+            showOverflowTooltip: true,
+            width: 150
           }
         ],
         toolbar: false,
@@ -503,10 +624,31 @@
         sum: 0,
         rowData: null,
         QuanityDetailDialogVisible: false,
-        quanityInlineCurrent: null
+        quanityInlineCurrent: null,
+        // 图片对话框相关
+        imageDialogVisible: false,
+        currentImageRow: null
       };
     },
     methods: {
+      formatDate(date) {
+        if (!date) return '-';
+        return this.$moment(date).format('YYYY-MM-DD');
+      },
+      isDateExpired(date) {
+        if (!date) return false;
+        return this.$moment(date).isBefore(this.$moment(), 'day');
+      },
+      // 打开图片对话框
+      openImageDialog(row) {
+        this.currentImageRow = row;
+        this.imageDialogVisible = true;
+      },
+      // 关闭图片对话框
+      closeImageDialog() {
+        this.imageDialogVisible = false;
+        this.currentImageRow = null;
+      },
       async getSKUSList(row, visible) {
         if (!visible) return;
         if (!row.VARIETIE_CODE) return;
