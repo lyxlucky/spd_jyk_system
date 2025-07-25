@@ -47,9 +47,13 @@
                 type="primary"
                 icon="el-icon-scan"
                 @click="handleScanCode"
-                >扫UDI码</el-button
+                >扫码</el-button
               >
-              <span>已勾选:<el-tag size="mini" effect="plain">{{selection?.length || 0}}</el-tag></span>
+              <span
+                >已勾选:<el-tag size="mini" effect="plain">{{
+                  selection?.length || 0
+                }}</el-tag></span
+              >
             </div>
             <div>
               <el-button size="mini" type="success" @click="showNewUse"
@@ -93,7 +97,7 @@
 
     <!-- 扫码反选弹窗 -->
     <el-dialog
-      title="扫UDI"
+      title="扫码"
       :visible.sync="scanDialogVisible"
       width="30%"
       :close-on-click-modal="false"
@@ -105,7 +109,7 @@
         v-model="scanCode"
         placeholder="请输入或扫描条码"
         clearable
-        @keyup.enter.native="handleScanConfirm"
+        @change="handleScanConfirm"
       ></el-input>
       <span slot="footer" class="dialog-footer">
         <el-button @click="scanDialogVisible = false">取 消</el-button>
@@ -137,7 +141,7 @@
             align: 'center',
             fixed: 'left'
           },
-          
+
           {
             prop: 'VARIETIE_NAME',
             label: '品种名称',
@@ -186,7 +190,9 @@
             show: false,
             showOverflowTooltip: true,
             formatter: (row) => {
-              return this.$moment(row.BATCH_PRODUCTION_DATE).format('YYYY-MM-DD');
+              return this.$moment(row.BATCH_PRODUCTION_DATE).format(
+                'YYYY-MM-DD'
+              );
             }
           },
 
@@ -198,7 +204,9 @@
             show: false,
             showOverflowTooltip: true,
             formatter: (row) => {
-              return this.$moment(row.BATCH_VALIDITY_PERIOD).format('YYYY-MM-DD');
+              return this.$moment(row.BATCH_VALIDITY_PERIOD).format(
+                'YYYY-MM-DD'
+              );
             }
           },
 
@@ -232,7 +240,7 @@
             minWidth: 130,
             show: false,
             showOverflowTooltip: true
-          },
+          }
         ],
         pageSize: 50,
         pagerCount: 2,
@@ -247,7 +255,7 @@
         isShowNewUse: false,
         scanDialogVisible: false,
         scanCode: '',
-        isMock: false, // 是否使用假数据，开发时可开启,
+        isMock: false // 是否使用假数据，开发时可开启,
       };
     },
     methods: {
@@ -281,9 +289,11 @@
               PRICE: (Math.random() * 100).toFixed(2),
               BATCH: 'BATCH' + (i + 1),
               BATCH_PRODUCTION_DATE: new Date().toISOString(),
-              BATCH_VALIDITY_PERIOD: new Date(Date.now() + 1000 * 60 * 60 * 24 * 365).toISOString(),
+              BATCH_VALIDITY_PERIOD: new Date(
+                Date.now() + 1000 * 60 * 60 * 24 * 365
+              ).toISOString(),
               APPROVAL_NUMBER: 'APPROVAL' + (i + 1),
-              MANUFACTURING_ENT_NAME: '企业' + (i + 1),
+              MANUFACTURING_ENT_NAME: '企业' + (i + 1)
               //canSelect: Math.random() > 0.5 // 随机可选/不可选
             });
           }
@@ -316,11 +326,11 @@
         };
       },
       onCurrentChange(current) {
-        console.log(current)
+        console.log(current);
         this.current = current;
       },
 
-      handleOpen(){
+      handleOpen() {
         this.selection = [];
       },
 
@@ -419,17 +429,21 @@
             SSBH: this.AdvanceNumberTableCurrent?.SSBH,
             UDI: this.scanCode
           });
-          
+
           if (res.data) {
             // 在表格数据中查找对应的行
-            const index = this.$refs.table.tableData.findIndex(item => item.ID === res.data.ID);
-            
+            const index = this.$refs.table.tableData.findIndex(
+              (item) => item.ID === res.data.ID
+            );
+            // 清空输入框
             if (index !== -1) {
               // 如果找到对应的行，给该行加上canSelect=true
               this.$refs.table.tableData[index].canSelect = true;
               // 进行反选
               const row = this.$refs.table.tableData[index];
-              const selectedIndex = this.selection.findIndex(item => item.ID === res.data.ID);
+              const selectedIndex = this.selection.findIndex(
+                (item) => item.ID === res.data.ID
+              );
               if (selectedIndex !== -1) {
                 // 如果已选中，则取消选中
                 this.$refs.table.toggleRowSelection(row, false);
@@ -438,15 +452,17 @@
                 this.$refs.table.toggleRowSelection(row, true);
               }
               this.$message.success('操作成功');
-              this.scanCode = ''; // 清空输入框
+              this.scanCode = '';
               this.$nextTick(() => {
                 this.$refs.scanInput.focus(); // 重新聚焦输入框
               });
             } else {
-              this.$message.warning('未找到对应的数据');
+              this.$message.warning(`${this.scanCode}未找到对应的数据`);
+              this.scanCode = '';
             }
           } else {
-            this.$message.warning('未找到对应的数据');
+            this.$message.warning(`${this.scanCode}未找到对应的数据`);
+            this.scanCode = '';
           }
         } catch (error) {
           this.$message.error('操作失败');
@@ -455,7 +471,10 @@
       },
       tableRowClassName({ row }) {
         // 只要该行被勾选，返回 selected-row
-        return this.selection && this.selection.find(item => item.ID === row.ID) ? 'selected-row' : '';
+        return this.selection &&
+          this.selection.find((item) => item.ID === row.ID)
+          ? 'selected-row'
+          : '';
       }
     },
     mounted() {
@@ -477,7 +496,7 @@
   }
   // 选中行高亮，使用主题色
   ::v-deep(.el-table .selected-row) {
-    background-color: var(--el-color-primary, #409EFF) !important;
+    background-color: var(--el-color-primary, #409eff) !important;
     color: #fff;
   }
 
