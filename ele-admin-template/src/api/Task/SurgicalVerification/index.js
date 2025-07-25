@@ -161,7 +161,9 @@ export async function addBdszZqsjMainPsDelUse(params) {
 export async function BdSsApprove(params) {
   const formatData = {
     Token: sessionStorage.getItem(TOKEN_STORE_NAME),
-    qdid: params.qdid
+    qdid: params.qdid,
+    APPRO_DOC_GH: params.APPRO_DOC_GH || '',
+    APPRO_NER_GH: params.APPRO_NER_GH || '',
   };
   let res = await request.post('/Abdzczh/BdSsApprove', formatData);
 

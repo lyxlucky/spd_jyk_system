@@ -81,6 +81,12 @@
       @reload="reload"
       :visible.sync="updateUserInfoDialogVisible"
     ></UpdateUserInfoDialog>
+    
+    <ApprovalDialog
+      :visible.sync="approvalDialogVisible"
+      @confirm="handleApprovalConfirm"
+      @cancel="handleApprovalCancel"
+    ></ApprovalDialog>
   </div>
 </template>
 
@@ -143,6 +149,7 @@
   import AdvanceReceiptNumberSearch from './AdvanceReceiptNumberSearch.vue';
   import AdvanceReceiptNumberEdit from './AdvanceReceiptNumberEdit.vue';
   import UpdateUserInfoDialog from '@/views/Task/OPSConsumables/components/UpdateUserInfoDialog';
+  import ApprovalDialog from './ApprovalDialog.vue';
 
   import {
     getBdSzYyHisSs,
@@ -159,7 +166,8 @@
     components: {
       AdvanceReceiptNumberSearch,
       AdvanceReceiptNumberEdit,
-      UpdateUserInfoDialog
+      UpdateUserInfoDialog,
+      ApprovalDialog
     },
     data() {
       return {
@@ -293,7 +301,10 @@
         showImport: false,
         // datasource: [],
         data: [],
-        updateUserInfoDialogVisible: false
+        updateUserInfoDialogVisible: false,
+        approvalDialogVisible: false,
+        approvalResolve: null,
+        approvalReject: null
       };
     },
     methods: {
@@ -345,24 +356,53 @@
       handleApprove() {
         return new Promise((resolve, reject) => {
           if (this.current == null) {
-            return this.$message.warning('请先选择一条数据');
+            this.$message.warning('请先选择一条数据');
+            return reject();
           }
-          const loading = this.$messageLoading('审批中...');
-          //return
-          BdSsApprove({ qdid: this.current.SSBH })
-            .then((res) => {
-              this.$message.success(res.msg);
-              resolve();
-            })
-            .catch((err) => {
-              this.$message.error(err.msg);
-              reject();
-            })
-            .finally(() => {
-              loading.close();
-              this.reload();
-            });
+          
+          // 保存 Promise 的 resolve 和 reject 方法
+          this.approvalResolve = resolve;
+          this.approvalReject = reject;
+          
+          // 显示审批对话框
+          this.approvalDialogVisible = true;
         });
+      },
+      
+      handleApprovalConfirm(data) {
+        const loading = this.$messageLoading('审批中...');
+        
+        BdSsApprove({ 
+          qdid: this.current.SSBH,
+          APPRO_DOC_GH: data.doctorCode,
+          APPRO_NER_GH: data.nurseCode
+        })
+          .then((res) => {
+            this.$message.success(res.msg);
+            if (this.approvalResolve) {
+              this.approvalResolve();
+            }
+          })
+          .catch((err) => {
+            this.$message.error(err.msg);
+            if (this.approvalReject) {
+              this.approvalReject();
+            }
+          })
+          .finally(() => {
+            loading.close();
+            this.reload();
+            this.approvalResolve = null;
+            this.approvalReject = null;
+          });
+      },
+      
+      handleApprovalCancel() {
+        if (this.approvalReject) {
+          this.approvalReject();
+        }
+        this.approvalResolve = null;
+        this.approvalReject = null;
       },
       handleCatDefNoPkgCode() {
         return new Promise((resolve, reject) => {
