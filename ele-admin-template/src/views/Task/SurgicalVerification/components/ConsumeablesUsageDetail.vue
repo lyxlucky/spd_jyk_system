@@ -25,7 +25,7 @@
             class="ele-btn-icon"
             @click="approve"
           >
-            护士审批
+            审批
           </el-button>
 
           <el-button
@@ -220,7 +220,7 @@
               if (row.IS_XM === 0 || row.IS_XM === '0') return '是';
               if (row.IS_XM === 1 || row.IS_XM === '1') return '否';
               return row.IS_XM;
-            },
+            }
           },
           {
             prop: 'DEF_NO_PKG_CODE',
@@ -281,7 +281,7 @@
         // this.totalCount = data.list.reduce((pre, cur) => {
         //   return pre + cur.TRUE_PS_QTY;
         // }, 0);
-        this.totalCount = data?.list.length
+        this.totalCount = data?.list.length;
         return data;
       },
       catDefNoPkgCode() {
@@ -343,14 +343,14 @@
           this.$message.warning('请先选择要设置为不收费的记录');
           return;
         }
-        const ids = this.selection.map(row => ({ ID: row.ID }));
+        const ids = this.selection.map((row) => ({ ID: row.ID }));
         const loading = this.$messageLoading('设置中...');
         upIS_XM({ data: ids, state: '1' })
-          .then(res => {
+          .then((res) => {
             this.$message.success(res.msg || '设置成功');
             this.reload();
           })
-          .catch(err => {
+          .catch((err) => {
             this.$message.error(err.msg || err || '设置失败');
           })
           .finally(() => {
@@ -362,20 +362,20 @@
           this.$message.warning('请先选择要设置为收费的记录');
           return;
         }
-        const ids = this.selection.map(row => ({ ID: row.ID }));
+        const ids = this.selection.map((row) => ({ ID: row.ID }));
         const loading = this.$messageLoading('设置中...');
         upIS_XM({ data: ids, state: '0' })
-          .then(res => {
+          .then((res) => {
             this.$message.success(res.msg || '设置成功');
             this.reload();
           })
-          .catch(err => {
+          .catch((err) => {
             this.$message.error(err.msg || err || '设置失败');
           })
           .finally(() => {
             loading.close();
           });
-      },
+      }
     },
     created() {
       this.$bus.$on('AdVanceReceiptNumberDelTableCurrentChange', () => {
