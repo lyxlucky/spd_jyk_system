@@ -94,6 +94,7 @@ export async function SerachPlanListDeta(data) {
   data2.dateFrom = data.where.dateFrom ? data.where.dateFrom : '';
   data2.dateTo = data.where.dateTo ? data.where.dateTo : '';
   data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+  data2.deptTwoCode = store.state.user.info.DeptNow.Dept_Two_Code;
 
   const res = await request.get('/DeptApplyPlan/SerachPlanListDeta', {
     params: data2
