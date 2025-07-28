@@ -52,13 +52,39 @@
           </el-date-picker>
         </el-form-item>
       </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 9, md: 12 } : { span: 6 }">
+      <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 4 }">
         <el-form-item label="收货状态:" label-width="80px">
           <el-select size="mini" v-model="where.STATE" @change="search()">
             <el-option label="全部" value=""></el-option>
             <el-option label="未收完" value="0"></el-option>
             <el-option label="已收完" value="1"></el-option>
           </el-select>
+        </el-form-item>
+      </el-col>
+
+      <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 4 }">
+        <el-form-item label="院区:" label-width="80px">
+          <el-select size="mini" v-model="where.STORAGE" @change="search()">
+            <el-option label="全部" value=""></el-option>
+            <el-option label="通州院区" value="1"></el-option>
+            <el-option label="西直门院区" value="2"></el-option>
+          </el-select>
+        </el-form-item>
+      </el-col>
+
+      <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 4 }">
+        <el-form-item label="高低值属性:" label-width="120px">
+          <el-select size="mini" v-model="where.TYPE" @change="search()">
+            <el-option label="全部" value=""></el-option>
+            <el-option label="低值" value="0"></el-option>
+            <el-option label="高值" value="1"></el-option>
+            <el-option label="试剂" value="2"></el-option>
+          </el-select>
+        </el-form-item>
+      </el-col>
+
+      <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 4 }">
+        <el-form-item>
           <el-button
             size="mini"
             type="primary"
@@ -70,7 +96,13 @@
           <el-button size="mini" icon="el-icon-refresh" @click="reset"
             >重置</el-button
           >
-          <el-button size="mini" type="success" icon="el-icon-download" @click="handleExportData">导出</el-button>
+          <el-button
+            size="mini"
+            type="success"
+            icon="el-icon-download"
+            @click="handleExportData"
+            >导出</el-button
+          >
         </el-form-item>
       </el-col>
 
@@ -91,6 +123,8 @@
       const defaultWhere = {
         VARIETIE_SEARCH_VALUE: '',
         STATE: '',
+        STORAGE:"",
+        TYPE:"",
         DEPT_TWO_CODE: '',
         PLAN_NUMBER: '',
         PLAN_TIME_START: '',

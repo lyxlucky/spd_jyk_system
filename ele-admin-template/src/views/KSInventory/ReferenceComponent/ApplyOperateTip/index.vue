@@ -13,6 +13,7 @@
       <el-card shadow="never">
         <!-- 搜索表单 -->
         <!-- 数据表格 -->
+        <user-search @exportData="handleNewExportData" @search="reload" />
         <ele-pro-table
           ref="table"
           height="600px"
@@ -26,9 +27,7 @@
           @selection-change="onSelectionChange"
           cache-key="ApplyOperateTip"
         >
-          <template v-slot:toolbar>
-            <user-search @exportData="handleNewExportData" @search="reload" />
-          </template>
+          <template v-slot:toolbar> </template>
           <!-- 操作列 -->
           <template v-slot:APPLY_QTY="{ row }">
             <el-form-item label="">

@@ -283,6 +283,9 @@ export async function getApplyOperateTip(data) {
   data2.page = data.page ? data.page : '';
   data2.size = data.limit ? data.limit : '';
   data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+  data2.STORAGE = data.where.STORAGE ? data.where.STORAGE : '';
+  data2.TYPE = data.where.TYPE ? data.where.TYPE : '';
+  data2.PLAN_TIME_END = data.where.PLAN_TIME_END ? data.where.PLAN_TIME_END : '';
 
   var rep = formdataify(data2);
 
