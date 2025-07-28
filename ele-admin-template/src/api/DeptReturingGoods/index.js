@@ -59,7 +59,6 @@ export async function AddReturningGoodsItems(data) {
   }
 }
 
-
 export async function DeleteReturningGoodsItems(data) {
   const formatData = {
     Token: sessionStorage.getItem(TOKEN_STORE_NAME),
@@ -77,10 +76,19 @@ export async function DeleteReturningGoodsItems(data) {
 }
 
 export async function getGoodsReturnDetailList(data) {
+  console.log(data);
   const formatData = {
     Token: sessionStorage.getItem(TOKEN_STORE_NAME),
     deptTwoCode: store.state.user.info.DeptNow.Dept_Two_Code,
-    goodsReturnNumber: data.where.Returning_Goods_Number
+    goodsReturnNumber: data.where.Returning_Goods_Number,
+    page: data.page,
+    size: data.limit,
+    varCode: data.where.varCode || '',
+    varName: data.where.varName || '',
+    varSpec: data.where.varSpec || '',
+    defNoPkgCode: data.where.defNoPkgCode || '',
+    batch: data.where.batch || '',
+    medicalCode: data.where.medicalCode || ''
   };
   const res = await request.post(
     '/DeptTwoReturningGoods/getGoodsReturnDetailList',
@@ -108,7 +116,6 @@ export async function ConfirmReturningGoodsItems(data) {
     return Promise.reject(new Error(res.data.msg));
   }
 }
-
 
 export async function GetDeptTwoReturningGoodsDetail(data) {
   const formatData = {

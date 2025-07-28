@@ -74,13 +74,18 @@
               <el-form-item class="ele-form-actions">
                 <el-button
                   type="primary"
-                  :disabled="leftCurrent == null || leftCurrent.Returning_State != '0'"
+                  :disabled="
+                    leftCurrent == null || leftCurrent.Returning_State != '0'
+                  "
                   @click="handleAdd()"
                   >添加</el-button
                 >
                 <el-button
                   type="danger"
-                  :disabled="rightSelection.length == 0 || leftCurrent.Returning_State != '0'"
+                  :disabled="
+                    rightSelection.length == 0 ||
+                    leftCurrent.Returning_State != '0'
+                  "
                   @click="handleDelete()"
                   >删除</el-button
                 >
@@ -93,11 +98,15 @@
     </el-row>
 
     <ele-modal
-      width="80%"
+      width="70%"
       :destroy-on-close="true"
       :visible.sync="addVarDialogVisible"
       title="添加品种"
     >
+      <DeptTwoGoodsDefReturingInLineTableSearch
+        @search="inLineReload"
+        @handleInLineAdd="handleInLineAdd"
+      />
       <ele-pro-table
         ref="inLineTable"
         width="calc(100vh - 220px)"
@@ -113,9 +122,9 @@
         cache-key="DeptTwoGoodsDefReturingInLineTableCacheKey"
       >
         <template v-slot:toolbar>
-          <el-button type="primary" size="mini" @click="handleInLineAdd()"
+          <!-- <el-button type="primary" size="mini" @click="handleInLineAdd()"
             >添加到退货单</el-button
-          >
+          > -->
         </template>
       </ele-pro-table>
     </ele-modal>
@@ -131,8 +140,12 @@
     DeleteReturningGoodsItems,
     ConfirmReturningGoodsItems
   } from '@/api/DeptReturingGoods';
+  import DeptTwoGoodsDefReturingInLineTableSearch from './DeptTwoGoodsDefReturingInLineTableSearch';
   export default {
     name: 'DeptTwoGoodsDefReturing',
+    components: {
+      DeptTwoGoodsDefReturingInLineTableSearch
+    },
     data() {
       return {
         // 左侧表格配置
@@ -228,7 +241,7 @@
           {
             prop: 'Varietie_Code',
             label: '品种(材料)编码',
-            minWidth: 150,
+            minWidth: 180,
             showOverflowTooltip: true
           },
           {
@@ -265,7 +278,7 @@
           {
             prop: 'Def_No_Pkg_Code',
             label: '定数码',
-            width: 150,
+            width: 180,
             align: 'center'
           },
           {
@@ -319,32 +332,33 @@
           {
             prop: 'VARIETIE_CODE_NEW',
             label: '品种(材料)编码',
-            minWidth: 150,
+            width: 120,
             showOverflowTooltip: true
           },
           {
             prop: 'Varietie_Name',
             label: '品种全称',
-            width: 240,
-            align: 'center'
+            width: 280,
+            align: 'center',
+            showOverflowTooltip: true
           },
           {
             prop: 'Specification_Or_Type',
             label: '型号/规格',
-            width: 100,
+            width: 200,
             showOverflowTooltip: true
           },
           {
             prop: 'Unit',
             label: '单位',
-            width: 100,
-            align: 'right',
-            sortable: true
+            width: 80,
+            sortable: true,
+            showOverflowTooltip: true
           },
           {
             prop: 'Manufacturing_Ent_Name',
             label: '生产企业名称',
-            width: 120,
+            width: 180,
             showOverflowTooltip: true
           },
           {
@@ -357,13 +371,15 @@
             prop: 'Def_No_Pkg_Code',
             label: '定数码',
             width: 150,
-            align: 'center'
+            align: 'center',
+            showOverflowTooltip: true
           },
           {
             prop: 'Batch',
             label: '生产批号',
             width: 150,
-            align: 'center'
+            align: 'center',
+            showOverflowTooltip: true
           },
           {
             prop: 'MEDICAL_CODE',
@@ -430,12 +446,11 @@
         });
       },
       inLineDatasource({ page, limit, where, order }) {
+        where.Returning_Goods_Number = this.leftCurrent?.Returning_Goods_Number;
         let data = getGoodsReturnDetailList({
           page,
           limit,
-          where: {
-            Returning_Goods_Number: this.leftCurrent?.Returning_Goods_Number
-          },
+          where,
           order
         }).then((res) => {
           var tData = {
@@ -513,6 +528,11 @@
         this.$refs.rightTable.reload({ page: 1, where: data });
       },
 
+      inLineReload(data) {
+        // 刷新左侧表格数据
+        this.$refs.inLineTable.reload({ page: 1, where: data });
+      },
+
       onLeftCurrentChange(current) {
         this.leftCurrent = current;
         if (this.leftCurrent != null) {
@@ -528,6 +548,12 @@
       },
       onInLineSelectionChange(selection) {
         this.inLineSelection = selection;
+      }
+    },
+    computed: {
+      // 是否开启响应式布局
+      styleResponsive() {
+        return this.$store.state.theme.styleResponsive;
       }
     }
   };
