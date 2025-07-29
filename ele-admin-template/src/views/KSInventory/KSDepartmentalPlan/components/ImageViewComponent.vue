@@ -70,9 +70,30 @@
       :visible.sync="previewDialogVisible"
       width="80%"
       center
+      top="5vh"
+      :modal="false"
+      :close-on-click-modal="false"
+      append-to-body
     >
       <div class="preview-container">
-        <img :src="previewImageUrl" alt="预览图片" class="preview-image" />
+        <div class="preview-controls">
+          <el-button
+            @click="rotateLeft"
+            icon="el-icon-refresh-left"
+            circle
+          ></el-button>
+          <el-button
+            @click="rotateRight"
+            icon="el-icon-refresh-right"
+            circle
+          ></el-button>
+        </div>
+        <img
+          :src="previewImageUrl"
+          alt="预览图片"
+          class="preview-image"
+          :style="{ transform: `rotate(${rotationAngle}deg)` }"
+        />
       </div>
     </el-dialog>
   </div>
@@ -203,7 +224,8 @@
         selection: [],
         // 图片预览相关
         previewDialogVisible: false,
-        previewImageUrl: ''
+        previewImageUrl: '',
+        rotationAngle: 0
       };
     },
     mounted() {
@@ -253,8 +275,19 @@
       previewImage(row) {
         if (row.PIC_URL && row.PIC_URL.indexOf('pdf') === -1) {
           this.previewImageUrl = this.getImageUrl(row.PIC_URL);
+          this.rotationAngle = 0; // 重置旋转角度
           this.previewDialogVisible = true;
         }
+      },
+
+      // 向左旋转
+      rotateLeft() {
+        this.rotationAngle -= 90;
+      },
+
+      // 向右旋转
+      rotateRight() {
+        this.rotationAngle += 90;
       },
 
       // 查看PDF
@@ -293,9 +326,18 @@
     text-align: center;
   }
 
+  .preview-controls {
+    margin-bottom: 20px;
+  }
+
+  .preview-controls .el-button {
+    margin: 0 10px;
+  }
+
   .preview-image {
     max-width: 100%;
     max-height: 70vh;
     object-fit: contain;
+    transition: transform 0.3s ease;
   }
 </style>

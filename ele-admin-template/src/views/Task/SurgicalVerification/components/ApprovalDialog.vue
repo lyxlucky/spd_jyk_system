@@ -20,6 +20,7 @@
           v-model="formData.doctorCode"
           placeholder="请输入医生工号"
           clearable
+          @keyup.enter.native="handleConfirm"
         ></el-input>
       </el-form-item>
       <el-form-item label="护士工号" prop="nurseCode">
@@ -27,16 +28,20 @@
           v-model="formData.nurseCode"
           placeholder="请输入护士工号"
           clearable
+          @keyup.enter.native="handleConfirm"
         ></el-input>
+      </el-form-item>
+      <el-form-item>
+        <el-button @click="handleCancel">取消</el-button>
+        <el-button type="primary" @click="handleConfirm" :loading="loading">
+          确定
+        </el-button>
       </el-form-item>
     </el-form>
 
-    <div slot="footer" class="dialog-footer">
-      <el-button @click="handleCancel">取消</el-button>
-      <el-button type="primary" @click="handleConfirm" :loading="loading">
-        确定
-      </el-button>
-    </div>
+    <!-- <div slot="footer" class="dialog-footer">
+      
+    </div> -->
   </el-dialog>
 </template>
 

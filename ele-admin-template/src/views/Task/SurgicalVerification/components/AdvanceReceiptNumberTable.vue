@@ -81,7 +81,7 @@
       @reload="reload"
       :visible.sync="updateUserInfoDialogVisible"
     ></UpdateUserInfoDialog>
-    
+
     <ApprovalDialog
       :visible.sync="approvalDialogVisible"
       @confirm="handleApprovalConfirm"
@@ -336,6 +336,9 @@
       reload(where) {
         this.$refs.table.reload({ page: 1, where: where });
       },
+      async asyncReload(where) {
+        await this.$refs.table.reload({ page: 1, where: where });
+      },
 
       onCurrentChange(current) {
         this.current = current;
@@ -359,20 +362,20 @@
             this.$message.warning('请先选择一条数据');
             return reject();
           }
-          
+
           // 保存 Promise 的 resolve 和 reject 方法
           this.approvalResolve = resolve;
           this.approvalReject = reject;
-          
+
           // 显示审批对话框
           this.approvalDialogVisible = true;
         });
       },
-      
+
       handleApprovalConfirm(data) {
         const loading = this.$messageLoading('审批中...');
-        
-        BdSsApprove({ 
+        let currnt = this.current;
+        BdSsApprove({
           qdid: this.current.SSBH,
           APPRO_DOC_GH: data.doctorCode,
           APPRO_NER_GH: data.nurseCode
@@ -389,14 +392,15 @@
               this.approvalReject();
             }
           })
-          .finally(() => {
+          .finally(async () => {
             loading.close();
-            this.reload();
+            this.$refs.formRef.where.condition = currnt.SSBH;
+            this.reload({ SSBH: currnt.SSBH });
             this.approvalResolve = null;
             this.approvalReject = null;
           });
       },
-      
+
       handleApprovalCancel() {
         if (this.approvalReject) {
           this.approvalReject();
@@ -417,7 +421,6 @@
       },
       //术中交接
       handleIntraoperativeHandover(row) {
-        console.log(row);
         if (!row) {
           return this.$message.warning('请先选择一条数据');
         }
@@ -519,7 +522,7 @@
             this.handleCatDefNoPkgCode();
           })
           .catch((e) => {
-            console.log(e);
+            //console.log(e);
           });
       });
 

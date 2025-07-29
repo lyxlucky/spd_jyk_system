@@ -332,6 +332,14 @@
         >
       </span>
     </el-dialog>
+
+    <!-- 证件到期提醒对话框 -->
+    <ExpiredCertificateDialog
+      :visible="expiredCertificateDialogVisible"
+      :expiredList="expiredCertificateList"
+      @confirm="confirmSubmitWithExpiredCertificates"
+      @cancel="handleExpiredCertificateCancel"
+    />
   </el-form>
 </template>
 
@@ -363,6 +371,7 @@
   import DpetOneAuthWithDept from '@/views/KSInventory/ReferenceComponent/DpetOneAuthWithDept/index.vue';
   import ApplyTemp from '@/views/KSInventory/ApplyTemp/index.vue';
   import IntroduceDefinedTemp from './aaaaccc.vue';
+  import ExpiredCertificateDialog from './ExpiredCertificateDialog.vue';
   import { TOKEN_STORE_NAME } from '@/config/setting';
   export default {
     props: ['KSDepartmentalPlanDataSearch', 'selection', 'datasourceList'],
@@ -373,7 +382,8 @@
       BidVarInfoDept,
       ApplyOperateTip,
       VarietyDataLzhLook,
-      DpetOneAuthWithDept
+      DpetOneAuthWithDept,
+      ExpiredCertificateDialog
     },
     data() {
       // 默认表单数据
@@ -399,7 +409,9 @@
         visibleLine: 'none',
         PlanNum: '',
         dialogTableVisible2: false,
-        Token: sessionStorage.getItem(TOKEN_STORE_NAME)
+        Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+        expiredCertificateDialogVisible: false,
+        expiredCertificateList: []
       };
     },
     computed: {
@@ -550,6 +562,115 @@
       },
 
       addPutInListDeta2() {
+        // 检查是否为bdrm环境
+        if (HOME_HP == 'bdrm') {
+          // 检查证件到期情况
+          console.log(HOME_HP);
+          const expiredItems = this.checkExpiredCertificates();
+          console.log(expiredItems);
+          if (expiredItems.length > 0) {
+            this.expiredCertificateList = expiredItems;
+            this.expiredCertificateDialogVisible = true;
+            return;
+          }
+        }
+
+        // 执行原有的提交逻辑
+        this.executeSubmitLogic();
+      },
+
+      // 检查证件到期的方法
+      checkExpiredCertificates() {
+        const expiredItems = [];
+        const currentDate = new Date();
+
+        this.datasourceList.forEach((element) => {
+          const expiredTypes = [];
+
+          // 检查注册证到期R
+          if (element.REGISTRATION_VALID_DATE) {
+            const expiry = new Date(element.REGISTRATION_VALID_DATE);
+            console.log(expiry);
+            if (expiry <= currentDate) {
+              expiredTypes.push('注册证');
+            }
+          }
+
+          // 检查生产许可证到期
+          if (element.MAN_XKZ_END) {
+            const expiry = new Date(element.MAN_XKZ_END);
+            if (expiry <= currentDate) {
+              expiredTypes.push('生产许可证');
+            }
+          }
+
+          // 检查品种授权到期
+          if (element.AUTH_VALID) {
+            const expiry = new Date(element.AUTH_VALID);
+            if (expiry <= currentDate) {
+              expiredTypes.push('品种授权');
+            }
+          }
+
+          // 检查供应商经营许可证到期
+          if (element.BUSINESS_LICENSE_VALID_DATE2) {
+            const expiry = new Date(element.BUSINESS_LICENSE_VALID_DATE2);
+            if (expiry <= currentDate) {
+              expiredTypes.push('供应商经营许可证');
+            }
+          }
+
+          // 检查集配商经营许可证到期
+          if (element.BUSINESS_LICENSE_VALID_DATE) {
+            const expiry = new Date(element.BUSINESS_LICENSE_VALID_DATE);
+            if (expiry <= currentDate) {
+              expiredTypes.push('集配商经营许可证');
+            }
+          }
+
+          // 如果有到期的证件，添加到列表中
+          if (expiredTypes.length > 0) {
+            expiredItems.push({
+              VarName: element.VarName,
+              VarID: element.VarID,
+              GG: element.GG,
+              Manufacturing: element.Manufacturing,
+              expiredType: expiredTypes.join('、'),
+              expiredDate: this.getEarliestExpiredDate(element),
+              RegistrationCertificateExpiry: element.REGISTRATION_VALID_DATE,
+              ProductionLicenseExpiry: element.MAN_XKZ_END,
+              VarietyAuthorizationExpiry: element.AUTH_VALID,
+              SupplierBusinessLicenseExpiry:
+                element.BUSINESS_LICENSE_VALID_DATE2,
+              DistributorBusinessLicenseExpiry:
+                element.BUSINESS_LICENSE_VALID_DATE
+            });
+          }
+        });
+
+        return expiredItems;
+      },
+
+      // 获取最早的到期日期
+      getEarliestExpiredDate(element) {
+        const dates = [];
+        if (element.REGISTRATION_VALID_DATE)
+          dates.push(new Date(element.REGISTRATION_VALID_DATE));
+        if (element.MAN_XKZ_END) dates.push(new Date(element.MAN_XKZ_END));
+        if (element.AUTH_VALID) dates.push(new Date(element.AUTH_VALID));
+        if (element.BUSINESS_LICENSE_VALID_DATE2)
+          dates.push(new Date(element.BUSINESS_LICENSE_VALID_DATE2));
+        if (element.BUSINESS_LICENSE_VALID_DATE)
+          dates.push(new Date(element.BUSINESS_LICENSE_VALID_DATE));
+
+        if (dates.length === 0) return '';
+
+        const earliestDate = new Date(Math.min(...dates));
+        return earliestDate.toISOString().split('T')[0];
+      },
+
+      // 执行提交逻辑
+      executeSubmitLogic() {
         const loading = this.$messageLoading('提交中..');
         var list = [];
         this.datasourceList.forEach((element) => {
@@ -570,7 +691,6 @@
         KeeptListDeta(list)
           .then((res) => {
             loading.close();
-
             if (res.code == '200') {
               var data = {
                 PlanNum: this.KSDepartmentalPlanDataSearch.PlanNum
@@ -599,6 +719,18 @@
             loading.close();
             this.$message.error(err);
           });
+      },
+
+      // 确认提交（有到期证件的情况下）
+      confirmSubmitWithExpiredCertificates() {
+        this.expiredCertificateDialogVisible = false;
+        this.executeSubmitLogic();
+      },
+
+      // 取消提交（有到期证件的情况下）
+      handleExpiredCertificateCancel() {
+        this.expiredCertificateDialogVisible = false;
+        this.$message.info('已取消提交');
       },
 
       deleteZeroDelAndCommit() {
