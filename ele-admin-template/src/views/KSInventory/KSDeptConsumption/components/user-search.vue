@@ -250,7 +250,7 @@
       </el-col>
 
       <el-col
-        v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 6 }"
+        v-bind="styleResponsive ? { lg: 5, md: 12 } : { span: 6 }"
         style="margin-left: 25px"
       >
         <div class="ele-form-actions">
@@ -266,6 +266,24 @@
           <el-button size="mini" icon="el-icon-refresh" @click="reset"
             >重置</el-button
           >
+
+          <el-button
+            type="primary"
+            icon="el-icon-view"
+            size="mini"
+            @click="KSDeptConsumpHZTipShow = true"
+            >查看汇总</el-button
+          >
+
+          <el-button
+            size="mini"
+            type="primary"
+            icon="el-icon-view"
+            class="ele-btn-icon"
+            @click="KSDeptConsumpKSHZTipShow = true"
+          >
+            科室汇总
+          </el-button>
         </div>
       </el-col>
 
@@ -329,11 +347,20 @@
         </div>
       </el-col> -->
     <!-- </el-row> -->
+    <KSDeptConsumpHZTip :visible.sync="KSDeptConsumpHZTipShow" :data="where"/>
+    <KSDeptConsumpKSHZTip :visible.sync="KSDeptConsumpKSHZTipShow" :data="where"/>
   </el-form>
 </template>
 
 <script>
+  import KSDeptConsumpHZTip from '@/views/KSInventory/KSDeptConsumption/components/KSDeptConsumpHZTip/index.vue';
+  import KSDeptConsumpKSHZTip from '@/views/KSInventory/KSDeptConsumption/components/KSDeptConsumpKSHZTip/index.vue';
+
   export default {
+    components: {
+      KSDeptConsumpHZTip,
+      KSDeptConsumpKSHZTip,
+    },
     data() {
       // 默认表单数据
       const defaultWhere = {
@@ -373,11 +400,15 @@
         def: '',
         Patient_Number: '',
         SPDDEPTNAME: '',
-        Operate_Person: ''
+        Operate_Person: '',
+
+    
       };
       return {
         // 表单数据
-        where: { ...defaultWhere }
+        where: { ...defaultWhere },
+        KSDeptConsumpHZTipShow: false,
+        KSDeptConsumpKSHZTipShow: false,
       };
     },
     computed: {
