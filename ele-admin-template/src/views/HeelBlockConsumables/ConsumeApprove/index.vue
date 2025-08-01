@@ -672,7 +672,7 @@
         let loadingInstance = Loading.service({
           target: '.receipt-order-list-table .el-table'
         });
-        this.currentConsumeA1 = null;
+        // this.currentConsumeA1 = null;
         this.currentConsumeA1Status = true;
         let where = this.consumeForm;
         let dataSource = await apiGetLoadGoodsDeliveryNumbers({
