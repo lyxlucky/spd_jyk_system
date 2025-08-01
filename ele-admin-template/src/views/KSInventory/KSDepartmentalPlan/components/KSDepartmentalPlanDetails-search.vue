@@ -630,7 +630,6 @@
 
           // 如果有到期的证件，添加到列表中
           if (expiredTypes.length > 0) {
-            console.log(element);
             expiredItems.push({
               VarName: element.VarName,
               VarID: element.VarCode,
