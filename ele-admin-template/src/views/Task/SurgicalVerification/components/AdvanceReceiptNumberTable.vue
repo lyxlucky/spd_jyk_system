@@ -87,6 +87,33 @@
       @confirm="handleApprovalConfirm"
       @cancel="handleApprovalCancel"
     ></ApprovalDialog>
+
+    <!-- 扫码交接对话框 -->
+    <el-dialog
+      title="扫码交接"
+      :visible.sync="scanDialogVisible"
+      width="400px"
+      :close-on-click-modal="false"
+    >
+      <el-form :model="scanForm" label-width="80px">
+        <el-form-item label="手术编号">
+          <el-input
+            v-model="scanForm.surgeryNumber"
+            placeholder="请输入手术编号"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="工号">
+          <el-input
+            v-model="scanForm.jobNumber"
+            placeholder="请输入工号"
+          ></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="scanDialogVisible = false">取消</el-button>
+        <el-button type="primary" @click="handleScanConfirm">确定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -256,12 +283,12 @@
             showOverflowTooltip: true,
             minWidth: 180
           },
-          {
-            label: '操作',
-            width: 160,
-            align: 'center',
-            slot: 'ACTION'
-          },
+          // {
+          //   label: '操作',
+          //   width: 160,
+          //   align: 'center',
+          //   slot: 'ACTION'
+          // },
           {
             prop: 'SSRQ',
             label: '手术时间',
@@ -304,7 +331,13 @@
         updateUserInfoDialogVisible: false,
         approvalDialogVisible: false,
         approvalResolve: null,
-        approvalReject: null
+        approvalReject: null,
+        // 扫码交接对话框
+        scanDialogVisible: false,
+        scanForm: {
+          surgeryNumber: '',
+          jobNumber: ''
+        }
       };
     },
     methods: {
@@ -449,35 +482,47 @@
       },
 
       handleScanQrCode(data) {
-        this.$prompt('请输入手术编号', '扫码交接', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          inputPlaceholder: '请输入手术编号'
+        // 重置表单数据
+        this.scanForm = {
+          surgeryNumber: '',
+          jobNumber: ''
+        };
+        // 显示对话框
+        this.scanDialogVisible = true;
+      },
+
+      handleScanConfirm() {
+        // 验证输入
+        if (!this.scanForm.surgeryNumber) {
+          return this.$message.error('请输入手术编号');
+        }
+        if (!this.scanForm.jobNumber) {
+          return this.$message.error('请输入工号');
+        }
+
+        // 关闭对话框
+        this.scanDialogVisible = false;
+
+        // 提交数据
+        this.$bus.$emit(
+          'AdvanceReceiptNumberTableDialogCurrentSSBHChange',
+          this.scanForm.surgeryNumber
+        );
+
+        commitBdszSsyyInfo({
+          spd: 'PDA123#1',
+          pdaMan: this.scanForm.jobNumber,
+          ID: this.scanForm.surgeryNumber,
+          TJ_STATE: 3
         })
-          .then(({ value }) => {
-            if (value == undefined)
-              return this.$message.error('请输入手术编号');
-            this.$bus.$emit(
-              'AdvanceReceiptNumberTableDialogCurrentSSBHChange',
-              value
-            );
-            commitBdszSsyyInfo({
-              spd: 'PDA123#1',
-              pdaMan: this.$store.state.user.info.UserName,
-              ID: value,
-              TJ_STATE: 3
-            })
-              .then((res) => {
-                this.$message.success(res.msg);
-                this.$refs.formRef.where.MZZY = '3';
-                this.reload({ SSBH: value });
-              })
-              .catch((err) => {
-                this.$message.error(err);
-              });
+          .then((res) => {
+            this.$message.success(res.msg);
+            this.$refs.formRef.where.MZZY = '3';
+            this.reload({ SSBH: this.scanForm.surgeryNumber });
           })
-          .catch(() => {})
-          .finally(() => {});
+          .catch((err) => {
+            this.$message.error(err);
+          });
       },
       handleCancel() {
         if (this.current == null)

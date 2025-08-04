@@ -53,7 +53,7 @@
             icon="el-icon-remove"
             @click="setNoCharge"
           >
-            设置不收费
+            打包收费
           </el-button>
           <el-button
             size="mini"
@@ -62,7 +62,7 @@
             class="ele-btn-icon"
             @click="setCharge"
           >
-            设置收费
+            取消打包收费
           </el-button>
         </div>
       </template>
