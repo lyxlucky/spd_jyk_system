@@ -13,80 +13,6 @@
     </div>
     <div class="half-table">
       <el-card shadow="never">
-        <!-- 搜索表单 -->
-        <el-form class="form-box">
-          <el-form-item>
-            <el-input
-              size="mini"
-              v-model="where.keyword"
-              placeholder="请输入服务机构或供应商名称"
-              clearable
-            />
-          </el-form-item>
-          <el-form-item>
-            <el-button
-              size="mini"
-              type="primary"
-              icon="el-icon-search"
-              @click="reload"
-            >
-              搜索
-            </el-button>
-          </el-form-item>
-          <el-form-item>
-            <el-button
-              size="mini"
-              type="success"
-              icon="el-icon-plus"
-              @click="openAddDialog"
-            >
-              新增
-            </el-button>
-          </el-form-item>
-          <el-form-item v-if="scoreButtonPermission">
-            <el-button
-              size="mini"
-              type="warning"
-              icon="el-icon-star-on"
-              :disabled="!selectedSupplier"
-              @click="openScoreDialog"
-            >评分</el-button>
-          </el-form-item>
-          <el-form-item v-if="where.vendorType === '供应商'">
-            <el-button
-              size="mini"
-              type="info"
-              icon="el-icon-refresh"
-              :loading="syncLoading"
-              @click="syncSuppliers"
-            >
-              同步
-            </el-button>
-          </el-form-item>
-          <el-form-item>
-            <el-button
-              size="mini"
-              icon="el-icon-download"
-              @click="downloadTemplate"
-            >
-              模板下载
-            </el-button>
-          </el-form-item>
-          <el-form-item>
-            <el-upload
-              action="#"
-              :show-file-list="false"
-              :before-upload="() => false"
-              :on-change="handleImportExcel"
-              accept=".xlsx"
-            >
-              <el-button size="mini" icon="el-icon-upload2">导入</el-button>
-            </el-upload>
-          </el-form-item>
-          <el-form-item>
-            <el-button size="mini" type="success" icon="el-icon-download" @click="handleExportAll">导出</el-button>
-          </el-form-item>
-        </el-form>
         <!-- 数据表格 -->
         <ele-pro-table
           ref="table"
@@ -101,7 +27,8 @@
           @current-change="onCurrentChange"
           @size-change="onSizeChange"
           @row-click="onRowClick"
-          height="35vh"
+          height="30vh"
+          full-height="calc(100vh - 120px)"
         >
           <template v-slot:action="{ row }">
             <el-button
@@ -126,6 +53,82 @@
               </template>
             </el-popconfirm>
           </template>
+          <template v-slot:toolbar>
+            <!-- 搜索表单 -->
+            <el-form class="form-box" inline>
+              <el-form-item>
+                <el-input
+                  size="mini"
+                  v-model="where.keyword"
+                  placeholder="请输入服务机构或供应商名称"
+                  clearable
+                />
+              </el-form-item>
+              <el-form-item>
+                <el-button
+                  size="mini"
+                  type="primary"
+                  icon="el-icon-search"
+                  @click="reload"
+                >
+                  搜索
+                </el-button>
+              </el-form-item>
+              <el-form-item>
+                <el-button
+                  size="mini"
+                  type="success"
+                  icon="el-icon-plus"
+                  @click="openAddDialog"
+                >
+                  新增
+                </el-button>
+              </el-form-item>
+              <el-form-item v-if="scoreButtonPermission">
+                <el-button
+                  size="mini"
+                  type="warning"
+                  icon="el-icon-star-on"
+                  :disabled="!selectedSupplier"
+                  @click="openScoreDialog"
+                >评分</el-button>
+              </el-form-item>
+              <el-form-item v-if="where.vendorType === '供应商'">
+                <el-button
+                  size="mini"
+                  type="info"
+                  icon="el-icon-refresh"
+                  :loading="syncLoading"
+                  @click="syncSuppliers"
+                >
+                  同步
+                </el-button>
+              </el-form-item>
+              <el-form-item>
+                <el-button
+                  size="mini"
+                  icon="el-icon-download"
+                  @click="downloadTemplate"
+                >
+                  模板下载
+                </el-button>
+              </el-form-item>
+              <el-form-item>
+                <el-upload
+                  action="#"
+                  :show-file-list="false"
+                  :before-upload="() => false"
+                  :on-change="handleImportExcel"
+                  accept=".xlsx"
+                >
+                  <el-button size="mini" icon="el-icon-upload2">导入</el-button>
+                </el-upload>
+              </el-form-item>
+              <el-form-item>
+                <el-button size="mini" type="success" icon="el-icon-download" @click="handleExportAll">导出</el-button>
+              </el-form-item>
+            </el-form>
+          </template>
         </ele-pro-table>
       </el-card>
     </div>
@@ -140,6 +143,7 @@
           @size-change="onScoreRecordPageSizeChange"
           :empty-text="selectedSupplier ? '暂无评分记录' : '请选择供应商'"
           height="30vh"
+          full-height="calc(100vh - 120px)"
         >
           <template v-slot:scoreRecordAction="{ row }">
             <el-button
@@ -166,6 +170,17 @@
                 >删除</el-button>
               </template>
             </el-popconfirm>
+          </template>
+          <template v-slot:toolbar>
+            <el-button
+              size="mini"
+              type="warning"
+              icon="el-icon-download"
+              :disabled="!selectedSupplier"
+              @click="handleExportAllScoreRecords"
+            >
+              导出全部评分记录
+            </el-button>
           </template>
         </ele-pro-table>
       </el-card>
@@ -401,9 +416,9 @@
     height: 2px;
     background-color: #007bff;
   }
-  .form-box {
-    display: flex;
-    gap: 10px;
+  .el-form-item {
+    //gap: 10px;
+    margin-bottom: 0;
   }
   .where-type {
     width: 10rem;
@@ -664,6 +679,7 @@
           { prop: 'EVALUATOR_NAME', label: '评分人', minWidth: 120, align: 'center' },
           { prop: 'EVAL_YEAR', label: '评分年份', minWidth: 120, align: 'center' },
           { prop: 'EVAL_TIME', label: '评分时间', minWidth: 160, align: 'center', formatter: (row) => this.formatDateTime(row.EVAL_TIME) },
+          { prop: 'TOTAL_SCORE', label: '得分', minWidth: 100, align: 'center', formatter: (row) => this.calculateTotalScore(row) },
           { prop: 'REMARK', label: '备注', minWidth: 200, align: 'center', showOverflowTooltip: true },
           {
             columnKey: 'action',
@@ -769,6 +785,7 @@
     },
     methods: {
       datasource({ page, limit, where, order }) {
+        console.log(page, limit, where, order);
         where.keyword = this.where.keyword;
         where.vendorType = this.where.vendorType;
         let deptCode = null;
@@ -1274,6 +1291,22 @@
         if (!dateTime) return '';
         return dateTime.replace('T', ' ');
       },
+      // 计算总分
+      calculateTotalScore(row) {
+        if (!row.Records || !Array.isArray(row.Records)) {
+          return '0';
+        }
+
+        const totalScore = row.Records.reduce((total, record) => {
+          // 只统计评分型的项目
+          if (record.ITEM_TYPE === '评分' && record.SCORE !== null && record.SCORE !== undefined && record.SCORE !== '') {
+            return total + (Number(record.SCORE) || 0);
+          }
+          return total;
+        }, 0);
+
+        return totalScore.toString();
+      },
       async syncSuppliers() {
         this.syncLoading = true;
         try {
@@ -1363,6 +1396,77 @@
           saveAs(new Blob([wbout], { type: 'application/octet-stream' }), `${this.where.vendorType}信息导出.xlsx`);
         } catch (e) {
           this.$message.error('导出失败：' + (e.message || e));
+        }
+      },
+      // 导出全部评分记录
+      async handleExportAllScoreRecords() {
+        if (!this.selectedSupplier) {
+          this.$message.warning('请先选择供应商');
+          return;
+        }
+
+        try {
+          // 获取所有评分记录（99999条）
+          const res = await getSupplierScoreRecords({
+            vendorId: this.selectedSupplier.ID,
+            pageIndex: 1,
+            pageSize: 99999
+          });
+
+          if (!res.result || res.result.length === 0) {
+            this.$message.warning('该供应商暂无评分记录');
+            return;
+          }
+
+          // 处理数据，每个批次为一行
+          const exportData = res.result.map(batchItem => {
+            const batch = batchItem.Batch;
+            const records = batchItem.Records || [];
+
+            // 计算总分
+            const totalScore = records.reduce((total, record) => {
+              if (record.ITEM_TYPE === '评分' && record.SCORE !== null && record.SCORE !== undefined && record.SCORE !== '') {
+                return total + (Number(record.SCORE) || 0);
+              }
+              return total;
+            }, 0);
+
+            return {
+              '评分人': batch.EVALUATOR_NAME,
+              '评分年份': batch.EVAL_YEAR,
+              '评分时间': this.formatDateTime(batch.EVAL_TIME),
+              '得分': totalScore,
+              '备注': batch.REMARK || ''
+            };
+          });
+
+          if (exportData.length === 0) {
+            this.$message.warning('没有可导出的评分数据');
+            return;
+          }
+
+          // 创建Excel文件
+          const worksheet = XLSX.utils.json_to_sheet(exportData);
+          const workbook = XLSX.utils.book_new();
+          XLSX.utils.book_append_sheet(workbook, worksheet, '评分记录');
+
+          // 设置列宽
+          const columnWidths = [
+            { wch: 12 }, // 评分人
+            { wch: 10 }, // 评分年份
+            { wch: 20 }, // 评分时间
+            { wch: 8 },  // 得分
+            { wch: 30 }  // 备注
+          ];
+          worksheet['!cols'] = columnWidths;
+
+          const wbout = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+          const fileName = `${this.selectedSupplier.VENDOR_NAME}_评分记录.xlsx`;
+          saveAs(new Blob([wbout], { type: 'application/octet-stream' }), fileName);
+
+          this.$message.success(`成功导出 ${exportData.length} 条评分记录`);
+        } catch (e) {
+          this.$message.error('导出评分记录失败：' + (e.message || e));
         }
       },
     }
