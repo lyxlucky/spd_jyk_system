@@ -111,13 +111,13 @@
           //   slot: 'action',
           //   showOverflowTooltip: true
           // },
-          // {
-          //   prop: 'STOCK_QTY',
-          //   slot: 'STOCK_QTY',
-          //   align: 'center',
-          //   label: '中心库剩余库存',
-          //   minWidth: 120,
-          // },
+          {
+            prop: 'STOCK_QTY',
+            slot: 'STOCK_QTY',
+            align: 'center',
+            label: '中心库剩余库存',
+            minWidth: 120,
+          },
           {
             prop: 'VARIETIE_CODE_NEW',
             label: '材料编码',

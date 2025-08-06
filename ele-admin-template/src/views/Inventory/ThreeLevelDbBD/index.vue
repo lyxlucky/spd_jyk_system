@@ -219,10 +219,22 @@ import { getThirdStockInfo, getThirdStockInfoFlow } from '@/api/Inventory/ThreeL
           },
           {
             prop: 'KS_QTY',
-            label: '库存数量',
+            label: '入库数量',
             align: 'center',
             showOverflowTooltip: true,
             minWidth: 100
+          },
+          {
+            prop: 'KS_QTY_TOTAL',
+            slot: 'KS_QTY_TOTAL',
+            label: '库存数量',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 100,
+            formatter: (row, column, cellValue) => {
+              if(Number(row.KS_QTY) == 0) return row.KS_QTY;
+              return Number(row.KS_QTY) + Number(row.JF_QTY);
+            }
           },
           {
             prop: 'XH_QTY',
@@ -308,13 +320,13 @@ import { getThirdStockInfo, getThirdStockInfoFlow } from '@/api/Inventory/ThreeL
             showOverflowTooltip: true,
             minWidth: 150
           },
-          {
-            prop: 'CONSUMER',
-            label: '消耗人',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 120
-          },
+          // {
+          //   prop: 'CONSUMER',
+          //   label: '消耗人',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   minWidth: 120
+          // },
           {
             prop: 'PATIENT_NUMBER',
             label: '病患号',
