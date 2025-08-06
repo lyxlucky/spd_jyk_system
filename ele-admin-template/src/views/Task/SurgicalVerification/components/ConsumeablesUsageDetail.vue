@@ -329,7 +329,7 @@
                 this.$message.success(res.msg);
               })
               .catch((err) => {
-                this.$message.error(err);
+                this.$message.error(err.msg);
               })
               .finally(() => {
                 loading.close();
