@@ -9,7 +9,7 @@ export async function apiSupplierScoreGetList(data, deptCode) {
     let formataData = {}
     formataData.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
     formataData.pageIndex = data.page ? data.page : 1;
-    formataData.pageSize = data.size ? data.size : 10;
+    formataData.pageSize = data.limit ? data.limit : 10;
     formataData.vendorName = data.where.keyword ? data.where.keyword : '';
     formataData.vendorType = data.where.vendorType ? data.where.vendorType : '';
     formataData.deptCode = deptCode;
