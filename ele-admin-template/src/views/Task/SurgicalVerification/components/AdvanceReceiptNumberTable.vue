@@ -95,17 +95,17 @@
       width="400px"
       :close-on-click-modal="false"
     >
-      <el-form :model="scanForm" label-width="80px">
-        <el-form-item label="手术编号">
-          <el-input
-            v-model="scanForm.surgeryNumber"
-            placeholder="请输入手术编号"
-          ></el-input>
-        </el-form-item>
+      <el-form :model="scanForm" @submit.native.prevent label-width="80px">
         <el-form-item label="工号">
           <el-input
             v-model="scanForm.jobNumber"
             placeholder="请输入工号"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="手术编号">
+          <el-input
+            v-model="scanForm.surgeryNumber"
+            placeholder="请输入手术编号"
           ></el-input>
         </el-form-item>
       </el-form>
