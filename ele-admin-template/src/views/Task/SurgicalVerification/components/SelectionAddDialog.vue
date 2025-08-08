@@ -242,7 +242,7 @@
             showOverflowTooltip: true
           }
         ],
-        pageSize: 50,
+        pageSize: 9999999,
         pagerCount: 2,
         pageSizes: [10, 20, 50, 100, 9999999],
         // 表格选中数据
@@ -459,14 +459,23 @@
             } else {
               this.$message.warning(`${this.scanCode}未找到对应的数据`);
               this.scanCode = '';
+              this.$nextTick(() => {
+                this.$refs.scanInput.focus();
+              });
             }
           } else {
             this.$message.warning(`${this.scanCode}未找到对应的数据`);
             this.scanCode = '';
+            this.$nextTick(() => {
+              this.$refs.scanInput.focus();
+            });
           }
         } catch (error) {
           this.$message.error('操作失败');
           console.error(error);
+          this.$nextTick(() => {
+            this.$refs.scanInput.focus();
+          });
         }
       },
       tableRowClassName({ row }) {
