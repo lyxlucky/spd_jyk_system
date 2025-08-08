@@ -47,7 +47,7 @@
           placeholder="申领单"
         />
       </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 3, md: 4 } : { span: 4 }">
+      <el-col v-bind="styleResponsive ? { lg: 2, md: 4 } : { span: 4 }">
         <div class="block">
           <el-date-picker
             size="mini"
@@ -60,7 +60,7 @@
           </el-date-picker>
         </div>
       </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 3, md: 4 } : { span: 4 }">
+      <el-col v-bind="styleResponsive ? { lg: 2, md: 4 } : { span: 4 }">
         <div class="block">
           <el-date-picker
             size="mini"
@@ -74,7 +74,7 @@
         </div>
       </el-col>
 
-      <el-col v-bind="styleResponsive ? { lg: 3, md: 5 } : { span: 5 }">
+      <el-col v-bind="styleResponsive ? { lg: 2, md: 5 } : { span: 5 }">
         <el-select size="mini" v-model="where.State" @change="search()">
           <el-option label="全部" value="-1"></el-option>
           <el-option label="新增" value="0"></el-option>
@@ -88,7 +88,19 @@
         </el-select>
       </el-col>
 
-      <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 8 }">
+      <el-col
+        v-if="isBDRM"
+        v-bind="styleResponsive ? { lg: 2, md: 12 } : { span: 8 }"
+      >
+        <el-select size="mini" v-model="where.props" @change="search()">
+          <el-option label="全部" value=""></el-option>
+          <el-option label="低值" value="0"></el-option>
+          <el-option label="高值" value="1"></el-option>
+          <el-option label="试剂" value="2"></el-option>
+        </el-select>
+      </el-col>
+
+      <el-col v-bind="styleResponsive ? { lg: 2, md: 12 } : { span: 8 }">
         <el-input
           size="mini"
           clearable
@@ -96,6 +108,7 @@
           placeholder="请输入品种名称/型号规格/生产企业"
         />
       </el-col>
+
       <el-col v-bind="styleResponsive ? { lg: 3, md: 4 } : { span: 4 }">
         <div class="ele-form-actions">
           <el-button
@@ -155,6 +168,7 @@
 </template>
 
 <script>
+  import { HOME_HP } from '@/config/setting';
   import {
     CreatList,
     ReturnInitState
@@ -168,6 +182,7 @@
         Start: '',
         End: '',
         State: '-1',
+        props: '',
         isTwoApp: ''
       };
       return {
@@ -180,6 +195,9 @@
       // 是否开启响应式布局
       styleResponsive() {
         return this.$store.state.theme.styleResponsive;
+      },
+      isBDRM() {
+        return this.$HOME_HP == 'bdrm';
       }
     },
     methods: {

@@ -14,9 +14,11 @@ import 'viewerjs/dist/viewer.css'
 import moment from 'moment';
 import numeral from 'numeral';
 import dateShortcuts from './directives/dateShortcuts';
+import { HOME_HP } from '@/config/setting';
 
 
 
+Vue.prototype.$HOME_HP = HOME_HP;
 Vue.prototype.$numeral = numeral;
 // 将 moment 挂载到 Vue 原型上
 Vue.prototype.$moment = moment;

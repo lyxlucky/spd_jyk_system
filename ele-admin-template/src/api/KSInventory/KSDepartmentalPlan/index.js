@@ -56,6 +56,7 @@ export async function SerachPlanList(data) {
   data2.End = data.where.End ? data.where.End : '';
   data2.isTwoApp = data.where.isTwoApp ? data.where.DeptCode : '';
   data2.PlanNum = data.where.PlanNum ? data.where.PlanNum : '';
+  data2.props = data.where.props ? data.where.props : '';
   data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
 
   const res = await request.get('/DeptApplyPlan/SerachPlanList', {
