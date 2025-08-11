@@ -95,23 +95,27 @@
       width="400px"
       :close-on-click-modal="false"
     >
-      <el-form :model="scanForm" @submit.native.prevent label-width="80px">
+      <el-form :model="scanForm" @submit.native.prevent="handleScanConfirm" label-width="80px">
         <el-form-item label="工号">
           <el-input
             v-model="scanForm.jobNumber"
             placeholder="请输入工号"
+            @keyup.enter.native="handleScanConfirm"
+            :disabled="scanLoading"
           ></el-input>
         </el-form-item>
         <el-form-item label="手术编号">
           <el-input
             v-model="scanForm.surgeryNumber"
             placeholder="请输入手术编号"
+            @keyup.enter.native="handleScanConfirm"
+            :disabled="scanLoading"
           ></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="scanDialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="handleScanConfirm">确定</el-button>
+        <el-button @click="scanDialogVisible = false" :disabled="scanLoading">取消</el-button>
+        <el-button type="primary" @click="handleScanConfirm" :loading="scanLoading">确定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -492,6 +496,11 @@
       },
 
       handleScanConfirm() {
+        // 如果已经在加载状态，防止重复提交
+        if (this.scanLoading) {
+          return;
+        }
+        
         // 验证输入
         if (!this.scanForm.surgeryNumber) {
           return this.$message.error('请输入手术编号');
@@ -500,8 +509,8 @@
           return this.$message.error('请输入工号');
         }
 
-        // 关闭对话框
-        this.scanDialogVisible = false;
+        // 设置加载状态
+        this.scanLoading = true;
 
         // 提交数据
         this.$bus.$emit(
@@ -519,9 +528,15 @@
             this.$message.success(res.msg);
             this.$refs.formRef.where.MZZY = '3';
             this.reload({ SSBH: this.scanForm.surgeryNumber });
+            // 关闭对话框
+            this.scanDialogVisible = false;
           })
           .catch((err) => {
             this.$message.error(err);
+          })
+          .finally(() => {
+            // 无论成功失败都关闭加载状态
+            this.scanLoading = false;
           });
       },
       handleCancel() {
