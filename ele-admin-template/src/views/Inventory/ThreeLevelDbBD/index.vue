@@ -109,7 +109,7 @@
         >
           <template v-slot:toolbar>
             <h1>
-              总计费数量: {{flowRow.JF_QTY}} 总库存数: {{flowRow.KS_QTY}}
+              总计费数量: {{Number(flowRow.JF_QTY) + Number(flowRow.JF_DEF_QTY)}} 总库存数: {{flowRow.KS_QTY}}
             </h1>
           </template>
           <template v-slot:action="{ row }">
@@ -212,10 +212,17 @@ import { getThirdStockInfo, getThirdStockInfoFlow } from '@/api/Inventory/ThreeL
           },
           {
             prop: 'JF_QTY',
-            label: '计费数量',
+            label: '散货计费数量',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 100
+            minWidth: 120
+          },
+          {
+            prop: 'JF_DEF_QTY',
+            label: '定数包计费数量',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 140
           },
           {
             prop: 'KS_QTY',
@@ -233,7 +240,7 @@ import { getThirdStockInfo, getThirdStockInfoFlow } from '@/api/Inventory/ThreeL
             minWidth: 100,
             formatter: (row, column, cellValue) => {
               if(Number(row.KS_QTY) == 0) return row.KS_QTY;
-              return Number(row.KS_QTY) + Number(row.JF_QTY);
+              return Number(row.KS_QTY) + Number(row.JF_QTY) + Number(row.JF_DEF_QTY);
             }
           },
           {
@@ -340,6 +347,13 @@ import { getThirdStockInfo, getThirdStockInfoFlow } from '@/api/Inventory/ThreeL
             align: 'center',
             showOverflowTooltip: true,
             minWidth: 100
+          },
+          {
+            prop: 'OPEARTION_CHARGING_TIME',
+            label: '计费时间',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 140
           },
           {
             prop: 'QTY',
