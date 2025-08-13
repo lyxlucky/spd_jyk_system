@@ -95,7 +95,11 @@
       width="400px"
       :close-on-click-modal="false"
     >
-      <el-form :model="scanForm" @submit.native.prevent="handleScanConfirm" label-width="80px">
+      <el-form
+        :model="scanForm"
+        @submit.native.prevent="handleScanConfirm"
+        label-width="80px"
+      >
         <el-form-item label="工号">
           <el-input
             v-model="scanForm.jobNumber"
@@ -114,8 +118,15 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="scanDialogVisible = false" :disabled="scanLoading">取消</el-button>
-        <el-button type="primary" @click="handleScanConfirm" :loading="scanLoading">确定</el-button>
+        <el-button @click="scanDialogVisible = false" :disabled="scanLoading"
+          >取消</el-button
+        >
+        <el-button
+          type="primary"
+          @click="handleScanConfirm"
+          :loading="scanLoading"
+          >确定</el-button
+        >
       </div>
     </el-dialog>
   </div>
@@ -338,6 +349,7 @@
         approvalReject: null,
         // 扫码交接对话框
         scanDialogVisible: false,
+        scanLoading: false,
         scanForm: {
           surgeryNumber: '',
           jobNumber: ''
@@ -378,6 +390,7 @@
       },
 
       onCurrentChange(current) {
+        console.log(current);
         this.current = current;
         this.$emit('getCurrent', current);
         this.$bus.$emit('AdvanceReceiptNumberTableCurrent', current);
@@ -500,7 +513,7 @@
         if (this.scanLoading) {
           return;
         }
-        
+
         // 验证输入
         if (!this.scanForm.surgeryNumber) {
           return this.$message.error('请输入手术编号');

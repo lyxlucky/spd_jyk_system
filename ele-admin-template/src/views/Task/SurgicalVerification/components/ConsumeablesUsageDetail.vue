@@ -20,12 +20,24 @@
         <div>
           <el-button
             size="mini"
-            type="primary"
-            icon="el-icon-check"
+            :type="
+              parentCurrent && parentCurrent.DEPT_TWO_QTY > 0
+                ? 'success'
+                : 'primary'
+            "
+            :icon="
+              parentCurrent && parentCurrent.DEPT_TWO_QTY > 0
+                ? 'el-icon-check'
+                : 'el-icon-time'
+            "
             class="ele-btn-icon"
             @click="approve"
           >
-            审批
+            {{
+              parentCurrent && parentCurrent.DEPT_TWO_QTY > 0
+                ? '已审批'
+                : '未审批'
+            }}
           </el-button>
 
           <el-button
@@ -306,6 +318,7 @@
         this.$bus.$emit('ConsumeableUsageDetailCancel', this.current);
       },
       approve() {
+        // console.log(this.parentCurrent.DEPT_TWO_QTY);
         this.$bus.$emit('ConsumeableUsageDetailApprove', this.current);
       },
       /* 刷新表格 */
