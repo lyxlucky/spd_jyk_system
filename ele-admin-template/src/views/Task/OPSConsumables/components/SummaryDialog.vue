@@ -146,7 +146,9 @@
                 '规格型号',
                 '预约数量',
                 '单位',
-                '生产企业'
+                '生产企业',
+                '散货库存',
+                '定数包库存',
               ]
             ];
 
@@ -157,7 +159,9 @@
                 item.SPECIFICATION_OR_TYPE,
                 item.FYSL,
                 item.UNIT,
-                item.MANUFACTURING_ENT_NAME
+                item.MANUFACTURING_ENT_NAME,
+                item.SH_QTY,
+                item.DEF_QTY
               ]);
             });
 
@@ -175,6 +179,9 @@
           .catch(() => {
             loading.close();
             this.$message.error('导出失败！');
+          })
+          .finally(() => {
+            loading.close();
           });
       },
       datasource({ page, limit }) {
