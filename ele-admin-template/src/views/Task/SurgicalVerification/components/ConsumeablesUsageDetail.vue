@@ -20,24 +20,12 @@
         <div>
           <el-button
             size="mini"
-            :type="
-              parentCurrent && parentCurrent.DEPT_TWO_QTY > 0
-                ? 'success'
-                : 'primary'
-            "
-            :icon="
-              parentCurrent && parentCurrent.DEPT_TWO_QTY > 0
-                ? 'el-icon-check'
-                : 'el-icon-time'
-            "
+            type="primary"
+            icon="el-icon-check"
             class="ele-btn-icon"
             @click="approve"
           >
-            {{
-              parentCurrent && parentCurrent.DEPT_TWO_QTY > 0
-                ? '已审批'
-                : '未审批'
-            }}
+            审批
           </el-button>
 
           <el-button
@@ -99,6 +87,17 @@
         >
           剔除
         </el-button>
+      </template>
+
+      <!-- 审核状态插槽 -->
+      <template v-slot:DEPT_TWO_QTY="{ row }">
+        <el-tag v-if="row.DEPT_TWO_QTY > 0" type="success" size="mini">
+          已审核
+        </el-tag>
+        <el-tag v-else-if="row.DEPT_TWO_QTY == 0 || row.DEPT_TWO_QTY == '0'" type="warning" size="mini">
+          未审核
+        </el-tag>
+        <span v-else>{{ row.DEPT_TWO_QTY }}</span>
       </template>
     </ele-pro-table>
   </div>
@@ -195,6 +194,13 @@
             label: '批号',
             align: 'center',
             width: 130
+          },
+          {
+            prop: 'DEPT_TWO_QTY',
+            label: '审核状态',
+            align: 'center',
+            width: 130,
+            slot: 'DEPT_TWO_QTY'
           },
           {
             prop: 'BATCH_PRODUCTION_DATE',
