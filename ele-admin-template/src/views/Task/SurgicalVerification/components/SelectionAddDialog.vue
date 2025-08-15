@@ -109,11 +109,19 @@
         v-model="scanCode"
         placeholder="请输入或扫描条码"
         clearable
+        :disabled="scanLoading"
         @change="handleScanConfirm"
       ></el-input>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="scanDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="handleScanConfirm">确 定</el-button>
+        <el-button @click="scanDialogVisible = false" :disabled="scanLoading"
+          >取 消</el-button
+        >
+        <el-button
+          type="primary"
+          @click="handleScanConfirm"
+          :loading="scanLoading"
+          >确 定</el-button
+        >
       </span>
     </el-dialog>
   </div>
@@ -255,6 +263,9 @@
         isShowNewUse: false,
         scanDialogVisible: false,
         scanCode: '',
+        scanLoading: false,
+        lastScanTime: 0,
+        scanDebounceTime: 300, // 防抖时间.3秒
         isMock: false // 是否使用假数据，开发时可开启,
       };
     },
@@ -424,6 +435,22 @@
           this.$message.warning('请输入条码');
           return;
         }
+
+        // 防抖处理：检查距离上次执行的时间
+        const currentTime = Date.now();
+        if (currentTime - this.lastScanTime < this.scanDebounceTime) {
+          //this.$message.warning('操作过于频繁，请稍后再试');
+          return;
+        }
+
+        // 如果正在加载中，直接返回
+        if (this.scanLoading) {
+          return;
+        }
+
+        this.scanLoading = true;
+        this.lastScanTime = currentTime;
+
         try {
           const res = await getBdszScanInfo({
             SSBH: this.AdvanceNumberTableCurrent?.SSBH,
@@ -476,6 +503,8 @@
           this.$nextTick(() => {
             this.$refs.scanInput.focus();
           });
+        } finally {
+          this.scanLoading = false;
         }
       },
       tableRowClassName({ row }) {
