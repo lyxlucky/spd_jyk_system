@@ -10,17 +10,27 @@ export default class RequestTimeoutManager {
     //this.startTimer();
   }
 
-  // 更新最后一次请求的时间
+  // 更新最后请求时间
   updateLastRequestTime() {
     this.lastRequestTime = Date.now();
-    this.resetTimer();
+    // 不需要重新启动定时器，定时器会定期检查
   }
 
   // 启动定时器
   startTimer() {
-    this.timer = setTimeout(() => {
+    // 清除现有定时器
+    this.clearTimer();
+    
+    // 使用间隔检查，每分钟检查一次是否超时
+    const checkInterval = 60 * 1000; // 1分钟检查一次
+    
+    const checkTimeout = () => {
       const currentTime = Date.now();
+      // console.log(currentTime - this.lastRequestTime, this.timeoutMs)
+
       if (currentTime - this.lastRequestTime >= this.timeoutMs) {
+        console.log(currentTime - this.lastRequestTime, this.timeoutMs)
+        this.clearTimer();
         MessageBox.alert('登录状态已过期, 请退出重新登录!', '系统提示', {
           confirmButtonText: '重新登录',
           showClose: false,
@@ -33,18 +43,20 @@ export default class RequestTimeoutManager {
             MessageBox.close();
           }
         });
+      } else {
+        // 如果还没超时，继续检查
+        this.timer = setTimeout(checkTimeout, checkInterval);
       }
-    }, this.timeoutMs);
-  }
-
-  // 重置定时器
-  resetTimer() {
-    clearTimeout(this.timer);
-    this.startTimer();
+    };
+    
+    this.timer = setTimeout(checkTimeout, checkInterval);
   }
 
   // 清除定时器
   clearTimer() {
-    clearTimeout(this.timer);
+    if (this.timer) {
+      clearTimeout(this.timer);
+      this.timer = null;
+    }
   }
 }

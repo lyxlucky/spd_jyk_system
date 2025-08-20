@@ -25,7 +25,13 @@ service.interceptors.request.use(
     const token = getToken();
     if (token && config.headers) {
       config.headers.common[TOKEN_HEADER_NAME] = token;
-      requestTimeoutManager.startTimer();
+      // 只在第一次启动定时器，后续请求只更新时间
+      if (!requestTimeoutManager.timer) {
+        requestTimeoutManager.startTimer();
+      } else {
+        // 更新最后请求时间，重置定时器
+        requestTimeoutManager.updateLastRequestTime();
+      }
       // config.headers.common[TOKEN_HEADER_NAME] = 'text/html, application/xhtml+xml';
       // config.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
       // config.headers.common['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
