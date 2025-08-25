@@ -256,3 +256,47 @@ export async function GetBdszZgsjMainPsDelExcelDetail2(params) {
   }
   return Promise.reject(res.data);
 }
+
+/**
+ * 拣配回退
+ * @param {Object} data 请求数据
+ * @param {string} data.state 状态
+ * @param {Array} data.data 手术数据列表
+ * @returns {Promise} 返回请求结果
+ */
+export async function returnJp(data) {
+  const formatData = {
+    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+    state: data.state || '',
+    data: data.data || []
+  };
+
+  let res = await request.post('/DeptPlanTransfer/returnJp', formatData);
+
+  if (res.data.code == 200) {
+    return res.data;
+  }
+  return Promise.reject(res.data);
+}
+
+/**
+ * 临时单处理完成
+ * @param {Object} data 请求数据
+ * @param {string} data.state 状态
+ * @param {Array} data.data 手术数据列表
+ * @returns {Promise} 返回请求结果
+ */
+export async function singFinish(data) {
+  const formatData = {
+    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+    state: data.state || '',
+    data: data.data || []
+  };
+
+  let res = await request.post('/DeptPlanTransfer/singFinish', formatData);
+
+  if (res.data.code == 200) {
+    return res.data;
+  }
+  return Promise.reject(res.data);
+}

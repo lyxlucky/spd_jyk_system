@@ -182,6 +182,12 @@
             <el-button type="primary" @click="handleShowSummary"
               >查看汇总</el-button
             >
+            <el-button type="warning" @click="returnJp" icon="el-icon-back"
+              >拣配回退</el-button
+            >
+            <el-button type="success" @click="singFinish" icon="el-icon-check"
+              >临时单处理完成</el-button
+            >
           </el-form-item>
         </el-form>
       </template>
@@ -212,7 +218,9 @@
   import {
     getBdSzYyHisSs,
     GetBdszZgsjMainPsDelExcel,
-    GetBdszZgsjMainPsDelExcelDetail
+    GetBdszZgsjMainPsDelExcelDetail,
+    returnJp,
+    singFinish
   } from '@/api/Task/OPSConsumables';
   export default {
     name: 'OPSConsumablesTable',
@@ -586,6 +594,74 @@
           return;
         }
         this.summaryDialogVisible = true;
+      },
+      // 拣配回退
+      returnJp() {
+        if (this.selection.length === 0) {
+          this.$message.warning('请至少选择一条数据');
+          return;
+        }
+
+        this.$confirm('确认要进行拣配回退操作吗？', '提示', {
+          type: 'warning'
+        })
+          .then(() => {
+            const loading = this.$messageLoading('处理中...');
+            const requestData = {
+              data: this.selection.map(item => ({
+                SSBH: item.SSBH
+              }))
+            };
+
+            returnJp(requestData)
+              .then((res) => {
+                this.$message.success(res.msg || '拣配回退成功');
+                this.reload(); // 刷新表格
+              })
+              .catch((err) => {
+                this.$message.error(err.msg || '拣配回退失败');
+              })
+              .finally(() => {
+                loading.close();
+              });
+          })
+          .catch(() => {
+            this.$message.info('已取消操作');
+          });
+      },
+      // 临时单处理完成
+      singFinish() {
+        if (this.selection.length === 0) {
+          this.$message.warning('请至少选择一条数据');
+          return;
+        }
+
+        this.$confirm('确认要完成临时单处理吗？', '提示', {
+          type: 'warning'
+        })
+          .then(() => {
+            const loading = this.$messageLoading('处理中...');
+            const requestData = {
+              data: this.selection.map(item => ({
+                SSBH: item.SSBH
+              }))
+            };
+
+            singFinish(requestData)
+              .then((res) => {
+                this.$message.success(res.msg || '临时单处理完成');
+                this.reload(); // 刷新表格
+              })
+              .catch((err) => {
+                this.$message.error(err.msg || '临时单处理失败');
+              })
+              .finally(() => {
+                loading.close();
+              });
+          })
+          .catch(() => {
+            this.$message.info('已取消操作');
+          });
       }
     },
     created() {
