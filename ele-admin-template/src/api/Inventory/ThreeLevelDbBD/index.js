@@ -49,12 +49,14 @@ export async function getThirdStockInfo(data) {
  * @throws {Error} 当请求失败时抛出错误
  */
 export async function getThirdStockInfoFlow(data) {
+    console.log(data);
     let requestData = {};
     requestData.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
     requestData.varCode = data.where?.varCode;
+    requestData.DeptCode = data.where?.DeptCode;
     requestData.chargingCode = data.where?.chargingCode;
     requestData.page = parseInt(data.page) || 1;
-    requestData.size = parseInt(data.size) || 10;
+    requestData.size = parseInt(data.limit) || 10;
 
     const res = await request.post(`/PekingApplication/getThirdStockInfoFlow`, requestData);
 

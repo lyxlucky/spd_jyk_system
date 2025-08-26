@@ -77,10 +77,7 @@
         </el-form>
       </template>
       <template v-slot:action="{ row }">
-        <el-button
-          type="primary"
-          size="mini"
-          @click="showFlowDialog(row)"
+        <el-button type="primary" size="mini" @click="showFlowDialog(row)"
           >流向记录</el-button
         >
       </template>
@@ -102,23 +99,19 @@
           :datasource="flowDatasource"
           :init-load="false"
           size="mini"
-          :pageSize="pageSize"
-          :pageSizes="pageSizes"
+          :pageSize="flowPageSize"
+          :pageSizes="flowPageSizes"
           highlight-current-row
           cache-key="ThreeLevelDbBDFlowTable"
         >
           <template v-slot:toolbar>
             <h1>
-              总计费数量: {{Number(flowRow.JF_QTY) + Number(flowRow.JF_DEF_QTY)}} 总库存数: {{flowRow.KS_QTY}}
+              总计费数量:
+              {{
+                Number(flowRow.JF_QTY) + Number(flowRow.JF_DEF_QTY)
+              }}
+              总库存数: {{ flowRow.KS_QTY }}
             </h1>
-          </template>
-          <template v-slot:action="{ row }">
-            <el-button
-              type="primary"
-              size="mini"
-              @click="showFlowDialog(row)"
-            >流向记录</el-button
-            >
           </template>
         </ele-pro-table>
       </div>
@@ -127,7 +120,10 @@
 </template>
 
 <script>
-import { getThirdStockInfo, getThirdStockInfoFlow } from '@/api/Inventory/ThreeLevelDbBD';
+  import {
+    getThirdStockInfo,
+    getThirdStockInfoFlow
+  } from '@/api/Inventory/ThreeLevelDbBD';
   import { utils, writeFile } from 'xlsx';
   export default {
     name: 'ThreeLevelDbBD',
@@ -146,6 +142,8 @@ import { getThirdStockInfo, getThirdStockInfoFlow } from '@/api/Inventory/ThreeL
           manufacter: '', // 生产企业
           prodRegistrationCode: '' // 批准文号
         },
+        flowPageSize: 10,
+        flowPageSizes: [10, 20, 50, 100, 9999999],
         columns: [
           {
             prop: 'DEPT_TWO_NAME',
@@ -239,8 +237,10 @@ import { getThirdStockInfo, getThirdStockInfoFlow } from '@/api/Inventory/ThreeL
             showOverflowTooltip: true,
             minWidth: 100,
             formatter: (row, column, cellValue) => {
-              if(Number(row.KS_QTY) == 0) return row.KS_QTY;
-              return Number(row.KS_QTY) + Number(row.JF_QTY) + Number(row.JF_DEF_QTY);
+              if (Number(row.KS_QTY) == 0) return row.KS_QTY;
+              return (
+                Number(row.KS_QTY) + Number(row.JF_QTY) + Number(row.JF_DEF_QTY)
+              );
             }
           },
           {
@@ -266,10 +266,10 @@ import { getThirdStockInfo, getThirdStockInfoFlow } from '@/api/Inventory/ThreeL
             slot: 'action',
             showOverflowTooltip: true
             //fixed: 'right'
-          },
+          }
         ],
         flowDialogVisible: false,
-        flowRow : {},
+        flowRow: {},
         flowColumns: [
           {
             prop: 'VARIETIE_CODE_NEW',
@@ -356,13 +356,46 @@ import { getThirdStockInfo, getThirdStockInfoFlow } from '@/api/Inventory/ThreeL
             minWidth: 140
           },
           {
+            prop: 'PACK_TYPE',
+            label: '类型',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 140,
+            formatter: (row, column, cellValue) => {
+              if (row.BARCODE_NUMBER && row.BARCODE_NUMBER == '-')
+                return '散货';
+              else {
+                return '定数包';
+              }
+            }
+          },
+          {
+            prop: 'BARCODE_NUMBER',
+            label: '定数包',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 180
+          },
+          {
+            prop: 'TYPE',
+            label: '出入库类型',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 140,
+            formatter: (row, column, cellValue) => {
+              if(Number(row.QTY) > 0 && row.HOSPITALIZATION_NUMBER) return '消退';
+              if (Number(row.QTY) > 0) return '入库';
+              if (Number(row.QTY) < 0) return '出库';
+            }
+          },
+          {
             prop: 'QTY',
-            label: '消耗数量',
+            label: '数量',
             align: 'center',
             showOverflowTooltip: true,
             minWidth: 100
-          },
-        ],
+          }
+        ]
       };
     },
     methods: {
@@ -435,13 +468,12 @@ import { getThirdStockInfo, getThirdStockInfoFlow } from '@/api/Inventory/ThreeL
                     Sheet1: utils.aoa_to_sheet(dataArray)
                   }
                 },
-                '三级库存信息.xlsx'
+                '三级库-库存信息.xlsx'
               );
               this.$message.success('导出成功');
             })
             .catch((error) => {
               loading.close();
-              console.error('导出数据失败:', error);
               this.$message.error('导出数据失败，请稍后重试');
             });
         } catch (error) {
@@ -453,7 +485,7 @@ import { getThirdStockInfo, getThirdStockInfoFlow } from '@/api/Inventory/ThreeL
       showFlowDialog(row) {
         this.flowDialogVisible = true;
         this.flowRow = row;
-        this.flowDatasource({ page: 1, limit: 10 })
+        this.flowDatasource({ page: 1, limit: this.flowPageSize })
           .then((res) => {
             this.$refs.flowTable.reload({ list: res.list, count: res.count });
           })
@@ -465,9 +497,10 @@ import { getThirdStockInfo, getThirdStockInfoFlow } from '@/api/Inventory/ThreeL
         // 这里可以实现流向记录的查询逻辑
         const where = {
           varCode: this.flowRow.VARIETIE_CODE_NEW,
-          chargingCode: this.flowRow.CHARGE_CODE
-        }
-        return getThirdStockInfoFlow({ page, limit, where})
+          chargingCode: this.flowRow.CHARGE_CODE,
+          DeptCode: this.flowRow.DEPT_TWO_CODE
+        };
+        return getThirdStockInfoFlow({ page, limit, where })
           .then((res) => {
             return {
               list: res.data || [],
