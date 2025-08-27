@@ -101,7 +101,7 @@ export default {
         },
         {
           // prop: 'KC_COUNT',
-          prop: 'replenish_time',
+          prop: 'BATCH_VALIDITY_PERIOD',
           label: '效期',
 
           align: 'center',
