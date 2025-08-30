@@ -384,3 +384,17 @@ export async function upIS_XM(params) {
   }
   return Promise.reject(res.data);
 }
+
+// 北大深圳预约历史新增缺失
+export async function bdszyyLsAddDef(params) {
+  const formatData = {
+    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+    SSBH: params.SSBH || '',
+    DEF_NO_PKG_CODE: params.DEF_NO_PKG_CODE || ''
+  };
+  let res = await request.post('/DeptPlanTransfer/bdszyyLsAddDef', formatData);
+  if (res.data.code == 200) {
+    return res.data;
+  }
+  return Promise.reject(res.data);
+}

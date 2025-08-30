@@ -64,6 +64,15 @@
           >
             取消打包收费
           </el-button>
+          <el-button
+            size="mini"
+            type="primary"
+            icon="el-icon-scan"
+            class="ele-btn-icon"
+            @click="showScanDialog"
+          >
+            扫码添加录入
+          </el-button>
         </div>
       </template>
 
@@ -94,12 +103,40 @@
         <el-tag v-if="row.DEPT_TWO_QTY > 0" type="success" size="mini">
           已审核
         </el-tag>
-        <el-tag v-else-if="row.DEPT_TWO_QTY == 0 || row.DEPT_TWO_QTY == '0'" type="warning" size="mini">
+        <el-tag
+          v-else-if="row.DEPT_TWO_QTY == 0 || row.DEPT_TWO_QTY == '0'"
+          type="warning"
+          size="mini"
+        >
           未审核
         </el-tag>
         <span v-else>{{ row.DEPT_TWO_QTY }}</span>
       </template>
     </ele-pro-table>
+
+    <!-- 扫码添加录入弹框 -->
+    <el-dialog
+      title="扫码添加录入"
+      :visible.sync="scanDialogVisible"
+      width="400px"
+      :close-on-click-modal="false"
+    >
+      <el-form :model="scanForm" label-width="80px">
+        <el-form-item label="定数码">
+          <el-input
+            v-model="scanForm.defNoPkgCode"
+            placeholder="请输入定数码"
+            clearable
+          ></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="scanDialogVisible = false">取消</el-button>
+        <el-button type="primary" @click="handleScanAdd" :loading="scanLoading">
+          确定
+        </el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 <style scoped lang="scss">
@@ -140,7 +177,8 @@
   import {
     GetBdszZqsjMainUseDel,
     deleteUsedQty,
-    upIS_XM
+    upIS_XM,
+    bdszyyLsAddDef
   } from '@/api/Task/SurgicalVerification';
   import { BACK_BASE_URL } from '@/config/setting';
   export default {
@@ -269,7 +307,13 @@
         selection: [],
         // 当前编辑数据
         current: null,
-        parentCurrent: null
+        parentCurrent: null,
+        // 扫码添加录入弹框
+        scanDialogVisible: false,
+        scanLoading: false,
+        scanForm: {
+          defNoPkgCode: ''
+        }
       };
     },
     watch: {
@@ -394,6 +438,39 @@
           .finally(() => {
             loading.close();
           });
+      },
+      // 显示扫码添加录入弹框
+      showScanDialog() {
+        if (
+          this.parentCurrent == null ||
+          Object.keys(this.parentCurrent).length == 0
+        ) {
+          return this.$message.warning('请先选择一条数据');
+        }
+        this.scanDialogVisible = true;
+        this.scanForm.defNoPkgCode = '';
+      },
+      // 处理扫码添加录入
+      async handleScanAdd() {
+        if (!this.scanForm.defNoPkgCode.trim()) {
+          this.$message.warning('请输入定数码');
+          return;
+        }
+        
+        this.scanLoading = true;
+        try {
+          const res = await bdszyyLsAddDef({
+            SSBH: this.parentCurrent.SSBH,
+            DEF_NO_PKG_CODE: this.scanForm.defNoPkgCode.trim()
+          });
+          this.$message.success(res.msg || '添加成功');
+          this.scanDialogVisible = false;
+          this.reload();
+        } catch (err) {
+          this.$message.error(err.msg || '添加失败');
+        } finally {
+          this.scanLoading = false;
+        }
       }
     },
     created() {
