@@ -127,6 +127,7 @@
             v-model="scanForm.defNoPkgCode"
             placeholder="请输入定数码"
             clearable
+            @keyup.enter.native="handleScanAdd"
           ></el-input>
         </el-form-item>
       </el-form>
@@ -452,11 +453,16 @@
       },
       // 处理扫码添加录入
       async handleScanAdd() {
+        // 防抖：如果正在处理中，直接返回
+        if (this.scanLoading) {
+          return;
+        }
+
         if (!this.scanForm.defNoPkgCode.trim()) {
           this.$message.warning('请输入定数码');
           return;
         }
-        
+
         this.scanLoading = true;
         try {
           const res = await bdszyyLsAddDef({
