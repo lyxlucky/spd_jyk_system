@@ -74,6 +74,21 @@
             <el-button type="primary" @click="reload()">查询</el-button>
             <el-button type="success" @click="exportData()">导出</el-button>
           </el-form-item>
+          <el-form-item>
+            <el-upload
+              ref="upload"
+              :action="uploadUrl"
+              :headers="uploadHeaders"
+              :data="uploadData"
+              :show-file-list="false"
+              :on-success="handleUploadSuccess"
+              :on-error="handleUploadError"
+              :before-upload="beforeUpload"
+              accept=".xlsx,.xls,.csv"
+            >
+              <el-button type="warning" size="mini">上传初始化库存</el-button>
+            </el-upload>
+          </el-form-item>
         </el-form>
       </template>
       <template v-slot:action="{ row }">
@@ -105,13 +120,22 @@
           cache-key="ThreeLevelDbBDFlowTable"
         >
           <template v-slot:toolbar>
-            <h1>
-              总计费数量:
-              {{
-                Number(flowRow.JF_QTY) + Number(flowRow.JF_DEF_QTY)
-              }}
-              总库存数: {{ flowRow.KS_QTY }}
-            </h1>
+            <div style="display: flex; gap: 10px">
+              <h1>
+                总入库数量：{{ Number(flowRow.KS_QTY) }}
+                总计费数量:
+                {{ Number(flowRow.JF_QTY) + Number(flowRow.JF_DEF_QTY) }}
+                库存数:
+                {{
+                  Number(flowRow.KS_QTY) +
+                  Number(flowRow.JF_QTY) +
+                  Number(flowRow.JF_DEF_QTY)
+                }}
+              </h1>
+              <el-button type="success" size="mini" @click="exportFlowData()"
+                >导出Excel</el-button
+              >
+            </div>
           </template>
         </ele-pro-table>
       </div>
@@ -124,6 +148,7 @@
     getThirdStockInfo,
     getThirdStockInfoFlow
   } from '@/api/Inventory/ThreeLevelDbBD';
+  import { TOKEN_STORE_NAME } from '@/config/setting';
   import { utils, writeFile } from 'xlsx';
   export default {
     name: 'ThreeLevelDbBD',
@@ -243,20 +268,20 @@
               );
             }
           },
-          {
-            prop: 'XH_QTY',
-            label: '消耗数量',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 100
-          },
-          {
-            prop: 'JS_QTY',
-            label: '结算数量',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 100
-          },
+          // {
+          //   prop: 'XH_QTY',
+          //   label: '消耗数量',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   minWidth: 100
+          // },
+          // {
+          //   prop: 'JS_QTY',
+          //   label: '结算数量',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   minWidth: 100
+          // },
           {
             columnKey: 'action',
             label: '操作',
@@ -270,6 +295,15 @@
         ],
         flowDialogVisible: false,
         flowRow: {},
+        uploadUrl: '/api/lhfy/uploadThirdInventory', // 上传接口地址，请根据实际情况修改
+        uploadHeaders: {
+          // 上传请求头，请根据实际情况修改
+          Authorization: 'Bearer ' + localStorage.getItem('token') || ''
+        },
+        uploadData: {
+          // 上传时附带的额外参数
+          Token: sessionStorage.getItem(TOKEN_STORE_NAME)
+        },
         flowColumns: [
           {
             prop: 'VARIETIE_CODE_NEW',
@@ -362,19 +396,33 @@
             showOverflowTooltip: true,
             minWidth: 140,
             formatter: (row, column, cellValue) => {
-              if (row.BARCODE_NUMBER && row.BARCODE_NUMBER == '-')
+              if (row.TYPE && row.TYPE == '2') {
                 return '散货';
-              else {
+              }
+              if (row.TYPE && row.TYPE == '3') {
+                return '定数包';
+              }
+              if (row.BARCODE_NUMBER && row.BARCODE_NUMBER == '-') {
+                return '散货';
+              } else {
                 return '定数包';
               }
             }
           },
           {
             prop: 'BARCODE_NUMBER',
-            label: '定数包',
+            label: '定数包号',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 180
+            minWidth: 180,
+            formatter: (row, column, cellValue) => {
+              if (row.TYPE && row.TYPE == '3') {
+                return row.ORIGING_CODE;
+              }
+              if (row.BARCODE_NUMBER && row.BARCODE_NUMBER != '-') {
+                return row.BARCODE_NUMBER;
+              }
+            }
           },
           {
             prop: 'TYPE',
@@ -383,7 +431,8 @@
             showOverflowTooltip: true,
             minWidth: 140,
             formatter: (row, column, cellValue) => {
-              if(Number(row.QTY) > 0 && row.HOSPITALIZATION_NUMBER) return '消退';
+              if (Number(row.QTY) > 0 && row.HOSPITALIZATION_NUMBER)
+                return '消退';
               if (Number(row.QTY) > 0) return '入库';
               if (Number(row.QTY) < 0) return '出库';
             }
@@ -413,6 +462,29 @@
               count: 0
             };
           });
+      },
+      beforeUpload(file) {
+        const isExcel =
+          file.type ===
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
+          file.type === 'application/vnd.ms-excel';
+        if (!isExcel) {
+          this.$message.error('只能上传Excel文件!');
+          return false;
+        }
+        this.$message.info(`开始上传文件: ${file.name}`);
+        return true;
+      },
+      handleUploadSuccess(response, file, fileList) {
+        if (response.code === 200) {
+          this.$message.success('文件上传成功!');
+          this.reload();
+        } else {
+          this.$message.error(`文件上传失败: ${response.msg}`);
+        }
+      },
+      handleUploadError(err, file, fileList) {
+        this.$message.error(`文件上传失败: ${err.msg}`);
       },
       reload() {
         this.$refs.table.reload({ page: 1, where: this.form });
@@ -513,6 +585,105 @@
               count: 0
             };
           });
+      },
+      exportFlowData() {
+        const loading = this.$messageLoading('正在导出数据...');
+        try {
+          // 直接使用当前的查询条件进行全量导出
+          getThirdStockInfoFlow({
+            page: 1,
+            limit: 999999,
+            where: {
+              varCode: this.flowRow.VARIETIE_CODE_NEW,
+              chargingCode: this.flowRow.CHARGE_CODE,
+              DeptCode: this.flowRow.DEPT_TWO_CODE
+            }
+          })
+            .then((response) => {
+              loading.close();
+              const headers = [
+                '品种编码',
+                '计费编码',
+                '品种名称',
+                '规格型号',
+                '单位',
+                '转换比',
+                '批准文号',
+                '生产企业',
+                '病患号',
+                '住院号',
+                '计费时间',
+                '类型',
+                '定数包号',
+                '数量'
+              ];
+              const dataArray = [headers];
+              response.data.forEach((d) => {
+                // 根据formatter逻辑处理数据
+                let packType = '';
+                if (d.TYPE && d.TYPE == '2') {
+                  packType = '散货';
+                } else if (d.TYPE && d.TYPE == '3') {
+                  packType = '定数包';
+                } else if (d.BARCODE_NUMBER && d.BARCODE_NUMBER == '-') {
+                  packType = '散货';
+                } else {
+                  packType = '定数包';
+                }
+
+                let barcodeNumber = '';
+                if (d.TYPE && d.TYPE == '3') {
+                  barcodeNumber = d.ORIGING_CODE || '';
+                } else if (d.BARCODE_NUMBER && d.BARCODE_NUMBER != '-') {
+                  barcodeNumber = d.BARCODE_NUMBER;
+                }
+
+                let type = '';
+                if (Number(d.QTY) > 0 && d.HOSPITALIZATION_NUMBER) {
+                  type = '消退';
+                } else if (Number(d.QTY) > 0) {
+                  type = '入库';
+                } else if (Number(d.QTY) < 0) {
+                  type = '出库';
+                }
+
+                dataArray.push([
+                  d.VARIETIE_CODE_NEW || '',
+                  d.CHARGING_CODE || '',
+                  d.VARIETIE_NAME || '',
+                  d.SPECIFICATION_OR_TYPE || '',
+                  d.UNIT || '',
+                  d.HIS_ZHB || '',
+                  d.APPROVAL_NUMBER || '',
+                  d.MANUFACTURING_ENT_NAME || '',
+                  d.PATIENT_NUMBER || '',
+                  d.HOSPITALIZATION_NUMBER || '',
+                  d.OPEARTION_CHARGING_TIME || '',
+                  packType,
+                  barcodeNumber,
+                  d.QTY || ''
+                ]);
+              });
+              writeFile(
+                {
+                  SheetNames: ['Sheet1'],
+                  Sheets: {
+                    Sheet1: utils.aoa_to_sheet(dataArray)
+                  }
+                },
+                '三级库-流向记录.xlsx'
+              );
+              this.$message.success('导出成功');
+            })
+            .catch((error) => {
+              loading.close();
+              this.$message.error('导出数据失败，请稍后重试');
+            });
+        } catch (error) {
+          loading.close();
+          console.error('导出数据失败:', error);
+          this.$message.error('导出数据失败，请稍后重试');
+        }
       }
     }
   };
