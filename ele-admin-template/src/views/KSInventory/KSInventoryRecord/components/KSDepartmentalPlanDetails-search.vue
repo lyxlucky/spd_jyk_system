@@ -86,7 +86,7 @@
           </el-select>
         </el-form-item>
       </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 6 }">
+      <el-col v-bind="styleResponsive ? { lg: 6, md: 12 } : { span: 6 }">
         <el-form-item label-width="0px">
           <div class="ele-form-actions">
             <el-button
@@ -108,10 +108,20 @@
             <el-button size="mini" icon="el-icon-refresh" @click="reset"
               >重置</el-button
             >
+
+             <el-button
+              type="primary"
+              icon="el-icon-view"
+              size="mini"
+              @click="KSDepartmentalPlanDetailsGroupTipShow = true"
+              >查看汇总</el-button
+          >
           </div>
         </el-form-item>
       </el-col>
     </el-row>
+    <KSDepartmentalPlanDetailsGroupTip :visible.sync="KSDepartmentalPlanDetailsGroupTipShow" />
+
   </el-form>
 </template>
 
@@ -123,11 +133,13 @@
     ToExamine
   } from '@/api/KSInventory/KSDepartmentalPlan';
   import IntroduceUserDefinedTemp from '@/views/KSInventory/IntroduceUserDefinedTemp/index.vue';
+  import KSDepartmentalPlanDetailsGroupTip from '@/views/KSInventory/KSInventoryRecord/components/KSDepartmentalPlanDetailsGroup/index.vue';
 
   export default {
     props: ['KSDepartmentalPlanDataSearch', 'selection', 'datasourceList'],
     components: {
-      IntroduceUserDefinedTemp
+      IntroduceUserDefinedTemp,
+      KSDepartmentalPlanDetailsGroupTip
       // IntroduceDefinedTemp
     },
     data() {
@@ -146,6 +158,7 @@
       return {
         // 表单数据
         where: { ...defaultWhere },
+        KSDepartmentalPlanDetailsGroupTipShow: false,
         pickerOptions: {
           shortcuts: [
             {
