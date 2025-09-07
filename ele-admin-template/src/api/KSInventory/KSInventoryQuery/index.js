@@ -133,7 +133,7 @@ export async function GetJykDetailShelfNew(data) {
     data2.startTime = startTime ? startTime : '';
     data2.endTime = endTime ? endTime : '';
 
-    const res = await request.get('/AJykDept/GetJykDetailShelfNewGroup', {
+    const res = await request.get('/AJykDept/GetJykDetailShelfNew', {
         params: data2,
     });
     if (res.data.code == 200) {
