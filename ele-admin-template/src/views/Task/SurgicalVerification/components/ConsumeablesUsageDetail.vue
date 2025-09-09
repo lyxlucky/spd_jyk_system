@@ -124,6 +124,7 @@
       <el-form :model="scanForm" label-width="80px">
         <el-form-item label="定数码">
           <el-input
+            ref="defNoPkgCodeInput"
             v-model="scanForm.defNoPkgCode"
             placeholder="请输入定数码"
             clearable
@@ -450,6 +451,10 @@
         }
         this.scanDialogVisible = true;
         this.scanForm.defNoPkgCode = '';
+        // 等待DOM更新后聚焦输入框
+        this.$nextTick(() => {
+          this.$refs.defNoPkgCodeInput.focus();
+        });
       },
       // 处理扫码添加录入
       async handleScanAdd() {
@@ -464,17 +469,23 @@
         }
 
         this.scanLoading = true;
+        const loading = this.$messageLoading('正在添加中...');
         try {
           const res = await bdszyyLsAddDef({
             SSBH: this.parentCurrent.SSBH,
             DEF_NO_PKG_CODE: this.scanForm.defNoPkgCode.trim()
           });
           this.$message.success(res.msg || '添加成功');
-          this.scanDialogVisible = false;
+          // 清空输入框并重新聚焦
+          this.scanForm.defNoPkgCode = '';
+          this.$nextTick(() => {
+            this.$refs.defNoPkgCodeInput.focus();
+          });
           this.reload();
         } catch (err) {
           this.$message.error(err.msg || '添加失败');
         } finally {
+          loading.close();
           this.scanLoading = false;
         }
       }
