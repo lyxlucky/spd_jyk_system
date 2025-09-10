@@ -152,6 +152,19 @@
             fixed: 'right'
           },
           {
+            prop: 'VAR_REMARK',
+            label: '品种备注',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 120,
+            formatter: (_row, _column, cellValue) => {
+              if (cellValue == null) {
+                cellValue = '无';
+              }
+              return cellValue;
+            }
+          },
+          {
             prop: 'VARIETIE_CODE_NEW',
             label: '品种编码',
             // sortable: 'custom',

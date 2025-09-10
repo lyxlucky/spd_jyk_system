@@ -220,6 +220,13 @@
             minWidth: 80
           },
           {
+            prop: 'PRICE',
+            label: '单价',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 80,
+          },
+          {
             prop: 'HIS_ZHB',
             label: '转换比',
             align: 'center',

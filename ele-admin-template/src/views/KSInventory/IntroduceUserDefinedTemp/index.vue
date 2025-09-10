@@ -102,6 +102,19 @@
             showOverflowTooltip: true,
             fixed: 'left'
           },
+          {
+            prop: 'VAR_REMARK',
+            label: '品种备注',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 120,
+            formatter: (_row, _column, cellValue) => {
+              if (cellValue == null) {
+                cellValue = '无';
+              }
+              return cellValue;
+            }
+          },
           // {
           //   columnKey: 'action',
           //   label: '操作',
