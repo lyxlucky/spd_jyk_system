@@ -129,6 +129,7 @@
             placeholder="请输入定数码"
             clearable
             @keyup.enter.native="handleScanAdd"
+            @input="handleScanInput"
           ></el-input>
         </el-form-item>
       </el-form>
@@ -315,7 +316,10 @@
         scanLoading: false,
         scanForm: {
           defNoPkgCode: ''
-        }
+        },
+        // 扫码自动提交相关
+        scanInputTimer: null,
+        lastInputTime: 0
       };
     },
     watch: {
@@ -478,16 +482,40 @@
           this.$message.success(res.msg || '添加成功');
           // 清空输入框并重新聚焦
           this.scanForm.defNoPkgCode = '';
-          this.$nextTick(() => {
-            this.$refs.defNoPkgCodeInput.focus();
-          });
           this.reload();
         } catch (err) {
           this.$message.error(err.msg || '添加失败');
         } finally {
           loading.close();
           this.scanLoading = false;
+          this.$nextTick(() => {
+            this.$refs.defNoPkgCodeInput.focus();
+          });
         }
+      },
+      // 处理扫码输入，自动检测扫码完成
+      handleScanInput(value) {
+        const currentTime = Date.now();
+        this.lastInputTime = currentTime;
+        
+        // 清除之前的定时器
+        if (this.scanInputTimer) {
+          clearTimeout(this.scanInputTimer);
+        }
+        
+        // 设置固定延迟时间
+        const delay = 500;
+        
+        // 设置新的定时器，在指定延迟后自动提交
+        this.scanInputTimer = setTimeout(() => {
+          // 检查是否在延迟期间有新的输入
+          if (Date.now() - this.lastInputTime >= delay - 50) {
+            // 如果输入内容不为空，自动提交
+            if (value && value.trim()) {
+              this.handleScanAdd();
+            }
+          }
+        }, delay);
       }
     },
     created() {
@@ -509,6 +537,10 @@
       this.$bus.$off('AdVanceReceiptNumberDelTableCurrentChange');
       this.$bus.$off('ConsumeableUsageDetailApprove');
       this.$bus.$off('ConsumeableUsageDetailCancel');
+      // 清理扫码定时器
+      if (this.scanInputTimer) {
+        clearTimeout(this.scanInputTimer);
+      }
     }
   };
 </script>
