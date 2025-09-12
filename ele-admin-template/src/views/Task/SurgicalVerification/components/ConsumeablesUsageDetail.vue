@@ -14,6 +14,7 @@
       :selection.sync="selection"
       @selection-change="onSelectionChange"
       @current-change="onCurrentChange"
+      :row-class-name="getRowClassName"
       cache-key="ConsumeablesUsageDetailCacheKey"
     >
       <template v-slot:toolbar>
@@ -175,6 +176,23 @@
     padding: 0px 0;
     box-sizing: border-box;
   } */
+
+  /* 扫码录入行的绿色背景样式 */
+  ::v-deep .el-table .scan-input-row {
+    background-color: #e8f5e8 !important;
+  }
+
+  ::v-deep .el-table .scan-input-row:hover {
+    background-color: #d4edda !important;
+  }
+
+  ::v-deep .el-table .scan-input-row td {
+    background-color: #e8f5e8 !important;
+  }
+
+  ::v-deep .el-table .scan-input-row:hover td {
+    background-color: #d4edda !important;
+  }
 </style>
 <script>
   import {
@@ -311,6 +329,8 @@
         // 当前编辑数据
         current: null,
         parentCurrent: null,
+        // 保存上次的请求参数
+        lastRequestParams: null,
         // 扫码添加录入弹框
         scanDialogVisible: false,
         scanLoading: false,
@@ -334,6 +354,15 @@
     methods: {
       async datasource({ page, limit, where, order }) {
         where.SSBH = this.parentCurrent?.SSBH;
+
+        // 保存当前请求参数
+        this.lastRequestParams = {
+          page,
+          limit,
+          where: { ...where },
+          order
+        };
+
         let data = await GetBdszZqsjMainUseDel({
           page,
           limit,
@@ -369,6 +398,12 @@
       },
       onCurrentChange(current) {
         this.current = current;
+      },
+      getRowClassName({ row, rowIndex }) {
+        if (row.REMARK == '扫码录入') {
+          return 'scan-input-row';
+        }
+        return '';
       },
       cancel() {
         this.$bus.$emit('ConsumeableUsageDetailCancel', this.current);
@@ -482,12 +517,13 @@
           this.$message.success(res.msg || '添加成功');
           // 清空输入框并重新聚焦
           this.scanForm.defNoPkgCode = '';
-          this.reload();
+          this.reload(this.lastRequestParams?.where);
         } catch (err) {
           this.$message.error(err.msg || '添加失败');
         } finally {
           loading.close();
           this.scanLoading = false;
+          // this.reload(this.lastRequestParams?.where);
           this.$nextTick(() => {
             this.$refs.defNoPkgCodeInput.focus();
           });
@@ -497,15 +533,15 @@
       handleScanInput(value) {
         const currentTime = Date.now();
         this.lastInputTime = currentTime;
-        
+
         // 清除之前的定时器
         if (this.scanInputTimer) {
           clearTimeout(this.scanInputTimer);
         }
-        
+
         // 设置固定延迟时间
         const delay = 500;
-        
+
         // 设置新的定时器，在指定延迟后自动提交
         this.scanInputTimer = setTimeout(() => {
           // 检查是否在延迟期间有新的输入
