@@ -112,6 +112,8 @@
           未审核
         </el-tag>
         <span v-else>{{ row.DEPT_TWO_QTY }}</span>
+        /
+        <span>{{ row.IS_XM == 1 ? '是' : '否' }}</span>
       </template>
     </ele-pro-table>
 
@@ -255,8 +257,8 @@
             width: 130
           },
           {
-            prop: 'DEPT_TWO_QTY',
-            label: '审核状态',
+            // prop: 'DEPT_TWO_QTY',
+            label: '审核状态/是否打包',
             align: 'center',
             width: 130,
             slot: 'DEPT_TWO_QTY'
@@ -288,17 +290,17 @@
             width: 130,
             showOverflowTooltip: true
           },
-          {
-            prop: 'IS_XM',
-            label: '是否收费',
-            align: 'center',
-            width: 100,
-            formatter: (row) => {
-              if (row.IS_XM === 0 || row.IS_XM === '0') return '是';
-              if (row.IS_XM === 1 || row.IS_XM === '1') return '否';
-              return row.IS_XM;
-            }
-          },
+          // {
+          //   prop: 'IS_XM',
+          //   label: '是否收费',
+          //   align: 'center',
+          //   width: 100,
+          //   formatter: (row) => {
+          //     if (row.IS_XM === 0 || row.IS_XM === '0') return '否';
+          //     if (row.IS_XM === 1 || row.IS_XM === '1') return '是';
+          //     return row.IS_XM;
+          //   }
+          // },
           {
             prop: 'DEF_NO_PKG_CODE',
             label: '定数码',
