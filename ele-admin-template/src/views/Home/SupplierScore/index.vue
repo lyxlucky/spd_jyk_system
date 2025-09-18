@@ -52,6 +52,20 @@
                 >撤回</el-button>
               </template>
             </el-popconfirm>
+
+            <el-popconfirm
+              title="确定删除？"
+              @confirm="deleteItem(row)"
+            >
+              <template v-slot:reference>
+                <el-button
+                  size="mini"
+                  type="danger"
+                  style="margin-right: 4px;"
+                  @click.stop
+                >删除</el-button>
+              </template>
+            </el-popconfirm>
           </template>
           <template v-slot:toolbar>
             <!-- 搜索表单 -->
@@ -280,6 +294,7 @@
     <el-dialog
       :title="`${where?.vendorType || ''}评分`"
       :visible.sync="scoreDialogVisible"
+      top="5vh"
       width="900px"
       @close="closeScoreDialog"
       :close-on-click-modal="false"
@@ -661,7 +676,7 @@
           {
             columnKey: 'action',
             label: '操作',
-            width: 160,
+            width: 220,
             align: 'center',
             resizable: false,
             slot: 'action',
