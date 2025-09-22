@@ -164,6 +164,15 @@
         </div>
       </el-col>
     </el-row> -->
+
+    <!-- 项目类型选择对话框 -->
+    <ProjectTypeDialog
+      :visible="showProjectTypeDialog"
+      :bz="BZ"
+      @update:visible="showProjectTypeDialog = $event"
+      @confirm="handleDialogConfirm"
+      @cancel="handleDialogCancel"
+    />
   </el-form>
 </template>
 
@@ -171,9 +180,14 @@
   import { HOME_HP } from '@/config/setting';
   import {
     CreatList,
-    ReturnInitState
+    ReturnInitState,
+    getResearchProjects
   } from '@/api/KSInventory/KSDepartmentalPlan';
+  import ProjectTypeDialog from './ProjectTypeDialog.vue';
   export default {
+    components: {
+      ProjectTypeDialog
+    },
     data() {
       // 默认表单数据
       const defaultWhere = {
@@ -188,7 +202,8 @@
       return {
         // 表单数据
         where: { ...defaultWhere },
-        BZ: ''
+        BZ: '',
+        showProjectTypeDialog: false
       };
     },
     computed: {
@@ -212,6 +227,17 @@
       },
       /* 创建申领单 */
       CreatApplicationForm() {
+        if (this.isBDRM) {
+          // 如果是bdrm环境，显示项目类型选择对话框
+          this.showProjectTypeDialog = true;
+        } else {
+          // 非bdrm环境，直接创建
+          this.createApplicationDirectly();
+        }
+      },
+
+      /* 直接创建申领单（非bdrm环境） */
+      createApplicationDirectly() {
         const loading = this.$loading({ lock: true });
         var data = {
           BZ: this.BZ,
@@ -223,7 +249,29 @@
           loading.close();
           this.$message.success(res.msg);
           this.$emit('search', this.where);
+        }).catch((error) => {
+          loading.close();
+          this.$message.error(error.message || '创建失败');
         });
+      },
+
+      /* 处理对话框确认 */
+      handleDialogConfirm(createData) {
+        const loading = this.$loading({ lock: true });
+        CreatList(createData).then((res) => {
+          loading.close();
+          this.$message.success(res.msg);
+          this.showProjectTypeDialog = false;
+          this.$emit('search', this.where);
+        }).catch((error) => {
+          loading.close();
+          this.$message.error(error.message || '创建失败');
+        });
+      },
+
+      /* 处理对话框取消 */
+      handleDialogCancel() {
+        this.showProjectTypeDialog = false;
       }
     },
 

@@ -509,35 +509,39 @@
               loading.close();
               const headers = [
                 '二级科室名称',
-                '批准文号',
                 '品种编码',
                 '计费编码',
                 '品种名称',
                 '规格型号',
                 '生产企业',
                 '单位',
+                '单价',
                 '转换比',
-                '计费数量',
-                '库存数量',
-                '消耗数量',
-                '结算数量'
+                '批准文号',
+                '散货计费数量',
+                '定数包计费数量',
+                '入库数量',
+                '库存数量'
               ];
               const dataArray = [headers];
               response.data.forEach((d) => {
+                // 计算库存数量，与表格中的formatter逻辑一致
+                const ksQtyTotal = Number(d.KS_QTY) + Number(d.JF_QTY) + Number(d.JF_DEF_QTY);
                 dataArray.push([
                   d.DEPT_TWO_NAME || '',
-                  d.APPROVAL_NUMBER || '',
                   d.VARIETIE_CODE_NEW || '',
                   d.CHARGE_CODE || '',
                   d.VARIETIE_NAME || '',
                   d.SPECIFICATION_OR_TYPE || '',
                   d.MANUFACTURING_ENT_NAME || '',
                   d.UNIT || '',
+                  d.PRICE || '',
                   d.HIS_ZHB || '',
+                  d.APPROVAL_NUMBER || '',
                   d.JF_QTY || '',
+                  d.JF_DEF_QTY || '',
                   d.KS_QTY || '',
-                  d.XH_QTY || '',
-                  d.JS_QTY || ''
+                  ksQtyTotal || ''
                 ]);
               });
               writeFile(
@@ -622,6 +626,7 @@
                 '计费时间',
                 '类型',
                 '定数包号',
+                '出入库类型',
                 '数量'
               ];
               const dataArray = [headers];
@@ -668,6 +673,7 @@
                   d.OPEARTION_CHARGING_TIME || '',
                   packType,
                   barcodeNumber,
+                  type,
                   d.QTY || ''
                 ]);
               });

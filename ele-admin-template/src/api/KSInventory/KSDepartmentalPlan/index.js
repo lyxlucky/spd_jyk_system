@@ -553,3 +553,20 @@ export async function getVarietieSku(data) {
     return Promise.reject(res.data.msg);
   }
 }
+
+//获取科研项目列表
+export async function getResearchProjects(data) {
+  const formatData = {
+    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+    deptCode: data && data.deptCode ? data.deptCode : store.state.user.info.DeptNow.Dept_Two_Code,
+    page: data && data.page ? data.page : 1,
+    size: data && data.pageSize ? data.pageSize : 20,
+    search: data && data.search ? data.search : ''
+  }
+  const res = await request.post('/pekingApplication/getSubjects', formatData);
+  if (res.data.code == 200) {
+    return res.data;
+  } else {
+    return Promise.reject(res.data.msg);
+  }
+}
