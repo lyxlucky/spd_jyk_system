@@ -904,7 +904,7 @@
         this.$refs.form.validate((valid) => {
           if (valid) {
             const submitData = {
-
+              DEPT_TWO_CODE: this.where.vendorType === '供应商' ? this.$store.state.user.info.DeptNow.Dept_Two_Code : null,
               ...this.formData
             };
 
@@ -1251,6 +1251,7 @@
               ADDRESS: row[3] || '',
               CONTACT_INFO: row[4] || '',
               VENDOR_TYPE: this.where.vendorType,
+              DEPT_TWO_CODE: this.where.vendorType === '供应商' ? this.$store.state.user.info.DeptNow.Dept_Two_Code : null
             }));
           if (suppliers.length === 0) {
             this.$message.warning('没有有效数据');
