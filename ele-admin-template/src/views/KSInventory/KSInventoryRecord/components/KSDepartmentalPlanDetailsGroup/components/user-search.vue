@@ -7,19 +7,19 @@
   >
     <el-row :gutter="10">
       <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 6 }">
-        <el-form-item label="品种：" label-width="60px">
+        <!-- <el-form-item label="品种：" label-width="60px">
           <el-input
             size="mini"
             clearable
             v-model="where.Name"
             placeholder=""
           />
-        </el-form-item>
+        </el-form-item> -->
       </el-col>
 
       <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 4 }">
         <el-form-item>
-          <el-button
+          <!-- <el-button
             size="mini"
             type="primary"
             icon="el-icon-search"
@@ -29,7 +29,7 @@
           >
           <el-button size="mini" icon="el-icon-refresh" @click="reset"
             >重置</el-button
-          >
+          > -->
           <!-- <el-button
             size="mini"
             type="success"

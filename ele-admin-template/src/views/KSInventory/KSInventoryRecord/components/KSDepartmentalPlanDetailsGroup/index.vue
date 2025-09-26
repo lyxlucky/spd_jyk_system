@@ -1,7 +1,7 @@
 <template>
   <ele-modal
     :destroy-on-close="true"
-    width="1800px"
+    width="90%"
     :centered="true"
     :visible="visible"
     :close-on-click-modal="true"
@@ -10,7 +10,7 @@
     @update:visible="updateVisible"
   >
     <div class="ele-body">
-      <el-card shadow="never">
+      <!-- <el-card shadow="never"> -->
         <!-- 搜索表单 -->
         <!-- 数据表格 -->
         <user-search @exportData="handleNewExportData" @search="reload" />
@@ -35,7 +35,7 @@
             </el-form-item>
           </template>
         </ele-pro-table>
-      </el-card>
+      <!-- </el-card> -->
       <!-- <div class="ele-footer" style="display: flex;justify-content: center;">
         <el-button size="small" type="primary" icon="el-icon-plus" class="ele-btn-icon" @click="addKSKSDepartmentalPlanData()">
           确定添加
@@ -80,7 +80,8 @@
       visible: Boolean,
       // 修改回显的数据
       data: Object,
-      IntroduceUserDefinedTempSearch: Object
+      IntroduceUserDefinedTempSearch: Object,
+      where: Object
     },
     components: {
       UserSearch,
@@ -200,10 +201,12 @@
     methods: {
       /* 表格数据源 */
       datasource({ page, limit, where, order }) {
-         let currentDeptCode =
-        this.$store.state.user.info.DeptNow.Dept_Two_Code + ',';
-      where.DeptCode = currentDeptCode;
-   
+        if (this.where) {
+          where = this.where;
+        }
+         let currentDeptCode =this.$store.state.user.info.DeptNow.Dept_Two_Code + ',';
+        where.DeptCode = currentDeptCode;
+        
         let data = GetJykDetailShelfNewGroup({ page, limit, where, order }).then(
           (res) => {
             var tData = {

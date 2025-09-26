@@ -120,7 +120,7 @@
         </el-form-item>
       </el-col>
     </el-row>
-    <KSDepartmentalPlanDetailsGroupTip :visible.sync="KSDepartmentalPlanDetailsGroupTipShow" />
+    <KSDepartmentalPlanDetailsGroupTip :where="where" :visible.sync="KSDepartmentalPlanDetailsGroupTipShow" />
 
   </el-form>
 </template>
