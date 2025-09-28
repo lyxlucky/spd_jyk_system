@@ -195,6 +195,13 @@
             }
           },
           {
+            prop: 'REGION_NAME',
+            label: '库区',
+            align: 'center',
+            showOverflowTooltip: true,
+            width: 100
+          },
+          {
             // slot: 'zkDay',
             prop: '',
             label: '在库天数',
