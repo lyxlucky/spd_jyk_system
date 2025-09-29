@@ -129,6 +129,13 @@
             width: 120
           },
           {
+            prop: 'REGION_NAME',
+            label: '库区',
+            align: 'center',
+            showOverflowTooltip: true,
+            width: 100
+          },
+          {
             prop: 'Varietie_Code_New',
             label: '品种编码',
             align: 'center',
@@ -194,13 +201,7 @@
               return cellValue.replace('T', ' ');
             }
           },
-          {
-            prop: 'REGION_NAME',
-            label: '库区',
-            align: 'center',
-            showOverflowTooltip: true,
-            width: 100
-          },
+          
           {
             // slot: 'zkDay',
             prop: '',

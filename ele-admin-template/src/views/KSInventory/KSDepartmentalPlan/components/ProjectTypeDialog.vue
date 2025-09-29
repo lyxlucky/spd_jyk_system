@@ -61,6 +61,23 @@
           </div>
         </el-select>
       </el-form-item>
+
+      <el-form-item label="库区" prop="region">
+        <el-select
+          v-model="form.region"
+          placeholder="请选择库区"
+          style="width: 100%"
+          :loading="regionLoading"
+          :disabled="!regions.length"
+        >
+          <el-option
+            v-for="region in regions"
+            :key="region.value"
+            :label="region.label"
+            :value="region.value"
+          ></el-option>
+        </el-select>
+      </el-form-item>
     </el-form>
 
     <div slot="footer" class="dialog-footer">
@@ -73,7 +90,7 @@
 </template>
 
 <script>
-import { getResearchProjects } from '@/api/KSInventory/KSDepartmentalPlan';
+import { getResearchProjects, getDeptTwoRegion } from '@/api/KSInventory/KSDepartmentalPlan';
 
 export default {
   name: 'ProjectTypeDialog',
@@ -91,7 +108,8 @@ export default {
     return {
       form: {
         projectType: 'non_research',
-        researchProject: ''
+        researchProject: '',
+        region: ''
       },
       rules: {
         projectType: [
@@ -99,6 +117,9 @@ export default {
         ],
         researchProject: [
           { required: true, message: '请选择科研项目', trigger: 'change' }
+        ],
+        region: [
+          { required: true, message: '请选择库区', trigger: 'change' }
         ]
       },
       researchProjects: [],
@@ -109,10 +130,35 @@ export default {
       currentPage: 1,
       pageSize: 20,
       hasMore: true,
-      currentSearchQuery: ''
+      currentSearchQuery: '',
+      regions: [],
+      regionLoading: false
     };
   },
   methods: {
+
+    async fetchRegions() {
+      this.regionLoading = true;
+      try {
+        const res = await getDeptTwoRegion({
+          deptTwoCode: this.$store.state.user.info.DeptNow.Dept_Two_Code,
+          type: 0,
+          account: this.$store.state.user.info.UserName
+        });
+        if (res && res.data) {
+          this.regions = res.data.map(item => ({
+            label: item.name || item.label || item.REGION_NAME,
+            value: item.REGION_CODE
+          }));
+        }
+      } catch (error) {
+        this.$message.error('获取库区列表失败');
+        console.error('获取库区列表失败:', error);
+      } finally {
+        this.regionLoading = false;
+      }
+    },
+
     async handleProjectTypeChange(value) {
       if (value === 'research') {
         await this.fetchResearchProjects();
@@ -220,7 +266,8 @@ export default {
             State: '2',
             Operater: this.$store.state.user.info.UserName,
             ProjectType: this.form.projectType,
-            ResearchProjectId: this.form.researchProject || null
+            ResearchProjectId: this.form.researchProject || null,
+            REGION_CODE: this.form.region
           };
           this.$emit('confirm', createData);
         }
@@ -239,7 +286,8 @@ export default {
     resetForm() {
       this.form = {
         projectType: 'non_research',
-        researchProject: ''
+        researchProject: '',
+        region: ''
       };
       this.researchProjects = [];
       this.filteredProjects = [];
@@ -250,6 +298,9 @@ export default {
         this.$refs.form.resetFields();
       }
     }
+  },
+  mounted() {
+    this.fetchRegions();
   },
   watch: {
     visible(newVal) {
