@@ -47,17 +47,14 @@
           color="#2ee693"
           >已审核</el-tag
         >
-        
+
         <el-tag
           size="mini"
           v-else-if="row.State == 6 && row.QUANITY == 0"
           type="success"
           >已审批</el-tag
         >
-        <el-tag
-          size="mini"
-          v-else-if="row.State == -6"
-          type="danger"
+        <el-tag size="mini" v-else-if="row.State == -6" type="danger"
           >未审批</el-tag
         >
         <el-tag
@@ -84,7 +81,7 @@
           style="color: white"
           >强制结束</el-tag
         >
-        
+
         <!-- <el-tag
           size="mini"
           v-else-if="
@@ -191,8 +188,10 @@
             showOverflowTooltip: true,
             minWidth: 110,
             formatter: (row, column, cellValue) => {
-              if(row?.SCIENTIFIC_ID) return "科研计划"
-              return "普通计划";
+              if (row?.SCIENTIFIC_ID && row.SCIENTIFIC_ID !== 'null') {
+                return '科研计划';
+              }
+              return '普通计划';
             }
           },
           {

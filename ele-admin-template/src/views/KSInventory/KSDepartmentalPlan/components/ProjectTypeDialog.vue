@@ -220,7 +220,7 @@ export default {
             State: '2',
             Operater: this.$store.state.user.info.UserName,
             ProjectType: this.form.projectType,
-            ResearchProjectId: this.form.researchProject || null
+            ResearchProjectId: this.form.researchProject || ""
           };
           this.$emit('confirm', createData);
         }
