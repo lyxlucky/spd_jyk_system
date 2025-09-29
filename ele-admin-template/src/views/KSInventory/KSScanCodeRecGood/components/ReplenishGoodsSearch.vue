@@ -66,16 +66,38 @@
       width="400px"
       @close="closeScanDialog"
     >
-      <el-input
-        size="mini"
-        id="idDistributeNumber"
-        clearable
-        v-model="DistributeNumber"
-        style="border: 1px solid black; border-radius: 5px"
-        placeholder="请扫码入库"
-        @change="confirmScan"
-        ref="scanInput"
-      />
+      <el-form :model="scanForm" label-width="80px">
+        
+        <el-form-item label="扫码内容">
+          <el-input
+            size="mini"
+            id="idDistributeNumber"
+            clearable
+            v-model="DistributeNumber"
+            style="border: 1px solid black; border-radius: 5px"
+            placeholder="请扫码入库"
+            @change="confirmScan"
+            ref="scanInput"
+          />
+        </el-form-item>
+        <el-form-item label="库区">
+          <el-select
+            v-model="scanForm.region"
+            placeholder="请选择库区"
+            style="width: 100%"
+            :loading="regionLoading"
+            :disabled="!regions.length"
+            clearable
+          >
+            <el-option
+              v-for="region in regions"
+              :key="region.value"
+              :label="region.label"
+              :value="region.value"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="closeScanDialog">取消</el-button>
         <el-button type="primary" @click="confirmScan">确定</el-button>
@@ -86,6 +108,7 @@
 
 <script>
   import { DeptReceivingScanOrder } from '@/api/KSInventory/KSInventoryQuery';
+  import { getDeptTwoRegion } from '@/api/KSInventory/KSDepartmentalPlan';
   export default {
     data() {
       // 默认表单数据
@@ -100,6 +123,13 @@
         DistributeNumber: null,
         deliveryDateRange: null,
         scanDialogVisible: false,
+        // 扫码表单数据
+        scanForm: {
+          region: ''
+        },
+        // 库区相关数据
+        regions: [],
+        regionLoading: false,
         rules: {
           // TempletName: [
           //   {
@@ -138,9 +168,32 @@
           this.where.delivery_end_date = '';
         }
       },
+      /* 获取库区数据 */
+      async fetchRegions() {
+        this.regionLoading = true;
+        try {
+          const res = await getDeptTwoRegion({
+            deptTwoCode: this.$store.state.user.info.DeptNow.Dept_Two_Code,
+            type: 0,
+            account: this.$store.state.user.info.UserName
+          });
+          if (res && res.data) {
+            this.regions = res.data.map(item => ({
+              label: item.name || item.label || item.REGION_NAME,
+              value: item.REGION_CODE
+            }));
+          }
+        } catch (error) {
+          this.$message.error('获取库区列表失败');
+          console.error('获取库区列表失败:', error);
+        } finally {
+          this.regionLoading = false;
+        }
+      },
       /* 打开扫码对话框 */
       openScanDialog() {
         this.scanDialogVisible = true;
+        this.fetchRegions(); // 打开对话框时获取库区数据
         this.$nextTick(() => {
           this.$refs.scanInput.focus();
         });
@@ -149,6 +202,7 @@
       closeScanDialog() {
         this.scanDialogVisible = false;
         this.DistributeNumber = '';
+        this.scanForm.region = ''; // 重置库区选择
       },
       /* 确认扫码 */
       confirmScan() {
@@ -161,7 +215,8 @@
       onSubmit() {
         const loading = this.$messageLoading('正在处理中...');
         var data = {
-          DistributeNumber: this.DistributeNumber
+          DistributeNumber: this.DistributeNumber,
+          REGION_CODE: this.scanForm.region || '' // 添加库区信息
         };
         DeptReceivingScanOrder(data)
           .then((res) => {

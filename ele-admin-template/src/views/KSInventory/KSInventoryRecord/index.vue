@@ -175,6 +175,13 @@ export default {
           minWidth: 110
         },
         {
+          prop: 'REGION_NAME',
+          label: '库区',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 100
+        },
+        {
           prop: 'VARIETIE_CODE_NEW',
           label: '品种编码',
           align: 'center',

@@ -62,11 +62,12 @@
         </el-select>
       </el-form-item>
 
-      <el-form-item label="库区" prop="region">
+      <el-form-item label="库区" prop="region" v-if="false">
         <el-select
           v-model="form.region"
           placeholder="请选择库区"
           style="width: 100%"
+          
           :loading="regionLoading"
           :disabled="!regions.length"
         >
@@ -117,9 +118,6 @@ export default {
         ],
         researchProject: [
           { required: true, message: '请选择科研项目', trigger: 'change' }
-        ],
-        region: [
-          { required: true, message: '请选择库区', trigger: 'change' }
         ]
       },
       researchProjects: [],
