@@ -185,6 +185,17 @@
             fixed: 'right'
           },
           {
+            prop: 'SCIENTIFIC_TYPE',
+            label: '类型',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 110,
+            formatter: (row, column, cellValue) => {
+              if(row?.SCIENTIFIC_ID) return "科研计划"
+              return "普通计划";
+            }
+          },
+          {
             prop: 'PlanNum',
             label: '申领单号',
             align: 'center',

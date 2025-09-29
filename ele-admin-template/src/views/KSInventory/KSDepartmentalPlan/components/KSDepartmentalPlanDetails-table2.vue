@@ -56,6 +56,7 @@
           :KSDepartmentalPlanDataSearch="KSDepartmentalPlanDataSearch"
           :selection="selection"
           @showEditReoad="showEditReoad"
+          @BindBudget="handleBindBudget"
           :datasourceList="datasourceList"
         />
       </template>
@@ -340,6 +341,14 @@
             slot: 'VarCode',
             label: '品种编码',
 
+            align: 'center',
+            showOverflowTooltip: true,
+            width: 150
+          },
+
+          {
+            prop: 'ITEM_NAME',
+            label: '科研费用名称',
             align: 'center',
             showOverflowTooltip: true,
             width: 150
@@ -648,6 +657,9 @@
       openImageDialog(row) {
         this.currentImageRow = row;
         this.imageDialogVisible = true;
+      },
+      handleBindBudget(){
+
       },
       // 关闭图片对话框
       closeImageDialog() {

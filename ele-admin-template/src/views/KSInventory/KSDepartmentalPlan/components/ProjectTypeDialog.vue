@@ -180,16 +180,20 @@ export default {
       this.currentSearchQuery = query;
 
       if (!query) {
+        // 清空搜索时，重新加载所有数据
         await this.fetchResearchProjects(true);
         return;
       }
 
+      // 从服务器搜索
       await this.fetchResearchProjects(true);
     },
 
     handleDropdownVisible(visible) {
       if (!visible) {
         this.currentSearchQuery = '';
+        // 当下拉框关闭时，重新加载所有数据
+        this.fetchResearchProjects(true);
       }
     },
 

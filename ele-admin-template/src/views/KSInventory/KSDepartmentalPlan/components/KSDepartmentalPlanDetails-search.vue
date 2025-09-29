@@ -210,6 +210,18 @@
           >
             导出
           </el-button>
+
+          <!-- 绑定费用项 -->
+          <el-button
+            type="primary"
+            size="mini"
+            icon="el-icon-s-grid"
+            class="ele-btn-icon"
+            @click="handleBindBudget"
+            :disabled="!selection || selection.length === 0"
+          >
+            绑定费用项
+          </el-button>
         </div>
       </el-col>
     </el-row>
@@ -340,6 +352,34 @@
       @confirm="confirmSubmitWithExpiredCertificates"
       @cancel="handleExpiredCertificateCancel"
     />
+
+    <!-- 绑定费用项对话框 -->
+    <el-dialog
+      title="绑定费用项"
+      :visible.sync="bindBudgetDialogVisible"
+      width="80%"
+      :close-on-click-modal="false"
+      append-to-body
+      top="5vh"
+    >
+      <ele-pro-table
+        ref="budgetTable"
+        :columns="budgetColumns"
+        :datasource="budgetDatasource"
+        :selection.sync="budgetSelection"
+        :tool-style="{ display: 'none' }"
+        height="400px"
+        :page-sizes="[10, 20, 50, 100]"
+        :page-size="20"
+        :highlight-current-row="true"
+        @selection-change="handleBudgetSelectionChange"
+      >
+      </ele-pro-table>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="bindBudgetDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="confirmBindBudget">确 定</el-button>
+      </div>
+    </el-dialog>
   </el-form>
 </template>
 
@@ -364,6 +404,7 @@
     deleteZeroDel,
     ImportTempExcel
   } from '@/api/KSInventory/KSDepartmentalPlan';
+  import { getBudgets, bindBudget } from '@/api/pekingApplication';
   import IntroduceUserDefinedTemp from '@/views/KSInventory/IntroduceUserDefinedTemp/index.vue';
   import BidVarInfoDept from '@/views/KSInventory/ReferenceComponent/BidVarInfoDept/index.vue';
   import ApplyOperateTip from '@/views/KSInventory/ReferenceComponent/ApplyOperateTip/index.vue';
@@ -411,7 +452,41 @@
         dialogTableVisible2: false,
         Token: sessionStorage.getItem(TOKEN_STORE_NAME),
         expiredCertificateDialogVisible: false,
-        expiredCertificateList: []
+        expiredCertificateList: [],
+        bindBudgetDialogVisible: false,
+        budgetItemList: [],
+        budgetSelection: [],
+        budgetColumns: [
+          {
+            columnKey: 'selection',
+            type: 'selection',
+            width: 45,
+            align: 'center',
+            fixed: 'left'
+          },
+          {
+            label: '序号',
+            columnKey: 'index',
+            type: 'index',
+            width: 45,
+            align: 'center',
+            showOverflowTooltip: true,
+            fixed: 'left'
+          },
+          {
+            prop: 'ITEM_ID',
+            label: '费用项编码',
+            align: 'center',
+            showOverflowTooltip: true,
+            width: 180
+          },
+          {
+            prop: 'ITEM_COMMENT',
+            label: '费用项名称',
+            align: 'center',
+            showOverflowTooltip: true
+          }
+        ]
       };
     },
     computed: {
@@ -564,6 +639,15 @@
       addPutInListDeta2() {
         // 检查是否为bdrm环境
         if (HOME_HP == 'bdrm') {
+          // 检查是否为科研订单，如果是则验证费用项目绑定
+          if (this.isResearchOrder()) {
+            if (!this.hasBudgetBinding()) {
+              this.$message.warning(
+                '科研订单必须绑定费用项目才能提交，请先绑定费用项目'
+              );
+              return;
+            }
+          }
           // 检查证件到期情况
           console.log(HOME_HP);
           const expiredItems = this.checkExpiredCertificates();
@@ -577,6 +661,29 @@
 
         // 执行原有的提交逻辑
         this.executeSubmitLogic();
+      },
+
+      // 判断是否为科研订单
+      isResearchOrder() {
+        // 检查申领单数据中是否有科研项目ID
+        return (
+          this.KSDepartmentalPlanDataSearch &&
+          this.KSDepartmentalPlanDataSearch.SCIENTIFIC_ID
+        );
+      },
+
+      // 检查是否已绑定费用项目
+      hasBudgetBinding() {
+        // 检查选中的品种是否都已绑定费用项目
+        if (!this.selection || this.selection.length === 0) {
+          return false;
+        }
+
+        // 检查每个选中的品种是否都有费用项目绑定
+        return this.selection.every((item) => {
+          // 检查品种是否有费用项目名称字段
+          return item.ITEM_NAME && item.ITEM_NAME.trim() !== '';
+        });
       },
 
       // 检查证件到期的方法
@@ -845,6 +952,107 @@
       },
       exportData() {
         this.$emit('exportData', this.where);
+      },
+      handleBindBudget() {
+        // 打开绑定费用项对话框
+        this.bindBudgetDialogVisible = true;
+        // 加载费用项数据（这里使用模拟数据，实际应该从API获取）
+        this.loadBudgetItems();
+      },
+      confirmBindBudget() {
+        // 确定绑定费用项
+        if (!this.budgetSelection || this.budgetSelection.length === 0) {
+          this.$message.warning('请选择一个费用项');
+          return;
+        }
+
+        // 限制只能选择一个费用项
+        if (this.budgetSelection.length > 1) {
+          this.$message.warning('只能选择一个费用项');
+          return;
+        }
+
+        // 获取选中的费用项ID
+        const budgetIds = String(
+          this.budgetSelection.map((item) => item.ITEM_ID)
+        );
+
+        const budgetName = String(
+          this.budgetSelection.map((item) => item.ITEM_COMMENT)
+        );
+
+        // 构建请求数据
+        const data = {
+          planNum: this.KSDepartmentalPlanDataSearch.PlanNum,
+          planDetailId: this.selection.map((item) => item.ID).join(','),
+          budgetDetailId: budgetIds,
+          budgetDetailName: budgetName
+        };
+
+        // 调用绑定费用项API
+        const loading = this.$messageLoading('绑定中...');
+        bindBudget(data)
+          .then((res) => {
+            loading.close();
+            this.bindBudgetDialogVisible = false;
+            this.$message.success(res.msg || '绑定费用项成功');
+
+            // 刷新表格数据
+            var where = {
+              PlanNum: this.KSDepartmentalPlanDataSearch.PlanNum
+            };
+            this.$emit('search', where);
+          })
+          .catch((err) => {
+            loading.close();
+            this.$message.error(err.message || '绑定费用项失败');
+          });
+      },
+      loadBudgetItems() {
+        // 刷新表格数据
+        if (this.$refs.budgetTable) {
+          this.$refs.budgetTable.reload();
+        }
+      },
+      budgetDatasource({ page, limit, where, order }) {
+        // 调用API获取费用项数据
+        return getBudgets({ page, limit, where, order })
+          .then((res) => {
+            // 处理API返回的数据，确保格式符合ele-pro-table的要求
+            if (res.code === 200 && res.data) {
+              return {
+                count: res.total || res.data.length || 0,
+                list: res.data
+              };
+            } else {
+              return {
+                count: 0,
+                list: []
+              };
+            }
+          })
+          .catch((err) => {
+            this.$message.error(err.message || '获取费用项数据失败');
+            return {
+              count: 0,
+              list: []
+            };
+          });
+      },
+      handleBudgetSelectionChange(selection) {
+        // 如果选择了多个，只保留最后一个
+        if (selection.length > 1) {
+          // 获取当前表格的DOM元素
+          const table = this.$refs.budgetTable;
+          if (table && table.$refs.table) {
+            // 清除所有选择
+            table.$refs.table.clearSelection();
+            // 选择最后一项
+            const lastItem = selection[selection.length - 1];
+            table.$refs.table.toggleRowSelection(lastItem, true);
+          }
+          this.$message.warning('只能选择一个费用项');
+        }
       },
       importFile() {
         console.log(this.PlanNum);
