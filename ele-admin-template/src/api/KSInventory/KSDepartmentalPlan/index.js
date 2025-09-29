@@ -570,3 +570,21 @@ export async function getResearchProjects(data) {
     return Promise.reject(res.data.msg);
   }
 }
+
+//查询对应科室的库区
+export async function getDeptTwoRegion(data) {
+  const formatData = {
+    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+    deptTwoCode: data.deptTwoCode || '',
+    type: data.type || 0,
+    account: data.account || ''
+  }
+  const res = await request.get('/DeptTwoRegion/getDeptTwoRegion', {
+    params: formatData
+  });
+  if (res.data.code == 200) {
+    return res.data;
+  } else {
+    return Promise.reject(new Error(res.data.msg));
+  }
+}
