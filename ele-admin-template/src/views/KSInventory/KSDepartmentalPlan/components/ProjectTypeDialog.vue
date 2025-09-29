@@ -143,9 +143,9 @@ export default {
           type: 0,
           account: this.$store.state.user.info.UserName
         });
-        if (res && res.data) {
-          this.regions = res.data.map(item => ({
-            label: item.name || item.label || item.REGION_NAME,
+        if (res && res.result) {
+          this.regions = res.result.map(item => ({
+            label: item.REGION_NAME,
             value: item.REGION_CODE
           }));
         }
