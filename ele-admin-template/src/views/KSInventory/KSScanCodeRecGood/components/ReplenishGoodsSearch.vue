@@ -74,7 +74,6 @@
             id="idDistributeNumber"
             clearable
             v-model="DistributeNumber"
-            style="border: 1px solid black; border-radius: 5px"
             placeholder="请扫码入库"
             @change="confirmScan"
             ref="scanInput"
@@ -177,9 +176,9 @@
             type: 0,
             account: this.$store.state.user.info.UserName
           });
-          if (res && res.data) {
-            this.regions = res.data.map(item => ({
-              label: item.name || item.label || item.REGION_NAME,
+          if (res && res.result) {
+            this.regions = res.result.map(item => ({
+              label: item.REGION_NAME,
               value: item.REGION_CODE
             }));
           }
