@@ -53,9 +53,20 @@
         </template>
 
         <template v-slot:RECORD_TYPE="{ row }">
-          <el-tag v-if="row.RECORD_TYPE == 0" type="info">入库</el-tag>
+          <!-- <el-tag v-if="row.RECORD_TYPE == 0" type="info">入库</el-tag>
           <el-tag v-if="row.RECORD_TYPE == 1" type="info">消耗</el-tag>
-          <el-tag v-if="row.RECORD_TYPE == 2" type="success">退库</el-tag>
+          <el-tag v-if="row.RECORD_TYPE == 2" type="success">退库</el-tag> -->
+          <el-tag v-if="row.RECORD_TYPE == 0" type="primary">库存初始化</el-tag>
+          <el-tag v-if="row.RECORD_TYPE == 1" type="success">散货申领入库</el-tag>
+          <el-tag v-if="row.RECORD_TYPE == 2" type="success">定数包入库</el-tag>
+          <el-tag v-if="row.RECORD_TYPE == 3" type="warning">定数包消耗</el-tag>
+          <el-tag v-if="row.RECORD_TYPE == 4" type="info">定数包退货</el-tag>
+          <el-tag v-if="row.RECORD_TYPE == 5" type="danger">散货手动出库</el-tag>
+          <el-tag v-if="row.RECORD_TYPE == 6" type="success">HIS计费</el-tag>
+          <el-tag v-if="row.RECORD_TYPE == 7" type="info">HIS退费</el-tag>
+          <el-tag v-if="row.RECORD_TYPE == 8" type="success">调库入库</el-tag>
+          <el-tag v-if="row.RECORD_TYPE == 9" type="warning">调库出库</el-tag>
+          <el-tag v-if="row.RECORD_TYPE == -1" type="info">HIS计费无库存扣减</el-tag>
         </template>
 
         <!-- 操作列 -->
