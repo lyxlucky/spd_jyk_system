@@ -26,7 +26,6 @@
           :selection.sync="selection"
           @current-change="onCurrentChange"
           @size-change="onSizeChange"
-          @row-click="onRowClick"
           height="30vh"
           full-height="calc(100vh - 120px)"
         >
@@ -45,7 +44,7 @@
               <template v-slot:reference>
                 <el-button
                   size="mini"
-                  type="danger"
+                  type="warning"
                   :disabled="row.STATUS !== '1'"
                   style="margin-right: 4px;"
                   @click.stop
@@ -141,11 +140,43 @@
               <el-form-item>
                 <el-button size="mini" type="success" icon="el-icon-download" @click="handleExportAll">导出</el-button>
               </el-form-item>
+              <el-form-item>
+                <el-button
+                  size="mini"
+                  type="warning"
+                  icon="el-icon-document"
+                  @click="openExportAllSuppliersScoreDialog"
+                >导出全部供应商分数</el-button>
+              </el-form-item>
             </el-form>
           </template>
         </ele-pro-table>
       </el-card>
     </div>
+    <!-- 导出全部供应商分数 年份选择弹窗 -->
+    <el-dialog
+      title="选择年份"
+      :visible.sync="exportAllScoreDialogVisible"
+      width="360px"
+      :close-on-click-modal="false"
+    >
+      <el-form label-width="80px">
+        <el-form-item label="评分年份">
+          <el-date-picker
+            v-model="exportAllScoreYear"
+            type="year"
+            placeholder="选择年份"
+            :clearable="false"
+            style="width: 200px;"
+            value-format="yyyy"
+          />
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="closeExportAllSuppliersScoreDialog">取 消</el-button>
+        <el-button type="primary" @click="confirmExportAllSuppliersScore" :loading="exportingAllScore">确 定</el-button>
+      </div>
+    </el-dialog>
     <div class="half-table">
       <el-card v-if="selectedSupplier || true" shadow="never">
         <ele-pro-table
@@ -195,10 +226,44 @@
             >
               导出全部评分记录
             </el-button>
+            <el-button
+              size="mini"
+              type="primary"
+              icon="el-icon-document"
+              :disabled="!selectedSupplier"
+              @click="openExportScoreDialog"
+              style="margin-left: 8px;"
+            >
+              导出供应商分数
+            </el-button>
           </template>
         </ele-pro-table>
       </el-card>
     </div>
+    <!-- 导出分数年份选择弹窗 -->
+    <el-dialog
+      title="选择年份"
+      :visible.sync="exportScoreDialogVisible"
+      width="360px"
+      :close-on-click-modal="false"
+    >
+      <el-form label-width="80px">
+        <el-form-item label="评分年份">
+          <el-date-picker
+            v-model="exportScoreYear"
+            type="year"
+            placeholder="选择年份"
+            :clearable="false"
+            style="width: 200px;"
+            value-format="yyyy"
+          />
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="closeExportScoreDialog">取 消</el-button>
+        <el-button type="primary" @click="confirmExportSupplierScore" :loading="exportingScore">确 定</el-button>
+      </div>
+    </el-dialog>
     <!-- 新增/编辑弹窗 -->
     <el-dialog
       :title="dialogTitle"
@@ -548,7 +613,7 @@
   import { saveAs } from 'file-saver';
   import store from '@/store';
 
-  export default {
+  export default {  
     data() {
       return {
         vendorTypes: ['供应商', '服务商', '计量供应商', '第三方检验机构'],
@@ -716,6 +781,14 @@
         groupedScoreRules: [],
         scoreDetailLoading: false,
         syncLoading: false,
+        // 导出分数弹窗
+        exportScoreDialogVisible: false,
+        exportScoreYear: String(new Date().getFullYear()),
+        exportingScore: false,
+        // 导出全部供应商分数
+        exportAllScoreDialogVisible: false,
+        exportAllScoreYear: String(new Date().getFullYear()),
+        exportingAllScore: false,
       };
     },
     computed: {
@@ -904,7 +977,7 @@
         this.$refs.form.validate((valid) => {
           if (valid) {
             const submitData = {
-
+              DEPT_TWO_CODE: this.where.vendorType === '供应商' ? this.$store.state.user.info.DeptNow.Dept_Two_Code : null,
               ...this.formData
             };
 
@@ -926,13 +999,6 @@
                 this.$message.error(this.isEdit ? '更新失败' : '添加失败');
               });
           }
-        });
-      },
-      onRowClick(row) {
-        this.selectedSupplier = row;
-        this.scoreRecordPage = 1;
-        this.$nextTick(() => {
-          this.$refs.scoreTable && this.$refs.scoreTable.reload();
         });
       },
       async initDefaultSupplier() {
@@ -1251,6 +1317,7 @@
               ADDRESS: row[3] || '',
               CONTACT_INFO: row[4] || '',
               VENDOR_TYPE: this.where.vendorType,
+              DEPT_TWO_CODE: this.where.vendorType === '供应商' ? this.$store.state.user.info.DeptNow.Dept_Two_Code : null
             }));
           if (suppliers.length === 0) {
             this.$message.warning('没有有效数据');
@@ -1482,6 +1549,148 @@
           this.$message.success(`成功导出 ${exportData.length} 条评分记录`);
         } catch (e) {
           this.$message.error('导出评分记录失败：' + (e.message || e));
+        }
+      },
+      // 导出全部供应商分数（所选年份），使用 Promise.all 汇总
+      openExportAllSuppliersScoreDialog() {
+        this.exportAllScoreYear = String(new Date().getFullYear());
+        this.exportAllScoreDialogVisible = true;
+      },
+      closeExportAllSuppliersScoreDialog() {
+        this.exportAllScoreDialogVisible = false;
+      },
+      async confirmExportAllSuppliersScore() {
+        if (!this.exportAllScoreYear) {
+          this.$message.warning('请选择年份');
+          return;
+        }
+        this.exportingAllScore = true;
+        try {
+          const targetYear = Number(this.exportAllScoreYear);
+
+          // 获取全部供应商列表（按当前筛选条件/类型），尽量大页
+          const deptCode = this.where.vendorType === '供应商' ? this.$store.state.user.info.DeptNow.Dept_Two_Code : null;
+          const listRes = await apiSupplierScoreGetList({ page: 1, limit: 99999, where: this.where }, deptCode);
+          const allSuppliers = listRes.result || [];
+          if (!allSuppliers.length) {
+            this.$message.warning('没有可导出的供应商');
+            return;
+          }
+
+          // 并发获取每个供应商的评分记录
+          const promises = allSuppliers.map(s => getSupplierScoreRecords({ vendorId: s.ID, pageIndex: 1, pageSize: 99999 })
+            .then(res => ({ supplier: s, records: res.result || [] }))
+            .catch(() => ({ supplier: s, records: [] }))
+          );
+          const results = await Promise.all(promises);
+
+          // 组装导出数据，按年份筛选并计算总分
+          const exportData = results.map(({ supplier, records }) => {
+            const yearItem = records.find(item => item.Batch && Number(item.Batch.EVAL_YEAR) === targetYear);
+            let scoreCell = '';
+            if (yearItem && Array.isArray(yearItem.Records)) {
+              const totalScore = yearItem.Records.reduce((total, record) => {
+                if (record.ITEM_TYPE === '评分' && record.SCORE !== null && record.SCORE !== undefined && record.SCORE !== '') {
+                  return total + (Number(record.SCORE) || 0);
+                }
+                return total;
+              }, 0);
+              scoreCell = totalScore === 0 ? 0 : totalScore; // 有记录则显示累计分(可为0)，无记录则空白
+            }
+            return {
+              '供应商名称': supplier.VENDOR_NAME,
+              '供应商编码': supplier.SUPPLIER_CODE,
+              '注册编码': supplier.REGISTER_NO,
+              '类型': supplier.VENDOR_TYPE,
+              '服务或供应项目': supplier.SUPPLY_ITEMS,
+              '地址': supplier.ADDRESS,
+              '联系方式': supplier.CONTACT_INFO,
+              '评分年份': targetYear,
+              '得分': scoreCell
+            };
+          });
+
+          // 导出 Excel
+          const worksheet = XLSX.utils.json_to_sheet(exportData);
+          const workbook = XLSX.utils.book_new();
+          XLSX.utils.book_append_sheet(workbook, worksheet, `${this.where.vendorType}分数`);
+          const wbout = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+          const fileName = `${this.where.vendorType}_分数_${this.exportAllScoreYear}.xlsx`;
+          saveAs(new Blob([wbout], { type: 'application/octet-stream' }), fileName);
+
+          this.$message.success(`成功导出 ${exportData.length} 条记录`);
+          this.closeExportAllSuppliersScoreDialog();
+        } catch (e) {
+          this.$message.error('导出失败：' + (e.message || e));
+        } finally {
+          this.exportingAllScore = false;
+        }
+      },
+      // 导出指定年份的供应商分数
+      openExportScoreDialog() {
+        if (!this.selectedSupplier) {
+          this.$message.warning('请先选择供应商');
+          return;
+        }
+        this.exportScoreYear = String(new Date().getFullYear());
+        this.exportScoreDialogVisible = true;
+      },
+      closeExportScoreDialog() {
+        this.exportScoreDialogVisible = false;
+      },
+      async confirmExportSupplierScore() {
+        if (!this.selectedSupplier) {
+          this.$message.warning('请先选择供应商');
+          return;
+        }
+        if (!this.exportScoreYear) {
+          this.$message.warning('请选择年份');
+          return;
+        }
+        this.exportingScore = true;
+        try {
+          const res = await getSupplierScoreRecords({
+            vendorId: this.selectedSupplier.ID,
+            pageIndex: 1,
+            pageSize: 99999
+          });
+          const targetYear = Number(this.exportScoreYear);
+          const yearBatch = (res.result || []).find(item => item.Batch && Number(item.Batch.EVAL_YEAR) === targetYear);
+          if (!yearBatch) {
+            this.$message.warning('该年份暂无评分记录');
+            return;
+          }
+          const totalScore = (yearBatch.Records || []).reduce((total, record) => {
+            if (record.ITEM_TYPE === '评分' && record.SCORE !== null && record.SCORE !== undefined && record.SCORE !== '') {
+              return total + (Number(record.SCORE) || 0);
+            }
+            return total;
+          }, 0);
+
+          const exportRow = [{
+            '供应商名称': this.selectedSupplier.VENDOR_NAME,
+            '供应商编码': this.selectedSupplier.SUPPLIER_CODE,
+            '注册编码': this.selectedSupplier.REGISTER_NO,
+            '类型': this.selectedSupplier.VENDOR_TYPE,
+            '服务或供应项目': this.selectedSupplier.SUPPLY_ITEMS,
+            '地址': this.selectedSupplier.ADDRESS,
+            '联系方式': this.selectedSupplier.CONTACT_INFO,
+            '评分年份': targetYear,
+            '得分': totalScore
+          }];
+
+          const worksheet = XLSX.utils.json_to_sheet(exportRow);
+          const workbook = XLSX.utils.book_new();
+          XLSX.utils.book_append_sheet(workbook, worksheet, '供应商分数');
+          const wbout = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+          const fileName = `${this.selectedSupplier.VENDOR_NAME}_分数_${this.exportScoreYear}.xlsx`;
+          saveAs(new Blob([wbout], { type: 'application/octet-stream' }), fileName);
+          this.$message.success('导出成功');
+          this.closeExportScoreDialog();
+        } catch (e) {
+          this.$message.error('导出失败：' + (e.message || e));
+        } finally {
+          this.exportingScore = false;
         }
       },
     }

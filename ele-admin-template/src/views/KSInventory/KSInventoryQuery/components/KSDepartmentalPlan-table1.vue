@@ -318,6 +318,13 @@ export default {
           showOverflowTooltip: true,
           minWidth: 250
         },
+        {
+          prop: 'REGION_NAME',
+          label: '库区',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 100
+        },
         // {
         //   prop: 'OPERATOR',
         //   label: '操作人',

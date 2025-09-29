@@ -76,13 +76,9 @@
         <el-form-item label="流向类型:">
           <el-select size="mini" v-model="where.TYPE" @change="search()">
             <el-option label="全部" value=""></el-option>
-            <el-option label="已出库" value="3"></el-option>
-            <el-option label="已入库" value="2"></el-option>
-            <el-option label="库存初始化" value="0"></el-option>
-            <el-option label="申领入库" value="1"></el-option>
-            <el-option label="定数包退货" value="4"></el-option>
-            <el-option label="散货出库" value="5"></el-option>
-            <el-option label="his计费" value="6"></el-option>
+            <el-option label="入库" value="0"></el-option>
+            <el-option label="消耗" value="1"></el-option>
+            <el-option label="退库" value="2"></el-option>
           </el-select>
         </el-form-item>
       </el-col>
@@ -120,7 +116,7 @@
         </el-form-item>
       </el-col>
     </el-row>
-    <KSDepartmentalPlanDetailsGroupTip :visible.sync="KSDepartmentalPlanDetailsGroupTipShow" />
+    <KSDepartmentalPlanDetailsGroupTip :where="where" :visible.sync="KSDepartmentalPlanDetailsGroupTipShow" />
 
   </el-form>
 </template>

@@ -38,7 +38,8 @@ export async function addSupplierScore(data) {
         SUPPLY_ITEMS: data.SUPPLY_ITEMS,
         REGISTER_NO: data.Supplier_Code,
         ADDRESS: data.ADDRESS,
-        CONTACT_INFO: data.CONTACT_INFO
+        CONTACT_INFO: data.CONTACT_INFO,
+        DEPT_TWO_CODE: data.DEPT_TWO_CODE,
     };
 
     try {
