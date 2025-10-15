@@ -29,6 +29,7 @@ export async function getThirdStockInfo(data) {
     requestData.spec = data.where?.spec || '';
     requestData.manufacter = data.where?.manufacter || '';
     requestData.prodRegistrationCode = data.where?.prodRegistrationCode || '';
+    requestData.stockZero = data.where?.stockZero || '';
 
     const res = await request.post(`/PekingApplication/getThirdStockInfo`, requestData);
 

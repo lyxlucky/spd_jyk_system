@@ -674,13 +674,13 @@
 
       // 检查是否已绑定费用项目
       hasBudgetBinding() {
-        // 检查选中的品种是否都已绑定费用项目
-        if (!this.selection || this.selection.length === 0) {
+        // 检查表格数据源中的所有品种是否都已绑定费用项目
+        if (!this.datasourceList || this.datasourceList.length === 0) {
           return false;
         }
 
-        // 检查每个选中的品种是否都有费用项目绑定
-        return this.selection.every((item) => {
+        // 检查每个品种是否都有费用项目绑定
+        return this.datasourceList.every((item) => {
           // 检查品种是否有费用项目名称字段
           return item.ITEM_NAME && item.ITEM_NAME.trim() !== '';
         });

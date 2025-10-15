@@ -70,6 +70,17 @@
               clearable
             />
           </el-form-item>
+          <el-form-item prop="stockZero">
+            <el-select
+              v-model="form.stockZero"
+              placeholder="库存数量筛选"
+              clearable
+            >
+              <el-option label="全部" value=""></el-option>
+              <el-option label="库存数量为零" value="1"></el-option>
+              <el-option label="库存数量不为零" value="2"></el-option>
+            </el-select>
+          </el-form-item>
           <el-form-item class="ele-form-actions">
             <el-button type="primary" @click="reload()">查询</el-button>
             <el-button type="success" @click="exportData()">导出</el-button>
@@ -165,7 +176,8 @@
           chargingCode: '', // 计费编码
           spec: '', // 规格型号
           manufacter: '', // 生产企业
-          prodRegistrationCode: '' // 批准文号
+          prodRegistrationCode: '', // 批准文号
+          stockZero: '' // 库存筛选：1-库存为0，2-库存不为0
         },
         flowPageSize: 10,
         flowPageSizes: [10, 20, 50, 100, 9999999],
