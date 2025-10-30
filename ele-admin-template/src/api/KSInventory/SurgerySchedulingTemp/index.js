@@ -10,6 +10,7 @@ export async function AddNaxtDayApplyPlanTemp(data) {
   data2.TEMPLATE_NAME = data.TEMPLATE_NAME ? data.TEMPLATE_NAME : '';
   data2.CREATOR = data.CREATOR ? data.CREATOR : '';
   data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+  data2.DeptCode = store.state.user.info.DeptNow.Dept_Two_Code;
 
   var rep = formdataify(data2);
 
