@@ -70,7 +70,7 @@
               clearable
             />
           </el-form-item>
-          <el-form-item prop="stockZero">
+          <el-form-item prop="stockZero" label="库存数量">
             <el-select
               v-model="form.stockZero"
               placeholder="库存数量筛选"
