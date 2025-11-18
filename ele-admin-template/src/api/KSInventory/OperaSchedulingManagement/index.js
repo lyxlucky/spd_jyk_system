@@ -21,6 +21,7 @@ export async function GetNaxtDayApplyPlanMain(data) {
   data2.page = data.page ? data.page : 1;
   data2.size = data.limit ? data.limit : 10;
   data2.STORAGE = data.where.STORAGE ? data.where.STORAGE : '';
+  data2.STATE = data.where.JP_STATE ? data.where.JP_STATE : '';
 
   var data3 = formdataify(data2);
   const res = await request.post(
