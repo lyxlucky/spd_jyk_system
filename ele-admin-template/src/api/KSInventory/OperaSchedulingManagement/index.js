@@ -21,6 +21,7 @@ export async function GetNaxtDayApplyPlanMain(data) {
   data2.page = data.page ? data.page : 1;
   data2.size = data.limit ? data.limit : 10;
   data2.STORAGE = data.where.STORAGE ? data.where.STORAGE : '';
+  data2.JP_STATE = data.where.JP_STATE !== undefined && data.where.JP_STATE !== null ? data.where.JP_STATE : '';
 
   var data3 = formdataify(data2);
   const res = await request.post(
@@ -264,6 +265,21 @@ export async function getSTORAGE(data) {
   const res = await request.get('/Commons/getSTORAGE', {
     params: formatData
   });
+  if (res.data.code == 200) {
+    return res.data;
+  } else {
+    return Promise.reject(new Error(res.data.msg));
+  }
+}
+
+export async function CancelNaxtDayApplyPlanMain(data) {
+  var data2 = {};
+  data2.ID = data.ID ? data.ID : '';
+  data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+  const res = await request.post(
+    '/DeptApplyPlan/CancelNaxtDayApplyPlanMain',
+    data2
+  );
   if (res.data.code == 200) {
     return res.data;
   } else {

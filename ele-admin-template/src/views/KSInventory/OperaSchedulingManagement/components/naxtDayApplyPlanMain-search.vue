@@ -38,6 +38,7 @@
           <el-option label="已拣配" value="2"></el-option>
           <el-option label="已交接" value="3"></el-option>
           <el-option label="已完成" value="4"></el-option>
+          <el-option label="已取消" value="-1"></el-option>
         </el-select>
       </el-col>
 
@@ -69,7 +70,7 @@
 
     <el-row style="padding: 10px 0;" :gutter="10">
       <el-col
-        v-bind="styleResponsive ? { lg: 10, md: 4 } : { span: 4 }"
+        v-bind="styleResponsive ? { lg: 12, md: 4 } : { span: 4 }"
       >
         <div class="ele-form-actions">
           <el-button
@@ -152,6 +153,9 @@
           >
             导出
           </el-button>
+          <el-button size="mini" type="danger" @click="cancel"
+            >取消</el-button
+          >
         </div>
       </el-col>
     </el-row>
@@ -199,8 +203,20 @@
       },
       /*  重置 */
       reset() {
-        this.where = { ...this.defaultWhere };
+        const defaultWhere = {
+          NAXT_DAT_PLAN_NUM: '',
+          CREATE_MAN: '',
+          date: [],
+          YY_TYPE: '',
+          STORAGE: '',
+          JP_STATE: ''
+        };
+        this.where = { ...defaultWhere };
         this.search();
+      },
+      /* 取消 */
+      cancel() {
+        this.$emit('cancel');
       },
       exportData() {
         this.$emit('exportData', this.where);
@@ -264,9 +280,8 @@
       const threeMonthsAgo = this.$moment()
         .subtract(3, 'months')
         .format('YYYY-MM-DD');
-      this.where.Start = threeMonthsAgo; // 绑定开始日期
-      this.where.End = currentDate; // 绑定结束日期
-      //this.dateRange = [startDate, endDate]; // 绑定开始日期和结束日期
+      // 将日期范围设置为数组格式，与 API 期望的格式一致
+      this.where.date = [threeMonthsAgo, currentDate];
     }
   };
 </script>

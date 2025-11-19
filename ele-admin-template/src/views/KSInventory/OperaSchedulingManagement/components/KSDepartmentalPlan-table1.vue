@@ -5,7 +5,7 @@
       <!-- 表头工具栏 -->
       <template v-slot:toolbar>
         <!-- 搜索表单 -->
-        <naxtDayApplyPlanMainSearch @exportData2="exportData2" @removeBatch="removeBatch" @exportData="exportData" :KSDepartmentalPlanData="current" @search="reload" @openUserEdit="openUserEdit" @upNaxtDayApplyPlanMainByState="upNaxtDayApplyPlanMainByStateFun" />
+        <naxtDayApplyPlanMainSearch @cancel="handleCancel" @exportData2="exportData2" @removeBatch="removeBatch" @exportData="exportData" :KSDepartmentalPlanData="current" @search="reload" @openUserEdit="openUserEdit" @upNaxtDayApplyPlanMainByState="upNaxtDayApplyPlanMainByStateFun" />
       </template>
 
       <template v-slot:State="{ row }">
@@ -45,7 +45,8 @@ import {
   upNaxtDayApplyPlanMainByState,
   DeleteNaxtDayApplyPlanMain,
   CreatePperationExcel,
-  GetNaxtDayApplyPlanMainVar
+  GetNaxtDayApplyPlanMainVar,
+  CancelNaxtDayApplyPlanMain
 } from '@/api/KSInventory/OperaSchedulingManagement';
 import { utils, writeFile } from 'xlsx';
 export default {
@@ -124,7 +125,9 @@ export default {
               return '已交接';
             } else if (cellValue == 4) {
               return '已完成';
-            } else {
+            } else if (cellValue == -1) {
+              return '已取消';
+            }else {
               return '';
             }
           }
@@ -206,7 +209,9 @@ export default {
       applyPlanXhz: 0,
       applyPlanBl: '0%',
       key: 0,
-      RenderTabel: true
+      RenderTabel: true,
+      // 保存当前的搜索条件
+      currentWhere: {}
     };
   },
   mounted() {
@@ -246,7 +251,12 @@ export default {
     },
     /* 刷新表格 */
     reload(where) {
-      this.$refs.table.reload({ page: 1, where: where });
+      // 如果传入了新的搜索条件，则更新保存的搜索条件
+      if (where) {
+        this.currentWhere = where;
+      }
+      // 使用保存的搜索条件进行刷新
+      this.$refs.table.reload({ page: 1, where: this.currentWhere });
     },
     toggleSelection() {
       this.$nextTick(() => {
@@ -294,8 +304,7 @@ export default {
         .then((res) => {
           loading.close();
           this.$message.success(res.msg);
-          var where = {};
-          this.$refs.table.reload({ page: 1, where: where });
+          this.reload();
         })
         .catch((err) => {
           loading.close();
@@ -321,8 +330,7 @@ export default {
         .then((res) => {
           loading.close();
           this.$message.success(res.msg);
-          var where = {};
-          this.$refs.table.reload({ page: 1, where: where });
+          this.reload();
         })
         .catch((err) => {
           loading.close();
@@ -458,6 +466,27 @@ export default {
             this.$message.error(e.message);
           });
       });
+    },
+    handleCancel() {
+      if (this.selection.length <= 0) {
+        this.$message.warning('请选择一条数据');
+        return;
+      }
+      const loading = this.$messageLoading('处理中..');
+      const ID = this.selection.map((item) => item.ID).join(',');
+      var data = {
+        ID
+      };
+      CancelNaxtDayApplyPlanMain(data)
+        .then((res) => {
+          loading.close();
+          this.$message.success(res.msg);
+          this.reload();
+        })
+        .catch((err) => {
+          loading.close();
+          this.$message.error(err);
+        });
     }
   },
   watch: {
