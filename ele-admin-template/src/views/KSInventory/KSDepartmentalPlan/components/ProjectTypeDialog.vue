@@ -62,7 +62,7 @@
         </el-select>
       </el-form-item>
 
-      <el-form-item label="库区" prop="region" v-if="false">
+      <el-form-item label="库区" prop="region">
         <el-select
           v-model="form.region"
           placeholder="请选择库区"

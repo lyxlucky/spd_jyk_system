@@ -552,6 +552,7 @@
       },
       KSDepartmentalPlanDataSearch() {
         this.PlanNum = this.KSDepartmentalPlanDataSearch.PlanNum;
+        return this.KSDepartmentalPlanDataSearch.PlanNum;
       }
     },
     methods: {

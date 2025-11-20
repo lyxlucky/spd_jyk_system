@@ -316,6 +316,7 @@
         where.DeptCode = this.IntroduceUserDefinedTempSearch.PlanDept
           ? this.IntroduceUserDefinedTempSearch.PlanDept
           : this.$store.state.user.info.DeptNow.Dept_Two_Code;
+        where.PlanNum = this.IntroduceUserDefinedTempSearch.PlanNum;
         let data = SerachPlanList({ page, limit, where, order }).then((res) => {
           var tData = {
             count: res.total,
@@ -327,7 +328,7 @@
       },
       /* 刷新表格 */
       reload(where) {
-        this.$refs.table.reload({ page: 1, where: where });
+        this.$refs.table.reload({ page: 1, where: {...where, PlanNum: this.IntroduceUserDefinedTempSearch.PlanNum} });
       },
       /* 打开编辑弹窗 */
       openEdit(row) {

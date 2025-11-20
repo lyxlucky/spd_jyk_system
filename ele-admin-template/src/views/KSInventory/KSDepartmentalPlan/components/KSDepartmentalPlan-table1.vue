@@ -244,6 +244,14 @@
             minWidth: 110
           },
           {
+            prop: 'REGION_NAME',
+            label: '库区',
+
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 75
+          },
+          {
             prop: 'PlanTime',
             label: '申领时间',
             align: 'center',
