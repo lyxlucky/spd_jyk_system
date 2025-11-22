@@ -339,7 +339,7 @@
         where.DeptCode = this.$store.state.user.info.DeptNow.Dept_Two_Code;
         where.UserId = this.$store.state.user.info.ID;
         where.TempletMasteID = this.ApplyTempTableData.ID;
-        where.PlanNum = this.IntroduceUserDefinedTempSearch.PlanNum;
+        where.PlanNum = this.IntroduceUserDefinedTempSearch?.PlanNum;
         let data = SerachTempletDeta({ page, limit, where, order }).then(
           (res) => {
             var tData = {
