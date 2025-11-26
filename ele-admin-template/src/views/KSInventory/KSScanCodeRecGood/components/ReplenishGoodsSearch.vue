@@ -75,7 +75,6 @@
             clearable
             v-model="DistributeNumber"
             placeholder="请扫码入库"
-            @change="confirmScan"
             ref="scanInput"
           />
         </el-form-item>
