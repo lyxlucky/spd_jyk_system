@@ -13,10 +13,10 @@
       <el-divider></el-divider>
       <h4>{{ $t('login.title') }}</h4>
       <el-form-item prop="username">
-        <el-input clearable v-model="form.username" prefix-icon="el-icon-user" :placeholder="$t('login.username')" />
+        <el-input clearable autocomplete="username" v-model="form.username" prefix-icon="el-icon-user" :placeholder="$t('login.username')" />
       </el-form-item>
       <el-form-item prop="password">
-        <el-input show-password v-model="form.password" prefix-icon="el-icon-lock" :placeholder="$t('login.password')" />
+        <el-input show-password autocomplete="new-password" v-model="form.password" prefix-icon="el-icon-lock" :placeholder="$t('login.password')" />
       </el-form-item>
       <el-form-item prop="code">
         <div class="login-input-group">

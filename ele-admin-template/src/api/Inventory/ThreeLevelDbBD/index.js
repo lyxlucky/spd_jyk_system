@@ -56,6 +56,8 @@ export async function getThirdStockInfoFlow(data) {
     requestData.varCode = data.where?.varCode;
     requestData.DeptCode = data.where?.DeptCode;
     requestData.chargingCode = data.where?.chargingCode;
+    requestData.startTime = data.where?.startTime;
+    requestData.endTime = data.where?.endTime;
     requestData.page = parseInt(data.page) || 1;
     requestData.size = parseInt(data.limit) || 10;
 

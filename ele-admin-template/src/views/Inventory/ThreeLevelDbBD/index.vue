@@ -131,24 +131,37 @@
           cache-key="ThreeLevelDbBDFlowTable"
         >
           <template v-slot:toolbar>
-            <div style="display: flex; gap: 10px">
-              <h1>
-                总入库数量：{{ Number(flowRow.KS_QTY) }}
-                总计费数量:
-                {{ Number(flowRow.JF_QTY) + Number(flowRow.JF_DEF_QTY) }}
-                库存数:
-                {{
-                  Number(flowRow.KS_QTY) +
-                  Number(flowRow.JF_QTY) +
-                  Number(flowRow.JF_DEF_QTY)
-                }}
-              </h1>
-              <el-button type="success" size="mini" @click="exportFlowData()"
-                >导出Excel</el-button
-              >
-            </div>
+            <el-form :inline="true" size="mini">
+              <el-form-item label="开始时间">
+                <el-date-picker
+                  v-model="flowForm.startTime"
+                  type="date"
+                  placeholder="选择开始时间"
+                  value-format="yyyy-MM-dd"
+                  style="width: 180px"
+                />
+              </el-form-item>
+              <el-form-item label="结束时间">
+                <el-date-picker
+                  v-model="flowForm.endTime"
+                  type="date"
+                  placeholder="选择结束时间"
+                  value-format="yyyy-MM-dd"
+                  style="width: 180px"
+                />
+              </el-form-item>
+              <el-form-item>
+                <el-button type="primary" size="mini" @click="reloadFlowData">查询</el-button>
+                <el-button type="success" size="mini" @click="exportFlowData()">导出Excel</el-button>
+              </el-form-item>
+            </el-form>
           </template>
         </ele-pro-table>
+        <div style="text-align: right; margin-top: 10px; font-size: 24px">
+          总入库数量：{{ Number(flowRow.KS_QTY) }} |
+          总计费数量：{{ Number(flowRow.JF_QTY) + Number(flowRow.JF_DEF_QTY) }} |
+          库存数：{{ Number(flowRow.KS_QTY) + Number(flowRow.JF_QTY) + Number(flowRow.JF_DEF_QTY) }}
+        </div>
       </div>
     </el-dialog>
   </div>
@@ -181,6 +194,10 @@
         },
         flowPageSize: 10,
         flowPageSizes: [10, 20, 50, 100, 9999999],
+        flowForm: {
+          startTime: '',
+          endTime: ''
+        },
         columns: [
           {
             prop: 'DEPT_TWO_NAME',
@@ -580,6 +597,8 @@
       showFlowDialog(row) {
         this.flowDialogVisible = true;
         this.flowRow = row;
+        this.flowForm.startTime = '';
+        this.flowForm.endTime = '';
         this.flowDatasource({ page: 1, limit: this.flowPageSize })
           .then((res) => {
             this.$refs.flowTable.reload({ list: res.list, count: res.count });
@@ -588,12 +607,16 @@
             this.$refs.flowTable.reload({ list: [], count: 0 });
           });
       },
+      reloadFlowData() {
+        this.$refs.flowTable.reload({ page: 1 });
+      },
       flowDatasource({ page, limit }) {
-        // 这里可以实现流向记录的查询逻辑
         const where = {
           varCode: this.flowRow.VARIETIE_CODE_NEW,
           chargingCode: this.flowRow.CHARGE_CODE,
-          DeptCode: this.flowRow.DEPT_TWO_CODE
+          DeptCode: this.flowRow.DEPT_TWO_CODE,
+          startTime: this.flowForm.startTime,
+          endTime: this.flowForm.endTime
         };
         return getThirdStockInfoFlow({ page, limit, where })
           .then((res) => {
@@ -612,14 +635,15 @@
       exportFlowData() {
         const loading = this.$messageLoading('正在导出数据...');
         try {
-          // 直接使用当前的查询条件进行全量导出
           getThirdStockInfoFlow({
             page: 1,
             limit: 999999,
             where: {
               varCode: this.flowRow.VARIETIE_CODE_NEW,
               chargingCode: this.flowRow.CHARGE_CODE,
-              DeptCode: this.flowRow.DEPT_TWO_CODE
+              DeptCode: this.flowRow.DEPT_TWO_CODE,
+              startTime: this.flowForm.startTime,
+              endTime: this.flowForm.endTime
             }
           })
             .then((response) => {
