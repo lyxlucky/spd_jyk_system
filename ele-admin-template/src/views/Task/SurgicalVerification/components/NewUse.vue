@@ -13,6 +13,7 @@
       :selection.sync="currentTableSelection"
       @selection-change="onSelectionChange"
       @current-change="onCurrentChange"
+      :initLoad="false"
       cache-key="NewUseCacheTableKey"
     >
       <template slot="toolbar">
@@ -343,7 +344,10 @@
       styleResponsive() {
         return this.$store.state.theme.styleResponsive;
       }
-    }
+    },
+    mounted() {
+      this.reload({ where: this.defaultWhere });
+    },
   };
 </script>
 <style lang=""></style>
