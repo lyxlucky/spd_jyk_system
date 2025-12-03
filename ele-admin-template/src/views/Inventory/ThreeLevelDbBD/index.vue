@@ -84,6 +84,7 @@
           <el-form-item class="ele-form-actions">
             <el-button type="primary" @click="reload()">查询</el-button>
             <el-button type="success" @click="exportData()">导出</el-button>
+            <el-button type="info" @click="showKcDialog()">库存汇总</el-button>
           </el-form-item>
           <el-form-item>
             <el-upload
@@ -164,13 +165,95 @@
         </div>
       </div>
     </el-dialog>
+
+    <el-dialog
+      title="库存汇总"
+      :visible.sync="kcDialogVisible"
+      width="80%"
+      :close-on-click-modal="false"
+    >
+      <div>
+        <ele-pro-table
+          class="style-table"
+          ref="kcTable"
+          height="50vh"
+          full-height="calc(100vh - 116px)"
+          :columns="kcColumns"
+          :datasource="kcDatasource"
+          :init-load="false"
+          size="mini"
+          :pageSize="kcPageSize"
+          :pageSizes="kcPageSizes"
+          highlight-current-row
+          cache-key="ThreeLevelDbBDKcTable"
+        >
+          <template v-slot:toolbar>
+            <el-form :inline="true" size="mini">
+              <el-form-item label="品种编码">
+                <el-input
+                  v-model="kcForm.VARIETIE_CODE_NEW"
+                  placeholder="请输入品种编码"
+                  clearable
+                  style="width: 180px"
+                />
+              </el-form-item>
+              <el-form-item label="品种名称">
+                <el-input
+                  v-model="kcForm.VARIETIE_NAME"
+                  placeholder="请输入品种名称"
+                  clearable
+                  style="width: 180px"
+                />
+              </el-form-item>
+              <el-form-item label="规格型号">
+                <el-input
+                  v-model="kcForm.SPECIFICATION_OR_TYPE"
+                  placeholder="请输入规格型号"
+                  clearable
+                  style="width: 180px"
+                />
+              </el-form-item>
+              <el-form-item label="单位">
+                <el-input
+                  v-model="kcForm.UNIT"
+                  placeholder="请输入单位"
+                  clearable
+                  style="width: 180px"
+                />
+              </el-form-item>
+              <el-form-item label="价格">
+                <el-input
+                  v-model="kcForm.PRICE"
+                  placeholder="请输入价格"
+                  clearable
+                  style="width: 180px"
+                />
+              </el-form-item>
+              <el-form-item label="生产企业">
+                <el-input
+                  v-model="kcForm.MANUFACTURING_ENT_NAME"
+                  placeholder="请输入生产企业"
+                  clearable
+                  style="width: 180px"
+                />
+              </el-form-item>
+              <el-form-item>
+                <el-button type="primary" size="mini" @click="reloadKcData">查询</el-button>
+                <el-button type="success" size="mini" @click="exportKcData()">导出Excel</el-button>
+              </el-form-item>
+            </el-form>
+          </template>
+        </ele-pro-table>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
   import {
     getThirdStockInfo,
-    getThirdStockInfoFlow
+    getThirdStockInfoFlow,
+    getThreeKcInfo
   } from '@/api/Inventory/ThreeLevelDbBD';
   import { TOKEN_STORE_NAME } from '@/config/setting';
   import { utils, writeFile } from 'xlsx';
@@ -331,6 +414,17 @@
         ],
         flowDialogVisible: false,
         flowRow: {},
+        kcDialogVisible: false,
+        kcPageSize: 10,
+        kcPageSizes: [10, 20, 50, 100, 9999999],
+        kcForm: {
+          VARIETIE_CODE_NEW: '',
+          VARIETIE_NAME: '',
+          SPECIFICATION_OR_TYPE: '',
+          UNIT: '',
+          PRICE: '',
+          MANUFACTURING_ENT_NAME: ''
+        },
         uploadUrl: '/api/lhfy/uploadThirdInventory', // 上传接口地址，请根据实际情况修改
         uploadHeaders: {
           // 上传请求头，请根据实际情况修改
@@ -420,7 +514,7 @@
           },
           {
             prop: 'OPEARTION_CHARGING_TIME',
-            label: '计费时间',
+            label: '时间',
             align: 'center',
             showOverflowTooltip: true,
             minWidth: 140
@@ -479,6 +573,78 @@
             align: 'center',
             showOverflowTooltip: true,
             minWidth: 100
+          }
+        ],
+        kcColumns: [
+          {
+            prop: 'VARIETIE_CODE_NEW',
+            label: '品种编码',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 120
+          },
+          {
+            prop: 'VARIETIE_NAME',
+            label: '品种名称',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 150
+          },
+          {
+            prop: 'SPECIFICATION_OR_TYPE',
+            label: '规格型号',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 120
+          },
+          {
+            prop: 'UNIT',
+            label: '单位',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 80
+          },
+          {
+            prop: 'PRICE',
+            label: '单价',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 80
+          },
+          {
+            prop: 'MANUFACTURING_ENT_NAME',
+            label: '生产企业',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 150
+          },
+          {
+            prop: 'QTY',
+            label: '数量',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 100
+          },
+          {
+            prop: 'TOTAL_PRICE',
+            label: '总价',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 100
+          },
+          {
+            prop: 'JF_QTY',
+            label: '散货计费数量',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 120
+          },
+          {
+            prop: 'JF_DEF_QTY',
+            label: '定数包计费数量',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 140
           }
         ]
       };
@@ -721,6 +887,112 @@
                   }
                 },
                 '三级库-流向记录.xlsx'
+              );
+              this.$message.success('导出成功');
+            })
+            .catch((error) => {
+              loading.close();
+              this.$message.error('导出数据失败，请稍后重试');
+            });
+        } catch (error) {
+          loading.close();
+          console.error('导出数据失败:', error);
+          this.$message.error('导出数据失败，请稍后重试');
+        }
+      },
+      showKcDialog() {
+        this.kcDialogVisible = true;
+        this.kcForm = {
+          VARIETIE_CODE_NEW: '',
+          VARIETIE_NAME: '',
+          SPECIFICATION_OR_TYPE: '',
+          UNIT: '',
+          PRICE: '',
+          MANUFACTURING_ENT_NAME: ''
+        };
+        this.kcDatasource({ page: 1, limit: this.kcPageSize })
+          .then((res) => {
+            this.$refs.kcTable.reload({ list: res.list, count: res.count });
+          })
+          .catch(() => {
+            this.$refs.kcTable.reload({ list: [], count: 0 });
+          });
+      },
+      reloadKcData() {
+        this.$refs.kcTable.reload({ page: 1, where: this.kcForm });
+      },
+      kcDatasource({ page, limit, where }) {
+        return getThreeKcInfo({
+          page: page,
+          limit: limit,
+          VARIETIE_CODE_NEW: where?.VARIETIE_CODE_NEW || '',
+          VARIETIE_NAME: where?.VARIETIE_NAME || '',
+          SPECIFICATION_OR_TYPE: where?.SPECIFICATION_OR_TYPE || '',
+          UNIT: where?.UNIT || '',
+          PRICE: where?.PRICE || '',
+          MANUFACTURING_ENT_NAME: where?.MANUFACTURING_ENT_NAME || ''
+        })
+          .then((res) => {
+            return {
+              list: res.data || [],
+              count: res.total || 0
+            };
+          })
+          .catch(() => {
+            return {
+              list: [],
+              count: 0
+            };
+          });
+      },
+      exportKcData() {
+        const loading = this.$messageLoading('正在导出数据...');
+        try {
+          getThreeKcInfo({
+            VARIETIE_CODE_NEW: this.kcForm.VARIETIE_CODE_NEW,
+            VARIETIE_NAME: this.kcForm.VARIETIE_NAME,
+            SPECIFICATION_OR_TYPE: this.kcForm.SPECIFICATION_OR_TYPE,
+            UNIT: this.kcForm.UNIT,
+            PRICE: this.kcForm.PRICE,
+            MANUFACTURING_ENT_NAME: this.kcForm.MANUFACTURING_ENT_NAME
+          })
+            .then((response) => {
+              loading.close();
+              const headers = [
+                '品种编码',
+                '品种名称',
+                '规格型号',
+                '单位',
+                '单价',
+                '生产企业',
+                '数量',
+                '总价',
+                '散货计费数量',
+                '定数包计费数量'
+              ];
+              const dataArray = [headers];
+              response.data.forEach((d) => {
+                dataArray.push([
+                  d.VARIETIE_CODE_NEW || '',
+                  d.VARIETIE_NAME || '',
+                  d.SPECIFICATION_OR_TYPE || '',
+                  d.UNIT || '',
+                  d.PRICE || '',
+                  d.MANUFACTURING_ENT_NAME || '',
+                  d.QTY || '',
+                  d.TOTAL_PRICE || '',
+                  d.JF_QTY || '',
+                  d.JF_DEF_QTY || ''
+                ]);
+              });
+              writeFile(
+                {
+                  SheetNames: ['Sheet1'],
+                  Sheets: {
+                    Sheet1: utils.aoa_to_sheet(dataArray)
+                  }
+                },
+                '三级库-新增库存信息.xlsx'
               );
               this.$message.success('导出成功');
             })

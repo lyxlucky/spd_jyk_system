@@ -344,6 +344,10 @@
         this.$emit('update:visible', value);
       },
       addKSKSDepartmentalPlanData() {
+        if (!this.selection || this.selection.length == 0) {
+          this.$message.warning('请先选择数据');
+          return;
+        }
         const loading = this.$messageLoading('添加中..');
         this.selection.forEach((element) => {
           element.PLAN_NUMBER = this.IntroduceUserDefinedTempSearch.PlanNum;
