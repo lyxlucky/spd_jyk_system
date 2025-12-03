@@ -1,7 +1,7 @@
 <!-- 搜索表单 -->
 <template>
   <div>
-    <el-form class="ele-form-search">
+    <el-form class="ele-form-search" @submit.native.prevent>
       <el-row :gutter="10">
         <el-col :lg="4" :md="4">
           <el-input size="mini" v-model="where.VARIETIE_NAME" placeholder="请输入品种名称/生产企业搜索" clearable />

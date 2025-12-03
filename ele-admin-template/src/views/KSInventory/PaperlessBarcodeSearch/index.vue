@@ -6,6 +6,7 @@
         :inline="true"
         label-width="80px"
         size="small"
+        @submit.native.prevent
       >
         <el-form-item label="住院号">
           <el-input

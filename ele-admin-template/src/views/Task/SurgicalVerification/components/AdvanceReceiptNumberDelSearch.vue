@@ -1,7 +1,7 @@
 <!-- 搜索表单 -->
 <template>
   <div>
-    <el-form class="ele-form-search" :inline="true" size="mini">
+    <el-form class="ele-form-search" :inline="true" size="mini" @submit.native.prevent>
       <el-form-item>
         <el-input
           v-model="where.VARIETIE_CODE_NEW"

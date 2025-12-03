@@ -133,7 +133,7 @@
       width="400px"
       :close-on-click-modal="false"
     >
-      <el-form :model="scanForm" label-width="80px">
+      <el-form :model="scanForm" label-width="80px" @submit.native.prevent>
         <el-form-item label="定数码">
           <el-input
             ref="defNoPkgCodeInput"
@@ -160,7 +160,7 @@
       width="400px"
       :close-on-click-modal="false"
     >
-      <el-form :model="transferScanForm" label-width="80px">
+      <el-form :model="transferScanForm" label-width="80px" @submit.native.prevent>
         <el-form-item label="定数码">
           <el-input
             ref="transferDefNoPkgCodeInput"
