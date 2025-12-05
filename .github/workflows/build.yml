@@ -34,7 +34,12 @@ jobs:
         run: npm run build:${{ matrix.env }}
 
       - name: Package dist
-        run: zip -r dist-${{ matrix.env }}.zip dist
+        run: |
+          if [ -d "jyk" ]; then
+            zip -r dist-${{ matrix.env }}.zip jyk
+          elif [ -d "jyknw" ]; then
+            zip -r dist-${{ matrix.env }}.zip jyknw
+          fi
 
       - name: Upload to Release
         uses: softprops/action-gh-release@v1
