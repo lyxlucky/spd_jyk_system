@@ -16,7 +16,6 @@
           style="width: 100%"
         >
           <el-option label="非科研" value="non_research"></el-option>
-          <el-option label="科研" value="research"></el-option>
         </el-select>
       </el-form-item>
 
