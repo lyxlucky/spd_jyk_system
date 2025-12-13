@@ -29,6 +29,7 @@
           <KSDepartmentalPlantable
             ref="table1"
             @getCurrent="getCurrent"
+            @reload="handleTable1Reload"
             :IsReload="IsReloadTag"
           ></KSDepartmentalPlantable>
         </el-card>
@@ -39,6 +40,7 @@
             <span>申领单详情</span>
           </div> -->
           <KSDepartmentalPlanDetailstable2
+            ref="table2"
             :KSDepartmentalPlanData="KSDepartmentalPlanData"
             @clickReload="clickReload"
             @clickReload2="clickReload2"
@@ -89,6 +91,17 @@
       },
       clickReload2() {
         this.$refs.table1.reload2();
+      },
+      handleTable1Reload() {
+        // 当table1的绑定操作完成后，刷新table2
+        this.$nextTick(() => {
+          if (this.$refs.table2 && this.KSDepartmentalPlanData && this.KSDepartmentalPlanData.PlanNum) {
+            const where = {
+              PlanNum: this.KSDepartmentalPlanData.PlanNum
+            };
+            this.$refs.table2.reload(where);
+          }
+        });
       }
     },
     watch: {
