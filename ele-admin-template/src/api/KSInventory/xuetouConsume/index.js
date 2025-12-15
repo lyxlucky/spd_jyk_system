@@ -58,8 +58,11 @@ export async function getDialysisConsumablesRecords(data) {
     CreateTimeEnd: data.CreateTimeEnd || ''
   };
   const res = await request.post('/HdPlan/GetDialysisConsumablesRecords', params);
-  if (res.data.success) {
-    return res.data;
+  if (res.data.code == '200') {
+    return {
+      data: res.data.data || [],
+      total: res.data.total || 0
+    };
   } else {
     return Promise.reject(new Error(res.data.msg));
   }

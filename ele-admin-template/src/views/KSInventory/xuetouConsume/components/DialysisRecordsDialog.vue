@@ -87,7 +87,13 @@ export default {
       },
       columns: [
         { prop: 'UniqueId', label: 'ID', minWidth: 100, align: 'center' },
-        { prop: 'ScheduleDate', label: '排班日期', minWidth: 120, align: 'center' },
+        { 
+          prop: 'ScheduleDate', 
+          label: '排班日期', 
+          minWidth: 120, 
+          align: 'center',
+          formatter: row => row.ScheduleDate ? (row.ScheduleDate.includes('T') ? row.ScheduleDate.split('T')[0] : row.ScheduleDate.split(' ')[0]) : ''
+        },
         { prop: 'PatientName', label: '姓名', minWidth: 100, align: 'center' },
         { prop: 'IdCard', label: '身份证号', minWidth: 160, align: 'center' },
         { prop: 'BedNumber', label: '床号', minWidth: 80, align: 'center' },
@@ -100,7 +106,7 @@ export default {
           label: '创建时间', 
           minWidth: 120, 
           align: 'center',
-          formatter: row => row.CreateTime ? (row.CreateTime.includes('T') ? row.CreateTime.split('T')[0] : row.CreateTime.split(' ')[0]) : ''
+          formatter: row => row.CreateTime ? (row.CreateTime.includes('T') ? row.CreateTime.split('T')[0] + ' ' + row.CreateTime.split('T')[1].substring(0, 5) : row.CreateTime) : ''
         }
       ]
     }
@@ -138,11 +144,26 @@ export default {
           size: 999999,
           ...this.where
         })
-        if (res.success && res.data && res.data.length > 0) {
+        if (res.data && res.data.length > 0) {
           // 准备导出数据
+          const formatDate = (dateStr) => {
+            if (!dateStr) return ''
+            if (dateStr.includes('T')) {
+              return dateStr.split('T')[0]
+            }
+            return dateStr.split(' ')[0]
+          }
+          const formatDateTime = (dateStr) => {
+            if (!dateStr) return ''
+            if (dateStr.includes('T')) {
+              const [date, time] = dateStr.split('T')
+              return date + ' ' + time.substring(0, 5)
+            }
+            return dateStr
+          }
           const exportData = res.data.map(item => ({
             ID: item.UniqueId || '',
-            排班日期: item.ScheduleDate || '',
+            排班日期: formatDate(item.ScheduleDate),
             姓名: item.PatientName || '',
             身份证号: item.IdCard || '',
             床号: item.BedNumber || '',
@@ -150,7 +171,7 @@ export default {
             HIS耗材名称: item.HisMaterialName || '',
             收费编码: item.ChargeCode || '',
             数量: item.Quantity || '',
-            创建时间: item.CreateTime || ''
+            创建时间: formatDateTime(item.CreateTime)
           }))
           
           // 使用xlsx导出
