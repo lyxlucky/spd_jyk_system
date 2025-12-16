@@ -398,3 +398,17 @@ export async function bdszyyLsAddDef(params) {
   }
   return Promise.reject(res.data);
 }
+
+// 转单扫码录入
+export async function bdszyyZsAddDef(params) {
+  const formatData = {
+    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+    SSBH: params.SSBH || '',
+    DEF_NO_PKG_CODE: params.DEF_NO_PKG_CODE || ''
+  };
+  let res = await request.post('/DeptPlanTransfer/bdszyyZsAddDef', formatData);
+  if (res.data.code == 200) {
+    return res.data;
+  }
+  return Promise.reject(res.data);
+}

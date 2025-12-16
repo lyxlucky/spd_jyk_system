@@ -3,6 +3,7 @@
     <ele-modal
       title="转单记录"
       :destroy-on-close="true"
+      top="1vh"
       width="90%"
       height="80%"
       :visible="visible"
@@ -12,7 +13,7 @@
       <ele-pro-table
         size="mini"
         ref="table"
-        height="12vh"
+        height="70vh"
         highlight-current-row
         :stripe="true"
         :pageSize="pageSize"

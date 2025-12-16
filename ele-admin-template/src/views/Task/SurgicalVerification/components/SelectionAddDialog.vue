@@ -87,11 +87,15 @@
       width="80%"
       top="1vh"
       destroy-on-close
+      @close="handleNewUseClose"
     >
       <NewUse
+        v-if="isShowNewUse"
+        ref="newUseComponent"
         :selection="selection"
-        @close="isShowNewUse = false"
+        @close="handleNewUseClose"
         :ApplyTempTableData="ApplyTempTableData"
+        :key="newUseKey"
       ></NewUse>
     </el-dialog>
 
@@ -261,6 +265,7 @@
         current: null,
         AdvanceNumberTableCurrent: null,
         isShowNewUse: false,
+        newUseKey: 0,
         scanDialogVisible: false,
         scanCode: '',
         scanLoading: false,
@@ -421,7 +426,13 @@
           });
       },
       showNewUse() {
+        this.newUseKey++;
         this.isShowNewUse = true;
+      },
+      handleNewUseClose() {
+        this.isShowNewUse = false;
+        // 窗口关闭hou，刷新表格
+        this.$refs.table.reload();
       },
       handleScanCode() {
         this.scanDialogVisible = true;

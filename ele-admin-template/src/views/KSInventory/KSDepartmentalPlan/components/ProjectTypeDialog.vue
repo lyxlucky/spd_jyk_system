@@ -16,7 +16,6 @@
           style="width: 100%"
         >
           <el-option label="非科研" value="non_research"></el-option>
-          <el-option label="科研" value="research"></el-option>
         </el-select>
       </el-form-item>
 
@@ -62,7 +61,7 @@
         </el-select>
       </el-form-item>
 
-      <el-form-item label="库区" prop="region" v-if="false">
+      <el-form-item label="库区" prop="region">
         <el-select
           v-model="form.region"
           placeholder="请选择库区"

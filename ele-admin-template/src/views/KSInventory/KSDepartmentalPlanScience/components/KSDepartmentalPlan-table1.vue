@@ -13,6 +13,7 @@
       :rowClickChecked="true"
       :stripe="true"
       :pageSize="pageSize"
+      @expand-change="handleTableExpandChange"
       :pageSizes="pageSizes"
       :columns="columns"
       :datasource="datasource"
@@ -20,6 +21,17 @@
       :needPage="false"
       cache-key="KSInventoryBasicDataTable"
     >
+      <template v-slot:expand="{ row }">
+        <el-form
+          label-width="140px"
+          label-position="left"
+          size="mini"
+          class="ele-form-detail"
+        >
+        {{ row }}
+        </el-form>
+      </template>
+
       <!-- 表头工具栏 -->
       <template v-slot:toolbar>
         <!-- 搜索表单 -->
@@ -29,7 +41,16 @@
           }}
           消耗/计划:{{ applyPlanBl }}</label
         >
-        <KSDepartmentalPlan-search @search="reload" ref="search" />
+        <KSDepartmentalPlan-search
+          @search="reload"
+          @bindBudget="handleBindBudget"
+          :selection="selection"
+          ref="search"
+        />
+      </template>
+
+      <template v-slot:PlanNum="{ row }">
+        <el-link type="primary" @click="openDrawer(row.PlanNum)">{{ row.PlanNum }}</el-link>
       </template>
 
       <template v-slot:State="{ row }">
@@ -81,27 +102,6 @@
           style="color: white"
           >强制结束</el-tag
         >
-
-        <!-- <el-tag
-          size="mini"
-          v-else-if="
-            row.SUM_Left_Apply_Qty > 0 &&
-            row.SUM_Left_Apply_Qty != row.SUM_Apply_Qty &&
-            row.State != 6
-          "
-          type="danger"
-          >未收全</el-tag
-        >
-        <el-tag
-          size="mini"
-          v-else-if="row.SUM_Apply_Qty == row.QUANITY"
-          type="success"
-          >已收全</el-tag
-        > -->
-
-        <!-- <el-tag v-for="(item) in row" :key="item.PlanNum" size="mini" type="primary" :disable-transitions="true">
-          {{ item.State }}
-        </el-tag> -->
       </template>
       <!-- 操作列 -->
       <template v-slot:action="{ row }">
@@ -134,42 +134,70 @@
         >
       </template>
     </ele-pro-table>
+
+    <!-- 申领单详情 Drawer -->
+    <KSDepartmentalPlanDrawer
+      :visible.sync="drawerVisible"
+      :planNum="selectedPlanNum"
+    />
+
+    <!-- 绑定费用项对话框 -->
+    <el-dialog
+      title="绑定费用项"
+      :visible.sync="bindBudgetDialogVisible"
+      width="80%"
+      :close-on-click-modal="false"
+      append-to-body
+      top="5vh"
+    >
+      <ele-pro-table
+        ref="budgetTable"
+        :columns="budgetColumns"
+        :datasource="budgetDatasource"
+        :selection.sync="budgetSelection"
+        :tool-style="{ display: 'none' }"
+        height="400px"
+        :page-sizes="[10, 20, 50, 100]"
+        :page-size="20"
+        :highlight-current-row="true"
+        @selection-change="handleBudgetSelectionChange"
+      >
+      </ele-pro-table>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="bindBudgetDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="confirmBindBudget">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
   import KSDepartmentalPlanSearch from './KSDepartmentalPlan-search.vue';
+  import KSDepartmentalPlanDrawer from './KSDepartmentalPlan-drawer.vue';
   import {
     SerachPlanList,
     DeletePlanList,
     SearchHistoryConsumedAndPurchaseDept,
     ReturnInitState
   } from '@/api/KSInventory/KSDepartmentalPlan';
-  import { getDeptAuthVarNew } from '@/api/KSInventory/KSInventoryBasicData';
+  import { getBudgets, bindBudget } from '@/api/pekingApplication';
   export default {
     name: 'KSDepartmentalPlanTable',
     props: ['IsReload'],
     components: {
-      KSDepartmentalPlanSearch
+      KSDepartmentalPlanSearch,
+      KSDepartmentalPlanDrawer
     },
     data() {
       return {
         // 表格列配置
         columns: [
-          // {
-          //   columnKey: 'selection',
-          //   type: 'selection',
-          //   width: 45,
-          //   align: 'center',
-          //   fixed: 'left'
-          // },
           {
             columnKey: 'index',
             type: 'index',
             width: 45,
             align: 'center',
-            showOverflowTooltip: true,
-            fixed: 'left'
+            showOverflowTooltip: true
           },
           {
             columnKey: 'action',
@@ -199,7 +227,22 @@
             label: '申领单号',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 110
+            minWidth: 110,
+            slot: 'PlanNum'
+          },
+          {
+            prop: 'scientificId',
+            label: '科研编码',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 120
+          },
+          {
+            prop: 'scientificName',
+            label: '科研项目名称',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 120
           },
           {
             prop: 'Operater',
@@ -312,7 +355,42 @@
         applyPlanXhz: 0,
         applyPlanBl: '0%',
         key: 0,
-        RenderTabel: true
+        RenderTabel: true,
+        selectedPlanNum: '',
+        drawerVisible: false,
+        bindBudgetDialogVisible: false,
+        budgetSelection: [],
+        budgetColumns: [
+          {
+            columnKey: 'selection',
+            type: 'selection',
+            width: 45,
+            align: 'center',
+            fixed: 'left'
+          },
+          {
+            label: '序号',
+            columnKey: 'index',
+            type: 'index',
+            width: 45,
+            align: 'center',
+            showOverflowTooltip: true,
+            fixed: 'left'
+          },
+          {
+            prop: 'ITEM_ID',
+            label: '费用项编码',
+            align: 'center',
+            showOverflowTooltip: true,
+            width: 180
+          },
+          {
+            prop: 'ITEM_COMMENT',
+            label: '费用项名称',
+            align: 'center',
+            showOverflowTooltip: true
+          }
+        ]
       };
     },
     mounted() {
@@ -339,6 +417,7 @@
             Dept_Two_CodeStr + userDeptList[i].Dept_Two_Code + ',';
         }
         where.DeptCode = Dept_Two_CodeStr;
+        where.projectType = '1';
         let data = SerachPlanList({ page, limit, where, order }).then((res) => {
           var tData = {
             count: res.total,
@@ -446,6 +525,101 @@
             loading.close();
             this.$message.error(err);
           });
+      },
+      handleBindBudget() {
+        this.bindBudgetDialogVisible = true;
+        this.loadBudgetItems();
+      },
+      confirmBindBudget() {
+        if (!this.budgetSelection || this.budgetSelection.length === 0) {
+          this.$message.warning('请选择一个费用项');
+          return;
+        }
+        if (this.budgetSelection.length > 1) {
+          this.$message.warning('只能选择一个费用项');
+          return;
+        }
+        if (!this.current || !this.current.PlanNum) {
+          this.$message.warning('请先选择申领单');
+          return;
+        }
+        const budgetIds = String(
+          this.budgetSelection.map((item) => item.ITEM_ID)
+        );
+        const budgetName = String(
+          this.budgetSelection.map((item) => item.ITEM_COMMENT)
+        );
+        const data = {
+          planNum: this.current.PlanNum,
+          planDetailId: this.selection.map((item) => item.ID).join(','),
+          budgetDetailId: budgetIds,
+          budgetDetailName: budgetName
+        };
+        const loading = this.$messageLoading('绑定中...');
+        bindBudget(data)
+          .then((res) => {
+            loading.close();
+            this.bindBudgetDialogVisible = false;
+            this.$message.success(res.msg || '绑定费用项成功');
+            this.$emit('reload');
+          })
+          .catch((err) => {
+            loading.close();
+            this.$message.error(err.message || '绑定费用项失败');
+          });
+      },
+      loadBudgetItems() {
+        if (this.$refs.budgetTable) {
+          this.$refs.budgetTable.reload();
+        }
+      },
+      budgetDatasource({ page, limit, where, order }) {
+        const params = {
+          page,
+          limit,
+          where,
+          order,
+          scientificId: this.current?.scientificId
+        };
+        return getBudgets(params)
+          .then((res) => {
+            if (res.code === 200 && res.data) {
+              return {
+                count: res.total || res.data.length || 0,
+                list: res.data
+              };
+            } else {
+              return {
+                count: 0,
+                list: []
+              };
+            }
+          })
+          .catch((err) => {
+            this.$message.error(err.message || '获取费用项数据失败');
+            return {
+              count: 0,
+              list: []
+            };
+          });
+      },
+      handleBudgetSelectionChange(selection) {
+        if (selection.length > 1) {
+          const table = this.$refs.budgetTable;
+          if (table && table.$refs.table) {
+            table.$refs.table.clearSelection();
+            const lastItem = selection[selection.length - 1];
+            table.$refs.table.toggleRowSelection(lastItem, true);
+          }
+          this.$message.warning('只能选择一个费用项');
+        }
+      },
+      handleTableExpandChange(row, expandedRows){
+        console.log({row, expandedRows})
+      },
+      openDrawer(planNum) {
+        this.selectedPlanNum = planNum;
+        this.drawerVisible = true;
       }
     },
     watch: {

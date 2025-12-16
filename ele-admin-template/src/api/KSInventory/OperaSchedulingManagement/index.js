@@ -271,3 +271,18 @@ export async function getSTORAGE(data) {
     return Promise.reject(new Error(res.data.msg));
   }
 }
+
+export async function CancelNaxtDayApplyPlanMain(data) {
+  var data2 = {};
+  data2.ID = data.ID ? data.ID : '';
+  data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+  const res = await request.post(
+    '/DeptApplyPlan/CancelNaxtDayApplyPlanMain',
+    data2
+  );
+  if (res.data.code == 200) {
+    return res.data;
+  } else {
+    return Promise.reject(new Error(res.data.msg));
+  }
+}

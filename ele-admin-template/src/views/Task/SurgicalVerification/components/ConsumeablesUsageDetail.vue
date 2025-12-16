@@ -74,6 +74,15 @@
           >
             扫码添加录入
           </el-button>
+          <el-button
+            size="mini"
+            type="primary"
+            icon="el-icon-scan"
+            class="ele-btn-icon"
+            @click="showTransferScanDialog"
+          >
+            转单扫码录入
+          </el-button>
         </div>
       </template>
 
@@ -124,7 +133,7 @@
       width="400px"
       :close-on-click-modal="false"
     >
-      <el-form :model="scanForm" label-width="80px">
+      <el-form :model="scanForm" label-width="80px" @submit.native.prevent>
         <el-form-item label="定数码">
           <el-input
             ref="defNoPkgCodeInput"
@@ -139,6 +148,33 @@
       <div slot="footer" class="dialog-footer">
         <el-button @click="scanDialogVisible = false">取消</el-button>
         <el-button type="primary" @click="handleScanAdd" :loading="scanLoading">
+          确定
+        </el-button>
+      </div>
+    </el-dialog>
+
+    <!-- 转单扫码录入弹框 -->
+    <el-dialog
+      title="转单扫码录入"
+      :visible.sync="transferScanDialogVisible"
+      width="400px"
+      :close-on-click-modal="false"
+    >
+      <el-form :model="transferScanForm" label-width="80px" @submit.native.prevent>
+        <el-form-item label="定数码">
+          <el-input
+            ref="transferDefNoPkgCodeInput"
+            v-model="transferScanForm.defNoPkgCode"
+            placeholder="请输入定数码"
+            clearable
+            @keyup.enter.native="handleTransferScanAdd"
+            @input="handleTransferScanInput"
+          ></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="transferScanDialogVisible = false">取消</el-button>
+        <el-button type="primary" @click="handleTransferScanAdd" :loading="transferScanLoading">
           确定
         </el-button>
       </div>
@@ -201,7 +237,8 @@
     GetBdszZqsjMainUseDel,
     deleteUsedQty,
     upIS_XM,
-    bdszyyLsAddDef
+    bdszyyLsAddDef,
+    bdszyyZsAddDef
   } from '@/api/Task/SurgicalVerification';
   import { BACK_BASE_URL } from '@/config/setting';
   export default {
@@ -341,7 +378,16 @@
         },
         // 扫码自动提交相关
         scanInputTimer: null,
-        lastInputTime: 0
+        lastInputTime: 0,
+        // 转单扫码录入弹框
+        transferScanDialogVisible: false,
+        transferScanLoading: false,
+        transferScanForm: {
+          defNoPkgCode: ''
+        },
+        // 转单扫码自动提交相关
+        transferScanInputTimer: null,
+        transferLastInputTime: 0
       };
     },
     watch: {
@@ -497,6 +543,21 @@
           this.$refs.defNoPkgCodeInput.focus();
         });
       },
+      // 显示转单扫码录入弹框
+      showTransferScanDialog() {
+        if (
+          this.parentCurrent == null ||
+          Object.keys(this.parentCurrent).length == 0
+        ) {
+          return this.$message.warning('请先选择一条数据');
+        }
+        this.transferScanDialogVisible = true;
+        this.transferScanForm.defNoPkgCode = '';
+        // 等待DOM更新后聚焦输入框
+        this.$nextTick(() => {
+          this.$refs.transferDefNoPkgCodeInput.focus();
+        });
+      },
       // 处理扫码添加录入
       async handleScanAdd() {
         // 防抖：如果正在处理中，直接返回
@@ -531,6 +592,39 @@
           });
         }
       },
+      // 处理转单扫码录入
+      async handleTransferScanAdd() {
+        // 防抖：如果正在处理中，直接返回
+        if (this.transferScanLoading) {
+          return;
+        }
+
+        if (!this.transferScanForm.defNoPkgCode.trim()) {
+          this.$message.warning('请输入定数码');
+          return;
+        }
+
+        this.transferScanLoading = true;
+        const loading = this.$messageLoading('正在添加中...');
+        try {
+          const res = await bdszyyZsAddDef({
+            SSBH: this.parentCurrent.SSBH,
+            DEF_NO_PKG_CODE: this.transferScanForm.defNoPkgCode.trim()
+          });
+          this.$message.success(res.msg || '添加成功');
+          // 清空输入框并重新聚焦
+          this.transferScanForm.defNoPkgCode = '';
+          this.reload(this.lastRequestParams?.where);
+        } catch (err) {
+          this.$message.error(err.msg || '添加失败');
+        } finally {
+          loading.close();
+          this.transferScanLoading = false;
+          this.$nextTick(() => {
+            this.$refs.transferDefNoPkgCodeInput.focus();
+          });
+        }
+      },
       // 处理扫码输入，自动检测扫码完成
       handleScanInput(value) {
         const currentTime = Date.now();
@@ -551,6 +645,30 @@
             // 如果输入内容不为空，自动提交
             if (value && value.trim()) {
               this.handleScanAdd();
+            }
+          }
+        }, delay);
+      },
+      // 处理转单扫码输入，自动检测扫码完成
+      handleTransferScanInput(value) {
+        const currentTime = Date.now();
+        this.transferLastInputTime = currentTime;
+
+        // 清除之前的定时器
+        if (this.transferScanInputTimer) {
+          clearTimeout(this.transferScanInputTimer);
+        }
+
+        // 设置固定延迟时间
+        const delay = 500;
+
+        // 设置新的定时器，在指定延迟后自动提交
+        this.transferScanInputTimer = setTimeout(() => {
+          // 检查是否在延迟期间有新的输入
+          if (Date.now() - this.transferLastInputTime >= delay - 50) {
+            // 如果输入内容不为空，自动提交
+            if (value && value.trim()) {
+              this.handleTransferScanAdd();
             }
           }
         }, delay);
@@ -578,6 +696,10 @@
       // 清理扫码定时器
       if (this.scanInputTimer) {
         clearTimeout(this.scanInputTimer);
+      }
+      // 清理转单扫码定时器
+      if (this.transferScanInputTimer) {
+        clearTimeout(this.transferScanInputTimer);
       }
     }
   };

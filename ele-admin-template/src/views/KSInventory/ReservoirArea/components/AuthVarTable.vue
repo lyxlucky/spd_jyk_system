@@ -12,7 +12,7 @@
       </template> -->
         <!-- 左表头 -->
         <template v-slot:toolbar>
-          <el-form class="ele-form-search">
+          <el-form class="ele-form-search" @submit.native.prevent>
             <el-row :gutter="10">
               <el-col :lg="10" :md="12">
                 <el-form-item label="">

@@ -64,6 +64,7 @@ export async function SerachTempletDeta(data) {
     : '';
   data2.dateFrom = data.where.dateFrom ? data.where.dateFrom : '';
   data2.dateTo = data.where.dateTo ? data.where.dateTo : '';
+  data2.PlanNum = data.where.PlanNum ? data.where.PlanNum : '';
   data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
 
   const res = await request.get('/DeptApplyPlan/SerachTempletDeta', {

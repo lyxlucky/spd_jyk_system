@@ -32,7 +32,7 @@
       :pageSizes="pageSizes"
     >
       <template v-slot:toolbar>
-        <el-form :inline="true" size="mini">
+        <el-form :inline="true" size="mini" @submit.native.prevent>
           <el-form-item>
             <el-input placeholder="编码/名称"></el-input>
           </el-form-item>
