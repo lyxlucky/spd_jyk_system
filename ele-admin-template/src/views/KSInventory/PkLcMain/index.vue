@@ -157,6 +157,7 @@
           </template>
           <template v-slot:dtlAction="{ row }">
             <el-button
+              v-if="false"
               size="mini"
               type="primary"
               :disabled="!canEditDtl"
@@ -246,6 +247,7 @@
             placeholder="请选择失效日期"
             value-format="yyyy-MM-dd"
             style="width: 100%"
+            disabled
           ></el-date-picker>
         </el-form-item>
         <el-form-item label="手写备注栏" prop="REMARK">
@@ -332,6 +334,7 @@
               :max="99"
               size="mini"
               controls-position="right"
+              disabled
             />
           </template>
           <template v-slot:toolbar>
@@ -340,7 +343,7 @@
                 <el-input
                   style="width: 200px"
                   v-model="productSearchKeyword"
-                  placeholder="请输入品种名称/品种编码/型号规格/生产企业搜索"
+                  placeholder="请输入物料名称/物料编码/型号规格/生产企业搜索"
                   clearable
                   @keyup.enter.native="reloadProductTable"
                 />
@@ -379,7 +382,7 @@
         ref="editDtlForm"
         label-width="120px"
       >
-        <el-form-item label="品种名称">
+        <el-form-item label="物料名称">
           <span>{{ editDtlFormData.VARIETIE_NAME }}</span>
         </el-form-item>
         <el-form-item label="规格型号">
@@ -416,7 +419,7 @@
     >
       <div v-if="lcDetailCurrentRow" style="margin-bottom: 15px;">
         <el-descriptions :column="2" border size="small">
-          <el-descriptions-item label="品种名称">{{ lcDetailCurrentRow.VARIETIE_NAME }}</el-descriptions-item>
+          <el-descriptions-item label="物料名称">{{ lcDetailCurrentRow.VARIETIE_NAME }}</el-descriptions-item>
           <el-descriptions-item label="规格型号">{{ lcDetailCurrentRow.SPECIFICATION_OR_TYPE }}</el-descriptions-item>
         </el-descriptions>
       </div>
@@ -511,7 +514,7 @@
             slot: 'stateTag'
           },
           {
-            prop: 'USER_ID',
+            prop: 'USERNAME',
             label: '申请人工号',
             width: 100,
             align: 'center'
@@ -638,14 +641,14 @@
           },
           {
             prop: 'VARIETIE_CODE_NEW',
-            label: '品种编码',
+            label: '物料编码',
             minWidth: 120,
             align: 'center',
             showOverflowTooltip: true
           },
           {
             prop: 'VARIETIE_NAME',
-            label: '品种名称',
+            label: '物料名称',
             minWidth: 150,
             align: 'center',
             showOverflowTooltip: true
@@ -693,7 +696,7 @@
           {
             columnKey: 'action',
             label: '操作',
-            width: 180,
+            width: 100,
             align: 'center',
             slot: 'dtlAction',
             fixed: 'right'
@@ -737,14 +740,14 @@
           },
           {
             prop: 'VARIETIE_CODE_NEW',
-            label: '品种编码',
+            label: '物料编码',
             minWidth: 130,
             align: 'center',
             showOverflowTooltip: true
           },
           {
             prop: 'VARIETIE_NAME',
-            label: '品种名称',
+            label: '物料名称',
             minWidth: 150,
             align: 'center',
             showOverflowTooltip: true
@@ -847,8 +850,17 @@
         }
       },
       // ============ 主单方法 ============
+      // 清空主单选中状态和明细数据
+      clearMainSelection() {
+        this.selectedMain = null;
+        this.$nextTick(() => {
+          this.$refs.dtlTable && this.$refs.dtlTable.reload();
+        });
+      },
       mainDatasource({ page, limit }) {
         this.mainPage = page;
+        // 主单刷新时清空选中状态
+        this.clearMainSelection();
         return getMainList({
           page,
           limit,
@@ -863,7 +875,6 @@
           });
       },
       reloadMain() {
-        this.selectedMain = null;
         this.$refs.mainTable.reload({ page: 1 });
       },
       onMainCurrentChange(current) {
@@ -906,6 +917,9 @@
         this.isEditMain = false;
         this.mainDialogTitle = '新增主单';
         this.resetMainForm();
+        // 设置失效日期默认为当前自然年的最后一天
+        const currentYear = new Date().getFullYear();
+        this.mainFormData.EXPIRATION_TIME = `${currentYear}-12-31`;
         this.mainDialogVisible = true;
       },
       editMainItem(row) {
@@ -981,11 +995,6 @@
           if (res.code === 200) {
             this.$message.success('提交成功');
             this.$refs.mainTable.reload();
-            // 刷新当前选中主单的状态
-            if (this.selectedMain && this.selectedMain.ID === row.ID) {
-              this.selectedMain.STATE = 1;
-              this.$refs.dtlTable && this.$refs.dtlTable.reload();
-            }
           } else {
             this.$message.error(res.msg || '提交失败');
           }
@@ -1000,7 +1009,6 @@
           const res = await deleteMain(row.ID);
           if (res.code === 200) {
             this.$message.success('删除成功');
-            this.selectedMain = null;
             this.$refs.mainTable.reload();
           } else {
             this.$message.error(res.msg || '删除失败');
@@ -1033,14 +1041,6 @@
             this.$message.success(approved ? '审批通过' : '审批不通过');
             this.closeApproveDialog();
             this.$refs.mainTable.reload();
-            // 刷新当前选中主单的状态
-            if (
-              this.selectedMain &&
-              this.selectedMain.ID === this.approveFormData.id
-            ) {
-              this.selectedMain.STATE = approved ? 2 : -1;
-              this.$refs.dtlTable && this.$refs.dtlTable.reload();
-            }
           } else {
             this.$message.error(res.msg || '审批失败');
           }
