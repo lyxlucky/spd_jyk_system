@@ -92,7 +92,7 @@
               <el-form-item>
                 <el-input
                   v-model="mainWhere.searchName"
-                  placeholder="品种编码/品种名称/注册证"
+                  placeholder="物料编码/物料名称/注册证"
                   clearable
                   @keyup.enter.native="reloadMain"
                 />
@@ -307,7 +307,7 @@
 
     <!-- 产品选择弹窗 -->
     <el-dialog
-      title="选择品种"
+      title="选择物料"
       :visible.sync="productSelectDialogVisible"
       width="1200px"
       top="5vh"
@@ -363,7 +363,7 @@
           type="primary"
           @click="confirmAddProducts"
           :loading="addProductsLoading"
-          >添加品种 ({{ productSelection.length }})</el-button
+          >添加物料 ({{ productSelection.length }})</el-button
         >
       </div>
     </el-dialog>
