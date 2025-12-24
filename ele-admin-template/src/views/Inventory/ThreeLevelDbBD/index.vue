@@ -152,16 +152,25 @@
                 />
               </el-form-item>
               <el-form-item>
-                <el-button type="primary" size="mini" @click="reloadFlowData">查询</el-button>
-                <el-button type="success" size="mini" @click="exportFlowData()">导出Excel</el-button>
+                <el-button type="primary" size="mini" @click="reloadFlowData"
+                  >查询</el-button
+                >
+                <el-button type="success" size="mini" @click="exportFlowData()"
+                  >导出Excel</el-button
+                >
               </el-form-item>
             </el-form>
           </template>
         </ele-pro-table>
         <div style="text-align: right; margin-top: 10px; font-size: 24px">
-          总入库数量：{{ Number(flowRow.KS_QTY) }} |
-          总计费数量：{{ Number(flowRow.JF_QTY) + Number(flowRow.JF_DEF_QTY) }} |
-          库存数：{{ Number(flowRow.KS_QTY) + Number(flowRow.JF_QTY) + Number(flowRow.JF_DEF_QTY) }}
+          总入库数量：{{ Number(flowRow.KS_QTY) }} | 总计费数量：{{
+            Number(flowRow.JF_QTY) + Number(flowRow.JF_DEF_QTY)
+          }}
+          | 库存数：{{
+            Number(flowRow.KS_QTY) +
+            Number(flowRow.JF_QTY) +
+            Number(flowRow.JF_DEF_QTY)
+          }}
         </div>
       </div>
     </el-dialog>
@@ -238,8 +247,12 @@
                 />
               </el-form-item>
               <el-form-item>
-                <el-button type="primary" size="mini" @click="reloadKcData">查询</el-button>
-                <el-button type="success" size="mini" @click="exportKcData()">导出Excel</el-button>
+                <el-button type="primary" size="mini" @click="reloadKcData"
+                  >查询</el-button
+                >
+                <el-button type="success" size="mini" @click="exportKcData()"
+                  >导出Excel</el-button
+                >
               </el-form-item>
             </el-form>
           </template>
@@ -336,7 +349,7 @@
             label: '单价',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 80,
+            minWidth: 80
           },
           {
             prop: 'HIS_ZHB',
@@ -372,6 +385,22 @@
             align: 'center',
             showOverflowTooltip: true,
             minWidth: 100
+          },
+          {
+            prop: 'STORAGE_TYPE',
+            label: '入库类型',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 100,
+            formatter: (row, column, cellValue) => {
+              if (row?.STORAGE_TYPE == 0) {
+                return '普通入库';
+              }
+              if (row?.STORAGE_TYPE == 1) {
+                return '盘盈入库';
+              }
+              return '未知';
+            }
           },
           {
             prop: 'KS_QTY_TOTAL',
@@ -721,7 +750,8 @@
               const dataArray = [headers];
               response.data.forEach((d) => {
                 // 计算库存数量，与表格中的formatter逻辑一致
-                const ksQtyTotal = Number(d.KS_QTY) + Number(d.JF_QTY) + Number(d.JF_DEF_QTY);
+                const ksQtyTotal =
+                  Number(d.KS_QTY) + Number(d.JF_QTY) + Number(d.JF_DEF_QTY);
                 dataArray.push([
                   d.DEPT_TWO_NAME || '',
                   d.VARIETIE_CODE_NEW || '',
@@ -968,7 +998,8 @@
                 '数量',
                 '总价',
                 '散货计费数量',
-                '定数包计费数量'
+                '定数包计费数量',
+                '入库类型'
               ];
               const dataArray = [headers];
               response.data.forEach((d) => {
@@ -982,7 +1013,8 @@
                   d.QTY || '',
                   d.TOTAL_PRICE || '',
                   d.JF_QTY || '',
-                  d.JF_DEF_QTY || ''
+                  d.JF_DEF_QTY || '',
+                  d.STORAGE_TYPE == 0 ? '普通入库' : d.STORAGE_TYPE == 2 ? '盘盈入库' : '未知'
                 ]);
               });
               writeFile(
