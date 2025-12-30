@@ -112,7 +112,10 @@ module.exports = {
     performance: {
       maxAssetSize: 2000000,
       maxEntrypointSize: 2000000
-    }
+    },
+    cache: {
+      type: 'filesystem',
+    },
   },
   chainWebpack(config) {
     // set svg-sprite-loader

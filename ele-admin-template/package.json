@@ -71,6 +71,9 @@
     "vuedraggable": "^2.24.3",
     "vuex": "^3.6.2",
     "vuex-persistedstate": "^4.1.0",
+    "vxe-pc-ui": "^3.10.29",
+    "vxe-table": "^3.19.18",
+    "xe-utils": "^3.7.9",
     "xgplayer-vue": "^1.1.5",
     "xlsx": "^0.18.5"
   },

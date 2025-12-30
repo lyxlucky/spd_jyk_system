@@ -47,6 +47,23 @@ Vue.use(VueClipboard);
 // 注册全局指令
 Vue.directive('date-shortcuts', dateShortcuts);
 
+import VxeUIBase, { VxeUI } from 'vxe-pc-ui'
+import 'vxe-pc-ui/es/style.css'
+
+import VxeUITable from 'vxe-table'
+import 'vxe-table/es/style.css'
+
+import VxeUIPluginExportXLSX from '@vxe-ui/plugin-export-xlsx'
+import ExcelJS from 'exceljs'
+
+VxeUI.use(VxeUIPluginExportXLSX, {
+  ExcelJS
+})
+
+
+Vue.use(VxeUIBase)
+Vue.use(VxeUITable)
+
 new Vue({
   router,
   store,
