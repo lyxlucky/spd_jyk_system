@@ -140,6 +140,28 @@
             minWidth: 120
           },
           {
+            prop: 'IS_CHARGE',
+            label: '是否收费',
+            sortable: 'custom',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 120,
+            formatter: (_row, _column, cellValue) => {
+              if (cellValue == null) {
+                cellValue = '未定义';
+              }
+              return cellValue == 1 ? "是" : "否";
+            }
+          },
+          {
+            prop: 'CHARGING_CODE',
+            label: '计费编码',
+            sortable: 'custom',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 120
+          },
+          {
             prop: 'DEPT_ZDY_VARIETIE_CODE',
             label: '自定义编码',
             sortable: 'custom',
@@ -303,7 +325,6 @@
         // 是否显示导入弹窗
         showImport: false,
         isUpdate: false,
-
         // 添加品种数量
         APPLY_QTY: 0
         // datasource: [],

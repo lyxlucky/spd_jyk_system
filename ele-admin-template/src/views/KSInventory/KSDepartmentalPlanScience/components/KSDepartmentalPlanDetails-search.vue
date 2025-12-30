@@ -212,7 +212,7 @@
           </el-button>
 
           <!-- 绑定费用项 -->
-          <el-button
+          <!-- <el-button
             type="primary"
             size="mini"
             icon="el-icon-s-grid"
@@ -221,7 +221,7 @@
             :disabled="!selection || selection.length === 0"
           >
             绑定费用项
-          </el-button>
+          </el-button> -->
         </div>
       </el-col>
     </el-row>
