@@ -154,4 +154,47 @@
     padding-top: 1px;
     padding-bottom: 1px;
   }
+
+  // vxe-table 表格密度样式
+  .table-density-default .vxe-table .vxe-body--row {
+    height: 40px;
+  }
+  .table-density-middle .vxe-table .vxe-body--row {
+    height: 32px;
+  }
+  .table-density-compact .vxe-table .vxe-body--row {
+    height: 24px;
+  }
+  .table-density-default .vxe-table .vxe-header--row {
+    height: 40px;
+  }
+  .table-density-middle .vxe-table .vxe-header--row {
+    height: 32px;
+  }
+  .table-density-compact .vxe-table .vxe-header--row {
+    height: 24px;
+  }
+  .table-density-default .vxe-table .vxe-cell {
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+  .table-density-middle .vxe-table .vxe-cell {
+    padding-top: 4px;
+    padding-bottom: 4px;
+  }
+  .table-density-compact .vxe-table .vxe-cell {
+    padding-top: 1px;
+    padding-bottom: 1px;
+  }
+  // vxe-table 紧凑模式下的额外样式优化
+  .table-density-compact .vxe-table {
+    .vxe-body--column,
+    .vxe-header--column {
+      padding-left: 4px;
+      padding-right: 4px;
+    }
+    .vxe-cell {
+      line-height: 1.2;
+    }
+  }
 </style>

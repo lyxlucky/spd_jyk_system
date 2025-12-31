@@ -216,6 +216,7 @@
           size="mini"
           height="400"
           highlight-current-row
+          resizable
           @current-change="onMainTableCurrentChange"
           @row-click="onMainTableRowClick"
         >
@@ -272,7 +273,7 @@
           <vxe-column
             field="SURGERY_DATE"
             title="手术日期"
-            width="120"
+            width="155"
             align="center"
             :formatter="formatDate"
           />
@@ -369,6 +370,7 @@
           stripe
           size="mini"
           height="400"
+          resizable
         >
           <vxe-column type="seq" title="序号" width="60" align="center" />
           <vxe-column
@@ -656,14 +658,7 @@ export default {
       if (!cellValue) {
         return '';
       }
-      if (typeof cellValue === 'string') {
-        return cellValue;
-      }
-      const date = new Date(cellValue);
-      const year = date.getFullYear();
-      const month = String(date.getMonth() + 1).padStart(2, '0');
-      const day = String(date.getDate()).padStart(2, '0');
-      return `${year}-${month}-${day}`;
+      return this.$moment(cellValue).format('YYYY-MM-DD HH:mm:ss');
     },
     // 格式化是否审核批号效期
     formatIsAudit({ cellValue }) {
