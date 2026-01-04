@@ -124,7 +124,7 @@
             start-placeholder="开始日期"
             end-placeholder="结束日期"
             value-format="yyyy-MM-dd"
-            style="width: 240px"
+            style="width: 100%"
           />
         </el-form-item>
         <el-form-item label="手术时间">
@@ -135,7 +135,7 @@
             start-placeholder="开始日期"
             end-placeholder="结束日期"
             value-format="yyyy-MM-dd"
-            style="width: 240px"
+            style="width: 100%"
           />
         </el-form-item>
         <el-form-item label="是否上传植入物单">
