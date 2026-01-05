@@ -157,7 +157,6 @@
           </template>
           <template v-slot:dtlAction="{ row }">
             <el-button
-              v-if="false"
               size="mini"
               type="primary"
               :disabled="!canEditDtl"
@@ -337,6 +336,16 @@
               disabled
             />
           </template>
+          <template v-slot:singleLcNumsInput="{ row }">
+            <el-input-number
+              v-model="row.SINGLE_LC_NUMS"
+              :min="1"
+              :max="99"
+              size="mini"
+              controls-position="right"
+              disabled
+            />
+          </template>
           <template v-slot:toolbar>
             <el-form class="ele-form-search" size="mini" inline>
               <el-form-item>
@@ -391,6 +400,16 @@
         <el-form-item label="计划临采次数" prop="PLAN_LC_TIMES">
           <el-input-number
             v-model="editDtlFormData.PLAN_LC_TIMES"
+            :min="1"
+            :max="99"
+            controls-position="right"
+            :disabled="true"
+            style="width: 100%"
+          />
+        </el-form-item>
+        <el-form-item label="单次临采数量" prop="SINGLE_LC_NUMS">
+          <el-input-number
+            v-model="editDtlFormData.SINGLE_LC_NUMS"
             :min="1"
             :max="99"
             controls-position="right"
@@ -612,6 +631,13 @@
               trigger: 'blur'
             }
           ],
+          PATIENT_NAME: [
+            {
+              required: true,
+              message: '请输入患者姓名',
+              trigger: 'blur'
+            }
+          ],
           EXPIRATION_TIME: [
             {
               required: true,
@@ -687,6 +713,12 @@
             align: 'center'
           },
           {
+            prop: 'SINGLE_LC_NUMS',
+            label: '单次临采数量',
+            width: 120,
+            align: 'center'
+          },
+          {
             prop: 'LC_TIMES',
             label: '已临采次数',
             width: 120,
@@ -696,7 +728,7 @@
           {
             columnKey: 'action',
             label: '操作',
-            width: 100,
+            width: 180,
             align: 'center',
             slot: 'dtlAction',
             fixed: 'right'
@@ -709,11 +741,15 @@
           ID: null,
           VARIETIE_NAME: '',
           SPECIFICATION_OR_TYPE: '',
-          PLAN_LC_TIMES: 10
+          PLAN_LC_TIMES: 10,
+          SINGLE_LC_NUMS: 1
         },
         editDtlFormRules: {
           PLAN_LC_TIMES: [
             { required: true, message: '请输入计划临采次数', trigger: 'blur' }
+          ],
+          SINGLE_LC_NUMS: [
+            { required: true, message: '请输入单次临采数量', trigger: 'blur' }
           ]
         },
 
@@ -785,6 +821,13 @@
             width: 130,
             align: 'center',
             slot: 'planLcTimesInput'
+          },
+          {
+            prop: 'SINGLE_LC_NUMS',
+            label: '单次临采数量',
+            width: 130,
+            align: 'center',
+            slot: 'singleLcNumsInput'
           }
         ],
 
@@ -1095,7 +1138,8 @@
           ID: row.ID,
           VARIETIE_NAME: row.VARIETIE_NAME,
           SPECIFICATION_OR_TYPE: row.SPECIFICATION_OR_TYPE,
-          PLAN_LC_TIMES: row.PLAN_LC_TIMES || 10
+          PLAN_LC_TIMES: row.PLAN_LC_TIMES || 10,
+          SINGLE_LC_NUMS: row.SINGLE_LC_NUMS || 1
         };
         this.editDtlDialogVisible = true;
       },
@@ -1105,7 +1149,8 @@
           ID: null,
           VARIETIE_NAME: '',
           SPECIFICATION_OR_TYPE: '',
-          PLAN_LC_TIMES: 10
+          PLAN_LC_TIMES: 10,
+          SINGLE_LC_NUMS: 1
         };
       },
       submitEditDtlForm() {
@@ -1115,7 +1160,8 @@
           try {
             const res = await updateDtl({
               ID: this.editDtlFormData.ID,
-              PLAN_LC_TIMES: this.editDtlFormData.PLAN_LC_TIMES
+              PLAN_LC_TIMES: this.editDtlFormData.PLAN_LC_TIMES,
+              SINGLE_LC_NUMS: this.editDtlFormData.SINGLE_LC_NUMS
             });
             if (res.code === 200) {
               this.$message.success('修改成功');
@@ -1169,7 +1215,8 @@
             // 为每个产品设置默认计划临采次数为10
             const listWithDefault = (res.result || []).map((item) => ({
               ...item,
-              PLAN_LC_TIMES: item.PLAN_LC_TIMES || 10
+              PLAN_LC_TIMES: item.PLAN_LC_TIMES || 10,
+              SINGLE_LC_NUMS: item.SINGLE_LC_NUMS || 1
             }));
             return {
               count: res.total,
@@ -1193,12 +1240,14 @@
 
         const codes = this.productSelection.map((p) => p.VARIETIE_CODE);
         const times = this.productSelection.map((p) => p.PLAN_LC_TIMES || 10);
+        const singleNums = this.productSelection.map((p) => p.SINGLE_LC_NUMS || 1);
 
         try {
           const res = await insertDtl({
             PK_LC_MAIN_ID: this.selectedMain.ID,
             VARIETIE_CODES: codes,
-            PLAN_LC_TIMES: times
+            PLAN_LC_TIMES: times,
+            SINGLE_LC_NUMS: singleNums,
           });
           if (res.code === 200) {
             this.$message.success('成功添加');

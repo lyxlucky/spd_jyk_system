@@ -244,6 +244,7 @@ export async function insertDtl(data) {
     PK_LC_MAIN_ID: data.PK_LC_MAIN_ID,
     VARIETIE_CODES: data.VARIETIE_CODES,
     PLAN_LC_TIMES: data.PLAN_LC_TIMES,
+    SINGLE_LC_NUMS: data.SINGLE_LC_NUMS,
   };
 
   try {
@@ -265,7 +266,8 @@ export async function updateDtl(data) {
     token,
     data: {
       ID: data.ID,
-      PLAN_LC_TIMES: data.PLAN_LC_TIMES
+      PLAN_LC_TIMES: data.PLAN_LC_TIMES,
+      SINGLE_LC_NUMS: data.SINGLE_LC_NUMS,
     }
   };
 

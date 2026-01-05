@@ -69,6 +69,7 @@
                   <th>规格型号</th>
                   <th>价格</th>
                   <th>计划临采次数</th>
+                  <th>单次临采数量</th>
                   <th>已临采次数</th>
                 </tr>
               </thead>
@@ -82,10 +83,11 @@
                   <td>{{ item.SPECIFICATION_OR_TYPE }}</td>
                   <td>{{ item.PRICE }}</td>
                   <td>{{ item.PLAN_LC_TIMES }}</td>
+                  <td>{{ item.SINGLE_LC_NUMS }}</td>
                   <td>{{ item.LC_TIMES }}</td>
                 </tr>
                 <tr v-if="dtlList.length === 0">
-                  <td colspan="9" class="empty-row">暂无明细数据</td>
+                  <td colspan="10" class="empty-row">暂无明细数据</td>
                 </tr>
               </tbody>
             </table>
