@@ -64,6 +64,13 @@ npm run build:zxnw     # 中心医院内网
 npm run build:lgww     # 龙岗医院外网
 ```
 
+#### 市二医院环境
+```bash
+npm run build:se2bb    # 市二本部
+npm run build:dpyq     # 大鹏院区
+npm run build:lhyq     # 龙华院区
+```
+
 ## 环境配置说明
 
 每个环境都有对应的 `.env.{环境名}` 配置文件，包含：
