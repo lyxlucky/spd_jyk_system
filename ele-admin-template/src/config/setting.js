@@ -25,7 +25,10 @@ const getRequestTimeout = () => {
     'stzlnw': 3600000, // 1小时
     'zxww': 3600000,  // 1小时
     'zxnw': 3600000,  // 1小时
-    'lgww': 3600000   // 1小时
+    'lgww': 3600000,  // 1小时
+    'se2bb': 3600000, // 1小时
+    'dpyq': 3600000,  // 1小时
+    'lhyq': 3600000   // 1小时
   };
   console.log(env,envTimeoutMap[env]);
   return envTimeoutMap[env] || 3600000; 
@@ -64,7 +67,10 @@ const getHomeHp = () => {
     'stzlnw': 'stzl',
     'zxww': 'stzx',
     'zxnw': 'stzx',
-    'lgww': 'lg'
+    'lgww': 'lg',
+    'se2bb': 'se2bb',
+    'dpyq': 'dpyq',
+    'lhyq': 'lhyq'
   };
   return envHpMap[env] || 'bd';
 }
@@ -113,7 +119,10 @@ const getBackBaseUrl = () => {
     'stzlnw': 'http://199.199.197.110:8001',
     'zxww': 'http://47.106.243.154:831',
     'zxnw': 'http://172.16.0.99:82',
-    'lgww': 'http://218.17.60.162:10052'
+    'lgww': 'http://218.17.60.162:10052',
+    'se2bb': 'http://10.173.128.80:18101',
+    'dpyq': 'http://10.173.128.80:18105',
+    'lhyq': 'http://10.173.128.80:18103'
   };
   return envMap[env] || 'http://localhost:16416';
 }
