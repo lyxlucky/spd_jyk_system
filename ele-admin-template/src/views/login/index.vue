@@ -156,6 +156,9 @@ export default {
       case 'bdrm':
         logoPath = require('@/assets/logoBJ.jpg');
         break;
+      case 'se2':
+        logoPath = require('@/assets/szse.png'); // 待定：市二本部、大鹏院区、龙华院区使用同一个LOGO
+        break;
       default:
         logoPath = require('@/assets/logoBJ.jpg');
       }

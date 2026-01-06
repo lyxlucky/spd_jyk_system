@@ -68,9 +68,9 @@ const getHomeHp = () => {
     'zxww': 'stzx',
     'zxnw': 'stzx',
     'lgww': 'lg',
-    'se2bb': 'se2bb',
-    'dpyq': 'dpyq',
-    'lhyq': 'lhyq'
+    'se2bb': 'se2',  // 市二本部、大鹏院区、龙华院区统一使用同一个HOME_HP
+    'dpyq': 'se2',   // 三个环境使用同一个LOGO（待定）
+    'lhyq': 'se2'    // 三个环境使用同一个LOGO（待定）
   };
   return envHpMap[env] || 'bd';
 }
