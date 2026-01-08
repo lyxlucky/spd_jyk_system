@@ -26,6 +26,7 @@
     "build:zxnw": "vue-cli-service build --mode zxnw",
     "build:lgww": "vue-cli-service build --mode lgww",
     "build:se2bb": "vue-cli-service build --mode se2bb",
+    "build:se2bbww": "vue-cli-service build --mode se2bbww",
     "build:dpyq": "vue-cli-service build --mode dpyq",
     "build:lhyq": "vue-cli-service build --mode lhyq",
     "lint": "vue-cli-service lint",

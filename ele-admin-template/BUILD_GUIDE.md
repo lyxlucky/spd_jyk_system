@@ -67,6 +67,7 @@ npm run build:lgww     # 龙岗医院外网
 #### 市二医院环境
 ```bash
 npm run build:se2bb    # 市二本部
+npm run build:se2bbww  # 市二本部外网
 npm run build:dpyq     # 大鹏院区
 npm run build:lhyq     # 龙华院区
 ```

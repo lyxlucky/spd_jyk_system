@@ -27,11 +27,12 @@ const getRequestTimeout = () => {
     'zxnw': 3600000,  // 1小时
     'lgww': 3600000,  // 1小时
     'se2bb': 3600000, // 1小时
+    'se2bbww': 3600000, // 1小时
     'dpyq': 3600000,  // 1小时
     'lhyq': 3600000   // 1小时
   };
   console.log(env,envTimeoutMap[env]);
-  return envTimeoutMap[env] || 3600000; 
+  return envTimeoutMap[env] || 3600000;
 }
 
 export const REQUEST_TIMEOUT = getRequestTimeout();
@@ -69,6 +70,7 @@ const getHomeHp = () => {
     'zxnw': 'stzx',
     'lgww': 'lg',
     'se2bb': 'se2',  // 市二本部、大鹏院区、龙华院区统一使用同一个HOME_HP
+    'se2bbww': 'se2',  // 市二本部、大鹏院区、龙华院区统一使用同一个HOME_HP
     'dpyq': 'se2',   // 三个环境使用同一个LOGO（待定）
     'lhyq': 'se2'    // 三个环境使用同一个LOGO（待定）
   };
@@ -121,6 +123,7 @@ const getBackBaseUrl = () => {
     'zxnw': 'http://172.16.0.99:82',
     'lgww': 'http://218.17.60.162:10052',
     'se2bb': 'http://10.173.128.80:18101',
+    'se2bbww': 'http://47.106.243.154:18101',
     'dpyq': 'http://10.173.128.80:18105',
     'lhyq': 'http://10.173.128.80:18103'
   };
