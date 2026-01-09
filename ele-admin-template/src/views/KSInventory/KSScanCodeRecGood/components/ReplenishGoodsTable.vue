@@ -1,5 +1,5 @@
 <template>
-  <div class="ele-body">
+  <div class="">
     <ReplenishGoodsSearch @search="reload" />
     <!-- 数据表格 -->
     <ele-pro-table highlight-current-row @current-change="onCurrentChange" ref="table" height="60vh" :rowClickChecked="true" :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" cache-key="ReplenishGoodsTable">
@@ -140,14 +140,14 @@ export default {
           showOverflowTooltip: true,
           minWidth: 80
         },
-        {
-          prop: 'dept_two_name',
-          label: '科室名称',
-          // sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 120
-        },
+        // {
+        //   prop: 'dept_two_name',
+        //   label: '科室名称',
+        //   // sortable: 'custom',
+        //   align: 'center',
+        //   showOverflowTooltip: true,
+        //   minWidth: 120
+        // },
         {
           prop: 'ID',
           label: 'ID',
