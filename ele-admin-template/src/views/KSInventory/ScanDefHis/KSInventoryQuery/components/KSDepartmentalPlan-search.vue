@@ -1,141 +1,125 @@
 <!-- 搜索表单 -->
 <template>
   <el-form
+    inline
     class="ele-form-search"
     @keyup.enter.native="search"
     @submit.native.prevent
   >
-    <el-row :gutter="10">
-      <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 12 }">
-        <el-form-item>
-          <el-input
+    <el-form-item>
+      <el-input
+        style="width: 160px"
+        size="mini"
+        clearable
+        v-model="where.Name"
+        placeholder="品种名称"
+      />
+    </el-form-item>
+    <el-form-item>
+      <el-input
+        style="width: 160px"
+        size="mini"
+        clearable
+        v-model="where.SPEC"
+        placeholder="规格型号"
+      />
+    </el-form-item>
+    <el-form-item>
+      <el-input
+        style="width: 160px"
+        size="mini"
+        clearable
+        v-model="where.MANUFACTURING_ENT_NAME"
+        placeholder="生产企业"
+      />
+    </el-form-item>
+    <el-form-item>
+      <el-select style="width: 120px" size="mini" clearable v-model="where.DEPTNAME" @change="search()" >
+        <el-option label="科室名称" value="">科室名称</el-option>
+        <el-option
+          v-for="item in userDept"
+          :key="item.Dept_Two_Code"
+          :value="item.Dept_Two_Name"
+          >{{ item.Dept_Two_Name }}</el-option
+        >
+      </el-select>
+    </el-form-item>
+    <el-form-item>
+      <el-input
+        style="width: 160px"
+        size="mini"
+        clearable
+        v-model="where.DEF_NO_PKG_CODE"
+        placeholder="定数码"
+      />
+    </el-form-item>
+    <el-form-item >
+      <el-select style="width: 100px" size="mini" clearable v-model="where.TYPE" @change="search()">
+        <el-option label="定数码" value="1"></el-option>
+        <el-option label="散货" value="0"></el-option>
+        <el-option label="库存类型" value=""></el-option>
+      </el-select>
+    </el-form-item>
+    <el-form-item>
+      <el-input
+        style="width: 120px"
+        size="mini"
+        clearable
+        type="number"
+        v-model="where.xqDay"
+        placeholder="近效期/天"
+      />
+    </el-form-item>
+    <el-form-item>
+      <el-select style="width: 100px" size="mini" clearable v-model="where.COUNT" @change="search()">
+        <el-option label="数量" value=""></el-option>
+        <el-option label="未出库" value="1"></el-option>
+        <el-option label="已出库" value="0"></el-option>
+      </el-select>
+    </el-form-item>
+    <el-form-item>
+      <el-input
+        style="width: 160px"
+        size="mini"
+        clearable
+        v-model="where.DELIVERY_NUMBER"
+        placeholder="入库单号"
+      />
+    </el-form-item>
+    <el-form-item>
+      <el-button
+        size="mini"
+        type="primary"
+        icon="el-icon-search"
+        class="ele-btn-icon"
+        @click="search"
+      >
+        查询
+      </el-button>
+    </el-form-item>
+    <el-form-item>
+      <el-button size="mini" class="ele-btn-icon" icon="el-icon-refresh" @click="reset">
+        重置
+      </el-button>
+    </el-form-item>
+    <el-form-item>
+      <el-popconfirm
+        class="ele-action"
+        title="确定添加？"
+        @confirm="addBatchInsertScanDef()"
+      >
+        <template v-slot:reference>
+          <el-button
             size="mini"
-            clearable
-            v-model="where.Name"
-            placeholder="品种名称"
-          />
-        </el-form-item>
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 12 }">
-        <el-form-item>
-          <el-input
-            size="mini"
-            clearable
-            v-model="where.SPEC"
-            placeholder="规格型号"
-          />
-        </el-form-item>
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 12 }">
-        <el-form-item>
-          <el-input
-            size="mini"
-            clearable
-            v-model="where.MANUFACTURING_ENT_NAME"
-            placeholder="生产企业"
-          />
-        </el-form-item>
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 12 }">
-        <el-form-item label="科室名称:" label-width="77px">
-          <el-select size="mini" v-model="where.DEPTNAME" @change="search()">
-            <el-option label="全部" value="">全部</el-option>
-            <el-option
-              v-for="item in userDept"
-              :key="item.Dept_Two_Code"
-              :value="item.Dept_Two_Name"
-              >{{ item.Dept_Two_Name }}</el-option
-            >
-          </el-select>
-        </el-form-item>
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 12 }">
-        <el-form-item>
-          <el-input
-            size="mini"
-            clearable
-            v-model="where.DEF_NO_PKG_CODE"
-            placeholder="定数码"
-          />
-        </el-form-item>
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 12 }">
-        <el-form-item label="库存类型:" label-width="77px">
-          <el-select size="mini" v-model="where.TYPE" @change="search()">
-            <el-option label="定数码" value="1"></el-option>
-            <el-option label="散货" value="0"></el-option>
-            <el-option label="全部" value=""></el-option>
-          </el-select>
-        </el-form-item>
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 12 }">
-        <el-form-item>
-          <el-input
-            size="mini"
-            clearable
-            type="number"
-            v-model="where.xqDay"
-            placeholder="近效期/天"
-          />
-        </el-form-item>
-      </el-col>
-    </el-row>
-
-    <el-row :gutter="10">
-      <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 12 }">
-        <el-form-item label="数量:" label-width="45px">
-          <el-select size="mini" v-model="where.COUNT" @change="search()">
-            <el-option label="全部" value=""></el-option>
-            <el-option label="未出库" value="1"></el-option>
-            <el-option label="已出库" value="0"></el-option>
-          </el-select>
-        </el-form-item>
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 12 }">
-        <el-form-item>
-          <el-input
-            size="mini"
-            clearable
-            v-model="where.DELIVERY_NUMBER"
-            placeholder="入库单号"
-          />
-        </el-form-item>
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 12, md: 12 } : { span: 8 }">
-        <div>
-          <el-form-item>
-            <el-button
-              size="mini"
-              type="primary"
-              icon="el-icon-search"
-              class="ele-btn-icon"
-              @click="search"
-            >
-              查询
-            </el-button>
-            <el-button size="mini" icon="el-icon-refresh" @click="reset">重置</el-button>
-
-            <el-popconfirm
-              class="ele-action"
-              title="确定添加？"
-              @confirm="addBatchInsertScanDef()"
-            >
-              <template v-slot:reference>
-                <el-button
-                  size="mini"
-                  type="primary"
-                  icon="el-icon-plus"
-                  class="ele-btn-icon"
-                >
-                  添加
-                </el-button>
-              </template>
-            </el-popconfirm>
-          </el-form-item>
-        </div>
-        <!-- </div> -->
-      </el-col>
-    </el-row>
+            type="primary"
+            icon="el-icon-plus"
+            class="ele-btn-icon"
+          >
+            添加
+          </el-button>
+        </template>
+      </el-popconfirm>
+    </el-form-item>
     <KSInventoryQuery2 :visible.sync="KSInventoryQueryShow" />
   </el-form>
 </template>

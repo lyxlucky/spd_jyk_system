@@ -8,7 +8,7 @@
       @current-change="onCurrentChange"
       :row-class-name="tableRowClassName"
       ref="table"
-      height="60vh"
+      height="65vh"
       :rowClickChecked="true"
       :stripe="false"
       :pageSize="pageSize"

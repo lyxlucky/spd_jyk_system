@@ -60,7 +60,7 @@
           >
             查询
           </el-button>
-          <el-button size="mini" icon="el-icon-refresh" @click="reset"
+          <el-button size="mini" icon="el-icon-refresh"  class="ele-btn-icon" @click="reset"
             >重置</el-button
           >
         </div>

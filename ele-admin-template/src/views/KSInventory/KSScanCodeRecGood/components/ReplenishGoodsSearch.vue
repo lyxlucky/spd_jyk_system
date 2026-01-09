@@ -2,61 +2,55 @@
 <template>
   <div>
     <el-form
-      label-width="0px"
+      inline
       class="ele-form-search"
       @keyup.enter.native="search"
       @submit.native.prevent
     >
-      <!-- <el-row :gutter="15">
-        <el-col v-bind="styleResponsive ? { lg: 12, md: 12 } : { span: 12 }">
-          <el-button size="mini" type="primary" @click="openScanDialog">扫码入库</el-button>
-        </el-col>
-      </el-row> -->
-      <el-row :gutter="15">
-        <el-col v-bind="styleResponsive ? { lg: 12, md: 12 } : { span: 12 }">
-          <el-input
-            size="mini"
-            clearable
-            v-model="where.stock_out_distribute_number"
-            placeholder="请输入补货单号"
-          />
-        </el-col>
-        <el-col v-bind="styleResponsive ? { lg: 12, md: 12 } : { span: 12 }">
-          <el-date-picker
-            size="mini"
-            v-model="deliveryDateRange"
-            type="daterange"
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            value-format="yyyy-MM-dd"
-            @change="onDeliveryDateChange"
-            style="width: 100%"
-          >
-          </el-date-picker>
-        </el-col>
-      </el-row>
-      <el-row :gutter="15">
-        <el-col v-bind="styleResponsive ? { lg: 24, md: 24 } : { span: 24 }">
-          <div class="ele-form-actions">
-            <el-button
-              size="mini"
-              type="primary"
-              icon="el-icon-search"
-              class="ele-btn-icon"
-              @click="search"
-            >
-              查询
-            </el-button>
-            <el-button icon="el-icon-refresh" size="mini" @click="reset"
-              >重置</el-button
-            >
-            <el-button size="mini" type="primary" @click="openScanDialog"
-              >扫码入库</el-button
-            >
-          </div>
-        </el-col>
-      </el-row>
+      <el-form-item>
+        <el-input
+          style="width: 130px"
+          size="mini"
+          clearable
+          v-model="where.stock_out_distribute_number"
+          placeholder="请输入补货单号"
+        />
+      </el-form-item>
+      <el-form-item>
+        <el-date-picker
+          size="mini"
+          style="width: 220px"
+          v-model="deliveryDateRange"
+          type="daterange"
+          range-separator="至"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          value-format="yyyy-MM-dd"
+          @change="onDeliveryDateChange"
+        >
+        </el-date-picker>
+      </el-form-item>
+      <el-form-item>
+        <el-button
+          size="mini"
+          type="primary"
+          icon="el-icon-search"
+          class="ele-btn-icon"
+          @click="search"
+        >
+          查询
+        </el-button>
+      </el-form-item>
+      <el-form-item>
+        <el-button icon="el-icon-refresh" size="mini" @click="reset">
+          重置
+        </el-button>
+      </el-form-item>
+      <el-form-item>
+        <el-button size="mini" type="primary" @click="openScanDialog">
+          扫码入库
+        </el-button>
+      </el-form-item>
     </el-form>
 
     <!-- 扫码对话框 -->
@@ -67,7 +61,6 @@
       @close="closeScanDialog"
     >
       <el-form :model="scanForm" label-width="80px">
-        
         <el-form-item label="扫码内容">
           <el-input
             size="mini"
@@ -115,11 +108,27 @@
         delivery_start_date: '',
         delivery_end_date: ''
       };
+      // 获取默认15天的日期范围
+      const today = new Date();
+      const startDate = new Date(today);
+      startDate.setDate(today.getDate() - 14); // 15天前（包含今天）
+      const formatDate = (date) => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+      };
+      const defaultDateRange = [formatDate(startDate), formatDate(today)];
+
       return {
         // 表单数据
-        where: { ...defaultWhere },
+        where: {
+          ...defaultWhere,
+          delivery_start_date: defaultDateRange[0],
+          delivery_end_date: defaultDateRange[1]
+        },
         DistributeNumber: null,
-        deliveryDateRange: null,
+        deliveryDateRange: defaultDateRange,
         scanDialogVisible: false,
         // 扫码表单数据
         scanForm: {
@@ -152,8 +161,24 @@
       },
       /*  重置 */
       reset() {
-        this.where = { ...this.defaultWhere };
-        this.deliveryDateRange = null;
+        // 重新计算默认15天日期范围
+        const today = new Date();
+        const startDate = new Date(today);
+        startDate.setDate(today.getDate() - 14);
+        const formatDate = (date) => {
+          const year = date.getFullYear();
+          const month = String(date.getMonth() + 1).padStart(2, '0');
+          const day = String(date.getDate()).padStart(2, '0');
+          return `${year}-${month}-${day}`;
+        };
+        const defaultDateRange = [formatDate(startDate), formatDate(today)];
+
+        this.where = {
+          stock_out_distribute_number: '',
+          delivery_start_date: defaultDateRange[0],
+          delivery_end_date: defaultDateRange[1]
+        };
+        this.deliveryDateRange = defaultDateRange;
         this.search();
       },
       /* 送货时间范围变化处理 */
@@ -176,7 +201,7 @@
             account: this.$store.state.user.info.UserName
           });
           if (res && res.result) {
-            this.regions = res.result.map(item => ({
+            this.regions = res.result.map((item) => ({
               label: item.REGION_NAME,
               value: item.REGION_CODE
             }));
@@ -254,4 +279,8 @@
     created() {}
   };
 </script>
-<style></style>
+<style scoped lang="scss">
+  ::v-deep .el-form-item {
+    margin-bottom: 0;
+  }
+</style>

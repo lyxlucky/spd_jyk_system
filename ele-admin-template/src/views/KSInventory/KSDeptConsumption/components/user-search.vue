@@ -1,352 +1,229 @@
 <!-- 搜索表单 -->
 <template>
   <el-form
-    label-width="77px"
     class="ele-form-search"
+    inline
     @keyup.enter.native="search"
     @submit.native.prevent
   >
-    <el-row :gutter="10">
-      <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 6 }">
-        <el-input
-          size="mini"
-          clearable
-          v-model="where.varietie"
-          placeholder="品种编码、品种全称"
-        />
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 6 }">
-        <el-input
-          size="mini"
-          clearable
-          v-model="where.supplier"
-          placeholder="请输入供应商搜索"
-        />
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 6 }">
-        <el-input
-          size="mini"
-          clearable
-          v-model="where.manuEntName"
-          placeholder="请输入生产企业搜索"
-        />
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 6 }">
-        <el-input
-          size="mini"
-          clearable
-          v-model="where.batch"
-          placeholder="请输入生产批号搜索"
-        />
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 6 }">
-        <el-input
-          size="mini"
-          clearable
-          v-model="where.deptTwoName"
-          placeholder="请输入科室名称"
-        />
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 6 }">
-        <el-input
-          size="mini"
-          clearable
-          v-model="where.DEPT_NAME"
-          placeholder="计费科室名称"
-        />
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 6 }">
-        <el-input
-          size="mini"
-          clearable
-          v-model="where.SPDDEPTNAME"
-          placeholder="成本科室名称"
-        />
-      </el-col>
-
-      <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 6 }">
-        <el-select
-          size="mini"
-          clearable
-          v-model="where.highOrLow"
-          placeholder="请选择高低值"
-        >
-          <el-option label="高值" value="高值"> </el-option>
-          <el-option label="低值" value="低值"> </el-option>
-          <el-option label="试剂" value="试剂"> </el-option>
-        </el-select>
-        <!-- <el-input size="mini" clearable v-model="where.highOrLow" placeholder="请输入高低值" /> -->
-      </el-col>
-    </el-row>
-    <el-row :gutter="10" style="margin-top: 10px">
-      <!-- <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 6 }">
-        <el-input size="mini" clearable v-model="where.highOrLow" placeholder="请输入高低值" />
-      </el-col> -->
-      <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 6 }">
-        <el-input
-          size="mini"
-          clearable
-          v-model="where.trade"
-          placeholder="请输入国产/进口"
-        />
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 6 }">
-        <el-input
-          size="mini"
-          clearable
-          v-model="where.classificName"
-          placeholder="请输入分类属性"
-        />
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 6 }">
-        <el-input
-          size="mini"
-          clearable
-          v-model="where.specType"
-          placeholder="请输入规格型号"
-        />
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 6 }">
-        <el-input
-          size="mini"
-          clearable
-          v-model="where.Patient_Number"
-          placeholder="病患号/住院号"
-        />
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 6 }">
-        <el-input
-          size="mini"
-          clearable
-          v-model="where.def"
-          placeholder="请输入定数码"
-        />
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 6 }">
-        <el-input
-          size="mini"
-          clearable
-          v-model="where.Operate_Person"
-          placeholder="消耗人"
-        />
-      </el-col>
-
-      <el-col v-bind="styleResponsive ? { lg: 5, md: 12 } : { span: 6 }">
-        <el-form-item label="消耗时间:">
-          <el-date-picker
-            size="mini"
-            v-model="where.validDateFrom"
-            type="date"
-            style="width: 140px"
-            value-format="yyyy-MM-dd"
-            placeholder="消耗开始时间"
-          >
-          </el-date-picker>
-
-          <el-date-picker
-            size="mini"
-            v-model="where.validDateTo"
-            type="date"
-            style="width: 140px; margin-left: 10px"
-            value-format="yyyy-MM-dd"
-            placeholder="消耗结束时间"
-          >
-          </el-date-picker>
-        </el-form-item>
-      </el-col>
-    </el-row>
-    <el-row :gutter="10" style="margin-top: 0">
-      <!-- <el-col v-bind="styleResponsive ? { lg: 5, md: 12 } : { span: 6 }">
-        <el-form-item label="消耗时间:">
-          <el-date-picker size="mini" v-model="where.validDateFrom" type="date" style="width:140px" value-format="yyyy-MM-dd" placeholder="消耗开始时间">
-          </el-date-picker>
-
-          <el-date-picker size="mini" v-model="where.validDateTo" type="date" style="width:140px;margin-left: 10px;" value-format="yyyy-MM-dd" placeholder="消耗结束时间">
-          </el-date-picker>
-        </el-form-item>
-      </el-col> -->
-      <!-- <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 6 }" style="margin-left:40px">
-        <el-date-picker size="mini" v-model="where.validDateTo" type="date" style="width:150px" value-format="yyyy-MM-dd" placeholder="消耗结束时间">
-        </el-date-picker>
-      </el-col> -->
-
-      <el-col
-        v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 6 }"
-        style="margin-left: 25px; display: none"
+    <el-form-item>
+      <el-input
+        size="mini"
+        clearable
+        v-model="where.varietie"
+        placeholder="品种编码、品种全称"
+      />
+    </el-form-item>
+    <el-form-item>
+      <el-input
+        size="mini"
+        clearable
+        v-model="where.supplier"
+        placeholder="请输入供应商搜索"
+      />
+    </el-form-item>
+    <el-form-item>
+      <el-input
+        size="mini"
+        clearable
+        v-model="where.manuEntName"
+        placeholder="请输入生产企业搜索"
+      />
+    </el-form-item>
+    <el-form-item>
+      <el-input
+        size="mini"
+        clearable
+        v-model="where.batch"
+        placeholder="请输入生产批号搜索"
+      />
+    </el-form-item>
+    <el-form-item>
+      <el-input
+        size="mini"
+        clearable
+        v-model="where.deptTwoName"
+        placeholder="请输入科室名称"
+      />
+    </el-form-item>
+    <el-form-item>
+      <el-input
+        size="mini"
+        clearable
+        v-model="where.DEPT_NAME"
+        placeholder="计费科室名称"
+      />
+    </el-form-item>
+    <el-form-item>
+      <el-input
+        size="mini"
+        clearable
+        v-model="where.SPDDEPTNAME"
+        placeholder="成本科室名称"
+      />
+    </el-form-item>
+    <el-form-item>
+      <el-select
+        size="mini"
+        clearable
+        v-model="where.highOrLow"
+        placeholder="请选择高低值"
       >
-        <el-form-item label="日清时间:">
-          <el-date-picker
-            v-model="where.dayClearingDate"
-            type="date"
-            style="width: 150px"
-            value-format="yyyy-MM-dd"
-            placeholder="日清开始时间"
-          >
-          </el-date-picker>
-        </el-form-item>
-      </el-col>
-
-      <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 6 }">
-        <el-form-item label="是否按月结日期搜索,默认否" label-width="200px">
-          <el-switch v-model="where.useMonth"></el-switch>
-        </el-form-item>
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 6 }">
-        <el-date-picker
-          size="mini"
-          v-model="where.monthFmt"
-          type="month"
-          style="width: 140px"
-          value-format="yyyy-MM"
-          placeholder="开始时间"
-          :disabled="!where.useMonth"
-        >
-        </el-date-picker>
-
-        <el-date-picker
-          size="mini"
-          v-model="where.monthFmt2"
-          type="month"
-          style="width: 140px; margin-left: 10px"
-          value-format="yyyy-MM"
-          placeholder="结束时间"
-          :disabled="!where.useMonth"
-        >
-        </el-date-picker>
-      </el-col>
-
-      <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 6 }">
-        <el-form-item label="消耗类型：" label-width="85px">
-          <el-select size="mini" v-model="where.consumeType">
-            <el-option label="全部" value=""></el-option>
-            <el-option label="条码扫码消耗" value="0"></el-option>
-            <el-option label="RFID读码消耗" value="1"></el-option>
-            <el-option label="HIS计费消耗" value="2"></el-option>
-            <el-option label="散货申领消耗" value="3"></el-option>
-            <el-option label="HIS医嘱计费消耗" value="4"></el-option>
-            <el-option label="超时默认消耗" value="5"></el-option>
-          </el-select>
-        </el-form-item>
-      </el-col>
-
-      <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 6 }">
-        <el-form-item label="是否防控物资:" label-width="100px">
-          <el-select size="mini" v-model="where.isProtect">
-            <el-option label="全部" value=""></el-option>
-            <el-option label="否" value="0"></el-option>
-            <el-option label="是" value="1"></el-option>
-          </el-select>
-        </el-form-item>
-      </el-col>
-
-      <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 6 }">
-        <el-form-item label="高低值分类下级分类:" label-width="150px">
-          <el-select size="mini" v-model="where.highOrLowClassTwo">
-            <el-option label="全部" value=""></el-option>
-            <el-option label="重点治理" value="1"></el-option>
-            <el-option label="非重点治理" value="2"></el-option>
-          </el-select>
-        </el-form-item>
-      </el-col>
-
-      <el-col
-        v-bind="styleResponsive ? { lg: 5, md: 12 } : { span: 6 }"
-        style="margin-left: 25px"
+        <el-option label="高值" value="高值"> </el-option>
+        <el-option label="低值" value="低值"> </el-option>
+        <el-option label="试剂" value="试剂"> </el-option>
+      </el-select>
+    </el-form-item>
+    <el-form-item>
+      <el-input
+        size="mini"
+        clearable
+        v-model="where.trade"
+        placeholder="请输入国产/进口"
+      />
+    </el-form-item>
+    <el-form-item>
+      <el-input
+        size="mini"
+        clearable
+        v-model="where.classificName"
+        placeholder="请输入分类属性"
+      />
+    </el-form-item>
+    <el-form-item>
+      <el-input
+        size="mini"
+        clearable
+        v-model="where.specType"
+        placeholder="请输入规格型号"
+      />
+    </el-form-item>
+    <el-form-item>
+      <el-input
+        size="mini"
+        clearable
+        v-model="where.Patient_Number"
+        placeholder="病患号/住院号"
+      />
+    </el-form-item>
+    <el-form-item>
+      <el-input
+        size="mini"
+        clearable
+        v-model="where.def"
+        placeholder="请输入定数码"
+      />
+    </el-form-item>
+    <el-form-item>
+      <el-input
+        size="mini"
+        clearable
+        v-model="where.Operate_Person"
+        placeholder="消耗人"
+      />
+    </el-form-item>
+    <el-form-item label="消耗时间:">
+      <el-date-picker
+        size="mini"
+        v-model="validDateRange"
+        type="daterange"
+        style="width: 200px"
+        value-format="yyyy-MM-dd"
+        range-separator="至"
+        start-placeholder="开始时间"
+        end-placeholder="结束时间"
       >
-        <div class="ele-form-actions">
-          <el-button
-            size="mini"
-            type="primary"
-            icon="el-icon-search"
-            class="ele-btn-icon"
-            @click="search"
-          >
-            查询
-          </el-button>
-          <el-button size="mini" icon="el-icon-refresh" @click="reset"
-            >重置</el-button
-          >
-
-          <el-button
-            type="primary"
-            icon="el-icon-view"
-            size="mini"
-            @click="KSDeptConsumpHZTipShow = true"
-            >查看汇总</el-button
-          >
-
-          <el-button
-            size="mini"
-            type="primary"
-            icon="el-icon-view"
-            class="ele-btn-icon"
-            @click="KSDeptConsumpKSHZTipShow = true"
-          >
-            科室汇总
-          </el-button>
-        </div>
-      </el-col>
-
-      <!-- <el-col v-bind="styleResponsive ? { lg: 2, md: 12 } : { span: 6 }" style="margin-left:25px">
-        <el-date-picker size="mini"  v-model="where.monthFmt2" type="month" style="width:140px" value-format="yyyy-MM" placeholder="结束时间" :disabled="!where.useMonth">
-        </el-date-picker>
-      </el-col> -->
-      <!-- <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 6 }" style="margin-left:25px">
-        <el-form-item label="PDA扫码时间:" label-width='120px'>
-          <el-date-picker v-model="where.KSConsumePDA_startDate" type="date" style="width:150px" value-format="yyyy-MM-dd" placeholder="入库开始时间">
-          </el-date-picker>
-        </el-form-item>
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 2, md: 12 } : { span: 6 }" style="margin-left:5px">
-        <el-date-picker v-model="where.KSConsumePDA_endDate" type="date" style="width:150px" value-format="yyyy-MM-dd" placeholder="入库结束时间">
-        </el-date-picker>
-      </el-col> -->
-    </el-row>
-    <!-- <el-row :gutter="10" style="margin-top:10px"> -->
-
-    <!-- <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 6 }" style="margin-left:25px">
-        <el-form-item label="消耗类型：" label-width='85px'>
-          <el-select v-model="where.consumeType">
-            <el-option label="全部" value=""></el-option>
-            <el-option label="条码扫码消耗" value="0"></el-option>
-            <el-option label="RFID读码消耗" value="1"></el-option>
-            <el-option label="HIS计费消耗" value="2"></el-option>
-            <el-option label="散货申领消耗" value="3"></el-option>
-            <el-option label="HIS医嘱计费消耗" value="4"></el-option>
-            <el-option label="超时默认消耗" value="5"></el-option>
-          </el-select>
-        </el-form-item>
-      </el-col> -->
-    <!-- <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 6 }">
-        <el-form-item label="是否防控物资:" label-width='100px'>
-          <el-select v-model="where.isProtect">
-            <el-option label="全部" value=""></el-option>
-            <el-option label="否" value="0"></el-option>
-            <el-option label="是" value="1"></el-option>
-          </el-select>
-        </el-form-item>
-      </el-col> -->
-    <!-- <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 6 }">
-        <el-form-item label="高低值分类下级分类:" label-width='150px'>
-          <el-select v-model="where.highOrLowClassTwo">
-            <el-option label="全部" value=""></el-option>
-            <el-option label="重点治理" value="1"></el-option>
-            <el-option label="非重点治理" value="2"></el-option>
-          </el-select>
-        </el-form-item>
-      </el-col> -->
-    <!-- <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 6 }" style="margin-left:25px">
-        <div class="ele-form-actions">
-          <el-button size="mini" type="primary" icon="el-icon-search" class="ele-btn-icon" @click="search">
-            查询
-          </el-button>
-          <el-button size="mini" @click="reset">重置</el-button>
-          <el-button type="primary" class="ele-btn-icon" @click="exportData" v-loading.fullscreen.lock="fullscreenLoading">
-            导出
-          </el-button>
-        </div>
-      </el-col> -->
-    <!-- </el-row> -->
+      </el-date-picker>
+    </el-form-item>
+    <el-form-item label="日清时间:" style="display: none">
+      <el-date-picker
+        v-model="where.dayClearingDate"
+        type="date"
+        style="width: 150px"
+        value-format="yyyy-MM-dd"
+        placeholder="日清开始时间"
+      >
+      </el-date-picker>
+    </el-form-item>
+    <el-form-item label="是否按月结日期搜索,默认否">
+      <el-switch v-model="where.useMonth"></el-switch>
+    </el-form-item>
+    <el-form-item>
+      <el-date-picker
+        size="mini"
+        v-model="monthRange"
+        type="monthrange"
+        style="width: 200px"
+        value-format="yyyy-MM"
+        range-separator="至"
+        start-placeholder="开始时间"
+        end-placeholder="结束时间"
+        :disabled="!where.useMonth"
+      >
+      </el-date-picker>
+    </el-form-item>
+    <el-form-item label="消耗类型：">
+      <el-select size="mini" v-model="where.consumeType">
+        <el-option label="全部" value=""></el-option>
+        <el-option label="条码扫码消耗" value="0"></el-option>
+        <el-option label="RFID读码消耗" value="1"></el-option>
+        <el-option label="HIS计费消耗" value="2"></el-option>
+        <el-option label="散货申领消耗" value="3"></el-option>
+        <el-option label="HIS医嘱计费消耗" value="4"></el-option>
+        <el-option label="超时默认消耗" value="5"></el-option>
+      </el-select>
+    </el-form-item>
+    <el-form-item label="是否防控物资:">
+      <el-select size="mini" v-model="where.isProtect">
+        <el-option label="全部" value=""></el-option>
+        <el-option label="否" value="0"></el-option>
+        <el-option label="是" value="1"></el-option>
+      </el-select>
+    </el-form-item>
+    <el-form-item label="高低值分类下级分类:">
+      <el-select size="mini" v-model="where.highOrLowClassTwo">
+        <el-option label="全部" value=""></el-option>
+        <el-option label="重点治理" value="1"></el-option>
+        <el-option label="非重点治理" value="2"></el-option>
+      </el-select>
+    </el-form-item>
+    <el-form-item>
+      <el-button
+        size="mini"
+        type="primary"
+        icon="el-icon-search"
+        class="ele-btn-icon"
+        @click="search"
+      >
+        查询
+      </el-button>
+    </el-form-item>
+    <el-form-item>
+      <el-button size="mini" icon="el-icon-refresh" class="ele-btn-icon" @click="reset"
+        >重置</el-button
+      >
+    </el-form-item>
+    <el-form-item>
+      <el-button
+        type="primary"
+        icon="el-icon-view"
+        class="ele-btn-icon"
+        size="mini"
+        @click="KSDeptConsumpHZTipShow = true"
+        >查看汇总</el-button
+      >
+    </el-form-item>
+    <el-form-item>
+      <el-button
+        size="mini"
+        type="primary"
+        icon="el-icon-view"
+        class="ele-btn-icon"
+        @click="KSDeptConsumpKSHZTipShow = true"
+      >
+        科室汇总
+      </el-button>
+    </el-form-item>
     <KSDeptConsumpHZTip :visible.sync="KSDeptConsumpHZTipShow" :data="where"/>
     <KSDeptConsumpKSHZTip :visible.sync="KSDeptConsumpKSHZTipShow" :data="where"/>
   </el-form>
@@ -409,12 +286,34 @@
         where: { ...defaultWhere },
         KSDeptConsumpHZTipShow: false,
         KSDeptConsumpKSHZTipShow: false,
+        validDateRange: [],
+        monthRange: []
       };
     },
     computed: {
       // 是否开启响应式布局
       styleResponsive() {
         return this.$store.state.theme.styleResponsive;
+      }
+    },
+    watch: {
+      validDateRange(val) {
+        if (val && val.length === 2) {
+          this.where.validDateFrom = val[0];
+          this.where.validDateTo = val[1];
+        } else {
+          this.where.validDateFrom = '';
+          this.where.validDateTo = '';
+        }
+      },
+      monthRange(val) {
+        if (val && val.length === 2) {
+          this.where.monthFmt = val[0];
+          this.where.monthFmt2 = val[1];
+        } else {
+          this.where.monthFmt = '';
+          this.where.monthFmt2 = '';
+        }
       }
     },
     methods: {
@@ -425,6 +324,8 @@
       /*  重置 */
       reset() {
         this.where = { ...this.defaultWhere };
+        this.validDateRange = [];
+        this.monthRange = [];
         this.search();
       }
     },
@@ -447,3 +348,10 @@
     }
   };
 </script>
+
+
+<style scoped lang="scss">
+  :deep(.el-form-item) {
+    margin-bottom: 2px;
+  }
+</style>

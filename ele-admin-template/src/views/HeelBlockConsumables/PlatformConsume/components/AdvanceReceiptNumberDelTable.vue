@@ -361,7 +361,7 @@
             Batch_Validity_Period: item.Batch_Validity_Period || '9999-12-31',
             Batch_Production_Date: item.Batch_Production_Date,
             Varietie_Name: item.Varietie_Name,
-            DISINFECTION_VALID_DATE: item.DISINFECTION_VALID_DATE,
+            DISINFECTION_VALID_DATE: item.DISINFECTION_VALID_DATE
           };
         });
 

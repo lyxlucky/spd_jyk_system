@@ -1,32 +1,13 @@
 <template>
   <div class="ele-body">
     <el-card shadow="never">
-      <el-row style="margin-bottom: 5px">
-        <el-col :span="3">
-          当前页总金额:
-          {{ data.pageCost }}
-        </el-col>
-
-        <el-col :span="3">
-          所有页总金额:
-          {{ data.allCost }}
-        </el-col>
-
-        <el-col :span="3">
-          当前页散货汇总数量:
-          {{ data.pageGoodsQty }}
-        </el-col>
-
-        <el-col :span="3">
-          所有页散货汇总数量:
-          {{ data.allGoodsQty }}
-        </el-col>
-      </el-row>
+      
       <!-- 搜索表单 -->
       <user-search @search="reload" />
       <!-- 数据表格 -->
       <ele-pro-table
         ref="table"
+        height="calc(100vh - 380px)"
         :pageSize="pageSize"
         :pageSizes="pageSizes"
         :columns="columns"
@@ -47,8 +28,10 @@
           </el-button>
         </template> -->
         <template v-slot:toolbar>
+          <el-row style="margin-bottom: 5px;display: flex; align-items: center;">
+             <el-col :span="2">
           <el-button
-            size="small"
+            size="mini"
             type="primary"
             icon="el-icon-download"
             class="ele-btn-icon"
@@ -56,6 +39,31 @@
           >
             导出
           </el-button>
+        </el-col>
+        <el-col :span="3">
+          当前页总金额:
+          {{ data.pageCost }}
+        </el-col>
+
+        <el-col :span="3">
+          所有页总金额:
+          {{ data.allCost }}
+        </el-col>
+
+        <el-col :span="3">
+          当前页散货汇总数量:
+          {{ data.pageGoodsQty }}
+        </el-col>
+
+        <el-col :span="3">
+          所有页散货汇总数量:
+          {{ data.allGoodsQty }}
+        </el-col>
+
+       
+      </el-row>
+
+          
         </template>
 
         <!-- 操作列 -->
@@ -154,6 +162,7 @@
           // },
           {
             columnKey: 'index',
+             label: '序',
             type: 'index',
             width: 45,
             align: 'center',

@@ -1,121 +1,127 @@
 <!-- 搜索表单 -->
 <template>
   <el-form
-    label-width="100px"
+    inline
     class="ele-form-search"
     @keyup.enter.native="search"
     @submit.native.prevent
   >
-    <el-row :gutter="10">
-      <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 12 }">
-        <el-input
-          clearable
-          size="mini"
-          v-model="where.Name"
-          placeholder="品种名称/品种编码"
-        />
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 12 }">
-        <el-input
-          clearable
-          size="mini"
-          v-model="where.DELIVERY_NUMBER"
-          placeholder="入库单号"
-        />
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 12 }">
-        <el-input
-          clearable
-          size="mini"
-          v-model="where.DEF_NO_PKG_CODE"
-          placeholder="定数码"
-        />
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 12 }">
-        <el-input
-          clearable
-          size="mini"
-          v-model="where.MANUFACTURER"
-          placeholder="生产企业"
-        />
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 12 }">
-        <el-input
-          clearable
-          size="mini"
-          v-model="where.PROD_REGISTRATION"
-          placeholder="注册证"
-        />
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 12 }">
-        <el-input
-          size="mini"
-          clearable
-          v-model="where.BATCH"
-          placeholder="批号"
-        />
-      </el-col>
-
-      <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 12 }">
-        <el-date-picker
-          v-model="where.date"
-          type="daterange"
-          size="mini"
-          align="right"
-          unlink-panels
-          value-format="yyyy-MM-dd"
-          range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          :picker-options="pickerOptions"
-        >
-        </el-date-picker>
-      </el-col>
-
-      <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 12 }">
-        <el-form-item label="流向类型:">
-          <el-select size="mini" v-model="where.TYPE" @change="search()">
-            <el-option label="全部" value=""></el-option>
-            <el-option label="入库" value="0"></el-option>
-            <el-option label="消耗" value="1"></el-option>
-            <el-option label="退库" value="2"></el-option>
-          </el-select>
-        </el-form-item>
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 6, md: 12 } : { span: 6 }">
-        <el-form-item label-width="0px">
-          <div class="ele-form-actions">
-            <el-button
-              size="mini"
-              type="primary"
-              icon="el-icon-search"
-              class="ele-btn-icon"
-              @click="search"
-            >
-              查询
-            </el-button>
-            <el-button
-              size="mini"
-              type="primary"
-              icon="el-icon-download"
-              @click="exportData()"
-              >导出</el-button
-            >
-            <el-button size="mini" icon="el-icon-refresh" @click="reset"
-              >重置</el-button
-            >
-
-             <el-button
-              type="primary"
-              icon="el-icon-view"
-              size="mini"
-              @click="KSDepartmentalPlanDetailsGroupTipShow = true"
-              >查看汇总</el-button
-          >
-          </div>
-        </el-form-item>
-      </el-col>
-    </el-row>
+    <el-form-item>
+      <el-input
+        clearable
+        size="mini"
+        style="width: 160px"
+        v-model="where.Name"
+        placeholder="品种名称/品种编码"
+      />
+    </el-form-item>
+    <el-form-item>
+      <el-input
+        clearable
+        size="mini"
+        style="width: 160px"
+        v-model="where.DELIVERY_NUMBER"
+        placeholder="入库单号"
+      />
+    </el-form-item>
+    <el-form-item>
+      <el-input
+        clearable
+        size="mini"
+        style="width: 160px"
+        v-model="where.DEF_NO_PKG_CODE"
+        placeholder="定数码"
+      />
+    </el-form-item>
+    <el-form-item>
+      <el-input
+        clearable
+        size="mini"
+        style="width: 160px"
+        v-model="where.MANUFACTURER"
+        placeholder="生产企业"
+      />
+    </el-form-item>
+    <el-form-item>
+      <el-input
+        clearable
+        size="mini"
+        style="width: 160px"
+        v-model="where.PROD_REGISTRATION"
+        placeholder="注册证"
+      />
+    </el-form-item>
+    <el-form-item>
+      <el-input
+        size="mini"
+        clearable
+        style="width: 120px"
+        v-model="where.BATCH"
+        placeholder="批号"
+      />
+    </el-form-item>
+    <el-form-item>
+      <el-date-picker
+        v-model="where.date"
+        type="daterange"
+        size="mini"
+        align="right"
+        unlink-panels
+        value-format="yyyy-MM-dd"
+        range-separator="至"
+        start-placeholder="开始日期"
+        end-placeholder="结束日期"
+        :picker-options="pickerOptions"
+        style="width: 200px"
+      >
+      </el-date-picker>
+    </el-form-item>
+    <el-form-item>
+      <el-select size="mini" clearable style="width: 120px" v-model="where.TYPE" @change="search()">
+        <el-option label="流向类型" value="">全部</el-option>
+        <el-option label="入库" value="0"></el-option>
+        <el-option label="消耗" value="1"></el-option>
+        <el-option label="退库" value="2"></el-option>
+      </el-select>
+    </el-form-item>
+    <el-form-item>
+      <el-button
+        size="mini"
+        type="primary"
+        icon="el-icon-search"
+        class="ele-btn-icon"
+        @click="search"
+      >
+        查询
+      </el-button>
+    </el-form-item>
+    <el-form-item>
+      <el-button
+        size="mini"
+        type="primary"
+        class="ele-btn-icon"
+        icon="el-icon-download"
+        @click="exportData()"
+      >
+        导出
+      </el-button>
+    </el-form-item>
+    <el-form-item>
+      <el-button size="mini" class="ele-btn-icon" icon="el-icon-refresh" @click="reset">
+        重置
+      </el-button>
+    </el-form-item>
+    <el-form-item>
+      <el-button
+        type="primary"
+        icon="el-icon-view"
+        size="mini"
+        class="ele-btn-icon"
+        @click="KSDepartmentalPlanDetailsGroupTipShow = true"
+      >
+        查看汇总
+      </el-button>
+    </el-form-item>
     <KSDepartmentalPlanDetailsGroupTip :where="where" :visible.sync="KSDepartmentalPlanDetailsGroupTipShow" />
 
   </el-form>
@@ -338,3 +344,9 @@
     }
   };
 </script>
+
+<style scoped lang="scss">
+  ::v-deep .el-form-item {
+    margin-bottom: 0;
+  }
+</style>

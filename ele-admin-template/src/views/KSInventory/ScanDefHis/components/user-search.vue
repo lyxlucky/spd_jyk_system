@@ -2,130 +2,140 @@
 <template>
   <div>
     <el-form
-      label-width="77px"
+      inline
       class="ele-form-search"
       @keyup.enter.native="search"
       @submit.native.prevent
     >
-      <el-row :gutter="15">
-        <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 6 }">
-          <el-input
-            id="idDefNoPkgCode"
-            clearable
-            v-model="where.defNoPkgCode"
-            placeholder="请输入定数码"
-            size="mini"
-            @change="addScanDef"
-          />
-        </el-col>
-        <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 6 }">
-          <el-input
-            clearable
-            v-model="where.varietie"
-            size="mini"
-            placeholder="请输入品种编码/品种名称"
-          />
-        </el-col>
-        <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 6 }">
-          <el-input
-            clearable
-            v-model="where.specType"
-            size="mini"
-            placeholder="请输入规格型号"
-          />
-        </el-col>
-        <!-- <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 6 }">
-        <el-input clearable v-model="where.defNoPkgCode" placeholder="请输入合同编码" />
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 6 }">
-        <el-input clearable v-model="where.contractCode" placeholder="请输入供应商名称" />
-      </el-col> -->
-        <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 6 }">
-          <el-input
-            clearable
-            v-model="where.deptTwoName"
-            size="mini"
-            placeholder="请输入二级科室名称"
-          />
-        </el-col>
-        <el-col v-bind="styleResponsive ? { lg: 12, md: 12 } : { span: 6 }">
-          <div class="ele-form-actions" style="display: flex">
-            <el-button
-              type="primary"
-              size="mini"
-              icon="el-icon-search"
-              class="ele-btn-icon"
-              @click="search"
-            >
-              查询
+      <el-form-item>
+        <el-input
+          style="width: 160px;"
+          id="idDefNoPkgCode"
+          clearable
+          v-model="where.defNoPkgCode"
+          placeholder="请输入定数码"
+          size="mini"
+          @change="addScanDef"
+        />
+      </el-form-item>
+      <el-form-item>
+        <el-input
+          style="width: 160px;"
+          clearable
+          v-model="where.varietie"
+          size="mini"
+          placeholder="请输入品种编码/品种名称"
+        />
+      </el-form-item>
+      <el-form-item>
+        <el-input
+          style="width: 160px;"
+          clearable
+          v-model="where.specType"
+          size="mini"
+          placeholder="请输入规格型号"
+        />
+      </el-form-item>
+      <el-form-item>
+        <el-input
+          style="width: 160px;"
+          clearable
+          v-model="where.deptTwoName"
+          size="mini"
+          placeholder="请输入二级科室名称"
+        />
+      </el-form-item>
+      <el-form-item>
+        <el-button
+          type="primary"
+          size="mini"
+          icon="el-icon-search"
+          class="ele-btn-icon"
+          @click="search"
+        >
+          查询
+        </el-button>
+      </el-form-item>
+      <el-form-item>
+        <el-button @click="reset" class="ele-btn-icon" icon="el-icon-refresh" size="mini">
+          重置
+        </el-button>
+      </el-form-item>
+      <el-form-item>
+        <el-button
+          type="primary"
+          size="mini"
+          icon="el-icon-download"
+          class="ele-btn-icon"
+          @click="exportData"
+        >
+          导出
+        </el-button>
+      </el-form-item>
+      <el-form-item>
+        <el-popconfirm
+          class="ele-action"
+          title="确定删除？"
+          @confirm="removeBatch()"
+        >
+          <template v-slot:reference>
+            <el-button type="danger" class="ele-btn-icon" icon=" el-icon-delete" size="mini" :underline="false">
+              删除
             </el-button>
-            <el-button @click="reset" icon="el-icon-refresh" size="mini">重置</el-button>
-            <el-button
-              type="primary"
-              size="mini"
-              icon="el-icon-download"
-              class="ele-btn-icon"
-              @click="exportData"
-            >
-              导出
+          </template>
+        </el-popconfirm>
+      </el-form-item>
+      <el-form-item>
+        <el-popconfirm
+          class="ele-action"
+          title="确定消耗？"
+          @confirm="consumption()"
+        >
+          <template v-slot:reference>
+            <el-button type="success" class="ele-btn-icon" size="mini" icon="el-icon-delete-solid" :underline="false">
+              消耗
             </el-button>
-            <el-popconfirm
-              class="ele-action"
-              title="确定删除？"
-              @confirm="removeBatch()"
-            >
-              <template v-slot:reference>
-                <el-button type="danger" icon="el-icon-delete" size="mini" :underline="false"
-                  >删除</el-button
-                >
-              </template>
-            </el-popconfirm>
-            <el-popconfirm
-              class="ele-action"
-              title="确定消耗？"
-              @confirm="consumption()"
-            >
-              <template v-slot:reference>
-                <el-button type="success" size="mini" icon="el-icon-delete-solid" :underline="false"
-                  >消耗</el-button
-                >
-              </template>
-            </el-popconfirm>
-            <div style="margin-left: 10px;width: 80px;">
-              <el-upload
-                :on-success="uploadSuccess"
-                :on-error="upError"
-                :data="Updata"
-                :show-file-list="false"
-                :action="uploadUrl"
-                ref="Defupload"
-                :limit="1"
-              >
-                <el-button size="mini" icon="el-icon-_upload" type="primary"
-                  >导入</el-button
-                >
-              </el-upload>
-            </div>
-            <el-button
-              type="primary"
-              size="mini"
-              class="ele-btn-icon"
-              icon="el-icon-goods"
-              @click="KSInventoryQueryShow = true"
-              >从库存中挑选</el-button
-            >
-            <el-button
-              type="success"
-              size="mini"
-              class="ele-btn-icon"
-              v-if="['stzl', 'stzx'].includes(HOME_HP) || ENV == 'development'"
-              @click="bindMachine"
-              icon="el-icon-link"
-              >绑定设备</el-button
-            >
-          </div>
-        </el-col>
-      </el-row>
+          </template>
+        </el-popconfirm>
+      </el-form-item>
+      <el-form-item>
+        <el-upload
+          :on-success="uploadSuccess"
+          :on-error="upError"
+          :data="Updata"
+          :show-file-list="false"
+          :action="uploadUrl"
+          ref="Defupload"
+          :limit="1"
+        >
+          <el-button size="mini" icon="el-icon-_upload" type="primary">
+            导入
+          </el-button>
+        </el-upload>
+      </el-form-item>
+      <el-form-item>
+        <el-button
+          type="primary"
+          size="mini"
+          class="ele-btn-icon"
+          icon="el-icon-goods"
+          @click="KSInventoryQueryShow = true"
+        >
+          从库存中挑选
+        </el-button>
+      </el-form-item>
+      <el-form-item>
+        <el-button
+          type="success"
+          size="mini"
+          class="ele-btn-icon"
+          v-if="['stzl', 'stzx'].includes(HOME_HP) || ENV == 'development'"
+          @click="bindMachine"
+          icon="el-icon-link"
+        >
+          绑定设备
+        </el-button>
+      </el-form-item>
     </el-form>
     <!-- <h3 style="color:blue">{{msgTip}}</h3> -->
     <KSInventoryQuery :visible.sync="KSInventoryQueryShow" />
@@ -335,3 +345,9 @@
     }
   };
 </script>
+
+<style scoped lang="scss">
+  ::v-deep .el-form-item {
+    margin-bottom: 6px;
+  }
+</style>

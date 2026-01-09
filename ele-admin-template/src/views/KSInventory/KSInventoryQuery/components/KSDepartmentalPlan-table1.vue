@@ -1,13 +1,15 @@
 <template>
-  <div class="ele-body">
+  <div class="">
     <KSDepartmentalPlan-search @exportDataExcel="exportDataExcel" @search="reload" @openEdit="openEdit" :current="current" :type="TYPE" :sumCount="sumCount" />
     <!-- 数据表格 -->
-    <ele-pro-table highlight-current-row @current-change="onCurrentChange" ref="table" :rowClickChecked="true" :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" cache-key="KSInventoryBasicDataTable">
+    <ele-pro-table height="calc(100vh - 330px)" highlight-current-row @current-change="onCurrentChange" ref="table" :rowClickChecked="true" :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" cache-key="KSInventoryBasicDataTable">
       <!-- 表头工具栏 -->
       <template v-slot:toolbar>
         <!-- 搜索表单 -->
         <!-- <label>合计数量:<b>{{sumCount}}</b></label> -->
-      <span v-if="['stzl', 'stzx'].includes(HOME_HP) || ENV == 'development'" style="font-size: 20px;">当前设备： {{ bindMachine || '暂无' }}</span>
+      <span v-if="['stzl', 'stzx'].includes(HOME_HP) || ENV == 'development'" style="font-size: 20px; padding-right: 20px;">当前设备： {{ bindMachine || '暂无' }}</span>
+
+      <span style="font-size: 20px;">合计数量:<b>{{ sumCount }}</b></span>
       </template>
 
       <template v-slot:State="{ row }">
@@ -152,14 +154,14 @@ export default {
         //   showOverflowTooltip: true,
         //   fixed: 'left'
         // },
-        {
-          prop: 'DEPT_TWO_NAME',
-          label: '科室名称',
-          // sortable: 'custom',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 100
-        },
+        // {
+        //   prop: 'DEPT_TWO_NAME',
+        //   label: '科室名称',
+        //   // sortable: 'custom',
+        //   align: 'center',
+        //   showOverflowTooltip: true,
+        //   minWidth: 100
+        // },
         {
           // prop: 'DEF_NO_PKG_CODE',
           slot: 'DEF_NO_PKG_CODE',
@@ -451,7 +453,7 @@ export default {
             loading.close();
             const array = [
               [
-                '科室名称',
+                // '科室名称',
                 '定数码',
                 // '品种ID',
                 '品种编码',

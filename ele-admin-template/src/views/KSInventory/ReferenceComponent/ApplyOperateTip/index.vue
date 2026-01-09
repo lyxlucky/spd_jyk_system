@@ -9,11 +9,11 @@
     title="计划收货情况"
     @update:visible="updateVisible"
   >
-    <div class="ele-body">
+    <div class="">
       <el-card shadow="never">
         <!-- 搜索表单 -->
         <!-- 数据表格 -->
-        <user-search @exportData="handleNewExportData" @search="reload" />
+        
         <ele-pro-table
           ref="table"
           height="600px"
@@ -27,7 +27,9 @@
           @selection-change="onSelectionChange"
           cache-key="ApplyOperateTip"
         >
-          <template v-slot:toolbar> </template>
+          <template v-slot:toolbar>
+            <user-search @exportData="handleNewExportData" @search="reload" />
+          </template>
           <!-- 操作列 -->
           <template v-slot:APPLY_QTY="{ row }">
             <el-form-item label="">
@@ -416,3 +418,10 @@
     }
   };
 </script>
+
+
+<style scoped>
+  :deep(.el-card__body) {
+      padding: 0;
+  }
+</style>

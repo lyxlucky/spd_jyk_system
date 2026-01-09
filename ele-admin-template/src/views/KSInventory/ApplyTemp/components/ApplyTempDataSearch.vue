@@ -1,78 +1,98 @@
 <!-- 搜索表单 -->
 <template>
   <div>
-    <el-form class="ele-form-search">
-      <el-row :gutter="10">
-        <!-- <el-col v-bind="styleResponsive ? { lg: 6, md: 12 } : { span: 6 }">
-        <el-form-item label="状态：">
-          <el-select v-model="where.State" @change="search()">
-            <el-option label="显示所有申领品种" value="-1"></el-option>
-            <el-option label="仅显示实际申领为空品种" value="0"></el-option>
-            <el-option label="仅显示实际申领非空品种" value="1"></el-option>
-          </el-select>
-        </el-form-item>
-      </el-col> -->
-        <el-col v-bind="styleResponsive ? { lg: 7, md: 12 } : { span: 6 }">
-          <el-form-item label="平均用量时间段：" label-width="130px">
-            <el-date-picker size="mini" v-model="where.dateFrom" type="date" value-format="yyyy-MM-dd"
-              placeholder="yyyy-MM-dd">
-            </el-date-picker>
-          </el-form-item>
-        </el-col>
-        <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 6 }">
-          <el-form-item>
-            <el-date-picker size="mini" v-model="where.dateTo" type="date" value-format="yyyy-MM-dd"
-              placeholder="yyyy-MM-dd">
-            </el-date-picker>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row :gutter="10">
-        <el-col :lg="8" :md="12">
-          <el-input size="mini" v-model="where.SerachName" placeholder="请输入品种名称/品种编码/型号规格/生产企业搜索" clearable />
-        </el-col>
-        <el-col :lg="14" :md="12">
-          <div class="ele-form-actions">
-            <el-button size="mini" icon="el-icon-search" type="primary" @click="search">查询</el-button>
-            <el-button size="mini" icon="el-icon-refresh" @click="reset">重置</el-button>
-
-            <el-button type="primary" size="mini" @click="$emit('addTempVar')"
-              :style="{ display: IsDisabled == true ? 'none' : '' }">确认申领</el-button>
-
-            <!-- <el-button type="primary" size="mini" @click="dialogTableVisible = true"
-              icon="el-icon-plus">添加品种</el-button> -->
-            <!-- <el-button type="primary" icon="el-icon-plus" size="mini" @click="saveApplyNum">保存</el-button> -->
-            <!-- <el-button type="primary" size="small" @click="search">导入模板</el-button> -->
-            <!-- <el-upload action="" :before-upload="importFile" :show-file-list="false" accept=".xls,.xlsx,.csv">
-              <el-button>导入excel</el-button>
-            </el-upload> -->
-
-            <!-- <el-dropdown>
-              <el-button size="mini" icon="el-icon-s-grid" type="primary">
-                模板<i class="el-icon-arrow-down el-icon--right"></i>
-              </el-button>
-              <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item>
-                  <el-button type="primary" size="mini" @click="dialogTableVisible2 = true">导入模板</el-button>
-                </el-dropdown-item>
-                <el-dropdown-item>
-                  <el-button type="primary" size="mini" @click="exportData">导出模板</el-button>
-                </el-dropdown-item>
-              </el-dropdown-menu>
-            </el-dropdown> -->
-            <!-- <el-button type="danger" icon="el-icon-delete" size="mini" @click="removeBatch">删除</el-button> -->
-          </div>
-        </el-col>
-      </el-row>
-      <!-- <el-row :gutter="10">
-        <div class="ele-form-actions">
-          <el-button type="primary" size="small" @click="dialogTableVisible = true">添加品种</el-button>
-          <el-button type="primary" size="small" @click="saveApplyNum">保存</el-button>
-          <el-button type="primary" size="small" @click="search">导入模板</el-button>
-          <el-button type="primary" size="small" @click="search">导出模板</el-button>
-          <el-button type="danger" size="small" @click="removeBatch">删除</el-button>
-        </div>
-      </el-row> -->
+    <el-form class="ele-form-search" inline>
+      <el-form-item label="平均用量时间段：" >
+        <el-date-picker
+          size="mini"
+          v-model="where.dateRange"
+          type="daterange"
+          style="width: 200px"
+          value-format="yyyy-MM-dd"
+          range-separator="至"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+        >
+        </el-date-picker>
+      </el-form-item>
+      <el-form-item>
+        <el-input
+          size="mini"
+          v-model="where.SerachName"
+          style="width: 200px"
+          placeholder="品名/编码/型号规格/生产企业"
+          clearable
+        />
+      </el-form-item>
+      <el-form-item>
+        <el-button size="mini" class="ele-btn-icon" icon="el-icon-search" type="primary" @click="search">查询</el-button>
+      </el-form-item>
+      <el-form-item>
+        <el-button size="mini" class="ele-btn-icon" icon="el-icon-refresh" @click="reset">重置</el-button>
+      </el-form-item>
+      <el-form-item v-if="!IsDisabled">
+        <el-button
+          type="primary"
+          size="mini"
+          class="ele-btn-icon"
+          @click="addTempVar"
+          :style="{ display: IsDisabled == true ? 'none' : '' }"
+        >
+          确认申领
+        </el-button>
+      </el-form-item>
+      <el-form-item>
+        <el-button
+          type="primary"
+          size="mini"
+          @click="showDialogTableVisible"
+          icon="el-icon-plus"
+          class="ele-btn-icon"
+          >添加品种</el-button
+        >
+      </el-form-item>
+      <el-form-item>
+        <el-button
+          type="primary"
+          icon="el-icon-plus"
+          class="ele-btn-icon"
+          size="mini"
+          @click="saveApplyNum"
+          >保存</el-button
+        >
+      </el-form-item>
+      <el-form-item>
+        <el-dropdown>
+          <el-button size="mini" icon="el-icon-s-grid" class="ele-btn-icon" type="primary">
+            模板<i class="el-icon-arrow-down el-icon--right"></i>
+          </el-button>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item style="margin-bottom: 4px;">
+              <el-button
+                type="primary"
+                size="mini"
+                @click="showDialogTableVisible2"
+                >导入模板</el-button
+              >
+            </el-dropdown-item>
+            <el-dropdown-item>
+              <el-button type="primary" size="mini" @click="exportData"
+                >导出模板</el-button
+              >
+            </el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
+      </el-form-item>
+      <el-form-item>
+        <el-button
+          type="danger"
+          icon="el-icon-delete"
+          class="ele-btn-icon"
+          size="mini"
+          @click="removeBatch"
+          >删除</el-button
+        >
+      </el-form-item>
     </el-form>
     <el-dialog title="导入模板品种" :visible.sync="dialogTableVisible2" width="30%">
       <div style="width: 100%; text-align: center">
@@ -123,8 +143,7 @@ export default {
       PlanNum: '',
       is_second_app: '',
       SerachName: '',
-      dateFrom: '',
-      dateTo: ''
+      dateRange: this.getDefaultDateRange()
     };
     return {
       // 表单数据
@@ -148,11 +167,29 @@ export default {
     }
   },
   methods: {
+    getDefaultDateRange() {
+      const end = new Date();
+      const start = new Date();
+      start.setDate(start.getDate() - 30);
+      return [
+        start.toISOString().split('T')[0],
+        end.toISOString().split('T')[0]
+      ];
+    },
     showDialogTableVisible(){
       this.dialogTableVisible = true;
     },
     showDialogTableVisible2(){
       this.dialogTableVisible2 = true;
+    },
+    saveApplyNum() {
+      this.$emit('saveApplyNum');
+    },
+    addTempVar() {
+      this.$emit('addTempVar');
+    },
+    removeBatch() {
+      this.$emit('removeBatch');
     },
     /* 搜索 */
     search() {
@@ -162,38 +199,6 @@ export default {
     reset() {
       this.where = { ...this.defaultWhere };
       this.search();
-    },
-    removeBatch() {
-      console.log(this.selection);
-      var ID = '';
-      this.selection.forEach((item) => {
-        ID += item.ID + ',';
-      });
-      ID.substring(0, ID.length - 1);
-      var data = {
-        ID
-      };
-      DeletePlanDeta(data).then((res) => {
-        console.log(res);
-      });
-    },
-    saveApplyNum() {
-      const loading = this.$messageLoading('保存中...');
-      var list = this.selection;
-      for (let i = 0; i < list.length; i++) {
-        list[i].BigBoxCount = '0';
-        list[i].MinBoxCount = '0';
-      }
-      KeepTempletDeta(list)
-        .then((res) => {
-          loading.close();
-          this.$emit('search', this.where);
-          this.$message.success(res.msg);
-        })
-        .catch((err) => {
-          loading.close();
-          this.$message.error(err);
-        });
     },
     exportData() {
       this.$emit('exportData', this.where);

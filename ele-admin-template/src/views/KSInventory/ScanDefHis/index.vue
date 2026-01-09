@@ -4,11 +4,6 @@
       <!-- 搜索表单 -->
       <!-- <user-search @search="reload" @getMsgTip="getMsgTip" @exportData="exportData" :selection="selection" /> -->
       <!-- 数据表格 -->
-      <span
-        v-if="['stzl', 'stzx'].includes(HOME_HP) || ENV == 'development'"
-        style="font-size: 20px; margin-bottom: 5px"
-        >当前设备： {{ bindMachine || '暂无' }}</span
-      >
       <user-search
         @search="reload"
         @getMsgTip="getMsgTip"
@@ -17,6 +12,7 @@
       />
       <ele-pro-table
         ref="table"
+        height="calc(100vh - 300px)"
         :pageSize="pageSize"
         :pageSizes="pageSizes"
         :columns="columns"
@@ -28,6 +24,10 @@
       >
         <!-- 表头工具栏 -->
         <template v-slot:toolbar>
+          <span
+        v-if="['stzl', 'stzx'].includes(HOME_HP) || ENV == 'development'"
+        style="font-size: 20px; margin-bottom: 5px"
+        >当前设备： {{ bindMachine || '暂无' }}</span>
           <!-- <el-button size="small" type="primary" icon="el-icon-plus" class="ele-btn-icon" @click="openEdit()">
             新建
           </el-button>

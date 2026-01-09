@@ -1,6 +1,6 @@
 <!-- 搜索表单 -->
 <template>
-  <el-form class="ele-form-search">
+  <el-form class="ele-form-search" inline >
     <!-- <el-row :gutter="10" style="display: none">
       <el-col v-bind="styleResponsive ? { lg: 6, md: 12 } : { span: 6 }">
         <el-form-item label="状态：">
@@ -32,199 +32,228 @@
         </el-date-picker>
       </el-col>
     </el-row> -->
-    <el-row :gutter="10">
-      <el-col :lg="5" :md="12">
-        <el-input
-          size="mini"
-          v-model="where.SerachName"
-          placeholder="请输入品种名称/品种编码/型号规格/生产企业搜索"
-          clearable
-        />
-      </el-col>
-      <el-col :lg="19" :md="12">
-        <div class="ele-form-actions">
-          <el-button
-            type="primary"
-            icon="el-icon-search"
-            size="mini"
-            @click="search"
-            >查询</el-button
-          >
-          <el-button size="mini" icon="el-icon-refresh" @click="reset"
-            >重置</el-button
-          >
-
-          <el-dropdown>
-            <el-button size="mini" icon="el-icon-plus" type="primary">
-              新增<i class="el-icon-arrow-down el-icon--right"></i>
+    <el-form-item>
+      <el-input
+        size="mini"
+        style="width: 200px"
+        v-model="where.SerachName"
+        placeholder="品名/编码/型号规格/生产企业搜索"
+        clearable
+      />
+    </el-form-item>
+    <el-form-item>
+      <el-button
+        type="primary"
+        icon="el-icon-search"
+        class="ele-btn-icon"
+        size="mini"
+        @click="search"
+      >
+        查询
+      </el-button>
+    </el-form-item>
+    <el-form-item>
+      <el-button size="mini" class="ele-btn-icon" icon="el-icon-refresh" @click="reset">
+        重置
+      </el-button>
+    </el-form-item>
+    <el-form-item>
+      <el-dropdown>
+        <el-button size="mini" class="ele-btn-icon" icon="el-icon-plus" type="primary">
+          新增<i class="el-icon-arrow-down el-icon--right"></i>
+        </el-button>
+        <el-dropdown-menu slot="dropdown">
+          <el-dropdown-item>
+            <el-button
+              type="primary"
+              icon="el-icon-plus"
+              size="mini"
+              style="margin-bottom: 4px;"
+              @click="openIntroduceUserDefinedTemp"
+              :disabled="!IsDisabled"
+            >
+              自定义新增
             </el-button>
-            <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item>
-                <el-button
-                  type="primary"
-                  icon="el-icon-plus"
-                  size="mini"
-                  @click="openIntroduceUserDefinedTemp"
-                  :disabled="!IsDisabled"
-                  >自定义新增</el-button
-                >
-              </el-dropdown-item>
-              <el-dropdown-item>
-                <el-button
-                  type="primary"
-                  icon="el-icon-upload"
-                  size="mini"
-                  @click="showApplyTemp"
-                  :disabled="!IsDisabled"
-                  >引入模板</el-button
-                >
-              </el-dropdown-item>
-            </el-dropdown-menu>
-          </el-dropdown>
-          <!-- <el-button type="primary" size="small" @click="openIntroduceOtherTemp" :disabled='!IsDisabled'>引用常规模板</el-button> -->
-          <!-- <el-button type="primary" size="small" @click="reset" :disabled='!IsDisabled'>引入历史记录</el-button> -->
-          <el-button
-            type="primary"
-            icon="el-icon-s-check"
-            size="mini"
-            @click="KeeptApplyDate"
-            :disabled="!IsDisabled"
-            >暂存申领单</el-button
-          >
-          <el-button
-            type="success"
-            size="mini"
-            icon="el-icon-finished"
-            @click="addPutInListDeta2"
-            :disabled="!IsDisabled"
-            >保存并提交</el-button
-          >
-          <!-- <el-button type="primary" size="small" @click="reset" :disabled='IsDisabled'>查询订单情况</el-button> -->
-          <!-- <el-button type="primary" size="small" @click="reset" :disabled='IsDisabled'>合并订单</el-button> -->
-          <!-- :style="{ display: visibleLine }" -->
-          <el-button
-            type="success"
-            icon="el-icon-s-order"
-            size="mini"
-            @click="subToExamine"
-            :disabled="!IsPutInListDeta"
-            >审核申领单</el-button
-          >
-          <el-button
-            type="primary"
-            icon="el-icon-s-cooperation"
-            v-if="
-              ['stzl', 'stzx', 'bd'].includes(HOME_HP) || ENV == 'development'
-            "
-            size="mini"
-            @click="Approval"
-            :disabled="!IsToExamine"
-            >审批申领单</el-button
-          >
-          <!-- <el-button type="danger" size="small" @click="removeBatch" :disabled='!IsDisabledByDel'>删除</el-button> -->
-          <el-popconfirm
-            class="ele-action"
-            title="确定删除？"
-            @confirm="removeBatch()"
-          >
-            <template v-slot:reference>
-              <!-- <el-link type="danger" :underline="false" icon="el-icon-delete">
-              删除
-            </el-link> -->
-              <el-button
-                type="danger"
-                icon="el-icon-delete"
-                size="mini"
-                :underline="false"
-                :disabled="!IsDisabledByDel"
-                >删除</el-button
-              >
-            </template>
-          </el-popconfirm>
-
-          <el-button
-            type="primary"
-            icon="el-icon-view"
-            size="mini"
-            @click="ApplyOperateTipShow = true"
-            >查看订单详情</el-button
-          >
-
-          <el-dropdown>
-            <el-button size="mini" icon="el-icon-s-unfold" type="primary">
-              目录<i class="el-icon-arrow-down el-icon--right"></i>
+          </el-dropdown-item>
+          <el-dropdown-item>
+            <el-button
+              type="primary"
+              icon="el-icon-upload"
+              size="mini"
+              @click="showApplyTemp"
+              :disabled="!IsDisabled"
+            >
+              引入模板
             </el-button>
-            <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item>
-                <el-button
-                  type="primary"
-                  size="mini"
-                  @click="BidListShowEdit = true"
-                  v-permission="'zhongbiaomulu'"
-                  >中标目录</el-button
-                >
-              </el-dropdown-item>
-              <el-dropdown-item>
-                <el-button
-                  type="primary"
-                  size="mini"
-                  @click="VarietyDataLzhLookShow = true"
-                  v-permission="'zaiyongmulu'"
-                  >在用目录</el-button
-                >
-              </el-dropdown-item>
-              <el-dropdown-item>
-                <el-button
-                  type="primary"
-                  size="mini"
-                  @click="DpetOneAuthWithDeptShow = true"
-                  v-permission="'keshimulu'"
-                  >科室目录</el-button
-                >
-              </el-dropdown-item>
-            </el-dropdown-menu>
-          </el-dropdown>
-
+          </el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
+    </el-form-item>
+    <el-form-item>
+      <el-button
+        type="primary"
+        icon="el-icon-s-check"
+        size="mini"
+        class="ele-btn-icon"
+        @click="KeeptApplyDate"
+        :disabled="!IsDisabled"
+      >
+        暂存申领单
+      </el-button>
+    </el-form-item>
+    <el-form-item>
+      <el-button
+        type="success"
+        size="mini"
+        icon="el-icon-finished"
+        class="ele-btn-icon"
+        @click="addPutInListDeta2"
+        :disabled="!IsDisabled"
+      >
+        保存并提交
+      </el-button>
+    </el-form-item>
+    <el-form-item>
+      <el-button
+        type="success"
+        icon="el-icon-s-order"
+        class="ele-btn-icon"
+        size="mini"
+        @click="subToExamine"
+        :disabled="!IsPutInListDeta"
+      >
+        审核申领单
+      </el-button>
+    </el-form-item>
+    <el-form-item>
+      <el-button
+        type="primary"
+        icon="el-icon-s-cooperation"
+        class="ele-btn-icon"
+        v-if="['stzl', 'stzx', 'bd'].includes(HOME_HP) || ENV == 'development'"
+        size="mini"
+        @click="Approval"
+        :disabled="!IsToExamine"
+      >
+        审批申领单
+      </el-button>
+    </el-form-item>
+    <el-form-item>
+      <el-popconfirm
+        class="ele-action"
+        title="确定删除？"
+        @confirm="removeBatch()"
+      >
+        <template v-slot:reference>
           <el-button
-            type="primary"
-            size="mini"
-            @click="DownloadGuide"
-            icon="el-icon-question"
-            v-permission="'shenlinzhiyin'"
-            >申领指引</el-button
-          >
-
-          <el-button
-            type="primary"
-            size="mini"
-            icon="el-icon-upload"
-            @click="dialogTableVisible2 = true"
-            >导入模板</el-button
-          >
-          <el-button
-            type="primary"
-            size="mini"
-            icon="el-icon-download"
+            type="danger"
+            icon="el-icon-delete"
             class="ele-btn-icon"
-            @click="exportData"
-          >
-            导出
-          </el-button>
-
-          <!-- 绑定费用项 -->
-          <el-button
-            type="primary"
             size="mini"
-            icon="el-icon-s-grid"
-            class="ele-btn-icon"
-            @click="handleBindBudget"
-            :disabled="!selection || selection.length === 0"
+            :underline="false"
+            :disabled="!IsDisabledByDel"
           >
-            绑定费用项
+            删除
           </el-button>
-        </div>
-      </el-col>
-    </el-row>
+        </template>
+      </el-popconfirm>
+    </el-form-item>
+    <el-form-item>
+      <el-button
+        type="primary"
+        icon="el-icon-view"
+        class="ele-btn-icon"
+        size="mini"
+        @click="ApplyOperateTipShow = true"
+      >
+        查看订单详情
+      </el-button>
+    </el-form-item>
+    <el-form-item>
+      <el-dropdown>
+        <el-button size="mini" icon="el-icon-s-unfold" class="ele-btn-icon" type="primary">
+          目录<i class="el-icon-arrow-down el-icon--right"></i>
+        </el-button>
+        <el-dropdown-menu slot="dropdown">
+          <el-dropdown-item>
+            <el-button
+              type="primary"
+              size="mini"
+              @click="BidListShowEdit = true"
+              v-permission="'zhongbiaomulu'"
+            >
+              中标目录
+            </el-button>
+          </el-dropdown-item>
+          <el-dropdown-item style="margin: 4px 0;">
+            <el-button
+              type="primary"
+              size="mini"
+              @click="VarietyDataLzhLookShow = true"
+              v-permission="'zaiyongmulu'"
+            >
+              在用目录
+            </el-button>
+          </el-dropdown-item>
+          <el-dropdown-item>
+            <el-button
+              type="primary"
+              size="mini"
+              @click="DpetOneAuthWithDeptShow = true"
+              v-permission="'keshimulu'"
+            >
+              科室目录
+            </el-button>
+          </el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
+    </el-form-item>
+    <el-form-item>
+      <el-button
+        type="primary"
+        size="mini"
+        @click="DownloadGuide"
+        class="ele-btn-icon"
+        icon="el-icon-question"
+        v-permission="'shenlinzhiyin'"
+      >
+        申领指引
+      </el-button>
+    </el-form-item>
+    <el-form-item>
+      <el-button
+        type="primary"
+        size="mini"
+        icon="el-icon-upload"
+        class="ele-btn-icon"
+        @click="dialogTableVisible2 = true"
+      >
+        导入模板
+      </el-button>
+    </el-form-item>
+    <el-form-item>
+      <el-button
+        type="primary"
+        size="mini"
+        icon="el-icon-download"
+        class="ele-btn-icon"
+        @click="exportData"
+      >
+        导出
+      </el-button>
+    </el-form-item>
+    <el-form-item>
+      <el-button
+        type="primary"
+        size="mini"
+        icon="el-icon-s-grid"
+        class="ele-btn-icon"
+        @click="handleBindBudget"
+        :disabled="!selection || selection.length === 0"
+      >
+        绑定费用项
+      </el-button>
+    </el-form-item>
     <el-dialog
       title="导入模板品种"
       :visible.sync="dialogTableVisible2"
@@ -1089,3 +1118,9 @@
     }
   };
 </script>
+
+<style scoped lang="scss">
+  ::v-deep .el-form-item {
+    margin-bottom: 4px;
+  }
+</style>

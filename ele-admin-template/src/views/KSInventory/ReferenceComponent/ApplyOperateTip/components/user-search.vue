@@ -2,117 +2,113 @@
 <template>
   <el-form
     class="ele-form-search"
+    inline
     @keyup.enter.native="search"
     @submit.native.prevent
   >
-    <el-row :gutter="10">
-      <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 6 }">
-        <el-form-item label="品种：" label-width="60px">
-          <el-input
-            size="mini"
-            clearable
-            v-model="where.VARIETIE_SEARCH_VALUE"
-            placeholder=""
-          />
-        </el-form-item>
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 6 }">
-        <el-form-item label="单号：" label-width="60px">
-          <el-input
-            size="mini"
-            clearable
-            v-model="where.PLAN_NUMBER"
-            placeholder=""
-          />
-        </el-form-item>
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 4, md: 4 } : { span: 4 }">
-        <el-form-item label="计划收货日期:" label-width="100px">
-          <el-date-picker
-            size="mini"
-            v-model="where.PLAN_TIME_START"
-            type="date"
-            style="width: 140px"
-            value-format="yyyy-MM-dd"
-            placeholder="yyyy-MM-dd"
-          >
-          </el-date-picker>
-        </el-form-item>
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 3, md: 3 } : { span: 4 }">
-        <el-form-item>
-          <el-date-picker
-            size="mini"
-            v-model="where.PLAN_TIME_END"
-            type="date"
-            style="width: 140px"
-            value-format="yyyy-MM-dd"
-            placeholder="yyyy-MM-dd"
-          >
-          </el-date-picker>
-        </el-form-item>
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 4 }">
-        <el-form-item label="收货状态:" label-width="80px">
-          <el-select size="mini" v-model="where.STATE" @change="search()">
-            <el-option label="全部" value=""></el-option>
-            <el-option label="未收完" value="0"></el-option>
-            <el-option label="已收完" value="1"></el-option>
-          </el-select>
-        </el-form-item>
-      </el-col>
-
-      <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 4 }">
-        <el-form-item label="院区:" label-width="80px">
-          <el-select size="mini" v-model="where.STORAGE" @change="search()">
-            <el-option label="全部" value=""></el-option>
-            <el-option label="通州院区" value="1"></el-option>
-            <el-option label="西直门院区" value="2"></el-option>
-          </el-select>
-        </el-form-item>
-      </el-col>
-
-      <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 4 }">
-        <el-form-item label="高低值属性:" label-width="120px">
-          <el-select size="mini" v-model="where.TYPE" @change="search()">
-            <el-option label="全部" value=""></el-option>
-            <el-option label="低值" value="0"></el-option>
-            <el-option label="高值" value="1"></el-option>
-            <el-option label="试剂" value="2"></el-option>
-          </el-select>
-        </el-form-item>
-      </el-col>
-
-      <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 4 }">
-        <el-form-item>
-          <el-button
-            size="mini"
-            type="primary"
-            icon="el-icon-search"
-            class="ele-btn-icon"
-            @click="search"
-            >查询</el-button
-          >
-          <el-button size="mini" icon="el-icon-refresh" @click="reset"
-            >重置</el-button
-          >
-          <el-button
-            size="mini"
-            type="success"
-            icon="el-icon-download"
-            @click="handleExportData"
-            >导出</el-button
-          >
-        </el-form-item>
-      </el-col>
-
-      <!-- <el-col v-bind="styleResponsive ? { lg: 2, md: 12 } : { span: 6 }">
-        <div class="ele-form-actions">
-          <el-button type="primary" icon="el-icon-search" class="ele-btn-icon" @click="search">查询</el-button>
-          <el-button @click="reset">重置</el-button>
-        </div>
-      </el-col> -->
-    </el-row>
+    <el-form-item>
+      <el-input
+        size="mini"
+        style="width: 160px"
+        clearable
+        v-model="where.VARIETIE_SEARCH_VALUE"
+        placeholder="品种"
+      />
+    </el-form-item>
+    <el-form-item>
+      <el-input
+        size="mini"
+        style="width: 160px"
+        clearable
+        v-model="where.PLAN_NUMBER"
+        placeholder="单号"
+      />
+    </el-form-item>
+    <el-form-item style="width: 220px">
+      <el-date-picker
+        size="mini"
+        v-model="where.PLAN_TIME_RANGE"
+        type="daterange"
+        style="width: 220px"
+        value-format="yyyy-MM-dd"
+        range-separator="至"
+        start-placeholder="收货开始日期"
+        end-placeholder="收货结束日期"
+      >
+      </el-date-picker>
+    </el-form-item>
+    <el-form-item>
+      <el-select
+        size="mini"
+        v-model="where.STATE"
+        @change="search()"
+        style="width: 120px"
+        placeholder="收货状态"
+      >
+        <el-option label="收货状态" value="">全部</el-option>
+        <el-option label="未收完" value="0"></el-option>
+        <el-option label="已收完" value="1"></el-option>
+      </el-select>
+    </el-form-item>
+    <el-form-item>
+      <el-select
+        size="mini"
+        v-model="where.STORAGE"
+        @change="search()"
+        style="width: 120px"
+        placeholder="院区"
+      >
+        <el-option label="院区" value="">全部</el-option>
+        <el-option label="通州院区" value="1"></el-option>
+        <el-option label="西直门院区" value="2"></el-option>
+      </el-select>
+    </el-form-item>
+    <el-form-item>
+      <el-select
+        size="mini"
+        v-model="where.TYPE"
+        @change="search()"
+        style="width: 120px"
+        placeholder="高低值属性"
+      >
+        <el-option label="高低值属性" value="">全部</el-option>
+        <el-option label="低值" value="0"></el-option>
+        <el-option label="高值" value="1"></el-option>
+        <el-option label="试剂" value="2"></el-option>
+      </el-select>
+    </el-form-item>
+    <el-form-item>
+      <el-button
+        size="mini"
+        type="primary"
+        icon="el-icon-search"
+        class="ele-btn-icon"
+        @click="search"
+      >
+        查询
+      </el-button>
+    </el-form-item>
+    <el-form-item>
+      <el-button
+        size="mini"
+        icon="el-icon-refresh"
+        class="ele-btn-icon"
+        @click="reset"
+      >
+        重置
+      </el-button>
+    </el-form-item>
+    <el-form-item>
+      <el-button
+        size="mini"
+        type="success"
+        icon="el-icon-download"
+        class="ele-btn-icon"
+        @click="handleExportData"
+      >
+        导出
+      </el-button>
+    </el-form-item>
   </el-form>
 </template>
 
@@ -123,12 +119,11 @@
       const defaultWhere = {
         VARIETIE_SEARCH_VALUE: '',
         STATE: '',
-        STORAGE:"",
-        TYPE:"",
+        STORAGE: '',
+        TYPE: '',
         DEPT_TWO_CODE: '',
         PLAN_NUMBER: '',
-        PLAN_TIME_START: '',
-        PLAN_TIME_END: ''
+        PLAN_TIME_RANGE: []
       };
       return {
         // 表单数据

@@ -4,6 +4,17 @@
     <!-- 数据表格 -->
     <!-- :rowClickChecked="true"  -->
     <!-- :rowClickCheckedIntelligent="false"  -->
+    <KSDepartmentalPlanDetails-search
+          @Approval="Approval"
+          @exportData="exportData"
+          @search="reload"
+          @ClickReload="ClickReload"
+          :KSDepartmentalPlanDataSearch="KSDepartmentalPlanDataSearch"
+          :selection="selection"
+          @showEditReoad="showEditReoad"
+          @BindBudget="handleBindBudget"
+          :datasourceList="datasourceList"
+        />
     <ele-pro-table
       ref="table"
       :toolStyle="toolStyle"
@@ -44,21 +55,10 @@
       <!-- 左表头 -->
       <template v-slot:toolbar>
         <!-- 搜索表单 -->
-        <p style="display: flex; justify-content: flex-start; font-size: large"
-          >实际申领数量合计: <b>{{ sumNumber }}</b> 实际申领金额合计:
+        <label
+          >实际申领数量合计: <b>{{ sumNumber }}</b>&nbsp;&nbsp;实际申领金额合计:
           <b>{{ sumAount }}</b>
-        </p>
-        <KSDepartmentalPlanDetails-search
-          @Approval="Approval"
-          @exportData="exportData"
-          @search="reload"
-          @ClickReload="ClickReload"
-          :KSDepartmentalPlanDataSearch="KSDepartmentalPlanDataSearch"
-          :selection="selection"
-          @showEditReoad="showEditReoad"
-          @BindBudget="handleBindBudget"
-          :datasourceList="datasourceList"
-        />
+        </label>
       </template>
 
       <template v-slot:PlanQty="{ row }">

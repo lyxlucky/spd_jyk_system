@@ -1,5 +1,5 @@
 <template>
-  <div class="ele-body">
+  <div class="">
     <!-- 数据表格 -->
     <ele-pro-table ref="table" height="67vh" highlight-current-row :stripe="true" :rowClickChecked="true" @current-change="onCurrentChange" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" cache-key="DefNoPkgDataTable">
       <!-- 表头工具栏 -->
@@ -116,10 +116,10 @@ export default {
         },
          {
           prop: 'KC_COUNT',
-          label: '库存数量',
+          label: '剩余库存数量',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 80,
+          minWidth: 120,
         },
          {
           prop: 'replenish_quantity',

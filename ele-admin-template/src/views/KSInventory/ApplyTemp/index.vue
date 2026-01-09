@@ -17,49 +17,6 @@
             <span>申领模板列表品种</span>
           </div>
           <!-- <el-button type="primary" size="mini" @click="addTempVar" :style="{ display: IsDisabled==true?'none':'' }">确认申领</el-button> -->
-          <div>
-            <el-button
-              type="primary"
-              size="mini"
-              @click="showDialogTableVisible"
-              icon="el-icon-plus"
-              >添加品种</el-button
-            >
-            <el-button
-              type="primary"
-              icon="el-icon-plus"
-              size="mini"
-              @click="saveApplyNum"
-              >保存</el-button
-            >
-            <el-dropdown>
-              <el-button size="mini" icon="el-icon-s-grid" type="primary">
-                模板<i class="el-icon-arrow-down el-icon--right"></i>
-              </el-button>
-              <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item>
-                  <el-button
-                    type="primary"
-                    size="mini"
-                    @click="showDialogTableVisible2"
-                    >导入模板</el-button
-                  >
-                </el-dropdown-item>
-                <el-dropdown-item>
-                  <el-button type="primary" size="mini" @click="exportData"
-                    >导出模板</el-button
-                  >
-                </el-dropdown-item>
-              </el-dropdown-menu>
-            </el-dropdown>
-            <el-button
-              type="danger"
-              icon="el-icon-delete"
-              size="mini"
-              @click="removeBatch"
-              >删除</el-button
-            >
-          </div>
 
           <ApplyTempDataTable
             ref="Apply"
@@ -131,23 +88,6 @@
       };
     },
     methods: {
-      //调用孙组件事件
-      showDialogTableVisible() {
-        this.$refs.Apply.showDialogTableVisible();
-      },
-      //保存
-      saveApplyNum() {
-        this.$refs.Apply.saveApplyNum();
-      },
-      showDialogTableVisible2() {
-        this.$refs.Apply.showDialogTableVisible2();
-      },
-      exportData() {
-        this.$refs.Apply.exportChildData();
-      },
-      removeBatch() {
-        this.$refs.Apply.removeBatch();
-      },
 
       getCurrent(data) {
         this.ApplyTempTableData = data;

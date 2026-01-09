@@ -1,58 +1,63 @@
 <!-- 搜索表单 -->
 <template>
   <div>
-    <el-form class="ele-form-search">
-      <el-row :gutter="10">
-        <el-col :lg="5" :md="12">
-          <el-input
-            size="mini"
-            v-model="where.condition"
-            placeholder="请输入品种名称/品种编码/型号规格"
-            clearable
-          />
-        </el-col>
-        <el-col :lg="5" :md="12">
-          <el-input
-            size="mini"
-            v-model="where.zcz"
-            placeholder="请输入注册证/生产企业/批准文号"
-            clearable
-          />
-        </el-col>
-        <el-col :lg="12" :md="12">
-          <div class="ele-form-actions">
-            <el-button
-              size="mini"
-              icon="el-icon-search"
-              type="primary"
-              @click="search"
-              >查询</el-button
-            >
-            <el-button
-              size="mini"
-              type="primary"
-              :disabled="!isLeftTableCurrent"
-              @click="handleUdiScanAdd"
-              >UDI扫码添加</el-button
-            >
-            <el-button
-              size="mini"
-              :disabled="!isAddVarietieEnable"
-              type="primary"
-              @click="handleAddConsumeItem"
-              >添加</el-button
-            >
-
-            <el-button
-              size="mini"
-              :disabled="!isPrintDefNoPkgCodeEnable"
-              type="primary"
-              @click="handleCatDefNoPkgCode"
-              >查看定数码标签</el-button
-            >
-          </div>
-        </el-col>
-      </el-row>
+    <el-form class="ele-form-search" inline>
+      <el-form-item>
+        <el-input
+          size="mini"
+          v-model="where.condition"
+          placeholder="品种名称/编码/型号规格"
+          clearable
+        />
+      </el-form-item>
+      <el-form-item>
+        <el-input
+          size="mini"
+          v-model="where.zcz"
+          placeholder="注册证/生产企业/批准文号"
+          clearable
+        />
+      </el-form-item>
+      <el-form-item>
+        <el-button
+          size="mini"
+          icon="el-icon-search"
+          class="ele-btn-icon"
+          type="primary"
+          @click="search"
+          >查询</el-button
+        >
+      </el-form-item>
+      <el-form-item>
+        <el-button
+          size="mini"
+          type="primary"
+          class="ele-btn-icon"
+          :disabled="!isLeftTableCurrent"
+          @click="handleUdiScanAdd"
+          >UDI扫码添加</el-button
+        >
+      </el-form-item>
+      <el-form-item>
+        <el-button
+          size="mini"
+          :disabled="!isAddVarietieEnable"
+          type="primary"
+          class="ele-btn-icon"
+          @click="handleAddConsumeItem"
+          >添加</el-button
+        >
+      </el-form-item>
+      <el-form-item>
+        <el-button
+          size="mini"
+          :disabled="!isPrintDefNoPkgCodeEnable"
+          type="primary"
+          class="ele-btn-icon"
+          @click="handleCatDefNoPkgCode"
+          >查看定数码标签</el-button
+        >
+      </el-form-item>
     </el-form>
     <!-- <AuthVarTable
       :visible.sync="dialogTableVisible"

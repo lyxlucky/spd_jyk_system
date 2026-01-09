@@ -22,7 +22,7 @@
       </el-container>
     </el-container>
     <el-container>
-      <el-aside width="1000px" style="margin: 20px 0px 0px 20px;">
+      <el-aside width="1100px" style="margin: 0px 0px 0px 20px;">
         <el-card shadow="always">
           <div slot="header" class="clearfix">
             <span>品种消耗确认表</span>
@@ -31,7 +31,7 @@
         </el-card>
       </el-aside>
       <el-container>
-        <el-main width="500px">
+        <el-main width="400px" style="padding-top: 0;">
           <el-card shadow="always">
             <div slot="header" class="clearfix">
               <span>UDI码列表</span>
@@ -121,3 +121,10 @@ export default {
   }
 };
 </script>
+
+
+<style scoped lang="scss">
+  :deep(.el-card__body) {
+   padding: 0;
+  }
+</style>

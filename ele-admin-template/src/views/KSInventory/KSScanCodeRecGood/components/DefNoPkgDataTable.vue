@@ -1,5 +1,5 @@
 <template>
-  <div class="ele-body">
+  <div class="">
     <!-- 数据表格 -->
     <ele-pro-table ref="table" v-if="IsRefDefNoPkgDataTable==false" height="65vh" highlight-current-row :stripe="true" :rowClickChecked="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" cache-key="DefNoPkgDataTable">
       <template v-slot:KC_COUNT="{ row }">

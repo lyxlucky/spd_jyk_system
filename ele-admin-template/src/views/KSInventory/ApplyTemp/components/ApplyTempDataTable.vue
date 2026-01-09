@@ -7,6 +7,8 @@
       ref="Apply"
       @search="reload"
       @addTempVar="$emit('addTempVar')"
+      @saveApplyNum="saveApplyNum"
+      @removeBatch="removeBatch"
       :IntroduceUserDefinedTempSearch="IntroduceUserDefinedTempSearch"
       @exportData="exportData"
       :ApplyTempTableDataSearch="ApplyTempTableDataSearch"
@@ -16,7 +18,8 @@
     <ele-pro-table
       size="mini"
       ref="table"
-      height="60vh"
+      height="70vh"
+      style="background: #fff;"
       highlight-current-row
       :stripe="true"
       :rowClickCheckedIntelligent="false"
@@ -148,7 +151,7 @@
           },
           {
             prop: 'StockQty',
-            label: '散货库存',
+            label: '中心库库存',
 
             align: 'center',
             showOverflowTooltip: true,
@@ -199,7 +202,7 @@
           },
           {
             prop: 'Price',
-            label: '结算价',
+            label: '中标价',
             align: 'center',
             showOverflowTooltip: true,
             minWidth: 80,

@@ -1,5 +1,5 @@
 <template>
-  <div class="ele-body">
+  <div class="">
     <KSDepartmentalPlan-search
         @exportDataExcel="exportDataExcel"
         @search="reload"
@@ -11,6 +11,7 @@
       />
     <!-- 数据表格 -->
     <ele-pro-table
+      height="50vh"
       highlight-current-row
       @current-change="onCurrentChange"
       ref="table"

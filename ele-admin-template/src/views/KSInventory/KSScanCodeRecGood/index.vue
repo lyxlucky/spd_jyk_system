@@ -118,3 +118,10 @@ export default {
   }
 };
 </script>
+
+
+<style scoped lang="scss">
+  ::v-deep .el-card__body {
+    padding: 8px;
+  }
+</style>

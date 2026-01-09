@@ -1,6 +1,7 @@
 <template>
-  <div class="ele-body" v-if="RenderTabel">
+  <div class="" v-if="RenderTabel">
     <!-- 数据表格 -->
+    <KSDepartmentalPlan-search @search="reload" ref="search" />
     <ele-pro-table
       :key="key"
       :reserve-selection="true"
@@ -24,12 +25,10 @@
       <template v-slot:toolbar>
         <!-- 搜索表单 -->
         <label
-          >当月-申报总金额:{{ applyPlanSbz }} 消耗总金额:{{
+          >当月-申报总金额:{{ applyPlanSbz }}&nbsp;&nbsp;消耗总金额:{{
             applyPlanXhz
-          }}
-          消耗/计划:{{ applyPlanBl }}</label
+          }}&nbsp;&nbsp;消耗/计划:{{ applyPlanBl }}</label
         >
-        <KSDepartmentalPlan-search @search="reload" ref="search" />
       </template>
 
       <template v-slot:State="{ row }">

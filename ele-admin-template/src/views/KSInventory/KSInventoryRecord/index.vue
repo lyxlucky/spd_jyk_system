@@ -1,18 +1,10 @@
 <template>
   <div class="ele-body">
     <el-card shadown="never">
-      <label>
-        出库数:<b>{{ SumCount2 }}</b>
-        出库金额:<b>{{ CKSumAmount }}</b>
-        入库数: <b>{{ SumCount1 }}</b>
-        入库金额: <b>{{ RKSumAmount }}</b>
-        净入库:<b>{{ netExport }}</b>
-        合计金额:<b>{{ SumAmount }}</b>
-      </label>
       <KSDepartmentalPlanDetails-search @exportData="exportData" @search="reload" :KSDepartmentalPlanDataSearch="KSDepartmentalPlanDataSearch" :selection="selection" @showEditReoad="showEditReoad" :datasourceList="datasourceList" />
       <!-- <el-button type="danger" size="small" @click="aaa">aaa</el-button> -->
       <!-- 数据表格 -->
-      <ele-pro-table ref="table" highlight-current-row :stripe="true" :rowClickChecked="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" @selection-change="onSelectionChange" cache-key="KSInventoryBasicDataTable">
+      <ele-pro-table height="calc(100vh - 330px)" ref="table" highlight-current-row :stripe="true" :rowClickChecked="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" @selection-change="onSelectionChange" cache-key="KSInventoryBasicDataTable">
         <!-- 表头工具栏 -->
         <!-- 右表头 -->
         <!-- <template v-slot:toolkit>
@@ -22,6 +14,14 @@
       </template> -->
         <!-- 左表头 -->
         <template v-slot:toolbar>
+          <label>
+            <span style="padding-right: 8px;">入库数: <b>{{ SumCount1 }}</b></span>
+            <span style="padding-right: 8px;">入库金额: <b>{{ RKSumAmount }}</b></span>
+            <span style="padding-right: 8px;">出库数:<b>{{ SumCount2 * -1 }}</b></span>
+            <span style="padding-right: 8px;">出库金额:<b>{{ CKSumAmount * -1 }}</b></span>
+            <span style="padding-right: 8px;">入库数-出库数:<b>{{ netExport }}</b></span>
+            <span style="padding-right: 8px;">入库金额-出库金额:<b>{{ SumAmount }}</b></span>
+          </label>
           <!-- 搜索表单 -->
           <!-- <el-button size="small" type="danger" icon="el-icon-delete" class="ele-btn-icon" @click="removebatch">
           删除

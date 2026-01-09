@@ -33,7 +33,7 @@
           ></KSDepartmentalPlantable>
         </el-card>
       </el-header>
-      <el-main style="padding-top: 1px">
+      <el-main style="padding-top: 4px">
         <el-card shadow="always">
           <!-- <div slot="header" class="clearfix">
             <span>申领单详情</span>

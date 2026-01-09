@@ -2,17 +2,13 @@
 <template>
   <div>
     <el-form class="ele-form-search">
-      <el-row :gutter="5">
-        <el-col :lg="12" :md="12">
-          <el-form-item >
-            <el-select size="mini" v-model="where.State" @change="search()">
-              <el-option label="全部" value=""></el-option>
-              <el-option label="在库" value="1"></el-option>
-              <el-option label="已消耗" value="0"></el-option>
-            </el-select>
-          </el-form-item>
-        </el-col>
-      </el-row>
+      <el-form-item style="margin-bottom: 0;">
+        <el-select size="mini" v-model="where.State" @change="search()">
+          <el-option label="全部" value=""></el-option>
+          <el-option label="在库" value="1"></el-option>
+          <el-option label="已消耗" value="0"></el-option>
+        </el-select>
+      </el-form-item>
     </el-form>
   </div>
 
@@ -32,7 +28,7 @@ export default {
     // 默认表单数据
     const defaultWhere = {
       Token: '',
-      State: '',
+      State: '1',
     };
     return {
       // 表单数据
