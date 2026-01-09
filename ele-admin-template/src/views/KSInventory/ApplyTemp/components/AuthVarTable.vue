@@ -36,49 +36,43 @@
       </template> -->
         <!-- 左表头 -->
         <template v-slot:toolbar>
-          <el-form class="ele-form-search" size="mini">
-            <el-row :gutter="4">
-              <el-col :lg="8" :md="4">
-                <el-form-item label="">
-                  <el-input
-                    v-model="SerachName"
-                    placeholder="请输入品种名称/品种编码/型号规格/生产企业搜索"
-                    clearable
-                    @change="reload"
-                  />
-                </el-form-item>
+          <el-form class="ele-form-search" size="mini" inline>
+            <el-form-item label="">
+              <el-input
+                v-model="SerachName"
+                placeholder="请输入品种名称/品种编码/型号规格/生产企业搜索"
+                clearable
+                @change="reload"
+              />
+            </el-form-item>
 
-                <el-form-item label="">
-                  <el-input
-                    v-model="spec"
-                    placeholder="请输入规格型号"
-                    clearable
-                    @change="reload"
-                  />
-                </el-form-item>
+            <el-form-item label="">
+              <el-input
+                v-model="spec"
+                placeholder="请输入规格型号"
+                clearable
+                @change="reload"
+              />
+            </el-form-item>
 
-                <el-form-item label="">
-                  <el-input
-                    v-model="manufacturer"
-                    placeholder="请输入生产企业"
-                    clearable
-                    @change="reload"
-                  />
-                </el-form-item>
-              </el-col>
+            <el-form-item label="">
+              <el-input
+                v-model="manufacturer"
+                placeholder="请输入生产企业"
+                clearable
+                @change="reload"
+              />
+            </el-form-item>
 
-              <el-col :lg="14" :md="12">
-                <div class="ele-form-actions">
-                  <el-button size="mini" type="primary" @click="reload"
-                    >查询</el-button
-                  >
-                  <el-button type="primary" size="mini" @click="addTempVar"
-                    >添加至选定模板</el-button
-                  >
-                  <!-- <el-button type="primary" size="small" @click="search">导出目录</el-button> -->
-                </div>
-              </el-col>
-            </el-row>
+            <el-form-item>
+              <el-button size="mini" type="primary" @click="reload"
+                >查询</el-button
+              >
+              <el-button type="primary" size="mini" @click="addTempVar"
+                >添加至选定模板</el-button
+              >
+              <!-- <el-button type="primary" size="small" @click="search">导出目录</el-button> -->
+            </el-form-item>
           </el-form>
           <!-- 搜索表单 -->
           <!-- <ApplyTempDataSearch @search="reload" :ApplyTempTableDataSearch='ApplyTempTableDataSearch' :selection="selection" /> -->
@@ -136,6 +130,7 @@
           {
             columnKey: 'index',
             type: 'index',
+            label: '序号',
             width: 45,
             align: 'center',
             showOverflowTooltip: true,
