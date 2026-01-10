@@ -10,7 +10,7 @@
     title="自定义新增"
     @update:visible="updateVisible"
   >
-    <div class="ele-body">
+    <div class="">
       <el-card shadow="never">
         <!-- 搜索表单 -->
         <user-search @addKSKS="addKSKSDepartmentalPlanData" @search="reload" />

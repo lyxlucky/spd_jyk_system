@@ -10,7 +10,7 @@
     title="引用自定义模板"
     @update:visible="updateVisible"
   >
-    <div class="ele-body" style="height: 75vh">
+    <div class="" >
       <!-- 数据表格 -->
       <ele-pro-table
         size="mini"
@@ -393,3 +393,10 @@
     }
   };
 </script>
+
+
+<style scoped lang="scss">
+  ::v-deep .el-form-item {
+    margin-bottom: 0;
+  }
+</style>
