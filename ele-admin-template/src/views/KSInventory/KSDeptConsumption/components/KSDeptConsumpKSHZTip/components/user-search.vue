@@ -1,6 +1,7 @@
 <!-- 搜索表单 -->
 <template>
   <el-form
+    v-if="false"
     class="ele-form-search"
     @keyup.enter.native="search"
     @submit.native.prevent

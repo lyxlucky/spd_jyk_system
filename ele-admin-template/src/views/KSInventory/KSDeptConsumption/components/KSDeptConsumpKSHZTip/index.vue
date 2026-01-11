@@ -6,10 +6,11 @@
     :visible="visible"
     :close-on-click-modal="true"
     custom-class="ele-dialog-form"
+    title="计划收货情况"
     label="计划收货情况"
     @update:visible="updateVisible"
   >
-    <div class="ele-body">
+    <div class="">
       <el-card shadow="never">
         <!-- 搜索表单 -->
         <!-- 数据表格 -->
@@ -27,7 +28,15 @@
           @selection-change="onSelectionChange"
           cache-key="KSDeptConsumpHZTip"
         >
-          <template v-slot:toolbar> </template>
+          <template v-slot:toolbar>
+            <el-button
+            size="mini"
+            type="success"
+            icon="el-icon-download"
+            @click="handleExportData"
+            >导出</el-button
+          >
+          </template>
           <!-- 操作列 -->
           <template v-slot:APPLY_QTY="{ row }">
             <el-form-item label="">
@@ -345,3 +354,9 @@
     }
   };
 </script>
+
+<style scoped lang="scss">
+  ::v-deep(.el-card__body) {
+    padding: 0;
+  }
+</style>
