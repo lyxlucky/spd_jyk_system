@@ -42,6 +42,13 @@
     </el-form-item>
 
     <el-form-item label="">
+      <el-select size="mini" v-model="where.mlType">
+        <el-option label="科室目录" value="0" />
+        <el-option label="在用目录" value="1" />
+      </el-select>
+    </el-form-item>
+
+    <el-form-item label="">
       <el-button
         size="mini"
         type="primary"
@@ -143,11 +150,13 @@
         SerachName: '',
         spec: '',
         manufacturer: '',
-        varType: ''
+        varType: '',
+        mlType: '0'
       };
       return {
         // 表单数据
         where: { ...defaultWhere },
+        defaultWhere: defaultWhere,
         HOME_HP: HOME_HP
       };
     },

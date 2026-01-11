@@ -12,6 +12,7 @@ export async function SerachPlanList(data) {
   data2.SPECIFICATION_OR_TYPE = data.where.spec ? data.where.spec : '';
   data2.MANUFACTURING_ENT_NAME = data.where.manufacturer ? data.where.manufacturer : '';
   data2.varType = data.where.varType ? data.where.varType : '';
+  data2.mlType = data.where.mlType ? data.where.mlType : '0';
   data2.PlanNum = data.where.PlanNum ? data.where.PlanNum : '';
 
   const res = await request.get('/DeptApplyPlan/SerachAuthVar', {
