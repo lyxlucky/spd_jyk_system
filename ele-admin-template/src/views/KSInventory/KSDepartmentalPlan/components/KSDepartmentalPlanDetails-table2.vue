@@ -337,7 +337,7 @@
           //   fixed: 'right'
           // },
           {
-            // prop: 'VarCode',
+            prop: 'VarCode',
             slot: 'VarCode',
             label: '品种编码',
 
@@ -463,6 +463,7 @@
             width: 80
           },
           {
+            prop:"planQty",
             slot: 'PlanQty',
             // prop: 'PlanQty',
             label: '实际申领数量',
@@ -492,16 +493,32 @@
             }
           },
           {
+            prop:"PAG_TYPE",
             slot: 'PAG_TYPE',
             // prop: 'PAG_TYPE',
             label: '包装规格',
-
             align: 'center',
             showOverflowTooltip: true,
             width: 110
           },
           {
-            prop: '',
+            prop:"BigBoxCount",
+            // prop: 'PAG_TYPE',
+            label: '大包装数量',
+            align: 'center',
+            showOverflowTooltip: true,
+            width: 110
+          },
+          {
+            prop:"MinBoxCount",
+            // prop: 'PAG_TYPE',
+            label: '中包装数量',
+            align: 'center',
+            showOverflowTooltip: true,
+            width: 110
+          },
+          {
+            prop: 'TOTAL_DOLLAR',
             label: '总金额',
             align: 'center',
             showOverflowTooltip: true,
@@ -538,13 +555,14 @@
             }
           },
           {
+            prop:"IMAGE_BUTTON",
             slot: 'IMAGE_BUTTON',
             label: '图片',
             align: 'center',
             width: 80
           },
           {
-            // prop: 'REMARK',
+            prop: 'REMARK',
             slot: 'REMARK',
             label: '备注',
             align: 'center',
@@ -552,7 +570,7 @@
             width: 110
           },
           {
-            // prop: 'REMARK',
+            prop: 'SKU_BDRM',
             slot: 'SKU',
             label: 'SKU',
             align: 'center',
@@ -569,6 +587,7 @@
             width: 110
           },
           {
+            prop:"REGISTRATION_VALID_DATE",
             slot: 'REGISTRATION_VALID_DATE',
             label: '注册证到期',
             align: 'center',
@@ -576,38 +595,38 @@
             width: 120,
             show: HOME_HP == 'bdrm'
           },
-          {
-            slot: 'MAN_XKZ_END',
-            label: '生产许可证到期',
-            align: 'center',
-            showOverflowTooltip: true,
-            width: 140,
-            show: HOME_HP == 'bdrm'
-          },
-          {
-            slot: 'AUTH_VALID',
-            label: '品种授权到期',
-            align: 'center',
-            showOverflowTooltip: true,
-            width: 120,
-            show: HOME_HP == 'bdrm'
-          },
-          {
-            slot: 'BUSINESS_LICENSE_VALID_DATE2',
-            label: '供应商经营许可证',
-            align: 'center',
-            showOverflowTooltip: true,
-            width: 150,
-            show: HOME_HP == 'bdrm'
-          },
-          {
-            slot: 'BUSINESS_LICENSE_VALID_DATE',
-            label: '集配商经营许可证',
-            align: 'center',
-            showOverflowTooltip: true,
-            width: 150,
-            show: HOME_HP == 'bdrm'
-          }
+          // {
+          //   slot: 'MAN_XKZ_END',
+          //   label: '生产许可证到期',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   width: 140,
+          //   show: HOME_HP == 'bdrm'
+          // },
+          // {
+          //   slot: 'AUTH_VALID',
+          //   label: '品种授权到期',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   width: 120,
+          //   show: HOME_HP == 'bdrm'
+          // },
+          // {
+          //   slot: 'BUSINESS_LICENSE_VALID_DATE2',
+          //   label: '供应商经营许可证',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   width: 150,
+          //   show: HOME_HP == 'bdrm'
+          // },
+          // {
+          //   slot: 'BUSINESS_LICENSE_VALID_DATE',
+          //   label: '集配商经营许可证',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   width: 150,
+          //   show: HOME_HP == 'bdrm'
+          // }
         ],
         toolbar: false,
         toolStyle: {
