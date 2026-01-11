@@ -59,8 +59,9 @@
         placeholder="院区"
       >
         <el-option label="院区" value="">全部</el-option>
-        <el-option label="通州院区" value="1"></el-option>
-        <el-option label="西直门院区" value="2"></el-option>
+        <el-option label="本部" value="1"></el-option>
+        <!-- <el-option label="通州院区" value="1"></el-option>
+        <el-option label="西直门院区" value="2"></el-option> -->
       </el-select>
     </el-form-item>
     <el-form-item>
@@ -123,17 +124,32 @@
         TYPE: '',
         DEPT_TWO_CODE: '',
         PLAN_NUMBER: '',
+        PLAN_TIME_START: '',
+        PLAN_TIME_END: '',
         PLAN_TIME_RANGE: []
       };
       return {
         // 表单数据
-        where: { ...defaultWhere }
+        where: { ...defaultWhere },
+        defaultWhere
       };
     },
     computed: {
       // 是否开启响应式布局
       styleResponsive() {
         return this.$store.state.theme.styleResponsive;
+      }
+    },
+    watch: {
+      // 监听日期范围变化，同步开始/结束时间
+      'where.PLAN_TIME_RANGE'(val) {
+        if (Array.isArray(val) && val.length === 2 && val[0] && val[1]) {
+          this.where.PLAN_TIME_START = val[0];
+          this.where.PLAN_TIME_END = val[1];
+        } else {
+          this.where.PLAN_TIME_START = '';
+          this.where.PLAN_TIME_END = '';
+        }
       }
     },
     methods: {
@@ -151,22 +167,25 @@
       }
     },
     created() {
-      // 获取各种类型当前时间
-      var date = new Date(); //获取当前时间国标版
-      var year = date.getFullYear(); // 获取年
-      var month = date.getMonth() + 1; //获取当前月
-      var day = date.getDate(); //日
-      var now_time = year + '-' + month + '-' + day;
-      this.where.EndTime = now_time;
-
-      //获取7天前的时间
-      var now2 = new Date();
-      var date2 = new Date(now2.getTime() - 7 * 24 * 3600 * 1000);
-      var year2 = date2.getFullYear();
-      var month2 = date2.getMonth() + 1;
-      var day2 = date2.getDate();
-      var now_time2 = year2 + '-' + month2 + '-' + day2;
-      this.where.StartTime = now_time2;
+      // 初始化日期范围为最近7天，并同步开始/结束时间
+      const pad = (n) => (n < 10 ? '0' + n : '' + n);
+      const endDate = new Date();
+      const startDate = new Date(endDate.getTime() - 7 * 24 * 3600 * 1000);
+      const endStr =
+        endDate.getFullYear() + '-' + pad(endDate.getMonth() + 1) + '-' + pad(endDate.getDate());
+      const startStr =
+        startDate.getFullYear() + '-' + pad(startDate.getMonth() + 1) + '-' + pad(startDate.getDate());
+      this.where.PLAN_TIME_RANGE = [startStr, endStr];
+      this.where.PLAN_TIME_START = startStr;
+      this.where.PLAN_TIME_END = endStr;
+      // 在 created 阶段仅初始化数据，不触发查询
+    }
+    ,
+    mounted() {
+      // 组件及父级已挂载，确保父级 refs 已就绪后再触发查询
+      // this.$nextTick(() => {
+      //   this.search();
+      // });
     }
   };
 </script>

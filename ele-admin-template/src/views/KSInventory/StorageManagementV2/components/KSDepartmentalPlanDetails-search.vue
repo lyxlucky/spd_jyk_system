@@ -68,7 +68,6 @@
     <IntroduceDefinedTemp :visible.sync="showEdit2" />
     <BidVarInfoDept :visible.sync="BidListShowEdit" />
     <ApplyOperateTip :visible.sync="ApplyOperateTipShow" />
-    <ApplyOperateTip :visible.sync="ApplyOperateTipShow" />
     <VarietyDataLzhLook :visible.sync="VarietyDataLzhLookShow" />
     <DpetOneAuthWithDept :visible.sync="DpetOneAuthWithDeptShow" />
     <el-dialog title="授权品种目录" :visible.sync="ApplyTempPage" width='95%'>

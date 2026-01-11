@@ -320,7 +320,7 @@
             fixed: 'left'
           },
           {
-            label: '序号',
+            label: '序',
             columnKey: 'index',
             type: 'index',
             width: 45,
