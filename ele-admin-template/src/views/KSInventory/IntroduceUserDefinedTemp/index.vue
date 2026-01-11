@@ -1,6 +1,6 @@
 <template>
   <ele-modal
-    top="1vh"
+    top="10vh"
     :destroy-on-close="true"
     width="90%"
     height="80%"
@@ -409,3 +409,10 @@
     }
   };
 </script>
+
+
+<style scoped lang="scss">
+  ::v-deep(.el-card__body) {
+    padding: 0;
+  }
+</style>

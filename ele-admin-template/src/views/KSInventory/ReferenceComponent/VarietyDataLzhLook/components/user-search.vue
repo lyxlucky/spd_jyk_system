@@ -2,89 +2,70 @@
 <template>
   <el-form
     class="ele-form-search"
+    inline
     @keyup.enter.native="search"
     @submit.native.prevent
   >
-    <el-row>
-      <el-col :span="3">
-        <el-form-item>
-          <el-input
-            size="mini"
-            style="width: 90%"
-            clearable
-            v-model="where.varietieCode"
-            placeholder="品种编码/名称"
-          />
-        </el-form-item>
-      </el-col>
-      <el-col :span="3">
-        <el-form-item>
-          <el-input
-            size="mini"
-            style="width: 90%"
-            clearable
-            v-model="where.Specification_Or_Type"
-            placeholder="规格型号"
-          />
-        </el-form-item>
-      </el-col>
-      <el-col :span="3">
-        <el-form-item>
-          <el-input
-            size="mini"
-            style="width: 90%"
-            clearable
-            v-model="where.SCQY"
-            placeholder="生产企业"
-          />
-        </el-form-item>
-      </el-col>
-      <el-col :span="3">
-        <el-form-item>
-          <el-input
-            size="mini"
-            style="width: 90%"
-            clearable
-            v-model="where.ZCZ"
-            placeholder="注册证"
-          />
-        </el-form-item>
-      </el-col>
-
-      <el-col :span="3">
-        <el-form-item>
-          <el-input
-            size="mini"
-            style="width: 90%"
-            clearable
-            v-model="where.SUP"
-            placeholder="供应商"
-          />
-        </el-form-item>
-      </el-col>
-
-      <el-col :span="4">
-        <el-form-item>
-          <el-button
-            size="mini"
-            type="primary"
-            icon="el-icon-search"
-            class="ele-btn-icon"
-            @click="search"
-            >查询</el-button
-          >
-          <!-- <el-button @click="reset">重置</el-button> -->
-          <el-button
-            size="mini"
-            type="primary"
-            class="ele-btn-icon"
-            icon="el-icon-download"
-            @click="ApplyToBidVarInfoDept()"
-            >申请至科室目录</el-button
-          >
-        </el-form-item>
-      </el-col>
-    </el-row>
+    <el-form-item>
+      <el-input
+        size="mini"
+        clearable
+        v-model="where.varietieCode"
+        placeholder="品种编码/名称"
+      />
+    </el-form-item>
+    <el-form-item>
+      <el-input
+        size="mini"
+        clearable
+        v-model="where.Specification_Or_Type"
+        placeholder="规格型号"
+      />
+    </el-form-item>
+    <el-form-item>
+      <el-input
+        size="mini"
+        clearable
+        v-model="where.SCQY"
+        placeholder="生产企业"
+      />
+    </el-form-item>
+    <el-form-item>
+      <el-input
+        size="mini"
+        clearable
+        v-model="where.ZCZ"
+        placeholder="注册证"
+      />
+    </el-form-item>
+    <el-form-item>
+      <el-input
+        size="mini"
+        clearable
+        v-model="where.SUP"
+        placeholder="供应商"
+      />
+    </el-form-item>
+    <el-form-item>
+      <el-button
+        size="mini"
+        type="primary"
+        icon="el-icon-search"
+        class="ele-btn-icon"
+        @click="search"
+      >
+        查询
+      </el-button>
+      <el-button
+        size="mini"
+        type="primary"
+        class="ele-btn-icon"
+        icon="el-icon-download"
+        @click="ApplyToBidVarInfoDept()"
+      >
+        申请至科室目录
+      </el-button>
+    </el-form-item>
   </el-form>
 </template>
 
