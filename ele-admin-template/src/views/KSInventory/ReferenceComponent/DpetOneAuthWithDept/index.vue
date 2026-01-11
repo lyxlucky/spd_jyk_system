@@ -1,6 +1,6 @@
 <template >
   <ele-modal :destroy-on-close="true" width="1600px" :centered="true" :visible="visible" :close-on-click-modal="true" custom-class="ele-dialog-form" title="科室目录" @update:visible="updateVisible">
-    <div class="ele-body">
+    <div class="">
       <el-card shadow="never">
         <!-- 搜索表单 -->
         <!-- 数据表格 -->
@@ -423,3 +423,9 @@ export default {
   }
 };
 </script>
+
+<style scoped lang="scss">
+  ::v-deep(.el-card__body) {
+    padding: 0;
+  }
+</style>

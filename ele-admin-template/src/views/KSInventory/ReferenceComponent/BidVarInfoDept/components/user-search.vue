@@ -2,229 +2,174 @@
 <template>
   <el-form
     class="ele-form-search"
+    inline
     @keyup.enter.native="search"
     @submit.native.prevent
   >
-    <el-row :gutter="10">
-      <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 6 }">
-        <el-form-item label="品种编码：" label-width="100px">
-          <el-input
-            size="mini"
-            clearable
-            v-model="where.VARIETIE_CODE_NEW"
-            placeholder=""
-          />
-        </el-form-item>
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 6 }">
-        <el-form-item label="品种名称：" label-width="100px">
-          <el-input
-            size="mini"
-            clearable
-            v-model="where.PROD_REGISTRATION_NAME"
-            placeholder=""
-          />
-        </el-form-item>
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 6 }">
-        <el-form-item label="规格型号:" label-width="100px">
-          <el-input size="mini" clearable v-model="where.GG" placeholder="" />
-        </el-form-item>
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 6 }">
-        <el-form-item label="注册证号:" label-width="100px">
-          <el-input
-            size="mini"
-            clearable
-            v-model="where.APPROVAL_NUMBER"
-            placeholder=""
-          />
-        </el-form-item>
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 6 }">
-        <el-form-item label="供应商:" label-width="100px">
-          <el-input
-            size="mini"
-            clearable
-            v-model="where.SUP_NAME"
-            placeholder=""
-          />
-        </el-form-item>
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 6 }">
-        <el-form-item label="生产企业:" label-width="100px">
-          <el-input
-            size="mini"
-            clearable
-            v-model="where.MANUFACTURING_ENT_NAME"
-            placeholder=""
-          />
-        </el-form-item>
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 6 }">
-        <el-form-item label="使用科室:" label-width="100px">
-          <el-input
-            size="mini"
-            clearable
-            v-model="where.USE_DEPT"
-            placeholder=""
-          />
-        </el-form-item>
-      </el-col>
-      <!-- <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 6 }">
-        <el-form-item label="导入时间:" label-width='100px'>
-          <el-input clearable v-model="where.SerachName" placeholder="" />
-        </el-form-item>
-      </el-col> -->
-      <el-col v-bind="styleResponsive ? { lg: 4, md: 4 } : { span: 4 }">
-        <el-form-item label="导入时间:" label-width="100px">
-          <el-date-picker
-            size="mini"
-            v-model="where.start_time"
-            type="date"
-            style="width: 140px"
-            value-format="yyyy-MM-dd"
-            placeholder="导入开始日期"
-          >
-          </el-date-picker>
-        </el-form-item>
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 2, md: 4 } : { span: 4 }">
-        <el-form-item>
-          <el-date-picker
-            size="mini"
-            v-model="where.end_time"
-            type="date"
-            style="width: 140px"
-            value-format="yyyy-MM-dd"
-            placeholder="导入结束日期"
-          >
-          </el-date-picker>
-        </el-form-item>
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 6 }">
-        <el-form-item label="合同编码:" label-width="100px">
-          <el-input
-            size="mini"
-            clearable
-            v-model="where.CONTRACT_CODE"
-            placeholder=""
-          />
-        </el-form-item>
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 6 }">
-        <el-form-item label="合同开始:" label-width="100px">
-          <el-input
-            size="mini"
-            clearable
-            v-model="where.CREATE_BATCH"
-            placeholder=""
-          />
-        </el-form-item>
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 6 }">
-        <el-form-item label="合同结束:" label-width="100px">
-          <el-input
-            size="mini"
-            clearable
-            v-model="where.CREATE_BATCH2"
-            placeholder=""
-          />
-        </el-form-item>
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 6 }">
-        <el-form-item label="在用状态：" label-width="100px">
-          <el-select size="mini" v-model="where.IS_HAVE" @change="search()">
-            <el-option label="全部" value=""></el-option>
-            <el-option label="启用" value="1"></el-option>
-            <el-option label="已申请" value="2"></el-option>
-            <el-option label="未使用" value="0"></el-option>
-          </el-select>
-        </el-form-item>
-      </el-col>
-      <div style="display: none">
-        <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 6 }">
-          <el-form-item label="是否高值:" label-width="100px">
-            <el-select
-              size="mini"
-              v-model="where.HIGH_OR_LOW_CLASS"
-              @change="search()"
-            >
-              <el-option label="全部" value=""></el-option>
-              <el-option label="否" value="0"></el-option>
-              <el-option label="是" value="1"></el-option>
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 6 }">
-          <el-form-item label="重点治理:" label-width="100px">
-            <el-select
-              size="mini"
-              v-model="where.IS_IN_COUNTRY_IMPORT"
-              @change="search()"
-            >
-              <el-option label="全部" value=""></el-option>
-              <el-option label="否" value="0"></el-option>
-              <el-option label="是" value="1"></el-option>
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 6 }">
-          <el-form-item label="重点治理序号:" label-width="100px">
-            <el-input
-              size="mini"
-              clearable
-              v-model="where.HIGH_CLASS_XH"
-              placeholder=""
-            />
-          </el-form-item>
-        </el-col>
-      </div>
-      <el-col v-bind="styleResponsive ? { lg: 10, md: 12 } : { span: 6 }">
-        <el-form-item>
-          <div class="ele-form-actions">
-            <el-button
-              size="mini"
-              type="primary"
-              icon="el-icon-search"
-              class="ele-btn-icon"
-              @click="search"
-            >
-              查询
-            </el-button>
-            <el-button size="mini" icon="el-icon-refresh" @click="reset"
-              >重置</el-button
-            >
-            <el-button
-              size="mini"
-              v-permission="'zhongbiao-export'"
-              type="primary"
-              icon="el-icon-download"
-              class="ele-btn-icon"
-              @click="exportData"
-            >
-              导出
-            </el-button>
-            <el-button
-              size="mini"
-              type="primary"
-              class="ele-btn-icon"
-              icon="el-icon-upload2"
-              @click="ApplyToVarietyDataLzhLook()"
-              >申请至在用目录</el-button
-            >
-            <el-button
-              size="mini"
-              type="danger"
-              class="ele-btn-icon"
-              icon="el-icon-download"
-              @click="CalApplyToVarietyDataLzhLook()"
-              >取消申请至在用目录</el-button
-            >
-          </div>
-        </el-form-item>
-      </el-col>
-    </el-row>
+    <el-form-item>
+      <el-input
+        size="mini"
+        style="width: 180px"
+        clearable
+        v-model="where.VARIETIE_CODE_NEW"
+        placeholder="品种编码"
+      />
+    </el-form-item>
+    <el-form-item>
+      <el-input
+        size="mini"
+        style="width: 180px"
+        clearable
+        v-model="where.PROD_REGISTRATION_NAME"
+        placeholder="品种名称"
+      />
+    </el-form-item>
+    <el-form-item>
+      <el-input
+        size="mini"
+        style="width: 180px"
+        clearable
+        v-model="where.GG"
+        placeholder="规格型号"
+      />
+    </el-form-item>
+    <el-form-item>
+      <el-input
+        size="mini"
+        style="width: 180px"
+        clearable
+        v-model="where.APPROVAL_NUMBER"
+        placeholder="注册证号"
+      />
+    </el-form-item>
+    <el-form-item>
+      <el-input
+        size="mini"
+        style="width: 180px"
+        clearable
+        v-model="where.SUP_NAME"
+        placeholder="供应商"
+      />
+    </el-form-item>
+    <el-form-item>
+      <el-input
+        size="mini"
+        style="width: 180px"
+        clearable
+        v-model="where.MANUFACTURING_ENT_NAME"
+        placeholder="生产企业"
+      />
+    </el-form-item>
+    <el-form-item>
+      <el-input
+        size="mini"
+        style="width: 180px"
+        clearable
+        v-model="where.USE_DEPT"
+        placeholder="使用科室"
+      />
+    </el-form-item>
+    <el-form-item style="width: 280px">
+      <el-date-picker
+        size="mini"
+        v-model="where.importTimeRange"
+        type="daterange"
+        style="width: 280px"
+        value-format="yyyy-MM-dd"
+        range-separator="至"
+        start-placeholder="导入开始日期"
+        end-placeholder="导入结束日期"
+      >
+      </el-date-picker>
+    </el-form-item>
+    <el-form-item>
+      <el-input
+        size="mini"
+        style="width: 180px"
+        clearable
+        v-model="where.CONTRACT_CODE"
+        placeholder="合同编码"
+      />
+    </el-form-item>
+    <el-form-item>
+      <el-input
+        size="mini"
+        style="width: 180px"
+        clearable
+        v-model="where.CREATE_BATCH"
+        placeholder="合同开始"
+      />
+    </el-form-item>
+    <el-form-item>
+      <el-input
+        size="mini"
+        style="width: 180px"
+        clearable
+        v-model="where.CREATE_BATCH2"
+        placeholder="合同结束"
+      />
+    </el-form-item>
+    <el-form-item>
+      <el-select
+        size="mini"
+        style="width: 180px"
+        v-model="where.IS_HAVE"
+        @change="search()"
+        placeholder="在用状态"
+      >
+        <el-option label="在用状态" value="">全部</el-option>
+        <el-option label="启用" value="1"></el-option>
+        <el-option label="已申请" value="2"></el-option>
+        <el-option label="未使用" value="0"></el-option>
+      </el-select>
+    </el-form-item>
+    <el-form-item>
+      <el-button
+        size="mini"
+        type="primary"
+        icon="el-icon-search"
+        class="ele-btn-icon"
+        @click="search"
+      >
+        查询
+      </el-button>
+    </el-form-item>
+    <el-form-item>
+      <el-button size="mini" class="ele-btn-icon" icon="el-icon-refresh" @click="reset">重置</el-button>
+    </el-form-item>
+    <el-form-item v-permission="'zhongbiao-export'">
+      <el-button
+        size="mini"
+        type="primary"
+        icon="el-icon-download"
+        class="ele-btn-icon"
+        @click="exportData"
+      >
+        导出
+      </el-button>
+      </el-form-item>
+    <el-form-item>
+      <el-button
+        size="mini"
+        type="primary"
+        class="ele-btn-icon"
+        icon="el-icon-upload2"
+        @click="ApplyToVarietyDataLzhLook()"
+      >
+        申请至在用目录
+      </el-button>
+      </el-form-item>
+    <el-form-item>
+      <el-button
+        size="mini"
+        type="danger"
+        class="ele-btn-icon"
+        icon="el-icon-download"
+        @click="CalApplyToVarietyDataLzhLook()"
+      >
+        取消申请至在用目录
+      </el-button>
+      </el-form-item>
   </el-form>
 </template>
 
@@ -249,12 +194,11 @@
         CONTRACT_CODE: '',
         CREATE_BATCH: '',
         CREATE_BATCH2: '',
-        start_time: '',
+        importTimeRange: [],
         HIGH_OR_LOW_CLASS: '',
         HIGH_CLASS_XH: '',
         IS_PRICE: '',
-        KC: '',
-        end_time: ''
+        KC: ''
       };
       return {
         // 表单数据
