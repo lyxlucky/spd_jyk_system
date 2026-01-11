@@ -64,6 +64,13 @@
               />
             </el-form-item>
 
+            <el-form-item label="">
+              <el-select size="mini" v-model="mlType">
+                <el-option label="科室目录" value="0" />
+                <el-option label="在用目录" value="1" />
+              </el-select>
+            </el-form-item>
+
             <el-form-item>
               <el-button size="mini" type="primary" @click="reload"
                 >查询</el-button
@@ -296,7 +303,8 @@
         SerachName: '',
         isUpdate: false,
         spec: '',
-        manufacturer: ''
+        manufacturer: '',
+        mlType: '0'
       };
     },
     methods: {
@@ -306,6 +314,7 @@
         where.SerachName = this.SerachName;
         where.spec = this.spec;
         where.manufacturer = this.manufacturer;
+        where.mlType = this.mlType;
         let data = SerachAuthVar({ page, limit, where, order }).then((res) => {
           var tData = {
             count: res.total,
