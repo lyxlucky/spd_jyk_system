@@ -83,7 +83,7 @@
           </el-dropdown-menu>
         </el-dropdown>
       </el-form-item>
-      <el-form-item>
+      <el-form-item v-if="false">
         <el-button
           type="danger"
           icon="el-icon-delete"

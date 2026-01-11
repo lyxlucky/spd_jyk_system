@@ -68,6 +68,7 @@
           :max="99999999"
           :step="1"
           size="mini"
+          @change="handlePlanQtyChange(row)"
         />
         <!-- <el-input-number v-model="row.PlanQty" controls-position="right" @change="handleChange" :min="0" :max="9999" size="mini"></el-input-number> -->
       </template>
@@ -293,7 +294,8 @@
     SerachPlanListDeta,
     UpdateApplyPlanBZ,
     Approval,
-    getVarietieSku
+    getVarietieSku,
+    upPlanListDelCount
   } from '@/api/KSInventory/KSDepartmentalPlan';
   import { utils, writeFile } from 'xlsx';
   import { HOME_HP } from '@/config/setting';
@@ -697,6 +699,41 @@
           this.$message.error(error.message || '获取SKU列表失败');
         }
       },
+      async handlePlanQtyChange(row) {
+        if (!row.ID || row.PlanQty === undefined || row.PlanQty === '') {
+          return;
+        }
+        // 保存原始值，用于失败时恢复
+        const originalPlanQty = row._originalPlanQty;
+        try {
+          const res = await upPlanListDelCount({
+            ID: row.ID,
+            Qty: row.PlanQty
+          });
+          if (res.code == 200) {
+            // 更新成功，保存新的值作为原始值
+            this.$set(row, '_originalPlanQty', row.PlanQty);
+            this.$message({
+              type: 'success',
+              message: '数量更新成功'
+            });
+          } else {
+            // 更新失败，恢复原始值
+            this.$set(row, 'PlanQty', originalPlanQty);
+            this.$message({
+              type: 'error',
+              message: res.message || '更新失败'
+            });
+          }
+        } catch (error) {
+          // 更新出错，恢复原始值
+          this.$set(row, 'PlanQty', originalPlanQty);
+          this.$message({
+            type: 'error',
+            message: error.message || '更新数量失败'
+          });
+        }
+      },
       handleQuanityDetail(data) {
         this.quanityInlineCurrent = data;
         this.QuanityDetailDialogVisible = true;
@@ -750,7 +787,8 @@
             const processedResult = res.result.map((item) => ({
               ...item,
               SELECTED_SKU_NAME: '',
-              SELECTED_SKU_ID: ''
+              SELECTED_SKU_ID: '',
+              _originalPlanQty: item.PlanQty
             }));
 
             var tData = {

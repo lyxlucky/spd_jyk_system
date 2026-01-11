@@ -589,3 +589,18 @@ export async function getDeptTwoRegion(data) {
     return Promise.reject(new Error(res.data.msg));
   }
 }
+
+/* 更新申领单数量 */
+export async function upPlanListDelCount(data) {
+  var formatData = {
+    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+    ID: data.ID,
+    Qty: data.Qty
+  };
+  const res = await request.post('/DeptApplyPlan/upPlanListDelCount', formdataify(formatData));
+  if (res.data.code == 200) {
+    return res.data;
+  } else {
+    return Promise.reject(new Error(res.data.msg));
+  }
+}
