@@ -113,7 +113,7 @@
         保存并提交
       </el-button>
     </el-form-item>
-    <el-form-item>
+    <el-form-item v-permission="'ApplyPlan_审核'">
       <el-button
         type="success"
         icon="el-icon-s-order"
@@ -125,12 +125,11 @@
         审核申领单
       </el-button>
     </el-form-item>
-    <el-form-item>
+    <el-form-item v-permission="'ApplyPlan_审核'" v-if="['stzl', 'stzx', 'bd'].includes(HOME_HP) || ENV == 'development'">
       <el-button
         type="primary"
         icon="el-icon-s-cooperation"
         class="ele-btn-icon"
-        v-if="['stzl', 'stzx', 'bd'].includes(HOME_HP) || ENV == 'development'"
         size="mini"
         @click="Approval"
         :disabled="!IsToExamine"
