@@ -117,6 +117,16 @@ const envConfig = {
     target: 'http://10.173.128.80:18103/',
     publicPath: '/jyknw/',
     outputDir: 'jyknw'
+  },
+  xhww: {
+    target: 'http://47.106.243.154:891/',
+    publicPath: '/jyk/',
+    outputDir: 'jyk'
+  },
+  xhnw: {
+    target: 'http://172.21.152.3:891/',
+    publicPath: '/jyknw/',
+    outputDir: 'jyknw'
   }
 }
 

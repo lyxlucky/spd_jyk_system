@@ -29,7 +29,9 @@ const getRequestTimeout = () => {
     'se2bb': 3600000, // 1小时
     'se2bbww': 3600000, // 1小时
     'dpyq': 3600000,  // 1小时
-    'lhyq': 3600000   // 1小时
+    'lhyq': 3600000,   // 1小时
+    'xhww': 3600000,  // 1小时
+    'xhnw': 3600000   // 1小时
   };
   console.log(env,envTimeoutMap[env]);
   return envTimeoutMap[env] || 3600000;
@@ -72,7 +74,9 @@ const getHomeHp = () => {
     'se2bb': 'se2',  // 市二本部、大鹏院区、龙华院区统一使用同一个HOME_HP
     'se2bbww': 'se2',  // 市二本部、大鹏院区、龙华院区统一使用同一个HOME_HP
     'dpyq': 'se2',   // 三个环境使用同一个LOGO（待定）
-    'lhyq': 'se2'    // 三个环境使用同一个LOGO（待定）
+    'lhyq': 'se2',    // 三个环境使用同一个LOGO（待定）
+    'xhww': 'xh',   // 新华外网
+    'xhnw': 'xh'    // 新华内网
   };
   return envHpMap[env] || 'bd';
 }
@@ -125,7 +129,9 @@ const getBackBaseUrl = () => {
     'se2bb': 'http://10.173.128.80:18101',
     'se2bbww': 'http://47.106.243.154:18101',
     'dpyq': 'http://10.173.128.80:18105',
-    'lhyq': 'http://10.173.128.80:18103'
+    'lhyq': 'http://10.173.128.80:18103',
+    'xhww': 'http://47.106.243.154:891',
+    'xhnw': 'http://172.21.152.3:891'
   };
   return envMap[env] || 'http://localhost:16416';
 }

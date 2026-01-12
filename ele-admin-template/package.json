@@ -29,6 +29,8 @@
     "build:se2bbww": "vue-cli-service build --mode se2bbww",
     "build:dpyq": "vue-cli-service build --mode dpyq",
     "build:lhyq": "vue-cli-service build --mode lhyq",
+    "build:xhww": "vue-cli-service build --mode xhww",
+    "build:xhnw": "vue-cli-service build --mode xhnw",
     "lint": "vue-cli-service lint",
     "clean:lib": "rimraf node_modules"
   },
