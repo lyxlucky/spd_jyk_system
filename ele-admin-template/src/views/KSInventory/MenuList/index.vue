@@ -223,6 +223,33 @@
     >
       <KSExpirationReminder></KSExpirationReminder>
     </ele-modal>
+
+    <!-- 操作指引对话框 -->
+    <el-dialog
+      title="操作指引"
+      :visible.sync="guideDialogVisible"
+      width="400px"
+      center
+    >
+      <div style="display: flex; justify-content: space-around; padding: 20px;">
+        <el-button
+          type="primary"
+          icon="el-icon-video-camera"
+          @click="openVideo"
+          style="width: 140px; height: 80px;"
+        >
+          <div style="margin-top: 10px;">操作视频</div>
+        </el-button>
+        <el-button
+          type="success"
+          icon="el-icon-document"
+          @click="downloadGuide"
+          style="width: 140px; height: 80px;"
+        >
+          <div style="margin-top: 10px;">操作手册</div>
+        </el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -265,6 +292,7 @@
         MenuList: null,
         KSExpirationReminderVisible: true,
         NoticeMenuList: null,
+        guideDialogVisible: false,
         JYkDefRemindTotal: 0,
         TableListTotal: 0,
         saleroomData: [],
@@ -357,12 +385,18 @@
         if (visibleProperty) {
           this[visibleProperty] = true;
         } else {
-          this.downloadGuide();
+          this.guideDialogVisible = true;
         }
       },
       downloadGuide() {
         var url = `${BACK_BASE_URL}/ZL/上药控股SPD科室操作手册.pdf`;
         window.open(url.replace('/undefined', ''));
+        this.guideDialogVisible = false;
+      },
+      openVideo() {
+        var url = `${BACK_BASE_URL}/ZL/上药控股SPD科室操作视频.mp4`;
+        window.open(url.replace('/undefined', ''));
+        this.guideDialogVisible = false;
       },
       getTop20() {
         this.isVarOrUsed = !this.isVarOrUsed;
