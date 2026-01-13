@@ -542,6 +542,22 @@
             minWidth: 100
           },
           {
+            prop: 'HOSPITAL_TYPE',
+            label: '就诊类型',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 100,
+            formatter: (row, column, cellValue) => {
+              if (row.HOSPITAL_TYPE === 0 || row.HOSPITAL_TYPE === '0') {
+                return '门诊';
+              }
+              if (row.HOSPITAL_TYPE === 1 || row.HOSPITAL_TYPE === '1') {
+                return '住院';
+              }
+              return cellValue || '未知';
+            }
+          },
+          {
             prop: 'OPEARTION_CHARGING_TIME',
             label: '时间',
             align: 'center',

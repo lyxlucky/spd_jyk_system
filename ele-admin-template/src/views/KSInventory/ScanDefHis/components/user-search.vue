@@ -136,9 +136,46 @@
           绑定设备
         </el-button>
       </el-form-item>
+      <el-form-item>
+        <el-button
+          type="info"
+          size="mini"
+          class="ele-btn-icon"
+          icon="el-icon-view"
+          @click="openStockSummaryDialog"
+        >
+          库存汇总
+        </el-button>
+      </el-form-item>
     </el-form>
     <!-- <h3 style="color:blue">{{msgTip}}</h3> -->
     <KSInventoryQuery :visible.sync="KSInventoryQueryShow" />
+    
+    <!-- 库存汇总对话框 -->
+    <el-dialog
+      title="科室库存汇总"
+      :visible.sync="stockSummaryDialogVisible"
+      width="90%"
+      :close-on-click-modal="false"
+      append-to-body
+      top="5vh"
+    >
+      <ele-pro-table
+        ref="stockSummaryTable"
+        :columns="stockSummaryColumns"
+        :datasource="stockSummaryDatasource"
+        :selection.sync="stockSummarySelection"
+        height="500px"
+        :page-sizes="[10, 20, 50, 100]"
+        :page-size="20"
+        cache-key="DeptStockSummaryTable"
+      >
+      </ele-pro-table>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="batchConsumeFromSummary">批量消耗</el-button>
+        <el-button @click="stockSummaryDialogVisible = false">关 闭</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -148,7 +185,9 @@
   import {
     insertScanDef,
     delScanDef,
-    spdScanConsume
+    spdScanConsume,
+    getDeptStockSummary,
+    batchConsumeByVarietieCode
   } from '@/api/KSInventory/ScanDefHis';
 
   import KSInventoryQuery from '@/views/KSInventory/ScanDefHis/KSInventoryQuery/index.vue';
@@ -185,7 +224,75 @@
         Updata: {
           Token: sessionStorage['Token']
         },
-        KSInventoryQueryShow: false
+        KSInventoryQueryShow: false,
+        stockSummaryDialogVisible: false,
+        stockSummarySelection: [],
+        stockSummaryColumns: [
+          {
+            columnKey: 'selection',
+            type: 'selection',
+            width: 45,
+            align: 'center',
+            fixed: 'left'
+          },
+          {
+            label: '品种编码',
+            prop: 'VARIETIE_CODE_NEW',
+            width: 120,
+            align: 'center'
+          },
+          {
+            label: '品种名称',
+            prop: 'VARIETIE_NAME',
+            minWidth: 150,
+            align: 'center'
+          },
+          {
+            label: '规格型号',
+            prop: 'SPECIFICATION_OR_TYPE',
+            width: 120,
+            align: 'center'
+          },
+          {
+            label: '供应商',
+            prop: 'SUPPLIER_NAME',
+            minWidth: 150,
+            align: 'center'
+          },
+          {
+            label: '批次',
+            prop: 'BATCH',
+            width: 120,
+            align: 'center'
+          },
+          {
+            label: '生产日期',
+            prop: 'BATCH_PRODUCTION_DATE',
+            width: 120,
+            align: 'center',
+            formatter: (row) => {
+              return row.BATCH_PRODUCTION_DATE ? new Date(row.BATCH_PRODUCTION_DATE).toLocaleDateString() : '';
+            }
+          },
+          {
+            label: '有效期',
+            prop: 'BATCH_VALIDITY_PERIOD',
+            width: 120,
+            align: 'center',
+            formatter: (row) => {
+              return row.BATCH_VALIDITY_PERIOD ? new Date(row.BATCH_VALIDITY_PERIOD).toLocaleDateString() : '';
+            }
+          },
+          {
+            label: '数量',
+            prop: 'QTY',
+            width: 100,
+            align: 'center',
+            formatter: (row) => {
+              return row.QTY ? Number(row.QTY) : '0';
+            }
+          }
+        ]
       };
     },
     computed: {
@@ -341,6 +448,111 @@
         console.log(response);
         this.$refs.Defupload.clearFiles();
         this.$message.error(response.msg);
+      },
+      /* 打开库存汇总对话框 */
+      openStockSummaryDialog() {
+        this.stockSummaryDialogVisible = true;
+        // 刷新表格数据
+        this.$nextTick(() => {
+          if (this.$refs.stockSummaryTable) {
+            this.$refs.stockSummaryTable.reload();
+          }
+        });
+      },
+      /* 库存汇总数据源 */
+      stockSummaryDatasource({ page, limit, where, order }) {
+        const deptTwoCode = this.$store.state.user.info.DeptNow?.Dept_Two_Code;
+        if (!deptTwoCode) {
+          this.$message.warning('未获取到科室代码');
+          return Promise.resolve({
+            count: 0,
+            list: []
+          });
+        }
+
+        return getDeptStockSummary({ deptTwoCode, page, limit })
+          .then((res) => {
+            if (res.code == 200 && res.result) {
+              let dataList = [];
+              try {
+                dataList = typeof res.result === 'string' ? JSON.parse(res.result) : res.result;
+              } catch (e) {
+                console.error('解析数据失败:', e);
+                dataList = [];
+              }
+
+              return {
+                count: res.total || 0,
+                list: dataList
+              };
+            } else {
+              this.$message.error(res.msg || '获取数据失败');
+              return {
+                count: 0,
+                list: []
+              };
+            }
+          })
+          .catch((err) => {
+            this.$message.error(err.message || '获取库存汇总数据失败');
+            return {
+              count: 0,
+              list: []
+            };
+          });
+      },
+      /* 从库存汇总批量消耗 */
+      batchConsumeFromSummary() {
+        if (!this.stockSummarySelection || this.stockSummarySelection.length === 0) {
+          this.$message.warning('请选择要消耗的品种');
+          return;
+        }
+
+        // 提取品种编码
+        const varietieCodes = [];
+        this.stockSummarySelection.forEach((item) => {
+          if (item.VARIETIE_CODE) {
+            varietieCodes.push(item.VARIETIE_CODE);
+          }
+        });
+
+        if (varietieCodes.length === 0) {
+          this.$message.warning('所选数据中没有有效的品种编码');
+          return;
+        }
+
+        // 去重
+        const uniqueVarietieCodes = [...new Set(varietieCodes)];
+
+        const loading = this.$messageLoading('批量消耗中...');
+        const deptTwoCode = this.$store.state.user.info.DeptNow?.Dept_Two_Code;
+        
+        if (!deptTwoCode) {
+          loading.close();
+          this.$message.warning('未获取到科室代码');
+          return;
+        }
+
+        const data = {
+          deptTwoCode: deptTwoCode,
+          varietieCodeJson: JSON.stringify(uniqueVarietieCodes)
+        };
+
+        batchConsumeByVarietieCode(data)
+          .then((res) => {
+            loading.close();
+            this.$message.success(res.msg || '批量消耗成功');
+            // 关闭对话框
+            this.stockSummaryDialogVisible = false;
+            // 清空选择
+            this.stockSummarySelection = [];
+            // 刷新主表格
+            this.search();
+          })
+          .catch((err) => {
+            loading.close();
+            this.$message.error(err.message || '批量消耗失败');
+          });
       }
     }
   };
