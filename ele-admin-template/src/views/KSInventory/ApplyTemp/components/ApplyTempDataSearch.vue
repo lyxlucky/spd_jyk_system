@@ -183,7 +183,22 @@ export default {
       this.dialogTableVisible2 = true;
     },
     saveApplyNum() {
-      this.$emit('saveApplyNum');
+      const loading = this.$messageLoading('保存中...');
+      var list = this.selection;
+      for (let i = 0; i < list.length; i++) {
+        list[i].BigBoxCount = '0';
+        list[i].MinBoxCount = '0';
+      }
+      KeepTempletDeta(list)
+        .then((res) => {
+          loading.close();
+          this.$emit('search', this.where);
+          this.$message.success(res.msg);
+        })
+        .catch((err) => {
+          loading.close();
+          this.$message.error(err);
+        });
     },
     addTempVar() {
       this.$emit('addTempVar');

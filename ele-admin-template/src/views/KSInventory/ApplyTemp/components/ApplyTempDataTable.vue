@@ -70,7 +70,7 @@
       <template v-slot:action="{ row }">
         <el-popconfirm
           class="ele-action"
-          title="确定要删除此用户吗？"
+          title="确定要删除此品种？"
           @confirm="remove(row)"
         >
           <template v-slot:reference>
@@ -192,7 +192,7 @@
             showOverflowTooltip: true,
             width: 90
           },
-          
+
           {
             prop: 'Unit',
             label: '单位',
@@ -243,7 +243,7 @@
             minWidth: 110,
             show: false
           },
-          
+
           {
             prop: 'ZB',
             label: '是否中标',
@@ -330,7 +330,7 @@
         }
         this.isHideDeptSup = isHideDeptSup;
         console.log('isHideDeptSup:', isHideDeptSup);
-        
+
         // 找到生产企业名称列并设置show属性
         const manufacturingColumn = this.columns.find(col => col.prop === 'Manufacturing');
         if (manufacturingColumn) {
