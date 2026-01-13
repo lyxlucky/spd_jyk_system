@@ -78,3 +78,32 @@ export async function spdScanConsume(data) {
         return Promise.reject(new Error(res.data.msg));
     }
 }
+
+export async function getDeptStockSummary(data) {
+    var data2 = {};
+    data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+    data2.deptTwoCode = data.deptTwoCode ? data.deptTwoCode : '';
+    data2.page = data.page ? data.page : 1;
+    data2.limit = data.limit ? data.limit : 20;
+    var rep = formdataify(data2);
+    const res = await request.post('/DeptConsume/GetDeptStockSummary', rep);
+    if (res.data.code == 200) {
+        return res.data;
+    } else {
+        return Promise.reject(new Error(res.data.msg));
+    }
+}
+
+export async function batchConsumeByVarietieCode(data) {
+    var data2 = {};
+    data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+    data2.deptTwoCode = data.deptTwoCode ? data.deptTwoCode : '';
+    data2.varietieCodeJson = data.varietieCodeJson ? data.varietieCodeJson : '';
+    var rep = formdataify(data2);
+    const res = await request.post('/DeptConsume/BatchConsumeByVarietieCode', rep);
+    if (res.data.code == 200) {
+        return res.data;
+    } else {
+        return Promise.reject(new Error(res.data.msg));
+    }
+}
