@@ -50,7 +50,7 @@
             <el-option label="已消耗" value="1" />
           </el-select>
         </el-form-item>
-        <el-form-item label="与HIS收费是否一致">
+        <el-form-item label="与HIS收费是否一致" >
           <el-select
             v-model="searchForm.IS_HIS_CHARGE_CONSISTENT"
             placeholder="请选择"
@@ -94,7 +94,7 @@
             style="width: 200px"
           />
         </el-form-item>
-        <el-form-item label="提交HIS状态">
+        <el-form-item label="提交HIS状态" v-if="false">
           <el-select
             v-model="searchForm.SUBMIT_HIS_STATUS"
             placeholder="请选择提交HIS状态"
@@ -196,17 +196,67 @@
           />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" icon="el-icon-search" @click="search">
+          <el-button type="primary" class="ele-btn-icon" icon="el-icon-search" @click="search">
             搜索
           </el-button>
         </el-form-item>
         <el-form-item>
-          <el-button icon="el-icon-refresh" @click="reset">重置</el-button>
+          <el-button icon="el-icon-refresh" class="ele-btn-icon" @click="reset">重置</el-button>
+        </el-form-item>
+        <el-form-item>
+          <el-button
+            type="primary"
+            class="ele-btn-icon"
+            :disabled="!currentMainRow"
+            @click="handleApproveConsume"
+          >
+            手术消耗审批
+          </el-button>
+        </el-form-item>
+        <el-form-item v-if="false">
+          <el-button
+            type="info"
+            class="ele-btn-icon"
+            :disabled="!currentMainRow"
+            @click="handlePrintConsumeOrder"
+          >
+            打印消耗单
+          </el-button>
+        </el-form-item>
+        <el-form-item>
+          <el-button
+            type="warning"
+            class="ele-btn-icon"
+            :disabled="!currentMainRow"
+            @click="handleAuditBatchValidity"
+          >
+            批号效期审核
+          </el-button>
+        </el-form-item>
+        <el-form-item v-if="false">
+          <el-button
+            type="success"
+            class="ele-btn-icon"
+            :disabled="!currentMainRow"
+            @click="handleConfirmUse"
+          >
+            确认使用
+          </el-button>
+        </el-form-item>
+        <el-form-item>
+          <el-button
+            type="danger"
+            class="ele-btn-icon"
+            :disabled="!currentMainRow"
+            @click="handleCancelSurgeryApproval"
+          >
+            取消手术审批
+          </el-button>
         </el-form-item>
       </el-form>
 
       <!-- 主表 -->
-      <div style="margin-top: 15px">
+      <div>
         <vxe-table
           ref="mainTable"
           :data="mainTableData"
@@ -361,7 +411,21 @@
       </div>
 
       <!-- 明细表 -->
-      <div style="margin-top: 30px">
+      <div>
+        <div style="display: flex; align-items: center; margin-bottom: 8px; font-weight: bold; font-size: 14px">
+          <div style="margin-right: 10px; font-weight: bold; font-size: 14px">
+            >>手术消耗品种
+          </div>
+          <el-button
+            type="warning"
+            class="ele-btn-icon"
+            size="mini"
+            :disabled="!currentDetailRow"
+            @click="handleEditBatchValidity"
+          >
+            修改批号效期
+          </el-button>
+        </div>
         <vxe-table
           ref="detailTable"
           :data="detailTableData"
@@ -370,7 +434,10 @@
           stripe
           size="mini"
           height="400"
+          highlight-current-row
           resizable
+          @current-change="onDetailTableCurrentChange"
+          @row-click="onDetailTableRowClick"
         >
           <vxe-column type="seq" title="序号" width="60" align="center" />
           <vxe-column
@@ -443,6 +510,82 @@
         />
       </div>
     </el-card>
+
+    <!-- 模拟审批弹窗 -->
+    <el-dialog
+      :title="actionDialogTitle"
+      :visible.sync="actionDialogVisible"
+      width="520px"
+      destroy-on-close
+    >
+      <el-form :model="actionDialogForm" label-width="96px" size="mini" style="margin-top: 12px">
+        <template v-if="actionDialogType === 'approveConsume' || actionDialogType === 'auditBatchValidity'">
+          <el-form-item label="处理结果">
+            <el-radio-group v-model="actionDialogForm.decision">
+              <el-radio label="pass">通过</el-radio>
+              <el-radio label="reject">驳回</el-radio>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item label="备注">
+            <el-input
+              v-model="actionDialogForm.reason"
+              type="textarea"
+              :rows="3"
+              placeholder="备注"
+              maxlength="200"
+              show-word-limit
+            />
+          </el-form-item>
+        </template>
+
+        <template v-else-if="actionDialogType === 'cancelSurgeryApproval'">
+          <el-form-item label="取消原因">
+            <el-input
+              v-model="actionDialogForm.reason"
+              type="textarea"
+              :rows="3"
+              placeholder="填写取消原因（模拟弹窗，不会提交）"
+              maxlength="200"
+              show-word-limit
+            />
+          </el-form-item>
+        </template>
+
+        <template v-else-if="actionDialogType === 'editBatchValidity'">
+          <el-form-item label="批号">
+            <el-input
+              v-model="actionDialogForm.batchNo"
+              placeholder="示例：从明细行带出批号"
+              maxlength="50"
+            />
+          </el-form-item>
+          <el-form-item label="效期">
+            <el-date-picker
+              v-model="actionDialogForm.validity"
+              type="date"
+              placeholder="选择效期日期"
+              value-format="yyyy-MM-dd"
+              style="width: 100%"
+            />
+          </el-form-item>
+          <el-form-item label="备注">
+            <el-input
+              v-model="actionDialogForm.remark"
+              type="textarea"
+              :rows="2"
+              placeholder="此弹窗仅用于交互演示"
+              maxlength="200"
+              show-word-limit
+            />
+          </el-form-item>
+        </template>
+      </el-form>
+
+      <span slot="footer" class="dialog-footer">
+        <el-button size="mini" @click="actionDialogVisible = false">取 消</el-button>
+        <el-button type="primary" size="mini" @click="confirmActionDialog">确定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -501,6 +644,17 @@ export default {
         page: 1,
         size: 20,
         total: 0
+      },
+      currentDetailRow: null, // 当前选中的明细行
+      actionDialogVisible: false,
+      actionDialogTitle: '',
+      actionDialogType: '',
+      actionDialogForm: {
+        decision: 'pass',
+        reason: '',
+        batchNo: '',
+        validity: '',
+        remark: ''
       }
     };
   },
@@ -586,6 +740,7 @@ export default {
     onMainTableCurrentChange({ row }) {
       this.currentMainRow = row;
       this.detailTablePage.page = 1;
+      this.currentDetailRow = null;
       this.loadDetailTableData();
     },
     // 主表行点击
@@ -594,6 +749,7 @@ export default {
       // 设置当前行
       this.currentMainRow = row;
       this.detailTablePage.page = 1;
+      this.currentDetailRow = null;
       // 设置当前行为选中状态（触发高亮）
       this.$nextTick(() => {
         if (this.$refs.mainTable) {
@@ -630,6 +786,7 @@ export default {
       if (!this.currentMainRow || !this.currentMainRow.ID) {
         this.detailTableData = [];
         this.detailTablePage.total = 0;
+        this.currentDetailRow = null;
         return;
       }
       this.detailTableLoading = true;
@@ -644,6 +801,7 @@ export default {
         if (res.code === 200) {
           this.detailTableData = res.result || [];
           this.detailTablePage.total = res.total || 0;
+          this.currentDetailRow = null;
         } else {
           this.$message.error(res.msg || '加载明细数据失败');
         }
@@ -749,6 +907,93 @@ export default {
         return '否';
       }
       return cellValue || '';
+    },
+    // 明细表当前行变化
+    onDetailTableCurrentChange({ row }) {
+      this.currentDetailRow = row;
+    },
+    // 明细表行点击
+    onDetailTableRowClick({ row }) {
+      if (!row) return;
+      this.currentDetailRow = row;
+      this.$nextTick(() => {
+        if (this.$refs.detailTable) {
+          this.$refs.detailTable.setCurrentRow(row);
+        }
+      });
+    },
+    // 预留：确认使用
+    handleConfirmUse() {
+      if (!this.currentMainRow) {
+        this.$message.warning('请先选择手术单');
+        return;
+      }
+      this.$message.info('TODO：确认使用功能待实现');
+    },
+    // 预留：手术消耗审批
+    handleApproveConsume() {
+      if (!this.currentMainRow) {
+        this.$message.warning('请先选择手术单');
+        return;
+      }
+      this.openActionDialog('approveConsume');
+    },
+    // 预留：打印消耗单
+    handlePrintConsumeOrder() {
+      if (!this.currentMainRow) {
+        this.$message.warning('请先选择手术单');
+        return;
+      }
+      this.$message.info('TODO：打印消耗单功能待实现');
+    },
+    // 预留：审核批号效期
+    handleAuditBatchValidity() {
+      if (!this.currentMainRow) {
+        this.$message.warning('请先选择手术单');
+        return;
+      }
+      this.openActionDialog('auditBatchValidity');
+    },
+    // 预留：修改批号效期（选中）
+    handleEditBatchValidity() {
+      if (!this.currentDetailRow) {
+        this.$message.warning('请先选择明细记录');
+        return;
+      }
+      this.openActionDialog('editBatchValidity');
+    },
+    // 预留：取消手术审批
+    handleCancelSurgeryApproval() {
+      if (!this.currentMainRow) {
+        this.$message.warning('请先选择手术单');
+        return;
+      }
+      this.openActionDialog('cancelSurgeryApproval');
+    },
+    // 打开模拟弹窗
+    openActionDialog(type) {
+      this.actionDialogType = type;
+      this.actionDialogVisible = true;
+      this.actionDialogForm = {
+        decision: 'pass',
+        reason: '',
+        batchNo: (this.currentDetailRow && this.currentDetailRow.BATCH_NO) || '',
+        validity: '',
+        remark: ''
+      };
+
+      const titles = {
+        approveConsume: '手术消耗审批',
+        auditBatchValidity: '批号效期审核',
+        cancelSurgeryApproval: '取消手术审批',
+        editBatchValidity: '修改批号效期'
+      };
+      this.actionDialogTitle = titles[type] || '操作预览';
+    },
+    // 模拟提交
+    confirmActionDialog() {
+      this.$message.success('已模拟提交，未调用后台接口');
+      this.actionDialogVisible = false;
     }
   },
   created() {
@@ -758,7 +1003,4 @@ export default {
 </script>
 
 <style scoped>
-.ele-form-search {
-  margin-bottom: 15px;
-}
 </style>

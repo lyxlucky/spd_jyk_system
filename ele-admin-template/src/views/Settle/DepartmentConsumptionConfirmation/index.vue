@@ -17,7 +17,7 @@
             start-placeholder="开始日期"
             end-placeholder="结束日期"
             value-format="yyyy-MM-dd"
-            style="width: 240px"
+            style="width: 200px"
           />
         </el-form-item>
         <el-form-item label="执行科室">
@@ -95,6 +95,28 @@
             <el-option label="已确认" value="1" />
           </el-select>
         </el-form-item>
+        <el-form-item label="出库方式">
+          <el-select
+            v-model="searchForm.OUT_TYPE"
+            placeholder="请选择出库方式"
+            clearable
+            style="width: 150px"
+          >
+            <el-option label="申领出库" value="1" />
+            <el-option label="扫码出库" value="2" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="是否跟台">
+          <el-select
+            v-model="searchForm.IS_FOLLOW"
+            placeholder="请选择是否跟台"
+            clearable
+            style="width: 150px"
+          >
+            <el-option label="是" value="1" />
+            <el-option label="否" value="0" />
+          </el-select>
+        </el-form-item>
         <el-form-item>
           <el-button type="primary" icon="el-icon-search" @click="search">
             搜索
@@ -113,7 +135,34 @@
             确认使用
           </el-button>
         </el-form-item>
+        <el-form-item>
+          <el-button
+            type="warning"
+            icon="el-icon-download"
+            @click="exportMainTable"
+          >
+            导出汇总
+          </el-button>
+        </el-form-item>
       </el-form>
+
+      <!-- 统计汇总 -->
+      <div style="margin-top: 15px; padding: 10px; background-color: #f5f7fa; border-radius: 4px;">
+        <el-row :gutter="20">
+          <el-col :span="6">
+            <div style="font-size: 14px; color: #606266;">
+              <span style="font-weight: bold;">总数量：</span>
+              <span style="color: #409EFF; font-size: 16px; font-weight: bold;">{{ totalQuantity }}</span>
+            </div>
+          </el-col>
+          <el-col :span="6">
+            <div style="font-size: 14px; color: #606266;">
+              <span style="font-weight: bold;">总金额：</span>
+              <span style="color: #F56C6C; font-size: 16px; font-weight: bold;">¥{{ totalAmount }}</span>
+            </div>
+          </el-col>
+        </el-row>
+      </div>
 
       <!-- 主表（汇总表） -->
       <div style="margin-top: 15px">
@@ -247,6 +296,32 @@
 
       <!-- 明细表 -->
       <div style="margin-top: 30px">
+        <div style="margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
+          <div style="padding: 10px; background-color: #f5f7fa; border-radius: 4px; flex: 1; margin-right: 10px;">
+            <el-row :gutter="20">
+              <el-col :span="6">
+                <div style="font-size: 14px; color: #606266;">
+                  <span style="font-weight: bold;">明细总数量：</span>
+                  <span style="color: #409EFF; font-size: 16px; font-weight: bold;">{{ detailTotalQuantity }}</span>
+                </div>
+              </el-col>
+              <el-col :span="6">
+                <div style="font-size: 14px; color: #606266;">
+                  <span style="font-weight: bold;">明细总金额：</span>
+                  <span style="color: #F56C6C; font-size: 16px; font-weight: bold;">¥{{ detailTotalAmount }}</span>
+                </div>
+              </el-col>
+            </el-row>
+          </div>
+          <el-button
+            type="warning"
+            icon="el-icon-download"
+            size="small"
+            @click="exportDetailTable"
+          >
+            导出明细
+          </el-button>
+        </div>
         <vxe-table
           ref="detailTable"
           :data="detailTableData"
@@ -402,9 +477,16 @@ export default {
         SUPPLIER_NAME: '',
         MANUFACTURING_ENT_NAME: '',
         USE_APP_STATE: '',
+        OUT_TYPE: '', // 出库方式
+        IS_FOLLOW: '', // 是否跟台
         ID: ''
       },
       dateRange: [], // 日期范围
+      // 统计数据
+      totalQuantity: 0, // 总数量
+      totalAmount: '0.00', // 总金额
+      detailTotalQuantity: 0, // 明细总数量
+      detailTotalAmount: '0.00', // 明细总金额
       // 主表数据
       mainTableData: [],
       mainTableLoading: false,
@@ -453,6 +535,8 @@ export default {
         SUPPLIER_NAME: '',
         MANUFACTURING_ENT_NAME: '',
         USE_APP_STATE: '',
+        OUT_TYPE: '',
+        IS_FOLLOW: '',
         ID: ''
       };
       this.dateRange = [];
@@ -472,6 +556,8 @@ export default {
         if (res.code === 200) {
           this.mainTableData = res.result || [];
           this.mainTablePage.total = res.total || 0;
+          // 计算总数量和总金额
+          this.calculateMainTotal();
         } else {
           this.$message.error(res.msg || '加载数据失败');
         }
@@ -500,6 +586,8 @@ export default {
         if (res.code === 200) {
           this.detailTableData = res.result || [];
           this.detailTablePage.total = res.total || 0;
+          // 计算明细总数量和总金额
+          this.calculateDetailTotal();
         } else {
           this.$message.error(res.msg || '加载明细数据失败');
         }
@@ -633,6 +721,52 @@ export default {
         return '否';
       }
       return cellValue || '';
+    },
+    // 计算主表总数量和总金额
+    calculateMainTotal() {
+      let quantity = 0;
+      let amount = 0;
+      this.mainTableData.forEach((item) => {
+        quantity += Number(item.GOODS_QTY || 0);
+        amount += Number(item.SUM_PRICE || 0);
+      });
+      this.totalQuantity = quantity;
+      this.totalAmount = amount.toFixed(2);
+    },
+    // 计算明细表总数量和总金额
+    calculateDetailTotal() {
+      // 注意：明细表可能需要根据实际字段调整
+      // 这里假设明细表也有数量和金额字段，如果没有则需要根据实际情况调整
+      this.detailTotalQuantity = this.detailTablePage.total || 0;
+      this.detailTotalAmount = '0.00';
+    },
+    // 导出主表
+    exportMainTable() {
+      if (!this.mainTableData || this.mainTableData.length === 0) {
+        this.$message.warning('暂无数据可导出');
+        return;
+      }
+      this.$refs.mainTable.exportData({
+        type: 'xlsx',
+        filename: '科室消耗汇总表',
+        sheetName: '汇总数据',
+        isHeader: true,
+        isFooter: false
+      });
+    },
+    // 导出明细表
+    exportDetailTable() {
+      if (!this.detailTableData || this.detailTableData.length === 0) {
+        this.$message.warning('暂无数据可导出');
+        return;
+      }
+      this.$refs.detailTable.exportData({
+        type: 'xlsx',
+        filename: '科室消耗明细表',
+        sheetName: '明细数据',
+        isHeader: true,
+        isFooter: false
+      });
     }
   },
   created() {
