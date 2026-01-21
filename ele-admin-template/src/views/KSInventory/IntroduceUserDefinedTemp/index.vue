@@ -338,7 +338,7 @@
           ? this.IntroduceUserDefinedTempSearch.PlanDept
           : this.$store.state.user.info.DeptNow.Dept_Two_Code;
         where.PlanNum = this.IntroduceUserDefinedTempSearch.PlanNum;
-        let data = SerachPlanList({ page, limit, where, order }).then((res) => {
+        let data = SerachPlanList({ page, limit, where, order, routePath: this.$route.path }).then((res) => {
           var tData = {
             count: res.total,
             list: res.result

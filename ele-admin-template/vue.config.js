@@ -99,13 +99,13 @@ const envConfig = {
     outputDir: 'jyk'
   },
   se2bb: {
-    target: 'http://10.173.128.80:18101/',
+    target: 'http://10.173.128.80:18101/sebb/',
     publicPath: '/jyknw/',
     outputDir: 'jyknw'
   },
   se2bbww: {
-    target: 'http://47.106.243.154:18101/',
-    publicPath: '/jyk/',
+    target: 'http://47.106.243.154:18101/sebb/',
+    publicPath: '/sebb/jyk/',
     outputDir: 'jyk'
   },
   dpyq: {

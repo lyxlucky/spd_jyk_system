@@ -283,8 +283,11 @@
             v-model="approveFormData.spRemark"
             type="textarea"
             :rows="3"
-            placeholder="请输入审批意见"
+            placeholder="请输入审批意见（拒绝时必填）"
           ></el-input>
+          <div style="color: #909399; font-size: 12px; margin-top: 4px;">
+            <i class="el-icon-info"></i> 选择"不通过"时必须填写拒绝原因
+          </div>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -1073,6 +1076,11 @@
         this.approveFormData = { id: null, spRemark: '' };
       },
       async handleApprove(approved) {
+        // 拒绝时必须填写审批意见
+        if (!approved && !this.approveFormData.spRemark.trim()) {
+          this.$message.warning('拒绝时必须填写拒绝原因');
+          return;
+        }
         this.approveLoading = true;
         try {
           const res = await approveMain({

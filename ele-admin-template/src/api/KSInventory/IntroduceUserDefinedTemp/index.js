@@ -11,7 +11,14 @@ export async function SerachPlanList(data) {
   data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
   data2.SPECIFICATION_OR_TYPE = data.where.spec ? data.where.spec : '';
   data2.MANUFACTURING_ENT_NAME = data.where.manufacturer ? data.where.manufacturer : '';
-  data2.varType = data.where.varType ? data.where.varType : '';
+  
+  // 根据路由动态设置varType
+  if (data.routePath && data.routePath.includes('/KSInventory/KSDepartmentalPlanScience')) {
+    data2.varType = '0'; // 强制设置为低值
+  } else {
+    data2.varType = data.where.varType ? data.where.varType : '';
+  }
+  
   data2.mlType = data.where.mlType ? data.where.mlType : '0';
   data2.PlanNum = data.where.PlanNum ? data.where.PlanNum : '';
 

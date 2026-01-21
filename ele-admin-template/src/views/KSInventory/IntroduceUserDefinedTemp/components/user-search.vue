@@ -37,13 +37,16 @@
 
     <el-form-item v-if="HOME_HP == 'bdrm'" label="">
       <el-select size="mini" v-model="where.varType">
-        <el-option label="全部" value="" />
-        <el-option label="高值" value="1" />
-        <el-option label="试剂" value="2" />
+        <el-option
+          v-for="item in varTypeOptions"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        />
       </el-select>
     </el-form-item>
 
-    <el-form-item label="">
+    <el-form-item v-if="HOME_HP == 'se2'" label="">
       <el-select size="mini" v-model="where.mlType">
         <el-option label="科室目录" value="0" />
         <el-option label="在用目录" value="1" />
@@ -166,6 +169,29 @@
       // 是否开启响应式布局
       styleResponsive() {
         return this.$store.state.theme.styleResponsive;
+      },
+      // 根据路由动态返回选项列表
+      varTypeOptions() {
+        const currentRoute = this.$route.path; // 获取当前路由路径
+        // 全部选项
+        const allOptions = [
+          { label: '全部', value: '' },
+          { label: '低值', value: '0' },
+          { label: '高值', value: '1' },
+          { label: '试剂', value: '2' }
+        ];
+        // 只有低值选项
+        const lowValueOptions = [
+          { label: '低值', value: '0' }
+        ];
+        
+        // 根据路由返回不同的选项（请根据实际路由路径修改判断条件）
+        // 示例：如果路由包含 'routeA'，返回全部选项；如果包含 'routeB'，只返回低值
+        if (currentRoute.includes('/KSInventory/KSDepartmentalPlanScience')) {
+          return lowValueOptions;
+        } else {
+          return allOptions;
+        }
       }
     },
     methods: {
@@ -176,6 +202,10 @@
       /*  重置 */
       reset() {
         this.where = { ...this.defaultWhere };
+        // 如果是特定路由，重置后仍然设置为低值
+        if (this.$route.path.includes('/KSInventory/KSDepartmentalPlanScience')) {
+          this.where.varType = '0';
+        }
         this.search();
       },
       addKSKS() {
@@ -199,6 +229,11 @@
       var day2 = date2.getDate();
       var now_time2 = year2 + '-' + month2 + '-' + day2;
       this.where.StartTime = now_time2;
+
+      // 如果是特定路由，设置默认varType为低值
+      if (this.$route.path.includes('/KSInventory/KSDepartmentalPlanScience')) {
+        this.where.varType = '0';
+      }
     }
   };
 </script>

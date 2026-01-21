@@ -346,14 +346,21 @@ export default {
         }
       }
 
-      // 审批意见
-      if (approver && approver.opinion) {
-        details.push('审批意见：' + approver.opinion);
-      }
-
       // 审批结果
       if (approver && approver.result) {
         details.push('审批结果：' + approver.result);
+      }
+
+      // 审批意见/拒绝原因（特别突出显示）
+      if (approver && approver.opinion) {
+        // 如果是拒绝，用红色标注
+        const isRejected = approver.result && 
+                          (approver.result.indexOf('拒绝') !== -1 || approver.result.indexOf('不') !== -1);
+        if (isRejected) {
+          details.push('<span style="color:#ff5722;font-weight:bold;">拒绝原因：' + approver.opinion + '</span>');
+        } else {
+          details.push('审批意见：' + approver.opinion);
+        }
       }
 
       // 审批耗时
@@ -443,6 +450,15 @@ export default {
       if (isNodeRejected) {
         // 显示拒绝状态
         html += '<div style="margin-bottom:5px; color:#ff5722;">已拒绝：' + rejectedNames.join('、') + '</div>';
+        
+        // 查找并显示拒绝原因
+        const rejectOpinions = approvers
+          .filter(a => a.opinion && a.result && (a.result.indexOf('拒绝') !== -1 || a.result.indexOf('不') !== -1))
+          .map(a => a.opinion);
+        if (rejectOpinions.length > 0) {
+          html += '<div style="margin-bottom:5px; color:#ff5722; font-weight:bold;">拒绝原因：' + rejectOpinions.join('；') + '</div>';
+        }
+        
         html += '<div style="color:#999; font-size:12px;">审批被拒绝，流程终止</div>';
       } else {
         // 显示正常状态
