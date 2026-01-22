@@ -98,25 +98,35 @@ const envConfig = {
     publicPath: '/jyk/',
     outputDir: 'jyk'
   },
-  se2bb: {
+  sebb: {
     target: 'http://10.173.128.80:18101/sebb/',
     publicPath: '/jyknw/',
     outputDir: 'jyknw'
   },
-  se2bbww: {
+  sebbww: {
     target: 'http://47.106.243.154:18101/sebb/',
     publicPath: '/sebb/jyk/',
     outputDir: 'jyk'
   },
-  dpyq: {
+  sedp: {
     target: 'http://10.173.128.80:18105/',
     publicPath: '/jyknw/',
     outputDir: 'jyknw'
   },
-  lhyq: {
+  sedpww: {
+    target: 'http://47.106.243.154:18101/sedp/',
+    publicPath: '/sedp/jyk/',
+    outputDir: 'jyk'
+  },
+  selh: {
     target: 'http://10.173.128.80:18103/',
     publicPath: '/jyknw/',
     outputDir: 'jyknw'
+  },
+  selhww: {
+    target: 'http://47.106.243.154:18101/selh/',
+    publicPath: '/selh/jyk/',
+    outputDir: 'jyk'
   },
   xhww: {
     target: 'http://47.106.243.154:891/',
@@ -138,14 +148,20 @@ module.exports = {
   outputDir: config.outputDir,
   productionSourceMap: false,
   transpileDependencies: ['element-ui', 'ele-admin', 'vue-i18n'],
-  configureWebpack: {
-    performance: {
+  configureWebpack: config => {
+    config.performance = {
       maxAssetSize: 2000000,
       maxEntrypointSize: 2000000
-    },
-    cache: {
-      type: 'filesystem',
-    },
+    }
+
+    if (process.env.NODE_ENV === 'development') {
+      // 仅开发环境：如遇到缓存问题，可设置为 false 关闭缓存
+      config.cache = {
+        type: 'filesystem',
+      }
+    } else {
+      config.cache = false
+    }
   },
   chainWebpack(config) {
     // set svg-sprite-loader
