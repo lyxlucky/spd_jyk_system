@@ -37,13 +37,15 @@ jobs:
 
       - name: Package dist
         run: |
+          VERSION=${GITHUB_REF_NAME#refs/tags/}
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
           if [ -d "jyk" ]; then
-            zip -r dist-${{ matrix.env }}.zip jyk
+            zip -r dist-${{ matrix.env }}-$VERSION.zip jyk
           elif [ -d "jyknw" ]; then
-            zip -r dist-${{ matrix.env }}.zip jyknw
+            zip -r dist-${{ matrix.env }}-$VERSION.zip jyknw
           fi
 
       - name: Upload to Release
         uses: softprops/action-gh-release@v1
         with:
-          files: ele-admin-template/dist-${{ matrix.env }}.zip
+          files: ele-admin-template/dist-${{ matrix.env }}-${{ env.VERSION }}.zip
