@@ -69,7 +69,7 @@
             <el-option label="消耗已确认" value="消耗已确认" />
           </el-select>
         </el-form-item>
-        <el-form-item label="提交HIS状态">
+        <el-form-item label="提交HIS状态" v-if="false">
           <el-select
             v-model="searchForm.SUBMIT_HIS_STATUS"
             placeholder="请选择提交HIS状态"
@@ -167,7 +167,7 @@
             style="width: 150px"
           />
         </el-form-item>
-        <el-form-item label="院内寄售耗材">
+        <el-form-item label="院内寄售耗材" v-if="false">
           <el-select
             v-model="searchForm.IS_HOSPITAL_CONSIGNMENT"
             placeholder="请选择"
@@ -248,7 +248,7 @@
           <el-button
             type="info"
             class="ele-btn-icon"
-            :disabled="!currentMainRow"
+            :disabled="!currentMainRow || (currentMainRow.IS_HIS_CREATE == 1)"
             @click="handleEditSurgery"
           >
             修改手术单
@@ -258,7 +258,7 @@
           <el-button
             type="danger"
             class="ele-btn-icon"
-            :disabled="!currentMainRow"
+            :disabled="!currentMainRow || (currentMainRow.IS_HIS_CREATE == 1)"
             @click="handleInvalidateSurgery"
           >
             手术单作废
@@ -351,7 +351,7 @@
             align="center"
           />
           <vxe-column field="GENDER" title="性别" width="80" align="center" />
-          <vxe-column field="AGE" title="年龄" width="120" align="left" />
+          <vxe-column field="AGE_STR" title="年龄" width="120" align="center" />
           <vxe-column
             field="DIAGNOSIS"
             title="诊断结果"
@@ -384,7 +384,7 @@
             align="center"
           />
           <vxe-column
-            field="SMART_CABINET"
+            field="SMART_CABINET1"
             title="智能柜"
             width="120"
             align="center"
@@ -561,7 +561,7 @@
       </div>
 
       <!-- 明细表2：领用未登记耗材 -->
-      <div >
+      <div v-if="false">
         <div style="margin-bottom: 10px; font-weight: bold; font-size: 14px">
           >>领用未登记耗材
         </div>
@@ -896,7 +896,8 @@ import {
   getAllSurgeryLocations,
   getAllApplyDepartments,
   getSurgeryList,
-  getSurgeryById
+  getSurgeryById,
+  addSurgeryConsumable
 } from '@/api/Settle/SurgeryOrderManagement';
 
 export default {
@@ -1507,12 +1508,20 @@ export default {
         this.$message.warning('请先选择手术单');
         return;
       }
+      if (this.currentMainRow.IS_HIS_CREATE == 1) {
+        this.$message.warning('HIS创建的手术单不允许修改');
+        return;
+      }
       this.openEditDialog();
     },
     // 手术单作废
     async handleInvalidateSurgery() {
       if (!this.currentMainRow) {
         this.$message.warning('请先选择手术单');
+        return;
+      }
+      if (this.currentMainRow.IS_HIS_CREATE == 1) {
+        this.$message.warning('HIS创建的手术单不允许作废');
         return;
       }
       this.$confirm('确认作废该手术单吗? 此操作不可恢复', '危险警告', {
@@ -1536,8 +1545,8 @@ export default {
         }
       }).catch(() => {});
     },
-    // 预留：登记消耗（定数标签）
-    handleRegisterConsume() {
+    // 登记消耗（定数标签）
+    async handleRegisterConsume() {
       if (!this.currentMainRow) {
         this.$message.warning('请先选择手术单');
         return;
@@ -1546,9 +1555,29 @@ export default {
         this.$message.warning('请输入定数标签');
         return;
       }
-      this.$message.info('TODO：登记消耗功能待实现');
-      // 预留：提交成功后可清空输入
-      // this.registerConsumeForm.LABEL = '';
+      // 只有系统创建的手术单才能手动登记消耗
+      // if (this.currentMainRow.IS_HIS_CREATE == 1) {
+      //   this.$message.warning('HIS创建的手术单不能手动登记消耗');
+      //   return;
+      // }
+
+      try {
+        const res = await addSurgeryConsumable({
+          SURGERY_ID: this.currentMainRow.ID,
+          SURGERY_NO: this.currentMainRow.SURGERY_NO,
+          BARCODE: this.registerConsumeForm.LABEL
+        });
+
+        if (res.code === 200) {
+          this.$message.success(res.msg || '登记成功');
+          this.registerConsumeForm.LABEL = ''; // 清空输入
+          this.loadRegisteredTableData(); // 刷新列表
+        } else {
+          this.$message.error(res.msg || '登记失败');
+        }
+      } catch (error) {
+        this.$message.error(error.message || '登记失败');
+      }
     },
     // 预留：打印消耗单
     handlePrintConsumeOrder() {
