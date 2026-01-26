@@ -301,7 +301,7 @@ export default {
   },
   computed: {
     isSzse() {
-      return this.$HOME_HP?.startsWith('szse');
+      return this.$HOME_HP?.startsWith('se2');
     }
   },
   watch: {

@@ -148,7 +148,7 @@
       },
       isSzse() {
         console.log(this.$HOME_HP);
-        return this.$HOME_HP?.startsWith('szse');
+        return this.$HOME_HP?.startsWith('se2');
       }
     },
     methods: {
