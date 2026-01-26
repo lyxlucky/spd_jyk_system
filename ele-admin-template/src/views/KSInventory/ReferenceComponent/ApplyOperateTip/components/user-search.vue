@@ -34,6 +34,7 @@
         range-separator="至"
         start-placeholder="收货开始日期"
         end-placeholder="收货结束日期"
+        clearable
       >
       </el-date-picker>
     </el-form-item>
@@ -44,6 +45,7 @@
         @change="search()"
         style="width: 120px"
         placeholder="收货状态"
+        clearable
       >
         <el-option label="收货状态" value="">全部</el-option>
         <el-option label="未收完" value="0"></el-option>
@@ -57,11 +59,10 @@
         @change="search()"
         style="width: 120px"
         placeholder="院区"
+        clearable
       >
         <el-option label="院区" value="">全部</el-option>
-        <el-option label="本部" value="1"></el-option>
-        <!-- <el-option label="通州院区" value="1"></el-option>
-        <el-option label="西直门院区" value="2"></el-option> -->
+        <el-option v-for="item in storageList" :key="item.ID" :label="item.NAME" :value="item.ID"></el-option>
       </el-select>
     </el-form-item>
     <el-form-item>
@@ -71,6 +72,7 @@
         @change="search()"
         style="width: 120px"
         placeholder="高低值属性"
+        clearable
       >
         <el-option label="高低值属性" value="">全部</el-option>
         <el-option label="低值" value="0"></el-option>
@@ -114,6 +116,8 @@
 </template>
 
 <script>
+  import {getSTORAGE} from "@/api/login";
+
   export default {
     data() {
       // 默认表单数据
@@ -131,7 +135,8 @@
       return {
         // 表单数据
         where: { ...defaultWhere },
-        defaultWhere
+        defaultWhere,
+        storageList: []
       };
     },
     computed: {
@@ -179,6 +184,13 @@
       this.where.PLAN_TIME_START = startStr;
       this.where.PLAN_TIME_END = endStr;
       // 在 created 阶段仅初始化数据，不触发查询
+
+      getSTORAGE().then(res => {
+        if (res && res.result) {
+          this.storageList = res.result;
+        }
+      });
+
     }
     ,
     mounted() {

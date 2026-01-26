@@ -145,6 +145,10 @@
       },
       isBDRM() {
         return this.$HOME_HP == 'bdrm';
+      },
+      isSzse() {
+        console.log(this.$HOME_HP);
+        return this.$HOME_HP?.startsWith('szse');
       }
     },
     methods: {
@@ -166,7 +170,7 @@
       },
       /* 创建申领单 */
       CreatApplicationForm() {
-        if (this.isBDRM) {
+        if (this.isBDRM || this.isSzse) {
           // 如果是bdrm环境，显示项目类型选择对话框
           this.showProjectTypeDialog = true;
         } else {

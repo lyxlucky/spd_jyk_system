@@ -8,7 +8,7 @@
     @close="handleClose"
   >
     <el-form ref="form" :model="form" :rules="rules" label-width="100px">
-      <el-form-item label="项目类型" prop="projectType">
+      <el-form-item label="项目类型" prop="projectType" v-if="!isSzse">
         <el-select
           v-model="form.projectType"
           placeholder="请选择项目类型"
@@ -66,7 +66,7 @@
           v-model="form.region"
           placeholder="请选择库区"
           style="width: 100%"
-          
+
           :loading="regionLoading"
           :disabled="!regions.length"
         >
@@ -298,6 +298,11 @@ export default {
   },
   mounted() {
     this.fetchRegions();
+  },
+  computed: {
+    isSzse() {
+      return this.$HOME_HP?.startsWith('szse');
+    }
   },
   watch: {
     visible(newVal) {
