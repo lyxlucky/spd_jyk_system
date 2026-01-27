@@ -314,6 +314,15 @@
             </el-row>
           </div>
           <el-button
+            type="success"
+            icon="el-icon-check"
+            size="small"
+            :disabled="detailTableSelection.length === 0"
+            @click="confirmDetailUse"
+          >
+            确认使用
+          </el-button>
+          <el-button
             type="warning"
             icon="el-icon-download"
             size="small"
@@ -330,7 +339,11 @@
           stripe
           size="mini"
           height="400"
+          :checkbox-config="{ highlight: true }"
+          @checkbox-change="onDetailTableCheckboxChange"
+          @checkbox-all="onDetailTableCheckboxAll"
         >
+          <vxe-column type="checkbox" width="50" align="center" />
           <vxe-column type="seq" title="序号" width="60" align="center" />
           <vxe-column
             field="DEF_NO_PKG_CODE"
@@ -504,7 +517,8 @@ export default {
         page: 1,
         size: 20,
         total: 0
-      }
+      },
+      detailTableSelection: [] // 明细表选中数据
     };
   },
   methods: {
@@ -572,6 +586,7 @@ export default {
       if (!this.currentMainRow || !this.currentMainRow.ID) {
         this.detailTableData = [];
         this.detailTablePage.total = 0;
+        this.detailTableSelection = [];
         return;
       }
       this.detailTableLoading = true;
@@ -586,6 +601,7 @@ export default {
         if (res.code === 200) {
           this.detailTableData = res.result || [];
           this.detailTablePage.total = res.total || 0;
+          this.detailTableSelection = [];
           // 计算明细总数量和总金额
           this.calculateDetailTotal();
         } else {
@@ -682,6 +698,59 @@ export default {
           }
         })
         .catch(() => {});
+    },
+    // 确认使用明细表数据
+    async confirmDetailUse() {
+      if (this.detailTableSelection.length === 0) {
+        this.$message.warning('请选择要确认的数据');
+        return;
+      }
+      this.$confirm('确定要确认使用明细表中的数据吗？', '提示', {
+        type: 'warning'
+      })
+        .then(async () => {
+          const loading = this.$messageLoading('处理中...');
+          try {
+            // 构建请求数据，使用明细表勾选的数据
+            const SzseSpUseHzInfoList = this.detailTableSelection.map((item) => {
+              return {
+                ...item,
+                Token: sessionStorage.getItem(TOKEN_STORE_NAME) || '',
+                state: '1', // 确认状态
+                mark: '' // 备注
+              };
+            });
+            const res = await appSzseUseInfo({
+              SzseSpUseHzInfoList: SzseSpUseHzInfoList,
+              state: '1',
+              mark: ''
+            });
+            loading.close();
+            if (res.code === 200) {
+              this.$message.success(res.msg || '确认成功');
+              this.detailTableSelection = [];
+              // 重新加载主表和明细表数据
+              this.loadMainTableData();
+              if (this.currentMainRow) {
+                this.loadDetailTableData();
+              }
+            } else {
+              this.$message.error(res.msg || '确认失败');
+            }
+          } catch (error) {
+            loading.close();
+            this.$message.error(error.message || '确认失败');
+          }
+        })
+        .catch(() => {});
+    },
+    // 明细表复选框变化
+    onDetailTableCheckboxChange({ records }) {
+      this.detailTableSelection = records;
+    },
+    // 明细表全选变化
+    onDetailTableCheckboxAll({ records }) {
+      this.detailTableSelection = records;
     },
     // 格式化价格
     formatPrice({ cellValue }) {
