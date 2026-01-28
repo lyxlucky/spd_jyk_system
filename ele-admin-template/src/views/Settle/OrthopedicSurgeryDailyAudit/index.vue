@@ -33,10 +33,12 @@
             clearable
             style="width: 150px"
           >
-            <el-option label="待审核" value="0" />
-            <el-option label="已审核" value="1" />
-            <el-option label="已驳回" value="2" />
-            <!-- TODO: 根据实际业务添加更多状态 -->
+            <el-option
+              v-for="(label, value) in surgeryStatusDict"
+              :key="value"
+              :label="label"
+              :value="value"
+            />
           </el-select>
         </el-form-item>
         <el-form-item label="消耗状态">
@@ -82,6 +84,14 @@
           <el-input
             v-model="searchForm.PATIENT_NAME"
             placeholder="请输入病人姓名"
+            clearable
+            style="width: 200px"
+          />
+        </el-form-item>
+        <el-form-item label="手术单号">
+          <el-input
+            v-model="searchForm.SURGERY_NO"
+            placeholder="请输入手术单号"
             clearable
             style="width: 200px"
           />
@@ -207,10 +217,10 @@
           <el-button
             type="primary"
             class="ele-btn-icon"
-            :disabled="!currentMainRow"
+            :disabled="selectedMainRows.length === 0"
             @click="handleApproveConsume"
           >
-            手术消耗审批
+            手术消耗审批{{ selectedMainRows.length > 0 ? `(${selectedMainRows.length})` : '' }}
           </el-button>
         </el-form-item>
         <el-form-item v-if="false">
@@ -227,10 +237,10 @@
           <el-button
             type="warning"
             class="ele-btn-icon"
-            :disabled="!currentMainRow"
+            :disabled="selectedMainRows.length === 0"
             @click="handleAuditBatchValidity"
           >
-            批号效期审核
+            批号效期审核{{ selectedMainRows.length > 0 ? `(${selectedMainRows.length})` : '' }}
           </el-button>
         </el-form-item>
         <el-form-item v-if="false">
@@ -243,7 +253,7 @@
             确认使用
           </el-button>
         </el-form-item>
-        <el-form-item>
+        <el-form-item v-if="false">
           <el-button
             type="danger"
             class="ele-btn-icon"
@@ -269,7 +279,10 @@
           resizable
           @current-change="onMainTableCurrentChange"
           @row-click="onMainTableRowClick"
+          @checkbox-change="onMainTableCheckboxChange"
+          @checkbox-all="onMainTableCheckboxAll"
         >
+          <vxe-column type="checkbox" width="60" align="center" />
           <vxe-column type="seq" title="序号" width="60" align="center" />
           <vxe-column
             field="SURGERY_NO"
@@ -290,7 +303,7 @@
             align="center"
           />
           <vxe-column
-            field="AGE"
+            field="AGE_STR"
             title="年龄"
             width="80"
             align="center"
@@ -321,7 +334,7 @@
             show-overflow
           />
           <vxe-column
-            field="SURGERY_DATE"
+            field="ACTUAL_SURGERY_DATE"
             title="手术日期"
             width="155"
             align="center"
@@ -448,13 +461,13 @@
           />
           <vxe-column
             field="MEDICAL_INSURANCE_PRICE_CODE"
-            title="医保物价码"
+            title="医保编码"
             min-width="150"
             show-overflow
           />
           <vxe-column
             field="DEPT_CONFIRM"
-            title="科室确认"
+            title="科室确认状态"
             width="120"
             align="center"
             :formatter="formatDeptConfirm"
@@ -478,16 +491,54 @@
             show-overflow
           />
           <vxe-column
+            field="SPECIFICATION_OR_TYPE"
+            title="规格型号"
+            min-width="120"
+            show-overflow
+          />
+          <vxe-column
             field="APPROVAL_NUMBER"
             title="注册证号"
+            min-width="180"
+            show-overflow
+          />
+          <vxe-column
+            field="BATCH_NO"
+            title="批号"
+            min-width="120"
+            show-overflow
+          />
+          <vxe-column
+            field="VALIDITY_DATE"
+            title="效期"
+            width="120"
+            align="center"
+            :formatter="formatValidityDate"
+          />
+          <vxe-column
+            field="BARCODE"
+            title="标签条码"
+            min-width="180"
+            show-overflow
+          />
+          <vxe-column
+            field="NUM"
+            title="数量"
+            width="80"
+            align="center"
+          />
+          <vxe-column
+            field="MANUFACTURER"
+            title="生产厂家"
             min-width="150"
             show-overflow
           />
           <vxe-column
-            field="MODIFY_BEFORE_NOTE"
-            title="修改前注"
-            min-width="150"
-            show-overflow
+            field="CREATE_TIME"
+            title="登记时间"
+            width="160"
+            align="center"
+            :formatter="formatDate"
           />
         </vxe-table>
         <!-- 明细表分页 -->
@@ -552,10 +603,19 @@
         </template>
 
         <template v-else-if="actionDialogType === 'editBatchValidity'">
+          <el-form-item label="品种编码">
+            <el-input :value="currentDetailRow && currentDetailRow.VARIETIE_CODE_NEW" disabled />
+          </el-form-item>
+          <el-form-item label="品种名称">
+            <el-input :value="currentDetailRow && currentDetailRow.VARIETIE_NAME" disabled />
+          </el-form-item>
+          <el-form-item label="标签条码">
+            <el-input :value="currentDetailRow && currentDetailRow.BARCODE" disabled />
+          </el-form-item>
           <el-form-item label="批号">
             <el-input
               v-model="actionDialogForm.batchNo"
-              placeholder="示例：从明细行带出批号"
+              placeholder="请输入批号"
               maxlength="50"
             />
           </el-form-item>
@@ -566,16 +626,6 @@
               placeholder="选择效期日期"
               value-format="yyyy-MM-dd"
               style="width: 100%"
-            />
-          </el-form-item>
-          <el-form-item label="备注">
-            <el-input
-              v-model="actionDialogForm.remark"
-              type="textarea"
-              :rows="2"
-              placeholder="此弹窗仅用于交互演示"
-              maxlength="200"
-              show-word-limit
             />
           </el-form-item>
         </template>
@@ -591,14 +641,26 @@
 
 <script>
 import {
-  getOrthopedicSurgeryHzInfo,
-  getOrthopedicSurgeryDelInfo
+  getSurgeryList,
+  getOrthopedicSurgeryDelInfo,
+  getAllApplyDepartments,
+  updateBatchValidity,
+  auditBatchValidity,
+  approveConsume
 } from '@/api/Settle/OrthopedicSurgeryDailyAudit';
 
 export default {
   name: 'OrthopedicSurgeryDailyAudit',
   data() {
     return {
+      // 手术状态字典
+      surgeryStatusDict: {
+        '1': '未开始',
+        '2': '进行中',
+        '3': '已完成',
+        '4': '已暂停',
+        '5': '已作废'
+      },
       // 搜索表单
       searchForm: {
         APPLY_DEPT: '',
@@ -607,6 +669,7 @@ export default {
         IS_HIS_CHARGE_CONSISTENT: '',
         ZX_DEPT: '',
         PATIENT_NAME: '',
+        SURGERY_NO: '',
         HOSPITALIZATION_NUMBER: '',
         SUBMIT_HIS_STATUS: '',
         IS_ORTHOPEDIC_SURGERY: '',
@@ -637,6 +700,7 @@ export default {
         total: 0
       },
       currentMainRow: null, // 当前选中的主表行
+      selectedMainRows: [], // 选中的主表行（多选）
       // 明细表数据
       detailTableData: [],
       detailTableLoading: false,
@@ -646,6 +710,7 @@ export default {
         total: 0
       },
       currentDetailRow: null, // 当前选中的明细行
+      tempSurgeryNos: [], // 临时保存要审批的手术单号列表
       actionDialogVisible: false,
       actionDialogTitle: '',
       actionDialogType: '',
@@ -703,6 +768,7 @@ export default {
         IS_HIS_CHARGE_CONSISTENT: '',
         ZX_DEPT: '',
         PATIENT_NAME: '',
+        SURGERY_NO: '',
         HOSPITALIZATION_NUMBER: '',
         SUBMIT_HIS_STATUS: '',
         IS_ORTHOPEDIC_SURGERY: '',
@@ -768,10 +834,17 @@ export default {
           page: this.mainTablePage.page,
           size: this.mainTablePage.size
         };
-        const res = await getOrthopedicSurgeryHzInfo(params);
+        const res = await getSurgeryList(params);
         if (res.code === 200) {
           this.mainTableData = res.result || [];
           this.mainTablePage.total = res.total || 0;
+          // 清空选中状态
+          this.selectedMainRows = [];
+          this.$nextTick(() => {
+            if (this.$refs.mainTable) {
+              this.$refs.mainTable.clearCheckboxRow();
+            }
+          });
         } else {
           this.$message.error(res.msg || '加载数据失败');
         }
@@ -783,7 +856,7 @@ export default {
     },
     // 加载明细表数据
     async loadDetailTableData() {
-      if (!this.currentMainRow || !this.currentMainRow.ID) {
+      if (!this.currentMainRow || !this.currentMainRow.SURGERY_NO) {
         this.detailTableData = [];
         this.detailTablePage.total = 0;
         this.currentDetailRow = null;
@@ -792,8 +865,7 @@ export default {
       this.detailTableLoading = true;
       try {
         const params = {
-          ...this.searchForm,
-          ID: this.currentMainRow.ID,
+          SURGERY_NO: this.currentMainRow.SURGERY_NO,
           page: this.detailTablePage.page,
           size: this.detailTablePage.size
         };
@@ -827,19 +899,23 @@ export default {
       }
       return cellValue || '';
     },
-    // 格式化科室确认
+    // 格式化科室确认状态（0未确认使用 1确认使用 2使用异常）
     formatDeptConfirm({ cellValue }) {
       if (cellValue === '1' || cellValue === 1) {
-        return '已确认';
+        return '确认使用';
       } else if (cellValue === '0' || cellValue === 0) {
         return '未确认';
+      } else if (cellValue === '2' || cellValue === 2) {
+        return '使用异常';
       }
       return cellValue || '';
     },
     // 格式化手术单状态
     formatSurgeryStatus({ cellValue }) {
-      // TODO: 根据实际业务逻辑格式化状态
-      return cellValue || '';
+      if (!cellValue) {
+        return '';
+      }
+      return this.surgeryStatusDict[String(cellValue)] || cellValue;
     },
     // 格式化消耗状态
     formatConsumeStatus({ cellValue }) {
@@ -908,6 +984,22 @@ export default {
       }
       return cellValue || '';
     },
+    // 格式化植入类耗材
+    formatIsImplant({ cellValue }) {
+      if (cellValue === '1' || cellValue === 1) {
+        return '是';
+      } else if (cellValue === '0' || cellValue === 0) {
+        return '否';
+      }
+      return cellValue || '';
+    },
+    // 格式化效期
+    formatValidityDate({ cellValue }) {
+      if (!cellValue) {
+        return '';
+      }
+      return this.$moment(cellValue).format('YYYY-MM-DD');
+    },
     // 明细表当前行变化
     onDetailTableCurrentChange({ row }) {
       this.currentDetailRow = row;
@@ -922,6 +1014,32 @@ export default {
         }
       });
     },
+    // 主表 checkbox 变化
+    onMainTableCheckboxChange({ row, checked }) {
+      if (checked) {
+        if (!this.selectedMainRows.find(item => item.ID === row.ID)) {
+          this.selectedMainRows.push(row);
+        }
+      } else {
+        const index = this.selectedMainRows.findIndex(item => item.ID === row.ID);
+        if (index > -1) {
+          this.selectedMainRows.splice(index, 1);
+        }
+      }
+    },
+    // 主表全选/取消全选
+    onMainTableCheckboxAll({ checked, records }) {
+      if (checked) {
+        records.forEach(row => {
+          if (!this.selectedMainRows.find(item => item.ID === row.ID)) {
+            this.selectedMainRows.push(row);
+          }
+        });
+      } else {
+        const selectedIds = records.map(row => row.ID);
+        this.selectedMainRows = this.selectedMainRows.filter(row => !selectedIds.includes(row.ID));
+      }
+    },
     // 预留：确认使用
     handleConfirmUse() {
       if (!this.currentMainRow) {
@@ -930,12 +1048,23 @@ export default {
       }
       this.$message.info('TODO：确认使用功能待实现');
     },
-    // 预留：手术消耗审批
+    // 手术消耗审批（支持批量）
     handleApproveConsume() {
-      if (!this.currentMainRow) {
+      // 获取要审批的手术单号列表
+      let surgeryNos = [];
+      if (this.selectedMainRows.length > 0) {
+        surgeryNos = this.selectedMainRows.map(row => row.SURGERY_NO).filter(no => no);
+      } else if (this.currentMainRow && this.currentMainRow.SURGERY_NO) {
+        surgeryNos = [this.currentMainRow.SURGERY_NO];
+      }
+
+      if (surgeryNos.length === 0) {
         this.$message.warning('请先选择手术单');
         return;
       }
+
+      // 保存到临时变量，供弹窗使用
+      this.tempSurgeryNos = surgeryNos;
       this.openActionDialog('approveConsume');
     },
     // 预留：打印消耗单
@@ -946,13 +1075,37 @@ export default {
       }
       this.$message.info('TODO：打印消耗单功能待实现');
     },
-    // 预留：审核批号效期
-    handleAuditBatchValidity() {
-      if (!this.currentMainRow) {
+    // 审核批号效期（支持批量，直接审核，不需要弹窗）
+    async handleAuditBatchValidity() {
+      // 获取要审核的手术单号列表
+      let surgeryNos = [];
+      if (this.selectedMainRows.length > 0) {
+        surgeryNos = this.selectedMainRows.map(row => row.SURGERY_NO).filter(no => no);
+      } else if (this.currentMainRow && this.currentMainRow.SURGERY_NO) {
+        surgeryNos = [this.currentMainRow.SURGERY_NO];
+      }
+
+      if (surgeryNos.length === 0) {
         this.$message.warning('请先选择手术单');
         return;
       }
-      this.openActionDialog('auditBatchValidity');
+
+      try {
+        const params = {
+          SURGERY_NOS: surgeryNos
+        };
+        const res = await auditBatchValidity(params);
+        this.$message.success(res.msg || `批号效期审核成功（${surgeryNos.length}条）`);
+        // 清空选中
+        this.selectedMainRows = [];
+        if (this.$refs.mainTable) {
+          this.$refs.mainTable.clearCheckboxRow();
+        }
+        // 刷新主表数据
+        this.loadMainTableData();
+      } catch (error) {
+        this.$message.error(error.message || '批号效期审核失败');
+      }
     },
     // 预留：修改批号效期（选中）
     handleEditBatchValidity() {
@@ -970,7 +1123,7 @@ export default {
       }
       this.openActionDialog('cancelSurgeryApproval');
     },
-    // 打开模拟弹窗
+    // 打开弹窗
     openActionDialog(type) {
       this.actionDialogType = type;
       this.actionDialogVisible = true;
@@ -978,25 +1131,89 @@ export default {
         decision: 'pass',
         reason: '',
         batchNo: (this.currentDetailRow && this.currentDetailRow.BATCH_NO) || '',
-        validity: '',
+        validity: (this.currentDetailRow && this.currentDetailRow.VALIDITY_DATE) ? this.$moment(this.currentDetailRow.VALIDITY_DATE).format('YYYY-MM-DD') : '',
         remark: ''
       };
 
       const titles = {
-        approveConsume: '手术消耗审批',
+        approveConsume: this.tempSurgeryNos.length > 1 ? `手术消耗审批（批量 ${this.tempSurgeryNos.length}条）` : '手术消耗审批',
         auditBatchValidity: '批号效期审核',
         cancelSurgeryApproval: '取消手术审批',
         editBatchValidity: '修改批号效期'
       };
       this.actionDialogTitle = titles[type] || '操作预览';
     },
-    // 模拟提交
-    confirmActionDialog() {
-      this.$message.success('已模拟提交，未调用后台接口');
-      this.actionDialogVisible = false;
+    // 提交操作
+    async confirmActionDialog() {
+      if (this.actionDialogType === 'editBatchValidity') {
+        // 修改批号效期
+        if (!this.currentDetailRow || !this.currentDetailRow.ID) {
+          this.$message.warning('请先选择要修改的记录');
+          return;
+        }
+        try {
+          const params = {
+            ID: this.currentDetailRow.ID,
+            BATCH_NO: this.actionDialogForm.batchNo,
+            VALIDITY_DATE: this.actionDialogForm.validity
+          };
+          await updateBatchValidity(params);
+          this.$message.success('修改批号效期成功');
+          this.actionDialogVisible = false;
+          // 刷新明细表数据
+          this.loadDetailTableData();
+        } catch (error) {
+          this.$message.error(error.message || '修改批号效期失败');
+        }
+      } else if (this.actionDialogType === 'approveConsume') {
+        // 手术消耗审批
+        if (this.tempSurgeryNos.length === 0) {
+          this.$message.warning('请先选择手术单');
+          return;
+        }
+        try {
+          const params = {
+            SURGERY_NOS: this.tempSurgeryNos,
+            DECISION: this.actionDialogForm.decision
+          };
+          const res = await approveConsume(params);
+          this.$message.success(res.msg || `手术消耗审批成功（${this.tempSurgeryNos.length}条）`);
+          this.actionDialogVisible = false;
+          // 清空选中
+          this.selectedMainRows = [];
+          this.tempSurgeryNos = [];
+          if (this.$refs.mainTable) {
+            this.$refs.mainTable.clearCheckboxRow();
+          }
+          // 刷新主表和明细表数据
+          this.loadMainTableData();
+          this.loadDetailTableData();
+        } catch (error) {
+          this.$message.error(error.message || '手术消耗审批失败');
+        }
+      } else {
+        // 其他操作暂时模拟
+        this.$message.success('已模拟提交，未调用后台接口');
+        this.actionDialogVisible = false;
+      }
+    },
+    // 加载科室列表
+    async loadDeptOptions() {
+      try {
+        const res = await getAllApplyDepartments();
+        if (res.code === 200 && res.result) {
+          this.deptOptions = res.result.map(item => ({
+            value: item.APPLY_DEPT_NAME,
+            label: item.APPLY_DEPT_NAME
+          }));
+        }
+      } catch (error) {
+        console.error('加载科室列表失败', error);
+      }
     }
   },
   created() {
+    this.loadDeptOptions();
     this.loadMainTableData();
   }
 };

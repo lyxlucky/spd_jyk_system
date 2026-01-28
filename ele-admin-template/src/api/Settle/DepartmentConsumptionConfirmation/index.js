@@ -1,6 +1,7 @@
 import request from '@/utils/request';
 import { TOKEN_STORE_NAME } from '@/config/setting';
 import { formdataify } from '@/utils/formdataify';
+import store from "@/store";
 
 /**
  * 科室消耗确认 - 获取汇总信息
@@ -16,6 +17,7 @@ export async function getSzseSpUseHzInfo(data) {
     OPEARTION_CHARGING_TIME_END: data.OPEARTION_CHARGING_TIME_END || '',
     ZX_DEPT: data.ZX_DEPT || '',
     DEPT_TWO_NAME: data.DEPT_TWO_NAME || '',
+    DEPT_TWO_CODE: store.state.user.info?.DeptNow?.Dept_Two_Code || '',
     SPECIFICATION_OR_TYPE: data.SPECIFICATION_OR_TYPE || '',
     VARIETIE_NAME: data.VARIETIE_NAME || '',
     VARIETIE_CODE_NEW: data.VARIETIE_CODE_NEW || '',
@@ -30,7 +32,7 @@ export async function getSzseSpUseHzInfo(data) {
 
 //   const formData = formdataify(formatData);
   const res = await request.post('/DeptConsume/getSzseSpUseHzInfo', formatData);
-  
+
   if (res.data.code == 200) {
     return res.data;
   } else {
@@ -66,7 +68,7 @@ export async function getSzseSpUseDelInfo(data) {
 
 //   const formData = formdataify(formatData);
   const res = await request.post('/DeptConsume/getSzseSpUseDelInfo', formatData);
-  
+
   if (res.data.code == 200) {
     return res.data;
   } else {
@@ -89,7 +91,7 @@ export async function appSzseUseInfo(data) {
 
   // 对于包含数组的复杂对象，直接发送JSON对象
   const res = await request.post('/DeptConsume/appSzseUseInfo', formatData);
-  
+
   if (res.data.code == 200) {
     return res.data;
   } else {

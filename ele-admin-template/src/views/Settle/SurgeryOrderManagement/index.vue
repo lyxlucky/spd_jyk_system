@@ -81,7 +81,7 @@
             <el-option label="已提交" value="已提交" />
           </el-select>
         </el-form-item>
-        <el-form-item label="是否上传消耗单">
+        <el-form-item label="是否上传消耗单" v-if="false">
           <el-select
             v-model="searchForm.IS_UPLOAD_CONSUME"
             placeholder="请选择"
@@ -109,15 +109,15 @@
             style="width: 150px"
           />
         </el-form-item>
-        <el-form-item label="患者住院号码">
+        <el-form-item label="患者住院号">
           <el-input
             v-model="searchForm.HOSPITALIZATION_NUMBER"
-            placeholder="请输入患者住院号码"
+            placeholder="请输入患者住院号"
             clearable
             style="width: 150px"
           />
         </el-form-item>
-        <el-form-item label="手术计划">
+        <el-form-item label="手术计划" >
           <el-date-picker
             v-model="surgeryPlanDateRange"
             type="daterange"
@@ -340,7 +340,7 @@
           />
           <vxe-column
             field="HOSPITALIZATION_NUMBER"
-            title="住院号"
+            title="患者住院号"
             min-width="120"
             show-overflow
           />
@@ -384,6 +384,7 @@
             align="center"
           />
           <vxe-column
+            v-if="false"
             field="SMART_CABINET1"
             title="智能柜"
             width="120"
@@ -394,6 +395,14 @@
             title="申请科室"
             min-width="120"
             show-overflow
+            align="center"
+          />
+          <vxe-column
+            field="PLAN_SURGERY_DATE"
+            title="计划手术日期"
+            width="180"
+            align="center"
+            :formatter="formatDateTime"
           />
           <vxe-column
             field="ACTUAL_SURGERY_DATE"
@@ -410,17 +419,28 @@
             :formatter="formatPrice"
           />
           <vxe-column
-            field="CONSUME_STATUS"
-            title="消耗状态"
+            field="IS_CONSUME"
+            title="是否确认消耗"
             width="120"
             align="center"
-          />
+          >
+            <template v-slot="{ row }">
+              <el-tag v-if="row.IS_CONSUME == 1" type="success">是</el-tag>
+              <el-tag v-else-if="row.IS_CONSUME == 0" type="danger">否</el-tag>
+              <el-tag v-else type="warning">未知</el-tag>
+            </template>
+          </vxe-column>
           <vxe-column
             field="CHARGE_STATUS"
             title="收费状态"
             width="120"
             align="center"
-          />
+          >
+            <template v-slot="{ row }">
+              <el-tag v-if="row.CHARGE_STATUS == 1" type="success">是</el-tag>
+              <el-tag v-else type="danger">否</el-tag>
+            </template>
+        </vxe-column>
         </vxe-table>
         <!-- 主表分页 -->
         <vxe-pager
@@ -498,10 +518,15 @@
           />
           <vxe-column
             field="IS_IMPLANT"
-            title="植入类耗材"
+            title="是否植入类耗材"
             width="120"
             align="center"
-          />
+          >
+            <template v-slot="{ row }">
+              <el-tag v-if="row.IS_IMPLANT == 1" type="success">是</el-tag>
+              <el-tag v-else type="danger">否</el-tag>
+            </template>
+          </vxe-column>
           <vxe-column
             field="VARIETIE_NAME"
             title="品种名称"
@@ -539,6 +564,30 @@
             min-width="150"
             show-overflow
           />
+          <vxe-column field="IS_CONSUME" title="是否确认消耗" width="120" align="center">
+            <template v-slot="{ row }">
+              <el-tag v-if="row.IS_CONSUME == 1" type="success">是</el-tag>
+              <el-tag v-else-if="row.IS_CONSUME == 0" type="danger">否</el-tag>
+              <el-tag v-else type="warning">未知</el-tag>
+            </template>
+          </vxe-column>
+          <vxe-column
+            title="操作"
+            width="100"
+            align="center"
+            fixed="right"
+          >
+            <template v-slot="{ row }">
+              <el-button
+                type="danger"
+                size="mini"
+                :disabled="!currentMainRow || (currentMainRow.CONSUME_STATUS == 1)"
+                @click="handleDeleteConsumable(row)"
+              >
+                删除
+              </el-button>
+            </template>
+          </vxe-column>
         </vxe-table>
         <!-- 明细表1分页 -->
         <vxe-pager
@@ -897,8 +946,13 @@ import {
   getAllApplyDepartments,
   getSurgeryList,
   getSurgeryById,
-  addSurgeryConsumable
+  addSurgeryConsumable,
+  uploadImplantForm,
+  getImplantForm,
+  confirmConsumption,
+  deleteSurgeryConsumable
 } from '@/api/Settle/SurgeryOrderManagement';
+import { BACK_BASE_URL } from '@/config/setting';
 
 export default {
   name: 'SurgeryOrderManagement',
@@ -923,7 +977,10 @@ export default {
         HOSPITALIZATION_NUMBER: '',
         ACTUAL_SURGERY_DATE_START: '',
         ACTUAL_SURGERY_DATE_END: '',
-        CHIEF_SURGEON: ''
+        CHIEF_SURGEON: '',
+        IS_UPLOAD_IMPLANT: '',
+        IS_FOLLOW_STAGE: '',
+        CREATOR: '',
       },
       // 日期范围
       surgeryPlanDateRange: [],
@@ -1040,7 +1097,7 @@ export default {
         if (deptRes.code === 200 && deptRes.result) {
           this.deptOptions = deptRes.result.map(item => ({
             label: item.APPLY_DEPT_NAME,
-            value: item.APPLY_DEPT_NAME
+            value: item.APPLY_DEPT_CODE,
           }));
         }
       } catch (error) {
@@ -1075,7 +1132,10 @@ export default {
         HOSPITALIZATION_NUMBER: '',
         ACTUAL_SURGERY_DATE_START: '',
         ACTUAL_SURGERY_DATE_END: '',
-        CHIEF_SURGEON: ''
+        CHIEF_SURGEON: '',
+        IS_UPLOAD_IMPLANT: '',
+        IS_FOLLOW_STAGE: '',
+        CREATOR: '',
       };
       this.surgeryPlanDateRange = [];
       this.surgeryTimeDateRange = [];
@@ -1088,6 +1148,7 @@ export default {
       try {
         const params = {
           ...this.searchForm,
+          CREATE_MAN: this.searchForm.CREATOR, // 映射创建人字段
           page: this.mainTablePage.page,
           size: this.mainTablePage.size
         };
@@ -1453,20 +1514,25 @@ export default {
         this.$message.warning('请先选择手术单');
         return;
       }
-      this.$confirm('确认消耗吗?', '提示', {
+      // 只有系统创建的手术单才能确认消耗
+      if (this.currentMainRow.IS_HIS_CREATE == 1) {
+        this.$message.warning('HIS创建的手术单不能确认消耗');
+        return;
+      }
+      this.$confirm('确认消耗吗?确认后将更新手术单和耗材明细的消耗状态', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(async () => {
         try {
-          // TODO: 这里可能需要修改为CONSUME_STATUS字段而非SURGERY_STATUS
-          const res = await updateSurgeryStatus({
-            ID: this.currentMainRow.ID,
-            SURGERY_STATUS: 3 // 暂时保持原逻辑
+          const res = await confirmConsumption({
+            SURGERY_ID: this.currentMainRow.ID,
+            SURGERY_NO: this.currentMainRow.SURGERY_NO
           });
           if (res.code === 200) {
-            this.$message.success('消耗确认成功');
+            this.$message.success(res.msg || '消耗确认成功');
             this.loadMainTableData();
+            this.loadRegisteredTableData();
           } else {
             this.$message.error(res.msg || '操作失败');
           }
@@ -1556,10 +1622,15 @@ export default {
         return;
       }
       // 只有系统创建的手术单才能手动登记消耗
-      // if (this.currentMainRow.IS_HIS_CREATE == 1) {
-      //   this.$message.warning('HIS创建的手术单不能手动登记消耗');
-      //   return;
-      // }
+      if (this.currentMainRow.IS_HIS_CREATE == 1) {
+        this.$message.warning('HIS创建的手术单不能手动登记消耗');
+        return;
+      }
+      // 检查手术单是否已确认消耗
+      if (this.currentMainRow.CONSUME_STATUS == 1) {
+        this.$message.warning('手术单已确认消耗，不允许登记');
+        return;
+      }
 
       try {
         const res = await addSurgeryConsumable({
@@ -1578,6 +1649,42 @@ export default {
       } catch (error) {
         this.$message.error(error.message || '登记失败');
       }
+    },
+    // 删除已登记的耗材
+    async handleDeleteConsumable(row) {
+      if (!row || !row.ID) {
+        this.$message.warning('请选择要删除的耗材');
+        return;
+      }
+      if (!this.currentMainRow) {
+        this.$message.warning('请先选择手术单');
+        return;
+      }
+      // 检查手术单是否已确认消耗
+      if (this.currentMainRow.CONSUME_STATUS == 1) {
+        this.$message.warning('手术单已确认消耗，不允许删除');
+        return;
+      }
+
+      this.$confirm('确认删除该耗材吗?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async () => {
+        try {
+          const res = await deleteSurgeryConsumable({
+            ID: row.ID
+          });
+          if (res.code === 200) {
+            this.$message.success(res.msg || '删除成功');
+            this.loadRegisteredTableData(); // 刷新列表
+          } else {
+            this.$message.error(res.msg || '删除失败');
+          }
+        } catch (error) {
+          this.$message.error(error.message || '删除失败');
+        }
+      }).catch(() => {});
     },
     // 预留：打印消耗单
     handlePrintConsumeOrder() {
@@ -1603,21 +1710,70 @@ export default {
       }
       this.$message.info('TODO：查看消耗单功能待实现');
     },
-    // 预留：上传植入物单
+    // 上传植入物单 - 触发文件选择
     handleUploadImplantOrder() {
       if (!this.currentMainRow) {
         this.$message.warning('请先选择手术单');
         return;
       }
-      this.$message.info('TODO：上传植入物单功能待实现');
+      // 只有系统创建的手术单才能上传植入物单
+      if (this.currentMainRow.IS_HIS_CREATE == 1) {
+        this.$message.warning('HIS创建的手术单不能上传植入物单');
+        return;
+      }
+      // 创建隐藏的file input来选择文件
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = '*/*'; // 接受所有文件类型
+      input.multiple = true; // 支持多选
+      input.onchange = async (e) => {
+        const files = e.target.files;
+        if (!files || files.length === 0) {
+          return;
+        }
+        try {
+          const res = await uploadImplantForm({
+            ID: this.currentMainRow.ID,
+            files: Array.from(files)
+          });
+          if (res.code === 200) {
+            this.$message.success(res.msg || '上传成功');
+            this.loadMainTableData();
+          } else {
+            this.$message.error(res.msg || '上传失败');
+          }
+        } catch (error) {
+          this.$message.error(error.message || '上传失败');
+        }
+      };
+      input.click();
     },
-    // 预留：查看植入物单
-    handleViewImplantOrder() {
+    // 查看植入物单 - 在浏览器中打开文件
+    async handleViewImplantOrder() {
       if (!this.currentMainRow) {
         this.$message.warning('请先选择手术单');
         return;
       }
-      this.$message.info('TODO：查看植入物单功能待实现');
+      try {
+        const res = await getImplantForm(this.currentMainRow.ID);
+        if (res.code === 200) {
+          if (res.result) {
+            // 文件名可能是多个，用逗号分隔
+            const fileNames = res.result.split(',');
+            // 在新窗口打开每个文件
+            fileNames.forEach(fileName => {
+              const fileUrl = `${BACK_BASE_URL}/Upload/ImplantForm/${fileName.trim()}`;
+              window.open(fileUrl, '_blank');
+            });
+          } else {
+            this.$message.info('该手术单暂无植入物单');
+          }
+        } else {
+          this.$message.error(res.msg || '获取失败');
+        }
+      } catch (error) {
+        this.$message.error(error.message || '获取失败');
+      }
     }
   },
   created() {

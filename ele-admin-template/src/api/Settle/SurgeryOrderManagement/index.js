@@ -1,5 +1,6 @@
 import request from '@/utils/request';
 import { TOKEN_STORE_NAME } from '@/config/setting';
+import store from '@/store';
 
 /**
  * 手术单管理 - 获取主表（手术单列表）信息
@@ -105,7 +106,10 @@ export async function getUnregisteredConsumablesInfo(data) {
 export async function addSurgeryOrder(data) {
   const formatData = {
     Token: sessionStorage.getItem(TOKEN_STORE_NAME),
-    ...data
+    ...data,
+    // 自动从全局获取申请科室信息
+    APPLY_DEPT: store.state.user.info?.DeptNow?.Dept_Two_Name || '',
+    APPLY_DEPT_CODE: store.state.user.info?.DeptNow?.Dept_Two_Code || ''
   };
 
   const res = await request.post(
@@ -245,6 +249,31 @@ export async function getSurgeryById(id) {
 }
 
 /**
+ * 登记手术消耗
+ * @param {Object} data - 包含SURGERY_ID, SURGERY_NO, BARCODE
+ * @returns {Promise} - 返回请求Promise
+ */
+export async function addSurgeryConsumable(data) {
+  const formatData = {
+    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+    SURGERY_ID: data.SURGERY_ID,
+    SURGERY_NO: data.SURGERY_NO,
+    BARCODE: data.BARCODE
+  };
+
+  const res = await request.post(
+    '/SurgeryOrder/AddSurgeryConsumable',
+    formatData
+  );
+
+  if (res.data.code == 200) {
+    return res.data;
+  } else {
+    return Promise.reject(new Error(res.data.msg));
+  }
+}
+
+/**
  * 查询手术单列表 - 使用CRUD接口（用于替代getSurgeryOrderHzInfo）
  * @param {Object} data - 查询参数
  * @returns {Promise} - 返回请求Promise
@@ -263,7 +292,10 @@ export async function getSurgeryList(data) {
     CONSUME_STATUS: data.CONSUME_STATUS ? parseInt(data.CONSUME_STATUS) : null,
     CHIEF_SURGEON: data.CHIEF_SURGEON || '',
     ACTUAL_SURGERY_DATE_START: data.ACTUAL_SURGERY_DATE_START || '',
-    ACTUAL_SURGERY_DATE_END: data.ACTUAL_SURGERY_DATE_END || ''
+    ACTUAL_SURGERY_DATE_END: data.ACTUAL_SURGERY_DATE_END || '',
+    IS_UPLOAD_IMPLANT: data.IS_UPLOAD_IMPLANT || '',
+    CREATE_MAN: data.CREATE_MAN || '',
+    IS_FOLLOW_STAGE: data.IS_FOLLOW_STAGE ? parseInt(data.IS_FOLLOW_STAGE) : null
   };
 
   const res = await request.post(
@@ -278,3 +310,108 @@ export async function getSurgeryList(data) {
   }
 }
 
+/**
+ * 上传植入物单（真实文件上传）
+ * @param {Object} data - 包含ID和file
+ * @returns {Promise} - 返回请求Promise
+ */
+export async function uploadImplantForm(data) {
+  const formData = new FormData();
+  formData.append('Token', sessionStorage.getItem(TOKEN_STORE_NAME));
+  formData.append('ID', data.ID);
+
+  // 支持多个文件上传
+  if (data.files && data.files.length > 0) {
+    data.files.forEach((file, index) => {
+      formData.append(`file${index}`, file);
+    });
+  } else if (data.file) {
+    formData.append('file', data.file);
+  }
+
+  const res = await request.post(
+    '/SurgeryOrder/UploadImplantForm',
+    formData,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    }
+  );
+
+  if (res.data.code == 200) {
+    return res.data;
+  } else {
+    return Promise.reject(new Error(res.data.msg));
+  }
+}
+
+/**
+ * 获取植入物单路径
+ * @param {number} id - 手术单ID
+ * @returns {Promise} - 返回请求Promise
+ */
+export async function getImplantForm(id) {
+  const formatData = {
+    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+    ID: id
+  };
+
+  const res = await request.post(
+    '/SurgeryOrder/GetImplantForm',
+    formatData
+  );
+
+  if (res.data.code == 200) {
+    return res.data;
+  } else {
+    return Promise.reject(new Error(res.data.msg));
+  }
+}
+
+/**
+ * 确认消耗
+ * @param {Object} data - 包含SURGERY_ID和SURGERY_NO
+ * @returns {Promise} - 返回请求Promise
+ */
+export async function confirmConsumption(data) {
+  const formatData = {
+    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+    SURGERY_ID: data.SURGERY_ID,
+    SURGERY_NO: data.SURGERY_NO
+  };
+
+  const res = await request.post(
+    '/SurgeryOrder/ConfirmConsumption',
+    formatData
+  );
+
+  if (res.data.code == 200) {
+    return res.data;
+  } else {
+    return Promise.reject(new Error(res.data.msg));
+  }
+}
+
+/**
+ * 删除手术消耗
+ * @param {Object} data - 包含ID
+ * @returns {Promise} - 返回请求Promise
+ */
+export async function deleteSurgeryConsumable(data) {
+  const formatData = {
+    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+    ID: data.ID
+  };
+
+  const res = await request.post(
+    '/SurgeryOrder/DeleteSurgeryConsumable',
+    formatData
+  );
+
+  if (res.data.code == 200) {
+    return res.data;
+  } else {
+    return Promise.reject(new Error(res.data.msg));
+  }
+}

@@ -108,7 +108,7 @@
         </el-form-item>
         <el-form-item label="是否跟台">
           <el-select
-            v-model="searchForm.IS_FOLLOW"
+            v-model="searchForm.IS_GT"
             placeholder="请选择是否跟台"
             clearable
             style="width: 150px"
@@ -118,25 +118,27 @@
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" icon="el-icon-search" @click="search">
+          <el-button class="ele-btn-icon" type="primary" icon="el-icon-search" @click="search">
             搜索
           </el-button>
         </el-form-item>
         <el-form-item>
-          <el-button icon="el-icon-refresh" @click="reset">重置</el-button>
+          <el-button class="ele-btn-icon" icon="el-icon-refresh" @click="reset">重置</el-button>
         </el-form-item>
         <el-form-item>
           <el-button
             type="success"
+            class="ele-btn-icon"
             icon="el-icon-check"
             :disabled="mainTableSelection.length === 0"
             @click="confirmUse"
           >
-            确认使用
+            确认消耗
           </el-button>
         </el-form-item>
         <el-form-item>
           <el-button
+            class="ele-btn-icon"
             type="warning"
             icon="el-icon-download"
             @click="exportMainTable"
@@ -376,12 +378,14 @@
             title="灭菌效期"
             width="120"
             align="center"
+            :formatter="formatDate"
           />
           <vxe-column
             field="DISINFECTION_VALID_DATE"
             title="消毒有效期"
             width="120"
             align="center"
+            :formatter="formatDate"
           />
           <vxe-column
             field="PATIENT_NAME"
@@ -439,7 +443,7 @@
             title="计费时间"
             width="150"
             align="center"
-            :formatter="formatDate"
+            :formatter="formatDateTime"
           />
         </vxe-table>
         <!-- 明细表分页 -->
@@ -490,11 +494,11 @@ export default {
         SUPPLIER_NAME: '',
         MANUFACTURING_ENT_NAME: '',
         USE_APP_STATE: '',
-        OUT_TYPE: '', // 出库方式
-        IS_FOLLOW: '', // 是否跟台
+        OUT_TYPE: '2', // 出库方式
+        IS_GT: '', // 是否跟台
         ID: ''
       },
-      dateRange: [], // 日期范围
+      dateRange: null, // 日期范围，将在created中初始化
       // 统计数据
       totalQuantity: 0, // 总数量
       totalAmount: '0.00', // 总金额
@@ -522,6 +526,28 @@ export default {
     };
   },
   methods: {
+    // 获取默认日期范围（当前月份1日到前一天，如果是1号则为1号到1号）
+    getDefaultDateRange() {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = now.getMonth();
+      const day = now.getDate();
+
+      // 当前月份1日
+      const startDate = new Date(year, month, 1);
+      const startDateStr = `${year}-${String(month + 1).padStart(2, '0')}-01`;
+
+      // 如果是1号，结束日期也是1号；否则是前一天
+      let endDate;
+      if (day === 1) {
+        endDate = new Date(year, month, 1);
+      } else {
+        endDate = new Date(now.getTime() - 24 * 60 * 60 * 1000); // 前一天
+      }
+      const endDateStr = `${endDate.getFullYear()}-${String(endDate.getMonth() + 1).padStart(2, '0')}-${String(endDate.getDate()).padStart(2, '0')}`;
+
+      return [startDateStr, endDateStr];
+    },
     // 搜索
     search() {
       // 处理日期范围
@@ -549,13 +575,13 @@ export default {
         SUPPLIER_NAME: '',
         MANUFACTURING_ENT_NAME: '',
         USE_APP_STATE: '',
-        OUT_TYPE: '',
-        IS_FOLLOW: '',
+        OUT_TYPE: '2',
+        IS_GT: '',
         ID: ''
       };
-      this.dateRange = [];
+      this.dateRange = this.getDefaultDateRange();
       this.mainTablePage.page = 1;
-      this.loadMainTableData();
+      this.search();
     },
     // 加载主表数据
     async loadMainTableData() {
@@ -759,12 +785,16 @@ export default {
       }
       return Number(cellValue).toFixed(2);
     },
-    // 格式化日期
+    // 格式化日期（只保留年月日）
     formatDate({ cellValue }) {
       if (!cellValue) {
         return '';
       }
       if (typeof cellValue === 'string') {
+        // 处理格式如 2027-01-01T00:00:00，只保留年月日
+        if (cellValue.includes('T')) {
+          return cellValue.split('T')[0];
+        }
         return cellValue;
       }
       const date = new Date(cellValue);
@@ -772,6 +802,24 @@ export default {
       const month = String(date.getMonth() + 1).padStart(2, '0');
       const day = String(date.getDate()).padStart(2, '0');
       return `${year}-${month}-${day}`;
+    },
+    // 格式化日期时间（去掉T，用空格替换）
+    formatDateTime({ cellValue }) {
+      if (!cellValue) {
+        return '';
+      }
+      if (typeof cellValue === 'string') {
+        // 处理格式如 2025-02-19T20:52:53，去掉T
+        return cellValue.replace('T', ' ');
+      }
+      const date = new Date(cellValue);
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      const hours = String(date.getHours()).padStart(2, '0');
+      const minutes = String(date.getMinutes()).padStart(2, '0');
+      const seconds = String(date.getSeconds()).padStart(2, '0');
+      return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
     },
     // 格式化确认状态
     formatUseAppState({ cellValue }) {
@@ -839,6 +887,13 @@ export default {
     }
   },
   created() {
+    // 设置默认日期范围
+    this.dateRange = this.getDefaultDateRange();
+    // 设置搜索表单的日期字段
+    if (this.dateRange && this.dateRange.length === 2) {
+      this.searchForm.OPEARTION_CHARGING_TIME_START = this.dateRange[0];
+      this.searchForm.OPEARTION_CHARGING_TIME_END = this.dateRange[1];
+    }
     this.loadMainTableData();
   }
 };
