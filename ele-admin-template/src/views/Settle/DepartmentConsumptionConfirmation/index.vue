@@ -439,6 +439,26 @@
             align="center"
           />
           <vxe-column
+            field="GOODS_QTY"
+            title="数量"
+            width="100"
+            align="right"
+          />
+          <vxe-column
+            field="SUPPLY_PRICE"
+            title="单价"
+            width="100"
+            align="right"
+            :formatter="formatPrice"
+          />
+          <vxe-column
+            field="SUM_PRICE"
+            title="金额"
+            width="120"
+            align="right"
+            :formatter="formatDetailAmount"
+          />
+          <vxe-column
             field="OPEARTION_CHARGING_TIME"
             title="计费时间"
             width="150"
@@ -596,8 +616,9 @@ export default {
         if (res.code === 200) {
           this.mainTableData = res.result || [];
           this.mainTablePage.total = res.total || 0;
-          // 计算总数量和总金额
-          this.calculateMainTotal();
+          // 从接口获取总数量和总金额
+          this.totalQuantity = res.sumCount || 0;
+          this.totalAmount = (res.sumPrice || 0).toFixed(2);
         } else {
           this.$message.error(res.msg || '加载数据失败');
         }
@@ -628,8 +649,9 @@ export default {
           this.detailTableData = res.result || [];
           this.detailTablePage.total = res.total || 0;
           this.detailTableSelection = [];
-          // 计算明细总数量和总金额
-          this.calculateDetailTotal();
+          // 从接口获取明细总数量和总金额
+          this.detailTotalQuantity = res.sumCount || 0;
+          this.detailTotalAmount = (res.sumPrice || 0).toFixed(2);
         } else {
           this.$message.error(res.msg || '加载明细数据失败');
         }
@@ -785,6 +807,16 @@ export default {
       }
       return Number(cellValue).toFixed(2);
     },
+    // 格式化明细表金额（如果接口没有返回，则计算：数量 * 单价）
+    formatDetailAmount({ row }) {
+      const qty = Number(row.GOODS_QTY || 0);
+      const price = Number(row.SUPPLY_PRICE || 0);
+      // 如果接口返回了SUM_PRICE，优先使用接口的值，否则计算
+      if (row.SUM_PRICE != null && row.SUM_PRICE !== '') {
+        return Number(row.SUM_PRICE).toFixed(2);
+      }
+      return (qty * price).toFixed(2);
+    },
     // 格式化日期（只保留年月日）
     formatDate({ cellValue }) {
       if (!cellValue) {
@@ -838,24 +870,6 @@ export default {
         return '否';
       }
       return cellValue || '';
-    },
-    // 计算主表总数量和总金额
-    calculateMainTotal() {
-      let quantity = 0;
-      let amount = 0;
-      this.mainTableData.forEach((item) => {
-        quantity += Number(item.GOODS_QTY || 0);
-        amount += Number(item.SUM_PRICE || 0);
-      });
-      this.totalQuantity = quantity;
-      this.totalAmount = amount.toFixed(2);
-    },
-    // 计算明细表总数量和总金额
-    calculateDetailTotal() {
-      // 注意：明细表可能需要根据实际字段调整
-      // 这里假设明细表也有数量和金额字段，如果没有则需要根据实际情况调整
-      this.detailTotalQuantity = this.detailTablePage.total || 0;
-      this.detailTotalAmount = '0.00';
     },
     // 导出主表
     exportMainTable() {

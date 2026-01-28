@@ -50,10 +50,10 @@
             style="width: 150px"
           >
             <el-option label="全部" value="" />
-            <el-option label="未开始" value="1" />
+            <!-- <el-option label="未开始" value="1" /> -->
             <el-option label="进行中" value="2" />
             <el-option label="已完成" value="3" />
-            <el-option label="已暂停" value="4" />
+            <!-- <el-option label="已暂停" value="4" /> -->
             <el-option label="已作废" value="5" />
           </el-select>
         </el-form-item>
@@ -224,7 +224,7 @@
             手术暂停
           </el-button>
         </el-form-item>
-        <el-form-item>
+        <el-form-item v-if="false">
           <el-button
             type="success"
             class="ele-btn-icon"
@@ -420,17 +420,18 @@
           />
           <vxe-column
             field="IS_CONSUME"
-            title="是否确认消耗"
+            title="消耗状态"
             width="120"
             align="center"
           >
             <template v-slot="{ row }">
-              <el-tag v-if="row.IS_CONSUME == 1" type="success">是</el-tag>
-              <el-tag v-else-if="row.IS_CONSUME == 0" type="danger">否</el-tag>
+              <el-tag v-if="row.IS_CONSUME == 1" type="success">已确认</el-tag>
+              <el-tag v-else-if="row.IS_CONSUME == 0" type="danger">未确认</el-tag>
               <el-tag v-else type="warning">未知</el-tag>
             </template>
           </vxe-column>
           <vxe-column
+            v-if="false"
             field="CHARGE_STATUS"
             title="收费状态"
             width="120"
@@ -564,10 +565,10 @@
             min-width="150"
             show-overflow
           />
-          <vxe-column field="IS_CONSUME" title="是否确认消耗" width="120" align="center">
+          <vxe-column field="IS_CONSUME" title="消耗状态" width="120" align="center">
             <template v-slot="{ row }">
-              <el-tag v-if="row.IS_CONSUME == 1" type="success">是</el-tag>
-              <el-tag v-else-if="row.IS_CONSUME == 0" type="danger">否</el-tag>
+              <el-tag v-if="row.IS_CONSUME == 1" type="success">已确认</el-tag>
+              <el-tag v-else-if="row.IS_CONSUME == 0" type="danger">未确认</el-tag>
               <el-tag v-else type="warning">未知</el-tag>
             </template>
           </vxe-column>
@@ -1519,7 +1520,7 @@ export default {
         this.$message.warning('HIS创建的手术单不能确认消耗');
         return;
       }
-      this.$confirm('确认消耗吗?确认后将更新手术单和耗材明细的消耗状态', '提示', {
+      this.$confirm('确认消耗吗?确认后将先标记手术单为完成状态，然后更新手术单和耗材明细的消耗状态', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'

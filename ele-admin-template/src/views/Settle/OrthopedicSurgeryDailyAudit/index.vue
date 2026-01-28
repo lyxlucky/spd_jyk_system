@@ -52,7 +52,7 @@
             <el-option label="已消耗" value="1" />
           </el-select>
         </el-form-item>
-        <el-form-item label="与HIS收费是否一致" >
+        <el-form-item label="与HIS收费是否一致" v-if="false">
           <el-select
             v-model="searchForm.IS_HIS_CHARGE_CONSISTENT"
             placeholder="请选择"
@@ -63,7 +63,7 @@
             <el-option label="否" value="0" />
           </el-select>
         </el-form-item>
-        <el-form-item label="执行科室">
+        <el-form-item label="执行科室" v-if="false">
           <el-select
             v-model="searchForm.ZX_DEPT"
             placeholder="请选择执行科室"
@@ -116,7 +116,7 @@
             <el-option label="提交失败" value="2" />
           </el-select>
         </el-form-item>
-        <el-form-item label="是否骨科手术">
+        <el-form-item label="是否骨科手术" v-if="false">
           <el-select
             v-model="searchForm.IS_ORTHOPEDIC_SURGERY"
             placeholder="请选择"
@@ -127,7 +127,7 @@
             <el-option label="否" value="0" />
           </el-select>
         </el-form-item>
-        <el-form-item label="是否消耗">
+        <el-form-item label="是否消耗" v-if="false">
           <el-select
             v-model="searchForm.IS_CONSUME"
             placeholder="请选择"
@@ -361,6 +361,7 @@
             :formatter="formatConsumeStatus"
           />
           <vxe-column
+            v-if="false"
             field="IS_HIS_CHARGE_CONSISTENT"
             title="与HIS收费是否一致"
             width="150"
@@ -368,6 +369,7 @@
             :formatter="formatIsConsistent"
           />
           <vxe-column
+            v-if="false"
             field="SUBMIT_HIS_STATUS"
             title="提交HIS状态"
             width="120"
@@ -375,6 +377,7 @@
             :formatter="formatSubmitHisStatus"
           />
           <vxe-column
+            v-if="false"
             field="IS_ORTHOPEDIC_SURGERY"
             title="是否骨科手术"
             width="120"
@@ -382,6 +385,7 @@
             :formatter="formatIsOrthopedic"
           />
           <vxe-column
+            v-if="false"
             field="IS_CONSUME"
             title="是否消耗"
             width="120"
@@ -655,10 +659,10 @@ export default {
     return {
       // 手术状态字典
       surgeryStatusDict: {
-        '1': '未开始',
+        // '1': '未开始',
         '2': '进行中',
         '3': '已完成',
-        '4': '已暂停',
+        // '4': '已暂停',
         '5': '已作废'
       },
       // 搜索表单
@@ -994,11 +998,13 @@ export default {
       return cellValue || '';
     },
     // 格式化效期
-    formatValidityDate({ cellValue }) {
-      if (!cellValue) {
+    formatValidityDate({ cellValue, row }) {
+      // 优先使用 VALIDITY_DATE，如果没有值则使用 BATCH_VALIDITY_PERIOD
+      const validityDate = row.VALIDITY_DATE || row.BATCH_VALIDITY_PERIOD;
+      if (!validityDate) {
         return '';
       }
-      return this.$moment(cellValue).format('YYYY-MM-DD');
+      return this.$moment(validityDate).format('YYYY-MM-DD');
     },
     // 明细表当前行变化
     onDetailTableCurrentChange({ row }) {
@@ -1127,11 +1133,13 @@ export default {
     openActionDialog(type) {
       this.actionDialogType = type;
       this.actionDialogVisible = true;
+      // 效期优先使用 VALIDITY_DATE，如果没有值则使用 BATCH_VALIDITY_PERIOD
+      const validityDate = (this.currentDetailRow && (this.currentDetailRow.VALIDITY_DATE || this.currentDetailRow.BATCH_VALIDITY_PERIOD)) || '';
       this.actionDialogForm = {
         decision: 'pass',
         reason: '',
         batchNo: (this.currentDetailRow && this.currentDetailRow.BATCH_NO) || '',
-        validity: (this.currentDetailRow && this.currentDetailRow.VALIDITY_DATE) ? this.$moment(this.currentDetailRow.VALIDITY_DATE).format('YYYY-MM-DD') : '',
+        validity: validityDate ? this.$moment(validityDate).format('YYYY-MM-DD') : '',
         remark: ''
       };
 
