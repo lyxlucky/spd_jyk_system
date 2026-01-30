@@ -97,7 +97,7 @@
         </el-form-item>
         <el-form-item label="出库方式">
           <el-select
-            v-model="searchForm.OUT_TYPE"
+            v-model="searchForm.CONSUMPTION_TYPE"
             placeholder="请选择出库方式"
             clearable
             style="width: 150px"
@@ -174,6 +174,7 @@
           :loading="mainTableLoading"
           border
           stripe
+          resizable
           size="mini"
           height="400"
           highlight-current-row
@@ -339,6 +340,7 @@
           :loading="detailTableLoading"
           border
           stripe
+          resizable
           size="mini"
           height="400"
           :checkbox-config="{ highlight: true }"
@@ -514,7 +516,7 @@ export default {
         SUPPLIER_NAME: '',
         MANUFACTURING_ENT_NAME: '',
         USE_APP_STATE: '',
-        OUT_TYPE: '2', // 出库方式
+        CONSUMPTION_TYPE: '2', // 出库方式
         IS_GT: '', // 是否跟台
         ID: ''
       },
@@ -595,7 +597,7 @@ export default {
         SUPPLIER_NAME: '',
         MANUFACTURING_ENT_NAME: '',
         USE_APP_STATE: '',
-        OUT_TYPE: '2',
+        CONSUMPTION_TYPE: '2',
         IS_GT: '',
         ID: ''
       };
@@ -726,7 +728,8 @@ export default {
             const res = await appSzseUseInfo({
               SzseSpUseHzInfoList: SzseSpUseHzInfoList,
               state: '1',
-              mark: ''
+              mark: '',
+              searchForm: this.searchForm // 传递查询条件用于后端权限校验
             });
             loading.close();
             if (res.code === 200) {
@@ -771,7 +774,8 @@ export default {
             const res = await appSzseUseInfo({
               SzseSpUseHzInfoList: SzseSpUseHzInfoList,
               state: '1',
-              mark: ''
+              mark: '',
+              searchForm: this.searchForm // 传递查询条件用于后端权限校验
             });
             loading.close();
             if (res.code === 200) {
