@@ -953,7 +953,7 @@ import {
   confirmConsumption,
   deleteSurgeryConsumable
 } from '@/api/Settle/SurgeryOrderManagement';
-import { BACK_BASE_URL } from '@/config/setting';
+import { API_BASE_URL, TOKEN_STORE_NAME } from '@/config/setting';
 
 export default {
   name: 'SurgeryOrderManagement',
@@ -1687,13 +1687,16 @@ export default {
         }
       }).catch(() => {});
     },
-    // 预留：打印消耗单
+    // 打印消耗单
     handlePrintConsumeOrder() {
       if (!this.currentMainRow) {
         this.$message.warning('请先选择手术单');
         return;
       }
-      this.$message.info('TODO：打印消耗单功能待实现');
+      const token = sessionStorage.getItem(TOKEN_STORE_NAME);
+      const surgeryNo = this.currentMainRow.SURGERY_NO;
+      const printUrl = `${API_BASE_URL}/PrintPdf/PrintSsDetail?format=pdf&inline=true&SURGERY_NO=${surgeryNo}&Token=${token}`;
+      window.open(printUrl, '_blank');
     },
     // 预留：上传消耗单
     handleUploadConsumeOrder() {
@@ -1763,7 +1766,7 @@ export default {
             const fileNames = res.result.split(',');
             // 在新窗口打开每个文件
             fileNames.forEach(fileName => {
-              const fileUrl = `${BACK_BASE_URL}/Upload/ImplantForm/${fileName.trim()}`;
+              const fileUrl = `${API_BASE_URL}/Upload/ImplantForm/${fileName.trim()}`;
               window.open(fileUrl, '_blank');
             });
           } else {
