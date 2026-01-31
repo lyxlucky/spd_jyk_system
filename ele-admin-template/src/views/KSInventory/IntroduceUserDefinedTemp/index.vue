@@ -41,6 +41,12 @@
             }}</el-tag>
             <el-tag v-else type="success">{{ row.STOCK_QTY }}</el-tag>
           </template>
+
+          <template v-slot:IMAGE_BUTTON="{ row }">
+            <el-button type="primary" size="mini" @click="openImageDialog(row)"
+              >图片</el-button
+            >
+          </template>
         </ele-pro-table>
       </el-card>
       <!-- <div class="ele-footer" style="display: flex;justify-content: center;">
@@ -53,6 +59,24 @@
       <user-edit :visible.sync="showEdit" :data="current" @done="reload" />
       <!-- 导入弹窗 -->
       <!-- <user-import :visible.sync="showImport" @done="reload" /> -->
+
+      <!-- 图片对话框 -->
+      <el-dialog
+        title="图片查看"
+        :visible.sync="imageDialogVisible"
+        top="1vh"
+        width="90%"
+        :append-to-body="true"
+        :before-close="closeImageDialog"
+      >
+        <ImageViewComponent
+          v-if="imageDialogVisible"
+          :row-data="currentImageRow"
+        />
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="closeImageDialog">关 闭</el-button>
+        </span>
+      </el-dialog>
     </div>
   </ele-modal>
 </template>
@@ -61,6 +85,7 @@
   import { utils, writeFile } from 'xlsx';
   import UserSearch from './components/user-search.vue';
   import UserEdit from './components/user-edit.vue';
+  import ImageViewComponent from '../KSDepartmentalPlan/components/ImageViewComponent.vue';
   import { HOME_HP } from '@/config/setting';
   import { GetDeptInStockDetail } from '@/api/KSInventory/DepaStorageQuery';
   import {
@@ -78,7 +103,8 @@
     },
     components: {
       UserSearch,
-      UserEdit
+      UserEdit,
+      ImageViewComponent
       // UserImport
     },
     data() {
@@ -101,6 +127,13 @@
             align: 'center',
             showOverflowTooltip: true,
             fixed: 'left'
+          },
+          {
+            prop: 'IMAGE_BUTTON',
+            slot: 'IMAGE_BUTTON',
+            label: '图片',
+            align: 'center',
+            width: 80
           },
           {
             prop: 'VAR_REMARK',
@@ -199,20 +232,20 @@
             showOverflowTooltip: true,
             minWidth: 80
           },
-          // {
-          //   prop: 'BIG_BOX_COUNT',
-          //   label: '大包装数量',
-          //   width: 80,
-          //   align: 'center',
-          //   showOverflowTooltip: true
-          // },
-          // {
-          //   prop: 'MIDDLE_PACKAGE_COUNT',
-          //   label: '中包装数量',
-          //   width: 80,
-          //   align: 'center',
-          //   showOverflowTooltip: true
-          // },
+          {
+            prop: 'BIG_BOX_COUNT',
+            label: '大包装数量',
+            width: 100,
+            align: 'center',
+            showOverflowTooltip: true
+          },
+          {
+            prop: 'MIDDLE_PACKAGE_COUNT',
+            label: '中包装数量',
+            width: 100,
+            align: 'center',
+            showOverflowTooltip: true
+          },
           {
             prop: 'PAG_TYPE',
             label: '包装规格',
@@ -326,7 +359,10 @@
         showImport: false,
         isUpdate: false,
         // 添加品种数量
-        APPLY_QTY: 0
+        APPLY_QTY: 0,
+        // 图片对话框相关
+        imageDialogVisible: false,
+        currentImageRow: null
         // datasource: [],
       };
     },
@@ -387,6 +423,16 @@
       },
       onSelectionChange(selection) {
         this.selection = selection;
+      },
+      // 打开图片对话框
+      openImageDialog(row) {
+        this.currentImageRow = row;
+        this.imageDialogVisible = true;
+      },
+      // 关闭图片对话框
+      closeImageDialog() {
+        this.imageDialogVisible = false;
+        this.currentImageRow = null;
       }
     },
     watch: {

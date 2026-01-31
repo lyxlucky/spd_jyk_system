@@ -101,6 +101,7 @@
 
 <script>
   import { getVarPic2 } from '@/api/Home/Qualificationcheck';
+  import {BACK_BASE_URL} from "@/config/setting";
 
   export default {
     name: 'ImageViewComponent',
@@ -268,7 +269,7 @@
       getImageUrl(picUrl) {
         if (!picUrl) return '';
         // 这里需要根据实际的图片服务器地址进行调整
-        return `${process.env.VUE_APP_API_URL || ''}/Upload/ProPic/${picUrl}`;
+        return `${BACK_BASE_URL || ''}/Upload/ProPic/${picUrl}`;
       },
 
       // 预览图片

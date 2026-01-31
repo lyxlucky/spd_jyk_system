@@ -232,7 +232,7 @@
             align: 'center',
             showOverflowTooltip: true,
             minWidth: 110,
-            show: false
+            show: true
           },
           {
             prop: 'MinBoxCount',
@@ -241,7 +241,7 @@
             align: 'center',
             showOverflowTooltip: true,
             minWidth: 110,
-            show: false
+            show: true
           },
 
           {
