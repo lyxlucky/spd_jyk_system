@@ -362,6 +362,7 @@
             align="center"
           />
           <vxe-column
+            v-if="false"
             field="ACCOUNT"
             title="账号"
             width="120"

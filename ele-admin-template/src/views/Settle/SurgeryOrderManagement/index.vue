@@ -109,10 +109,10 @@
             style="width: 150px"
           />
         </el-form-item>
-        <el-form-item label="患者住院号">
+        <el-form-item label="住院号">
           <el-input
-            v-model="searchForm.HOSPITALIZATION_NUMBER"
-            placeholder="请输入患者住院号"
+            v-model="searchForm.IN_HOSP_NO"
+            placeholder="请输入住院号"
             clearable
             style="width: 150px"
           />
@@ -339,8 +339,8 @@
             show-overflow
           />
           <vxe-column
-            field="HOSPITALIZATION_NUMBER"
-            title="患者住院号"
+            field="IN_HOSP_NO"
+            title="住院号"
             min-width="120"
             show-overflow
           />
@@ -802,8 +802,8 @@
           </el-row>
           <el-row :gutter="20">
             <el-col :span="8">
-              <el-form-item label="住院号" prop="HOSPITALIZATION_NUMBER">
-                <el-input v-model="surgeryFormData.HOSPITALIZATION_NUMBER" placeholder="请输入住院号" />
+              <el-form-item label="住院号" prop="IN_HOSP_NO">
+                <el-input v-model="surgeryFormData.IN_HOSP_NO" placeholder="请输入住院号" />
               </el-form-item>
             </el-col>
             <el-col :span="8">
@@ -975,7 +975,7 @@ export default {
         CONSUME_STATUS: '',
         SURGERY_NO: '',
         PATIENT_NAME: '',
-        HOSPITALIZATION_NUMBER: '',
+        IN_HOSP_NO: '',
         ACTUAL_SURGERY_DATE_START: '',
         ACTUAL_SURGERY_DATE_END: '',
         CHIEF_SURGEON: '',
@@ -1130,7 +1130,7 @@ export default {
         CONSUME_STATUS: '',
         SURGERY_NO: '',
         PATIENT_NAME: '',
-        HOSPITALIZATION_NUMBER: '',
+        IN_HOSP_NO: '',
         ACTUAL_SURGERY_DATE_START: '',
         ACTUAL_SURGERY_DATE_END: '',
         CHIEF_SURGEON: '',

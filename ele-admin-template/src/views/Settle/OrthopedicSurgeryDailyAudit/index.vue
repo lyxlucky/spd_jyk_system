@@ -98,7 +98,7 @@
         </el-form-item>
         <el-form-item label="住院号">
           <el-input
-            v-model="searchForm.HOSPITALIZATION_NUMBER"
+            v-model="searchForm.IN_HOSP_NO"
             placeholder="请输入住院号"
             clearable
             style="width: 200px"
@@ -172,7 +172,7 @@
             <el-option label="否" value="0" />
           </el-select>
         </el-form-item>
-        <el-form-item label="是否跟台">
+        <el-form-item label="是否跟台" v-if="false">
           <el-select
             v-model="searchForm.IS_FOLLOW_STAGE"
             placeholder="请选择"
@@ -291,7 +291,7 @@
             show-overflow
           />
           <vxe-column
-            field="HOSPITALIZATION_NUMBER"
+            field="IN_HOSP_NO"
             title="住院号"
             min-width="120"
             show-overflow
@@ -400,6 +400,7 @@
             :formatter="formatAuditState"
           />
           <vxe-column
+            v-if="false"
             field="IS_FOLLOW_STAGE"
             title="是否跟台"
             width="120"
@@ -674,7 +675,7 @@ export default {
         ZX_DEPT: '',
         PATIENT_NAME: '',
         SURGERY_NO: '',
-        HOSPITALIZATION_NUMBER: '',
+        IN_HOSP_NO: '',
         SUBMIT_HIS_STATUS: '',
         IS_ORTHOPEDIC_SURGERY: '',
         IS_CONSUME: '',
@@ -682,7 +683,7 @@ export default {
         SURGERY_DATE_END: '',
         AUDIT_STATE: '',
         IS_AUDIT_BATCH_VALIDITY: '',
-        IS_FOLLOW_STAGE: '',
+        IS_FOLLOW_STAGE: '1',
         VARIETIE_CHARGE_START: '',
         VARIETIE_CHARGE_END: '',
         DEPT_APPROVAL_START: '',
@@ -773,7 +774,7 @@ export default {
         ZX_DEPT: '',
         PATIENT_NAME: '',
         SURGERY_NO: '',
-        HOSPITALIZATION_NUMBER: '',
+        IN_HOSP_NO: '',
         SUBMIT_HIS_STATUS: '',
         IS_ORTHOPEDIC_SURGERY: '',
         IS_CONSUME: '',
@@ -781,7 +782,7 @@ export default {
         SURGERY_DATE_END: '',
         AUDIT_STATE: '',
         IS_AUDIT_BATCH_VALIDITY: '',
-        IS_FOLLOW_STAGE: '',
+        IS_FOLLOW_STAGE: '1',
         VARIETIE_CHARGE_START: '',
         VARIETIE_CHARGE_END: '',
         DEPT_APPROVAL_START: '',

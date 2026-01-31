@@ -15,6 +15,7 @@ export async function getSurgeryList(data) {
     SURGERY_NO: data.SURGERY_NO || '',
     PATIENT_NAME: data.PATIENT_NAME || '',
     HOSPITALIZATION_NUMBER: data.HOSPITALIZATION_NUMBER || '',
+    IN_HOSP_NO: data.IN_HOSP_NO || '',
     SURGERY_LOCATION: data.SURGERY_LOCATION || '',
     APPLY_DEPT_CODE: data.APPLY_DEPT_CODE || '',
     APPLY_DEPT: data.APPLY_DEPT || '',
