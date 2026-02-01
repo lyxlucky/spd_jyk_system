@@ -28,7 +28,7 @@
         </el-form-item>
         <el-form-item label="申请科室">
           <el-select
-            v-model="searchForm.APPLY_DEPT"
+            v-model="searchForm.APPLY_DEPT_CODE"
             placeholder="请选择申请科室"
             clearable
             filterable
@@ -970,12 +970,14 @@ export default {
       // 搜索表单
       searchForm: {
         SURGERY_LOCATION: '',
-        APPLY_DEPT: '',
+        APPLY_DEPT_CODE: '',
         SURGERY_STATUS: '',
         CONSUME_STATUS: '',
         SURGERY_NO: '',
         PATIENT_NAME: '',
         IN_HOSP_NO: '',
+        PLAN_SURGERY_DATE_START: '',
+        PLAN_SURGERY_DATE_END: '',
         ACTUAL_SURGERY_DATE_START: '',
         ACTUAL_SURGERY_DATE_END: '',
         CHIEF_SURGEON: '',
@@ -1107,6 +1109,17 @@ export default {
     },
     // 搜索
     search() {
+      // 处理手术计划日期范围
+      if (
+        this.surgeryPlanDateRange &&
+        this.surgeryPlanDateRange.length === 2
+      ) {
+        this.searchForm.PLAN_SURGERY_DATE_START = this.surgeryPlanDateRange[0];
+        this.searchForm.PLAN_SURGERY_DATE_END = this.surgeryPlanDateRange[1];
+      } else {
+        this.searchForm.PLAN_SURGERY_DATE_START = '';
+        this.searchForm.PLAN_SURGERY_DATE_END = '';
+      }
       // 处理手术时间日期范围
       if (
         this.surgeryTimeDateRange &&
@@ -1125,12 +1138,14 @@ export default {
     reset() {
       this.searchForm = {
         SURGERY_LOCATION: '',
-        APPLY_DEPT: '',
+        APPLY_DEPT_CODE: '',
         SURGERY_STATUS: '',
         CONSUME_STATUS: '',
         SURGERY_NO: '',
         PATIENT_NAME: '',
         IN_HOSP_NO: '',
+        PLAN_SURGERY_DATE_START: '',
+        PLAN_SURGERY_DATE_END: '',
         ACTUAL_SURGERY_DATE_START: '',
         ACTUAL_SURGERY_DATE_END: '',
         CHIEF_SURGEON: '',
