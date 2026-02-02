@@ -350,10 +350,31 @@
           <vxe-column type="checkbox" width="50" align="center" />
           <vxe-column type="seq" title="序号" width="60" align="center" />
           <vxe-column
-            field="DEF_NO_PKG_CODE"
-            title="定数码"
-            min-width="120"
-            show-overflow
+            field="GOODS_QTY"
+            title="数量"
+            width="100"
+            align="right"
+          />
+          <vxe-column
+            field="SUPPLY_PRICE"
+            title="单价"
+            width="100"
+            align="right"
+            :formatter="formatPrice"
+          />
+          <vxe-column
+            field="SUM_PRICE"
+            title="金额"
+            width="120"
+            align="right"
+            :formatter="formatDetailAmount"
+          />
+          <vxe-column
+            field="OPEARTION_CHARGING_TIME"
+            title="计费时间"
+            width="150"
+            align="center"
+            :formatter="formatDateTime"
           />
           <vxe-column
             field="OPERATE_PERSON"
@@ -442,31 +463,10 @@
             align="center"
           />
           <vxe-column
-            field="GOODS_QTY"
-            title="数量"
-            width="100"
-            align="right"
-          />
-          <vxe-column
-            field="SUPPLY_PRICE"
-            title="单价"
-            width="100"
-            align="right"
-            :formatter="formatPrice"
-          />
-          <vxe-column
-            field="SUM_PRICE"
-            title="金额"
-            width="120"
-            align="right"
-            :formatter="formatDetailAmount"
-          />
-          <vxe-column
-            field="OPEARTION_CHARGING_TIME"
-            title="计费时间"
-            width="150"
-            align="center"
-            :formatter="formatDateTime"
+            field="DEF_NO_PKG_CODE"
+            title="定数码"
+            min-width="120"
+            show-overflow
           />
         </vxe-table>
         <!-- 明细表分页 -->
