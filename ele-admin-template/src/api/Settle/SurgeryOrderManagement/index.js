@@ -99,6 +99,31 @@ export async function getUnregisteredConsumablesInfo(data) {
 }
 
 /**
+ * 手术单管理 - 批量修改执行科室
+ * @param {Object} data - { SURGERY_NO, items: [{ ID, SOURCE_TYPE }], DEPT_CODE }
+ * @returns {Promise}
+ */
+export async function batchUpdateExecuteDept(data) {
+  const formatData = {
+    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+    SURGERY_NO: data.SURGERY_NO || '',
+    items: data.items || [],
+    DEPT_CODE: data.DEPT_CODE || ''
+  };
+
+  const res = await request.post(
+    '/SurgeryOrder/BatchUpdateExecuteDept',
+    formatData
+  );
+
+  if (res.data.code == 200) {
+    return res.data;
+  } else {
+    return Promise.reject(new Error(res.data.msg));
+  }
+}
+
+/**
  * 手术单管理 - 创建手术单
  * @param {Object} data - 手术单信息
  * @returns {Promise} - 返回请求Promise
@@ -231,14 +256,10 @@ export async function getAllApplyDepartments() {
  * @returns {Promise} - 返回请求Promise
  */
 export async function getSurgeryById(id) {
-  const formatData = {
-    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
-    id: id
-  };
+  const Token = sessionStorage.getItem(TOKEN_STORE_NAME);
 
-  const res = await request.post(
-    '/SurgeryOrder/GetSurgeryById',
-    formatData
+  const res = await request.get(
+    `/SurgeryOrder/GetSurgeryById?id=${id}&Token=${Token}`,
   );
 
   if (res.data.code == 200) {

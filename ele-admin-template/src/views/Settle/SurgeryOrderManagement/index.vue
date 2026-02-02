@@ -248,7 +248,7 @@
           <el-button
             type="info"
             class="ele-btn-icon"
-            :disabled="!currentMainRow || (currentMainRow.IS_HIS_CREATE == 1)"
+            :disabled="!currentMainRow"
             @click="handleEditSurgery"
           >
             修改手术单
@@ -491,6 +491,17 @@
                 登记消耗
               </el-button>
             </el-form-item>
+            <el-form-item>
+              <el-button
+                type="warning"
+                class="ele-btn-icon"
+                icon="el-icon-edit"
+                :disabled="!currentMainRow || registeredTableCheckedCount === 0"
+                @click="openBatchExecuteDeptDialog"
+              >
+                批量修改执行科室
+              </el-button>
+            </el-form-item>
           </el-form>
         </div>
 
@@ -503,7 +514,11 @@
           size="mini"
           height="300"
           resizable
+          :checkbox-config="{ highlight: true }"
+          @checkbox-change="onRegisteredTableCheckboxChange"
+          @checkbox-all="onRegisteredTableCheckboxAll"
         >
+          <vxe-column type="checkbox" width="50" align="center" />
           <vxe-column type="seq" title="序号" width="60" align="center" />
           <vxe-column
             field="ZX_DEPT"
@@ -730,7 +745,7 @@
 
     <!-- 创建/编辑手术单对话框 -->
     <el-dialog
-      title="创建临时手术单"
+      :title="isEditMode ? '修改手术单' : '创建临时手术单'"
       :visible.sync="surgeryDialogVisible"
       width="75%"
       @close="closeSurgeryDialog"
@@ -829,8 +844,8 @@
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="年龄" prop="AGE">
-                <el-input v-model="surgeryFormData.AGE" placeholder="请输入年龄" type="number" />
+              <el-form-item label="年龄">
+                <el-input :value="surgeryFormData.AGE_STR" placeholder="-" readonly />
               </el-form-item>
             </el-col>
             <el-col :span="8">
@@ -844,12 +859,12 @@
           </el-row>
           <el-row :gutter="20">
             <el-col :span="8">
-              <el-form-item label="所在科室" prop="PATIENT_DEPT">
+              <el-form-item label="所在科室" prop="PATIENT_DEPT_CODE">
                 <el-select
-                  v-model="surgeryFormData.PATIENT_DEPT"
+                  filterable
+                  v-model="surgeryFormData.PATIENT_DEPT_CODE"
                   placeholder="请选择所在科室"
                   style="width: 100%"
-                  @change="onPatientDeptChange"
                 >
                   <el-option
                     v-for="item in deptOptions"
@@ -879,6 +894,7 @@
                   placeholder="请输入诊断结果"
                   type="textarea"
                   :rows="2"
+                  readonly
                 />
               </el-form-item>
             </el-col>
@@ -890,12 +906,12 @@
           <div class="section-title">主刀信息</div>
           <el-row :gutter="20">
             <el-col :span="12">
-              <el-form-item label="主刀科室" prop="SURGEON_DEPT">
+              <el-form-item label="主刀科室" prop="SURGEON_DEPT_CODE">
                 <el-select
-                  v-model="surgeryFormData.SURGEON_DEPT"
+                  filterable
+                  v-model="surgeryFormData.SURGEON_DEPT_CODE"
                   placeholder="请选择主刀科室"
                   style="width: 100%"
-                  @change="onSurgeonDeptChange"
                 >
                   <el-option
                     v-for="item in deptOptions"
@@ -908,19 +924,25 @@
             </el-col>
             <el-col :span="12">
               <el-form-item label="主刀医生" prop="CHIEF_SURGEON">
-                <el-select
+                <el-input
                   v-model="surgeryFormData.CHIEF_SURGEON"
-                  placeholder="请选择主刀医生"
+                  placeholder="请输入主刀医生"
                   style="width: 100%"
-                  @change="onChiefSurgeonChange"
-                >
-                  <el-option
-                    v-for="item in chiefSurgeonOptions"
-                    :key="item.no"
-                    :label="item.name"
-                    :value="item.name"
-                  />
-                </el-select>
+                  readonly
+                />
+<!--                <el-select-->
+<!--                  v-model="surgeryFormData.CHIEF_SURGEON"-->
+<!--                  placeholder="请选择主刀医生"-->
+<!--                  style="width: 100%"-->
+<!--                  @change="onChiefSurgeonChange"-->
+<!--                >-->
+<!--                  <el-option-->
+<!--                    v-for="item in chiefSurgeonOptions"-->
+<!--                    :key="item.no"-->
+<!--                    :label="item.name"-->
+<!--                    :value="item.name"-->
+<!--                  />-->
+<!--                </el-select>-->
               </el-form-item>
             </el-col>
           </el-row>
@@ -929,6 +951,37 @@
       <span slot="footer" class="dialog-footer">
         <el-button @click="closeSurgeryDialog">取 消</el-button>
         <el-button type="primary" @click="saveSurgery" :loading="surgeryDialogLoading">确 定</el-button>
+      </span>
+    </el-dialog>
+
+    <!-- 批量修改执行科室 -->
+    <el-dialog
+      title="批量修改执行科室"
+      :visible.sync="batchExecuteDeptDialogVisible"
+      width="420px"
+      append-to-body
+    >
+      <el-form label-width="90px" size="small">
+        <el-form-item label="执行科室">
+          <el-select
+            v-model="batchExecuteDeptCode"
+            placeholder="请选择执行科室"
+            clearable
+            filterable
+            style="width: 100%"
+          >
+            <el-option
+              v-for="item in deptOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="closeBatchExecuteDeptDialog">取 消</el-button>
+        <el-button type="primary" @click="submitBatchUpdateExecuteDept" :loading="batchExecuteDeptLoading">确 认</el-button>
       </span>
     </el-dialog>
   </div>
@@ -951,7 +1004,8 @@ import {
   uploadImplantForm,
   getImplantForm,
   confirmConsumption,
-  deleteSurgeryConsumable
+  deleteSurgeryConsumable,
+  batchUpdateExecuteDept
 } from '@/api/Settle/SurgeryOrderManagement';
 import { API_BASE_URL, TOKEN_STORE_NAME } from '@/config/setting';
 
@@ -991,22 +1045,6 @@ export default {
       // 选项数据
       surgeryLocationOptions: [],
       deptOptions: [],
-      // 患者科室选项（测试数据）
-      patientDeptOptions: [
-        { code: 'DEPT001', name: '骨科' },
-        { code: 'DEPT002', name: '心外科' }
-      ],
-      // 主刀科室选项（测试数据）
-      surgeonDeptOptions: [
-        { code: 'DEPT001', name: '骨科' },
-        { code: 'DEPT002', name: '心外科' }
-      ],
-      // 主刀医生选项（测试数据）
-      chiefSurgeonOptions: [
-        { no: 'DOC001', name: '张医生' },
-        { no: 'DOC002', name: '李医生' },
-        { no: 'DOC003', name: '王医生' }
-      ],
       // 主表数据
       mainTableData: [],
       mainTableLoading: false,
@@ -1021,9 +1059,13 @@ export default {
       registeredTableLoading: false,
       registeredTablePage: {
         page: 1,
-        size: 20,
+        size: 100,
         total: 0
       },
+      batchExecuteDeptCode: '',
+      batchExecuteDeptDialogVisible: false,
+      batchExecuteDeptLoading: false,
+      registeredTableCheckedCount: 0,
       // 明细表2：领用未登记耗材
       unregisteredTableData: [],
       unregisteredTableLoading: false,
@@ -1057,7 +1099,7 @@ export default {
         SURGERY_GROUP: '',
         // 患者信息模块
         PATIENT_NAME: '',
-        AGE: '',
+        AGE_STR: '',
         GENDER: '',
         PATIENT_DEPT: '',
         PATIENT_DEPT_CODE: '',
@@ -1076,13 +1118,25 @@ export default {
         SURGERY_NO: [{ required: true, message: '请输入手术单号', trigger: 'blur' }],
         // 患者信息必填
         PATIENT_NAME: [{ required: true, message: '请输入患者姓名', trigger: 'blur' }],
-        PATIENT_DEPT: [{ required: true, message: '请选择所在科室', trigger: 'change' }],
+        PATIENT_DEPT_CODE: [{ required: true, message: '请选择所在科室', trigger: 'change' }],
         // 主刀信息必填
         SURGEON_DEPT: [{ required: true, message: '请选择主刀科室', trigger: 'change' }]
       }
     };
   },
   methods: {
+    // getById 可能不返回 AGE_STR，根据 AGE（出生日期）计算显示
+    ageStrFromBirthDate(dateVal) {
+      if (dateVal === undefined || dateVal === null || dateVal === '') return '';
+      const s = String(dateVal).trim().substring(0, 10);
+      const birth = new Date(s);
+      if (isNaN(birth.getTime())) return '';
+      const today = new Date();
+      let age = today.getFullYear() - birth.getFullYear();
+      const m = today.getMonth() - birth.getMonth();
+      if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
+      return age >= 0 ? `${age}岁` : '';
+    },
     // 加载手术地点和申请科室选项
     async loadOptions() {
       try {
@@ -1191,6 +1245,7 @@ export default {
         this.$message.error(error.message || '加载数据失败');
       } finally {
         this.mainTableLoading = false;
+        this.$nextTick(() => this.clearRegisteredTableCheckbox());
       }
     },
     // 加载已登记手术消耗品种数据
@@ -1198,6 +1253,7 @@ export default {
       if (!this.currentMainRow || !this.currentMainRow.SURGERY_NO) {
         this.registeredTableData = [];
         this.registeredTablePage.total = 0;
+        this.$nextTick(() => this.clearRegisteredTableCheckbox());
         return;
       }
       this.registeredTableLoading = true;
@@ -1219,6 +1275,7 @@ export default {
         this.$message.error(error.message || '加载已登记耗材数据失败');
       } finally {
         this.registeredTableLoading = false;
+        this.$nextTick(() => this.clearRegisteredTableCheckbox());
       }
     },
     // 加载领用未登记耗材数据
@@ -1266,6 +1323,66 @@ export default {
       this.registeredTablePage.page = currentPage;
       this.registeredTablePage.size = pageSize;
       this.loadRegisteredTableData();
+    },
+    onRegisteredTableCheckboxChange({ records }) {
+      this.registeredTableCheckedCount = (records && records.length) || 0;
+    },
+    onRegisteredTableCheckboxAll({ records }) {
+      this.registeredTableCheckedCount = (records && records.length) || 0;
+    },
+    clearRegisteredTableCheckbox() {
+      this.registeredTableCheckedCount = 0;
+      if (this.$refs.registeredTable && typeof this.$refs.registeredTable.clearCheckboxRow === 'function') {
+        this.$refs.registeredTable.clearCheckboxRow();
+      }
+    },
+    openBatchExecuteDeptDialog() {
+      if (!this.currentMainRow || !this.currentMainRow.SURGERY_NO) {
+        this.$message.warning('请先选择手术单');
+        return;
+      }
+      const rows = this.$refs.registeredTable ? this.$refs.registeredTable.getCheckboxRecords() : [];
+      if (!rows || rows.length === 0) {
+        this.$message.warning('请勾选要修改的耗材记录');
+        return;
+      }
+      this.batchExecuteDeptCode = '';
+      this.batchExecuteDeptDialogVisible = true;
+    },
+    closeBatchExecuteDeptDialog() {
+      this.batchExecuteDeptDialogVisible = false;
+      this.batchExecuteDeptCode = '';
+    },
+    async submitBatchUpdateExecuteDept() {
+      if (!this.batchExecuteDeptCode) {
+        this.$message.warning('请选择执行科室');
+        return;
+      }
+      const rows = this.$refs.registeredTable ? this.$refs.registeredTable.getCheckboxRecords() : [];
+      if (!rows || rows.length === 0) {
+        this.$message.warning('请勾选要修改的耗材记录');
+        return;
+      }
+      this.batchExecuteDeptLoading = true;
+      try {
+        const items = rows.map(r => ({ ID: r.ID, SOURCE_TYPE: r.SOURCE_TYPE }));
+        const res = await batchUpdateExecuteDept({
+          SURGERY_NO: this.currentMainRow.SURGERY_NO,
+          items,
+          DEPT_CODE: this.batchExecuteDeptCode
+        });
+        if (res.code === 200) {
+          this.$message.success(res.msg || '修改成功');
+          this.closeBatchExecuteDeptDialog();
+          this.loadRegisteredTableData();
+        } else {
+          this.$message.error(res.msg || '修改失败');
+        }
+      } catch (error) {
+        this.$message.error(error.message || '修改失败');
+      } finally {
+        this.batchExecuteDeptLoading = false;
+      }
     },
     // 未登记表分页变化
     onUnregisteredTablePageChange({ currentPage, pageSize }) {
@@ -1342,27 +1459,6 @@ export default {
         return cellValue || '';
       }
     },
-    // 患者科室选择变化
-    onPatientDeptChange(value) {
-      const selected = this.patientDeptOptions.find(item => item.name === value);
-      if (selected) {
-        this.surgeryFormData.PATIENT_DEPT_CODE = selected.code;
-      }
-    },
-    // 主刀科室选择变化
-    onSurgeonDeptChange(value) {
-      const selected = this.surgeonDeptOptions.find(item => item.name === value);
-      if (selected) {
-        this.surgeryFormData.SURGEON_DEPT_CODE = selected.code;
-      }
-    },
-    // 主刀医生选择变化
-    onChiefSurgeonChange(value) {
-      const selected = this.chiefSurgeonOptions.find(item => item.name === value);
-      if (selected) {
-        this.surgeryFormData.CHIEF_SURGEON_NO = selected.no;
-      }
-    },
     // 打开创建手术单对话框
     openCreateDialog() {
       this.isEditMode = false;
@@ -1379,7 +1475,7 @@ export default {
         SURGERY_GROUP: '',
         // 患者信息模块
         PATIENT_NAME: '',
-        AGE: '',
+        AGE_STR: '',
         GENDER: '',
         PATIENT_DEPT: '',
         PATIENT_DEPT_CODE: '',
@@ -1397,43 +1493,53 @@ export default {
       });
       this.surgeryDialogVisible = true;
     },
-    // 打开编辑手术单对话框
-    openEditDialog() {
+    // 打开编辑手术单对话框（调用接口获取最新手术单信息）
+    async openEditDialog() {
       if (!this.currentMainRow) {
         return;
       }
       this.isEditMode = true;
-      this.surgeryFormData = {
-        ID: this.currentMainRow.ID,
-        // 手术信息模块
-        SURGERY_LOCATION: this.currentMainRow.SURGERY_LOCATION || '',
-        SURGERY_NO: this.currentMainRow.SURGERY_NO || '',
-        PLAN_SURGERY_DATE: this.currentMainRow.PLAN_SURGERY_DATE || '',
-        SURGERY_TYPE: this.currentMainRow.SURGERY_TYPE || '',
-        SURGERY_NAME: this.currentMainRow.SURGERY_NAME || '',
-        SURGERY_TABLE: this.currentMainRow.SURGERY_TABLE || '',
-        HOSPITALIZATION_NUMBER: this.currentMainRow.HOSPITALIZATION_NUMBER || '',
-        SURGERY_FLAG: this.currentMainRow.SURGERY_FLAG || '',
-        SURGERY_GROUP: this.currentMainRow.SURGERY_GROUP || '',
-        // 患者信息模块
-        PATIENT_NAME: this.currentMainRow.PATIENT_NAME || '',
-        AGE: this.currentMainRow.AGE || '',
-        GENDER: this.currentMainRow.GENDER || '',
-        PATIENT_DEPT: this.currentMainRow.PATIENT_DEPT || '',
-        PATIENT_DEPT_CODE: this.currentMainRow.PATIENT_DEPT_CODE || '',
-        IN_HOSP_NO: this.currentMainRow.IN_HOSP_NO || '',
-        BED_NUMBER: this.currentMainRow.BED_NUMBER || '',
-        DIAGNOSIS: this.currentMainRow.DIAGNOSIS || '',
-        // 主刀信息模块
-        SURGEON_DEPT: this.currentMainRow.SURGEON_DEPT || '',
-        SURGEON_DEPT_CODE: this.currentMainRow.SURGEON_DEPT_CODE || '',
-        CHIEF_SURGEON: this.currentMainRow.CHIEF_SURGEON || '',
-        CHIEF_SURGEON_NO: this.currentMainRow.CHIEF_SURGEON_NO || ''
-      };
-      this.$nextTick(() => {
-        this.$refs.surgeryForm.clearValidate();
-      });
+      this.surgeryDialogLoading = true;
       this.surgeryDialogVisible = true;
+      try {
+        const res = await getSurgeryById(this.currentMainRow.ID);
+        const row = res.result || res.data || res;
+        this.surgeryFormData = {
+          ID: row.ID,
+          SURGERY_LOCATION: row.SURGERY_LOCATION || '',
+          SURGERY_NO: row.SURGERY_NO || '',
+          PLAN_SURGERY_DATE: row.PLAN_SURGERY_DATE || '',
+          SURGERY_TYPE: row.SURGERY_TYPE || '',
+          SURGERY_NAME: row.SURGERY_NAME || '',
+          SURGERY_TABLE: row.SURGERY_TABLE || '',
+          HOSPITALIZATION_NUMBER: row.HOSPITALIZATION_NUMBER || '',
+          SURGERY_FLAG: row.SURGERY_FLAG || '',
+          SURGERY_GROUP: row.SURGERY_GROUP || '',
+          PATIENT_NAME: row.PATIENT_NAME || '',
+          AGE: row.AGE || '',
+          AGE_STR: row.AGE_STR || this.ageStrFromBirthDate(row.AGE) || '',
+          GENDER: row.GENDER || '',
+          PATIENT_DEPT: row.PATIENT_DEPT || '',
+          PATIENT_DEPT_CODE: row.PATIENT_DEPT_CODE || '',
+          IN_HOSP_NO: row.IN_HOSP_NO || '',
+          BED_NUMBER: row.BED_NUMBER || '',
+          DIAGNOSIS: row.DIAGNOSIS || '',
+          SURGEON_DEPT: row.SURGEON_DEPT || '',
+          SURGEON_DEPT_CODE: row.SURGEON_DEPT_CODE || '',
+          CHIEF_SURGEON: row.CHIEF_SURGEON || '',
+          CHIEF_SURGEON_NO: row.CHIEF_SURGEON_NO || ''
+        };
+        this.$nextTick(() => {
+          if (this.$refs.surgeryForm) {
+            this.$refs.surgeryForm.clearValidate();
+          }
+        });
+      } catch (error) {
+        this.$message.error(error.message || '获取手术单详情失败');
+        this.surgeryDialogVisible = false;
+      } finally {
+        this.surgeryDialogLoading = false;
+      }
     },
     // 关闭对话框
     closeSurgeryDialog() {
@@ -1530,11 +1636,6 @@ export default {
         this.$message.warning('请先选择手术单');
         return;
       }
-      // 只有系统创建的手术单才能确认消耗
-      if (this.currentMainRow.IS_HIS_CREATE == 1) {
-        this.$message.warning('HIS创建的手术单不能确认消耗');
-        return;
-      }
       this.$confirm('确认消耗吗?确认后将先标记手术单为完成状态，然后更新手术单和耗材明细的消耗状态', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -1590,10 +1691,6 @@ export default {
         this.$message.warning('请先选择手术单');
         return;
       }
-      if (this.currentMainRow.IS_HIS_CREATE == 1) {
-        this.$message.warning('HIS创建的手术单不允许修改');
-        return;
-      }
       this.openEditDialog();
     },
     // 手术单作废
@@ -1635,11 +1732,6 @@ export default {
       }
       if (!this.registerConsumeForm.LABEL) {
         this.$message.warning('请输入定数标签');
-        return;
-      }
-      // 只有系统创建的手术单才能手动登记消耗
-      if (this.currentMainRow.IS_HIS_CREATE == 1) {
-        this.$message.warning('HIS创建的手术单不能手动登记消耗');
         return;
       }
       // 检查手术单是否已确认消耗
@@ -1733,11 +1825,6 @@ export default {
     handleUploadImplantOrder() {
       if (!this.currentMainRow) {
         this.$message.warning('请先选择手术单');
-        return;
-      }
-      // 只有系统创建的手术单才能上传植入物单
-      if (this.currentMainRow.IS_HIS_CREATE == 1) {
-        this.$message.warning('HIS创建的手术单不能上传植入物单');
         return;
       }
       // 创建隐藏的file input来选择文件
