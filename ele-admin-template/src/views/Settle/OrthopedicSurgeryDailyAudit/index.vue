@@ -683,7 +683,7 @@ export default {
         SURGERY_DATE_END: '',
         AUDIT_STATE: '',
         IS_AUDIT_BATCH_VALIDITY: '',
-        IS_FOLLOW_STAGE: '1',
+        IS_FOLLOW_STAGE: '',
         VARIETIE_CHARGE_START: '',
         VARIETIE_CHARGE_END: '',
         DEPT_APPROVAL_START: '',
@@ -782,7 +782,7 @@ export default {
         SURGERY_DATE_END: '',
         AUDIT_STATE: '',
         IS_AUDIT_BATCH_VALIDITY: '',
-        IS_FOLLOW_STAGE: '1',
+        IS_FOLLOW_STAGE: '',
         VARIETIE_CHARGE_START: '',
         VARIETIE_CHARGE_END: '',
         DEPT_APPROVAL_START: '',
@@ -1223,7 +1223,7 @@ export default {
   },
   created() {
     this.loadDeptOptions();
-    this.loadMainTableData();
+    // this.loadMainTableData();
   }
 };
 </script>
