@@ -178,7 +178,7 @@
           size="mini"
           height="400"
           highlight-current-row
-          :checkbox-config="{ highlight: true }"
+          :checkbox-config="{ highlight: true, trigger: 'row' }"
           @checkbox-change="onMainTableCheckboxChange"
           @checkbox-all="onMainTableCheckboxAll"
           @current-change="onMainTableCurrentChange"
@@ -343,7 +343,7 @@
           resizable
           size="mini"
           height="400"
-          :checkbox-config="{ highlight: true }"
+          :checkbox-config="{ highlight: true, trigger: 'row' }"
           @checkbox-change="onDetailTableCheckboxChange"
           @checkbox-all="onDetailTableCheckboxAll"
         >
@@ -474,7 +474,7 @@
           :current-page="detailTablePage.page"
           :page-size="detailTablePage.size"
           :total="detailTablePage.total"
-          :page-sizes="[10, 20, 50, 100]"
+          :page-sizes="[100, 500, 1000, 2000]"
           :layouts="[
             'PrevJump',
             'PrevPage',
@@ -542,7 +542,7 @@ export default {
       detailTableLoading: false,
       detailTablePage: {
         page: 1,
-        size: 20,
+        size: 1000,
         total: 0
       },
       detailTableSelection: [] // 明细表选中数据
@@ -619,6 +619,14 @@ export default {
         if (res.code === 200) {
           this.mainTableData = res.result || [];
           this.mainTablePage.total = res.total || 0;
+          this.mainTableSelection = [];
+          // 清空明细表数据和勾选
+          this.detailTableData = [];
+          this.detailTablePage.total = 0;
+          this.detailTableSelection = [];
+          this.detailTotalQuantity = 0;
+          this.detailTotalAmount = '0.00';
+          this.currentMainRow = null;
           // 从接口获取总数量和总金额
           this.totalQuantity = res.sumCount || 0;
           this.totalAmount = (res.sumPrice || 0).toFixed(2);
