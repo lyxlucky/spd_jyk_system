@@ -440,3 +440,21 @@ export async function deleteSurgeryConsumable(data) {
     return Promise.reject(new Error(res.data.msg));
   }
 }
+
+/**
+ * 补打标签 - 返回文件流
+ * @param {Object} data - { SURGERY_NO, Detail: [{ DEF_NO_PKG_CODE }] }
+ * @returns {Promise<{data: Blob}>} - 返回带 data(Blob) 的响应
+ */
+export async function printGtDetail(data) {
+  const formatData = {
+    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+    format: 'json',
+    inline: 'true',
+    SURGERY_NO: data.SURGERY_NO || '',
+    Detail: data.Detail || []
+  };
+  return request.post('/PrintPdf/PrintGtDetail', formatData, {
+    responseType: 'blob'
+  });
+}

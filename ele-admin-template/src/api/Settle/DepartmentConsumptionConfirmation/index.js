@@ -55,6 +55,7 @@ export async function getSzseSpUseDelInfo(data) {
     OPEARTION_CHARGING_TIME_END: data.OPEARTION_CHARGING_TIME_END || '',
     ZX_DEPT: data.ZX_DEPT || '',
     DEPT_TWO_NAME: data.DEPT_TWO_NAME || '',
+    DEPT_TWO_CODE: store.state.user.info?.DeptNow?.Dept_Two_Code || '',
     SPECIFICATION_OR_TYPE: data.SPECIFICATION_OR_TYPE || '',
     VARIETIE_NAME: data.VARIETIE_NAME || '',
     VARIETIE_CODE_NEW: data.VARIETIE_CODE_NEW || '',
