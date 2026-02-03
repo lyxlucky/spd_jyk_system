@@ -502,6 +502,18 @@
                 批量修改执行科室
               </el-button>
             </el-form-item>
+            <el-form-item>
+              <el-button
+                type="success"
+                class="ele-btn-icon"
+                icon="el-icon-printer"
+                :disabled="!currentMainRow || registeredTableCheckedCount === 0"
+                :loading="reprintLabelLoading"
+                @click="handleReprintLabel"
+              >
+                补打标签
+              </el-button>
+            </el-form-item>
           </el-form>
         </div>
 
@@ -587,6 +599,11 @@
               <el-tag v-else type="warning">未知</el-tag>
             </template>
           </vxe-column>
+          <vxe-column field="SOURCE_TYPE" title="登记来源" width="100" align="center">
+            <template v-slot="{ row }">
+              <span>{{ row.SOURCE_TYPE == 1 ? 'HIS登记' : '系统登记' }}</span>
+            </template>
+          </vxe-column>
           <vxe-column
             title="操作"
             width="100"
@@ -597,7 +614,7 @@
               <el-button
                 type="danger"
                 size="mini"
-                :disabled="!currentMainRow || (currentMainRow.CONSUME_STATUS == 1)"
+                :disabled="!currentMainRow || (currentMainRow.CONSUME_STATUS == 1) || (row.SOURCE_TYPE == 1)"
                 @click="handleDeleteConsumable(row)"
               >
                 删除
@@ -1005,7 +1022,8 @@ import {
   getImplantForm,
   confirmConsumption,
   deleteSurgeryConsumable,
-  batchUpdateExecuteDept
+  batchUpdateExecuteDept,
+  printGtDetail
 } from '@/api/Settle/SurgeryOrderManagement';
 import { API_BASE_URL, TOKEN_STORE_NAME } from '@/config/setting';
 
@@ -1065,6 +1083,7 @@ export default {
       batchExecuteDeptCode: '',
       batchExecuteDeptDialogVisible: false,
       batchExecuteDeptLoading: false,
+      reprintLabelLoading: false,
       registeredTableCheckedCount: 0,
       // 明细表2：领用未登记耗材
       unregisteredTableData: [],
@@ -1382,6 +1401,50 @@ export default {
         this.$message.error(error.message || '修改失败');
       } finally {
         this.batchExecuteDeptLoading = false;
+      }
+    },
+    async handleReprintLabel() {
+      if (!this.currentMainRow || !this.currentMainRow.SURGERY_NO) {
+        this.$message.warning('请先选择手术单');
+        return;
+      }
+      const rows = this.$refs.registeredTable ? this.$refs.registeredTable.getCheckboxRecords() : [];
+      if (!rows || rows.length === 0) {
+        this.$message.warning('请勾选要补打标签的耗材记录');
+        return;
+      }
+      const detail = rows.map(r => ({
+        DEF_NO_PKG_CODE: r.LABEL_BARCODE || ''
+      })).filter(d => d.DEF_NO_PKG_CODE);
+      if (detail.length === 0) {
+        this.$message.warning('所选记录无有效标签条码');
+        return;
+      }
+      this.reprintLabelLoading = true;
+      try {
+        const res = await printGtDetail({
+          SURGERY_NO: this.currentMainRow.SURGERY_NO,
+          Detail: detail
+        });
+        const blob = res.data;
+        if (blob.type && blob.type.indexOf('application/json') !== -1) {
+          const text = await new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = reject;
+            reader.readAsText(blob);
+          });
+          const json = JSON.parse(text);
+          this.$message.error(json.msg || json.message || '补打标签失败');
+          return;
+        }
+        const url = window.URL.createObjectURL(blob);
+        window.open(url, '_blank');
+        setTimeout(() => window.URL.revokeObjectURL(url), 60000);
+      } catch (error) {
+        this.$message.error(error.message || '补打标签失败');
+      } finally {
+        this.reprintLabelLoading = false;
       }
     },
     // 未登记表分页变化
