@@ -294,79 +294,121 @@ export default {
     openImport() {
       this.showImport = true;
     },
-    exportData(data) {
-      const loading = this.$messageLoading('正在导出数据...');
-      this.$refs.table.doRequest(({ where, order }) => {
-        where = data;
-        where.sourceFrom = this.$store.state.user.info.DeptNow.Dept_Two_Code;
-        SearchDefRemind({
-          page: 1,
-          limit: 999999,
-          where: where,
-          order: order
-        })
-          .then((res) => {
-            loading.close();
-            const array = [
-              [
-                '所属科室',
-                '品种编码',
-                '品种名称',
-                '品种名称',
-                '规格/型号',
-                '单位',
-                '供应商',
-                '生产批号',
-                '生产日期',
-                '有效到期',
-                '定数码',
-                '在库天数',
-                '备注',
-                '库存状态'
-              ]
-            ];
-            res.result.forEach((d) => {
-              var USE_DEF_NO_PKG_CODE = '';
-              if (d.USE_DEF_NO_PKG_CODE == d.Def_No_Pkg_Code) {
-                USE_DEF_NO_PKG_CODE = '已结算';
-              } else {
-                USE_DEF_NO_PKG_CODE = '未结算';
-              }
-              array.push([
-                d.Source_Name,
-                d.Varietie_Code_New,
-                d.Varietie_Name,
-                d.Specification_Or_Type,
-                d.Unit,
-                d.Supplier_Name,
-                d.Batch,
-                d.Batch_Production_Date,
-                d.Batch_Validity_Period,
-                d.Def_No_Pkg_Code,
-                d.Storaged_Days,
-                d.Remark,
-                d.Storaged_Days,
-                USE_DEF_NO_PKG_CODE
-                // this.$util.toDateString(d.createTime)
-              ]);
-            });
-            writeFile(
-              {
-                SheetNames: ['Sheet1'],
-                Sheets: {
-                  Sheet1: utils.aoa_to_sheet(array)
-                }
-              },
-              '库存近效期提醒.xlsx'
-            );
-            this.$message.success('导出成功');
-          })
-          .catch((e) => {
-            loading.close();
-            this.$message.error(e.message);
-          });
+exportData(data) {
+  const loading = this.$messageLoading('正在导出数据...');
+  this.$refs.table.doRequest(({ where, order }) => {
+    where = data || where;
+    where.sourceFrom = this.$store.state.user.info.DeptNow.Dept_Two_Code;
+    
+    SearchDefRemind({
+      page: 1,
+      limit: 9999999,
+      where: where,
+      order: order
+    })
+      .then((res) => {
+        loading.close();
+        
+        // 获取当前时间用于计算
+        const today = this.$moment();
+        
+        // 表头与表格列对应
+        const array = [
+          [
+            '所属科室',
+            '品种编码',
+            '品种名称',
+            '规格/型号',
+            '供应商',
+            '生产企业',
+            '在库天数',
+            '剩余天数',
+            '计费编码',
+            '单位',
+            '生产批号',
+            '生产日期',
+            '有效到期',
+            '定数码'
+          ]
+        ];
+        
+        res.result.forEach((d) => {
+          // 计算在库天数
+          const createTime = this.$moment(d.CREATE_TIME, "YYYY/MM/DD HH:mm:ss");
+          const inventoryDays = today.diff(createTime, 'days');
+          
+          // 计算剩余天数
+          const batchValidDate = this.$moment(d.Batch_Validity_Period);
+          const remainingDays = batchValidDate.diff(today, 'days');
+          
+          array.push([
+            d.Source_Name || '',
+            d.Varietie_Code_New || '',
+            d.Varietie_Name || '',
+            d.Specification_Or_Type || '',
+            d.Supplier_Name || '',
+            d.Manufacturing_Ent_Name || '',
+            inventoryDays,  // 在库天数（计算值）
+            remainingDays,  // 剩余天数（计算值）
+            d.CHARGING_CODE || '',
+            d.Unit || '',
+            d.Batch || '',
+            d.Batch_Production_Date ? d.Batch_Production_Date.substr(0, 10) : '', // 格式化日期
+            d.Batch_Validity_Period ? d.Batch_Validity_Period.substr(0, 10) : '', // 格式化日期
+            d.Def_No_Pkg_Code || ''
+          ]);
+        });
+        
+        // 创建工作簿和工作表
+        const worksheet = utils.aoa_to_sheet(array);
+        
+        // 设置列宽
+        const colWidths = [
+          { wch: 12 }, // 所属科室
+          { wch: 15 }, // 品种编码
+          { wch: 20 }, // 品种名称
+          { wch: 20 }, // 规格/型号
+          { wch: 20 }, // 供应商
+          { wch: 20 }, // 生产企业
+          { wch: 10 }, // 在库天数
+          { wch: 10 }, // 剩余天数
+          { wch: 15 }, // 计费编码
+          { wch: 8 },  // 单位
+          { wch: 20 }, // 生产批号
+          { wch: 12 }, // 生产日期
+          { wch: 12 }, // 有效到期
+          { wch: 25 }  // 定数码
+        ];
+        worksheet['!cols'] = colWidths;
+        
+        // 设置表头样式
+        const range = utils.decode_range(worksheet['!ref']);
+        for (let C = range.s.c; C <= range.e.c; ++C) {
+          const address = utils.encode_cell({ r: 0, c: C });
+          if (!worksheet[address]) continue;
+          worksheet[address].s = {
+            font: { bold: true, color: { rgb: "FFFFFF" } },
+            fill: { fgColor: { rgb: "4472C4" } },
+            alignment: { horizontal: "center", vertical: "center" }
+          };
+        }
+        
+        // 创建并导出文件
+        const workbook = utils.book_new();
+        utils.book_append_sheet(workbook, worksheet, "库存近效期提醒");
+        
+        // 生成文件名（包含当前日期）
+        const fileName = `库存近效期提醒_${today.format('YYYYMMDD_HHmmss')}.xlsx`;
+        writeFile(workbook, fileName);
+        
+        this.$message.success(`导出成功，共 ${res.result.length} 条数据`);
+      })
+      .catch((e) => {
+        loading.close();
+        this.$message.error(e.message || '导出失败');
       });
-    }
+  });
+}
   },
   created() {
     // this.getdatasource();
