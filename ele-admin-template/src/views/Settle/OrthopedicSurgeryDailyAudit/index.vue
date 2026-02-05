@@ -138,7 +138,7 @@
             <el-option label="否" value="0" />
           </el-select>
         </el-form-item>
-        <el-form-item label="手术日期">
+        <el-form-item label="计划手术日期">
           <el-date-picker
             v-model="surgeryDateRange"
             type="daterange"
@@ -334,11 +334,23 @@
             show-overflow
           />
           <vxe-column
-            field="ACTUAL_SURGERY_DATE"
-            title="手术日期"
+            field="PLAN_SURGERY_DATE"
+            title="计划手术日期"
             width="155"
             align="center"
             :formatter="formatDate"
+          />
+          <vxe-column
+            field="CHARGE_AMOUNT"
+            title="收费金额"
+            width="100"
+            align="center"
+          />
+          <vxe-column
+            field="FOLLOW_STAGE_CHARGE_AMOUNT"
+            title="跟台收费金额"
+            width="100"
+            align="center"
           />
           <vxe-column
             field="SURGERY_STATUS"
@@ -413,7 +425,7 @@
           :current-page="mainTablePage.page"
           :page-size="mainTablePage.size"
           :total="mainTablePage.total"
-          :page-sizes="[10, 20, 50, 100]"
+          :page-sizes="[20, 50, 100, 200]"
           :layouts="[
             'PrevJump',
             'PrevPage',
@@ -521,6 +533,12 @@
             :formatter="formatValidityDate"
           />
           <vxe-column
+            field="SUPPLY_PRICE"
+            title="收费金额"
+            width="120"
+            align="center"
+          />
+          <vxe-column
             field="BARCODE"
             title="标签条码"
             min-width="180"
@@ -551,7 +569,7 @@
           :current-page="detailTablePage.page"
           :page-size="detailTablePage.size"
           :total="detailTablePage.total"
-          :page-sizes="[10, 20, 50, 100]"
+          :page-sizes="[20, 50, 100, 200]"
           :layouts="[
             'PrevJump',
             'PrevPage',
@@ -711,7 +729,7 @@ export default {
       detailTableLoading: false,
       detailTablePage: {
         page: 1,
-        size: 20,
+        size: 100,
         total: 0
       },
       currentDetailRow: null, // 当前选中的明细行

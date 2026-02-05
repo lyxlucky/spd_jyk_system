@@ -282,7 +282,7 @@
           :current-page="mainTablePage.page"
           :page-size="mainTablePage.size"
           :total="mainTablePage.total"
-          :page-sizes="[10, 20, 50, 100]"
+          :page-sizes="[50, 100, 500, 2000]"
           :layouts="[
             'PrevJump',
             'PrevPage',
@@ -373,6 +373,7 @@
             field="OPEARTION_CHARGING_TIME"
             title="计费时间"
             width="150"
+            sortable
             align="center"
             :formatter="formatDateTime"
           />
@@ -416,6 +417,7 @@
             title="患者姓名"
             width="100"
             align="center"
+            sortable
           />
           <vxe-column
             field="PATIENT_DEPT"
@@ -428,8 +430,9 @@
             title="住院号"
             width="120"
             show-overflow
+            sortable
           />
-          <vxe-column field="SSBH" title="手术编号" width="100" align="center" />
+          <vxe-column field="SSBH" title="手术编号" width="150" align="center" />
           <vxe-column
             field="ZDMC"
             title="主刀名称"
@@ -532,7 +535,7 @@ export default {
       mainTableLoading: false,
       mainTablePage: {
         page: 1,
-        size: 20,
+        size: 500,
         total: 0
       },
       mainTableSelection: [], // 主表选中数据

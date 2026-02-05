@@ -65,7 +65,8 @@ export async function getSzseSpUseDelInfo(data) {
     CHARGING_CODE: data.CHARGING_CODE || '',
     SUPPLIER_NAME: data.SUPPLIER_NAME || '',
     USE_APP_STATE: data.USE_APP_STATE || '',
-    ID: data.ID || ''
+    ID: data.ID || '',
+    CONSUMPTION_TYPE: '2',
   };
 
 //   const formData = formdataify(formatData);
