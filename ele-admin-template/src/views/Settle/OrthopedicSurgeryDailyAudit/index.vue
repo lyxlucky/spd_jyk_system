@@ -341,6 +341,7 @@
             :formatter="formatDate"
           />
           <vxe-column
+            v-if="false"
             field="CHARGE_AMOUNT"
             title="收费金额"
             width="100"
@@ -349,6 +350,12 @@
           <vxe-column
             field="FOLLOW_CHARGE_AMOUNT"
             title="跟台收费金额"
+            width="100"
+            align="center"
+          />
+          <vxe-column
+            field="FOLLOW_CHARGE_QTY"
+            title="跟台消耗数量"
             width="100"
             align="center"
           />
