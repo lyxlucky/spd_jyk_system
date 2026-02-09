@@ -185,7 +185,7 @@
           @row-click="onMainTableRowClick"
         >
           <vxe-column type="checkbox" width="50" align="center" />
-          <vxe-column type="seq" title="序号" width="60" align="center" />
+          <vxe-column type="seq" title="序号" width="50" align="center" />
           <vxe-column field="YEAR" title="年份" width="80" align="center" />
           <vxe-column field="MONTH" title="月份" width="80" align="center" />
           <vxe-column
@@ -205,24 +205,28 @@
             title="计费编码"
             min-width="120"
             show-overflow
+            sortable
           />
           <vxe-column
             field="VARIETIE_CODE_NEW"
             title="品种编码"
             min-width="120"
             show-overflow
+            sortable
           />
           <vxe-column
             field="VARIETIE_NAME"
             title="品种名称"
             min-width="150"
             show-overflow
+            sortable
           />
           <vxe-column
             field="SPECIFICATION_OR_TYPE"
             title="规格型号"
             min-width="120"
             show-overflow
+            sortable
           />
           <vxe-column field="UNIT" title="单位" width="80" align="center" />
           <vxe-column
@@ -230,6 +234,7 @@
             title="数量"
             width="100"
             align="right"
+            sortable
           />
           <vxe-column
             field="SUPPLY_PRICE"
@@ -237,6 +242,7 @@
             width="100"
             align="right"
             :formatter="formatPrice"
+            sortable
           />
           <vxe-column
             field="SUM_PRICE"
@@ -244,6 +250,7 @@
             width="120"
             align="right"
             :formatter="formatPrice"
+            sortable
           />
           <vxe-column
             field="SUPPLIER_NAME"
@@ -282,7 +289,7 @@
           :current-page="mainTablePage.page"
           :page-size="mainTablePage.size"
           :total="mainTablePage.total"
-          :page-sizes="[50, 100, 500, 2000]"
+          :page-sizes="[100, 500, 2000, 5000]"
           :layouts="[
             'PrevJump',
             'PrevPage',
@@ -343,6 +350,8 @@
           resizable
           size="mini"
           height="400"
+          :scroll-y="{ enabled: true }"
+          :row-config="{ height: 32 }"
           :checkbox-config="{ highlight: true, trigger: 'row' }"
           @checkbox-change="onDetailTableCheckboxChange"
           @checkbox-all="onDetailTableCheckboxAll"
@@ -354,6 +363,7 @@
             title="数量"
             width="100"
             align="right"
+            sortable
           />
           <vxe-column
             field="SUPPLY_PRICE"
@@ -361,6 +371,7 @@
             width="100"
             align="right"
             :formatter="formatPrice"
+            sortable
           />
           <vxe-column
             field="SUM_PRICE"
@@ -368,6 +379,7 @@
             width="120"
             align="right"
             :formatter="formatDetailAmount"
+            sortable
           />
           <vxe-column
             field="OPEARTION_CHARGING_TIME"
@@ -458,6 +470,7 @@
             width="120"
             align="center"
             :formatter="formatDate"
+            sortable
           />
           <vxe-column
             field="IS_INTERVENED"
@@ -477,7 +490,7 @@
           :current-page="detailTablePage.page"
           :page-size="detailTablePage.size"
           :total="detailTablePage.total"
-          :page-sizes="[100, 500, 1000, 2000]"
+          :page-sizes="[100, 500, 2000, 5000]"
           :layouts="[
             'PrevJump',
             'PrevPage',
@@ -535,7 +548,7 @@ export default {
       mainTableLoading: false,
       mainTablePage: {
         page: 1,
-        size: 500,
+        size: 2000,
         total: 0
       },
       mainTableSelection: [], // 主表选中数据
@@ -545,7 +558,7 @@ export default {
       detailTableLoading: false,
       detailTablePage: {
         page: 1,
-        size: 1000,
+        size: 2000,
         total: 0
       },
       detailTableSelection: [] // 明细表选中数据

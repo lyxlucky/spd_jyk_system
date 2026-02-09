@@ -384,6 +384,13 @@
             align="center"
           />
           <vxe-column
+            field="APPLY_DEPT"
+            title="主刀科室"
+            min-width="120"
+            show-overflow
+            align="center"
+          />
+          <vxe-column
             v-if="false"
             field="SMART_CABINET1"
             title="智能柜"
@@ -393,6 +400,13 @@
           <vxe-column
             field="APPLY_DEPT"
             title="申请科室"
+            min-width="120"
+            show-overflow
+            align="center"
+          />
+          <vxe-column
+            field="PATIENT_DEPT"
+            title="病人所在科室"
             min-width="120"
             show-overflow
             align="center"

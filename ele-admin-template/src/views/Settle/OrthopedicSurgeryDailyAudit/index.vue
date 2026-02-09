@@ -347,7 +347,7 @@
             align="center"
           />
           <vxe-column
-            field="FOLLOW_STAGE_CHARGE_AMOUNT"
+            field="FOLLOW_CHARGE_AMOUNT"
             title="跟台收费金额"
             width="100"
             align="center"
@@ -701,7 +701,7 @@ export default {
         SURGERY_DATE_END: '',
         AUDIT_STATE: '',
         IS_AUDIT_BATCH_VALIDITY: '',
-        IS_FOLLOW_STAGE: '',
+        IS_FOLLOW_STAGE: '1',
         VARIETIE_CHARGE_START: '',
         VARIETIE_CHARGE_END: '',
         DEPT_APPROVAL_START: '',
@@ -800,7 +800,7 @@ export default {
         SURGERY_DATE_END: '',
         AUDIT_STATE: '',
         IS_AUDIT_BATCH_VALIDITY: '',
-        IS_FOLLOW_STAGE: '',
+        IS_FOLLOW_STAGE: '1',
         VARIETIE_CHARGE_START: '',
         VARIETIE_CHARGE_END: '',
         DEPT_APPROVAL_START: '',
