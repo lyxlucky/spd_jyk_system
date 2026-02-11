@@ -361,6 +361,15 @@
                 />
               </el-form-item>
               <el-form-item>
+      <el-input
+        style="width: 180px"
+        v-model="MANUFACTURING_ENT_NAME"
+        placeholder="请输入注册证号"
+        clearable
+        @keyup.enter.native="reloadProductTable"
+      />
+    </el-form-item>
+              <el-form-item>
                 <el-button type="primary" @click="reloadProductTable"
                   >查询</el-button
                 >
@@ -690,6 +699,13 @@
             showOverflowTooltip: true
           },
           {
+          prop: 'APPROVAL_NUMBER',
+          label: '注册证号',
+          minWidth: 150,
+          align: 'center',
+          showOverflowTooltip: true
+        },
+          {
             prop: 'MANUFACTURING_ENT_NAME',
             label: '生产企业',
             minWidth: 150,
@@ -759,6 +775,7 @@
         // ============ 产品选择弹窗相关 ============
         productSelectDialogVisible: false,
         productSearchKeyword: '',
+        MANUFACTURING_ENT_NAME: '', // 新增：注册证号搜索条件
         productPageSize: 10,
         productSelection: [],
         addProductsLoading: false,
@@ -1203,6 +1220,7 @@
       closeProductSelectDialog() {
         this.productSelectDialogVisible = false;
         this.productSearchKeyword = '';
+        this.MANUFACTURING_ENT_NAME = ''; // 新增：重置注册证号
         this.productSelection = [];
       },
       reloadProductTable() {
@@ -1216,7 +1234,8 @@
           limit,
           where: {
             DeptCode: deptCode,
-            SerachName: this.productSearchKeyword
+            SerachName: this.productSearchKeyword,
+            ApprovalNumber: this.MANUFACTURING_ENT_NAME // 新增：传递注册证号
           }
         })
           .then((res) => {
