@@ -362,8 +362,8 @@
               </el-form-item>
               <el-form-item>
       <el-input
-        style="width: 180px"
-        v-model="MANUFACTURING_ENT_NAME"
+        style="width: 200px"
+        v-model="productSearchKeyword2"
         placeholder="请输入注册证号"
         clearable
         @keyup.enter.native="reloadProductTable"
@@ -775,7 +775,7 @@
         // ============ 产品选择弹窗相关 ============
         productSelectDialogVisible: false,
         productSearchKeyword: '',
-        MANUFACTURING_ENT_NAME: '', // 新增：注册证号搜索条件
+        productSearchKeyword2: '', // 新增：注册证号搜索条件
         productPageSize: 10,
         productSelection: [],
         addProductsLoading: false,
@@ -811,6 +811,12 @@
           {
             prop: 'Brand',
             label: '品牌',
+            minWidth: 150,
+            align: 'center',
+            showOverflowTooltip: true
+          }, {
+            prop: 'APPROVAL_NUMBER',
+            label: '注册证号',
             minWidth: 150,
             align: 'center',
             showOverflowTooltip: true
@@ -867,11 +873,11 @@
       };
     },
     computed: {
-      // 是否可以编辑明细：仅在选中主单且状态为新增(0)或审批不通过(-1)时可编辑
+      // 是否可以编辑明细：仅在选中主单且状态为已提交(0)或审批不通过(-1)时可编辑
       canEditDtl() {
         return (
           this.selectedMain &&
-          (this.selectedMain.STATE === 0 || this.selectedMain.STATE === -1)
+          (this.selectedMain.STATE === 0 ||this.selectedMain.STATE === 1 || this.selectedMain.STATE === -1)
         );
       }
     },
@@ -1210,6 +1216,7 @@
           return;
         }
         this.productSearchKeyword = '';
+        this.productSearchKeyword2 = ''; // 新增：重置注册证号
         this.productSelection = [];
         this.productSelectDialogVisible = true;
         this.$nextTick(() => {
@@ -1220,7 +1227,7 @@
       closeProductSelectDialog() {
         this.productSelectDialogVisible = false;
         this.productSearchKeyword = '';
-        this.MANUFACTURING_ENT_NAME = ''; // 新增：重置注册证号
+        this.productSearchKeyword2 = ''; // 新增：重置注册证号
         this.productSelection = [];
       },
       reloadProductTable() {
@@ -1235,7 +1242,7 @@
           where: {
             DeptCode: deptCode,
             SerachName: this.productSearchKeyword,
-            ApprovalNumber: this.MANUFACTURING_ENT_NAME // 新增：传递注册证号
+            manufacturer: this.productSearchKeyword2 // 新增：传递注册证号
           }
         })
           .then((res) => {

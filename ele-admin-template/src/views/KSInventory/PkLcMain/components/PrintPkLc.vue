@@ -65,6 +65,7 @@
                   <th>品种编码</th>
                   <th>品种名称</th>
                   <th>品牌</th>
+                  <th>注册证号</th>
                   <th>生产企业</th>
                   <th>规格型号</th>
                   <th>价格</th>
@@ -79,6 +80,7 @@
                   <td>{{ item.VARIETIE_CODE_NEW }}</td>
                   <td>{{ item.VARIETIE_NAME }}</td>
                   <td>{{ item.BRAND }}</td>
+                  <td>{{ item.APPROVAL_NUMBER }}</td>
                   <td>{{ item.MANUFACTURING_ENT_NAME }}</td>
                   <td>{{ item.SPECIFICATION_OR_TYPE }}</td>
                   <td>{{ item.PRICE }}</td>
