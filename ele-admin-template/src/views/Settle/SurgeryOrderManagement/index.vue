@@ -518,6 +518,17 @@
             </el-form-item>
             <el-form-item>
               <el-button
+                type="danger"
+                class="ele-btn-icon"
+                icon="el-icon-user"
+                :disabled="!currentMainRow || registeredTableCheckedCount === 0"
+                @click="openDestroyerDialog"
+              >
+                销毁人登记
+              </el-button>
+            </el-form-item>
+            <el-form-item>
+              <el-button
                 type="success"
                 class="ele-btn-icon"
                 icon="el-icon-printer"
@@ -618,6 +629,19 @@
               <span>{{ row.SOURCE_TYPE == 1 ? 'HIS登记' : '系统登记' }}</span>
             </template>
           </vxe-column>
+          <vxe-column
+            field="DESTROY_MAN"
+            title="销毁人"
+            min-width="100"
+            show-overflow
+          />
+          <vxe-column
+            field="DESTROY_TIME"
+            title="销毁时间"
+            width="180"
+            align="center"
+            :formatter="formatDateTime"
+          />
           <vxe-column
             title="操作"
             width="100"
@@ -1015,6 +1039,30 @@
         <el-button type="primary" @click="submitBatchUpdateExecuteDept" :loading="batchExecuteDeptLoading">确 认</el-button>
       </span>
     </el-dialog>
+
+    <!-- 销毁人登记 -->
+    <el-dialog
+      title="销毁人登记"
+      :visible.sync="destroyerDialogVisible"
+      width="420px"
+      append-to-body
+    >
+      <el-form label-width="90px" size="small">
+        <el-form-item label="销毁人">
+          <el-input
+            v-model="destroyerName"
+            placeholder="请输入销毁人姓名"
+            clearable
+            maxlength="50"
+            show-word-limit
+          />
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="closeDestroyerDialog">取 消</el-button>
+        <el-button type="primary" @click="submitDestroyerRegister" :loading="destroyerLoading">确 认</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -1037,6 +1085,7 @@ import {
   confirmConsumption,
   deleteSurgeryConsumable,
   batchUpdateExecuteDept,
+  batchRegisterDestroyer,
   printGtDetail
 } from '@/api/Settle/SurgeryOrderManagement';
 import { API_BASE_URL, TOKEN_STORE_NAME } from '@/config/setting';
@@ -1097,6 +1146,9 @@ export default {
       batchExecuteDeptCode: '',
       batchExecuteDeptDialogVisible: false,
       batchExecuteDeptLoading: false,
+      destroyerName: '',
+      destroyerDialogVisible: false,
+      destroyerLoading: false,
       reprintLabelLoading: false,
       registeredTableCheckedCount: 0,
       // 明细表2：领用未登记耗材
@@ -1385,6 +1437,51 @@ export default {
     closeBatchExecuteDeptDialog() {
       this.batchExecuteDeptDialogVisible = false;
       this.batchExecuteDeptCode = '';
+    },
+    openDestroyerDialog() {
+      if (!this.currentMainRow || !this.currentMainRow.SURGERY_NO) {
+        this.$message.warning('请先选择手术单');
+        return;
+      }
+      const rows = this.$refs.registeredTable ? this.$refs.registeredTable.getCheckboxRecords() : [];
+      if (!rows || rows.length === 0) {
+        this.$message.warning('请勾选要登记销毁人的耗材记录');
+        return;
+      }
+      this.destroyerName = '';
+      this.destroyerDialogVisible = true;
+    },
+    closeDestroyerDialog() {
+      this.destroyerDialogVisible = false;
+      this.destroyerName = '';
+    },
+    async submitDestroyerRegister() {
+      const name = (this.destroyerName || '').trim();
+      if (!name) {
+        this.$message.warning('请输入销毁人姓名');
+        return;
+      }
+      const rows = this.$refs.registeredTable ? this.$refs.registeredTable.getCheckboxRecords() : [];
+      if (!rows || rows.length === 0) {
+        this.$message.warning('请勾选要登记销毁人的耗材记录');
+        return;
+      }
+      this.destroyerLoading = true;
+      try {
+        const items = rows.map(r => ({ ID: r.ID, SOURCE_TYPE: r.SOURCE_TYPE }));
+        const res = await batchRegisterDestroyer({ DESTROY_MAN: name, items });
+        if (res.code === 200) {
+          this.$message.success(res.msg || '登记成功');
+          this.closeDestroyerDialog();
+          this.loadRegisteredTableData();
+        } else {
+          this.$message.error(res.msg || '登记失败');
+        }
+      } catch (error) {
+        this.$message.error(error.message || '登记失败');
+      } finally {
+        this.destroyerLoading = false;
+      }
     },
     async submitBatchUpdateExecuteDept() {
       if (!this.batchExecuteDeptCode) {
