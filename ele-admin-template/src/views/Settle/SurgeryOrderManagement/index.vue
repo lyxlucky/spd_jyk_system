@@ -1909,10 +1909,10 @@ export default {
         return;
       }
       // 检查手术单是否已确认消耗
-      if (this.currentMainRow.CONSUME_STATUS == 1) {
-        this.$message.warning('手术单已确认消耗，不允许登记');
-        return;
-      }
+      // if (this.currentMainRow.CONSUME_STATUS == 1) {
+      //   this.$message.warning('手术单已确认消耗，不允许登记');
+      //   return;
+      // }
 
       try {
         const res = await addSurgeryConsumable({
