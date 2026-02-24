@@ -604,3 +604,19 @@ export async function upPlanListDelCount(data) {
     return Promise.reject(new Error(res.data.msg));
   }
 }
+
+
+export async function cancelOneAuthVarWithDept(data) {
+  const postData = {
+    Varietie_Code: data.Varietie_Code,
+    Dept_One_Code: data.Dept_One_Code,
+    Token: sessionStorage.getItem(TOKEN_STORE_NAME)
+  };
+  const formData = formdataify(postData);
+  const res = await request.post('/DeptOneBulkCargoAuthVar/UpdateDEPT_ONE_BULK_State', formData);
+  if (res.data.code == 200) {
+    return res.data;
+  } else {
+    return Promise.reject(new Error(res.data.msg));
+  }
+}

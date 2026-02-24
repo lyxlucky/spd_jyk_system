@@ -54,6 +54,9 @@
         重置
       </el-button>
     </el-form-item>
+    <el-form-item >
+      <el-button size="mini" type="danger" class="ele-btn-icon" @click="cancelAuthorization">取消授权</el-button>
+    </el-form-item>
     <el-form-item v-permission="'keshi-export'">
       <el-button
         size="mini"
@@ -111,6 +114,9 @@
         this.where = { ...this.defaultWhere };
         this.search();
       },
+      cancelAuthorization() {
+      this.$emit('cancelAuthorization');
+    },
       exportData() {
         this.$emit('exportData', this.where);
       },

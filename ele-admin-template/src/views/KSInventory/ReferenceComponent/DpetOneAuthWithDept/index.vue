@@ -4,7 +4,7 @@
       <el-card shadow="never">
         <!-- 搜索表单 -->
         <!-- 数据表格 -->
-        <user-search @search="reload" @exportData="exportData" @deleteIds="deleteIds" />
+        <user-search @search="reload" @exportData="exportData" @deleteIds="deleteIds" @cancelAuthorization="cancelAuthorization" />
         <ele-pro-table ref="table" height="600px" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :rowClickChecked="true" :rowClickCheckedIntelligent="false" :selection.sync="selection" @selection-change="onSelectionChange" cache-key="dpetOneAuthWithDept">
           <template v-slot:toolbar>
           </template>
@@ -46,7 +46,8 @@ import UserEdit from './components/user-edit.vue';
 import {
   getOneAuthVarWithDept,
   deleteOneAuthVarWithDeptItem,
-  deleteOneAuthVarWithDeptItems
+  deleteOneAuthVarWithDeptItems,
+  cancelOneAuthVarWithDept  
 } from '@/api/KSInventory/KSDepartmentalPlan';
 import {
   SerachPlanList,
@@ -282,7 +283,43 @@ export default {
     },
     onSelectionChange(selection) {
       this.selection = selection;
-    },
+    },  // 取消授权
+   cancelAuthorization() {
+  if (this.selection.length === 0) {
+    this.$message.warning('请选中要操作的数据');
+    return;
+  }
+  this.$confirm('确认要取消授权此数据吗？', '提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning'
+  }).then(() => {
+    const loading = this.$messageLoading('取消授权中...');
+    let Varietie_Code = '';
+    let Dept_One_Code = '';
+    this.selection.forEach(item => {
+      Varietie_Code += item.Varietie_Code + ',';
+      Dept_One_Code += item.Dept_One_Code + ',';
+    });
+    Varietie_Code = Varietie_Code.slice(0, -1);
+    Dept_One_Code = Dept_One_Code.slice(0, -1);
+
+    // 调用修改后的 API，只传递业务参数
+    cancelOneAuthVarWithDept({ Varietie_Code, Dept_One_Code })
+      .then(res => {
+        loading.close();
+        this.$message.success(res.msg || '取消授权成功');
+        this.reload(); // 刷新表格
+      })
+      .catch(err => {
+        loading.close();
+        this.$message.error(err.message || '操作失败');
+      });
+  }).catch(() => {
+    // 用户取消确认，不做处理
+  });
+}
+    ,
     exportData(data) {
       const loading = this.$messageLoading('正在导出数据...');
       this.$refs.table.doRequest(({ where, order }) => {
