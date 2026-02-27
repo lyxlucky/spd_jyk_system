@@ -384,7 +384,7 @@
             align="center"
           />
           <vxe-column
-            field="APPLY_DEPT"
+            field="SURGEON_DEPT"
             title="主刀科室"
             min-width="120"
             show-overflow
@@ -652,7 +652,7 @@
               <el-button
                 type="danger"
                 size="mini"
-                :disabled="!currentMainRow || (currentMainRow.CONSUME_STATUS == 1) || (row.SOURCE_TYPE == 1)"
+                :disabled="!currentMainRow || (row.SOURCE_TYPE == 1)"
                 @click="handleDeleteConsumable(row)"
               >
                 删除
@@ -1955,7 +1955,7 @@ export default {
       }).then(async () => {
         try {
           const res = await deleteSurgeryConsumable({
-            ID: row.ID
+            ID: row.SURGERY_VARIETIE_ID
           });
           if (res.code === 200) {
             this.$message.success(res.msg || '删除成功');

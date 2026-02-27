@@ -54,7 +54,7 @@
         重置
       </el-button>
     </el-form-item>
-    <el-form-item >
+    <el-form-item v-if="false">
       <el-button size="mini" type="danger" class="ele-btn-icon" @click="cancelAuthorization">取消授权</el-button>
     </el-form-item>
     <el-form-item v-permission="'keshi-export'">
@@ -69,7 +69,7 @@
         导出
       </el-button>
     </el-form-item>
-    <el-form-item v-permission="'keshi-export'">
+    <el-form-item>
       <el-button
         size="mini"
         type="danger"
