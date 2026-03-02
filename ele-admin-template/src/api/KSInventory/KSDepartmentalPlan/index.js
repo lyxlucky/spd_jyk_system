@@ -590,6 +590,24 @@ export async function getDeptTwoRegion(data) {
   }
 }
 
+// 查询对应科室的库区 按科室选择
+export async function getDeptTwoRegion2(data) {
+  const formatData = {
+    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+    deptTwoCode: data.deptTwoCode || '',
+    type: data.type || 0,
+    account: ''
+  }
+  const res = await request.get('/DeptTwoRegion/getDeptTwoRegion', {
+    params: formatData
+  });
+  if (res.data.code == 200) {
+    return res.data;
+  } else {
+    return Promise.reject(new Error(res.data.msg));
+  }
+}
+
 /* 更新申领单数量 */
 export async function upPlanListDelCount(data) {
   var formatData = {

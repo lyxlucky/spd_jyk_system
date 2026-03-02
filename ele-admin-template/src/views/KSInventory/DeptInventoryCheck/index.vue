@@ -82,6 +82,11 @@
         <vxe-column type="seq" title="序号" width="55" align="center" />
         <vxe-column field="PERIOD_YM" title="期数" width="90" align="center" />
         <vxe-column field="DEPT_TWO_NAME" title="盘点科室" min-width="140" />
+        <vxe-column field="REGION_CODE" title="库区" width="110" align="center">
+          <template #default="{ row }">
+            <span>{{ regionLabel(row.REGION_CODE) }}</span>
+          </template>
+        </vxe-column>
         <vxe-column field="CHECK_START_TIME" title="盘点开始时间" width="155" align="center" :formatter="formatterDate" />
         <vxe-column field="CHECK_END_TIME" title="盘点结束时间" width="155" align="center" :formatter="formatterDate" />
         <vxe-column field="STATUS" title="状态" width="90" align="center">
@@ -189,7 +194,23 @@
               :loading="importLoading"
               @click="triggerImport"
             >导入</el-button>
+            <el-dropdown
+              v-if="currentMainRow && currentMainRow.STATUS === 0"
+              size="mini"
+              split-button
+              type="info"
+              :disabled="lastStockImportLoading"
+              @click="triggerLastStockImport"
+              @command="handleLastStockCommand"
+              style="margin-left: 4px"
+            >
+              {{ lastStockImportLoading ? '导入中...' : '导入上期库存' }}
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item command="download"><i class="el-icon-download" /> 下载模板</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
             <input ref="importInput" type="file" accept=".xlsx" style="display:none" @change="handleImportFile" />
+            <input ref="lastStockImportInput" type="file" accept=".xlsx" style="display:none" @change="handleLastStockImportFile" />
           </el-form-item>
         </el-form>
       </div>
@@ -302,14 +323,37 @@
         <el-form-item label="盘点科室">
           <el-input :value="isEditMode ? checkFormData.DEPT_TWO_NAME : deptName" disabled />
         </el-form-item>
+        <el-form-item label="库区">
+          <el-input
+            v-if="isEditMode"
+            :value="(checkFormData.REGION_CODE == null || checkFormData.REGION_CODE === 0 || checkFormData.REGION_CODE === '0') ? '无库区' : regionLabel(checkFormData.REGION_CODE)"
+            disabled
+          />
+          <el-select
+            v-else
+            v-model="checkFormData.REGION_CODE"
+            clearable
+            :placeholder="regions.length > 0 ? '请选择库区' : '暂无库区'"
+            style="width: 100%"
+            :loading="regionLoading"
+            :disabled="!regions.length"
+          >
+            <el-option
+              v-for="region in regions"
+              :key="region.value"
+              :label="region.label"
+              :value="region.value"
+            />
+          </el-select>
+        </el-form-item>
         <el-form-item label="盘点开始时间" prop="CHECK_START_TIME">
           <el-date-picker
             v-model="checkFormData.CHECK_START_TIME"
             type="date"
             placeholder="选择开始时间"
-            value-format="yyyy-MM-dd HH:mm:ss"
+            value-format="yyyy-MM-dd"
             style="width: 100%"
-            :disabled="isEditMode"
+            :disabled="true"
           />
         </el-form-item>
         <el-form-item label="盘点结束时间" prop="CHECK_END_TIME">
@@ -317,7 +361,7 @@
             v-model="checkFormData.CHECK_END_TIME"
             type="date"
             placeholder="选择结束时间"
-            value-format="yyyy-MM-dd HH:mm:ss"
+            value-format="yyyy-MM-dd"
             style="width: 100%"
             :disabled="isEditMode"
           />
@@ -369,7 +413,7 @@
         <el-form-item label="实存数" prop="ACTUAL_STOCK_QTY">
           <el-input-number
             v-model="detailFormData.ACTUAL_STOCK_QTY"
-            :precision="2"
+            :precision="0"
             :step="1"
             :min="0"
             style="width: 100%"
@@ -377,7 +421,7 @@
             @change="calcProfitLoss"
           />
         </el-form-item>
-        <el-form-item label="盈亏数">
+        <el-form-item label="盈亏数" v-if="false">
           <el-input
             :value="detailFormData.PROFIT_LOSS_NUMBER !== undefined && detailFormData.PROFIT_LOSS_NUMBER !== null ? detailFormData.PROFIT_LOSS_NUMBER : '—'"
             disabled
@@ -422,8 +466,11 @@ import {
   deleteDeptInventoryCheck,
   getDeptInventoryCheckDetailList,
   updateDeptInventoryCheckDetail,
-  batchUpdateDeptInventoryCheckDetail
+  batchUpdateDeptInventoryCheckDetail,
+  importLastStockQty
 } from '@/api/KSInventory/DeptInventoryCheck';
+import { getDeptTwoRegion2 } from '@/api/KSInventory/KSDepartmentalPlan';
+import { reloadPageTab } from '@/utils/page-tab-util';
 import store from '@/store';
 
 export default {
@@ -456,11 +503,14 @@ export default {
       checkDialogVisible: false,
       checkDialogLoading: false,
       isEditMode: false,
+      regions: [],
+      regionLoading: false,
       checkFormData: {
         ID: null,
         PERIOD_YM: '',
         CHECK_START_TIME: '',
         CHECK_END_TIME: '',
+        REGION_CODE: '',
         REMARK: ''
       },
       checkFormRules: {
@@ -473,6 +523,7 @@ export default {
       detailDialogLoading: false,
       exportLoading: false,
       importLoading: false,
+      lastStockImportLoading: false,
       detailFormData: {
         ID: null,
         VARIETIE_NAME: '',
@@ -615,7 +666,7 @@ export default {
         const workbook = new ExcelJS.Workbook();
         const sheet = workbook.addWorksheet('盘点明细');
 
-        const headers = ['盘点单明细ID', '上期库存', '入库数', '领用数', '退还数', '本期库存', '实存数', '消耗数', '计费数量', '盈亏値', '物资编码', '品种名称', '规格型号', '收费编码', '单位', '厂家', '单价', '是否入柜', '盈亏备注'];
+        const headers = ['盘点单明细ID', '上期库存', '入库数', '领用数', '退还数', '本期库存', '实存数', '消耗数', '计费数量', '盈亏値', '品种编码', '品种名称', '规格型号', '收费编码', '单位', '厂家', '单价', '是否入柜', '盈亏备注'];
         const colCount = headers.length;
         const colWidths = [14, 10, 10, 10, 10, 10, 10, 10, 10, 10, 16, 30, 20, 14, 8, 30, 10, 10, 20];
         sheet.columns = colWidths.map(w => ({ width: w }));
@@ -746,6 +797,85 @@ export default {
       }
     },
 
+    // —————————————————————— 导入上期库存 ——————————————————————
+    handleLastStockCommand(command) {
+      if (command === 'download') {
+        this.downloadLastStockTemplate();
+      } else if (command === 'import') {
+        this.triggerLastStockImport();
+      }
+    },
+    async downloadLastStockTemplate() {
+      try {
+        const ExcelJS = (await import('exceljs')).default;
+        const workbook = new ExcelJS.Workbook();
+        const sheet = workbook.addWorksheet('上期库存模板');
+        sheet.columns = [{ width: 22 }, { width: 14 }];
+        const thinBorder = { top: { style: 'thin' }, bottom: { style: 'thin' }, left: { style: 'thin' }, right: { style: 'thin' } };
+        const headerRow = sheet.addRow(['品种编码', '上期库存']);
+        headerRow.height = 22;
+        headerRow.eachCell((cell) => {
+          cell.font = { bold: true, size: 10 };
+          cell.alignment = { horizontal: 'center', vertical: 'middle' };
+          cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFD9E1F2' } };
+          cell.border = thinBorder;
+        });
+        const buffer = await workbook.xlsx.writeBuffer();
+        const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = '上期库存导入模板.xlsx';
+        a.click();
+        URL.revokeObjectURL(url);
+      } catch (error) {
+        this.$message.error(error.message || '下载模板失败');
+      }
+    },
+    triggerLastStockImport() {
+      this.$refs.lastStockImportInput.value = '';
+      this.$refs.lastStockImportInput.click();
+    },
+    async handleLastStockImportFile(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      this.lastStockImportLoading = true;
+      try {
+        const XLSX = await import('xlsx');
+        const buffer = await file.arrayBuffer();
+        const wb = XLSX.read(buffer, { type: 'array' });
+        const ws = wb.Sheets[wb.SheetNames[0]];
+        // 第1行为列头，从第2行开始读数据
+        const aoa = XLSX.utils.sheet_to_json(ws, { header: 1, defval: null });
+        const items = [];
+        for (let i = 1; i < aoa.length; i++) {
+          const row = aoa[i];
+          if (!row || row[0] == null || String(row[0]).trim() === '') continue;
+          const code = String(row[0]).trim();
+          const qty = (row[1] !== null && row[1] !== '' && !isNaN(parseFloat(row[1]))) ? parseFloat(row[1]) : 0;
+          items.push({ VARIETIE_CODE_NEW: code, LAST_STOCK_QTY: qty });
+        }
+        if (items.length === 0) {
+          this.$message.warning('未读取到有效数据，请确认文件格式正确（列A：品种编码，列B：上期库存）');
+          return;
+        }
+        await this.$confirm(`读取到 ${items.length} 条品种数据，确认导入上期库存？（已存在的品种编码将自动跳过）`, '导入确认', {
+          confirmButtonText: '确认导入',
+          cancelButtonText: '取消',
+          type: 'warning'
+        });
+        const res = await importLastStockQty(this.currentMainRow.ID, items);
+        this.$message.success(res.msg || '导入成功');
+        this.loadDetailTableData();
+      } catch (error) {
+        if (error !== 'cancel') {
+          this.$message.error(error.message || '导入失败');
+        }
+      } finally {
+        this.lastStockImportLoading = false;
+      }
+    },
+
     // ——————————————————— 盘亏异常着色 ———————————————————
     isProfitLossAbnormal(row) {
       if (row.ACTUAL_STOCK_QTY === null || row.ACTUAL_STOCK_QTY === undefined) return false;
@@ -753,10 +883,41 @@ export default {
       return Number(row.ACTUAL_STOCK_QTY) !== Number(row.CURRENT_STOCK_QTY);
     },
 
+    // ——————————————————— 库区 ———————————————————
+    async fetchRegions(autoDefault = false) {
+      this.regionLoading = true;
+      try {
+        const res = await getDeptTwoRegion2({
+          deptTwoCode: this.deptCode,
+          type: 0,
+          account: this.$store.state.user.info?.UserName || ''
+        });
+        if (res && res.result) {
+          this.regions = res.result.map(item => ({
+            label: item.REGION_NAME,
+            value: item.REGION_CODE
+          }));
+        } else {
+          this.regions = [];
+        }
+        if (autoDefault && this.regions.length === 0) {
+          this.checkFormData.REGION_CODE = 0;
+        }
+      } catch (error) {
+        this.$message.error('获取库区列表失败');
+        this.regions = [];
+        if (autoDefault) {
+          this.checkFormData.REGION_CODE = 0;
+        }
+      } finally {
+        this.regionLoading = false;
+      }
+    },
+
     // ——————————————————— 新建/修改盘点单 ———————————————————
     openCreateDialog() {
       this.isEditMode = false;
-      this.checkFormData = { ID: null, PERIOD_YM: '', DEPT_TWO_CODE: this.deptCode, DEPT_TWO_NAME: this.deptName, CHECK_START_TIME: '', CHECK_END_TIME: '', REMARK: '' };
+      this.checkFormData = { ID: null, PERIOD_YM: '', DEPT_TWO_CODE: this.deptCode, DEPT_TWO_NAME: this.deptName, CHECK_START_TIME: '2026-01-30', CHECK_END_TIME: '', REGION_CODE: null, REMARK: '' };
       this.$nextTick(() => { this.$refs.checkForm && this.$refs.checkForm.clearValidate(); });
       this.checkDialogVisible = true;
     },
@@ -769,6 +930,7 @@ export default {
         PERIOD_YM: row.PERIOD_YM || '',
         CHECK_START_TIME: row.CHECK_START_TIME || '',
         CHECK_END_TIME: row.CHECK_END_TIME || '',
+        REGION_CODE: row.REGION_CODE != null ? row.REGION_CODE : null,
         REMARK: row.REMARK || ''
       };
       this.$nextTick(() => { this.$refs.checkForm && this.$refs.checkForm.clearValidate(); });
@@ -781,6 +943,10 @@ export default {
     saveCheck() {
       this.$refs.checkForm.validate(async (valid) => {
         if (!valid) return;
+        // 无库区时默认传 0
+        if (this.checkFormData.REGION_CODE === null || this.checkFormData.REGION_CODE === undefined) {
+          this.checkFormData.REGION_CODE = 0;
+        }
         // 结束时间不能早于开始时间
         if (this.checkFormData.CHECK_END_TIME && this.checkFormData.CHECK_START_TIME
           && this.checkFormData.CHECK_END_TIME < this.checkFormData.CHECK_START_TIME) {
@@ -941,9 +1107,22 @@ export default {
     formatterPrice({ cellValue }) {
       if (cellValue == null || cellValue === '') return '';
       return Number(cellValue).toFixed(2);
+    },
+    regionLabel(code) {
+      if (code === null || code === undefined || code === 0 || code === '0') return '';
+      const found = this.regions.find(r => r.value === code || String(r.value) === String(code));
+      return found ? found.label : code;
+    }
+  },
+  watch: {
+    deptCode(newVal, oldVal) {
+      if (newVal && newVal !== oldVal) {
+        reloadPageTab();
+      }
     }
   },
   created() {
+    this.fetchRegions();
     this.loadMainTableData();
   }
 };

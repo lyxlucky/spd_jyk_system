@@ -37,7 +37,8 @@ export async function addDeptInventoryCheck(data) {
     CHECK_START_TIME: data.CHECK_START_TIME || '',
     CHECK_END_TIME: data.CHECK_END_TIME || '',
     REMARK: data.REMARK || '',
-    CREATE_MAN: store.state.user.info?.Nickname || ''
+    CREATE_MAN: store.state.user.info?.Nickname || '',
+    REGION_CODE: data.REGION_CODE || 0,
   };
   const res = await request.post('/DeptInventoryCheck/AddDeptInventoryCheck', formatData);
   if (res.data.code == 200) {
@@ -154,6 +155,25 @@ export async function batchUpdateDeptInventoryCheckDetail(items) {
     Items: items
   };
   const res = await request.post('/DeptInventoryCheck/BatchUpdateDeptInventoryCheckDetail', formatData);
+  if (res.data.code == 200) {
+    return res.data;
+  } else {
+    return Promise.reject(new Error(res.data.msg));
+  }
+}
+
+/**
+ * 科室盘点 - 导入上期库存（按品种编码新增明细行，重复编码跳过）
+ * @param {number} checkId  盘点单主键
+ * @param {Array<{VARIETIE_CODE_NEW: string, LAST_STOCK_QTY: number}>} items
+ */
+export async function importLastStockQty(checkId, items) {
+  const formatData = {
+    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+    CHECK_ID: checkId,
+    Items: items
+  };
+  const res = await request.post('/DeptInventoryCheck/ImportLastStockQty', formatData);
   if (res.data.code == 200) {
     return res.data;
   } else {
