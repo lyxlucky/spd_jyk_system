@@ -80,15 +80,15 @@
         style="margin-bottom: 8px"
       >
         <vxe-column type="seq" title="序号" width="55" align="center" />
-        <vxe-column field="PERIOD_YM" title="期数" width="90" align="center" />
-        <vxe-column field="DEPT_TWO_NAME" title="盘点科室" min-width="140" />
-        <vxe-column field="REGION_CODE" title="库区" width="110" align="center">
+        <vxe-column field="PERIOD_YM" title="期数" width="110" align="center" />
+        <vxe-column field="DEPT_TWO_NAME" title="盘点科室" min-width="110" align="center" />
+        <vxe-column field="REGION_CODE" title="库区" min-width="110" align="center">
           <template #default="{ row }">
             <span>{{ regionLabel(row.REGION_CODE) }}</span>
           </template>
         </vxe-column>
-        <vxe-column field="CHECK_START_TIME" title="盘点开始时间" width="155" align="center" :formatter="formatterDate" />
-        <vxe-column field="CHECK_END_TIME" title="盘点结束时间" width="155" align="center" :formatter="formatterDate" />
+        <vxe-column field="CHECK_START_TIME" title="盘点开始时间" width="155" align="center" :formatter="formatterDateTime" />
+        <vxe-column field="CHECK_END_TIME" title="盘点结束时间" width="155" align="center" :formatter="formatterDateTime" />
         <vxe-column field="STATUS" title="状态" width="90" align="center">
           <template #default="{ row }">
             <el-tag v-if="row.STATUS === 0" size="mini" type="info">草稿</el-tag>
@@ -312,12 +312,10 @@
         label-width="110px"
         size="small"
       >
-        <el-form-item label="期数" prop="PERIOD_YM">
+        <el-form-item label="期数">
           <el-input
             v-model="checkFormData.PERIOD_YM"
-            placeholder="如：202502"
-            clearable
-            :disabled="isEditMode"
+            disabled
           />
         </el-form-item>
         <el-form-item label="盘点科室">
@@ -346,26 +344,7 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="盘点开始时间" prop="CHECK_START_TIME">
-          <el-date-picker
-            v-model="checkFormData.CHECK_START_TIME"
-            type="date"
-            placeholder="选择开始时间"
-            value-format="yyyy-MM-dd"
-            style="width: 100%"
-            :disabled="true"
-          />
-        </el-form-item>
-        <el-form-item label="盘点结束时间" prop="CHECK_END_TIME">
-          <el-date-picker
-            v-model="checkFormData.CHECK_END_TIME"
-            type="date"
-            placeholder="选择结束时间"
-            value-format="yyyy-MM-dd"
-            style="width: 100%"
-            :disabled="isEditMode"
-          />
-        </el-form-item>
+
         <el-form-item label="备注">
           <el-input
             v-model="checkFormData.REMARK"
@@ -513,11 +492,7 @@ export default {
         REGION_CODE: '',
         REMARK: ''
       },
-      checkFormRules: {
-        PERIOD_YM: [{ required: true, message: '请输入期数', trigger: 'blur' }],
-        CHECK_START_TIME: [{ required: true, message: '请选择盘点开始时间', trigger: 'change' }],
-        CHECK_END_TIME: [{ required: true, message: '请选择盘点结束时间', trigger: 'change' }]
-      },
+      checkFormRules: {},
       // 明细填写对话框
       detailDialogVisible: false,
       detailDialogLoading: false,
@@ -917,7 +892,8 @@ export default {
     // ——————————————————— 新建/修改盘点单 ———————————————————
     openCreateDialog() {
       this.isEditMode = false;
-      this.checkFormData = { ID: null, PERIOD_YM: '', DEPT_TWO_CODE: this.deptCode, DEPT_TWO_NAME: this.deptName, CHECK_START_TIME: '2026-01-30', CHECK_END_TIME: '', REGION_CODE: null, REMARK: '' };
+      const periodYm = this.$moment().format('YYYYMMDDHHmmss');
+      this.checkFormData = { ID: null, PERIOD_YM: periodYm, DEPT_TWO_CODE: this.deptCode, DEPT_TWO_NAME: this.deptName, CHECK_START_TIME: '', CHECK_END_TIME: '', REGION_CODE: null, REMARK: '' };
       this.$nextTick(() => { this.$refs.checkForm && this.$refs.checkForm.clearValidate(); });
       this.checkDialogVisible = true;
     },
@@ -947,12 +923,12 @@ export default {
         if (this.checkFormData.REGION_CODE === null || this.checkFormData.REGION_CODE === undefined) {
           this.checkFormData.REGION_CODE = 0;
         }
-        // 结束时间不能早于开始时间
-        if (this.checkFormData.CHECK_END_TIME && this.checkFormData.CHECK_START_TIME
-          && this.checkFormData.CHECK_END_TIME < this.checkFormData.CHECK_START_TIME) {
-          this.$message.warning('盘点结束时间不能早于开始时间');
-          return;
+
+        if (!this.isEditMode) {
+          // 期数 = 当前完整时间（YYYYMMDDHHmmss），CHECK_START_TIME / CHECK_END_TIME 由后端计算
+          this.checkFormData.PERIOD_YM = this.$moment().format('YYYYMMDDHHmmss');
         }
+
         this.checkDialogLoading = true;
         try {
           if (this.isEditMode) {
