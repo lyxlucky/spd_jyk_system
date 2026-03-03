@@ -134,6 +134,7 @@ export async function updateDeptInventoryCheckDetail(data) {
     Token: sessionStorage.getItem(TOKEN_STORE_NAME),
     ID: data.ID,
     ACTUAL_STOCK_QTY: data.ACTUAL_STOCK_QTY !== undefined ? data.ACTUAL_STOCK_QTY : '',
+    ISSUE_QTY: data.ISSUE_QTY !== undefined ? data.ISSUE_QTY : '',
     PROFIT_LOSS_REMARK: data.PROFIT_LOSS_REMARK || '',
     IS_IN_CABINET: data.IS_IN_CABINET !== undefined ? data.IS_IN_CABINET : ''
   };
