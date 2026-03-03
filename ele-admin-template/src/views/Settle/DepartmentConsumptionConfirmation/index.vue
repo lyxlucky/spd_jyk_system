@@ -178,6 +178,7 @@
           size="mini"
           height="400"
           highlight-current-row
+          :virtual-y-config="{ enabled: true, gt: 100 }"
           :checkbox-config="{ highlight: true, trigger: 'row' }"
           @checkbox-change="onMainTableCheckboxChange"
           @checkbox-all="onMainTableCheckboxAll"
@@ -350,8 +351,7 @@
           resizable
           size="mini"
           height="400"
-          :scroll-y="{ enabled: true }"
-          :row-config="{ height: 32 }"
+          :virtual-y-config="{ enabled: true, gt: 100 }"
           :checkbox-config="{ highlight: true, trigger: 'row' }"
           @checkbox-change="onDetailTableCheckboxChange"
           @checkbox-all="onDetailTableCheckboxAll"

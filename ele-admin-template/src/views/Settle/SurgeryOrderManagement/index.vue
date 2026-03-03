@@ -920,6 +920,7 @@
                   v-model="surgeryFormData.PATIENT_DEPT_CODE"
                   placeholder="请选择所在科室"
                   style="width: 100%"
+                  @change="onPatientDeptChange"
                 >
                   <el-option
                     v-for="item in deptOptions"
@@ -967,6 +968,7 @@
                   v-model="surgeryFormData.SURGEON_DEPT_CODE"
                   placeholder="请选择主刀科室"
                   style="width: 100%"
+                  @change="onSurgeonDeptChange"
                 >
                   <el-option
                     v-for="item in deptOptions"
@@ -1210,6 +1212,14 @@ export default {
     };
   },
   methods: {
+    onPatientDeptChange(val) {
+      const opt = this.deptOptions.find(d => d.value === val);
+      this.surgeryFormData.PATIENT_DEPT = opt ? opt.label : '';
+    },
+    onSurgeonDeptChange(val) {
+      const opt = this.deptOptions.find(d => d.value === val);
+      this.surgeryFormData.SURGEON_DEPT = opt ? opt.label : '';
+    },
     // getById 可能不返回 AGE_STR，根据 AGE（出生日期）计算显示
     ageStrFromBirthDate(dateVal) {
       if (dateVal === undefined || dateVal === null || dateVal === '') return '';
