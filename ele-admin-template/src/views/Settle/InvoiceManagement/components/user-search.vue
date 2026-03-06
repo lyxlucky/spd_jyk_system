@@ -35,6 +35,16 @@
       <el-col v-bind="styleResponsive ? { lg: 2, md: 12 } : { span: 12 }">
         <el-input size="mini" clearable v-model="where.MONTHBILLNUM" placeholder="发票号" />
       </el-col>
+      <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 12 }">
+        <label>
+          发票图片状态:
+          <el-select style="width: 120px;" v-model="where.PIC_STATE" size="mini" placeholder="请选择">
+            <el-option label="全部" value=""></el-option>
+            <el-option label="有图" value="1"></el-option>
+            <el-option label="无图" value="0"></el-option>
+          </el-select>
+        </label>
+      </el-col>
       <el-col v-bind="styleResponsive ? { lg: 2, md: 12 } : { span: 12 }">
         <el-input size="mini" clearable v-model="where.SUPPLIER_NAME" placeholder="供应商" />
       </el-col>
@@ -108,6 +118,7 @@ export default {
       MONTHLY_TIME: [],
       EBS_CAN_SEND_INVOICE: '',
       QSSTATE: '',
+      PIC_STATE: '',
     };
     return {
       // 表单数据

@@ -74,7 +74,7 @@
           >
             扫码添加录入
           </el-button>
-          <el-button
+          <!-- <el-button
             size="mini"
             type="primary"
             icon="el-icon-scan"
@@ -82,7 +82,7 @@
             @click="showTransferScanDialog"
           >
             转单扫码录入
-          </el-button>
+          </el-button> -->
         </div>
       </template>
 
