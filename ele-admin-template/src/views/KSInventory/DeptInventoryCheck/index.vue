@@ -116,7 +116,7 @@
               @click.stop="handleSubmit(row)"
             >提交</el-button>
             <el-button
-              v-if="row.STATUS === 1"
+              v-if="false && row.STATUS === 1"
               size="mini"
               type="text"
               icon="el-icon-refresh-left"
