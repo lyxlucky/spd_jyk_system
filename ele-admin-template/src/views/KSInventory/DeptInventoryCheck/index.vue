@@ -238,8 +238,8 @@
         <vxe-column field="RETURN_QTY" title="退还数" width="80" align="right" footer-align="right" />
         <vxe-column field="CURRENT_STOCK_QTY" title="本期库存" width="90" align="right" footer-align="right" />
         <vxe-column field="ACTUAL_STOCK_QTY" title="实存数" width="90" align="right" footer-align="right" />
-        <vxe-column field="CHARGING_QTY" title="计费数量" width="90" align="right" footer-align="right" />
-        <vxe-column field="PROFIT_LOSS_NUMBER" title="盈亏数" width="80" align="right" footer-align="right" />
+        <vxe-column v-if="false" field="CHARGING_QTY" title="计费数量" width="90" align="right" footer-align="right" />
+        <vxe-column v-if="false" field="PROFIT_LOSS_NUMBER" title="盈亏数" width="80" align="right" footer-align="right" />
         <vxe-column field="IS_IN_CABINET" title="是否入柜" width="90" align="center" :formatter="formatterInCabinet" />
         <vxe-column field="PROFIT_LOSS_REMARK" title="盈亏备注" min-width="120" show-overflow />
         <vxe-column title="操作" width="80" align="center" fixed="right">
@@ -620,9 +620,9 @@ export default {
         const workbook = new ExcelJS.Workbook();
         const sheet = workbook.addWorksheet('盘点明细');
 
-        const headers = ['盘点单明细ID', '上期库存', '入库数', '领用数', '退还数', '本期库存', '实存数', '计费数量', '盈亏値', '品种编码', '品种名称', '规格型号', '收费编码', '单位', '厂家', '单价', '转换比', '是否入柜', '盈亏备注'];
+        const headers = ['盘点单明细ID', '上期库存', '入库数', '领用数', '退还数', '本期库存', '实存数', '品种编码', '品种名称', '规格型号', '收费编码', '单位', '厂家', '单价', '转换比', '是否入柜', '盈亏备注'];
         const colCount = headers.length;
-        const colWidths = [14, 10, 10, 10, 10, 10, 10, 10, 10, 16, 30, 20, 14, 8, 30, 10, 10, 10, 20];
+        const colWidths = [14, 10, 10, 10, 10, 10, 10, 16, 30, 20, 14, 8, 30, 10, 10, 10, 20];
         sheet.columns = colWidths.map(w => ({ width: w }));
 
         const thinBorder = { top: { style: 'thin' }, bottom: { style: 'thin' }, left: { style: 'thin' }, right: { style: 'thin' } };
@@ -660,8 +660,7 @@ export default {
             d.ID, d.LAST_STOCK_QTY, d.IN_QTY, d.ISSUE_QTY,
             d.RETURN_QTY != null ? -d.RETURN_QTY : '',
             d.CURRENT_STOCK_QTY, d.ACTUAL_STOCK_QTY,
-            d.CHARGING_QTY != null ? d.CHARGING_QTY : '',
-            d.PROFIT_LOSS_NUMBER, d.VARIETIE_CODE_NEW, d.VARIETIE_NAME,
+            d.VARIETIE_CODE_NEW, d.VARIETIE_NAME,
             d.SPECIFICATION_OR_TYPE, d.CHARGING_CODE != null ? d.CHARGING_CODE : '',
             d.UNIT, d.MANUFACTURING_ENT_NAME, d.PRICE,
             d.HIS_ZHB != null ? d.HIS_ZHB : '',
@@ -672,14 +671,8 @@ export default {
           dataRow.height = 18;
           dataRow.eachCell({ includeEmpty: true }, (cell, colNumber) => {
             cell.border = thinBorder;
-            cell.alignment = { vertical: 'middle', horizontal: colNumber >= 2 && colNumber <= 9 ? 'right' : 'left' };
+            cell.alignment = { vertical: 'middle', horizontal: colNumber >= 2 && colNumber <= 7 ? 'right' : 'left' };
           });
-          // 盈亏値赋色
-          const plCell = dataRow.getCell(9);
-          const plVal = d.PROFIT_LOSS_NUMBER;
-          if (plVal != null) {
-            plCell.font = { color: { argb: plVal > 0 ? 'FF67C23A' : plVal < 0 ? 'FFF56C6C' : 'FF000000' } };
-          }
         });
 
         const buffer = await workbook.xlsx.writeBuffer();
@@ -725,17 +718,15 @@ export default {
             ID: id,
             ISSUE_QTY: toNum(row[3]),                      // 领用数
             ACTUAL_STOCK_QTY: toNum(row[6]),               // 实存数
-            CHARGING_QTY: toNum(row[7]),                   // 计费数量
-            PROFIT_LOSS_NUMBER: toNum(row[8]),             // 盈亏値
-            IS_IN_CABINET: toInCabinet(row[17]),           // 是否入柜
-            PROFIT_LOSS_REMARK: (row[18] != null && row[18] !== '') ? String(row[18]) : null  // 盈亏备注
+            IS_IN_CABINET: toInCabinet(row[15]),           // 是否入柜
+            PROFIT_LOSS_REMARK: (row[16] != null && row[16] !== '') ? String(row[16]) : null  // 盈亏备注
           });
         }
         if (items.length === 0) {
           this.$message.warning('未读取到有效数据，请确认文件格式正确');
           return;
         }
-        await this.$confirm(`将更新 ${items.length} 条明细的领用数/实存数/计费数量/盈亏値，确认导入？`, '导入确认', {
+        await this.$confirm(`将更新 ${items.length} 条明细数据，确认导入？`, '导入确认', {
           confirmButtonText: '确认导入',
           cancelButtonText: '取消',
           type: 'warning'
