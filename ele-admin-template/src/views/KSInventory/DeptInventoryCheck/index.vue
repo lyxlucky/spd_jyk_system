@@ -63,6 +63,14 @@
             @click="openCreateDialog"
           >新建盘点单</el-button>
         </el-form-item>
+        <el-form-item>
+           <el-button
+            type="warning"
+            icon="el-icon-download"
+            class="ele-btn-icon"
+            @click="downloadLastStockFile"
+          >下载期初库存表</el-button>
+        </el-form-item>
       </el-form>
 
       <!-- 主表：盘点单列表 -->
@@ -431,6 +439,7 @@ import {
 } from '@/api/KSInventory/DeptInventoryCheck';
 import { getDeptTwoRegion2 } from '@/api/KSInventory/KSDepartmentalPlan';
 import { reloadPageTab } from '@/utils/page-tab-util';
+import { BACK_BASE_URL } from '@/config/setting';
 import store from '@/store';
 
 export default {
@@ -858,6 +867,12 @@ export default {
       } finally {
         this.regionLoading = false;
       }
+    },
+
+    // ——————————————————— 下载上期库存表 ———————————————————
+    downloadLastStockFile() {
+      var url = `${BACK_BASE_URL}/ZL/科室耗材目录.xlsx`;
+      window.open(url.replace('/undefined', ''));
     },
 
     // ——————————————————— 新建/修改盘点单 ———————————————————
