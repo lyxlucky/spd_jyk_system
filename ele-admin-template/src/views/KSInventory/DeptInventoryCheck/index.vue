@@ -229,6 +229,8 @@
         size="mini"
         height="100%"
         :row-config="{ isHover: true }"
+        :edit-config="{ trigger: 'dblclick', mode: 'cell', showStatus: true, activeMethod: detailEditActiveMethod }"
+        @edit-closed="onDetailEditClosed"
       >
         <vxe-column type="seq" title="序号" width="55" align="center" />
         <vxe-column field="VARIETIE_CODE_NEW" title="品种编码" width="120" />
@@ -242,10 +244,34 @@
         <vxe-column field="HIS_ZHB" title="转换比" width="80" align="right" />
         <vxe-column field="LAST_STOCK_QTY" title="上期库存" width="80" align="right" footer-align="right" />
         <vxe-column field="IN_QTY" title="入库数" width="80" align="right" footer-align="right" />
-        <vxe-column field="ISSUE_QTY" title="领用数" width="80" align="right" footer-align="right" />
+        <vxe-column field="ISSUE_QTY" title="领用数" width="100" align="right" footer-align="right" :edit-render="{}">
+          <template #edit="{ row }">
+            <el-input-number
+              v-model="row.ISSUE_QTY"
+              :precision="0"
+              :step="1"
+              :min="0"
+              size="mini"
+              controls-position="right"
+              style="width: 100%"
+            />
+          </template>
+        </vxe-column>
         <vxe-column field="RETURN_QTY" title="退还数" width="80" align="right" footer-align="right" />
         <vxe-column field="CURRENT_STOCK_QTY" title="本期库存" width="80" align="right" footer-align="right" />
-        <vxe-column field="ACTUAL_STOCK_QTY" title="实存数" width="80" align="right" footer-align="right" />
+        <vxe-column field="ACTUAL_STOCK_QTY" title="实存数" width="100" align="right" footer-align="right" :edit-render="{}">
+          <template #edit="{ row }">
+            <el-input-number
+              v-model="row.ACTUAL_STOCK_QTY"
+              :precision="0"
+              :step="1"
+              :min="0"
+              size="mini"
+              controls-position="right"
+              style="width: 100%"
+            />
+          </template>
+        </vxe-column>
         <vxe-column field="CHARGING_QTY" title="计费数量" width="80" align="right" footer-align="right">
           <template #default="{ row }">
             <span class="charging-qty-blue">{{ row.CHARGING_QTY }}</span>
@@ -261,8 +287,24 @@
             >{{ row.PROFIT_LOSS_NUMBER }}</span>
           </template>
         </vxe-column>
-        <vxe-column field="IS_IN_CABINET" title="是否入柜" width="80" align="center" :formatter="formatterInCabinet" />
-        <vxe-column field="PROFIT_LOSS_REMARK" title="盈亏备注" min-width="120" show-overflow />
+        <vxe-column field="IS_IN_CABINET" title="是否入柜" width="100" align="center" :formatter="formatterInCabinet" :edit-render="{}">
+          <template #edit="{ row }">
+            <el-select v-model="row.IS_IN_CABINET" size="mini" clearable style="width: 100%">
+              <el-option label="是" :value="1" />
+              <el-option label="否" :value="0" />
+            </el-select>
+          </template>
+        </vxe-column>
+        <vxe-column field="PROFIT_LOSS_REMARK" title="盈亏备注" min-width="150" show-overflow :edit-render="{}">
+          <template #edit="{ row }">
+            <el-input
+              v-model="row.PROFIT_LOSS_REMARK"
+              size="mini"
+              maxlength="500"
+              clearable
+            />
+          </template>
+        </vxe-column>
         <vxe-column title="操作" width="80" align="center" fixed="right">
           <template #default="{ row }">
             <el-button
@@ -480,6 +522,7 @@ export default {
         VARIETIE_NAME: '',
         VARIETIE_CODE_NEW: ''
       },
+      detailInlineSavingMap: {},
       // 盘点单对话框
       checkDialogVisible: false,
       checkDialogLoading: false,
@@ -629,6 +672,33 @@ export default {
       this.detailTablePage.page = currentPage;
       this.detailTablePage.size = pageSize;
       this.loadDetailTableData();
+    },
+    detailEditActiveMethod({ row, column }) {
+      if (!this.currentMainRow || this.currentMainRow.STATUS !== 0) return false;
+      return ['ISSUE_QTY', 'ACTUAL_STOCK_QTY', 'IS_IN_CABINET', 'PROFIT_LOSS_REMARK'].includes(column.field);
+    },
+    async onDetailEditClosed({ row, column }) {
+      if (!row || !column) return;
+      if (!this.currentMainRow || this.currentMainRow.STATUS !== 0) return;
+      if (!['ISSUE_QTY', 'ACTUAL_STOCK_QTY', 'IS_IN_CABINET', 'PROFIT_LOSS_REMARK'].includes(column.field)) return;
+
+      const savingKey = `${row.ID}_${column.field}`;
+      if (this.detailInlineSavingMap[savingKey]) return;
+      this.$set(this.detailInlineSavingMap, savingKey, true);
+      try {
+        await updateDeptInventoryCheckDetail({
+          ID: row.ID,
+          ACTUAL_STOCK_QTY: row.ACTUAL_STOCK_QTY,
+          ISSUE_QTY: row.ISSUE_QTY,
+          PROFIT_LOSS_REMARK: row.PROFIT_LOSS_REMARK,
+          IS_IN_CABINET: row.IS_IN_CABINET
+        });
+        // this.loadDetailTableData();
+      } catch (error) {
+        this.$message.error(error.message || '明细更新失败');
+      } finally {
+        this.$set(this.detailInlineSavingMap, savingKey, false);
+      }
     },
 
     // —————————————————————— 导出明细 ——————————————————————
