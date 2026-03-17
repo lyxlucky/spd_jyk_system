@@ -171,6 +171,16 @@ export async function isHaveZeroDel(data) {
   // }
 }
 
+export async function checkHasPendingOrder(data) {
+  var data2 = {};
+  data2.PlanNum = data.PlanNum ? data.PlanNum : '';
+  data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+
+  var rep = formdataify(data2);
+  const res = await request.post('/DeptApplyPlan/checkHasPendingOrder', rep);
+  return res.data;
+}
+
 export async function deleteZeroDel(data) {
   var data2 = {};
   data2.PlanNum = data.PlanNum ? data.PlanNum : '';

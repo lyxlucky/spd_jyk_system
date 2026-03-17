@@ -428,6 +428,7 @@
     ToExamine,
     KeeptListDeta,
     isHaveZeroDel,
+    checkHasPendingOrder,
     deleteZeroDel,
     ImportTempExcel
   } from '@/api/KSInventory/KSDepartmentalPlan';
@@ -837,7 +838,8 @@
                   if (res.code == '200') {
                     this.centerDialogVisible = true;
                   } else {
-                    this.deleteZeroDelAndCommit2();
+                    // code 400: 无零数量明细，直接进补货单检查
+                    this.checkPendingOrderAndSubmit();
                   }
                 })
                 .finally(() => {
@@ -868,23 +870,39 @@
         this.$message.info('已取消提交');
       },
 
+      checkPendingOrderAndSubmit() {
+        var data = {
+          PlanNum: this.KSDepartmentalPlanDataSearch.PlanNum
+        };
+        checkHasPendingOrder(data)
+          .then((res) => {
+            if (res.code == '202') {
+              this.$confirm(res.msg, '提示', {
+                confirmButtonText: '仍然提交',
+                cancelButtonText: '取消',
+                type: 'warning'
+              })
+                .then(() => {
+                  this.deleteZeroDelAndCommit2();
+                })
+                .catch(() => {});
+            } else {
+              this.deleteZeroDelAndCommit2();
+            }
+          })
+          .catch(() => {
+            this.deleteZeroDelAndCommit2();
+          });
+      },
+
       deleteZeroDelAndCommit() {
         var data = {
           PlanNum: this.KSDepartmentalPlanDataSearch.PlanNum
         };
         deleteZeroDel(data).then((res) => {
           if (res.code == '200') {
-            var data = {
-              PlanNum: this.KSDepartmentalPlanDataSearch.PlanNum
-            };
-            PutInListDeta(data)
-              .then((res) => {
-                this.$message.success(res.msg);
-                reloadPageTab();
-              })
-              .catch((err) => {
-                this.$message.error(err);
-              });
+            this.centerDialogVisible = false;
+            this.checkPendingOrderAndSubmit();
           }
         });
       },
