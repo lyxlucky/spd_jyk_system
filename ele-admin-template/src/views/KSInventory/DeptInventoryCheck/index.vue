@@ -26,7 +26,7 @@
           >
             <el-option label="草稿" :value="0" />
             <el-option label="已提交" :value="1" />
-            <el-option label="已审核" :value="2" />
+            <!--<el-option label="已审核" :value="2" />-->
           </el-select>
         </el-form-item>
         <el-form-item label="盘点时间" v-if="false">
@@ -63,6 +63,14 @@
             @click="openCreateDialog"
           >新建盘点单</el-button>
         </el-form-item>
+        <el-form-item>
+           <el-button
+            type="warning"
+            icon="el-icon-download"
+            class="ele-btn-icon"
+            @click="downloadLastStockFile"
+          >下载期初库存表</el-button>
+        </el-form-item>
       </el-form>
 
       <!-- 主表：盘点单列表 -->
@@ -72,6 +80,7 @@
         :loading="mainTableLoading"
         highlight-current-row
         border
+        resizable
         size="mini"
         height="240"
         :row-config="{ isHover: true, isCurrent: true }"
@@ -81,11 +90,7 @@
         <vxe-column type="seq" title="序号" width="55" align="center" />
         <vxe-column field="PERIOD_YM" title="期数" width="160" align="center" />
         <vxe-column field="DEPT_TWO_NAME" title="盘点科室" min-width="110" align="center" />
-        <vxe-column field="REGION_CODE" title="库区" min-width="110" align="center">
-          <template #default="{ row }">
-            <span>{{ regionLabel(row.REGION_CODE) }}</span>
-          </template>
-        </vxe-column>
+        <vxe-column field="REGION_NAME" title="库区" min-width="110" align="center" />
         <vxe-column field="CHECK_START_TIME" title="盘点开始时间" width="155" align="center" :formatter="formatterDateTime" />
         <vxe-column field="CHECK_END_TIME" title="盘点结束时间" width="155" align="center" :formatter="formatterDateTime" />
         <vxe-column field="STATUS" title="状态" width="90" align="center">
@@ -220,28 +225,86 @@
         :data="detailTableData"
         :loading="detailTableLoading"
         border
+        resizable
         size="mini"
         height="100%"
         :row-config="{ isHover: true }"
+        :edit-config="{ trigger: 'dblclick', mode: 'cell', showStatus: true, activeMethod: detailEditActiveMethod }"
+        @edit-closed="onDetailEditClosed"
       >
         <vxe-column type="seq" title="序号" width="55" align="center" />
         <vxe-column field="VARIETIE_CODE_NEW" title="品种编码" width="120" />
+        <vxe-column field="CHARGING_CODE" title="计费编码" width="120" />
+        <vxe-column field="IS_CHARGE" title="是否收费" width="80" align="center" :formatter="({ cellValue }) => cellValue === 1 ? '是' : cellValue === 0 ? '否' : ''" />
         <vxe-column field="VARIETIE_NAME" title="品种名称" min-width="150" show-overflow />
         <vxe-column field="SPECIFICATION_OR_TYPE" title="规格型号" width="130" show-overflow />
         <vxe-column field="UNIT" title="单位" width="60" align="center" />
         <vxe-column field="MANUFACTURING_ENT_NAME" title="厂家" width="160" show-overflow />
         <vxe-column field="PRICE" title="单价" width="80" align="right" :formatter="formatterPrice" />
         <vxe-column field="HIS_ZHB" title="转换比" width="80" align="right" />
-        <vxe-column field="LAST_STOCK_QTY" title="上期库存" width="90" align="right" footer-align="right" />
+        <vxe-column field="LAST_STOCK_QTY" title="上期库存" width="80" align="right" footer-align="right" />
         <vxe-column field="IN_QTY" title="入库数" width="80" align="right" footer-align="right" />
-        <vxe-column field="ISSUE_QTY" title="领用数" width="80" align="right" footer-align="right" />
+        <vxe-column field="ISSUE_QTY" title="领用数" width="100" align="right" footer-align="right" :edit-render="{}">
+          <template #edit="{ row }">
+            <el-input-number
+              v-model="row.ISSUE_QTY"
+              :precision="0"
+              :step="1"
+              :min="0"
+              size="mini"
+              controls-position="right"
+              style="width: 100%"
+            />
+          </template>
+        </vxe-column>
         <vxe-column field="RETURN_QTY" title="退还数" width="80" align="right" footer-align="right" />
-        <vxe-column field="CURRENT_STOCK_QTY" title="本期库存" width="90" align="right" footer-align="right" />
-        <vxe-column field="ACTUAL_STOCK_QTY" title="实存数" width="90" align="right" footer-align="right" />
-        <vxe-column v-if="false" field="CHARGING_QTY" title="计费数量" width="90" align="right" footer-align="right" />
-        <vxe-column v-if="false" field="PROFIT_LOSS_NUMBER" title="盈亏数" width="80" align="right" footer-align="right" />
-        <vxe-column field="IS_IN_CABINET" title="是否入柜" width="90" align="center" :formatter="formatterInCabinet" />
-        <vxe-column field="PROFIT_LOSS_REMARK" title="盈亏备注" min-width="120" show-overflow />
+        <vxe-column field="CURRENT_STOCK_QTY" title="本期库存" width="80" align="right" footer-align="right" />
+        <vxe-column field="ACTUAL_STOCK_QTY" title="实存数" width="100" align="right" footer-align="right" :edit-render="{}">
+          <template #edit="{ row }">
+            <el-input-number
+              v-model="row.ACTUAL_STOCK_QTY"
+              :precision="0"
+              :step="1"
+              :min="0"
+              size="mini"
+              controls-position="right"
+              style="width: 100%"
+            />
+          </template>
+        </vxe-column>
+        <vxe-column field="CHARGING_QTY" title="计费数量" width="80" align="right" footer-align="right">
+          <template #default="{ row }">
+            <span class="charging-qty-blue">{{ row.CHARGING_QTY }}</span>
+          </template>
+        </vxe-column>
+        <vxe-column field="PROFIT_LOSS_NUMBER" title="盈亏数" width="80" align="right" footer-align="right">
+          <template #default="{ row }">
+            <span
+              :class="{
+                'profit-loss-positive': Number(row.PROFIT_LOSS_NUMBER) > 0,
+                'profit-loss-negative': Number(row.PROFIT_LOSS_NUMBER) < 0
+              }"
+            >{{ row.PROFIT_LOSS_NUMBER }}</span>
+          </template>
+        </vxe-column>
+        <vxe-column field="IS_IN_CABINET" title="是否入柜" width="100" align="center" :formatter="formatterInCabinet" :edit-render="{}">
+          <template #edit="{ row }">
+            <el-select v-model="row.IS_IN_CABINET" size="mini" clearable style="width: 100%">
+              <el-option label="是" :value="1" />
+              <el-option label="否" :value="0" />
+            </el-select>
+          </template>
+        </vxe-column>
+        <vxe-column field="PROFIT_LOSS_REMARK" title="盈亏备注" min-width="150" show-overflow :edit-render="{}">
+          <template #edit="{ row }">
+            <el-input
+              v-model="row.PROFIT_LOSS_REMARK"
+              size="mini"
+              maxlength="500"
+              clearable
+            />
+          </template>
+        </vxe-column>
         <vxe-column title="操作" width="80" align="center" fixed="right">
           <template #default="{ row }">
             <el-button
@@ -261,7 +324,7 @@
         :current-page="detailTablePage.page"
         :page-size="detailTablePage.size"
         :total="detailTablePage.total"
-        :page-sizes="[50, 100, 200]"
+        :page-sizes="[50, 100, 200, 500]"
         size="mini"
         @page-change="onDetailTablePageChange"
         style="margin-top: 8px"
@@ -431,7 +494,7 @@ import {
 } from '@/api/KSInventory/DeptInventoryCheck';
 import { getDeptTwoRegion2 } from '@/api/KSInventory/KSDepartmentalPlan';
 import { reloadPageTab } from '@/utils/page-tab-util';
-import store from '@/store';
+import { BACK_BASE_URL } from '@/config/setting';
 
 export default {
   name: 'DeptInventoryCheck',
@@ -459,6 +522,7 @@ export default {
         VARIETIE_NAME: '',
         VARIETIE_CODE_NEW: ''
       },
+      detailInlineSavingMap: {},
       // 盘点单对话框
       checkDialogVisible: false,
       checkDialogLoading: false,
@@ -500,6 +564,10 @@ export default {
     deptCode() {
       return this.$store.state.user.info?.DeptNow?.Dept_Two_Code || '';
     },
+    canViewAllChecks() {
+      const groupName = this.$store.state.user.info?.Group_Name || '';
+      return groupName === '医学装备部' || groupName === '超级管理员';
+    }
   },
   methods: {
     // ——————————————————— 搜索 ———————————————————
@@ -543,7 +611,7 @@ export default {
       try {
         const params = {
           ...this.searchForm,
-          DEPT_TWO_CODE: this.deptCode,
+          DEPT_TWO_CODE: this.canViewAllChecks ? '' : this.deptCode,
           page: this.mainTablePage.page,
           size: this.mainTablePage.size
         };
@@ -605,6 +673,33 @@ export default {
       this.detailTablePage.size = pageSize;
       this.loadDetailTableData();
     },
+    detailEditActiveMethod({ row, column }) {
+      if (!this.currentMainRow || this.currentMainRow.STATUS !== 0) return false;
+      return ['ISSUE_QTY', 'ACTUAL_STOCK_QTY', 'IS_IN_CABINET', 'PROFIT_LOSS_REMARK'].includes(column.field);
+    },
+    async onDetailEditClosed({ row, column }) {
+      if (!row || !column) return;
+      if (!this.currentMainRow || this.currentMainRow.STATUS !== 0) return;
+      if (!['ISSUE_QTY', 'ACTUAL_STOCK_QTY', 'IS_IN_CABINET', 'PROFIT_LOSS_REMARK'].includes(column.field)) return;
+
+      const savingKey = `${row.ID}_${column.field}`;
+      if (this.detailInlineSavingMap[savingKey]) return;
+      this.$set(this.detailInlineSavingMap, savingKey, true);
+      try {
+        await updateDeptInventoryCheckDetail({
+          ID: row.ID,
+          ACTUAL_STOCK_QTY: row.ACTUAL_STOCK_QTY,
+          ISSUE_QTY: row.ISSUE_QTY,
+          PROFIT_LOSS_REMARK: row.PROFIT_LOSS_REMARK,
+          IS_IN_CABINET: row.IS_IN_CABINET
+        });
+        // this.loadDetailTableData();
+      } catch (error) {
+        this.$message.error(error.message || '明细更新失败');
+      } finally {
+        this.$set(this.detailInlineSavingMap, savingKey, false);
+      }
+    },
 
     // —————————————————————— 导出明细 ——————————————————————
     async exportDetail() {
@@ -620,9 +715,9 @@ export default {
         const workbook = new ExcelJS.Workbook();
         const sheet = workbook.addWorksheet('盘点明细');
 
-        const headers = ['盘点单明细ID', '上期库存', '入库数', '领用数', '退还数', '本期库存', '实存数', '品种编码', '品种名称', '规格型号', '收费编码', '单位', '厂家', '单价', '转换比', '是否入柜', '盈亏备注'];
+        const headers = ['盘点单明细ID', '上期库存', '入库数', '领用数', '退还数', '本期库存', '实存数', '计费数量', '盈亏数', '品种编码', '品种名称', '规格型号', '收费编码', '是否收费', '单位', '厂家', '单价', '转换比', '是否入柜', '盈亏备注'];
         const colCount = headers.length;
-        const colWidths = [14, 10, 10, 10, 10, 10, 10, 16, 30, 20, 14, 8, 30, 10, 10, 10, 20];
+        const colWidths = [14, 10, 10, 10, 10, 10, 10, 10, 10, 16, 30, 20, 14, 10, 8, 30, 10, 10, 10, 20];
         sheet.columns = colWidths.map(w => ({ width: w }));
 
         const thinBorder = { top: { style: 'thin' }, bottom: { style: 'thin' }, left: { style: 'thin' }, right: { style: 'thin' } };
@@ -659,9 +754,10 @@ export default {
           const rowData = [
             d.ID, d.LAST_STOCK_QTY, d.IN_QTY, d.ISSUE_QTY,
             d.RETURN_QTY != null ? -d.RETURN_QTY : '',
-            d.CURRENT_STOCK_QTY, d.ACTUAL_STOCK_QTY,
+            d.CURRENT_STOCK_QTY, d.ACTUAL_STOCK_QTY, d.CHARGING_QTY, d.PROFIT_LOSS_NUMBER,
             d.VARIETIE_CODE_NEW, d.VARIETIE_NAME,
             d.SPECIFICATION_OR_TYPE, d.CHARGING_CODE != null ? d.CHARGING_CODE : '',
+            d.IS_CHARGE === 1 ? '是' : d.IS_CHARGE === 0 ? '否' : '',
             d.UNIT, d.MANUFACTURING_ENT_NAME, d.PRICE,
             d.HIS_ZHB != null ? d.HIS_ZHB : '',
             d.IS_IN_CABINET === 1 ? '是' : d.IS_IN_CABINET === 0 ? '否' : '',
@@ -671,7 +767,7 @@ export default {
           dataRow.height = 18;
           dataRow.eachCell({ includeEmpty: true }, (cell, colNumber) => {
             cell.border = thinBorder;
-            cell.alignment = { vertical: 'middle', horizontal: colNumber >= 2 && colNumber <= 7 ? 'right' : 'left' };
+            cell.alignment = { vertical: 'middle', horizontal: colNumber >= 2 && colNumber <= 9 ? 'right' : 'left' };
           });
         });
 
@@ -706,20 +802,30 @@ export default {
         const ws = wb.Sheets[wb.SheetNames[0]];
         // header:1 返回二维数组；前3行是标题/信息/列头行
         const aoa = XLSX.utils.sheet_to_json(ws, { header: 1, defval: null });
+        const headerRow = aoa[2] || [];
+        const findColIndex = (name, fallback) => {
+          const idx = headerRow.findIndex(h => String(h || '').trim() === name);
+          return idx >= 0 ? idx : fallback;
+        };
+        const idxId = findColIndex('盘点单明细ID', 0);
+        const idxIssueQty = findColIndex('领用数', 3);
+        const idxActualStockQty = findColIndex('实存数', 6);
+        const idxInCabinet = findColIndex('是否入柜', 15);
+        const idxProfitLossRemark = findColIndex('盈亏备注', 16);
         const items = [];
         for (let i = 3; i < aoa.length; i++) {
           const row = aoa[i];
-          if (!row || row[0] == null) continue;
-          const id = parseInt(row[0]);
+          if (!row || row[idxId] == null) continue;
+          const id = parseInt(row[idxId]);
           if (isNaN(id) || id <= 0) continue;
           const toNum = (v) => (v !== null && v !== '' && !isNaN(parseFloat(v)) ? parseFloat(v) : null);
           const toInCabinet = (v) => { if (v === '是' || v === 1) return 1; if (v === '否' || v === 0) return 0; return null; };
           items.push({
             ID: id,
-            ISSUE_QTY: toNum(row[3]),                      // 领用数
-            ACTUAL_STOCK_QTY: toNum(row[6]),               // 实存数
-            IS_IN_CABINET: toInCabinet(row[15]),           // 是否入柜
-            PROFIT_LOSS_REMARK: (row[16] != null && row[16] !== '') ? String(row[16]) : null  // 盈亏备注
+            ISSUE_QTY: toNum(row[idxIssueQty]),                      // 领用数
+            ACTUAL_STOCK_QTY: toNum(row[idxActualStockQty]),         // 实存数
+            IS_IN_CABINET: toInCabinet(row[idxInCabinet]),           // 是否入柜
+            PROFIT_LOSS_REMARK: (row[idxProfitLossRemark] != null && row[idxProfitLossRemark] !== '') ? String(row[idxProfitLossRemark]) : null  // 盈亏备注
           });
         }
         if (items.length === 0) {
@@ -858,6 +964,12 @@ export default {
       } finally {
         this.regionLoading = false;
       }
+    },
+
+    // ——————————————————— 下载上期库存表 ———————————————————
+    downloadLastStockFile() {
+      var url = `${BACK_BASE_URL}/ZL/科室耗材目录.xlsx`;
+      window.open(url.replace('/undefined', ''));
     },
 
     // ——————————————————— 新建/修改盘点单 ———————————————————
@@ -1083,6 +1195,18 @@ export default {
 </script>
 
 <style scoped>
+.charging-qty-blue {
+  color: #409eff;
+}
+
+.profit-loss-positive {
+  color: #67c23a;
+}
+
+.profit-loss-negative {
+  color: #f56c6c;
+}
+
 .profit-loss-warn {
   color: #e6a23c;
   font-weight: bold;
