@@ -453,7 +453,7 @@ export default {
             loading.close();
             const array = [
               [
-                // '科室名称',
+                '科室名称',
                 '定数码',
                 // '品种ID',
                 '品种编码',
