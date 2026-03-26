@@ -244,7 +244,7 @@
         <vxe-column field="HIS_ZHB" title="转换比" width="80" align="right" />
         <vxe-column field="LAST_STOCK_QTY" title="上期库存" width="80" align="right" footer-align="right" />
         <vxe-column field="IN_QTY" title="入库数" width="80" align="right" footer-align="right" />
-        <vxe-column field="ISSUE_QTY" title="领用数" width="100" align="right" footer-align="right" :edit-render="{}">
+        <vxe-column v-if="false" field="ISSUE_QTY" title="领用数" width="100" align="right" footer-align="right" :edit-render="{}">
           <template #edit="{ row }">
             <el-input-number
               v-model="row.ISSUE_QTY"
@@ -423,7 +423,7 @@
         <el-form-item label="本期库存">
           <el-input :value="detailFormData.CURRENT_STOCK_QTY" disabled />
         </el-form-item>
-        <el-form-item label="领用数" prop="ISSUE_QTY">
+        <el-form-item label="领用数" prop="ISSUE_QTY" v-if="false">
           <el-input-number
             v-model="detailFormData.ISSUE_QTY"
             :precision="0"
@@ -715,9 +715,9 @@ export default {
         const workbook = new ExcelJS.Workbook();
         const sheet = workbook.addWorksheet('盘点明细');
 
-        const headers = ['盘点单明细ID', '上期库存', '入库数', '领用数', '退还数', '本期库存', '实存数', '计费数量', '盈亏数', '品种编码', '品种名称', '规格型号', '收费编码', '是否收费', '单位', '厂家', '单价', '转换比', '是否入柜', '盈亏备注'];
+        const headers = ['盘点单明细ID', '上期库存', '入库数', '退还数', '本期库存', '实存数', '计费数量', '盈亏数', '品种编码', '品种名称', '规格型号', '收费编码', '是否收费', '单位', '厂家', '单价', '转换比', '是否入柜', '盈亏备注'];
         const colCount = headers.length;
-        const colWidths = [14, 10, 10, 10, 10, 10, 10, 10, 10, 16, 30, 20, 14, 10, 8, 30, 10, 10, 10, 20];
+        const colWidths = [14, 10, 10, 10, 10, 10, 10, 10, 16, 30, 20, 14, 10, 8, 30, 10, 10, 10, 20];
         sheet.columns = colWidths.map(w => ({ width: w }));
 
         const thinBorder = { top: { style: 'thin' }, bottom: { style: 'thin' }, left: { style: 'thin' }, right: { style: 'thin' } };
@@ -752,7 +752,7 @@ export default {
         // 数据行
         allData.forEach(d => {
           const rowData = [
-            d.ID, d.LAST_STOCK_QTY, d.IN_QTY, d.ISSUE_QTY,
+            d.ID, d.LAST_STOCK_QTY, d.IN_QTY,
             d.RETURN_QTY != null ? -d.RETURN_QTY : '',
             d.CURRENT_STOCK_QTY, d.ACTUAL_STOCK_QTY, d.CHARGING_QTY, d.PROFIT_LOSS_NUMBER,
             d.VARIETIE_CODE_NEW, d.VARIETIE_NAME,
@@ -808,10 +808,9 @@ export default {
           return idx >= 0 ? idx : fallback;
         };
         const idxId = findColIndex('盘点单明细ID', 0);
-        const idxIssueQty = findColIndex('领用数', 3);
-        const idxActualStockQty = findColIndex('实存数', 6);
-        const idxInCabinet = findColIndex('是否入柜', 15);
-        const idxProfitLossRemark = findColIndex('盈亏备注', 16);
+        const idxActualStockQty = findColIndex('实存数', 4);
+        const idxInCabinet = findColIndex('是否入柜', 13);
+        const idxProfitLossRemark = findColIndex('盈亏备注', 14);
         const items = [];
         for (let i = 3; i < aoa.length; i++) {
           const row = aoa[i];
@@ -822,7 +821,6 @@ export default {
           const toInCabinet = (v) => { if (v === '是' || v === 1) return 1; if (v === '否' || v === 0) return 0; return null; };
           items.push({
             ID: id,
-            ISSUE_QTY: toNum(row[idxIssueQty]),                      // 领用数
             ACTUAL_STOCK_QTY: toNum(row[idxActualStockQty]),         // 实存数
             IS_IN_CABINET: toInCabinet(row[idxInCabinet]),           // 是否入柜
             PROFIT_LOSS_REMARK: (row[idxProfitLossRemark] != null && row[idxProfitLossRemark] !== '') ? String(row[idxProfitLossRemark]) : null  // 盈亏备注
