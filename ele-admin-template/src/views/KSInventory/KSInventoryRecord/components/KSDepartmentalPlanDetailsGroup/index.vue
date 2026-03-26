@@ -178,6 +178,18 @@
             return Number(cellValue).toFixed(2);
           }
         },
+        {
+          prop: 'TOTAL_AMOUNT',
+          label: '总金额',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 100,
+          formatter: (row) => {
+            const qty = Number(row?.COUNT ?? 0);
+            const price = Number(row?.PRICE ?? 0);
+            return (qty * price).toFixed(2);
+          }
+        },
         ],
         toolbar: false,
         pageSize: 15,
