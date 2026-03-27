@@ -5,6 +5,16 @@
       <!-- <user-search @search="reload" @exportData="exportData" /> -->
       <!-- 数据表格 -->
       <user-search @search="reload" @exportData="exportData" />
+      <div class="expiry-legend">
+        <span class="legend-item">
+          <i class="legend-color legend-danger"></i>
+          3个月内（&lt;=90天）
+        </span>
+        <span class="legend-item">
+          <i class="legend-color legend-warning"></i>
+          6个月内（91~180天）
+        </span>
+      </div>
       <ele-pro-table ref="table" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" :row-class-name="getRowClassName" cache-key="KSInventoryBasicDataTable">
         <!-- 表头工具栏 -->
         <template v-slot:toolbar>
@@ -435,6 +445,35 @@ exportData(data) {
 </script>
 
 <style>
+.expiry-legend {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin: 4px 0 10px;
+  font-size: 13px;
+  color: #606266;
+}
+
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+}
+
+.legend-color {
+  width: 14px;
+  height: 14px;
+  margin-right: 6px;
+  border: 1px solid #dcdfe6;
+}
+
+.legend-danger {
+  background-color: #ffe3e3;
+}
+
+.legend-warning {
+  background-color: #fff9db;
+}
+
 .ele-pro-table .el-table .expiry-row-warning > td {
   background-color: #fff9db;
 }
