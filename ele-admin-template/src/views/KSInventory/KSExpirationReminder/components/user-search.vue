@@ -81,10 +81,11 @@
       const defaultWhere = {
         condition: '',
         condition1: '',
-        jxqSatte: '3',
+        jxqSatte: '6',
         isHaveTh: '0'
       };
       return {
+        defaultWhere,
         // 表单数据
         where: { ...defaultWhere }
       };
