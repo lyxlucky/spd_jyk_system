@@ -12,6 +12,15 @@
     <el-form ref="form" :model="form" :rules="rules" label-width="82px">
       <el-row :gutter="12">
         <el-col v-bind="styleResponsive ? { sm: 20 } : { span: 20 }">
+          <el-form-item label="常用名:" prop="COMMON_NAME">
+            <el-input
+              size="mini"
+              clearable
+              :maxlength="255"
+              v-model="form.COMMON_NAME"
+              placeholder="请输入常用名"
+            />
+          </el-form-item>
           <el-form-item label="品种类别:" prop="CLASS_NUM">
             <el-select
             size="mini"
@@ -124,7 +133,8 @@
         CONVERSION_RATIO: '',
         CLASS_NUM: '',
         DEVICE_REMARK: '',
-        IS_DB:''
+        IS_DB: '',
+        COMMON_NAME: ''
       };
       return {
         defaultForm,
@@ -216,7 +226,8 @@
                     CONVERSION_RATIO: this.data.JYK_ZHB,
                     CLASS_NUM: this.data.CLASS_NUM == null ? '0' : this.data.CLASS_NUM,
                     DEVICE_REMARK: this.data.JYK_YQM,
-                    IS_DB: this.data.IS_DB
+                    IS_DB: this.data.IS_DB,
+                    COMMON_NAME: this.data.COMMON_NAME != null ? this.data.COMMON_NAME : ''
                 };
             this.isUpdate = true;
           } else {

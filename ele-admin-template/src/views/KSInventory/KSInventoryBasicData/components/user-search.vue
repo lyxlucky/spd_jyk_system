@@ -78,6 +78,22 @@
           </el-select>
         </el-form-item>
       </el-col>
+      <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 4 }">
+        <el-form-item label="高低值：" label-width="90px">
+          <el-select
+            size="mini"
+            v-model="where.HIGH_OR_LOW_CLASS"
+            placeholder="全部"
+            clearable
+            @change="search()"
+          >
+            <el-option label="全部" value=""></el-option>
+            <el-option label="低值" value="0"></el-option>
+            <el-option label="高值" value="1"></el-option>
+            <el-option label="试剂" value="2"></el-option>
+          </el-select>
+        </el-form-item>
+      </el-col>
       <el-col v-bind="styleResponsive ? { lg: 6, md: 12 } : { span: 4 }">
         <el-form-item>
           <div class="ele-form-actions">
@@ -130,9 +146,11 @@
         Dept_One_Code: '',
         isDeptTwoAuth: '',
         type: '1',
-        settlementDept: ''
+        settlementDept: '',
+        HIGH_OR_LOW_CLASS: ''
       };
       return {
+        defaultWhere,
         // 表单数据
         where: { ...defaultWhere }
       };

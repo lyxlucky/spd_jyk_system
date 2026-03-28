@@ -193,6 +193,14 @@
             minWidth: 250
           },
           {
+            prop: 'COMMON_NAME',
+            label: '常用名',
+            sortable: 'custom',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 140
+          },
+          {
             prop: 'Specification_Or_Type',
             label: '规格/型号',
             sortable: 'custom',
@@ -462,6 +470,7 @@
                   '品种编码',
                   '品种id',
                   '品种名称',
+                  '常用名',
                   '规格/型号',
                   '生产企业名称',
                   '注册证号',
@@ -477,6 +486,7 @@
                   d.Varietie_Code_New,
                   d.Varietie_Code,
                   d.Varietie_Name,
+                  d.COMMON_NAME,
                   d.Specification_Or_Type,
                   d.Manufacturing_Ent_Name,
                   d.APPROVAL_NUMBER,
@@ -534,7 +544,7 @@
             });
           }
         } else {
-          this.columns = this.columns.slice(1, 13);
+          this.columns = this.columns.slice(1, 14);
         }
       }
     },

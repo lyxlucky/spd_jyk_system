@@ -14,6 +14,10 @@ export async function getDeptAuthVarNew(data) {
     data2.CLASS_NUM = data.where.CLASS_NUM ? data.where.CLASS_NUM : '';
     data2.DEVICE_REMARK = data.where.DEVICE_REMARK ? data.where.DEVICE_REMARK : '';
     data2.isDeptTwoAuth = data.where.isDeptTwoAuth ? data.where.isDeptTwoAuth : '';
+    data2.HIGH_OR_LOW_CLASS =
+        data.where.HIGH_OR_LOW_CLASS !== undefined && data.where.HIGH_OR_LOW_CLASS !== null
+            ? String(data.where.HIGH_OR_LOW_CLASS)
+            : '';
     data2.type = data.where.type ? data.where.type : '';
     data2.order = data.order ? data.order : '';
     // data2.Dept_One_Code = data.where.Dept_One_Code ? data.where.Dept_One_Code : '';
