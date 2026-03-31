@@ -943,7 +943,7 @@ export default {
           account: this.$store.state.user.info?.UserName || ''
         });
         if (res && res.result) {
-          this.regions = res.result.map(item => ({
+          this.regions = (res.result || []).filter(item => item.IS_CABINET != 1).map(item => ({
             label: item.REGION_NAME,
             value: item.REGION_CODE
           }));
