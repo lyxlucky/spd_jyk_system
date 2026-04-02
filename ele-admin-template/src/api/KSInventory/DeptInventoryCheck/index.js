@@ -26,6 +26,21 @@ export async function getDeptInventoryCheckList(data) {
 }
 
 /**
+ * 科室盘点 - 期数下拉（去重，yyyy-MM）
+ */
+export async function getDeptInventoryCheckPeriodList() {
+  const formatData = {
+    Token: sessionStorage.getItem(TOKEN_STORE_NAME)
+  };
+  const res = await request.post('/DeptInventoryCheck/GetDeptInventoryCheckPeriodList', formatData);
+  if (res.data.code == 200) {
+    return res.data;
+  } else {
+    return Promise.reject(new Error(res.data.msg));
+  }
+}
+
+/**
  * 科室盘点 - 新建盘点单（主表 + 自动生成子表）
  */
 export async function addDeptInventoryCheck(data) {

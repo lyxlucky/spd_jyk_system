@@ -10,12 +10,24 @@
         @keyup.enter.native="search"
       >
         <el-form-item label="期数">
-          <el-input
+          <el-select
             v-model="searchForm.PERIOD_YM"
-            placeholder="请填写期数"
+            filterable
+            allow-create
+            default-first-option
+            placeholder="请填写或选择期数"
             clearable
-            style="width: 130px"
-          />
+            style="width: 170px"
+          >
+            <el-option
+              v-for="item in periodOptions"
+              :key="item.PERIOD_YM"
+              :value="item.PERIOD_YM"
+            >
+              <span>{{ item.PERIOD_YM }}</span>
+              <span style="float: right; color: #8492a6; font-size: 13px">{{ item.PERIOD_COUNT || 0 }}</span>
+            </el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="状态">
           <el-select
@@ -89,8 +101,8 @@
       >
         <vxe-column type="seq" title="序号" width="55" align="center" />
         <vxe-column field="PERIOD_YM" title="期数" width="160" align="center" />
-        <vxe-column field="DEPT_TWO_NAME" title="盘点科室" min-width="110" align="center" />
-        <vxe-column field="REGION_NAME" title="库区" min-width="110" align="center" />
+        <vxe-column field="DEPT_TWO_NAME" title="盘点科室" min-width="120" align="center" />
+        <vxe-column field="REGION_NAME" title="库区" min-width="120" align="center" />
         <vxe-column field="CHECK_START_TIME" title="盘点开始时间" width="155" align="center" :formatter="formatterDateTime" />
         <vxe-column field="CHECK_END_TIME" title="盘点结束时间" width="155" align="center" :formatter="formatterDateTime" />
         <vxe-column field="STATUS" title="状态" width="90" align="center">
@@ -121,7 +133,7 @@
               @click.stop="handleSubmit(row)"
             >提交</el-button>
             <el-button
-              v-if="false && row.STATUS === 1"
+              v-if="row.STATUS === 1 && canViewAllChecks"
               size="mini"
               type="text"
               icon="el-icon-refresh-left"
@@ -244,7 +256,7 @@
         <vxe-column field="HIS_ZHB" title="转换比" width="80" align="right" />
         <vxe-column field="LAST_STOCK_QTY" title="上期库存" width="80" align="right" footer-align="right" />
         <vxe-column field="IN_QTY" title="入库数" width="80" align="right" footer-align="right" />
-        <vxe-column v-if="false" field="ISSUE_QTY" title="领用数" width="100" align="right" footer-align="right" :edit-render="{}">
+        <vxe-column v-if="false" field="ISSUE_QTY" title="领用数" width="100" align="right" footer-align="right" :edit-render="{ showIcon: false }">
           <template #edit="{ row }">
             <el-input-number
               v-model="row.ISSUE_QTY"
@@ -259,7 +271,10 @@
         </vxe-column>
         <vxe-column field="RETURN_QTY" title="退还数" width="80" align="right" footer-align="right" />
         <vxe-column field="CURRENT_STOCK_QTY" title="本期库存" width="80" align="right" footer-align="right" />
-        <vxe-column field="ACTUAL_STOCK_QTY" title="实存数" width="100" align="right" footer-align="right" :edit-render="{}">
+        <vxe-column field="ACTUAL_STOCK_QTY" width="100" align="right" footer-align="right" :edit-render="{ showIcon: true }">
+          <template #header>
+            <span style="color: #f56c6c">实存数</span>
+          </template>
           <template #edit="{ row }">
             <el-input-number
               v-model="row.ACTUAL_STOCK_QTY"
@@ -287,7 +302,7 @@
             >{{ row.PROFIT_LOSS_NUMBER }}</span>
           </template>
         </vxe-column>
-        <vxe-column field="IS_IN_CABINET" title="是否入柜" width="100" align="center" :formatter="formatterInCabinet" :edit-render="{}">
+        <vxe-column field="IS_IN_CABINET" title="是否入柜" width="100" align="center" :formatter="formatterInCabinet" :edit-render="{ showIcon: true }">
           <template #edit="{ row }">
             <el-select v-model="row.IS_IN_CABINET" size="mini" clearable style="width: 100%">
               <el-option label="是" :value="1" />
@@ -295,7 +310,7 @@
             </el-select>
           </template>
         </vxe-column>
-        <vxe-column field="PROFIT_LOSS_REMARK" title="盈亏备注" min-width="150" show-overflow :edit-render="{}">
+        <vxe-column field="PROFIT_LOSS_REMARK" title="盈亏备注" min-width="150" show-overflow :edit-render="{ showIcon: true }">
           <template #edit="{ row }">
             <el-input
               v-model="row.PROFIT_LOSS_REMARK"
@@ -483,6 +498,7 @@
 <script>
 import {
   getDeptInventoryCheckList,
+  getDeptInventoryCheckPeriodList,
   addDeptInventoryCheck,
   updateDeptInventoryCheck,
   updateDeptInventoryCheckStatus,
@@ -509,6 +525,7 @@ export default {
         CHECK_START_TIME_END: ''
       },
       checkStartRange: [],
+      periodOptions: [],
       // 主表
       mainTableData: [],
       mainTableLoading: false,
@@ -552,7 +569,7 @@ export default {
         ACTUAL_STOCK_QTY: null,
         ISSUE_QTY: null,
         PROFIT_LOSS_NUMBER: null,
-        IS_IN_CABINET: null,
+        IS_IN_CABINET: 0,
         PROFIT_LOSS_REMARK: ''
       }
     };
@@ -606,6 +623,14 @@ export default {
     },
 
     // ——————————————————— 主表 ———————————————————
+    async loadPeriodOptions() {
+      try {
+        const res = await getDeptInventoryCheckPeriodList();
+        this.periodOptions = (res.result || []).filter(item => !!item && !!item.PERIOD_YM);
+      } catch (error) {
+        this.periodOptions = [];
+      }
+    },
     async loadMainTableData() {
       this.mainTableLoading = true;
       try {
@@ -1115,7 +1140,7 @@ export default {
         ACTUAL_STOCK_QTY: row.ACTUAL_STOCK_QTY !== undefined && row.ACTUAL_STOCK_QTY !== null ? row.ACTUAL_STOCK_QTY : null,
         ISSUE_QTY: row.ISSUE_QTY !== undefined && row.ISSUE_QTY !== null ? row.ISSUE_QTY : null,
         PROFIT_LOSS_NUMBER: row.PROFIT_LOSS_NUMBER !== undefined ? row.PROFIT_LOSS_NUMBER : null,
-        IS_IN_CABINET: row.IS_IN_CABINET !== undefined ? row.IS_IN_CABINET : null,
+        IS_IN_CABINET: row.IS_IN_CABINET !== undefined && row.IS_IN_CABINET !== null ? row.IS_IN_CABINET : 0,
         PROFIT_LOSS_REMARK: row.PROFIT_LOSS_REMARK || ''
       };
       this.detailDialogVisible = true;
@@ -1187,6 +1212,7 @@ export default {
   },
   created() {
     this.fetchRegions();
+    this.loadPeriodOptions();
     this.loadMainTableData();
   }
 };
