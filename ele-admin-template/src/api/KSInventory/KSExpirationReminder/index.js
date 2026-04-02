@@ -1,6 +1,7 @@
 import request from '@/utils/request';
 import { formdataify, DataToObject } from '@/utils/formdataify';
 import { TOKEN_STORE_NAME, } from '@/config/setting';
+import store from '@/store/index';
 
 export async function SearchDefRemind(data) {
     var data2 = {};
@@ -18,6 +19,7 @@ export async function SearchDefRemind(data) {
     data2.condition1 = data.where.condition1 ? data.where.condition1 : '';
     data2.jxqSatte = data.where.jxqSatte ? data.where.jxqSatte : '3';
     data2.isHaveTh = data.where.isHaveTh ? data.where.isHaveTh : '-1';
+    data2.deptCodes = store.state.user.info.userDept.map((item) => item.Dept_Two_Code).join(',');
 
     const res = await request.get('/DeptTwoDefNoPackageStock/SearchJYkDefRemind', {
         params: data2,
