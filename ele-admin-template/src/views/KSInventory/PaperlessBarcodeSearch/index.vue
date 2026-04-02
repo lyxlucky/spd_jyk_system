@@ -44,7 +44,7 @@
       >
         <template v-slot:fileUrl="{ row }">
           <el-link
-            :href="row.fileUrl"
+            :href="resolvePdfUrl(row.fileUrl)"
             target="_blank"
             type="primary"
             :underline="false"
@@ -63,6 +63,7 @@
 </template>
 <script>
   import { getPaperlessInfo } from '@/api/KSInventory/PaperlessBarcodeSearch';
+  import { BACK_BASE_URL } from '@/config/setting';
 
   export default {
     name: 'PaperlessBarcodeSearch',
@@ -154,8 +155,61 @@
        * 打开PDF
        */
       openPdf(url) {
-        if (!url) return;
-        window.open(url, '_blank');
+        const pdfUrl = this.resolvePdfUrl(url);
+        if (!pdfUrl) return;
+        window.open(pdfUrl, '_blank');
+      },
+      /**
+       * 根据当前前后端环境解析PDF地址
+       */
+      resolvePdfUrl(url) {
+        if (!url) return '';
+
+        const cleanUrl = String(url).trim().replace('/undefined', '');
+        if (!cleanUrl) return '';
+
+        if (!BACK_BASE_URL) {
+          return cleanUrl;
+        }
+
+        const baseUrl = BACK_BASE_URL.replace(/\/$/, '');
+
+        if (cleanUrl.indexOf(baseUrl) === 0) {
+          return cleanUrl;
+        }
+
+        const joinBackBaseUrl = (path) => {
+          if (!path) return baseUrl;
+
+          const normalizedPath = String(path)
+            .replace(/^\.\//, '')
+            .replace(/\\/g, '/');
+
+          return normalizedPath.charAt(0) === '/'
+            ? `${baseUrl}${normalizedPath}`
+            : `${baseUrl}/${normalizedPath}`;
+        };
+
+        try {
+          const backBaseUrlObj = new URL(baseUrl);
+          const backBasePath =
+            backBaseUrlObj.pathname === '/'
+              ? ''
+              : backBaseUrlObj.pathname.replace(/\/$/, '');
+
+          const parsedUrl = new URL(cleanUrl);
+          let relativePath = `${parsedUrl.pathname}${parsedUrl.search}${parsedUrl.hash}`;
+
+          if (backBasePath && relativePath.indexOf(`${backBasePath}/`) === 0) {
+            relativePath = relativePath.slice(backBasePath.length);
+          } else if (backBasePath && relativePath === backBasePath) {
+            relativePath = '/';
+          }
+
+          return joinBackBaseUrl(relativePath);
+        } catch (error) {
+          return joinBackBaseUrl(cleanUrl);
+        }
       }
     }
   };
