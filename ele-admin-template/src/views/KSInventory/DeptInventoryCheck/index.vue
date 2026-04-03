@@ -256,7 +256,7 @@
         <vxe-column field="HIS_ZHB" title="转换比" width="80" align="right" />
         <vxe-column field="LAST_STOCK_QTY" title="上期库存" width="80" align="right" footer-align="right" />
         <vxe-column field="IN_QTY" title="入库数" width="80" align="right" footer-align="right" />
-        <vxe-column v-if="false" field="ISSUE_QTY" title="领用数" width="100" align="right" footer-align="right" :edit-render="{ showIcon: false }">
+        <vxe-column v-if="false" field="ISSUE_QTY" title="领用数" width="100" align="right" footer-align="right" :edit-render="{}">
           <template #edit="{ row }">
             <el-input-number
               v-model="row.ISSUE_QTY"
@@ -271,7 +271,7 @@
         </vxe-column>
         <vxe-column field="RETURN_QTY" title="退还数" width="80" align="right" footer-align="right" />
         <vxe-column field="CURRENT_STOCK_QTY" title="本期库存" width="80" align="right" footer-align="right" />
-        <vxe-column field="ACTUAL_STOCK_QTY" width="100" align="right" footer-align="right" :edit-render="{ showIcon: true }">
+        <vxe-column field="ACTUAL_STOCK_QTY" width="100" align="right" footer-align="right" :edit-render="{}">
           <template #header>
             <span style="color: #f56c6c">实存数</span>
           </template>
@@ -292,7 +292,7 @@
             <span class="charging-qty-blue">{{ row.CHARGING_QTY }}</span>
           </template>
         </vxe-column>
-        <vxe-column field="PROFIT_LOSS_NUMBER" title="盈亏数" width="80" align="right" footer-align="right">
+        <vxe-column v-if="canViewAllChecks" field="PROFIT_LOSS_NUMBER" title="盈亏数" width="80" align="right" footer-align="right">
           <template #default="{ row }">
             <span
               :class="{
@@ -302,7 +302,7 @@
             >{{ row.PROFIT_LOSS_NUMBER }}</span>
           </template>
         </vxe-column>
-        <vxe-column field="IS_IN_CABINET" title="是否入柜" width="100" align="center" :formatter="formatterInCabinet" :edit-render="{ showIcon: true }">
+        <vxe-column field="IS_IN_CABINET" title="是否入柜" width="100" align="center" :formatter="formatterInCabinet" :edit-render="{}">
           <template #edit="{ row }">
             <el-select v-model="row.IS_IN_CABINET" size="mini" clearable style="width: 100%">
               <el-option label="是" :value="1" />
@@ -310,7 +310,7 @@
             </el-select>
           </template>
         </vxe-column>
-        <vxe-column field="PROFIT_LOSS_REMARK" title="盈亏备注" min-width="150" show-overflow :edit-render="{ showIcon: true }">
+        <vxe-column field="PROFIT_LOSS_REMARK" title="盈亏备注" min-width="150" show-overflow :edit-render="{}">
           <template #edit="{ row }">
             <el-input
               v-model="row.PROFIT_LOSS_REMARK"
@@ -740,9 +740,14 @@ export default {
         const workbook = new ExcelJS.Workbook();
         const sheet = workbook.addWorksheet('盘点明细');
 
-        const headers = ['盘点单明细ID', '上期库存', '入库数', '退还数', '本期库存', '实存数', '计费数量', '盈亏数', '品种编码', '品种名称', '规格型号', '收费编码', '是否收费', '单位', '厂家', '单价', '转换比', '是否入柜', '盈亏备注'];
+        const includeProfitLoss = this.canViewAllChecks;
+        const headers = ['盘点单明细ID', '上期库存', '入库数', '退还数', '本期库存', '实存数', '计费数量']
+          .concat(includeProfitLoss ? ['盈亏数'] : [])
+          .concat(['品种编码', '品种名称', '规格型号', '收费编码', '是否收费', '单位', '厂家', '单价', '转换比', '是否入柜', '盈亏备注']);
         const colCount = headers.length;
-        const colWidths = [14, 10, 10, 10, 10, 10, 10, 10, 16, 30, 20, 14, 10, 8, 30, 10, 10, 10, 20];
+        const colWidths = [14, 10, 10, 10, 10, 10, 10]
+          .concat(includeProfitLoss ? [10] : [])
+          .concat([16, 30, 20, 14, 10, 8, 30, 10, 10, 10, 20]);
         sheet.columns = colWidths.map(w => ({ width: w }));
 
         const thinBorder = { top: { style: 'thin' }, bottom: { style: 'thin' }, left: { style: 'thin' }, right: { style: 'thin' } };
@@ -779,7 +784,12 @@ export default {
           const rowData = [
             d.ID, d.LAST_STOCK_QTY, d.IN_QTY,
             d.RETURN_QTY != null ? -d.RETURN_QTY : '',
-            d.CURRENT_STOCK_QTY, d.ACTUAL_STOCK_QTY, d.CHARGING_QTY, d.PROFIT_LOSS_NUMBER,
+            d.CURRENT_STOCK_QTY, d.ACTUAL_STOCK_QTY, d.CHARGING_QTY
+          ];
+          if (includeProfitLoss) {
+            rowData.push(d.PROFIT_LOSS_NUMBER);
+          }
+          rowData.push(
             d.VARIETIE_CODE_NEW, d.VARIETIE_NAME,
             d.SPECIFICATION_OR_TYPE, d.CHARGING_CODE != null ? d.CHARGING_CODE : '',
             d.IS_CHARGE === 1 ? '是' : d.IS_CHARGE === 0 ? '否' : '',
@@ -787,7 +797,7 @@ export default {
             d.HIS_ZHB != null ? d.HIS_ZHB : '',
             d.IS_IN_CABINET === 1 ? '是' : d.IS_IN_CABINET === 0 ? '否' : '',
             d.PROFIT_LOSS_REMARK
-          ];
+          );
           const dataRow = sheet.addRow(rowData);
           dataRow.height = 18;
           dataRow.eachCell({ includeEmpty: true }, (cell, colNumber) => {
