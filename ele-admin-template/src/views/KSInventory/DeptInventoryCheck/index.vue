@@ -41,6 +41,23 @@
             <!--<el-option label="已审核" :value="2" />-->
           </el-select>
         </el-form-item>
+        <el-form-item label="科室" v-if="canViewAllChecks">
+          <el-select
+            v-model="searchForm.DEPT_TWO_CODE"
+            filterable
+            clearable
+            placeholder="请选择科室"
+            :loading="deptLoading"
+            style="width: 170px"
+          >
+            <el-option
+              v-for="item in deptOptions"
+              :key="item.Dept_Two_Code"
+              :label="item.Dept_Two_Name"
+              :value="item.Dept_Two_Code"
+            />
+          </el-select>
+        </el-form-item>
         <el-form-item label="盘点时间" v-if="false">
           <el-date-picker
             v-model="checkStartRange"
@@ -94,7 +111,7 @@
         border
         resizable
         size="mini"
-        height="240"
+        height="220"
         :row-config="{ isHover: true, isCurrent: true }"
         @current-change="onMainTableCurrentChange"
         style="margin-bottom: 8px"
@@ -231,7 +248,7 @@
         </el-form>
       </div>
 
-      <div style="height: calc(100vh - 580px);">
+      <div style="height: calc(100vh - 560px);">
       <vxe-table
         ref="detailTable"
         :data="detailTableData"
@@ -506,7 +523,8 @@ import {
   getDeptInventoryCheckDetailList,
   updateDeptInventoryCheckDetail,
   batchUpdateDeptInventoryCheckDetail,
-  importLastStockQty
+  importLastStockQty,
+  getDeptTwoOptions
 } from '@/api/KSInventory/DeptInventoryCheck';
 import { getDeptTwoRegion2 } from '@/api/KSInventory/KSDepartmentalPlan';
 import { reloadPageTab } from '@/utils/page-tab-util';
@@ -519,6 +537,7 @@ export default {
       // 搜索表单
       searchForm: {
         PERIOD_YM: '',
+        DEPT_TWO_CODE: '',
         DEPT_TWO_NAME: '',
         STATUS: '',
         CHECK_START_TIME_BEGIN: '',
@@ -526,6 +545,8 @@ export default {
       },
       checkStartRange: [],
       periodOptions: [],
+      deptOptions: [],
+      deptLoading: false,
       // 主表
       mainTableData: [],
       mainTableLoading: false,
@@ -603,6 +624,7 @@ export default {
     reset() {
       this.searchForm = {
         PERIOD_YM: '',
+        DEPT_TWO_CODE: '',
         DEPT_TWO_NAME: '',
         STATUS: '',
         CHECK_START_TIME_BEGIN: '',
@@ -631,12 +653,24 @@ export default {
         this.periodOptions = [];
       }
     },
+    async loadDeptOptions() {
+      if (!this.canViewAllChecks) return;
+      this.deptLoading = true;
+      try {
+        const res = await getDeptTwoOptions();
+        this.deptOptions = (res.result || []).filter(item => !!item && !!item.Dept_Two_Code);
+      } catch (error) {
+        this.deptOptions = [];
+      } finally {
+        this.deptLoading = false;
+      }
+    },
     async loadMainTableData() {
       this.mainTableLoading = true;
       try {
         const params = {
           ...this.searchForm,
-          DEPT_TWO_CODE: this.canViewAllChecks ? '' : this.deptCode,
+          DEPT_TWO_CODE: this.canViewAllChecks ? (this.searchForm.DEPT_TWO_CODE || '') : this.deptCode,
           page: this.mainTablePage.page,
           size: this.mainTablePage.size
         };
@@ -1223,6 +1257,7 @@ export default {
   created() {
     this.fetchRegions();
     this.loadPeriodOptions();
+    this.loadDeptOptions();
     this.loadMainTableData();
   }
 };
