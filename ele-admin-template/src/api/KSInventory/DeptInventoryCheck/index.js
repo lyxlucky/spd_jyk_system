@@ -196,3 +196,18 @@ export async function importLastStockQty(checkId, items) {
     return Promise.reject(new Error(res.data.msg));
   }
 }
+
+/**
+ * 科室盘点 - 获取二级科室选项列表（用于管理员筛选）
+ */
+export async function getDeptTwoOptions() {
+  const formatData = {
+    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+  };
+  const res = await request.get('/DeptTwoBasicInfo/GetEnabledList', { params: formatData });
+  if (res.data.code == 200) {
+    return res.data;
+  } else {
+    return Promise.reject(new Error(res.data.msg));
+  }
+}
