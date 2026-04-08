@@ -532,7 +532,7 @@ export default {
         CHARGING_CODE: '',
         SUPPLIER_NAME: '',
         MANUFACTURING_ENT_NAME: '',
-        USE_APP_STATE: '',
+        USE_APP_STATE: '0',
         CONSUMPTION_TYPE: '2', // 出库方式
         IS_GT: '', // 是否跟台
         ID: ''
@@ -613,7 +613,7 @@ export default {
         CHARGING_CODE: '',
         SUPPLIER_NAME: '',
         MANUFACTURING_ENT_NAME: '',
-        USE_APP_STATE: '',
+        USE_APP_STATE: '0',
         CONSUMPTION_TYPE: '2',
         IS_GT: '',
         ID: ''
