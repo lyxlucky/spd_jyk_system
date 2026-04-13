@@ -1,7 +1,7 @@
 <template lang="">
   <div>
     <el-container>
-      <el-header height="350">
+      <el-header height="350" style="margin-top: 10px">
         <el-card shadow="always">
           <registrationTable></registrationTable>
         </el-card>

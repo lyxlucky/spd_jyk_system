@@ -260,6 +260,8 @@ export async function UpDateProdInfo(data) {
     formataData.HIS_PROD_END_TIME = data.where.current.HIS_PROD_END_TIME ? toDateString(data.where.current.HIS_PROD_END_TIME,"yyyy-MM-dd") : '1970-01-01'
     formataData.SCOPE_APPLICATION = data.where.current.SCOPE_APPLICATION ?? '';
     formataData.STORAGE_CONDITION = data.where.current.STORAGE_CONDITION ?? '';
+    formataData.ONEOFF_STERILIZATION_PACKAGING = data.where.current.ONEOFF_STERILIZATION_PACKAGING ?? '';
+    formataData.PRO_MEDICAL_CONSUMABLE_GRADE = data.where.current.PRO_MEDICAL_CONSUMABLE_GRADE ?? '';
     formataData.EDITPROD_PROD = data.EDITPROD_PROD ?? '';
     formataData.EDITPROD_MGMT = data.EDITPROD_MGMT ?? '';
     formataData.EDITPROD_REG = data.EDITPROD_REG ?? '';

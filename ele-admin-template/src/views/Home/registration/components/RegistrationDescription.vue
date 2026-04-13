@@ -1,6 +1,12 @@
 <template lang="">
-  <div>
-    <el-descriptions title="注册证产品详情" :column="4" border>
+  <div class="registration-description">
+    <el-descriptions
+      title="注册证产品详情"
+      :column="4"
+      border
+      :label-style="descLabelStyle"
+      :content-style="descContentStyle"
+    >
       <el-descriptions-item label="注册证名称：">{{
         current.PROD_REGISTRATION_NAME
       }}</el-descriptions-item>
@@ -58,7 +64,13 @@
     </el-descriptions>
 
     <!-- 第二大行 -->
-    <el-descriptions title="证照详情" :column="4" border>
+    <el-descriptions
+      title="证照详情"
+      :column="4"
+      border
+      :label-style="descLabelStyle"
+      :content-style="descContentStyle"
+    >
       <el-descriptions-item label="注册证图片：">
         <div class="image-container" v-viewer>
           <template v-for="(item, index) in varPicCurrent">
@@ -168,7 +180,17 @@
       return {
         current: {},
         varPicCurrent: [],
-        picturePrefix: '/Upload/ProPic/'
+        picturePrefix: '/Upload/ProPic/',
+        descLabelStyle: {
+          width: '130px',
+          minWidth: '130px',
+          verticalAlign: 'middle'
+        },
+        descContentStyle: {
+          minWidth: '0',
+          wordBreak: 'break-word',
+          verticalAlign: 'middle'
+        }
       };
     },
     methods: {
@@ -197,6 +219,13 @@
   };
 </script>
 <style scoped>
+  .registration-description {
+    width: 100%;
+  }
+  .registration-description ::v-deep .el-descriptions__table {
+    width: 100%;
+    table-layout: fixed;
+  }
   .image {
     height: 18px;
     display: flex;

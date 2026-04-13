@@ -1,6 +1,7 @@
 <template lang="">
   <ele-modal
-    width="70%"
+    width="85%"
+    top="5vh"
     title="修改证照详情"
     :visible="visible"
     :resizable="true"
@@ -9,60 +10,32 @@
   >
     <div class="container">
       <div v-loading="loading" class="description">
-        <el-descriptions title="注册证信息" :column="3" size="mini" border>
-          <!-- <el-descriptions-item label="注册证编号">{{this.where.current.APPROVAL_NUMBER}}</el-descriptions-item> -->
-          <el-descriptions-item label="注册证编号">
+        <el-descriptions
+          title="注册证信息"
+          :column="2"
+          size="mini"
+          border
+          class="registration-detail-desc"
+        >
+          <!-- 第1行 -->
+          <el-descriptions-item label="注册证产品名称">
             <div
-              v-if="!editing.APPROVAL_NUMBER"
-              @click="enableEdit('APPROVAL_NUMBER')"
-              >{{ this.where.current.APPROVAL_NUMBER }}</div
-            >
-            <el-input
-              v-else
-              v-model="where.current.APPROVAL_NUMBER"
-              @blur="saveEdit('APPROVAL_NUMBER')"
-              @keydown.enter="saveEdit('APPROVAL_NUMBER')"
-              @keydown.esc="cancelEdit('APPROVAL_NUMBER')"
-              :ref="'input-APPROVAL_NUMBER'"
-            >
-            </el-input
-          ></el-descriptions-item>
-          <!-- <el-descriptions-item label="注册证产品名称" :span="2">{{this.where.current.PROD_REGISTRATION_NAME}}</el-descriptions-item> -->
-          <el-descriptions-item label="注册证产品名称" :span="2"
-            ><div
               v-if="!editing.PROD_REGISTRATION_NAME"
               @click="enableEdit('PROD_REGISTRATION_NAME')"
               >{{ this.where.current.PROD_REGISTRATION_NAME }}</div
             >
             <el-input
               v-else
+              size="mini"
               v-model="where.current.PROD_REGISTRATION_NAME"
               @blur="saveEdit('PROD_REGISTRATION_NAME')"
               @keydown.enter="saveEdit('PROD_REGISTRATION_NAME')"
               @keydown.esc="cancelEdit('PROD_REGISTRATION_NAME')"
               :ref="'input-PROD_REGISTRATION_NAME'"
             >
-            </el-input
-          ></el-descriptions-item>
-          <!-- <el-descriptions-item label="原注册证编号">{{this.where.current.OLD_PROD_REGISTRATION_CODE}}</el-descriptions-item> -->
-
-          <el-descriptions-item label="原注册证编号">
-            <div
-              v-if="!editing.OLD_PROD_REGISTRATION_CODE"
-              @click="enableEdit('OLD_PROD_REGISTRATION_CODE')"
-              >{{ this.where.current.OLD_PROD_REGISTRATION_CODE || '空' }}</div
-            >
-            <el-input
-              v-else
-              v-model="where.current.OLD_PROD_REGISTRATION_CODE"
-              @blur="saveEdit('OLD_PROD_REGISTRATION_CODE')"
-              @keydown.enter="saveEdit('OLD_PROD_REGISTRATION_CODE')"
-              @keydown.esc="cancelEdit('OLD_PROD_REGISTRATION_CODE')"
-              :ref="'input-OLD_PROD_REGISTRATION_CODE'"
-            >
             </el-input>
           </el-descriptions-item>
-          <el-descriptions-item label="医疗器械注册人或备案人" :span="2">
+          <el-descriptions-item label="医疗器械注册人或备案人">
             {{ this.where.current.MANUFACTURING_ENT_NAME || '空' }}
             <el-button
               type="primary"
@@ -74,7 +47,25 @@
             >
           </el-descriptions-item>
 
-          <el-descriptions-item label="受托医疗器械生产企业名称" :span="3">
+          <!-- 第2行 -->
+          <el-descriptions-item label="注册证编号">
+            <div
+              v-if="!editing.APPROVAL_NUMBER"
+              @click="enableEdit('APPROVAL_NUMBER')"
+              >{{ this.where.current.APPROVAL_NUMBER }}</div
+            >
+            <el-input
+              v-else
+              size="mini"
+              v-model="where.current.APPROVAL_NUMBER"
+              @blur="saveEdit('APPROVAL_NUMBER')"
+              @keydown.enter="saveEdit('APPROVAL_NUMBER')"
+              @keydown.esc="cancelEdit('APPROVAL_NUMBER')"
+              :ref="'input-APPROVAL_NUMBER'"
+            >
+            </el-input>
+          </el-descriptions-item>
+          <el-descriptions-item label="受托医疗器械生产企业名称">
             {{ this.where.current.ST_MANUFACTURING_ENT_NAME || '空' }}
             <el-button
               type="primary"
@@ -86,10 +77,48 @@
             >
           </el-descriptions-item>
 
-          <!-- <el-descriptions-item label="生产地址">{{this.where.current.PRODUCTION_SITE}}</el-descriptions-item>
-        <el-descriptions-item label="生产许可证号" :span="2">{{his.where.current.MANUFACTURING_LICENSE }}</el-descriptions-item>
-        <el-descriptions-item label="法人">{{this.where.current.LEGAL_PERSON}}</el-descriptions-item> -->
+          <!-- 第3行：注册证批准日期 | 生产许可证号 -->
+          <el-descriptions-item label="注册证批准日期">
+            <el-date-picker
+              v-model="where.current.REGISTRATION_ISSUING_DATE"
+              type="date"
+              placeholder="选择日期"
+              format="yyyy-MM-dd"
+              size="mini"
+              style="width: 100%"
+            >
+            </el-date-picker>
+          </el-descriptions-item>
+          <el-descriptions-item label="生产许可证号">
+            <div
+              v-if="!editing.MANUFACTURING_LICENSE"
+              @click="enableEdit('MANUFACTURING_LICENSE')"
+              >{{ this.where.current.MANUFACTURING_LICENSE || '空' }}</div
+            >
+            <el-input
+              v-else
+              size="mini"
+              v-model="where.current.MANUFACTURING_LICENSE"
+              @blur="saveEdit('MANUFACTURING_LICENSE')"
+              @keydown.enter="saveEdit('MANUFACTURING_LICENSE')"
+              @keydown.esc="cancelEdit('MANUFACTURING_LICENSE')"
+              :ref="'input-MANUFACTURING_LICENSE'"
+            >
+            </el-input>
+          </el-descriptions-item>
 
+          <!-- 第4行：注册证有效期至 | 生产地址 -->
+          <el-descriptions-item label="注册证有效期至">
+            <el-date-picker
+              v-model="where.current.REGISTRATION_VALID_DATE"
+              type="date"
+              placeholder="选择日期"
+              format="yyyy-MM-dd"
+              size="mini"
+              style="width: 100%"
+            >
+            </el-date-picker>
+          </el-descriptions-item>
           <el-descriptions-item label="生产地址">
             <div
               v-if="!editing.PRODUCTION_SITE"
@@ -98,6 +127,7 @@
             >
             <el-input
               v-else
+              size="mini"
               v-model="where.current.PRODUCTION_SITE"
               @blur="saveEdit('PRODUCTION_SITE')"
               @keydown.enter="saveEdit('PRODUCTION_SITE')"
@@ -106,21 +136,27 @@
             >
             </el-input>
           </el-descriptions-item>
-          <el-descriptions-item label="生产许可证号" :span="2">
-            <div
-              v-if="!editing.MANUFACTURING_LICENSE"
-              @click="enableEdit('MANUFACTURING_LICENSE')"
-              >{{ this.where.current.MANUFACTURING_LICENSE || '空' }}</div
-            >
-            <el-input
-              v-else
-              v-model="where.current.MANUFACTURING_LICENSE"
-              @blur="saveEdit('MANUFACTURING_LICENSE')"
-              @keydown.enter="saveEdit('MANUFACTURING_LICENSE')"
-              @keydown.esc="cancelEdit('MANUFACTURING_LICENSE')"
-              :ref="'input-MANUFACTURING_LICENSE'"
-            >
-            </el-input>
+
+          <!-- 第5行：原注册证编号 | 法人 -->
+          <el-descriptions-item label="原注册证编号">
+            <div class="old-reg-row">
+              <div
+                v-if="!editing.OLD_PROD_REGISTRATION_CODE"
+                class="old-reg-value"
+                @click="enableEdit('OLD_PROD_REGISTRATION_CODE')"
+                >{{ this.where.current.OLD_PROD_REGISTRATION_CODE || '空' }}</div
+              >
+              <el-input
+                v-else
+                size="mini"
+                v-model="where.current.OLD_PROD_REGISTRATION_CODE"
+                @blur="saveEdit('OLD_PROD_REGISTRATION_CODE')"
+                @keydown.enter="saveEdit('OLD_PROD_REGISTRATION_CODE')"
+                @keydown.esc="cancelEdit('OLD_PROD_REGISTRATION_CODE')"
+                :ref="'input-OLD_PROD_REGISTRATION_CODE'"
+              >
+              </el-input>
+            </div>
           </el-descriptions-item>
           <el-descriptions-item label="法人">
             <div
@@ -130,6 +166,7 @@
             >
             <el-input
               v-else
+              size="mini"
               v-model="where.current.LEGAL_PERSON"
               @blur="saveEdit('LEGAL_PERSON')"
               @keydown.enter="saveEdit('LEGAL_PERSON')"
@@ -139,8 +176,50 @@
             </el-input>
           </el-descriptions-item>
 
+          <!-- 第6行：原注册证批准日期(REGISTRATION_ISSUING_DATE) | 国内代理企业 -->
+          <el-descriptions-item label="原注册证批准日期">
+            <el-date-picker
+              v-model="where.current.REGISTRATION_ISSUING_DATE"
+              type="date"
+              placeholder="选择日期"
+              format="yyyy-MM-dd"
+              size="mini"
+              style="width: 100%"
+            >
+            </el-date-picker>
+          </el-descriptions-item>
+          <el-descriptions-item label="国内代理企业">
+            <div
+              v-if="!editing.FOREIGN_REGIST_NAME"
+              @click="enableEdit('FOREIGN_REGIST_NAME')"
+              >{{ this.where.current.FOREIGN_REGIST_NAME || '空' }}</div
+            >
+            <el-input
+              v-else
+              size="mini"
+              v-model="where.current.FOREIGN_REGIST_NAME"
+              @blur="saveEdit('FOREIGN_REGIST_NAME')"
+              @keydown.enter="saveEdit('FOREIGN_REGIST_NAME')"
+              @keydown.esc="cancelEdit('FOREIGN_REGIST_NAME')"
+              :ref="'input-FOREIGN_REGIST_NAME'"
+            >
+            </el-input>
+          </el-descriptions-item>
+
+          <!-- 第7行：原注册证有效期至(REGISTRATION_VALID_DATE) | 进口或国产 -->
+          <el-descriptions-item label="原注册证有效期至">
+            <el-date-picker
+              v-model="where.current.REGISTRATION_VALID_DATE"
+              type="date"
+              placeholder="选择日期"
+              format="yyyy-MM-dd"
+              size="mini"
+              style="width: 100%"
+            >
+            </el-date-picker>
+          </el-descriptions-item>
           <el-descriptions-item label="进口或国产">
-            <el-select v-model="where.current.TRADE_TYPE" placeholder="请选择">
+            <el-select v-model="where.current.TRADE_TYPE" placeholder="请选择" size="mini">
               <el-option
                 v-for="item in prodOptions"
                 :key="item.value"
@@ -150,156 +229,13 @@
               </el-option>
             </el-select>
           </el-descriptions-item>
-          <!-- <el-descriptions-item label="品牌">{{this.where.current.Brand}}</el-descriptions-item> -->
-          <el-descriptions-item label="品牌">
-            <div v-if="!editing.Brand" @click="enableEdit('Brand')">{{
-              this.where.current.Brand || '空'
-            }}</div>
-            <el-input
-              v-else
-              v-model="where.current.Brand"
-              @blur="saveEdit('Brand')"
-              @keydown.enter="saveEdit('Brand')"
-              @keydown.esc="cancelEdit('Brand')"
-              :ref="'input-Brand'"
-            >
-            </el-input>
-          </el-descriptions-item>
-          <!-- <el-descriptions-item label="注册证批准日期">{{
-          this.where.current.REGISTRATION_ISSUING_DATE
-            ? this.where.current.REGISTRATION_ISSUING_DATE.substring(0, 10)
-            : ''
-        }}</el-descriptions-item> -->
-          <el-descriptions-item label="注册证批准日期" :span="2">
-            <el-date-picker
-              v-model="where.current.REGISTRATION_ISSUING_DATE"
-              type="date"
-              placeholder="选择日期"
-              format="yyyy-MM-dd"
-              size="mini"
-            >
-            </el-date-picker>
-          </el-descriptions-item>
-          <!-- <el-descriptions-item label="注册证有效期至" :span="2">{{
-          this.where.current.REGISTRATION_VALID_DATE
-            ? this.where.current.REGISTRATION_VALID_DATE.substring(0, 10)
-            : ''
-        }}</el-descriptions-item> -->
 
-          <el-descriptions-item label="注册证有效期至" :span="1">
-            <el-date-picker
-              v-model="where.current.REGISTRATION_VALID_DATE"
-              type="date"
-              placeholder="选择日期"
-              format="yyyy-MM-dd"
-              size="mini"
-            >
-            </el-date-picker>
-          </el-descriptions-item>
-
-          <!-- <el-descriptions-item :span="3" label="结构及组成">{{
-          this.where.current.Brand
-        }}</el-descriptions-item> -->
-
-          <el-descriptions-item :span="2" label="结构及组成">
-            <div
-              v-if="!editing.STRUCTURE_COMPOSITION"
-              @click="enableEdit('STRUCTURE_COMPOSITION')"
-              >{{ this.where.current.STRUCTURE_COMPOSITION || '空' }}</div
-            >
-            <el-input
-              v-else
-              v-model="where.current.STRUCTURE_COMPOSITION"
-              @blur="saveEdit('STRUCTURE_COMPOSITION')"
-              @keydown.enter="saveEdit('STRUCTURE_COMPOSITION')"
-              @keydown.esc="cancelEdit('STRUCTURE_COMPOSITION')"
-              :ref="'input-STRUCTURE_COMPOSITION'"
-            >
-            </el-input>
-          </el-descriptions-item>
-
-          <el-descriptions-item label="his结束时间" :span="1">
-            <el-date-picker
-              v-model="where.current.HIS_PROD_END_TIME"
-              type="date"
-              placeholder="选择日期"
-              format="yyyy-MM-dd"
-              size="mini"
-            >
-            </el-date-picker>
-          </el-descriptions-item>
-
-          <!-- <el-descriptions-item :span="3" label="适用范围">{{
-          this.where.current.Brand
-        }}</el-descriptions-item> -->
-
-          <el-descriptions-item :span="3" label="适用范围">
-            <div
-              v-if="!editing.SCOPE_APPLICATION"
-              @click="enableEdit('SCOPE_APPLICATION')"
-              >{{ this.where.current.SCOPE_APPLICATION || '空' }}</div
-            >
-            <el-input
-              v-else
-              v-model="where.current.SCOPE_APPLICATION"
-              @blur="saveEdit('SCOPE_APPLICATION')"
-              @keydown.enter="saveEdit('SCOPE_APPLICATION')"
-              @keydown.esc="cancelEdit('SCOPE_APPLICATION')"
-              :ref="'input-SCOPE_APPLICATION'"
-            >
-            </el-input>
-          </el-descriptions-item>
-
-          <!-- 全是下拉列表 -->
-          <el-descriptions-item label="产品类别">
-            <el-select
-              v-model="where.current.PROD_BIG_CLASS_CODE"
-              placeholder="请选择"
-            >
-              <el-option
-                v-for="item in productTypeOptions"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value.toString()"
-              >
-              </el-option>
-            </el-select>
-          </el-descriptions-item>
-
-          <el-descriptions-item label="管理类别">
-            <el-select
-              v-model="where.current.MGMT_CAT_CODE"
-              placeholder="请选择"
-            >
-              <el-option
-                v-for="item in MgmtOptions"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value.toString()"
-              >
-              </el-option>
-            </el-select>
-          </el-descriptions-item>
-
-          <el-descriptions-item label="监管类别">
-            <el-select
-              v-model="where.current.SUPERVISE_CAT_CODE"
-              placeholder="请选择"
-            >
-              <el-option
-                v-for="item in RegulatoryOptions"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value.toString()"
-              >
-              </el-option>
-            </el-select>
-          </el-descriptions-item>
-
+          <!-- 第8行 -->
           <el-descriptions-item label="储存条件">
             <el-select
               v-model="where.current.STORAGE_CONDITION"
               placeholder="请选择"
+              size="mini"
             >
               <el-option
                 v-for="item in storageConditionOptions"
@@ -310,27 +246,163 @@
               </el-option>
             </el-select>
           </el-descriptions-item>
+          <el-descriptions-item label="品牌">
+            <div v-if="!editing.Brand" @click="enableEdit('Brand')">{{
+              this.where.current.Brand || '空'
+            }}</div>
+            <el-input
+              v-else
+              size="mini"
+              v-model="where.current.Brand"
+              @blur="saveEdit('Brand')"
+              @keydown.enter="saveEdit('Brand')"
+              @keydown.esc="cancelEdit('Brand')"
+              :ref="'input-Brand'"
+            >
+            </el-input>
+          </el-descriptions-item>
 
-          <el-descriptions-item label="同步修改关联品种名称" :span="2">
+          <!-- 第9行 -->
+          <el-descriptions-item label="产品类别">
+            <el-select
+              v-model="where.current.PROD_BIG_CLASS_CODE"
+              placeholder="请选择"
+              size="mini"
+            >
+              <el-option
+                v-for="item in productTypeOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value.toString()"
+              >
+              </el-option>
+            </el-select>
+          </el-descriptions-item>
+          <el-descriptions-item label="同步修改关联品种名称">
             <el-switch
               v-model="where.isSync"
               active-color="#13ce66"
               inactive-color="#ff4949"
               active-value="1"
               inactive-value="0"
+              size="mini"
             >
             </el-switch>
           </el-descriptions-item>
 
-          <!-- <el-descriptions-item :span="3" label="缺项备注">
-          {{ this.where.current.QXBZ }}
-        </el-descriptions-item> -->
-          <el-descriptions-item :span="3" label="缺项备注">
+          <!-- 第10行 -->
+          <el-descriptions-item label="管理类别">
+            <el-select
+              v-model="where.current.MGMT_CAT_CODE"
+              placeholder="请选择"
+              size="mini"
+            >
+              <el-option
+                v-for="item in MgmtOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value.toString()"
+              >
+              </el-option>
+            </el-select>
+          </el-descriptions-item>
+          <el-descriptions-item label="是否灭菌">
+            <el-select
+              v-model="where.current.ONEOFF_STERILIZATION_PACKAGING"
+              placeholder="请选择"
+              clearable
+              size="mini"
+            >
+              <el-option
+                v-for="item in oneoffSterilizationOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              >
+              </el-option>
+            </el-select>
+          </el-descriptions-item>
+
+          <!-- 第11行 -->
+          <el-descriptions-item label="监管类别">
+            <el-select
+              v-model="where.current.SUPERVISE_CAT_CODE"
+              placeholder="请选择"
+              size="mini"
+            >
+              <el-option
+                v-for="item in RegulatoryOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value.toString()"
+              >
+              </el-option>
+            </el-select>
+          </el-descriptions-item>
+          <el-descriptions-item label="his结束时间">
+            <el-date-picker
+              v-model="where.current.HIS_PROD_END_TIME"
+              type="date"
+              placeholder="选择日期"
+              format="yyyy-MM-dd"
+              size="mini"
+              style="width: 100%"
+            >
+            </el-date-picker>
+          </el-descriptions-item>
+
+          <!-- 第12行 -->
+          <el-descriptions-item label="是否启用">
+            <el-tag size="mini" :type="where.current.ENABLE == '1' ? 'success' : 'info'">
+              {{ where.current.ENABLE == '1' ? '启用' : '停用' }}
+            </el-tag>
+          </el-descriptions-item>
+          <el-descriptions-item label="创建日期">
+            {{ formatCreateTime(where.current.CREATE_TIME) }}
+          </el-descriptions-item>
+
+          <!-- 通栏 -->
+          <el-descriptions-item label="结构及组成" :span="2">
+            <div
+              v-if="!editing.STRUCTURE_COMPOSITION"
+              @click="enableEdit('STRUCTURE_COMPOSITION')"
+              >{{ this.where.current.STRUCTURE_COMPOSITION || '空' }}</div
+            >
+            <el-input
+              v-else
+              size="mini"
+              v-model="where.current.STRUCTURE_COMPOSITION"
+              @blur="saveEdit('STRUCTURE_COMPOSITION')"
+              @keydown.enter="saveEdit('STRUCTURE_COMPOSITION')"
+              @keydown.esc="cancelEdit('STRUCTURE_COMPOSITION')"
+              :ref="'input-STRUCTURE_COMPOSITION'"
+            >
+            </el-input>
+          </el-descriptions-item>
+          <el-descriptions-item label="适用范围" :span="2">
+            <div
+              v-if="!editing.SCOPE_APPLICATION"
+              @click="enableEdit('SCOPE_APPLICATION')"
+              >{{ this.where.current.SCOPE_APPLICATION || '空' }}</div
+            >
+            <el-input
+              v-else
+              size="mini"
+              v-model="where.current.SCOPE_APPLICATION"
+              @blur="saveEdit('SCOPE_APPLICATION')"
+              @keydown.enter="saveEdit('SCOPE_APPLICATION')"
+              @keydown.esc="cancelEdit('SCOPE_APPLICATION')"
+              :ref="'input-SCOPE_APPLICATION'"
+            >
+            </el-input>
+          </el-descriptions-item>
+          <el-descriptions-item label="缺项备注" :span="2">
             <div v-if="!editing.QXBZ" @click="enableEdit('QXBZ')">{{
               this.where.current.QXBZ || '空'
             }}</div>
             <el-input
               v-else
+              size="mini"
               v-model="where.current.QXBZ"
               @blur="saveEdit('QXBZ')"
               @keydown.enter="saveEdit('QXBZ')"
@@ -686,6 +758,7 @@
           PROD_REGISTRATION_NAME: false,
           OLD_PROD_REGISTRATION_CODE: false,
           MANUFACTURING_ENT_NAME: false,
+          FOREIGN_REGIST_NAME: false,
           PRODUCTION_SITE: false,
           MANUFACTURING_LICENSE: false,
           LEGAL_PERSON: false,
@@ -694,6 +767,10 @@
           STRUCTURE_COMPOSITION: false,
           QXBZ: false
         },
+        oneoffSterilizationOptions: [
+          { value: '1', label: '是' },
+          { value: '0', label: '否' }
+        ],
         prodOptions: [
           {
             value: '0',
@@ -894,6 +971,14 @@
           this.where.current.ST_MANUFACTURING_ENT_NAME =
             data.current.MANUFACTURING_ENT_NAME;
         }
+      },
+      formatCreateTime(val) {
+        if (val == null || val === '') return '';
+        if (this.$moment) {
+          return this.$moment(val).format('YYYY-MM-DD');
+        }
+        const s = String(val);
+        return s.length >= 10 ? s.substring(0, 10) : s;
       }
     },
     watch: {
@@ -913,6 +998,8 @@
           })
           .catch((error) => {
             console.error('Error in initializeData:', error);
+            // 关闭加载动画
+            this.loading = false;
           });
       }
     },
@@ -926,6 +1013,28 @@
   };
 </script>
 <style scoped>
+  .registration-detail-desc {
+    width: 100%;
+  }
+  .registration-detail-desc ::v-deep .el-descriptions__table {
+    width: 100%;
+    table-layout: fixed;
+  }
+  .old-reg-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+  }
+  .old-reg-value {
+    flex: 1;
+    min-width: 0;
+  }
+  .old-reg-hint {
+    color: #909399;
+    font-size: 12px;
+    white-space: nowrap;
+  }
   .image {
     height: 28px;
     display: flex;

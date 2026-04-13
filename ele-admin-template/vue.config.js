@@ -162,6 +162,8 @@ module.exports = {
     } else {
       config.cache = false
     }
+
+    
   },
   chainWebpack(config) {
     // set svg-sprite-loader
@@ -185,6 +187,17 @@ module.exports = {
         new CompressionWebpackPlugin({
           test: /\.(js|css|html)$/,
           threshold: 10240
+        })
+      );
+    }
+
+    if (process.env.NODE_ENV === 'development') {
+      const { codeInspectorPlugin } = require('code-inspector-plugin');
+      config.plugin('code-inspector-plugin').use(
+        codeInspectorPlugin({
+          bundler: 'webpack',
+          editor: 'cursor', // code/cursor/webstorm
+          showSwitch: true,
         })
       );
     }

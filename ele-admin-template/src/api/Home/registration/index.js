@@ -39,6 +39,18 @@ export async function disAppro(data) {
   return res.data;
 }
 
+/** 批量去重保留：items 为表格行数组，含 PROD_REGISTRATION_CODE、APPROVAL_NUMBER（JSON 请求体） */
+export async function disApproBatch(items) {
+  const res = await request.post('/ProdInfo/disApproBatch', {
+    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+    Items: items.map((row) => ({
+      ID: row.PROD_REGISTRATION_CODE,
+      ApproStr: row.APPROVAL_NUMBER
+    }))
+  });
+  return res.data;
+}
+
 export async function DeleteProd(data) {
   let formatData = {};
   formatData.PROD_REGISTRATION_CODE = data.code;
