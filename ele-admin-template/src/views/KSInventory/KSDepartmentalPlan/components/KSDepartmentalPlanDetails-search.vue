@@ -430,7 +430,8 @@
     isHaveZeroDel,
     checkHasPendingOrder,
     deleteZeroDel,
-    ImportTempExcel
+    ImportTempExcel,
+    ApplyPlanUpdateRemarks
   } from '@/api/KSInventory/KSDepartmentalPlan';
   import { getBudgets, bindBudget } from '@/api/pekingApplication';
   import IntroduceUserDefinedTemp from '@/views/KSInventory/IntroduceUserDefinedTemp/index.vue';
@@ -854,7 +855,46 @@
           })
           .catch((err) => {
             loading.close();
-            this.$message.error(err);
+            const errMsg = err.message || String(err);
+            if (errMsg.includes('低值医材') && errMsg.includes('联系方式')) {
+              this.promptForLowValueRemark();
+            } else {
+              this.$message.error(errMsg);
+            }
+          });
+      },
+
+      // 低值医材提醒填写联系方式
+      promptForLowValueRemark() {
+        this.$prompt('该申领单明细全部为低值医材，请填写联系方式（电话/手机号）', '提示', {
+          confirmButtonText: '保存并继续提交',
+          cancelButtonText: '取消',
+          inputPlaceholder: '请输入联系方式',
+          inputValidator: (value) => {
+            if (!value || !value.trim()) {
+              return '联系方式不能为空';
+            }
+            return true;
+          }
+        })
+          .then(({ value }) => {
+            const loading = this.$messageLoading('保存备注中..');
+            ApplyPlanUpdateRemarks({
+              ApplyPlanNum: this.KSDepartmentalPlanDataSearch.PlanNum,
+              Remarks: value.trim()
+            })
+              .then(() => {
+                loading.close();
+                this.$emit('ClickReload', true);
+                this.executeSubmitLogic();
+              })
+              .catch((remarkErr) => {
+                loading.close();
+                this.$message.error(remarkErr.message || '备注保存失败');
+              });
+          })
+          .catch(() => {
+            this.$message.info('已取消提交，请在备注中填写联系方式后再提交');
           });
       },
 
