@@ -102,6 +102,17 @@
           {{ item.State }}
         </el-tag> -->
       </template>
+      <template v-slot:BZ="{ row }">
+        <el-link
+          v-if="row.BZ == null || row.BZ === ''"
+          type="primary"
+          @click="OpenUpdateRemarksBox(row)"
+          >无</el-link
+        >
+        <el-tag v-else type="primary" @click="OpenUpdateRemarksBox(row)">{{
+          row.BZ
+        }}</el-tag>
+      </template>
       <!-- 操作列 -->
       <template v-slot:action="{ row }">
         <el-popconfirm
@@ -142,7 +153,8 @@
     SerachPlanList,
     DeletePlanList,
     SearchHistoryConsumedAndPurchaseDept,
-    ReturnInitState
+    ReturnInitState,
+    ApplyPlanUpdateRemarks
   } from '@/api/KSInventory/KSDepartmentalPlan';
   import { getDeptAuthVarNew } from '@/api/KSInventory/KSInventoryBasicData';
   export default {
@@ -272,8 +284,8 @@
           },
           {
             prop: 'BZ',
+            slot: 'BZ',
             label: '备注',
-
             align: 'center',
             showOverflowTooltip: true,
             minWidth: 110
@@ -419,6 +431,35 @@
           })
           .catch((err) => {
             console.log(err);
+          });
+      },
+      OpenUpdateRemarksBox(row) {
+        this.$prompt('请输入备注信息', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          inputValue: row.BZ || ''
+        })
+          .then(({ value }) => {
+            const loading = this.$messageLoading('备注提交中..');
+            ApplyPlanUpdateRemarks({
+              ApplyPlanNum: row.PlanNum,
+              Remarks: value
+            })
+              .then((res) => {
+                loading.close();
+                this.$message.success('备注成功');
+                this.reload();
+              })
+              .catch((err) => {
+                loading.close();
+                this.$message.error(err.message || '备注失败');
+              });
+          })
+          .catch(() => {
+            this.$message({
+              type: 'info',
+              message: '取消备注'
+            });
           });
       },
       ReturnStateBtn(data) {

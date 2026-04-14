@@ -634,6 +634,23 @@ export async function upPlanListDelCount(data) {
 }
 
 
+/* 更新申领单主单备注 */
+export async function ApplyPlanUpdateRemarks(data) {
+  var data2 = {};
+  data2.ApplyPlanNum = data.ApplyPlanNum ? data.ApplyPlanNum : '';
+  data2.Remarks = data.Remarks !== undefined ? data.Remarks : '';
+  data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+
+  const res = await request.get('/DeptApplyPlan/ApplyPlanUpdateRemarks', {
+    params: data2
+  });
+  if (res.data.code == 200) {
+    return res.data;
+  } else {
+    return Promise.reject(new Error(res.data.msg));
+  }
+}
+
 export async function cancelOneAuthVarWithDept(data) {
   const postData = {
     Varietie_Code: data.Varietie_Code,
