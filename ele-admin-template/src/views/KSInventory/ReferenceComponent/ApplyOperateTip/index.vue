@@ -243,6 +243,34 @@
       };
     },
     methods: {
+      getDefaultPlanTimeRange() {
+        const pad = (n) => (n < 10 ? '0' + n : '' + n);
+        const endDate = new Date();
+        const startDate = new Date(endDate.getTime() - 7 * 24 * 3600 * 1000);
+        const endStr =
+          endDate.getFullYear() +
+          '-' +
+          pad(endDate.getMonth() + 1) +
+          '-' +
+          pad(endDate.getDate());
+        const startStr =
+          startDate.getFullYear() +
+          '-' +
+          pad(startDate.getMonth() + 1) +
+          '-' +
+          pad(startDate.getDate());
+        return {
+          PLAN_TIME_START: startStr,
+          PLAN_TIME_END: endStr
+        };
+      },
+      buildRequestWhere(where = {}) {
+        const nextWhere = { ...where };
+        if (!nextWhere.PLAN_TIME_START && !nextWhere.PLAN_TIME_END) {
+          Object.assign(nextWhere, this.getDefaultPlanTimeRange());
+        }
+        return nextWhere;
+      },
       /* 表格数据源 */
       datasource({ page, limit, where, order }) {
         var Dept_Two_CodeArray = this.$store.state.user.info.userDept;
@@ -251,8 +279,9 @@
         for (let i = 0; i < Dept_Two_CodeArray.length; i++) {
           DEPT_TWO_CODEStr += Dept_Two_CodeArray[i].Dept_Two_Code + ',';
         }
-        where.DEPT_TWO_CODE = DEPT_TWO_CODEStr;
-        let data = getApplyOperateTip({ page, limit, where, order }).then(
+        const requestWhere = this.buildRequestWhere(where);
+        requestWhere.DEPT_TWO_CODE = DEPT_TWO_CODEStr;
+        let data = getApplyOperateTip({ page, limit, where: requestWhere, order }).then(
           (res) => {
             var tData = {
               count: res.total,
