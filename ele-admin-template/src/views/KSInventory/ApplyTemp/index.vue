@@ -110,7 +110,7 @@
           data.APPLY_QTY = element.TempletQty;
           json.push(data);
         });
-        KeeptListDeta(json)
+        KeeptListDeta(json, '1')
           .then((res) => {
             console.log(res);
             this.$message.success('添加成功');

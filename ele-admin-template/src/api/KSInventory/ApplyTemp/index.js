@@ -134,11 +134,11 @@ export async function CreateTempletDeta(data) {
 }
 
 /* 其他模板添加品种 */
-export async function KeeptListDeta(data) {
+export async function KeeptListDeta(data, type = '0') {
   var data2 = {};
   data2.json = JSON.stringify(data);
   data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
-  data2.type = '0';
+  data2.type = type;
 
   var rep = formdataify(data2);
 
