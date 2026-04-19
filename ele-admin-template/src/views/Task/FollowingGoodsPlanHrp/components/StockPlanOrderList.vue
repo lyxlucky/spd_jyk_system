@@ -370,6 +370,12 @@
             }
           },
           {
+            label: '首次发送时间(提交采购)',
+            prop: 'FIRST_SEND_TIME',
+            width: 168,
+            align: 'center'
+          },
+          {
             label: '跟踪状态',
             prop: 'SEND_STATE',
             width: 120,

@@ -46,6 +46,16 @@ export function getMenuRoutes(menus, homePath) {
       routes.push({ ...route, children: null });
     }
   );
+  // 仅开发环境：便于未在库里配菜单时联调「暂存库查询(新)」。生产构建 NODE_ENV=production 不会注入。
+  // 正式环境仍以 /Commons/login 返回的 permission_group + 后台菜单为准。
+  if (process.env.NODE_ENV === 'development') {
+    routes.push({
+      path: '/Inventory/NewTemporaryRepositoryQuery',
+      component: () =>
+        import('@/views/Inventory/NewTemporaryRepositoryQuery/index.vue'),
+      meta: { title: '暂存库查询(新)' }
+    });
+  }
   return {
     path: LAYOUT_PATH,
     component: EleLayout,
