@@ -127,6 +127,17 @@
               <el-option label="已作废" value="1"></el-option>
             </el-select>
           </el-form-item>
+          <el-form-item
+            label="科室"
+            style="margin-right: 16px; margin-bottom: 8px"
+          >
+            <el-input
+              v-model="where.KSMC"
+              placeholder="科室名称"
+              clearable
+              style="width: 140px"
+            ></el-input>
+          </el-form-item>
           <el-form-item style="margin-right: 16px; margin-bottom: 8px">
             <el-input
               v-model="where.BRXM_OR_SSMC"
@@ -298,6 +309,7 @@
           IS_LS: '',
           IS_PRINT2: '',
           BRXM_OR_SSMC: '',
+          KSMC: '',
           SSBH: '',
           SSTH: '',
           SSFJ: ''
@@ -549,6 +561,7 @@
       // 表格数据源
       datasource({ page, limit, where, order }) {
         where.MZZY = this.where.MZZY;
+        where.KSMC = this.where.KSMC;
         console.log(where);
 
         return getBdSzYyHisSs({ page, limit, where, order })

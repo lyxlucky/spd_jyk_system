@@ -30,6 +30,8 @@ export async function getBdSzYyHisSs(params) {
     SSFJ: params.where?.SSFJ || '',
     IS_ADD: params.where?.IS_ADD || '',
     IS_PRINT2: params.where?.IS_PRINT2 || '',
+    /** 科室名称模糊查询 */
+    KSMC: params.where?.KSMC || '',
     page: params.page || 1,
     size: params.limit || 10,
     sort: params.order?.sort || '',
