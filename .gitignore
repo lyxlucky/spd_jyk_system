@@ -15,4 +15,3 @@ yarn.lock
 *.ntvs*
 *.njsproj
 *.sln
-ele-admin-template/package-lock.json
