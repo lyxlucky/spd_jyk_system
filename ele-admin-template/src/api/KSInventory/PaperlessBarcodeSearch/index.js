@@ -13,6 +13,7 @@ export async function getPaperlessInfo(params) {
   data2.HospitalNumber = params?.inpatientNo || '';
   data2.AdnissTimes = params?.admissionTimes ?? '';
   data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+  data2.USER_DEPT = store.state.user.info?.DeptNow?.Dept_Two_Code || '0';
   data2.page = params?.page || 1;
   data2.size = params?.size || 10;
 
