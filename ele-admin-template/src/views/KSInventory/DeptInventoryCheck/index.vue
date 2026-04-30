@@ -267,9 +267,10 @@
         <vxe-column field="IS_CHARGE" title="是否收费" width="80" align="center" :formatter="({ cellValue }) => cellValue === 1 ? '是' : cellValue === 0 ? '否' : ''" />
         <vxe-column field="VARIETIE_NAME" title="品种名称" min-width="150" show-overflow />
         <vxe-column field="SPECIFICATION_OR_TYPE" title="规格型号" width="130" show-overflow />
-        <vxe-column field="UNIT" title="单位" width="60" align="center" />
         <vxe-column field="MANUFACTURING_ENT_NAME" title="厂家" width="160" show-overflow />
-        <vxe-column field="PRICE" title="单价" width="80" align="right" :formatter="formatterPrice" />
+        <vxe-column field="PRICE" title="SPD单价" width="80" align="right" :formatter="formatterPrice" />
+        <vxe-column field="UNIT" title="SPD单位" width="80" align="center" />
+        <vxe-column field="HIS_UNIT" title="计费单位" width="80" align="center" />
         <vxe-column field="HIS_ZHB" title="转换比" width="80" align="right" />
         <vxe-column field="LAST_STOCK_QTY" title="上期库存" width="80" align="right" footer-align="right" />
         <vxe-column field="IN_QTY" title="入库数" width="80" align="right" footer-align="right" />
@@ -777,11 +778,11 @@ export default {
         const includeProfitLoss = this.canViewAllChecks;
         const headers = ['盘点单明细ID', '上期库存', '入库数', '退还数', '本期库存', '实存数', '计费数量']
           .concat(includeProfitLoss ? ['盈亏数'] : [])
-          .concat(['品种编码', '品种名称', '规格型号', '收费编码', '是否收费', '单位', '厂家', '单价', '转换比', '是否入柜', '盈亏备注']);
+          .concat(['品种编码', '品种名称', '规格型号', '计费编码', '是否收费', 'SPD单位', '计费单位', '厂家', 'SPD单价', '转换比', '是否入柜', '盈亏备注']);
         const colCount = headers.length;
         const colWidths = [14, 10, 10, 10, 10, 10, 10]
           .concat(includeProfitLoss ? [10] : [])
-          .concat([16, 30, 20, 14, 10, 8, 30, 10, 10, 10, 20]);
+          .concat([16, 30, 20, 14, 10, 10, 10, 30, 10, 10, 10, 20]);
         sheet.columns = colWidths.map(w => ({ width: w }));
 
         const thinBorder = { top: { style: 'thin' }, bottom: { style: 'thin' }, left: { style: 'thin' }, right: { style: 'thin' } };
@@ -827,7 +828,7 @@ export default {
             d.VARIETIE_CODE_NEW, d.VARIETIE_NAME,
             d.SPECIFICATION_OR_TYPE, d.CHARGING_CODE != null ? d.CHARGING_CODE : '',
             d.IS_CHARGE === 1 ? '是' : d.IS_CHARGE === 0 ? '否' : '',
-            d.UNIT, d.MANUFACTURING_ENT_NAME, d.PRICE,
+            d.UNIT, d.HIS_UNIT, d.MANUFACTURING_ENT_NAME, d.PRICE,
             d.HIS_ZHB != null ? d.HIS_ZHB : '',
             d.IS_IN_CABINET === 1 ? '是' : d.IS_IN_CABINET === 0 ? '否' : '',
             d.PROFIT_LOSS_REMARK
