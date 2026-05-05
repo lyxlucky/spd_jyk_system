@@ -23,6 +23,11 @@ const envConfig = {
     publicPath: '/jyk/',
     outputDir: 'jyk'
   },
+  bjwwnew: {
+    target: 'http://39.107.78.98:6049/',
+    publicPath: '/jykww/',
+    outputDir: 'jykww'
+  },
   bjnw: {
     target: 'http://172.27.2.102:18002/',
     publicPath: '/jyknw/',

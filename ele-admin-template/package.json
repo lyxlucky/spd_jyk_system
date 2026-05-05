@@ -10,6 +10,7 @@
     "build:report": "vue-cli-service build --report",
     "build:test": "vue-cli-service build --mode test",
     "build:bjww": "vue-cli-service build --mode bjww",
+    "build:bjwwnew": "vue-cli-service build --mode bjwwnew",
     "build:bjnw": "vue-cli-service build --mode bjnw",
     "build:bjnwhttps": "vue-cli-service build --mode bjnwhttps",
     "build:bdww": "vue-cli-service build --mode bdww",

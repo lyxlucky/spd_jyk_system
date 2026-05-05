@@ -598,6 +598,20 @@
             showOverflowTooltip: true
           },
           {
+            prop: 'PATIENT_NUM',
+            label: '住院号',
+            minWidth: 120,
+            align: 'center',
+            showOverflowTooltip: true
+          },
+          {
+            prop: 'PATIENT_ID_CARD',
+            label: '病人身份证号',
+            minWidth: 180,
+            align: 'center',
+            showOverflowTooltip: true
+          },
+          {
             prop: 'EXPIRATION_TIME',
             label: '失效日期',
             minWidth: 120,

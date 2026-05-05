@@ -11,6 +11,7 @@ const getRequestTimeout = () => {
     'local': 3600000, // 1小时
     'test': 3600000,  // 1小时
     'bjww': 3600000,  // 1小时
+    'bjwwnew': 3600000,  // 1小时
     'bjnw': 3600000,  // 1小时
     'bjnwhttps': 3600000, // 1小时
     'bdww': 4*60*60*1000,  // 4小时
@@ -58,6 +59,7 @@ const getHomeHp = () => {
     'local': 'bdrm',
     'test': 'bdrm',
     'bjww': 'bdrm',
+    'bjwwnew': 'bdrm',
     'bjnw': 'bdrm',
     'bjnwhttps': 'bdrm',
     'bdww': 'bd',
@@ -115,6 +117,7 @@ const getBackBaseUrl = () => {
     'local': 'http://localhost:16416',
     'test': 'http://120.79.135.98:891',
     'bjww': 'http://39.107.78.98:6049',
+    'bjwwnew': 'http://39.107.78.98:6049',
     'bjnw': 'http://172.27.2.102:18002',
     'bjnwhttps': 'https://spd.pkuph.cn:10082',
     'bdww': 'http://47.106.243.154:9001',
