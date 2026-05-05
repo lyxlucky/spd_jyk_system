@@ -69,6 +69,8 @@ export async function insertMain(data) {
       SURGICAL_PRO_NAME: data.SURGICAL_PRO_NAME,
       REMARK: data.REMARK,
       PATIENT_NAME: data.PATIENT_NAME,
+      PATIENT_NUM: data.PATIENT_NUM,
+      PATIENT_ID_CARD: data.PATIENT_ID_CARD,
       EXPIRATION_TIME: data.EXPIRATION_TIME
     },
   };
@@ -96,6 +98,8 @@ export async function updateMain(data) {
       SURGICAL_PRO_NAME: data.SURGICAL_PRO_NAME,
       REMARK: data.REMARK,
       PATIENT_NAME: data.PATIENT_NAME,
+      PATIENT_NUM: data.PATIENT_NUM,
+      PATIENT_ID_CARD: data.PATIENT_ID_CARD,
     },
   };
 

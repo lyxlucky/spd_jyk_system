@@ -233,6 +233,18 @@
             placeholder="请输入患者姓名"
           ></el-input>
         </el-form-item>
+        <el-form-item label="住院号" prop="PATIENT_NUM">
+          <el-input
+            v-model="mainFormData.PATIENT_NUM"
+            placeholder="请输入住院号"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="病人身份证号" prop="PATIENT_ID_CARD">
+          <el-input
+            v-model="mainFormData.PATIENT_ID_CARD"
+            placeholder="请输入病人身份证号"
+          ></el-input>
+        </el-form-item>
         <el-form-item label="联系方式" prop="PHONE">
           <el-input
             v-model="mainFormData.PHONE"
@@ -630,6 +642,8 @@
         mainFormData: {
           ID: null,
           PATIENT_NAME: '',
+          PATIENT_NUM: '',
+          PATIENT_ID_CARD: '',
           PHONE: '',
           SURGICAL_PRO_NAME: '',
           REMARK: '',
@@ -997,6 +1011,8 @@
         this.mainFormData = {
           ID: row.ID,
           PATIENT_NAME: row.PATIENT_NAME,
+          PATIENT_NUM: row.PATIENT_NUM,
+          PATIENT_ID_CARD: row.PATIENT_ID_CARD,
           PHONE: row.PHONE,
           SURGICAL_PRO_NAME: row.SURGICAL_PRO_NAME,
           REMARK: row.REMARK,
@@ -1008,6 +1024,8 @@
         this.mainFormData = {
           ID: null,
           PATIENT_NAME: '',
+          PATIENT_NUM: '',
+          PATIENT_ID_CARD: '',
           PHONE: '',
           SURGICAL_PRO_NAME: '',
           REMARK: '',
