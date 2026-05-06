@@ -155,10 +155,7 @@ export async function batchRegisterDestroyer(data) {
 export async function addSurgeryOrder(data) {
   const formatData = {
     Token: sessionStorage.getItem(TOKEN_STORE_NAME),
-    ...data,
-    // 自动从全局获取申请科室信息
-    APPLY_DEPT: store.state.user.info?.DeptNow?.Dept_Two_Name || '',
-    APPLY_DEPT_CODE: store.state.user.info?.DeptNow?.Dept_Two_Code || ''
+    ...data
   };
 
   const res = await request.post(

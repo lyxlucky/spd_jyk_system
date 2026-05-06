@@ -842,6 +842,26 @@
               </el-form-item>
             </el-col>
             <el-col :span="8">
+              <el-form-item label="申请科室" prop="APPLY_DEPT_CODE">
+                <el-select
+                  filterable
+                  v-model="surgeryFormData.APPLY_DEPT_CODE"
+                  placeholder="请选择申请科室"
+                  style="width: 100%"
+                  @change="onApplyDeptChange"
+                >
+                  <el-option
+                    v-for="item in deptOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  />
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row :gutter="20">
+            <el-col :span="8">
               <el-form-item label="计划时间" prop="PLAN_SURGERY_DATE">
                 <el-date-picker
                   v-model="surgeryFormData.PLAN_SURGERY_DATE"
@@ -852,8 +872,6 @@
                 />
               </el-form-item>
             </el-col>
-          </el-row>
-          <el-row :gutter="20">
             <el-col :span="8">
               <el-form-item label="手术类型" prop="SURGERY_TYPE">
                 <el-input v-model="surgeryFormData.SURGERY_TYPE" placeholder="请输入手术类型" />
@@ -864,13 +882,13 @@
                 <el-input v-model="surgeryFormData.SURGERY_NAME" placeholder="请输入手术名称" />
               </el-form-item>
             </el-col>
+          </el-row>
+          <el-row :gutter="20">
             <el-col :span="8">
               <el-form-item label="手术台" prop="SURGERY_TABLE">
                 <el-input v-model="surgeryFormData.SURGERY_TABLE" placeholder="请输入手术台" />
               </el-form-item>
             </el-col>
-          </el-row>
-          <el-row :gutter="20">
             <el-col :span="8">
               <el-form-item label="住院号" prop="IN_HOSP_NO">
                 <el-input v-model="surgeryFormData.IN_HOSP_NO" placeholder="请输入住院号" />
@@ -881,10 +899,18 @@
                 <el-input v-model="surgeryFormData.SURGERY_FLAG" placeholder="请输入手术标识" />
               </el-form-item>
             </el-col>
+          </el-row>
+          <el-row :gutter="20">
             <el-col :span="8">
               <el-form-item label="手术分组" prop="SURGERY_GROUP">
                 <el-input v-model="surgeryFormData.SURGERY_GROUP" placeholder="请输入手术分组" />
               </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <!-- 占位列，保持三列对齐 -->
+            </el-col>
+            <el-col :span="8">
+              <!-- 占位列，保持三列对齐 -->
             </el-col>
           </el-row>
         </div>
@@ -961,7 +987,7 @@
         <div class="form-section">
           <div class="section-title">主刀信息</div>
           <el-row :gutter="20">
-            <el-col :span="12">
+            <el-col :span="8">
               <el-form-item label="主刀科室" prop="SURGEON_DEPT_CODE">
                 <el-select
                   filterable
@@ -979,7 +1005,7 @@
                 </el-select>
               </el-form-item>
             </el-col>
-            <el-col :span="12">
+            <el-col :span="8">
               <el-form-item label="主刀医生" prop="CHIEF_SURGEON">
                 <el-input
                   v-model="surgeryFormData.CHIEF_SURGEON"
@@ -987,19 +1013,14 @@
                   style="width: 100%"
                   readonly
                 />
-<!--                <el-select-->
-<!--                  v-model="surgeryFormData.CHIEF_SURGEON"-->
-<!--                  placeholder="请选择主刀医生"-->
-<!--                  style="width: 100%"-->
-<!--                  @change="onChiefSurgeonChange"-->
-<!--                >-->
-<!--                  <el-option-->
-<!--                    v-for="item in chiefSurgeonOptions"-->
-<!--                    :key="item.no"-->
-<!--                    :label="item.name"-->
-<!--                    :value="item.name"-->
-<!--                  />-->
-<!--                </el-select>-->
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="主刀医生工号" prop="CHIEF_SURGEON_NO">
+                <el-input
+                  v-model="surgeryFormData.CHIEF_SURGEON_NO"
+                  placeholder="请输入主刀医生工号"
+                />
               </el-form-item>
             </el-col>
           </el-row>
@@ -1190,6 +1211,9 @@ export default {
         GENDER: '',
         PATIENT_DEPT: '',
         PATIENT_DEPT_CODE: '',
+        // 申请科室
+        APPLY_DEPT: '',
+        APPLY_DEPT_CODE: '',
         IN_HOSP_NO: '',
         BED_NUMBER: '',
         DIAGNOSIS: '',
@@ -1203,11 +1227,12 @@ export default {
         // 手术信息必填
         SURGERY_LOCATION: [{ required: true, message: '请选择手术地点', trigger: 'change' }],
         SURGERY_NO: [{ required: true, message: '请输入手术单号', trigger: 'blur' }],
+        APPLY_DEPT_CODE: [{ required: true, message: '请选择申请科室', trigger: 'change' }],
         // 患者信息必填
         PATIENT_NAME: [{ required: true, message: '请输入患者姓名', trigger: 'blur' }],
         PATIENT_DEPT_CODE: [{ required: true, message: '请选择所在科室', trigger: 'change' }],
         // 主刀信息必填
-        SURGEON_DEPT: [{ required: true, message: '请选择主刀科室', trigger: 'change' }]
+        SURGEON_DEPT_CODE: [{ required: true, message: '请选择主刀科室', trigger: 'change' }]
       }
     };
   },
@@ -1215,6 +1240,10 @@ export default {
     onPatientDeptChange(val) {
       const opt = this.deptOptions.find(d => d.value === val);
       this.surgeryFormData.PATIENT_DEPT = opt ? opt.label : '';
+    },
+    onApplyDeptChange(val) {
+      const opt = this.deptOptions.find(d => d.value === val);
+      this.surgeryFormData.APPLY_DEPT = opt ? opt.label : '';
     },
     onSurgeonDeptChange(val) {
       const opt = this.deptOptions.find(d => d.value === val);
@@ -1650,6 +1679,9 @@ export default {
         // 手术信息模块
         SURGERY_LOCATION: '',
         SURGERY_NO: '',
+        // 申请科室
+        APPLY_DEPT: '',
+        APPLY_DEPT_CODE: '',
         PLAN_SURGERY_DATE: '',
         SURGERY_TYPE: '',
         SURGERY_NAME: '',
@@ -1692,6 +1724,8 @@ export default {
           ID: row.ID,
           SURGERY_LOCATION: row.SURGERY_LOCATION || '',
           SURGERY_NO: row.SURGERY_NO || '',
+          APPLY_DEPT: row.APPLY_DEPT || '',
+          APPLY_DEPT_CODE: row.APPLY_DEPT_CODE || '',
           PLAN_SURGERY_DATE: row.PLAN_SURGERY_DATE || '',
           SURGERY_TYPE: row.SURGERY_TYPE || '',
           SURGERY_NAME: row.SURGERY_NAME || '',
