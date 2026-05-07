@@ -39,11 +39,21 @@ jobs:
         run: |
           VERSION=${GITHUB_REF_NAME#refs/tags/}
           echo "VERSION=$VERSION" >> $GITHUB_ENV
-          if [ -d "jyk" ]; then
-            zip -r dist-${{ matrix.env }}-$VERSION.zip jyk
-          elif [ -d "jyknw" ]; then
-            zip -r dist-${{ matrix.env }}-$VERSION.zip jyknw
+          
+          TARGET_DIR=""
+          
+          for dir in jyk jyknw jykww; do
+          if [ -d "$dir" ]; then
+          TARGET_DIR="$dir"
+          break
           fi
+          done
+          
+          if [ -z "$TARGET_DIR" ]; then
+          TARGET_DIR="dist"
+          fi
+          
+          zip -r dist-${{ matrix.env }}-$VERSION.zip "$TARGET_DIR"
 
       - name: Upload to Release
         uses: softprops/action-gh-release@v1
