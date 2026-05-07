@@ -55,25 +55,18 @@
           </el-form-item>
           <el-form-item label="仪器设备:" prop="DEVICE_REMARK">
             <el-select
-            size="mini"
+              size="mini"
               style="width: 100%"
               filterable
               v-model="form.DEVICE_REMARK"
               placeholder="请选择仪器设备"
             >
-              <el-option-group
-                v-for="group in options"
-                :key="group.WORKING_GROUP"
-                :label="group.WORKING_GROUP"
-              >
-                <el-option
-                  v-for="item in group.INSTRUMENT_NAME"
-                  :key="item"
-                  :label="item"
-                  :value="item"
-                >
-                </el-option>
-              </el-option-group>
+              <el-option
+                v-for="item in deviceOptions"
+                :key="item"
+                :label="item"
+                :value="item"
+              ></el-option>
             </el-select>
           </el-form-item>
 
@@ -175,6 +168,18 @@
       // 是否开启响应式布局
       styleResponsive() {
         return this.$store.state.theme.styleResponsive;
+      }
+      ,
+      // 扁平化并去重的仪器设备列表
+      deviceOptions() {
+        if (!this.options || !Array.isArray(this.options)) return [];
+        const names = this.options.reduce((acc, group) => {
+          const list = Array.isArray(group && group.INSTRUMENT_NAME)
+            ? group.INSTRUMENT_NAME
+            : (group && group.INSTRUMENT_NAME ? [group.INSTRUMENT_NAME] : []);
+          return acc.concat(list);
+        }, []);
+        return Array.from(new Set(names));
       }
     },
     created() {
