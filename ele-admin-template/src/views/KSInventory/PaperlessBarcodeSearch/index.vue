@@ -28,6 +28,12 @@
         <el-form-item>
           <el-button type="primary" @click="handleSearch">查询</el-button>
           <el-button @click="handleReset">重置</el-button>
+          <el-button
+            type="primary"
+            :disabled="!selection.length"
+            @click="handleBatchRegenerate"
+            >批量重新生成</el-button
+          >
         </el-form-item>
       </el-form>
     </el-card>
@@ -39,6 +45,8 @@
         :pageSizes="[10, 20, 50, 100]"
         :columns="columns"
         :datasource="datasource"
+        :selection.sync="selection"
+        @selection-change="onSelectionChange"
         v-loading="loading"
         cache-key="PaperlessBarcodeSearchTable"
       >
@@ -57,12 +65,18 @@
             >打开</el-button
           >
         </template>
+        <template v-slot:action="{ row }">
+          <el-button type="text" @click="handleRegenerate(row)">重新生成</el-button>
+        </template>
       </ele-pro-table>
     </el-card>
   </div>
 </template>
 <script>
-  import { getPaperlessInfo } from '@/api/KSInventory/PaperlessBarcodeSearch';
+  import {
+    getPaperlessInfo,
+    regenerateCaseStatusReceipt
+  } from '@/api/KSInventory/PaperlessBarcodeSearch';
   import { BACK_BASE_URL } from '@/config/setting';
 
   export default {
@@ -76,6 +90,13 @@
         },
         // 表格列配置
         columns: [
+          {
+            columnKey: 'selection',
+            type: 'selection',
+            width: 45,
+            align: 'center',
+            fixed: 'left'
+          },
           {
             prop: 'inpatientNo',
             label: '住院号',
@@ -103,10 +124,20 @@
             minWidth: 140,
             align: 'center',
             showOverflowTooltip: true
+          },
+          {
+            columnKey: 'action',
+            label: '操作',
+            width: 120,
+            align: 'center',
+            resizable: false,
+            slot: 'action',
+            showOverflowTooltip: true
           }
         ],
         loading: false,
-        size: 10
+        size: 10,
+        selection: []
       };
     },
     methods: {
@@ -150,6 +181,55 @@
         this.queryForm.inpatientNo = '';
         this.queryForm.admissionTimes = null;
         this.handleSearch();
+      },
+      onSelectionChange(selection) {
+        this.selection = selection || [];
+      },
+      async handleRegenerate(row) {
+        const fileId = row?.fileId;
+        if (!fileId) {
+          this.$message.warning('文件ID为空，无法重新生成');
+          return;
+        }
+
+        const loading = this.$messageLoading('重新生成中...');
+        try {
+          const res = await regenerateCaseStatusReceipt({
+            uniqueIdentifier: fileId
+          });
+          this.$message.success(res?.msg || '重新生成成功');
+        } catch (error) {
+          this.$message.error(error?.message || '重新生成失败');
+        } finally {
+          loading.close();
+        }
+      },
+      async handleBatchRegenerate() {
+        if (!this.selection.length) {
+          this.$message.warning('请先勾选需要重新生成的数据');
+          return;
+        }
+
+        const loading = this.$messageLoading('批量重新生成中...');
+        try {
+          const tasks = this.selection
+            .filter((item) => !!item?.fileId)
+            .map((item) =>
+              regenerateCaseStatusReceipt({ uniqueIdentifier: item.fileId })
+            );
+
+          if (!tasks.length) {
+            this.$message.warning('所选数据文件ID为空，无法重新生成');
+            return;
+          }
+
+          await Promise.all(tasks);
+          this.$message.success(`批量重新生成成功，共${tasks.length}条`);
+        } catch (error) {
+          this.$message.error(error?.message || '批量重新生成失败');
+        } finally {
+          loading.close();
+        }
       },
       /**
        * 打开PDF
