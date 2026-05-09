@@ -177,28 +177,27 @@
           </el-button>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item>
-              <el-upload
-                :show-file-list="false"
-                :action="actionUrl"
-                :data="Updata"
-                :on-success="onSuccess"
-                :on-progress="onProgress"
-              >
-                <el-button size="mini" icon="el-icon-upload2" type="primary"
-                  >上传初始化库存</el-button
+              <div style="display: flex; align-items: center; gap: 6px;">
+                <el-upload
+                  :show-file-list="false"
+                  :action="actionUrl"
+                  :data="Updata"
+                  :on-success="onSuccess"
+                  :on-progress="onProgress"
                 >
-              </el-upload>
-            </el-dropdown-item>
-            <el-dropdown-item>
-              <el-button
-                size="mini"
-                type="primary"
-                icon="el-icon-download"
-                style="margin: 4px 0;"
-                @click="DownloadTemplate()"
-              >
-                下载初始化模板
-              </el-button>
+                  <el-button size="mini" icon="el-icon-upload2" type="primary"
+                    >上传初始化库存</el-button
+                  >
+                </el-upload>
+                <el-tooltip content="下载模板" placement="top">
+                  <el-button
+                    size="mini"
+                    type="success"
+                    icon="el-icon-download"
+                    @click="downloadInitTemplate()"
+                  />
+                </el-tooltip>
+              </div>
             </el-dropdown-item>
             <el-dropdown-item>
               <el-button
@@ -399,6 +398,9 @@
       DownloadTemplate() {
         var url = `${BACK_BASE_URL}/ZL/库存初始化.xls`;
         window.location.href = url.replace('/undefined', '');
+      },
+      downloadInitTemplate() {
+        window.location.href = process.env.BASE_URL + 'ZL/科室库存初始化模板.xlsx';
       },
       GenerateStockData_btn() {
         // var Dept_Two_CodeStr = '';
