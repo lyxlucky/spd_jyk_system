@@ -268,7 +268,7 @@
     getThirdStockInfoFlow,
     getThreeKcInfo
   } from '@/api/Inventory/ThreeLevelDbBD';
-  import { TOKEN_STORE_NAME } from '@/config/setting';
+  import { TOKEN_STORE_NAME, API_BASE_URL } from '@/config/setting';
   import { utils, writeFile } from 'xlsx';
   export default {
     name: 'ThreeLevelDbBD',
@@ -454,7 +454,7 @@
           PRICE: '',
           MANUFACTURING_ENT_NAME: ''
         },
-        uploadUrl: '/api/lhfy/uploadThirdInventory', // 上传接口地址，请根据实际情况修改
+        uploadUrl: API_BASE_URL + '/lhfy/uploadThirdInventory',
         uploadHeaders: {
           // 上传请求头，请根据实际情况修改
           Authorization: 'Bearer ' + localStorage.getItem('token') || ''
