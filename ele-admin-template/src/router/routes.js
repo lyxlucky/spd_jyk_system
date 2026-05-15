@@ -55,6 +55,11 @@ export function getMenuRoutes(menus, homePath) {
         import('@/views/Inventory/NewTemporaryRepositoryQuery/index.vue'),
       meta: { title: '暂存库查询(新)' }
     });
+    routes.push({
+      path: '/Home/HerpJfDept',
+      component: () => import('@/views/Home/HerpJfDept/index.vue'),
+      meta: { title: '计费科室维护' }
+    });
   }
   return {
     path: LAYOUT_PATH,
