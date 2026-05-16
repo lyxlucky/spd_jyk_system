@@ -62,7 +62,7 @@
         height="calc(100vh - 280px)"
         @selection-change="(s) => (selected = s)"
       >
-        <el-table-column type="selection" width="45" />
+        <el-table-column type="selection" width="45" align="center"/>
         <el-table-column prop="DEPT_TWO_NAME" label="二级科室名称" width="150" show-overflow-tooltip />
         <el-table-column prop="VARIETIE_NAME" label="品种名称" width="150" show-overflow-tooltip />
         <el-table-column prop="VARIETIE_CODE_NEW" label="品种编码" width="150" show-overflow-tooltip />

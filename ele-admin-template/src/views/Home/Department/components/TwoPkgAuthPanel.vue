@@ -54,7 +54,7 @@
         @selection-change="(s) => (selected = s)"
         @sort-change="onSort"
       >
-        <el-table-column type="selection" width="48" fixed />
+        <el-table-column type="selection" width="48" fixed align="center" />
         <el-table-column prop="Varietie_Code_New" label="品种（材料）编码" width="80" sortable="custom" show-overflow-tooltip />
         <el-table-column prop="Varietie_Name" label="品种全称" min-width="200" sortable="custom" show-overflow-tooltip />
         <el-table-column prop="Specification_Or_Type" label="型号/规格" min-width="100" sortable="custom" show-overflow-tooltip />

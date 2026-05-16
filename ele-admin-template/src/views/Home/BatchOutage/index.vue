@@ -47,7 +47,7 @@
         @selection-change="(s) => (one.selected = s)"
         @sort-change="onSortOne"
       >
-        <el-table-column type="selection" width="45" />
+        <el-table-column type="selection" width="45" align="center"/>
         <el-table-column prop="Dept_One_Code" label="科室编码" width="120" sortable="custom" />
         <el-table-column prop="Dept_One_Name" label="科室名称" width="120" sortable="custom" show-overflow-tooltip />
         <el-table-column label="启用状态" width="90" sortable="custom" prop="Enable">
@@ -128,7 +128,7 @@
         @selection-change="(s) => (two.selected = s)"
         @sort-change="onSortTwo"
       >
-        <el-table-column type="selection" width="45" />
+        <el-table-column type="selection" width="45" align="center"/>
         <el-table-column prop="DEPT_TWO_CODE" label="二级科室编码" width="120" sortable="custom" show-overflow-tooltip />
         <el-table-column prop="DEPT_TWO_NAME" label="二级科室名称" width="120" sortable="custom" show-overflow-tooltip />
         <el-table-column label="启用状态" width="90" sortable="custom" prop="Enable">

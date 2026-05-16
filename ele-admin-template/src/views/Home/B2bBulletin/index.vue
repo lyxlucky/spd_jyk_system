@@ -167,7 +167,7 @@
         style="width: 100%"
         @selection-change="(v) => (attSelection = v)"
       >
-        <el-table-column type="selection" width="45" />
+        <el-table-column type="selection" width="45" align="center"/>
         <el-table-column type="index" width="50" label="序号" />
         <el-table-column prop="FILENAME" label="文件名" min-width="200" show-overflow-tooltip />
         <el-table-column prop="CREATE_TIME" label="创建时间" width="180" />

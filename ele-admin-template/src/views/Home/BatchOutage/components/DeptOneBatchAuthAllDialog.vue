@@ -35,7 +35,7 @@
             height="100%"
             @selection-change="(s) => (varSelected = s)"
           >
-          <el-table-column type="selection" width="45" :reserve-selection="true" />
+          <el-table-column type="selection" width="45" :reserve-selection="true" align="center"/>
           <el-table-column label="品种编码" min-width="120" show-overflow-tooltip>
             <template slot-scope="{ row }">{{ row.varietie_code_new || row.Varietie_Code_New }}</template>
           </el-table-column>
@@ -90,7 +90,7 @@
             height="100%"
             @selection-change="(s) => (deptSelected = s)"
           >
-          <el-table-column type="selection" width="45" :reserve-selection="true" />
+          <el-table-column type="selection" width="45" :reserve-selection="true" align="center"/>
           <el-table-column prop="Dept_One_Name" label="科室名称" min-width="120" align="center" show-overflow-tooltip />
           <el-table-column prop="Herp_Dept_One_Code" label="herp科室编码" min-width="110" align="center" show-overflow-tooltip />
           </el-table>

@@ -56,7 +56,7 @@
         @selection-change="(s) => (selected = s)"
         @sort-change="onSort"
       >
-        <el-table-column type="selection" width="55" fixed />
+        <el-table-column type="selection" width="55" fixed align="center"/>
         <el-table-column prop="Varietie_Code_New" label="品种（材料）编码" width="120" sortable="custom" show-overflow-tooltip />
         <el-table-column prop="Varietie_Name" label="品种全称" min-width="200" sortable="custom" show-overflow-tooltip />
         <el-table-column prop="Auto_Apply_Radix" label="PDA自动申领基数" width="120" sortable="custom" />

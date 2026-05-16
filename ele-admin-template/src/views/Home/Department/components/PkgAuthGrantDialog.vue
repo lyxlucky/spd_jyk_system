@@ -48,7 +48,7 @@
             @selection-change="onSrcSelection"
             @row-click="onSrcRowClick"
           >
-            <el-table-column type="selection" width="42" :selectable="srcRowSelectable" />
+            <el-table-column type="selection" width="42" :selectable="srcRowSelectable" align="center" />
             <el-table-column prop="Varietie_Code_New" label="品种编码" width="100" show-overflow-tooltip />
             <el-table-column prop="Varietie_Name" label="品种全称" min-width="110" show-overflow-tooltip />
             <el-table-column prop="Specification_Or_Type" label="规格" width="80" show-overflow-tooltip />
@@ -88,7 +88,7 @@
             @selection-change="(s) => (grantPicked = s)"
             @row-click="onGrantRowClick"
           >
-            <el-table-column type="selection" width="42" />
+            <el-table-column type="selection" width="42" align="center" />
             <el-table-column prop="Varietie_Code_New" label="编码" width="90" show-overflow-tooltip />
             <el-table-column prop="Varietie_Name" label="名称" min-width="100" show-overflow-tooltip />
             <el-table-column prop="Specification_Or_Type" label="规格" width="70" show-overflow-tooltip />
