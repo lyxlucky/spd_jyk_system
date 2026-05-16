@@ -60,6 +60,11 @@ export function getMenuRoutes(menus, homePath) {
       component: () => import('@/views/Home/HerpJfDept/index.vue'),
       meta: { title: '计费科室维护' }
     });
+    routes.push({
+      path: '/Home/Department',
+      component: () => import('@/views/Home/Department/index.vue'),
+      meta: { title: '科室资料维护' }
+    });
   }
   return {
     path: LAYOUT_PATH,
