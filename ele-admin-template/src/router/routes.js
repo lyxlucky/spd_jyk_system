@@ -70,6 +70,11 @@ export function getMenuRoutes(menus, homePath) {
       component: () => import('@/views/Home/BatchOutage/index.vue'),
       meta: { title: '科室授权品种' }
     });
+    routes.push({
+      path: '/Home/AUpDownKsQuery',
+      component: () => import('@/views/Home/AUpDownKsQuery/index.vue'),
+      meta: { title: '上下限审批' }
+    });
   }
   return {
     path: LAYOUT_PATH,
