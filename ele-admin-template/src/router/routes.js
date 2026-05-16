@@ -90,6 +90,11 @@ export function getMenuRoutes(menus, homePath) {
       component: () => import('@/views/Settle/MensualBills/index.vue'),
       meta: { title: '月结管理' }
     });
+    routes.push({
+      path: '/Settle/HishedgingData',
+      component: () => import('@/views/Settle/HishedgingData/index.vue'),
+      meta: { title: 'HIS消耗数据管理' }
+    });
   }
   return {
     path: LAYOUT_PATH,
