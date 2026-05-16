@@ -85,6 +85,11 @@ export function getMenuRoutes(menus, homePath) {
       component: () => import('@/views/Inventory/ReviseManagement/index.vue'),
       meta: { title: '盘点管理(库存稽查)' }
     });
+    routes.push({
+      path: '/Settle/MensualBills',
+      component: () => import('@/views/Settle/MensualBills/index.vue'),
+      meta: { title: '月结管理' }
+    });
   }
   return {
     path: LAYOUT_PATH,
