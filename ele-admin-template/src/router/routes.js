@@ -100,6 +100,11 @@ export function getMenuRoutes(menus, homePath) {
       component: () => import('@/views/KSInventory/KSConsumeQueryTemp/index.vue'),
       meta: { title: '科室消耗查询V2' }
     });
+    routes.push({
+      path: '/KSInventory/FinancialAudit',
+      component: () => import('@/views/KSInventory/FinancialAudit/index.vue'),
+      meta: { title: '发票签收' }
+    });
   }
   return {
     path: LAYOUT_PATH,
