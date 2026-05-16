@@ -95,6 +95,11 @@ export function getMenuRoutes(menus, homePath) {
       component: () => import('@/views/Settle/HishedgingData/index.vue'),
       meta: { title: 'HIS消耗数据管理' }
     });
+    routes.push({
+      path: '/KSInventory/KSConsumeQueryTemp',
+      component: () => import('@/views/KSInventory/KSConsumeQueryTemp/index.vue'),
+      meta: { title: '科室消耗查询V2' }
+    });
   }
   return {
     path: LAYOUT_PATH,
