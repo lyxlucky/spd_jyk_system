@@ -80,6 +80,11 @@ export function getMenuRoutes(menus, homePath) {
       component: () => import('@/views/Home/ManufacturingMaintain/index.vue'),
       meta: { title: '生产企业维护' }
     });
+    routes.push({
+      path: '/Inventory/ReviseManagement',
+      component: () => import('@/views/Inventory/ReviseManagement/index.vue'),
+      meta: { title: '盘点管理(库存稽查)' }
+    });
   }
   return {
     path: LAYOUT_PATH,
