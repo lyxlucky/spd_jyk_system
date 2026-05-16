@@ -65,6 +65,11 @@ export function getMenuRoutes(menus, homePath) {
       component: () => import('@/views/Home/Department/index.vue'),
       meta: { title: '科室资料维护' }
     });
+    routes.push({
+      path: '/Home/BatchOutage',
+      component: () => import('@/views/Home/BatchOutage/index.vue'),
+      meta: { title: '科室授权品种' }
+    });
   }
   return {
     path: LAYOUT_PATH,

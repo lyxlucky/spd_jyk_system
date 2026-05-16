@@ -248,6 +248,118 @@ export async function searchDeptOneAuthedVar(params) {
   throw new Error(d?.msg || '查询散货授权失败');
 }
 
+/** 全院一级科室已授权散货品种（旧 Home/BatchOutage：SerachDeptOneAuthedVarAll） */
+export async function searchDeptOneAuthedVarAll(params) {
+  const fd = formdataify({
+    Token: getToken(),
+    deptOneName: params.deptOneName ?? '',
+    varietieCondition: params.varietieCondition ?? '',
+    page: String(params.page ?? 1),
+    size: String(params.size ?? 15),
+    field: params.field ?? '',
+    order: params.order ?? '',
+    enble: params.enble ?? ''
+  });
+  const res = await request.post('/DeptOneBulkCargoAuthVar/SerachDeptOneAuthedVarAll', fd);
+  const d = res.data;
+  if (d && okCode(d.code)) {
+    return { rows: d.result || [], total: d.total ?? 0, msg: d.msg };
+  }
+  throw new Error(d?.msg || '查询一级科室授权失败');
+}
+
+/** 全院二级科室已定数包授权品种（旧 BatchOutage：SearchDeptTwoAuthedVarAll） */
+export async function searchDeptTwoAuthedVarAll(params) {
+  const res = await request.get('/DeptTwoDefNoPkgAuthVar/SearchDeptTwoAuthedVarAll', {
+    params: {
+      Token: getToken(),
+      deptTwoCode: params.deptTwoCode ?? '',
+      varietieCondition: params.varietieCondition ?? '',
+      page: params.page ?? 1,
+      size: params.size ?? 15,
+      field: params.field ?? '',
+      order: params.order ?? '',
+      enble: params.enble ?? ''
+    }
+  });
+  const d = res.data;
+  if (d && okCode(d.code)) {
+    return { rows: d.result || [], total: d.total ?? 0 };
+  }
+  throw new Error(d?.msg || '查询二级科室授权失败');
+}
+
+/** 批量停用/启用一级科室授权（勾选行整行 JSON 提交，与旧 DisableDeptOneAuthVarsAll 一致） */
+export async function disableDeptOneAuthVarsAll(rows, state) {
+  const fd = formdataify({
+    Token: getToken(),
+    json: JSON.stringify(rows),
+    state: String(state)
+  });
+  const res = await request.post('/DeptOneBulkCargoAuthVar/DisableDeptOneAuthVarsAll', fd);
+  return res.data;
+}
+
+/** 批量停用/启用二级科室定数包授权 */
+export async function disableDeptTwoAuthVarsAll(rows, state) {
+  const fd = formdataify({
+    Token: getToken(),
+    json: JSON.stringify(rows),
+    state: String(state)
+  });
+  const res = await request.post('/DeptTwoDefNoPkgAuthVar/DisableDeptTwoAuthVarsAll', fd);
+  return res.data;
+}
+
+/** 删除一级科室散货授权（Dept_One_Code、Varietie_Code 均为逗号拼接，与旧 DelDeptOneAuthVar 一致） */
+export async function delDeptOneAuthVar(deptOneCodesCsv, varietieCodesCsv) {
+  const fd = formdataify({
+    Token: getToken(),
+    Dept_One_Code: deptOneCodesCsv,
+    Varietie_Code: varietieCodesCsv
+  });
+  const res = await request.post('/DeptOneBulkCargoAuthVar/DelDeptOneAuthVar', fd);
+  return res.data;
+}
+
+/** 删除二级定数包授权（Pkg_Auth_Var_Code 逗号拼接） */
+export async function delDeptTwoAuthVar(pkgAuthVarCodesCsv) {
+  const fd = formdataify({
+    Token: getToken(),
+    Pkg_Auth_Var_Code: pkgAuthVarCodesCsv
+  });
+  const res = await request.post('/DeptTwoDefNoPkgAuthVar/DelDeptTwoAuthVar', fd);
+  return res.data;
+}
+
+/** 品种批量授权弹窗：分页品种列表（getOneAuthVar） */
+export async function getOneAuthVarPage(params) {
+  const fd = formdataify({
+    Token: getToken(),
+    VARIETIE_SEARCH_VALUE: params.VARIETIE_SEARCH_VALUE ?? '',
+    varGgxh: params.varGgxh ?? '',
+    page: String(params.page ?? 1),
+    size: String(params.size ?? 30)
+  });
+  const res = await request.post('/DeptOneBulkCargoAuthVar/getOneAuthVar', fd);
+  const d = res.data;
+  if (d && okCode(d.code)) {
+    return { rows: d.result || [], total: d.total ?? 0 };
+  }
+  throw new Error(d?.msg || '查询品种失败');
+}
+
+/** 多科室批量授权品种（json1 品种行数组、json2 科室行数组 JSON 字符串） */
+export async function authVarAllDept(json1, json2) {
+  const fd = formdataify({
+    Token: getToken(),
+    json1: typeof json1 === 'string' ? json1 : JSON.stringify(json1),
+    json2: typeof json2 === 'string' ? json2 : JSON.stringify(json2)
+  });
+  const res = await request.post('/DeptOneBulkCargoAuthVar/AuthVarAllDept', fd);
+  return res.data;
+}
+
 export async function insertDeptOneBulkAuth(jsonList) {
   const fd = formdataify({ Token: getToken(), json: JSON.stringify(jsonList) });
   const res = await request.post('/DeptOneBulkCargoAuthVar/Insert', fd);
@@ -345,6 +457,71 @@ export async function upTwoAudit(deptOneCode, varietieCodes, tag) {
   const res = await request.post('/DeptOneBulkCargoAuthVar/upTwoAudit', fd);
   if (res.data?.code === 301) throw new Error(res.data.msg);
   return res.data;
+}
+
+/** 一级科室已授权品种编码列表（注意后端参数名为 deptOndeCode） */
+export async function getDeptOneAuthedVarietieCodes(deptOneCode) {
+  const res = await request.get('/DeptOneBulkCargoAuthVar/GetDeptAuthedVarietieCodes', {
+    params: { deptOndeCode: deptOneCode ?? '', Token: getToken() }
+  });
+  if (res.data === '301' || res.data === 301) {
+    throw new Error('登录失效，请重新登录');
+  }
+  const list = parseBody(res.data);
+  return Array.isArray(list) ? list : [];
+}
+
+/** 一级散货授权页：选中行品种证照/注册信息 */
+export async function getDeptOneSelectedSingleVarExtra(varietieCode) {
+  const res = await request.get('/DeptOneBulkCargoAuthVar/GetDeptOneSelectedSingleVarExtra', {
+    params: { varietieCode: varietieCode ?? '', Token: getToken() }
+  });
+  if (res.data === '301' || res.data === 301) {
+    throw new Error('登录失效，请重新登录');
+  }
+  const list = parseBody(res.data);
+  return Array.isArray(list) ? list : [];
+}
+
+/** 一级散货授权页：移入/移出后右侧待授权表（POST + form，inConditions 为品种编码 JSON 数组字符串） */
+export async function getDeptOneSelectedMutillVarExtra(varietieCodes, startIndex = 1, endIndex = 999999) {
+  const fd = formdataify({
+    Token: getToken(),
+    inConditions: JSON.stringify(varietieCodes),
+    startIndex: String(startIndex),
+    endIndex: String(endIndex)
+  });
+  const res = await request.post('/DeptOneBulkCargoAuthVar/GetDeptOneSelectedMutillVarExtra', fd);
+  if (res.data === '301' || res.data === 301) {
+    throw new Error('登录失效，请重新登录');
+  }
+  const body = typeof res.data === 'string' ? JSON.parse(res.data) : res.data;
+  const rows = body?.result ? (typeof body.result === 'string' ? JSON.parse(body.result) : body.result) : [];
+  return { rows, count: body?.count ?? 0, msg: body?.msg };
+}
+
+/** 二级科室已定数包授权键（用于左侧灰显 code-coef） */
+export async function getDeptTwoAuthedVarietieCodes(deptTwoCode) {
+  const res = await request.get('/DeptTwoDefNoPkgAuthVar/GetDeptAuthedVarietieCodes', {
+    params: { deptTwoCode: deptTwoCode ?? '', Token: getToken() }
+  });
+  if (res.data === '301' || res.data === 301) {
+    throw new Error('登录失效，请重新登录');
+  }
+  const list = parseBody(res.data);
+  return Array.isArray(list) ? list : [];
+}
+
+/** 定数包授权页：选中行品种附加信息（与旧页 GetDeptTwoDefNoPkgAuthVarExtra 一致） */
+export async function getDeptTwoDefNoPkgAuthVarExtraList(varietieCode) {
+  const res = await request.get('/DeptTwoDefNoPkgAuthVar/GetDeptTwoDefNoPkgAuthVarExtra', {
+    params: { varietieCode: varietieCode ?? '', Token: getToken() }
+  });
+  if (res.data === '301' || res.data === 301) {
+    throw new Error('登录失效，请重新登录');
+  }
+  const list = parseBody(res.data);
+  return Array.isArray(list) ? list : [];
 }
 
 export async function searchVarietiePageList(varieite, startIndex, endIndex) {
