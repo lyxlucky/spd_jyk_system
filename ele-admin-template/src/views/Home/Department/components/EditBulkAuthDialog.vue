@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :title="dialogTitle" :visible.sync="visible" width="520px" append-to-body @closed="onClosed">
+  <el-dialog custom-class="legacy-layer-dialog" :title="dialogTitle" :visible.sync="visible" width="520px" append-to-body @closed="onClosed">
     <div v-loading="fillLoading" class="dialog-form-wrap" element-loading-text="加载中...">
       <el-form ref="formRef" :model="form" label-width="150px" size="small">
         <el-form-item prop="validDatetime" :rules="[{ required: true, message: '必填' }]">
@@ -23,7 +23,7 @@
         </el-form-item>
       </el-form>
     </div>
-    <div slot="footer">
+    <div slot="footer" class="footer-center">
       <el-button size="small" @click="visible = false">取消</el-button>
       <el-button type="primary" size="small" :loading="submitLoading" :disabled="fillLoading" @click="submit">确定</el-button>
     </div>
@@ -122,5 +122,18 @@ export default {
 }
 .dialog-form-wrap {
   min-height: 140px;
+}
+.footer-center {
+  text-align: center;
+}
+.footer-center .el-button {
+  margin: 0 10px;
+}
+</style>
+
+<style>
+.legacy-layer-dialog .el-dialog__body {
+  padding: 12px 16px 8px;
+  background: #fafafa;
 }
 </style>
