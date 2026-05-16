@@ -75,6 +75,11 @@ export function getMenuRoutes(menus, homePath) {
       component: () => import('@/views/Home/AUpDownKsQuery/index.vue'),
       meta: { title: '上下限审批' }
     });
+    routes.push({
+      path: '/Home/ManufacturingMaintain',
+      component: () => import('@/views/Home/ManufacturingMaintain/index.vue'),
+      meta: { title: '生产企业维护' }
+    });
   }
   return {
     path: LAYOUT_PATH,
