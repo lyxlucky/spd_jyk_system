@@ -110,6 +110,11 @@ export function getMenuRoutes(menus, homePath) {
       component: () => import('@/views/Inventory/CentreBankTakeGoods/index.vue'),
       meta: { title: '收货作业' }
     });
+    routes.push({
+      path: '/Task/AuthOrder',
+      component: () => import('@/views/Task/AuthOrder/index.vue'),
+      meta: { title: '自助订单' }
+    });
   }
   return {
     path: LAYOUT_PATH,
