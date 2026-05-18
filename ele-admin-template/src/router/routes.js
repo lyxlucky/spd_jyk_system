@@ -125,6 +125,16 @@ export function getMenuRoutes(menus, homePath) {
       component: () => import('@/views/TraceSource/VarPriceRecode/index.vue'),
       meta: { title: '价格变动记录(新)' }
     });
+    routes.push({
+      path: '/KSInventory/PKGSourceDetail',
+      component: () => import('@/views/KSInventory/PKGSourceDetail/index.vue'),
+      meta: { title: '溯源查询' }
+    });
+    routes.push({
+      path: '/TraceSource/PKGSourceDetail',
+      component: () => import('@/views/TraceSource/PKGSourceDetail/index.vue'),
+      meta: { title: '溯源查询(新)' }
+    });
   }
   return {
     path: LAYOUT_PATH,
