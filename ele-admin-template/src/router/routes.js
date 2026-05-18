@@ -135,6 +135,16 @@ export function getMenuRoutes(menus, homePath) {
       component: () => import('@/views/TraceSource/PKGSourceDetail/index.vue'),
       meta: { title: '溯源查询(新)' }
     });
+    routes.push({
+      path: '/Statistics/EffectiveTip',
+      component: () => import('@/views/Statistics/EffectiveTip/index.vue'),
+      meta: { title: '效期到期统计' }
+    });
+    routes.push({
+      path: '/Statistics/NewEffectiveTip',
+      component: () => import('@/views/Statistics/NewEffectiveTip/index.vue'),
+      meta: { title: '效期到期统计(新)' }
+    });
   }
   return {
     path: LAYOUT_PATH,
