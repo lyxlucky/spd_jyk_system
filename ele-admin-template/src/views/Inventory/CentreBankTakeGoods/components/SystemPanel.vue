@@ -98,7 +98,7 @@
             <el-button size="mini" type="primary" icon="el-icon-search" :disabled="!currentReceipt" @click="loadDetails" />
             <el-button size="mini" type="primary" :disabled="!detailSelection.length" @click="onSaveDetails">保存</el-button>
             <el-button size="mini" type="primary" :disabled="!currentReceipt" @click="onAutoSave">自动保存实收数量</el-button>
-            <el-button size="mini" :disabled="!currentReceipt" @click="onToManualList">转人工收货</el-button>
+            <el-button size="mini" :disabled="!detailSelection.length" @click="onToManualList">转人工收货</el-button>
             <el-button size="mini" :disabled="!detailSelection.length" @click="openBatchDialog('orderType')">修改采购方式</el-button>
             <el-button size="mini" :disabled="!detailSelection.length" @click="openBatchDialog('ptBz')">平台单号备注</el-button>
             <el-button size="mini" :disabled="!detailSelection.length" @click="openBatchDialog('varType')">修改物资类型</el-button>
@@ -238,20 +238,14 @@
               </template>
             </el-table-column>
             <el-table-column label="检验报告图片" width="100" align="center">
-              <template>
-                <el-button type="text" size="mini" @click="openLegacy('/Frame/UploadvarietyGoodsreceiving', '上传品种检查报告图片')">
-                  上传
-                </el-button>
+              <template slot-scope="{ row }">
+                <el-button type="text" size="mini" @click="openProPicUpload(row)">上传</el-button>
               </template>
             </el-table-column>
             <el-table-column label="UDI操作" width="200" fixed="right">
               <template slot-scope="{ row }">
-                <el-button type="text" size="mini" @click="openLegacy('/Frame/CentreBankTakeGoogsUdiScan', row.Varietie_Code_New + ' UDI扫码')">
-                  添加UDI
-                </el-button>
-                <el-button type="text" size="mini" @click="openLegacy('/Frame/CentreBankWatchUDI', String(row.BATCH_ID || '') + ' 查看UDI')">
-                  查看UDI
-                </el-button>
+                <el-button type="text" size="mini" @click="openUdiScan(row)">添加UDI</el-button>
+                <el-button type="text" size="mini" @click="openWatchUdi(row)">查看UDI</el-button>
                 <el-button type="text" size="mini" :disabled="isReceived" @click="onNewAddRow(row)">新增收货</el-button>
               </template>
             </el-table-column>
@@ -290,7 +284,32 @@
 
     <B2bFetchDialog :visible.sync="b2bVisible" @done="loadReceipts" />
     <PendingDetailDialog :visible.sync="pendingVisible" />
-    <LegacyFrameDialog :visible.sync="legacy.visible" :title="legacy.title" :path="legacy.path" />
+    <CentreBankWatchUdiDialog
+      :visible.sync="udiVisible"
+      :batch-id="udiBatchId"
+      :title="udiTitle"
+    />
+    <ProPicUploadDialog
+      :visible.sync="uploadVisible"
+      mode="system"
+      :detail-id="uploadDetailId"
+      title="上传品种检查报告图片"
+      @uploaded="loadDetails"
+    />
+    <UdiScanDialog
+      :visible.sync="udiScanVisible"
+      :context="udiScanContext"
+      :title="udiScanTitle"
+      @added="loadDetails"
+    />
+    <TransferToManualDialog
+      :visible.sync="transferVisible"
+      :receipt="currentReceipt"
+      :receipt-header="receiptHeader"
+      :dtl-ids="transferDtlIds"
+      :storage-list="storageList"
+      @done="onTransferDone"
+    />
     <PromptDialog
       :visible.sync="prompt.visible"
       :title="prompt.title"
@@ -307,7 +326,10 @@ import { Message, MessageBox } from 'element-ui';
 import { TOKEN_STORE_NAME, HOME_HP } from '@/config/setting';
 import B2bFetchDialog from './B2bFetchDialog.vue';
 import PendingDetailDialog from './PendingDetailDialog.vue';
-import LegacyFrameDialog from './LegacyFrameDialog.vue';
+import CentreBankWatchUdiDialog from '@/views/Inventory/CentreBankWatchUdi/CentreBankWatchUdiDialog.vue';
+import ProPicUploadDialog from './ProPicUploadDialog.vue';
+import UdiScanDialog from './UdiScanDialog.vue';
+import TransferToManualDialog from './TransferToManualDialog.vue';
 import PromptDialog from './PromptDialog.vue';
 import {
   getStorageWithToken,
@@ -356,7 +378,8 @@ import {
   buildDefIdJson,
   proPicList,
   hpFlags,
-  showPtHtnumColumn
+  showPtHtnumColumn,
+  buildUdiScanContext
 } from '../utils';
 
 const ORDER_OPTS = [
@@ -382,7 +405,15 @@ const ST_PRINT_BLOCK = ['stzx', 'stse', 'csyy', 'stzl', 'stzyyy', 'chrmyy'];
 
 export default {
   name: 'SystemPanel',
-  components: { B2bFetchDialog, PendingDetailDialog, LegacyFrameDialog, PromptDialog },
+  components: {
+    B2bFetchDialog,
+    PendingDetailDialog,
+    CentreBankWatchUdiDialog,
+    ProPicUploadDialog,
+    UdiScanDialog,
+    TransferToManualDialog,
+    PromptDialog
+  },
   data() {
     return {
       flags: hpFlags,
@@ -403,7 +434,16 @@ export default {
       printSize: '10',
       b2bVisible: false,
       pendingVisible: false,
-      legacy: { visible: false, title: '', path: '' },
+      udiVisible: false,
+      udiBatchId: '',
+      udiTitle: '',
+      uploadVisible: false,
+      uploadDetailId: '',
+      udiScanVisible: false,
+      udiScanContext: null,
+      udiScanTitle: '',
+      transferVisible: false,
+      transferDtlIds: [],
       prompt: { visible: false, title: '', label: '', options: [], mode: '', loading: false },
       storageTwoList: []
     };
@@ -465,11 +505,52 @@ export default {
       const u = list[idx];
       if (u) this.openWin(u);
     },
-    openLegacy(path, title) {
-      this.legacy = { visible: true, path, title };
+    openProPicUpload(row) {
+      const id = row?.Def_No_Pkg_Receipt_Detail_Id || row?.BATCH_ID;
+      if (!id) {
+        Message.warning('缺少明细标识');
+        return;
+      }
+      this.uploadDetailId = id;
+      this.uploadVisible = true;
+    },
+    openUdiScan(row) {
+      const ctx = buildUdiScanContext(row, 'system');
+      if (!ctx?.batchId) {
+        Message.warning('缺少批次标识');
+        return;
+      }
+      this.udiScanContext = ctx;
+      this.udiScanTitle = `${row.Varietie_Code_New || ''} UDI扫码`;
+      this.udiScanVisible = true;
+    },
+    openWatchUdi(row) {
+      const batchId = row?.BATCH_ID;
+      if (!batchId) {
+        Message.warning('缺少批号标识');
+        return;
+      }
+      this.udiBatchId = batchId;
+      this.udiTitle = `${batchId} 查看UDI`;
+      this.udiVisible = true;
     },
     onToManualList() {
-      this.openLegacy('/Frame/CreateTakeGoodsFromSystem', '转人工收货单');
+      if (!this.detailSelection.length) {
+        Message.warning('请至少选中一行明细');
+        return;
+      }
+      if (!this.currentReceipt) {
+        Message.warning('请先选择收货单');
+        return;
+      }
+      this.transferDtlIds = this.detailSelection.map((r) => r.Def_No_Pkg_Receipt_Detail_Id).filter(Boolean);
+      this.transferVisible = true;
+    },
+    async onTransferDone() {
+      await this.loadReceipts();
+      if (this.currentReceipt) {
+        await this.loadDetails();
+      }
     },
     async loadStorage() {
       try {

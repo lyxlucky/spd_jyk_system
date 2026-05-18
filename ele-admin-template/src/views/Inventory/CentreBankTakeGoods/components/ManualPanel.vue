@@ -135,18 +135,18 @@
 
           <div class="section-title mt">已添加的收货品种列表</div>
           <div class="toolbar wrap">
-            <el-input v-model="printSize" size="mini" placeholder="打印条数" style="width: 90px" />
-            <el-button size="mini" type="primary" :disabled="!currentReceipt" @click="onPrint">打印收货单</el-button>
             <el-button size="mini" type="danger" :disabled="!addedSelection.length" @click="onDeleteAdded">删除</el-button>
-            <el-button size="mini" :disabled="!addedSelection.length" @click="onSaveAdded">保存明细</el-button>
             <el-button size="mini" :disabled="!addedSelection.length" @click="openBatchDialog('orderType')">修改采购方式</el-button>
             <el-button size="mini" :disabled="!addedSelection.length" @click="openBatchDialog('jcType')">修改集采类型</el-button>
+            <el-input v-model="printSize" size="mini" placeholder="打印条数" style="width: 90px" />
+            <el-button size="mini" type="primary" :disabled="!currentReceipt" @click="onPrint">打印收货单</el-button>
             <el-button size="mini" :disabled="!addedSelection.length" @click="openInvoiceDialog('detail')">添加明细发票</el-button>
-            <el-button v-if="flags.showVarType" size="mini" :disabled="!addedSelection.length" @click="openBatchDialog('varType')">修改物资类型</el-button>
-            <el-button v-if="flags.showVarType" size="mini" :disabled="!addedSelection.length" @click="openBatchDialog('temperature')">修改收货温度</el-button>
+            <el-button size="mini" :disabled="!addedSelection.length" @click="openBatchDialog('temperature')">修改收货温度</el-button>
+            <el-button size="mini" :disabled="!addedSelection.length" @click="openBatchDialog('varType')">修改物资类型</el-button>
             <el-button v-if="flags.showFundsSource" size="mini" :disabled="!addedSelection.length" @click="openBatchDialog('funds')">修改资金来源</el-button>
             <el-button v-if="flags.showStorageTwo" size="mini" :disabled="!addedSelection.length" @click="openBatchDialog('storageTwo')">修改收货仓库</el-button>
             <el-button size="mini" :disabled="!addedSelection.length" @click="openBatchDialog('ptBz')">平台单号备注</el-button>
+            <el-button size="mini" :disabled="!addedSelection.length" @click="onSaveAdded">保存</el-button>
           </div>
           <el-table
             ref="addedTable"
@@ -196,14 +196,14 @@
               </template>
             </el-table-column>
             <el-table-column label="检验报告" width="88" align="center">
-              <template>
-                <el-button type="text" size="mini" @click="openLegacy('/Frame/UploadvarietyInspection', '上传检验报告')">上传</el-button>
+              <template slot-scope="{ row }">
+                <el-button type="text" size="mini" @click="openProPicUpload(row)">上传</el-button>
               </template>
             </el-table-column>
             <el-table-column label="操作" width="160" fixed="right">
-              <template>
-                <el-button type="text" size="mini" @click="openLegacy('/Frame/CentreBankTakeGoogsUdiScan', '添加UDI')">添加UDI</el-button>
-                <el-button type="text" size="mini" @click="openLegacy('/Frame/CentreBankWatchUDI', '查看UDI')">查看UDI</el-button>
+              <template slot-scope="{ row }">
+                <el-button type="text" size="mini" @click="openUdiScan(row)">添加UDI</el-button>
+                <el-button type="text" size="mini" @click="openWatchUdi(row)">查看UDI</el-button>
               </template>
             </el-table-column>
             <el-table-column label="上传状态" width="80">
@@ -237,7 +237,24 @@
     </el-row>
 
     <DeliveryHistoryDialog :visible.sync="historyVisible" />
-    <LegacyFrameDialog :visible.sync="legacy.visible" :title="legacy.title" :path="legacy.path" />
+    <CentreBankWatchUdiDialog
+      :visible.sync="udiVisible"
+      :batch-id="udiBatchId"
+      :title="udiTitle"
+    />
+    <ProPicUploadDialog
+      :visible.sync="uploadVisible"
+      mode="manual"
+      :detail-id="uploadDetailId"
+      title="上传检验报告"
+      @uploaded="onUploadDone"
+    />
+    <UdiScanDialog
+      :visible.sync="udiScanVisible"
+      :context="udiScanContext"
+      title="添加UDI"
+      @added="onUdiAdded"
+    />
     <PromptDialog
       :visible.sync="prompt.visible"
       :title="prompt.title"
@@ -252,7 +269,9 @@
 <script>
 import { Message, MessageBox } from 'element-ui';
 import DeliveryHistoryDialog from './DeliveryHistoryDialog.vue';
-import LegacyFrameDialog from './LegacyFrameDialog.vue';
+import CentreBankWatchUdiDialog from '@/views/Inventory/CentreBankWatchUdi/CentreBankWatchUdiDialog.vue';
+import ProPicUploadDialog from './ProPicUploadDialog.vue';
+import UdiScanDialog from './UdiScanDialog.vue';
 import PromptDialog from './PromptDialog.vue';
 import {
   getStorageList,
@@ -299,7 +318,8 @@ import {
   buildIdJson,
   hpFlags,
   initSearchRow,
-  monthAheadDate
+  monthAheadDate,
+  buildUdiScanContext
 } from '../utils';
 
 const ORDER_OPTS = [
@@ -320,10 +340,21 @@ const VAR_TYPE_OPTS = [
   { label: '普通物资', value: '0' }
 ];
 const TEMP_OPTS = [{ label: '常温', value: '0' }];
+const JC_TYPE_OPTS = [
+  { label: '集采', value: '集采' },
+  { label: '线上', value: '线上' },
+  { label: '线下', value: '线下' }
+];
 
 export default {
   name: 'ManualPanel',
-  components: { DeliveryHistoryDialog, LegacyFrameDialog, PromptDialog },
+  components: {
+    DeliveryHistoryDialog,
+    CentreBankWatchUdiDialog,
+    ProPicUploadDialog,
+    UdiScanDialog,
+    PromptDialog
+  },
   data() {
     return {
       flags: hpFlags,
@@ -343,9 +374,15 @@ export default {
       addedLoading: false,
       addedSelection: [],
       historyVisible: false,
-      printSize: '4',
+      printSize: '',
       noteDescription: '',
-      legacy: { visible: false, title: '', path: '' },
+      udiVisible: false,
+      udiBatchId: '',
+      udiTitle: '',
+      uploadVisible: false,
+      uploadDetailId: '',
+      udiScanVisible: false,
+      udiScanContext: null,
       prompt: { visible: false, title: '', label: '', options: [], mode: '', loading: false },
       storageTwoList: [],
       invoiceMode: 'detail'
@@ -380,8 +417,39 @@ export default {
     fmtVarType,
     fmtTemperature,
     fmtOrderType,
-    openLegacy(path, title) {
-      this.legacy = { visible: true, path, title };
+    openProPicUpload(row) {
+      const id = row?.Goods_Var_Receipt_Detail_Id;
+      if (!id) {
+        Message.warning('缺少明细标识');
+        return;
+      }
+      this.uploadDetailId = id;
+      this.uploadVisible = true;
+    },
+    async onUploadDone() {
+      if (this.currentReceipt) await this.loadAddedVarieties();
+    },
+    openUdiScan(row) {
+      const ctx = buildUdiScanContext(row, 'manual');
+      if (!ctx?.batchId) {
+        Message.warning('缺少批次标识');
+        return;
+      }
+      this.udiScanContext = ctx;
+      this.udiScanVisible = true;
+    },
+    async onUdiAdded() {
+      if (this.currentReceipt) await this.loadAddedVarieties();
+    },
+    openWatchUdi(row) {
+      const batchId = row?.Goods_Var_Receipt_Detail_Id || row?.BATCH_ID;
+      if (!batchId) {
+        Message.warning('缺少批号标识');
+        return;
+      }
+      this.udiBatchId = batchId;
+      this.udiTitle = `${batchId} 查看UDI`;
+      this.udiVisible = true;
     },
     async loadStorageTwo() {
       try {
@@ -534,6 +602,16 @@ export default {
           Message.warning(`品种 ${r.Varietie_Name} 备注不能为空`);
           return false;
         }
+        if (this.flags.isSkuShow) {
+          const skus = r.SKUS || [];
+          const hasReal = skus.some((s) => s.ID != null && s.ID !== '');
+          if (hasReal && !e.skuId) {
+            Message.warning(
+              `品种编码：${r.Varietie_Code_New || r.Varietie_Code || ''}（${r.Varietie_Name || ''}）的SKU必须选择`
+            );
+            return false;
+          }
+        }
         r.Hidden_Batch = e.batch;
         r.Hidden_FJ_batch = e.fjBatch;
         r.Hidden_Batch_Production_Date = e.prodDate;
@@ -582,12 +660,30 @@ export default {
         if (e !== 'cancel') Message.error(e.message || '删除失败');
       }
     },
+    validateManualSearchSku() {
+      if (!this.flags.isSkuShow) return true;
+      const errs = [];
+      this.searchVarieties.forEach((row) => {
+        const skus = row.SKUS || [];
+        const hasReal = skus.some((s) => s.ID != null && s.ID !== '');
+        const skuId = row._edit?.skuId;
+        if (hasReal && !skuId) {
+          errs.push(`品种编码：${row.Varietie_Code_New || row.Varietie_Code || ''}（${row.Varietie_Name || ''}）的SKU必须选择`);
+        }
+      });
+      if (errs.length) {
+        MessageBox.alert(errs.join('<br/>'), '提示', { dangerouslyUseHTMLString: true });
+        return false;
+      }
+      return true;
+    },
     async onConfirmReceipt() {
       if (!this.currentReceipt) return;
       if (!this.addedVarieties.length) {
         Message.warning('该收货单未添加收货品种');
         return;
       }
+      if (!this.validateManualSearchSku()) return;
       try {
         await checkVarietieBatch(this.currentReceipt.Goods_Var_Cargo_Receipt_Id);
         await MessageBox.confirm('确定要进行收货操作吗？', '提示', { type: 'warning' });
@@ -619,7 +715,10 @@ export default {
       }
       try {
         const path = getManualPrintApiPath();
-        const size = this.printSize || 4;
+        let size = this.printSize;
+        if (size === '' || size == null) {
+          size = this.flags.chrmyyPrintSize ? 10 : 4;
+        }
         const res = await printReceiptExcel(path, {
           receiptId: this.currentReceipt.Goods_Var_Cargo_Receipt_Id,
           centrDelivery_Note_Number: this.currentReceipt.Delivery_Note_Number,
@@ -637,7 +736,7 @@ export default {
       }
       const map = {
         orderType: { title: '修改采购方式', label: '采购方式', options: ORDER_OPTS },
-        jcType: { title: '修改集采类型', label: '集采类型', options: [] },
+        jcType: { title: '修改集采类型', label: '集采类型', options: JC_TYPE_OPTS },
         funds: { title: '修改资金来源', label: '资金来源', options: FUNDS_OPTS },
         varType: { title: '修改物资类型', label: '物资类型', options: VAR_TYPE_OPTS },
         temperature: { title: '修改收货温度', label: '收货温度', options: TEMP_OPTS },

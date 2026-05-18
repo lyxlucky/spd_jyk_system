@@ -27,6 +27,17 @@ function unwrap(res) {
   throw new Error(res.data?.msg || '操作失败');
 }
 
+/** 与旧 MVC $.post 一致：x-www-form-urlencoded，供 WebApi 绑定 BaseParam 等复杂参数 */
+function postUrlEncoded(path, fields) {
+  const body = new URLSearchParams();
+  Object.entries(fields).forEach(([k, v]) => {
+    body.append(k, v == null ? '' : String(v));
+  });
+  return request.post(path, body.toString(), {
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+  });
+}
+
 /** 库区列表（人工收货下拉） */
 export async function getStorageList() {
   const res = await request.get('/Commons/getSTORAGE');
@@ -36,7 +47,7 @@ export async function getStorageList() {
 
 /** 库区列表（系统收货，需 Token） */
 export async function getStorageWithToken() {
-  const res = await request.post('/Commons/GetStorageWithToken', formdataify({ Token: token() }));
+  const res = await postUrlEncoded('/Commons/GetStorageWithToken', { Token: token() });
   return unwrap(res).result || [];
 }
 
@@ -264,17 +275,15 @@ export async function deleteEmptySystemReceipt(receiptId) {
   return unwrap(res);
 }
 
+/** 待收货详情 */
 export async function getSystemDeliveredVarieties2(params = {}) {
-  const res = await request.post(
-    '/SystemDelivered/GetSystemDeliveredVarietiets2',
-    formdataify({
-      Token: token(),
-      page: params.page || 1,
-      size: params.size || 10,
-      Delivery_Note_Number: params.deliveryNoteNumber || '',
-      Varietie_Code_New: params.varietieCode || ''
-    })
-  );
+  const res = await postUrlEncoded('/SystemDelivered/GetSystemDeliveredVarietiets2', {
+    Token: token(),
+    page: params.page || 1,
+    size: params.size || 10,
+    Delivery_Note_Number: params.deliveryNoteNumber || '',
+    Varietie_Code_New: params.varietieCode || ''
+  });
   return unwrap(res);
 }
 
@@ -458,4 +467,78 @@ export async function fetchB2bOrder(sendOrderNum, b2bJson) {
     formdataify({ Token: token(), SEND_ORDER_NUM: sendOrderNum, JSON: jsonStr })
   );
   return unwrap(res);
+}
+
+/** 人工收货批次检验报告图片 */
+export async function uploadManualProPic(mainid, file) {
+  const fd = new FormData();
+  fd.append('file', file);
+  fd.append('mainid', String(mainid));
+  const res = await request.post(`/ManualDelivered/UploadProPic?Token=${encodeURIComponent(token())}`, fd, {
+    headers: { 'Content-Type': 'multipart/form-data' }
+  });
+  return unwrap(res);
+}
+
+/** 系统收货批次检验报告图片 */
+export async function uploadSystemProPic(mainid, file) {
+  const fd = new FormData();
+  fd.append('file', file);
+  fd.append('mainid', String(mainid));
+  const res = await request.post(`/SystemDelivered/UploadProPic?Token=${encodeURIComponent(token())}`, fd, {
+    headers: { 'Content-Type': 'multipart/form-data' }
+  });
+  return unwrap(res);
+}
+
+/** UDI 扫码解析 */
+export async function getInfoByScanUdi(udi) {
+  const res = await request.post(
+    '/B2BConsumeMgmt/getInfoByscanUdi',
+    formdataify({ Token: token(), UDI: udi })
+  );
+  return unwrap(res);
+}
+
+/** 收货添加 UDI */
+export async function addShUdi(payload) {
+  const res = await request.post(
+    '/CentralWarehouseBagMakingMgmt/addSH_UDI',
+    formdataify({
+      Token: token(),
+      SERIAL_NUMBER: payload.serialNumber,
+      SERIAL_NUMBER2: payload.serialNumber2 || payload.serialNumber,
+      BATCH_ID: payload.batchId,
+      QTY: payload.qty,
+      CREATE_MAN: nickname(),
+      RECEIVABLE: payload.receivable ?? 0
+    })
+  );
+  return unwrap(res);
+}
+
+/** 系统收货单转人工收货单 */
+export async function transferToManual(payload) {
+  const res = await request.post(
+    '/SystemDelivered/TransferToManual',
+    formdataify({
+      Token: token(),
+      receiveProperty: payload.receiveProperty,
+      storageId: payload.storageId,
+      noteDescription: payload.noteDescription || '',
+      deliveryId: payload.deliveryId,
+      deliveryNoteNumber: payload.deliveryNoteNumber,
+      prepareGoodsPlanNumber: payload.prepareGoodsPlanNumber || '',
+      staff: nickname(),
+      dtlIdJson: JSON.stringify(payload.dtlIds || [])
+    })
+  );
+  return unwrap(res);
+}
+
+/** B2B 同步订单收货状态 */
+export async function syncB2bOrderReceive(deliveryNoteNumber) {
+  await request.get(`${B2B_BASE_URL}/api/Stock/upOrderReceive`, {
+    params: { Delivery_Note_Number: deliveryNoteNumber }
+  });
 }

@@ -227,11 +227,6 @@ module.exports = {
           '^/api': '/api'
         }
       },
-      '/Frame': {
-        target: config.target,
-        changeOrigin: true,
-        secure: false
-      },
       '/Upload': {
         target: config.target,
         changeOrigin: true,

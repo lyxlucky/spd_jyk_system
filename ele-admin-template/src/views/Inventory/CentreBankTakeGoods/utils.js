@@ -2,15 +2,6 @@ import { BACK_BASE_URL, HOME_HP } from '@/config/setting';
 
 export const LEGACY_WEB_BASE = (BACK_BASE_URL || '').replace(/\/$/, '');
 
-/** 旧版 MVC Frame 页基址：开发环境走 devServer 代理，避免直连未启动的 MVC 端口 */
-export function legacyWebBase() {
-  const back = (BACK_BASE_URL || '').replace(/\/$/, '');
-  if (process.env.NODE_ENV === 'development' && typeof window !== 'undefined') {
-    return window.location.origin;
-  }
-  return back;
-}
-
 /** 勾选列：居中 */
 export const COL_SEL = { type: 'selection', width: 48, align: 'center', fixed: 'left' };
 
@@ -189,7 +180,9 @@ export const hpFlags = {
   /** 汕头等院区显示省平台合同列（旧 hide: isSt） */
   isStHospital: ['stse', 'stzl', 'stzx', 'csyy', 'stzyyy', 'chrmyy'].includes(HOME_HP),
   dqFs: ['fszxy', 'fsdwrmyy', 'fsdl', 'fsyb'].includes(HOME_HP),
+  /** 资金来源/二级仓库：旧 Home 权限控制 hideFUNDS_SOURCE、hideSTORAGE_TWO */
   showFundsSource: false,
+  /** 收货作业页工具栏物资/温度：旧 CentreBankTakeGoogs 未启用 hideVAR_TYPE，始终显示 */
   showVarType: false,
   showStorageTwo: false,
   showOverflowReceipt: HOME_HP === 'nyd',
@@ -200,6 +193,33 @@ export function initHpFlagsFromPermissions(permissions = []) {
   hpFlags.showFundsSource = permissions.some((p) => p.Permission_Url === '收货-资金来源');
   hpFlags.showVarType = permissions.some((p) => p.Permission_Url === '物资类型');
   hpFlags.showStorageTwo = permissions.some((p) => p.Permission_Url === '仓库-二级仓库');
+}
+
+/** UDI 扫码弹窗上下文（系统/人工收货明细行） */
+export function buildUdiScanContext(row, mode = 'system') {
+  if (!row) return null;
+  if (mode === 'manual') {
+    return {
+      batchId: row.Goods_Var_Receipt_Detail_Id,
+      varietyCode: row.Varietie_Code,
+      varietyName: row.Varietie_Name,
+      batch: row.Batch,
+      prodDate: row.Batch_Production_Date,
+      validDate: row.Batch_Validity_Period,
+      receivable: row.Netreceipts ?? 0,
+      udiTop: row.UDI_TOP || ''
+    };
+  }
+  return {
+    batchId: row.BATCH_ID,
+    varietyCode: row.Varietie_Code_New || row.Varietie_Code,
+    varietyName: row.Varietie_Name,
+    batch: row.Batch,
+    prodDate: row.Batch_Production_Date,
+    validDate: row.Batch_Validity_Period,
+    receivable: row.Netreceipts ?? row.Receivable ?? 0,
+    udiTop: row.UDI_TOP || ''
+  };
 }
 
 export function initSearchRow(row, note = '') {
