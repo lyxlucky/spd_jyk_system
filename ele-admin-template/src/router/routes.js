@@ -150,6 +150,11 @@ export function getMenuRoutes(menus, homePath) {
       component: () => import('@/views/Statistics/EffectiveTipWinShow/index.vue'),
       meta: { title: '效期到期弹框' }
     });
+    routes.push({
+      path: '/Inventory/VwHptx',
+      component: () => import('@/views/Inventory/VwHptx/index.vue'),
+      meta: { title: '货票同行入库' }
+    });
   }
   return {
     path: LAYOUT_PATH,
