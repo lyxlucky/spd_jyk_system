@@ -105,6 +105,11 @@ export function getMenuRoutes(menus, homePath) {
       component: () => import('@/views/KSInventory/FinancialAudit/index.vue'),
       meta: { title: '发票签收' }
     });
+    routes.push({
+      path: '/Inventory/CentreBankTakeGoogs',
+      component: () => import('@/views/Inventory/CentreBankTakeGoods/index.vue'),
+      meta: { title: '收货作业' }
+    });
   }
   return {
     path: LAYOUT_PATH,

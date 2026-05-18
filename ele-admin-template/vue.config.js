@@ -226,6 +226,21 @@ module.exports = {
         pathRewrite: {
           '^/api': '/api'
         }
+      },
+      '/Frame': {
+        target: config.target,
+        changeOrigin: true,
+        secure: false
+      },
+      '/Upload': {
+        target: config.target,
+        changeOrigin: true,
+        secure: false
+      },
+      '/Excel': {
+        target: config.target,
+        changeOrigin: true,
+        secure: false
       }
     }
     // port: 8060
