@@ -155,6 +155,11 @@ export function getMenuRoutes(menus, homePath) {
       component: () => import('@/views/Inventory/VwHptx/index.vue'),
       meta: { title: '货票同行入库' }
     });
+    routes.push({
+      path: '/Inventory/TertiaryInventory',
+      component: () => import('@/views/Inventory/TertiaryInventory/index.vue'),
+      meta: { title: '三级库存查询' }
+    });
   }
   return {
     path: LAYOUT_PATH,
