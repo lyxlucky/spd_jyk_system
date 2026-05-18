@@ -115,6 +115,16 @@ export function getMenuRoutes(menus, homePath) {
       component: () => import('@/views/Task/AuthOrder/index.vue'),
       meta: { title: '自助订单' }
     });
+    routes.push({
+      path: '/Home/VarPriceRecode',
+      component: () => import('@/views/Home/VarPriceRecode/index.vue'),
+      meta: { title: '价格变动记录' }
+    });
+    routes.push({
+      path: '/TraceSource/VarPriceRecode',
+      component: () => import('@/views/TraceSource/VarPriceRecode/index.vue'),
+      meta: { title: '价格变动记录(新)' }
+    });
   }
   return {
     path: LAYOUT_PATH,
