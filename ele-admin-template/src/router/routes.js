@@ -145,6 +145,11 @@ export function getMenuRoutes(menus, homePath) {
       component: () => import('@/views/Statistics/NewEffectiveTip/index.vue'),
       meta: { title: '效期到期统计(新)' }
     });
+    routes.push({
+      path: '/Statistics/EffectiveTipWinShow',
+      component: () => import('@/views/Statistics/EffectiveTipWinShow/index.vue'),
+      meta: { title: '效期到期弹框' }
+    });
   }
   return {
     path: LAYOUT_PATH,
