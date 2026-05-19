@@ -160,6 +160,11 @@ export function getMenuRoutes(menus, homePath) {
       component: () => import('@/views/Inventory/TertiaryInventory/index.vue'),
       meta: { title: '三级库存查询' }
     });
+    routes.push({
+      path: '/Inventory/ThirdInventoryQuery',
+      component: () => import('@/views/Inventory/ThirdInventoryQuery/index.vue'),
+      meta: { title: '三级库申领库存查询' }
+    });
   }
   return {
     path: LAYOUT_PATH,
