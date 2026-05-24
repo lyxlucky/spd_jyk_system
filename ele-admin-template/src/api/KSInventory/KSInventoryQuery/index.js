@@ -3,6 +3,16 @@ import { formdataify, DataToObject } from '@/utils/formdataify';
 import { TOKEN_STORE_NAME, } from '@/config/setting';
 import store from '@/store';
 
+function getJykMainShelfOrder(order) {
+    if (!order || order.sort !== 'STORAGED_DAYS_SORT') {
+        return order || '';
+    }
+    return {
+        sort: 'RECORD_TIME',
+        order: order.order === 'asc' ? 'desc' : 'asc'
+    };
+}
+
 export async function GetJykMainShelf(data) {
     console.log(data)
     var data2 = {};
@@ -20,7 +30,7 @@ export async function GetJykMainShelf(data) {
     // data2.DeptCode = data.where.DeptCode ? data.where.DeptCode : '';
     data2.DeptCode = store.state.user.info.DeptNow.Dept_Two_Code ? store.state.user.info.DeptNow.Dept_Two_Code :""
     data2.xqDay = data.where.xqDay ? data.where.xqDay : 0;
-    data2.order = data.order ? data.order : '';
+    data2.order = getJykMainShelfOrder(data.order);
     data2.batch = data.where.batch ? data.where.batch : '';
     const res = await request.get('/AJykDept/GetJykMainShelf', {
         params: data2,

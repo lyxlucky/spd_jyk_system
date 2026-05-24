@@ -222,15 +222,17 @@ export default {
           minWidth: 180
         },
         {
-          prop: 'INWAREHOUSE_DATE',
+          prop: 'STORAGED_DAYS_SORT',
           label: '在库天数',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 160,
           sortable: true,
+          sortMethod: (a, b) => {
+            return this.getStoragedDays(a) - this.getStoragedDays(b);
+          },
           formatter: (row, column, cellValue) => {
-            const now = this.$moment();
-            return this.$moment(now,'YYYY-MM-DD').diff(row.RECORD_TIME, 'days') + '天';
+            return this.getStoragedDays(row) + '天';
           }
         },
         {
@@ -414,6 +416,11 @@ export default {
     };
   },
   methods: {
+    getStoragedDays(row) {
+      if (!row || !row.RECORD_TIME) return 0;
+      const days = dayjs().diff(dayjs(row.RECORD_TIME), 'days');
+      return Number.isFinite(days) ? days : 0;
+    },
     /* 表格数据源 */
     datasource({ page, limit, where, order }) {
       // var Dept_Two_CodeStr = '';
@@ -429,7 +436,10 @@ export default {
       let data = GetJykMainShelf({ page, limit, where, order }).then((res) => {
         var tData = {
           count: res.total,
-          list: res.result
+          list: (res.result || []).map((item) => ({
+            ...item,
+            STORAGED_DAYS_SORT: this.getStoragedDays(item)
+          }))
         };
         this.sumCount = res.sumCount;
         return tData;

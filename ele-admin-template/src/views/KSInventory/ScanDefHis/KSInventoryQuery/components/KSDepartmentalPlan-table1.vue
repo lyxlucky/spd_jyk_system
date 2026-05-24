@@ -303,18 +303,17 @@
             minWidth: 280
           },
           {
-            prop: 'INWAREHOUSE_DATE',
+            prop: 'STORAGED_DAYS_SORT',
             label: '在库天数',
             align: 'center',
             showOverflowTooltip: true,
             minWidth: 160,
             sortable: true,
+            sortMethod: (a, b) => {
+              return this.getStoragedDays(a) - this.getStoragedDays(b);
+            },
             formatter: (row, column, cellValue) => {
-              const now = this.$moment();
-              return (
-                this.$moment(now, 'YYYY-MM-DD').diff(row.RECORD_TIME, 'days') +
-                '天'
-              );
+              return this.getStoragedDays(row) + '天';
             }
           },
           {
@@ -482,6 +481,11 @@
       };
     },
     methods: {
+      getStoragedDays(row) {
+        if (!row || !row.RECORD_TIME) return 0;
+        const days = dayjs().diff(dayjs(row.RECORD_TIME), 'days');
+        return Number.isFinite(days) ? days : 0;
+      },
       isExpiringWithin15Days(validityPeriod) {
         const now = dayjs(); // 当前时间
         const future7Days = dayjs().add(15, 'day'); // 未来七天
@@ -506,7 +510,10 @@
           (res) => {
             var tData = {
               count: res.total,
-              list: res.result
+              list: (res.result || []).map((item) => ({
+                ...item,
+                STORAGED_DAYS_SORT: this.getStoragedDays(item)
+              }))
             };
             this.sumCount = res.sumCount;
             return tData;
