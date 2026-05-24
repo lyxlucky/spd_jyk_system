@@ -276,6 +276,40 @@ export async function SearchHistoryConsumedAndPurchaseDept(data) {
   }
 }
 
+export async function SearchHistoryCycleConsumedVar(data) {
+  var data2 = {};
+  data2.deptTwoCode = data.where.deptTwoCode ? data.where.deptTwoCode : '';
+  data2.SerachName = data.where.SerachName ? data.where.SerachName : '';
+  data2.Specification_Or_Type = data.where.Specification_Or_Type
+    ? data.where.Specification_Or_Type
+    : '';
+  data2.Manufacturing_Ent_Name = data.where.Manufacturing_Ent_Name
+    ? data.where.Manufacturing_Ent_Name
+    : '';
+  data2.dateFrom = data.where.dateFrom ? data.where.dateFrom : '';
+  data2.dateTo = data.where.dateTo ? data.where.dateTo : '';
+  data2.SearchPlanNum = data.where.SearchPlanNum
+    ? data.where.SearchPlanNum
+    : '';
+  data2.QtyCalcType = data.where.QtyCalcType ? data.where.QtyCalcType : '1';
+  data2.PlanNum = data.where.PlanNum ? data.where.PlanNum : '';
+  data2.page = data.page ? data.page : 1;
+  data2.size = data.limit ? data.limit : 20;
+  data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+
+  var rep = formdataify(data2);
+
+  const res = await request.post(
+    '/PurchaseOrderApply/SearchHistoryCycleConsumedVar',
+    rep
+  );
+  if (res.data.code == 200) {
+    return res.data;
+  } else {
+    return Promise.reject(new Error(res.data.msg));
+  }
+}
+
 export async function getApplyOperateTip(data) {
   var data2 = {};
   data2.VARIETIE_SEARCH_VALUE = data.where.VARIETIE_SEARCH_VALUE

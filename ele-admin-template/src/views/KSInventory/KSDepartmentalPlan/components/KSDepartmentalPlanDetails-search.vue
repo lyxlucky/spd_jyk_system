@@ -86,6 +86,18 @@
               引入模板
             </el-button>
           </el-dropdown-item>
+          <el-dropdown-item>
+            <el-button
+              type="primary"
+              icon="el-icon-time"
+              size="mini"
+              style="margin-top: 4px;"
+              @click="openHistoryCycleConsume"
+              :disabled="!IsDisabled"
+            >
+              按历史周期申领
+            </el-button>
+          </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
     </el-form-item>
@@ -338,6 +350,11 @@
     <ApplyOperateTip :visible.sync="ApplyOperateTipShow" />
     <VarietyDataLzhLook :visible.sync="VarietyDataLzhLookShow" />
     <DpetOneAuthWithDept :visible.sync="DpetOneAuthWithDeptShow" />
+    <HistoryCycleConsumeDialog
+      :visible.sync="HistoryCycleConsumeShow"
+      :plan-data="KSDepartmentalPlanDataSearch"
+      @done="historyCycleConsumeDone"
+    />
     <el-dialog
       title="授权品种目录"
       :visible.sync="ApplyTempPage"
@@ -442,6 +459,7 @@
   import ApplyTemp from '@/views/KSInventory/ApplyTemp/index.vue';
   import IntroduceDefinedTemp from './aaaaccc.vue';
   import ExpiredCertificateDialog from './ExpiredCertificateDialog.vue';
+  import HistoryCycleConsumeDialog from './HistoryCycleConsumeDialog.vue';
   import { TOKEN_STORE_NAME } from '@/config/setting';
   export default {
     props: ['KSDepartmentalPlanDataSearch', 'selection', 'datasourceList'],
@@ -453,7 +471,8 @@
       ApplyOperateTip,
       VarietyDataLzhLook,
       DpetOneAuthWithDept,
-      ExpiredCertificateDialog
+      ExpiredCertificateDialog,
+      HistoryCycleConsumeDialog
     },
     data() {
       // 默认表单数据
@@ -466,6 +485,7 @@
       };
       return {
         // 表单数据
+        defaultWhere,
         where: { ...defaultWhere },
         showEdit: false,
         showEdit2: false,
@@ -475,6 +495,7 @@
         ApplyOperateTipShow: false,
         VarietyDataLzhLookShow: false,
         DpetOneAuthWithDeptShow: false,
+        HistoryCycleConsumeShow: false,
         HidesubToExamine: false,
         visibleLine: 'none',
         PlanNum: '',
@@ -630,6 +651,22 @@
       showApplyTemp() {
         // console.log(this.KSDepartmentalPlanDataSearch);
         this.ApplyTempPage = true;
+      },
+      openHistoryCycleConsume() {
+        if (
+          !this.KSDepartmentalPlanDataSearch ||
+          !this.KSDepartmentalPlanDataSearch.PlanNum
+        ) {
+          this.$message.warning('请先选择申领单');
+          return;
+        }
+        this.HistoryCycleConsumeShow = true;
+      },
+      historyCycleConsumeDone() {
+        var where = {
+          PlanNum: this.KSDepartmentalPlanDataSearch.PlanNum
+        };
+        this.$emit('search', where);
       },
       /* 打开其他模板页面 */
       openIntroduceOtherTemp() {
