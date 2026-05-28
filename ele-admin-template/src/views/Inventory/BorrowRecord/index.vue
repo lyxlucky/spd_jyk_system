@@ -21,10 +21,10 @@
             style="width: 100%;"
           />
         </el-form-item>
-        <el-form-item label="操作人">
+        <el-form-item label="领用人">
           <el-input
             v-model="searchForm.OperatePerson"
-            placeholder="请输入操作人"
+            placeholder="请输入领用人"
             clearable
             style="width: 150px"
           />
@@ -123,7 +123,7 @@
           <vxe-column field="Unit" title="单位" width="80" align="center" />
           <vxe-column
             field="OperatePerson"
-            title="操作人"
+            title="领用人"
             width="100"
             align="center"
             sortable
@@ -281,7 +281,7 @@
           />
           <vxe-column
             field="OperatePerson"
-            title="操作人"
+            title="领用人"
             width="100"
             align="center"
           />
@@ -325,6 +325,34 @@
             title="主刀医生"
             width="100"
             align="center"
+          />
+          <vxe-column
+            field="PatientName"
+            title="病人姓名"
+            width="100"
+            align="center"
+            show-overflow
+          />
+          <vxe-column
+            field="PatientNumber"
+            title="住院号"
+            width="120"
+            align="center"
+            show-overflow
+          />
+          <vxe-column
+            field="ChargePerson"
+            title="计费人"
+            width="100"
+            align="center"
+          />
+          <vxe-column
+            field="ChargeTime"
+            title="计费时间"
+            width="160"
+            align="center"
+            :formatter="formatDateTime"
+            sortable
           />
           <vxe-column
             field="IsCharged"
@@ -398,14 +426,14 @@ export default {
     };
   },
   methods: {
-    // 获取默认日期范围（本月1日到现在）
+    // 获取默认日期范围（当天）
     getDefaultDateRange() {
       const now = new Date();
       const year = now.getFullYear();
-      const month = now.getMonth();
-      const startDateStr = `${year}-${String(month + 1).padStart(2, '0')}-01 00:00:00`;
-      const endDateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} 23:59:59`;
-      return [startDateStr, endDateStr];
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const day = String(now.getDate()).padStart(2, '0');
+      const dateStr = `${year}-${month}-${day}`;
+      return [`${dateStr} 00:00:00`, `${dateStr} 23:59:59`];
     },
     // 搜索
     search() {
@@ -427,7 +455,7 @@ export default {
       this.searchForm = {
         StartTime: '',
         EndTime: '',
-        OperatePerson: '',
+        OperatePerson: this.$store.state.user.info.Nickname || '',
         VarietieCode: '',
         VarietieName: '',
         DefNoPkgCode: '',
@@ -591,6 +619,7 @@ export default {
       this.searchForm.StartTime = this.dateRange[0];
       this.searchForm.EndTime = this.dateRange[1];
     }
+    this.searchForm.OperatePerson = this.$store.state.user.info.Nickname || '';
     this.loadMainTableData();
   }
 };
