@@ -9,15 +9,16 @@
         size="mini"
         @keyup.enter.native="search"
       >
-        <el-form-item label="计费时间">
+        <el-form-item label="计费时间" class="date-range-item" style="width: 400px">
           <el-date-picker
             v-model="dateRange"
-            type="daterange"
+            type="datetimerange"
             range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            value-format="yyyy-MM-dd"
-            style="width: 200px"
+            start-placeholder="开始时间"
+            end-placeholder="结束时间"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            :default-time="['00:00:00', '23:59:59']"
+            style="width: 100%;"
           />
         </el-form-item>
         <el-form-item label="执行科室">
@@ -104,7 +105,7 @@
           >
             <el-option label="申领出库" value="1" />
             <el-option label="扫码出库" value="2" />
-            <el-option label="一出扫码出库" value="3" />
+            <el-option v-if="false" label="一出扫码出库" value="3" />
           </el-select>
         </el-form-item>
         <el-form-item label="是否跟台">
@@ -573,9 +574,8 @@ export default {
       const month = now.getMonth();
       const day = now.getDate();
 
-      // 当前月份1日
-      const startDate = new Date(year, month, 1);
-      const startDateStr = `${year}-${String(month + 1).padStart(2, '0')}-01`;
+      // 当前月份1日 00:00:00
+      const startDateStr = `${year}-${String(month + 1).padStart(2, '0')}-01 00:00:00`;
 
       // 如果是1号，结束日期也是1号；否则是前一天
       let endDate;
@@ -584,7 +584,7 @@ export default {
       } else {
         endDate = new Date(now.getTime() - 24 * 60 * 60 * 1000); // 前一天
       }
-      const endDateStr = `${endDate.getFullYear()}-${String(endDate.getMonth() + 1).padStart(2, '0')}-${String(endDate.getDate()).padStart(2, '0')}`;
+      const endDateStr = `${endDate.getFullYear()}-${String(endDate.getMonth() + 1).padStart(2, '0')}-${String(endDate.getDate()).padStart(2, '0')} 23:59:59`;
 
       return [startDateStr, endDateStr];
     },
@@ -946,5 +946,13 @@ export default {
 <style scoped>
 .ele-form-search {
   margin-bottom: 15px;
+}
+</style>
+
+<style>
+.ele-form-search.el-form--inline
+.date-range-item.el-form-item
+.el-form-item__content {
+  max-width: 320px;
 }
 </style>
