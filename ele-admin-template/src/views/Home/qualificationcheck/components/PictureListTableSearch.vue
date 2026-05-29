@@ -50,6 +50,24 @@
       </el-form-item>
       <el-form-item>
         <el-button
+          type="primary"
+          plain
+          size="mini"
+          icon="el-icon-cpu"
+          @click="aiReviewSubmit"
+          >发起 AI 审核</el-button
+        >
+      </el-form-item>
+      <el-form-item>
+        <el-button
+          size="mini"
+          icon="el-icon-refresh"
+          @click="aiReviewSync"
+          >同步 AI 状态</el-button
+        >
+      </el-form-item>
+      <el-form-item>
+        <el-button
           type="success"
           size="mini"
           icon="el-icon-check"
@@ -143,7 +161,10 @@
           {
             value: '6',
             label: '厂家生产许可证'
-          }
+          },
+          { value: '11', label: '经营许可证' },
+          { value: '12', label: '二类备案' },
+          { value: '13', label: '营业执照' }
         ]
       };
     },
@@ -162,6 +183,12 @@
       },
       deleteItem() {
         this.$emit('deleteItem', this.where);
+      },
+      aiReviewSubmit() {
+        this.$emit('aiReviewSubmit', this.where);
+      },
+      aiReviewSync() {
+        this.$emit('aiReviewSync', this.where);
       }
     },
     computed: {

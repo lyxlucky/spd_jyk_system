@@ -165,6 +165,11 @@ export function getMenuRoutes(menus, homePath) {
       component: () => import('@/views/Inventory/ThirdInventoryQuery/index.vue'),
       meta: { title: '三级库申领库存查询' }
     });
+    routes.push({
+      path: '/Inventory/picVarCode',
+      component: () => import('@/views/Inventory/picVarCode/index.vue'),
+      meta: { title: '品种资质审核' }
+    });
   }
   return {
     path: LAYOUT_PATH,

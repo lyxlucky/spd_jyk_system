@@ -21,6 +21,8 @@
           @approveItem="approveItem"
           @denyItem="DenyReasonVisible = true"
           @dropItem="dropItem"
+          @aiReviewSubmit="aiReviewSubmit"
+          @aiReviewSync="aiReviewSync"
         />
       </template>
 
@@ -43,6 +45,26 @@
         <el-tag v-else-if="row.STATE == 2" type="danger">审批未通过</el-tag>
       </template>
 
+      <template v-slot:AI_STATUS="{ row }">
+        <el-link type="primary" :underline="false" @click.stop="openAiDetail(row)">
+          <el-tag :type="aiStatusTagType(row.AI_STATUS)" size="mini" effect="plain">
+            {{ aiStatusLabel(row.AI_STATUS) }}
+          </el-tag>
+        </el-link>
+      </template>
+
+      <template v-slot:AI_SUMMARY="{ row }">
+        <el-link
+          v-if="row.AI_SUMMARY"
+          type="primary"
+          :underline="false"
+          @click.stop="openAiDetail(row)"
+        >
+          {{ formatAiSummaryBrief(row.AI_SUMMARY, 36) || '—' }}
+        </el-link>
+        <span v-else class="text-muted">—</span>
+      </template>
+
       <template v-slot:QY_STATE="{ row }">
         <el-tag v-if="row.QY_STATE == 0" type="success">使用</el-tag>
         <el-tag v-else-if="row.QY_STATE == 1" type="danger">弃用</el-tag>
@@ -60,6 +82,11 @@
       <DenyReason @confirm="denyItem" @cancel="DenyReasonVisible = false"/>
     </ele-modal>
 
+    <AiReviewDetailDialog
+      :visible.sync="aiDetailVisible"
+      :var-pic-id="aiDetailVarPicId"
+    />
+
   </div>
 </template>
 <script>
@@ -67,17 +94,22 @@
     getVarPic2,
     ApproveVarPic,
     PicVarDiscardUse,
-    deleteVarPic
+    deleteVarPic,
+    submitVarPicAiReview,
+    syncVarPicAiReviewStatus
   } from '@/api/Home/Qualificationcheck/index';
   import PictureListTableSearch from './PictureListTableSearch';
   import DenyReason from './DenyReason';
+  import AiReviewDetailDialog from './AiReviewDetailDialog';
   import { BACK_BASE_URL } from '@/config/setting';
+  import { aiStatusLabel, aiStatusTagType, formatAiSummaryBrief } from '@/utils/aiReviewDisplay';
   export default {
     name: 'pictureListTable',
     props: ['bottomTableCurrent'],
     components: {
       PictureListTableSearch,
-      DenyReason
+      DenyReason,
+      AiReviewDetailDialog
     },
     data() {
       const defaultWhere = {
@@ -173,6 +205,18 @@
             align: 'center'
           },
           {
+            slot: 'AI_STATUS',
+            label: 'AI状态',
+            width: 88,
+            align: 'center'
+          },
+          {
+            slot: 'AI_SUMMARY',
+            label: 'AI审查意见',
+            minWidth: 160,
+            align: 'left'
+          },
+          {
             prop: 'PASS_REASON',
             label: '未通过原因',
             minWidth: 150,
@@ -240,10 +284,66 @@
         // 当前编辑数据
         current: null,
         picturePrefix: '/Upload/ProPic/',
-        DenyReasonVisible: false
+        DenyReasonVisible: false,
+        aiDetailVisible: false,
+        aiDetailVarPicId: ''
       };
     },
     methods: {
+      aiStatusLabel,
+      aiStatusTagType,
+      formatAiSummaryBrief,
+      openAiDetail(row) {
+        this.aiDetailVarPicId = row.ID;
+        this.aiDetailVisible = true;
+      },
+      aiReviewSubmit() {
+        if (this.selection.length === 0) {
+          this.$message.warning('请至少选择一条有附件的资质记录');
+          return;
+        }
+        const ids = this.selection.map((item) => ({ ID: item.ID }));
+        this.$confirm('确认为所选记录发起 AI 资质审核？（不会修改人工审批状态）', '提示', {
+          type: 'info'
+        })
+          .then(() => {
+            const loading = this.$messageLoading('正在提交 AI 审核…');
+            submitVarPicAiReview({ json: ids })
+              .then((res) => {
+                loading.close();
+                this.$message.success(res.msg);
+                if (res.errors && res.errors.length) {
+                  this.$alert(res.errors.join('\n'), '部分失败', { type: 'warning' });
+                }
+                this.reload(this.where);
+              })
+              .catch((err) => {
+                loading.close();
+                this.$message.error(err.message || err);
+              });
+          })
+          .catch(() => {});
+      },
+      aiReviewSync() {
+        const rows =
+          this.selection.length > 0 ? this.selection : this.current ? [this.current] : [];
+        if (rows.length === 0) {
+          this.$message.warning('请勾选记录或选中一行后同步');
+          return;
+        }
+        const ids = rows.map((item) => ({ ID: item.ID }));
+        const loading = this.$messageLoading('正在同步…');
+        syncVarPicAiReviewStatus({ json: ids })
+          .then((res) => {
+            loading.close();
+            this.$message.success(res.msg);
+            this.reload(this.where);
+          })
+          .catch((err) => {
+            loading.close();
+            this.$message.error(err.message || err);
+          });
+      },
       // 表格行点击事件
       onCurrentChange(row) {
         this.current = row;

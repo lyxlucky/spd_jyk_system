@@ -182,6 +182,59 @@ export async function deleteVarPic(data) {
     }
 }
 
+/** 手动发起 AI 资质审核（支持 json: [{ID}]） */
+export async function submitVarPicAiReview(data) {
+    let formataData = {}
+    formataData.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+    if (data.VAR_PIC_ID) {
+        formataData.VAR_PIC_ID = data.VAR_PIC_ID;
+    }
+    if (data.json) {
+        formataData.json = typeof data.json === 'string' ? data.json : JSON.stringify(data.json);
+    }
+    let req = formdataify(formataData);
+    const res = await request.post('/VarPicReview/Submit', req);
+    if (res.data.code == 200 || res.data.code == '200') {
+        return res.data;
+    } else {
+        return Promise.reject(new Error(res.data.msg));
+    }
+}
+
+/** AI 审核详情；sync=1 时从中台拉取最新状态 */
+export async function getVarPicAiReviewDetail(data) {
+    let formataData = {}
+    formataData.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+    formataData.VAR_PIC_ID = data.VAR_PIC_ID;
+    formataData.sync = data.sync ? '1' : '0';
+    let req = formdataify(formataData);
+    const res = await request.post('/VarPicReview/GetDetail', req);
+    if (res.data.code == 200 || res.data.code == '200') {
+        return res.data;
+    } else {
+        return Promise.reject(new Error(res.data.msg));
+    }
+}
+
+/** 同步 AI 状态到列表 */
+export async function syncVarPicAiReviewStatus(data) {
+    let formataData = {}
+    formataData.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+    if (data.VAR_PIC_ID) {
+        formataData.VAR_PIC_ID = data.VAR_PIC_ID;
+    }
+    if (data.json) {
+        formataData.json = typeof data.json === 'string' ? data.json : JSON.stringify(data.json);
+    }
+    let req = formdataify(formataData);
+    const res = await request.post('/VarPicReview/SyncStatus', req);
+    if (res.data.code == 200 || res.data.code == '200') {
+        return res.data;
+    } else {
+        return Promise.reject(new Error(res.data.msg));
+    }
+}
+
 export async function getFactory(data) {
     let formataData = {}
     formataData.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
