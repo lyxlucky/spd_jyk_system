@@ -170,6 +170,11 @@ export function getMenuRoutes(menus, homePath) {
       component: () => import('@/views/KSInventory/NoMoveSell/index.vue'),
       meta: { title: '不动销查询' }
     });
+    routes.push({
+      path: '/KSInventory/Stockmaintenance',
+      component: () => import('@/views/KSInventory/Stockmaintenance/index.vue'),
+      meta: { title: '库存养护' }
+    });
   }
   return {
     path: LAYOUT_PATH,
