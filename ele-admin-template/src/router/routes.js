@@ -175,6 +175,11 @@ export function getMenuRoutes(menus, homePath) {
       component: () => import('@/views/KSInventory/Stockmaintenance/index.vue'),
       meta: { title: '库存养护' }
     });
+    routes.push({
+      path: '/Inventory/Snapshot',
+      component: () => import('@/views/Inventory/Snapshot/index.vue'),
+      meta: { title: '库存快照' }
+    });
   }
   return {
     path: LAYOUT_PATH,
