@@ -201,7 +201,7 @@ module.exports = {
       config.plugin('code-inspector-plugin').use(
         codeInspectorPlugin({
           bundler: 'webpack',
-          editor: 'cursor', // code/cursor/webstorm
+          // editor: 'cursor', // code/cursor/webstorm
           showSwitch: true,
         })
       );

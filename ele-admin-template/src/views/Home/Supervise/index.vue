@@ -70,7 +70,7 @@
                 <el-button
                   type="text"
                   icon="el-icon-setting"
-                  title="品种证件必填"
+                  title="供应/品种证件必填"
                   @click.stop="openDocRuleDrawer(row)"
                 />
                 <el-button
@@ -230,42 +230,112 @@
       </span>
     </el-dialog>
 
-    <!-- 管理类别：品种证件必填配置 -->
+    <!-- 管理类别：供应证件 + 品种证件必填配置 -->
     <el-drawer
-      :title="docRuleDrawerTitle"
       :visible.sync="docRuleDrawerVisible"
       direction="rtl"
-      size="520px"
+      size="640px"
       append-to-body
       custom-class="doc-rule-drawer"
       @closed="onDocRuleDrawerClosed"
     >
-      <div v-loading="docRuleLoading" class="doc-rule-drawer-body">
-        <p v-if="docRuleHint" class="doc-rule-hint">{{ docRuleHint }}</p>
-        <el-table
-          v-if="docRuleLines.length"
-          :data="docRuleLines"
-          border
-          size="small"
-          max-height="calc(100vh - 220px)"
-          row-key="dictValue"
-        >
-          <el-table-column prop="dictLabel" label="证件类型" min-width="220" show-overflow-tooltip />
-          <el-table-column label="必填" width="88" align="center">
-            <template slot-scope="{ row }">
-              <el-switch v-model="row.required" />
-            </template>
-          </el-table-column>
-        </el-table>
-        <div v-else-if="!docRuleLoading && docRuleDrawerVisible" class="doc-rule-empty">
-          暂无字典项。请先在「字典管理」中维护类型 <code>VARIETY_DOC_TYPE</code> 下的证件选项。
+      <template slot="title">
+        <div class="doc-rule-drawer-heading">
+          <div class="doc-rule-drawer-heading-main">{{ docRuleDrawerTitle }}</div>
+        </div>
+      </template>
+
+      <div v-loading="docRuleLoading" class="doc-rule-drawer-inner">
+        <el-alert
+          v-if="docRuleHint && docRuleDrawerVisible"
+          class="doc-rule-alert"
+          type="warning"
+          :closable="false"
+          show-icon
+          :title="docRuleHint"
+        />
+
+        <div class="doc-rule-scroll">
+          <section class="doc-rule-panel doc-rule-panel--supplier" aria-labelledby="doc-rule-supplier-title">
+            <header class="doc-rule-panel-head">
+              <span class="doc-rule-panel-chip doc-rule-panel-chip--supplier" aria-hidden="true">供应</span>
+              <div class="doc-rule-panel-head-text">
+                <h3 id="doc-rule-supplier-title" class="doc-rule-panel-title">供应证件类型</h3>
+              </div>
+              <span class="doc-rule-panel-count">{{ docRuleSupplierLines.length }} 项</span>
+            </header>
+            <div class="doc-rule-panel-body">
+              <el-table
+                v-if="docRuleSupplierLines.length"
+                :data="docRuleSupplierLines"
+                border
+                stripe
+                size="small"
+                class="doc-rule-table"
+                row-key="dictValue"
+              >
+                <el-table-column prop="dictLabel" label="证件 / 资料项" min-width="208" show-overflow-tooltip />
+                <el-table-column label="必填" width="96" align="center" header-align="center">
+                  <template slot-scope="{ row }">
+                    <el-switch
+                      v-model="row.required"
+                      active-color="#13ce66"
+                      :aria-label="`供应：${row.dictLabel}是否必填`"
+                    />
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
+          </section>
+
+          <section class="doc-rule-panel doc-rule-panel--variety" aria-labelledby="doc-rule-variety-title">
+            <header class="doc-rule-panel-head">
+              <span class="doc-rule-panel-chip doc-rule-panel-chip--variety" aria-hidden="true">品种</span>
+              <div class="doc-rule-panel-head-text">
+                <h3 id="doc-rule-variety-title" class="doc-rule-panel-title">品种证件类型</h3>
+              </div>
+              <span class="doc-rule-panel-count">{{ docRuleVarietyLines.length }} 项</span>
+            </header>
+            <div class="doc-rule-panel-body">
+              <el-table
+                v-if="docRuleVarietyLines.length"
+                :data="docRuleVarietyLines"
+                border
+                stripe
+                size="small"
+                class="doc-rule-table"
+                row-key="dictValue"
+              >
+                <el-table-column prop="dictLabel" label="证件 / 资料项" min-width="208" show-overflow-tooltip />
+                <el-table-column label="必填" width="96" align="center" header-align="center">
+                  <template slot-scope="{ row }">
+                    <el-switch
+                      v-model="row.required"
+                      active-color="#13ce66"
+                      :aria-label="`品种：${row.dictLabel}是否必填`"
+                    />
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
+          </section>
         </div>
       </div>
+
       <div class="doc-rule-drawer-footer">
-        <el-button @click="docRuleDrawerVisible = false">取消</el-button>
-        <el-button type="primary" :loading="docRuleSaving" :disabled="docRuleLoading" @click="saveDocRules">
-          保存
-        </el-button>
+        <span class="doc-rule-footer-hint">保存将依次写入两套证件必填规则。</span>
+        <div class="doc-rule-footer-actions">
+          <el-button size="medium" plain @click="docRuleDrawerVisible = false">取 消</el-button>
+          <el-button
+            size="medium"
+            type="primary"
+            :loading="docRuleSaving"
+            :disabled="docRuleLoading"
+            @click="saveDocRules"
+          >
+            {{ docRuleSaving ? '保存中…' : '保 存' }}
+          </el-button>
+        </div>
       </div>
     </el-drawer>
   </div>
@@ -291,6 +361,7 @@
   } from '@/api/Home/Supervise';
 
   const VARIETY_DOC_TYPE_CODE = 'VARIETY_DOC_TYPE';
+  const SUPPLIER_DOC_TYPE_CODE = 'SUPPLIER_DOC_TYPE';
 
   export default {
     name: 'Supervise',
@@ -324,19 +395,20 @@
         sideTableHeight: 360,
         regTableHeight: 400,
         layoutTimer: null,
-        /** 品种证件必填 Drawer */
+        /** 供应/品种证件必填 Drawer */
         docRuleDrawerVisible: false,
         docRuleMgmtRow: null,
         docRuleLoading: false,
         docRuleSaving: false,
-        docRuleLines: [],
+        docRuleSupplierLines: [],
+        docRuleVarietyLines: [],
         docRuleHint: ''
       };
     },
     computed: {
       docRuleDrawerTitle() {
         const n = this.docRuleMgmtRow && this.docRuleMgmtRow.Mgmt_Cat_Name;
-        return n ? `品种证件必填 · ${n}` : '品种证件必填';
+        return n ? `供应/品种证件必填 · ${n}` : '供应/品种证件必填';
       }
     },
     created() {
@@ -893,17 +965,75 @@
         }
         return [];
       },
+      buildDocRuleLinesFromMerged(merged) {
+        const dictTypeRow =
+          merged &&
+          (merged.dictType != null
+            ? merged.dictType
+            : merged.dicttype != null
+              ? merged.dicttype
+              : null);
+        const dictTypeId =
+          dictTypeRow &&
+          (dictTypeRow.DictTypeId != null ? dictTypeRow.DictTypeId : dictTypeRow.dictTypeId);
+        if (dictTypeId == null || dictTypeId === '') {
+          return { lines: [], missingType: true };
+        }
+
+        const dictRows = this.apiListPayload(merged);
+        const sorted = [...dictRows].sort((a, b) => {
+          const sa = Number(a.SortNum != null ? a.SortNum : a.sortNum) || 0;
+          const sb = Number(b.SortNum != null ? b.SortNum : b.sortNum) || 0;
+          if (sa !== sb) {
+            return sa - sb;
+          }
+          const ida = Number(a.DictDataId != null ? a.DictDataId : a.dictDataId) || 0;
+          const idb = Number(b.DictDataId != null ? b.DictDataId : b.dictDataId) || 0;
+          return ida - idb;
+        });
+
+        const rules = this.apiRulesPayload(merged);
+        const ruleByValue = new Map();
+        rules.forEach((r) => {
+          const v = r.DictValue != null ? String(r.DictValue) : String(r.dictValue || '');
+          if (v) {
+            ruleByValue.set(v, r);
+          }
+        });
+
+        const lines = sorted.map((d) => {
+          const dv = String(d.DictValue != null ? d.DictValue : d.dictValue || '');
+          const label = d.DictLabel != null ? d.DictLabel : d.dictLabel || dv;
+          const existing = ruleByValue.get(dv);
+          const ruleId =
+            existing &&
+            (existing.RuleId != null ? existing.RuleId : existing.ruleId != null ? existing.ruleId : null);
+          const isReq =
+            existing &&
+            String(existing.IsRequired != null ? existing.IsRequired : existing.isRequired || '') === '1';
+          return {
+            dictValue: dv,
+            dictLabel: label,
+            ruleId: ruleId != null && ruleId !== '' ? Number(ruleId) : null,
+            required: !!isReq
+          };
+        });
+
+        return { lines, missingType: false };
+      },
       openDocRuleDrawer(row) {
         this.docRuleMgmtRow = row;
         this.docRuleHint = '';
-        this.docRuleLines = [];
+        this.docRuleSupplierLines = [];
+        this.docRuleVarietyLines = [];
         this.docRuleDrawerVisible = true;
         this.loadDocRuleData();
       },
       onDocRuleDrawerClosed() {
         this.docRuleMgmtRow = null;
         this.docRuleHint = '';
-        this.docRuleLines = [];
+        this.docRuleSupplierLines = [];
+        this.docRuleVarietyLines = [];
       },
       async loadDocRuleData() {
         const row = this.docRuleMgmtRow;
@@ -914,66 +1044,36 @@
         this.docRuleLoading = true;
         this.docRuleHint = '';
         try {
-          const merged = await dictDataByTypeCode({
-            dictTypeCode: VARIETY_DOC_TYPE_CODE,
-            status: '1',
-            size: 500,
-            mgmtCatCode
-          });
-          const dictTypeRow =
-            merged &&
-            (merged.dictType != null
-              ? merged.dictType
-              : merged.dicttype != null
-                ? merged.dicttype
-                : null);
-          const dictTypeId =
-            dictTypeRow &&
-            (dictTypeRow.DictTypeId != null ? dictTypeRow.DictTypeId : dictTypeRow.dictTypeId);
-          if (dictTypeId == null || dictTypeId === '') {
-            this.docRuleHint = '未找到字典类型 VARIETY_DOC_TYPE，请先在字典管理中新增该类型。';
-            return;
+          const [supplierMerged, varietyMerged] = await Promise.all([
+            dictDataByTypeCode({
+              dictTypeCode: SUPPLIER_DOC_TYPE_CODE,
+              status: '1',
+              size: 500,
+              mgmtCatCode
+            }),
+            dictDataByTypeCode({
+              dictTypeCode: VARIETY_DOC_TYPE_CODE,
+              status: '1',
+              size: 500,
+              mgmtCatCode
+            })
+          ]);
+
+          const supplierBuilt = this.buildDocRuleLinesFromMerged(supplierMerged);
+          const varietyBuilt = this.buildDocRuleLinesFromMerged(varietyMerged);
+          this.docRuleSupplierLines = supplierBuilt.lines;
+          this.docRuleVarietyLines = varietyBuilt.lines;
+
+          const missingCodes = [];
+          if (supplierBuilt.missingType) {
+            missingCodes.push(SUPPLIER_DOC_TYPE_CODE);
           }
-
-          const dictRows = this.apiListPayload(merged);
-          const sorted = [...dictRows].sort((a, b) => {
-            const sa = Number(a.SortNum != null ? a.SortNum : a.sortNum) || 0;
-            const sb = Number(b.SortNum != null ? b.SortNum : b.sortNum) || 0;
-            if (sa !== sb) {
-              return sa - sb;
-            }
-            const ida = Number(a.DictDataId != null ? a.DictDataId : a.dictDataId) || 0;
-            const idb = Number(b.DictDataId != null ? b.DictDataId : b.dictDataId) || 0;
-            return ida - idb;
-          });
-
-          const rules = this.apiRulesPayload(merged);
-
-          const ruleByValue = new Map();
-          rules.forEach((r) => {
-            const v = r.DictValue != null ? String(r.DictValue) : String(r.dictValue || '');
-            if (v) {
-              ruleByValue.set(v, r);
-            }
-          });
-
-          this.docRuleLines = sorted.map((d) => {
-            const dv = String(d.DictValue != null ? d.DictValue : d.dictValue || '');
-            const label = d.DictLabel != null ? d.DictLabel : d.dictLabel || dv;
-            const existing = ruleByValue.get(dv);
-            const ruleId =
-              existing &&
-              (existing.RuleId != null ? existing.RuleId : existing.ruleId != null ? existing.ruleId : null);
-            const isReq =
-              existing &&
-              String(existing.IsRequired != null ? existing.IsRequired : existing.isRequired || '') === '1';
-            return {
-              dictValue: dv,
-              dictLabel: label,
-              ruleId: ruleId != null && ruleId !== '' ? Number(ruleId) : null,
-              required: !!isReq
-            };
-          });
+          if (varietyBuilt.missingType) {
+            missingCodes.push(VARIETY_DOC_TYPE_CODE);
+          }
+          if (missingCodes.length) {
+            this.docRuleHint = `未找到字典类型：${missingCodes.join('、')}，请先在字典管理中新增该类型及字典项。`;
+          }
         } catch (e) {
           Message.error(e.message || '加载证件配置失败');
         } finally {
@@ -982,18 +1082,24 @@
       },
       async saveDocRules() {
         const row = this.docRuleMgmtRow;
-        if (!row || !this.docRuleLines.length) {
+        if (!row) {
           this.docRuleDrawerVisible = false;
           return;
         }
         const mgmtCatCode = Number(row.Mgmt_Cat_Code);
-        const requiredDictValues = this.docRuleLines.filter((l) => l.required).map((l) => l.dictValue);
+        const supplierRequired = this.docRuleSupplierLines.filter((l) => l.required).map((l) => l.dictValue);
+        const varietyRequired = this.docRuleVarietyLines.filter((l) => l.required).map((l) => l.dictValue);
         this.docRuleSaving = true;
         try {
           await mgmtCatVarietyDocRuleSync({
             mgmtCatCode,
+            dictTypeCode: SUPPLIER_DOC_TYPE_CODE,
+            requiredDictValues: supplierRequired
+          });
+          await mgmtCatVarietyDocRuleSync({
+            mgmtCatCode,
             dictTypeCode: VARIETY_DOC_TYPE_CODE,
-            requiredDictValues
+            requiredDictValues: varietyRequired
           });
           Message.success('保存成功');
           this.docRuleDrawerVisible = false;
@@ -1110,44 +1216,253 @@
 </style>
 
 <style lang="scss">
+  /* 证件必填抽屉：分区面板、表格与底部栏 */
   .doc-rule-drawer {
-    .el-drawer__body {
-      padding: 0 20px 16px;
+    &.el-drawer {
       display: flex;
       flex-direction: column;
+    }
+
+    .el-drawer__body {
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-height: 0;
       height: 100%;
       box-sizing: border-box;
     }
+
+    .el-drawer__header {
+      align-items: flex-start;
+      padding: 18px 20px 12px;
+      margin-bottom: 0;
+      border-bottom: 1px solid #ebeef5;
+    }
+
+    .el-drawer__title {
+      flex: 1;
+      line-height: inherit;
+    }
+
+    .el-drawer__close-btn {
+      margin-top: 2px;
+    }
   }
 
-  .doc-rule-drawer-body {
-    flex: 1;
-    min-height: 120px;
-    overflow: auto;
+  .doc-rule-drawer-heading {
+    padding-right: 8px;
   }
 
-  .doc-rule-hint {
-    margin: 0 0 12px;
-    font-size: 13px;
-    color: #e6a23c;
-    line-height: 1.5;
+  .doc-rule-drawer-heading-main {
+    font-size: 16px;
+    font-weight: 600;
+    color: #303133;
+    line-height: 1.35;
   }
 
-  .doc-rule-empty {
-    padding: 24px 8px;
-    font-size: 13px;
+  .doc-rule-drawer-heading-sub {
+    margin-top: 6px;
+    font-size: 12px;
+    font-weight: normal;
     color: #909399;
-    line-height: 1.6;
+    line-height: 1.5;
+    max-width: 36em;
+  }
+
+  .doc-rule-drawer-inner {
+    position: relative;
+    flex: 1;
+    min-height: 100px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    padding: 0 20px;
+  }
+
+  .doc-rule-alert {
+    flex-shrink: 0;
+    margin: 14px 0 4px;
+
+    .el-alert__title {
+      font-size: 13px;
+      line-height: 1.5;
+      font-weight: normal;
+    }
+
+    .el-alert__content {
+      padding-right: 0;
+    }
+  }
+
+  .doc-rule-scroll {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 10px 0 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .doc-rule-panel {
+    flex-shrink: 0;
+    background: linear-gradient(180deg, #fbfcfd 0%, #f6f8fa 100%);
+    border: 1px solid #e4e7ed;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  }
+
+  .doc-rule-panel-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    background: rgba(255, 255, 255, 0.75);
+    border-bottom: 1px solid #ebeef5;
+  }
+
+  .doc-rule-panel-chip {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 36px;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+
+  .doc-rule-panel-chip--supplier {
+    color: #409eff;
+    background: rgba(64, 158, 255, 0.12);
+  }
+
+  .doc-rule-panel-chip--variety {
+    color: #67c23a;
+    background: rgba(103, 194, 58, 0.14);
+  }
+
+  .doc-rule-panel-head-text {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .doc-rule-panel-title {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #303133;
+    line-height: 1.4;
+  }
+
+  .doc-rule-panel-desc {
+    margin: 4px 0 0;
+    font-size: 12px;
+    color: #909399;
+    line-height: 1.4;
 
     code {
-      font-size: 12px;
+      font-size: 11px;
+      padding: 1px 6px;
+      border-radius: 4px;
+      background: #f0f2f5;
+      color: #606266;
     }
+  }
+
+  .doc-rule-panel-count {
+    flex-shrink: 0;
+    font-size: 12px;
+    color: #909399;
+    padding: 2px 8px;
+    border-radius: 10px;
+    background: #fff;
+    border: 1px solid #ebeef5;
+  }
+
+  .doc-rule-panel-body {
+    padding: 0;
+
+    .doc-rule-table.el-table {
+      background: transparent;
+    }
+
+    .el-table__header th {
+      background: #fafbfc !important;
+      font-weight: 600;
+      font-size: 12px;
+      color: #606266;
+      padding: 8px 0;
+    }
+
+    .el-table__body td {
+      padding: 6px 0;
+      font-size: 13px;
+    }
+  }
+
+  .doc-rule-panel-empty {
+    padding: 28px 20px 32px;
+    text-align: center;
+  }
+
+  .doc-rule-panel-empty-icon {
+    display: block;
+    margin: 0 auto 12px;
+    font-size: 40px;
+    color: #c0c4cc;
+    line-height: 1;
+  }
+
+  .doc-rule-empty-lead {
+    margin: 0;
+    font-size: 13px;
+    color: #606266;
+    line-height: 1.6;
+  }
+
+  .doc-rule-empty-code-wrap {
+    margin: 10px 0 0;
+  }
+
+  .doc-rule-empty-code {
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    background: #f0f2f5;
+    color: #303133;
   }
 
   .doc-rule-drawer-footer {
     flex-shrink: 0;
-    padding-top: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 14px 20px;
+    margin: 0;
     border-top: 1px solid #ebeef5;
-    text-align: right;
+    background: #fafafa;
+    box-sizing: border-box;
+  }
+
+  .doc-rule-footer-hint {
+    font-size: 12px;
+    color: #909399;
+    line-height: 1.4;
+    max-width: 52%;
+    min-width: 200px;
+  }
+
+  .doc-rule-footer-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: auto;
   }
 </style>
