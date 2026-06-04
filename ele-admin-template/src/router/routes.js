@@ -141,11 +141,6 @@ export function getMenuRoutes(menus, homePath) {
       meta: { title: '效期到期统计' }
     });
     routes.push({
-      path: '/Statistics/NewEffectiveTip',
-      component: () => import('@/views/Statistics/NewEffectiveTip/index.vue'),
-      meta: { title: '效期到期统计(新)' }
-    });
-    routes.push({
       path: '/Statistics/EffectiveTipWinShow',
       component: () => import('@/views/Statistics/EffectiveTipWinShow/index.vue'),
       meta: { title: '效期到期弹框' }
@@ -169,6 +164,11 @@ export function getMenuRoutes(menus, homePath) {
       path: '/Inventory/picVarCode',
       component: () => import('@/views/Inventory/picVarCode/index.vue'),
       meta: { title: '品种资质审核' }
+    });
+    routes.push({
+      path: '/KSInventory/NoMoveSell',
+      component: () => import('@/views/KSInventory/NoMoveSell/index.vue'),
+      meta: { title: '不动销查询' }
     });
   }
   return {
