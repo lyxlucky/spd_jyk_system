@@ -1340,8 +1340,8 @@ export default {
         const spdRes = await getSpdDeptList();
         if (spdRes.code === 200 && spdRes.result) {
           this.spdDeptOptions = spdRes.result.map(item => ({
-            label: item.DEPT_TWO_NAME,
-            value: item.DEPT_TWO_CODE,
+            label: item.Dept_Two_Name,
+            value: item.Dept_Two_Code,
           }));
         }
       } catch (error) {
