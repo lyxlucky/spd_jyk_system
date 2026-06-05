@@ -185,6 +185,11 @@ export function getMenuRoutes(menus, homePath) {
       component: () => import('@/views/Statistics/VarUseStatistics/index.vue'),
       meta: { title: '品种消耗统计' }
     });
+    routes.push({
+      path: '/Home/PrchaseDataV2',
+      component: () => import('@/views/Home/PrchaseDataV2/index.vue'),
+      meta: { title: '带量采购监测V2' }
+    });
   }
   return {
     path: LAYOUT_PATH,
