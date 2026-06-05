@@ -230,6 +230,11 @@ export function getMenuRoutes(menus, homePath) {
       component: () => import('@/views/Statistics/YGCGPlatform/index.vue'),
       meta: { title: '阳光采购平台比价' }
     });
+    routes.push({
+      path: '/Home/BidVarInfo',
+      component: () => import('@/views/Home/BidVarInfo/index.vue'),
+      meta: { title: '本院中标目录' }
+    });
   }
   return {
     path: LAYOUT_PATH,
