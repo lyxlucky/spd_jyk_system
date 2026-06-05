@@ -235,6 +235,11 @@ export function getMenuRoutes(menus, homePath) {
       component: () => import('@/views/Home/BidVarInfo/index.vue'),
       meta: { title: '本院中标目录' }
     });
+    routes.push({
+      path: '/Home/healthInsuranceDirectory',
+      component: () => import('@/views/Home/HealthInsuranceDirectory/index.vue'),
+      meta: { title: '深圳医保目录' }
+    });
   }
   return {
     path: LAYOUT_PATH,
