@@ -220,6 +220,11 @@ export function getMenuRoutes(menus, homePath) {
       component: () => import('@/views/Home/YgPlatView/index.vue'),
       meta: { title: '阳光平台发送查看' }
     });
+    routes.push({
+      path: '/Home/YgPlatReceivGoods',
+      component: () => import('@/views/Home/YgPlatReceivGoods/index.vue'),
+      meta: { title: '阳光平台收货' }
+    });
   }
   return {
     path: LAYOUT_PATH,
