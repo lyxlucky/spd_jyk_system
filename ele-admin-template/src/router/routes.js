@@ -250,6 +250,11 @@ export function getMenuRoutes(menus, homePath) {
       component: () => import('@/views/Home/YgVarClLookSm/index.vue'),
       meta: { title: '物价目录审核查看(萨米)' }
     });
+    routes.push({
+      path: '/KSInventory/GY_CLML_SPD',
+      component: () => import('@/views/KSInventory/GyClmlSpd/index.vue'),
+      meta: { title: 'HIS计费目录' }
+    });
   }
   return {
     path: LAYOUT_PATH,
