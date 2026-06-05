@@ -190,6 +190,11 @@ export function getMenuRoutes(menus, homePath) {
       component: () => import('@/views/Home/PrchaseDataV2/index.vue'),
       meta: { title: '带量采购监测V2' }
     });
+    routes.push({
+      path: '/Statistics/DeptUseCountStatistics',
+      component: () => import('@/views/Statistics/DeptUseCountStatistics/index.vue'),
+      meta: { title: '科室用量统计' }
+    });
   }
   return {
     path: LAYOUT_PATH,
