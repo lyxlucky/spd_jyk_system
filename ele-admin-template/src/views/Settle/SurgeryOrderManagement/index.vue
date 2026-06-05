@@ -1320,7 +1320,7 @@ export default {
       try {
         // 加载手术地点
         const locationsRes = await getAllSurgeryLocations();
-        if (locationsRes.code === 200 && locationsRes.result) {
+        if (locationsRes.code == 200 && locationsRes.result) {
           this.surgeryLocationOptions = locationsRes.result.map(item => ({
             label: item.LOCATION_NAME,
             value: item.LOCATION_NAME
@@ -1329,7 +1329,7 @@ export default {
 
         // 加载申请科室
         const deptRes = await getAllApplyDepartments();
-        if (deptRes.code === 200 && deptRes.result) {
+        if (deptRes.code == 200 && deptRes.result) {
           this.deptOptions = deptRes.result.map(item => ({
             label: item.APPLY_DEPT_NAME,
             value: item.APPLY_DEPT_CODE,
@@ -1338,7 +1338,7 @@ export default {
 
         // 加载SPD科室（用于成本科室选择）
         const spdRes = await getSpdDeptList();
-        if (spdRes.code === 200 && spdRes.result) {
+        if (spdRes.code == 200 && spdRes.result) {
           this.spdDeptOptions = spdRes.result.map(item => ({
             label: item.Dept_Two_Name,
             value: item.Dept_Two_Code,
