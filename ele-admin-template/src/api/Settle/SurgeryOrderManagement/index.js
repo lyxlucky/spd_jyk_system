@@ -124,6 +124,31 @@ export async function batchUpdateExecuteDept(data) {
 }
 
 /**
+ * 手术单管理 - 批量修改成本科室
+ * @param {Object} data - { SURGERY_NO, items: [{ ID, SOURCE_TYPE }], DEPT_CODE }
+ * @returns {Promise}
+ */
+export async function batchUpdateCostDept(data) {
+  const formatData = {
+    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+    SURGERY_NO: data.SURGERY_NO || '',
+    items: data.items || [],
+    DEPT_CODE: data.DEPT_CODE || ''
+  };
+
+  const res = await request.post(
+    '/SurgeryOrder/BatchUpdateCostDept',
+    formatData
+  );
+
+  if (res.data.code == 200) {
+    return res.data;
+  } else {
+    return Promise.reject(new Error(res.data.msg));
+  }
+}
+
+/**
  * 手术单管理 - 批量销毁人登记
  * @param {Object} data - { DESTROY_MAN, items: [{ ID, SOURCE_TYPE }] }
  * @returns {Promise}
