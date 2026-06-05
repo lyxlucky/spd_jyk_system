@@ -240,6 +240,11 @@ export function getMenuRoutes(menus, homePath) {
       component: () => import('@/views/Home/HealthInsuranceDirectory/index.vue'),
       meta: { title: '深圳医保目录' }
     });
+    routes.push({
+      path: '/Home/YGVARCL_SM',
+      component: () => import('@/views/Home/YgVarClSm/index.vue'),
+      meta: { title: '物价目录审核(萨米)' }
+    });
   }
   return {
     path: LAYOUT_PATH,
