@@ -245,6 +245,11 @@ export function getMenuRoutes(menus, homePath) {
       component: () => import('@/views/Home/YgVarClSm/index.vue'),
       meta: { title: '物价目录审核(萨米)' }
     });
+    routes.push({
+      path: '/Home/YGVARCLLOOK_SM',
+      component: () => import('@/views/Home/YgVarClLookSm/index.vue'),
+      meta: { title: '物价目录审核查看(萨米)' }
+    });
   }
   return {
     path: LAYOUT_PATH,
