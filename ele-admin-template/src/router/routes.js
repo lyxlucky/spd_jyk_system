@@ -225,6 +225,11 @@ export function getMenuRoutes(menus, homePath) {
       component: () => import('@/views/Home/YgPlatReceivGoods/index.vue'),
       meta: { title: '阳光平台收货' }
     });
+    routes.push({
+      path: '/Statistics/YGCGPlatform',
+      component: () => import('@/views/Statistics/YGCGPlatform/index.vue'),
+      meta: { title: '阳光采购平台比价' }
+    });
   }
   return {
     path: LAYOUT_PATH,
