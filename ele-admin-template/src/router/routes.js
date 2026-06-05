@@ -255,6 +255,11 @@ export function getMenuRoutes(menus, homePath) {
       component: () => import('@/views/KSInventory/GyClmlSpd/index.vue'),
       meta: { title: 'HIS计费目录' }
     });
+    routes.push({
+      path: '/KSInventory/HighValueConsumables',
+      component: () => import('@/views/KSInventory/HighValueConsumables/index.vue'),
+      meta: { title: '第一批高值医用耗材目录' }
+    });
   }
   return {
     path: LAYOUT_PATH,
