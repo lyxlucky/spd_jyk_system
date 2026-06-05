@@ -1097,7 +1097,7 @@
             style="width: 100%"
           >
             <el-option
-              v-for="item in deptOptions"
+              v-for="item in spdDeptOptions"
               :key="item.value"
               :label="item.label"
               :value="item.value"
@@ -1157,6 +1157,7 @@ import {
   deleteSurgeryConsumable,
   batchUpdateExecuteDept,
   batchUpdateCostDept,
+  getSpdDeptList,
   batchRegisterDestroyer,
   printGtDetail
 } from '@/api/Settle/SurgeryOrderManagement';
@@ -1198,6 +1199,7 @@ export default {
       // 选项数据
       surgeryLocationOptions: [],
       deptOptions: [],
+      spdDeptOptions: [],
       // 主表数据
       mainTableData: [],
       mainTableLoading: false,
@@ -1331,6 +1333,15 @@ export default {
           this.deptOptions = deptRes.result.map(item => ({
             label: item.APPLY_DEPT_NAME,
             value: item.APPLY_DEPT_CODE,
+          }));
+        }
+
+        // 加载SPD科室（用于成本科室选择）
+        const spdRes = await getSpdDeptList();
+        if (spdRes.code === 200 && spdRes.result) {
+          this.spdDeptOptions = spdRes.result.map(item => ({
+            label: item.DEPT_TWO_NAME,
+            value: item.DEPT_TWO_CODE,
           }));
         }
       } catch (error) {
