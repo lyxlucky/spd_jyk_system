@@ -195,6 +195,11 @@ export function getMenuRoutes(menus, homePath) {
       component: () => import('@/views/Statistics/DeptUseCountStatistics/index.vue'),
       meta: { title: '科室用量统计' }
     });
+    routes.push({
+      path: '/Statistics/DeptAnalysisStatistical',
+      component: () => import('@/views/Statistics/DeptAnalysisStatistical/index.vue'),
+      meta: { title: '科室统计分析' }
+    });
   }
   return {
     path: LAYOUT_PATH,
