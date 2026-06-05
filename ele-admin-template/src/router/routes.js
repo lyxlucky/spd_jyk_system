@@ -205,6 +205,11 @@ export function getMenuRoutes(menus, homePath) {
       component: () => import('@/views/Statistics/MaterialStatistics/index.vue'),
       meta: { title: '耗材监管统计' }
     });
+    routes.push({
+      path: '/Statistics/RegistrationLimitPlan',
+      component: () => import('@/views/Statistics/RegistrationLimitPlan/index.vue'),
+      meta: { title: '注册证限量' }
+    });
   }
   return {
     path: LAYOUT_PATH,
