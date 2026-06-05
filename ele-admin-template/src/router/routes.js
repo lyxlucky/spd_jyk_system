@@ -215,6 +215,11 @@ export function getMenuRoutes(menus, homePath) {
       component: () => import('@/views/Home/YgVarInfo/index.vue'),
       meta: { title: '阳光本院目录' }
     });
+    routes.push({
+      path: '/Home/YgPlatView',
+      component: () => import('@/views/Home/YgPlatView/index.vue'),
+      meta: { title: '阳光平台发送查看' }
+    });
   }
   return {
     path: LAYOUT_PATH,
