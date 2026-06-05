@@ -297,6 +297,21 @@ export async function getAllApplyDepartments() {
 }
 
 /**
+ * 获取SPD科室列表（二级科室，已启用且未删除）
+ * @returns {Promise}
+ */
+export async function getSpdDeptList() {
+  const Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+  const res = await request.get('/DeptTwoBasicInfo/GetEnabledList', { params: { Token } });
+
+  if (res.data.code == 200) {
+    return res.data;
+  } else {
+    return Promise.reject(new Error(res.data.msg));
+  }
+}
+
+/**
  * 获取单个手术单详情 - 使用CRUD接口
  * @param {number} id - 手术单ID
  * @returns {Promise} - 返回请求Promise
