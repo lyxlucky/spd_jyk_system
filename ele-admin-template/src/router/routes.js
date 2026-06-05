@@ -200,6 +200,11 @@ export function getMenuRoutes(menus, homePath) {
       component: () => import('@/views/Statistics/DeptAnalysisStatistical/index.vue'),
       meta: { title: '科室统计分析' }
     });
+    routes.push({
+      path: '/Statistics/MaterialStatistics',
+      component: () => import('@/views/Statistics/MaterialStatistics/index.vue'),
+      meta: { title: '耗材监管统计' }
+    });
   }
   return {
     path: LAYOUT_PATH,
