@@ -210,6 +210,11 @@ export function getMenuRoutes(menus, homePath) {
       component: () => import('@/views/Statistics/RegistrationLimitPlan/index.vue'),
       meta: { title: '注册证限量' }
     });
+    routes.push({
+      path: '/Home/YgVarInfo',
+      component: () => import('@/views/Home/YgVarInfo/index.vue'),
+      meta: { title: '阳光本院目录' }
+    });
   }
   return {
     path: LAYOUT_PATH,
