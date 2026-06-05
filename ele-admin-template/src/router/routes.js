@@ -180,6 +180,11 @@ export function getMenuRoutes(menus, homePath) {
       component: () => import('@/views/Inventory/Snapshot/index.vue'),
       meta: { title: '库存快照' }
     });
+    routes.push({
+      path: '/Statistics/VarUseStatistics',
+      component: () => import('@/views/Statistics/VarUseStatistics/index.vue'),
+      meta: { title: '品种消耗统计' }
+    });
   }
   return {
     path: LAYOUT_PATH,
