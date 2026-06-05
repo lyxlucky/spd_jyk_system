@@ -26,16 +26,9 @@ jobs:
             echo "tag_name=${GITHUB_REF_NAME}" >> $GITHUB_OUTPUT
             echo "prerelease=false" >> $GITHUB_OUTPUT
           else
-            # Find latest official tag (exclude alpha)
-            LATEST=$(git tag -l 'v*' --sort=-version:refname | grep -v 'alpha' | head -n1)
-            if [ -z "$LATEST" ]; then
-              LATEST="v0.0.0"
-            fi
-            # Count existing alpha tags for this version: v1.2.0-alpha.1, v1.2.0-alpha.2 ...
-            EXISTING=$(git tag -l "${LATEST}-alpha.*" 2>/dev/null | wc -l)
-            NEXT_NUM=$((EXISTING + 1))
-            ALPHA_TAG="${LATEST}-alpha.${NEXT_NUM}"
-            echo "tag_name=$ALPHA_TAG" >> $GITHUB_OUTPUT
+            SHORT_SHA=$(git rev-parse --short HEAD)
+            DEV_TAG="dev-$(date +%Y%m%d)-${SHORT_SHA}"
+            echo "tag_name=$DEV_TAG" >> $GITHUB_OUTPUT
             echo "prerelease=true" >> $GITHUB_OUTPUT
           fi
 
@@ -117,12 +110,12 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           KEEP=5
-          # List all pre-releases matching alpha pattern, newest first
-          ALPHA_RELEASES=$(gh release list --limit 100 --json tagName,isPrerelease \
-            | jq -r '[.[] | select(.isPrerelease and (.tagName | test("^v[0-9]+\\.[0-9]+\\.[0-9]+-alpha\\.[0-9]+$")))] | sort_by(.tagName) | reverse | .[].tagName')
+          # List all dev pre-releases, newest first
+          DEV_RELEASES=$(gh release list --limit 100 --json tagName,isPrerelease \
+            | jq -r '[.[] | select(.isPrerelease and (.tagName | startswith("dev-")))] | sort_by(.tagName) | reverse | .[].tagName')
 
           COUNT=0
-          for tag in $ALPHA_RELEASES; do
+          for tag in $DEV_RELEASES; do
             COUNT=$((COUNT + 1))
             if [ $COUNT -gt $KEEP ]; then
               echo "Deleting old alpha release: $tag"
