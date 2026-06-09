@@ -91,6 +91,11 @@ export function getMenuRoutes(menus, homePath) {
       meta: { title: '月结管理' }
     });
     routes.push({
+      path: '/Settle/NissinBills',
+      component: () => import('@/views/Settle/NissinBills/index.vue'),
+      meta: { title: '日清管理' }
+    });
+    routes.push({
       path: '/Settle/HishedgingData',
       component: () => import('@/views/Settle/HishedgingData/index.vue'),
       meta: { title: 'HIS消耗数据管理' }
