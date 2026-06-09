@@ -136,6 +136,11 @@ export function getMenuRoutes(menus, homePath) {
       meta: { title: '拣配及配送' }
     });
     routes.push({
+      path: '/Task/BuyBack',
+      component: () => import('@/views/Task/BuyBack/index.vue'),
+      meta: { title: '中心库退购' }
+    });
+    routes.push({
       path: '/Home/VarPriceRecode',
       component: () => import('@/views/Home/VarPriceRecode/index.vue'),
       meta: { title: '价格变动记录' }
