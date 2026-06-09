@@ -96,6 +96,11 @@ export function getMenuRoutes(menus, homePath) {
       meta: { title: '日清管理' }
     });
     routes.push({
+      path: '/Settle/printUseDeptTwo',
+      component: () => import('@/views/Settle/PrintUseDeptTwo/index.vue'),
+      meta: { title: '日清his计费打印' }
+    });
+    routes.push({
       path: '/Settle/HishedgingData',
       component: () => import('@/views/Settle/HishedgingData/index.vue'),
       meta: { title: 'HIS消耗数据管理' }
