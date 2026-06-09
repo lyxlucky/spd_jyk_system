@@ -1,9 +1,19 @@
 import request from '@/utils/request';
 import { formdataify } from '@/utils/formdataify';
 import { TOKEN_STORE_NAME } from '@/config/setting';
+import { EncryptWithCustomKey, getAesKey } from '@/utils/aes-util';
 
 function getToken() {
   return sessionStorage.getItem(TOKEN_STORE_NAME) || '';
+}
+
+function ensureAesKey() {
+  let key = sessionStorage.getItem('AesKey') || localStorage.getItem('AesKey');
+  if (!key) {
+    key = getAesKey();
+    localStorage.setItem('AesKey', key);
+  }
+  return key;
 }
 
 function okCode(c) {
@@ -443,7 +453,7 @@ export async function exportDeptOneAuthedVars(payload) {
 }
 
 export async function upTwoAudit(deptOneCode, varietieCodes, tag) {
-  const { Encrypt } = await import('@/utils/aes-util');
+  const key = ensureAesKey();
   const prams = {
     ID: varietieCodes.join(','),
     Dept_One_Code: deptOneCode,
@@ -451,8 +461,8 @@ export async function upTwoAudit(deptOneCode, varietieCodes, tag) {
     tag: String(tag)
   };
   const fd = formdataify({
-    prams: Encrypt(JSON.stringify(prams)),
-    AesKey: sessionStorage.getItem('AesKey') || ''
+    prams: EncryptWithCustomKey(JSON.stringify(prams), key),
+    AesKey: key
   });
   const res = await request.post('/DeptOneBulkCargoAuthVar/upTwoAudit', fd);
   if (res.data?.code === 301) throw new Error(res.data.msg);

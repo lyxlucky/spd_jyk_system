@@ -141,11 +141,6 @@ export function getMenuRoutes(menus, homePath) {
       meta: { title: '效期到期统计' }
     });
     routes.push({
-      path: '/Statistics/NewEffectiveTip',
-      component: () => import('@/views/Statistics/NewEffectiveTip/index.vue'),
-      meta: { title: '效期到期统计(新)' }
-    });
-    routes.push({
       path: '/Statistics/EffectiveTipWinShow',
       component: () => import('@/views/Statistics/EffectiveTipWinShow/index.vue'),
       meta: { title: '效期到期弹框' }
@@ -169,6 +164,101 @@ export function getMenuRoutes(menus, homePath) {
       path: '/Inventory/picVarCode',
       component: () => import('@/views/Inventory/picVarCode/index.vue'),
       meta: { title: '品种资质审核' }
+    });
+    routes.push({
+      path: '/KSInventory/NoMoveSell',
+      component: () => import('@/views/KSInventory/NoMoveSell/index.vue'),
+      meta: { title: '不动销查询' }
+    });
+    routes.push({
+      path: '/KSInventory/Stockmaintenance',
+      component: () => import('@/views/KSInventory/Stockmaintenance/index.vue'),
+      meta: { title: '库存养护' }
+    });
+    routes.push({
+      path: '/Inventory/Snapshot',
+      component: () => import('@/views/Inventory/Snapshot/index.vue'),
+      meta: { title: '库存快照' }
+    });
+    routes.push({
+      path: '/Statistics/VarUseStatistics',
+      component: () => import('@/views/Statistics/VarUseStatistics/index.vue'),
+      meta: { title: '品种消耗统计' }
+    });
+    routes.push({
+      path: '/Home/PrchaseDataV2',
+      component: () => import('@/views/Home/PrchaseDataV2/index.vue'),
+      meta: { title: '带量采购监测V2' }
+    });
+    routes.push({
+      path: '/Statistics/DeptUseCountStatistics',
+      component: () => import('@/views/Statistics/DeptUseCountStatistics/index.vue'),
+      meta: { title: '科室用量统计' }
+    });
+    routes.push({
+      path: '/Statistics/DeptAnalysisStatistical',
+      component: () => import('@/views/Statistics/DeptAnalysisStatistical/index.vue'),
+      meta: { title: '科室统计分析' }
+    });
+    routes.push({
+      path: '/Statistics/MaterialStatistics',
+      component: () => import('@/views/Statistics/MaterialStatistics/index.vue'),
+      meta: { title: '耗材监管统计' }
+    });
+    routes.push({
+      path: '/Statistics/RegistrationLimitPlan',
+      component: () => import('@/views/Statistics/RegistrationLimitPlan/index.vue'),
+      meta: { title: '注册证限量' }
+    });
+    routes.push({
+      path: '/Home/YgVarInfo',
+      component: () => import('@/views/Home/YgVarInfo/index.vue'),
+      meta: { title: '阳光本院目录' }
+    });
+    routes.push({
+      path: '/Home/YgPlatView',
+      component: () => import('@/views/Home/YgPlatView/index.vue'),
+      meta: { title: '阳光平台发送查看' }
+    });
+    routes.push({
+      path: '/Home/YgPlatReceivGoods',
+      component: () => import('@/views/Home/YgPlatReceivGoods/index.vue'),
+      meta: { title: '阳光平台收货' }
+    });
+    routes.push({
+      path: '/Statistics/YGCGPlatform',
+      component: () => import('@/views/Statistics/YGCGPlatform/index.vue'),
+      meta: { title: '阳光采购平台比价' }
+    });
+    routes.push({
+      path: '/Home/BidVarInfo',
+      component: () => import('@/views/Home/BidVarInfo/index.vue'),
+      meta: { title: '本院中标目录' }
+    });
+    routes.push({
+      path: '/Home/healthInsuranceDirectory',
+      component: () => import('@/views/Home/HealthInsuranceDirectory/index.vue'),
+      meta: { title: '深圳医保目录' }
+    });
+    routes.push({
+      path: '/Home/YGVARCL_SM',
+      component: () => import('@/views/Home/YgVarClSm/index.vue'),
+      meta: { title: '物价目录审核(萨米)' }
+    });
+    routes.push({
+      path: '/Home/YGVARCLLOOK_SM',
+      component: () => import('@/views/Home/YgVarClLookSm/index.vue'),
+      meta: { title: '物价目录审核查看(萨米)' }
+    });
+    routes.push({
+      path: '/KSInventory/GY_CLML_SPD',
+      component: () => import('@/views/KSInventory/GyClmlSpd/index.vue'),
+      meta: { title: 'HIS计费目录' }
+    });
+    routes.push({
+      path: '/KSInventory/HighValueConsumables',
+      component: () => import('@/views/KSInventory/HighValueConsumables/index.vue'),
+      meta: { title: '第一批高值医用耗材目录' }
     });
   }
   return {

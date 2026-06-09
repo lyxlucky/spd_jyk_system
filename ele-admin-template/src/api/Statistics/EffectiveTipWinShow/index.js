@@ -1,13 +1,18 @@
 import request from '@/utils/request';
 import { TOKEN_STORE_NAME } from '@/config/setting';
-import { Encrypt } from '@/utils/aes-util';
+import { EncryptWithCustomKey, getAesKey } from '@/utils/aes-util';
 
 function token() {
   return sessionStorage.getItem(TOKEN_STORE_NAME) || localStorage.getItem(TOKEN_STORE_NAME) || '';
 }
 
-function aesKey() {
-  return sessionStorage.getItem('AesKey') || localStorage.getItem('AesKey') || '';
+function ensureAesKey() {
+  let key = sessionStorage.getItem('AesKey') || localStorage.getItem('AesKey');
+  if (!key) {
+    key = getAesKey();
+    localStorage.setItem('AesKey', key);
+  }
+  return key;
 }
 
 function postUrlEncoded(path, fields) {
@@ -154,12 +159,16 @@ export async function deactivateContractsAll(listJson) {
 }
 
 export async function getVarietyReports({ page, size, pramsObj }) {
-  const pramsStr = Encrypt(JSON.stringify({ ...pramsObj, Token: token() }));
+  const key = ensureAesKey();
+  const pramsStr = EncryptWithCustomKey(
+    JSON.stringify({ ...pramsObj, Token: token() }),
+    key
+  );
   const res = await postUrlEncoded('/VarietyReport/GetVarietyReports', {
     page,
     size,
     prams: pramsStr,
-    AesKey: aesKey()
+    AesKey: key
   });
   return unwrapPaged(res);
 }
@@ -210,18 +219,20 @@ export async function sendVarStzl(json) {
 }
 
 export async function searchVarietieContract(varietieCode, contractName = '') {
-  const pramsStr = Encrypt(
+  const key = ensureAesKey();
+  const pramsStr = EncryptWithCustomKey(
     JSON.stringify({
       varietie: varietieCode,
       Token: token(),
       specification: '',
       contract: contractName,
       supplier: ''
-    })
+    }),
+    key
   );
   const res = await postUrlEncoded('/VarietiesQuery/SearchVarietieContract', {
     prams: pramsStr,
-    AesKey: aesKey(),
+    AesKey: key,
     page: 1,
     size: 9999
   });
