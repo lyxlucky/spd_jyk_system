@@ -13,6 +13,7 @@ export async function SearchVarietie(data) {
     data2.order = order;
     data2.Storage_Id = data.where.option ? data.where.option : '';
     data2.condition = data.where.search ? data.where.search : '99999999999999999999';
+    data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
     const res = await request.get('/CentralWarehouseBagMakingMgmt/SearchVarietie', {
       params: data2
     });
@@ -33,15 +34,15 @@ export async function SearchVarietie(data) {
   }
 
   export async function LoadLockedVarieties(data) {
-    const formatData = {
-      page: data.page,
-      size: data.limit,
-      Bag_Maker: data.where.search ? data.where.search : '',
-      token: sessionStorage.getItem(TOKEN_STORE_NAME)
-    };
-    const res = await request.get('/CentralWarehouseBagMakingMgmt/LoadLockedVarieties',{
-      params: formatData
-    });
+  const formatData = {
+    page: data.page,
+    size: data.limit,
+    Bag_Maker: data.where.search ? data.where.search : '',
+    Token: sessionStorage.getItem(TOKEN_STORE_NAME)
+  };
+  const res = await request.get('/CentralWarehouseBagMakingMgmt/LoadLockedVarieties',{
+    params: formatData
+  });
     if (res.data.code == 200) {
       return res.data;
     } else {
@@ -67,7 +68,7 @@ export async function SearchVarietie(data) {
 export async function UnlockVarietieQuantity(data) {
   const formatData = {
     json: data.json,
-    token: sessionStorage.getItem(TOKEN_STORE_NAME)
+    Token: sessionStorage.getItem(TOKEN_STORE_NAME)
   }
   const res = await request.post('/CentralWarehouseBagMakingMgmt/UnlockVarietieQuantity', formdataify(formatData));
   if (res) {
@@ -89,6 +90,7 @@ export async function ShowVarietieDefCodes(data) {
     page: data.page,
     size: data.limit,
     id: data.where.id,
+    Token: sessionStorage.getItem(TOKEN_STORE_NAME)
   }
   const res = await request.get('/CentralWarehouseBagMakingMgmt/ShowVarietieDefCodes',{
     params: formatData

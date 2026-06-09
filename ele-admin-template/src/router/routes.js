@@ -146,6 +146,11 @@ export function getMenuRoutes(menus, homePath) {
       meta: { title: '二级库退货' }
     });
     routes.push({
+      path: '/Task/CentralinventoryPackage',
+      component: () => import('@/views/Task/CentralinventoryPackage/index.vue'),
+      meta: { title: '制包作业' }
+    });
+    routes.push({
       path: '/Home/VarPriceRecode',
       component: () => import('@/views/Home/VarPriceRecode/index.vue'),
       meta: { title: '价格变动记录' }
