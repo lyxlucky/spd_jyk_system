@@ -131,6 +131,11 @@ export function getMenuRoutes(menus, homePath) {
       meta: { title: '备货计划跟踪' }
     });
     routes.push({
+      path: '/Inventory/PickingMnagement',
+      component: () => import('@/views/Inventory/PickingMnagement/index.vue'),
+      meta: { title: '拣配及配送' }
+    });
+    routes.push({
       path: '/Home/VarPriceRecode',
       component: () => import('@/views/Home/VarPriceRecode/index.vue'),
       meta: { title: '价格变动记录' }
