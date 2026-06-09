@@ -151,6 +151,11 @@ export function getMenuRoutes(menus, homePath) {
       meta: { title: '制包作业' }
     });
     routes.push({
+      path: '/Task/BhInfo',
+      component: () => import('@/views/Task/BhInfo/index.vue'),
+      meta: { title: '品种备货分析' }
+    });
+    routes.push({
       path: '/Home/VarPriceRecode',
       component: () => import('@/views/Home/VarPriceRecode/index.vue'),
       meta: { title: '价格变动记录' }
