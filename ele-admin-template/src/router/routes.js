@@ -126,6 +126,11 @@ export function getMenuRoutes(menus, homePath) {
       meta: { title: '自助订单' }
     });
     routes.push({
+      path: '/Task/FollowingGoodsPlan',
+      component: () => import('@/views/Task/FollowingGoodsPlan/index.vue'),
+      meta: { title: '备货计划跟踪' }
+    });
+    routes.push({
       path: '/Home/VarPriceRecode',
       component: () => import('@/views/Home/VarPriceRecode/index.vue'),
       meta: { title: '价格变动记录' }
