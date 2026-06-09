@@ -17,6 +17,15 @@ export const formdataify = (params) => {
     return formData;
 };
 
+/** 与旧 MVC $.post 一致：x-www-form-urlencoded，供 WebApi 绑定 BaseParam 等参数 */
+export function toUrlEncodedBody(params) {
+    const body = new URLSearchParams();
+    Object.entries(params || {}).forEach(([key, value]) => {
+        body.append(key, value == null ? '' : String(value));
+    });
+    return body.toString();
+}
+
 
 /**
 * 格式数据为 get参数字符串 

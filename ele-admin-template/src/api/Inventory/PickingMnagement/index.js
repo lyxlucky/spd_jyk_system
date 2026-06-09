@@ -1,5 +1,5 @@
 import request from '@/utils/request';
-import { formdataify } from '@/utils/formdataify';
+import { formdataify, toUrlEncodedBody } from '@/utils/formdataify';
 import { TOKEN_STORE_NAME, HOME_HP } from '@/config/setting';
 import store from '@/store';
 
@@ -12,7 +12,9 @@ function nickname() {
 }
 
 export function getStorageList() {
-  return request.post('/Commons/GetStorageWithToken', formdataify({ Token: token() }));
+  return request.post('/Commons/GetStorageWithToken', toUrlEncodedBody({ Token: token() }), {
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+  });
 }
 
 export function searchPickList(data) {

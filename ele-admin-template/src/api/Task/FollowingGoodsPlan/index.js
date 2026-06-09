@@ -1,5 +1,5 @@
 import request from '@/utils/request';
-import { formdataify } from '@/utils/formdataify';
+import { formdataify, toUrlEncodedBody } from '@/utils/formdataify';
 import { TOKEN_STORE_NAME, HOME_HP, B2B_BASE_URL } from '@/config/setting';
 import store from '@/store';
 
@@ -11,7 +11,9 @@ export { needSendState, PostPrepareCloseOrderData } from '@/api/Task/FollowingGo
 
 /** 库区下拉 */
 export function getStorageList() {
-  return request.post('/Commons/GetStorageWithToken', formdataify({ Token: token() }));
+  return request.post('/Commons/GetStorageWithToken', toUrlEncodedBody({ Token: token() }), {
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+  });
 }
 
 /** 状态汇总统计 */
