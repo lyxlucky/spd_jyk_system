@@ -141,6 +141,11 @@ export function getMenuRoutes(menus, homePath) {
       meta: { title: '中心库退购' }
     });
     routes.push({
+      path: '/Task/SectionRejected',
+      component: () => import('@/views/Task/SectionRejected/index.vue'),
+      meta: { title: '二级库退货' }
+    });
+    routes.push({
       path: '/Home/VarPriceRecode',
       component: () => import('@/views/Home/VarPriceRecode/index.vue'),
       meta: { title: '价格变动记录' }
