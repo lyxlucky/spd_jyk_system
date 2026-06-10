@@ -161,6 +161,11 @@ export function getMenuRoutes(menus, homePath) {
       meta: { title: '用户管理' }
     });
     routes.push({
+      path: '/UserManage/UMPDA',
+      component: () => import('@/views/UserManage/UMPDA/index.vue'),
+      meta: { title: 'PDA用户管理' }
+    });
+    routes.push({
       path: '/Home/VarPriceRecode',
       component: () => import('@/views/Home/VarPriceRecode/index.vue'),
       meta: { title: '价格变动记录' }
