@@ -31,7 +31,7 @@ export default class RequestTimeoutManager {
       if (currentTime - this.lastRequestTime >= this.timeoutMs) {
         console.log(currentTime - this.lastRequestTime, this.timeoutMs)
         this.clearTimer();
-        MessageBox.alert('登录状态已过期, 请退出重新登录!', '系统提示', {
+        MessageBox.alert('为保障账号安全，长时间未操作已自动退出，请重新登录。', '系统提示', {
           confirmButtonText: '重新登录',
           showClose: false,
           callback: (action) => {
