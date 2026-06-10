@@ -16,8 +16,7 @@ export async function getSummaryList(data) {
     VarietieCode: data.VarietieCode || '',
     VarietieName: data.VarietieName || '',
     DefNoPkgCode: data.DefNoPkgCode || '',
-    DeptTwoCode: store.state.user.info?.DeptNow?.Dept_Two_Code || '',
-    IsAllCharged: data.IsAllCharged || ''
+    DeptTwoCode: store.state.user.info?.DeptNow?.Dept_Two_Code || ''
   };
   const res = await request.post('/BorrowRecord/GetSummaryList', formatData);
   if (res.data.code == 200) {
@@ -41,8 +40,7 @@ export async function getDetailList(data) {
     VarietieCode: data.VarietieCode || '',
     VarietieName: data.VarietieName || '',
     DefNoPkgCode: data.DefNoPkgCode || '',
-    DeptTwoCode: store.state.user.info?.DeptNow?.Dept_Two_Code || '',
-    IsAllCharged: data.IsAllCharged || ''
+    DeptTwoCode: store.state.user.info?.DeptNow?.Dept_Two_Code || ''
   };
   const res = await request.post('/BorrowRecord/GetDetailList', formatData);
   if (res.data.code == 200) {

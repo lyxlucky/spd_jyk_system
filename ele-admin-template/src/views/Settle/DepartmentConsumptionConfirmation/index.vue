@@ -103,9 +103,8 @@
             clearable
             style="width: 150px"
           >
-            <el-option label="申领出库" value="1" />
             <el-option label="扫码出库" value="2" />
-            <el-option v-if="false" label="一出扫码出库" value="3" />
+            <el-option label="申领出库" value="3" />
           </el-select>
         </el-form-item>
         <el-form-item label="是否跟台">

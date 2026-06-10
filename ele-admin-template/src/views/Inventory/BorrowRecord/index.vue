@@ -45,17 +45,6 @@
             style="width: 150px"
           />
         </el-form-item>
-        <el-form-item label="全部计费">
-          <el-select
-            v-model="searchForm.IsAllCharged"
-            placeholder="全部"
-            clearable
-            style="width: 120px"
-          >
-            <el-option label="是" value="1" />
-            <el-option label="否" value="0" />
-          </el-select>
-        </el-form-item>
         <el-form-item>
           <el-button
             class="ele-btn-icon"
@@ -143,8 +132,8 @@
             sortable
           />
           <vxe-column
-            field="ReturnCount"
-            title="归还数量"
+            field="ChargedCount"
+            title="计费数量"
             width="100"
             align="right"
             sortable
@@ -155,13 +144,6 @@
             width="100"
             align="right"
             sortable
-          />
-          <vxe-column
-            field="IsAllCharged"
-            title="全部计费"
-            width="100"
-            align="center"
-            :formatter="formatIsAllCharged"
           />
         </vxe-table>
         <!-- 主表分页 -->
@@ -402,8 +384,7 @@ export default {
         OperatePerson: '',
         VarietieCode: '',
         VarietieName: '',
-        DefNoPkgCode: '',
-        IsAllCharged: ''
+        DefNoPkgCode: ''
       },
       dateRange: null,
       // 主表
@@ -458,8 +439,7 @@ export default {
         OperatePerson: this.$store.state.user.info.Nickname || '',
         VarietieCode: '',
         VarietieName: '',
-        DefNoPkgCode: '',
-        IsAllCharged: ''
+        DefNoPkgCode: ''
       };
       this.dateRange = this.getDefaultDateRange();
       this.mainTablePage.page = 1;
@@ -555,12 +535,7 @@ export default {
     formatOperateType({ cellValue }) {
       if (cellValue === 'BORROW') return '暂借';
       if (cellValue === 'RETURN') return '归还';
-      return cellValue || '';
-    },
-    // 格式化全部计费
-    formatIsAllCharged({ cellValue }) {
-      if (cellValue === '1') return '是';
-      if (cellValue === '0') return '否';
+      if (cellValue === 'BORROW_RETURN') return '暂借/归还';
       return cellValue || '';
     },
     // 格式化是否计费
