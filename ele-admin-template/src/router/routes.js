@@ -156,6 +156,11 @@ export function getMenuRoutes(menus, homePath) {
       meta: { title: '品种备货分析' }
     });
     routes.push({
+      path: '/UserManage/UMUsers',
+      component: () => import('@/views/UserManage/UMUsers/index.vue'),
+      meta: { title: '用户管理' }
+    });
+    routes.push({
       path: '/Home/VarPriceRecode',
       component: () => import('@/views/Home/VarPriceRecode/index.vue'),
       meta: { title: '价格变动记录' }
