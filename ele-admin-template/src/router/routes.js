@@ -166,6 +166,11 @@ export function getMenuRoutes(menus, homePath) {
       meta: { title: 'PDA用户管理' }
     });
     routes.push({
+      path: '/UserManage/UMGroups',
+      component: () => import('@/views/UserManage/UMGroups/index.vue'),
+      meta: { title: '权限组管理' }
+    });
+    routes.push({
       path: '/Home/VarPriceRecode',
       component: () => import('@/views/Home/VarPriceRecode/index.vue'),
       meta: { title: '价格变动记录' }
