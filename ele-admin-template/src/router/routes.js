@@ -171,6 +171,11 @@ export function getMenuRoutes(menus, homePath) {
       meta: { title: '权限组管理' }
     });
     routes.push({
+      path: '/UserManage/UMPermissions',
+      component: () => import('@/views/UserManage/UMPermissions/index.vue'),
+      meta: { title: '权限管理' }
+    });
+    routes.push({
       path: '/Home/VarPriceRecode',
       component: () => import('@/views/Home/VarPriceRecode/index.vue'),
       meta: { title: '价格变动记录' }
