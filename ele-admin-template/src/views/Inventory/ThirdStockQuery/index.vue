@@ -62,21 +62,13 @@
       this.loadData(1);
     },
     methods: {
-      getShOutQty(row) {
-        return Math.abs(Number(row?.JF_QTY || 0));
-      },
-      getDefOutQty(row) {
-        return Math.abs(Number(row?.JF_DEF_QTY || 0));
-      },
-      getHisJfQty(row) {
-        return Math.abs(Number(row?.XH_QTY || 0));
-      },
       calcStockQty(row) {
         if (!row) return 0;
+        if (Number(row.KS_QTY) === 0) return row.KS_QTY;
         return (
-          this.getShOutQty(row) +
-          this.getDefOutQty(row) -
-          this.getHisJfQty(row)
+          Number(row.KS_QTY || 0) +
+          Number(row.JF_QTY || 0) +
+          Number(row.JF_DEF_QTY || 0)
         );
       },
       formatStorageType(value) {
