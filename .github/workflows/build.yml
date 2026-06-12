@@ -2,18 +2,51 @@ name: Build All Environments
 
 on:
   push:
+    branches:
+      - dev
     tags:
       - 'v*'
 
 jobs:
+  # Dev branch: create alpha tag once before all builds
+  prepare:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    outputs:
+      tag_name: ${{ steps.version.outputs.tag_name }}
+      prerelease: ${{ steps.version.outputs.prerelease }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Resolve version
+        id: version
+        run: |
+          if [ "${{ github.ref_type }}" = "tag" ]; then
+            echo "tag_name=${GITHUB_REF_NAME}" >> $GITHUB_OUTPUT
+            echo "prerelease=false" >> $GITHUB_OUTPUT
+          else
+            SHORT_SHA=$(git rev-parse --short HEAD)
+            DEV_TAG="dev-$(date +%Y%m%d)-${SHORT_SHA}"
+            echo "tag_name=$DEV_TAG" >> $GITHUB_OUTPUT
+            echo "prerelease=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create alpha tag (dev only)
+        if: github.ref_type == 'branch'
+        run: |
+          git tag "${{ steps.version.outputs.tag_name }}"
+          git push origin "${{ steps.version.outputs.tag_name }}"
+
   build:
+    needs: prepare
     runs-on: ubuntu-latest
     permissions:
       contents: write
 
     strategy:
       matrix:
-        env: [bjww, bjwwnew, bjnw, bjnwhttps, bdww, bdnw, lhfyww, lhfynw, hnww, hnnw, smww, smnw, stzlww, stzlnw, zxww, zxnw, lgww, sebb, sebbww, sedp, sedpww, selh, selhww, xhww,xhnw]
+        env: [bjww, bjwwnew, bjnw, bjnwhttps, bdww, bdnw, lhfyww, lhfynw, hnww, hnnw, smww, smnw, stzlww, stzlnw, zxww, zxnw, lgww, sebb, sebbww, sedp, sedpww, selh, selhww, xhww, xhnw]
 
     defaults:
       run:
@@ -21,6 +54,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+        with:
+          ref: ${{ needs.prepare.outputs.tag_name }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
@@ -37,25 +72,53 @@ jobs:
 
       - name: Package dist
         run: |
-          VERSION=${GITHUB_REF_NAME#refs/tags/}
+          VERSION=${{ needs.prepare.outputs.tag_name }}
           echo "VERSION=$VERSION" >> $GITHUB_ENV
-          
+
           TARGET_DIR=""
-          
+
           for dir in jyk jyknw jykww; do
-          if [ -d "$dir" ]; then
-          TARGET_DIR="$dir"
-          break
-          fi
+            if [ -d "$dir" ]; then
+              TARGET_DIR="$dir"
+              break
+            fi
           done
-          
+
           if [ -z "$TARGET_DIR" ]; then
-          TARGET_DIR="dist"
+            TARGET_DIR="dist"
           fi
-          
+
           zip -r dist-${{ matrix.env }}-$VERSION.zip "$TARGET_DIR"
 
       - name: Upload to Release
         uses: softprops/action-gh-release@v1
         with:
-          files: ele-admin-template/dist-${{ matrix.env }}-${{ env.VERSION }}.zip
+          tag_name: ${{ needs.prepare.outputs.tag_name }}
+          prerelease: ${{ needs.prepare.outputs.prerelease }}
+          files: ele-admin-template/dist-${{ matrix.env }}-${{ needs.prepare.outputs.tag_name }}.zip
+
+  # Keep only the latest 5 alpha releases
+  cleanup:
+    needs: [prepare, build]
+    if: needs.prepare.outputs.prerelease == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Delete old alpha releases
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          KEEP=5
+          # List all dev pre-releases, newest first
+          DEV_RELEASES=$(gh release list --limit 100 --json tagName,isPrerelease \
+            | jq -r '[.[] | select(.isPrerelease and (.tagName | startswith("dev-")))] | sort_by(.tagName) | reverse | .[].tagName')
+
+          COUNT=0
+          for tag in $DEV_RELEASES; do
+            COUNT=$((COUNT + 1))
+            if [ $COUNT -gt $KEEP ]; then
+              echo "Deleting old alpha release: $tag"
+              gh release delete "$tag" --yes --cleanup-tag
+            fi
+          done

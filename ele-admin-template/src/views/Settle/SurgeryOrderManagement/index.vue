@@ -518,6 +518,17 @@
             </el-form-item>
             <el-form-item>
               <el-button
+                type="warning"
+                class="ele-btn-icon"
+                icon="el-icon-edit-outline"
+                :disabled="!currentMainRow || registeredTableCheckedCount === 0"
+                @click="openBatchCostDeptDialog"
+              >
+                批量修改成本科室
+              </el-button>
+            </el-form-item>
+            <el-form-item>
+              <el-button
                 type="danger"
                 class="ele-btn-icon"
                 icon="el-icon-user"
@@ -560,6 +571,12 @@
           <vxe-column
             field="ZX_DEPT"
             title="执行科室"
+            min-width="120"
+            show-overflow
+          />
+          <vxe-column
+            field="SPD_COST_DEPT_NAME"
+            title="SPD成本科室"
             min-width="120"
             show-overflow
           />
@@ -1063,6 +1080,37 @@
       </span>
     </el-dialog>
 
+    <!-- 批量修改成本科室 -->
+    <el-dialog
+      title="批量修改成本科室"
+      :visible.sync="batchCostDeptDialogVisible"
+      width="420px"
+      append-to-body
+    >
+      <el-form label-width="90px" size="small">
+        <el-form-item label="成本科室">
+          <el-select
+            v-model="batchCostDeptCode"
+            placeholder="请选择成本科室"
+            clearable
+            filterable
+            style="width: 100%"
+          >
+            <el-option
+              v-for="item in spdDeptOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="closeBatchCostDeptDialog">取 消</el-button>
+        <el-button type="primary" @click="submitBatchUpdateCostDept" :loading="batchCostDeptLoading">确 认</el-button>
+      </span>
+    </el-dialog>
+
     <!-- 销毁人登记 -->
     <el-dialog
       title="销毁人登记"
@@ -1108,6 +1156,8 @@ import {
   confirmConsumption,
   deleteSurgeryConsumable,
   batchUpdateExecuteDept,
+  batchUpdateCostDept,
+  getSpdDeptList,
   batchRegisterDestroyer,
   printGtDetail
 } from '@/api/Settle/SurgeryOrderManagement';
@@ -1149,6 +1199,7 @@ export default {
       // 选项数据
       surgeryLocationOptions: [],
       deptOptions: [],
+      spdDeptOptions: [],
       // 主表数据
       mainTableData: [],
       mainTableLoading: false,
@@ -1169,6 +1220,9 @@ export default {
       batchExecuteDeptCode: '',
       batchExecuteDeptDialogVisible: false,
       batchExecuteDeptLoading: false,
+      batchCostDeptCode: '',
+      batchCostDeptDialogVisible: false,
+      batchCostDeptLoading: false,
       destroyerName: '',
       destroyerDialogVisible: false,
       destroyerLoading: false,
@@ -1266,7 +1320,7 @@ export default {
       try {
         // 加载手术地点
         const locationsRes = await getAllSurgeryLocations();
-        if (locationsRes.code === 200 && locationsRes.result) {
+        if (locationsRes.code == 200 && locationsRes.result) {
           this.surgeryLocationOptions = locationsRes.result.map(item => ({
             label: item.LOCATION_NAME,
             value: item.LOCATION_NAME
@@ -1275,10 +1329,19 @@ export default {
 
         // 加载申请科室
         const deptRes = await getAllApplyDepartments();
-        if (deptRes.code === 200 && deptRes.result) {
+        if (deptRes.code == 200 && deptRes.result) {
           this.deptOptions = deptRes.result.map(item => ({
             label: item.APPLY_DEPT_NAME,
             value: item.APPLY_DEPT_CODE,
+          }));
+        }
+
+        // 加载SPD科室（用于成本科室选择）
+        const spdRes = await getSpdDeptList();
+        if (spdRes.code == 200 && spdRes.result) {
+          this.spdDeptOptions = spdRes.result.map(item => ({
+            label: item.Dept_Two_Name,
+            value: item.Dept_Two_Code,
           }));
         }
       } catch (error) {
@@ -1551,6 +1614,54 @@ export default {
         this.$message.error(error.message || '修改失败');
       } finally {
         this.batchExecuteDeptLoading = false;
+      }
+    },
+    openBatchCostDeptDialog() {
+      if (!this.currentMainRow || !this.currentMainRow.SURGERY_NO) {
+        this.$message.warning('请先选择手术单');
+        return;
+      }
+      const rows = this.$refs.registeredTable ? this.$refs.registeredTable.getCheckboxRecords() : [];
+      if (!rows || rows.length === 0) {
+        this.$message.warning('请勾选要修改的耗材记录');
+        return;
+      }
+      this.batchCostDeptCode = '';
+      this.batchCostDeptDialogVisible = true;
+    },
+    closeBatchCostDeptDialog() {
+      this.batchCostDeptDialogVisible = false;
+      this.batchCostDeptCode = '';
+    },
+    async submitBatchUpdateCostDept() {
+      if (!this.batchCostDeptCode) {
+        this.$message.warning('请选择成本科室');
+        return;
+      }
+      const rows = this.$refs.registeredTable ? this.$refs.registeredTable.getCheckboxRecords() : [];
+      if (!rows || rows.length === 0) {
+        this.$message.warning('请勾选要修改的耗材记录');
+        return;
+      }
+      this.batchCostDeptLoading = true;
+      try {
+        const items = rows.map(r => ({ ID: r.ID, SOURCE_TYPE: r.SOURCE_TYPE }));
+        const res = await batchUpdateCostDept({
+          SURGERY_NO: this.currentMainRow.SURGERY_NO,
+          items,
+          DEPT_CODE: this.batchCostDeptCode
+        });
+        if (res.code === 200) {
+          this.$message.success(res.msg || '修改成功');
+          this.closeBatchCostDeptDialog();
+          this.loadRegisteredTableData();
+        } else {
+          this.$message.error(res.msg || '修改失败');
+        }
+      } catch (error) {
+        this.$message.error(error.message || '修改失败');
+      } finally {
+        this.batchCostDeptLoading = false;
       }
     },
     async handleReprintLabel() {
