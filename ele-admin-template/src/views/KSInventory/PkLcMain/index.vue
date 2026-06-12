@@ -243,12 +243,33 @@
           <el-input
             v-model="mainFormData.PATIENT_ID_CARD"
             placeholder="请输入病人身份证号"
+            maxlength="18"
+            show-word-limit
           ></el-input>
         </el-form-item>
-        <el-form-item label="联系方式" prop="PHONE">
+        <el-form-item label="送货科室" prop="DELIVERY_DEPT_CODE">
+          <el-select
+            v-model="mainFormData.DELIVERY_DEPT_CODE"
+            placeholder="请选择送货科室"
+            clearable
+            filterable
+            style="width: 100%"
+            @change="onDeliveryDeptChange"
+          >
+            <el-option
+              v-for="item in deliveryDeptOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="科室联系方式" prop="PHONE">
           <el-input
             v-model="mainFormData.PHONE"
-            placeholder="请输入联系方式"
+            placeholder="请输入科室联系方式"
+            maxlength="11"
+            show-word-limit
           ></el-input>
         </el-form-item>
         <el-form-item v-if="!isEditMain" label="失效日期" prop="EXPIRATION_TIME">
@@ -515,6 +536,7 @@
     SerachAuthVarPkLc,
     GetLcDtlPlanList
   } from '@/api/KSInventory/PkLc';
+  import { getSpdDeptList } from '@/api/Settle/SurgeryOrderManagement';
   import { getUserGroupByName } from '@/api/layout/index';
   import PrintPkLc from './components/PrintPkLc.vue';
 
@@ -535,6 +557,7 @@
           searchName: null
         },
         deptTwoOptions: [],
+        deliveryDeptOptions: [],
         mainColumns: [
           {
             prop: 'ID',
@@ -571,8 +594,15 @@
           },
           {
             prop: 'PHONE',
-            label: '联系方式',
+            label: '科室联系方式',
             minWidth: 130,
+            align: 'center',
+            showOverflowTooltip: true
+          },
+          {
+            prop: 'DELIVERY_DEPT_NAME',
+            label: '送货科室',
+            minWidth: 120,
             align: 'center',
             showOverflowTooltip: true
           },
@@ -658,6 +688,8 @@
           PATIENT_NAME: '',
           PATIENT_NUM: '',
           PATIENT_ID_CARD: '',
+          DELIVERY_DEPT_CODE: '',
+          DELIVERY_DEPT_NAME: '',
           PHONE: '',
           SURGICAL_PRO_NAME: '',
           REMARK: '',
@@ -675,6 +707,37 @@
             {
               required: true,
               message: '请输入患者姓名',
+              trigger: 'blur'
+            }
+          ],
+          PATIENT_NUM: [
+            {
+              required: true,
+              message: '请输入住院号',
+              trigger: 'blur'
+            }
+          ],
+          PATIENT_ID_CARD: [
+            {
+              required: true,
+              message: '请输入病人身份证号',
+              trigger: 'blur'
+            },
+            {
+              len: 18,
+              message: '病人身份证号必须为18位',
+              trigger: 'blur'
+            }
+          ],
+          PHONE: [
+            {
+              required: true,
+              message: '请输入科室联系方式',
+              trigger: 'blur'
+            },
+            {
+              pattern: /^\d{11}$/,
+              message: '科室联系方式必须为11位数字',
               trigger: 'blur'
             }
           ],
@@ -911,6 +974,7 @@
     },
     created() {
       this.loadDeptTwoOptions();
+      this.loadDeliveryDeptOptions();
       this.checkApprovePermission();
     },
     methods: {
@@ -945,6 +1009,23 @@
         } catch (error) {
           console.error('加载二级科室选项失败:', error);
         }
+      },
+      async loadDeliveryDeptOptions() {
+        try {
+          const res = await getSpdDeptList();
+          this.deliveryDeptOptions = (res.result || []).map((item) => ({
+            label: item.Dept_Two_Name,
+            value: item.Dept_Two_Code
+          }));
+        } catch (error) {
+          console.error('加载送货科室选项失败:', error);
+        }
+      },
+      onDeliveryDeptChange(code) {
+        const dept = this.deliveryDeptOptions.find(
+          (item) => item.value === code
+        );
+        this.mainFormData.DELIVERY_DEPT_NAME = dept ? dept.label : '';
       },
       // ============ 主单方法 ============
       // 清空主单选中状态和明细数据
@@ -1027,6 +1108,8 @@
           PATIENT_NAME: row.PATIENT_NAME,
           PATIENT_NUM: row.PATIENT_NUM,
           PATIENT_ID_CARD: row.PATIENT_ID_CARD,
+          DELIVERY_DEPT_CODE: row.DELIVERY_DEPT_CODE,
+          DELIVERY_DEPT_NAME: row.DELIVERY_DEPT_NAME,
           PHONE: row.PHONE,
           SURGICAL_PRO_NAME: row.SURGICAL_PRO_NAME,
           REMARK: row.REMARK,
@@ -1040,6 +1123,8 @@
           PATIENT_NAME: '',
           PATIENT_NUM: '',
           PATIENT_ID_CARD: '',
+          DELIVERY_DEPT_CODE: '',
+          DELIVERY_DEPT_NAME: '',
           PHONE: '',
           SURGICAL_PRO_NAME: '',
           REMARK: '',

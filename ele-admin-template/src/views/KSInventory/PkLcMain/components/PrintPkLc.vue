@@ -35,7 +35,7 @@
                 <td class="info-value">{{ mainData.USER_ID }}</td>
               </tr>
               <tr>
-                <td class="info-label">联系方式</td>
+                <td class="info-label">科室联系方式</td>
                 <td class="info-value">{{ mainData.PHONE }}</td>
                 <td class="info-label">患者姓名</td>
                 <td class="info-value">{{ mainData.PATIENT_NAME }}</td>

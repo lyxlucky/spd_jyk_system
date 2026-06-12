@@ -71,6 +71,8 @@ export async function insertMain(data) {
       PATIENT_NAME: data.PATIENT_NAME,
       PATIENT_NUM: data.PATIENT_NUM,
       PATIENT_ID_CARD: data.PATIENT_ID_CARD,
+      DELIVERY_DEPT_CODE: data.DELIVERY_DEPT_CODE,
+      DELIVERY_DEPT_NAME: data.DELIVERY_DEPT_NAME,
       EXPIRATION_TIME: data.EXPIRATION_TIME
     },
   };
@@ -100,6 +102,8 @@ export async function updateMain(data) {
       PATIENT_NAME: data.PATIENT_NAME,
       PATIENT_NUM: data.PATIENT_NUM,
       PATIENT_ID_CARD: data.PATIENT_ID_CARD,
+      DELIVERY_DEPT_CODE: data.DELIVERY_DEPT_CODE,
+      DELIVERY_DEPT_NAME: data.DELIVERY_DEPT_NAME,
     },
   };
 
