@@ -321,6 +321,11 @@ export function getMenuRoutes(menus, homePath) {
       meta: { title: '合同资料维护' }
     });
     routes.push({
+      path: '/Home/StockTransfer',
+      component: () => import('@/views/Home/StockTransfer/index.vue'),
+      meta: { title: '即时库存退转' }
+    });
+    routes.push({
       path: '/Home/healthInsuranceDirectory',
       component: () => import('@/views/Home/HealthInsuranceDirectory/index.vue'),
       meta: { title: '深圳医保目录' }
