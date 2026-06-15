@@ -136,6 +136,11 @@ export function getMenuRoutes(menus, homePath) {
       meta: { title: '拣配及配送' }
     });
     routes.push({
+      path: '/Inventory/CentralinventoryMonitoring',
+      component: () => import('@/views/Inventory/CentralinventoryMonitoring/index.vue'),
+      meta: { title: '主动补货(库存监控)' }
+    });
+    routes.push({
       path: '/Task/BuyBack',
       component: () => import('@/views/Task/BuyBack/index.vue'),
       meta: { title: '中心库退购' }
