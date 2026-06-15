@@ -316,6 +316,11 @@ export function getMenuRoutes(menus, homePath) {
       meta: { title: '供应商资料维护' }
     });
     routes.push({
+      path: '/Home/Contract',
+      component: () => import('@/views/Home/Contract/index.vue'),
+      meta: { title: '合同资料维护' }
+    });
+    routes.push({
       path: '/Home/healthInsuranceDirectory',
       component: () => import('@/views/Home/HealthInsuranceDirectory/index.vue'),
       meta: { title: '深圳医保目录' }
