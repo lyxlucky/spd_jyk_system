@@ -93,7 +93,7 @@
             <el-table-column label="审批状态" width="72">
               <template slot-scope="{ row }">{{ approvalStateLabel(row.ApprovalState) }}</template>
             </el-table-column>
-            <el-table-column label="日清金额" width="88" align="right">
+            <el-table-column label="日清金额" width="88" align="center">
               <template slot-scope="{ row }">{{ fmtMoney(row.Money) }}</template>
             </el-table-column>
           </el-table>
@@ -139,7 +139,7 @@
           <el-table v-loading="varietyLoading" :data="varietyRows" border stripe size="mini" height="calc(100vh - 340px)">
             <el-table-column prop="dept_two_code" label="计费科室编码" width="98" show-overflow-tooltip />
             <el-table-column prop="Varietie_code" label="品种材料编码" width="98" show-overflow-tooltip />
-            <el-table-column prop="Varietie_name" label="品种全称" min-width="110" show-overflow-tooltip />
+            <el-table-column prop="Varietie_name" label="品种全称" min-width="98" show-overflow-tooltip />
             <el-table-column prop="Specification_or_Type" label="型号/规格" width="88" show-overflow-tooltip />
             <el-table-column prop="Manufacturing_Ent_Name" label="生产企业" width="88" show-overflow-tooltip />
             <el-table-column prop="Charging_Code" label="计费编码" width="78" />
@@ -154,10 +154,10 @@
             <el-table-column prop="DefQuantity" label="包数" width="48" align="center" />
             <el-table-column prop="GoodsQuantity" label="散货数量" width="68" align="center" />
             <el-table-column prop="Unit" label="单位" width="48" />
-            <el-table-column label="结算价" width="68" align="right">
+            <el-table-column label="结算价" width="68" align="center">
               <template slot-scope="{ row }">{{ fmtMoney(row.Price) }}</template>
             </el-table-column>
-            <el-table-column label="金额" width="76" align="right">
+            <el-table-column label="金额" width="76" align="center">
               <template slot-scope="{ row }">{{ fmtMoney(row.Money) }}</template>
             </el-table-column>
             <el-table-column prop="supplier_name" label="供应商" min-width="90" show-overflow-tooltip />

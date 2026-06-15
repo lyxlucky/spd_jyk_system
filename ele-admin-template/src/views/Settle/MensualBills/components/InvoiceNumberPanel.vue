@@ -63,7 +63,7 @@
             <el-button size="mini" @click="invExcelStorageMonth">妇幼出库单（供应商）</el-button>
           </div>
           <el-table v-loading="supplierLoading" :data="supplierRows" border stripe size="mini" height="calc(100vh - 360px)" @selection-change="onSupplierCheck" @row-click="onSupplierRowClick">
-            <el-table-column type="selection" width="40" />
+            <el-table-column type="selection" width="40" align="center"/>
             <template v-if="hp === 'stzl'">
               <el-table-column prop="Supplier_Code" label="供应商编码" width="90" show-overflow-tooltip />
               <el-table-column prop="Supplier_Name" label="供应商名称" min-width="110" show-overflow-tooltip />
@@ -87,9 +87,9 @@
               <el-table-column label="医疗用品" width="78" align="right"><template slot-scope="{ row }">{{ fmtMoney(row.YL_Use) }}</template></el-table-column>
               <el-table-column label="一次性耗材" width="90" align="right"><template slot-scope="{ row }">{{ fmtMoney(row.YCX_Material) }}</template></el-table-column>
               <el-table-column label="应急物质" width="78" align="right"><template slot-scope="{ row }">{{ fmtMoney(row.YJWZ_Material) }}</template></el-table-column>
-              <el-table-column label="其他" width="68" align="right"><template slot-scope="{ row }">{{ fmtMoney(row.QTWZ_Material) }}</template></el-table-column>
+              <el-table-column label="其他" width="68" align="center"><template slot-scope="{ row }">{{ fmtMoney(row.QTWZ_Material) }}</template></el-table-column>
             </template>
-            <el-table-column label="合计" width="120" align="right" fixed="right"><template slot-scope="{ row }">{{ fmtMoney(row.Money) }}</template></el-table-column>
+            <el-table-column label="合计" width="120" align="center" fixed="right"><template slot-scope="{ row }">{{ fmtMoney(row.Money) }}</template></el-table-column>
           </el-table>
           <el-pagination small layout="total, prev, pager, next" :total="supplierTotal" :page-size="supplierPage.size" :current-page.sync="supplierPage.page" style="margin-top: 8px" @current-change="loadSupplierList" />
         </el-card>
@@ -109,8 +109,8 @@
           </template>
           <el-table v-loading="invoiceLoading" :data="invoiceRows" border stripe size="mini" height="calc(100vh - 200px)">
             <el-table-column type="index" label="序号" width="50" />
-            <el-table-column prop="BillNum" label="发票号码" min-width="120" show-overflow-tooltip />
-            <el-table-column label="发票金额" width="100" align="right"><template slot-scope="{ row }">{{ fmtMoney(row.Price) }}</template></el-table-column>
+            <el-table-column prop="BillNum" label="发票号码" min-width="120" align="center" show-overflow-tooltip />
+            <el-table-column label="发票金额" width="100" align="center"><template slot-scope="{ row }">{{ fmtMoney(row.Price) }}</template></el-table-column>
             <el-table-column label="状态" width="80"><template slot-scope="{ row }">{{ row.State == 0 ? '未审批' : '已审批' }}</template></el-table-column>
           </el-table>
         </el-card>

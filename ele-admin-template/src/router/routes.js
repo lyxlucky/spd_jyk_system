@@ -296,6 +296,11 @@ export function getMenuRoutes(menus, homePath) {
       meta: { title: '本院中标目录' }
     });
     routes.push({
+      path: '/Home/VarietieVarJC',
+      component: () => import('@/views/Home/VarietieVarJC/index.vue'),
+      meta: { title: '集采品种维护' }
+    });
+    routes.push({
       path: '/Home/healthInsuranceDirectory',
       component: () => import('@/views/Home/HealthInsuranceDirectory/index.vue'),
       meta: { title: '深圳医保目录' }
