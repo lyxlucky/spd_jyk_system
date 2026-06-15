@@ -306,6 +306,11 @@ export function getMenuRoutes(menus, homePath) {
       meta: { title: '品种资料审批' }
     });
     routes.push({
+      path: '/Home/YGPT',
+      component: () => import('@/views/Home/YGPT/index.vue'),
+      meta: { title: '平台编码审核' }
+    });
+    routes.push({
       path: '/Home/healthInsuranceDirectory',
       component: () => import('@/views/Home/HealthInsuranceDirectory/index.vue'),
       meta: { title: '深圳医保目录' }
