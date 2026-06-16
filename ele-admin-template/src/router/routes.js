@@ -141,6 +141,11 @@ export function getMenuRoutes(menus, homePath) {
       meta: { title: '主动补货(库存监控)' }
     });
     routes.push({
+      path: '/KSInventory/DeptPlannedDeliveryNew',
+      component: () => import('@/views/KSInventory/DeptPlannedDeliveryNew/index.vue'),
+      meta: { title: '科室计划配送新' }
+    });
+    routes.push({
       path: '/Task/BuyBack',
       component: () => import('@/views/Task/BuyBack/index.vue'),
       meta: { title: '中心库退购' }
