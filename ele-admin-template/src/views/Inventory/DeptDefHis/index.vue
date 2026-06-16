@@ -57,10 +57,10 @@ export default {
           fixed: 'left'
         },
         {
-          label: '序',
+          label: '序号',
           columnKey: 'index',
           type: 'index',
-          width: 45,
+          width: 60,
           align: 'center',
           showOverflowTooltip: true,
           fixed: 'left'
@@ -71,7 +71,7 @@ export default {
   { prop: 'Varietie_Name', label: '品种名称', align: 'center',minWidth: 150 },
   { prop: 'Specification_Or_Type', label: '规格型号',  align: 'center',  minWidth: 150 },
   { prop: 'Unit', label: '单位',  align: 'center',  minWidth: 80 },
-  { prop: 'Dept_Two_Code', label: '二级科室编码',  align: 'center', minWidth: 120 },
+  { prop: 'Dept_Two_Code', label: '二级科室编码',  align: 'center', minWidth: 150 },
   { prop: 'Coefficient', label: '系数',  align: 'center', minWidth: 60 },
   { prop: 'Batch', label: '批号', align: 'center',  minWidth: 80 },
   { prop: 'Last_Update_Time', label: '上架时间',  align: 'center',  minWidth: 120 },
@@ -79,7 +79,7 @@ export default {
     prop: 'Last_Update_Time', 
     label: '在库天数', 
     align: 'center', 
-    minWidth: 80,
+    minWidth: 120,
     formatter: function (row, column) {
       var bvp_date = row.Last_Update_Time.substr(0, 10);
       var this_date = new Date(bvp_date).getTime();
@@ -91,7 +91,7 @@ export default {
     prop: 'Stock_State', 
     label: '上架状态', 
     align: 'center', 
-    minWidth: 80,
+    minWidth: 120,
     formatter: function (row, column) {
       if (row.Stock_State == "0")
         return "已退货";
@@ -109,13 +109,13 @@ export default {
   { prop: 'Batch_Validity_Period', label: '有效期',  align: 'center',  minWidth: 120 },
   { prop: 'Batch_Production_Date', label: '生产日期',  align: 'center',  minWidth: 120 },
   { prop: 'Supply_Price', label: '结算价',  align: 'center',  minWidth: 80 },
-  { prop: 'Contract_Code', label: '合同编码',  align: 'center',  minWidth: 80 },
+  { prop: 'Contract_Code', label: '合同编码',  align: 'center',  minWidth: 120 },
   { prop: 'Supplier_Name', label: '供应商名称',  align: 'center',  minWidth: 120 },
   { prop: 'Serial_Number', label: 'sn码',  align: 'center',  minWidth: 80 },
   { prop: 'Rfid_Code', label: 'rfid码',  align: 'center',  minWidth: 80 },
-  { prop: 'Dept_Two_Up_Shelf_Id', label: '二级定数码上架id', align: 'center',  hidden:true},
-  { prop: 'Varietie_Code', label: '品种编码id',  align: 'center', hidden:true},
-  { prop: 'Supplier_Code', label: '供应商编码',  align: 'center', hidden:true}
+  { prop: 'Dept_Two_Up_Shelf_Id', label: '二级定数码上架id', align: 'center', minWidth: 200, hidden:true},
+  { prop: 'Varietie_Code', label: '品种编码id',  align: 'center', minWidth: 120, hidden:true},
+  { prop: 'Supplier_Code', label: '供应商编码',  align: 'center', minWidth: 120, hidden:true}
 
       ],
       toolbar: false,

@@ -122,11 +122,22 @@ export default {
       }
       // 用户信息
       commit('setUserInfo', result);
-      // 用户权限
-      const authorities = result.permission_group.map((item) => {
-        return item.component;
+      // 用户权限（component + path 等，兼容旧系统 Permission_Url 类按钮权限）
+      const authoritySet = new Set();
+      (result.permission_group || []).forEach((item) => {
+        [
+          item.component,
+          item.path,
+          item.title,
+          item.Permission_Url,
+          item.PERMISSION_URL
+        ].forEach((v) => {
+          if (v) {
+            authoritySet.add(v);
+          }
+        });
       });
-      commit('setAuthorities', authorities);
+      commit('setAuthorities', [...authoritySet]);
 
       // 用户角色
       // const roles = result.Group_Name?.map((d) => d.Group_ID) ?? [];

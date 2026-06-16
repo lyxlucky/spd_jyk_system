@@ -2,6 +2,49 @@
   <div class="variety-data-lzh-main">
     <VarietyDataLzhMainSearch @search="reload" />
 
+    <div class="spd-panel">
+      <div class="spd-panel__head">操作</div>
+      <div class="local-toolbar spd-toolbar">
+        <div class="spd-toolbar__group">
+          <div class="spd-toolbar__btns">
+            <el-button size="mini" :disabled="!selection.length" :loading="commitLoading" @click="onSendApproval">
+              发送审批
+            </el-button>
+          </div>
+        </div>
+        <div v-if="showExportToolbar" class="spd-toolbar__divider" />
+        <div v-if="showExportToolbar" class="spd-toolbar__group">
+          <div class="spd-toolbar__btns">
+            <el-button
+              v-if="canExport('export-VarietyDataLzhDc')"
+              size="mini"
+              icon="el-icon-download"
+              :loading="exportingHp"
+              @click="onExportHp"
+            >
+              导出
+            </el-button>
+            <el-button
+              v-if="canExport('export-VarietyDataLzhDc')"
+              size="mini"
+              :loading="exportingHp"
+              @click="onExportHp"
+            >
+              导出(高性能)
+            </el-button>
+            <el-button
+              v-if="canExport('export-VarietyDataLzhDcjs')"
+              size="mini"
+              :loading="exportingSearch"
+              @click="onExportSearch"
+            >
+              导出检索
+            </el-button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="spd-panel spd-table-panel">
       <div class="spd-panel__head">散货品种列表</div>
       <div class="spd-panel__body spd-table-panel__wrap">
@@ -10,11 +53,6 @@
       <template v-slot:PAG_TYPE="{ row }">
         <div :id="'PAG_TYPE' + row.ID" :key="row.id" @click="dialogVisibleFun(row)">{{ row.PAG_TYPE }}
         </div>
-      </template>
-
-      <!-- 左表头 -->
-      <template v-slot:toolbar>
-        <!-- 搜索表单 -->
       </template>
 
       <template v-slot:PlanQty="{ row }">
@@ -114,6 +152,12 @@ import {
   Approval
 } from '@/api/KSInventory/KSDepartmentalPlan';
 import { QueryPageLayUI } from '@/api/Home/VarietyDataLzhMain';
+import {
+  approvalVarietieCommit,
+  createStorageExcelCwjEpPlus
+} from '@/api/Home/VarietyDataLzhAudit';
+import { openExcelFile } from '@/views/Home/VarietyDataLzhAudit/utils';
+import { hasExportPermission } from '../utils';
 
 import { utils, writeFile } from 'xlsx';
 export default {
@@ -138,7 +182,7 @@ export default {
           label: '序号',
           columnKey: 'index',
           type: 'index',
-          width: 45,
+          width: 60,
           align: 'center',
           showOverflowTooltip: true,
           fixed: 'left'
@@ -200,7 +244,7 @@ export default {
           label: '医疗器械注册人或备案人',
           align: 'center',
           showOverflowTooltip: true,
-          width: 120
+          width: 280
         },
         {
           prop: 'Unit',
@@ -214,7 +258,7 @@ export default {
           label: '中标价',
           align: 'center',
           showOverflowTooltip: true,
-          width: 80,
+          width: 100,
           formatter: (row, column, cellValue) => {
             return Number(cellValue).toFixed(2);
           }
@@ -224,7 +268,7 @@ export default {
           label: '历史中标价格',
           align: 'center',
           showOverflowTooltip: true,
-          width: 80
+          width: 140
         },
         {
           prop: 'Approval_Number',
@@ -282,21 +326,21 @@ export default {
           label: '库存上限',
           align: 'center',
           showOverflowTooltip: true,
-          width: 80
+          width: 100
         },
         {
           prop: 'STOREHOUSE_LOWER',
           label: '库存下限',
           align: 'center',
           showOverflowTooltip: true,
-          width: 80
+          width: 100
         },
         {
           prop: 'APPROVAL_STATE',
           label: '审批状态',
           align: 'center',
           showOverflowTooltip: true,
-          width: 80,
+          width: 120,
           formatter: (row, column, cellValue) => {
             if (cellValue == '1') {
               return '通过';
@@ -314,7 +358,7 @@ export default {
           label: '省平台编码',
           align: 'center',
           showOverflowTooltip: true,
-          width: 80
+          width: 140
         },
         {
           prop: 'YG_CODE',
@@ -349,14 +393,14 @@ export default {
           label: '全国历史最低价',
           align: 'center',
           showOverflowTooltip: true,
-          width: 110
+          width: 180
         },
         {
           prop: 'HIGH_OR_LOW_CLASS_TWO',
           label: '高低值下级属性',
           align: 'center',
           showOverflowTooltip: true,
-          width: 110,
+          width: 180,
           formatter: (row, column, cellValue) => {
             if (cellValue == '1') {
               return '重点治理';
@@ -372,7 +416,7 @@ export default {
           label: '设备科是否修改',
           align: 'center',
           showOverflowTooltip: true,
-          width: 110,
+          width: 180,
           formatter: (row, column, cellValue) => {
             if (cellValue == '1') {
               return '是';
@@ -388,7 +432,7 @@ export default {
           label: '仓库名称',
           align: 'center',
           showOverflowTooltip: true,
-          width: 110,
+          width: 120,
           formatter: (row, column, cellValue) => {
             if (cellValue == '1') {
               return '老仓库';
@@ -404,7 +448,7 @@ export default {
           label: '适应症',
           align: 'center',
           showOverflowTooltip: true,
-          width: 80,
+          width: 100,
           formatter: (row, column, cellValue) => {
             if (cellValue == '1') {
               return '是';
@@ -420,7 +464,7 @@ export default {
           label: '适应症提示',
           align: 'center',
           showOverflowTooltip: true,
-          width: 130
+          width: 140
         },
 
         {
@@ -428,7 +472,7 @@ export default {
           label: '医保分类',
           align: 'center',
           showOverflowTooltip: true,
-          width: 80,
+          width: 100,
           formatter: (row, column, cellValue) => {
             if (cellValue == '00') {
               return '是';
@@ -502,10 +546,106 @@ export default {
       count3: 0,
       count4: 0,
       sum: 0,
-      rowData: null
+      rowData: null,
+      currentWhere: null,
+      commitLoading: false,
+      exportingHp: false,
+      exportingSearch: false
     };
   },
+  computed: {
+    showExportToolbar() {
+      return (
+        this.canExport('export-VarietyDataLzhDc') ||
+        this.canExport('export-VarietyDataLzhDcjs')
+      );
+    },
+    KSDepartmentalPlanDataSearch() {
+      return this.KSDepartmentalPlanData;
+    }
+  },
   methods: {
+    canExport(key) {
+      return hasExportPermission(this.$store, key);
+    },
+    buildExportExtra(where = {}) {
+      return {
+        BZ_TI: where.BZ_TI ?? '',
+        JF_BJ: where.JF_BJ ?? '',
+        IS_HANG_UP: where.IS_HANG_UP ?? '',
+        enableChargingCode: where.enableChargingCode ?? '',
+        updateTime: where.updateTime ?? '',
+        SENDYB_STATE: where.SENDYB_STATE ?? '',
+        priceChangeTimeStart: where.priceChangeTimeStart ?? '',
+        priceChangeTimeEnd: where.priceChangeTimeEnd ?? '',
+        state: where.filterKubao ? '1' : '0'
+      };
+    },
+    async onSendApproval() {
+      if (!this.selection.length) {
+        this.$message.warning('请至少选中一行数据');
+        return;
+      }
+      this.commitLoading = true;
+      try {
+        const res = await approvalVarietieCommit(this.selection);
+        this.$alert(res.msg || '操作完成', '提示');
+        this.reload(this.currentWhere);
+      } catch (e) {
+        this.$message.error(e.message || '发送审批失败');
+      } finally {
+        this.commitLoading = false;
+      }
+    },
+    async onExportHp() {
+      this.exportingHp = true;
+      try {
+        const res = await createStorageExcelCwjEpPlus(
+          this.currentWhere || {},
+          this.buildExportExtra(this.currentWhere || {})
+        );
+        if (res.msg) {
+          openExcelFile(res.msg);
+          this.$message.success(
+            res.totalCount ? `导出成功，共 ${res.totalCount} 条` : '导出成功'
+          );
+        }
+      } catch (e) {
+        this.$message.error(e.message || '导出失败');
+      } finally {
+        this.exportingHp = false;
+      }
+    },
+    async onExportSearch() {
+      this.exportingSearch = true;
+      try {
+        const res = await QueryPageLayUI({
+          page: 1,
+          limit: 999999,
+          where: this.currentWhere || {}
+        });
+        const rows = res.result || [];
+        const exportColumns = this.columns.filter(
+          (col) => col.prop && col.type !== 'selection' && col.type !== 'index'
+        );
+        const header = exportColumns.map((col) => col.label);
+        const body = rows.map((row) =>
+          exportColumns.map((col) => {
+            if (typeof col.formatter === 'function') {
+              return col.formatter(row, col, row[col.prop]);
+            }
+            return row[col.prop] ?? '';
+          })
+        );
+        const sheet = utils.aoa_to_sheet([header, ...body]);
+        writeFile({ SheetNames: ['品种资料'], Sheets: { 品种资料: sheet } }, '品种资料检索.xlsx');
+        this.$message.success('导出成功');
+      } catch (e) {
+        this.$message.error(e.message || '导出失败');
+      } finally {
+        this.exportingSearch = false;
+      }
+    },
     Approval() {
       Approval({ PlanNum: this.KSDepartmentalPlanData.PlanNum }).then((res) => {
         if (res.code == 200) {
@@ -524,6 +664,9 @@ export default {
     },
     /* 表格数据源 */
     datasource({ page, limit, where, order }) {
+      if (where) {
+        this.currentWhere = where;
+      }
       let data = QueryPageLayUI({ page, limit, where, order }).then((res) => {
         var tData = {
           count: res.total,
@@ -543,7 +686,10 @@ export default {
     },
     /* 刷新表格 */
     reload(where) {
-      this.$refs.table.reload({ page: 1, where: where });
+      if (where) {
+        this.currentWhere = where;
+      }
+      this.$refs.table.reload({ page: 1, where: this.currentWhere });
     },
     ClickReload(IsReload) {
       this.$emit('IsReload', IsReload);
@@ -689,11 +835,6 @@ export default {
       console.log(row.PlanQty);
     }
   },
-  computed: {
-    KSDepartmentalPlanDataSearch() {
-      return this.KSDepartmentalPlanData;
-    }
-  },
   watch: {
     KSDepartmentalPlanDataSearch() {
       this.$forceUpdate();
@@ -735,5 +876,15 @@ export default {
 <style scoped>
 .variety-data-lzh-main {
   padding: 0;
+}
+.local-toolbar {
+  padding: 0 12px 12px;
+}
+.local-toolbar.spd-toolbar {
+  padding-bottom: 12px;
+}
+.local-toolbar .spd-toolbar__divider {
+  min-height: 24px;
+  margin: 0 8px;
 }
 </style>

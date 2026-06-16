@@ -1,38 +1,77 @@
 <template>
   <div class="ele-body spd-page variety-audit-page">
-    <el-card shadow="never" class="main-card">
-      <div class="section-title">散货品种列表</div>
+    <AuditSearch @search="reload" />
 
-      <AuditSearch @search="reload" />
-
-      <div class="toolbar-row">
-        <el-button v-if="showKubaoBtn" size="mini" :loading="kuboLoading" @click="onKubaoCreate">
-          库宝创建品种
-        </el-button>
-        <el-button size="mini" :loading="commitLoading" @click="onSendApproval">发送审批</el-button>
-        <el-button type="primary" size="mini" :loading="approveLoading" @click="onApprovePass">
-          审批通过
-        </el-button>
-        <el-button type="danger" size="mini" @click="onApproveReject">审批未通过</el-button>
-        <el-button
-          v-if="showSyncBtn"
-          size="mini"
-          :loading="syncLoading"
-          @click="onPullSync"
-        >
-          南五同步
-        </el-button>
-        <el-button
-          v-permission="'export-VarietyDataLzhDc'"
-          size="mini"
-          icon="el-icon-download"
-          :loading="exporting"
-          @click="onExport"
-        >
-          导出Excel
-        </el-button>
+    <div class="spd-panel">
+      <div class="spd-panel__head">操作</div>
+      <div class="local-toolbar spd-toolbar">
+        <div class="spd-toolbar__group">
+          <div class="spd-toolbar__btns">
+            <el-button
+              v-if="showKubaoBtn"
+              size="mini"
+              :disabled="!selection.length"
+              :loading="kuboLoading"
+              @click="onKubaoCreate"
+            >
+              库宝创建品种
+            </el-button>
+            <el-button
+              size="mini"
+              :disabled="!selection.length"
+              :loading="commitLoading"
+              @click="onSendApproval"
+            >
+              发送审批
+            </el-button>
+          </div>
+        </div>
+        <div class="spd-toolbar__divider" />
+        <div class="spd-toolbar__group">
+          <div class="spd-toolbar__btns">
+            <el-button
+              type="primary"
+              size="mini"
+              :disabled="!selection.length"
+              :loading="approveLoading"
+              @click="onApprovePass"
+            >
+              审批通过
+            </el-button>
+            <el-button type="danger" size="mini" :disabled="!selection.length" @click="onApproveReject">
+              审批未通过
+            </el-button>
+          </div>
+        </div>
+        <template v-if="showSyncBtn">
+          <div class="spd-toolbar__divider" />
+          <div class="spd-toolbar__group">
+            <div class="spd-toolbar__btns">
+              <el-button size="mini" :loading="syncLoading" @click="onPullSync">南五同步</el-button>
+            </div>
+          </div>
+        </template>
+        <template v-if="canExport('export-VarietyDataLzhDc')">
+          <div class="spd-toolbar__divider" />
+          <div class="spd-toolbar__group">
+            <div class="spd-toolbar__btns">
+              <el-button
+                size="mini"
+                icon="el-icon-download"
+                :loading="exporting"
+                @click="onExport"
+              >
+                导出Excel
+              </el-button>
+            </div>
+          </div>
+        </template>
       </div>
+    </div>
 
+    <div class="spd-panel spd-table-panel">
+      <div class="spd-panel__head">散货品种列表</div>
+      <div class="spd-panel__body spd-table-panel__wrap">
       <ele-pro-table
         ref="table"
         highlight-current-row
@@ -68,7 +107,8 @@
           </el-button>
         </template>
       </ele-pro-table>
-    </el-card>
+      </div>
+    </div>
 
     <RemarkDialog :visible.sync="remarkVisible" :row="currentRow" @done="reloadTable" />
     <RejectRemarkDialog
@@ -101,6 +141,7 @@ import {
   formatYesNo,
   openExcelFile
 } from './utils';
+import { hasExportPermission } from '@/views/Home/VarietyDataLzh/utils';
 
 export default {
   name: 'VarietyDataLzhAudit',
@@ -219,6 +260,9 @@ export default {
     }
   },
   methods: {
+    canExport(key) {
+      return hasExportPermission(this.$store, key);
+    },
     formatEnable,
     formatApprovalState,
     formatDeptState,
@@ -327,19 +371,15 @@ export default {
 .variety-audit-page {
   padding-bottom: 12px;
 }
-.main-card ::v-deep .el-card__body {
-  padding: 12px;
+.local-toolbar {
+  padding: 0 12px 12px;
 }
-.section-title {
-  font-size: 14px;
-  font-weight: 600;
-  margin-bottom: 10px;
+.local-toolbar.spd-toolbar {
+  padding-bottom: 12px;
 }
-.toolbar-row {
-  margin: 8px 0 10px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+.local-toolbar .spd-toolbar__divider {
+  min-height: 24px;
+  margin: 0 8px;
 }
 .variety-audit-page ::v-deep .ele-pro-table .el-table {
   width: 100%;

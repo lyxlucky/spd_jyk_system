@@ -61,7 +61,7 @@
             type="date"
             value-format="yyyy-MM-dd"
             placeholder="开始"
-            style="width: 130px"
+            style="width: 140px"
           />
           <span class="date-sep">至</span>
           <el-date-picker
@@ -69,12 +69,12 @@
             type="date"
             value-format="yyyy-MM-dd"
             placeholder="结束"
-            style="width: 130px"
+            style="width: 140px"
           />
         </el-col>
         <el-col :span="3" class="stock-day-col">
           <span class="label-inline">在库天数大于：</span>
-          <el-input v-model="where.upStockDay" type="number" clearable style="width: 70px" />
+          <el-input v-model="where.upStockDay" type="number" clearable style="width: 100px" />
         </el-col>
         <el-col :span="8" class="btn-col">
           <el-button type="primary" icon="el-icon-search" @click="search">查询</el-button>

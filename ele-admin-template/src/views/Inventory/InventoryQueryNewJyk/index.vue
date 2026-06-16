@@ -47,7 +47,7 @@ export default {
           label: '库房位置',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 80
+          minWidth: 120
         },
         {
           prop: 'STORAGE_TWO_NAME',
@@ -60,7 +60,7 @@ export default {
         label: '所属区域',
         align: 'center',
         showOverflowTooltip: true,
-        minWidth: 90,
+        minWidth: 120,
         formatter: function (row) {
             var wzlx = "";
             if (row.VAR_TYPE === "1") {
@@ -92,7 +92,7 @@ export default {
         label: '收货类型',
         align: 'center',
         showOverflowTooltip: true,
-        minWidth: 90,
+        minWidth: 120,
         formatter: function (row) {
             if (row.Receive_Property == 0) {
                 return "普通收货";
@@ -108,7 +108,7 @@ export default {
         label: '品种编码',
         align: 'center',
         showOverflowTooltip: true,
-        minWidth: 100
+        minWidth: 120
     },
     {
         prop: 'Varietie_Name',
@@ -129,14 +129,14 @@ export default {
         label: '单位',
         align: 'center',
         showOverflowTooltip: true,
-        minWidth: 60
+        minWidth: 80
     },
     {
         prop: 'Goods_Qty',
         label: '库存散货',
         align: 'center',
         showOverflowTooltip: true,
-        minWidth: 80
+        minWidth: 120
     },
     {
         prop: 'APPROVAL_NUMBER',
@@ -150,14 +150,14 @@ export default {
         label: '药交ID',
         align: 'center',
         showOverflowTooltip: true,
-        minWidth: 70,
+        minWidth: 120,
     },
     {
         prop: 'YG_CODE',
         label: '阳光产品码',
         align: 'center',
         showOverflowTooltip: true,
-        minWidth: 80
+        minWidth: 120
     },
     {
         prop: 'Manufacturing_Ent_Name',
@@ -178,14 +178,14 @@ export default {
         label: '生产批号',
         align: 'center',
         showOverflowTooltip: true,
-        minWidth: 100
+        minWidth: 120
     },
     {
         prop: 'Batch_Production_Date',
         label: '生产日期',
         align: 'center',
         showOverflowTooltip: true,
-        minWidth: 90,
+        minWidth: 120,
         formatter: function (row) {
             return row.Batch_Production_Date.substr(0, 10);
         }
@@ -195,7 +195,7 @@ export default {
         label: '有效到期',
         align: 'center',
         showOverflowTooltip: true,
-        minWidth: 90,
+        minWidth: 120,
         formatter: function (row) {
             var bvp_date = row.Batch_Validity_Period.substr(0, 10);
             var this_date = new Date(bvp_date).getTime();
@@ -222,14 +222,14 @@ export default {
         label: '系数',
         align: 'center',
         showOverflowTooltip: true,
-        minWidth: 45
+        minWidth: 80
     },
     {
         prop: 'Supply_Price',
         label: '结算价',
         align: 'right',
         showOverflowTooltip: true,
-        minWidth: 80,
+        minWidth: 100,
         formatter: function (row) {
             return row.Supply_Price.toFixed(row.price_bl);
         }
@@ -239,14 +239,14 @@ export default {
         label: '库存定数包数',
         align: 'center',
         showOverflowTooltip: true,
-        minWidth: 90
+        minWidth: 150
     },
     {
         prop: 'Def_Qty',
         label: '库存定数包数转散',
         align: 'center',
         showOverflowTooltip: true,
-        minWidth: 90,
+        minWidth: 200,
         formatter: function (row) {
             return row.Def_Qty * row.Coefficient;
         }
@@ -256,42 +256,42 @@ export default {
         label: '在库天数',
         align: 'center',
         showOverflowTooltip: true,
-        minWidth: 80
+        minWidth: 120
     },
     {
         prop: 'Def_Down_Shelf_Qty',
         label: '定数包未上架',
         align: 'center',
         showOverflowTooltip: true,
-        minWidth: 90
+        minWidth: 140
     },
     {
         prop: 'Goods_Down_Shelf_Qty',
         label: '散货未上架',
         align: 'center',
         showOverflowTooltip: true,
-        minWidth: 80
+        minWidth: 140
     },
     {
         prop: 'Goods_Look_Qty',
         label: '散货锁定',
         align: 'center',
         showOverflowTooltip: true,
-        minWidth: 80
+        minWidth: 120
     },
     {
         prop: 'Def_Locking_Qty',
         label: '定数包锁定',
         align: 'center',
         showOverflowTooltip: true,
-        minWidth: 80
+        minWidth: 120
     },
     {
         prop: 'Pre_Lock_Sum',
         label: '定数包预锁',
         align: 'center',
         showOverflowTooltip: true,
-        minWidth: 80
+        minWidth: 120
     },
     {
         prop: 'APPROVAL_NUMBER',
@@ -312,14 +312,14 @@ export default {
         label: '货位号',
         align: 'center',
         showOverflowTooltip: true,
-        minWidth: 70
+        minWidth: 100
     },
     {
         prop: 'CONTRACT_NAME',
         label: '合同名称',
         align: 'center',
         showOverflowTooltip: true,
-        minWidth: 80
+        minWidth: 120
     },
     {
         prop: 'CONTRACT_END_TIME',
@@ -391,7 +391,7 @@ export default {
         label: '科室未结算',
         align: 'center',
         showOverflowTooltip: true,
-        minWidth: 85,
+        minWidth: 130,
         formatter: function (row) {
             if (row.NO_CONSUME_NUM === null) {
                 return 0;
@@ -405,42 +405,42 @@ export default {
         label: '周日均用量',
         align: 'center',
         showOverflowTooltip: true,
-        minWidth: 80
+        minWidth: 130
     },
     {
         prop: 'AVG30',
         label: '月日均用量',
         align: 'center',
         showOverflowTooltip: true,
-        minWidth: 80
+        minWidth: 130
     },
     {
         prop: 'Batch_Id',
         label: '批次号ID',
         align: 'center',
         showOverflowTooltip: true,
-        minWidth: 60
+        minWidth: 140
     },
     {
         prop: 'MGMT_CAT_NAME',
         label: '管理类别',
         align: 'center',
         showOverflowTooltip: true,
-        minWidth: 80
+        minWidth: 120
     },
     {
         prop: 'DELIVERY_NOTE_NUMBER',
         label: 'SPD入库单号',
         align: 'center',
         showOverflowTooltip: true,
-        minWidth: 80
+        minWidth: 160
     },
     {
         prop: 'DETAIL_CREATE_TYPE',
         label: '是否跟台',
         align: 'center',
         showOverflowTooltip: true,
-        minWidth: 80,
+        minWidth: 120,
         formatter: function (row) {
             if (row.DETAIL_CREATE_TYPE === 1) {
                 return "是";
@@ -454,7 +454,7 @@ export default {
         label: '入库时间',
         align: 'center',
         showOverflowTooltip: true,
-        minWidth: 80
+        minWidth: 120
     },
     {
         prop: 'Varietie_Code',
@@ -506,14 +506,14 @@ export default {
           label: '库房位置',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 90
+          minWidth: 120
         },
         {
           prop: 'Up_Shelf_State',
           label: '所属区域',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 90,
+          minWidth: 120,
           formatter: function (row) {
             if (row.Up_Shelf_State === 1) {
               return '合格区';
@@ -537,7 +537,7 @@ export default {
           label: '品种编码',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 90
+          minWidth: 120
         },
         {
           prop: 'Varietie_Name',
@@ -586,7 +586,7 @@ export default {
           label: '生产日期',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 90,
+          minWidth: 120,
           formatter: function (row) {
             return row.Batch_Production_Date.substr(0, 10);
           }
@@ -596,7 +596,7 @@ export default {
           label: '有效到期',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 90,
+          minWidth: 120,
           formatter: function (row) {
             var bvp_date = row.Batch_Validity_Period.substr(0, 10);
             var this_date = new Date(bvp_date).getTime();
@@ -644,28 +644,28 @@ export default {
           label: '货位号',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 70
+          minWidth: 100
         },
         {
           prop: 'Storaged_Days',
           label: '在库天数',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 80,
+          minWidth: 120,
         },
         {
           prop: 'Brand',
           label: '品牌',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 55
+          minWidth: 85
         },
         {
           prop: 'USE_DEF_NO_PKG_CODE',
           label: '是否结算',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 90,
+          minWidth: 120,
           formatter: function (row) {
             if (row.USE_DEF_NO_PKG_CODE === row.Def_No_Pkg_Code) {
               return "已结算";

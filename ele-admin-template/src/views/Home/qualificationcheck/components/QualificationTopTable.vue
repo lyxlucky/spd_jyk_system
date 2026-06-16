@@ -215,7 +215,7 @@
           {
             label: '序号',
             type: 'index',
-            width: 60,
+            width: 80,
             align: 'center',
             fixed: 'left'
           },
@@ -223,7 +223,7 @@
             prop: 'Enable',
             slot: 'Enable',
             label: '启用状态',
-            minWidth: 80,
+            minWidth: 120,
             align: 'center'
           },
           // {
@@ -243,13 +243,13 @@
             prop: 'checkFile',
             slot: 'checkFile',
             label: '查看详细资料',
-            minWidth: 120,
+            minWidth: 140,
             align: 'center'
           },
           {
             prop: 'QXBZ',
             label: '缺项备注',
-            minWidth: 130,
+            minWidth: 120,
             align: 'center',
             showOverflowTooltip: true
           },
@@ -264,42 +264,42 @@
             prop: 'Business_License_Valid_Date',
             slot: 'Business_License_Valid_Date',
             label: '营业执照效期',
-            minWidth: 110,
+            minWidth: 160,
             align: 'left'
           },
           {
             prop: 'RODUCTION_CLASS_1_VALID_DATE',
             slot: 'RODUCTION_CLASS_1_VALID_DATE',
             label: '一类的许可证经营有效期',
-            minWidth: 110,
+            minWidth: 240,
             align: 'left'
           },
           {
             prop: 'Roduction_class_2_Valid_Date',
             slot: 'Roduction_class_2_Valid_Date',
             label: '二类的许可证经营有效期',
-            minWidth: 110,
+            minWidth: 240,
             align: 'left'
           },
           {
             prop: 'Roduction_class_3_Valid_Date',
             slot: 'Roduction_class_3_Valid_Date',
             label: '三类的许可证经营有效期',
-            minWidth: 110,
+            minWidth: 240,
             align: 'left'
           },
           {
             prop: 'DR_VALID_DATE',
             slot: 'DR_VALID_DATE',
             label: '体外诊断试剂经营许可证有效期',
-            minWidth: 110,
+            minWidth: 260,
             align: 'left'
           },
           {
             prop: 'WTS_VALID_DATE',
             slot: 'WTS_VALID_DATE',
             label: '业务员委托书有效期',
-            minWidth: 110,
+            minWidth: 240,
             align: 'left'
           }
         ],
