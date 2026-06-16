@@ -1,5 +1,5 @@
 <template>
-  <div class="ele-body print-use-dept-two">
+  <div class="ele-body spd-page print-use-dept-two">
     <div class="panel-grid">
       <!-- 左：日清列表 -->
       <div class="col-left">

@@ -1,5 +1,5 @@
 <template>
-  <div class="ele-body varietie-var-jc-page">
+  <div class="ele-body spd-page varietie-var-jc-page">
     <el-card shadow="never">
       <el-form size="mini" inline class="filter-row" @submit.native.prevent>
         <el-form-item>

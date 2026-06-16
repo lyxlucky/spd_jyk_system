@@ -1,5 +1,5 @@
 <template>
-  <div class="ele-body bid-var-info">
+  <div class="ele-body spd-page bid-var-info">
     <el-card shadow="never">
       <el-form size="small" inline class="filter-block" @submit.native.prevent>
         <el-form-item label="品种编码">

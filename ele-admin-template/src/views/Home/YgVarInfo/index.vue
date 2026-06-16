@@ -1,5 +1,5 @@
 <template>
-  <div class="ele-body yg-var-info">
+  <div class="ele-body spd-page yg-var-info">
     <el-card shadow="never">
       <div class="page-title">阳光平台本院目录</div>
 

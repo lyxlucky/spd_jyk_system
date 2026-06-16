@@ -1,5 +1,5 @@
 <template>
-  <div class="ele-body">
+  <div class="ele-body spd-page">
     <el-card shadow="never">
       <!-- 搜索表单 -->
       <user-search @search="reload" />

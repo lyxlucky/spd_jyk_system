@@ -1,8 +1,9 @@
 <template>
   <div class="plan-table-tab">
     <!-- 查询条件 -->
-    <div class="panel panel-search">
-      <div class="panel-head">查询条件</div>
+    <div class="spd-panel spd-panel--search">
+      <div class="spd-panel__head">查询条件</div>
+      <div class="spd-panel__body">
       <el-form size="mini" class="search-form" @submit.native.prevent @keyup.enter.native="reload">
         <el-row :gutter="10">
           <el-col :span="4">
@@ -136,12 +137,13 @@
           </el-col>
         </el-row>
       </el-form>
+      </div>
     </div>
 
     <!-- 操作工具栏 -->
-    <div class="panel panel-toolbar">
-      <div class="panel-head panel-head-toolbar">
-        <span class="panel-title">操作</span>
+    <div class="spd-panel">
+      <div class="spd-panel__head spd-panel__head--split spd-panel__head-toolbar">
+        <span class="spd-panel__title">操作</span>
         <div class="storage-select">
           <span class="storage-label">库区</span>
           <el-select v-model="localStorageId" size="mini" style="width: 130px" @change="onStorageChange">
@@ -149,20 +151,20 @@
           </el-select>
         </div>
       </div>
-      <div class="toolbar-groups">
-        <div class="toolbar-group">
-          <span class="group-label">生成</span>
-          <div class="group-btns">
+      <div class="spd-toolbar">
+        <div class="spd-toolbar__group">
+          <span class="spd-toolbar__label">生成</span>
+          <div class="spd-toolbar__btns">
             <el-button size="mini" type="primary" @click="onTransferGoodsApply">散货申领单</el-button>
             <el-button size="mini" type="primary" @click="onPickList">拣配单</el-button>
             <el-button size="mini" type="primary" @click="onBagMaking">定数包</el-button>
             <el-button size="mini" type="primary" @click="onStockUp">备货</el-button>
           </div>
         </div>
-        <div class="toolbar-divider" />
-        <div class="toolbar-group">
-          <span class="group-label">维护</span>
-          <div class="group-btns">
+        <div class="spd-toolbar__divider" />
+        <div class="spd-toolbar__group">
+          <span class="spd-toolbar__label">维护</span>
+          <div class="spd-toolbar__btns">
             <el-button size="mini" @click="onChangeLeftApply">变更剩余申请</el-button>
             <el-button size="mini" @click="lcVisible = true">临采详情</el-button>
             <el-button size="mini" @click="onReplaceVar">替换品种</el-button>
@@ -172,23 +174,23 @@
             <el-button size="mini" @click="onBatchRemark">批量备注</el-button>
           </div>
         </div>
-        <div class="toolbar-divider" />
-        <div class="toolbar-group">
-          <div class="group-btns">
+        <div class="spd-toolbar__divider" />
+        <div class="spd-toolbar__group">
+          <div class="spd-toolbar__btns">
             <el-button size="mini" type="danger" plain @click="onShutdownPlan">强制结束</el-button>
             <el-button size="mini" type="danger" plain @click="onDeleteDetail">删除明细</el-button>
           </div>
         </div>
       </div>
-      <div class="filter-bar">
-        <span class="filter-bar-label">计划状态</span>
+      <div class="spd-filter-bar">
+        <span class="spd-filter-bar__label">计划状态</span>
         <el-checkbox-group v-model="where.planState" size="mini" @change="reload">
           <el-checkbox label="6">新增</el-checkbox>
           <el-checkbox label="3">未收全</el-checkbox>
           <el-checkbox label="4">已收全</el-checkbox>
           <el-checkbox label="10">强制结束</el-checkbox>
         </el-checkbox-group>
-        <span class="filter-bar-divider" />
+        <span class="spd-filter-bar__divider" />
         <el-select v-model="where.planIsZxk_sh" size="mini" style="width: 118px" clearable placeholder="散货库存" @change="reload">
           <el-option label="散货-全部" value="" />
           <el-option label="散货-有" value="1" />
@@ -220,12 +222,12 @@
     </div>
 
     <!-- 数据列表 -->
-    <div class="panel panel-table">
-      <div class="panel-head panel-head-table">
-        <span class="panel-title">科室计划列表</span>
-        <span v-if="selection.length" class="panel-meta">已选 {{ selection.length }} 条</span>
+    <div class="spd-panel spd-table-panel">
+      <div class="spd-panel__head spd-panel__head--split">
+        <span class="spd-panel__title">科室计划列表</span>
+        <span v-if="selection.length" class="spd-panel__head-meta">已选 {{ selection.length }} 条</span>
       </div>
-      <div class="table-wrap">
+      <div class="spd-table-panel__wrap">
         <ele-pro-table
           ref="table"
           size="mini"
@@ -661,55 +663,6 @@ export default {
   gap: 10px;
 }
 
-.panel {
-  border: 1px solid #ebeef5;
-  border-radius: 4px;
-  background: #fff;
-}
-
-.panel-head {
-  padding: 8px 12px;
-  font-size: 13px;
-  font-weight: 600;
-  color: #303133;
-  background: #f5f7fa;
-  border-bottom: 1px solid #ebeef5;
-}
-
-.panel-head-toolbar,
-.panel-head-table {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.panel-title {
-  font-weight: 600;
-}
-
-.panel-meta {
-  font-size: 12px;
-  font-weight: normal;
-  color: #409eff;
-}
-
-.panel-search .search-form {
-  padding: 10px 12px 2px;
-}
-
-.panel-search :deep(.el-form-item) {
-  margin-bottom: 8px;
-}
-
-.panel-search :deep(.el-form-item__label) {
-  font-size: 12px;
-  padding-right: 6px;
-}
-
-.panel-toolbar {
-  padding-bottom: 10px;
-}
-
 .storage-select {
   display: flex;
   align-items: center;
@@ -720,78 +673,5 @@ export default {
   font-size: 12px;
   font-weight: normal;
   color: #606266;
-}
-
-.toolbar-groups {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  gap: 0;
-  padding: 10px 12px 0;
-}
-
-.toolbar-group {
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-}
-
-.group-label {
-  flex-shrink: 0;
-  width: 32px;
-  padding-top: 6px;
-  font-size: 12px;
-  color: #909399;
-  line-height: 1;
-}
-
-.group-btns {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-.toolbar-divider {
-  width: 1px;
-  min-height: 28px;
-  margin: 0 12px;
-  background: #dcdfe6;
-  align-self: center;
-}
-
-.filter-bar {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px;
-  margin: 10px 12px 0;
-  padding: 8px 10px;
-  background: #fafafa;
-  border: 1px dashed #e4e7ed;
-  border-radius: 4px;
-}
-
-.filter-bar-label {
-  font-size: 12px;
-  color: #909399;
-  margin-right: 4px;
-}
-
-.filter-bar-divider {
-  width: 1px;
-  height: 16px;
-  margin: 0 4px;
-  background: #dcdfe6;
-}
-
-.panel-table {
-  flex: 1;
-  min-height: 360px;
-  display: flex;
-  flex-direction: column;
-}
-
-.table-wrap {
-  padding: 0 1px 8px;
 }
 </style>

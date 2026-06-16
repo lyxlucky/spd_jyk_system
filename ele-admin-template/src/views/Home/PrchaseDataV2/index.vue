@@ -1,5 +1,5 @@
 <template>
-  <div class="ele-body prchase-data-v2">
+  <div class="ele-body spd-page prchase-data-v2">
     <el-card shadow="never">
       <el-tabs v-model="activeTab" @tab-click="onTabClick">
         <el-tab-pane label="项目列表" name="project">

@@ -1,5 +1,5 @@
 <template>
-  <div class="ele-body pkg-source-detail">
+  <div class="ele-body spd-page pkg-source-detail">
     <el-card shadow="never">
       <user-search ref="search" @search="reload" />
       <ele-pro-table

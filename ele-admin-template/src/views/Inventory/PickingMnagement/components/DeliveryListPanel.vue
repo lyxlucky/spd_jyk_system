@@ -1,7 +1,7 @@
 <template>
   <el-card shadow="never">
     <div slot="header">定数包出库配送单列表</div>
-    <el-form :inline="true" size="mini" class="toolbar-form">
+    <el-form :inline="true" size="mini" class="filter-row">
       <el-form-item label="补货状态">
         <el-select v-model="form.replenish_state" style="width: 110px" @change="handleSearch">
           <el-option label="全部" :value="-1" />
@@ -10,87 +10,8 @@
           <el-option label="已收货" :value="2" />
         </el-select>
       </el-form-item>
-      <el-form-item class="toolbar-actions">
-        <el-button size="mini" @click="handleExport">导出</el-button>
-        <el-button type="danger" size="mini" :disabled="!selectedRow" @click="handleCloseDistribute">
-          取消出库
-        </el-button>
-        <el-button
-          v-if="hp.isSe2 && hp.showEpcSend"
-          type="primary"
-          size="mini"
-          :disabled="!selectedRow"
-          @click="openEpcSend"
-        >
-          制标发送
-        </el-button>
-        <el-button
-          v-if="hp.isSe2 && hp.showProcessUp"
-          type="primary"
-          size="mini"
-          :disabled="!selectedRow"
-          @click="openProCkOrder"
-        >
-          智能库上架
-        </el-button>
-        <el-button
-          v-if="!hp.isSe2"
-          type="primary"
-          size="mini"
-          :disabled="!selectedRow"
-          @click="handleSendDefHNCK"
-        >
-          补发送智能柜
-        </el-button>
-        <el-button type="primary" size="mini" :disabled="!selectedRow" @click="handlePrintDelivery">
-          打印出库配送单
-        </el-button>
-        <el-button
-          v-if="!hp.hidePrintDetail2"
-          type="primary"
-          size="mini"
-          :disabled="!selectedRow"
-          @click="handlePrintDelivery2"
-        >
-          打印出库单详情
-        </el-button>
-        <el-button
-          v-if="hp.showConsignmentPrint"
-          type="primary"
-          size="mini"
-          :disabled="!selectedRow"
-          @click="handlePrintConsignment"
-        >
-          打印出库寄售单
-        </el-button>
-        <el-button
-          v-if="hp.isLhLike"
-          type="primary"
-          size="mini"
-          :disabled="!selectedRow"
-          @click="handleSendYsy"
-        >
-          补发送至医商云
-        </el-button>
-        <el-button
-          type="primary"
-          size="mini"
-          :disabled="!canSendDeliveryBtn"
-          @click="handleSendDelivery"
-        >
-          发送出库配送单
-        </el-button>
-        <el-button
-          type="primary"
-          size="mini"
-          :disabled="!canConfirmReceiptBtn"
-          @click="handleConfirmReceipt"
-        >
-          确认收货
-        </el-button>
-      </el-form-item>
     </el-form>
-    <el-form :inline="true" size="mini">
+    <el-form :inline="true" size="mini" class="filter-row" @submit.native.prevent>
       <el-form-item>
         <el-date-picker
           v-model="form.dateRange"
@@ -125,6 +46,103 @@
         <el-button type="primary" icon="el-icon-search" @click="handleSearch">查询</el-button>
       </el-form-item>
     </el-form>
+    <div class="local-toolbar spd-toolbar">
+      <div class="spd-toolbar__group">
+        <div class="spd-toolbar__btns">
+          <el-button
+            type="primary"
+            size="mini"
+            :disabled="!canSendDeliveryBtn"
+            @click="handleSendDelivery"
+          >
+            发送出库配送单
+          </el-button>
+          <el-button
+            type="primary"
+            size="mini"
+            :disabled="!canConfirmReceiptBtn"
+            @click="handleConfirmReceipt"
+          >
+            确认收货
+          </el-button>
+        </div>
+      </div>
+      <div class="spd-toolbar__divider" />
+      <div class="spd-toolbar__group">
+        <div class="spd-toolbar__btns">
+          <el-button size="mini" :disabled="!selectedRow" @click="handlePrintDelivery">
+            打印出库配送单
+          </el-button>
+          <el-button
+            v-if="!hp.hidePrintDetail2"
+            size="mini"
+            :disabled="!selectedRow"
+            @click="handlePrintDelivery2"
+          >
+            打印出库单详情
+          </el-button>
+          <el-button
+            v-if="hp.showConsignmentPrint"
+            size="mini"
+            :disabled="!selectedRow"
+            @click="handlePrintConsignment"
+          >
+            打印出库寄售单
+          </el-button>
+        </div>
+      </div>
+      <div class="spd-toolbar__divider" />
+      <div class="spd-toolbar__group">
+        <div class="spd-toolbar__btns">
+          <el-button
+            v-if="hp.isSe2 && hp.showEpcSend"
+            size="mini"
+            :disabled="!selectedRow"
+            @click="openEpcSend"
+          >
+            制标发送
+          </el-button>
+          <el-button
+            v-if="hp.isSe2 && hp.showProcessUp"
+            size="mini"
+            :disabled="!selectedRow"
+            @click="openProCkOrder"
+          >
+            智能库上架
+          </el-button>
+          <el-button
+            v-if="!hp.isSe2"
+            size="mini"
+            :disabled="!selectedRow"
+            @click="handleSendDefHNCK"
+          >
+            补发送智能柜
+          </el-button>
+          <el-button
+            v-if="hp.isLhLike"
+            size="mini"
+            :disabled="!selectedRow"
+            @click="handleSendYsy"
+          >
+            补发送至医商云
+          </el-button>
+        </div>
+      </div>
+      <div class="spd-toolbar__divider" />
+      <div class="spd-toolbar__group">
+        <div class="spd-toolbar__btns">
+          <el-button size="mini" @click="handleExport">导出</el-button>
+        </div>
+      </div>
+      <div class="spd-toolbar__divider" />
+      <div class="spd-toolbar__group">
+        <div class="spd-toolbar__btns">
+          <el-button type="danger" size="mini" :disabled="!selectedRow" @click="handleCloseDistribute">
+            取消出库
+          </el-button>
+        </div>
+      </div>
+    </div>
     <ele-pro-table
       ref="table"
       size="mini"
@@ -565,13 +583,22 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.toolbar-form {
+.filter-row {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  margin-bottom: 8px;
+  gap: 4px;
 }
-.toolbar-actions {
-  margin-left: auto;
+.local-toolbar {
+  margin-bottom: 8px;
+}
+.local-toolbar.spd-toolbar {
+  padding: 0;
+}
+.local-toolbar .spd-toolbar__divider {
+  min-height: 24px;
+  margin: 0 8px;
 }
 :deep(.highlight-pack-row) {
   background-color: #f9d5d5 !important;

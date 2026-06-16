@@ -1,5 +1,5 @@
 <template>
-  <div class="ele-body ks-consume-query-temp">
+  <div class="ele-body spd-page ks-consume-query-temp">
     <el-card shadow="never">
       <div class="summary-bar">
         <span>当前页总金额: <b>{{ summary.pageCost }}</b></span>

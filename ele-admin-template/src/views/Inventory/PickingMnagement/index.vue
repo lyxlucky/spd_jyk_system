@@ -1,5 +1,5 @@
 <template>
-  <div class="ele-body picking-management">
+  <div class="ele-body spd-page picking-management">
     <el-row :gutter="10">
       <el-col :span="12">
         <PickListPanel ref="pickList" @pick-selected="onPickSelected" />

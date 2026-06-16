@@ -1,5 +1,5 @@
 <template>
-  <div class="ele-body yg-var-cl-sm">
+  <div class="ele-body spd-page yg-var-cl-sm">
     <el-card shadow="never">
       <el-form size="small" inline class="filter-block" @submit.native.prevent>
         <el-form-item label="品种/医保编码">

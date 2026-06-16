@@ -1,5 +1,5 @@
 <template>
-  <div class="ele-body central-inventory-monitoring">
+  <div class="ele-body spd-page central-inventory-monitoring">
     <el-card shadow="never">
       <el-tabs v-model="activeTab" type="card">
         <el-tab-pane label="中心库库存监控" name="center">
@@ -37,30 +37,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.central-inventory-monitoring :deep(.el-card__body) {
-  padding-top: 12px;
+.central-inventory-monitoring :deep(.monitor-warn-1) {
+  background-color: #f9d5d5 !important;
 }
-.central-inventory-monitoring :deep(.el-tabs__header) {
-  margin-bottom: 12px;
+.central-inventory-monitoring :deep(.monitor-warn-2) {
+  background-color: #f7f4a8 !important;
 }
-/* 表头完整显示 + 勾选列居中 */
-.central-inventory-monitoring :deep(.el-table th > .cell) {
-  white-space: nowrap;
-}
-.central-inventory-monitoring :deep(.ele-pro-table .el-table),
-.central-inventory-monitoring :deep(.data-table .el-table) {
-  width: max-content;
-  min-width: 100%;
-}
-.central-inventory-monitoring :deep(.cim-checkbox-col .cell),
-.central-inventory-monitoring :deep(.el-table-column--selection .cell) {
-  text-align: center;
-  padding-left: 0;
-  padding-right: 0;
-}
-.central-inventory-monitoring :deep(.el-table-column--selection .cell .el-checkbox) {
-  display: inline-flex;
-  justify-content: center;
-  width: 100%;
+.central-inventory-monitoring :deep(.monitor-warn-3) {
+  background-color: #a6e4f7 !important;
 }
 </style>

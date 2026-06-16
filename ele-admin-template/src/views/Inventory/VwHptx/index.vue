@@ -1,5 +1,5 @@
 <template>
-  <div class="ele-body vwhptx-page">
+  <div class="ele-body spd-page vwhptx-page">
     <el-card shadow="never">
       <div class="page-title">货票同行入库</div>
       <div class="summary-bar">

@@ -3,7 +3,7 @@
     <el-row :gutter="10">
       <el-col :span="3">
         <div class="section-title">选择退货科室</div>
-        <el-form :inline="true" size="mini" class="toolbar">
+        <el-form :inline="true" size="mini" class="filter-row">
           <el-form-item style="width: 100%; margin-right: 0">
             <el-input
               v-model="deptFilters.SearchName"
@@ -34,7 +34,7 @@
       </el-col>
       <el-col :span="21">
         <div class="section-title">选配退货品种</div>
-        <el-form :inline="true" size="mini" class="toolbar">
+        <el-form :inline="true" size="mini" class="filter-row" @submit.native.prevent>
           <el-form-item>
             <el-input v-model="varFilters.SearchVarietie" placeholder="编码/品种全称" clearable style="width: 180px" @keyup.enter.native="reloadVarieties" />
           </el-form-item>
@@ -57,10 +57,12 @@
           <el-form-item>
             <el-button type="primary" icon="el-icon-search" :disabled="!selectedDept" @click="reloadVarieties">查询</el-button>
           </el-form-item>
-          <el-form-item class="toolbar-right">
-            <el-button type="primary" :disabled="!canAddVarieties" @click="handleAddVarieties">添加退货品种</el-button>
-          </el-form-item>
         </el-form>
+        <div class="local-toolbar">
+          <div class="spd-toolbar__btns">
+            <el-button size="mini" type="primary" :disabled="!canAddVarieties" @click="handleAddVarieties">添加退货品种</el-button>
+          </div>
+        </div>
         <ele-pro-table
           ref="varTable"
           size="mini"
@@ -136,11 +138,20 @@
             </el-col>
           </el-row>
         </el-form>
-        <div class="order-actions">
-          <el-button size="mini" type="primary" :disabled="!selectedDept" @click="createVisible = true">创建退货单</el-button>
-          <el-button size="mini" type="success" :disabled="!canConfirmOrder" @click="handleConfirmOrder">确认退货</el-button>
-          <el-button size="mini" :disabled="!canPrintOrder" @click="handlePrintOrder">打印退货单</el-button>
-          <el-button size="mini" type="danger" :disabled="!canDeleteOrder" @click="handleDeleteOrder">删除退货单</el-button>
+        <div class="local-toolbar spd-toolbar">
+          <div class="spd-toolbar__group">
+            <div class="spd-toolbar__btns">
+              <el-button size="mini" type="primary" :disabled="!selectedDept" @click="createVisible = true">创建退货单</el-button>
+              <el-button size="mini" type="success" :disabled="!canConfirmOrder" @click="handleConfirmOrder">确认退货</el-button>
+              <el-button size="mini" :disabled="!canPrintOrder" @click="handlePrintOrder">打印退货单</el-button>
+            </div>
+          </div>
+          <div class="spd-toolbar__divider" />
+          <div class="spd-toolbar__group">
+            <div class="spd-toolbar__btns">
+              <el-button size="mini" type="danger" :disabled="!canDeleteOrder" @click="handleDeleteOrder">删除退货单</el-button>
+            </div>
+          </div>
         </div>
         <ele-pro-table
           ref="orderTable"
@@ -178,7 +189,7 @@
       </el-col>
       <el-col :span="18">
         <div class="section-title">退货品种明细</div>
-        <el-form :inline="true" size="mini" class="toolbar">
+        <el-form :inline="true" size="mini" class="filter-row" @submit.native.prevent>
           <el-form-item>
             <el-input
               v-model="detailFilters.SearchName"
@@ -191,10 +202,12 @@
           <el-form-item>
             <el-button type="primary" icon="el-icon-search" :disabled="!selectedOrder" @click="reloadDetails">查询</el-button>
           </el-form-item>
-          <el-form-item class="toolbar-right">
-            <el-button type="danger" :disabled="!canDeleteDetail" @click="handleDeleteDetails">删除品种</el-button>
-          </el-form-item>
         </el-form>
+        <div class="local-toolbar">
+          <div class="spd-toolbar__btns">
+            <el-button size="mini" type="danger" :disabled="!canDeleteDetail" @click="handleDeleteDetails">删除品种</el-button>
+          </div>
+        </div>
         <ele-pro-table
           ref="detailTable"
           size="mini"
@@ -725,22 +738,27 @@ export default {
   font-weight: 600;
   margin-bottom: 8px;
 }
-.toolbar {
-  margin-bottom: 4px;
+.filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 8px;
+  gap: 4px;
 }
-.toolbar-right {
-  float: right;
+.local-toolbar {
+  margin-bottom: 8px;
+}
+.local-toolbar.spd-toolbar {
+  padding: 0;
+}
+.local-toolbar .spd-toolbar__divider {
+  min-height: 24px;
+  margin: 0 8px;
 }
 .order-filter-form {
   margin-bottom: 8px;
   :deep(.el-form-item) {
     margin-bottom: 6px;
   }
-}
-.order-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-bottom: 8px;
 }
 </style>

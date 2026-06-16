@@ -1,5 +1,5 @@
 <template>
-  <div class="ele-body inventory-snapshot">
+  <div class="ele-body spd-page inventory-snapshot">
     <el-card shadow="never" class="section-card">
       <SupplierSnapshotPanel />
     </el-card>

@@ -1,5 +1,5 @@
 <template>
-  <div class="ele-body umpda-page">
+  <div class="ele-body spd-page umpda-page">
     <el-card shadow="never" class="umpda-table-card">
       <div class="section-title">PDA用户管理</div>
       <el-form :inline="true" size="mini" class="filter-form" @submit.native.prevent>

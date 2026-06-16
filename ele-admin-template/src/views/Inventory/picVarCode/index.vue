@@ -1,5 +1,5 @@
 <template>
-  <div class="ele-body pic-var-code-page">
+  <div class="ele-body spd-page pic-var-code-page">
     <el-card shadow="never">
       <ele-pro-table
         ref="table"

@@ -1,5 +1,5 @@
 <template>
-  <div class="ele-body auth-order-page">
+  <div class="ele-body spd-page auth-order-page">
     <el-row :gutter="12">
       <!-- 订单主单 -->
       <el-col :span="5">
@@ -8,7 +8,7 @@
             <span>订单号</span>
             <!-- <span class="count-tip">共 {{ mainTotal }} 条</span> -->
           </div>
-          <div class="toolbar">
+          <div class="filter-row">
             <el-input
               v-model="mainQuery.deliveryNoteNumber"
               size="mini"
@@ -21,7 +21,7 @@
               <el-option label="已收货" value="1" />
               <el-option label="全部" value="" />
             </el-select>
-            <el-button size="mini" type="primary" icon="el-icon-search" @click="loadMain(true)" />
+            <el-button size="mini" type="primary" icon="el-icon-search" @click="loadMain(true)">查询</el-button>
           </div>
           <el-table
             v-loading="mainLoading"
@@ -57,19 +57,33 @@
           <div class="section-title row-title">
             <span>订单明细</span>
           </div>
-          <div class="toolbar wrap">
-            <el-button v-if="showConfirmReceipt" size="mini" type="primary" :disabled="!selectedMain" @click="onConfirmReceipt">
-              确认收货
-            </el-button>
-            <el-button v-if="showReceiptToUse" size="mini" type="primary" :disabled="!selectedMain" @click="openReceiptDialog('use')">
-              收货结算
-            </el-button>
-            <el-button v-if="showReceiptToSend" size="mini" type="primary" :disabled="!selectedMain" @click="openReceiptDialog('send')">
-              收货至出库
-            </el-button>
-            <el-button size="mini" :disabled="!selectedMain" @click="onPrint">打印收货单</el-button>
-            <el-button size="mini" :disabled="!selectedMain" @click="onReplace">转为普通收货</el-button>
-            <el-button size="mini" :disabled="!selectedMain" @click="exportDetail">导出</el-button>
+          <div class="local-toolbar spd-toolbar">
+            <div class="spd-toolbar__group">
+              <div class="spd-toolbar__btns">
+                <el-button v-if="showConfirmReceipt" size="mini" type="primary" :disabled="!selectedMain" @click="onConfirmReceipt">
+                  确认收货
+                </el-button>
+                <el-button v-if="showReceiptToUse" size="mini" type="primary" :disabled="!selectedMain" @click="openReceiptDialog('use')">
+                  收货结算
+                </el-button>
+                <el-button v-if="showReceiptToSend" size="mini" type="primary" :disabled="!selectedMain" @click="openReceiptDialog('send')">
+                  收货至出库
+                </el-button>
+              </div>
+            </div>
+            <div class="spd-toolbar__divider" />
+            <div class="spd-toolbar__group">
+              <div class="spd-toolbar__btns">
+                <el-button size="mini" :disabled="!selectedMain" @click="onPrint">打印收货单</el-button>
+                <el-button size="mini" :disabled="!selectedMain" @click="exportDetail">导出</el-button>
+              </div>
+            </div>
+            <div class="spd-toolbar__divider" />
+            <div class="spd-toolbar__group">
+              <div class="spd-toolbar__btns">
+                <el-button size="mini" :disabled="!selectedMain" @click="onReplace">转为普通收货</el-button>
+              </div>
+            </div>
           </div>
           <el-table
             v-loading="delLoading"
@@ -123,9 +137,18 @@
             <span>定数码</span>
             <!-- <span class="count-tip">共 {{ defTotal }} 条</span> -->
           </div>
-          <div class="toolbar">
-            <el-button size="mini" type="warning" :disabled="!defSelection.length" @click="onRejectDef">拒收定数码</el-button>
-            <el-button size="mini" :disabled="!selectedMain" @click="exportDef">导出</el-button>
+          <div class="local-toolbar spd-toolbar">
+            <div class="spd-toolbar__group">
+              <div class="spd-toolbar__btns">
+                <el-button size="mini" type="warning" :disabled="!defSelection.length" @click="onRejectDef">拒收定数码</el-button>
+              </div>
+            </div>
+            <div class="spd-toolbar__divider" />
+            <div class="spd-toolbar__group">
+              <div class="spd-toolbar__btns">
+                <el-button size="mini" :disabled="!selectedMain" @click="exportDef">导出</el-button>
+              </div>
+            </div>
           </div>
           <el-table
             ref="defTable"
@@ -582,12 +605,22 @@ export default {
     font-size: 12px;
     color: #909399;
   }
-  .toolbar {
+  .filter-row {
     display: flex;
     flex-wrap: wrap;
     gap: 6px;
     margin-bottom: 8px;
     align-items: center;
+  }
+  .local-toolbar {
+    margin-bottom: 8px;
+  }
+  .local-toolbar.spd-toolbar {
+    padding: 0;
+  }
+  .local-toolbar .spd-toolbar__divider {
+    min-height: 24px;
+    margin: 0 8px;
   }
   .pager {
     margin-top: 8px;

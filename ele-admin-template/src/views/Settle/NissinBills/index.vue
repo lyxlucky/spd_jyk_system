@@ -1,5 +1,5 @@
 <template>
-  <div class="ele-body nissin-bills">
+  <div class="ele-body spd-page nissin-bills">
     <div class="panel-grid">
       <!-- 左：日清账单列表 -->
       <div class="col-left">

@@ -1,5 +1,5 @@
 <template>
-  <div class="ele-body ygcg-platform">
+  <div class="ele-body spd-page ygcg-platform">
     <el-card shadow="never">
       <el-form
         size="small"

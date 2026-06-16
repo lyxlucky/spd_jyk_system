@@ -1,5 +1,5 @@
 <template>
-  <div class="ele-body variety-audit-page">
+  <div class="ele-body spd-page variety-audit-page">
     <el-card shadow="never" class="main-card">
       <div class="section-title">散货品种列表</div>
 

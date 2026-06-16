@@ -1,5 +1,5 @@
 <template>
-  <div class="ele-body contract-page">
+  <div class="ele-body spd-page contract-page">
     <el-card shadow="never" class="top-card">
       <el-row :gutter="10">
         <!-- 供应商列表 -->

@@ -1,5 +1,5 @@
 <template>
-  <div class="ele-body effective-tip-page">
+  <div class="ele-body spd-page effective-tip-page">
     <el-card shadow="never">
       <expiry-table-panel
         title="注册证到期"

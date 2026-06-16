@@ -1,5 +1,5 @@
 <template>
-  <div class="ele-body var-use-statistics">
+  <div class="ele-body spd-page var-use-statistics">
     <el-card shadow="never" class="block-card">
       <el-row :gutter="12">
         <el-col :span="5">

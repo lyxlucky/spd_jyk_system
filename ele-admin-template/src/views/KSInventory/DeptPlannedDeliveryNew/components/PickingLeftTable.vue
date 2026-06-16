@@ -1,6 +1,6 @@
 <template>
   <div class="picking-left">
-    <div class="sub-panel-head">备货单列表</div>
+    <div class="sub-panel-head spd-sub-panel__head">备货单列表</div>
     <el-form size="mini" inline class="filter-row" @submit.native.prevent>
       <el-form-item>
         <el-input v-model="where.date" clearable placeholder="YYYY-MM" style="width: 100px" />

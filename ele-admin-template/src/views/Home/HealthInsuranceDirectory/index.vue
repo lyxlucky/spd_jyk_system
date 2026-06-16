@@ -1,5 +1,5 @@
 <template>
-  <div class="ele-body health-insurance-directory">
+  <div class="ele-body spd-page health-insurance-directory">
     <el-card shadow="never">
       <el-form
         size="small"

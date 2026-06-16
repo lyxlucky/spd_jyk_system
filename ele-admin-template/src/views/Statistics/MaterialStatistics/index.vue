@@ -1,5 +1,5 @@
 <template>
-  <div class="ele-body material-statistics">
+  <div class="ele-body spd-page material-statistics">
     <el-card shadow="never">
       <p class="page-desc">
         说明:如果填写了环期时间系统只会显示环期有使用的品种,因为如果环期没有使用,金额为0是无法计算增幅的,排序增幅排序只有填写了环期时间才生效

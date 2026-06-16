@@ -1,6 +1,8 @@
 <template>
-  <div class="ele-body bh-info-page">
-    <el-card shadow="never">
+  <div class="ele-body spd-page bh-info-page">
+    <div class="spd-panel spd-panel--search">
+      <div class="spd-panel__head">查询条件</div>
+      <div class="spd-panel__body">
       <el-form :inline="true" size="mini" class="filter-form">
         <el-form-item label="品种编码">
           <el-input v-model="filters.VARIETIE_CODE_NEW" clearable style="width: 160px" @keyup.enter.native="reloadMain" />
@@ -43,8 +45,13 @@
           <el-button type="primary" icon="el-icon-search" @click="reloadMain">查询</el-button>
         </el-form-item>
       </el-form>
+      </div>
+    </div>
 
-      <div class="action-bar">
+    <div class="spd-panel">
+      <div class="spd-panel__head">操作</div>
+      <div class="action-bar spd-toolbar">
+        <div class="spd-toolbar__btns">
         <el-button type="primary" size="mini" :disabled="!mainSelection.length" @click="handleSetCb(1)">设为常备</el-button>
         <el-button type="danger" size="mini" plain :disabled="!mainSelection.length" @click="handleSetCb(0)">取消常备</el-button>
         <el-button type="success" size="mini" :disabled="!mainSelection.length" @click="handleGenerateStockUp">生成备货</el-button>
@@ -56,8 +63,16 @@
         <el-upload class="inline-upload" action="" :show-file-list="false" accept=".xlsx,.xls" :http-request="onImportBh">
           <el-button size="mini" :loading="importBhLoading">导入条目</el-button>
         </el-upload>
+        </div>
       </div>
+    </div>
 
+    <div class="spd-panel spd-table-panel">
+      <div class="spd-panel__head spd-panel__head--split">
+        <span>品种备货分析列表</span>
+        <span v-if="mainSelection.length" class="spd-panel__head-meta">已选 {{ mainSelection.length }} 条</span>
+      </div>
+      <div class="spd-table-panel__wrap">
       <ele-pro-table
         ref="mainTable"
         size="mini"
@@ -97,10 +112,13 @@
           <el-button type="text" size="mini" @click.stop="openLimitDialog(row)">修改上下限</el-button>
         </template>
       </ele-pro-table>
+      </div>
+    </div>
 
       <el-row :gutter="12" class="bottom-row">
         <el-col :span="10">
-          <div class="section-title">备货单列表</div>
+          <div class="spd-sub-panel">
+          <div class="spd-sub-panel__head">备货单列表</div>
           <el-form :inline="true" size="mini" class="bottom-filter">
             <el-form-item>
               <el-input v-model="pickingFilters.BHDate" placeholder="YYYY-MM" clearable style="width: 110px" />
@@ -147,11 +165,13 @@
               <el-button type="primary" size="mini" plain @click.stop="openPlanRemarkDialog(row)">备注</el-button>
             </template>
           </ele-pro-table>
+          </div>
         </el-col>
         <el-col :span="14">
-          <div class="section-title row-title">
+          <div class="spd-sub-panel">
+          <div class="spd-sub-panel__head row-title">
             <span>备货单明细</span>
-            <el-button type="danger" size="mini" :disabled="!detailSelection.length" @click="handleDeleteDetails">删除</el-button>
+            <el-button type="danger" size="mini" plain :disabled="!detailSelection.length" @click="handleDeleteDetails">删除</el-button>
           </div>
           <ele-pro-table
             ref="detailTable"
@@ -168,9 +188,9 @@
           >
             <template v-slot:price="{ row }">{{ formatPrice(row) }}</template>
           </ele-pro-table>
+          </div>
         </el-col>
       </el-row>
-    </el-card>
 
     <el-dialog title="备注" :visible.sync="remarkVisible" width="600px" append-to-body>
       <el-input v-model="remarkText" type="textarea" :rows="10" />
@@ -707,23 +727,10 @@ export default {
 </script>
 
 <style scoped>
-.filter-form {
-  margin-bottom: 4px;
-}
-.action-bar {
-  margin-bottom: 10px;
-}
-.action-bar .el-button,
-.action-bar .inline-upload {
-  margin-right: 8px;
-}
-.inline-upload {
-  display: inline-block;
-}
-.section-title {
-  font-size: 14px;
-  font-weight: 600;
-  margin-bottom: 8px;
+.bh-info-page {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 .row-title {
   display: flex;
@@ -731,9 +738,6 @@ export default {
   justify-content: space-between;
 }
 .bottom-row {
-  margin-top: 12px;
-}
-.bottom-filter {
-  margin-bottom: 6px;
+  margin-top: 0;
 }
 </style>

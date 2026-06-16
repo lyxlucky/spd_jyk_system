@@ -3,18 +3,7 @@
     <el-row :gutter="10">
       <el-col :span="7">
         <div class="section-title">退货单列表</div>
-        <el-form :inline="true" size="mini" class="toolbar">
-          <el-form-item>
-            <el-button type="primary" :disabled="!selectedOrder" @click="handlePrint">打印退货单</el-button>
-          </el-form-item>
-          <el-form-item>
-            <el-button type="success" :disabled="!selectedOrder" @click="handleConfirmReturn">确认退货</el-button>
-          </el-form-item>
-          <el-form-item v-if="hp.enableEpcBack">
-            <el-button type="warning" :disabled="!selectedOrder" @click="handleEpcBack">智能库退货</el-button>
-          </el-form-item>
-        </el-form>
-        <el-form :inline="true" size="mini" class="toolbar">
+        <el-form :inline="true" size="mini" class="filter-row" @submit.native.prevent>
           <el-form-item>
             <el-input v-model="orderFilters.return_number" placeholder="退货单号" clearable style="width: 110px" @keyup.enter.native="reloadOrders" />
           </el-form-item>
@@ -28,6 +17,23 @@
             <el-button type="primary" icon="el-icon-search" @click="reloadOrders">搜索</el-button>
           </el-form-item>
         </el-form>
+        <div class="local-toolbar spd-toolbar">
+          <div class="spd-toolbar__group">
+            <div class="spd-toolbar__btns">
+              <el-button size="mini" type="success" :disabled="!selectedOrder" @click="handleConfirmReturn">确认退货</el-button>
+              <el-button size="mini" :disabled="!selectedOrder" @click="handlePrint">打印退货单</el-button>
+              <el-button
+                v-if="hp.enableEpcBack"
+                size="mini"
+                type="warning"
+                :disabled="!selectedOrder"
+                @click="handleEpcBack"
+              >
+                智能库退货
+              </el-button>
+            </div>
+          </div>
+        </div>
         <ele-pro-table
           ref="orderTable"
           size="mini"
@@ -53,7 +59,7 @@
       </el-col>
       <el-col :span="17">
         <div class="section-title">退货单定数包列表</div>
-        <el-form :inline="true" size="mini" class="toolbar">
+        <el-form :inline="true" size="mini" class="filter-row" @submit.native.prevent>
           <el-form-item>
             <el-input
               v-model="detailFilters.condition"
@@ -290,7 +296,17 @@ export default {
   font-weight: 600;
   margin-bottom: 8px;
 }
-.toolbar {
-  margin-bottom: 4px;
+.filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 8px;
+  gap: 4px;
+}
+.local-toolbar {
+  margin-bottom: 8px;
+}
+.local-toolbar.spd-toolbar {
+  padding: 0;
 }
 </style>

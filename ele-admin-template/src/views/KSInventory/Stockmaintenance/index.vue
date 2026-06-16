@@ -1,5 +1,5 @@
 <template>
-  <div class="ele-body stock-maintenance">
+  <div class="ele-body spd-page stock-maintenance">
     <el-card shadow="never">
       <StockmaintenanceSearch
         ref="search"

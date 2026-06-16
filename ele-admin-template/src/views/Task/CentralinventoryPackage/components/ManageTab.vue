@@ -1,7 +1,7 @@
 <template>
   <div class="cip-manage-tab">
     <div class="section-title">请选择制包品种</div>
-    <el-form :inline="true" size="mini" class="toolbar">
+    <el-form :inline="true" size="mini" class="filter-row" @submit.native.prevent>
       <el-form-item>
         <el-input
           v-model="searchFilters.condition"
@@ -18,9 +18,13 @@
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" @click="reloadSearch">查询</el-button>
-        <el-button type="success" :disabled="!searchSelection.length" @click="handleAddLock">添加</el-button>
       </el-form-item>
     </el-form>
+    <div class="local-toolbar">
+      <div class="spd-toolbar__btns">
+        <el-button size="mini" type="success" :disabled="!searchSelection.length" @click="handleAddLock">添加</el-button>
+      </div>
+    </div>
     <ele-pro-table
       ref="searchTable"
       size="mini"
@@ -58,20 +62,34 @@
     <el-row :gutter="10" style="margin-top: 12px">
       <el-col :span="20">
         <div class="section-title">已添加的制包品种列表</div>
-        <el-form :inline="true" size="mini" class="toolbar">
+        <el-form :inline="true" size="mini" class="filter-row" @submit.native.prevent>
           <el-form-item>
             <el-input v-model="lockedFilters.bagMaker" placeholder="制包人/品种编码/名称" clearable style="width: 220px" @keyup.enter.native="reloadLocked" />
           </el-form-item>
           <el-form-item>
-            <el-button icon="el-icon-search" @click="reloadLocked">查询</el-button>
-            <el-button type="primary" @click="filterMyAccount">本账号制包</el-button>
-            <el-button type="warning" :disabled="!lockedSelection.length" @click="handleConvertUdi">转换为UDI制包</el-button>
-          </el-form-item>
-          <el-form-item class="toolbar-right">
-            <el-button type="danger" :disabled="!canDeleteLocked" @click="handleDeleteLocked">删除</el-button>
-            <el-button type="success" :disabled="!canGenerateDef" @click="handleGenerateDef">生成定数包标签</el-button>
+            <el-button type="primary" icon="el-icon-search" @click="reloadLocked">查询</el-button>
           </el-form-item>
         </el-form>
+        <div class="local-toolbar spd-toolbar">
+          <div class="spd-toolbar__group">
+            <div class="spd-toolbar__btns">
+              <el-button size="mini" @click="filterMyAccount">本账号制包</el-button>
+              <el-button size="mini" type="warning" :disabled="!lockedSelection.length" @click="handleConvertUdi">转换为UDI制包</el-button>
+            </div>
+          </div>
+          <div class="spd-toolbar__divider" />
+          <div class="spd-toolbar__group">
+            <div class="spd-toolbar__btns">
+              <el-button size="mini" type="success" :disabled="!canGenerateDef" @click="handleGenerateDef">生成定数包标签</el-button>
+            </div>
+          </div>
+          <div class="spd-toolbar__divider" />
+          <div class="spd-toolbar__group">
+            <div class="spd-toolbar__btns">
+              <el-button size="mini" type="danger" :disabled="!canDeleteLocked" @click="handleDeleteLocked">删除</el-button>
+            </div>
+          </div>
+        </div>
         <ele-pro-table
           ref="lockedTable"
           size="mini"
@@ -95,12 +113,14 @@
       </el-col>
       <el-col :span="4">
         <div class="section-title">定数包标签列表</div>
-        <el-select v-model="printType" size="mini" style="width: 100%; margin-bottom: 8px">
-          <el-option v-for="item in labelOptions" :key="item.value" :label="item.label" :value="item.value" />
-        </el-select>
-        <el-button type="primary" size="mini" style="width: 100%; margin-bottom: 8px" :disabled="!canPrintShelf" @click="handlePrintShelf">
-          上架打印
-        </el-button>
+        <div class="local-toolbar label-toolbar">
+          <el-select v-model="printType" size="mini" style="width: 100%">
+            <el-option v-for="item in labelOptions" :key="item.value" :label="item.label" :value="item.value" />
+          </el-select>
+          <el-button type="primary" size="mini" style="width: 100%" :disabled="!canPrintShelf" @click="handlePrintShelf">
+            上架打印
+          </el-button>
+        </div>
         <ele-pro-table
           ref="defCodeTable"
           size="mini"
@@ -470,11 +490,27 @@ export default {
   font-weight: 600;
   margin-bottom: 8px;
 }
-.toolbar {
-  margin-bottom: 4px;
+.filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 8px;
+  gap: 4px;
 }
-.toolbar-right {
-  float: right;
+.local-toolbar {
+  margin-bottom: 8px;
+}
+.local-toolbar.spd-toolbar {
+  padding: 0;
+}
+.local-toolbar .spd-toolbar__divider {
+  min-height: 24px;
+  margin: 0 8px;
+}
+.label-toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 .near-expiry {
   color: #e6a23c;

@@ -9,6 +9,9 @@
       </span>
     </div>
 
+    <div class="spd-panel spd-panel--search">
+      <div class="spd-panel__head">查询条件</div>
+      <div class="spd-panel__body">
     <el-form size="mini" inline class="filter-row" @submit.native.prevent>
       <el-form-item label="使用级别">
         <el-select v-model="filters.UseLevel" style="width: 100px" @change="reloadMonitor">
@@ -69,29 +72,40 @@
         <el-button type="primary" icon="el-icon-search" @click="reloadMonitor">查询</el-button>
         <el-button @click="toggleMonitorHeight">{{ monitorExpanded ? '还原表格' : '表格放大' }}</el-button>
       </el-form-item>
-      <el-form-item>
-        <el-select v-model="allocateSvc" style="width: 140px">
-          <el-option :label="allocateLabels.outToIn" value="1" />
-          <el-option :label="allocateLabels.inToOut" value="0" />
-        </el-select>
-      </el-form-item>
-      <el-form-item>
-        <el-button @click="openAllocate('sh')">生成散货调拨单</el-button>
-        <el-button @click="openAllocate('dsb')">生成定数包调拨单</el-button>
-      </el-form-item>
-      <el-form-item class="action-group">
-        <el-button v-permission="'export-CentralinventoryMonitoring-zxkdc'" :loading="exporting" @click="onExport">
-          导出
-        </el-button>
-        <el-button @click="onShowLc">临采品种详情</el-button>
-        <el-button type="primary" :disabled="!monitorSelection.length" @click="onGenerateStockUp">
-          添加至已选备货单
-        </el-button>
-        <el-upload class="inline-upload" action="" :show-file-list="false" accept=".xlsx,.xls" :http-request="onImportBh">
-          <el-button :loading="importLoading">导入生成备货</el-button>
-        </el-upload>
-      </el-form-item>
     </el-form>
+      </div>
+    </div>
+
+    <div class="spd-panel">
+      <div class="spd-panel__head">操作</div>
+      <div class="spd-toolbar">
+        <div class="spd-toolbar__group">
+          <div class="spd-toolbar__btns">
+            <el-select v-model="allocateSvc" size="mini" style="width: 140px">
+              <el-option :label="allocateLabels.outToIn" value="1" />
+              <el-option :label="allocateLabels.inToOut" value="0" />
+            </el-select>
+            <el-button size="mini" @click="openAllocate('sh')">散货调拨单</el-button>
+            <el-button size="mini" @click="openAllocate('dsb')">定数包调拨单</el-button>
+          </div>
+        </div>
+        <div class="spd-toolbar__divider" />
+        <div class="spd-toolbar__group">
+          <div class="spd-toolbar__btns">
+            <el-button v-permission="'export-CentralinventoryMonitoring-zxkdc'" size="mini" :loading="exporting" @click="onExport">
+              导出
+            </el-button>
+            <el-button size="mini" @click="onShowLc">临采详情</el-button>
+            <el-button size="mini" type="primary" :disabled="!monitorSelection.length" @click="onGenerateStockUp">
+              添加至已选备货单
+            </el-button>
+            <el-upload class="inline-upload" action="" :show-file-list="false" accept=".xlsx,.xls" :http-request="onImportBh">
+              <el-button size="mini" :loading="importLoading">导入生成备货</el-button>
+            </el-upload>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <div v-if="selectedRowsPreview.length" class="selected-preview">
       <el-table :data="selectedRowsPreview" size="mini" border max-height="120">
@@ -103,6 +117,12 @@
       </el-table>
     </div>
 
+    <div class="spd-panel spd-table-panel">
+      <div class="spd-panel__head spd-panel__head--split">
+        <span>中心库库存列表</span>
+        <span v-if="monitorSelection.length" class="spd-panel__head-meta">已选 {{ monitorSelection.length }} 条</span>
+      </div>
+      <div class="spd-table-panel__wrap">
     <ele-pro-table
       ref="monitorTable"
       class="data-table"
@@ -142,10 +162,13 @@
       </template>
       <template v-slot:planGoodsQty="{ row }">{{ planGoodsQtyDisplay(row) }}</template>
     </ele-pro-table>
+      </div>
+    </div>
 
     <el-row :gutter="12" class="bottom-row">
       <el-col :span="10">
-        <div class="section-title">备货单列表</div>
+        <div class="spd-sub-panel">
+        <div class="spd-sub-panel__head">备货单列表</div>
         <el-form size="mini" inline class="bottom-filter" @submit.native.prevent>
           <el-form-item>
             <el-input v-model="pickingWhere.BHDate" placeholder="YYYY-MM" clearable style="width: 100px" />
@@ -197,13 +220,15 @@
             <el-button type="text" size="mini" class="text-danger" @click.stop="onDeletePlan(row)">删除</el-button>
           </template>
         </ele-pro-table>
+        </div>
       </el-col>
       <el-col :span="14">
-        <div class="section-title row-title">
+        <div class="spd-sub-panel">
+        <div class="spd-sub-panel__head row-title">
           <span>备货单明细</span>
-          <div>
+          <div class="spd-toolbar__btns">
             <el-button size="mini" :disabled="!detailSelection.length" @click="openBhXsDialog">增加线上线下</el-button>
-            <el-button type="danger" size="mini" :disabled="!detailSelection.length" @click="onDeleteDetails">
+            <el-button type="danger" size="mini" plain :disabled="!detailSelection.length" @click="onDeleteDetails">
               删除
             </el-button>
           </div>
@@ -221,6 +246,7 @@
           :selection.sync="detailSelection"
           cache-key="cimCenterDetailTable"
         />
+        </div>
       </el-col>
     </el-row>
 
@@ -704,6 +730,9 @@ export default {
 
 <style lang="scss" scoped>
 .center-warehouse-tab {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
   .color-legend {
     display: flex;
     flex-wrap: wrap;
@@ -728,19 +757,11 @@ export default {
   .bottom-filter {
     margin-bottom: 8px;
   }
-  .action-group {
-    margin-left: auto;
-  }
   .inline-upload {
     display: inline-block;
-    margin-left: 8px;
   }
   .selected-preview {
-    margin-bottom: 8px;
-  }
-  .section-title {
-    font-weight: 600;
-    margin-bottom: 8px;
+    margin-bottom: 0;
   }
   .row-title {
     display: flex;
@@ -748,7 +769,7 @@ export default {
     justify-content: space-between;
   }
   .bottom-row {
-    margin-top: 12px;
+    margin-top: 0;
   }
   .text-danger {
     color: #f56c6c;

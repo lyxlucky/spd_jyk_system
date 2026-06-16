@@ -1,0 +1,288 @@
+/**
+ * 新系统页面统一布局（查询区 / 工具栏 / 表格区）
+ * 页面根节点添加 class="spd-page" 即可生效
+ */
+
+.spd-page {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 0;
+
+  /* 表头完整显示 + 勾选列居中 */
+  :deep(.el-table th > .cell) {
+    white-space: nowrap;
+  }
+  :deep(.ele-pro-table .el-table),
+  :deep(.data-table .el-table),
+  :deep(.el-table) {
+    width: max-content;
+    min-width: 100%;
+  }
+  :deep(.spd-checkbox-col .cell),
+  :deep(.dpd-checkbox-col .cell),
+  :deep(.cim-checkbox-col .cell),
+  :deep(.el-table-column--selection .cell) {
+    text-align: center;
+    padding-left: 0;
+    padding-right: 0;
+  }
+  :deep(.el-table-column--selection .cell .el-checkbox) {
+    display: inline-flex;
+    justify-content: center;
+    width: 100%;
+  }
+
+  > .el-card {
+    border: 1px solid #ebeef5;
+    box-shadow: none !important;
+  }
+  > .el-card :deep(.el-card__body) {
+    padding: 12px;
+  }
+}
+
+/* ---------- 分区面板 ---------- */
+.spd-panel {
+  border: 1px solid #ebeef5;
+  border-radius: 4px;
+  background: #fff;
+  overflow: hidden;
+}
+
+.spd-panel__title {
+  font-weight: 600;
+}
+
+.spd-panel__head--split {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.spd-panel__head-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.spd-panel__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #303133;
+  background: #f5f7fa;
+  border-bottom: 1px solid #ebeef5;
+}
+
+.spd-panel__head-meta {
+  font-size: 12px;
+  font-weight: normal;
+  color: #409eff;
+}
+
+.spd-panel__body {
+  padding: 10px 12px;
+}
+
+.spd-panel--search .spd-panel__body {
+  padding-bottom: 2px;
+}
+
+.spd-panel--search :deep(.el-form-item) {
+  margin-bottom: 8px;
+}
+
+.spd-panel--search :deep(.el-form-item__label) {
+  font-size: 12px;
+}
+
+/* ---------- 页面级分区（上下多块） ---------- */
+.spd-section {
+  border: 1px solid #ebeef5;
+  border-radius: 4px;
+  background: #fff;
+  padding: 0 12px 12px;
+}
+
+.spd-section__head {
+  margin: 0 -12px 12px;
+  padding: 10px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #303133;
+  background: #f5f7fa;
+  border-bottom: 1px solid #ebeef5;
+}
+
+.spd-sub-panel {
+  border: 1px solid #ebeef5;
+  border-radius: 4px;
+  padding: 10px;
+  background: #fafbfc;
+  min-height: 280px;
+}
+
+.spd-sub-panel__head {
+  font-size: 12px;
+  font-weight: 600;
+  color: #606266;
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #ebeef5;
+}
+
+/* ---------- 工具栏 ---------- */
+.spd-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 0;
+  padding: 10px 12px 0;
+}
+
+.spd-toolbar__group {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.spd-toolbar__label {
+  flex-shrink: 0;
+  width: 32px;
+  padding-top: 6px;
+  font-size: 12px;
+  color: #909399;
+  line-height: 1;
+}
+
+.spd-toolbar__btns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.spd-toolbar__divider {
+  width: 1px;
+  min-height: 28px;
+  margin: 0 12px;
+  background: #dcdfe6;
+  align-self: center;
+}
+
+.spd-toolbar__extra {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ---------- 次级筛选条 ---------- */
+.spd-filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 10px 12px 0;
+  padding: 8px 10px;
+  background: #fafafa;
+  border: 1px dashed #e4e7ed;
+  border-radius: 4px;
+}
+
+.spd-filter-bar__label {
+  font-size: 12px;
+  color: #909399;
+  margin-right: 4px;
+}
+
+.spd-filter-bar__divider {
+  width: 1px;
+  height: 16px;
+  margin: 0 4px;
+  background: #dcdfe6;
+}
+
+/* ---------- 表格内容区 ---------- */
+.spd-table-panel {
+  display: flex;
+  flex-direction: column;
+  min-height: 320px;
+}
+
+.spd-table-panel__wrap {
+  padding: 0 1px 8px;
+}
+
+/* ---------- 兼容旧类名（在 spd-page 内自动增强） ---------- */
+.spd-page {
+  .panel-title,
+  .section-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #303133;
+    margin-bottom: 8px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #ebeef5;
+  }
+
+  .filter-row,
+  .panel-toolbar,
+  .filter-form {
+    margin-bottom: 8px;
+  }
+
+  .action-bar,
+  .detail-toolbar,
+  .auth-toolbar,
+  .toolbar-row:not(.spd-toolbar) {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 10px;
+    margin-bottom: 10px;
+    background: #fafafa;
+    border: 1px solid #ebeef5;
+    border-radius: 4px;
+  }
+
+  .action-bar .inline-upload,
+  .toolbar-row .inline-upload {
+    display: inline-flex;
+    margin: 0;
+  }
+
+  .section-card {
+    border: 1px solid #ebeef5;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    box-shadow: none !important;
+  }
+
+  .section-card:last-child {
+    margin-bottom: 0;
+  }
+
+  .section-card :deep(.el-card__body) {
+    padding: 12px;
+  }
+
+  .top-card {
+    border: 1px solid #ebeef5;
+    box-shadow: none !important;
+  }
+
+  .top-card :deep(.el-card__body) {
+    padding: 12px;
+  }
+
+  /* Tab 页内间距 */
+  .el-tabs__header {
+    margin-bottom: 10px;
+  }
+}

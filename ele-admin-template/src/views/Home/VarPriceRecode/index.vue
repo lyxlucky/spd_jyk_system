@@ -1,5 +1,5 @@
 <template>
-  <div class="ele-body">
+  <div class="ele-body spd-page">
     <el-card shadow="never">
       <user-search ref="search" @search="reload" @exportData="exportData" @markAsProcessed="markAsProcessed" />
       <ele-pro-table

@@ -1,5 +1,5 @@
 <template>
-  <div class="ele-body yg-plat-receiv-goods">
+  <div class="ele-body spd-page yg-plat-receiv-goods">
     <el-card shadow="never">
       <el-form size="small" inline class="filter-bar" @submit.native.prevent>
         <el-form-item>

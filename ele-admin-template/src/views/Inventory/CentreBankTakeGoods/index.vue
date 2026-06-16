@@ -1,5 +1,5 @@
 <template>
-  <div class="ele-body centre-bank-take-goods">
+  <div class="ele-body spd-page centre-bank-take-goods">
     <el-card shadow="never">
       <el-tabs v-model="activeTab">
         <el-tab-pane label="人工收货单" name="manual">

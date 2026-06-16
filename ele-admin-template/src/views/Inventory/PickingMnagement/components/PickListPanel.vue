@@ -2,7 +2,7 @@
   <el-card shadow="never">
     <div slot="header">定数包拣配指示单列表</div>
     <div class="panel-tip">注意：默认加载一个月的拣配单</div>
-    <el-form :inline="true" size="mini" class="toolbar-form">
+    <el-form :inline="true" size="mini" class="filter-row">
       <el-form-item label="拣配状态">
         <el-select v-model="form.PackState" style="width: 110px" @change="handleSearch">
           <el-option label="全部" :value="-1" />
@@ -34,28 +34,8 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item class="toolbar-actions">
-        <el-button
-          v-if="hp.showKubao"
-          type="primary"
-          size="mini"
-          :disabled="!selectedRow"
-          @click="handleSendKubao"
-        >
-          发送库宝
-        </el-button>
-        <el-button type="primary" size="mini" :disabled="!canOperatePick" @click="handleCompletePick">
-          完成拣配
-        </el-button>
-        <el-button type="primary" size="mini" :disabled="!canOperatePick" @click="handleCancelPick">
-          取消拣配
-        </el-button>
-        <el-button type="primary" size="mini" :disabled="!selectedRow" @click="handlePrintPick">
-          打印拣配指示单
-        </el-button>
-      </el-form-item>
     </el-form>
-    <el-form :inline="true" size="mini">
+    <el-form :inline="true" size="mini" class="filter-row" @submit.native.prevent>
       <el-form-item>
         <el-date-picker
           v-model="form.dateRange"
@@ -89,15 +69,42 @@
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" @click="handleSearch">查询</el-button>
       </el-form-item>
-      <el-form-item>
-        <el-button v-permission="'export-PickingMnagement-jpddc'" @click="handleExport">
-          导出
-        </el-button>
-      </el-form-item>
-      <el-form-item>
-        <el-button @click="importVisible = true">导入定数包</el-button>
-      </el-form-item>
     </el-form>
+    <div class="local-toolbar spd-toolbar">
+      <div class="spd-toolbar__group">
+        <div class="spd-toolbar__btns">
+          <el-button type="primary" size="mini" :disabled="!canOperatePick" @click="handleCompletePick">
+            完成拣配
+          </el-button>
+          <el-button size="mini" :disabled="!canOperatePick" @click="handleCancelPick">
+            取消拣配
+          </el-button>
+          <el-button
+            v-if="hp.showKubao"
+            size="mini"
+            :disabled="!selectedRow"
+            @click="handleSendKubao"
+          >
+            发送库宝
+          </el-button>
+        </div>
+      </div>
+      <div class="spd-toolbar__divider" />
+      <div class="spd-toolbar__group">
+        <div class="spd-toolbar__btns">
+          <el-button size="mini" :disabled="!selectedRow" @click="handlePrintPick">打印拣配指示单</el-button>
+        </div>
+      </div>
+      <div class="spd-toolbar__divider" />
+      <div class="spd-toolbar__group">
+        <div class="spd-toolbar__btns">
+          <el-button v-permission="'export-PickingMnagement-jpddc'" size="mini" @click="handleExport">
+            导出
+          </el-button>
+          <el-button size="mini" @click="importVisible = true">导入定数包</el-button>
+        </div>
+      </div>
+    </div>
     <ele-pro-table
       ref="table"
       size="mini"
@@ -410,12 +417,21 @@ export default {
   font-size: 12px;
   margin-bottom: 8px;
 }
-.toolbar-form {
+.filter-row {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  margin-bottom: 8px;
+  gap: 4px;
 }
-.toolbar-actions {
-  margin-left: auto;
+.local-toolbar {
+  margin-bottom: 8px;
+}
+.local-toolbar.spd-toolbar {
+  padding: 0;
+}
+.local-toolbar .spd-toolbar__divider {
+  min-height: 24px;
+  margin: 0 8px;
 }
 </style>

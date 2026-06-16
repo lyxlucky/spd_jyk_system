@@ -1,5 +1,5 @@
 <template>
-  <div class="ele-body yg-plat-view">
+  <div class="ele-body spd-page yg-plat-view">
     <el-card shadow="never">
       <el-form size="small" inline class="filter-block" @submit.native.prevent>
         <el-form-item>

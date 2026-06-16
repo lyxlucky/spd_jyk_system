@@ -1,5 +1,5 @@
 <template>
-  <div class="ele-body hishedging-data">
+  <div class="ele-body spd-page hishedging-data">
     <el-card shadow="never" class="tabs-card">
       <el-tabs v-model="activeTab" type="card">
         <el-tab-pane label="对冲成功的HIS计费数据" name="success">

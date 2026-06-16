@@ -1,5 +1,5 @@
 <template>
-  <div class="ele-body tertiary-inventory-page">
+  <div class="ele-body spd-page tertiary-inventory-page">
     <el-card shadow="never">
       <div class="page-title">三级库存查询</div>
       <TertiaryInventorySearch ref="search" :exporting="exporting" @search="reload" @export="onExport" />

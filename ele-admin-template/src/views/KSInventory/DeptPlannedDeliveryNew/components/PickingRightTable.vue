@@ -1,6 +1,6 @@
 <template>
   <div class="picking-right">
-    <div class="sub-panel-head">备货单明细</div>
+    <div class="sub-panel-head spd-sub-panel__head">备货单明细</div>
     <el-form size="mini" inline class="filter-row">
       <el-form-item>
         <el-button type="danger" size="mini" icon="el-icon-delete" :disabled="!selection.length" @click="onDelete">

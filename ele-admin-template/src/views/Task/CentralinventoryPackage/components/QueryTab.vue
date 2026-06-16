@@ -1,6 +1,6 @@
 <template>
   <div class="cip-query-tab">
-    <el-form :inline="true" size="mini" class="toolbar">
+    <el-form :inline="true" size="mini" class="filter-row">
       <el-form-item>
         <el-input v-model="filters.bagMakingNumber" placeholder="制包单号/操作人" clearable style="width: 150px" @keyup.enter.native="reload" />
       </el-form-item>
@@ -23,7 +23,7 @@
         <el-input v-model="filters.deliveryNoteNumber" placeholder="入库单号" clearable style="width: 130px" @keyup.enter.native="reload" />
       </el-form-item>
     </el-form>
-    <el-form :inline="true" size="mini" class="toolbar">
+    <el-form :inline="true" size="mini" class="filter-row" @submit.native.prevent>
       <el-form-item>
         <el-input v-model="filters.defCode" placeholder="定数码" clearable style="width: 130px" @keyup.enter.native="reload" />
       </el-form-item>
@@ -50,16 +50,25 @@
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" @click="reload">查询</el-button>
-        <el-button v-permission="'export-CentralinventoryPackage-zbdc'" @click="handleExport">导出EXCEL</el-button>
       </el-form-item>
     </el-form>
     <div class="tip-red">注意：日期搜索为空则默认搜索最近7天</div>
-    <div class="action-bar">
-      <el-select v-model="printType" size="mini" style="width: 180px">
-        <el-option v-for="item in labelOptions" :key="item.value" :label="item.label" :value="item.value" />
-      </el-select>
-      <el-button size="mini" type="primary" :disabled="!selection.length" @click="handleReprint">补打定数包标签</el-button>
-      <el-button size="mini" :disabled="!selection.length" @click="handlePrintOrder">打印制包单号</el-button>
+    <div class="local-toolbar spd-toolbar">
+      <div class="spd-toolbar__group">
+        <div class="spd-toolbar__btns">
+          <el-select v-model="printType" size="mini" style="width: 180px">
+            <el-option v-for="item in labelOptions" :key="item.value" :label="item.label" :value="item.value" />
+          </el-select>
+          <el-button size="mini" type="primary" :disabled="!selection.length" @click="handleReprint">补打定数包标签</el-button>
+          <el-button size="mini" :disabled="!selection.length" @click="handlePrintOrder">打印制包单号</el-button>
+        </div>
+      </div>
+      <div class="spd-toolbar__divider" />
+      <div class="spd-toolbar__group">
+        <div class="spd-toolbar__btns">
+          <el-button v-permission="'export-CentralinventoryPackage-zbdc'" size="mini" @click="handleExport">导出EXCEL</el-button>
+        </div>
+      </div>
     </div>
     <ele-pro-table
       ref="queryTable"
@@ -243,19 +252,26 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.toolbar {
-  margin-bottom: 4px;
+.filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 8px;
+  gap: 4px;
 }
 .tip-red {
   color: #f56c6c;
   font-size: 12px;
   margin-bottom: 8px;
 }
-.action-bar {
-  display: flex;
-  gap: 8px;
-  align-items: center;
+.local-toolbar {
   margin-bottom: 8px;
-  flex-wrap: wrap;
+}
+.local-toolbar.spd-toolbar {
+  padding: 0;
+}
+.local-toolbar .spd-toolbar__divider {
+  min-height: 24px;
+  margin: 0 8px;
 }
 </style>

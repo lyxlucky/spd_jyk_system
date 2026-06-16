@@ -1,11 +1,10 @@
 <template>
-  <div class="ele-body">
-    <!-- <el-button type="danger" size="small" @click="aaa">aaa</el-button> -->
-    <!-- 数据表格 -->
-    <!-- :rowClickChecked="true"  -->
-    <!-- :rowClickCheckedIntelligent="false"  -->
+  <div class="variety-data-lzh-main">
     <VarietyDataLzhMainSearch @search="reload" />
 
+    <div class="spd-panel spd-table-panel">
+      <div class="spd-panel__head">散货品种列表</div>
+      <div class="spd-panel__body spd-table-panel__wrap">
     <ele-pro-table ref="table" :toolStyle="toolStyle" height="60vh" highlight-current-row :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" @selection-change="onSelectionChange" cache-key="KSInventoryBasicDataTable">
 
       <template v-slot:PAG_TYPE="{ row }">
@@ -65,6 +64,8 @@
         </el-popconfirm>
       </template>
     </ele-pro-table>
+      </div>
+    </div>
 
     <el-dialog title="包装规格" :visible.sync="dialogVisible" width="30%" :before-close="handleClose">
       <el-row :gutter="20">
@@ -732,7 +733,7 @@ export default {
 </script>
 
 <style scoped>
-.ele-body {
-  padding: 0px;
+.variety-data-lzh-main {
+  padding: 0;
 }
 </style>

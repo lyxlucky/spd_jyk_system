@@ -1,5 +1,5 @@
 <template>
-  <div class="ele-body umg-page">
+  <div class="ele-body spd-page umg-page">
     <el-card shadow="never">
       <div class="section-title">权限组管理</div>
       <div class="toolbar-row">

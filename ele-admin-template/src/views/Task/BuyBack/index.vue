@@ -1,5 +1,5 @@
 <template>
-  <div class="ele-body buy-back-page">
+  <div class="ele-body spd-page buy-back-page">
     <el-card shadow="never">
       <el-tabs v-model="activeTab">
         <el-tab-pane label="中心库散货退购管理" name="bulk">

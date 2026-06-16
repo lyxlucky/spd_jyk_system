@@ -1,5 +1,5 @@
 <template>
-  <div class="ele-body high-value-consumables">
+  <div class="ele-body spd-page high-value-consumables">
     <el-card shadow="never">
       <el-form
         size="small"

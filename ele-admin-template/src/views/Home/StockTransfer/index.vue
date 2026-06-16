@@ -1,6 +1,7 @@
 <template>
-  <div class="ele-body stock-transfer-page">
-    <el-card shadow="never" class="section-card">
+  <div class="ele-body spd-page stock-transfer-page">
+    <div class="spd-section">
+      <div class="spd-section__head">目标合同品种</div>
       <el-form size="mini" inline class="filter-row" @submit.native.prevent>
         <el-input
           v-model="targetWhere.targetSupplierName"
@@ -47,10 +48,10 @@
         :selection.sync="targetSelection"
         cache-key="stockTransferTargetTable"
       />
-    </el-card>
+    </div>
 
-    <el-card shadow="never" class="section-card">
-      <div class="section-title">退转单列表</div>
+    <div class="spd-section">
+      <div class="spd-section__head">退转单列表</div>
       <el-form size="mini" inline class="filter-row" @submit.native.prevent>
         <el-input
           v-model="transferWhere.transferNumber"
@@ -95,9 +96,9 @@
           <el-option label="退转成功" value="3" />
           <el-option label="退转异常" value="4" />
         </el-select>
-        <el-button type="primary" icon="el-icon-search" style="margin-left: 8px" @click="reloadTransfer">查询</el-button>
-        <el-button :loading="approving" style="margin-left: 8px" @click="onApprove">审批</el-button>
-        <el-button type="danger" :loading="deleting" @click="onDelete">删除</el-button>
+        <el-button type="primary" icon="el-icon-search" @click="reloadTransfer">查询</el-button>
+        <el-button :loading="approving" @click="onApprove">审批</el-button>
+        <el-button type="danger" plain :loading="deleting" @click="onDelete">删除</el-button>
       </el-form>
 
       <ele-pro-table
@@ -115,7 +116,7 @@
       >
         <template v-slot:state="{ row }">{{ formatTransferState(row.State) }}</template>
       </ele-pro-table>
-    </el-card>
+    </div>
 
     <SourceContractDialog
       :visible.sync="sourceVisible"
@@ -268,26 +269,4 @@ export default {
 </script>
 
 <style scoped>
-.section-card {
-  margin-bottom: 12px;
-}
-.section-card:last-child {
-  margin-bottom: 0;
-}
-.section-title {
-  font-weight: 600;
-  margin-bottom: 10px;
-  font-size: 14px;
-}
-.filter-row {
-  margin-bottom: 10px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-  align-items: center;
-}
-.data-table ::v-deep .el-table {
-  width: max-content;
-  min-width: 100%;
-}
 </style>

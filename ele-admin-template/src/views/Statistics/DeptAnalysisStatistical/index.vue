@@ -1,5 +1,5 @@
 <template>
-  <div class="ele-body dept-analysis-statistical">
+  <div class="ele-body spd-page dept-analysis-statistical">
     <el-card shadow="never">
       <div class="page-title">科室医用耗材支出情况</div>
       <el-form

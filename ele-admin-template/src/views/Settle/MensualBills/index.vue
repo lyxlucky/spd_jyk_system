@@ -1,5 +1,5 @@
 <template>
-  <div class="ele-body mensual-bills">
+  <div class="ele-body spd-page mensual-bills">
     <el-card shadow="never" class="tabs-card">
       <el-tabs v-model="activeTab" type="card">
         <el-tab-pane label="月结数据管理" name="data">

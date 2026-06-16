@@ -1,5 +1,5 @@
 <template>
-  <div class="ele-body registration-limit-plan">
+  <div class="ele-body spd-page registration-limit-plan">
     <el-card shadow="never">
       <el-form size="small" inline class="toolbar" @submit.native.prevent>
         <el-form-item>

@@ -90,9 +90,6 @@
             />
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" icon="el-icon-search" :disabled="!deptTwoCode" @click="reloadVariety">查询</el-button>
-          </el-form-item>
-          <el-form-item>
             <el-select
               v-model="varietyStorageId"
               clearable
@@ -104,11 +101,16 @@
             </el-select>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" icon="el-icon-plus" :disabled="!canAddVariety" :loading="inserting" @click="onInsertVariety">
-              添加申领品种
-            </el-button>
+            <el-button type="primary" icon="el-icon-search" :disabled="!deptTwoCode" @click="reloadVariety">查询</el-button>
           </el-form-item>
         </el-form>
+        <div class="local-toolbar">
+          <div class="spd-toolbar__btns">
+            <el-button size="mini" type="primary" icon="el-icon-plus" :disabled="!canAddVariety" :loading="inserting" @click="onInsertVariety">
+              添加申领品种
+            </el-button>
+          </div>
+        </div>
         <ele-pro-table
           ref="varietyTable"
           size="mini"
@@ -153,35 +155,6 @@
             />
           </el-form-item>
         </el-form>
-        <div class="apply-actions">
-          <el-button size="mini" type="primary" :disabled="!canConfirm" :loading="confirming" @click="onConfirmApply">
-            确认申领
-          </el-button>
-          <el-button size="mini" :disabled="!selectedApply" :loading="printing" @click="onPrintApply">打印申领单</el-button>
-          <el-button
-            v-if="showJhdPrint"
-            size="mini"
-            :disabled="!selectedApply"
-            :loading="printingJhd"
-            @click="onPrintJhd"
-          >
-            打印借货单
-          </el-button>
-          <el-button
-            v-if="homeHp === 'szlh'"
-            size="mini"
-            :disabled="!applyId"
-            :loading="sendingYsy"
-            @click="onSendYsy"
-          >
-            补发医商云
-          </el-button>
-        </div>
-        <div class="apply-actions">
-          <el-button size="mini" type="danger" :disabled="!selectedApply" :loading="deletingApply" @click="onDeleteApply">
-            删除申领单
-          </el-button>
-        </div>
         <el-form size="mini" inline class="filter-row" @submit.native.prevent>
           <el-form-item>
             <el-select v-model="applyFilters.is_sign" style="width: 90px" @change="reloadApplyList">
@@ -198,16 +171,6 @@
             </el-select>
           </el-form-item>
           <el-form-item>
-            <el-button size="mini" type="primary" :disabled="!deptTwoCode" :loading="creatingApply" @click="onCreateApply">
-              新建申领单
-            </el-button>
-          </el-form-item>
-          <el-form-item>
-            <el-button size="mini" :loading="exporting" @click="onExportApply">导出</el-button>
-          </el-form-item>
-        </el-form>
-        <el-form size="mini" inline class="filter-row" @submit.native.prevent>
-          <el-form-item>
             <el-input
               v-model="applyFilters.searchName"
               clearable
@@ -220,6 +183,51 @@
             <el-button type="primary" icon="el-icon-search" :disabled="!deptTwoCode" @click="reloadApplyList">查询</el-button>
           </el-form-item>
         </el-form>
+        <div class="local-toolbar spd-toolbar">
+          <div class="spd-toolbar__group">
+            <div class="spd-toolbar__btns">
+              <el-button size="mini" type="primary" :disabled="!deptTwoCode" :loading="creatingApply" @click="onCreateApply">
+                新建申领单
+              </el-button>
+              <el-button size="mini" :loading="exporting" @click="onExportApply">导出</el-button>
+            </div>
+          </div>
+          <div class="spd-toolbar__divider" />
+          <div class="spd-toolbar__group">
+            <div class="spd-toolbar__btns">
+              <el-button size="mini" type="primary" :disabled="!canConfirm" :loading="confirming" @click="onConfirmApply">
+                确认申领
+              </el-button>
+              <el-button size="mini" :disabled="!selectedApply" :loading="printing" @click="onPrintApply">打印申领单</el-button>
+              <el-button
+                v-if="showJhdPrint"
+                size="mini"
+                :disabled="!selectedApply"
+                :loading="printingJhd"
+                @click="onPrintJhd"
+              >
+                打印借货单
+              </el-button>
+              <el-button
+                v-if="homeHp === 'szlh'"
+                size="mini"
+                :disabled="!applyId"
+                :loading="sendingYsy"
+                @click="onSendYsy"
+              >
+                补发医商云
+              </el-button>
+            </div>
+          </div>
+          <div class="spd-toolbar__divider" />
+          <div class="spd-toolbar__group">
+            <div class="spd-toolbar__btns">
+              <el-button size="mini" type="danger" :disabled="!selectedApply" :loading="deletingApply" @click="onDeleteApply">
+                删除申领单
+              </el-button>
+            </div>
+          </div>
+        </div>
         <ele-pro-table
           ref="applyTable"
           size="mini"
@@ -238,18 +246,19 @@
         </ele-pro-table>
       </el-col>
       <el-col :span="19">
-        <div class="panel-title row-title">
-          <span>申领品种明细</span>
-          <el-button
-            v-if="homeHp === 'szlh' && isNewApply"
-            type="danger"
-            size="mini"
-            :disabled="!detailSelection.length"
-            :loading="deletingDetail"
-            @click="onDeleteDetail"
-          >
-            删除申领明细
-          </el-button>
+        <div class="panel-title">申领品种明细</div>
+        <div v-if="homeHp === 'szlh' && isNewApply" class="local-toolbar">
+          <div class="spd-toolbar__btns">
+            <el-button
+              type="danger"
+              size="mini"
+              :disabled="!detailSelection.length"
+              :loading="deletingDetail"
+              @click="onDeleteDetail"
+            >
+              删除申领明细
+            </el-button>
+          </div>
         </div>
         <ele-pro-table
           ref="detailTable"
@@ -869,11 +878,6 @@ export default {
   font-size: 14px;
   margin-bottom: 8px;
 }
-.panel-title.row-title {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
 .filter-row {
   display: flex;
   flex-wrap: wrap;
@@ -887,11 +891,19 @@ export default {
 .apply-filter-form ::v-deep .el-form-item {
   margin-bottom: 6px;
 }
-.apply-actions {
+.local-toolbar {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: 6px;
   margin-bottom: 8px;
+}
+.local-toolbar.spd-toolbar {
+  padding: 0;
+}
+.local-toolbar .spd-toolbar__divider {
+  min-height: 24px;
+  margin: 0 8px;
 }
 .detail-total {
   display: flex;

@@ -1,5 +1,5 @@
 <template>
-  <div class="ele-body gy-clml-spd">
+  <div class="ele-body spd-page gy-clml-spd">
     <el-card shadow="never">
       <el-form
         size="small"

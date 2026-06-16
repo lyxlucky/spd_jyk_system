@@ -1,5 +1,5 @@
 <template>
-  <div class="ele-body no-move-sell">
+  <div class="ele-body spd-page no-move-sell">
     <el-card shadow="never">
       <NoMoveSellSearch
         ref="search"

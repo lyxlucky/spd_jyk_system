@@ -1,5 +1,5 @@
 <template>
-  <div class="ele-body supplier-page">
+  <div class="ele-body spd-page supplier-page">
     <el-card shadow="never">
       <el-form size="mini" class="filter-form" @submit.native.prevent>
         <el-row :gutter="8" type="flex" style="flex-wrap: wrap; align-items: center">

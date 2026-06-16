@@ -1,5 +1,5 @@
 <template>
-  <div class="ele-body um-users-page">
+  <div class="ele-body spd-page um-users-page">
     <el-card shadow="never">
       <div class="section-title">用户管理</div>
       <el-form :inline="true" size="mini" class="filter-form" @submit.native.prevent>

@@ -1,5 +1,5 @@
 <template>
-  <div class="ele-body following-goods-plan">
+  <div class="ele-body spd-page following-goods-plan">
     <el-row :gutter="10">
       <el-col :span="8">
         <StatusSummaryStatistics

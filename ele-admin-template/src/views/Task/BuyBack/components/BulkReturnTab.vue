@@ -1,7 +1,7 @@
 <template>
   <div class="bulk-return-tab">
     <div class="section-title">中心库散货品种库存列表</div>
-    <el-form :inline="true" size="mini" class="toolbar">
+    <el-form :inline="true" size="mini" class="filter-row" @submit.native.prevent>
       <el-form-item>
         <el-input
           v-model="filters.supplier"
@@ -50,15 +50,17 @@
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" @click="reloadInventory">查询</el-button>
       </el-form-item>
-      <el-form-item class="toolbar-right">
-        <el-button type="primary" :disabled="!inventorySelection.length" @click="openCreateDialog">
+    </el-form>
+    <div class="local-toolbar">
+      <div class="spd-toolbar__btns">
+        <el-button size="mini" type="primary" :disabled="!inventorySelection.length" @click="openCreateDialog">
           创建并生成退购单
         </el-button>
-        <el-button type="primary" :disabled="!canAddToOrder" @click="handleAddToOrder">
+        <el-button size="mini" :disabled="!canAddToOrder" @click="handleAddToOrder">
           添加至已选退购单
         </el-button>
-      </el-form-item>
-    </el-form>
+      </div>
+    </div>
     <div class="tip-red">
       注意：退购单分为2种，合格区库存的普通退购单和盘损隔离区库存的盘损退购单。（盘损退购单系统扣减库存，但退购数据不会发送给供应商）
     </div>
@@ -88,7 +90,7 @@
     <el-row :gutter="10" style="margin-top: 12px">
       <el-col :span="9">
         <div class="section-title">散货退购单号列表</div>
-        <el-form :inline="true" size="mini" class="toolbar">
+        <el-form :inline="true" size="mini" class="filter-row" @submit.native.prevent>
           <el-form-item>
             <el-input
               v-model="orderFilters.condition"
@@ -98,11 +100,6 @@
               @keyup.enter.native="reloadOrders"
             />
           </el-form-item>
-          <el-form-item>
-            <el-button type="primary" icon="el-icon-search" @click="reloadOrders">查询</el-button>
-          </el-form-item>
-        </el-form>
-        <el-form :inline="true" size="mini">
           <el-form-item>
             <el-select v-model="orderFilters.state" placeholder="状态" clearable style="width: 100px" @change="reloadOrders">
               <el-option label="全部" value="" />
@@ -131,36 +128,43 @@
               @change="reloadOrders"
             />
           </el-form-item>
+          <el-form-item>
+            <el-button type="primary" icon="el-icon-search" @click="reloadOrders">查询</el-button>
+          </el-form-item>
         </el-form>
-        <div class="order-actions">
-          <el-button size="mini" :disabled="!selectedOrder" @click="handlePrint">打印</el-button>
-          <el-button
-            v-if="hp.useB2bFlow"
-            size="mini"
-            type="primary"
-            :disabled="!actionFlags.canSend"
-            @click="handleSend"
-          >
-            发送
-          </el-button>
-          <el-button
-            v-if="hp.useB2bFlow"
-            size="mini"
-            type="primary"
-            :disabled="!actionFlags.canGetGoods"
-            @click="handleGetGoods"
-          >
-            确认提货
-          </el-button>
-          <el-button
-            v-if="!hp.useB2bFlow"
-            size="mini"
-            type="primary"
-            :disabled="!actionFlags.canConfirm"
-            @click="handleConfirm"
-          >
-            确认退购
-          </el-button>
+        <div class="local-toolbar spd-toolbar">
+          <div class="spd-toolbar__group">
+            <div class="spd-toolbar__btns">
+              <el-button size="mini" :disabled="!selectedOrder" @click="handlePrint">打印</el-button>
+              <el-button
+                v-if="hp.useB2bFlow"
+                size="mini"
+                type="primary"
+                :disabled="!actionFlags.canSend"
+                @click="handleSend"
+              >
+                发送
+              </el-button>
+              <el-button
+                v-if="hp.useB2bFlow"
+                size="mini"
+                type="primary"
+                :disabled="!actionFlags.canGetGoods"
+                @click="handleGetGoods"
+              >
+                确认提货
+              </el-button>
+              <el-button
+                v-if="!hp.useB2bFlow"
+                size="mini"
+                type="primary"
+                :disabled="!actionFlags.canConfirm"
+                @click="handleConfirm"
+              >
+                确认退购
+              </el-button>
+            </div>
+          </div>
         </div>
         <ele-pro-table
           ref="orderTable"
@@ -182,7 +186,7 @@
           散货退购明细
           <span class="tip-inline">*同一张退购单请确保供应商一致。同一张退购单不允许同时包含合格区和盘损隔离区的库存</span>
         </div>
-        <el-form :inline="true" size="mini" class="toolbar">
+        <el-form :inline="true" size="mini" class="filter-row" @submit.native.prevent>
           <el-form-item>
             <el-input
               v-model="detailFilters.str"
@@ -195,20 +199,29 @@
           <el-form-item>
             <el-button type="primary" icon="el-icon-search" @click="reloadDetails">查询</el-button>
           </el-form-item>
-          <el-form-item class="toolbar-right">
-            <el-button v-permission="'export-BuyBack-tgdc'" size="mini" @click="handleExport">
-              导出excel
-            </el-button>
-            <el-button
-              type="danger"
-              size="mini"
-              :disabled="!actionFlags.canDeleteDetail || !selectedDetail"
-              @click="handleDeleteDetail"
-            >
-              删除
-            </el-button>
-          </el-form-item>
         </el-form>
+        <div class="local-toolbar spd-toolbar">
+          <div class="spd-toolbar__group">
+            <div class="spd-toolbar__btns">
+              <el-button v-permission="'export-BuyBack-tgdc'" size="mini" @click="handleExport">
+                导出excel
+              </el-button>
+            </div>
+          </div>
+          <div class="spd-toolbar__divider" />
+          <div class="spd-toolbar__group">
+            <div class="spd-toolbar__btns">
+              <el-button
+                type="danger"
+                size="mini"
+                :disabled="!actionFlags.canDeleteDetail || !selectedDetail"
+                @click="handleDeleteDetail"
+              >
+                删除
+              </el-button>
+            </div>
+          </div>
+        </div>
         <ele-pro-table
           ref="detailTable"
           size="mini"
@@ -798,16 +811,22 @@ export default {
     font-size: 12px;
     font-weight: normal;
   }
-  .toolbar {
+  .filter-row {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-  }
-  .toolbar-right {
-    margin-left: auto;
-  }
-  .order-actions {
     margin-bottom: 8px;
+    gap: 4px;
+  }
+  .local-toolbar {
+    margin-bottom: 8px;
+  }
+  .local-toolbar.spd-toolbar {
+    padding: 0;
+  }
+  .local-toolbar .spd-toolbar__divider {
+    min-height: 24px;
+    margin: 0 8px;
   }
   :deep(.near-expiry-row) {
     background-color: #fdf6ec !important;

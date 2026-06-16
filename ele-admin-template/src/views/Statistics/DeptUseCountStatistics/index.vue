@@ -1,5 +1,5 @@
 <template>
-  <div class="ele-body dept-use-count-statistics">
+  <div class="ele-body spd-page dept-use-count-statistics">
     <el-card shadow="never" class="block-card">
       <div class="panel-title">二级科室列表</div>
       <el-form size="small" inline class="filter-bar" @submit.native.prevent>

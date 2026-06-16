@@ -1,5 +1,5 @@
 <template>
-  <div class="ele-body section-rejected-page">
+  <div class="ele-body spd-page section-rejected-page">
     <el-card shadow="never">
       <el-tabs v-model="activeTab">
         <el-tab-pane label="二级科室定数包退货管理" name="def">

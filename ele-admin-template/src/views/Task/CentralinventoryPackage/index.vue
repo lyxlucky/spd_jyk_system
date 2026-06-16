@@ -1,5 +1,5 @@
 <template>
-  <div class="ele-body centralinventory-package-page">
+  <div class="ele-body spd-page centralinventory-package-page">
     <el-card shadow="never">
       <el-tabs v-model="activeTab">
         <el-tab-pane label="中心库制包管理" name="manage">

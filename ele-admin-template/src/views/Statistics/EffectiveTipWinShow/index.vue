@@ -1,5 +1,5 @@
 <template>
-  <div class="ele-body effective-tip-win-show">
+  <div class="ele-body spd-page effective-tip-win-show">
     <contract-maintenance-dialog ref="contractDlg" />
 
     <!-- 1 -->

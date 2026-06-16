@@ -1,5 +1,5 @@
 <template>
-  <div class="ele-body financial-audit">
+  <div class="ele-body spd-page financial-audit">
     <el-card shadow="never">
       <div class="summary-bar">
         <span>总金额: <b>{{ summary.sumMoney }}</b></span>
