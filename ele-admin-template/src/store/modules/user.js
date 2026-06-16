@@ -5,6 +5,27 @@ import { formatMenus, toTreeData, formatTreeData, deepClone } from 'ele-admin';
 import { USER_MENUS, BLACK_LIST_ROUTERS } from '@/config/setting';
 import { getUserInfo, getConfig } from '@/api/layout';
 
+/**
+ * 将 PRIMARY_ROUT / PERMISSION 扁平菜单转为可建树结构（menuKey / parentKey 全局唯一）
+ */
+function normalizeMenuForTree(list) {
+  return list.map((item) => {
+    if (item.menuKey) {
+      return {
+        ...item,
+        menuKey: item.menuKey,
+        parentKey: item.parentKey ?? null
+      };
+    }
+    const isPrimaryRoute = item.PID == null || item.PID === '';
+    return {
+      ...item,
+      menuKey: isPrimaryRoute ? `R_${item.ID}` : `P_${item.ID}`,
+      parentKey: isPrimaryRoute ? null : `R_${item.PID}`
+    };
+  });
+}
+
 export default {
   namespaced: true,
   state: {
@@ -92,10 +113,12 @@ export default {
     async fetchUserInfo({ commit }) {
       var data = this.state.user.loginInfo;
       // data.Token = sessionStorage.getItem('Token') ? sessionStorage.getItem('Token') : "0";
-      const result = await getUserInfo(data).catch(() => { });
-      result.DeptNow = result.userDept[0];
+      const result = await getUserInfo(data).catch(() => undefined);
       if (!result) {
         return {};
+      }
+      if (result.userDept?.length) {
+        result.DeptNow = result.userDept[0];
       }
       // 用户信息
       commit('setUserInfo', result);
@@ -111,17 +134,18 @@ export default {
       commit('setRoles', roles);
       // 用户菜单, 过滤掉按钮类型并转为 children 形式
       //过滤
-      const childrens = result.permission_group.filter((d) => {
-        return !BLACK_LIST_ROUTERS.includes(d.component);
-      });
+      const childrens = normalizeMenuForTree(
+        result.permission_group.filter((d) => {
+          return !BLACK_LIST_ROUTERS.includes(d.component);
+        })
+      );
 
       const { menus, homePath } = formatMenus(
         USER_MENUS ??
         toTreeData({
-          // data: result.authorities?.filter((d) => d.menuType !== 1),
           data: childrens,
-          idField: 'ID',
-          parentIdField: 'PID'
+          idField: 'menuKey',
+          parentIdField: 'parentKey'
         })
       );
       commit('setMenus', menus);
