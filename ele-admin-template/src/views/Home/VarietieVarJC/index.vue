@@ -111,37 +111,37 @@ export default {
       exporting: false,
       columns: [
         { type: 'selection', columnKey: 'selection', width: 45, align: 'center', fixed: 'left' },
-        { type: 'index', columnKey: 'index', label: '序号', width: 50, align: 'center', fixed: 'left' },
+        { type: 'index', columnKey: 'index', label: '序号', width: 80, align: 'center', fixed: 'left' },
         { label: '操作', width: 80, fixed: 'left', slot: 'action' },
-        { prop: 'VARIETIE_CODE_NEW', label: '品种编码', width: 110, showOverflowTooltip: true },
+        { prop: 'VARIETIE_CODE_NEW', label: '品种编码', width: 120, showOverflowTooltip: true },
         { prop: 'VARIETIE_NAME', label: '品种名称', minWidth: 150, showOverflowTooltip: true },
         { prop: 'SPECIFICATION_OR_TYPE', label: '规格型号', minWidth: 160, showOverflowTooltip: true },
-        { prop: 'UNIT', label: '单位', width: 70 },
+        { prop: 'UNIT', label: '单位', width: 80 },
         {
           prop: 'PRICE',
           label: '当前中标价格',
-          width: 110,
+          width: 140,
           formatter: (_r, _c, v) => (v != null && v !== '' ? Number(v).toFixed(2) : '')
         },
         {
           prop: 'JC_PRICE',
           label: '集采价格',
-          width: 90,
+          width: 120,
           formatter: (_r, _c, v) => (v != null && v !== '' ? Number(v).toFixed(2) : '')
         },
         {
           prop: 'JC_START_TIME',
           label: '集采开始时间',
-          width: 110,
+          width: 140,
           formatter: (_r, _c, v) => date10(v)
         },
         {
           prop: 'JC_END_TIME',
           label: '集采结束时间',
-          width: 110,
+          width: 140,
           formatter: (_r, _c, v) => date10(v)
         },
-        { prop: 'CREATE_MAN', label: '创建人', width: 80, showOverflowTooltip: true },
+        { prop: 'CREATE_MAN', label: '创建人', width: 100, showOverflowTooltip: true },
         { prop: 'CREATE_TIME', label: '创建时间', width: 140, showOverflowTooltip: true },
         { prop: 'REMARK', label: '备注', minWidth: 100, showOverflowTooltip: true },
         { slot: 'state', prop: 'STATE', label: '状态', width: 80 },

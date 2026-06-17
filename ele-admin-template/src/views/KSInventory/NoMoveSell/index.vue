@@ -109,7 +109,7 @@ export default {
         {
           prop: 'StockPosition',
           label: '库存位置',
-          width: 100,
+          width: 120,
           sortable: 'custom',
           showOverflowTooltip: true
         },
@@ -117,7 +117,7 @@ export default {
           columnKey: 'storageId',
           prop: 'STORAGE_ID',
           label: '院区库房',
-          width: 100,
+          width: 120,
           sortable: 'custom',
           slot: 'storageId'
         },
@@ -125,14 +125,14 @@ export default {
           columnKey: 'upShelfState',
           prop: 'UP_SHELF_STATE',
           label: '所属区域',
-          width: 100,
+          width: 120,
           sortable: 'custom',
           slot: 'upShelfState'
         },
         {
           prop: 'VARIETIE_CODE_NEW',
           label: '品种编码',
-          width: 100,
+          width: 120,
           sortable: 'custom',
           showOverflowTooltip: true
         },
@@ -153,14 +153,14 @@ export default {
         {
           prop: 'UNIT',
           label: '单位',
-          width: 60,
+          width: 80,
           align: 'center',
           sortable: 'custom'
         },
         {
           prop: 'MANUFACTURING_ENT_NAME',
           label: '生产企业名称',
-          minWidth: 150,
+          minWidth: 160,
           sortable: 'custom',
           showOverflowTooltip: true
         },
@@ -198,7 +198,7 @@ export default {
           columnKey: 'supplyPrice',
           prop: 'SUPPLY_PRICE',
           label: '结算价',
-          width: 80,
+          width: 100,
           align: 'right',
           sortable: 'custom',
           slot: 'supplyPrice'
@@ -213,21 +213,21 @@ export default {
         {
           prop: 'DefQUANTITY',
           label: '库存定数包',
-          width: 100,
+          width: 140,
           align: 'center',
           sortable: 'custom'
         },
         {
           prop: 'GOODSQUANTITY',
           label: '库存散货',
-          width: 100,
+          width: 120,
           align: 'center',
           sortable: 'custom'
         },
         {
           prop: 'UpStockDay',
           label: '在库天数',
-          width: 100,
+          width: 120,
           align: 'center',
           sortable: 'custom'
         }

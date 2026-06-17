@@ -2,52 +2,57 @@
   <div class="variety-data-lzh-main">
     <VarietyDataLzhMainSearch @search="reload" />
 
-    <div class="spd-panel spd-table-panel">
-      <div class="spd-panel__head">散货品种列表</div>
-      <div class="spd-panel__body spd-table-panel__wrap">
-    <!-- 操作按钮工具栏 -->
-    <div class="action-toolbar">
-      <div class="toolbar-row">
-        <el-button size="small" icon="el-icon-plus" @click="handleAdd">添加</el-button>
-        <el-button size="small" type="danger" icon="el-icon-delete" @click="handleDelete">删除</el-button>
-        <el-button size="small" plain @click="handleTempRemark">临时备注</el-button>
-        <el-button size="small" plain @click="handleBatchRemark">批量备注</el-button>
-        <el-button size="small" plain @click="handleContract">品种合同维护关系</el-button>
-        <el-button size="small" plain @click="handleDeptAuth">品种科室授权关系</el-button>
-        <el-button size="small" plain @click="handleCheckReceive">查看品种对接</el-button>
-        <el-button size="small" plain @click="handleKubo">库宝创建品种</el-button>
-        <el-button size="small" plain @click="handleCheckZCZ">查看新老注册证品种</el-button>
-        <el-button size="small" plain @click="handleExpirationData">品种效期资料</el-button>
-        <el-button size="small" plain @click="handleBhRule">定数备货规则</el-button>
-      </div>
-      <div class="toolbar-row">
-        <el-button size="small" plain @click="handleImport">导入</el-button>
-        <el-button size="small" plain @click="handleExportTemplate">导出模板</el-button>
-        <el-button size="small" plain @click="handleYbApproval">批量提交医保审批</el-button>
-        <el-button size="small" plain @click="handleUpdateField">更新选定字段</el-button>
-        <el-button size="small" type="success" @click="handleEnable(1)">启用</el-button>
-        <el-button size="small" type="danger" @click="handleEnable(0)">冻结</el-button>
-        <el-button size="small" plain icon="el-icon-download" @click="handleExport">导出</el-button>
-        <el-button size="small" plain @click="handleExportHighPerf">导出(高性能)</el-button>
-        <el-button size="small" plain @click="handleExportSearch">导出检索</el-button>
-        <el-button size="small" plain @click="handleSendApproval">发送审批</el-button>
-        <el-button size="small" plain @click="handleWxtSp">微讯通品种审核</el-button>
-        <el-button size="small" type="danger" plain @click="handleStopDept(1)">禁止科室申请</el-button>
-        <el-button size="small" plain @click="handleStopDept(0)">开启科室申请</el-button>
-        <el-button size="small" plain @click="handleExportMaterial">导出物资分类品种</el-button>
+    <div class="spd-panel">
+      <div class="spd-panel__head">操作</div>
+      <div class="local-toolbar spd-toolbar">
+        <div class="spd-toolbar__group">
+          <div class="spd-toolbar__btns">
+            <el-button size="mini" :disabled="!selection.length" :loading="commitLoading" @click="onSendApproval">
+              发送审批
+            </el-button>
+          </div>
+        </div>
+        <div v-if="showExportToolbar" class="spd-toolbar__divider" />
+        <div v-if="showExportToolbar" class="spd-toolbar__group">
+          <div class="spd-toolbar__btns">
+            <el-button
+              v-if="canExport('export-VarietyDataLzhDc')"
+              size="mini"
+              icon="el-icon-download"
+              :loading="exportingHp"
+              @click="onExportHp"
+            >
+              导出
+            </el-button>
+            <el-button
+              v-if="canExport('export-VarietyDataLzhDc')"
+              size="mini"
+              :loading="exportingHp"
+              @click="onExportHp"
+            >
+              导出(高性能)
+            </el-button>
+            <el-button
+              v-if="canExport('export-VarietyDataLzhDcjs')"
+              size="mini"
+              :loading="exportingSearch"
+              @click="onExportSearch"
+            >
+              导出检索
+            </el-button>
+          </div>
+        </div>
       </div>
     </div>
 
-    <ele-pro-table ref="table" :highlight-current-row="true" :toolStyle="toolStyle" height="60vh" :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" @selection-change="onSelectionChange" @current-change="onRowClick" cache-key="KSInventoryBasicDataTable">
+    <div class="spd-panel spd-table-panel">
+      <div class="spd-panel__head">散货品种列表</div>
+      <div class="spd-panel__body spd-table-panel__wrap">
+    <ele-pro-table ref="table" :toolStyle="toolStyle" height="60vh" highlight-current-row :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" @selection-change="onSelectionChange" cache-key="KSInventoryBasicDataTable">
 
       <template v-slot:PAG_TYPE="{ row }">
         <div :id="'PAG_TYPE' + row.ID" :key="row.id" @click="dialogVisibleFun(row)">{{ row.PAG_TYPE }}
         </div>
-      </template>
-
-      <!-- 左表头 -->
-      <template v-slot:toolbar>
-        <!-- 搜索表单 -->
       </template>
 
       <template v-slot:PlanQty="{ row }">
@@ -147,6 +152,12 @@ import {
   Approval
 } from '@/api/KSInventory/KSDepartmentalPlan';
 import { QueryPageLayUI } from '@/api/Home/VarietyDataLzhMain';
+import {
+  approvalVarietieCommit,
+  createStorageExcelCwjEpPlus
+} from '@/api/Home/VarietyDataLzhAudit';
+import { openExcelFile } from '@/views/Home/VarietyDataLzhAudit/utils';
+import { hasExportPermission } from '../utils';
 
 import { utils, writeFile } from 'xlsx';
 export default {
@@ -171,7 +182,7 @@ export default {
           label: '序号',
           columnKey: 'index',
           type: 'index',
-          width: 45,
+          width: 60,
           align: 'center',
           showOverflowTooltip: true,
           fixed: 'left'
@@ -233,7 +244,7 @@ export default {
           label: '医疗器械注册人或备案人',
           align: 'center',
           showOverflowTooltip: true,
-          width: 120
+          width: 280
         },
         {
           prop: 'Unit',
@@ -247,7 +258,7 @@ export default {
           label: '中标价',
           align: 'center',
           showOverflowTooltip: true,
-          width: 80,
+          width: 100,
           formatter: (row, column, cellValue) => {
             return Number(cellValue).toFixed(2);
           }
@@ -257,7 +268,7 @@ export default {
           label: '历史中标价格',
           align: 'center',
           showOverflowTooltip: true,
-          width: 80
+          width: 140
         },
         {
           prop: 'Approval_Number',
@@ -315,21 +326,21 @@ export default {
           label: '库存上限',
           align: 'center',
           showOverflowTooltip: true,
-          width: 80
+          width: 100
         },
         {
           prop: 'STOREHOUSE_LOWER',
           label: '库存下限',
           align: 'center',
           showOverflowTooltip: true,
-          width: 80
+          width: 100
         },
         {
           prop: 'APPROVAL_STATE',
           label: '审批状态',
           align: 'center',
           showOverflowTooltip: true,
-          width: 80,
+          width: 120,
           formatter: (row, column, cellValue) => {
             if (cellValue == '1') {
               return '通过';
@@ -347,7 +358,7 @@ export default {
           label: '省平台编码',
           align: 'center',
           showOverflowTooltip: true,
-          width: 80
+          width: 140
         },
         {
           prop: 'YG_CODE',
@@ -382,14 +393,14 @@ export default {
           label: '全国历史最低价',
           align: 'center',
           showOverflowTooltip: true,
-          width: 110
+          width: 180
         },
         {
           prop: 'HIGH_OR_LOW_CLASS_TWO',
           label: '高低值下级属性',
           align: 'center',
           showOverflowTooltip: true,
-          width: 110,
+          width: 180,
           formatter: (row, column, cellValue) => {
             if (cellValue == '1') {
               return '重点治理';
@@ -405,7 +416,7 @@ export default {
           label: '设备科是否修改',
           align: 'center',
           showOverflowTooltip: true,
-          width: 110,
+          width: 180,
           formatter: (row, column, cellValue) => {
             if (cellValue == '1') {
               return '是';
@@ -421,7 +432,7 @@ export default {
           label: '仓库名称',
           align: 'center',
           showOverflowTooltip: true,
-          width: 110,
+          width: 120,
           formatter: (row, column, cellValue) => {
             if (cellValue == '1') {
               return '老仓库';
@@ -437,7 +448,7 @@ export default {
           label: '适应症',
           align: 'center',
           showOverflowTooltip: true,
-          width: 80,
+          width: 100,
           formatter: (row, column, cellValue) => {
             if (cellValue == '1') {
               return '是';
@@ -453,7 +464,7 @@ export default {
           label: '适应症提示',
           align: 'center',
           showOverflowTooltip: true,
-          width: 130
+          width: 140
         },
 
         {
@@ -461,7 +472,7 @@ export default {
           label: '医保分类',
           align: 'center',
           showOverflowTooltip: true,
-          width: 80,
+          width: 100,
           formatter: (row, column, cellValue) => {
             if (cellValue == '00') {
               return '是';
@@ -535,10 +546,106 @@ export default {
       count3: 0,
       count4: 0,
       sum: 0,
-      rowData: null
+      rowData: null,
+      currentWhere: null,
+      commitLoading: false,
+      exportingHp: false,
+      exportingSearch: false
     };
   },
+  computed: {
+    showExportToolbar() {
+      return (
+        this.canExport('export-VarietyDataLzhDc') ||
+        this.canExport('export-VarietyDataLzhDcjs')
+      );
+    },
+    KSDepartmentalPlanDataSearch() {
+      return this.KSDepartmentalPlanData;
+    }
+  },
   methods: {
+    canExport(key) {
+      return hasExportPermission(this.$store, key);
+    },
+    buildExportExtra(where = {}) {
+      return {
+        BZ_TI: where.BZ_TI ?? '',
+        JF_BJ: where.JF_BJ ?? '',
+        IS_HANG_UP: where.IS_HANG_UP ?? '',
+        enableChargingCode: where.enableChargingCode ?? '',
+        updateTime: where.updateTime ?? '',
+        SENDYB_STATE: where.SENDYB_STATE ?? '',
+        priceChangeTimeStart: where.priceChangeTimeStart ?? '',
+        priceChangeTimeEnd: where.priceChangeTimeEnd ?? '',
+        state: where.filterKubao ? '1' : '0'
+      };
+    },
+    async onSendApproval() {
+      if (!this.selection.length) {
+        this.$message.warning('请至少选中一行数据');
+        return;
+      }
+      this.commitLoading = true;
+      try {
+        const res = await approvalVarietieCommit(this.selection);
+        this.$alert(res.msg || '操作完成', '提示');
+        this.reload(this.currentWhere);
+      } catch (e) {
+        this.$message.error(e.message || '发送审批失败');
+      } finally {
+        this.commitLoading = false;
+      }
+    },
+    async onExportHp() {
+      this.exportingHp = true;
+      try {
+        const res = await createStorageExcelCwjEpPlus(
+          this.currentWhere || {},
+          this.buildExportExtra(this.currentWhere || {})
+        );
+        if (res.msg) {
+          openExcelFile(res.msg);
+          this.$message.success(
+            res.totalCount ? `导出成功，共 ${res.totalCount} 条` : '导出成功'
+          );
+        }
+      } catch (e) {
+        this.$message.error(e.message || '导出失败');
+      } finally {
+        this.exportingHp = false;
+      }
+    },
+    async onExportSearch() {
+      this.exportingSearch = true;
+      try {
+        const res = await QueryPageLayUI({
+          page: 1,
+          limit: 999999,
+          where: this.currentWhere || {}
+        });
+        const rows = res.result || [];
+        const exportColumns = this.columns.filter(
+          (col) => col.prop && col.type !== 'selection' && col.type !== 'index'
+        );
+        const header = exportColumns.map((col) => col.label);
+        const body = rows.map((row) =>
+          exportColumns.map((col) => {
+            if (typeof col.formatter === 'function') {
+              return col.formatter(row, col, row[col.prop]);
+            }
+            return row[col.prop] ?? '';
+          })
+        );
+        const sheet = utils.aoa_to_sheet([header, ...body]);
+        writeFile({ SheetNames: ['品种资料'], Sheets: { 品种资料: sheet } }, '品种资料检索.xlsx');
+        this.$message.success('导出成功');
+      } catch (e) {
+        this.$message.error(e.message || '导出失败');
+      } finally {
+        this.exportingSearch = false;
+      }
+    },
     Approval() {
       Approval({ PlanNum: this.KSDepartmentalPlanData.PlanNum }).then((res) => {
         if (res.code == 200) {
@@ -557,6 +664,9 @@ export default {
     },
     /* 表格数据源 */
     datasource({ page, limit, where, order }) {
+      if (where) {
+        this.currentWhere = where;
+      }
       let data = QueryPageLayUI({ page, limit, where, order }).then((res) => {
         var tData = {
           count: res.total,
@@ -576,7 +686,10 @@ export default {
     },
     /* 刷新表格 */
     reload(where) {
-      this.$refs.table.reload({ page: 1, where: where });
+      if (where) {
+        this.currentWhere = where;
+      }
+      this.$refs.table.reload({ page: 1, where: this.currentWhere });
     },
     ClickReload(IsReload) {
       this.$emit('IsReload', IsReload);
@@ -586,97 +699,6 @@ export default {
     },
     onSelectionChange(selection) {
       this.selection = selection;
-    },
-    /* 行选中 - 通知父组件 */
-    onRowClick(row) {
-      if (!row) return;
-      this.$emit('row-click', row);
-    },
-    // ========== 工具栏按钮处理 ==========
-    handleAdd() {
-      this.$emit('tool-action', { action: 'add' });
-    },
-    handleDelete() {
-      if (!this.selection.length) {
-        this.$message.error('请至少选择一条数据');
-        return;
-      }
-      this.$emit('tool-action', { action: 'delete', selection: this.selection });
-    },
-    handleTempRemark() {
-      this.$emit('tool-action', { action: 'tempRemark' });
-    },
-    handleBatchRemark() {
-      if (!this.selection.length) {
-        this.$message.error('请至少选择一条数据');
-        return;
-      }
-      this.$emit('tool-action', { action: 'batchRemark', selection: this.selection });
-    },
-    handleContract() {
-      this.$emit('tool-action', { action: 'contract' });
-    },
-    handleDeptAuth() {
-      this.$emit('tool-action', { action: 'deptAuth' });
-    },
-    handleCheckReceive() {
-      this.$emit('tool-action', { action: 'checkReceive' });
-    },
-    handleKubo() {
-      this.$emit('tool-action', { action: 'kubo' });
-    },
-    handleCheckZCZ() {
-      this.$emit('tool-action', { action: 'checkZCZ' });
-    },
-    handleExpirationData() {
-      this.$emit('tool-action', { action: 'expirationData' });
-    },
-    handleBhRule() {
-      this.$emit('tool-action', { action: 'bhRule' });
-    },
-    handleImport() {
-      this.$emit('tool-action', { action: 'import' });
-    },
-    handleExportTemplate() {
-      this.$emit('tool-action', { action: 'exportTemplate' });
-    },
-    handleYbApproval() {
-      if (!this.selection.length) {
-        this.$message.error('请至少选择一条数据');
-        return;
-      }
-      this.$emit('tool-action', { action: 'ybApproval', selection: this.selection });
-    },
-    handleUpdateField() {
-      this.$emit('tool-action', { action: 'updateField' });
-    },
-    handleEnable(state) {
-      if (!this.selection.length) {
-        this.$message.error('请至少选择一条数据');
-        return;
-      }
-      this.$emit('tool-action', { action: 'enable', state, selection: this.selection });
-    },
-    handleExport() {
-      this.$emit('tool-action', { action: 'export', selection: this.selection });
-    },
-    handleExportHighPerf() {
-      this.$emit('tool-action', { action: 'exportHighPerf', selection: this.selection });
-    },
-    handleExportSearch() {
-      this.$emit('tool-action', { action: 'exportSearch', selection: this.selection });
-    },
-    handleSendApproval() {
-      this.$emit('tool-action', { action: 'sendApproval' });
-    },
-    handleWxtSp() {
-      this.$emit('tool-action', { action: 'wxtSp' });
-    },
-    handleStopDept(state) {
-      this.$emit('tool-action', { action: 'stopDept', state });
-    },
-    handleExportMaterial() {
-      this.$emit('tool-action', { action: 'exportMaterial' });
     },
     showEditReoad(data) {
       if (data == false) {
@@ -813,11 +835,6 @@ export default {
       console.log(row.PlanQty);
     }
   },
-  computed: {
-    KSDepartmentalPlanDataSearch() {
-      return this.KSDepartmentalPlanData;
-    }
-  },
   watch: {
     KSDepartmentalPlanDataSearch() {
       this.$forceUpdate();
@@ -860,13 +877,14 @@ export default {
 .variety-data-lzh-main {
   padding: 0;
 }
-.action-toolbar {
-  margin: 8px 0;
+.local-toolbar {
+  padding: 0 12px 12px;
 }
-.toolbar-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-  margin-bottom: 4px;
+.local-toolbar.spd-toolbar {
+  padding-bottom: 12px;
+}
+.local-toolbar .spd-toolbar__divider {
+  min-height: 24px;
+  margin: 0 8px;
 }
 </style>

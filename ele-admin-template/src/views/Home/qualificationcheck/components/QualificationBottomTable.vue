@@ -107,7 +107,7 @@
           {
             prop: 'XZ_COUNT',
             label: '待审核资料',
-            minWidth: 100,
+            minWidth: 120,
             align: 'center'
           },
           {
@@ -195,13 +195,13 @@
           {
             slot: 'TYPE',
             label: '审核登记表类型',
-            minWidth: 130,
+            minWidth: 170,
             align: 'center'
           },
           {
             slot: 'Supplier_Name',
             label: '登记表供应商',
-            minWidth: 100,
+            minWidth: 140,
             align: 'center',
             showOverflowTooltip: true
           },

@@ -9,12 +9,12 @@ export function getVwHptxColumns() {
     {
       prop: 'PIC_URL',
       label: '发票图片',
-      width: 100,
+      width: 120,
       align: 'center',
       slot: 'pic'
     },
     { prop: 'DELIVERY_TIME', label: '收货时间', width: 120, showOverflowTooltip: true },
-    { prop: 'HPTX_MONTH', label: '结算月份', width: 80, showOverflowTooltip: true },
+    { prop: 'HPTX_MONTH', label: '结算月份', width: 120, showOverflowTooltip: true },
     { prop: 'INVOICES', label: '发票号', width: 120, showOverflowTooltip: true },
     {
       prop: 'ORDER_JS_TYPE',
@@ -48,7 +48,7 @@ export function getVwHptxColumns() {
     {
       prop: 'FP_QS_STATE',
       label: '是否签收',
-      width: 100,
+      width: 120,
       align: 'center',
       formatter: (row) => fmtFpQsState(row.FP_QS_STATE)
     }
