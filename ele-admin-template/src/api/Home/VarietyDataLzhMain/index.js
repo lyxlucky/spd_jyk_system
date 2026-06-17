@@ -1,4 +1,4 @@
-import request from '@/utils/request';
+﻿import request from '@/utils/request';
 import { formdataify, DataToObject } from '@/utils/formdataify';
 import { TOKEN_STORE_NAME, } from '@/config/setting';
 import { Encrypt } from '@/utils/aes-util';
@@ -57,10 +57,22 @@ export async function QueryPageLayUI(data) {
     data2.BZ_TI = data.where.BZ_TI ? data.where.BZ_TI : '';
     data2.JF_BJ = data.where.JF_BJ ? data.where.JF_BJ : '';
     data2.IS_HANG_UP = data.where.IS_HANG_UP ? data.where.IS_HANG_UP : '';
+    // 对齐老系统 buildVarietyQueryPrams 缺失的参数
+    data2.Y_M_P_CODE = data.where.Y_M_P_CODE ? data.where.Y_M_P_CODE : '';
+    data2.STSEHIS_STATE = data.where.STSEHIS_STATE ? data.where.STSEHIS_STATE : '';
+    data2.HOSPITAL_SYNC = data.where.HOSPITAL_SYNC ? data.where.HOSPITAL_SYNC : '';
+    data2.CLASS_ONE = data.where.CLASS_ONE ? data.where.CLASS_ONE : '';
+    data2.CLASS_TWO = data.where.CLASS_TWO ? data.where.CLASS_TWO : '';
+    data2.CLASS_THREE = data.where.CLASS_THREE ? data.where.CLASS_THREE : '';
+    data2.CLASSIFIC_PROPERTIES3 = data.where.CLASSIFIC_PROPERTIES3 ? data.where.CLASSIFIC_PROPERTIES3 : '';
+    data2.VAR_CREATETIMESTART = data.where.VAR_CREATETIMESTART ? data.where.VAR_CREATETIMESTART : '';
+    data2.VAR_CREATETIMEEND = data.where.VAR_CREATETIMEEND ? data.where.VAR_CREATETIMEEND : '';
 
     // data2.page = data.page ? data.page : 1;
     // data2.size = data.limit ? data.limit : 30;
-    data2.field = data.field ? data.field : '';
+    data2.field = (typeof data.field === 'string') ? data.field : '';
+    // 对齐老系统：order 必须为字符串（"asc"/"desc"），而不是对象
+    data2.order = (typeof data.order === 'string') ? data.order : '';
 
 
     var pramsStr = Encrypt(JSON.stringify(data2))
@@ -79,4 +91,112 @@ export async function QueryPageLayUI(data) {
     } else {
         return Promise.reject(new Error(res.data.msg));
     }
+}
+
+// ========== 定数包品种维护 ==========
+
+// 加载定数包品种列表
+export async function GetDefinitePkgList(data) {
+    const Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+    const params = {
+        Token,
+        VARIETIE_CODE: data.VARIETIE_CODE || '',
+        VARIETIE_NAME: data.VARIETIE_NAME || '',
+        wheres: data.wheres || 1,
+        page: data.page || 1,
+        size: data.size || 30
+    };
+    const res = await request.get('/VarietieBasicInfo/GetDefinitePkgListpackage', { params });
+    if (res.data.code == 200 || res.data.code === '200') {
+        return res.data;
+    } else {
+        return Promise.reject(new Error(res.data.msg));
+    }
+}
+
+// 加载定数包系数方案详情
+export async function GetDefinitePkgDetail(data) {
+    const Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+    const res = await request.get('/VarietieBasicInfo/GetDefinitePkgALL', {
+        params: { Token, varietieCode: data.varietieCode }
+    });
+    if (res.data.code == 200 || res.data.code === '200') {
+        return res.data;
+    } else {
+        return Promise.reject(new Error(res.data.msg));
+    }
+}
+
+// 添加定数包系数
+export async function InsertDefinite(data) {
+    const Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+    const res = await request.post('/VarietieBasicInfo/InsertDefinite', formdataify({
+        Token,
+        DeCodeGuid: data.coefficient,
+        varietieCode: data.varietieCode
+    }));
+    return res.data;
+}
+
+// 修改定数包系数
+export async function UpdateDefinite(data) {
+    const Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+    const res = await request.post('/VarietieBasicInfo/UpdateDefinite', formdataify({
+        Token,
+        DeCodeGuid: data.pkgCode,
+        DePkgConefficient: data.coefficient,
+        Enable: data.enable
+    }));
+    return res.data;
+}
+
+// 删除定数包系数
+export async function DeleteDefinite(data) {
+    const Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+    const res = await request.post('/VarietieBasicInfo/DeleteDefinite', formdataify({
+        Token,
+        PkgCode: data.pkgCode
+    }));
+    return res.data;
+}
+
+// 检查是否可以删除定数包
+export async function CheckVarietieBasic(data) {
+    const Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+    const res = await request.get('/VarietieBasicInfo/CheckVarietieBasic', {
+        params: { Token, VarietieCode: data.varietieCode, nickname: data.nickname || '' }
+    });
+    return res.data;
+}
+
+// 检查定数包系数是否重复
+export async function IsCoefficientSame(data) {
+    const Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+    const res = await request.get('/Contract/Iscoefficientsame', {
+        params: {
+            Token,
+            varietie_code: data.varietieCode,
+            def_no_pkg_coefficient: data.coefficient
+        }
+    });
+    return res.data;
+}
+
+// 获取品种详情信息（用于新建定数包时展示品种基本信息）
+export async function GetVarietyDetailsInfo(varietieCode) {
+    const Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+    const res = await request.get('/VarietieBasicInfo/GetDetailsInfo', {
+        params: { Token, VarietieCode: varietieCode }
+    });
+    return res.data;
+}
+
+// 导入定数包系数
+export async function ImportDefinitePackages(formData) {
+    const Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+    const res = await request.post(`/VarietieBasicInfo/ImportDefinitePackages?Token=${encodeURIComponent(Token)}`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+        timeout: 120000
+    });
+    return res.data;
 }

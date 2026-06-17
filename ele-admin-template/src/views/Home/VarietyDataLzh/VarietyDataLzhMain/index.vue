@@ -5,7 +5,40 @@
     <div class="spd-panel spd-table-panel">
       <div class="spd-panel__head">散货品种列表</div>
       <div class="spd-panel__body spd-table-panel__wrap">
-    <ele-pro-table ref="table" :toolStyle="toolStyle" height="60vh" highlight-current-row :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" @selection-change="onSelectionChange" cache-key="KSInventoryBasicDataTable">
+    <!-- 操作按钮工具栏 -->
+    <div class="action-toolbar">
+      <div class="toolbar-row">
+        <el-button size="small" icon="el-icon-plus" @click="handleAdd">添加</el-button>
+        <el-button size="small" type="danger" icon="el-icon-delete" @click="handleDelete">删除</el-button>
+        <el-button size="small" plain @click="handleTempRemark">临时备注</el-button>
+        <el-button size="small" plain @click="handleBatchRemark">批量备注</el-button>
+        <el-button size="small" plain @click="handleContract">品种合同维护关系</el-button>
+        <el-button size="small" plain @click="handleDeptAuth">品种科室授权关系</el-button>
+        <el-button size="small" plain @click="handleCheckReceive">查看品种对接</el-button>
+        <el-button size="small" plain @click="handleKubo">库宝创建品种</el-button>
+        <el-button size="small" plain @click="handleCheckZCZ">查看新老注册证品种</el-button>
+        <el-button size="small" plain @click="handleExpirationData">品种效期资料</el-button>
+        <el-button size="small" plain @click="handleBhRule">定数备货规则</el-button>
+      </div>
+      <div class="toolbar-row">
+        <el-button size="small" plain @click="handleImport">导入</el-button>
+        <el-button size="small" plain @click="handleExportTemplate">导出模板</el-button>
+        <el-button size="small" plain @click="handleYbApproval">批量提交医保审批</el-button>
+        <el-button size="small" plain @click="handleUpdateField">更新选定字段</el-button>
+        <el-button size="small" type="success" @click="handleEnable(1)">启用</el-button>
+        <el-button size="small" type="danger" @click="handleEnable(0)">冻结</el-button>
+        <el-button size="small" plain icon="el-icon-download" @click="handleExport">导出</el-button>
+        <el-button size="small" plain @click="handleExportHighPerf">导出(高性能)</el-button>
+        <el-button size="small" plain @click="handleExportSearch">导出检索</el-button>
+        <el-button size="small" plain @click="handleSendApproval">发送审批</el-button>
+        <el-button size="small" plain @click="handleWxtSp">微讯通品种审核</el-button>
+        <el-button size="small" type="danger" plain @click="handleStopDept(1)">禁止科室申请</el-button>
+        <el-button size="small" plain @click="handleStopDept(0)">开启科室申请</el-button>
+        <el-button size="small" plain @click="handleExportMaterial">导出物资分类品种</el-button>
+      </div>
+    </div>
+
+    <ele-pro-table ref="table" :highlight-current-row="true" :toolStyle="toolStyle" height="60vh" :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" @selection-change="onSelectionChange" @current-change="onRowClick" cache-key="KSInventoryBasicDataTable">
 
       <template v-slot:PAG_TYPE="{ row }">
         <div :id="'PAG_TYPE' + row.ID" :key="row.id" @click="dialogVisibleFun(row)">{{ row.PAG_TYPE }}
@@ -554,6 +587,97 @@ export default {
     onSelectionChange(selection) {
       this.selection = selection;
     },
+    /* 行选中 - 通知父组件 */
+    onRowClick(row) {
+      if (!row) return;
+      this.$emit('row-click', row);
+    },
+    // ========== 工具栏按钮处理 ==========
+    handleAdd() {
+      this.$emit('tool-action', { action: 'add' });
+    },
+    handleDelete() {
+      if (!this.selection.length) {
+        this.$message.error('请至少选择一条数据');
+        return;
+      }
+      this.$emit('tool-action', { action: 'delete', selection: this.selection });
+    },
+    handleTempRemark() {
+      this.$emit('tool-action', { action: 'tempRemark' });
+    },
+    handleBatchRemark() {
+      if (!this.selection.length) {
+        this.$message.error('请至少选择一条数据');
+        return;
+      }
+      this.$emit('tool-action', { action: 'batchRemark', selection: this.selection });
+    },
+    handleContract() {
+      this.$emit('tool-action', { action: 'contract' });
+    },
+    handleDeptAuth() {
+      this.$emit('tool-action', { action: 'deptAuth' });
+    },
+    handleCheckReceive() {
+      this.$emit('tool-action', { action: 'checkReceive' });
+    },
+    handleKubo() {
+      this.$emit('tool-action', { action: 'kubo' });
+    },
+    handleCheckZCZ() {
+      this.$emit('tool-action', { action: 'checkZCZ' });
+    },
+    handleExpirationData() {
+      this.$emit('tool-action', { action: 'expirationData' });
+    },
+    handleBhRule() {
+      this.$emit('tool-action', { action: 'bhRule' });
+    },
+    handleImport() {
+      this.$emit('tool-action', { action: 'import' });
+    },
+    handleExportTemplate() {
+      this.$emit('tool-action', { action: 'exportTemplate' });
+    },
+    handleYbApproval() {
+      if (!this.selection.length) {
+        this.$message.error('请至少选择一条数据');
+        return;
+      }
+      this.$emit('tool-action', { action: 'ybApproval', selection: this.selection });
+    },
+    handleUpdateField() {
+      this.$emit('tool-action', { action: 'updateField' });
+    },
+    handleEnable(state) {
+      if (!this.selection.length) {
+        this.$message.error('请至少选择一条数据');
+        return;
+      }
+      this.$emit('tool-action', { action: 'enable', state, selection: this.selection });
+    },
+    handleExport() {
+      this.$emit('tool-action', { action: 'export', selection: this.selection });
+    },
+    handleExportHighPerf() {
+      this.$emit('tool-action', { action: 'exportHighPerf', selection: this.selection });
+    },
+    handleExportSearch() {
+      this.$emit('tool-action', { action: 'exportSearch', selection: this.selection });
+    },
+    handleSendApproval() {
+      this.$emit('tool-action', { action: 'sendApproval' });
+    },
+    handleWxtSp() {
+      this.$emit('tool-action', { action: 'wxtSp' });
+    },
+    handleStopDept(state) {
+      this.$emit('tool-action', { action: 'stopDept', state });
+    },
+    handleExportMaterial() {
+      this.$emit('tool-action', { action: 'exportMaterial' });
+    },
     showEditReoad(data) {
       if (data == false) {
         var where = {
@@ -735,5 +859,14 @@ export default {
 <style scoped>
 .variety-data-lzh-main {
   padding: 0;
+}
+.action-toolbar {
+  margin: 8px 0;
+}
+.toolbar-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 4px;
 }
 </style>
