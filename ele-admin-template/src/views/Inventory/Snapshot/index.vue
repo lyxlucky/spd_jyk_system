@@ -1,9 +1,11 @@
 <template>
   <div class="ele-body spd-page inventory-snapshot">
     <el-card shadow="never" class="section-card">
+      <div class="section-title">供应商库存快照</div>
       <SupplierSnapshotPanel />
     </el-card>
     <el-card shadow="never" class="section-card">
+      <div class="section-title">中心库库存快照</div>
       <CenterKzSnapshotPanel :flags="snapshotFlags" />
     </el-card>
   </div>
@@ -30,10 +32,16 @@ export default {
 </script>
 
 <style scoped>
-.section-card {
-  margin-bottom: 16px;
+.section-card :deep(.el-card__body) {
+  padding: 12px;
 }
-.section-card:last-child {
-  margin-bottom: 0;
+
+.section-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #303133;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #ebeef5;
 }
 </style>

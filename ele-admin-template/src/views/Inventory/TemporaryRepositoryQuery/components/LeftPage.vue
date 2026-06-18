@@ -1,45 +1,33 @@
 <template>
-  <div class="ele-body temporary-left-page">
-    <el-card shadow="never">
-      <!-- 搜索表单 -->
-      <!-- <user-search @search="reload" @exportData="exportData" /> -->
-      <!-- 数据表格 -->
-      <user-search @search="reload" @exportData="exportData" @returnData="returnData"/>
-      <ele-pro-table
-        ref="table"
-        size="mini"
-        height="calc(100vh - 234px)"
-        :pageSize="pageSize"
-        :pageSizes="pageSizes"
-        :columns="columns"
-        :datasource="datasource"
-        :selection.sync="selection"
-        cache-key="KSInventoryBasicDataTable"
-      >
-        <!-- 表头工具栏 -->
-        <template v-slot:toolbar>
-        </template>
-
-        <!-- 操作列 -->
-        <template v-slot:action="{ row }">
-          <el-link type="primary" :underline="false" icon="el-icon-edit" @click="openEdit(row)">
-            修改
-          </el-link>
-          <!-- <el-button type="primary" size="mini" @click="openEdit(row)">编辑</el-button> -->
-          <!-- <el-popconfirm class="ele-action" title="确定要删除此用户吗？" @confirm="remove(row)">
-            <template v-slot:reference>
-              <el-link type="danger" :underline="false" icon="el-icon-delete">
-                删除
-              </el-link>
-            </template>
-          </el-popconfirm> -->
-        </template>
-      </ele-pro-table>
-    </el-card>
-    <!-- 编辑弹窗 -->
+  <div class="temporary-page spd-page">
+    <user-search @search="reload" @exportData="exportData" @returnData="returnData" />
+    <div class="spd-panel spd-table-panel temporary-table-panel">
+      <div class="spd-panel__head spd-panel__head--split">
+        <span>暂存库列表</span>
+        <span v-if="selection.length" class="spd-panel__head-meta">已选 {{ selection.length }} 条</span>
+      </div>
+      <div class="spd-table-panel__wrap">
+        <ele-pro-table
+          ref="table"
+          class="data-table"
+          size="mini"
+          :toolbar="false"
+          :toolkit="['columns', 'fullscreen']"
+          height="calc(100vh - 300px)"
+          :pageSize="pageSize"
+          :pageSizes="pageSizes"
+          :columns="columns"
+          :datasource="datasource"
+          :selection.sync="selection"
+          cache-key="temporaryRepositoryLeftTable"
+        >
+          <template v-slot:action="{ row }">
+            <el-button type="text" size="mini" @click="openEdit(row)">修改</el-button>
+          </template>
+        </ele-pro-table>
+      </div>
+    </div>
     <user-edit :visible.sync="showEdit" :data="current" @done="reload" />
-    <!-- 导入弹窗 -->
-    <!-- <user-import :visible.sync="showImport" @done="reload" /> -->
   </div>
 </template>
 
@@ -47,17 +35,17 @@
 import { utils, writeFile } from 'xlsx';
 import UserSearch from './leftpage-search.vue';
 import {
-  GetPDAList,Temporary_supplyRevert
+  GetPDAList,
+  Temporary_supplyRevert
 } from '@/api/Inventory/TemporaryRepositoryQuery';
+
 export default {
   name: 'SystemUser',
   components: {
-    UserSearch,
-   
+    UserSearch
   },
   data() {
     return {
-      // 表格列配置
       columns: [
         {
           columnKey: 'selection',
@@ -66,7 +54,7 @@ export default {
           align: 'center',
           fixed: 'left'
         },
-         {
+        {
           prop: 'DEPT_TWO_NAME',
           label: '科室名称',
           align: 'center',
@@ -164,7 +152,7 @@ export default {
           showOverflowTooltip: true,
           width: 150,
           formatter: (row) => {
-            return row.Operate_Time.replace("T", " ");
+            return row.Operate_Time.replace('T', ' ');
           }
         },
         {
@@ -175,60 +163,34 @@ export default {
           style: 'display: none'
         }
       ],
-      toolbar: false,
       pageSize: 10,
       pageSizes: [10, 20, 50, 100, 9999999],
-      pagerCount: 5,
-      // 表格选中数据
       selection: [],
-      // 当前编辑数据
       current: null,
-      // 是否显示编辑弹窗
-      showEdit: false,
-      // 是否显示导入弹窗
-      showImport: false,
-      // datasource: [],
-      data: []
+      showEdit: false
     };
   },
   methods: {
-    /* 表格数据源 */
     datasource({ page, limit, where, order }) {
-      let data = GetPDAList({ page, limit, where, order }).then(
-        (res) => {
-            var tData = {
-              count: res.total,
-              list: res.result
-            };
-            return tData;
-          }
-      );
-      return data;
+      return GetPDAList({ page, limit, where, order }).then((res) => ({
+        count: res.total,
+        list: res.result
+      }));
     },
-    /* 刷新表格 */
     reload(where) {
-      console.log(where);
       this.$refs.table.reload({ page: 1, where: where });
     },
-    /* 打开编辑弹窗 */
     openEdit(row) {
       this.current = row;
       this.showEdit = true;
     },
-    /* 打开导入弹窗 */
-    openImport() {
-      this.showImport = true;
-    },
     async returnData(where) {
-      // 获取选中行的数据
       const selectedData = this.selection;
-      // 判断是否有选中的数据
       if (selectedData.length === 0) {
         this.$message.warning('请选择需要归还的行');
         return;
       }
       try {
-        // 显示确认框
         const confirmResult = await this.$confirm(
           '确认要归还吗？',
           '提示',
@@ -239,37 +201,21 @@ export default {
           }
         );
 
-        
         if (confirmResult) {
-          // 显示加载提示
-          // const loadingInstance = this.$message.loading({
-          //   message: '处理中...',
-          //   duration: 0
-          // });
-          // 调用封装的标记处理方法
           const responseData = await Temporary_supplyRevert(selectedData);
-
           this.$message.success(responseData);
-          // 关闭加载提示
-          //loadingInstance.close();
-          // 根据响应结果处理
           if (responseData.code == 200) {
             this.$message.success(responseData.msg);
-            // 刷新表格
             this.reload(where);
           } else {
             this.$message.error(responseData.msg);
           }
         }
       } catch (error) {
-        if (error.message.includes('timeout')) {
-         // this.$message.error('请求超时，请检查网络');
-        } else {
-          //this.$message.error('请求出错，请检查网络');
+        if (error.message && error.message.includes('timeout')) {
+          // ignore timeout
         }
       }
-    
-    
     },
     exportData(data) {
       const loading = this.$messageLoading('正在导出数据...');
@@ -284,7 +230,6 @@ export default {
         })
           .then((res) => {
             loading.close();
-            // 提取 columns 中的 label 作为表头
             const headers = this.columns
               .filter(column => column.prop)
               .map(column => column.label);
@@ -309,7 +254,7 @@ export default {
               },
               '暂借记录.xlsx'
             );
-            this.$message.success("导出成功");
+            this.$message.success('导出成功');
           })
           .catch((e) => {
             loading.close();
@@ -317,35 +262,21 @@ export default {
           });
       });
     }
-  },
-  created() {
-    // this.getdatasource();
-    // console.log(this.$store.state.user.info)
   }
 };
 </script>
 
 <style scoped>
-.temporary-left-page {
+.temporary-page {
   height: 100%;
-  padding: 0;
-}
-
-.temporary-left-page :deep(.el-card) {
-  height: 100%;
-}
-
-.temporary-left-page :deep(.el-card__body) {
-  height: 100%;
-  padding: 0;
-  box-sizing: border-box;
   display: flex;
   flex-direction: column;
+  gap: 10px;
   min-height: 0;
 }
 
-.temporary-left-page :deep(.el-table th .cell),
-.temporary-left-page :deep(.el-table td .cell) {
-  white-space: nowrap;
+.temporary-table-panel {
+  flex: 1;
+  min-height: 0;
 }
 </style>

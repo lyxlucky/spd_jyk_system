@@ -1,22 +1,32 @@
 <template>
   <div class="ele-body spd-page tertiary-inventory-page">
-    <el-card shadow="never">
-      <div class="page-title">三级库存查询</div>
+    <el-card shadow="never" class="tertiary-inventory-card">
       <TertiaryInventorySearch ref="search" :exporting="exporting" @search="reload" @export="onExport" />
-      <ele-pro-table
-        ref="table"
-        :height="tableHeight"
-        :columns="columns"
-        :datasource="datasource"
-        :selection.sync="selection"
-        :page-size="30"
-        :page-sizes="[30, 50, 100, 150, 200, 300, 99999]"
-        cache-key="TertiaryInventoryTable"
-      >
-        <template v-slot:action="{ row }">
-          <el-button type="primary" size="mini" @click="openDetail(row)">查看</el-button>
-        </template>
-      </ele-pro-table>
+      <div class="spd-panel spd-table-panel">
+        <div class="spd-panel__head">三级库存列表</div>
+        <div class="spd-table-panel__wrap">
+          <ele-pro-table
+            ref="table"
+            class="data-table"
+            size="mini"
+            border
+            stripe
+            :toolbar="false"
+            :header-overflow-hidden="false"
+            :height="tableHeight"
+            :columns="columns"
+            :datasource="datasource"
+            :selection.sync="selection"
+            :page-size="30"
+            :page-sizes="[30, 50, 100, 150, 200, 300, 99999]"
+            cache-key="TertiaryInventoryTable"
+          >
+            <template v-slot:action="{ row }">
+              <el-link type="primary" :underline="false" @click="openDetail(row)">查看</el-link>
+            </template>
+          </ele-pro-table>
+        </div>
+      </div>
     </el-card>
 
     <TertiaryInventoryDetailDialog
@@ -42,7 +52,7 @@ export default {
   data() {
     return {
       columns: getTertiaryInventoryColumns(),
-      tableHeight: 'calc(100vh - 260px)',
+      tableHeight: 'calc(100vh - 300px)',
       selection: [],
       lastWhere: {},
       exporting: false,
@@ -102,10 +112,25 @@ export default {
 </script>
 
 <style scoped>
-.tertiary-inventory-page .page-title {
-  font-size: 16px;
-  font-weight: 600;
-  margin-bottom: 12px;
-  color: #303133;
+.tertiary-inventory-card :deep(.el-card__body) {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.tertiary-inventory-page >>> .el-table th .cell {
+  white-space: nowrap;
+}
+
+.tertiary-inventory-page >>> .action-col .cell {
+  line-height: 23px;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.tertiary-inventory-page >>> .action-col .el-link {
+  font-size: 12px;
+  line-height: 23px;
+  vertical-align: middle;
 }
 </style>

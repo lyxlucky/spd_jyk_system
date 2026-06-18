@@ -1,6 +1,6 @@
 <template>
   <div class="ele-body spd-page no-move-sell">
-    <el-card shadow="never">
+    <el-card shadow="never" class="no-move-sell-card">
       <NoMoveSellSearch
         ref="search"
         :exporting="exporting"
@@ -9,41 +9,53 @@
         @export="onExport"
         @notify="onNotify"
       />
-      <ele-pro-table
-        ref="table"
-        :height="tableHeight"
-        :columns="columns"
-        :datasource="datasource"
-        :selection.sync="selection"
-        :page-size="10"
-        :page-sizes="[10, 30, 60, 90, 150, 300]"
-        :row-class-name="tableRowClass"
-        cache-key="KSInventoryNoMoveSellTable"
-        @sort-change="onSortChange"
-      >
-        <template v-slot:remarks="{ row }">
-          <el-link type="primary" :underline="false" @click="openRemark(row)">
-            {{ row.Remarks == null || row.Remarks === '' ? '无' : row.Remarks }}
-          </el-link>
-        </template>
-        <template v-slot:storageId="{ row }">
-          {{ fmtStorageId(row.STORAGE_ID) }}
-        </template>
-        <template v-slot:upShelfState="{ row }">
-          {{ fmtUpShelfState(row) }}
-        </template>
-        <template v-slot:batchProdDate="{ row }">
-          {{ fmtDate10(row.BATCH_PRODUCTION_DATE) }}
-        </template>
-        <template v-slot:batchValidity="{ row }">
-          <span :class="{ 'batch-expired': isBatchExpired(row.BATCH_VALIDITY_PERIOD) }">
-            {{ fmtDate10(row.BATCH_VALIDITY_PERIOD) }}
-          </span>
-        </template>
-        <template v-slot:supplyPrice="{ row }">
-          {{ fmtPrice(row.SUPPLY_PRICE) }}
-        </template>
-      </ele-pro-table>
+      <div class="spd-panel spd-table-panel">
+        <div class="spd-panel__head spd-panel__head--split">
+          <span>滞销库存列表</span>
+          <span v-if="selection.length" class="spd-panel__head-meta">已选 {{ selection.length }} 条</span>
+        </div>
+        <div class="spd-table-panel__wrap">
+          <ele-pro-table
+            ref="table"
+            class="data-table"
+            size="mini"
+            :toolbar="false"
+            :toolkit="['columns', 'fullscreen']"
+            :height="tableHeight"
+            :columns="columns"
+            :datasource="datasource"
+            :selection.sync="selection"
+            :page-size="10"
+            :page-sizes="[10, 30, 60, 90, 150, 300]"
+            :row-class-name="tableRowClass"
+            cache-key="noMoveSellTable"
+            @sort-change="onSortChange"
+          >
+            <template v-slot:remarks="{ row }">
+              <el-button type="text" size="mini" @click="openRemark(row)">
+                {{ row.Remarks == null || row.Remarks === '' ? '无' : row.Remarks }}
+              </el-button>
+            </template>
+            <template v-slot:storageId="{ row }">
+              {{ fmtStorageId(row.STORAGE_ID) }}
+            </template>
+            <template v-slot:upShelfState="{ row }">
+              {{ fmtUpShelfState(row) }}
+            </template>
+            <template v-slot:batchProdDate="{ row }">
+              {{ fmtDate10(row.BATCH_PRODUCTION_DATE) }}
+            </template>
+            <template v-slot:batchValidity="{ row }">
+              <span :class="{ 'batch-expired': isBatchExpired(row.BATCH_VALIDITY_PERIOD) }">
+                {{ fmtDate10(row.BATCH_VALIDITY_PERIOD) }}
+              </span>
+            </template>
+            <template v-slot:supplyPrice="{ row }">
+              {{ fmtPrice(row.SUPPLY_PRICE) }}
+            </template>
+          </ele-pro-table>
+        </div>
+      </div>
     </el-card>
 
     <el-dialog
@@ -53,10 +65,10 @@
       append-to-body
       @closed="remarkText = ''"
     >
-      <el-input v-model="remarkText" type="textarea" :rows="12" />
+      <el-input v-model="remarkText" type="textarea" :rows="12" size="mini" />
       <span slot="footer">
-        <el-button @click="remarkVisible = false">取消</el-button>
-        <el-button type="primary" :loading="remarkSaving" @click="saveRemark">确定</el-button>
+        <el-button size="mini" @click="remarkVisible = false">取消</el-button>
+        <el-button type="primary" size="mini" :loading="remarkSaving" @click="saveRemark">确定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -86,7 +98,7 @@ export default {
   components: { NoMoveSellSearch },
   data() {
     return {
-      tableHeight: 'calc(100vh - 220px)',
+      tableHeight: 'calc(100vh - 300px)',
       selection: [],
       lastWhere: {},
       lastSort: { field: '', order: '' },
@@ -109,7 +121,7 @@ export default {
         {
           prop: 'StockPosition',
           label: '库存位置',
-          width: 120,
+          width: 200,
           sortable: 'custom',
           showOverflowTooltip: true
         },
@@ -332,9 +344,16 @@ export default {
 </script>
 
 <style scoped>
+.no-move-sell-card :deep(.el-card__body) {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 .batch-expired {
   color: #f56c6c;
 }
+
 ::v-deep .no-move-sell-row-expired > td {
   background-color: #fde2e2 !important;
 }

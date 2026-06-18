@@ -1,5 +1,5 @@
 <template>
-  <div class="revise-management ele-body-small">
+  <div class="revise-management ele-body spd-page">
     <el-tabs v-model="activeTab" type="card" class="revise-tabs">
       <el-tab-pane label="盘点库存比对" name="compare">
         <div class="compare-layout">
@@ -10,7 +10,7 @@
               :data="timeRows"
               border
               stripe
-              size="small"
+              size="mini"
               highlight-current-row
               height="calc(100vh - 220px)"
               @current-change="onTimeSelect"
@@ -34,7 +34,7 @@
               :data="deptRows"
               border
               stripe
-              size="small"
+              size="mini"
               highlight-current-row
               height="calc(100vh - 220px)"
               @current-change="onDeptSelect"
@@ -42,7 +42,7 @@
               <el-table-column
                 prop="DEPT_TWO_NAME"
                 label="科室名称"
-                min-width="80"
+                min-width="100"
                 sortable
                 :sort-method="(a, b) => sortStr(a, b, 'DEPT_TWO_NAME')"
                 show-overflow-tooltip
@@ -50,7 +50,7 @@
               <el-table-column
                 prop="CYCOUNT"
                 label="差异数"
-                min-width="80"
+                min-width="88"
                 align="center"
                 sortable
                 :sort-method="(a, b) => sortNum(a, b, 'CYCOUNT')"
@@ -58,7 +58,7 @@
               <el-table-column
                 prop="QSCOUNT"
                 label="缺少数"
-                min-width="80"
+                min-width="88"
                 align="center"
                 sortable
                 :sort-method="(a, b) => sortNum(a, b, 'QSCOUNT')"
@@ -66,7 +66,7 @@
               <el-table-column
                 prop="YCCOUNT"
                 label="溢出数"
-                min-width="80"
+                min-width="88"
                 align="center"
                 sortable
                 :sort-method="(a, b) => sortNum(a, b, 'YCCOUNT')"
@@ -74,7 +74,7 @@
               <el-table-column
                 prop="DEPT_SP_STATE"
                 label="审批状态"
-                min-width="80"
+                min-width="96"
                 align="center"
                 sortable
                 :sort-method="(a, b) => sortStr(a, b, 'DEPT_SP_STATE')"
@@ -84,7 +84,7 @@
               <el-table-column
                 prop="DEPT_SP_MAN"
                 label="审批人"
-                min-width="80"
+                min-width="88"
                 sortable
                 :sort-method="(a, b) => sortStr(a, b, 'DEPT_SP_MAN')"
                 show-overflow-tooltip
@@ -92,7 +92,7 @@
               <el-table-column
                 prop="DEPT_SP_TIME"
                 label="审批时间"
-                min-width="80"
+                min-width="100"
                 sortable
                 :sort-method="(a, b) => sortDate(a, b, 'DEPT_SP_TIME')"
               >
@@ -106,40 +106,34 @@
               <span class="panel-title">库存稽查列表(盘点库存与系统库存的核对结果)</span>
             </div>
             <div class="audit-toolbar">
-              <span class="toolbar-item">
-                <a class="btn-link" @click.prevent="exportAuditExcel">导出excel</a>
-              </span>
-              <span class="toolbar-item">
-                <a class="btn-link" @click.prevent="onSupplementZj">补暂借</a>
-              </span>
-              <span class="toolbar-item">
-                <a class="btn-link" @click.prevent="onPrintConsume">补消耗打印</a>
-              </span>
-              <span class="toolbar-item filter-item">
-                <label class="filter-label">盘点方式选择：</label>
-                <el-select v-model="audit.pdWay" size="mini" style="width: 100px" @change="loadAudit(1)">
-                  <el-option label="全部" value="" />
-                  <el-option label="一致" value="1" />
-                  <el-option label="缺少" value="0" />
-                  <el-option label="溢出" value="2" />
-                </el-select>
-              </span>
-              <span class="toolbar-item filter-item">
-                <label class="filter-label">状态：</label>
-                <el-select v-model="audit.stockState" size="mini" style="width: 100px" @change="loadAudit(1)">
-                  <el-option label="全部" value="" />
-                  <el-option label="上架" value="1" />
-                  <el-option label="暂借" value="2" />
-                  <el-option label="已出库" value="3" />
-                  <el-option label="已退货" value="0" />
-                </el-select>
-              </span>
-              <span class="toolbar-item toolbar-right">
-                <a class="btn-link" @click.prevent="exportDeptServer">科室导出</a>
-              </span>
-              <span class="toolbar-item toolbar-right">
-                <a class="btn-link" @click.prevent="exportAllServer">导出全部</a>
-              </span>
+              <el-form size="mini" :inline="true" @submit.native.prevent>
+                <el-form-item>
+                  <el-button size="mini" @click="exportAuditExcel">导出</el-button>
+                  <el-button size="mini" @click="onSupplementZj">补暂借</el-button>
+                  <el-button size="mini" @click="onPrintConsume">补消耗打印</el-button>
+                </el-form-item>
+                <el-form-item label="盘点方式">
+                  <el-select v-model="audit.pdWay" style="width: 100px" @change="loadAudit(1)">
+                    <el-option label="全部" value="" />
+                    <el-option label="一致" value="1" />
+                    <el-option label="缺少" value="0" />
+                    <el-option label="溢出" value="2" />
+                  </el-select>
+                </el-form-item>
+                <el-form-item label="状态">
+                  <el-select v-model="audit.stockState" style="width: 100px" @change="loadAudit(1)">
+                    <el-option label="全部" value="" />
+                    <el-option label="上架" value="1" />
+                    <el-option label="暂借" value="2" />
+                    <el-option label="已出库" value="3" />
+                    <el-option label="已退货" value="0" />
+                  </el-select>
+                </el-form-item>
+                <el-form-item class="toolbar-right">
+                  <el-button size="mini" @click="exportDeptServer">科室导出</el-button>
+                  <el-button size="mini" @click="exportAllServer">导出全部</el-button>
+                </el-form-item>
+              </el-form>
             </div>
             <el-table
               ref="auditTable"
@@ -147,7 +141,7 @@
               :data="audit.rows"
               border
               stripe
-              size="small"
+              size="mini"
               height="calc(100vh - 310px)"
               @selection-change="(s) => (audit.selected = s)"
             >
@@ -155,7 +149,7 @@
               <el-table-column
                 prop="VARIETIE_CODE_NEW"
                 label="品种(材料)编码"
-                min-width="110"
+                min-width="130"
                 sortable
                 :sort-method="(a, b) => sortStr(a, b, 'VARIETIE_CODE_NEW')"
                 show-overflow-tooltip
@@ -202,7 +196,7 @@
               />
               <el-table-column
                 label="是否可补暂借"
-                min-width="100"
+                min-width="110"
                 align="center"
                 sortable
                 :sort-method="sortCanZj"
@@ -239,7 +233,7 @@
               </el-table-column>
               <el-table-column
                 label="当前库存状态"
-                min-width="100"
+                min-width="110"
                 align="center"
                 sortable
                 :sort-method="sortStockState"
@@ -297,34 +291,37 @@
           </table>
         </div>
         <div class="manual-toolbar">
-          <div class="manual-search">
-            <el-input
-              v-model="manual.search"
-              clearable
-              size="small"
-              placeholder="供应商/定数码/品种编码查询"
-              style="width: 385px"
-              @keyup.enter.native="loadManual(1)"
-            >
-              <el-button slot="append" icon="el-icon-search" @click="loadManual(1)" />
-            </el-input>
-          </div>
-          <label class="manual-type-label">请选择查询的操作类型：</label>
-          <el-select v-model="manual.selectType" size="small" style="width: 120px" @change="loadManual(1)">
-            <el-option label="允许补暂借" value="1" />
-            <el-option label="允许补归还" value="2" />
-          </el-select>
-          <div class="manual-btns">
-            <el-button size="small" @click="onManualBorrow">手动补暂借</el-button>
-            <el-button size="small" @click="onManualRevert">手动补归还</el-button>
-          </div>
+          <el-form size="mini" :inline="true" @submit.native.prevent>
+            <el-form-item>
+              <el-input
+                v-model="manual.search"
+                clearable
+                placeholder="供应商/定数码/品种编码"
+                style="width: 280px"
+                @keyup.enter.native="loadManual(1)"
+              />
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" icon="el-icon-search" @click="loadManual(1)">查询</el-button>
+            </el-form-item>
+            <el-form-item label="操作类型">
+              <el-select v-model="manual.selectType" style="width: 120px" @change="loadManual(1)">
+                <el-option label="允许补暂借" value="1" />
+                <el-option label="允许补归还" value="2" />
+              </el-select>
+            </el-form-item>
+            <el-form-item class="manual-btns">
+              <el-button size="mini" @click="onManualBorrow">手动补暂借</el-button>
+              <el-button size="mini" @click="onManualRevert">手动补归还</el-button>
+            </el-form-item>
+          </el-form>
         </div>
         <el-table
           v-loading="manual.loading"
           :data="manual.rows"
           border
           stripe
-          size="small"
+          size="mini"
           highlight-current-row
           height="calc(100vh - 320px)"
           @selection-change="(s) => (manual.selected = s)"
@@ -745,8 +742,8 @@ export default {
   min-width: 140px;
 }
 .dept-panel {
-  flex: 0 0 20%;
-  min-width: 200px;
+  flex: 0 0 22%;
+  min-width: 300px;
 }
 .main-panel {
   flex: 1;
@@ -757,6 +754,30 @@ export default {
 }
 .panel-card >>> .el-card__body {
   padding: 8px;
+  overflow-x: auto;
+}
+
+.revise-management >>> .el-table th .cell,
+.revise-management >>> .el-table td .cell {
+  white-space: nowrap;
+}
+
+.revise-management >>> .el-table th .cell {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  line-height: 23px;
+}
+
+.revise-management >>> .el-table th .caret-wrapper {
+  flex-shrink: 0;
+  margin-left: 2px;
+}
+
+.revise-management >>> .el-table__header-wrapper th,
+.revise-management >>> .el-table__fixed-header-wrapper th {
+  height: auto;
 }
 .panel-title {
   font-weight: 600;
@@ -767,54 +788,32 @@ export default {
   align-items: center;
 }
 .audit-toolbar {
+  margin-bottom: 8px;
+}
+
+.audit-toolbar :deep(.el-form--inline) {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  margin-bottom: 8px;
-  padding: 4px 0;
-  min-height: 32px;
+  width: 100%;
 }
-.toolbar-item {
-  margin-right: 12px;
-  margin-bottom: 4px;
+
+.audit-toolbar :deep(.el-form-item) {
+  margin-bottom: 0;
 }
-.toolbar-right {
+
+.audit-toolbar :deep(.toolbar-right) {
   margin-left: auto;
   margin-right: 0;
 }
-.filter-item {
-  display: inline-flex;
-  align-items: center;
-}
-.filter-label {
-  font-size: 12px;
-  color: #606266;
-  margin-right: 4px;
-  white-space: nowrap;
-}
-.btn-link {
-  display: inline-block;
-  min-width: 80px;
-  padding: 5px 12px;
-  font-size: 12px;
-  text-align: center;
-  color: #333;
-  background: #fff;
-  border: 1px solid #dcdfe6;
-  border-radius: 2px;
-  cursor: pointer;
-  text-decoration: none;
-}
-.btn-link:hover {
-  color: #009688;
-  border-color: #009688;
-}
+
 /* 与旧系统 inventory_area_top_table 一致：表头一行 + 数据一行 */
 .inventory-area-top-table {
   width: 100%;
   margin-top: 10px;
   margin-bottom: 15px;
 }
+
 .detail-row-table {
   width: 100%;
   table-layout: fixed;
@@ -822,47 +821,56 @@ export default {
   border: 2px solid #009688;
   border-collapse: collapse;
 }
+
 .detail-row-table thead {
   border-bottom: 2px solid #009688;
 }
+
 .detail-row-table th,
 .detail-row-table td {
-  padding: 10px 6px;
+  padding: 8px 6px;
   text-align: center;
   font-size: 12px;
   font-weight: 500;
-  word-break: break-all;
   border-right: 1px solid #e8e8e8;
 }
+
+.detail-row-table th {
+  white-space: nowrap;
+}
+
+.detail-row-table td {
+  word-break: break-all;
+}
+
 .detail-row-table th:last-child,
 .detail-row-table td:last-child {
   border-right: none;
 }
+
 .detail-row-table tbody td {
   font-weight: normal;
   color: #303133;
 }
+
 .manual-toolbar {
+  margin-bottom: 10px;
+}
+
+.manual-toolbar :deep(.el-form--inline) {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  margin-bottom: 10px;
+  width: 100%;
 }
-.manual-search {
-  margin-right: 20px;
+
+.manual-toolbar :deep(.el-form-item) {
+  margin-bottom: 0;
 }
-.manual-type-label {
-  font-size: 13px;
-  margin-right: 10px;
-  line-height: 32px;
-  white-space: nowrap;
-}
-.manual-btns {
+
+.manual-toolbar :deep(.manual-btns) {
   margin-left: auto;
-}
-.manual-btns .el-button {
-  min-width: 160px;
-  margin-left: 8px;
+  margin-right: 0;
 }
 .pager {
   margin-top: 8px;

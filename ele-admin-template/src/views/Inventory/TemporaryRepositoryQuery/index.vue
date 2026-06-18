@@ -1,27 +1,17 @@
 <template>
   <div class="ele-body spd-page temporary-repository-query-page">
     <el-card shadow="never" class="temporary-repository-query-card">
-      <div class="temporary-tabs">
-        <button
-          type="button"
-          class="temporary-tab"
-          :class="{ active: showLeftPage }"
-          @click="showLeftPage = true; showRightPage = false"
-        >
-          暂存库查询
-        </button>
-        <button
-          type="button"
-          class="temporary-tab"
-          :class="{ active: showRightPage }"
-          @click="showRightPage = true; showLeftPage = false"
-        >
-          智能间历史出库查询
-        </button>
-      </div>
+      <el-form size="mini" :inline="true" class="temporary-tabs-form" @submit.native.prevent>
+        <el-form-item>
+          <el-radio-group v-model="activeTab" size="mini">
+            <el-radio-button label="left">暂存库查询</el-radio-button>
+            <el-radio-button label="right">智能间历史出库查询</el-radio-button>
+          </el-radio-group>
+        </el-form-item>
+      </el-form>
       <div class="temporary-content">
-        <LeftPage v-if="showLeftPage" />
-        <RightPage v-if="showRightPage" />
+        <LeftPage v-if="activeTab === 'left'" />
+        <RightPage v-if="activeTab === 'right'" />
       </div>
     </el-card>
   </div>
@@ -38,8 +28,7 @@ export default {
   },
   data() {
     return {
-      showLeftPage: true,
-      showRightPage: false
+      activeTab: 'left'
     };
   }
 };
@@ -63,40 +52,32 @@ export default {
   min-height: 0;
 }
 
-.temporary-tabs {
+.temporary-tabs-form {
   flex: none;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 2px;
+  width: 100%;
   margin-bottom: 10px;
-  background: #f5f7fa;
-  border: 1px solid #ebeef5;
-  border-radius: 6px;
 }
 
-.temporary-tab {
+.temporary-tabs-form :deep(.el-form-item) {
+  width: 100%;
+  margin-bottom: 0;
+}
+
+.temporary-tabs-form :deep(.el-form-item__content) {
+  width: 100%;
+}
+
+.temporary-tabs-form :deep(.el-radio-group) {
+  display: flex;
+  width: 100%;
+}
+
+.temporary-tabs-form :deep(.el-radio-button) {
   flex: 1;
-  height: 32px;
-  padding: 0 16px;
-  border: 0;
-  border-radius: 4px;
-  color: #606266;
-  background: transparent;
-  font-size: 13px;
-  cursor: pointer;
-  transition: color .2s, background-color .2s, box-shadow .2s;
 }
 
-.temporary-tab:hover {
-  color: #409eff;
-}
-
-.temporary-tab.active {
-  color: #409eff;
-  font-weight: 600;
-  background: #fff;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, .08);
+.temporary-tabs-form :deep(.el-radio-button__inner) {
+  width: 100%;
 }
 
 .temporary-content {
@@ -104,8 +85,7 @@ export default {
   min-height: 0;
 }
 
-.temporary-content :deep(> .ele-body) {
+.temporary-content :deep(> .temporary-page) {
   height: 100%;
-  padding: 0;
 }
 </style>

@@ -1,23 +1,19 @@
 <template>
-  <div>
-    <!-- 表头 -->
-    <div class="header">
-      <span
-        @click="showLeftPage = true; showRightPage = false"
-        :class="{ 'active': showLeftPage }"
-      >
-      中心库入库查询
-      </span>
-      <span
-        @click="showRightPage = true; showLeftPage = false"
-        :class="{ 'active': showRightPage }"
-      >
-      中心库出库查询
-      </span>
-    </div>
-    <!-- 根据条件显示不同组件 -->
-    <LeftPage v-if="showLeftPage" />
-    <RightPage v-if="showRightPage" />
+  <div class="ele-body spd-page goodsshelves-page">
+    <el-card shadow="never" class="goodsshelves-card">
+      <el-form size="mini" :inline="true" class="goodsshelves-tabs-form" @submit.native.prevent>
+        <el-form-item>
+          <el-radio-group v-model="activeTab" size="mini">
+            <el-radio-button label="in">中心库入库查询</el-radio-button>
+            <el-radio-button label="out">中心库出库查询</el-radio-button>
+          </el-radio-group>
+        </el-form-item>
+      </el-form>
+      <div class="goodsshelves-content">
+        <LeftPage v-if="activeTab === 'in'" />
+        <RightPage v-if="activeTab === 'out'" />
+      </div>
+    </el-card>
   </div>
 </template>
 
@@ -32,35 +28,64 @@ export default {
   },
   data() {
     return {
-      showLeftPage: true,
-      showRightPage: false
+      activeTab: 'in'
     };
   }
 };
 </script>
 
 <style scoped>
-.header {
+.goodsshelves-page {
+  padding: 8px;
+}
+
+.goodsshelves-card {
+  height: calc(100vh - 112px);
+}
+
+.goodsshelves-page :deep(.el-card__body) {
+  height: 100%;
+  padding: 12px;
+  box-sizing: border-box;
   display: flex;
-  justify-content: center;
-  border-bottom: 1px solid #ccc; /* 整体表头底部的分割线 */
+  flex-direction: column;
+  min-height: 0;
 }
 
-.header span {
-  flex: 1; /* 让每个表头元素各占一半宽度 */
-  text-align: center;
-  padding: 10px 0;
-  cursor: pointer;
-  position: relative;
+.goodsshelves-tabs-form {
+  flex: none;
+  width: 100%;
+  margin-bottom: 10px;
 }
 
-.header span.active::after {
-  content: '';
-  position: absolute;
-  bottom: -1px; /* 与表头底部对齐 */
-  left: 0;
-  right: 0;
-  height: 2px;
-  background-color: #007bff; /* 选中状态下滑线颜色 */
+.goodsshelves-tabs-form :deep(.el-form-item) {
+  width: 100%;
+  margin-bottom: 0;
+}
+
+.goodsshelves-tabs-form :deep(.el-form-item__content) {
+  width: 100%;
+}
+
+.goodsshelves-tabs-form :deep(.el-radio-group) {
+  display: flex;
+  width: 100%;
+}
+
+.goodsshelves-tabs-form :deep(.el-radio-button) {
+  flex: 1;
+}
+
+.goodsshelves-tabs-form :deep(.el-radio-button__inner) {
+  width: 100%;
+}
+
+.goodsshelves-content {
+  flex: 1;
+  min-height: 0;
+}
+
+.goodsshelves-content :deep(> .goodsshelves-tab-page) {
+  height: 100%;
 }
 </style>

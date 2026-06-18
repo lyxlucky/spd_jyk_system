@@ -19,7 +19,7 @@ export function getTertiaryInventoryColumns() {
       formatter: (row) => fmtPrice(row.PRICE)
     },
     { prop: 'MANUFACTURING_ENT_NAME', label: '生产企业', width: 150, showOverflowTooltip: true },
-    { columnKey: 'action', label: '操作', width: 100, align: 'center', slot: 'action', fixed: 'right' }
+    { columnKey: 'action', label: '操作', width: 70, align: 'center', slot: 'action', className: 'action-col' }
   ];
 }
 

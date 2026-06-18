@@ -1,78 +1,97 @@
 <template>
-  <el-form
-    size="small"
-    class="ele-form-search no-move-sell-search"
-    @keyup.enter.native="search"
-    @submit.native.prevent
-  >
-    <el-row :gutter="10" type="flex" align="middle" class="search-row">
-      <el-col :span="4">
-        <el-input
-          v-model="where.varietie"
-          clearable
-          placeholder="请输入品种编码/品种全称进行搜索"
-        />
-      </el-col>
-      <el-col :span="4">
-        <el-input
-          v-model="where.supplierName"
-          clearable
-          placeholder="请输入供应商名称进行搜索"
-        />
-      </el-col>
-      <el-col :span="3">
-        <el-input v-model="where.batch" clearable placeholder="请输入生产批号进行搜索" />
-      </el-col>
-      <el-col :span="3">
-        <el-input
-          v-model="where.specifications"
-          clearable
-          placeholder="请输入规格型号进行搜索"
-        />
-      </el-col>
-      <el-col :span="3">
-        <el-input v-model="where.remark" clearable placeholder="请输入备注内容" />
-      </el-col>
-      <el-col :span="2">
-        <el-select v-model="where.centralPosition" style="width: 100%">
-          <el-option label="全部" value="0" />
-          <el-option label="中心库" value="1" />
-          <el-option label="科室" value="2" />
-        </el-select>
-      </el-col>
-      <el-col :span="3" class="stock-day-col">
-        <span class="label-inline">在库天数大于：</span>
-        <el-input v-model="where.upStockDay" type="number" clearable placeholder="" />
-      </el-col>
-      <el-col :span="5" class="btn-col">
-        <el-button type="primary" icon="el-icon-search" @click="search">查询</el-button>
-        <el-button type="primary" plain :loading="notifying" @click="$emit('notify')">
-          通知供应商
-        </el-button>
-        <el-button
-          v-permission="'export-NoMoveSellDc'"
-          type="primary"
-          plain
-          :loading="exporting"
-          @click="$emit('export')"
-        >
-          导出
-        </el-button>
-        <el-upload
-          class="inline-upload"
-          :action="importUrl"
-          name="file"
-          accept=".xlsx,.xls"
-          :show-file-list="false"
-          :headers="uploadHeaders"
-          :on-success="onImportOk"
-          :on-error="onImportErr"
-        >
-          <el-button type="primary" plain>导入备注</el-button>
-        </el-upload>
-      </el-col>
-    </el-row>
-  </el-form>
+  <div class="spd-panel spd-panel--search">
+    <div class="spd-panel__head">查询条件</div>
+    <div class="spd-panel__body">
+      <el-form
+        size="mini"
+        :inline="true"
+        @keyup.enter.native="search"
+        @submit.native.prevent
+      >
+        <el-form-item label="品种">
+          <el-input
+            v-model="where.varietie"
+            clearable
+            placeholder="编码/全称"
+            style="width: 140px"
+          />
+        </el-form-item>
+        <el-form-item label="供应商">
+          <el-input
+            v-model="where.supplierName"
+            clearable
+            placeholder="供应商名称"
+            style="width: 130px"
+          />
+        </el-form-item>
+        <el-form-item label="生产批号">
+          <el-input
+            v-model="where.batch"
+            clearable
+            placeholder="生产批号"
+            style="width: 110px"
+          />
+        </el-form-item>
+        <el-form-item label="规格型号">
+          <el-input
+            v-model="where.specifications"
+            clearable
+            placeholder="规格型号"
+            style="width: 110px"
+          />
+        </el-form-item>
+        <el-form-item label="备注">
+          <el-input
+            v-model="where.remark"
+            clearable
+            placeholder="备注内容"
+            style="width: 100px"
+          />
+        </el-form-item>
+        <el-form-item label="库存位置">
+          <el-select v-model="where.centralPosition" style="width: 90px">
+            <el-option label="全部" value="0" />
+            <el-option label="中心库" value="1" />
+            <el-option label="科室" value="2" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="在库天数">
+          <el-input
+            v-model="where.upStockDay"
+            type="number"
+            clearable
+            placeholder="大于"
+            style="width: 80px"
+          />
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" icon="el-icon-search" @click="search">查询</el-button>
+          <el-button type="info" :loading="notifying" @click="$emit('notify')">通知供应商</el-button>
+          <el-button
+            v-permission="'export-NoMoveSellDc'"
+            type="success"
+            icon="el-icon-download"
+            :loading="exporting"
+            @click="$emit('export')"
+          >
+            导出
+          </el-button>
+          <el-upload
+            class="inline-upload"
+            :action="importUrl"
+            name="file"
+            accept=".xlsx,.xls"
+            :show-file-list="false"
+            :headers="uploadHeaders"
+            :on-success="onImportOk"
+            :on-error="onImportErr"
+          >
+            <el-button type="warning" plain>导入备注</el-button>
+          </el-upload>
+        </el-form-item>
+      </el-form>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -132,28 +151,8 @@ export default {
 </script>
 
 <style scoped>
-.no-move-sell-search {
-  margin-bottom: 10px;
-}
-.search-row {
-  flex-wrap: wrap;
-}
-.stock-day-col {
-  display: flex;
-  align-items: center;
-}
-.label-inline {
-  white-space: nowrap;
-  font-size: 13px;
-  margin-right: 4px;
-  color: #606266;
-}
-.btn-col .el-button,
-.btn-col .inline-upload {
-  margin-right: 6px;
-  margin-bottom: 4px;
-}
 .inline-upload {
   display: inline-block;
+  margin-left: 6px;
 }
 </style>
