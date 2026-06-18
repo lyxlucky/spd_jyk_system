@@ -95,6 +95,17 @@
         重置
       </el-button>
     </el-form-item>
+    <el-form-item>
+      <el-button
+        size="mini"
+        type="primary"
+        icon="el-icon-download"
+        class="ele-btn-icon"
+        @click="exportData"
+      >
+        导出
+      </el-button>
+    </el-form-item>
 
     <!-- 项目类型选择对话框 -->
     <ProjectTypeDialog
@@ -131,6 +142,7 @@
         isTwoApp: ''
       };
       return {
+        defaultWhere,
         // 表单数据
         where: { ...defaultWhere },
         BZ: '',
@@ -163,9 +175,14 @@
       search() {
         this.$emit('search', this.where);
       },
+      /* 导出 */
+      exportData() {
+        this.$emit('exportData', { ...this.where });
+      },
       /*  重置 */
       reset() {
         this.where = { ...this.defaultWhere };
+        this.dateRange = [];
         this.search();
       },
       /* 创建申领单 */
