@@ -13,9 +13,9 @@ export async function QueryPageLayUI(data) {
     var data2 = {};
     data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
     data2.varietieCode = data.where.varietieCode ? data.where.varietieCode : '';
-    data2.enable = data.where.enable ? data.where.enable : '';
+    data2.enable = data.where.enable ? data.where.enable : '1';
     data2.varietieName = data.where.varietieName ? data.where.varietieName : '';
-    data2.enable = data.where.enable ? data.where.enable : '';
+    // data2.enable = data.where.enable ? data.where.enable : '';
     data2.state = data.where.state ? data.where.state : '';
 
     data2.IS_CHARGE = data.where.IS_CHARGE ? data.where.IS_CHARGE : '-1';

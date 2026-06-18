@@ -48,7 +48,7 @@
     <div class="spd-panel spd-table-panel">
       <div class="spd-panel__head">散货品种列表</div>
       <div class="spd-panel__body spd-table-panel__wrap">
-    <ele-pro-table ref="table" :toolStyle="toolStyle" height="60vh" highlight-current-row :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" @selection-change="onSelectionChange" cache-key="KSInventoryBasicDataTable">
+    <ele-pro-table ref="table" :toolStyle="toolStyle" height="60vh" highlight-current-row :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" @selection-change="onSelectionChange" @current-change="onCurrentChange" cache-key="KSInventoryBasicDataTable">
 
       <template v-slot:PAG_TYPE="{ row }">
         <div :id="'PAG_TYPE' + row.ID" :key="row.id" @click="dialogVisibleFun(row)">{{ row.PAG_TYPE }}
@@ -699,6 +699,10 @@ export default {
     },
     onSelectionChange(selection) {
       this.selection = selection;
+    },
+    onCurrentChange(row) {
+      this.current = row;
+      this.$emit('row-click', row);
     },
     showEditReoad(data) {
       if (data == false) {
