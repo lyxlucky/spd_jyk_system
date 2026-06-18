@@ -4,7 +4,7 @@
       <ele-pro-table
         ref="table"
         row-key="ID"
-        height="calc(100vh - 200px)"
+        height="calc(100vh - 370px)"
         :stripe="true"
         :columns="columns"
         :datasource="datasource"

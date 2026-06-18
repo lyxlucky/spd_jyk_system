@@ -1,56 +1,26 @@
 <template>
-  <div class="ele-body">
-    <!-- <el-card shadow="always"> -->
+  <div class="ele-body spd-page master-base-data-page">
+    <div class="master-base-data-layout">
+      <el-card shadow="always" class="master-card master-card-left">
+        <div slot="header" class="clearfix">
+          <span>医保审核单</span>
+        </div>
+        <ApplyTempTable @getCurrent="getCurrent" />
+      </el-card>
 
-    <el-row :gutter="10">
-      <el-col :span="8">
-        <el-card shadow="always">
-          <div slot="header" class="clearfix">
-            <span>医保审核单</span>
-          </div>
-          <ApplyTempTable @getCurrent="getCurrent"></ApplyTempTable>
-        </el-card>
-      </el-col>
-
-      <el-col :span="16">
-        <el-card shadow="always">
-          <div slot="header" class="clearfix">
-            <span>医保审核详情</span>
-          </div>
-          <ApplyTempDataTable
-            ref="Apply"
-            @addTempVar="addTempVar"
-            :IntroduceUserDefinedTempSearch="IntroduceUserDefinedTempSearch"
-            :ApplyTempTableData="ApplyTempTableData"
-            @selectionData="selectionData"
-          ></ApplyTempDataTable>
-        </el-card>
-      </el-col>
-    </el-row>
-    <!-- <el-container>
-      <el-aside width="450px" style="padding:0px;">
-        <el-card shadow="always">
-          <div slot="header" class="clearfix">
-            <span>医保审核单</span>
-          </div>
-          <ApplyTempTable @getCurrent="getCurrent"></ApplyTempTable>
-        </el-card>
-      </el-aside>
-      <el-container>
-        <el-main width="1000px" style="padding: 0px 0px 0px 1px">
-          <el-card shadow="always">
-            <div slot="header" class="clearfix">
-              <span>医保审核详情</span>
-            </div>
-            <ApplyTempDataTable ref="Apply" @addTempVar="addTempVar" :IntroduceUserDefinedTempSearch="IntroduceUserDefinedTempSearch" :ApplyTempTableData="ApplyTempTableData" @selectionData="selectionData"></ApplyTempDataTable>
-          </el-card>
-        </el-main>
-        <el-footer>
-          <el-button type="primary" @click="addTempVar" :style="{ display: IsDisabled==true?'none':'' }">确定</el-button>
-        </el-footer>
-      </el-container>
-    </el-container> -->
-    <!-- </el-card> -->
+      <el-card shadow="always" class="master-card master-card-right">
+        <div slot="header" class="clearfix">
+          <span>医保审核详情</span>
+        </div>
+        <ApplyTempDataTable
+          ref="Apply"
+          @addTempVar="addTempVar"
+          :IntroduceUserDefinedTempSearch="IntroduceUserDefinedTempSearch"
+          :ApplyTempTableData="ApplyTempTableData"
+          @selectionData="selectionData"
+        />
+      </el-card>
+    </div>
   </div>
 </template>
 
@@ -139,3 +109,50 @@
     }
   };
 </script>
+
+<style lang="scss" scoped>
+.master-base-data-page {
+  padding: 8px;
+}
+
+.master-base-data-layout {
+  height: calc(100vh - 112px);
+  display: flex;
+  gap: 10px;
+  min-height: 0;
+}
+
+.master-card {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.master-card-left {
+  flex: 0 0 calc(33.3333% - 5px);
+}
+
+.master-card-right {
+  flex: 1;
+}
+
+.master-card :deep(.el-card__header) {
+  flex: none;
+  padding: 10px 12px;
+}
+
+.master-card :deep(.el-card__body) {
+  flex: 1;
+  min-height: 0;
+  padding: 12px;
+  box-sizing: border-box;
+}
+
+.master-card :deep(.ele-body) {
+  height: 100%;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+</style>

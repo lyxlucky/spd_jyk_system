@@ -1,4 +1,4 @@
-<!-- 用户编辑弹窗 -->
+﻿<!-- 用户编辑弹窗 -->
 <template>
   <ele-modal
     width="600px"
@@ -10,18 +10,14 @@
     @update:visible="updateVisible"
   >
     <el-form ref="form" :model="form" :rules="rules" label-width="82px">
-      <el-row :gutter="12">
-        <el-col v-bind="styleResponsive ? { sm: 20 } : { span: 20 }">
-          <el-form-item label="备注:" prop="WJ_SP_MARK">
-            <el-input
-              size="mini"
-              clearable
-              v-model="form.YB_SP_MARK"
-              placeholder="备注"
-            />
-          </el-form-item>
-        </el-col>
-      </el-row>
+      <el-form-item label="备注:" prop="WJ_SP_MARK">
+        <el-input
+          size="mini"
+          clearable
+          v-model="form.YB_SP_MARK"
+          placeholder="备注"
+        />
+      </el-form-item>
     </el-form>
     <template v-slot:footer>
       <el-button size="mini" icon="el-icon-close" @click="updateVisible(false)"

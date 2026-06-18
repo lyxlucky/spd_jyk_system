@@ -1,17 +1,19 @@
-<template>
-  <el-form label-width="77px" class="ele-form-search" @keyup.enter.native="search" @submit.native.prevent>
-    <el-row :gutter="15">
-      <el-col v-bind="styleResponsive ? { lg: 12, md: 12 } : { span: 6 }">
-        <el-input size="mini" clearable v-model="where.temporary2_search_inp2" placeholder="请输入科室名称" />
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 6, md: 12 } : { span: 6 }">
-        <div class="ele-form-actions">
-          <el-button size="mini" type="primary" icon="el-icon-search" class="ele-btn-icon" @click="search">
-            查询
-          </el-button>
-        </div>
-      </el-col>
-    </el-row>
+﻿<template>
+  <el-form
+    class="ele-form-search temporary-search"
+    size="mini"
+    :inline="true"
+    @keyup.enter.native="search"
+    @submit.native.prevent
+  >
+    <el-form-item>
+      <el-input clearable v-model="where.temporary2_search_inp2" placeholder="请输入科室名称" style="width: 180px" />
+    </el-form-item>
+    <el-form-item>
+      <el-button type="primary" icon="el-icon-search" class="ele-btn-icon" @click="search">
+        查询
+      </el-button>
+    </el-form-item>
   </el-form>
 </template>
 
@@ -46,3 +48,16 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.temporary-search {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 10px;
+  margin-bottom: 8px;
+}
+
+.temporary-search :deep(.el-form-item) {
+  margin: 0;
+}
+</style>

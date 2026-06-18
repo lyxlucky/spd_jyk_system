@@ -50,7 +50,7 @@
       <ele-pro-table
         ref="table"
         highlight-current-row
-        height="calc(100vh - 220px)"
+        height="calc(100vh - 310px)"
         size="mini"
         :stripe="true"
         :page-size="pageSize"

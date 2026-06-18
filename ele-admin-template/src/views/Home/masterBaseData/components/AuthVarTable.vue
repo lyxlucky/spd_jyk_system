@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <ele-modal :destroy-on-close="true" width="1400px" :visible="visible" :close-on-click-modal="true" custom-class="ele-dialog-form" title="引用自定义模板" @update:visible="updateVisible">
     <div class="ele-body" style="height:75vh">
       <!-- 数据表格 -->
@@ -12,21 +12,14 @@
       </template> -->
         <!-- 左表头 -->
         <template v-slot:toolbar>
-          <el-form class="ele-form-search">
-            <el-row :gutter="10">
-              <el-col :lg="10" :md="12">
-                <el-form-item label="">
-                  <el-input v-model="SerachName" placeholder="请输入品种名称/品种编码/型号规格/生产企业搜索" clearable @change="reload" />
-                </el-form-item>
-              </el-col>
-              <el-col :lg="14" :md="12">
-                <div class="ele-form-actions">
-                  <el-button type="primary" @click="reload">查询</el-button>
-                  <el-button type="primary" size="small" @click="addTempVar">添加至选定模板</el-button>
-                  <!-- <el-button type="primary" size="small" @click="search">导出目录</el-button> -->
-                </div>
-              </el-col>
-            </el-row>
+          <el-form class="ele-form-search auth-var-search" size="mini" :inline="true">
+            <el-form-item>
+              <el-input v-model="SerachName" placeholder="请输入品种名称/品种编码/型号规格/生产企业搜索" clearable @change="reload" />
+            </el-form-item>
+            <el-form-item class="search-actions">
+              <el-button type="primary" @click="reload">查询</el-button>
+              <el-button type="primary" @click="addTempVar">添加至选定模板</el-button>
+            </el-form-item>
           </el-form>
           <!-- 搜索表单 -->
           <!-- <ApplyTempDataSearch @search="reload" :ApplyTempTableDataSearch='ApplyTempTableDataSearch' :selection="selection" /> -->

@@ -3,36 +3,48 @@
     <div class="spd-section">
       <div class="spd-section__head">目标合同品种</div>
       <el-form size="mini" inline class="filter-row" @submit.native.prevent>
-        <el-input
-          v-model="targetWhere.targetSupplierName"
-          clearable
-          placeholder="请输入供应商名称"
-          style="width: 180px"
-          @keyup.enter.native="reloadTarget"
-        />
-        <el-input
-          v-model="targetWhere.targetContractName"
-          clearable
-          placeholder="请输入合同名称"
-          style="width: 180px; margin-left: 8px"
-          @keyup.enter.native="reloadTarget"
-        />
-        <el-input
-          v-model="targetWhere.targetVarietie"
-          clearable
-          placeholder="请输入品种编码/品种名称"
-          style="width: 200px; margin-left: 8px"
-          @keyup.enter.native="reloadTarget"
-        />
-        <el-input
-          v-model="targetWhere.targetSpecType"
-          clearable
-          placeholder="请输入规格型号"
-          style="width: 160px; margin-left: 8px"
-          @keyup.enter.native="reloadTarget"
-        />
-        <el-button type="primary" icon="el-icon-search" style="margin-left: 8px" @click="reloadTarget">查询</el-button>
-        <el-button icon="el-icon-plus" style="margin-left: 8px" @click="onShowSource">选择源合同</el-button>
+        <el-form-item>
+          <el-input
+            v-model="targetWhere.targetSupplierName"
+            clearable
+            placeholder="请输入供应商名称"
+            style="width: 180px"
+            @keyup.enter.native="reloadTarget"
+          />
+        </el-form-item>
+        <el-form-item>
+          <el-input
+            v-model="targetWhere.targetContractName"
+            clearable
+            placeholder="请输入合同名称"
+            style="width: 180px"
+            @keyup.enter.native="reloadTarget"
+          />
+        </el-form-item>
+        <el-form-item>
+          <el-input
+            v-model="targetWhere.targetVarietie"
+            clearable
+            placeholder="请输入品种编码/品种名称"
+            style="width: 200px"
+            @keyup.enter.native="reloadTarget"
+          />
+        </el-form-item>
+        <el-form-item>
+          <el-input
+            v-model="targetWhere.targetSpecType"
+            clearable
+            placeholder="请输入规格型号"
+            style="width: 160px"
+            @keyup.enter.native="reloadTarget"
+          />
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" icon="el-icon-search" @click="reloadTarget">查询</el-button>
+        </el-form-item>
+        <el-form-item>
+          <el-button icon="el-icon-plus" @click="onShowSource">选择源合同</el-button>
+        </el-form-item>
       </el-form>
 
       <ele-pro-table
@@ -53,52 +65,70 @@
     <div class="spd-section">
       <div class="spd-section__head">退转单列表</div>
       <el-form size="mini" inline class="filter-row" @submit.native.prevent>
-        <el-input
-          v-model="transferWhere.transferNumber"
-          clearable
-          placeholder="请输入退转单号"
-          style="width: 140px"
-          @keyup.enter.native="reloadTransfer"
-        />
-        <el-input
-          v-model="transferWhere.sourceSupplierName"
-          clearable
-          placeholder="源-供应商名称"
-          style="width: 140px; margin-left: 8px"
-          @keyup.enter.native="reloadTransfer"
-        />
-        <el-input
-          v-model="transferWhere.targetSupplierName"
-          clearable
-          placeholder="目标-供应商名称"
-          style="width: 140px; margin-left: 8px"
-          @keyup.enter.native="reloadTransfer"
-        />
-        <el-input
-          v-model="transferWhere.varietie"
-          clearable
-          placeholder="品种编码/名称"
-          style="width: 160px; margin-left: 8px"
-          @keyup.enter.native="reloadTransfer"
-        />
-        <el-input
-          v-model="transferWhere.specType"
-          clearable
-          placeholder="规格型号"
-          style="width: 120px; margin-left: 8px"
-          @keyup.enter.native="reloadTransfer"
-        />
-        <el-select v-model="transferWhere.state" clearable placeholder="状态" style="width: 110px; margin-left: 8px">
-          <el-option label="全部" value="" />
-          <el-option label="新建" value="0" />
-          <el-option label="审批" value="1" />
-          <el-option label="退转中" value="2" />
-          <el-option label="退转成功" value="3" />
-          <el-option label="退转异常" value="4" />
-        </el-select>
-        <el-button type="primary" icon="el-icon-search" @click="reloadTransfer">查询</el-button>
-        <el-button :loading="approving" @click="onApprove">审批</el-button>
-        <el-button type="danger" plain :loading="deleting" @click="onDelete">删除</el-button>
+        <el-form-item>
+          <el-input
+            v-model="transferWhere.transferNumber"
+            clearable
+            placeholder="请输入退转单号"
+            style="width: 140px"
+            @keyup.enter.native="reloadTransfer"
+          />
+        </el-form-item>
+        <el-form-item>
+          <el-input
+            v-model="transferWhere.sourceSupplierName"
+            clearable
+            placeholder="源-供应商名称"
+            style="width: 140px"
+            @keyup.enter.native="reloadTransfer"
+          />
+        </el-form-item>
+        <el-form-item>
+          <el-input
+            v-model="transferWhere.targetSupplierName"
+            clearable
+            placeholder="目标-供应商名称"
+            style="width: 140px"
+            @keyup.enter.native="reloadTransfer"
+          />
+        </el-form-item>
+        <el-form-item>
+          <el-input
+            v-model="transferWhere.varietie"
+            clearable
+            placeholder="品种编码/名称"
+            style="width: 160px"
+            @keyup.enter.native="reloadTransfer"
+          />
+        </el-form-item>
+        <el-form-item>
+          <el-input
+            v-model="transferWhere.specType"
+            clearable
+            placeholder="规格型号"
+            style="width: 120px"
+            @keyup.enter.native="reloadTransfer"
+          />
+        </el-form-item>
+        <el-form-item>
+          <el-select v-model="transferWhere.state" clearable placeholder="状态" style="width: 110px">
+            <el-option label="全部" value="" />
+            <el-option label="新建" value="0" />
+            <el-option label="审批" value="1" />
+            <el-option label="退转中" value="2" />
+            <el-option label="退转成功" value="3" />
+            <el-option label="退转异常" value="4" />
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" icon="el-icon-search" @click="reloadTransfer">查询</el-button>
+        </el-form-item>
+        <el-form-item>
+          <el-button :loading="approving" @click="onApprove">审批</el-button>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="danger" plain :loading="deleting" @click="onDelete">删除</el-button>
+        </el-form-item>
       </el-form>
 
       <ele-pro-table

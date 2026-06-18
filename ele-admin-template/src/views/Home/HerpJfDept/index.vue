@@ -25,27 +25,31 @@
           <el-button size="small" icon="el-icon-download" @click="exportTwoExcel">导出</el-button>
         </el-form-item>
       </el-form>
-      <el-table
+      <vxe-table
         ref="twoTable"
-        v-loading="twoLoading"
+        :loading="twoLoading"
         :data="twoRows"
         border
         stripe
-        highlight-current-row
+        size="mini"
         height="400"
-        style="width: 100%"
+        :row-config="{ isHover: true, isCurrent: true }"
+        :column-config="{ resizable: true }"
+        show-overflow
         @current-change="onTwoCurrentChange"
       >
-        <el-table-column prop="DEPT_CODE" label="计费科室编码" min-width="120" show-overflow-tooltip />
-        <el-table-column prop="DEPT_NAME" label="计费科室名称" min-width="140" show-overflow-tooltip />
-        <el-table-column label="SPD二级科室编码" min-width="130">
-          <template slot-scope="{ row }">{{ fmtMap(row.DEPT_TWO_CODE) }}</template>
-        </el-table-column>
-        <el-table-column label="SPD二级科室名称" min-width="140">
-          <template slot-scope="{ row }">{{ fmtMapName(row) }}</template>
-        </el-table-column>
-        <el-table-column prop="ADD_TIME" label="创建时间" width="170" />
-      </el-table>
+        <vxe-column field="DEPT_CODE" title="计费科室编码" min-width="130" show-overflow />
+        <vxe-column field="DEPT_NAME" title="计费科室名称" min-width="160" show-overflow />
+        <vxe-column title="SPD二级科室编码" min-width="150" show-overflow>
+          <template #default="{ row }">{{ fmtMap(row.DEPT_TWO_CODE) }}</template>
+        </vxe-column>
+        <vxe-column title="SPD二级科室名称" min-width="160" show-overflow>
+          <template #default="{ row }">{{ fmtMapName(row) }}</template>
+        </vxe-column>
+        <vxe-column field="ADD_TIME" title="创建时间" width="220" show-overflow>
+          <template #default="{ row }">{{ formatDateTime(row.ADD_TIME) }}</template>
+        </vxe-column>
+      </vxe-table>
       <el-pagination
         class="pager"
         background
@@ -73,27 +77,31 @@
           <el-button type="primary" plain icon="el-icon-edit" @click="openOneEdit">编辑</el-button>
         </el-form-item>
       </el-form>
-      <el-table
+      <vxe-table
         ref="oneTable"
-        v-loading="oneLoading"
+        :loading="oneLoading"
         :data="oneRows"
         border
         stripe
-        highlight-current-row
+        size="mini"
         height="400"
-        style="width: 100%"
+        :row-config="{ isHover: true, isCurrent: true }"
+        :column-config="{ resizable: true }"
+        show-overflow
         @current-change="onOneCurrentChange"
       >
-        <el-table-column prop="HIS_DEPT_CODE" label="计费科室编码" min-width="120" show-overflow-tooltip />
-        <el-table-column prop="HIS_DEPT_NAME" label="计费科室名称" min-width="140" show-overflow-tooltip />
-        <el-table-column label="SPD一级科室编码" min-width="130">
-          <template slot-scope="{ row }">{{ fmtMap(row.DEPT_ONE_CODE) }}</template>
-        </el-table-column>
-        <el-table-column label="SPD一级科室名称" min-width="140">
-          <template slot-scope="{ row }">{{ fmtMap(row.DEPT_ONE_NAME) }}</template>
-        </el-table-column>
-        <el-table-column prop="CREATE_TIME" label="创建时间" width="170" />
-      </el-table>
+        <vxe-column field="HIS_DEPT_CODE" title="计费科室编码" min-width="130" show-overflow />
+        <vxe-column field="HIS_DEPT_NAME" title="计费科室名称" min-width="160" show-overflow />
+        <vxe-column title="SPD一级科室编码" min-width="150" show-overflow>
+          <template #default="{ row }">{{ fmtMap(row.DEPT_ONE_CODE) }}</template>
+        </vxe-column>
+        <vxe-column title="SPD一级科室名称" min-width="160" show-overflow>
+          <template #default="{ row }">{{ fmtMap(row.DEPT_ONE_NAME) }}</template>
+        </vxe-column>
+        <vxe-column field="CREATE_TIME" title="创建时间" width="220" show-overflow>
+          <template #default="{ row }">{{ formatDateTime(row.CREATE_TIME) }}</template>
+        </vxe-column>
+      </vxe-table>
       <el-pagination
         class="pager"
         background
@@ -198,6 +206,9 @@ export default {
     this.loadOne(1);
   },
   methods: {
+    formatDateTime(value) {
+      return this.$util.toDateString(value, 'yyyy-MM-dd HH:mm:ss');
+    },
     fmtMap(v) {
       if (v == null || v === '') return '未对码';
       return v;
@@ -227,7 +238,7 @@ export default {
       this.twoPage.size = s;
       this.loadTwo(1);
     },
-    onTwoCurrentChange(row) {
+    onTwoCurrentChange({ row }) {
       this.twoCurrent = row;
     },
     openTwoAdd() {
@@ -351,7 +362,7 @@ export default {
       this.onePage.size = s;
       this.loadOne(1);
     },
-    onOneCurrentChange(row) {
+    onOneCurrentChange({ row }) {
       this.oneCurrent = row;
     },
     openOneAdd() {

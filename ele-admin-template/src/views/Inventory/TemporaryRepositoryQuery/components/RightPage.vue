@@ -1,11 +1,22 @@
-<template>
-  <div class="ele-body">
+﻿<template>
+  <div class="ele-body temporary-right-page">
     <div class="card-container">
       <div class="left-card">
         <el-card shadow="never">
           <!-- 数据表格 -->
           <user-search @search="reload" />
-          <ele-pro-table ref="table1" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns1" :datasource="datasource" :selection.sync="selection" cache-key="KSInventoryBasicDataTable"  @row-click="handleTable1RowClick">
+          <ele-pro-table
+            ref="table1"
+            size="mini"
+            height="calc(100vh - 234px)"
+            :pageSize="pageSize"
+            :pageSizes="pageSizes"
+            :columns="columns1"
+            :datasource="datasource"
+            :selection.sync="selection"
+            cache-key="KSInventoryBasicDataTable"
+            @row-click="handleTable1RowClick"
+          >
             <!-- 表头工具栏 -->
             <template v-slot:toolbar>
             </template>
@@ -16,7 +27,17 @@
         <el-card shadow="never">
           <!-- 数据表格 -->
           <UserSearch2 @search="reload2" />
-          <ele-pro-table ref="table2" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns2" :datasource="datasource2" :selection.sync="selection" cache-key="KSInventoryBasicDataTable">
+          <ele-pro-table
+            ref="table2"
+            size="mini"
+            height="calc(100vh - 234px)"
+            :pageSize="pageSize"
+            :pageSizes="pageSizes"
+            :columns="columns2"
+            :datasource="datasource2"
+            :selection.sync="selection"
+            cache-key="KSInventoryBasicDataTable"
+          >
             <!-- 表头工具栏 -->
             <template v-slot:toolbar>
             </template>
@@ -264,27 +285,47 @@ export default {
 </script>
 
 <style scoped>
+.temporary-right-page {
+  height: 100%;
+  padding: 0;
+}
+
 .card-container {
   display: flex;
-  gap: 1mm;
+  gap: 10px;
   height: 100%;
+  min-height: 0;
 }
 
 .left-card {
   width: 25%;
+  min-width: 220px;
   height: 100%;
+  min-height: 0;
 }
 
 .right-card {
-  width: calc(75% - 1mm);
+  flex: 1;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+}
+
+.temporary-right-page :deep(.el-card) {
   height: 100%;
 }
 
-.ele-body.full-height {
-  height: 100vh;
+.temporary-right-page :deep(.el-card__body) {
+  height: 100%;
+  padding: 0;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
 }
 
-.ele-pro-table {
-  height: 75vh;/* 减去搜索框和其他元素的高度 */
+.temporary-right-page :deep(.el-table th .cell),
+.temporary-right-page :deep(.el-table td .cell) {
+  white-space: nowrap;
 }
 </style>     

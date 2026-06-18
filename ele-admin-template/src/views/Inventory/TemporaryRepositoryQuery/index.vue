@@ -1,23 +1,29 @@
 <template>
-  <div>
-    <!-- 表头 -->
-    <div class="header">
-      <span
-        @click="showLeftPage = true; showRightPage = false"
-        :class="{ 'active': showLeftPage }"
-      >
-      暂存库查询
-      </span>
-      <span
-        @click="showRightPage = true; showLeftPage = false"
-        :class="{ 'active': showRightPage }"
-      >
-      智能间历史出库查询
-      </span>
-    </div>
-    <!-- 根据条件显示不同组件 -->
-    <LeftPage v-if="showLeftPage" />
-    <RightPage v-if="showRightPage" />
+  <div class="ele-body spd-page temporary-repository-query-page">
+    <el-card shadow="never" class="temporary-repository-query-card">
+      <div class="temporary-tabs">
+        <button
+          type="button"
+          class="temporary-tab"
+          :class="{ active: showLeftPage }"
+          @click="showLeftPage = true; showRightPage = false"
+        >
+          暂存库查询
+        </button>
+        <button
+          type="button"
+          class="temporary-tab"
+          :class="{ active: showRightPage }"
+          @click="showRightPage = true; showLeftPage = false"
+        >
+          智能间历史出库查询
+        </button>
+      </div>
+      <div class="temporary-content">
+        <LeftPage v-if="showLeftPage" />
+        <RightPage v-if="showRightPage" />
+      </div>
+    </el-card>
   </div>
 </template>
 
@@ -40,27 +46,66 @@ export default {
 </script>
 
 <style scoped>
-.header {
+.temporary-repository-query-page {
+  padding: 8px;
+}
+
+.temporary-repository-query-card {
+  height: calc(100vh - 112px);
+}
+
+.temporary-repository-query-page :deep(.el-card__body) {
+  height: 100%;
+  padding: 12px;
+  box-sizing: border-box;
   display: flex;
-  justify-content: center;
-  border-bottom: 1px solid #ccc; /* 整体表头底部的分割线 */
+  flex-direction: column;
+  min-height: 0;
 }
 
-.header span {
-  flex: 1; /* 让每个表头元素各占一半宽度 */
-  text-align: center;
-  padding: 10px 0;
+.temporary-tabs {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 2px;
+  margin-bottom: 10px;
+  background: #f5f7fa;
+  border: 1px solid #ebeef5;
+  border-radius: 6px;
+}
+
+.temporary-tab {
+  flex: 1;
+  height: 32px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 4px;
+  color: #606266;
+  background: transparent;
+  font-size: 13px;
   cursor: pointer;
-  position: relative;
+  transition: color .2s, background-color .2s, box-shadow .2s;
 }
 
-.header span.active::after {
-  content: '';
-  position: absolute;
-  bottom: -1px; /* 与表头底部对齐 */
-  left: 0;
-  right: 0;
-  height: 2px;
-  background-color: #007bff; /* 选中状态下滑线颜色 */
+.temporary-tab:hover {
+  color: #409eff;
+}
+
+.temporary-tab.active {
+  color: #409eff;
+  font-weight: 600;
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, .08);
+}
+
+.temporary-content {
+  flex: 1;
+  min-height: 0;
+}
+
+.temporary-content :deep(> .ele-body) {
+  height: 100%;
+  padding: 0;
 }
 </style>

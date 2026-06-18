@@ -2,85 +2,58 @@
 <template>
   <el-form
     label-width="0px"
-    class="ele-form-search"
+    size="mini"
+    :inline="true"
+    class="ele-form-search apply-temp-search"
     @keyup.enter.native="search"
     @submit.native.prevent
   >
-    <el-row :gutter="5">
-      <el-col v-bind="styleResponsive ? { lg: 7, md: 12 } : { span: 12 }">
-        <el-input
-          size="mini"
-          clearable
-          v-model="where.REQUESTNOTEID"
-          placeholder="申请单号"
-        />
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 7, md: 12 } : { span: 12 }">
-        <el-select size="mini" v-model="where.YB_SP_STATE" @change="search()">
-          <el-option label="全部" value=""></el-option>
-          <el-option label="已审批" value="1"></el-option>
-          <el-option label="未审批" value="0"></el-option>
-        </el-select>
-      </el-col>
-      <!-- <el-col v-bind="styleResponsive ? { lg: 7, md: 12 } : { span: 12 }">
-        <el-input size="mini" clearable v-model="where.APPLYDEPT" placeholder="申请部门" />
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 7, md: 12 } : { span: 12 }">
-        <el-input size="mini" clearable v-model="where.APPLYPEOPLE" placeholder="经办人" />
-      </el-col> -->
-    </el-row>
-    <el-row :gutter="5" style="margin-top: 5px">
-      <!-- <el-col v-bind="styleResponsive ? { lg: 6, md: 12 } : { span: 12 }">
-        <el-select
-          size="mini"
-          v-model="where.PROCESS_STATUS"
-          @change="search()"
-        >
-          <el-option label="全部" value=""></el-option>
-          <el-option label="已传入中间表" value="N"></el-option>
-          <el-option label="已传入SPD" value="S"></el-option>
-          <el-option label="已接收收费编码" value="Y"></el-option>
-          <el-option label="传入SPD失败" value="E"></el-option>
-        </el-select>
-      </el-col> -->
-      <el-col v-bind="styleResponsive ? { lg: 18, md: 12 } : { span: 12 }">
-        <el-button
-          size="mini"
-          type="primary"
-          icon="el-icon-search"
-          class="ele-btn-icon"
-          @click="search"
-        >
-          查询
-        </el-button>
-        <el-button size="mini" icon="el-icon-refresh" @click="reset"
-          >重置</el-button
-        >
-        <!-- <el-button size="mini" type="primary" class="ele-btn-icon" @click="search">
-          编辑
-        </el-button> -->
-        <!-- <el-button size="mini" type="primary" class="ele-btn-icon" @click="showDialogTableVisible2">
-          导入
-        </el-button> -->
-        <el-button
-          size="mini"
-          type="primary"
-          class="ele-btn-icon"
-          icon="el-icon-download"
-          @click="exportData"
-        >
-          导出
-        </el-button>
-        <el-button
-          size="mini"
-          type="primary"
-          class="ele-btn-icon"
-          @click="openEdit"
-        >
-          审批
-        </el-button>
-      </el-col>
-    </el-row>
+    <el-form-item>
+      <el-input
+        clearable
+        v-model="where.REQUESTNOTEID"
+        placeholder="申请单号"
+      />
+    </el-form-item>
+    <el-form-item>
+      <el-select v-model="where.YB_SP_STATE" placeholder="审批状态" @change="search()">
+        <el-option label="全部" value=""></el-option>
+        <el-option label="已审批" value="1"></el-option>
+        <el-option label="未审批" value="0"></el-option>
+      </el-select>
+    </el-form-item>
+    <el-form-item>
+      <el-button
+        type="primary"
+        icon="el-icon-search"
+        class="ele-btn-icon"
+        @click="search"
+      >
+        查询
+      </el-button>
+    </el-form-item>
+    <el-form-item>
+      <el-button icon="el-icon-refresh" @click="reset">重置</el-button>
+    </el-form-item>
+    <el-form-item>
+      <el-button
+        type="primary"
+        class="ele-btn-icon"
+        icon="el-icon-download"
+        @click="exportData"
+      >
+        导出
+      </el-button>
+    </el-form-item>
+    <el-form-item>
+      <el-button
+        type="primary"
+        class="ele-btn-icon"
+        @click="openEdit"
+      >
+        审批
+      </el-button>
+    </el-form-item>
     <el-dialog
       title="导入模板品种"
       :visible.sync="dialogTableVisible2"
@@ -212,3 +185,22 @@
     created() {}
   };
 </script>
+
+<style scoped>
+.apply-temp-search {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 10px;
+  margin-bottom: 0;
+}
+
+.apply-temp-search :deep(.el-form-item) {
+  margin: 0;
+}
+
+.apply-temp-search :deep(.el-input),
+.apply-temp-search :deep(.el-select) {
+  width: 150px;
+}
+
+</style>

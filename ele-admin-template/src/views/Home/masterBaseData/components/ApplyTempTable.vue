@@ -1,5 +1,5 @@
-<template>
-  <div class="ele-body">
+﻿<template>
+  <div class="ele-body apply-temp-table-page">
     <ApplyTempSearch
       @search="reload"
       @exportData="exportData"
@@ -13,7 +13,7 @@
       highlight-current-row
       size="mini"
       ref="table"
-      height="60vh"
+      height="100%"
       :rowClickChecked="true"
       :stripe="true"
       :pageSize="pageSize"
@@ -57,14 +57,24 @@
   </div>
 </template>
 
-<style>
-  .el-table .warning-row {
-    background: oldlace;
-  }
+<style scoped>
+.apply-temp-table-page {
+  height: 100%;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
 
-  .el-table .success-row {
-    background: #65bb37;
-  }
+.apply-temp-table-page :deep(.apply-temp-search) {
+  flex: none;
+  margin-bottom: 8px;
+}
+
+.apply-temp-table-page :deep(.ele-pro-table) {
+  flex: 1;
+  min-height: 0;
+}
 </style>
 
 <script>

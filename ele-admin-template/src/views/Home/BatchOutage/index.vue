@@ -48,26 +48,26 @@
         @sort-change="onSortOne"
       >
         <el-table-column type="selection" width="45" align="center"/>
-        <el-table-column prop="Dept_One_Code" label="科室编码" width="120" sortable="custom" />
-        <el-table-column prop="Dept_One_Name" label="科室名称" width="120" sortable="custom" show-overflow-tooltip />
-        <el-table-column label="启用状态" width="90" sortable="custom" prop="Enable">
+        <el-table-column prop="Dept_One_Code" label="科室编码" width="120" sortable="custom" show-overflow-tooltip />
+        <el-table-column prop="Dept_One_Name" label="科室名称" min-width="150" sortable="custom" show-overflow-tooltip />
+        <el-table-column label="启用状态" width="100" sortable="custom" prop="Enable" show-overflow-tooltip>
           <template slot-scope="{ row }">{{ row.Enable == 1 ? '启用' : row.Enable == 0 ? '停用' : '—' }}</template>
         </el-table-column>
-        <el-table-column prop="Varietie_Code_New" label="品种（材料）编码" width="120" sortable="custom" show-overflow-tooltip />
-        <el-table-column prop="Varietie_Name" label="品种全称" min-width="200" sortable="custom" show-overflow-tooltip />
-        <el-table-column prop="Specification_Or_Type" label="型号/规格" min-width="130" sortable="custom" show-overflow-tooltip />
-        <el-table-column prop="Manufacturing_Ent_Name" label="生产企业名称" min-width="170" sortable="custom" show-overflow-tooltip />
-        <el-table-column prop="Unit" label="单位" width="80" sortable="custom" />
-        <el-table-column label="中标价" width="90" align="right" sortable="custom" prop="Price">
+        <el-table-column prop="Varietie_Code_New" label="品种（材料）编码" width="160" sortable="custom" show-overflow-tooltip />
+        <el-table-column prop="Varietie_Name" label="品种全称" min-width="240" sortable="custom" show-overflow-tooltip />
+        <el-table-column prop="Specification_Or_Type" label="型号/规格" min-width="170" sortable="custom" show-overflow-tooltip />
+        <el-table-column prop="Manufacturing_Ent_Name" label="生产企业名称" min-width="220" sortable="custom" show-overflow-tooltip />
+        <el-table-column prop="Unit" label="单位" width="80" sortable="custom" show-overflow-tooltip />
+        <el-table-column label="中标价" width="100" align="right" sortable="custom" prop="Price" show-overflow-tooltip>
           <template slot-scope="{ row }">{{ fmtPrice(row.Price) }}</template>
         </el-table-column>
-        <el-table-column label="授权日期" width="110" sortable="custom" prop="Auth_Time">
+        <el-table-column label="授权日期" width="120" sortable="custom" prop="Auth_Time" show-overflow-tooltip>
           <template slot-scope="{ row }">{{ fmtDate(row.Auth_Time) }}</template>
         </el-table-column>
-        <el-table-column label="授权到期" width="110" sortable="custom" prop="Auth_Valid_Date">
+        <el-table-column label="授权到期" width="120" sortable="custom" prop="Auth_Valid_Date" show-overflow-tooltip>
           <template slot-scope="{ row }">{{ fmtDate(row.Auth_Valid_Date) }}</template>
         </el-table-column>
-        <el-table-column prop="Auth_Bulk_Cargo_Upper_Limit" label="授权总量" width="100" align="center" sortable="custom" />
+        <el-table-column prop="Auth_Bulk_Cargo_Upper_Limit" label="授权总量" width="110" align="center" sortable="custom" show-overflow-tooltip />
       </el-table>
       <el-pagination
         class="pager"
@@ -129,27 +129,27 @@
         @sort-change="onSortTwo"
       >
         <el-table-column type="selection" width="45" align="center"/>
-        <el-table-column prop="DEPT_TWO_CODE" label="二级科室编码" width="120" sortable="custom" show-overflow-tooltip />
-        <el-table-column prop="DEPT_TWO_NAME" label="二级科室名称" width="120" sortable="custom" show-overflow-tooltip />
-        <el-table-column label="启用状态" width="90" sortable="custom" prop="Enable">
+        <el-table-column prop="DEPT_TWO_CODE" label="二级科室编码" width="130" sortable="custom" show-overflow-tooltip />
+        <el-table-column prop="DEPT_TWO_NAME" label="二级科室名称" min-width="150" sortable="custom" show-overflow-tooltip />
+        <el-table-column label="启用状态" width="100" sortable="custom" prop="Enable" show-overflow-tooltip>
           <template slot-scope="{ row }">{{ row.Enable == 1 ? '启用' : row.Enable == 0 ? '停用' : '—' }}</template>
         </el-table-column>
-        <el-table-column prop="Varietie_Code_New" label="品种（材料）编码" width="120" sortable="custom" show-overflow-tooltip />
-        <el-table-column prop="Varietie_Name" label="品种全称" min-width="200" sortable="custom" show-overflow-tooltip />
-        <el-table-column prop="Specification_Or_Type" label="型号/规格" min-width="130" sortable="custom" show-overflow-tooltip />
-        <el-table-column prop="Unit" label="单位" width="80" sortable="custom" />
-        <el-table-column prop="Def_No_Pkg_Coefficient" label="定数包系数" width="100" sortable="custom" />
-        <el-table-column prop="Manufacturing_Ent_Name" label="生产企业名称" min-width="170" sortable="custom" show-overflow-tooltip />
-        <el-table-column prop="Middle_Package_Count" label="中包装数量" width="110" sortable="custom" />
-        <el-table-column label="关联RFID" min-width="100" sortable="custom" prop="Related_Rfid">
+        <el-table-column prop="Varietie_Code_New" label="品种（材料）编码" width="160" sortable="custom" show-overflow-tooltip />
+        <el-table-column prop="Varietie_Name" label="品种全称" min-width="240" sortable="custom" show-overflow-tooltip />
+        <el-table-column prop="Specification_Or_Type" label="型号/规格" min-width="170" sortable="custom" show-overflow-tooltip />
+        <el-table-column prop="Unit" label="单位" width="80" sortable="custom" show-overflow-tooltip />
+        <el-table-column prop="Def_No_Pkg_Coefficient" label="定数包系数" width="120" sortable="custom" show-overflow-tooltip />
+        <el-table-column prop="Manufacturing_Ent_Name" label="生产企业名称" min-width="220" sortable="custom" show-overflow-tooltip />
+        <el-table-column prop="Middle_Package_Count" label="中包装数量" width="120" sortable="custom" show-overflow-tooltip />
+        <el-table-column label="关联RFID" width="110" sortable="custom" prop="Related_Rfid" show-overflow-tooltip>
           <template slot-scope="{ row }">{{ relatedRfidLabel(row.Related_Rfid) }}</template>
         </el-table-column>
-        <el-table-column prop="Def_No_Pkg_Upper" label="库存上限" width="100" sortable="custom" />
-        <el-table-column prop="Def_No_Pkg_Lower" label="库存下限" width="100" sortable="custom" />
-        <el-table-column label="授权到期" width="110" sortable="custom" prop="Auth_Valid_Date">
+        <el-table-column prop="Def_No_Pkg_Upper" label="库存上限" width="110" sortable="custom" show-overflow-tooltip />
+        <el-table-column prop="Def_No_Pkg_Lower" label="库存下限" width="110" sortable="custom" show-overflow-tooltip />
+        <el-table-column label="授权到期" width="120" sortable="custom" prop="Auth_Valid_Date" show-overflow-tooltip>
           <template slot-scope="{ row }">{{ fmtDate(row.Auth_Valid_Date) }}</template>
         </el-table-column>
-        <el-table-column prop="GROUP_NAME" label="分组名称" width="100" align="center" sortable="custom" show-overflow-tooltip />
+        <el-table-column prop="GROUP_NAME" label="分组名称" width="120" align="center" sortable="custom" show-overflow-tooltip />
       </el-table>
       <el-pagination
         class="pager"
@@ -533,5 +533,16 @@ export default {
   display: inline-block;
   margin: 0 8px;
   vertical-align: middle;
+}
+.batch-outage :deep(.el-table th .cell),
+.batch-outage :deep(.el-table td .cell) {
+  white-space: nowrap;
+}
+.batch-outage :deep(.el-table .cell) {
+  line-height: 23px;
+}
+.batch-outage :deep(.el-table__header-wrapper th),
+.batch-outage :deep(.el-table__fixed-header-wrapper th) {
+  height: 36px;
 }
 </style>

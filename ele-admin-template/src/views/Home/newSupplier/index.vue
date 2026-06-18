@@ -1,49 +1,83 @@
 <template>
-    <div class="ele-body">
-        <el-card shadow="never">
+    <div class="ele-body spd-page new-supplier-page">
+        <el-card shadow="never" class="new-supplier-card">
             <!-- 搜索表单 -->
-            <el-form class="form-box">
-                <el-form-item >
-                    <el-input size="mini" v-model="where.keyword" placeholder="请输入搜索内容" clearable />
+            <el-form  size="mini" :inline="true" @submit.native.prevent>
+                <el-form-item>
+                    <el-input v-model="where.keyword" placeholder="请输入搜索内容" clearable @keyup.enter.native="reload" />
                 </el-form-item>
                 <el-form-item>
-                    <el-select class="where-enable" size="mini" v-model="where.enable" placeholder="状态">
+                    <el-select v-model="where.enable" placeholder="状态">
                         <el-option label="启用" value="1"></el-option>
                         <el-option label="全部" value=""></el-option>
                         <el-option label="停用" value="0"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item >
-                    <el-button size="mini" type="primary" icon="el-icon-search" @click="reload">
+                <el-form-item>
+                    <el-button type="primary" icon="el-icon-search" @click="reload">
                         搜索
                     </el-button>
                 </el-form-item>
             </el-form>
             <!-- 数据表格 -->
-            <ele-pro-table 
-            ref="table" 
-            class="table-supplier" 
-            :columns="columns" 
-            :currentPage="page" 
-            :pageSize="size" 
-            :highlightCurrentRow="true"
-            :datasource="datasource" 
-            @current-change="onCurrentChange"
-            @size-change="onSizeChange"
-            >
-            </ele-pro-table>
+            <ele-pro-table
+                ref="table"
+                class="table-supplier"
+                size="mini"
+                height="calc(100vh - 290px)"
+                :columns="columns"
+                :currentPage="page"
+                :pageSize="size"
+                :highlightCurrentRow="true"
+                :datasource="datasource"
+                @current-change="onCurrentChange"
+                @size-change="onSizeChange"
+            />
         </el-card>
     </div>
 </template>
 
-<style scoped>
-    .form-box{
-        display: flex;
-        gap: 10px;
-    }
-    .where-enable{
-        width: 5rem;
-    }
+<style lang="scss" scoped>
+.new-supplier-page {
+    padding: 8px;
+}
+
+.new-supplier-card {
+    height: calc(100vh - 112px);
+}
+
+.new-supplier-page :deep(.el-card__body) {
+    height: 100%;
+    padding: 12px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+}
+
+.supplier-search {
+    flex: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 12px;
+    margin-bottom: 8px;
+}
+
+.supplier-search :deep(.el-form-item) {
+    margin: 0;
+}
+
+.supplier-search :deep(.el-input) {
+    width: 220px;
+}
+
+.supplier-search :deep(.el-select) {
+    width: 96px;
+}
+
+.new-supplier-page :deep(.ele-pro-table) {
+    flex: 1;
+    min-height: 0;
+}
 </style>
 
 <script>

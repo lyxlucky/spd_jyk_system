@@ -1,5 +1,5 @@
-<template>
-  <div class="ele-body">
+﻿<template>
+  <div class="ele-body apply-temp-data-table-page">
     <!-- 数据表格 -->
     <!-- 自定义指令实现当pageSizes改变时触发 -->
     <!-- :pageSize="pageSize" :pageSizes="pageSizes" -->
@@ -16,7 +16,7 @@
     />
     <ele-pro-table
       ref="table"
-      height="60vh"
+      height="100%"
       size="mini"
       highlight-current-row
       :stripe="true"
@@ -94,6 +94,26 @@
     </el-dialog>
   </div>
 </template>
+
+<style lang="scss" scoped>
+.apply-temp-data-table-page {
+  height: 100%;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.apply-temp-data-table-page :deep(.apply-temp-data-search) {
+  flex: none;
+  margin-bottom: 8px;
+}
+
+.apply-temp-data-table-page :deep(.ele-pro-table) {
+  flex: 1;
+  min-height: 0;
+}
+</style>
 
 <script>
   import { PrintinFile } from '@/api/Home/masterBaseData';

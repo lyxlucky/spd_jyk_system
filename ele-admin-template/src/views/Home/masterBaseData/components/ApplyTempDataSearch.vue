@@ -1,7 +1,7 @@
-<!-- 搜索表单 -->
+﻿<!-- 搜索表单 -->
 <template>
   <div>
-    <el-form class="ele-form-search" :inline="true">
+    <el-form class="ele-form-search apply-temp-data-search" size="mini" :inline="true">
       <el-form-item>
         <el-input
           size="mini"
@@ -78,77 +78,6 @@
           文件导出
         </el-button>
       </el-form-item>
-      <!-- <el-row :gutter="10">
-        <el-col :lg="3" :md="12">
-          <el-input
-            size="mini"
-            v-model="where.REGISTRATION_NAME"
-            placeholder="耗材注册证名称"
-            clearable
-          />
-        </el-col>
-
-        <el-col :lg="3" :md="12">
-          <el-input
-            size="mini"
-            v-model="where.REGISTRATION_NO"
-            placeholder="注册证号"
-            clearable
-          />
-        </el-col>
-
-        <el-col :lg="3" :md="12">
-          <el-input
-            size="mini"
-            v-model="where.ITEM_NUMBER"
-            placeholder="物料编码"
-            clearable
-          />
-        </el-col>
-
-        <el-col :lg="3" :md="12">
-          <el-input
-            size="mini"
-            v-model="where.STAND_VALUE"
-            placeholder="规格"
-            clearable
-          />
-        </el-col>
-
-        <el-col :lg="12" :md="12">
-          <div class="ele-form-actions">
-            <el-button
-              size="mini"
-              icon="el-icon-search"
-              type="primary"
-              @click="search"
-              >查询</el-button
-            >
-            <el-button size="mini" icon="el-icon-refresh" @click="reset"
-              >重置</el-button
-            > -->
-      <!-- <el-button size="mini" type="primary" class="ele-btn-icon" @click="search">
-          编辑
-        </el-button> -->
-      <!-- <el-button
-              size="mini"
-              type="primary"
-              class="ele-btn-icon"
-              @click="showDialogTableVisible2"
-            >
-              导入
-            </el-button>
-            <el-button
-              size="mini"
-              type="primary"
-              class="ele-btn-icon"
-              @click="exportData"
-            >
-              导出
-            </el-button>
-          </div>
-        </el-col>
-      </el-row> -->
     </el-form>
     <el-dialog
       title="导入模板品种"
@@ -328,3 +257,24 @@
     }
   };
 </script>
+
+<style scoped>
+.apply-temp-data-search {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 10px;
+  margin-bottom: 0;
+}
+
+.apply-temp-data-search :deep(.el-form-item) {
+  margin: 0;
+}
+
+.apply-temp-data-search :deep(.el-input) {
+  width: 150px;
+}
+
+.apply-temp-data-search :deep(.el-button + .el-button) {
+  margin-left: 0;
+}
+</style>

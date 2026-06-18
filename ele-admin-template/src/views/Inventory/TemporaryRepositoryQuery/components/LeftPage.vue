@@ -1,11 +1,21 @@
 <template>
-  <div class="ele-body">
+  <div class="ele-body temporary-left-page">
     <el-card shadow="never">
       <!-- 搜索表单 -->
       <!-- <user-search @search="reload" @exportData="exportData" /> -->
       <!-- 数据表格 -->
       <user-search @search="reload" @exportData="exportData" @returnData="returnData"/>
-      <ele-pro-table ref="table" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" cache-key="KSInventoryBasicDataTable">
+      <ele-pro-table
+        ref="table"
+        size="mini"
+        height="calc(100vh - 234px)"
+        :pageSize="pageSize"
+        :pageSizes="pageSizes"
+        :columns="columns"
+        :datasource="datasource"
+        :selection.sync="selection"
+        cache-key="KSInventoryBasicDataTable"
+      >
         <!-- 表头工具栏 -->
         <template v-slot:toolbar>
         </template>
@@ -314,3 +324,28 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.temporary-left-page {
+  height: 100%;
+  padding: 0;
+}
+
+.temporary-left-page :deep(.el-card) {
+  height: 100%;
+}
+
+.temporary-left-page :deep(.el-card__body) {
+  height: 100%;
+  padding: 0;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.temporary-left-page :deep(.el-table th .cell),
+.temporary-left-page :deep(.el-table td .cell) {
+  white-space: nowrap;
+}
+</style>

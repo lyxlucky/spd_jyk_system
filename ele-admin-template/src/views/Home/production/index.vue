@@ -1,19 +1,19 @@
 <template>
-    <div class="ele-body">
-        <el-card shadow="never">
+    <div class="ele-body spd-page production-page">
+        <el-card shadow="never" class="production-card">
             <!-- 搜索表单 -->
-            <el-form label-position="right" inline class="ele-form-search">
+            <el-form label-position="right" inline size="mini" class="ele-form-search production-search" @submit.native.prevent>
                 <el-form-item label="生产企业名称:">
-                    <el-input  size="mini" v-model="where.MANUFACTURING_ENT_NAME" placeholder="请输入" clearable />
+                    <el-input v-model="where.MANUFACTURING_ENT_NAME" placeholder="请输入" clearable @keyup.enter.native="reload" />
                 </el-form-item>
-                <el-form-item label="开始时间:" >
-                    <el-date-picker size="mini" v-model="where.startTime" type="date" placeholder="开始时间" />
+                <el-form-item label="开始时间:">
+                    <el-date-picker v-model="where.startTime" type="date" placeholder="开始时间" />
+                </el-form-item>
+                <el-form-item label="结束时间:">
+                    <el-date-picker v-model="where.endTime" type="date" placeholder="结束时间" />
                 </el-form-item>
                 <el-form-item>
-                    <el-date-picker size="mini" v-model="where.endTime" type="date" placeholder="结束时间" />
-                </el-form-item>
-                <el-form-item>
-                    <el-button size="mini" type="primary" icon="el-icon-search" class="ele-btn-icon" @click="reload">
+                    <el-button type="primary" icon="el-icon-search" class="ele-btn-icon" @click="reload">
                         查询
                     </el-button>
                 </el-form-item>
@@ -28,8 +28,14 @@
                 </div> -->
             </el-form>
             <!-- 数据表格 -->
-            <ele-pro-table ref="table" :columns="columns" :datasource="datasource" @selection-change="onSelectionChange">
-            </ele-pro-table>
+            <ele-pro-table
+                ref="table"
+                size="mini"
+                height="calc(100vh - 290px)"
+                :columns="columns"
+                :datasource="datasource"
+                @selection-change="onSelectionChange"
+            />
         </el-card>
 
         <!-- 新增/修改弹窗 -->
@@ -305,3 +311,45 @@ export default {
     }
 }
 </script>
+
+<style lang="scss" scoped>
+.production-page {
+    padding: 8px;
+}
+
+.production-card {
+    height: calc(100vh - 112px);
+}
+
+.production-page :deep(.el-card__body) {
+    height: 100%;
+    padding: 12px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+}
+
+.production-search {
+    flex: none;
+    margin-bottom: 8px;
+}
+
+.production-search :deep(.el-form-item) {
+    margin-right: 12px;
+    margin-bottom: 8px;
+}
+
+.production-search :deep(.el-form-item__label) {
+    padding-right: 6px;
+}
+
+.production-search :deep(.el-input),
+.production-search :deep(.el-date-editor.el-input) {
+    width: 180px;
+}
+
+.production-page :deep(.ele-pro-table) {
+    flex: 1;
+    min-height: 0;
+}
+</style>

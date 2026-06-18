@@ -1,32 +1,41 @@
-<template>
-  <el-form label-width="77px" class="ele-form-search" @keyup.enter.native="search" @submit.native.prevent>
-    <el-row :gutter="15">
-      <el-col v-bind="styleResponsive ? { lg: 6, md: 12 } : { span: 6 }">
-        <el-input size="mini" clearable v-model="where.temporary2_search_inp" placeholder="品种编码、品种名称、领出人、定数码" />
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 7, md: 12 } : { span: 6 }">
-        <el-date-picker
-          type="daterange"
-          value-format="yyyy-MM-dd"
-          size="mini"
-          range-separator="至"
-          start-placeholder="科室计划开始日期"
-          end-placeholder="科室计划结束日期"
-          v-model="dateRange"
-          @change="handleDateRangeChange"
-        >
-        </el-date-picker>
-      </el-col>
-    
-      <el-col v-bind="styleResponsive ? { lg: 6, md: 12 } : { span: 6 }">
-        <div class="ele-form-actions">
-          <el-button size="mini" type="primary" icon="el-icon-search" class="ele-btn-icon" @click="search">
-            查询
-          </el-button>
-          <el-button type="success" size="mini" icon="el-icon-download" @click="exportData">导出</el-button>
-        </div>
-      </el-col>
-    </el-row>
+﻿<template>
+  <el-form
+    class="ele-form-search temporary-search"
+    size="mini"
+    :inline="true"
+    @keyup.enter.native="search"
+    @submit.native.prevent
+  >
+    <el-form-item>
+      <el-input
+        clearable
+        v-model="where.temporary2_search_inp"
+        placeholder="品种编码、品种名称、领出人、定数码"
+        style="width: 240px"
+      />
+    </el-form-item>
+    <el-form-item>
+      <el-date-picker
+        type="daterange"
+        value-format="yyyy-MM-dd"
+        range-separator="至"
+        start-placeholder="科室计划开始日期"
+        end-placeholder="科室计划结束日期"
+        v-model="dateRange"
+        @change="handleDateRangeChange"
+        style="width: 260px"
+      />
+    </el-form-item>
+    <el-form-item>
+      <el-button type="primary" icon="el-icon-search" class="ele-btn-icon" @click="search">
+        查询
+      </el-button>
+    </el-form-item>
+    <el-form-item>
+      <el-button type="success" icon="el-icon-download" class="ele-btn-icon" @click="exportData">
+        导出
+      </el-button>
+    </el-form-item>
   </el-form>
 </template>
 
@@ -80,3 +89,16 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.temporary-search {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 10px;
+  margin-bottom: 8px;
+}
+
+.temporary-search :deep(.el-form-item) {
+  margin: 0;
+}
+</style>

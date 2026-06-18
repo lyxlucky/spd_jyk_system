@@ -1,73 +1,66 @@
-<template>
+﻿<template>
   <el-form
-    label-width="77px"
-    class="ele-form-search"
+    class="ele-form-search temporary-search"
+    size="mini"
+    :inline="true"
     @keyup.enter.native="search"
     @submit.native.prevent
   >
-    <el-row :gutter="15">
-      <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 6 }">
-        <el-input
-          size="mini"
-          clearable
-          v-model="where.divrjks2_search_inpName"
-          placeholder="请输入科室名称"
-        />
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 5, md: 12 } : { span: 6 }">
-        <el-input
-          size="mini"
-          clearable
-          v-model="where.divrjks2_search_inp"
-          placeholder="品种编码、品种名称、型号规格、定数码、RFID码"
-        />
-      </el-col>
-
-      <el-col v-bind="styleResponsive ? { lg: 5, md: 12 } : { span: 6 }">
-        <el-date-picker
-          v-model="where.timerange"
-          type="daterange"
-          size="mini"
-          value-format="yyyy-MM-dd"
-          range-separator="至"
-          start-placeholder="暂借开始日期"
-          end-placeholder="暂借结束日期"
-        >
-        </el-date-picker>
-      </el-col>
-
-      <el-col v-bind="styleResponsive ? { lg: 6, md: 12 } : { span: 6 }">
-        <div class="ele-form-actions">
-          <el-button
-            size="mini"
-            type="primary"
-            icon="el-icon-search"
-            class="ele-btn-icon"
-            @click="search"
-          >
-            查询
-          </el-button>
-          <el-button
-            size="mini"
-            type="success"
-            icon="el-icon-download"
-            class="ele-btn-icon"
-            @click="exportData"
-          >
-            导出
-          </el-button>
-          <el-button
-            size="mini"
-            type="info"
-            icon="el-icon-upload"
-            class="ele-btn-icon"
-            @click="returnData"
-          >
-            归还
-          </el-button>
-        </div>
-      </el-col>
-    </el-row>
+    <el-form-item>
+      <el-input
+        clearable
+        v-model="where.divrjks2_search_inpName"
+        placeholder="请输入科室名称"
+      />
+    </el-form-item>
+    <el-form-item>
+      <el-input
+        clearable
+        v-model="where.divrjks2_search_inp"
+        placeholder="品种编码、品种名称、型号规格、定数码、RFID码"
+      />
+    </el-form-item>
+    <el-form-item>
+      <el-date-picker
+        v-model="where.timerange"
+        type="daterange"
+        value-format="yyyy-MM-dd"
+        range-separator="至"
+        start-placeholder="暂借开始日期"
+        end-placeholder="暂借结束日期"
+        style="width:100%"
+      />
+    </el-form-item>
+    <el-form-item>
+      <el-button
+        type="primary"
+        icon="el-icon-search"
+        class="ele-btn-icon"
+        @click="search"
+      >
+        查询
+      </el-button>
+    </el-form-item>
+    <el-form-item>
+      <el-button
+        type="success"
+        icon="el-icon-download"
+        class="ele-btn-icon"
+        @click="exportData"
+      >
+        导出
+      </el-button>
+    </el-form-item>
+    <el-form-item>
+      <el-button
+        type="info"
+        icon="el-icon-upload"
+        class="ele-btn-icon"
+        @click="returnData"
+      >
+        归还
+      </el-button>
+    </el-form-item>
   </el-form>
 </template>
 
@@ -113,3 +106,16 @@
     }
   };
 </script>
+
+<style scoped>
+.temporary-search {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 10px;
+  margin-bottom: 8px;
+}
+
+.temporary-search :deep(.el-form-item) {
+  margin: 0;
+}
+</style>
