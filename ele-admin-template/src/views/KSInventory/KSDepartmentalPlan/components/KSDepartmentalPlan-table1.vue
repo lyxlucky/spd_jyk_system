@@ -1,7 +1,11 @@
 <template>
   <div class="" v-if="RenderTabel">
     <!-- 数据表格 -->
-    <KSDepartmentalPlan-search @search="reload" ref="search" />
+    <KSDepartmentalPlan-search
+      @search="reload"
+      @exportData="exportData"
+      ref="search"
+    />
     <ele-pro-table
       :key="key"
       :reserve-selection="true"
@@ -157,6 +161,7 @@
     ApplyPlanUpdateRemarks
   } from '@/api/KSInventory/KSDepartmentalPlan';
   import { getDeptAuthVarNew } from '@/api/KSInventory/KSInventoryBasicData';
+  import { exportToExcel } from '@/utils/excel-util';
   export default {
     name: 'KSDepartmentalPlanTable',
     props: ['IsReload'],
@@ -212,14 +217,7 @@
             showOverflowTooltip: true,
             minWidth: 110
           },
-          {
-            prop: 'Operater',
-            label: '申领人',
 
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 80
-          },
           {
             // prop: 'State',
             label: '状态',
@@ -263,6 +261,13 @@
             minWidth: 75
           },
           {
+            prop: 'Operater',
+            label: '申领人',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 80
+          },
+          {
             prop: 'PlanTime',
             label: '申领时间',
             align: 'center',
@@ -271,6 +276,13 @@
             formatter: (row, column, cellValue) => {
               return this.$moment(cellValue).format('YYYY-MM-DD HH:mm:ss');
             }
+          },
+          {
+            prop: 'APPROVALMAN',
+            label: '审批人',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 80
           },
           {
             prop: 'Approval_Time',
@@ -341,15 +353,55 @@
       });
     },
     methods: {
-      /* 表格数据源 */
-      datasource({ page, limit, where, order }) {
+      getPlanStateText(row) {
+        if (row.State == 0) {
+          return '新增';
+        }
+        if (row.State == 1) {
+          return '已提交';
+        }
+        if (row.State == 2) {
+          return '配送中';
+        }
+        if (row.State == 5) {
+          return '已审核';
+        }
+        if (row.State == 6 && row.QUANITY == 0) {
+          return '已审批';
+        }
+        if (row.State == -6) {
+          return '未审批';
+        }
+        if (
+          row.QUANITY > 0 &&
+          row.QUANITY != row.SUM_Apply_Qty &&
+          row.State != 10
+        ) {
+          return '未收全';
+        }
+        if (row.SUM_Apply_Qty == row.QUANITY) {
+          return '已收全';
+        }
+        if (row.State == 10) {
+          return '强制结束';
+        }
+        return row.State;
+      },
+      getSearchWhere(where = {}) {
         var Dept_Two_CodeStr = '';
         var userDeptList = this.$store.state.user.info.userDept;
         for (let i = 0; i < userDeptList.length; i++) {
           Dept_Two_CodeStr =
             Dept_Two_CodeStr + userDeptList[i].Dept_Two_Code + ',';
         }
-        where.DeptCode = Dept_Two_CodeStr;
+        return {
+          ...where,
+          DeptCode: Dept_Two_CodeStr
+        };
+      },
+      /* 表格数据源 */
+      datasource({ page, limit, where, order }) {
+        where = this.getSearchWhere(where);
         let data = SerachPlanList({ page, limit, where, order }).then((res) => {
           var tData = {
             count: res.total,
@@ -376,6 +428,83 @@
       /* 刷新表格 */
       reload(where) {
         this.$refs.table.reload({ page: 1, where: where });
+      },
+      exportData(where) {
+        const loading = this.$messageLoading('正在导出数据...');
+        const exportColumns = [
+          {
+            prop: 'SCIENTIFIC_TYPE',
+            label: '类型',
+            excelConfig: {
+              formatter: (row) => {
+                if (row?.SCIENTIFIC_ID && row.SCIENTIFIC_ID !== 'null') {
+                  return '科研计划';
+                }
+                return '普通计划';
+              }
+            }
+          },
+          { prop: 'PlanNum', label: '申领单号', excelConfig: { width: 18 } },
+          {
+            prop: 'State',
+            label: '状态',
+            excelConfig: {
+              formatter: (row) => this.getPlanStateText(row)
+            }
+          },
+          { prop: 'DEPT_TWO_NAME', label: '科室名称', excelConfig: { width: 18 } },
+          { prop: 'REGION_NAME', label: '库区' },
+          { prop: 'Operater', label: '申领人' },
+          {
+            prop: 'PlanTime',
+            label: '申领时间',
+            excelConfig: {
+              width: 20,
+              formatter: (row, column, cellValue) => {
+                return cellValue
+                  ? this.$moment(cellValue).format('YYYY-MM-DD HH:mm:ss')
+                  : '';
+              }
+            }
+          },
+          { prop: 'APPROVALMAN', label: '审批人' },
+          {
+            prop: 'Approval_Time',
+            label: '审批时间',
+            excelConfig: {
+              width: 20,
+              formatter: (row, column, cellValue) => {
+                return cellValue
+                  ? this.$moment(cellValue).format('YYYY-MM-DD HH:mm:ss')
+                  : '';
+              }
+            }
+          },
+          { prop: 'BZ', label: '备注', excelConfig: { width: 20 } },
+          { prop: 'SUM_Apply_Qty', label: '申请总数' },
+          { prop: 'QUANITY', label: '已收货总数' }
+        ];
+        SerachPlanList({
+          page: 1,
+          limit: 9999999,
+          where: this.getSearchWhere(where),
+          order: {}
+        })
+          .then((res) => {
+            const list = res.result || [];
+            if (!list.length) {
+              this.$message.warning('没有数据可导出');
+              return;
+            }
+            exportToExcel(list, exportColumns, '申领单列表');
+            this.$message.success('导出成功');
+          })
+          .catch((err) => {
+            this.$message.error(err.message || '导出失败');
+          })
+          .finally(() => {
+            loading.close();
+          });
       },
       reload2() {
         this.$refs.search.search();
