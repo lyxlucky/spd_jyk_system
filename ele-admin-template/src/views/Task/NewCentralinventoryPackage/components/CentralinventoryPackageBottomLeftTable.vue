@@ -56,19 +56,19 @@
           {
             prop: 'Name',
             label: '仓库名称',
-            minWidth: 80,
+            minWidth: 120,
             showOverflowTooltip: true
           },
           {
             prop: 'Bag_Maker',
             label: '制包人',
-            minWidth: 70,
+            minWidth: 100,
             showOverflowTooltip: true
           },
           {
             prop: 'Varietie_Code',
             label: '品种(材料)编码',
-            minWidth: 90,
+            minWidth: 140,
             showOverflowTooltip: true
           },
           {
@@ -87,7 +87,7 @@
             prop: 'Unit',
             align: 'center',
             label: '单位',
-            minWidth: 50,
+            minWidth: 80,
             showOverflowTooltip: true
           },
           {
@@ -100,13 +100,13 @@
           {
             prop: 'Batch',
             label: '生产批号',
-            minWidth: 75,
+            minWidth: 125,
             showOverflowTooltip: true
           },
           {
             prop: 'Batch_Production_Date',
             label: '生产日期',
-            minWidth: 75,
+            minWidth: 125,
             showOverflowTooltip: true,
             formatter: (row, column, cellValue) => {
               return cellValue
@@ -117,7 +117,7 @@
           {
             prop: 'Batch_Validity_Period',
             label: '失效日期',
-            minWidth: 75,
+            minWidth: 125,
             showOverflowTooltip: true,
             formatter: (row, column, cellValue) => {
               return cellValue
@@ -134,26 +134,26 @@
           {
             prop: 'Coefficient',
             label: '系数',
-            minWidth: 50,
+            minWidth: 80,
             showOverflowTooltip: true
           },
           {
             prop: 'Bag_Making_Number',
             label: '制包单号',
-            minWidth: 80,
+            minWidth: 120,
             showOverflowTooltip: true
           },
           {
             prop: 'Pack_Plan_Quantity',
             label: '制包数量',
-            minWidth: 60,
+            minWidth: 120,
             showOverflowTooltip: true
           },
           {
             slot: 'Bag_Making_State',
             label: '是否制包',
             align: 'center',
-            minWidth: 60,
+            minWidth: 100,
             showOverflowTooltip: true
           }
         ],

@@ -2,7 +2,7 @@
   <div>
     <!-- <el-card shadow="always"> -->
     <el-container>
-      <el-aside width="500px" style="margin: 20px 0px 0px 20px;">
+      <el-aside width="500px" style="margin: 20px 0px 20px 20px;">
         <el-card shadow="always">
           <div slot="header" class="clearfix">
             <span>预收货单号列表</span>

@@ -67,7 +67,7 @@ export default {
       where: defaultWhere(),
       sort: { field: '', order: '' },
       exporting: false,
-      tableHeight: 'calc(100vh - 340px)',
+      tableHeight: 'calc(100vh - 320px)',
       columns: [
         { prop: 'PROD_SOURCE_FROM', label: '自定义来源', minWidth: 120, showOverflowTooltip: true },
         { prop: 'XM_NUM', label: '项目编号', minWidth: 130 },

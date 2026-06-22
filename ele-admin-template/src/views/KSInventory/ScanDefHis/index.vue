@@ -1,73 +1,48 @@
 <template>
-  <div class="ele-body">
-    <el-card shadow="never">
-      <!-- 搜索表单 -->
-      <!-- <user-search @search="reload" @getMsgTip="getMsgTip" @exportData="exportData" :selection="selection" /> -->
-      <!-- 数据表格 -->
+  <div class="ele-body spd-page scan-def-his-page">
+    <el-card shadow="never" class="scan-def-his-card">
       <user-search
         @search="reload"
         @getMsgTip="getMsgTip"
         @exportData="exportData"
         :selection="selection"
       />
-      <ele-pro-table
-        ref="table"
-        height="calc(100vh - 300px)"
-        :pageSize="pageSize"
-        :pageSizes="pageSizes"
-        :columns="columns"
-        :datasource="datasource"
-        :selection.sync="selection"
-        @selection-change="onSelectionChange"
-        @done="done"
-        cache-key="KSInventoryBasicDataTable"
-      >
-        <!-- 表头工具栏 -->
-        <template v-slot:toolbar>
-          <span
-        v-if="['stzl', 'stzx'].includes(HOME_HP) || ENV == 'development'"
-        style="font-size: 20px; margin-bottom: 5px"
-        >当前设备： {{ bindMachine || '暂无' }}</span>
-          <!-- <el-button size="small" type="primary" icon="el-icon-plus" class="ele-btn-icon" @click="openEdit()">
-            新建
-          </el-button>
-          <el-button size="small" type="danger" icon="el-icon-delete" class="ele-btn-icon" @click="removeBatch">
-            删除
-          </el-button>
-          <el-button size="small" icon="el-icon-upload2" class="ele-btn-icon" @click="openImport">
-            导入
-          </el-button> -->
-        </template>
-
-        <!-- 操作列 -->
-        <template v-slot:action="{ row }">
-          <el-link
-            type="primary"
-            :underline="false"
-            icon="el-icon-edit"
-            @click="openEdit(row)"
-          >
-            修改
-          </el-link>
-          <!-- <el-button type="primary" size="mini" @click="openEdit(row)">编辑</el-button> -->
-          <!-- <el-popconfirm class="ele-action" title="确定要删除此用户吗？" @confirm="remove(row)">
-            <template v-slot:reference>
-              <el-link type="danger" :underline="false" icon="el-icon-delete">
-                删除
-              </el-link>
-            </template>
-          </el-popconfirm> -->
-        </template>
-        <!-- <template v-slot:zkDay="{ row }">
-  
-        </template> -->
-      </ele-pro-table>
+      <div class="spd-panel spd-table-panel">
+        <div class="spd-panel__head spd-panel__head--split">
+          <span>定数码消耗列表</span>
+          <span class="scan-def-his-meta">
+            <span
+              v-if="['stzl', 'stzx'].includes(HOME_HP) || ENV == 'development'"
+              class="spd-panel__head-meta"
+            >
+              当前设备：{{ bindMachine || '暂无' }}
+            </span>
+            <span v-if="msgTip" class="spd-panel__head-meta msg-tip">{{ msgTip }}</span>
+          </span>
+        </div>
+        <div class="spd-table-panel__wrap">
+          <ele-pro-table
+            ref="table"
+            class="data-table"
+            size="mini"
+            border
+            stripe
+            :toolbar="false"
+            :header-overflow-hidden="false"
+            :height="tableHeight"
+            :pageSize="pageSize"
+            :pageSizes="pageSizes"
+            :columns="columns"
+            :datasource="datasource"
+            :selection.sync="selection"
+            @selection-change="onSelectionChange"
+            @done="done"
+            cache-key="ScanDefHisTable"
+          />
+        </div>
+      </div>
     </el-card>
-    <!-- 编辑弹窗 -->
     <user-edit :visible.sync="showEdit" :data="current" @done="reload" />
-    <!-- 导入弹窗 -->
-    <!-- <user-import :visible.sync="showImport" @done="reload" /> -->
-    <h3 style="color: blue">{{ msgTip }}</h3>
   </div>
 </template>
 
@@ -126,7 +101,7 @@
             label: '二级科室名称',
             align: 'center',
             showOverflowTooltip: true,
-            width: 120
+            minWidth: 130
           },
           {
             prop: 'REGION_NAME',
@@ -287,6 +262,7 @@
           }
         ],
         toolbar: false,
+        tableHeight: 'calc(100vh - 360px)',
         pageSize: 20,
         pageSizes: [10, 20, 50, 100, 9999999],
         pagerCount: 5,
@@ -462,3 +438,26 @@
     }
   };
 </script>
+
+<style scoped>
+.scan-def-his-card :deep(.el-card__body) {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.scan-def-his-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-weight: normal;
+}
+
+.scan-def-his-meta .msg-tip {
+  color: #409eff;
+}
+
+.scan-def-his-page >>> .el-table th .cell {
+  white-space: nowrap;
+}
+</style>

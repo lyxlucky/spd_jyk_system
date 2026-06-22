@@ -1,8 +1,9 @@
 <template>
-  <div class="ele-body">
+  <div class="stocktaking-data-detail">
     <!-- <el-button type="danger" size="small" @click="aaa">aaa</el-button> -->
     <!-- 数据表格 -->
-    <ele-pro-table :paginationStyle=paginationStyle ref="table" :initLoad="false" :toolStyle="toolStyle" height="43vh" highlight-current-row :stripe="true" :rowClickChecked="true" :rowClickCheckedIntelligent="false" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" @selection-change="onSelectionChange" cache-key="StocktakingDataDetailsTabel">
+    <div class="spd-panel spd-panel--search">
+      <div class="spd-panel__head">明细操作</div>
       <!-- 表头工具栏 -->
       <!-- 右表头 -->
       <!-- <template v-slot:toolkit>
@@ -12,33 +13,67 @@
       </template> -->
       <!-- 左表头 -->
       <!-- @ClickReload="ClickReload"  -->
-      <template v-slot:toolbar>
-        <!-- 搜索表单 -->
-        <StocktakingDataDetailsSearch @exportData="exportData" @search="reload" @showEditReoad="showEditReoad" :KSDepartmentalPlanDataSearch='KSDepartmentalPlanDataSearch' :KSDepartmentalPlanData='KSDepartmentalPlanData' :selection="selection" :current="current" :datasourceList="datasourceList" @createBatchData="createBatchData" @scanItem="scanItem" />
-      </template>
+      <!-- 搜索表单 -->
+      <StocktakingDataDetailsSearch
+        @exportData="exportData"
+        @search="reload"
+        @showEditReoad="showEditReoad"
+        :KSDepartmentalPlanDataSearch="KSDepartmentalPlanDataSearch"
+        :KSDepartmentalPlanData="KSDepartmentalPlanData"
+        :selection="selection"
+        :current="current"
+        :datasourceList="datasourceList"
+        @createBatchData="createBatchData"
+        @scanItem="scanItem"
+      />
+    </div>
 
+    <div class="spd-panel spd-table-panel">
+      <div class="spd-panel__head">盘点明细列表</div>
+      <div class="spd-table-panel__wrap">
+        <ele-pro-table
+          ref="table"
+          class="data-table"
+          size="mini"
+          border
+          stripe
+          :initLoad="false"
+          :toolbar="false"
+          :header-overflow-hidden="false"
+          :height="tableHeight"
+          highlight-current-row
+          :rowClickChecked="true"
+          :rowClickCheckedIntelligent="false"
+          :pageSize="pageSize"
+          :pageSizes="pageSizes"
+          :columns="columns"
+          :datasource="datasource"
+          :selection.sync="selection"
+          cache-key="StocktakingDataDetailTable"
+          @selection-change="onSelectionChange"
+        >
       <template v-slot:PlanQty="{ row }">
         <el-input-number v-model="row.PlanQty" :min="0" :max="99999999" :step="1" size="mini" />
         <!-- <el-input-number v-model="row.PlanQty" controls-position="right" @change="handleChange" :min="0" :max="9999" size="mini"></el-input-number> -->
       </template>
       <template v-slot:VarCode="{ row }">
-        <el-tag v-if="row.LEFT_APPLY_QTY == 0" type="success">{{ row.VarCode }}</el-tag>
-        <el-tag v-else type="danger">{{ row.VarCode }}</el-tag>
+        <el-tag size="mini" v-if="row.LEFT_APPLY_QTY == 0" type="success">{{ row.VarCode }}</el-tag>
+        <el-tag size="mini" v-else type="danger">{{ row.VarCode }}</el-tag>
       </template>
       <template v-slot:REMARK="{ row }">
         <el-link v-if="row.REMARK == null" type="info" @click="OpenUpApplyPlanBZBox(row.ID)">无</el-link>
-        <el-tag v-else type="primary" @click="OpenUpApplyPlanBZBox(row.ID)">{{ row.REMARK }}</el-tag>
+        <el-tag size="mini" v-else type="primary" @click="OpenUpApplyPlanBZBox(row.ID)">{{ row.REMARK }}</el-tag>
       </template>
       <template v-slot:State="{ row }">
-        <el-tag v-if="row.State == 0" type="success">新增</el-tag>
-        <el-tag v-if="row.State == 1" type="success">已提交</el-tag>
-        <el-tag v-if="row.State == 2" type="success">配送中</el-tag>
-        <el-tag v-if="row.State == 5" type="success">已审核</el-tag>
-        <el-tag v-if="row.State == 10" type="success">强制结束</el-tag>
-        <el-tag v-if="(row.State == 6 || row.State == 4) && row.SUM_Left_Apply_Qty == row.SUM_Apply_Qty" type="success">已审批</el-tag>
-        <el-tag v-if="(row.SUM_Left_Apply_Qty > 0 && row.SUM_Left_Apply_Qty != row.SUM_Apply_Qty)" type="success">未收全</el-tag>
+        <el-tag size="mini" v-if="row.State == 0" type="success">新增</el-tag>
+        <el-tag size="mini" v-if="row.State == 1" type="success">已提交</el-tag>
+        <el-tag size="mini" v-if="row.State == 2" type="success">配送中</el-tag>
+        <el-tag size="mini" v-if="row.State == 5" type="success">已审核</el-tag>
+        <el-tag size="mini" v-if="row.State == 10" type="success">强制结束</el-tag>
+        <el-tag size="mini" v-if="(row.State == 6 || row.State == 4) && row.SUM_Left_Apply_Qty == row.SUM_Apply_Qty" type="success">已审批</el-tag>
+        <el-tag size="mini" v-if="(row.SUM_Left_Apply_Qty > 0 && row.SUM_Left_Apply_Qty != row.SUM_Apply_Qty)" type="success">未收全</el-tag>
         <!-- <el-tag v-if="(row.SUM_Left_Apply_Qty == 0)" type="success">已收全</el-tag> -->
-        <el-tag v-if="(row.SUM_Left_Apply_Qty == 0)" type="success">已收全</el-tag>
+        <el-tag size="mini" v-if="(row.SUM_Left_Apply_Qty == 0)" type="success">已收全</el-tag>
         <!-- <el-tag v-for="(item) in row" :key="item.PlanNum" size="mini" type="primary" :disable-transitions="true">
           {{ item.State }}
         </el-tag> -->
@@ -55,16 +90,18 @@
       </template>
 
       <template v-slot:STATE="{ row }">
-        <el-tag v-if="row.STATE == 0" type="danger">缺失</el-tag>
-        <el-tag v-if="row.STATE == 1" type="success">存在</el-tag>
-        <el-tag v-if="row.STATE == 2" type="warning">盘溢</el-tag>
+        <el-tag size="mini" v-if="row.STATE == 0" type="danger">缺失</el-tag>
+        <el-tag size="mini" v-if="row.STATE == 1" type="success">存在</el-tag>
+        <el-tag size="mini" v-if="row.STATE == 2" type="warning">盘溢</el-tag>
       </template>
 
       <template v-slot:DEF_NO_PKG_CODE="{ row }">
-        <el-tag type="success">{{ row.DEF_NO_PKG_CODE }}</el-tag>
+        <el-tag size="mini" type="success">{{ row.DEF_NO_PKG_CODE }}</el-tag>
       </template>
 
-    </ele-pro-table>
+        </ele-pro-table>
+      </div>
+    </div>
     <!-- 生成盘点数据 -->
     <createBatchDataModal :KSDepartmentalPlanData="KSDepartmentalPlanData" :visible.sync="createBatchDataModalVisible" />
 
@@ -263,17 +300,8 @@ export default {
           minWidth: 110
         }
       ],
-      paginationStyle: {
-        height: '18px',
-        padding: '0px 0px 5px 0px',
-        'margin-top': '-5px'
-      },
       toolbar: false,
-      toolStyle: {
-        display: 'flex',
-        'flex-wrap': 'wrap',
-        'align-items': 'flex-end'
-      },
+      tableHeight: 'calc((100vh - 420px) * 2 / 3)',
       pageSize: 20,
       pagerCount: 2,
       pageSizes: [10, 20, 50, 100, 9999999],
@@ -489,11 +517,7 @@ export default {
 
 
 <style scoped>
-.ele-body {
-  padding: 0px;
-}
-
-::v-deep .ele-table-tool-default {
-  padding: 0 0 0 5;
+.stocktaking-data-detail >>> .el-table th .cell {
+  white-space: nowrap;
 }
 </style>

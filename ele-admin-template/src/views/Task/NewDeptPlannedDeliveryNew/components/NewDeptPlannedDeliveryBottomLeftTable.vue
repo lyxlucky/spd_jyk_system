@@ -1,23 +1,35 @@
-<template lang="">
-  <div>
-    <NewDeptPlannedDeliveryBottomLeftTableSearch  @search='reload'/>
-    <ele-pro-table
-      :reserve-selection="true"
-      highlight-current-row
-      @current-change="onCurrentChange"
-      ref="table"
-      height="20vh"
-      :rowClickChecked="true"
-      :stripe="true"
-      :pageSize="pageSize"
-      :pageSizes="pageSizes"
-      :columns="columns"
-      :datasource="datasource"
-      :selection.sync="selection"
-      cache-key="NewDeptPlannedDeliveryBottomLeftTableCacheKey"
-      key="NewDeptPlannedDeliveryBottomLeftTableKey"
-    >
-    </ele-pro-table>
+<template>
+  <div class="bottom-left-panel">
+    <div class="spd-panel spd-panel--search">
+      <div class="spd-panel__head">备货计划查询</div>
+      <NewDeptPlannedDeliveryBottomLeftTableSearch @search="reload" />
+    </div>
+    <div class="spd-panel spd-table-panel">
+      <div class="spd-panel__head">备货计划列表</div>
+      <div class="spd-table-panel__wrap">
+        <ele-pro-table
+          ref="table"
+          class="data-table"
+          size="mini"
+          border
+          stripe
+          :toolbar="false"
+          :header-overflow-hidden="false"
+          :reserve-selection="true"
+          highlight-current-row
+          :row-click-checked="true"
+          :height="tableHeight"
+          :page-size="pageSize"
+          :page-sizes="pageSizes"
+          :columns="columns"
+          :datasource="datasource"
+          :selection.sync="selection"
+          cache-key="NewDeptPlannedDeliveryBottomLeftTableCacheKey"
+          key="NewDeptPlannedDeliveryBottomLeftTableKey"
+          @current-change="onCurrentChange"
+        />
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -32,6 +44,7 @@
       const defaultWhere = {};
       return {
         where: { ...defaultWhere },
+        tableHeight: 'calc((100vh - 420px) / 2)',
         columns: [
           {
             prop: 'Stock_Up_Plan_No',
@@ -133,6 +146,12 @@
         current: null
       };
     },
+    created() {
+      localStorage.setItem(
+        'NewDeptPlannedDeliveryBottomLeftTableCacheKeyTableSize',
+        JSON.stringify('mini')
+      );
+    },
     methods: {
       datasource({ page, limit, where, order }) {
         let data = GetPickingList({ page, limit, where, order }).then((res) => {
@@ -154,4 +173,12 @@
     }
   };
 </script>
-<style lang=""></style>
+<style scoped lang="scss">
+.bottom-left-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  height: 100%;
+  min-height: 0;
+}
+</style>

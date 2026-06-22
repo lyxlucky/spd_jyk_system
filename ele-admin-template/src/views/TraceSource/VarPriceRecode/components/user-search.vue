@@ -1,53 +1,53 @@
 <template>
-  <el-form label-width="77px" class="ele-form-search" @keyup.enter.native="search" @submit.native.prevent>
-    <el-row :gutter="15">
-      <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 6 }">
-        <el-input size="mini" clearable v-model="where.VARIETIE_SEARCH_VALUE" placeholder="编码/名称/规格型号" />
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 6, md: 12 } : { span: 6 }">
-        <el-date-picker
-          type="daterange"
-          value-format="yyyy-MM-dd"
-          size="mini"
-          range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          v-model="dateRange"
-          @change="handleDateRangeChange"
-        >
-        </el-date-picker>
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 6 }">
-        <label>
-          处理状态:
-          <el-select v-model="where.STATE" size="mini" placeholder="请选择状态">
-            <el-option label="全部" value="全部"></el-option>
-            <el-option label="未处理" value="0"></el-option>
-            <el-option label="已处理" value="1"></el-option>
-          </el-select>
-        </label>
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 5, md: 12 } : { span: 6 }">
-        <label>
-          新旧价格是否一致:
-          <el-select v-model="where.PriceIsEqual" size="mini" placeholder="请选择状态">
-            <el-option label="全部" value="全部"></el-option>
-            <el-option label="是" value="1"></el-option>
-            <el-option label="否" value="0"></el-option>
-          </el-select>
-        </label>
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 6, md: 12 } : { span: 6 }">
-        <div class="ele-form-actions">
-          <el-button size="mini" type="primary" icon="el-icon-search" class="ele-btn-icon" @click="search">
-            查询
-          </el-button>
-          <el-button size="mini" icon="el-icon-refresh" @click="reset">重置</el-button>
-          <el-button type="success" size="mini" @click="markAsProcessed">标记处理</el-button>
-          <el-button type="success" size="mini" icon="el-icon-download" @click="exportData">导出</el-button>
-        </div>
-      </el-col>
-    </el-row>
+  <el-form
+    inline
+    size="mini"
+    label-width="auto"
+    class="var-price-recode-search-form"
+    @keyup.enter.native="search"
+    @submit.native.prevent
+  >
+    <el-form-item label="品种">
+      <el-input
+        v-model="where.VARIETIE_SEARCH_VALUE"
+        clearable
+        placeholder="编码/名称/规格型号"
+        style="width: 200px"
+      />
+    </el-form-item>
+    <el-form-item label="记录时间">
+      <el-date-picker
+        v-model="dateRange"
+        type="daterange"
+        value-format="yyyy-MM-dd"
+        range-separator="至"
+        start-placeholder="开始日期"
+        end-placeholder="结束日期"
+        style="width: 240px"
+      />
+    </el-form-item>
+    <el-form-item label="处理状态">
+      <el-select v-model="where.STATE" placeholder="请选择" style="width: 90px">
+        <el-option label="全部" value="全部" />
+        <el-option label="未处理" value="0" />
+        <el-option label="已处理" value="1" />
+      </el-select>
+    </el-form-item>
+    <el-form-item label="价格一致">
+      <el-select v-model="where.PriceIsEqual" placeholder="请选择" style="width: 90px">
+        <el-option label="全部" value="全部" />
+        <el-option label="是" value="1" />
+        <el-option label="否" value="0" />
+      </el-select>
+    </el-form-item>
+    <el-form-item class="search-form-actions">
+      <el-button type="primary" icon="el-icon-search" class="ele-btn-icon" @click="search">
+        查询
+      </el-button>
+      <el-button icon="el-icon-refresh" @click="reset">重置</el-button>
+      <el-button type="success" @click="markAsProcessed">标记处理</el-button>
+      <el-button type="success" icon="el-icon-download" @click="exportData">导出</el-button>
+    </el-form-item>
   </el-form>
 </template>
 
@@ -55,60 +55,86 @@
 export default {
   data() {
     return {
-      // 默认表单数据
       defaultWhere: {
         VARIETIE_SEARCH_VALUE: '',
-        STATE: '0', // 默认处理状态为未处理
+        STATE: '0',
         start_time: '',
         end_time: '',
-        PriceIsEqual: '0' // 默认新旧价格是否一致为否
+        PriceIsEqual: '0'
       },
-      // 表单数据
-      where: {},
-      // 日期范围
-      dateRange: []
+      where: {}
     };
   },
   computed: {
-    // 是否开启响应式布局
-    styleResponsive() {
-      return this.$store.state.theme.styleResponsive;
+    dateRange: {
+      get() {
+        const { start_time, end_time } = this.where;
+        return start_time && end_time ? [start_time, end_time] : null;
+      },
+      set(val) {
+        if (val && val.length === 2) {
+          this.where.start_time = val[0];
+          this.where.end_time = val[1];
+        } else {
+          this.where.start_time = '';
+          this.where.end_time = '';
+        }
+      }
     }
   },
   created() {
-    // 初始化 where 对象
     this.where = { ...this.defaultWhere };
   },
   methods: {
-    /* 搜索 */
     search() {
-     
-      this.$emit('search', this.where);
+      this.$emit('search', { ...this.where });
     },
-    /*  重置 */
+    getWhere() {
+      return { ...this.where };
+    },
     reset() {
       this.where = { ...this.defaultWhere };
-      this.dateRange = [];
       this.search();
     },
-    /* 标记处理 */
     markAsProcessed() {
-      this.$emit('markAsProcessed', this.where);
+      this.$emit('markAsProcessed', { ...this.where });
     },
-    /* 导出数据 */
     exportData() {
-      this.$emit('exportData', this.where);
-    },
-    // 处理日期范围选择
-    handleDateRangeChange(range) {
-      if (range && range.length === 2) {
-        this.where.start_time = range[0];
-        this.where.end_time = range[1];
-      } else {
-        this.where.start_time = '';
-        this.where.end_time = '';
-      }
+      this.$emit('exportData', { ...this.where });
     }
   }
 };
 </script>
+
+<style lang="scss" scoped>
+.var-price-recode-search-form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.var-price-recode-search-form :deep(.el-form-item) {
+  display: inline-flex;
+  align-items: center;
+  margin-right: 12px;
+  margin-bottom: 0;
+  flex-shrink: 0;
+}
+
+.var-price-recode-search-form :deep(.el-form-item__label) {
+  white-space: nowrap;
+  padding-right: 6px;
+  float: none;
+}
+
+.var-price-recode-search-form :deep(.el-form-item__content) {
+  display: inline-flex;
+  align-items: center;
+  max-width: none;
+  flex-shrink: 0;
+}
+
+.search-form-actions :deep(.el-button + .el-button) {
+  margin-left: 8px;
+}
+</style>

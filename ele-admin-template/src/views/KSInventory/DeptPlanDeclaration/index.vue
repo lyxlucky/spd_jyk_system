@@ -1,15 +1,23 @@
 <template>
-  <div>
-    <el-container>
-      <el-header height="300">
-        <el-card shadow="always">
-          <DeptPlanDeclarationTopTable @getCurrent="getCurrent" @TopTableSelection="TopTableSelection" :IsReload="IsReloadTag"></DeptPlanDeclarationTopTable>
+  <div class="ele-body spd-page dept-plan-declaration-page">
+    <el-container class="dept-plan-declaration-container">
+      <el-header height="auto" class="dept-plan-declaration-header">
+        <el-card shadow="never" class="dept-plan-declaration-card">
+          <DeptPlanDeclarationTopTable
+            @getCurrent="getCurrent"
+            @TopTableSelection="TopTableSelection"
+            :IsReload="IsReloadTag"
+          />
         </el-card>
       </el-header>
-      <el-main style="padding-top: 3px">
-        <el-card shadow="always">
-          <DeptPlanDeclarationBottomTable :TopTableSelection="TopTableSelections" :DeptPlanDeclarationTopTableCurrent="DeptPlanDeclarationTopTableCurrent" @clickReload="clickReload" v-if="isActive">
-          </DeptPlanDeclarationBottomTable>
+      <el-main class="dept-plan-declaration-main">
+        <el-card shadow="never" class="dept-plan-declaration-card">
+          <DeptPlanDeclarationBottomTable
+            :TopTableSelection="TopTableSelections"
+            :DeptPlanDeclarationTopTableCurrent="DeptPlanDeclarationTopTableCurrent"
+            @clickReload="clickReload"
+            v-if="isActive"
+          />
         </el-card>
       </el-main>
     </el-container>
@@ -36,14 +44,14 @@ export default {
       DeptPlanDeclarationTopTableCurrent: {},
       isActive: true,
       IsReloadTag: false,
-      TopTableSelections:[]
+      TopTableSelections: []
     };
   },
   methods: {
     getCurrent(data) {
       this.DeptPlanDeclarationTopTableCurrent = data;
     },
-    TopTableSelection(data){
+    TopTableSelection(data) {
       this.TopTableSelections = data;
     },
     reload() {
@@ -52,8 +60,8 @@ export default {
         this.isActive = true;
       });
     },
-    clickReload(data){
-      this.IsReloadTag = data
+    clickReload(data) {
+      this.IsReloadTag = data;
     }
   },
   watch: {
@@ -61,3 +69,22 @@ export default {
   }
 };
 </script>
+
+<style scoped lang="scss">
+.dept-plan-declaration-card :deep(.el-card__body) {
+  padding: 10px;
+}
+
+.dept-plan-declaration-header {
+  padding: 0;
+}
+
+.dept-plan-declaration-main {
+  padding: 4px 0 10px;
+  overflow: visible;
+}
+
+.dept-plan-declaration-page >>> .el-table th .cell {
+  white-space: nowrap;
+}
+</style>

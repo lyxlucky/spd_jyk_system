@@ -13,38 +13,32 @@
           </el-form-item>
         </el-col>
 
-        <el-col
-          style=""
-          v-bind="styleResponsive ? { lg: 3, md: 4 } : { span: 4 }"
-        >
+        <el-col v-bind="styleResponsive ? { lg: 3, md: 4 } : { span: 4 }">
           <el-form-item label="是否定标">
             <el-select
               size="mini"
               v-model="where.status"
-              @change="search()"
               style="width: 110px"
+              @change="search()"
             >
-              <el-option label="全部" value=""></el-option>
-              <el-option label="否" value="0"></el-option>
-              <el-option label="是" value="1"></el-option>
+              <el-option label="全部" value="" />
+              <el-option label="否" value="0" />
+              <el-option label="是" value="1" />
             </el-select>
           </el-form-item>
         </el-col>
 
-        <el-col
-          style=""
-          v-bind="styleResponsive ? { lg: 3, md: 4 } : { span: 4 }"
-        >
+        <el-col v-bind="styleResponsive ? { lg: 3, md: 4 } : { span: 4 }">
           <el-form-item label="是否已读">
             <el-select
               size="mini"
               v-model="where.isShow"
-              @change="search()"
               style="width: 110px"
+              @change="search()"
             >
-              <el-option label="全部" value=""></el-option>
-              <el-option label="已读" value="1"></el-option>
-              <el-option label="未读" value="0"></el-option>
+              <el-option label="全部" value="" />
+              <el-option label="已读" value="1" />
+              <el-option label="未读" value="0" />
             </el-select>
           </el-form-item>
         </el-col>
@@ -56,37 +50,41 @@
               size="mini"
               icon="el-icon-search"
               @click="search"
-              >查询</el-button
             >
-
+              查询
+            </el-button>
             <el-button
               type="success"
               size="mini"
               icon="el-icon-check"
               @click="handleMakeRead"
-              >已读</el-button
             >
+              已读
+            </el-button>
 
             <!-- <el-button
               type="success"
               size="mini"
               icon="el-icon-check"
               @click="sure"
-              >定标</el-button
-            > -->
+            >
+              定标
+            </el-button> -->
 
             <!-- <el-button
               type="success"
               size="mini"
               icon="el-icon-upload"
-              >上传图片</el-button
-            > -->
+            >
+              上传图片
+            </el-button> -->
           </el-form-item>
         </el-col>
       </el-row>
     </el-form>
   </div>
 </template>
+
 <script>
   export default {
     name: 'KsNewBatchReminderTableSearch',
@@ -94,33 +92,31 @@
       const defaultWhere = {
         code: '',
         status: '',
-        isShow: '0',
+        isShow: '0'
       };
       return {
         where: { ...defaultWhere }
       };
     },
-    methods: {
-      search() {
-        this.$emit('search', this.where);
-      },
-      handleMakeRead(){
-        this.$emit('makeRead', this.where);
-      },
-      sure() {
-        this.$emit('sure', this.where);
+    computed: {
+      styleResponsive() {
+        return this.$store.state.theme.styleResponsive;
       }
     },
     mounted() {
       // 组件挂载后主动触发一次搜索，确保默认查询条件生效 需要取消el-table-pro的initLoad
       this.search();
     },
-    computed: {
-      // 是否开启响应式布局
-      styleResponsive() {
-        return this.$store.state.theme.styleResponsive;
+    methods: {
+      search() {
+        this.$emit('search', this.where);
+      },
+      handleMakeRead() {
+        this.$emit('makeRead', this.where);
+      },
+      sure() {
+        this.$emit('sure', this.where);
       }
     }
   };
 </script>
-<style lang=""></style>

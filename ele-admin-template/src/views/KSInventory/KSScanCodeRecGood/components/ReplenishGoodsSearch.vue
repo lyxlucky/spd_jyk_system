@@ -1,55 +1,37 @@
 <!-- 搜索表单 -->
 <template>
-  <div>
+  <div class="spd-panel__body">
     <el-form
-      inline
+      size="mini"
+      :inline="true"
       class="ele-form-search"
       @keyup.enter.native="search"
       @submit.native.prevent
     >
-      <el-form-item>
+      <el-form-item label="补货单号">
         <el-input
-          style="width: 130px"
-          size="mini"
+          style="width: 120px"
           clearable
           v-model="where.stock_out_distribute_number"
-          placeholder="请输入补货单号"
+          placeholder="补货单号"
         />
       </el-form-item>
-      <el-form-item>
+      <el-form-item label="日期">
         <el-date-picker
-          size="mini"
-          style="width: 220px"
+          style="width: 200px"
           v-model="deliveryDateRange"
           type="daterange"
           range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
+          start-placeholder="开始"
+          end-placeholder="结束"
           value-format="yyyy-MM-dd"
           @change="onDeliveryDateChange"
-        >
-        </el-date-picker>
+        />
       </el-form-item>
-      <el-form-item>
-        <el-button
-          size="mini"
-          type="primary"
-          icon="el-icon-search"
-          class="ele-btn-icon"
-          @click="search"
-        >
-          查询
-        </el-button>
-      </el-form-item>
-      <el-form-item>
-        <el-button icon="el-icon-refresh" size="mini" @click="reset">
-          重置
-        </el-button>
-      </el-form-item>
-      <el-form-item>
-        <el-button size="mini" type="primary" @click="openScanDialog">
-          扫码入库
-        </el-button>
+      <el-form-item class="ele-form-actions">
+        <el-button type="primary" icon="el-icon-search" @click="search">查询</el-button>
+        <el-button icon="el-icon-refresh" @click="reset">重置</el-button>
+        <el-button type="primary" @click="openScanDialog">扫码入库</el-button>
       </el-form-item>
     </el-form>
 
@@ -60,10 +42,9 @@
       width="400px"
       @close="closeScanDialog"
     >
-      <el-form :model="scanForm" label-width="80px">
+      <el-form size="mini" :model="scanForm" label-width="80px">
         <el-form-item label="扫码内容">
           <el-input
-            size="mini"
             id="idDistributeNumber"
             clearable
             v-model="DistributeNumber"
@@ -90,8 +71,8 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="closeScanDialog">取消</el-button>
-        <el-button type="primary" @click="confirmScan">确定</el-button>
+        <el-button size="mini" @click="closeScanDialog">取消</el-button>
+        <el-button size="mini" type="primary" @click="confirmScan">确定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -100,33 +81,35 @@
 <script>
   import { DeptReceivingScanOrder } from '@/api/KSInventory/KSInventoryQuery';
   import { getDeptTwoRegion } from '@/api/KSInventory/KSDepartmentalPlan';
+
+  const getDefaultDateRange = () => {
+    const today = new Date();
+    const startDate = new Date(today);
+    startDate.setDate(today.getDate() - 14);
+    const formatDate = (date) => {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    };
+    return [formatDate(startDate), formatDate(today)];
+  };
+
+  const defaultWhere = () => {
+    const defaultDateRange = getDefaultDateRange();
+    return {
+      stock_out_distribute_number: '',
+      delivery_start_date: defaultDateRange[0],
+      delivery_end_date: defaultDateRange[1]
+    };
+  };
+
   export default {
     data() {
-      // 默认表单数据
-      const defaultWhere = {
-        stock_out_distribute_number: '',
-        delivery_start_date: '',
-        delivery_end_date: ''
-      };
-      // 获取默认15天的日期范围
-      const today = new Date();
-      const startDate = new Date(today);
-      startDate.setDate(today.getDate() - 14); // 15天前（包含今天）
-      const formatDate = (date) => {
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0');
-        return `${year}-${month}-${day}`;
-      };
-      const defaultDateRange = [formatDate(startDate), formatDate(today)];
-
+      const defaultDateRange = getDefaultDateRange();
       return {
         // 表单数据
-        where: {
-          ...defaultWhere,
-          delivery_start_date: defaultDateRange[0],
-          delivery_end_date: defaultDateRange[1]
-        },
+        where: defaultWhere(),
         DistributeNumber: null,
         deliveryDateRange: defaultDateRange,
         scanDialogVisible: false,
@@ -161,18 +144,7 @@
       },
       /*  重置 */
       reset() {
-        // 重新计算默认15天日期范围
-        const today = new Date();
-        const startDate = new Date(today);
-        startDate.setDate(today.getDate() - 14);
-        const formatDate = (date) => {
-          const year = date.getFullYear();
-          const month = String(date.getMonth() + 1).padStart(2, '0');
-          const day = String(date.getDate()).padStart(2, '0');
-          return `${year}-${month}-${day}`;
-        };
-        const defaultDateRange = [formatDate(startDate), formatDate(today)];
-
+        const defaultDateRange = getDefaultDateRange();
         this.where = {
           stock_out_distribute_number: '',
           delivery_start_date: defaultDateRange[0],
@@ -280,7 +252,19 @@
   };
 </script>
 <style scoped lang="scss">
-  ::v-deep .el-form-item {
-    margin-bottom: 0;
-  }
+:deep(.el-form-item) {
+  margin-bottom: 0;
+}
+
+.ele-form-actions :deep(.el-form-item__content) {
+  max-width: none !important;
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.ele-form-actions :deep(.el-button) {
+  margin: 0;
+}
 </style>

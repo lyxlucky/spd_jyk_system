@@ -1,6 +1,6 @@
 <template>
-  <div class="ele-body">
-    <el-card shadow="never">
+  <div class="ele-body new-prchase-data-v2-page">
+    <el-card shadow="never" class="new-prchase-data-v2-card">
       <!-- 搜索表单 -->
       <el-form class="form-box" :inline="true">
         <el-form-item label="注册证名称">
@@ -101,20 +101,62 @@
 
       </el-form>
       <!-- 数据表格 -->
-      <ele-pro-table ref="table" class="table-PrchaseDataV2" :columns="columns" :currentPage="page" :pageSize="size" :highlightCurrentRow="true" :datasource="datasource" @current-change="onCurrentChange" @size-change="onSizeChange">
-      </ele-pro-table>
+      <div ref="tableWrap" class="table-wrap">
+        <ele-pro-table
+          ref="table"
+          class="table-PrchaseDataV2"
+          :height="tableHeight"
+          :columns="columns"
+          :currentPage="page"
+          :pageSize="size"
+          :highlightCurrentRow="true"
+          :datasource="datasource"
+          @current-change="onCurrentChange"
+          @size-change="onSizeChange"
+          @done="updateTableHeight"
+        />
+      </div>
     </el-card>
   </div>
 </template>
 
-<style scoped>
-/* .form-box{
-        display: flex;
-        gap: 10px;
-    } */
+<style lang="scss" scoped>
+.new-prchase-data-v2-page {
+  padding: 8px;
+}
+
+.new-prchase-data-v2-card {
+  height: calc(100vh - 112px);
+}
+
+.new-prchase-data-v2-page :deep(.el-card__body) {
+  height: 100%;
+  padding: 12px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.form-box {
+  flex: none;
+  margin-bottom: 8px;
+}
+
+.table-wrap {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.new-prchase-data-v2-page :deep(.ele-pro-table) {
+  height: 100%;
+}
+
 .where-enable {
   width: 5rem;
 }
+
 .el-select-dropdown__item {
   white-space: nowrap;
   overflow: hidden;
@@ -160,6 +202,7 @@ export default {
       //页
       page: 1,
       size: 10,
+      tableHeight: 400,
       //字段列表
       columns: [
         // {
@@ -179,7 +222,7 @@ export default {
         {
           prop: 'PROD_SOURCE_FROM',
           label: '自定义来源',
-          minWidth: 120,
+          minWidth: 140,
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
@@ -193,7 +236,7 @@ export default {
         {
           prop: 'PROD_REGISTRATION_NAME',
           label: '注册证名称',
-          minWidth: 120,
+          minWidth: 140,
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
@@ -273,15 +316,15 @@ export default {
         {
           prop: 'GOODS_QTY',
           label: '已消耗数量',
-          minWidth: 120,
+          minWidth: 150,
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true
         },
         {
           prop: 'COUNT-GOODS_QTY',
-          label: '余可用数量',
-          minWidth: 120,
+          label: '剩余可用数量',
+          minWidth: 150,
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true
@@ -300,7 +343,7 @@ export default {
         {
           prop: 'shProcess',
           label: '时序进度',
-          minWidth: 120,
+          minWidth: 140,
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
@@ -362,7 +405,7 @@ export default {
         {
           prop: 'BH_COUNT',
           label: '临时备货次数',
-          minWidth: 120,
+          minWidth: 160,
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true
@@ -424,8 +467,26 @@ export default {
   created() {
     this.Xm_SELECTclikc();
   },
-  mounted() {},
+  mounted() {
+    this.updateTableHeight();
+    window.addEventListener('resize', this.updateTableHeight);
+  },
+  beforeDestroy() {
+    window.removeEventListener('resize', this.updateTableHeight);
+  },
   methods: {
+    updateTableHeight() {
+      this.$nextTick(() => {
+        const wrap = this.$refs.tableWrap;
+        if (!wrap) return;
+        const toolbar = wrap.querySelector('.ele-table-tool');
+        const pagination = wrap.querySelector('.el-pagination');
+        const reserved =
+          (toolbar?.offsetHeight || 0) + (pagination?.offsetHeight || 46) + 8;
+        this.tableHeight = Math.max(240, wrap.clientHeight - reserved);
+        this.$refs.table?.doLayout?.();
+      });
+    },
     truncateLabel(label) {
       const maxLength = 20; // 最大显示长度
       return label.length > maxLength

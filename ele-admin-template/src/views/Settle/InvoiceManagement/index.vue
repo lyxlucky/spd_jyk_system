@@ -210,7 +210,7 @@
             align: 'center',
 
             showOverflowTooltip: true,
-            minWidth: 80
+            minWidth: 140
           },
           // {
           //   prop: 'PROVINCE_PLATFORM_CODE',
@@ -379,7 +379,7 @@
             label: '是否集采',
             align: 'center',
 
-            width: 80,
+            width: 120,
             showOverflowTooltip: true,
             formatter: (row, column, cellValue) => {
               if (cellValue == 0) {
@@ -442,7 +442,7 @@
             label: '审批状态',
             align: 'center',
 
-            width: 80,
+            width: 120,
             showOverflowTooltip: true,
             formatter: (row, column, cellValue) => {
               if (cellValue == 0) {
@@ -507,7 +507,7 @@
             prop: 'SPD_STATE',
             label: 'EBS发票状态',
             align: 'center',
-            width: 100,
+            width: 140,
             showOverflowTooltip: true,
             formatter: (row, column, cellValue) => {
               if (cellValue == 0) {

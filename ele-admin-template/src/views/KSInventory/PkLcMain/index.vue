@@ -1,193 +1,143 @@
 <template>
-  <div class="ele-body pk-lc-main-page">
-    <!-- 上半部分：主单表格 -->
-    <div class="half-table">
-      <el-card shadow="never">
-        <ele-pro-table
-          ref="mainTable"
-          class="table-main"
-          :columns="mainColumns"
-          :currentPage="mainPage"
-          :pageSize="mainSize"
-          :highlightCurrentRow="true"
-          :datasource="mainDatasource"
-          :row-class-name="mainTableRowClassName"
-          @current-change="onMainCurrentChange"
-          @size-change="onMainSizeChange"
-          height="30vh"
-          full-height="calc(100vh - 120px)"
-        >
-          <template v-slot:stateTag="{ row }">
-            <el-tag :type="getStateTagType(row.STATE)" size="small">
-              {{ getStateText(row.STATE) }}
-            </el-tag>
-          </template>
-          <template v-slot:mainAction="{ row }">
-            <el-button
-              size="mini"
-              type="info"
-              :disabled="row.STATE !== 0 && row.STATE !== -1"
-              @click="editMainItem(row)"
-              >编辑</el-button
-            >
-            <el-button
-              size="mini"
-              type="primary"
-              :disabled="row.STATE !== 0 && row.STATE !== -1"
-              @click="submitMainItem(row)"
-              style="margin-left: 5px"
-              >提交</el-button
-            >
-            <el-button
-              v-if="hasApprovePermission"
-              size="mini"
-              type="warning"
-              :disabled="row.STATE !== 1"
-              @click="openApproveDialog(row)"
-              style="margin-left: 5px"
-              >审批</el-button
-            >
-            <el-popconfirm
-              title="确定删除该申请单？"
-              @confirm="deleteMainItem(row)"
-            >
-              <template v-slot:reference>
+  <div class="ele-body spd-page pk-lc-main-page">
+    <el-card shadow="never" class="pk-lc-main-card">
+      <div class="spd-panel spd-panel--search">
+        <div class="spd-panel__head">查询条件</div>
+        <div class="spd-panel__body">
+          <el-form
+            class="form-box"
+            size="mini"
+            :inline="true"
+            @keyup.enter.native="reloadMain"
+            @submit.native.prevent
+          >
+            <el-form-item label="申请单号">
+              <el-input
+                v-model="mainWhere.id"
+                placeholder="申请单号"
+                clearable
+                style="width: 120px"
+              />
+            </el-form-item>
+            <el-form-item label="二级科室">
+              <el-select
+                v-model="mainWhere.deptTwoCode"
+                placeholder="全部"
+                clearable
+                filterable
+                style="width: 140px"
+              >
+                <el-option
+                  v-for="item in deptTwoOptions"
+                  :key="item.DEPT_TWO_CODE"
+                  :label="item.DEPT_TWO_NAME"
+                  :value="item.DEPT_TWO_CODE"
+                />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="物料">
+              <el-input
+                v-model="mainWhere.searchName"
+                placeholder="编码/名称/注册证"
+                clearable
+                style="width: 150px"
+              />
+            </el-form-item>
+            <el-form-item label="状态">
+              <el-select
+                v-model="mainWhere.state"
+                placeholder="全部"
+                clearable
+                style="width: 110px"
+              >
+                <el-option label="新增" :value="0" />
+                <el-option label="已提交" :value="1" />
+                <el-option label="已审批" :value="2" />
+                <el-option label="审批不通过" :value="-1" />
+              </el-select>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" icon="el-icon-search" @click="reloadMain">查询</el-button>
+              <el-button type="success" icon="el-icon-plus" @click="openAddMainDialog">新增主单</el-button>
+            </el-form-item>
+          </el-form>
+        </div>
+      </div>
+
+      <div class="spd-panel spd-table-panel">
+        <div class="spd-panel__head">申请主单列表</div>
+        <div class="spd-table-panel__wrap">
+          <ele-pro-table
+            ref="mainTable"
+            class="data-table table-main"
+            size="mini"
+            border
+            stripe
+            :toolbar="false"
+            :header-overflow-hidden="false"
+            :columns="mainColumns"
+            :currentPage="mainPage"
+            :pageSize="mainSize"
+            :highlightCurrentRow="true"
+            :datasource="mainDatasource"
+            :row-class-name="mainTableRowClassName"
+            :height="mainTableHeight"
+            cache-key="PkLcMainTable"
+            @current-change="onMainCurrentChange"
+            @size-change="onMainSizeChange"
+          >
+            <template v-slot:stateTag="{ row }">
+              <el-tag :type="getStateTagType(row.STATE)" size="mini">
+                {{ getStateText(row.STATE) }}
+              </el-tag>
+            </template>
+            <template v-slot:mainAction="{ row }">
+              <el-button
+                size="mini"
+                type="text"
+                :disabled="row.STATE !== 0 && row.STATE !== -1"
+                @click="editMainItem(row)"
+              >编辑</el-button>
+              <el-button
+                size="mini"
+                type="text"
+                :disabled="row.STATE !== 0 && row.STATE !== -1"
+                @click="submitMainItem(row)"
+              >提交</el-button>
+              <el-button
+                v-if="hasApprovePermission"
+                size="mini"
+                type="text"
+                :disabled="row.STATE !== 1"
+                @click="openApproveDialog(row)"
+              >审批</el-button>
+              <el-popconfirm title="确定删除该申请单？" @confirm="deleteMainItem(row)">
                 <el-button
+                  slot="reference"
                   size="mini"
-                  type="danger"
-                  style="margin-left: 5px"
+                  type="text"
+                  class="danger-text"
                   :disabled="row.STATE !== 0 && row.STATE !== -1"
                   @click.stop
-                  >删除</el-button
-                >
-              </template>
-            </el-popconfirm>
-          </template>
-          <template v-slot:toolbar>
-            <el-form class="form-box" inline size="mini">
-              <el-form-item>
-                <el-input
-                  v-model="mainWhere.id"
-                  placeholder="请输入申请单号"
-                  clearable
-                  @keyup.enter.native="reloadMain"
-                />
-              </el-form-item>
-              <el-form-item>
-                <el-select
-                  v-model="mainWhere.deptTwoCode"
-                  placeholder="请选择二级科室"
-                  clearable
-                  filterable
-                  style="width: 180px"
-                >
-                  <el-option
-                    v-for="item in deptTwoOptions"
-                    :key="item.DEPT_TWO_CODE"
-                    :label="item.DEPT_TWO_NAME"
-                    :value="item.DEPT_TWO_CODE"
-                  />
-                </el-select>
-              </el-form-item>
-              <el-form-item>
-                <el-input
-                  v-model="mainWhere.searchName"
-                  placeholder="物料编码/物料名称/注册证"
-                  clearable
-                  @keyup.enter.native="reloadMain"
-                />
-              </el-form-item>
-              <el-form-item>
-                <el-select
-                  v-model="mainWhere.state"
-                  placeholder="状态筛选"
-                  clearable
-                  style="width: 120px"
-                >
-                  <el-option label="新增" :value="0" />
-                  <el-option label="已提交" :value="1" />
-                  <el-option label="已审批" :value="2" />
-                  <el-option label="审批不通过" :value="-1" />
-                </el-select>
-              </el-form-item>
-              <el-form-item>
-                <el-button
-                  type="primary"
-                  icon="el-icon-search"
-                  @click="reloadMain"
-                  >搜索</el-button
-                >
-              </el-form-item>
-              <el-form-item>
-                <el-button
-                  type="success"
-                  icon="el-icon-plus"
-                  @click="openAddMainDialog"
-                  >新增主单</el-button
-                >
-              </el-form-item>
-            </el-form>
-          </template>
-        </ele-pro-table>
-      </el-card>
-    </div>
+                >删除</el-button>
+              </el-popconfirm>
+            </template>
+          </ele-pro-table>
+        </div>
+      </div>
 
-    <!-- 下半部分：明细表格 -->
-    <div class="half-table">
-      <el-card shadow="never">
-        <ele-pro-table
-          ref="dtlTable"
-          :columns="dtlColumns"
-          :datasource="dtlDatasource"
-          :currentPage="dtlPage"
-          :pageSize="dtlSize"
-          @size-change="onDtlSizeChange"
-          :empty-text="selectedMain ? '暂无明细记录' : '请选择主单'"
-          height="30vh"
-          full-height="calc(100vh - 120px)"
-        >
-          <template v-slot:lcTimesLink="{ row }">
-            <el-link
-              v-if="row.LC_TIMES > 0"
-              type="primary"
-              :underline="true"
-              @click="openLcDetailDialog(row)"
-            >{{ row.LC_TIMES }}</el-link>
-            <span v-else>{{ row.LC_TIMES || 0 }}</span>
-          </template>
-          <template v-slot:dtlAction="{ row }">
-            <el-button
-              size="mini"
-              type="primary"
-              :disabled="!canEditDtl"
-              @click="openEditDtlDialog(row)"
-              style="margin-right: 5px"
-              >编辑</el-button
-            >
-            <el-popconfirm
-              title="确定删除该明细？"
-              @confirm="deleteDtlItem(row)"
-            >
-              <template v-slot:reference>
-                <el-button
-                  size="mini"
-                  type="danger"
-                  :disabled="!canEditDtl"
-                  @click.stop
-                  >删除</el-button
-                >
-              </template>
-            </el-popconfirm>
-          </template>
-          <template v-slot:toolbar>
+      <div class="spd-panel spd-table-panel">
+        <div class="spd-panel__head spd-panel__head--split">
+          <span>申请明细列表</span>
+          <span class="pk-lc-detail-head">
+            <span v-if="selectedMain" class="spd-panel__head-meta">当前主单：{{ selectedMain.ID }}</span>
             <el-button
               size="mini"
               type="success"
               icon="el-icon-plus"
               :disabled="!canEditDtl"
               @click="openProductSelectDialog"
-              >新增明细</el-button
-            >
+            >新增明细</el-button>
             <el-button
               size="mini"
               type="primary"
@@ -195,12 +145,58 @@
               :disabled="!selectedMain"
               :loading="printLoading"
               @click="handlePrint"
-              >打印</el-button
-            >
-          </template>
-        </ele-pro-table>
-      </el-card>
-    </div>
+            >打印</el-button>
+          </span>
+        </div>
+        <div class="spd-table-panel__wrap">
+          <ele-pro-table
+            ref="dtlTable"
+            class="data-table"
+            size="mini"
+            border
+            stripe
+            :toolbar="false"
+            :header-overflow-hidden="false"
+            :columns="dtlColumns"
+            :datasource="dtlDatasource"
+            :currentPage="dtlPage"
+            :pageSize="dtlSize"
+            :height="dtlTableHeight"
+            :empty-text="selectedMain ? '暂无明细记录' : '请选择主单'"
+            cache-key="PkLcDtlTable"
+            @size-change="onDtlSizeChange"
+          >
+            <template v-slot:lcTimesLink="{ row }">
+              <el-link
+                v-if="row.LC_TIMES > 0"
+                type="primary"
+                :underline="true"
+                @click="openLcDetailDialog(row)"
+              >{{ row.LC_TIMES }}</el-link>
+              <span v-else>{{ row.LC_TIMES || 0 }}</span>
+            </template>
+            <template v-slot:dtlAction="{ row }">
+              <el-button
+                size="mini"
+                type="text"
+                :disabled="!canEditDtl"
+                @click="openEditDtlDialog(row)"
+              >编辑</el-button>
+              <el-popconfirm title="确定删除该明细？" @confirm="deleteDtlItem(row)">
+                <el-button
+                  slot="reference"
+                  size="mini"
+                  type="text"
+                  class="danger-text"
+                  :disabled="!canEditDtl"
+                  @click.stop
+                >删除</el-button>
+              </el-popconfirm>
+            </template>
+          </ele-pro-table>
+        </div>
+      </div>
+    </el-card>
 
     <!-- 新增/编辑主单弹窗 -->
     <el-dialog
@@ -215,6 +211,7 @@
         :rules="mainFormRules"
         ref="mainForm"
         label-width="210px"
+        size="mini"
       >
         <el-form-item
           label="产品适用范围及应用手术名称"
@@ -292,13 +289,13 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="closeMainDialog">取 消</el-button>
+        <el-button size="mini" @click="closeMainDialog">取消</el-button>
         <el-button
           type="primary"
+          size="mini"
           @click="submitMainForm"
           :loading="mainFormLoading"
-          >确 定</el-button
-        >
+        >确定</el-button>
       </div>
     </el-dialog>
 
@@ -310,7 +307,7 @@
       @close="closeApproveDialog"
       :close-on-click-modal="false"
     >
-      <el-form :model="approveFormData" ref="approveForm" label-width="100px">
+      <el-form :model="approveFormData" ref="approveForm" label-width="100px" size="mini">
         <el-form-item label="审批意见">
           <el-input
             v-model="approveFormData.spRemark"
@@ -324,19 +321,19 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="closeApproveDialog">取 消</el-button>
+        <el-button size="mini" @click="closeApproveDialog">取消</el-button>
         <el-button
           type="danger"
+          size="mini"
           @click="handleApprove(false)"
           :loading="approveLoading"
-          >不通过</el-button
-        >
+        >不通过</el-button>
         <el-button
           type="success"
+          size="mini"
           @click="handleApprove(true)"
           :loading="approveLoading"
-          >通 过</el-button
-        >
+        >通过</el-button>
       </div>
     </el-dialog>
 
@@ -350,16 +347,47 @@
       @close="closeProductSelectDialog"
     >
       <div class="product-select-content">
+        <div class="spd-panel spd-panel--search">
+          <div class="spd-panel__body">
+            <el-form size="mini" :inline="true" @keyup.enter.native="reloadProductTable" @submit.native.prevent>
+              <el-form-item label="关键字">
+                <el-input
+                  v-model="productSearchKeyword"
+                  placeholder="名称/编码/规格/企业"
+                  clearable
+                  style="width: 180px"
+                />
+              </el-form-item>
+              <el-form-item label="注册证号">
+                <el-input
+                  v-model="productSearchKeyword2"
+                  placeholder="注册证号"
+                  clearable
+                  style="width: 150px"
+                />
+              </el-form-item>
+              <el-form-item>
+                <el-button type="primary" icon="el-icon-search" @click="reloadProductTable">查询</el-button>
+              </el-form-item>
+            </el-form>
+          </div>
+        </div>
         <ele-pro-table
           ref="productTable"
+          class="data-table"
+          size="mini"
+          border
+          stripe
+          :toolbar="false"
+          :header-overflow-hidden="false"
           height="50vh"
-          :stripe="true"
           :rowClickChecked="true"
           :rowClickCheckedIntelligent="false"
           :pageSize="productPageSize"
           :columns="productColumns"
           :datasource="productDatasource"
           :selection.sync="productSelection"
+          cache-key="PkLcProductTable"
           @selection-change="onProductSelectionChange"
         >
           <template v-slot:planLcTimesInput="{ row }">
@@ -382,43 +410,16 @@
               disabled
             />
           </template>
-          <template v-slot:toolbar>
-            <el-form class="ele-form-search" size="mini" inline>
-              <el-form-item>
-                <el-input
-                  style="width: 200px"
-                  v-model="productSearchKeyword"
-                  placeholder="请输入物料名称/物料编码/型号规格/生产企业搜索"
-                  clearable
-                  @keyup.enter.native="reloadProductTable"
-                />
-              </el-form-item>
-              <el-form-item>
-      <el-input
-        style="width: 200px"
-        v-model="productSearchKeyword2"
-        placeholder="请输入注册证号"
-        clearable
-        @keyup.enter.native="reloadProductTable"
-      />
-    </el-form-item>
-              <el-form-item>
-                <el-button type="primary" @click="reloadProductTable"
-                  >查询</el-button
-                >
-              </el-form-item>
-            </el-form>
-          </template>
         </ele-pro-table>
       </div>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="closeProductSelectDialog">取 消</el-button>
+        <el-button size="mini" @click="closeProductSelectDialog">取消</el-button>
         <el-button
           type="primary"
+          size="mini"
           @click="confirmAddProducts"
           :loading="addProductsLoading"
-          >添加物料 ({{ productSelection.length }})</el-button
-        >
+        >添加物料 ({{ productSelection.length }})</el-button>
       </div>
     </el-dialog>
 
@@ -435,6 +436,7 @@
         :rules="editDtlFormRules"
         ref="editDtlForm"
         label-width="120px"
+        size="mini"
       >
         <el-form-item label="物料名称">
           <span>{{ editDtlFormData.VARIETIE_NAME }}</span>
@@ -447,6 +449,7 @@
             v-model="editDtlFormData.PLAN_LC_TIMES"
             :min="1"
             :max="99"
+            size="mini"
             controls-position="right"
             :disabled="true"
             style="width: 100%"
@@ -457,19 +460,20 @@
             v-model="editDtlFormData.SINGLE_LC_NUMS"
             :min="1"
             :max="99"
+            size="mini"
             controls-position="right"
             style="width: 100%"
           />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="closeEditDtlDialog">取 消</el-button>
+        <el-button size="mini" @click="closeEditDtlDialog">取消</el-button>
         <el-button
           type="primary"
+          size="mini"
           @click="submitEditDtlForm"
           :loading="editDtlLoading"
-          >确 定</el-button
-        >
+        >确定</el-button>
       </div>
     </el-dialog>
 
@@ -482,7 +486,7 @@
       @close="closeLcDetailDialog"
     >
       <div v-if="lcDetailCurrentRow" style="margin-bottom: 15px;">
-        <el-descriptions :column="2" border size="small">
+        <el-descriptions :column="2" border size="mini">
           <el-descriptions-item label="物料名称">{{ lcDetailCurrentRow.VARIETIE_NAME }}</el-descriptions-item>
           <el-descriptions-item label="规格型号">{{ lcDetailCurrentRow.SPECIFICATION_OR_TYPE }}</el-descriptions-item>
         </el-descriptions>
@@ -491,7 +495,7 @@
         :data="lcDetailList"
         v-loading="lcDetailLoading"
         border
-        size="small"
+        size="mini"
         max-height="400px"
       >
         <el-table-column type="index" label="序号" width="60" align="center" />
@@ -499,14 +503,14 @@
         <el-table-column prop="QTY" label="数量" width="100" align="center" />
         <el-table-column prop="ORDER_TYPE" label="订单类型" width="120" align="center">
           <template slot-scope="{ row }">
-            <el-tag :type="getOrderTypeTagType(row.ORDER_TYPE)" size="small">
+            <el-tag :type="getOrderTypeTagType(row.ORDER_TYPE)" size="mini">
               {{ getOrderTypeText(row.ORDER_TYPE) }}
             </el-tag>
           </template>
         </el-table-column>
       </el-table>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="closeLcDetailDialog">关 闭</el-button>
+        <el-button size="mini" @click="closeLcDetailDialog">关闭</el-button>
       </div>
     </el-dialog>
 
@@ -550,6 +554,8 @@
         // ============ 主单相关 ============
         mainPage: 1,
         mainSize: 10,
+        mainTableHeight: 'calc((100vh - 400px) / 2)',
+        dtlTableHeight: 'calc((100vh - 400px) / 2)',
         mainWhere: {
           id: null,
           deptTwoCode: null,
@@ -609,7 +615,7 @@
           {
             prop: 'SURGICAL_PRO_NAME',
             label: '产品适用范围及应用手术名称',
-            minWidth: 220,
+            minWidth: 300,
             align: 'center',
             showOverflowTooltip: true
           },
@@ -672,10 +678,10 @@
           {
             columnKey: 'action',
             label: '操作',
-            width: 280,
+            width: 200,
             align: 'center',
             slot: 'mainAction',
-            fixed: 'right'
+            className: 'action-col'
           }
         ],
         selectedMain: null,
@@ -838,10 +844,10 @@
           {
             columnKey: 'action',
             label: '操作',
-            width: 180,
+            width: 110,
             align: 'center',
             slot: 'dtlAction',
-            fixed: 'right'
+            className: 'action-col'
           }
         ],
         // ============ 编辑明细弹窗相关 ============
@@ -1484,19 +1490,50 @@
 </script>
 
 <style scoped lang="scss">
-  .pk-lc-main-page {
-    .half-table {
-      margin-bottom: 20px;
-    }
+.pk-lc-main-card :deep(.el-card__body) {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
 
-    ::v-deep .row-reject {
-      background: #fef0f0 !important;
-      color: #f56c6c !important;
-    }
+.pk-lc-detail-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: normal;
+}
 
-    ::v-deep .row-approved {
-      background: #f0f9eb !important;
-      color: #67c23a !important;
-    }
+.pk-lc-main-page >>> .el-table th .cell {
+  white-space: nowrap;
+}
+
+.pk-lc-main-page >>> .action-col .cell {
+  line-height: 23px;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.pk-lc-main-page >>> .danger-text {
+  color: #f56c6c;
+}
+
+.pk-lc-main-page >>> .danger-text.is-disabled {
+  color: #fab6b6;
+}
+
+.pk-lc-main-page {
+  ::v-deep .row-reject {
+    background: #fef0f0 !important;
+    color: #f56c6c !important;
   }
+
+  ::v-deep .row-approved {
+    background: #f0f9eb !important;
+    color: #67c23a !important;
+  }
+}
+
+.product-select-content .spd-panel--search .spd-panel__body {
+  padding-bottom: 2px;
+}
 </style>

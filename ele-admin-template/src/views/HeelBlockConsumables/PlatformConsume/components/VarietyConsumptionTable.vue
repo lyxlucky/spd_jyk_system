@@ -3,7 +3,7 @@
     <!-- <AdvanceReceiptNumberSearch @search="reload" :rowData="current" /> -->
     <!-- 数据表格 -->
     <ele-pro-table
-      height="300"
+      height="calc(100vh - 240px)"
       highlight-current-row
       :rowClickCheckedIntelligent="false"
       @current-change="onCurrentChange"
@@ -89,7 +89,7 @@
             // sortable: 'custom',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 110
+            minWidth: 160
           },
           {
             prop: 'Varietie_Name',
@@ -103,7 +103,7 @@
             label: '注册证号',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 70
+            minWidth: 120
           },
           {
             prop: 'PROD_REGISTRATION_NAME',
@@ -145,7 +145,7 @@
             label: '已关联UDI数量',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 80
+            minWidth: 160
           },
           {
             prop: 'Dept_Two_Name',

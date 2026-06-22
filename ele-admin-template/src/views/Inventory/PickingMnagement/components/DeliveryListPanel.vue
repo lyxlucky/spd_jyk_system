@@ -228,10 +228,10 @@ export default {
         {
           prop: 'stock_out_distribute_number',
           label: '补货单号',
-          minWidth: 110,
+          minWidth: 120,
           sortable: 'custom'
         },
-        { prop: 'dept_two_name', label: '配送科室', minWidth: 100, sortable: 'custom' }
+        { prop: 'dept_two_name', label: '配送科室', minWidth: 120, sortable: 'custom' }
       ];
       if (!this.hp.isLhLike) {
         base.push({ prop: 'REGION_NAME', label: '库区', width: 80, sortable: 'custom' });
@@ -253,7 +253,7 @@ export default {
         {
           prop: 'replenish_state',
           label: '补货状态',
-          width: 90,
+          width: 120,
           sortable: 'custom',
           formatter: (row) => formatReplenishState(row.replenish_state)
         }
@@ -262,7 +262,7 @@ export default {
         base.push({
           prop: 'Send_Herp_State',
           label: '医商云发送状态',
-          width: 110,
+          width: 160,
           sortable: 'custom',
           formatter: (row) => {
             if (String(row.Send_Herp_State) === '0') return '未发送';
@@ -271,9 +271,9 @@ export default {
           }
         });
       } else {
-        base.push({ prop: 'CALL_TIMES', label: '智能柜上架次数', width: 110 });
+        base.push({ prop: 'CALL_TIMES', label: '智能柜上架次数', width: 160 });
       }
-      base.push({ prop: 'Print_Count', label: '打印次数', width: 80 });
+      base.push({ prop: 'Print_Count', label: '打印次数', width: 120 });
       return base;
     }
   },

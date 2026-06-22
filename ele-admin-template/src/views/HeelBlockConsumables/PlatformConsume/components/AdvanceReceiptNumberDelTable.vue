@@ -168,21 +168,21 @@
             label: '品种(材料)编码',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 130
+            minWidth: 160
           },
           {
             prop: 'Varietie_Name',
             label: '品种全称',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 80
+            minWidth: 120
           },
           {
             prop: 'UDI_TOP',
             label: 'UDI_TOP',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 70
+            minWidth: 120
           },
           {
             prop: 'APPROVAL_NUMBER',
@@ -231,7 +231,7 @@
             label: '预送数量',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 70
+            minWidth: 120
           },
           {
             prop: 'Netreceipts',

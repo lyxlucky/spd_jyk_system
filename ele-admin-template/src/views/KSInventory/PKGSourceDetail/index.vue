@@ -4,7 +4,7 @@
       <user-search ref="search" @search="reload" />
       <ele-pro-table
         ref="table"
-        :height="395"
+        height="calc(100vh - 240px)"
         :page-size="pageSize"
         :page-sizes="pageSizes"
         :columns="columns"
@@ -77,7 +77,7 @@ export default {
           prop: 'Name',
           label: '仓库名称',
           align: 'left',
-          width: 80,
+          width: 120,
           showOverflowTooltip: true
         },
         {
@@ -85,7 +85,7 @@ export default {
           label: '品种编码',
           sortable: 'custom',
           align: 'left',
-          width: 100,
+          width: 120,
           showOverflowTooltip: true
         },
         {
@@ -93,7 +93,7 @@ export default {
           label: '计费编码',
           sortable: 'custom',
           align: 'left',
-          width: 100,
+          width: 120,
           showOverflowTooltip: true
         },
         {
@@ -114,7 +114,7 @@ export default {
           prop: 'Unit',
           label: '单位',
           align: 'center',
-          width: 45,
+          width: 65,
           showOverflowTooltip: true
         },
         {
@@ -136,7 +136,7 @@ export default {
           label: '生产批号',
           sortable: 'custom',
           align: 'left',
-          width: 80,
+          width: 120,
           showOverflowTooltip: true
         },
         {
@@ -145,14 +145,14 @@ export default {
           label: '有效到期',
           sortable: 'custom',
           align: 'left',
-          width: 80,
+          width: 120,
           slot: 'batchValidity'
         },
         {
           prop: 'Coefficient',
           label: '系数',
           align: 'center',
-          width: 45
+          width: 65
         },
         {
           prop: 'Def_No_Pkg_Code',

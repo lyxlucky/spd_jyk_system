@@ -1,103 +1,115 @@
 <template>
   <div class="hedge-failure">
-    <div class="pane-title">已计费但对冲失败的定数包列表</div>
-    <el-form size="small" inline class="toolbar" @submit.native.prevent>
-      <el-form-item>
-        <el-input
-          v-model="keyword"
-          clearable
-          placeholder="品种全称、定数码、计费编码模糊搜索"
-          style="width: 280px"
-          @keyup.enter.native="load(1)"
-        />
-      </el-form-item>
-      <el-form-item>
-        <el-select v-model="hedgeType" style="width: 110px" @change="load(1)">
-          <el-option label="全部" :value="-1" />
-          <el-option label="对冲失败" :value="2" />
-          <el-option label="重复扫码" :value="3" />
-          <el-option label="退费" :value="5" />
-          <el-option label="异常使用数量" :value="4" />
-          <el-option label="未对冲" :value="0" />
-          <el-option label="已对冲" :value="1" />
-        </el-select>
-      </el-form-item>
-      <el-form-item>
-        <el-select v-model="isDelete" style="width: 100px" @change="load(1)">
-          <el-option label="未剔除" value="1" />
-          <el-option label="全部" value="-1" />
-          <el-option label="已剔除" value="0" />
-        </el-select>
-      </el-form-item>
-      <el-form-item>
-        <el-select v-model="isHaveCharingCode" style="width: 130px" @change="load(1)">
-          <el-option label="计费编码已对码" value="1" />
-          <el-option label="全部" value="" />
-          <el-option label="计费编码未对码" value="0" />
-        </el-select>
-      </el-form-item>
-      <el-form-item>
-        <el-select v-model="defPkgFilter" style="width: 120px" @change="load(1)">
-          <el-option label="定数码-全部" value="" />
-          <el-option label="定数码-空" value="0" />
-          <el-option label="不为空" value="1" />
-        </el-select>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" icon="el-icon-search" @click="load(1)">查询</el-button>
-      </el-form-item>
-      <el-form-item class="actions">
-        <el-button type="primary" plain :loading="exporting" @click="exportExcel">导出</el-button>
-        <el-button type="primary" @click="onRestart">重新对冲</el-button>
-        <el-button type="primary" @click="onDeptBorrow">定数包补暂借</el-button>
-        <el-button v-if="canEditChargingCode" type="primary" @click="openEditCode">修改计费编码</el-button>
-        <el-button type="warning" plain @click="onRestore">取消剔除</el-button>
-        <el-button type="danger" plain @click="onDelete">剔除</el-button>
-        <el-button type="warning" :disabled="!canRefuse" @click="onRefuse">确认退费</el-button>
-        <el-button type="primary" @click="openReplace">替换定数码</el-button>
-        <el-button type="primary" @click="openReplenish">回补定数码</el-button>
-      </el-form-item>
-    </el-form>
+    <div class="spd-panel spd-panel--search">
+      <div class="spd-panel__head">已计费但对冲失败的定数包列表</div>
+      <div class="spd-panel__body">
+        <el-form
+          size="mini"
+          :inline="true"
+          label-width="72px"
+          class="ele-form-search toolbar"
+          @submit.native.prevent
+        >
+          <el-form-item label="关键词">
+            <el-input
+              v-model="keyword"
+              clearable
+              placeholder="品种全称、定数码、计费编码模糊搜索"
+              style="width: 280px"
+              @keyup.enter.native="load(1)"
+            />
+          </el-form-item>
+          <el-form-item label="对冲类型">
+            <el-select v-model="hedgeType" style="width: 110px" @change="load(1)">
+              <el-option label="全部" :value="-1" />
+              <el-option label="对冲失败" :value="2" />
+              <el-option label="重复扫码" :value="3" />
+              <el-option label="退费" :value="5" />
+              <el-option label="异常使用数量" :value="4" />
+              <el-option label="未对冲" :value="0" />
+              <el-option label="已对冲" :value="1" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="剔除">
+            <el-select v-model="isDelete" style="width: 100px" @change="load(1)">
+              <el-option label="未剔除" value="1" />
+              <el-option label="全部" value="-1" />
+              <el-option label="已剔除" value="0" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="对码">
+            <el-select v-model="isHaveCharingCode" style="width: 130px" @change="load(1)">
+              <el-option label="计费编码已对码" value="1" />
+              <el-option label="全部" value="" />
+              <el-option label="计费编码未对码" value="0" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="定数码">
+            <el-select v-model="defPkgFilter" style="width: 120px" @change="load(1)">
+              <el-option label="定数码-全部" value="" />
+              <el-option label="定数码-空" value="0" />
+              <el-option label="不为空" value="1" />
+            </el-select>
+          </el-form-item>
+          <el-form-item class="ele-form-actions" label-width="0">
+            <el-button type="primary" icon="el-icon-search" @click="load(1)">查询</el-button>
+            <el-button type="primary" plain :loading="exporting" icon="el-icon-download" @click="exportExcel">
+              导出
+            </el-button>
+            <el-button type="primary" @click="onRestart">重新对冲</el-button>
+            <el-button type="primary" @click="onDeptBorrow">定数包补暂借</el-button>
+            <el-button v-if="canEditChargingCode" type="primary" @click="openEditCode">修改计费编码</el-button>
+            <el-button type="warning" plain @click="onRestore">取消剔除</el-button>
+            <el-button type="danger" plain @click="onDelete">剔除</el-button>
+            <el-button type="warning" :disabled="!canRefuse" @click="onRefuse">确认退费</el-button>
+            <el-button type="primary" @click="openReplace">替换定数码</el-button>
+            <el-button type="primary" @click="openReplenish">回补定数码</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
+    </div>
 
-    <div class="table-shell">
-      <el-table
-        ref="table"
-        v-loading="loading"
-        :data="rows"
-        border
-        stripe
-        size="small"
-        height="100%"
-        highlight-current-row
-        @selection-change="(s) => (selected = s)"
-        @current-change="onRowSelect"
-        @sort-change="onSort"
-      >
-        <el-table-column type="selection" width="45" fixed="left" />
-        <el-table-column prop="His_Varietie_Name" label="HIS品种全称" min-width="150" sortable="custom" show-overflow-tooltip />
-        <el-table-column prop="Def_No_Pkg_Code" label="定数码" width="150" sortable="custom" class-name="col-highlight" show-overflow-tooltip />
-        <el-table-column prop="Charging_Code" label="计费编码" width="90" sortable="custom" class-name="col-highlight" />
-        <el-table-column prop="Operation_Number" label="手术编号" width="85" sortable="custom" />
-        <el-table-column prop="Hospitalization_Number" label="住院号" width="85" sortable="custom" />
-        <el-table-column prop="Patient_Number" label="病患号" width="85" sortable="custom" />
-        <el-table-column prop="Opeartion_Charging_Time" label="手术计费时间" width="150" sortable="custom" />
-        <el-table-column prop="Used_Qty" label="使用数量" width="85" align="center" sortable="custom" />
-        <el-table-column prop="Patient_Dept" label="病人科室" width="85" sortable="custom" />
-        <el-table-column prop="Charging_Dept_Name" label="计费科室名称" width="120" sortable="custom" show-overflow-tooltip />
-        <el-table-column prop="DEF_DEPT" label="定数码所在科室" width="110" sortable="custom" show-overflow-tooltip />
-        <el-table-column prop="Integrate_Time" label="系统对接时间" width="150" sortable="custom" />
-        <el-table-column label="是否对冲" width="90" sortable="custom" prop="Is_Hedge">
-          <template slot-scope="{ row }">{{ fmtIsHedge(row.Is_Hedge) }}</template>
-        </el-table-column>
-        <el-table-column label="剔除状态" width="85" sortable="custom" prop="IS_DELETE">
-          <template slot-scope="{ row }">{{ fmtIsDelete(row.IS_DELETE) }}</template>
-        </el-table-column>
-        <el-table-column prop="Reason" label="原因" min-width="120" sortable="custom" show-overflow-tooltip />
-        <el-table-column label="完成标志" width="85" sortable="custom" prop="Is_Complete">
-          <template slot-scope="{ row }">{{ fmtIsComplete(row.Is_Complete) }}</template>
-        </el-table-column>
-        <el-table-column prop="Id" label="唯一标识" min-width="80" sortable="custom" show-overflow-tooltip />
-      </el-table>
+    <div class="spd-panel spd-table-panel">
+      <div class="spd-table-panel__wrap table-shell">
+        <el-table
+          ref="table"
+          v-loading="loading"
+          :data="rows"
+          border
+          stripe
+          size="mini"
+          height="100%"
+          highlight-current-row
+          @selection-change="(s) => (selected = s)"
+          @current-change="onRowSelect"
+          @sort-change="onSort"
+        >
+          <el-table-column type="selection" width="45" fixed="left" />
+          <el-table-column prop="His_Varietie_Name" label="HIS品种全称" min-width="150" sortable="custom" show-overflow-tooltip />
+          <el-table-column prop="Def_No_Pkg_Code" label="定数码" width="150" sortable="custom" class-name="col-highlight" show-overflow-tooltip />
+          <el-table-column prop="Charging_Code" label="计费编码" width="120" sortable="custom" class-name="col-highlight" />
+          <el-table-column prop="Operation_Number" label="手术编号" width="120" sortable="custom" />
+          <el-table-column prop="Hospitalization_Number" label="住院号" width="100" sortable="custom" />
+          <el-table-column prop="Patient_Number" label="病患号" width="100" sortable="custom" />
+          <el-table-column prop="Opeartion_Charging_Time" label="手术计费时间" width="180" sortable="custom" />
+          <el-table-column prop="Used_Qty" label="使用数量" width="100" align="center" sortable="custom" />
+          <el-table-column prop="Patient_Dept" label="病人科室" width="100" sortable="custom" />
+          <el-table-column prop="Charging_Dept_Name" label="计费科室名称" width="160" sortable="custom" show-overflow-tooltip />
+          <el-table-column prop="DEF_DEPT" label="定数码所在科室" width="180" sortable="custom" show-overflow-tooltip />
+          <el-table-column prop="Integrate_Time" label="系统对接时间" width="180" sortable="custom" />
+          <el-table-column label="是否对冲" width="120" sortable="custom" prop="Is_Hedge">
+            <template slot-scope="{ row }">{{ fmtIsHedge(row.Is_Hedge) }}</template>
+          </el-table-column>
+          <el-table-column label="剔除状态" width="120" sortable="custom" prop="IS_DELETE">
+            <template slot-scope="{ row }">{{ fmtIsDelete(row.IS_DELETE) }}</template>
+          </el-table-column>
+          <el-table-column prop="Reason" label="原因" min-width="120" sortable="custom" show-overflow-tooltip />
+          <el-table-column label="完成标志" width="120" sortable="custom" prop="Is_Complete">
+            <template slot-scope="{ row }">{{ fmtIsComplete(row.Is_Complete) }}</template>
+          </el-table-column>
+          <el-table-column prop="Id" label="唯一标识" min-width="120" sortable="custom" show-overflow-tooltip />
+        </el-table>
+      </div>
     </div>
     <el-pagination
       class="pager"
@@ -116,7 +128,7 @@
     <ReplenishPkgDialog :visible.sync="replenishVisible" :record="currentRow" @done="load(page)" />
 
     <el-dialog title="修改计费编码" :visible.sync="editCodeVisible" width="480px" append-to-body>
-      <el-form label-width="100px" size="small">
+      <el-form label-width="100px" size="mini">
         <el-form-item label="原计费编码">
           <span>{{ currentRow?.Charging_Code }}</span>
         </el-form-item>
@@ -125,8 +137,8 @@
         </el-form-item>
       </el-form>
       <div slot="footer">
-        <el-button @click="editCodeVisible = false">取消</el-button>
-        <el-button type="primary" :loading="editLoading" @click="submitEditCode">确定</el-button>
+        <el-button size="mini" @click="editCodeVisible = false">取消</el-button>
+        <el-button size="mini" type="primary" :loading="editLoading" @click="submitEditCode">确定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -401,27 +413,47 @@ export default {
 };
 </script>
 
-<style scoped>
-.pane-title {
-  font-weight: 600;
-  margin-bottom: 10px;
-  padding-bottom: 6px;
-  border-bottom: 3px solid #3e9ef7;
-}
+<style scoped lang="scss">
 .table-shell {
-  height: 560px;
-  min-height: 560px;
+  height: calc(100vh - 320px);
+  min-height: 360px;
 }
+
 .pager {
   margin-top: 8px;
   text-align: right;
 }
-.toolbar >>> .el-form-item {
-  margin-bottom: 6px;
+
+.toolbar.ele-form-search :deep(.el-form-item:not(.ele-form-actions) .el-form-item__content) {
+  /* ele-admin 默认 max-width:200px，控件设更宽时会溢出盖住下一项 label */
+  max-width: none;
 }
-.actions >>> .el-button {
-  margin-bottom: 4px;
+
+.toolbar :deep(.el-form-item) {
+  margin-right: 12px;
+  margin-bottom: 8px;
 }
+
+.toolbar :deep(.el-form-item.ele-form-actions) {
+  margin-right: 0;
+}
+
+.toolbar :deep(.el-form-item__label) {
+  padding-right: 8px;
+}
+
+.ele-form-actions :deep(.el-form-item__content) {
+  max-width: none !important;
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.ele-form-actions :deep(.el-button) {
+  margin: 0;
+}
+
 .hedge-failure >>> .col-highlight {
   background: rgba(0, 150, 136, 0.12);
 }

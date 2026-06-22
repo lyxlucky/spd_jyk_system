@@ -1,5 +1,5 @@
 <template>
-  <div class="ele-body spd-page following-goods-plan">
+  <div class="ele-body">
     <el-row :gutter="10">
       <el-col :span="8">
         <StatusSummaryStatistics
@@ -93,3 +93,5 @@ export default {
   }
 };
 </script>
+
+<style scoped></style>

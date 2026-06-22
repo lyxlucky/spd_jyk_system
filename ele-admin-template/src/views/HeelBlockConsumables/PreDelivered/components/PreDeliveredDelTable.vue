@@ -123,7 +123,7 @@
             label: '品种(材料)编码',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 120
+            minWidth: 160
           },
 
           {
@@ -212,14 +212,14 @@
             label: '预送散货数量',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 80
+            minWidth: 140
           },
           {
             prop: 'ORDER_TYPE',
             label: '订单类型',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 90,
+            minWidth: 120,
             formatter: (row, column, cellValue) => {
               if (cellValue == 0) {
                 return '线下采购';

@@ -81,7 +81,7 @@
       <div class="spd-toolbar">
         <div class="spd-toolbar__group">
           <div class="spd-toolbar__btns">
-            <el-select v-model="allocateSvc" size="mini" style="width: 140px">
+            <el-select v-model="allocateSvc" size="mini" style="width: 200px">
               <el-option :label="allocateLabels.outToIn" value="1" />
               <el-option :label="allocateLabels.inToOut" value="0" />
             </el-select>

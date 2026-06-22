@@ -1,7 +1,7 @@
-<template lang="">
-  <div class="ele-body">
-    <el-card shadow="never"> 
-        <FinancialTable />
+<template>
+  <div class="ele-body spd-page financial-audit-page">
+    <el-card shadow="never" class="financial-audit-card">
+      <FinancialTable />
     </el-card>
   </div>
 </template>
@@ -16,4 +16,8 @@
     }
   };
 </script>
-<style lang=""></style>
+<style scoped lang="scss">
+.financial-audit-card :deep(.el-card__body) {
+  padding: 10px;
+}
+</style>

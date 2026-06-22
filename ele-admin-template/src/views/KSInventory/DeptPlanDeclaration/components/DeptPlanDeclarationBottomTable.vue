@@ -1,28 +1,53 @@
 <template>
-  <div class="ele-body">
-    <!-- 数据表格 -->
-    <!-- :toolkit="[]" -->
-    <ele-pro-table
-      :paginationStyle="paginationStyle"
-      ref="table"
-      :toolStyle="toolStyle"
-      height="40vh"
-      highlight-current-row
-      :stripe="true"
-      :rowClickChecked="true"
-      :rowClickCheckedIntelligent="false"
-      :pageSize="pageSize"
-      :pageSizes="pageSizes"
-      :columns="columns"
-      :datasource="datasource"
-      :initLoad="false"
-      :current.sync="current"
-      :selection.sync="selection"
-      @selection-change="onSelectionChange"
-      cache-key="DeptPlanDeclarationBottomTable"
-    >
-      <template v-slot:toolbar>
-        <!-- 搜索表单 -->
+  <div class="dept-plan-declaration-bottom">
+    <div class="spd-panel spd-panel--search">
+      <div class="spd-panel__head">明细操作</div>
+      <DeptPlanDeclarationBottomTableSearch
+        @uploadSuccess="uploadSuccess"
+        @search="reload"
+        @ClickReload="ClickReload"
+        :DeptPlanDeclarationTopTableCurrent="DeptPlanDeclarationTopTableCurrent"
+        :selection="selection"
+        :current="current"
+        @showEditReoad="showEditReoad"
+        :datasourceList="datasourceList"
+        @exportData="exportData"
+        @exportPrintSheet="exportPrintSheet"
+        @deleteBottomTableItems="deleteBottomTableItems"
+        @excelBottomTable="ExcelBottomPlanTable"
+        :TopTableSelection="TopTableSelection"
+        @addPlanItemDone="reload"
+      />
+    </div>
+
+    <div class="spd-panel spd-table-panel">
+      <div class="spd-panel__head">科室计划明细列表</div>
+      <div class="spd-table-panel__wrap">
+        <!-- 数据表格 -->
+        <!-- :toolkit="[]" -->
+        <ele-pro-table
+          ref="table"
+          class="data-table"
+          size="mini"
+          border
+          stripe
+          :toolbar="false"
+          :header-overflow-hidden="false"
+          :height="tableHeight"
+          highlight-current-row
+          :rowClickChecked="true"
+          :rowClickCheckedIntelligent="false"
+          :pageSize="pageSize"
+          :pageSizes="pageSizes"
+          :columns="columns"
+          :datasource="datasource"
+          :initLoad="false"
+          :current.sync="current"
+          :selection.sync="selection"
+          @selection-change="onSelectionChange"
+          cache-key="DeptPlanDeclarationBottomTable"
+        >
+          <!-- <template v-slot:toolbar>
         <DeptPlanDeclarationBottomTableSearch
           @uploadSuccess="uploadSuccess"
           @search="reload"
@@ -41,9 +66,9 @@
           :TopTableSelection="TopTableSelection"
           @addPlanItemDone="reload"
         />
-      </template>
+      </template> -->
 
-      <!--
+          <!--
         
         <template v-slot:DEPT_ZDY_VARIETIE_CODE="{ row }">
         <el-tag v-if="row.DEPT_ZDY_VARIETIE_CODE == null" type="danger">未定义</el-tag>
@@ -51,13 +76,15 @@
       </template> 
     -->
 
-      <!-- <template v-slot:PLAN_NUM="{ row }">
+          <!-- <template v-slot:PLAN_NUM="{ row }">
         <el-input-number style="width: 130px" v-model="row.PLAN_NUM" :min="0" :max="999999999"></el-input-number>
         <el-link type="primary" style="padding-left: 10px;" :underline="false" icon="el-icon-position" @click="submit(row)">
             提交
         </el-link>
       </template> -->
-    </ele-pro-table>
+        </ele-pro-table>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -94,6 +121,7 @@
           {
             prop: 'VARIETIE_CODE_NEW',
             label: '品种编码',
+            minWidth: 120,
             align: 'center',
             showOverflowTooltip: true,
             fixed: 'left'
@@ -109,6 +137,7 @@
           {
             prop: 'VARIETIE_NAME',
             label: '品种名称',
+            minWidth: 200,
             align: 'center',
             showOverflowTooltip: true,
             fixed: 'left'
@@ -116,6 +145,7 @@
           {
             prop: 'SPECIFICATION_OR_TYPE',
             label: '规格型号',
+            minWidth: 120,
             align: 'center',
             showOverflowTooltip: true,
             fixed: 'left'
@@ -123,6 +153,7 @@
           {
             prop: 'UNIT',
             label: '单位',
+            minWidth: 70,
             align: 'center',
             showOverflowTooltip: true,
             fixed: 'left'
@@ -130,6 +161,7 @@
           {
             prop: 'PRICE',
             label: '中标价',
+            minWidth: 90,
             align: 'center',
             showOverflowTooltip: true,
             fixed: 'left',
@@ -140,6 +172,7 @@
           {
             prop: 'PLAN_NUM',
             label: '计划数量',
+            minWidth: 90,
             align: 'center',
             showOverflowTooltip: true,
             fixed: 'left'
@@ -147,6 +180,7 @@
           {
             prop: 'APPROVAL_NUMBER',
             label: '注册证号',
+            minWidth: 140,
             align: 'center',
             showOverflowTooltip: true,
             fixed: 'left'
@@ -154,6 +188,7 @@
           {
             prop: 'MANUFACTURING_ENT_NAME',
             label: '生产企业',
+            minWidth: 160,
             align: 'center',
             showOverflowTooltip: true,
             fixed: 'left'
@@ -161,22 +196,14 @@
           {
             prop: 'REMARK',
             label: '备注',
+            minWidth: 100,
             align: 'center',
             showOverflowTooltip: true,
             fixed: 'left'
           }
         ],
-        paginationStyle: {
-          height: '18px',
-          padding: '0px 0px 5px 0px',
-          'margin-top': '-5px'
-        },
+        tableHeight: 'calc((100vh - 420px) / 2)',
         toolbar: false,
-        toolStyle: {
-          display: 'flex',
-          'flex-wrap': 'wrap',
-          'align-items': 'flex-end'
-        },
         pageSize: 20,
         pagerCount: 2,
         pageSizes: [10, 20, 50, 100, 9999999],
@@ -403,6 +430,7 @@
       // }
     },
     created() {
+      localStorage.setItem('DeptPlanDeclarationBottomTableSize', JSON.stringify('mini'));
       // this.getdatasource();
     },
     beforeDestroy() {
@@ -415,18 +443,3 @@
     }
   };
 </script>
-
-<style scoped>
-  .ele-body {
-    padding: 0px;
-  }
-
-  ::v-deep .ele-table-tool-default {
-    padding: 3px 0px 0px 5px;
-  }
-
-  ::v-deep .ele-table-tool .ele-table-tool-title {
-    margin-bottom: 0;
-    margin-top: 0;
-  }
-</style>

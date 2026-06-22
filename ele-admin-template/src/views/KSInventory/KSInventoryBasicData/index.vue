@@ -1,6 +1,6 @@
 <template>
-  <div class="ele-body">
-    <el-card shadow="never">
+  <div class="ele-body spd-page ks-inventory-basic-data-page">
+    <el-card shadow="never" class="ks-inventory-basic-data-card">
       <!-- 搜索表单 -->
       <user-search
         @search="reload"
@@ -8,16 +8,26 @@
         @exportData="exportData"
       />
       <!-- 数据表格 -->
-      <ele-pro-table
-        ref="table"
-        :pageSize="pageSize"
-        @current-change="onCurrentChange"
-        :pageSizes="pageSizes"
-        :columns="columns"
-        :datasource="datasource"
-        :selection.sync="selection"
-        cache-key="KSInventoryBasicDataTable"
-      >
+      <div class="spd-panel spd-table-panel">
+        <div class="spd-panel__head">科室入库品种列表</div>
+        <div class="spd-table-panel__wrap">
+          <ele-pro-table
+            ref="table"
+            class="data-table"
+            size="mini"
+            border
+            stripe
+            :toolbar="false"
+            :header-overflow-hidden="false"
+            :height="tableHeight"
+            :pageSize="pageSize"
+            @current-change="onCurrentChange"
+            :pageSizes="pageSizes"
+            :columns="columns"
+            :datasource="datasource"
+            :selection.sync="selection"
+            cache-key="KSInventoryBasicDataTable"
+          >
         <!-- 表头工具栏 -->
         <!-- <template v-slot:toolbar>
           <el-button size="small" type="primary" icon="el-icon-plus" class="ele-btn-icon" @click="openEdit()">
@@ -76,7 +86,9 @@
             </template>
           </el-popconfirm> -->
         </template>
-      </ele-pro-table>
+          </ele-pro-table>
+        </div>
+      </div>
     </el-card>
     <!-- 编辑弹窗 -->
     <user-edit :visible.sync="showEdit" :data="current" @done="reload" />
@@ -139,6 +151,7 @@
             resizable: false,
             slot: 'action',
             showOverflowTooltip: true,
+            className: 'action-col',
             fixed: 'left'
           },
           // {
@@ -305,6 +318,7 @@
           }
         ],
         toolbar: false,
+        tableHeight: 'calc(100vh - 330px)',
         pageSize: 20,
         pageSizes: [10, 20, 50, 100, 9999999],
         pagerCount: 5,
@@ -549,6 +563,7 @@
       }
     },
     created() {
+      localStorage.setItem('KSInventoryBasicDataTableSize', JSON.stringify('mini'));
       // this.getdatasource();
       // console.log(this.$store.state.user.info)
     },
@@ -566,3 +581,21 @@
     }
   };
 </script>
+
+<style scoped>
+.ks-inventory-basic-data-card :deep(.el-card__body) {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ks-inventory-basic-data-page >>> .el-table th .cell {
+  white-space: nowrap;
+}
+
+.ks-inventory-basic-data-page >>> .action-col .cell {
+  line-height: 23px;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+</style>

@@ -1,24 +1,36 @@
-<template lang="">
-  <div>
-    <NewDeptPlannedDeliveryTopTableSearch />
-    <ele-pro-table
-      :reserve-selection="true"
-      highlight-current-row
-      @current-change="onCurrentChange"
-      ref="table"
-      height="20vh"
-      :needPage="false"
-      :rowClickChecked="true"
-      :stripe="true"
-      :pageSize="pageSize"
-      :pageSizes="pageSizes"
-      :columns="columns"
-      :datasource="datasource"
-      :selection.sync="selection"
-      cache-key="financialTableCacheKey"
-      key="financialTableKey"
-    >
-    </ele-pro-table>
+<template>
+  <div class="top-table-panel">
+    <div class="spd-panel spd-panel--search">
+      <div class="spd-panel__head">科室计划查询</div>
+      <NewDeptPlannedDeliveryTopTableSearch @search="reload" />
+    </div>
+    <div class="spd-panel spd-table-panel">
+      <div class="spd-panel__head">科室计划列表</div>
+      <div class="spd-table-panel__wrap">
+        <ele-pro-table
+          ref="table"
+          class="data-table"
+          size="mini"
+          border
+          stripe
+          :toolbar="false"
+          :header-overflow-hidden="false"
+          :reserve-selection="true"
+          highlight-current-row
+          :row-click-checked="true"
+          :height="tableHeight"
+          :need-page="false"
+          :page-size="pageSize"
+          :page-sizes="pageSizes"
+          :columns="columns"
+          :datasource="datasource"
+          :selection.sync="selection"
+          cache-key="NewDeptPlannedDeliveryTopTable"
+          key="NewDeptPlannedDeliveryTopTableKey"
+          @current-change="onCurrentChange"
+        />
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -33,6 +45,7 @@ import { SearchDeptPlanMsg } from '@/api/Task/NewDeptPlannedDelivery';
       const defaultWhere = {};
       return {
         where: { ...defaultWhere },
+        tableHeight: 'calc((100vh - 520px) / 2)',
         columns: [
           {
             columnKey: 'index',
@@ -48,14 +61,14 @@ import { SearchDeptPlanMsg } from '@/api/Task/NewDeptPlannedDelivery';
             label: '计划单号',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 80
+            minWidth: 120
           },
           {
             prop: 'SPDBZ',
             label: 'SPD备注',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 100
+            minWidth: 120
           },
           {
             prop: 'BZ',
@@ -78,14 +91,14 @@ import { SearchDeptPlanMsg } from '@/api/Task/NewDeptPlannedDelivery';
             label: '科室备注',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 100
+            minWidth: 120
           },
           {
             prop: 'Priority',
             label: '订单优先级',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 100,
+            minWidth: 120,
             formatter: (_row, _column, cellValue) => {
               if (_row.Priority == '0') return '普通';
               else if (_row.Priority == '1') return '紧急';
@@ -97,14 +110,14 @@ import { SearchDeptPlanMsg } from '@/api/Task/NewDeptPlannedDelivery';
             label: '计划时间',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 80
+            minWidth: 120
           },
           {
             prop: 'Apply_State',
             label: '计划单状态',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 90,
+            minWidth: 140,
             formatter: (_row, _column, cellValue) => {
               if (_row.Apply_State == '10' || _row.Apply_State == 10)
                 return '强制结束';
@@ -129,56 +142,56 @@ import { SearchDeptPlanMsg } from '@/api/Task/NewDeptPlannedDelivery';
             label: '二级科室名称/审核科室',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 80
+            minWidth: 240
           },
           {
             prop: 'DEPT_AUTH_CODE',
             label: '二级科室授权',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 80
+            minWidth: 120
           },
           {
             prop: 'Varietie_Code_New',
             label: '品种编码',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 80
+            minWidth: 120
           },
           {
             prop: 'CHARGING_CODE',
             label: '计费编码',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 80
+            minWidth: 120
           },
           {
             prop: 'CHARGING_CODE',
             label: '计费编码',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 80
+            minWidth: 120
           },
           {
             prop: 'YG_CODE',
             label: '阳光产品码',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 80
+            minWidth: 120
           },
           {
             prop: 'Varietie_Name',
             label: '品种名称',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 80
+            minWidth: 120
           },
           {
             prop: 'Specification_Or_Type',
             label: '规格型号',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 80
+            minWidth: 120
           },
           {
             prop: 'Unit',
@@ -192,7 +205,7 @@ import { SearchDeptPlanMsg } from '@/api/Task/NewDeptPlannedDelivery';
             label: '中标价',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 80
+            minWidth: 100
           },
           {
             prop: 'SUPPLIER_NAME',
@@ -206,7 +219,7 @@ import { SearchDeptPlanMsg } from '@/api/Task/NewDeptPlannedDelivery';
             label: '合同类型',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 100,
+            minWidth: 120,
             formatter: (_row, _column, cellValue) => {
               if (_row.CONTRACT_TYPE == '0') return '-';
               else if (_row.CONTRACT_TYPE == '1') return '中标';
@@ -219,7 +232,7 @@ import { SearchDeptPlanMsg } from '@/api/Task/NewDeptPlannedDelivery';
             label: '生产企业名称',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 120
+            minWidth: 140
           },
           {
             prop: 'Apply_Qty',
@@ -233,7 +246,7 @@ import { SearchDeptPlanMsg } from '@/api/Task/NewDeptPlannedDelivery';
             label: '剩余申请数量',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 120
+            minWidth: 140
           },
           {
             prop: 'Center_Inside_Goods_Qty',
@@ -247,7 +260,7 @@ import { SearchDeptPlanMsg } from '@/api/Task/NewDeptPlannedDelivery';
             label: '院外散货数量',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 120
+            minWidth: 140
           },
           {
             prop: 'Center_Inside_Def_Qty',
@@ -275,56 +288,56 @@ import { SearchDeptPlanMsg } from '@/api/Task/NewDeptPlannedDelivery';
             label: '近30天用量（对应科室）',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 120
+            minWidth: 200
           },
           {
             prop: 'STOREHOUSE_UPPPER',
             label: '中心库上限',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 120
+            minWidth: 150
           },
           {
             prop: 'STOREHOUSE_LOWER',
             label: '中心库下限',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 120
+            minWidth: 150
           },
           {
             prop: 'MIDDLE_PACKAGE_COUNT',
             label: '中包装数量',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 90
+            minWidth: 120
           },
           {
             prop: 'BIG_BOX_COUNT',
             label: '大包装数量',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 90
+            minWidth: 120
           },
           {
             prop: 'PAG_TYPE',
             label: '包装规格',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 90
+            minWidth: 120
           },
           {
             prop: 'APPROVAL_NUMBER',
             label: '注册证',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 90
+            minWidth: 190
           },
           {
             prop: 'PLAN_SUBMITTER',
             label: '申领人',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 90
+            minWidth: 100
           }
         ],
         pageSize: 10,
@@ -335,7 +348,14 @@ import { SearchDeptPlanMsg } from '@/api/Task/NewDeptPlannedDelivery';
         current: null
       };
     },
+    created() {
+      localStorage.setItem('NewDeptPlannedDeliveryTopTableSize', JSON.stringify('mini'));
+    },
     methods: {
+      reload(where) {
+        this.where = where || this.where;
+        this.$refs.table.reload({ page: 1, where: this.where });
+      },
       datasource({ page, limit, where, order }) {
         let data = SearchDeptPlanMsg({ page, limit, where, order }).then(
           (res) => {
@@ -352,4 +372,11 @@ import { SearchDeptPlanMsg } from '@/api/Task/NewDeptPlannedDelivery';
     }
   };
 </script>
-<style lang=""></style>
+<style scoped lang="scss">
+.top-table-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 0;
+}
+</style>

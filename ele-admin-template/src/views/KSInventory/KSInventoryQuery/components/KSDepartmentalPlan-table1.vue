@@ -252,7 +252,7 @@ export default {
           // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 100,
+          minWidth: 120,
           sortable: true
         },
         {

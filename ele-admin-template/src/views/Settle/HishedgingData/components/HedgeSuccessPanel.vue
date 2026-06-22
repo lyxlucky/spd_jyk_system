@@ -1,70 +1,95 @@
 <template>
-  <el-row :gutter="10" class="hedge-success">
+  <el-row :gutter="8" class="hedge-success">
     <el-col :span="7" class="col-pane">
-      <div class="pane-title">二级科室列表</div>
-      <el-form size="small" inline @submit.native.prevent>
-        <el-form-item>
-          <el-input
-            v-model="deptKw"
-            clearable
-            placeholder="科室名称搜索"
-            style="width: 100%"
-            @keyup.enter.native="loadDepts"
+      <div class="spd-panel spd-panel--search">
+        <div class="spd-panel__head">二级科室列表</div>
+        <div class="spd-panel__body">
+          <el-form size="mini" :inline="true" class="ele-form-search" @submit.native.prevent>
+            <el-form-item label="科室">
+              <el-input
+                v-model="deptKw"
+                clearable
+                placeholder="科室名称搜索"
+                style="width: 100%"
+                @keyup.enter.native="loadDepts"
+              >
+                <el-button slot="append" icon="el-icon-search" @click="loadDepts" />
+              </el-input>
+            </el-form-item>
+          </el-form>
+        </div>
+      </div>
+      <div class="spd-panel spd-table-panel dept-table-panel">
+        <div class="spd-table-panel__wrap">
+          <el-table
+            ref="deptTable"
+            v-loading="deptLoading"
+            :data="deptRows"
+            border
+            stripe
+            size="mini"
+            :height="deptTableHeight"
+            highlight-current-row
+            @current-change="onDeptSelect"
           >
-            <el-button slot="append" icon="el-icon-search" @click="loadDepts" />
-          </el-input>
-        </el-form-item>
-      </el-form>
-      <div class="table-shell">
-        <el-table
-          ref="deptTable"
-          v-loading="deptLoading"
-          :data="deptRows"
-          border
-          stripe
-          height="100%"
-          highlight-current-row
-          @current-change="onDeptSelect"
-        >
-          <el-table-column prop="Dept_Two_Name" label="二级科室名称" min-width="140" show-overflow-tooltip sortable />
-        </el-table>
+            <el-table-column prop="Dept_Two_Name" label="二级科室名称" min-width="140" show-overflow-tooltip sortable />
+          </el-table>
+        </div>
       </div>
     </el-col>
     <el-col :span="17" class="col-pane">
-      <div class="pane-title">已对冲且对冲成功的数据列表</div>
-      <el-form size="small" :inline="true" class="search-form" @submit.native.prevent>
-        <el-form-item>
-          <el-input v-model="q.deptTwoName" clearable placeholder="科室名称模糊" style="width: 140px" />
-        </el-form-item>
-        <el-form-item>
-          <el-input v-model="q.hisVarietieName" clearable placeholder="品种全称" style="width: 140px" />
-        </el-form-item>
-        <el-form-item>
-          <el-input v-model="q.defNoPkgCode" clearable placeholder="定数码" style="width: 120px" />
-        </el-form-item>
-        <el-form-item>
-          <el-input v-model="q.patientNumber" clearable placeholder="病患号" style="width: 110px" />
-        </el-form-item>
-        <el-form-item>
-          <el-input v-model="q.chargingDept" clearable placeholder="计划科室" style="width: 110px" />
-        </el-form-item>
-        <el-form-item>
-          <el-input v-model="q.chargingCode" clearable placeholder="计费编码" style="width: 110px" />
-        </el-form-item>
-        <el-form-item>
-          <el-input v-model="q.serialNumber" clearable placeholder="UDI" style="width: 110px" />
-        </el-form-item>
-        <el-form-item>
-          <el-date-picker v-model="q.startDate" type="date" value-format="yyyy-MM-dd" placeholder="开始日期" style="width: 140px" />
-        </el-form-item>
-        <el-form-item>
-          <el-date-picker v-model="q.endDate" type="date" value-format="yyyy-MM-dd" placeholder="结束日期" style="width: 140px" />
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" icon="el-icon-search" @click="loadMain(1)">查询</el-button>
-          <el-button type="primary" plain :loading="exporting" @click="exportExcel">导出Excel</el-button>
-        </el-form-item>
-      </el-form>
+      <div class="spd-panel spd-panel--search">
+        <div class="spd-panel__head">已对冲且对冲成功的数据列表</div>
+        <div class="spd-panel__body">
+          <el-form size="mini" :inline="true" class="ele-form-search search-form" @submit.native.prevent>
+            <el-form-item label="科室">
+              <el-input v-model="q.deptTwoName" clearable placeholder="科室名称模糊" style="width: 120px" />
+            </el-form-item>
+            <el-form-item label="品种">
+              <el-input v-model="q.hisVarietieName" clearable placeholder="品种全称" style="width: 120px" />
+            </el-form-item>
+            <el-form-item label="定数码">
+              <el-input v-model="q.defNoPkgCode" clearable placeholder="定数码" style="width: 110px" />
+            </el-form-item>
+            <el-form-item label="病患号">
+              <el-input v-model="q.patientNumber" clearable placeholder="病患号" style="width: 100px" />
+            </el-form-item>
+            <el-form-item label="计划科室">
+              <el-input v-model="q.chargingDept" clearable placeholder="计划科室" style="width: 100px" />
+            </el-form-item>
+            <el-form-item label="计费编码">
+              <el-input v-model="q.chargingCode" clearable placeholder="计费编码" style="width: 100px" />
+            </el-form-item>
+            <el-form-item label="UDI">
+              <el-input v-model="q.serialNumber" clearable placeholder="UDI" style="width: 100px" />
+            </el-form-item>
+            <el-form-item label="开始">
+              <el-date-picker
+                v-model="q.startDate"
+                type="date"
+                value-format="yyyy-MM-dd"
+                placeholder="开始日期"
+                style="width: 130px"
+              />
+            </el-form-item>
+            <el-form-item label="结束">
+              <el-date-picker
+                v-model="q.endDate"
+                type="date"
+                value-format="yyyy-MM-dd"
+                placeholder="结束日期"
+                style="width: 130px"
+              />
+            </el-form-item>
+            <el-form-item class="ele-form-actions">
+              <el-button type="primary" icon="el-icon-search" @click="loadMain(1)">查询</el-button>
+              <el-button type="primary" plain :loading="exporting" icon="el-icon-download" @click="exportExcel">
+                导出Excel
+              </el-button>
+            </el-form-item>
+          </el-form>
+        </div>
+      </div>
 
       <el-table v-if="extendRow" :data="[extendRow]" border size="mini" class="detail-table">
         <el-table-column prop="Varietie_Code" label="品种编码" min-width="100" show-overflow-tooltip />
@@ -83,42 +108,44 @@
         <el-table-column prop="Coefficient" label="系数" width="60" />
       </el-table>
 
-      <div class="table-shell main-table-shell mt8">
-        <el-table
-          v-loading="mainLoading"
-          :data="mainRows"
-          border
-          stripe
-          size="small"
-          height="100%"
-          highlight-current-row
-          @row-click="onMainRowClick"
-          @sort-change="onSort"
-        >
-          <el-table-column prop="His_Varietie_Name" label="HIS品种全称" min-width="160" sortable="custom" show-overflow-tooltip />
-          <el-table-column prop="Def_No_Pkg_Code" label="定数码" width="110" sortable="custom" show-overflow-tooltip />
-          <el-table-column prop="Serial_Number" label="UDI" width="120" sortable="custom" show-overflow-tooltip />
-          <el-table-column prop="Operate_Person" label="消耗人" width="90" sortable="custom" show-overflow-tooltip />
-          <el-table-column prop="Nurse_Operator" label="暂借人" width="90" sortable="custom" show-overflow-tooltip />
-          <el-table-column prop="Charging_Code" label="计费编码" width="85" sortable="custom" />
-          <el-table-column prop="Operation_Number" label="手术编号" width="85" sortable="custom" />
-          <el-table-column prop="Hospitalization_Number" label="住院号" width="80" sortable="custom" />
-          <el-table-column prop="Patient_Number" label="病患号" width="80" sortable="custom" />
-          <el-table-column prop="HIS_CHARGING_PRICE" label="his计费价格" width="100" sortable="custom" />
-          <el-table-column prop="Opeartion_Charging_Time" label="手术计费时间" width="145" sortable="custom" />
-          <el-table-column prop="Used_Qty" label="使用数量" width="75" align="center" sortable="custom" />
-          <el-table-column prop="Patient_Dept" label="病人科室" width="85" />
-          <el-table-column prop="Charging_Dept" label="计费科室" width="85" />
-          <el-table-column prop="Dept_Name" label="计费科室名称" width="110" sortable="custom" show-overflow-tooltip />
-          <el-table-column prop="SPD_COST_DEPT_NAME" label="成本科室" width="90" show-overflow-tooltip />
-          <el-table-column label="完成标志" width="85" sortable="custom" prop="Is_Complete">
-            <template slot-scope="{ row }">{{ fmtIsComplete(row.Is_Complete) }}</template>
-          </el-table-column>
-          <el-table-column prop="Integrate_Time" label="系统对接时间" width="150" sortable="custom" />
-          <el-table-column label="是否对冲" width="85" sortable="custom" prop="Is_Hedge">
-            <template slot-scope="{ row }">{{ fmtIsHedge(row.Is_Hedge) }}</template>
-          </el-table-column>
-        </el-table>
+      <div class="spd-panel spd-table-panel main-table-panel mt8">
+        <div class="spd-table-panel__wrap">
+          <el-table
+            v-loading="mainLoading"
+            :data="mainRows"
+            border
+            stripe
+            size="mini"
+            :height="mainTableHeight"
+            highlight-current-row
+            @row-click="onMainRowClick"
+            @sort-change="onSort"
+          >
+            <el-table-column prop="His_Varietie_Name" label="HIS品种全称" min-width="160" sortable="custom" show-overflow-tooltip />
+            <el-table-column prop="Def_No_Pkg_Code" label="定数码" width="110" sortable="custom" show-overflow-tooltip />
+            <el-table-column prop="Serial_Number" label="UDI" width="120" sortable="custom" show-overflow-tooltip />
+            <el-table-column prop="Operate_Person" label="消耗人" width="90" sortable="custom" show-overflow-tooltip />
+            <el-table-column prop="Nurse_Operator" label="暂借人" width="90" sortable="custom" show-overflow-tooltip />
+            <el-table-column prop="Charging_Code" label="计费编码" width="85" sortable="custom" />
+            <el-table-column prop="Operation_Number" label="手术编号" width="85" sortable="custom" />
+            <el-table-column prop="Hospitalization_Number" label="住院号" width="80" sortable="custom" />
+            <el-table-column prop="Patient_Number" label="病患号" width="80" sortable="custom" />
+            <el-table-column prop="HIS_CHARGING_PRICE" label="his计费价格" width="100" sortable="custom" />
+            <el-table-column prop="Opeartion_Charging_Time" label="手术计费时间" width="145" sortable="custom" />
+            <el-table-column prop="Used_Qty" label="使用数量" width="75" align="center" sortable="custom" />
+            <el-table-column prop="Patient_Dept" label="病人科室" width="85" />
+            <el-table-column prop="Charging_Dept" label="计费科室" width="85" />
+            <el-table-column prop="Dept_Name" label="计费科室名称" width="110" sortable="custom" show-overflow-tooltip />
+            <el-table-column prop="SPD_COST_DEPT_NAME" label="成本科室" width="90" show-overflow-tooltip />
+            <el-table-column label="完成标志" width="85" sortable="custom" prop="Is_Complete">
+              <template slot-scope="{ row }">{{ fmtIsComplete(row.Is_Complete) }}</template>
+            </el-table-column>
+            <el-table-column prop="Integrate_Time" label="系统对接时间" width="150" sortable="custom" />
+            <el-table-column label="是否对冲" width="85" sortable="custom" prop="Is_Hedge">
+              <template slot-scope="{ row }">{{ fmtIsHedge(row.Is_Hedge) }}</template>
+            </el-table-column>
+          </el-table>
+        </div>
       </div>
       <el-pagination
         class="pager"
@@ -174,6 +201,16 @@ export default {
   },
   mounted() {
     this.loadDepts();
+  },
+  computed: {
+    deptTableHeight() {
+      return 'calc(100vh - 280px)';
+    },
+    mainTableHeight() {
+      // 顶部 Tab + 查询区 + 分页；选中行时还有两行明细表
+      const offset = this.extendRow ? 580 : 460;
+      return `calc(100vh - ${offset}px)`;
+    }
   },
   methods: {
     fmtIsComplete,
@@ -335,43 +372,62 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .hedge-success {
   align-items: stretch;
 }
+
 .col-pane {
   display: flex;
   flex-direction: column;
+  min-height: 0;
+  height: calc(100vh - 180px);
 }
-.pane-title {
-  font-weight: 600;
-  margin-bottom: 8px;
-  padding-bottom: 6px;
-  border-bottom: 3px solid #3e9ef7;
+
+.dept-table-panel,
+.main-table-panel {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
 }
-.table-shell {
-  height: 520px;
-  min-height: 520px;
-  flex-shrink: 0;
+
+.dept-table-panel .spd-table-panel__wrap,
+.main-table-panel .spd-table-panel__wrap {
+  flex: 1;
+  min-height: 0;
 }
-.main-table-shell {
-  height: 400px;
-  min-height: 400px;
-}
+
 .detail-table {
   width: 100%;
 }
+
 .mt6 {
   margin-top: 6px;
 }
+
 .mt8 {
   margin-top: 8px;
 }
+
 .pager {
   margin-top: 8px;
   text-align: right;
 }
-.search-form >>> .el-form-item {
-  margin-bottom: 6px;
+
+:deep(.el-form-item) {
+  margin-bottom: 0;
+}
+
+.ele-form-actions :deep(.el-form-item__content) {
+  max-width: none !important;
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.ele-form-actions :deep(.el-button) {
+  margin: 0;
 }
 </style>

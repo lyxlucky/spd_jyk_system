@@ -1,10 +1,11 @@
 <template>
-  <div class="ele-body">
+  <div class="lr-jyk-instrument-detail">
     <!-- <el-button type="danger" size="small" @click="aaa">aaa</el-button> -->
     <!-- 数据表格 -->
     <!-- :rowClickChecked="true"  -->
     <!-- :rowClickCheckedIntelligent="false"  -->
-    <ele-pro-table :paginationStyle=paginationStyle ref="table" :toolStyle="toolStyle" height="42vh" highlight-current-row :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" @selection-change="onSelectionChange" cache-key="KSInventoryBasicDataTable">
+    <div class="spd-panel spd-panel--search">
+      <div class="spd-panel__head">明细查询</div>
       <!-- 表头工具栏 -->
       <!-- 右表头 -->
       <!-- <template v-slot:toolkit>
@@ -13,43 +14,70 @@
         </el-button>
       </template> -->
       <!-- 左表头 -->
-      <template v-slot:toolbar>
-        <!-- 搜索表单 -->
-        <LrJykInstrumentDetails-search @search="reload" @ClickReload="ClickReload" :KSDepartmentalPlanDataSearch="KSDepartmentalPlanDataSearch" :selection="selection" @showEditReoad="showEditReoad" :datasourceList="datasourceList" />
-      </template>
+      <!-- 搜索表单 -->
+      <LrJykInstrumentDetails-search
+        @search="reload"
+        @ClickReload="ClickReload"
+        :KSDepartmentalPlanDataSearch="KSDepartmentalPlanDataSearch"
+        :selection="selection"
+        @showEditReoad="showEditReoad"
+        :datasourceList="datasourceList"
+      />
+    </div>
 
+    <div class="spd-panel spd-table-panel">
+      <div class="spd-panel__head">绑定明细列表</div>
+      <div class="spd-table-panel__wrap">
+        <ele-pro-table
+          ref="table"
+          class="data-table"
+          size="mini"
+          border
+          stripe
+          highlight-current-row
+          :toolbar="false"
+          :header-overflow-hidden="false"
+          :height="tableHeight"
+          :pageSize="pageSize"
+          :pageSizes="pageSizes"
+          :columns="columns"
+          :datasource="datasource"
+          :selection.sync="selection"
+          cache-key="LrJykInstrumentDetailTable"
+          @selection-change="onSelectionChange"
+        >
       <template v-slot:PlanQty="{ row }">
         <el-input-number v-model="row.PlanQty" :min="0" :max="99999999" :step="1" size="mini" />
         <!-- <el-input-number v-model="row.PlanQty" controls-position="right" @change="handleChange" :min="0" :max="9999" size="mini"></el-input-number> -->
       </template>
       <template v-slot:VarCode="{ row }">
-        <el-tag v-if="row.LEFT_APPLY_QTY == 0" type="success">{{
+        <el-tag size="mini" v-if="row.LEFT_APPLY_QTY == 0" type="success">{{
           row.VarCode
         }}</el-tag>
-        <el-tag v-else type="danger">{{ row.VarCode }}</el-tag>
+        <el-tag size="mini" v-else type="danger">{{ row.VarCode }}</el-tag>
       </template>
       <template v-slot:REMARK="{ row }">
         <el-link v-if="row.REMARK == null" type="info" @click="OpenUpApplyPlanBZBox(row.ID)">无</el-link>
-        <el-tag v-else type="primary" @click="OpenUpApplyPlanBZBox(row.ID)">{{
+        <el-tag size="mini" v-else type="primary" @click="OpenUpApplyPlanBZBox(row.ID)">{{
           row.REMARK
         }}</el-tag>
       </template>
       <template v-slot:State="{ row }">
-        <el-tag v-if="row.State == 0" type="success">新增</el-tag>
-        <el-tag v-if="row.State == 1" type="success">已提交</el-tag>
-        <el-tag v-if="row.State == 2" type="success">配送中</el-tag>
-        <el-tag v-if="row.State == 5" type="success">已审核</el-tag>
-        <el-tag v-if="row.State == 10" type="success">强制结束</el-tag>
-        <el-tag v-if="
+        <el-tag size="mini" v-if="row.State == 0" type="success">新增</el-tag>
+        <el-tag size="mini" v-if="row.State == 1" type="success">已提交</el-tag>
+        <el-tag size="mini" v-if="row.State == 2" type="success">配送中</el-tag>
+        <el-tag size="mini" v-if="row.State == 5" type="success">已审核</el-tag>
+        <el-tag size="mini" v-if="row.State == 10" type="success">强制结束</el-tag>
+        <el-tag size="mini" v-if="
             (row.State == 6 || row.State == 4) &&
             row.SUM_Left_Apply_Qty == row.SUM_Apply_Qty
           " type="success">已审批</el-tag>
-        <el-tag v-if="
+        <el-tag size="mini" v-if="
             row.SUM_Left_Apply_Qty > 0 &&
             row.SUM_Left_Apply_Qty != row.SUM_Apply_Qty
           " type="success">未收全</el-tag>
         <!-- <el-tag v-if="(row.SUM_Left_Apply_Qty == 0)" type="success">已收全</el-tag> -->
-        <el-tag v-if="row.SUM_Left_Apply_Qty == 0" type="success">已收全</el-tag>
+        <el-tag size="mini" v-if="row.SUM_Left_Apply_Qty == 0" type="success">已收全</el-tag>
         <!-- <el-tag v-for="(item) in row" :key="item.PlanNum" size="mini" type="primary" :disable-transitions="true">
           {{ item.State }}
         </el-tag> -->
@@ -64,7 +92,9 @@
           </template>
         </el-popconfirm>
       </template>
-    </ele-pro-table>
+        </ele-pro-table>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -105,12 +135,12 @@ export default {
         {
           columnKey: 'action',
           label: '操作',
-          width: 80,
+          width: 70,
           align: 'center',
           resizable: false,
           slot: 'action',
           showOverflowTooltip: true,
-          fixed: 'right'
+          className: 'action-col'
         },
         {
           prop: 'ID',
@@ -218,17 +248,8 @@ export default {
           }
         }
       ],
-      paginationStyle: {
-        height: '18px',
-        padding: '0px 0px 5px 0px',
-        'margin-top': '-5px'
-      },
       toolbar: false,
-      toolStyle: {
-        display: 'flex',
-        'flex-wrap': 'wrap',
-        'align-items': 'flex-end'
-      },
+      tableHeight: '42vh',
       pageSize: 9999999,
       pagerCount: 2,
       pageSizes: [100, 9999999],
@@ -315,22 +336,34 @@ export default {
     }
   },
   created() {
+    // ele-pro-table 初始化优先级：localStorage[cacheKey+Size] > size 属性
+    localStorage.setItem('LrJykInstrumentDetailTableSize', JSON.stringify('mini'));
     // this.getdatasource();
   }
 };
 </script>
 
 <style scoped>
-.ele-body {
-  padding: 0px;
+.lr-jyk-instrument-detail >>> .el-table th .cell {
+  white-space: nowrap;
 }
 
-::v-deep .ele-table-tool-default {
-  padding: 3px 0px 0px 5px;
+.lr-jyk-instrument-detail >>> .action-col .cell {
+  line-height: 23px;
+  padding-top: 0;
+  padding-bottom: 0;
 }
 
-::v-deep .ele-table-tool .ele-table-tool-title{
-  margin-bottom: 0;
-  margin-top: 0;
+.lr-jyk-instrument-detail :deep(.el-pagination) {
+  padding: 4px 0 0;
+}
+
+.lr-jyk-instrument-detail :deep(.el-pagination .btn-prev),
+.lr-jyk-instrument-detail :deep(.el-pagination .btn-next),
+.lr-jyk-instrument-detail :deep(.el-pagination .el-pager li) {
+  min-width: 24px;
+  height: 24px;
+  line-height: 24px;
+  font-size: 12px;
 }
 </style>

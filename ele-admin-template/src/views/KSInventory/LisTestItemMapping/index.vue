@@ -1,90 +1,96 @@
 <template>
-  <div class="ele-body">
-    <el-card shadow="never">
-      <!-- 搜索表单 -->
-      <el-form
-        :model="searchForm"
-        :inline="true"
-        class="ele-form-search"
-        size="mini"
-        @keyup.enter.native="search"
-      >
-        <el-form-item label="LIS项目">
-          <el-input
-            v-model="searchForm.lisKeyword"
-            placeholder="代码/名称"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="HIS项目">
-          <el-input
-            v-model="searchForm.hisKeyword"
-            placeholder="代码/名称"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="物料">
-          <el-input
-            v-model="searchForm.varietieKeyword"
-            placeholder="编码/名称/简称"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="search" icon="el-icon-search">查询</el-button>
-          <el-button @click="reset">重置</el-button>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="success" @click="syncLisData" :loading="syncLoading" icon="el-icon-refresh">同步LIS数据</el-button>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="warning" :loading="exportLoading" icon="el-icon-download" @click="exportMappings">导出</el-button>
-        </el-form-item>
-        <el-form-item>
-          <el-dropdown
-            split-button
-            type="info"
+  <div class="ele-body spd-page lis-test-item-mapping-page">
+    <el-card shadow="never" class="lis-test-item-mapping-card">
+      <div class="spd-panel spd-panel--search">
+        <div class="spd-panel__head">查询条件</div>
+        <div class="spd-panel__body">
+          <!-- 搜索表单 -->
+          <el-form
+            :model="searchForm"
+            :inline="true"
+            class="ele-form-search"
             size="mini"
-            :disabled="hisImportLoading"
-            @click="triggerHisImport"
-            @command="handleHisImportCommand"
+            @keyup.enter.native="search"
           >
-            {{ hisImportLoading ? '导入中...' : '导入HIS对码' }}
-            <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item command="download"><i class="el-icon-download" /> 下载模板</el-dropdown-item>
-            </el-dropdown-menu>
-          </el-dropdown>
-        </el-form-item>
-        <el-form-item>
-          <el-dropdown
-            split-button
-            type="info"
-            size="mini"
-            :disabled="spdImportLoading"
-            @click="triggerSpdImport"
-            @command="handleSpdImportCommand"
-          >
-            {{ spdImportLoading ? '导入中...' : '导入SPD对码' }}
-            <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item command="download"><i class="el-icon-download" /> 下载模板</el-dropdown-item>
-            </el-dropdown-menu>
-          </el-dropdown>
-          <input ref="hisImportInput" type="file" accept=".xlsx" style="display:none" @change="handleHisImportFile">
-          <input ref="spdImportInput" type="file" accept=".xlsx" style="display:none" @change="handleSpdImportFile">
-        </el-form-item>
-      </el-form>
+            <el-form-item label="LIS项目">
+              <el-input
+                style="width: 140px"
+                v-model="searchForm.lisKeyword"
+                placeholder="代码/名称"
+                clearable
+              />
+            </el-form-item>
+            <el-form-item label="HIS项目">
+              <el-input
+                style="width: 140px"
+                v-model="searchForm.hisKeyword"
+                placeholder="代码/名称"
+                clearable
+              />
+            </el-form-item>
+            <el-form-item label="物料">
+              <el-input
+                style="width: 160px"
+                v-model="searchForm.varietieKeyword"
+                placeholder="编码/名称/简称"
+                clearable
+              />
+            </el-form-item>
+            <el-form-item class="ele-form-actions">
+              <el-button type="primary" @click="search" icon="el-icon-search">查询</el-button>
+              <el-button @click="reset" icon="el-icon-refresh">重置</el-button>
+              <el-button type="success" @click="syncLisData" :loading="syncLoading" icon="el-icon-refresh">
+                同步LIS数据
+              </el-button>
+              <el-button type="warning" :loading="exportLoading" icon="el-icon-download" @click="exportMappings">
+                导出
+              </el-button>
+              <el-dropdown
+                split-button
+                type="info"
+                :disabled="hisImportLoading"
+                @click="triggerHisImport"
+                @command="handleHisImportCommand"
+              >
+                {{ hisImportLoading ? '导入中...' : '导入HIS对码' }}
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item command="download"><i class="el-icon-download" /> 下载模板</el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
+              <el-dropdown
+                split-button
+                type="info"
+                :disabled="spdImportLoading"
+                @click="triggerSpdImport"
+                @command="handleSpdImportCommand"
+              >
+                {{ spdImportLoading ? '导入中...' : '导入SPD对码' }}
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item command="download"><i class="el-icon-download" /> 下载模板</el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
+              <input ref="hisImportInput" type="file" accept=".xlsx" style="display:none" @change="handleHisImportFile">
+              <input ref="spdImportInput" type="file" accept=".xlsx" style="display:none" @change="handleSpdImportFile">
+            </el-form-item>
+          </el-form>
+        </div>
+      </div>
 
-      <!-- 数据表格 -->
-      <vxe-table
-        ref="table"
-        :data="tableData"
-        :loading="tableLoading"
-        border
-        resizable
-        size="mini"
-        height="650"
-        :row-config="{ isHover: true }"
-      >
+      <div class="spd-panel spd-table-panel">
+        <div class="spd-panel__head">检验项目对照列表</div>
+        <div class="spd-table-panel__wrap">
+          <!-- 数据表格 -->
+          <vxe-table
+            ref="table"
+            class="data-table"
+            :data="tableData"
+            :loading="tableLoading"
+            border
+            resizable
+            size="mini"
+            :height="tableHeight"
+            :row-config="{ isHover: true }"
+          >
         <vxe-column type="seq" title="序号" width="55" align="center" />
         <vxe-column field="LIS_CODE" title="LIS项目代码" width="120" />
         <vxe-column field="LIS_NAME" title="LIS项目名称" min-width="150" show-overflow />
@@ -99,9 +105,51 @@
         <vxe-column field="VARIETIE_CODE_NEW" title="物料编码" width="120" />
         <vxe-column field="VARIETIE_NAME" title="物料名称" min-width="150" show-overflow />
         <vxe-column field="COMMON_NAME" title="物料简称" width="120" />
-        <vxe-column title="操作" width="280" align="center" fixed="right">
+        <vxe-column title="操作" width="300" align="center" class-name="action-col">
           <template #default="{ row }">
-            <el-button
+            <el-link
+              type="primary"
+              :underline="false"
+              icon="el-icon-edit"
+              @click="openWeightDialog(row)"
+            >
+              编辑权重
+            </el-link>
+            <el-link
+              type="primary"
+              :underline="false"
+              icon="el-icon-plus"
+              @click="openHisDialog(row)"
+            >
+              HIS对码
+            </el-link>
+            <el-link
+              type="success"
+              :underline="false"
+              icon="el-icon-plus"
+              @click="openSpdDialog(row)"
+            >
+              SPD对码
+            </el-link>
+            <el-link
+              v-if="row.HIS_ID"
+              type="danger"
+              :underline="false"
+              icon="el-icon-delete"
+              @click="deleteHisMapping(row)"
+            >
+              删HIS对码
+            </el-link>
+            <el-link
+              v-if="row.SPD_ID"
+              type="danger"
+              :underline="false"
+              icon="el-icon-delete"
+              @click="deleteSpdMapping(row)"
+            >
+              删SPD对码
+            </el-link>
+            <!-- <el-button
               size="mini"
               type="text"
               icon="el-icon-edit"
@@ -147,21 +195,23 @@
               class="mapping-op-btn mapping-op-btn-danger"
             >
               删SPD对码
-            </el-button>
+            </el-button> -->
           </template>
         </vxe-column>
-      </vxe-table>
+          </vxe-table>
 
-      <!-- 分页 -->
-      <vxe-pager
-        :current-page="tablePage.page"
-        :page-size="tablePage.size"
-        :total="tablePage.total"
-        :page-sizes="[10, 20, 50, 100]"
-        size="mini"
-        @page-change="onTablePageChange"
-        style="margin-top: 8px"
-      />
+          <!-- 分页 -->
+          <vxe-pager
+            :current-page="tablePage.page"
+            :page-size="tablePage.size"
+            :total="tablePage.total"
+            :page-sizes="[10, 20, 50, 100]"
+            size="mini"
+            @page-change="onTablePageChange"
+            class="lis-test-item-mapping-pager"
+          />
+        </div>
+      </div>
     </el-card>
 
     <!-- 添加HIS对码关系对话框 -->
@@ -177,7 +227,7 @@
         :model="hisFormData"
         :rules="hisFormRules"
         label-width="120px"
-        size="small"
+        size="mini"
       >
         <el-form-item label="LIS项目代码">
           <el-input v-model="hisFormData.LIS_CODE" readonly />
@@ -196,14 +246,16 @@
             v-model="hisFormData.HIS_PRICE"
             :precision="2"
             :min="0"
+            size="mini"
             controls-position="right"
             style="width: 100%"
           />
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="closeHisDialog">取 消</el-button>
+        <el-button size="mini" @click="closeHisDialog">取 消</el-button>
         <el-button
+          size="mini"
           type="primary"
           :loading="hisDialogLoading"
           @click="saveHisMapping"
@@ -226,7 +278,7 @@
         :model="spdFormData"
         :rules="spdFormRules"
         label-width="100px"
-        size="small"
+        size="mini"
       >
         <el-form-item label="LIS项目代码">
           <el-input v-model="spdFormData.LIS_CODE" readonly />
@@ -239,8 +291,9 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="closeSpdDialog">取 消</el-button>
+        <el-button size="mini" @click="closeSpdDialog">取 消</el-button>
         <el-button
+          size="mini"
           type="primary"
           :loading="spdDialogLoading"
           @click="saveSpdMapping"
@@ -263,7 +316,7 @@
         :model="weightFormData"
         :rules="weightFormRules"
         label-width="100px"
-        size="small"
+        size="mini"
       >
         <el-form-item label="LIS项目代码">
           <el-input v-model="weightFormData.LIS_CODE" readonly />
@@ -275,14 +328,16 @@
           <el-input-number
             v-model="weightFormData.WEIGHT"
             :min="0"
+            size="mini"
             controls-position="right"
             style="width: 100%"
           />
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="closeWeightDialog">取 消</el-button>
+        <el-button size="mini" @click="closeWeightDialog">取 消</el-button>
         <el-button
+          size="mini"
           type="primary"
           :loading="weightDialogLoading"
           @click="saveWeightMapping"
@@ -321,6 +376,7 @@ export default {
       // 表格
       tableData: [],
       tableLoading: false,
+      tableHeight: 'calc(100vh - 280px)',
       tablePage: { page: 1, size: 20, total: 0 },
       // 同步
       syncLoading: false,
@@ -801,8 +857,48 @@ export default {
 }
 </script>
 
-<style scoped>
-.mapping-op-btn {
+<style scoped lang="scss">
+.lis-test-item-mapping-card :deep(.el-card__body) {
+  padding: 10px;
+}
+
+:deep(.el-form-item) {
+  margin-bottom: 0;
+}
+
+.ele-form-actions :deep(.el-form-item__content) {
+  max-width: none !important;
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.ele-form-actions :deep(.el-button) {
+  margin: 0;
+}
+
+.lis-test-item-mapping-pager {
+  margin-top: 8px;
+}
+
+.lis-test-item-mapping-page :deep(.vxe-header--column .vxe-cell) {
+  white-space: nowrap;
+}
+
+.lis-test-item-mapping-page :deep(.action-col .vxe-cell) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.lis-test-item-mapping-page :deep(.action-col .el-link) {
+  font-size: 12px;
+}
+
+/* .mapping-op-btn {
   padding: 2px 4px;
   margin: 2px;
   line-height: 1;
@@ -818,5 +914,5 @@ export default {
 
 .mapping-op-btn-danger {
   color: #f56c6c;
-}
+} */
 </style>

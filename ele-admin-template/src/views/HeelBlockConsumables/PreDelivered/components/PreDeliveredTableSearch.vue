@@ -51,17 +51,18 @@
         </el-date-picker>
       </el-col>
     </el-row>
-    <el-row :gutter="5" style="margin-top: 5px">
-      <el-col v-bind="styleResponsive ? { lg: 16, md: 12 } : { span: 12 }">
-        <el-input
-          size="mini"
-          clearable
-          v-model="where.condition"
-          placeholder="品种(材料)编码、品种全称、生产企业名称、型号/规格、供应商名称"
-        />
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 8, md: 12 } : { span: 12 }">
-        <div class="ele-form-actions">
+    <div class="condition-row">
+      <el-input
+        size="mini"
+        clearable
+        v-model="where.condition"
+        placeholder="品种(材料)编码、品种全称、生产企业名称、型号/规格、供应商名称"
+        class="condition-input"
+      />
+    </div>
+    <el-row :gutter="5">
+      <el-col v-bind="styleResponsive ? { lg: 24, md: 12 } : { span: 12 }">
+        <div class="ele-form-actions toolbar-actions">
           <el-button
             size="mini"
             type="primary"
@@ -71,15 +72,7 @@
           >
             查询
           </el-button>
-          <el-button size="mini" icon="el-icon-refresh" @click="reset"
-            >重置</el-button
-          >
-        </div>
-      </el-col>
-    </el-row>
-    <el-row :gutter="5">
-      <el-col v-bind="styleResponsive ? { lg: 24, md: 12 } : { span: 12 }">
-        <div class="ele-form-actions">
+          <el-button size="mini" icon="el-icon-refresh" @click="reset">重置</el-button>
           <el-button
             size="mini"
             type="warning"
@@ -269,3 +262,21 @@
     created() {}
   };
 </script>
+
+<style lang="scss" scoped>
+.condition-row {
+  margin-top: 5px;
+}
+
+.condition-input {
+  width: 100%;
+}
+
+.toolbar-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 5px;
+}
+</style>

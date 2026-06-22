@@ -1,130 +1,93 @@
 <!-- 搜索表单 -->
 <template>
-  <el-form
-    inline
-    class="ele-form-search"
-    @keyup.enter.native="search"
-    @submit.native.prevent
-  >
-    <el-form-item>
-      <el-input
-        clearable
-        size="mini"
-        style="width: 160px"
-        v-model="where.Name"
-        placeholder="品种名称/品种编码"
-      />
-    </el-form-item>
-    <el-form-item>
-      <el-input
-        clearable
-        size="mini"
-        style="width: 160px"
-        v-model="where.DELIVERY_NUMBER"
-        placeholder="入库单号"
-      />
-    </el-form-item>
-    <el-form-item>
-      <el-input
-        clearable
-        size="mini"
-        style="width: 160px"
-        v-model="where.DEF_NO_PKG_CODE"
-        placeholder="定数码"
-      />
-    </el-form-item>
-    <el-form-item>
-      <el-input
-        clearable
-        size="mini"
-        style="width: 160px"
-        v-model="where.MANUFACTURER"
-        placeholder="生产企业"
-      />
-    </el-form-item>
-    <el-form-item>
-      <el-input
-        clearable
-        size="mini"
-        style="width: 160px"
-        v-model="where.PROD_REGISTRATION"
-        placeholder="注册证"
-      />
-    </el-form-item>
-    <el-form-item>
-      <el-input
-        size="mini"
-        clearable
-        style="width: 120px"
-        v-model="where.BATCH"
-        placeholder="批号"
-      />
-    </el-form-item>
-    <el-form-item>
-      <el-date-picker
-        v-model="where.date"
-        type="daterange"
-        size="mini"
-        align="right"
-        unlink-panels
-        value-format="yyyy-MM-dd"
-        range-separator="至"
-        start-placeholder="开始日期"
-        end-placeholder="结束日期"
-        :picker-options="pickerOptions"
-        style="width: 200px"
-      >
-      </el-date-picker>
-    </el-form-item>
-    <el-form-item>
-      <el-select size="mini" clearable style="width: 120px" v-model="where.TYPE" @change="search()">
-        <el-option label="流向类型" value="">全部</el-option>
-        <el-option label="入库" value="0"></el-option>
-        <el-option label="消耗" value="1"></el-option>
-        <el-option label="退库" value="2"></el-option>
-      </el-select>
-    </el-form-item>
-    <el-form-item>
-      <el-button
-        size="mini"
-        type="primary"
-        icon="el-icon-search"
-        class="ele-btn-icon"
-        @click="search"
-      >
-        查询
-      </el-button>
-    </el-form-item>
-    <el-form-item>
-      <el-button
-        size="mini"
-        type="primary"
-        class="ele-btn-icon"
-        icon="el-icon-download"
-        @click="exportData()"
-      >
-        导出
-      </el-button>
-    </el-form-item>
-    <el-form-item>
-      <el-button size="mini" class="ele-btn-icon" icon="el-icon-refresh" @click="reset">
-        重置
-      </el-button>
-    </el-form-item>
-    <el-form-item>
-      <el-button
-        type="primary"
-        icon="el-icon-view"
-        size="mini"
-        class="ele-btn-icon"
-        @click="KSDepartmentalPlanDetailsGroupTipShow = true"
-      >
-        查看汇总
-      </el-button>
-    </el-form-item>
-    <KSDepartmentalPlanDetailsGroupTip :where="where" :visible.sync="KSDepartmentalPlanDetailsGroupTipShow" />
+  <div class="spd-panel__body">
+    <el-form
+      size="mini"
+      :inline="true"
+      class="ele-form-search"
+      @keyup.enter.native="search"
+      @submit.native.prevent
+    >
+      <el-form-item label="品种">
+        <el-input
+          clearable
+          style="width: 160px"
+          v-model="where.Name"
+          placeholder="品种名称/品种编码"
+        />
+      </el-form-item>
+      <el-form-item label="入库单号">
+        <el-input
+          clearable
+          style="width: 140px"
+          v-model="where.DELIVERY_NUMBER"
+          placeholder="入库单号"
+        />
+      </el-form-item>
+      <el-form-item label="定数码">
+        <el-input
+          clearable
+          style="width: 140px"
+          v-model="where.DEF_NO_PKG_CODE"
+          placeholder="定数码"
+        />
+      </el-form-item>
+      <el-form-item label="生产企业">
+        <el-input
+          clearable
+          style="width: 140px"
+          v-model="where.MANUFACTURER"
+          placeholder="生产企业"
+        />
+      </el-form-item>
+      <el-form-item label="注册证">
+        <el-input
+          clearable
+          style="width: 140px"
+          v-model="where.PROD_REGISTRATION"
+          placeholder="注册证"
+        />
+      </el-form-item>
+      <el-form-item label="批号">
+        <el-input
+          clearable
+          style="width: 120px"
+          v-model="where.BATCH"
+          placeholder="批号"
+        />
+      </el-form-item>
+      <el-form-item label="日期">
+        <el-date-picker
+          v-model="where.date"
+          type="daterange"
+          align="right"
+          unlink-panels
+          value-format="yyyy-MM-dd"
+          range-separator="至"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          :picker-options="pickerOptions"
+          style="width: 200px"
+        />
+      </el-form-item>
+      <el-form-item label="流向类型">
+        <el-select clearable style="width: 120px" v-model="where.TYPE" @change="search()">
+          <el-option label="全部" value="" />
+          <el-option label="入库" value="0" />
+          <el-option label="消耗" value="1" />
+          <el-option label="退库" value="2" />
+        </el-select>
+      </el-form-item>
+      <el-form-item class="ele-form-actions">
+        <el-button type="primary" icon="el-icon-search" @click="search">查询</el-button>
+        <el-button type="primary" icon="el-icon-download" @click="exportData()">导出</el-button>
+        <el-button icon="el-icon-refresh" @click="reset">重置</el-button>
+        <el-button type="primary" icon="el-icon-view" @click="KSDepartmentalPlanDetailsGroupTipShow = true">查看汇总</el-button>
+      </el-form-item>
+    </el-form>
 
-  </el-form>
+    <KSDepartmentalPlanDetailsGroupTip :where="where" :visible.sync="KSDepartmentalPlanDetailsGroupTipShow" />
+  </div>
 </template>
 
 <script>
@@ -137,6 +100,18 @@
   import IntroduceUserDefinedTemp from '@/views/KSInventory/IntroduceUserDefinedTemp/index.vue';
   import KSDepartmentalPlanDetailsGroupTip from '@/views/KSInventory/KSInventoryRecord/components/KSDepartmentalPlanDetailsGroup/index.vue';
 
+  const defaultWhere = () => ({
+    Token: '',
+    TYPE: '',
+    DELIVERY_NUMBER: '',
+    DEF_NO_PKG_CODE: '',
+    Name: '',
+    MANUFACTURER: '',
+    PROD_REGISTRATION: '',
+    BATCH: '',
+    date: []
+  });
+
   export default {
     props: ['KSDepartmentalPlanDataSearch', 'selection', 'datasourceList'],
     components: {
@@ -145,21 +120,8 @@
       // IntroduceDefinedTemp
     },
     data() {
-      // 默认表单数据
-      const defaultWhere = {
-        Token: '',
-        TYPE: '',
-        DELIVERY_NUMBER: '',
-        DEF_NO_PKG_CODE: '',
-        Name: '',
-        MANUFACTURER: '',
-        PROD_REGISTRATION: '',
-        BATCH: '',
-        date: []
-      };
       return {
-        // 表单数据
-        where: { ...defaultWhere },
+        where: defaultWhere(),
         KSDepartmentalPlanDetailsGroupTipShow: false,
         pickerOptions: {
           shortcuts: [
@@ -251,7 +213,7 @@
       },
       /*  重置 */
       reset() {
-        this.where = { ...this.defaultWhere };
+        this.where = defaultWhere();
         this.search();
       },
       /* 批量删除 */
@@ -346,7 +308,19 @@
 </script>
 
 <style scoped lang="scss">
-  ::v-deep .el-form-item {
-    margin-bottom: 0;
-  }
+:deep(.el-form-item) {
+  margin-bottom: 0;
+}
+
+.ele-form-actions :deep(.el-form-item__content) {
+  max-width: none !important;
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.ele-form-actions :deep(.el-button) {
+  margin: 0;
+}
 </style>

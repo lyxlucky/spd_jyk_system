@@ -1,39 +1,42 @@
-<template lang="">
-  <div>
-    <div>
-      <el-form
-        class="ele-form-search"
-        @keyup.enter.native="search"
-        style="padding-bottom: 10px"
-        @submit.native.prevent
-      >
-        <el-row type="flex" :gutter="10">
-          <el-col v-bind="styleResponsive ? { lg: 3, md: 2 } : { span: 4 }">
-            <el-form-item>
-              <el-button type='danger' size='mini' icon='el-icon-delete' @click="handleDelete">删除</el-button>
-            </el-form-item>
-          </el-col>
-        </el-row>
-      </el-form>
+<template>
+  <div class="bottom-right-panel">
+    <div class="spd-panel spd-panel--search">
+      <div class="spd-panel__head">备货明细操作</div>
+      <div class="spd-panel__body">
+        <el-form size="mini" :inline="true" class="ele-form-search" @submit.native.prevent>
+          <el-form-item class="ele-form-actions" label-width="0">
+            <el-button type="danger" plain icon="el-icon-delete" @click="handleDelete">删除</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
     </div>
-    <ele-pro-table
-      :reserve-selection="true"
-      highlight-current-row
-      @current-change="onCurrentChange"
-      ref="table"
-      height="20vh"
-      :initLoad="false"
-      :rowClickChecked="true"
-      :stripe="true"
-      :pageSize="pageSize"
-      :pageSizes="pageSizes"
-      :columns="columns"
-      :datasource="datasource"
-      :selection.sync="selection"
-      cache-key="NewDeptPlannedDeliveryBottomRightTableCacheKey"
-      key="NewDeptPlannedDeliveryBottomRightTableKey"
-    >
-    </ele-pro-table>
+    <div class="spd-panel spd-table-panel">
+      <div class="spd-panel__head">备货明细列表</div>
+      <div class="spd-table-panel__wrap">
+        <ele-pro-table
+          ref="table"
+          class="data-table"
+          size="mini"
+          border
+          stripe
+          :toolbar="false"
+          :header-overflow-hidden="false"
+          :reserve-selection="true"
+          highlight-current-row
+          :row-click-checked="true"
+          :init-load="false"
+          :height="tableHeight"
+          :page-size="pageSize"
+          :page-sizes="pageSizes"
+          :columns="columns"
+          :datasource="datasource"
+          :selection.sync="selection"
+          cache-key="NewDeptPlannedDeliveryBottomRightTableCacheKey"
+          key="NewDeptPlannedDeliveryBottomRightTableKey"
+          @current-change="onCurrentChange"
+        />
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -44,6 +47,7 @@
       const defaultWhere = {};
       return {
         where: { ...defaultWhere },
+        tableHeight: 'calc((100vh - 420px) / 2)',
         columns: [
           {
             width: 45,
@@ -63,21 +67,21 @@
             label: '品种(材料)编码',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 90
+            minWidth: 140
           },
           {
             prop: 'Varietie_Name',
             label: '品种全称',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 90
+            minWidth: 120
           },
           {
             prop: 'Specification_Or_Type',
             label: '型号/规格',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 90
+            minWidth: 120
           },
           {
             prop: 'Unit',
@@ -91,7 +95,7 @@
             label: '生产企业名称',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 90
+            minWidth: 140
           },
           {
             prop: 'Purchase_Price',
@@ -110,35 +114,35 @@
             label: '系数',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 55
+            minWidth: 65
           },
           {
             prop: 'Stock_Up_Plan_Def_Quantity',
             label: '备货/包',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 80
+            minWidth: 120
           },
           {
             prop: 'Stock_Up_Plan_Goods_Quantity',
             label: '备货/散',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 80
+            minWidth: 120
           },
           {
             prop: 'ReceiptQty',
             label: '实收数量',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 100
+            minWidth: 120
           },
           {
             prop: 'RemainQty',
             label: '剩余备货',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 100,
+            minWidth: 120,
             formatter: (_row, _column, cellValue) => {
               return (
                 Number(_row.Stock_Up_Plan_Goods_Quantity) -
@@ -151,7 +155,7 @@
             label: '备货时间',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 100
+            minWidth: 120
           }
         ],
         pageSize: 10,
@@ -162,7 +166,14 @@
         current: null
       };
     },
+    created() {
+      localStorage.setItem(
+        'NewDeptPlannedDeliveryBottomRightTableCacheKeyTableSize',
+        JSON.stringify('mini')
+      );
+    },
     methods: {
+      handleDelete() {},
       datasource({ page, limit, where, order }) {
         let data = GetPickingInfo({ page, limit, where, order }).then((res) => {
           var tData = {
@@ -192,4 +203,12 @@
     }
   };
 </script>
-<style lang=""></style>
+<style scoped lang="scss">
+.bottom-right-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  height: 100%;
+  min-height: 0;
+}
+</style>

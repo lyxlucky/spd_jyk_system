@@ -1,39 +1,56 @@
 <template>
-  <div class="" v-if="RenderTabel">
-    <!-- 数据表格 -->
-    <KSDepartmentalPlan-search
-      @search="reload"
-      @exportData="exportData"
-      ref="search"
-    />
-    <ele-pro-table
-      :key="key"
-      :reserve-selection="true"
-      highlight-current-row
-      :row-key="(row) => row.PlanNum"
-      @current-change="onCurrentChange"
-      ref="table"
-      height="18vh"
-      fullHeight="80vh"
-      :rowClickChecked="true"
-      :stripe="true"
-      :pageSize="pageSize"
-      :pageSizes="pageSizes"
-      :columns="columns"
-      :datasource="datasource"
-      :selection.sync="selection"
-      :needPage="false"
-      cache-key="KSInventoryBasicDataTable"
-    >
-      <!-- 表头工具栏 -->
-      <template v-slot:toolbar>
-        <!-- 搜索表单 -->
+  <div v-if="RenderTabel" class="ks-dept-plan-main">
+    <div class="spd-panel spd-panel--search">
+      <div class="spd-panel__head spd-panel__head--split">
+        <span>查询条件</span>
+        <span class="spd-panel__head-meta">
+          当月-申报总金额:{{ applyPlanSbz }}
+          消耗总金额:{{ applyPlanXhz }}
+          消耗/计划:{{ applyPlanBl }}
+        </span>
+      </div>
+      <KSDepartmentalPlan-search
+        @search="reload"
+        @exportData="exportData"
+        ref="search"
+      />
+    </div>
+
+    <div class="spd-panel spd-table-panel">
+      <div class="spd-panel__head">申领计划单列表</div>
+      <div class="spd-table-panel__wrap">
+        <!-- 数据表格 -->
+        <ele-pro-table
+          :key="key"
+          ref="table"
+          class="data-table"
+          size="mini"
+          border
+          stripe
+          :reserve-selection="true"
+          highlight-current-row
+          :row-key="(row) => row.PlanNum"
+          :toolbar="false"
+          :header-overflow-hidden="false"
+          :rowClickChecked="true"
+          :pageSize="pageSize"
+          :pageSizes="pageSizes"
+          :columns="columns"
+          :datasource="datasource"
+          :selection.sync="selection"
+          :needPage="false"
+          :height="tableHeight"
+          cache-key="KSDepartmentalPlanMainTable"
+          @current-change="onCurrentChange"
+        >
+          <!-- 表头工具栏 -->
+          <!-- <template v-slot:toolbar>
         <label
           >当月-申报总金额:{{ applyPlanSbz }}&nbsp;&nbsp;消耗总金额:{{
             applyPlanXhz
           }}&nbsp;&nbsp;消耗/计划:{{ applyPlanBl }}</label
         >
-      </template>
+      </template> -->
 
       <template v-slot:State="{ row }">
         <el-tag size="mini" v-if="row.State == 0" type="primary">新增</el-tag>
@@ -113,7 +130,7 @@
           @click="OpenUpdateRemarksBox(row)"
           >无</el-link
         >
-        <el-tag v-else type="primary" @click="OpenUpdateRemarksBox(row)">{{
+        <el-tag v-else type="primary" size="mini" @click="OpenUpdateRemarksBox(row)">{{
           row.BZ
         }}</el-tag>
       </template>
@@ -136,18 +153,19 @@
             </el-link>
           </template>
         </el-popconfirm>
-        <el-button
+        <el-link
           v-if="row.State == 1"
-          size="mini"
           type="primary"
+          :underline="false"
           icon="el-icon-edit"
-          class="ele-btn-icon"
           @click="ReturnStateBtn(row)"
         >
-          取消提交</el-button
-        >
+          取消提交
+        </el-link>
       </template>
-    </ele-pro-table>
+        </ele-pro-table>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -195,7 +213,7 @@
             resizable: false,
             slot: 'action',
             showOverflowTooltip: true,
-            fixed: 'right'
+            className: 'action-col'
           },
           {
             prop: 'SCIENTIFIC_TYPE',
@@ -318,6 +336,7 @@
           }
         ],
         toolbar: false,
+        tableHeight: 'calc((100vh - 420px) / 2)',
         pageSize: 9999999,
         pagerCount: 2,
         pageSizes: [2, 10, 20, 50, 100, 9999999],
@@ -625,6 +644,7 @@
       }
     },
     created() {
+      localStorage.setItem('KSDepartmentalPlanMainTableSize', JSON.stringify('mini'));
       // this.getdatasource();
       this.GetConsume();
     },
@@ -637,7 +657,13 @@
 </script>
 
 <style scoped>
-  .ele-body {
-    padding: 0px;
-  }
+.ks-dept-plan-main >>> .el-table th .cell {
+  white-space: nowrap;
+}
+
+.ks-dept-plan-main >>> .action-col .cell {
+  line-height: 23px;
+  padding-top: 0;
+  padding-bottom: 0;
+}
 </style>

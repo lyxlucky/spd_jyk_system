@@ -109,7 +109,7 @@ export default {
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 60,
+          minWidth: 180,
           formatter: (row, column, cellValue) => {
             if(cellValue == '1'){
               cellValue = '一级';
@@ -141,7 +141,7 @@ export default {
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 120
+          minWidth: 130
         },
         {
           prop: 'PROD_REGISTRATION_NAME',

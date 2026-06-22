@@ -101,7 +101,7 @@ export function buildColumns() {
     {
       prop: 'CREATE_BATCH',
       label: '导入时间',
-      width: 90,
+      width: 120,
       align: 'center',
       showOverflowTooltip: true
     },
@@ -116,26 +116,26 @@ export function buildColumns() {
     {
       prop: 'SPD_PRICE',
       label: 'SPD中标价',
-      width: 90,
+      width: 120,
       align: 'center',
       slot: 'SPD_PRICE'
     },
-    { prop: 'QTY', label: 'SPD库存', width: 80, align: 'center' },
+    { prop: 'QTY', label: 'SPD库存', width: 120, align: 'center' },
     {
       prop: 'SUPPLY_PRICE',
       label: 'SPD库存价',
-      width: 90,
+      width: 120,
       align: 'center',
       slot: 'SUPPLY_PRICE'
     },
     {
       prop: 'SPD_UNIT',
       label: 'SPD单位',
-      width: 80,
+      width: 120,
       align: 'center',
       slot: 'SPD_UNIT'
     },
-    { prop: 'UNIT', label: '单位', width: 70, align: 'center' },
+    { prop: 'UNIT', label: '单位', width: 80, align: 'center' },
     { prop: 'PRICE', label: '单价', width: 80, align: 'center' },
     {
       prop: 'IS_USE',
@@ -147,14 +147,14 @@ export function buildColumns() {
     {
       prop: 'CONTRACT_START',
       label: '合同生效日期',
-      width: 110,
+      width: 140,
       align: 'center',
       slot: 'CONTRACT_START'
     },
     {
       prop: 'CONTRACT_END',
       label: '合同失效日期',
-      width: 110,
+      width: 140,
       align: 'center',
       slot: 'CONTRACT_END'
     },
@@ -176,7 +176,7 @@ export function buildColumns() {
       width: 180,
       showOverflowTooltip: true
     },
-    { prop: 'PKG_GG', label: '包装规格', width: 100, showOverflowTooltip: true },
+    { prop: 'PKG_GG', label: '包装规格', width: 120, showOverflowTooltip: true },
     { prop: 'SUP_NAME', label: '供应商', width: 180, showOverflowTooltip: true },
     { prop: 'XH', label: '型号', width: 140, showOverflowTooltip: true },
     { prop: 'GG', label: '规格', width: 140, showOverflowTooltip: true },
@@ -192,22 +192,22 @@ export function buildColumns() {
     {
       prop: 'MEDICAL_CODE27',
       label: '国家医保编码（27位）',
-      width: 170,
+      width: 200,
       showOverflowTooltip: true
     },
-    { prop: 'CITY_VAR_CODE', label: '市平台产品码', width: 120, showOverflowTooltip: true },
-    { prop: 'CITY_SPE_CODE', label: '市平台规格型号码', width: 150, showOverflowTooltip: true },
+    { prop: 'CITY_VAR_CODE', label: '市平台产品码', width: 140, showOverflowTooltip: true },
+    { prop: 'CITY_SPE_CODE', label: '市平台规格型号码', width: 180, showOverflowTooltip: true },
     { prop: 'BRAND', label: '品牌', width: 120, showOverflowTooltip: true },
     { prop: 'USE_DEPT', label: '使用科室', width: 140, showOverflowTooltip: true },
     { prop: 'SUP_PEOPLE', label: '联系人', width: 100, showOverflowTooltip: true },
-    { prop: 'SUP_PHONE', label: '联系方式', width: 110, showOverflowTooltip: true },
-    { prop: 'LIMIT_SUM_PRICE', label: '合同限购金额', width: 110, showOverflowTooltip: true },
-    { prop: 'SEND_TYPE', label: '送货方式（快递\\配送）', width: 140, showOverflowTooltip: true },
+    { prop: 'SUP_PHONE', label: '联系方式', width: 130, showOverflowTooltip: true },
+    { prop: 'LIMIT_SUM_PRICE', label: '合同限购金额', width: 140, showOverflowTooltip: true },
+    { prop: 'SEND_TYPE', label: '送货方式（快递\\配送）', width: 200, showOverflowTooltip: true },
     { prop: 'SUPPORTING_EQU', label: '配套设备', width: 140, showOverflowTooltip: true },
     {
       prop: 'SUPPORTING_EQU_BRAND',
       label: '配套设备品牌',
-      width: 140,
+      width: 160,
       showOverflowTooltip: true
     },
     {
@@ -219,21 +219,21 @@ export function buildColumns() {
     {
       prop: 'HIGH_OR_LOW_CLASS',
       label: '是否高值',
-      width: 80,
+      width: 120,
       align: 'center',
       slot: 'HIGH_OR_LOW_CLASS'
     },
     {
       prop: 'IS_IN_COUNTRY_IMPORT',
       label: '国家高值医用耗材重点治理',
-      width: 170,
+      width: 240,
       align: 'center',
       slot: 'IS_IN_COUNTRY_IMPORT'
     },
     {
       prop: 'HIGH_CLASS_XH',
       label: '重点治理序号',
-      width: 100,
+      width: 140,
       align: 'center',
       showOverflowTooltip: true
     },

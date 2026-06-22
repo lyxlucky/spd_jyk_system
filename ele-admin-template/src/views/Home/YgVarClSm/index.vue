@@ -20,6 +20,8 @@
         <el-form-item label="来源">
           <el-input v-model="filters.SOURCE_FROM" clearable style="width: 120px" />
         </el-form-item>
+      </el-form>
+      <el-form size="small" inline class="filter-block" @submit.native.prevent>
         <el-form-item label="对码是否一致">
           <el-select v-model="filters.ISDM" clearable style="width: 90px">
             <el-option label="全部" value="" />
@@ -48,9 +50,6 @@
             <el-option label="调价" value="2" />
           </el-select>
         </el-form-item>
-      </el-form>
-
-      <el-form size="small" inline class="filter-block" @submit.native.prevent>
         <el-form-item label="供应商">
           <el-input v-model="filters.SUPPLIER_NAME" clearable style="width: 140px" />
         </el-form-item>

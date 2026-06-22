@@ -1,22 +1,46 @@
-<template lang="">
-  <div>
-    <ele-pro-table
-      highlight-current-row
-      highlight-selection-row
-      ref="table"
-      @current-change="onCurrentChange"
-      height="65vh"
-      :rowClickChecked="true"
-      :initLoad="false"
-      :stripe="true"
-      :pageSize="pageSize"
-      :pageSizes="pageSizes"
-      :columns="columns"
-      :datasource="datasource"
-      :selection.sync="selection"
-      cache-key="WarehouseTransferRightTable"
-    >
-      <template v-slot:toolbar>
+<template>
+  <div class="warehouse-transfer-right">
+    <div class="spd-panel spd-panel--search">
+      <div class="spd-panel__head">操作</div>
+      <div class="spd-panel__body">
+        <el-form size="mini" :inline="true" class="ele-form-search">
+          <el-form-item class="ele-form-actions">
+            <el-button
+              type="danger"
+              icon="el-icon-delete"
+              :disabled="!isDeleteEnable"
+              @click="deleteItem()"
+            >
+              删除
+            </el-button>
+          </el-form-item>
+        </el-form>
+      </div>
+    </div>
+
+    <div class="spd-panel spd-table-panel">
+      <div class="spd-table-panel__wrap">
+        <ele-pro-table
+          highlight-current-row
+          highlight-selection-row
+          ref="table"
+          class="data-table"
+          size="mini"
+          border
+          :toolbar="false"
+          :header-overflow-hidden="false"
+          :height="tableHeight"
+          :rowClickChecked="true"
+          :initLoad="false"
+          :pageSize="pageSize"
+          :pageSizes="pageSizes"
+          :columns="columns"
+          :datasource="datasource"
+          :selection.sync="selection"
+          cache-key="WarehouseTransferRightTable"
+          @current-change="onCurrentChange"
+        >
+          <!-- <template v-slot:toolbar>
         <div>
           <el-button
             type="danger"
@@ -27,19 +51,18 @@
             >删除</el-button
           >
         </div>
-      </template>
+      </template> -->
 
-      <template v-slot:TK_STAE="{ row }">
-        <el-tag v-if="row.TK_STAE == 0" type="primary" size="small"
-          >新增</el-tag
-        >
-        <el-tag v-if="row.TK_STAE == 1" type="success" size="small"
-          >确认</el-tag
-        >
-      </template>
-    </ele-pro-table>
+          <template v-slot:TK_STAE="{ row }">
+            <el-tag v-if="row.TK_STAE == 0" type="primary" size="mini">新增</el-tag>
+            <el-tag v-if="row.TK_STAE == 1" type="success" size="mini">确认</el-tag>
+          </template>
+        </ele-pro-table>
+      </div>
+    </div>
   </div>
 </template>
+
 <script>
   import {
     getDEPT_TK_DEF,
@@ -88,6 +111,7 @@
             showOverflowTooltip: true
           }
         ],
+        tableHeight: 'calc(100vh - 300px)',
         pageSize: 10,
         pagerCount: 2,
         pageSizes: [10, 20, 50, 100, 9999999],
@@ -159,6 +183,9 @@
         return this.selection.length > 0;
       }
     },
+    created() {
+      localStorage.setItem('WarehouseTransferRightTableSize', JSON.stringify('mini'));
+    },
     mounted() {
       this.$bus.$on(`${this.$route.path}/TriggerRightTablleReload`,() => {
         this.reload(this.where);
@@ -179,4 +206,21 @@
     }
   };
 </script>
-<style lang=""></style>
+
+<style scoped lang="scss">
+:deep(.el-form-item) {
+  margin-bottom: 0;
+}
+
+.ele-form-actions :deep(.el-form-item__content) {
+  max-width: none !important;
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.ele-form-actions :deep(.el-button) {
+  margin: 0;
+}
+</style>

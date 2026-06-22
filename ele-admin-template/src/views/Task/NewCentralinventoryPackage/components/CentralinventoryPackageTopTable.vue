@@ -66,13 +66,13 @@
           {
             prop: 'Name',
             label: '仓库名称',
-            minWidth: 80,
+            minWidth: 120,
             showOverflowTooltip: true
           },
           {
             prop: 'Varietie_Code',
             label: '品种(材料)编码',
-            minWidth: 100,
+            minWidth: 140,
             showOverflowTooltip: true
           },
           {
@@ -91,7 +91,7 @@
             prop: 'Unit',
             align: 'center',
             label: '单位',
-            minWidth: 50,
+            minWidth: 80,
             showOverflowTooltip: true
           },
           {
@@ -111,14 +111,14 @@
           {
             prop: 'Batch',
             label: '生产批号',
-            minWidth: 100,
+            minWidth: 120,
             sortable: true,
             showOverflowTooltip: true
           },
           {
             prop: 'Batch_Validity_Period',
             label: '失效日期',
-            minWidth: 90,
+            minWidth: 120,
             formatter: (d, column, cellValue) => {
               var bvp_date = d.Batch_Validity_Period.substr(0, 10);
               var this_date = new Date(bvp_date).getTime();
@@ -150,13 +150,13 @@
           {
             prop: 'Up_Quantity',
             label: '可用散货数量',
-            minWidth: 90,
+            minWidth: 160,
             showOverflowTooltip: true
           },
           {
             slot: 'makeQuantity',
             label: '制包数量',
-            minWidth: 90,
+            minWidth: 120,
             showOverflowTooltip: true
           }
         ],

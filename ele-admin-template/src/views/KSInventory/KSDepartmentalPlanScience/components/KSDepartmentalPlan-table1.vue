@@ -1,139 +1,103 @@
 <template>
-  <div class="ele-body" v-if="RenderTabel">
-    <!-- 数据表格 -->
-    <ele-pro-table
-      :key="key"
-      :reserve-selection="true"
-      highlight-current-row
-      :row-key="(row) => row.PlanNum"
-      @current-change="onCurrentChange"
-      ref="table"
-      height="18vh"
-      fullHeight="80vh"
-      :rowClickChecked="true"
-      :stripe="true"
-      :pageSize="pageSize"
-      @expand-change="handleTableExpandChange"
-      :pageSizes="pageSizes"
-      :columns="columns"
-      :datasource="datasource"
-      :selection.sync="selection"
-      :needPage="false"
-      cache-key="KSInventoryBasicDataTable"
-    >
-      <template v-slot:expand="{ row }">
-        <el-form
-          label-width="140px"
-          label-position="left"
-          size="mini"
-          class="ele-form-detail"
-        >
-        {{ row }}
-        </el-form>
-      </template>
+  <div v-if="RenderTabel" class="ks-dept-plan-main">
+    <div class="spd-panel spd-panel--search">
+      <div class="spd-panel__head spd-panel__head--split">
+        <span>查询条件</span>
+        <span class="spd-panel__head-meta">
+          当月-申报总金额:{{ applyPlanSbz }}
+          消耗总金额:{{ applyPlanXhz }}
+          消耗/计划:{{ applyPlanBl }}
+        </span>
+      </div>
+      <KSDepartmentalPlan-search
+        @search="reload"
+        @bindBudget="handleBindBudget"
+        :selection="selection"
+        ref="search"
+      />
+    </div>
 
-      <!-- 表头工具栏 -->
-      <template v-slot:toolbar>
-        <!-- 搜索表单 -->
-        <label
-          >当月-申报总金额:{{ applyPlanSbz }} 消耗总金额:{{
-            applyPlanXhz
-          }}
-          消耗/计划:{{ applyPlanBl }}</label
-        >
-        <KSDepartmentalPlan-search
-          @search="reload"
-          @bindBudget="handleBindBudget"
-          :selection="selection"
-          ref="search"
-        />
-      </template>
-
-      <template v-slot:PlanNum="{ row }">
-        <el-link type="primary" @click="openDrawer(row.PlanNum)">{{ row.PlanNum }}</el-link>
-      </template>
-
-      <template v-slot:State="{ row }">
-        <el-tag size="mini" v-if="row.State == 0" type="primary">新增</el-tag>
-        <el-tag size="mini" v-else-if="row.State == 1" type="warning"
-          >已提交</el-tag
-        >
-        <el-tag size="mini" v-else-if="row.State == 2" type="primary"
-          >配送中</el-tag
-        >
-        <el-tag
+    <div class="spd-panel spd-table-panel">
+      <div class="spd-panel__head">申领计划单列表</div>
+      <div class="spd-table-panel__wrap">
+        <ele-pro-table
+          :key="key"
+          ref="table"
+          class="data-table"
           size="mini"
-          v-else-if="row.State == 5"
-          type="primary"
-          color="#2ee693"
-          >已审核</el-tag
+          border
+          stripe
+          :reserve-selection="true"
+          highlight-current-row
+          :row-key="(row) => row.PlanNum"
+          :toolbar="false"
+          :header-overflow-hidden="false"
+          :rowClickChecked="true"
+          :pageSize="pageSize"
+          :pageSizes="pageSizes"
+          :columns="columns"
+          :datasource="datasource"
+          :selection.sync="selection"
+          :needPage="false"
+          :height="tableHeight"
+          cache-key="KSDepartmentalPlanScienceMainTable"
+          @current-change="onCurrentChange"
+          @expand-change="handleTableExpandChange"
         >
-
-        <el-tag
-          size="mini"
-          v-else-if="row.State == 6 && row.QUANITY == 0"
-          type="success"
-          >已审批</el-tag
-        >
-        <el-tag size="mini" v-else-if="row.State == -6" type="danger"
-          >未审批</el-tag
-        >
-        <el-tag
-          size="mini"
-          v-else-if="
-            row.QUANITY > 0 &&
-            row.QUANITY != row.SUM_Apply_Qty &&
-            row.State != 10
-          "
-          type="danger"
-          >未收全</el-tag
-        >
-        <el-tag
-          size="mini"
-          v-else-if="row.SUM_Apply_Qty == row.QUANITY"
-          type="success"
-          >已收全</el-tag
-        >
-        <el-tag
-          size="mini"
-          v-else-if="row.State == 10"
-          type="primary"
-          color="#e60000"
-          style="color: white"
-          >强制结束</el-tag
-        >
-      </template>
-      <!-- 操作列 -->
-      <template v-slot:action="{ row }">
-        <el-popconfirm
-          class="ele-action"
-          title="确定删除？"
-          @confirm="remove(row)"
-        >
-          <template v-slot:reference>
-            <el-link
-              type="danger"
-              size="mini"
-              :underline="false"
-              v-if="row.State == 0"
-              icon="el-icon-delete"
-            >
-              删除
-            </el-link>
+          <template v-slot:expand="{ row }">
+            <el-form label-width="140px" label-position="left" size="mini" class="ele-form-detail">
+              {{ row }}
+            </el-form>
           </template>
-        </el-popconfirm>
-        <el-button
-          v-if="row.State == 1"
-          size="mini"
-          type="primary"
-          icon="el-icon-edit"
-          class="ele-btn-icon"
-          @click="ReturnStateBtn(row)"
-        >
-          取消提交</el-button
-        >
-      </template>
-    </ele-pro-table>
+
+          <template v-slot:PlanNum="{ row }">
+            <el-link type="primary" :underline="false" @click="openDrawer(row.PlanNum)">{{ row.PlanNum }}</el-link>
+          </template>
+
+          <template v-slot:State="{ row }">
+            <el-tag size="mini" v-if="row.State == 0" type="primary">新增</el-tag>
+            <el-tag size="mini" v-else-if="row.State == 1" type="warning">已提交</el-tag>
+            <el-tag size="mini" v-else-if="row.State == 2" type="primary">配送中</el-tag>
+            <el-tag size="mini" v-else-if="row.State == 5" type="primary" color="#2ee693">已审核</el-tag>
+            <el-tag size="mini" v-else-if="row.State == 6 && row.QUANITY == 0" type="success">已审批</el-tag>
+            <el-tag size="mini" v-else-if="row.State == -6" type="danger">未审批</el-tag>
+            <el-tag
+              size="mini"
+              v-else-if="row.QUANITY > 0 && row.QUANITY != row.SUM_Apply_Qty && row.State != 10"
+              type="danger"
+            >未收全</el-tag>
+            <el-tag size="mini" v-else-if="row.SUM_Apply_Qty == row.QUANITY" type="success">已收全</el-tag>
+            <el-tag
+              size="mini"
+              v-else-if="row.State == 10"
+              type="primary"
+              color="#e60000"
+              style="color: white"
+            >强制结束</el-tag>
+          </template>
+
+          <template v-slot:action="{ row }">
+            <el-popconfirm class="ele-action" title="确定删除？" @confirm="remove(row)">
+              <template v-slot:reference>
+                <el-link
+                  v-if="row.State == 0"
+                  type="danger"
+                  :underline="false"
+                  icon="el-icon-delete"
+                >删除</el-link>
+              </template>
+            </el-popconfirm>
+            <el-button
+              v-if="row.State == 1"
+              size="mini"
+              type="text"
+              icon="el-icon-edit"
+              @click="ReturnStateBtn(row)"
+            >取消提交</el-button>
+          </template>
+        </ele-pro-table>
+      </div>
+    </div>
 
     <!-- 申领单详情 Drawer -->
     <KSDepartmentalPlanDrawer
@@ -152,20 +116,25 @@
     >
       <ele-pro-table
         ref="budgetTable"
+        class="data-table"
+        size="mini"
+        border
+        stripe
+        :toolbar="false"
+        :header-overflow-hidden="false"
         :columns="budgetColumns"
         :datasource="budgetDatasource"
         :selection.sync="budgetSelection"
-        :tool-style="{ display: 'none' }"
         height="400px"
         :page-sizes="[10, 20, 50, 100]"
         :page-size="20"
         :highlight-current-row="true"
+        cache-key="KSDepartmentalPlanScienceBudgetTable"
         @selection-change="handleBudgetSelectionChange"
-      >
-      </ele-pro-table>
+      />
       <div slot="footer" class="dialog-footer">
-        <el-button @click="bindBudgetDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="confirmBindBudget">确 定</el-button>
+        <el-button size="mini" @click="bindBudgetDialogVisible = false">取消</el-button>
+        <el-button type="primary" size="mini" @click="confirmBindBudget">确定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -190,6 +159,7 @@
     },
     data() {
       return {
+        tableHeight: 'calc((100vh - 420px) / 2)',
         // 表格列配置
         columns: [
           {
@@ -202,12 +172,11 @@
           {
             columnKey: 'action',
             label: '操作',
-            width: 120,
+            width: 150,
             align: 'center',
             resizable: false,
             slot: 'action',
-            showOverflowTooltip: true,
-            fixed: 'right'
+            className: 'action-col'
           },
           {
             prop: 'SCIENTIFIC_TYPE',
@@ -642,7 +611,13 @@
 </script>
 
 <style scoped>
-  .ele-body {
-    padding: 0px;
-  }
+.ks-dept-plan-main >>> .el-table th .cell {
+  white-space: nowrap;
+}
+
+.ks-dept-plan-main >>> .action-col .cell {
+  line-height: 23px;
+  padding-top: 0;
+  padding-bottom: 0;
+}
 </style>

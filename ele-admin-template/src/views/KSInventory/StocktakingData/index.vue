@@ -1,27 +1,28 @@
 <template>
-  <div>
-    <el-container>
-      <el-header height="370">
-        <el-card shadow="always" style="padding: 5px;">
-          <!-- <div slot="header" class="clearfix">
-            <span>申领计划单列表</span>
-          </div> -->
-          <!-- :IsReload="IsReloadTag" -->
-          <StocktakingDataTabel></StocktakingDataTabel>
-        </el-card>
-      </el-header>
-      <el-main style="padding-top: 1px">
-        <el-card shadow="always" style="padding: 5px;">
-          <!-- <div slot="header" class="clearfix">
-            <span>申领单详情</span>
-          </div> -->
-          <!-- @clickReload="clickReload" v-if="isActive" :KSDepartmentalPlanData="KSDepartmentalPlanData" -->
-           
-        <StocktakingDataTabelDel>
-        </StocktakingDataTabelDel>
-        </el-card>
-      </el-main>
-    </el-container>
+  <div class="ele-body spd-page stocktaking-data-page">
+    <!-- <el-container> -->
+    <!-- <el-header height="370"> -->
+    <el-card shadow="never" class="stocktaking-data-card">
+      <!-- <el-card shadow="always" style="padding: 5px;"> -->
+      <!-- <div slot="header" class="clearfix">
+        <span>申领计划单列表</span>
+      </div> -->
+      <!-- :IsReload="IsReloadTag" -->
+      <StocktakingDataTabel></StocktakingDataTabel>
+      <!-- </el-card> -->
+      <!-- </el-header> -->
+      <!-- <el-main style="padding-top: 1px"> -->
+      <!-- <el-card shadow="always" style="padding: 5px;"> -->
+      <!-- <div slot="header" class="clearfix">
+        <span>申领单详情</span>
+      </div> -->
+      <!-- @clickReload="clickReload" v-if="isActive" :KSDepartmentalPlanData="KSDepartmentalPlanData" -->
+      <StocktakingDataTabelDel>
+      </StocktakingDataTabelDel>
+      <!-- </el-card> -->
+      <!-- </el-main> -->
+    </el-card>
+    <!-- </el-container> -->
   </div>
 </template>
 
@@ -62,3 +63,16 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.stocktaking-data-card :deep(.el-card__body) {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
+}
+
+.stocktaking-data-page >>> .el-table th .cell {
+  white-space: nowrap;
+}
+</style>

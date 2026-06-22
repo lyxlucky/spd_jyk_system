@@ -1,25 +1,34 @@
 <!-- 搜索表单 -->
 <template>
-  <el-form label-width="77px" class="ele-form-search" @keyup.enter.native="search" @submit.native.prevent>
-    
-    <el-row :gutter="20">
-      <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 8 }">
-        <el-input size="mini" clearable v-model="where.INSTRUMENT_NAME" style="width:180px" placeholder="仪器名称/代码" />
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 8 }">
-        <el-input size="mini" clearable v-model="where.WORKING_GROUP" placeholder="工作组" />
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 3, md: 4 } : { span: 4 }">
-        <div class="ele-form-actions">
-          <el-button size="mini" type="primary" icon="el-icon-search" class="ele-btn-icon" @click="search">
-            查询
-          </el-button>
-          <el-button size="mini" icon="el-icon-refresh" @click="reset">重置</el-button>
-        </div>
-      </el-col>
-    </el-row>
-   
-  </el-form>
+  <div class="spd-panel__body">
+    <el-form
+      size="mini"
+      :inline="true"
+      @keyup.enter.native="search"
+      @submit.native.prevent
+    >
+      <el-form-item label="仪器">
+        <el-input
+          v-model="where.INSTRUMENT_NAME"
+          clearable
+          style="width: 180px"
+          placeholder="仪器名称/代码"
+        />
+      </el-form-item>
+      <el-form-item label="工作组">
+        <el-input
+          v-model="where.WORKING_GROUP"
+          clearable
+          placeholder="工作组"
+          style="width: 120px"
+        />
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" icon="el-icon-search" @click="search">查询</el-button>
+        <el-button icon="el-icon-refresh" @click="reset">重置</el-button>
+      </el-form-item>
+    </el-form>
+  </div>
 </template>
 
 <script>
@@ -27,16 +36,16 @@ import {
   CreatList,
   ReturnInitState
 } from '@/api/KSInventory/KSDepartmentalPlan';
+
+const defaultWhere = () => ({
+  INSTRUMENT_NAME: '',
+  WORKING_GROUP: ''
+});
+
 export default {
   data() {
-    // 默认表单数据
-    const defaultWhere = {
-      INSTRUMENT_NAME: '',
-      WORKING_GROUP: '',
-    };
     return {
-      // 表单数据
-      where: { ...defaultWhere },
+      where: defaultWhere()
     };
   },
   computed: {
@@ -52,7 +61,7 @@ export default {
     },
     /*  重置 */
     reset() {
-      this.where = { ...this.defaultWhere };
+      this.where = defaultWhere();
       this.search();
     },
     /* 创建申领单 */

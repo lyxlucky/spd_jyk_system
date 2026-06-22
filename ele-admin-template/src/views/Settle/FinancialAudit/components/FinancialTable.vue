@@ -1,23 +1,35 @@
-<template lang="">
-  <div>
-    <FinancialTableSearch />
-    <ele-pro-table
-      :reserve-selection="true"
-      highlight-current-row
-      @current-change="onCurrentChange"
-      ref="table"
-      height="70vh"
-      :rowClickChecked="true"
-      :stripe="true"
-      :pageSize="pageSize"
-      :pageSizes="pageSizes"
-      :columns="columns"
-      :datasource="datasource"
-      :selection.sync="selection"
-      cache-key="financialTableCacheKey"
-      key="financialTableKey"
-    >
-    </ele-pro-table>
+<template>
+  <div class="financial-audit">
+    <div class="spd-panel spd-panel--search">
+      <div class="spd-panel__head">查询条件</div>
+      <FinancialTableSearch @search="reload" />
+    </div>
+    <div class="spd-panel spd-table-panel">
+      <div class="spd-panel__head">财务审核列表</div>
+      <div class="spd-table-panel__wrap">
+        <ele-pro-table
+          ref="table"
+          class="data-table"
+          size="mini"
+          border
+          stripe
+          :toolbar="false"
+          :header-overflow-hidden="false"
+          :reserve-selection="true"
+          highlight-current-row
+          :row-click-checked="true"
+          :height="tableHeight"
+          :page-size="pageSize"
+          :page-sizes="pageSizes"
+          :columns="columns"
+          :datasource="datasource"
+          :selection.sync="selection"
+          cache-key="financialTableCacheKey"
+          key="financialTableKey"
+          @current-change="onCurrentChange"
+        />
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -32,6 +44,7 @@
       const defaultWhere = {};
       return {
         where: { ...defaultWhere },
+        tableHeight: 'calc(100vh - 420px)',
         // 表格列配置
         columns: [
           {
@@ -61,7 +74,7 @@
             label: '微讯通月份',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 80,
+            minWidth: 140,
             formatter: (row, column, cellValue) => {
               if (cellValue == null) {
                 return '-';
@@ -96,7 +109,7 @@
             label: '本院发票(收货自带)',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 100
+            minWidth: 200
           },
           {
             prop: 'SUPPLIER_NAME',
@@ -110,7 +123,7 @@
             label: '财务类别',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 100,
+            minWidth: 140,
             formatter: (row, column, cellValue) => {
               if (
                 row.CLASSIFIC_PROPERTIES == 1 ||
@@ -195,21 +208,21 @@
             label: '型号/规格',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 100
+            minWidth: 120
           },
           {
             prop: 'UNIT',
             label: '单位',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 55
+            minWidth: 65
           },
           {
             prop: 'PRICE',
             label: '单价',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 55
+            minWidth: 65
           },
           {
             prop: 'QTY',
@@ -230,7 +243,7 @@
             label: '生产企业名称',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 100
+            minWidth: 140
           },
           {
             prop: 'BATCH',
@@ -244,28 +257,28 @@
             label: '批次号',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 80
+            minWidth: 100
           },
           {
             prop: 'BATCH_PRODUCTION_DATE',
             label: '生产日期',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 80
+            minWidth: 100
           },
           {
             prop: 'BATCH_VALIDITY_PERIOD',
             label: '有效期',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 80
+            minWidth: 100
           },
           {
             prop: 'SIGNSTATUS',
             label: '医秒付签收状态',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 80,
+            minWidth: 180,
             formatter: (row, column, cellValue) => {
               if (cellValue == 1 || cellValue == '1') {
                 return '已签收';
@@ -279,7 +292,7 @@
             label: '审批状态',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 80,
+            minWidth: 120,
             formatter: (row, column, cellValue) => {
               if (cellValue == 1 || cellValue == '1') {
                 return '已审批';
@@ -293,21 +306,21 @@
             label: '审批时间',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 80
+            minWidth: 120
           },
           {
             prop: 'YG_ORDER_ID',
             label: '阳光订单',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 80
+            minWidth: 120
           },
           {
             prop: 'LS_IS_JC',
             label: '是否集采(时限)',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 80,
+            minWidth: 160,
             formatter: (row, column, cellValue) => {
               if (cellValue == 1 || cellValue == '1') {
                 return '集采';
@@ -321,21 +334,21 @@
             label: '集采备注',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 80
+            minWidth: 120
           },
           {
             prop: 'CHECKSTATUS',
             label: '医秒付发票状态',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 80
+            minWidth: 160
           },
           {
             prop: 'QSSTATE',
             label: '中心库发票签收',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 80,
+            minWidth: 160,
             formatter: (row, column, cellValue) => {
               if (cellValue == 1 || cellValue == '1') {
                 return '已签收';
@@ -345,7 +358,6 @@
             }
           }
         ],
-        toolbar: false,
         pageSize: 10,
         pageSizes: [10, 20, 40, 50, 100, 9999999],
         // 表格选中数据
@@ -354,7 +366,14 @@
         current: null
       };
     },
+    created() {
+      localStorage.setItem('financialTableCacheKeyTableSize', JSON.stringify('mini'));
+    },
     methods: {
+      reload(where) {
+        this.where = where || this.where;
+        this.$refs.table.reload({ page: 1, where: this.where });
+      },
       datasource({ page, limit, where, order }) {
         let data = getFinacialTableData({ page, limit, where, order }).then(
           (res) => {
@@ -371,4 +390,8 @@
     }
   };
 </script>
-<style lang=""></style>
+<style scoped lang="scss">
+.financial-audit >>> .el-table th .cell {
+  white-space: nowrap;
+}
+</style>

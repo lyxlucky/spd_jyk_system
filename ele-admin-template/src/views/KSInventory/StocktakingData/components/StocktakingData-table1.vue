@@ -1,35 +1,61 @@
 <template>
-  <div class="ele-body">
+  <div class="stocktaking-data-main">
     <!-- 数据表格 -->
-    <ele-pro-table :customStyle=customStyle :paginationStyle=paginationStyle :key="key" highlight-current-row @current-change="onCurrentChange" ref="table" :height="defaultHeight" :rowClickChecked="true" :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" @fullscreen-change="screenChange()" cache-key="StocktakingDataTabel">
+    <div class="spd-panel spd-panel--search">
+      <div class="spd-panel__head">查询条件</div>
       <!-- 表头工具栏 -->
-      <template v-slot:toolbar>
-        <!-- 搜索表单 -->
-        <StocktakingDataSearch @search="reload" />
-      </template>
+      <!-- 搜索表单 -->
+      <StocktakingDataSearch @search="reload" />
+    </div>
 
-      <!-- 操作列 -->
-      <template v-slot:ACTION="{ row }">
-        <el-button size="mini" :disabled="row.SUBMIT == 1" type="primary" icon="el-icon-check" class="ele-btn-icon" @click="submitItem(row)">提交</el-button>
-        <el-button size="mini" :disabled="row.SUBMIT == 1" type="danger" icon="el-icon-delete-solid" class="ele-btn-icon" @click="deleteItem(row)">删除</el-button>
-      </template>
+    <div class="spd-panel spd-table-panel">
+      <div class="spd-panel__head">盘点主单列表</div>
+      <div class="spd-table-panel__wrap">
+        <ele-pro-table
+          :key="key"
+          ref="table"
+          class="data-table"
+          size="mini"
+          border
+          stripe
+          highlight-current-row
+          :rowClickChecked="true"
+          :toolbar="false"
+          :header-overflow-hidden="false"
+          :height="defaultHeight"
+          :pageSize="pageSize"
+          :pageSizes="pageSizes"
+          :columns="columns"
+          :datasource="datasource"
+          :selection.sync="selection"
+          cache-key="StocktakingDataMainTable"
+          @current-change="onCurrentChange"
+          @fullscreen-change="screenChange()"
+        >
+          <!-- 操作列 -->
+          <template v-slot:ACTION="{ row }">
+            <el-button size="mini" :disabled="row.SUBMIT == 1" type="primary" icon="el-icon-check" class="ele-btn-icon" @click="submitItem(row)">提交</el-button>
+            <el-button size="mini" :disabled="row.SUBMIT == 1" type="danger" icon="el-icon-delete-solid" class="ele-btn-icon" @click="deleteItem(row)">删除</el-button>
+          </template>
 
-      <!-- 操作列 -->
-      <template v-slot:PC_PERCENT="{ row }">
-        <el-tag size="small" v-if="parseFloat(row.PC_COUNT / row.COUNT).toFixed(2) >= 0.9" type="success">{{
-          numberToPercent(row.PC_COUNT / row.COUNT) }}</el-tag>
-        <el-tag size="small" v-else-if="parseFloat(row.PC_COUNT / row.COUNT).toFixed(2) >= 0.8 && parseFloat(row.PC_COUNT / row.COUNT).toFixed(2) < 0.9" type="warning">{{ numberToPercent(row.PC_COUNT / row.COUNT) }}</el-tag>
-        <el-tag size="small" v-else-if="parseFloat(row.PC_COUNT / row.COUNT).toFixed(2) < 0.8" type="danger">{{
-          numberToPercent(row.PC_COUNT / row.COUNT) }}</el-tag>
-        <el-tag size="small" v-else type="danger">{{ numberToPercent(0) }}</el-tag>
-      </template>
+          <!-- 操作列 -->
+          <template v-slot:PC_PERCENT="{ row }">
+            <el-tag size="mini" v-if="parseFloat(row.PC_COUNT / row.COUNT).toFixed(2) >= 0.9" type="success">{{
+              numberToPercent(row.PC_COUNT / row.COUNT) }}</el-tag>
+            <el-tag size="mini" v-else-if="parseFloat(row.PC_COUNT / row.COUNT).toFixed(2) >= 0.8 && parseFloat(row.PC_COUNT / row.COUNT).toFixed(2) < 0.9" type="warning">{{ numberToPercent(row.PC_COUNT / row.COUNT) }}</el-tag>
+            <el-tag size="mini" v-else-if="parseFloat(row.PC_COUNT / row.COUNT).toFixed(2) < 0.8" type="danger">{{
+              numberToPercent(row.PC_COUNT / row.COUNT) }}</el-tag>
+            <el-tag size="mini" v-else type="danger">{{ numberToPercent(0) }}</el-tag>
+          </template>
 
-      <!-- 状态列 -->
-      <template v-slot:STATUS="{ row }">
-        <el-tag size="small" v-if="row.SUBMIT == 1" type="success">{{ "已提交" }}</el-tag>
-        <el-tag size="small" v-else type="warning">{{ "暂未提交" }}</el-tag>
-      </template>
-    </ele-pro-table>
+          <!-- 状态列 -->
+          <template v-slot:STATUS="{ row }">
+            <el-tag size="mini" v-if="row.SUBMIT == 1" type="success">{{ "已提交" }}</el-tag>
+            <el-tag size="mini" v-else type="warning">{{ "暂未提交" }}</el-tag>
+          </template>
+        </ele-pro-table>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -319,11 +345,7 @@ export default {
 
 
 <style scoped>
-.ele-body {
-  padding: 0px;
-}
-
-::v-deep .ele-table-tool-default {
-  padding: 0 0 0 5;
+.stocktaking-data-main >>> .el-table th .cell {
+  white-space: nowrap;
 }
 </style>

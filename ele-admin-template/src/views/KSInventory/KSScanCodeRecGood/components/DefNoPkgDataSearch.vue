@@ -1,17 +1,16 @@
 <!-- 搜索表单 -->
 <template>
-  <div>
-    <el-form class="ele-form-search">
-      <el-form-item style="margin-bottom: 0;">
-        <el-select size="mini" v-model="where.State" @change="search()">
-          <el-option label="全部" value=""></el-option>
-          <el-option label="在库" value="1"></el-option>
-          <el-option label="已消耗" value="0"></el-option>
+  <div class="spd-panel__body">
+    <el-form size="mini" :inline="true" class="ele-form-search">
+      <el-form-item label="库存状态">
+        <el-select style="width: 100px" v-model="where.State" @change="search()">
+          <el-option label="全部" value="" />
+          <el-option label="在库" value="1" />
+          <el-option label="已消耗" value="0" />
         </el-select>
       </el-form-item>
     </el-form>
   </div>
-
 </template>
 
 <script>
@@ -21,18 +20,18 @@ import {
 } from '@/api/KSInventory/KSDepartmentalPlan';
 import { GetDistributeDefDetailNum } from '@/api/KSInventory/KSScanCodeRecGood';
 
+const defaultWhere = () => ({
+  Token: '',
+  State: '1'
+});
+
 export default {
   props: ['ApplyTempTableDataSearch', 'selection'],
   components: {},
   data() {
-    // 默认表单数据
-    const defaultWhere = {
-      Token: '',
-      State: '1',
-    };
     return {
       // 表单数据
-      where: { ...defaultWhere }
+      where: defaultWhere()
     };
   },
   computed: {
@@ -51,10 +50,16 @@ export default {
     },
     /*  重置 */
     reset() {
-      this.where = { ...this.defaultWhere };
+      this.where = defaultWhere();
       this.search();
     }
   },
   watch: {}
 };
 </script>
+
+<style scoped lang="scss">
+:deep(.el-form-item) {
+  margin-bottom: 0;
+}
+</style>
