@@ -8,6 +8,9 @@ export const B2B_BASE_URL = "http://47.106.243.154:802";
 const getRequestTimeout = () => {
   const env = process.env.VUE_APP_ENV;
   const envTimeoutMap = {
+    'lsww': 3600000,
+    'lsnw': 3600000,
+    'lgnw': 3600000,
     'local': 3600000, // 1小时
     'test': 3600000,  // 1小时
     'bjww': 3600000,  // 1小时
@@ -75,6 +78,9 @@ const getHomeHp = () => {
     'zxww': 'stzx',
     'zxnw': 'stzx',
     'lgww': 'lg',
+    'lgnw': 'lg',
+    'lsww': 'ls',
+    'lsnw': 'ls',
     'sebb': 'se2',  // 市二本部、大鹏院区、龙华院区统一使用同一个HOME_HP
     'sebbww': 'se2',  // 市二本部、大鹏院区、龙华院区统一使用同一个HOME_HP
     'sedp': 'se2',   // 三个环境使用同一个LOGO（待定）
@@ -133,6 +139,7 @@ const getBackBaseUrl = () => {
     'zxww': 'http://47.106.243.154:831',
     'zxnw': 'http://172.16.0.99:82',
     'lgww': 'http://218.17.60.162:10052',
+    'lgnw': 'http://10.0.149.12:8001',
     'sebb': 'http://10.173.128.80:18101/sebb',
     'sebbww': 'http://47.106.243.154:18101/sebb',
     'sedp': 'http://10.173.128.80:18105',
@@ -140,7 +147,9 @@ const getBackBaseUrl = () => {
     'selh': 'http://10.173.128.80:18103',
     'selhww': 'http://47.106.243.154:18101/selh',
     'xhww': 'http://47.106.243.154:891',
-    'xhnw': 'http://172.21.152.3:891'
+    'xhnw': 'http://172.21.152.3:891',
+    'lsww': '',
+    'lsnw': ''
   };
   return envMap[env] || 'http://localhost:16416';
 }
