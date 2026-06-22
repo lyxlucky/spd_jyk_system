@@ -103,6 +103,11 @@ const envConfig = {
     publicPath: '/jyk/',
     outputDir: 'jyk'
   },
+  lgnw: {
+    target: 'http://10.0.149.12:8001/',
+    publicPath: '/jyknw/',
+    outputDir: 'jyknw'
+  },
   sebb: {
     target: 'http://10.173.128.80:18101/sebb/',
     publicPath: '/jyknw/',
@@ -140,6 +145,16 @@ const envConfig = {
   },
   xhnw: {
     target: 'http://172.21.152.3:891/',
+    publicPath: '/jyknw/',
+    outputDir: 'jyknw'
+  },
+  lsww: {
+    target: '',
+    publicPath: '/jyk/',
+    outputDir: 'jyk'
+  },
+  lsnw: {
+    target: '',
     publicPath: '/jyknw/',
     outputDir: 'jyknw'
   }
