@@ -23,20 +23,22 @@
       </el-form-item>
       <el-form-item>
         <el-button icon="el-icon-search" type="primary" @click="search">查询</el-button>
-        <el-button icon="el-icon-refresh" @click="reset" v-if="false">重置</el-button>
-        <el-button
-          v-if="!IsDisabled"
-          type="primary"
-          @click="addTempVar"
-          :style="{ display: IsDisabled == true ? 'none' : '' }"
-        >确认申领</el-button>
-        <el-button type="primary" @click="showDialogTableVisible" icon="el-icon-plus" v-if="false">添加品种</el-button>
-        <el-button type="primary" icon="el-icon-plus" v-if="false" @click="saveApplyNum">保存</el-button>
-        <el-dropdown v-if="false">
+      </el-form-item>
+      <el-form-item>
+        <el-button icon="el-icon-refresh" @click="reset" >重置</el-button>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="success" icon="el-icon-plus" @click="saveApplyNum">保存</el-button>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="showDialogTableVisible" icon="el-icon-plus">添加品种</el-button>
+      </el-form-item>
+      <el-form-item>
+        <el-dropdown>
           <el-button icon="el-icon-s-grid" type="primary">
             模板<i class="el-icon-arrow-down el-icon--right"></i>
           </el-button>
-          <el-dropdown-menu slot="dropdown" v-if="false">
+          <el-dropdown-menu slot="dropdown" >
             <el-dropdown-item style="margin-bottom: 4px">
               <el-button type="primary" size="mini" @click="showDialogTableVisible2">导入模板</el-button>
             </el-dropdown-item>
@@ -45,7 +47,17 @@
             </el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
-        <el-button type="danger" icon="el-icon-delete" v-if="false" @click="removeBatch">删除</el-button>
+      </el-form-item>
+      <el-form-item>
+        <el-button
+          v-if="!IsDisabled"
+          type="primary"
+          @click="addTempVar"
+          :style="{ display: IsDisabled == true ? 'none' : '' }"
+        >确认申领</el-button>
+      </el-form-item>
+      <el-form-item v-if="false">
+        <el-button type="danger" icon="el-icon-delete" @click="removeBatch">删除</el-button>
       </el-form-item>
     </el-form>
     <el-dialog
