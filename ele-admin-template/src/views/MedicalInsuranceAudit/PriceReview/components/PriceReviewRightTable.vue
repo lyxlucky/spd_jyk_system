@@ -6,7 +6,7 @@
       :initLoad="false"
       @current-change="onCurrentChange"
       ref="table"
-      height="70vh"
+      height="75vh"
       :rowClickChecked="true"
       :stripe="true"
       :pageSize="pageSize"

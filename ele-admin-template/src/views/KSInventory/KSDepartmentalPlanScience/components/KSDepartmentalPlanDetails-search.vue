@@ -12,7 +12,11 @@
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" @click="search">查询</el-button>
+      </el-form-item>
+      <el-form-item>
         <el-button icon="el-icon-refresh" @click="reset">重置</el-button>
+      </el-form-item>
+      <el-form-item>
         <el-dropdown>
           <el-button type="primary" icon="el-icon-plus">
             新增<i class="el-icon-arrow-down el-icon--right" />
@@ -36,16 +40,25 @@
             </el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
+      </el-form-item>
+      <el-form-item>
         <el-button type="primary" icon="el-icon-s-check" @click="KeeptApplyDate" :disabled="!IsDisabled">暂存申领单</el-button>
+      </el-form-item>
+      <el-form-item>
         <el-button type="success" icon="el-icon-finished" @click="addPutInListDeta2" :disabled="!IsDisabled">保存并提交</el-button>
+      </el-form-item>
+      <el-form-item>
         <el-button type="success" icon="el-icon-s-order" @click="subToExamine" :disabled="!IsPutInListDeta">审核申领单</el-button>
+      </el-form-item>
+      <el-form-item v-if="['stzl', 'stzx', 'bd'].includes(HOME_HP) || ENV == 'development'">
         <el-button
-          v-if="['stzl', 'stzx', 'bd'].includes(HOME_HP) || ENV == 'development'"
           type="primary"
           icon="el-icon-s-cooperation"
           @click="Approval"
           :disabled="!IsToExamine"
         >审批申领单</el-button>
+      </el-form-item>
+      <el-form-item>
         <el-popconfirm title="确定删除？" @confirm="removeBatch()">
           <el-button
             slot="reference"
@@ -54,7 +67,11 @@
             :disabled="!IsDisabledByDel"
           >删除</el-button>
         </el-popconfirm>
+      </el-form-item>
+      <el-form-item>
         <el-button type="primary" icon="el-icon-view" @click="ApplyOperateTipShow = true">查看订单详情</el-button>
+      </el-form-item>
+      <el-form-item>
         <el-dropdown>
           <el-button type="primary" icon="el-icon-s-unfold">
             目录<i class="el-icon-arrow-down el-icon--right" />
@@ -71,8 +88,14 @@
             </el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
+      </el-form-item>
+      <el-form-item>
         <el-button type="primary" icon="el-icon-question" v-permission="'shenlinzhiyin'" @click="DownloadGuide">申领指引</el-button>
+      </el-form-item>
+      <el-form-item>
         <el-button type="primary" icon="el-icon-upload" @click="dialogTableVisible2 = true">导入模板</el-button>
+      </el-form-item>
+      <el-form-item>
         <el-button type="success" icon="el-icon-download" @click="exportData">导出</el-button>
       </el-form-item>
     </el-form>

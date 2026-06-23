@@ -1,22 +1,22 @@
 <template>
-  <div class="project-search-bar">
+  <div class="spd-panel__body project-search-bar">
     <el-form
-      size="small"
-      inline
-      label-width="auto"
-      class="search-form"
+      size="mini"
+      :inline="true"
+      label-width="88px"
+      class="ele-form-search project-search-form"
       @keyup.enter.native="onSearch"
       @submit.native.prevent
     >
-      <div class="search-row">
+      <div class="filter-row">
         <el-form-item label="注册证名称">
-          <el-input v-model="form.PROD_REGISTRATION_NAME" clearable style="width: 160px" />
+          <el-input v-model="form.PROD_REGISTRATION_NAME" clearable style="width: 150px" />
         </el-form-item>
         <el-form-item label="注册证号">
-          <el-input v-model="form.APPROVAL_NUMBER" clearable style="width: 140px" />
+          <el-input v-model="form.APPROVAL_NUMBER" clearable style="width: 130px" />
         </el-form-item>
         <el-form-item label="采购数量">
-          <el-select v-model="form.CountState" clearable style="width: 120px">
+          <el-select v-model="form.CountState" clearable style="width: 110px">
             <el-option label="全部" value="" />
             <el-option label="等于消耗" value="0" />
             <el-option label="大于消耗" value="1" />
@@ -26,13 +26,13 @@
           </el-select>
         </el-form-item>
         <el-form-item label="结束日期">
-          <el-select v-model="form.last" style="width: 100px">
+          <el-select v-model="form.last" style="width: 90px">
             <el-option label="未过期" value="0" />
             <el-option label="全部" value="" />
             <el-option label="已过期" value="1" />
           </el-select>
         </el-form-item>
-        <el-form-item label="起始日期">
+        <el-form-item label="起始日期" class="date-range-item">
           <el-date-picker
             v-model="buyTimeRange"
             type="daterange"
@@ -40,10 +40,10 @@
             range-separator="至"
             start-placeholder="开始"
             end-placeholder="结束"
-            style="width: 240px"
+            style="width: 220px"
           />
         </el-form-item>
-        <el-form-item label="终止日期">
+        <el-form-item label="终止日期" class="date-range-item">
           <el-date-picker
             v-model="endTimeRange"
             type="daterange"
@@ -51,13 +51,13 @@
             range-separator="至"
             start-placeholder="开始"
             end-placeholder="结束"
-            style="width: 240px"
+            style="width: 220px"
           />
         </el-form-item>
       </div>
-      <div class="search-row">
+      <div class="filter-row">
         <el-form-item label="来源">
-          <el-input v-model="form.SOURCE_FROM" clearable style="width: 120px" />
+          <el-input v-model="form.SOURCE_FROM" clearable style="width: 110px" />
         </el-form-item>
         <el-form-item label="价格">
           <el-input v-model="form.PRICE" clearable style="width: 90px" />
@@ -67,7 +67,7 @@
             v-model="form.MANUFACTURING_ENT_NAME"
             placeholder="生产企业/备注"
             clearable
-            style="width: 150px"
+            style="width: 140px"
           />
         </el-form-item>
         <el-form-item label="品种">
@@ -75,31 +75,33 @@
             v-model="form.VARIETIE_CODE_NEW"
             placeholder="名称/编码"
             clearable
-            style="width: 130px"
+            style="width: 120px"
           />
         </el-form-item>
         <el-form-item v-if="deptMode" label="科室">
-          <el-input v-model="form.DeptQuery" placeholder="名称/编码" clearable style="width: 130px" />
+          <el-input v-model="form.DeptQuery" placeholder="名称/编码" clearable style="width: 120px" />
         </el-form-item>
         <el-form-item label="项目名称">
-          <el-select v-model="form.XM_NAME" filterable clearable style="width: 140px">
+          <el-select v-model="form.XM_NAME" filterable clearable style="width: 130px">
             <el-option label="全部" value="" />
             <el-option v-for="o in xmNameOptions" :key="'n' + o" :label="o" :value="o" />
           </el-select>
         </el-form-item>
         <el-form-item label="项目编码">
-          <el-select v-model="form.XM_NUM" filterable clearable style="width: 140px">
+          <el-select v-model="form.XM_NUM" filterable clearable style="width: 130px">
             <el-option label="全部" value="" />
             <el-option v-for="o in xmNumOptions" :key="'c' + o" :label="o" :value="o" />
           </el-select>
         </el-form-item>
         <el-form-item label="项目类型">
-          <el-select v-model="form.XM_TYPE" filterable clearable style="width: 120px">
+          <el-select v-model="form.XM_TYPE" filterable clearable style="width: 110px">
             <el-option label="全部" value="" />
             <el-option v-for="o in xmTypeOptions" :key="'t' + o" :label="o" :value="o" />
           </el-select>
         </el-form-item>
-        <el-form-item label="消耗时间">
+      </div>
+      <div class="filter-row filter-row--actions">
+        <el-form-item label="消耗时间" class="date-range-item">
           <el-date-picker
             v-model="consumeTimeRange"
             type="daterange"
@@ -107,16 +109,16 @@
             range-separator="至"
             start-placeholder="开始"
             end-placeholder="结束"
-            style="width: 240px"
+            style="width: 220px"
           />
+        </el-form-item>
+        <el-form-item class="ele-form-actions" label-width="0">
+          <el-button type="primary" icon="el-icon-search" @click="onSearch">查询</el-button>
+          <el-button icon="el-icon-refresh" @click="onReset">重置</el-button>
+          <slot name="actions" />
         </el-form-item>
       </div>
     </el-form>
-    <div class="toolbar-actions">
-      <el-button type="primary" icon="el-icon-search" size="small" @click="onSearch">查询</el-button>
-      <el-button icon="el-icon-refresh" size="small" @click="onReset">重置</el-button>
-      <slot name="actions" />
-    </div>
   </div>
 </template>
 
@@ -184,50 +186,54 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.project-search-bar {
-  margin-bottom: 8px;
-}
-
-.search-form {
-  display: block;
-}
-
-.search-row {
+.filter-row {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
-  gap: 0 4px;
-
-  & + & {
-    margin-top: 4px;
-  }
+  align-items: flex-start;
 }
 
-.search-form :deep(.el-form-item) {
-  display: inline-flex;
-  align-items: center;
-  margin-right: 8px;
-  margin-bottom: 0;
+.filter-row + .filter-row {
+  margin-top: 4px;
 }
 
-.search-form :deep(.el-form-item__label) {
-  white-space: nowrap;
-  padding-right: 6px;
-  float: none;
+.filter-row--actions {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px dashed #ebeef5;
 }
 
-.search-form :deep(.el-form-item__content) {
-  display: inline-flex;
-  align-items: center;
-  line-height: 32px;
+.project-search-form :deep(.el-form-item:not(.ele-form-actions) .el-form-item__content) {
   max-width: none;
 }
 
-.toolbar-actions {
-  display: flex;
+.project-search-form :deep(.el-form-item) {
+  margin-right: 12px;
+  margin-bottom: 8px;
+}
+
+.project-search-form :deep(.el-form-item.ele-form-actions) {
+  margin-right: 0;
+  flex: 1;
+  min-width: 280px;
+}
+
+.project-search-form :deep(.el-form-item__label) {
+  padding-right: 8px;
+}
+
+.ele-form-actions :deep(.el-form-item__content) {
+  max-width: none !important;
+  display: inline-flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 8px;
-  margin-top: 8px;
+  gap: 6px;
+}
+
+.ele-form-actions :deep(.el-button) {
+  margin: 0;
+}
+
+.date-range-item :deep(.el-date-editor) {
+  width: 220px;
 }
 </style>

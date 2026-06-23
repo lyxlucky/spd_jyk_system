@@ -16,7 +16,7 @@
           stripe
           :toolbar="false"
           :header-overflow-hidden="false"
-          height="calc(100vh - 420px)"
+          height="calc(100vh - 480px)"
           :pageSize="pageSize"
           :pageSizes="pageSizes"
           :columns="columns"
@@ -531,14 +531,15 @@
     methods: {
       /* 表格数据源 */
       datasource({ page, limit, where, order }) {
-        let data = GetPDAList({ page, limit, where, order }).then((res) => {
-          var tData = {
+        return GetPDAList({ page, limit, where, order })
+          .then((res) => ({
             count: res.total,
             list: res.result
-          };
-          return tData;
-        });
-        return data;
+          }))
+          .catch((err) => {
+            this.$message.error(err.message || '入库列表加载失败');
+            return { count: 0, list: [] };
+          });
       },
       /* 刷新表格 */
       reload(where) {

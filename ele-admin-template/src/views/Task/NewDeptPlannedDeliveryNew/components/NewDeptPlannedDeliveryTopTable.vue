@@ -19,7 +19,6 @@
           highlight-current-row
           :row-click-checked="true"
           :height="tableHeight"
-          :need-page="false"
           :page-size="pageSize"
           :page-sizes="pageSizes"
           :columns="columns"
@@ -45,7 +44,8 @@ import { SearchDeptPlanMsg } from '@/api/Task/NewDeptPlannedDelivery';
       const defaultWhere = {};
       return {
         where: { ...defaultWhere },
-        tableHeight: 'calc((100vh - 520px) / 2)',
+        tableHeight:
+          'calc((100vh - var(--dept-plan-table-offset, 260px)) * var(--dept-plan-top-ratio, 0.68) - var(--dept-plan-pager-height, 42px))',
         columns: [
           {
             columnKey: 'index',
@@ -378,5 +378,22 @@ import { SearchDeptPlanMsg } from '@/api/Task/NewDeptPlannedDelivery';
   flex-direction: column;
   gap: 10px;
   min-height: 0;
+}
+
+.top-table-panel .spd-table-panel {
+  overflow: visible;
+}
+
+.top-table-panel .spd-table-panel__wrap {
+  overflow: visible;
+  padding-bottom: 0;
+}
+
+.top-table-panel :deep(.ele-pro-table > .el-pagination) {
+  position: relative;
+  z-index: 2;
+  margin-top: 6px;
+  padding-bottom: 4px;
+  background: #fff;
 }
 </style>

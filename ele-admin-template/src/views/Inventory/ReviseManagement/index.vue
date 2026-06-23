@@ -36,7 +36,7 @@
               stripe
               size="mini"
               highlight-current-row
-              height="calc(100vh - 220px)"
+              height="calc(100vh - 200px)"
               @current-change="onDeptSelect"
             >
               <el-table-column

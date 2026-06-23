@@ -1,30 +1,42 @@
 <template>
-  <div>
-    <ProjectSearchBar
-      v-model="where"
-      dept-mode
-      :xm-name-options="xmNameOptions"
-      :xm-num-options="xmNumOptions"
-      :xm-type-options="xmTypeOptions"
-      @search="reload"
-    >
-      <template v-slot:actions>
-        <el-button size="small" icon="el-icon-download" :loading="exporting" @click="onExport">
-          导出
-        </el-button>
-      </template>
-    </ProjectSearchBar>
-    <ele-pro-table
-      ref="table"
-      :height="tableHeight"
-      :columns="columns"
-      :datasource="datasource"
-      :page-size="30"
-      :page-sizes="[30, 50, 100, 150, 200, 300, 99999]"
-      :row-class-name="rowClass"
-      cache-key="HomePrchaseDataV2DeptTable"
-      @sort-change="onSortChange"
-    >
+  <div class="dept-completion-panel">
+    <div class="spd-panel spd-panel--search">
+      <div class="spd-panel__head">查询与操作</div>
+      <ProjectSearchBar
+        v-model="where"
+        dept-mode
+        :xm-name-options="xmNameOptions"
+        :xm-num-options="xmNumOptions"
+        :xm-type-options="xmTypeOptions"
+        @search="reload"
+      >
+        <template v-slot:actions>
+          <el-button icon="el-icon-download" :loading="exporting" @click="onExport">
+            导出
+          </el-button>
+        </template>
+      </ProjectSearchBar>
+    </div>
+    <div class="spd-panel spd-table-panel">
+      <div class="spd-panel__head">科室完成情况</div>
+      <div class="spd-table-panel__wrap">
+        <ele-pro-table
+          ref="table"
+          class="data-table"
+          size="mini"
+          border
+          stripe
+          :toolbar="false"
+          :header-overflow-hidden="false"
+          :height="tableHeight"
+          :columns="columns"
+          :datasource="datasource"
+          :page-size="30"
+          :page-sizes="[30, 50, 100, 150, 200, 300, 99999]"
+          :row-class-name="rowClass"
+          cache-key="HomePrchaseDataV2DeptTable"
+          @sort-change="onSortChange"
+        >
       <template v-slot:endDate="{ row }">
         <span :class="{ 'text-danger': fmtEndDateWithDays(row).danger }">
           {{ fmtEndDateWithDays(row).text }}
@@ -33,7 +45,9 @@
       <template v-slot:wcl="{ row }">{{ row.WCL || 0 }}%</template>
       <template v-slot:shProcess="{ row }">{{ fmtTimeProgress(row) }}</template>
       <template v-slot:leftQty="{ row }">{{ deptLeftQty(row) }}</template>
-    </ele-pro-table>
+        </ele-pro-table>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -67,7 +81,7 @@ export default {
       where: defaultWhere(),
       sort: { field: '', order: '' },
       exporting: false,
-      tableHeight: 'calc(100vh - 320px)',
+      tableHeight: 'calc(100vh - 380px)',
       columns: [
         { prop: 'PROD_SOURCE_FROM', label: '自定义来源', minWidth: 120, showOverflowTooltip: true },
         { prop: 'XM_NUM', label: '项目编号', minWidth: 130 },
@@ -172,7 +186,13 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+.dept-completion-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 .text-danger {
   color: #f56c6c;
 }

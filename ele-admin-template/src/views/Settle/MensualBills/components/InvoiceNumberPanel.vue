@@ -29,7 +29,7 @@
           <div class="spd-panel spd-table-panel">
             <div class="spd-panel__head">月结单列表</div>
             <div class="spd-table-panel__wrap">
-              <el-table v-loading="billLoading" :data="billRows" border stripe size="mini" height="calc(100vh - 300px)" highlight-current-row @current-change="onBillSelect">
+              <el-table v-loading="billLoading" :data="billRows" border stripe size="mini" height="calc(100vh - 100px)" highlight-current-row @current-change="onBillSelect">
                 <el-table-column prop="MonthNumber" label="月结单号" min-width="100" show-overflow-tooltip />
                 <el-table-column prop="sDate" label="月结月份" width="90" />
                 <el-table-column prop="StartDate" label="月结首日" width="95">
@@ -97,7 +97,7 @@
           <div class="spd-panel spd-table-panel">
             <div class="spd-panel__head">供应商列表</div>
             <div class="spd-table-panel__wrap">
-              <el-table v-loading="supplierLoading" :data="supplierRows" border stripe size="mini" height="calc(100vh - 400px)" @selection-change="onSupplierCheck" @row-click="onSupplierRowClick">
+              <el-table v-loading="supplierLoading" :data="supplierRows" border stripe size="mini" height="calc(100vh - 100px)" @selection-change="onSupplierCheck" @row-click="onSupplierRowClick">
                 <el-table-column type="selection" width="40" align="center"/>
                 <template v-if="hp === 'stzl'">
                   <el-table-column prop="Supplier_Code" label="供应商编码" width="90" show-overflow-tooltip />
@@ -154,7 +154,7 @@
           <div class="spd-panel spd-table-panel">
             <div class="spd-panel__head">发票列表</div>
             <div class="spd-table-panel__wrap">
-              <el-table v-loading="invoiceLoading" :data="invoiceRows" border stripe size="mini" height="calc(100vh - 300px)">
+              <el-table v-loading="invoiceLoading" :data="invoiceRows" border stripe size="mini" height="calc(100vh - 100px)">
                 <el-table-column type="index" label="序号" width="50" />
                 <el-table-column prop="BillNum" label="发票号码" min-width="120" align="center" show-overflow-tooltip />
                 <el-table-column label="发票金额" width="100" align="center"><template slot-scope="{ row }">{{ fmtMoney(row.Price) }}</template></el-table-column>

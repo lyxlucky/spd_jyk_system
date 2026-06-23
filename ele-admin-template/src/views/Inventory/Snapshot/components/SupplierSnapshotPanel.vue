@@ -42,7 +42,7 @@
               border
               stripe
               highlight-current-row
-              height="400"
+              height="450"
               size="mini"
               @current-change="onBatchSelect"
             >
@@ -64,10 +64,12 @@
               class="pager"
               small
               background
-              layout="total, prev, pager, next"
+              layout="total, sizes, prev, pager, next"
               :total="batchTotal"
               :page-size="batchPage.size"
               :current-page="batchPage.page"
+              :page-sizes="[10, 50, 100, 150, 200, 300]"
+              @size-change="onBatchSize"
               @current-change="loadBatch"
             />
           </div>
@@ -144,7 +146,7 @@
               :data="detailRows"
               border
               stripe
-              height="360"
+              height="500"
               size="mini"
               @selection-change="(s) => (detailSelection = s)"
             >
@@ -255,6 +257,10 @@ export default {
     fmtApproveStateDtl,
     fmtIsGet,
     reloadBatch() {
+      this.loadBatch(1);
+    },
+    onBatchSize(size) {
+      this.batchPage.size = size;
       this.loadBatch(1);
     },
     async loadBatch(page) {

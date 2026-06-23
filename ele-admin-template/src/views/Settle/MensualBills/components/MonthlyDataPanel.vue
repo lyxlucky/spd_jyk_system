@@ -98,7 +98,7 @@
           <div class="spd-panel spd-table-panel">
             <div class="spd-panel__head">科室列表</div>
             <div class="spd-table-panel__wrap">
-          <el-table v-loading="deptLoading" :data="deptRows" border stripe size="mini" height="200" highlight-current-row @selection-change="deptSelection = $event" @current-change="onDeptSelect">
+          <el-table v-loading="deptLoading" :data="deptRows" border stripe size="mini" height="300" highlight-current-row @selection-change="deptSelection = $event" @current-change="onDeptSelect">
             <el-table-column type="selection" width="38" align="center"/>
             <el-table-column prop="Dept_One_Name" label="一级科室" min-width="70" show-overflow-tooltip />
             <el-table-column prop="SPD_COST_DEPT_NAME" label="二级科室" min-width="80" show-overflow-tooltip />
@@ -129,7 +129,7 @@
           <div class="spd-panel spd-table-panel">
             <div class="spd-panel__head">日清列表</div>
             <div class="spd-table-panel__wrap">
-          <el-table v-loading="dayLoading" :data="dayRows" border stripe size="mini" height="calc(100vh - 380px)" highlight-current-row @selection-change="daySelection = $event" @current-change="onDaySelect">
+          <el-table v-loading="dayLoading" :data="dayRows" border stripe size="mini" height="calc(100vh - 100px)" highlight-current-row @selection-change="daySelection = $event" @current-change="onDaySelect">
             <el-table-column type="selection" width="38" align="center"/>
             <el-table-column prop="ClearingDate" label="日清日期" width="98" />
             <el-table-column label="审批状态" width="72">
@@ -190,7 +190,7 @@
           <div class="spd-panel spd-table-panel">
             <div class="spd-panel__head">消耗明细</div>
             <div class="spd-table-panel__wrap">
-          <el-table v-loading="varietyLoading" :data="varietyRows" border stripe size="mini" height="calc(100vh - 420px)">
+          <el-table v-loading="varietyLoading" :data="varietyRows" border stripe size="mini" height="calc(100vh - 100px)">
             <el-table-column prop="dept_two_code" label="计费科室编码" width="98" show-overflow-tooltip />
             <el-table-column prop="Varietie_code" label="品种材料编码" width="98" show-overflow-tooltip />
             <el-table-column prop="Varietie_name" label="品种全称" min-width="98" show-overflow-tooltip />

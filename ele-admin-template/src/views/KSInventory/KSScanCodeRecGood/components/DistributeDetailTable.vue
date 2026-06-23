@@ -152,7 +152,7 @@ export default {
         },
       ],
       toolbar: false,
-      tableHeight: 'calc(100vh - 260px)',
+      tableHeight: 'calc(100vh - 160px)',
       pageSize: 20,
       pagerCount: 2,
       pageSizes: [10, 20, 50, 100, 9999999],

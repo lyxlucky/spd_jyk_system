@@ -29,6 +29,7 @@ export function searchPickList(data) {
       EndDate: where.EndDate || '',
       PackState: where.PackState ?? -1,
       TransferState: where.TransferState ?? -1,
+      HighOrLowClass: where.HighOrLowClass ?? -1,
       storageId: where.storageId || '',
       field: where.field || '',
       order: where.order || '',

@@ -127,10 +127,10 @@ export default {
         //   fixed: 'left'
         // },
         {
-          label: '序',
+          label: '序号',
           columnKey: 'index',
           type: 'index',
-          width: 45,
+          width: 65,
           align: 'center',
           showOverflowTooltip: true,
           fixed: 'left'
@@ -261,7 +261,7 @@ export default {
           // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 80,
+          minWidth: 120,
           sortable: true
         },
         {

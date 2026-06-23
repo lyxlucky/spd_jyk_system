@@ -47,7 +47,8 @@
       const defaultWhere = {};
       return {
         where: { ...defaultWhere },
-        tableHeight: 'calc((100vh - 420px) / 2)',
+        tableHeight:
+          'calc((100vh - var(--dept-plan-table-offset, 260px)) * var(--dept-plan-bottom-ratio, 0.32))',
         columns: [
           {
             width: 45,

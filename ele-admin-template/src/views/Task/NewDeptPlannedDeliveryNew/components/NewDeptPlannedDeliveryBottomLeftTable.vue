@@ -44,42 +44,43 @@
       const defaultWhere = {};
       return {
         where: { ...defaultWhere },
-        tableHeight: 'calc((100vh - 420px) / 2)',
+        tableHeight:
+          'calc((100vh - var(--dept-plan-table-offset, 260px)) * var(--dept-plan-bottom-ratio, 0.32))',
         columns: [
           {
             prop: 'Stock_Up_Plan_No',
             label: '备货计划单号',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 90
+            minWidth: 140
           },
           {
             prop: 'Creator',
             label: '创建人',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 90
+            minWidth: 100
           },
           {
             prop: 'supplier_name',
             label: '供应商名称',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 90
+            minWidth: 130
           },
           {
             prop: 'Address',
             label: '收货库区',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 90
+            minWidth: 120
           },
           {
             prop: 'Create_Time',
             label: '创建时间',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 90,
+            minWidth: 120,
             formatter: (_row, _column, cellValue) => {
               return cellValue
                 ? this.$moment(cellValue).format('YYYY-MM-DD')
@@ -98,7 +99,7 @@
             label: '审批状态',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 90,
+            minWidth: 120,
             formatter: (_row, _column, cellValue) => {
               if (_row.Approve_State == 0) {
                 return '未审批';
@@ -114,7 +115,7 @@
             label: '发送状态',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 90,
+            minWidth: 120,
             formatter: (_row, _column, cellValue) => {
               if (_row.Send_State == 0) {
                 return '未发送（SPD）';

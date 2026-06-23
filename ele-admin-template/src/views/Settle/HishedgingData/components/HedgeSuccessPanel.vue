@@ -126,22 +126,22 @@
             <el-table-column prop="Serial_Number" label="UDI" width="120" sortable="custom" show-overflow-tooltip />
             <el-table-column prop="Operate_Person" label="消耗人" width="90" sortable="custom" show-overflow-tooltip />
             <el-table-column prop="Nurse_Operator" label="暂借人" width="90" sortable="custom" show-overflow-tooltip />
-            <el-table-column prop="Charging_Code" label="计费编码" width="85" sortable="custom" />
-            <el-table-column prop="Operation_Number" label="手术编号" width="85" sortable="custom" />
-            <el-table-column prop="Hospitalization_Number" label="住院号" width="80" sortable="custom" />
-            <el-table-column prop="Patient_Number" label="病患号" width="80" sortable="custom" />
-            <el-table-column prop="HIS_CHARGING_PRICE" label="his计费价格" width="100" sortable="custom" />
+            <el-table-column prop="Charging_Code" label="计费编码" width="125" sortable="custom" />
+            <el-table-column prop="Operation_Number" label="手术编号" width="125" sortable="custom" />
+            <el-table-column prop="Hospitalization_Number" label="住院号" width="100" sortable="custom" />
+            <el-table-column prop="Patient_Number" label="病患号" width="100" sortable="custom" />
+            <el-table-column prop="HIS_CHARGING_PRICE" label="his计费价格" width="120" sortable="custom" />
             <el-table-column prop="Opeartion_Charging_Time" label="手术计费时间" width="145" sortable="custom" />
-            <el-table-column prop="Used_Qty" label="使用数量" width="75" align="center" sortable="custom" />
-            <el-table-column prop="Patient_Dept" label="病人科室" width="85" />
-            <el-table-column prop="Charging_Dept" label="计费科室" width="85" />
-            <el-table-column prop="Dept_Name" label="计费科室名称" width="110" sortable="custom" show-overflow-tooltip />
-            <el-table-column prop="SPD_COST_DEPT_NAME" label="成本科室" width="90" show-overflow-tooltip />
-            <el-table-column label="完成标志" width="85" sortable="custom" prop="Is_Complete">
+            <el-table-column prop="Used_Qty" label="使用数量" width="105" align="center" sortable="custom" />
+            <el-table-column prop="Patient_Dept" label="病人科室" width="125" />
+            <el-table-column prop="Charging_Dept" label="计费科室" width="125" />
+            <el-table-column prop="Dept_Name" label="计费科室名称" width="140" sortable="custom" show-overflow-tooltip />
+            <el-table-column prop="SPD_COST_DEPT_NAME" label="成本科室" width="120" show-overflow-tooltip />
+            <el-table-column label="完成标志" width="125" sortable="custom" prop="Is_Complete">
               <template slot-scope="{ row }">{{ fmtIsComplete(row.Is_Complete) }}</template>
             </el-table-column>
             <el-table-column prop="Integrate_Time" label="系统对接时间" width="150" sortable="custom" />
-            <el-table-column label="是否对冲" width="85" sortable="custom" prop="Is_Hedge">
+            <el-table-column label="是否对冲" width="125" sortable="custom" prop="Is_Hedge">
               <template slot-scope="{ row }">{{ fmtIsHedge(row.Is_Hedge) }}</template>
             </el-table-column>
           </el-table>
@@ -208,7 +208,7 @@ export default {
     },
     mainTableHeight() {
       // 顶部 Tab + 查询区 + 分页；选中行时还有两行明细表
-      const offset = this.extendRow ? 580 : 460;
+      const offset = this.extendRow ? 380 : 260;
       return `calc(100vh - ${offset}px)`;
     }
   },

@@ -71,17 +71,24 @@
         />
       </el-form-item>
       <el-form-item label="流向类型">
-        <el-select clearable style="width: 120px" v-model="where.TYPE" @change="search()">
+        <el-select clearable style="width: 120px" v-model="where.TYPE" @change="search">
           <el-option label="全部" value="" />
           <el-option label="入库" value="0" />
           <el-option label="消耗" value="1" />
           <el-option label="退库" value="2" />
         </el-select>
       </el-form-item>
-      <el-form-item class="ele-form-actions">
+      <br />
+      <el-form-item>
         <el-button type="primary" icon="el-icon-search" @click="search">查询</el-button>
-        <el-button type="primary" icon="el-icon-download" @click="exportData()">导出</el-button>
+      </el-form-item>
+      <el-form-item>
         <el-button icon="el-icon-refresh" @click="reset">重置</el-button>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="success" icon="el-icon-download" @click="exportData">导出</el-button>
+      </el-form-item>
+      <el-form-item>
         <el-button type="primary" icon="el-icon-view" @click="KSDepartmentalPlanDetailsGroupTipShow = true">查看汇总</el-button>
       </el-form-item>
     </el-form>
@@ -310,17 +317,5 @@
 <style scoped lang="scss">
 :deep(.el-form-item) {
   margin-bottom: 0;
-}
-
-.ele-form-actions :deep(.el-form-item__content) {
-  max-width: none !important;
-  display: inline-flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 6px;
-}
-
-.ele-form-actions :deep(.el-button) {
-  margin: 0;
 }
 </style>

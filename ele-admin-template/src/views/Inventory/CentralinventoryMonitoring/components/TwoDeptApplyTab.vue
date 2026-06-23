@@ -67,7 +67,7 @@
               v-model="varietyFilters.supplier_name"
               clearable
               placeholder="供应商/生产企业"
-              style="width: 130px"
+              style="width: 160px"
               @keyup.enter.native="reloadVariety"
             />
           </el-form-item>

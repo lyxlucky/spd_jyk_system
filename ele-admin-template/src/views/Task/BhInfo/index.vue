@@ -176,7 +176,7 @@
           <ele-pro-table
             ref="detailTable"
             size="mini"
-            height="305px"
+            height="335px"
             :init-load="false"
             :toolkit="[]"
             :need-page="false"

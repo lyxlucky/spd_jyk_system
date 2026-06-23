@@ -106,7 +106,7 @@
           <div class="panel-title">注册证明细</div>
           <ele-pro-table
             ref="detailTable"
-            :height="420"
+            :height="500"
             :columns="detailColumns"
             :datasource="detailDatasource"
             :page-size="20"

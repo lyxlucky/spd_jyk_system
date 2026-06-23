@@ -38,7 +38,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="对码">
-            <el-select v-model="isHaveCharingCode" style="width: 130px" @change="load(1)">
+            <el-select v-model="isHaveCharingCode" style="width: 135px" @change="load(1)">
               <el-option label="计费编码已对码" value="1" />
               <el-option label="全部" value="" />
               <el-option label="计费编码未对码" value="0" />

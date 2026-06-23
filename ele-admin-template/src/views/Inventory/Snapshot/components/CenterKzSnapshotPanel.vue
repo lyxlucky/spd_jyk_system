@@ -33,7 +33,7 @@
               border
               stripe
               highlight-current-row
-              height="400"
+              height="450"
               size="mini"
               @current-change="onKzSelect"
             >
@@ -46,10 +46,12 @@
               class="pager"
               small
               background
-              layout="total, prev, pager, next"
+              layout="total, sizes, prev, pager, next"
               :total="kzTotal"
               :page-size="kzPage.size"
               :current-page="kzPage.page"
+              :page-sizes="[10, 50, 100, 150, 200, 300]"
+              @size-change="onKzSize"
               @current-change="loadKzList"
             />
           </div>
@@ -305,6 +307,10 @@ export default {
       return c || '';
     },
     reloadKzList() {
+      this.loadKzList(1);
+    },
+    onKzSize(size) {
+      this.kzPage.size = size;
       this.loadKzList(1);
     },
     async loadKzList(page) {

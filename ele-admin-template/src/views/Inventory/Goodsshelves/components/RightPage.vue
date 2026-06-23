@@ -12,7 +12,7 @@
           stripe
           :toolbar="false"
           :header-overflow-hidden="false"
-          height="calc(100vh - 420px)"
+          height="calc(100vh - 480px)"
           :pageSize="pageSize"
           :pageSizes="pageSizes"
           :columns="columns"

@@ -2,11 +2,6 @@
   <div class="ele-body" v-if="RenderTabel">
     <!-- 数据表格 -->
     <ele-pro-table :key="key" :reserve-selection="true" highlight-current-row :row-key="(row) => row.PlanNum" :rowClickCheckedIntelligent="false" @current-change="onCurrentChange" ref="table" height="18vh" :rowClickChecked="true" :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" :needPage="true" cache-key="KSInventoryBasicDataTable">
-      <!-- 表头工具栏 -->
-      <template v-slot:toolbar>
-        <!-- 搜索表单 -->
-        <naxtDayApplyPlanMainSearch @cancel="handleCancel" @exportData2="exportData2" @removeBatch="removeBatch" @exportData="exportData" :KSDepartmentalPlanData="current" @search="reload" @openUserEdit="openUserEdit" @upNaxtDayApplyPlanMainByState="upNaxtDayApplyPlanMainByStateFun" />
-      </template>
 
       <template v-slot:State="{ row }">
         <el-tag size="mini" v-if="row.State == 0" type="primary">新增</el-tag>
@@ -37,8 +32,6 @@
 </template>
 
 <script>
-import naxtDayApplyPlanMainSearch from './naxtDayApplyPlanMain-search.vue';
-import { HOME_HP, BACK_BASE_URL, TOKEN_STORE_NAME } from '@/config/setting';
 import userEdit from './user-edit.vue';
 import {
   GetNaxtDayApplyPlanMain,
@@ -48,13 +41,12 @@ import {
   GetNaxtDayApplyPlanMainVar,
   CancelNaxtDayApplyPlanMain
 } from '@/api/KSInventory/OperaSchedulingManagement';
+import { BACK_BASE_URL } from '@/config/setting';
 import { utils, writeFile } from 'xlsx';
 export default {
   name: 'KSDepartmentalPlanTable',
   props: ['IsReload'],
   components: {
-    // KSDepartmentalPlanSearch,
-    naxtDayApplyPlanMainSearch,
     userEdit
   },
   data() {

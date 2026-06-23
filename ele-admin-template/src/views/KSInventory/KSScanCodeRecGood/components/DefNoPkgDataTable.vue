@@ -221,7 +221,7 @@ export default {
         }
       ],
       toolbar: false,
-      tableHeight: 'calc(100vh - 320px)',
+      tableHeight: 'calc(100vh - 200px)',
       pageSize: 20,
       pagerCount: 2,
       pageSizes: [10, 20, 50, 100, 9999999],

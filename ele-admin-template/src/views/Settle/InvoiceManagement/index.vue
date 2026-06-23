@@ -1,35 +1,42 @@
 <template>
-  <div class="ele-body">
-    <el-card shadow="never">
-      <!-- 数据表格 -->
-      <user-search
-        @search="reload"
-        @BillingDdviceBtn="BillingDdviceFun"
-        @exportData="exportData"
-        @ExamineBtn="ExamineFun"
-        @CancelExamineBtn="CancelExamineFun"
-        @ReceiptInvoiceBtn="ReceiptInvoiceFun"
-        @CancelReceiptInvoiceBtn="CancelReceiptInvoiceFun"
-      />
-      <ele-pro-table
-        ref="table"
-        height="65vh"
-        :rowClickCheckedIntelligent="false"
-        :rowClickChecked="true"
-        :initLoad="true"
-        :stripe="true"
-        :pageSize="pageSize"
-        :pageSizes="pageSizes"
-        :columns="columns"
-        :datasource="datasource"
-        :selection.sync="selection"
-        @selection-change="onSelectionChange"
-        highlight-current-row
-        cache-key="InvoiceManagementTable"
-      >
-        <!-- 表头工具栏 -->
-        <template v-slot:toolbar> </template>
-
+  <div class="ele-body spd-page invoice-management-page">
+    <el-card shadow="never" class="invoice-management-card">
+      <div class="spd-panel spd-panel--search">
+        <div class="spd-panel__head">查询与操作</div>
+        <user-search
+          @search="reload"
+          @BillingDdviceBtn="BillingDdviceFun"
+          @exportData="exportData"
+          @ExamineBtn="ExamineFun"
+          @CancelExamineBtn="CancelExamineFun"
+          @ReceiptInvoiceBtn="ReceiptInvoiceFun"
+          @CancelReceiptInvoiceBtn="CancelReceiptInvoiceFun"
+        />
+      </div>
+      <div class="spd-panel spd-table-panel">
+        <div class="spd-panel__head">发票管理列表</div>
+        <div class="spd-table-panel__wrap">
+          <ele-pro-table
+            ref="table"
+            class="data-table"
+            size="mini"
+            border
+            stripe
+            :toolbar="false"
+            :header-overflow-hidden="false"
+            :row-click-checked-intelligent="false"
+            :row-click-checked="true"
+            :init-load="true"
+            :height="tableHeight"
+            :page-size="pageSize"
+            :page-sizes="pageSizes"
+            :columns="columns"
+            :datasource="datasource"
+            :selection.sync="selection"
+            highlight-current-row
+            cache-key="InvoiceManagementTable"
+            @selection-change="onSelectionChange"
+          >
         <!-- 操作列 -->
         <template v-slot:action="{ row }">
           <el-link
@@ -85,7 +92,9 @@
             /> -->
           </div>
         </template>
-      </ele-pro-table>
+          </ele-pro-table>
+        </div>
+      </div>
     </el-card>
     <!-- 编辑弹窗 -->
     <user-edit :visible.sync="showEdit" :data="current" @done="reload" />
@@ -531,6 +540,7 @@
           // },
         ],
         toolbar: false,
+        tableHeight: 'calc(100vh - 420px)',
         pageSize: 20,
         pageSizes: [10, 20, 50, 100, 9999999],
         pagerCount: 5,
@@ -877,8 +887,7 @@
       }
     },
     created() {
-      // this.getdatasource();
-      // console.log(this.$store.state.user.info)
+      localStorage.setItem('InvoiceManagementTableSize', JSON.stringify('mini'));
     },
     computed: {
       // 是否开启响应式布局
@@ -891,3 +900,16 @@
     }
   };
 </script>
+
+<style scoped lang="scss">
+.invoice-management-card :deep(.el-card__body) {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.invoice-management-page >>> .el-table th .cell {
+  white-space: nowrap;
+}
+</style>

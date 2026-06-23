@@ -15,7 +15,9 @@
       </el-container>
     </el-container> -->
     <el-card shadow="never" class="dept-planned-delivery-card">
-      <NewDeptPlannedDeliveryTopTable />
+      <div class="dept-planned-top">
+        <NewDeptPlannedDeliveryTopTable />
+      </div>
       <div class="spd-split-bottom">
         <div class="spd-split-pane">
           <NewDeptPlannedDeliveryBottomLeftTable />
@@ -42,11 +44,19 @@
 </script>
 <style scoped lang="scss">
 .dept-planned-delivery-card :deep(.el-card__body) {
+  --dept-plan-table-offset: 260px;
+  --dept-plan-top-ratio: 0.68;
+  --dept-plan-bottom-ratio: 0.32;
+  --dept-plan-pager-height: 42px;
   padding: 10px;
   display: flex;
   flex-direction: column;
   gap: 10px;
   min-height: calc(100vh - 120px);
+}
+
+.dept-planned-top {
+  flex: 0 0 auto;
 }
 
 .spd-split-bottom {

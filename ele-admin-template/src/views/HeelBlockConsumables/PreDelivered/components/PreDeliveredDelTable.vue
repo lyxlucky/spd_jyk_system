@@ -14,7 +14,7 @@
     />
     <ele-pro-table
       ref="table"
-      height="60vh"
+      height="65vh"
       highlight-current-row
       :stripe="true"
       :rowClickChecked="true"

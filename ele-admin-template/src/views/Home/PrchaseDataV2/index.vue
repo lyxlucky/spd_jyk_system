@@ -1,6 +1,6 @@
 <template>
   <div class="ele-body spd-page prchase-data-v2">
-    <el-card shadow="never">
+    <el-card shadow="never" class="prchase-data-v2-card">
       <el-tabs v-model="activeTab" @tab-click="onTabClick">
         <el-tab-pane label="项目列表" name="project">
           <ProjectListPanel
@@ -69,8 +69,16 @@ export default {
 };
 </script>
 
-<style scoped>
-::v-deep .el-tabs__header {
-  margin-bottom: 12px;
+<style scoped lang="scss">
+.prchase-data-v2-card :deep(.el-card__body) {
+  padding: 10px;
+}
+
+.prchase-data-v2 :deep(.el-tabs__header) {
+  margin-bottom: 10px;
+}
+
+.prchase-data-v2 >>> .el-table th .cell {
+  white-space: nowrap;
 }
 </style>

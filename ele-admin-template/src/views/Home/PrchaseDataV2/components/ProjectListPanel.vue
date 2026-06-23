@@ -1,59 +1,68 @@
 <template>
-  <div>
-    <ProjectSearchBar
-      v-model="where"
-      :xm-name-options="xmNameOptions"
-      :xm-num-options="xmNumOptions"
-      :xm-type-options="xmTypeOptions"
-      @search="reload"
-    >
-      <template v-slot:actions>
-        <el-button
-          v-permission="'export-PrchaseDataV2-dlcgdc'"
-          size="small"
-          icon="el-icon-download"
-          :loading="exporting"
-          @click="onExportMain"
-        >
-          导出
-        </el-button>
-        <el-button
-          v-permission="'export-PrchaseDataV2-cgmxdc'"
-          size="small"
-          icon="el-icon-download"
-          :loading="exportingDetail"
-          @click="onExportDetail"
-        >
-          导出明细
-        </el-button>
-        <el-button size="small" type="primary" plain @click="openAdd">带量采购</el-button>
-        <el-button size="small" @click="openImportChoice('purchase')">导入</el-button>
-        <el-button size="small" @click="openImportChoice('var')">导入关联品种</el-button>
-        <el-button
-          v-permission="'export-PrchaseDataV2-ambdc'"
-          size="small"
-          @click="onExportJc"
-        >
-          按集采模板导出
-        </el-button>
-        <el-button size="small" :disabled="!selection.length" @click="onLinkByXmNum">
-          按集项目编号关联品种
-        </el-button>
-      </template>
-    </ProjectSearchBar>
+  <div class="project-list-panel">
+    <div class="spd-panel spd-panel--search">
+      <div class="spd-panel__head">查询与操作</div>
+      <ProjectSearchBar
+        v-model="where"
+        :xm-name-options="xmNameOptions"
+        :xm-num-options="xmNumOptions"
+        :xm-type-options="xmTypeOptions"
+        @search="reload"
+      >
+        <template v-slot:actions>
+          <el-button
+            v-permission="'export-PrchaseDataV2-dlcgdc'"
+            icon="el-icon-download"
+            :loading="exporting"
+            @click="onExportMain"
+          >
+            导出
+          </el-button>
+          <el-button
+            v-permission="'export-PrchaseDataV2-cgmxdc'"
+            icon="el-icon-download"
+            :loading="exportingDetail"
+            @click="onExportDetail"
+          >
+            导出明细
+          </el-button>
+          <el-button type="primary" plain @click="openAdd">带量采购</el-button>
+          <el-button @click="openImportChoice('purchase')">导入</el-button>
+          <el-button @click="openImportChoice('var')">导入关联品种</el-button>
+          <el-button
+            v-permission="'export-PrchaseDataV2-ambdc'"
+            @click="onExportJc"
+          >
+            按集采模板导出
+          </el-button>
+          <el-button :disabled="!selection.length" @click="onLinkByXmNum">
+            按集项目编号关联品种
+          </el-button>
+        </template>
+      </ProjectSearchBar>
+    </div>
 
-    <ele-pro-table
-      ref="table"
-      :height="tableHeight"
-      :columns="columns"
-      :datasource="datasource"
-      :selection.sync="selection"
-      :page-size="30"
-      :page-sizes="[30, 50, 100, 150, 200, 300, 99999]"
-      :row-class-name="rowClass"
-      cache-key="HomePrchaseDataV2ProjectTable"
-      @sort-change="onSortChange"
-    >
+    <div class="spd-panel spd-table-panel">
+      <div class="spd-panel__head">项目列表</div>
+      <div class="spd-table-panel__wrap">
+        <ele-pro-table
+          ref="table"
+          class="data-table"
+          size="mini"
+          border
+          stripe
+          :toolbar="false"
+          :header-overflow-hidden="false"
+          :height="tableHeight"
+          :columns="columns"
+          :datasource="datasource"
+          :selection.sync="selection"
+          :page-size="30"
+          :page-sizes="[30, 50, 100, 150, 200, 300, 99999]"
+          :row-class-name="rowClass"
+          cache-key="HomePrchaseDataV2ProjectTable"
+          @sort-change="onSortChange"
+        >
       <template v-slot:source="{ row }">
         <el-link type="primary" :underline="false" @click="openSource(row)">
           {{ row.PROD_SOURCE_FROM || '编辑' }}
@@ -75,7 +84,9 @@
         <el-button type="text" size="mini" @click="openVariety(row)">品种</el-button>
         <el-button type="text" size="mini" class="danger-link" @click="onDelete(row)">删除</el-button>
       </template>
-    </ele-pro-table>
+        </ele-pro-table>
+      </div>
+    </div>
 
     <ConsumeDetailDialog :visible.sync="detailVisible" :buy-id="activeBuyId" />
     <VarietyTableDialog :visible.sync="varietyVisible" :buy-id="activeBuyId" />
@@ -201,7 +212,7 @@ export default {
       exportingDetail: false,
       saving: false,
       importType: '',
-      tableHeight: 'calc(100vh - 360px)',
+      tableHeight: 'calc(100vh - 380px)',
       detailVisible: false,
       varietyVisible: false,
       deptVisible: false,
@@ -596,7 +607,13 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+.project-list-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 .danger-link {
   color: #f56c6c;
 }

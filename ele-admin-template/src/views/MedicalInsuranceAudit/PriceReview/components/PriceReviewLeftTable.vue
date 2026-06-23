@@ -5,7 +5,7 @@
       highlight-current-row
       @current-change="onCurrentChange"
       ref="table"
-      height="70vh"
+      height="71vh"
       :rowClickChecked="true"
       :stripe="true"
       :pageSize="pageSize"

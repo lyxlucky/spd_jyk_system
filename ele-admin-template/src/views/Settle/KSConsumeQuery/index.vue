@@ -923,7 +923,7 @@
           };
           return tData;
         } catch (error) {
-          this.$message.error('获取表格数据源失败，请稍后重试');
+          this.$message.error(error.message || '获取表格数据源失败，请稍后重试');
           return { count: 0, list: [] };
         }
       },

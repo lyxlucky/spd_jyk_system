@@ -199,7 +199,7 @@
         <ele-pro-table
           ref="pickingTable"
           size="mini"
-          height="265px"
+          height="305px"
           highlight-current-row
           :init-load="false"
           :toolkit="[]"
@@ -236,10 +236,10 @@
         <ele-pro-table
           ref="detailTable"
           size="mini"
-          height="265px"
+          height="335px"
           :init-load="false"
           :toolkit="[]"
-          :need-page="false"
+          :need-page="true"
           :page-size="9999"
           :columns="detailColumns"
           :datasource="detailDatasource"

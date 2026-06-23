@@ -1,86 +1,39 @@
 <template>
-  <div>
-    <el-form class="ele-form-search">
-      <el-row :gutter="10">
-        <el-col v-bind="styleResponsive ? { lg: 3, md: 2 } : { span: 4 }">
-          <el-form-item label-width="0px">
-            <el-input
-              v-model="where.code"
-              size="mini"
-              placeholder="请输入品种编码"
-              clearable
-            />
-          </el-form-item>
-        </el-col>
-
-        <el-col v-bind="styleResponsive ? { lg: 3, md: 4 } : { span: 4 }">
-          <el-form-item label="是否定标">
-            <el-select
-              size="mini"
-              v-model="where.status"
-              style="width: 110px"
-              @change="search()"
-            >
-              <el-option label="全部" value="" />
-              <el-option label="否" value="0" />
-              <el-option label="是" value="1" />
-            </el-select>
-          </el-form-item>
-        </el-col>
-
-        <el-col v-bind="styleResponsive ? { lg: 3, md: 4 } : { span: 4 }">
-          <el-form-item label="是否已读">
-            <el-select
-              size="mini"
-              v-model="where.isShow"
-              style="width: 110px"
-              @change="search()"
-            >
-              <el-option label="全部" value="" />
-              <el-option label="已读" value="1" />
-              <el-option label="未读" value="0" />
-            </el-select>
-          </el-form-item>
-        </el-col>
-
-        <el-col v-bind="styleResponsive ? { lg: 4, md: 2 } : { span: 4 }">
-          <el-form-item label-width="0px">
-            <el-button
-              type="primary"
-              size="mini"
-              icon="el-icon-search"
-              @click="search"
-            >
-              查询
-            </el-button>
-            <el-button
-              type="success"
-              size="mini"
-              icon="el-icon-check"
-              @click="handleMakeRead"
-            >
-              已读
-            </el-button>
-
-            <!-- <el-button
-              type="success"
-              size="mini"
-              icon="el-icon-check"
-              @click="sure"
-            >
-              定标
-            </el-button> -->
-
-            <!-- <el-button
-              type="success"
-              size="mini"
-              icon="el-icon-upload"
-            >
-              上传图片
-            </el-button> -->
-          </el-form-item>
-        </el-col>
-      </el-row>
+  <div class="spd-panel__body">
+    <el-form
+      size="mini"
+      :inline="true"
+      @keyup.enter.native="search"
+      @submit.native.prevent
+    >
+      <el-form-item label="品种编码">
+        <el-input
+          v-model="where.code"
+          placeholder="请输入品种编码"
+          clearable
+          style="width: 160px"
+        />
+      </el-form-item>
+      <el-form-item label="是否定标">
+        <el-select v-model="where.status" style="width: 110px" @change="search">
+          <el-option label="全部" value="" />
+          <el-option label="否" value="0" />
+          <el-option label="是" value="1" />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="是否已读">
+        <el-select v-model="where.isShow" style="width: 110px" @change="search">
+          <el-option label="全部" value="" />
+          <el-option label="已读" value="1" />
+          <el-option label="未读" value="0" />
+        </el-select>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" icon="el-icon-search" @click="search">查询</el-button>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="success" icon="el-icon-check" @click="handleMakeRead">已读</el-button>
+      </el-form-item>
     </el-form>
   </div>
 </template>
@@ -98,25 +51,19 @@
         where: { ...defaultWhere }
       };
     },
-    computed: {
-      styleResponsive() {
-        return this.$store.state.theme.styleResponsive;
-      }
-    },
-    mounted() {
-      // 组件挂载后主动触发一次搜索，确保默认查询条件生效 需要取消el-table-pro的initLoad
-      this.search();
-    },
     methods: {
       search() {
         this.$emit('search', this.where);
       },
       handleMakeRead() {
         this.$emit('makeRead', this.where);
-      },
-      sure() {
-        this.$emit('sure', this.where);
       }
     }
   };
 </script>
+
+<style scoped lang="scss">
+:deep(.el-form-item) {
+  margin-bottom: 0;
+}
+</style>

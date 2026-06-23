@@ -146,7 +146,7 @@
     <ele-pro-table
       ref="table"
       size="mini"
-      height="320px"
+      height="330px"
       highlight-current-row
       :columns="columns"
       :datasource="datasource"

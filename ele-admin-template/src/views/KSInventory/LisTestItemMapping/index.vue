@@ -78,7 +78,7 @@
 
       <div class="spd-panel spd-table-panel">
         <div class="spd-panel__head">检验项目对照列表</div>
-        <div class="spd-table-panel__wrap">
+        <div ref="tableWrap" class="spd-table-panel__wrap">
           <!-- 数据表格 -->
           <vxe-table
             ref="table"
@@ -90,6 +90,7 @@
             size="mini"
             :height="tableHeight"
             :row-config="{ isHover: true }"
+            :seq-config="{ startIndex: seqStartIndex }"
           >
         <vxe-column type="seq" title="序号" width="55" align="center" />
         <vxe-column field="LIS_CODE" title="LIS项目代码" width="120" />
@@ -376,7 +377,7 @@ export default {
       // 表格
       tableData: [],
       tableLoading: false,
-      tableHeight: 'calc(100vh - 280px)',
+      tableHeight: 400,
       tablePage: { page: 1, size: 20, total: 0 },
       // 同步
       syncLoading: false,
@@ -422,6 +423,11 @@ export default {
       }
     }
   },
+  computed: {
+    seqStartIndex() {
+      return (this.tablePage.page - 1) * this.tablePage.size
+    }
+  },
   methods: {
     // 查询
     search() {
@@ -456,7 +462,18 @@ export default {
         this.$message.error(error.message || '加载数据失败')
       } finally {
         this.tableLoading = false
+        this.updateTableHeight()
       }
+    },
+    updateTableHeight() {
+      this.$nextTick(() => {
+        const wrap = this.$refs.tableWrap
+        if (!wrap) return
+        const pager = wrap.querySelector('.lis-test-item-mapping-pager')
+        const pagerHeight = (pager?.offsetHeight || 40) + 8
+        const height = wrap.clientHeight - pagerHeight
+        this.tableHeight = Math.max(height, 240)
+      })
     },
     onTablePageChange({ currentPage, pageSize }) {
       this.tablePage.page = currentPage
@@ -853,13 +870,54 @@ export default {
   },
   created() {
     this.loadTableData()
+  },
+  mounted() {
+    this.updateTableHeight()
+    setTimeout(this.updateTableHeight, 100)
+    window.addEventListener('resize', this.updateTableHeight)
+  },
+  beforeDestroy() {
+    window.removeEventListener('resize', this.updateTableHeight)
   }
 }
 </script>
 
 <style scoped lang="scss">
+.lis-test-item-mapping-page {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 120px);
+  box-sizing: border-box;
+}
+
+.lis-test-item-mapping-card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
 .lis-test-item-mapping-card :deep(.el-card__body) {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
   padding: 10px;
+  gap: 10px;
+}
+
+.lis-test-item-mapping-card .spd-table-panel {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.lis-test-item-mapping-card .spd-table-panel__wrap {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 :deep(.el-form-item) {

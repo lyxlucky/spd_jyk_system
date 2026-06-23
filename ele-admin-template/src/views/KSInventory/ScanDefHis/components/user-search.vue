@@ -45,14 +45,24 @@
         <br />
         <el-form-item>
           <el-button type="primary" icon="el-icon-search" @click="search">查询</el-button>
+        </el-form-item>
+        <el-form-item>
           <el-button icon="el-icon-refresh" @click="reset">重置</el-button>
+        </el-form-item>
+        <el-form-item>
           <el-button type="success" icon="el-icon-download" @click="exportData">导出</el-button>
+        </el-form-item>
+        <el-form-item>
           <el-popconfirm title="确定删除？" @confirm="removeBatch()">
             <el-button slot="reference" type="danger" icon="el-icon-delete">删除</el-button>
           </el-popconfirm>
+        </el-form-item>
+        <el-form-item>
           <el-popconfirm title="确定消耗？" @confirm="consumption()">
             <el-button slot="reference" type="warning" icon="el-icon-s-goods">消耗</el-button>
           </el-popconfirm>
+        </el-form-item>
+        <el-form-item>
           <el-upload
             :on-success="uploadSuccess"
             :on-error="upError"
@@ -61,19 +71,17 @@
             :action="uploadUrl"
             ref="Defupload"
             :limit="1"
-            style="display: inline-block; margin: 0 10px"
           >
             <el-button icon="el-icon-upload2">导入</el-button>
           </el-upload>
+        </el-form-item>
+        <el-form-item>
           <el-button type="primary" icon="el-icon-goods" @click="KSInventoryQueryShow = true">从库存中挑选</el-button>
-          <el-button
-            v-if="['stzl', 'stzx'].includes(HOME_HP) || ENV == 'development'"
-            type="success"
-            icon="el-icon-link"
-            @click="bindMachine"
-          >
-            绑定设备
-          </el-button>
+        </el-form-item>
+        <el-form-item v-if="['stzl', 'stzx'].includes(HOME_HP) || ENV == 'development'">
+          <el-button type="success" icon="el-icon-link" @click="bindMachine">绑定设备</el-button>
+        </el-form-item>
+        <el-form-item>
           <el-button type="info" icon="el-icon-view" @click="openStockSummaryDialog">库存汇总</el-button>
         </el-form-item>
       </el-form>

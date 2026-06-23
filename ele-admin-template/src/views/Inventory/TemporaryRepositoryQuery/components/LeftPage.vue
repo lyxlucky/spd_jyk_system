@@ -13,7 +13,7 @@
           size="mini"
           :toolbar="false"
           :toolkit="['columns', 'fullscreen']"
-          height="calc(100vh - 300px)"
+          height="calc(100vh - 380px)"
           :pageSize="pageSize"
           :pageSizes="pageSizes"
           :columns="columns"

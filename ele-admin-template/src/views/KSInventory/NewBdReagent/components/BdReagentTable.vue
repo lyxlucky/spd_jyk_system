@@ -10,12 +10,12 @@
           @keyup.enter.native="search"
           @submit.native.prevent
         >
-          <el-form-item label="日期">
+          <el-form-item label="日期" class="date-range-item">
             <el-date-picker
               v-model="where.date"
               type="daterange"
               value-format="yyyy-MM-dd"
-              style="width: 200px"
+              style="width: 240px"
               range-separator="至"
               start-placeholder="开始日期"
               end-placeholder="结束日期"
@@ -29,9 +29,11 @@
               placeholder="耗材编码"
             />
           </el-form-item>
-          <el-form-item class="ele-form-actions">
+          <el-form-item>
             <el-button type="primary" icon="el-icon-search" @click="search">查询</el-button>
-            <el-button type="primary" icon="el-icon-download" @click="exportData">导出</el-button>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="success" icon="el-icon-download" @click="exportData">导出</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -278,15 +280,8 @@
   margin-bottom: 0;
 }
 
-.ele-form-actions :deep(.el-form-item__content) {
+/* ele-form-search 默认限制 content 最大 200px，daterange 会溢出盖住下一项 label */
+.date-range-item :deep(.el-form-item__content) {
   max-width: none !important;
-  display: inline-flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 6px;
-}
-
-.ele-form-actions :deep(.el-button) {
-  margin: 0;
 }
 </style>

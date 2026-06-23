@@ -40,7 +40,7 @@ export default {
 }
 
 .goodsshelves-card {
-  height: calc(100vh - 112px);
+  height: calc(100vh - 100px);
 }
 
 .goodsshelves-page :deep(.el-card__body) {

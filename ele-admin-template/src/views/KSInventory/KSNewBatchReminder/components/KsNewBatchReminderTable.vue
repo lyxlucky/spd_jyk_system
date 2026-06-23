@@ -18,15 +18,6 @@
       :initLoad="false"
       cache-key="KsNewBatchReminderTable"
     >
-      <!-- 表头工具栏 -->
-      <template v-slot:toolbar>
-        <KsNewBatchReminderTableSearch
-          @sure="makeSure"
-          @makeRead="makeRead"
-          @search="reload"
-        />
-      </template>
-
       <template v-slot:operation="{ row }">
         <el-button
           type="success"
@@ -62,12 +53,10 @@
     confirmBatch,
     makeItemRead
   } from '@/api/KSInventory/KSNewBatchReminder/index';
-  import KsNewBatchReminderTableSearch from './KsNewBatchReminderTableSearch';
   import KsNewBatchReminderUpload from './KsNewBatchReminderUpload';
   export default {
     name: 'KsNewBatchReminderTable',
     components: {
-      KsNewBatchReminderTableSearch,
       KsNewBatchReminderUpload
     },
     data() {
@@ -209,7 +198,7 @@
           }
         ],
         toolbar: false,
-        tableHeight: 'calc(100vh - 260px)',
+        tableHeight: 'calc(100vh - 320px)',
         pageSize: 10,
         pageSizes: [10, 20, 50, 100, 9999999],
         // 表格选中数据
