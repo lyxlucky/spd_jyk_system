@@ -105,7 +105,7 @@
     isDeptTwoAuth: '',
     type: '1',
     settlementDept: '',
-    HIGH_OR_LOW_CLASS: ''
+    HIGH_OR_LOW_CLASS: '2'
   });
 
   export default {
