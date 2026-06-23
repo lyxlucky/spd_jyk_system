@@ -12,8 +12,8 @@
         <el-input
           v-model="TempletName"
           clearable
-          placeholder="请输入申领单备注信息"
-          style="width: 160px"
+          placeholder="模板名称"
+          style="width: 140px"
         />
       </el-form-item>
       <el-form-item>
@@ -30,7 +30,7 @@
           <el-button size="small" @click="reset">重置</el-button>
         </div>
       </el-col> -->
-      <el-form-item label="查询">
+      <el-form-item>
         <el-input
           v-model="where.SerachName"
           clearable
@@ -38,10 +38,16 @@
           style="width: 140px"
         />
       </el-form-item>
-      <el-form-item class="ele-form-actions apply-temp-search-actions">
+      <el-form-item>
         <el-button type="primary" icon="el-icon-search" @click="search">查询</el-button>
+      </el-form-item>
+      <el-form-item>
         <el-button icon="el-icon-refresh" @click="reset">重置</el-button>
+      </el-form-item>
+      <el-form-item>
         <el-button type="primary" icon="el-icon-check" @click="UpdateCommon_btn">设置常规模板</el-button>
+      </el-form-item>
+      <el-form-item>
         <el-button type="danger" icon="el-icon-close" @click="UpdateCommon2_btn">取消常规模板</el-button>
       </el-form-item>
       <!-- <el-row :gutter="15" style="margin-top:5px">
