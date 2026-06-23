@@ -416,11 +416,13 @@ export default {
       row.Pkg_plan = plan.pkg;
     },
     onFilterDisabledChange(val) {
-      this.filters.EnableState = val ? '1' : '0';
+      // 后端：0=过滤已停用，1=不过滤
+      this.filters.EnableState = val ? '0' : '1';
       this.reloadMonitor();
     },
     onFilterZeroLimitChange(val) {
-      this.filters.EnableLowUp = val ? '1' : '0';
+      // 后端：0=过滤上下线为0，1=不过滤
+      this.filters.EnableLowUp = val ? '0' : '1';
       this.reloadMonitor();
     },
     onLoadPlanByVarietyChange() {
