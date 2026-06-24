@@ -47,10 +47,54 @@
                 style="width: 120px"
               />
             </el-form-item>
+            <el-form-item label="规格型号">
+              <el-input
+                v-model="searchForm.Spec"
+                placeholder="规格型号"
+                clearable
+                style="width: 120px"
+              />
+            </el-form-item>
+            <el-form-item label="定数码">
+              <el-input
+                v-model="searchForm.DefNoPkgCode"
+                placeholder="定数码"
+                clearable
+                style="width: 140px"
+              />
+            </el-form-item>
+            <el-form-item label="计费人">
+              <el-input
+                v-model="searchForm.ChargePerson"
+                placeholder="计费人"
+                clearable
+                style="width: 120px"
+              />
+            </el-form-item>
             <el-form-item>
-              <el-button type="primary" icon="el-icon-search" @click="search">查询</el-button>
-              <el-button icon="el-icon-refresh" @click="reset">重置</el-button>
-              <el-button type="success" icon="el-icon-download" @click="exportMainTable">导出汇总</el-button>
+              <el-button
+                class="ele-btn-icon"
+                type="primary"
+                icon="el-icon-search"
+                @click="search"
+              >
+                搜索
+              </el-button>
+            </el-form-item>
+            <el-form-item>
+              <el-button class="ele-btn-icon" icon="el-icon-refresh" @click="reset">
+                重置
+              </el-button>
+            </el-form-item>
+            <el-form-item>
+              <el-button
+                class="ele-btn-icon"
+                type="warning"
+                icon="el-icon-download"
+                @click="exportMainTable"
+              >
+                导出汇总
+              </el-button>
             </el-form-item>
           </el-form>
         </div>
@@ -68,7 +112,7 @@
             stripe
             resizable
             size="mini"
-            :height="tableHeight"
+            height="360"
             highlight-current-row
             :virtual-y-config="{ enabled: true, gt: 100 }"
             @current-change="onMainTableCurrentChange"
@@ -190,7 +234,8 @@
             stripe
             resizable
             size="mini"
-            :height="tableHeight"
+            height="360"
+            :column-config="{ drag: true }"
             :virtual-y-config="{ enabled: true, gt: 100 }"
           >
             <vxe-column type="seq" title="序号" width="60" align="center" />
@@ -359,7 +404,9 @@ export default {
         OperatePerson: '',
         VarietieCode: '',
         VarietieName: '',
-        DefNoPkgCode: ''
+        Spec: '',
+        DefNoPkgCode: '',
+        ChargePerson: ''
       },
       dateRange: null,
       // 主表
@@ -414,7 +461,9 @@ export default {
         OperatePerson: this.$store.state.user.info.Nickname || '',
         VarietieCode: '',
         VarietieName: '',
-        DefNoPkgCode: ''
+        Spec: '',
+        DefNoPkgCode: '',
+        ChargePerson: ''
       };
       this.dateRange = this.getDefaultDateRange();
       this.mainTablePage.page = 1;
@@ -464,9 +513,11 @@ export default {
           size: this.detailTablePage.size
         };
         const res = await getDetailList(params);
+        console.log(res);
         if (res.code === 200) {
           this.detailTableData = res.data?.list || [];
           this.detailTablePage.total = res.data?.total || 0;
+          console.log(this.detailTableData);
         } else {
           this.$message.error(res.msg || '加载明细数据失败');
         }
@@ -510,7 +561,7 @@ export default {
     formatOperateType({ cellValue }) {
       if (cellValue === 'BORROW') return '暂借';
       if (cellValue === 'RETURN') return '归还';
-      if (cellValue === 'BORROW_RETURN') return '暂借/归还';
+      if (cellValue === 'CHARGE') return '已计费';
       return cellValue || '';
     },
     // 格式化是否计费
