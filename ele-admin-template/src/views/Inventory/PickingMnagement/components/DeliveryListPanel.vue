@@ -153,7 +153,17 @@
       :row-class-name="rowClassName"
       cache-key="pickingMnagementDeliveryList"
       @row-click="handleRowClick"
-    />
+    >
+      <template v-slot:action="{ row }">
+        <el-button
+          type="text"
+          icon="el-icon-delete"
+          style="color: #f56c6c"
+          title="删除空补货单"
+          @click.stop="handleDeleteEmpty(row)"
+        />
+      </template>
+    </ele-pro-table>
     <DeptRegionDialog
       :visible.sync="regionDialogVisible"
       :title="regionDialogTitle"
@@ -176,7 +186,8 @@ import {
   createDeliveryExcelLh,
   insertDeptUpShelf,
   processDefEpcCk,
-  processOrder
+  processOrder,
+  deleteEmptyDistribute
 } from '@/api/Inventory/PickingMnagement';
 import {
   formatDateTime,
@@ -274,6 +285,13 @@ export default {
         base.push({ prop: 'CALL_TIMES', label: '智能柜上架次数', width: 160 });
       }
       base.push({ prop: 'Print_Count', label: '打印次数', width: 120 });
+      base.push({
+        columnKey: 'action',
+        label: '选项',
+        width: 70,
+        align: 'center',
+        slot: 'action'
+      });
       return base;
     }
   },
@@ -346,6 +364,32 @@ export default {
             this.$message.error(data?.msg || '操作失败');
           }
         });
+      });
+    },
+    handleDeleteEmpty(row) {
+      const num = row?.stock_out_distribute_number || '';
+      if (!num) return;
+      this.$confirm(
+        `确定删除补货单[${num}]吗？仅定数包为空的补货单允许删除。`,
+        '提示',
+        { type: 'warning' }
+      ).then(() => {
+        const loading = this.$loading({ lock: true, text: '删除中...' });
+        deleteEmptyDistribute(num)
+          .then((res) => {
+            const data = unwrapData(res);
+            if (isOkCode(data?.code)) {
+              this.$message.success(data.msg || '删除成功');
+              this.selectedRow = null;
+              this.handleSearch();
+              this.$parent.$refs.pickList?.handleSearch();
+            } else if (data?.code === 301 || data?.code === '301') {
+              this.$message.error('登录失效，请重新登录');
+            } else {
+              this.$message.error(data?.msg || '删除失败');
+            }
+          })
+          .finally(() => loading.close());
       });
     },
     handleSendDelivery() {

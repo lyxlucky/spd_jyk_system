@@ -157,6 +157,13 @@ export function deleteDistribute(stockOutDistributeNumber) {
   );
 }
 
+export function deleteEmptyDistribute(stockOutDistributeNumber) {
+  return request.post(
+    'PickDistributionmgmt/DeleteEmptyDistribute',
+    formdataify({ stock_out_distribute_number: stockOutDistributeNumber, Token: token() })
+  );
+}
+
 export function completeByDirectiveNumber(packDirectiveNumber) {
   return request.post(
     'DefDirective/CompleteByDirectiveNumber',
