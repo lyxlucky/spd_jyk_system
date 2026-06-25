@@ -34,6 +34,20 @@ export async function getBdSzYyHisSs(params) {
   return Promise.reject(res.data);
 }
 
+export async function syncBdSzYyHisSurgeryByCode(data) {
+  const formatData = {
+    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+    condition: data.condition || ''
+  };
+
+  let res = await request.post('/Commons/SyncBdSzYyHisSurgeryByCode', formatData);
+
+  if (res.data.code == 200) {
+    return res.data;
+  }
+  return Promise.reject(res.data);
+}
+
 export async function getBdSzYyHisSsWithNoUse(params) {
   console.log(params)
   const formatData = {
