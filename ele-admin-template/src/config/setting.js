@@ -8,8 +8,8 @@ export const B2B_BASE_URL = "http://47.106.243.154:802";
 const getRequestTimeout = () => {
   const env = process.env.VUE_APP_ENV;
   const envTimeoutMap = {
-    'lsww': 3600000,
-    'lsnw': 3600000,
+    'lglsww': 3600000,
+    'lgsnw': 3600000,
     'lgnw': 3600000,
     'local': 3600000, // 1小时
     'test': 3600000,  // 1小时
@@ -37,7 +37,7 @@ const getRequestTimeout = () => {
     'selh': 3600000,   // 1小时
     'selhww': 3600000,   // 1小时
     'xhww': 3600000,  // 1小时
-    'xhnw': 3600000   // 1小时
+    'xhnw': 3600000,   // 1小时
   };
   console.log(env,envTimeoutMap[env]);
   return envTimeoutMap[env] || 3600000;
@@ -79,8 +79,8 @@ const getHomeHp = () => {
     'zxnw': 'stzx',
     'lgww': 'lg',
     'lgnw': 'lg',
-    'lsww': 'ls',
-    'lsnw': 'ls',
+    'lglsww': 'lgls',
+    'lglsnw': 'lgls',
     'sebb': 'se2',  // 市二本部、大鹏院区、龙华院区统一使用同一个HOME_HP
     'sebbww': 'se2',  // 市二本部、大鹏院区、龙华院区统一使用同一个HOME_HP
     'sedp': 'se2',   // 三个环境使用同一个LOGO（待定）
@@ -88,7 +88,7 @@ const getHomeHp = () => {
     'selh': 'se2',    // 三个环境使用同一个LOGO（待定）
     'selhww': 'se2',    // 三个环境使用同一个LOGO（待定）
     'xhww': 'xh',   // 新华外网
-    'xhnw': 'xh'    // 新华内网
+    'xhnw': 'xh',    // 新华内网
   };
   return envHpMap[env] || 'bd';
 }
@@ -148,8 +148,8 @@ const getBackBaseUrl = () => {
     'selhww': 'http://47.106.243.154:18101/selh',
     'xhww': 'http://47.106.243.154:891',
     'xhnw': 'http://172.21.152.3:891',
-    'lsww': '',
-    'lsnw': ''
+    'lglsww': '',
+    'lglsnw': 'http://192.168.2.113:16002',
   };
   return envMap[env] || 'http://localhost:16416';
 }

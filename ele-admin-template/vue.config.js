@@ -148,16 +148,16 @@ const envConfig = {
     publicPath: '/jyknw/',
     outputDir: 'jyknw'
   },
-  lsww: {
+  lglsww: {
     target: '',
     publicPath: '/jyk/',
     outputDir: 'jyk'
   },
-  lsnw: {
-    target: '',
+  lglsnw: {
+    target: 'http://192.168.2.113:16002/',
     publicPath: '/jyknw/',
     outputDir: 'jyknw'
-  }
+  },
 }
 
 const currentEnv = process.env.VUE_APP_ENV || 'local';
@@ -183,7 +183,7 @@ module.exports = {
       config.cache = false
     }
 
-    
+
   },
   chainWebpack(config) {
     // set svg-sprite-loader
@@ -216,7 +216,7 @@ module.exports = {
       config.plugin('code-inspector-plugin').use(
         codeInspectorPlugin({
           bundler: 'webpack',
-          // editor: 'cursor', // code/cursor/webstorm
+          editor: 'webstorm', // code/cursor/webstorm
           showSwitch: true,
         })
       );
