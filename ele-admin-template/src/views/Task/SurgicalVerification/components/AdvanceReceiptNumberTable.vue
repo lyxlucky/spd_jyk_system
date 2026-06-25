@@ -10,6 +10,7 @@
       <AdvanceReceiptNumberSearch
         ref="formRef"
         @search="reload"
+        @syncSurgery="handleSyncSurgery"
         @handleScanQrCode="handleScanQrCode"
         @catDefNoPkgCode="handleCatDefNoPkgCode"
         :rowData="current"
@@ -195,6 +196,7 @@
 
   import {
     getBdSzYyHisSs,
+    syncBdSzYyHisSurgeryByCode,
     BdSsApprove,
     commitBdszSsyyInfo,
     addBdSzHisInSurgery,
@@ -387,6 +389,43 @@
       },
       async asyncReload(where) {
         await this.$refs.table.reload({ page: 1, where: where });
+      },
+      selectFirstRow() {
+        this.$nextTick(() => {
+          const rows = this.$refs.table?.tableData || [];
+          const firstRow = rows[0];
+          if (firstRow) {
+            this.$refs.table.setCurrentRow(firstRow);
+            this.onCurrentChange(firstRow);
+          } else {
+            this.current = null;
+            this.$emit('getCurrent', null);
+          }
+        });
+      },
+      handleSyncSurgery(where) {
+        const condition = (where?.condition || '').trim();
+        if (!condition) {
+          return this.$message.warning('请输入手术单号或住院号');
+        }
+
+        const loading = this.$messageLoading('同步中...');
+        syncBdSzYyHisSurgeryByCode({ condition })
+          .then(async (res) => {
+            this.$message.success(res.msg || res.data || '同步成功');
+            this.$refs.formRef.where.condition = condition;
+            await this.asyncReload({
+              ...this.$refs.formRef.where,
+              condition
+            });
+            this.selectFirstRow();
+          })
+          .catch((err) => {
+            this.$message.error(err.msg || err || '同步失败');
+          })
+          .finally(() => {
+            loading.close();
+          });
       },
 
       onCurrentChange(current) {

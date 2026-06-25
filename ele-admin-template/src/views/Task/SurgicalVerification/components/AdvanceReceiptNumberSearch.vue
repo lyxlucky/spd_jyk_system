@@ -78,6 +78,17 @@
         查询
       </el-button>
     </el-form-item>
+    <el-form-item>
+      <el-button
+        size="mini"
+        type="primary"
+        icon="el-icon-refresh"
+        class="ele-btn-icon"
+        @click="syncSurgery"
+      >
+        同步手术单
+      </el-button>
+    </el-form-item>
     <!-- <el-form-item>
           <el-button
             size="mini"
@@ -279,6 +290,9 @@
       },
       handleScanQrCode() {
         this.$emit('handleScanQrCode', this.where);
+      },
+      syncSurgery() {
+        this.$emit('syncSurgery', this.where);
       },
       /*  重置 */
       reset() {
