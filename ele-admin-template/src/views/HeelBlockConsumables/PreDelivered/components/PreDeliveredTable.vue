@@ -18,10 +18,9 @@
       height="60vh"
       :rowClickChecked="true"
       :stripe="false"
-      :pageSize="pageSize"
-      :pageSizes="pageSizes"
+      :page-size="pageSize"
+      :page-sizes="pageSizes"
       :columns="columns"
-      :needPage="false"
       :datasource="datasource"
       :selection.sync="selection"
       cache-key="PreDeliveredTable"
@@ -174,7 +173,7 @@
             // sortable: 'custom',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 80,
+            minWidth: 120,
             formatter(row, column, cellValue) {
               if (cellValue == '0') {
                 return '未审批';

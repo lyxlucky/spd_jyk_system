@@ -1,41 +1,70 @@
-yourFunctionName()
-
 <template>
-  <div class="ele-body">
-    <!-- 数据表格 -->
-    <!-- @current-change="onCurrentChange" -->
-    <!-- :toolkit="[]"  -->
-    <ele-pro-table :paginationStyle=paginationStyle :key="key" highlight-current-row ref="table" 
-      @current-change="onCurrentChange" height="29vh" 
-      :rowClickChecked="true" :stripe="true"
-      :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource"
-      :selection.sync="selection" cache-key="DeptPlanDeclarationTopTable">
-      <!-- 表头工具栏 -->
-      <template v-slot:toolbar>
-        <!-- 搜索表单 -->
+  <div class="dept-plan-declaration-top">
+    <div class="spd-panel spd-panel--search">
+      <div class="spd-panel__head">查询与操作</div>
+      <DeptPlanDeclarationTopTableSearch
+        ref="child"
+        @submitItem="submitDeptPlanFormItems"
+        @deleteItem="deleteDeptPlanFormItems"
+        @submitDeptPlanForm="submitDeptPlanForm"
+        :selection="selection"
+        @search="reload"
+      />
+    </div>
+
+    <div class="spd-panel spd-table-panel">
+      <div class="spd-panel__head">科室计划申报列表</div>
+      <div class="spd-table-panel__wrap">
+        <!-- 数据表格 -->
+        <!-- @current-change="onCurrentChange" -->
+        <!-- :toolkit="[]"  -->
+        <ele-pro-table
+          :key="key"
+          highlight-current-row
+          ref="table"
+          class="data-table"
+          size="mini"
+          border
+          stripe
+          :toolbar="false"
+          :header-overflow-hidden="false"
+          @current-change="onCurrentChange"
+          :height="tableHeight"
+          :rowClickChecked="true"
+          :pageSize="pageSize"
+          :pageSizes="pageSizes"
+          :columns="columns"
+          :datasource="datasource"
+          :selection.sync="selection"
+          cache-key="DeptPlanDeclarationTopTable"
+        >
+          <!-- 表头工具栏 -->
+          <!-- <template v-slot:toolbar>
         <DeptPlanDeclarationTopTableSearch ref="child" @submitItem="submitDeptPlanFormItems"
           @deleteItem="deleteDeptPlanFormItems" @submitDeptPlanForm="submitDeptPlanForm" :selection="selection"
           @search="reload" />
-      </template>
+      </template> -->
 
-      <!-- 审批状态 -->
+          <!-- 审批状态 -->
 
-      <template v-slot:APPROVE_STATE="{ row }">
-        <el-tag v-if="row.APPROVE_STATE == 0" type="primary">新增</el-tag>
-        <el-tag v-else-if="row.APPROVE_STATE == 1" type="success">已提交</el-tag>
-        <el-tag v-else-if="row.APPROVE_STATE == 2" type="primary">已审核</el-tag>
-        <el-tag v-else-if="row.APPROVE_STATE == 3" type="primary">已审批</el-tag>
-        <el-tag v-else-if="row.APPROVE_STATE == 4" type="warning">审核不通过</el-tag>
-        <el-tag v-else-if="row.APPROVE_STATE == 5" type="warning">审批不通过</el-tag>
-      </template>
+          <template v-slot:APPROVE_STATE="{ row }">
+            <el-tag v-if="row.APPROVE_STATE == 0" type="primary" size="mini">新增</el-tag>
+            <el-tag v-else-if="row.APPROVE_STATE == 1" type="success" size="mini">已提交</el-tag>
+            <el-tag v-else-if="row.APPROVE_STATE == 2" type="primary" size="mini">已审核</el-tag>
+            <el-tag v-else-if="row.APPROVE_STATE == 3" type="primary" size="mini">已审批</el-tag>
+            <el-tag v-else-if="row.APPROVE_STATE == 4" type="warning" size="mini">审核不通过</el-tag>
+            <el-tag v-else-if="row.APPROVE_STATE == 5" type="warning" size="mini">审批不通过</el-tag>
+          </template>
 
-      <!-- 类型 -->
+          <!-- 类型 -->
 
-      <template v-slot:TYPE="{ row }">
-        <el-tag v-if="row.TYPE == 1" type="info">正常申报</el-tag>
-        <el-tag v-else-if="row.TYPE == 2" type="info">补充申报</el-tag>
-      </template>
-    </ele-pro-table>
+          <template v-slot:TYPE="{ row }">
+            <el-tag v-if="row.TYPE == 1" type="info" size="mini">正常申报</el-tag>
+            <el-tag v-else-if="row.TYPE == 2" type="info" size="mini">补充申报</el-tag>
+          </template>
+        </ele-pro-table>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -68,7 +97,7 @@ export default {
         {
           prop: 'ID',
           label: '计划单号',
-          minWidth: 60,
+          minWidth: 100,
           align: 'center',
           showOverflowTooltip: true,
           fixed: 'left'
@@ -78,14 +107,14 @@ export default {
           label: '计划月份',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 70
+          minWidth: 90
         },
         {
           prop: 'APPROVE_STATE',
           label: '审批状态',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 80,
+          minWidth: 90,
           slot: 'APPROVE_STATE'
         },
         {
@@ -93,7 +122,7 @@ export default {
           label: '申报类型',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 60,
+          minWidth: 90,
           slot: 'TYPE'
         },
         {
@@ -101,35 +130,31 @@ export default {
           label: '科室名称',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 60
+          minWidth: 100
         },
         {
           prop: 'CREATE_TIME',
           label: '创建时间',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 80,
+          minWidth: 160,
         },
         {
           prop: 'CREATE_MAN',
           label: '创建人',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 70
+          minWidth: 80
         },
         {
           prop: 'REMARK',
           label: '备注',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 70
+          minWidth: 100
         }
       ],
-      paginationStyle: {
-        height: '18px',
-        padding: '0px 0px 5px 0px',
-        'margin-top': '-5px'
-      },
+      tableHeight: 'calc((100vh - 420px) / 2)',
       toolbar: false,
       pageSize: 10,
       pagerCount: 2,
@@ -145,7 +170,7 @@ export default {
       // datasource: [],
       data: [],
       key: 0,
-      localBus:new Vue()
+      localBus: new Vue()
     };
   },
   methods: {
@@ -234,6 +259,7 @@ export default {
     }
   },
   created() {
+    localStorage.setItem('DeptPlanDeclarationTopTableSize', JSON.stringify('mini'));
     // this.getdatasource();
     // this.GetConsume();
   },
@@ -247,18 +273,3 @@ export default {
   },
 };
 </script>
-
-
-<style scoped>
-.ele-body {
-  padding: 0px;
-}
-
-::v-deep .ele-table-tool-default {
-  padding: 3px 0px 0px 5px;
-}
-
-::v-deep .ele-table-tool .ele-table-tool-title{
-  margin-bottom: 0;
-}
-</style>

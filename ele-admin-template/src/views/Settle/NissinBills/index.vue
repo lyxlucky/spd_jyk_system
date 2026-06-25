@@ -170,18 +170,18 @@
             height="calc(100vh - 340px)"
             @sort-change="onVarietySort"
           >
-            <el-table-column prop="DateShow" label="手术计费日期" width="110" sortable="custom" />
-            <el-table-column prop="Varietie_code" label="品种编码" width="95" sortable="custom" show-overflow-tooltip />
+            <el-table-column prop="DateShow" label="手术计费日期" width="180" sortable="custom" />
+            <el-table-column prop="Varietie_code" label="品种编码" width="120" sortable="custom" show-overflow-tooltip />
             <el-table-column prop="Varietie_name" label="品种全称" min-width="140" sortable="custom" show-overflow-tooltip />
             <el-table-column prop="Specification_or_Type" label="型号/规格" width="100" sortable="custom" show-overflow-tooltip />
-            <el-table-column prop="Unit" label="单位" width="55" align="center" sortable="custom" />
-            <el-table-column prop="Manufacturing_Ent_Name" label="生产企业名称" width="120" sortable="custom" show-overflow-tooltip />
-            <el-table-column prop="Charging_Dept" label="计费科室编码" width="110" sortable="custom" show-overflow-tooltip />
-            <el-table-column prop="Batch" label="生产批号" width="90" sortable="custom" show-overflow-tooltip />
-            <el-table-column prop="Coefficient" label="系数" width="55" align="center" sortable="custom" />
-            <el-table-column prop="DefQuantity" label="包数" width="55" align="center" sortable="custom" />
-            <el-table-column prop="GoodsQuantity" label="散货数量" width="80" align="center" sortable="custom" />
-            <el-table-column label="单价" width="75" align="right" sortable="custom" prop="Price">
+            <el-table-column prop="Unit" label="单位" width="70" align="center" sortable="custom" />
+            <el-table-column prop="Manufacturing_Ent_Name" label="生产企业名称" width="160" sortable="custom" show-overflow-tooltip />
+            <el-table-column prop="Charging_Dept" label="计费科室编码" width="160" sortable="custom" show-overflow-tooltip />
+            <el-table-column prop="Batch" label="生产批号" width="120" sortable="custom" show-overflow-tooltip />
+            <el-table-column prop="Coefficient" label="系数" width="80" align="center" sortable="custom" />
+            <el-table-column prop="DefQuantity" label="包数" width="80" align="center" sortable="custom" />
+            <el-table-column prop="GoodsQuantity" label="散货数量" width="120" align="center" sortable="custom" />
+            <el-table-column label="单价" width="80" align="right" sortable="custom" prop="Price">
               <template slot-scope="{ row }">{{ fmtPrice(row) }}</template>
             </el-table-column>
             <el-table-column label="金额" width="80" align="right" sortable="custom" prop="Money">
@@ -190,7 +190,7 @@
           </el-table>
           <el-pagination
             v-if="varietyTotal > 0"
-            small
+            size="mini"
             layout="total, sizes, prev, pager, next"
             :total="varietyTotal"
             :page-size="varietyPage.size"

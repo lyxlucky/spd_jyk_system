@@ -1,18 +1,28 @@
 <template>
   <div class="ele-body spd-page third-inventory-query-page">
-    <el-card shadow="never">
-      <div class="page-title">三级库申领库存查询</div>
+    <el-card shadow="never" class="third-inventory-query-card">
       <ThirdInventoryQuerySearch ref="search" :exporting="exporting" @search="reload" @export="onExport" />
-      <ele-pro-table
-        ref="table"
-        :height="tableHeight"
-        :columns="columns"
-        :datasource="datasource"
-        :selection.sync="selection"
-        :page-size="30"
-        :page-sizes="[30, 50, 100, 150, 200, 300, 99999]"
-        cache-key="ThirdInventoryQueryTable"
-      />
+      <div class="spd-panel spd-table-panel">
+        <div class="spd-panel__head">三级库申领库存列表</div>
+        <div class="spd-table-panel__wrap">
+          <ele-pro-table
+            ref="table"
+            class="data-table"
+            size="mini"
+            border
+            stripe
+            :toolbar="false"
+            :header-overflow-hidden="false"
+            :height="tableHeight"
+            :columns="columns"
+            :datasource="datasource"
+            :selection.sync="selection"
+            :page-size="30"
+            :page-sizes="[30, 50, 100, 150, 200, 300, 99999]"
+            cache-key="ThirdInventoryQueryTable"
+          />
+        </div>
+      </div>
     </el-card>
   </div>
 </template>
@@ -30,7 +40,7 @@ export default {
   data() {
     return {
       columns: getThirdInventoryQueryColumns(),
-      tableHeight: 'calc(100vh - 280px)',
+      tableHeight: 'calc(100vh - 320px)',
       selection: [],
       lastWhere: {},
       exporting: false
@@ -70,10 +80,13 @@ export default {
 </script>
 
 <style scoped>
-.third-inventory-query-page .page-title {
-  font-size: 16px;
-  font-weight: 600;
-  margin-bottom: 12px;
-  color: #303133;
+.third-inventory-query-card :deep(.el-card__body) {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.third-inventory-query-page >>> .el-table th .cell {
+  white-space: nowrap;
 }
 </style>

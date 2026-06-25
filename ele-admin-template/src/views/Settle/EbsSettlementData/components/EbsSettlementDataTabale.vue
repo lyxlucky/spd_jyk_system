@@ -95,7 +95,7 @@
             label: '供应商编码',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 100
+            minWidth: 140
           },
           {
             prop: 'VENDOR_NAME',
@@ -109,7 +109,7 @@
             label: '供应商地点',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 100
+            minWidth: 140
           },
           {
             prop: 'INVOICE_DATE',
@@ -126,9 +126,9 @@
             label: '发票入账日期',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 120,
+            minWidth: 160,
             formatter: (_row, _column, cellValue) => {
-              return this.$util.toDateString(cellValue, 'yyyy-MM-dd HH:mm:ss');
+              return this.$util.toDateString(cellValue, 'yyyy-MM-dd');
             }
           },
           {
@@ -143,7 +143,7 @@
             label: '原始发票号',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 100
+            minWidth: 140
           },
           {
             prop: 'ATTACHMENT_NUM',
@@ -177,7 +177,7 @@
             label: '匹配操作人',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 100
+            minWidth: 120
           },
           {
             prop: 'SYNC_DATE',
@@ -218,7 +218,7 @@
             label: 'SPD创建时间',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 120,
+            minWidth: 140,
             formatter: (_row, _column, cellValue) => {
               return this.$util.toDateString(cellValue, 'yyyy-MM-dd HH:mm:ss');
             }
@@ -228,7 +228,7 @@
             label: 'SPD创建人',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 100
+            minWidth: 120
           },
           {
             prop: 'SPD_SEND_TIME',
@@ -245,14 +245,14 @@
             label: 'SPD发送人',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 100
+            minWidth: 120
           },
           {
             prop: 'SPD_STATE',
             label: 'SPD状态',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 100,
+            minWidth: 120,
             formatter(row, column, cellValue) {
               if (cellValue == '0') {
                 return '未发送';

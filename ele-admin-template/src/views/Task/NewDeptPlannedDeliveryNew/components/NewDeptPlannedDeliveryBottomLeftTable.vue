@@ -1,23 +1,35 @@
-<template lang="">
-  <div>
-    <NewDeptPlannedDeliveryBottomLeftTableSearch  @search='reload'/>
-    <ele-pro-table
-      :reserve-selection="true"
-      highlight-current-row
-      @current-change="onCurrentChange"
-      ref="table"
-      height="20vh"
-      :rowClickChecked="true"
-      :stripe="true"
-      :pageSize="pageSize"
-      :pageSizes="pageSizes"
-      :columns="columns"
-      :datasource="datasource"
-      :selection.sync="selection"
-      cache-key="NewDeptPlannedDeliveryBottomLeftTableCacheKey"
-      key="NewDeptPlannedDeliveryBottomLeftTableKey"
-    >
-    </ele-pro-table>
+<template>
+  <div class="bottom-left-panel">
+    <div class="spd-panel spd-panel--search">
+      <div class="spd-panel__head">备货计划查询</div>
+      <NewDeptPlannedDeliveryBottomLeftTableSearch @search="reload" />
+    </div>
+    <div class="spd-panel spd-table-panel">
+      <div class="spd-panel__head">备货计划列表</div>
+      <div class="spd-table-panel__wrap">
+        <ele-pro-table
+          ref="table"
+          class="data-table"
+          size="mini"
+          border
+          stripe
+          :toolbar="false"
+          :header-overflow-hidden="false"
+          :reserve-selection="true"
+          highlight-current-row
+          :row-click-checked="true"
+          :height="tableHeight"
+          :page-size="pageSize"
+          :page-sizes="pageSizes"
+          :columns="columns"
+          :datasource="datasource"
+          :selection.sync="selection"
+          cache-key="NewDeptPlannedDeliveryBottomLeftTableCacheKey"
+          key="NewDeptPlannedDeliveryBottomLeftTableKey"
+          @current-change="onCurrentChange"
+        />
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -32,41 +44,43 @@
       const defaultWhere = {};
       return {
         where: { ...defaultWhere },
+        tableHeight:
+          'calc((100vh - var(--dept-plan-table-offset, 260px)) * var(--dept-plan-bottom-ratio, 0.32))',
         columns: [
           {
             prop: 'Stock_Up_Plan_No',
             label: '备货计划单号',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 90
+            minWidth: 140
           },
           {
             prop: 'Creator',
             label: '创建人',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 90
+            minWidth: 100
           },
           {
             prop: 'supplier_name',
             label: '供应商名称',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 90
+            minWidth: 130
           },
           {
             prop: 'Address',
             label: '收货库区',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 90
+            minWidth: 120
           },
           {
             prop: 'Create_Time',
             label: '创建时间',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 90,
+            minWidth: 120,
             formatter: (_row, _column, cellValue) => {
               return cellValue
                 ? this.$moment(cellValue).format('YYYY-MM-DD')
@@ -85,7 +99,7 @@
             label: '审批状态',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 90,
+            minWidth: 120,
             formatter: (_row, _column, cellValue) => {
               if (_row.Approve_State == 0) {
                 return '未审批';
@@ -101,7 +115,7 @@
             label: '发送状态',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 90,
+            minWidth: 120,
             formatter: (_row, _column, cellValue) => {
               if (_row.Send_State == 0) {
                 return '未发送（SPD）';
@@ -133,6 +147,12 @@
         current: null
       };
     },
+    created() {
+      localStorage.setItem(
+        'NewDeptPlannedDeliveryBottomLeftTableCacheKeyTableSize',
+        JSON.stringify('mini')
+      );
+    },
     methods: {
       datasource({ page, limit, where, order }) {
         let data = GetPickingList({ page, limit, where, order }).then((res) => {
@@ -154,4 +174,12 @@
     }
   };
 </script>
-<style lang=""></style>
+<style scoped lang="scss">
+.bottom-left-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  height: 100%;
+  min-height: 0;
+}
+</style>

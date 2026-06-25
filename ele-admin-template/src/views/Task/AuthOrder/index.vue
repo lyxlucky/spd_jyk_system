@@ -91,7 +91,7 @@
             border
             stripe
             size="mini"
-            height="calc(100vh - 240px)"
+            height="calc(100vh - 200px)"
             highlight-current-row
             @current-change="onDelSelect"
           >
@@ -157,7 +157,7 @@
             border
             stripe
             size="mini"
-            height="calc(100vh - 240px)"
+            height="calc(100vh - 220px)"
             @selection-change="defSelection = $event"
           >
             <el-table-column type="selection" width="42" align="center" />

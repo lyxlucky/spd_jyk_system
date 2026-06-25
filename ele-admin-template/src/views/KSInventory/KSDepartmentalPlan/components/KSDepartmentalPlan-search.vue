@@ -1,111 +1,81 @@
 <!-- 搜索表单 -->
 <template>
-  <el-form
-    inline
-    class="ele-form-search"
-    @keyup.enter.native="search"
-    @submit.native.prevent
-  >
-    <el-form-item>
-      <el-input
-        size="mini"
-        clearable
-        style="width: 200px"
-        v-model="BZ"
-        placeholder="请输入申领单备注信息"
-      />
-    </el-form-item>
-    <el-form-item>
-      <el-button
-        size="mini"
-        type="primary"
-        icon="el-icon-check"
-        class="ele-btn-icon"
-        @click="CreatApplicationForm()"
-      >
-        创建
-      </el-button>
-    </el-form-item>
-    <el-form-item>
-      <el-input
-        size="mini"
-        clearable
-        style="width: 160px"
-        v-model="where.PlanNum"
-        placeholder="申领单"
-      />
-    </el-form-item>
-    <el-form-item>
-      <el-date-picker
-        size="mini"
-        v-model="dateRange"
-        type="daterange"
-        style="width: 200px"
-        value-format="yyyy-MM-dd"
-        range-separator="至"
-        start-placeholder="申领开始"
-        end-placeholder="申领结束"
-        @change="onDateRangeChange"
-      >
-      </el-date-picker>
-    </el-form-item>
-    <el-form-item>
-      <el-select size="mini" style="width: 140px" v-model="where.State" @change="search()">
-        <el-option label="状态" value="-1">全部</el-option>
-        <el-option label="新增" value="0"></el-option>
-        <el-option label="已提交" value="1"></el-option>
-        <el-option label="已审核" value="5"></el-option>
-        <el-option label="已审批" value="6"></el-option>
-        <el-option label="未审批" value="-6"></el-option>
-        <el-option label="未收全" value="3"></el-option>
-        <el-option label="已收全" value="4"></el-option>
-        <el-option label="强制结束" value="10"></el-option>
-      </el-select>
-    </el-form-item>
-    <el-form-item v-if="isBDRM">
-      <el-select size="mini" style="width: 120px" v-model="where.props" @change="search()">
-        <el-option label="高低值" value="">全部</el-option>
-        <el-option label="低值" value="0"></el-option>
-        <el-option label="高值" value="1"></el-option>
-        <el-option label="试剂" value="2"></el-option>
-      </el-select>
-    </el-form-item>
-    <el-form-item>
-      <el-input
-        size="mini"
-        clearable
-        style="width: 200px"
-        v-model="where.SerachName"
-        placeholder="请输入品名/型号规格/生产企业"
-      />
-    </el-form-item>
-    <el-form-item>
-      <el-button
-        size="mini"
-        type="primary"
-        icon="el-icon-search"
-        class="ele-btn-icon"
-        @click="search"
-      >
-        查询
-      </el-button>
-    </el-form-item>
-    <el-form-item>
-      <el-button size="mini" icon="el-icon-refresh" class="ele-btn-icon" @click="reset">
-        重置
-      </el-button>
-    </el-form-item>
-    <el-form-item>
-      <el-button
-        size="mini"
-        type="primary"
-        icon="el-icon-download"
-        class="ele-btn-icon"
-        @click="exportData"
-      >
-        导出
-      </el-button>
-    </el-form-item>
+  <div class="spd-panel__body">
+    <el-form
+      size="mini"
+      :inline="true"
+      class="ele-form-search"
+      @keyup.enter.native="search"
+      @submit.native.prevent
+    >
+      <el-form-item label="备注">
+        <el-input
+          clearable
+          style="width: 160px"
+          v-model="BZ"
+          placeholder="申领单备注信息"
+        />
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" icon="el-icon-check" @click="CreatApplicationForm()">
+          创建
+        </el-button>
+      </el-form-item>
+      <el-form-item label="申领单">
+        <el-input
+          clearable
+          style="width: 140px"
+          v-model="where.PlanNum"
+          placeholder="申领单号"
+        />
+      </el-form-item>
+      <el-form-item label="日期">
+        <el-date-picker
+          v-model="dateRange"
+          type="daterange"
+          style="width: 200px"
+          value-format="yyyy-MM-dd"
+          range-separator="至"
+          start-placeholder="申领开始"
+          end-placeholder="申领结束"
+          @change="onDateRangeChange"
+        />
+      </el-form-item>
+      <el-form-item label="状态">
+        <el-select style="width: 120px" v-model="where.State" @change="search()">
+          <el-option label="全部" value="-1" />
+          <el-option label="新增" value="0" />
+          <el-option label="已提交" value="1" />
+          <el-option label="已审核" value="5" />
+          <el-option label="已审批" value="6" />
+          <el-option label="未审批" value="-6" />
+          <el-option label="未收全" value="3" />
+          <el-option label="已收全" value="4" />
+          <el-option label="强制结束" value="10" />
+        </el-select>
+      </el-form-item>
+      <el-form-item v-if="isBDRM" label="高低值">
+        <el-select style="width: 100px" v-model="where.props" @change="search()">
+          <el-option label="全部" value="" />
+          <el-option label="低值" value="0" />
+          <el-option label="高值" value="1" />
+          <el-option label="试剂" value="2" />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="品种">
+        <el-input
+          clearable
+          style="width: 180px"
+          v-model="where.SerachName"
+          placeholder="品名/型号规格/生产企业"
+        />
+      </el-form-item>
+      <el-form-item class="ele-form-actions">
+        <el-button type="primary" icon="el-icon-search" @click="search">查询</el-button>
+        <el-button icon="el-icon-refresh" @click="reset">重置</el-button>
+        <el-button type="primary" icon="el-icon-download" @click="exportData">导出</el-button>
+      </el-form-item>
+    </el-form>
 
     <!-- 项目类型选择对话框 -->
     <ProjectTypeDialog
@@ -115,7 +85,7 @@
       @confirm="handleDialogConfirm"
       @cancel="handleDialogCancel"
     />
-  </el-form>
+  </div>
 </template>
 
 <script>
@@ -126,25 +96,25 @@
     getResearchProjects
   } from '@/api/KSInventory/KSDepartmentalPlan';
   import ProjectTypeDialog from './ProjectTypeDialog.vue';
+
+  const defaultWhere = () => ({
+    SerachName: '',
+    PlanNum: '',
+    Start: '',
+    End: '',
+    State: '-1',
+    props: '',
+    isTwoApp: ''
+  });
+
   export default {
     components: {
       ProjectTypeDialog
     },
     data() {
-      // 默认表单数据
-      const defaultWhere = {
-        SerachName: '',
-        PlanNum: '',
-        Start: '',
-        End: '',
-        State: '-1',
-        props: '',
-        isTwoApp: ''
-      };
       return {
-        defaultWhere,
         // 表单数据
-        where: { ...defaultWhere },
+        where: defaultWhere(),
         BZ: '',
         showProjectTypeDialog: false,
         dateRange: []
@@ -181,7 +151,7 @@
       },
       /*  重置 */
       reset() {
-        this.where = { ...this.defaultWhere };
+        this.where = defaultWhere();
         this.dateRange = [];
         this.search();
       },
@@ -252,7 +222,19 @@
 </script>
 
 <style scoped lang="scss">
-  ::v-deep .el-form-item {
-    margin-bottom: 4px;
-  }
+:deep(.el-form-item) {
+  margin-bottom: 0;
+}
+
+.ele-form-actions :deep(.el-form-item__content) {
+  max-width: none !important;
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.ele-form-actions :deep(.el-button) {
+  margin: 0;
+}
 </style>

@@ -1,51 +1,36 @@
 <template>
-  <div class="ele-body">
-    <el-card shadow="never">
-      <!-- 搜索表单 -->
-      <!-- <user-search @search="reload" @exportData="exportData" /> -->
-      <!-- 数据表格 -->
-      <user-search
-        @search="reload"
-        @exportData="exportData"
-        @returnData="returnData"
-      />
-      <ele-pro-table
-        ref="table"
-        :pageSize="pageSize"
-        :pageSizes="pageSizes"
-        :columns="columns"
-        :datasource="datasource"
-        :selection.sync="selection"
-        cache-key="KSInventoryBasicDataTable"
-      >
-        <!-- 表头工具栏 -->
-        <template v-slot:toolbar> </template>
-
-        <!-- 操作列 -->
-        <template v-slot:action="{ row }">
-          <el-link
-            type="primary"
-            :underline="false"
-            icon="el-icon-edit"
-            @click="openEdit(row)"
-          >
-            修改
-          </el-link>
-          <!-- <el-button type="primary" size="mini" @click="openEdit(row)">编辑</el-button> -->
-          <!-- <el-popconfirm class="ele-action" title="确定要删除此用户吗？" @confirm="remove(row)">
-            <template v-slot:reference>
-              <el-link type="danger" :underline="false" icon="el-icon-delete">
-                删除
-              </el-link>
-            </template>
-          </el-popconfirm> -->
-        </template>
-      </ele-pro-table>
-    </el-card>
-    <!-- 编辑弹窗 -->
+  <div class="goodsshelves-tab-page spd-page">
+    <user-search
+      @search="reload"
+      @exportData="exportData"
+      @returnData="returnData"
+    />
+    <div class="spd-panel spd-table-panel goodsshelves-table-panel">
+      <div class="spd-panel__head">入库列表</div>
+      <div class="spd-table-panel__wrap">
+        <ele-pro-table
+          ref="table"
+          class="data-table"
+          size="mini"
+          border
+          stripe
+          :toolbar="false"
+          :header-overflow-hidden="false"
+          height="calc(100vh - 480px)"
+          :pageSize="pageSize"
+          :pageSizes="pageSizes"
+          :columns="columns"
+          :datasource="datasource"
+          :selection.sync="selection"
+          cache-key="goodsshelvesInTable"
+        >
+          <template v-slot:action="{ row }">
+            <el-button type="text" size="mini" @click="openEdit(row)">修改</el-button>
+          </template>
+        </ele-pro-table>
+      </div>
+    </div>
     <user-edit :visible.sync="showEdit" :data="current" @done="reload" />
-    <!-- 导入弹窗 -->
-    <!-- <user-import :visible.sync="showImport" @done="reload" /> -->
   </div>
 </template>
 
@@ -131,7 +116,7 @@
             label: '业务发起库区',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 100,
+            minWidth: 130,
             formatter: function (row) {
               if (row.Storage_ID === 1 || row.Storage_ID === '1') {
                 return '院内库区';
@@ -147,7 +132,7 @@
             label: '科室/供应商名称',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 100
+            minWidth: 180
           },
           {
             prop: 'UP_SHELF_TIME',
@@ -161,21 +146,21 @@
             label: '品种(材料)编码',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 100
+            minWidth: 150
           },
           {
             prop: 'YG_CODE',
             label: '阳光编码',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 100
+            minWidth: 120
           },
           {
             prop: 'SPH_ERP_VARIETIE_CODE',
             label: '上药HERP编码',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 100
+            minWidth: 150
           },
           {
             prop: 'VARIETIE_NAME',
@@ -314,7 +299,7 @@
             label: '高低值分类下级属性',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 120,
+            minWidth: 200,
             formatter: function (row) {
               if (row.HIGH_OR_LOW_CLASS_TWO === '1') {
                 return '重点治理';
@@ -393,14 +378,14 @@
             label: '检验报告图片',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 100,
+            minWidth: 150,
             slot: 'Cont_barGoogs'
           },
           {
             label: '查看UDI',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 100,
+            minWidth: 140,
             slot: 'centre_UDI2'
           },
           {
@@ -456,7 +441,7 @@
             label: '计划单号',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 90
+            minWidth: 120
           },
           {
             prop: 'STOCK_UP_PLAN_GOODS_QUANTITY',
@@ -470,7 +455,7 @@
             label: '计划审批时间',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 90,
+            minWidth: 150,
             formatter: function (row) {
               if (
                 row.APPROVE_TIME === '0001-01-01T00:00:00' ||
@@ -494,7 +479,7 @@
             label: '是否集采',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 90,
+            minWidth: 100,
             formatter: function (row) {
               if (row.IS_JC === '1') {
                 return '是';
@@ -546,14 +531,15 @@
     methods: {
       /* 表格数据源 */
       datasource({ page, limit, where, order }) {
-        let data = GetPDAList({ page, limit, where, order }).then((res) => {
-          var tData = {
+        return GetPDAList({ page, limit, where, order })
+          .then((res) => ({
             count: res.total,
             list: res.result
-          };
-          return tData;
-        });
-        return data;
+          }))
+          .catch((err) => {
+            this.$message.error(err.message || '入库列表加载失败');
+            return { count: 0, list: [] };
+          });
       },
       /* 刷新表格 */
       reload(where) {
@@ -666,3 +652,22 @@
     }
   };
 </script>
+
+<style scoped>
+.goodsshelves-tab-page {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 0;
+}
+
+.goodsshelves-table-panel {
+  flex: 1;
+  min-height: 0;
+}
+
+.goodsshelves-tab-page >>> .el-table th .cell {
+  white-space: nowrap;
+}
+</style>

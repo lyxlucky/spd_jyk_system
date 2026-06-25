@@ -1,25 +1,46 @@
 <template>
-  <div class="">
-    <!-- 数据表格 -->
-    <ele-pro-table ref="table" height="67vh" highlight-current-row :stripe="true" :rowClickChecked="true" @current-change="onCurrentChange" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" cache-key="DefNoPkgDataTable">
-      <!-- 表头工具栏 -->
-      <!-- 右表头 -->
-      <!-- <template v-slot:toolkit>
+  <div class="ks-scan-distribute-table">
+    <div class="spd-panel spd-table-panel">
+      <div class="spd-table-panel__wrap">
+        <!-- 数据表格 -->
+        <ele-pro-table
+          ref="table"
+          class="data-table"
+          size="mini"
+          border
+          :toolbar="false"
+          :header-overflow-hidden="false"
+          :height="tableHeight"
+          highlight-current-row
+          :rowClickChecked="true"
+          @current-change="onCurrentChange"
+          :pageSize="pageSize"
+          :pageSizes="pageSizes"
+          :columns="columns"
+          :datasource="datasource"
+          :selection.sync="selection"
+          cache-key="KSScanCodeRecGoodDistributeTable"
+        >
+          <!-- 表头工具栏 -->
+          <!-- 右表头 -->
+          <!-- <template v-slot:toolkit>
         <el-button size="small" type="danger" icon="el-icon-delete" class="ele-btn-icon" @click="removebatch">
           删除
         </el-button>
       </template> -->
-      <!-- 左表头 -->
-      <!-- <template v-slot:toolbar>
+          <!-- 左表头 -->
+          <!-- <template v-slot:toolbar>
         <ApplyTempDataSearch @search="reload" :ApplyTempTableDataSearch='ApplyTempTableDataSearch' :selection="selection" @showEditReoad="showEditReoad" />
       </template> -->
 
-      <!-- 操作列 -->
-      <!-- <template v-slot:TempletQty="{ row }">
+          <!-- 操作列 -->
+          <!-- <template v-slot:TempletQty="{ row }">
         <el-input-number v-model="row.TempletQty" :min="0" :max="9999" :step="1" size="mini" />
       </template> -->
 
-    </ele-pro-table>
+        </ele-pro-table>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -126,11 +147,12 @@ export default {
           label: '收货数量',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 80,
+          minWidth: 120,
           fixed: 'right'
         },
       ],
       toolbar: false,
+      tableHeight: 'calc(100vh - 160px)',
       pageSize: 20,
       pagerCount: 2,
       pageSizes: [10, 20, 50, 100, 9999999],
@@ -188,6 +210,7 @@ export default {
     }
   },
   created() {
+    localStorage.setItem('KSScanCodeRecGoodDistributeTableSize', JSON.stringify('mini'));
     // this.getdatasource();
   }
 };

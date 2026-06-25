@@ -1,20 +1,51 @@
 <template>
-  <div class="ele-body">
-    <el-card shadow="never">
-      <!-- 搜索表单 -->
+  <div class="ele-body spd-page inventory-query-jyk">
+    <el-card shadow="never" class="inventory-query-jyk-card">
       <user-search @search="reload" @exportData="exportData" />
-      <!-- 数据表格 -->
-      <ele-pro-table ref="table" height="35vh" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" cache-key="KSInventoryBasicDataTable"  @row-click="handleRowClick">
-        <!-- 表头工具栏 -->
-        <template v-slot:toolbar>
-        </template>
-      </ele-pro-table>
+      <div class="spd-panel spd-table-panel">
+        <div class="spd-panel__head">库存列表</div>
+        <div class="spd-table-panel__wrap">
+          <ele-pro-table
+            ref="table"
+            class="data-table"
+            size="mini"
+            border
+            stripe
+            :toolbar="false"
+            :header-overflow-hidden="false"
+            height="calc((100vh - 480px) / 2)"
+            :pageSize="pageSize"
+            :pageSizes="pageSizes"
+            :columns="columns"
+            :datasource="datasource"
+            :selection.sync="selection"
+            cache-key="inventoryQueryJykMainTable"
+            @row-click="handleRowClick"
+          />
+        </div>
+      </div>
       <UserSearch2 @search="reload2" />
-      <ele-pro-table ref="table2" height="35vh" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns2" :datasource="datasource2" :selection.sync="selection" cache-key="KSInventoryBasicDataTable2">
-        <!-- 表头工具栏 -->
-        <template v-slot:toolbar>
-        </template>
-      </ele-pro-table>
+      <div class="spd-panel spd-table-panel">
+        <div class="spd-panel__head">定数码明细</div>
+        <div class="spd-table-panel__wrap">
+          <ele-pro-table
+            ref="table2"
+            class="data-table"
+            size="mini"
+            border
+            stripe
+            :toolbar="false"
+            :header-overflow-hidden="false"
+            height="calc((100vh - 480px) / 2)"
+            :pageSize="pageSize"
+            :pageSizes="pageSizes"
+            :columns="columns2"
+            :datasource="datasource2"
+            :selection.sync="selection"
+            cache-key="inventoryQueryJykDetailTable"
+          />
+        </div>
+      </div>
     </el-card>
   </div>
 </template>
@@ -33,6 +64,13 @@ export default {
   },
   data() {
     return {
+      sourceFrom: '',
+      batchId: '',
+      varietieCode: '',
+      batch: '',
+      coefficient: '',
+      currUpShelfState: '',
+      storageId: '',
       // 表格列配置
       columns: [
         {
@@ -830,4 +868,16 @@ export default {
     
   }
 };
-</script>    
+</script>
+
+<style scoped>
+.inventory-query-jyk-card :deep(.el-card__body) {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.inventory-query-jyk >>> .el-table th .cell {
+  white-space: nowrap;
+}
+</style>

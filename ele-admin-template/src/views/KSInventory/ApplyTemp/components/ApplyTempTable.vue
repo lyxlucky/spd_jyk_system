@@ -1,115 +1,118 @@
 <template>
-  <div>
-    <ApplyTempSearch @search="reload" :rowData="current" />
-    <!-- 数据表格 -->
-    <ele-pro-table
-      size="mini"
-      highlight-current-row
-      @current-change="onCurrentChange"
-      :row-class-name="tableRowClassName"
-      ref="table"
-      height="65vh"
-      :rowClickChecked="true"
-      :stripe="false"
-      :pageSize="pageSize"
-      :pageSizes="pageSizes"
-      :columns="columns"
-      :needPage="false"
-      :datasource="datasource"
-      :selection.sync="selection"
-      cache-key="ApplyTempTable"
-    >
-      <!-- 表头工具栏 -->
-      <template v-slot:toolbar>
-        <!-- 搜索表单 -->
-      </template>
+  <div class="apply-temp-main-table">
+    <div class="spd-panel spd-panel--search">
+      <div class="spd-panel__head">查询条件</div>
+      <ApplyTempSearch @search="reload" :rowData="current" />
+    </div>
 
-      <template v-slot:State="{ row }">
-        <el-tag v-if="row.State == 0" type="success">新增</el-tag>
-        <el-tag v-if="row.State == 1">已提交</el-tag>
-        <el-tag v-if="row.State == 2" type="primary">配送中</el-tag>
-        <el-tag v-if="row.State == 5" type="primary" color="#2ee693"
-          >已审核</el-tag
+    <!-- 数据表格 -->
+    <div class="spd-panel spd-table-panel">
+      <div class="spd-panel__head">模板列表</div>
+      <div class="spd-table-panel__wrap">
+        <ele-pro-table
+          ref="table"
+          class="data-table"
+          size="mini"
+          border
+          stripe
+          highlight-current-row
+          :row-class-name="tableRowClassName"
+          :rowClickChecked="true"
+          :toolbar="false"
+          :header-overflow-hidden="false"
+          :height="tableHeight"
+          :pageSize="pageSize"
+          :pageSizes="pageSizes"
+          :columns="columns"
+          :needPage="false"
+          :datasource="datasource"
+          :selection.sync="selection"
+          cache-key="ApplyTempMainTable"
+          @current-change="onCurrentChange"
         >
-        <el-tag
-          v-if="row.State == 10"
-          type="primary"
-          color="#e60000"
-          style="color: white"
-          >强制结束</el-tag
-        >
-        <el-tag
-          v-if="
-            (row.State == 6 || row.State == 4) &&
-            row.SUM_Left_Apply_Qty == row.SUM_Apply_Qty
-          "
-          type="success"
-          >已审批</el-tag
-        >
-        <el-tag
-          v-if="
-            row.SUM_Left_Apply_Qty > 0 &&
-            row.SUM_Left_Apply_Qty != row.SUM_Apply_Qty
-          "
-          type="danger"
-          >未收全</el-tag
-        >
-        <el-tag v-if="row.SUM_Left_Apply_Qty == 0" type="success"
-          >已收全</el-tag
-        >
-        <!-- <el-tag v-for="(item) in row" :key="item.PlanNum" size="mini" type="primary" :disable-transitions="true">
+          <!-- 表头工具栏 -->
+          <template v-slot:toolbar>
+            <!-- 搜索表单 -->
+          </template>
+
+          <template v-slot:State="{ row }">
+            <el-tag size="mini" v-if="row.State == 0" type="success">新增</el-tag>
+            <el-tag size="mini" v-if="row.State == 1">已提交</el-tag>
+            <el-tag size="mini" v-if="row.State == 2" type="primary">配送中</el-tag>
+            <el-tag size="mini" v-if="row.State == 5" type="primary" color="#2ee693">已审核</el-tag>
+            <el-tag
+              size="mini"
+              v-if="row.State == 10"
+              type="primary"
+              color="#e60000"
+              style="color: white"
+            >强制结束</el-tag>
+            <el-tag
+              size="mini"
+              v-if="
+                (row.State == 6 || row.State == 4) &&
+                row.SUM_Left_Apply_Qty == row.SUM_Apply_Qty
+              "
+              type="success"
+            >已审批</el-tag>
+            <el-tag
+              size="mini"
+              v-if="
+                row.SUM_Left_Apply_Qty > 0 &&
+                row.SUM_Left_Apply_Qty != row.SUM_Apply_Qty
+              "
+              type="danger"
+            >未收全</el-tag>
+            <el-tag size="mini" v-if="row.SUM_Left_Apply_Qty == 0" type="success">已收全</el-tag>
+            <!-- <el-tag v-for="(item) in row" :key="item.PlanNum" size="mini" type="primary" :disable-transitions="true">
           {{ item.State }}
         </el-tag> -->
-      </template>
-
-      <template v-slot:CommonState="{ row }">
-        <el-tag v-if="row.CommonState == 0" type="success">新增</el-tag>
-        <el-tag v-if="row.CommonState == 1">已提交</el-tag>
-      </template>
-
-      <template v-slot:TempletName="{ row }">
-        <span
-          style="color: #409eff"
-          type="primary"
-          @dblclick="editTempletName(row.TempletCode)"
-          v-if="row.TempletName"
-          :underline="false"
-          >{{ row.TempletName }}</span
-        >
-        <span
-          style="color: #409eff"
-          type="primary"
-          @dblclick="editTempletName(row.TempletCode)"
-          v-else
-          :underline="false"
-          >无</span
-        >
-      </template>
-
-      <!-- 操作列 -->
-      <template v-slot:action="{ row }">
-        <!-- <el-button type="primary" size="small" @click="search(row)">设置为专属模板</el-button> -->
-        <el-popconfirm
-          class="ele-action"
-          title="确定要删除此用户吗？"
-          @confirm="remove(row)"
-        >
-          <template v-slot:reference>
-            <el-link type="danger" :underline="false" icon="el-icon-delete">
-              删除
-            </el-link>
-            <el-link
-              @click="editTempletName(row.TempletCode)"
-              type="primary"
-              :underline="false"
-              icon="el-icon-edit"
-            >
-              编辑
-            </el-link>
           </template>
-        </el-popconfirm>
-      </template>
-    </ele-pro-table>
+
+          <template v-slot:CommonState="{ row }">
+            <el-tag size="mini" v-if="row.CommonState == 0" type="success">新增</el-tag>
+            <el-tag size="mini" v-if="row.CommonState == 1">已提交</el-tag>
+          </template>
+
+          <template v-slot:TempletName="{ row }">
+            <span
+              style="color: #409eff"
+              type="primary"
+              @dblclick="editTempletName(row.TempletCode)"
+              v-if="row.TempletName"
+              :underline="false"
+            >{{ row.TempletName }}</span>
+            <span
+              style="color: #409eff"
+              type="primary"
+              @dblclick="editTempletName(row.TempletCode)"
+              v-else
+              :underline="false"
+            >无</span>
+          </template>
+
+          <!-- 操作列 -->
+          <template v-slot:action="{ row }">
+            <!-- <el-button type="primary" size="small" @click="search(row)">设置为专属模板</el-button> -->
+            <el-popconfirm
+              class="ele-action"
+              title="确定要删除此用户吗？"
+              @confirm="remove(row)"
+            >
+              <template v-slot:reference>
+                <el-link type="danger" :underline="false" icon="el-icon-delete">删除</el-link>
+                <el-link
+                  @click="editTempletName(row.TempletCode)"
+                  type="primary"
+                  :underline="false"
+                  icon="el-icon-edit"
+                >编辑</el-link>
+              </template>
+            </el-popconfirm>
+          </template>
+        </ele-pro-table>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -121,6 +124,18 @@
   .el-table .success-row {
     background: #65bb37;
   }
+</style>
+
+<style scoped>
+.apply-temp-main-table >>> .el-table th .cell {
+  white-space: nowrap;
+}
+
+.apply-temp-main-table >>> .action-col .cell {
+  line-height: 23px;
+  padding-top: 0;
+  padding-bottom: 0;
+}
 </style>
 
 <script>
@@ -247,7 +262,8 @@
             align: 'center',
             resizable: false,
             slot: 'action',
-            showOverflowTooltip: true
+            showOverflowTooltip: true,
+            className: 'action-col'
             //fixed: 'right'
           },
           {
@@ -273,7 +289,8 @@
         // 是否显示导入弹窗
         showImport: false,
         // datasource: [],
-        data: []
+        data: [],
+        tableHeight: '65vh'
       };
     },
     methods: {
@@ -374,6 +391,7 @@
       this.$bus.$off('handleCommand');
     },
     created() {
+      localStorage.setItem('ApplyTempMainTableSize', JSON.stringify('mini'));
       // this.getdatasource();
       // console.log(this.$store.state.user.info.DeptNow.Dept_Two_Code);
     }

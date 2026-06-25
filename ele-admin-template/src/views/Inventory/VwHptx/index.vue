@@ -1,11 +1,6 @@
 <template>
   <div class="ele-body spd-page vwhptx-page">
-    <el-card shadow="never">
-      <div class="page-title">货票同行入库</div>
-      <div class="summary-bar">
-        <span>数量合计: <b>{{ summary.sumQty }}</b></span>
-        <span>金额合计: <b>{{ summary.sumMoney }}</b></span>
-      </div>
+    <el-card shadow="never" class="vwhptx-card">
       <VwHptxSearch
         ref="search"
         :exporting="exporting"
@@ -22,32 +17,49 @@
         @edit-order-type="onEditOrderType"
         @delete="onDelete"
       />
-      <ele-pro-table
-        ref="table"
-        :height="tableHeight"
-        :columns="columns"
-        :datasource="datasource"
-        :selection.sync="selection"
-        :page-size="20"
-        :page-sizes="[20, 40, 60, 90, 150, 300, 999999]"
-        cache-key="VwHptxTable"
-        @row-click="onRowClick"
-      >
-        <template v-slot:pic="{ row }">
-          <template v-if="!row.PIC_URL" />
-          <a
-            v-else-if="String(row.PIC_URL).indexOf('pdf') !== -1"
-            :href="invoicePicUrl(row.PIC_URL)"
-            target="_blank"
-          >pdf文件</a>
-          <img
-            v-else
-            class="invoice-thumb"
-            :src="invoicePicUrl(row.PIC_URL)"
-            @click.stop="previewPic(row.PIC_URL)"
-          />
-        </template>
-      </ele-pro-table>
+      <div class="spd-panel spd-table-panel">
+        <div class="spd-panel__head spd-panel__head--split">
+          <span>货票同行入库列表</span>
+          <span class="vwhptx-summary">
+            <span>数量合计: <b>{{ summary.sumQty }}</b></span>
+            <span>金额合计: <b>{{ summary.sumMoney }}</b></span>
+          </span>
+        </div>
+        <div class="spd-table-panel__wrap">
+          <ele-pro-table
+            ref="table"
+            class="data-table"
+            size="mini"
+            border
+            stripe
+            :toolbar="false"
+            :header-overflow-hidden="false"
+            :height="tableHeight"
+            :columns="columns"
+            :datasource="datasource"
+            :selection.sync="selection"
+            :page-size="20"
+            :page-sizes="[20, 40, 60, 90, 150, 300, 999999]"
+            cache-key="VwHptxTable"
+            @row-click="onRowClick"
+          >
+            <template v-slot:pic="{ row }">
+              <template v-if="!row.PIC_URL" />
+              <a
+                v-else-if="String(row.PIC_URL).indexOf('pdf') !== -1"
+                :href="invoicePicUrl(row.PIC_URL)"
+                target="_blank"
+              >pdf文件</a>
+              <img
+                v-else
+                class="invoice-thumb"
+                :src="invoicePicUrl(row.PIC_URL)"
+                @click.stop="previewPic(row.PIC_URL)"
+              />
+            </template>
+          </ele-pro-table>
+        </div>
+      </div>
     </el-card>
 
     <el-dialog
@@ -57,7 +69,7 @@
       append-to-body
       @closed="invoiceDialog.invoiceNums = ''"
     >
-      <el-form label-width="100px" size="small">
+      <el-form label-width="100px" size="mini">
         <el-form-item label="收货单号">
           <el-input :value="currentRow?.DELIVERY_NOTE_NUMBER" disabled />
         </el-form-item>
@@ -71,8 +83,8 @@
         </el-form-item>
       </el-form>
       <span slot="footer">
-        <el-button @click="invoiceDialog.visible = false">取消</el-button>
-        <el-button type="primary" :loading="invoiceDialog.loading" @click="submitInvoice">保存</el-button>
+        <el-button size="mini" @click="invoiceDialog.visible = false">取消</el-button>
+        <el-button type="primary" size="mini" :loading="invoiceDialog.loading" @click="submitInvoice">保存</el-button>
       </span>
     </el-dialog>
 
@@ -82,7 +94,7 @@
       width="450px"
       append-to-body
     >
-      <el-form label-width="120px" size="small">
+      <el-form label-width="120px" size="mini">
         <el-form-item label="新的结算月份">
           <el-date-picker
             v-model="monthDialog.month"
@@ -94,8 +106,8 @@
         </el-form-item>
       </el-form>
       <span slot="footer">
-        <el-button @click="monthDialog.visible = false">取消</el-button>
-        <el-button type="primary" :loading="monthDialog.loading" @click="submitMonth">保存</el-button>
+        <el-button size="mini" @click="monthDialog.visible = false">取消</el-button>
+        <el-button type="primary" size="mini" :loading="monthDialog.loading" @click="submitMonth">保存</el-button>
       </span>
     </el-dialog>
 
@@ -105,7 +117,7 @@
       width="450px"
       append-to-body
     >
-      <el-form label-width="120px" size="small">
+      <el-form label-width="120px" size="mini">
         <el-form-item label="新的入库类型">
           <el-select v-model="orderTypeDialog.orderJsType" style="width: 100%">
             <el-option
@@ -118,8 +130,8 @@
         </el-form-item>
       </el-form>
       <span slot="footer">
-        <el-button @click="orderTypeDialog.visible = false">取消</el-button>
-        <el-button type="primary" :loading="orderTypeDialog.loading" @click="submitOrderType">保存</el-button>
+        <el-button size="mini" @click="orderTypeDialog.visible = false">取消</el-button>
+        <el-button type="primary" size="mini" :loading="orderTypeDialog.loading" @click="submitOrderType">保存</el-button>
       </span>
     </el-dialog>
 
@@ -159,7 +171,7 @@ export default {
   data() {
     return {
       columns: getVwHptxColumns(),
-      tableHeight: 'calc(100vh - 420px)',
+      tableHeight: 'calc(100vh - 380px)',
       selection: [],
       currentRow: null,
       summary: { sumQty: 0, sumMoney: 0 },
@@ -380,26 +392,31 @@ export default {
 </script>
 
 <style scoped>
-.vwhptx-page .page-title {
-  font-size: 16px;
-  font-weight: 600;
-  margin-bottom: 10px;
-  color: #303133;
+.vwhptx-card :deep(.el-card__body) {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
-.summary-bar {
+
+.vwhptx-summary {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px;
-  justify-content: flex-end;
-  margin-bottom: 8px;
-  font-size: 14px;
-  color: #333;
+  gap: 16px;
+  font-size: 12px;
+  font-weight: normal;
+  color: #606266;
 }
-.summary-bar b {
-  color: #1e9fff;
+
+.vwhptx-summary b {
+  color: #409eff;
   font-weight: 600;
-  margin-left: 4px;
+  margin-left: 2px;
 }
+
+.vwhptx-page >>> .el-table th .cell {
+  white-space: nowrap;
+}
+
 .invoice-thumb {
   max-width: 60px;
   max-height: 40px;

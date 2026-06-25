@@ -55,7 +55,7 @@
         <ele-pro-table
           size="mini"
           ref="summaryTable"
-          height="250px"
+          height="300px"
           :columns="summaryColumns"
           highlight-current-row
           :datasource="summaryDatasource"

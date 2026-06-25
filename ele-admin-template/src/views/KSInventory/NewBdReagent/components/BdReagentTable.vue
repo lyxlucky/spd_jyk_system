@@ -1,21 +1,68 @@
-<template lang="">
-  <div>
-    <ele-pro-table
-      highlight-current-row
-      highlight-selection-row
-      ref="table"
-      @current-change="onCurrentChange"
-      height="70vh"
-      :rowClickChecked="true"
-      :stripe="true"
-      :pageSize="pageSize"
-      :pageSizes="pageSizes"
-      :columns="columns"
-      :datasource="datasource"
-      :selection.sync="selection"
-      cache-key="BdReagentTable"
-    >
-      <template v-slot:toolbar>
+<template>
+  <div class="new-bd-reagent-table">
+    <div class="spd-panel spd-panel--search">
+      <div class="spd-panel__head">查询条件</div>
+      <div class="spd-panel__body">
+        <el-form
+          size="mini"
+          :inline="true"
+          class="ele-form-search"
+          @keyup.enter.native="search"
+          @submit.native.prevent
+        >
+          <el-form-item label="日期" class="date-range-item">
+            <el-date-picker
+              v-model="where.date"
+              type="daterange"
+              value-format="yyyy-MM-dd"
+              style="width: 240px"
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+            />
+          </el-form-item>
+          <el-form-item label="耗材编码">
+            <el-input
+              v-model="where.drugsCode"
+              clearable
+              style="width: 140px"
+              placeholder="耗材编码"
+            />
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" icon="el-icon-search" @click="search">查询</el-button>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="success" icon="el-icon-download" @click="exportData">导出</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
+    </div>
+
+    <div class="spd-panel spd-table-panel">
+      <div class="spd-panel__head">试剂柜领用列表</div>
+      <div class="spd-table-panel__wrap">
+        <ele-pro-table
+          highlight-current-row
+          highlight-selection-row
+          ref="table"
+          class="data-table"
+          size="mini"
+          border
+          stripe
+          :toolbar="false"
+          :header-overflow-hidden="false"
+          :height="tableHeight"
+          :rowClickChecked="true"
+          :pageSize="pageSize"
+          :pageSizes="pageSizes"
+          :columns="columns"
+          :datasource="datasource"
+          :selection.sync="selection"
+          cache-key="NewBdReagentTable"
+          @current-change="onCurrentChange"
+        >
+          <!-- <template v-slot:toolbar>
         <div>
           <el-form class="ele-form-search">
             <el-row :gutter="10">
@@ -47,23 +94,33 @@
             </el-row>
           </el-form>
         </div>
-      </template>
-    </ele-pro-table>
+      </template> -->
+        </ele-pro-table>
+      </div>
+    </div>
   </div>
 </template>
+
 <script>
   import { utils, writeFile } from 'xlsx';
   import { queryPickAllDetail } from '@/api/KSInventory/NewBdReagent/index';
+  import moment from 'moment';
+
+  const getDefaultDateRange = () => [
+    moment().startOf('month').format('YYYY-MM-DD'),
+    moment().endOf('month').format('YYYY-MM-DD')
+  ];
+
+  const defaultWhere = () => ({
+    drugsCode: '',
+    date: getDefaultDateRange()
+  });
+
   export default {
     name: 'BdReagentTable',
-    components: {},
     data() {
-      const defaultWhere = {
-        drugsCode: '',
-        date: []
-      };
       return {
-        where: { ...defaultWhere },
+        where: defaultWhere(),
         columns: [
           {
             prop: 'dept_no',
@@ -78,7 +135,6 @@
             minWidth: 130,
             align: 'center',
             showOverflowTooltip: true
-
           },
           {
             prop: 'drugs_code',
@@ -86,7 +142,6 @@
             minWidth: 100,
             align: 'center',
             showOverflowTooltip: true
-
           },
           {
             prop: 'drugs_name',
@@ -94,32 +149,30 @@
             minWidth: 120,
             align: 'center',
             showOverflowTooltip: true
-
           },
           {
             prop: 'drugs_spec',
             label: '规格',
-            minWidth: 60,
+            minWidth: 80,
             align: 'center',
             showOverflowTooltip: true
-
           },
           {
             prop: 'qty',
             label: '领出数量',
-            minWidth: 60,
+            minWidth: 90,
             align: 'center',
             showOverflowTooltip: true
           },
           {
             prop: 'pick_time',
             label: '领出时间',
-            minWidth: 60,
+            minWidth: 150,
             align: 'center',
             showOverflowTooltip: true
-
           }
         ],
+        tableHeight: 'calc(100vh - 330px)',
         pageSize: 10,
         pagerCount: 2,
         pageSizes: [10, 20, 50, 100, 9999999],
@@ -129,27 +182,40 @@
         current: null
       };
     },
+    computed: {
+      // 是否开启响应式布局
+      styleResponsive() {
+        return this.$store.state.theme.styleResponsive;
+      }
+    },
     methods: {
+      getQueryWhere(where = {}) {
+        return {
+          ...this.where,
+          ...where
+        };
+      },
       datasource({ page, limit, where, order }) {
-        let data = queryPickAllDetail({
+        return queryPickAllDetail({
           page,
           limit,
-          where,
+          where: this.getQueryWhere(where),
           order
         }).then((res) => {
-          var tData = {
+          return {
             count: res.total,
             list: res.list
           };
-          return tData;
         });
-        return data;
       },
       onCurrentChange(row) {
         this.current = row;
       },
+      search() {
+        this.reload(this.where);
+      },
       reload(where) {
-        this.$refs.table.reload({ page: 1, where: where });
+        this.$refs.table.reload({ page: 1, where: this.getQueryWhere(where) });
       },
       exportData() {
         const loading = this.$messageLoading('正在导出数据...');
@@ -157,8 +223,8 @@
           queryPickAllDetail({
             page: 1,
             limit: 999999,
-            where: where,
-            order: order
+            where: this.getQueryWhere(where),
+            order
           })
             .then((res) => {
               const array = [
@@ -196,18 +262,26 @@
             })
             .catch((e) => {
               this.$message.error(e.message);
-            }).finally(() => {
-              loading.close();
             })
+            .finally(() => {
+              loading.close();
+            });
         });
-      },
-    },
-    computed: {
-      // 是否开启响应式布局
-      styleResponsive() {
-        return this.$store.state.theme.styleResponsive;
       }
+    },
+    created() {
+      localStorage.setItem('NewBdReagentTableSize', JSON.stringify('mini'));
     }
   };
 </script>
-<style lang=""></style>
+
+<style scoped lang="scss">
+:deep(.el-form-item) {
+  margin-bottom: 0;
+}
+
+/* ele-form-search 默认限制 content 最大 200px，daterange 会溢出盖住下一项 label */
+.date-range-item :deep(.el-form-item__content) {
+  max-width: none !important;
+}
+</style>

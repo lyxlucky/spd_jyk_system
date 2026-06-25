@@ -28,7 +28,7 @@
         <el-checkbox v-model="ratioMonitor" @change="reloadMonitor">是否按比值监控</el-checkbox>
       </el-form-item>
       <el-form-item class="toolbar-actions">
-        <el-select v-model="allocateSvc" style="width: 140px">
+        <el-select v-model="allocateSvc" style="width: 200px">
           <el-option :label="allocateLabels.outToIn" value="1" />
           <el-option :label="allocateLabels.inToOut" value="0" />
         </el-select>
@@ -131,7 +131,6 @@
           ref="monitorTable"
           size="mini"
           height="300px"
-          :stripe="true"
           :page-size="monitorPageSize"
           :page-sizes="[10, 30, 60, 90, 150, 300, 999999]"
           :columns="monitorColumns"
@@ -374,7 +373,8 @@ export default {
         Per: String(Number(this.cwjPer || 0) / 100),
         StorageID: this.filters.storageId || '',
         LowState: this.onlyBelowLower ? '1' : '0',
-        EnableState: this.filterDisabled ? '1' : '0',
+        // 后端：0=过滤已停用，1=不过滤
+        EnableState: this.filterDisabled ? '0' : '1',
         DeptName: this.selectedDept?.Dept_Two_Name || '',
         SearchName: this.varietySearch,
         IS_AUTH_SEND: this.filters.isAuthSend,

@@ -1,126 +1,103 @@
 <template>
-  <div class="ele-body">
-    <el-card shadow="never">
-      
+  <div class="ele-body spd-page ks-dept-consumption-page">
+    <el-card shadow="never" class="ks-dept-consumption-card">
       <!-- 搜索表单 -->
       <user-search @search="reload" />
       <!-- 数据表格 -->
-      <ele-pro-table
-        ref="table"
-        height="calc(100vh - 380px)"
-        :pageSize="pageSize"
-        :pageSizes="pageSizes"
-        :columns="columns"
-        :datasource="datasource"
-        :selection.sync="selection"
-        cache-key="KSDeptConsumption"
-      >
-        <!-- 表头工具栏 -->
-        <!-- <template v-slot:toolbar>
-          <el-button size="small" type="primary" icon="el-icon-plus" class="ele-btn-icon" @click="openEdit()">
-            新建
-          </el-button>
-          <el-button size="small" type="danger" icon="el-icon-delete" class="ele-btn-icon" @click="removeBatch">
-            删除
-          </el-button>
-          <el-button size="small" icon="el-icon-upload2" class="ele-btn-icon" @click="openImport">
-            导入
-          </el-button>
-        </template> -->
-        <template v-slot:toolbar>
-          <el-row style="margin-bottom: 5px;display: flex; align-items: center;">
-             <el-col :span="2">
-          <el-button
+      <div class="spd-panel spd-table-panel">
+        <div class="spd-panel__head spd-panel__head--split">
+          <span>科室消耗列表</span>
+          <span class="ks-dept-consumption-meta">
+            <el-button type="primary" icon="el-icon-download" @click="exportData">导出</el-button>
+            <span class="spd-panel__head-meta">当前页总金额: {{ data.pageCost }}</span>
+            <span class="spd-panel__head-meta">所有页总金额: {{ data.allCost }}</span>
+            <span class="spd-panel__head-meta">当前页散货汇总: {{ data.pageGoodsQty }}</span>
+            <span class="spd-panel__head-meta">所有页散货汇总: {{ data.allGoodsQty }}</span>
+          </span>
+        </div>
+        <div class="spd-table-panel__wrap">
+          <!-- <template v-slot:toolbar>
+            <el-button size="small" type="primary" icon="el-icon-plus" class="ele-btn-icon" @click="openEdit()">
+              新建
+            </el-button>
+            <el-button size="small" type="danger" icon="el-icon-delete" class="ele-btn-icon" @click="removeBatch">
+              删除
+            </el-button>
+            <el-button size="small" icon="el-icon-upload2" class="ele-btn-icon" @click="openImport">
+              导入
+            </el-button>
+          </template> -->
+          <ele-pro-table
+            ref="table"
+            class="data-table"
             size="mini"
-            type="primary"
-            icon="el-icon-download"
-            class="ele-btn-icon"
-            @click="exportData"
+            border
+            stripe
+            :toolbar="false"
+            :header-overflow-hidden="false"
+            :height="tableHeight"
+            :pageSize="pageSize"
+            :pageSizes="pageSizes"
+            :columns="columns"
+            :datasource="datasource"
+            :selection.sync="selection"
+            cache-key="KSDeptConsumptionTable"
           >
-            导出
-          </el-button>
-        </el-col>
-        <el-col :span="3">
-          当前页总金额:
-          {{ data.pageCost }}
-        </el-col>
+            <!-- <template v-slot:Consumption_Type="{ row }">
+              <el-tag :type="['', 'success','danger','warning','info'][row.Consumption_Type]" :disable-transitions="true">
+                {{['条码扫码消耗','RFID读码消耗','HIS计费消耗','散货申领消耗','HIS医嘱计费消耗','超时默认消耗'][row.Consumption_Type]}}
+              </el-tag>
+            </template> -->
 
-        <el-col :span="3">
-          所有页总金额:
-          {{ data.allCost }}
-        </el-col>
-
-        <el-col :span="3">
-          当前页散货汇总数量:
-          {{ data.pageGoodsQty }}
-        </el-col>
-
-        <el-col :span="3">
-          所有页散货汇总数量:
-          {{ data.allGoodsQty }}
-        </el-col>
-
-       
-      </el-row>
-
-          
-        </template>
-
-        <!-- 操作列 -->
-        <!-- <template v-slot:Consumption_Type="{ row }">
-          <el-tag :type="['', 'success','danger','warning','info'][row.Consumption_Type]" :disable-transitions="true">
-            {{['条码扫码消耗','RFID读码消耗','HIS计费消耗','散货申领消耗','HIS医嘱计费消耗','超时默认消耗'][row.Consumption_Type]}}
-          </el-tag>
-        </template> -->
-
-        <template v-slot:Storage_ID="{ row }">
-          <el-tag
-            :type="['', 'success'][row.Storage_ID]"
-            :disable-transitions="true"
-          >
-            {{ ['院内库区', '院外库区'][row.Storage_ID] }}
-          </el-tag>
-        </template>
-
-        <template v-slot:HIGH_OR_LOW_CLASS_TWO="{ row }">
-          <el-tag
-            :type="['', 'success', 'info'][row.HIGH_OR_LOW_CLASS_TWO]"
-            :disable-transitions="true"
-          >
-            {{
-              ['重点治理', '非重点治理', '未设置'][row.HIGH_OR_LOW_CLASS_TWO]
-            }}
-          </el-tag>
-          <!-- <el-tag v-if="row.HIGH_OR_LOW_CLASS_TWO==1">重点治理</el-tag>
-          <el-tag v-if="row.HIGH_OR_LOW_CLASS_TWO==2" type="info">非重点治理</el-tag>
-          <el-tag v-if="row.HIGH_OR_LOW_CLASS_TWO==null" type="warning">未设置</el-tag> -->
-        </template>
-        <template v-slot:IS_BIDDING="{ row }">
-          <el-tag
-            :type="['', 'success'][row.IS_BIDDING]"
-            :disable-transitions="true"
-          >
-            {{ ['是', '否'][row.IS_BIDDING] }}
-          </el-tag>
-          <!-- <el-tag v-if="row.IS_BIDDING==1">是</el-tag>
-          <el-tag v-if="row.IS_BIDDING==0" type="info">否</el-tag> -->
-        </template>
-        <template v-slot:action="{ row }">
-          <!-- <el-link type="primary" :underline="false" icon="el-icon-edit" @click="openEdit(row)">
-            修改
-          </el-link> -->
-          <el-button type="primary" size="mini" @click="openEdit(row)"
-            >编辑</el-button
-          >
-          <!-- <el-popconfirm class="ele-action" title="确定要删除此用户吗？" @confirm="remove(row)">
-            <template v-slot:reference>
-              <el-link type="danger" :underline="false" icon="el-icon-delete">
-                删除
-              </el-link>
+            <template v-slot:Storage_ID="{ row }">
+              <el-tag
+                :type="['', 'success'][row.Storage_ID]"
+                :disable-transitions="true"
+              >
+                {{ ['院内库区', '院外库区'][row.Storage_ID] }}
+              </el-tag>
             </template>
-          </el-popconfirm> -->
-        </template>
-      </ele-pro-table>
+
+            <template v-slot:HIGH_OR_LOW_CLASS_TWO="{ row }">
+              <el-tag
+                :type="['', 'success', 'info'][row.HIGH_OR_LOW_CLASS_TWO]"
+                :disable-transitions="true"
+              >
+                {{ ['重点治理', '非重点治理', '未设置'][row.HIGH_OR_LOW_CLASS_TWO] }}
+              </el-tag>
+              <!-- <el-tag v-if="row.HIGH_OR_LOW_CLASS_TWO==1">重点治理</el-tag>
+              <el-tag v-if="row.HIGH_OR_LOW_CLASS_TWO==2" type="info">非重点治理</el-tag>
+              <el-tag v-if="row.HIGH_OR_LOW_CLASS_TWO==null" type="warning">未设置</el-tag> -->
+            </template>
+
+            <template v-slot:IS_BIDDING="{ row }">
+              <el-tag
+                :type="['', 'success'][row.IS_BIDDING]"
+                :disable-transitions="true"
+              >
+                {{ ['是', '否'][row.IS_BIDDING] }}
+              </el-tag>
+              <!-- <el-tag v-if="row.IS_BIDDING==1">是</el-tag>
+              <el-tag v-if="row.IS_BIDDING==0" type="info">否</el-tag> -->
+            </template>
+
+            <!-- 操作列 -->
+            <template v-slot:action="{ row }">
+              <!-- <el-link type="primary" :underline="false" icon="el-icon-edit" @click="openEdit(row)">
+                修改
+              </el-link> -->
+              <el-button type="primary" size="mini" @click="openEdit(row)">编辑</el-button>
+              <!-- <el-popconfirm class="ele-action" title="确定要删除此用户吗？" @confirm="remove(row)">
+                <template v-slot:reference>
+                  <el-link type="danger" :underline="false" icon="el-icon-delete">
+                    删除
+                  </el-link>
+                </template>
+              </el-popconfirm> -->
+            </template>
+          </ele-pro-table>
+        </div>
+      </div>
     </el-card>
     <!-- 编辑弹窗 -->
     <user-edit :visible.sync="showEdit" :data="current" @done="reload" />
@@ -477,7 +454,7 @@
             showOverflowTooltip: true
           }
         ],
-        toolbar: false,
+        tableHeight: 'calc(100vh - 380px)',
         pageSize: 15,
         pageSizes: [15, 50, 100, 200, 9999999],
         pagerCount: 5,
@@ -1046,3 +1023,28 @@
     }
   };
 </script>
+
+<style scoped>
+.ks-dept-consumption-card :deep(.el-card__body) {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ks-dept-consumption-meta {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.ks-dept-consumption-page >>> .el-table th .cell {
+  white-space: nowrap;
+}
+
+.ks-dept-consumption-page >>> .action-col .cell {
+  line-height: 23px;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+</style>

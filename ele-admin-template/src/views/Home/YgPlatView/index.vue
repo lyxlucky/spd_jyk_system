@@ -55,7 +55,7 @@
             type="date"
             value-format="yyyy-MM-dd"
             placeholder="订单创建时间起始"
-            style="width: 150px"
+            style="width: 180px"
           />
         </el-form-item>
         <el-form-item>
@@ -64,7 +64,7 @@
             type="date"
             value-format="yyyy-MM-dd"
             placeholder="订单创建时间结束"
-            style="width: 150px"
+            style="width: 180px"
           />
         </el-form-item>
         <el-form-item label="是否发送">
@@ -245,34 +245,34 @@ export default {
       isZq: isZqHospital(),
       columns: [
         { columnKey: 'selection', type: 'selection', width: 45, align: 'center', fixed: 'left' },
-        { prop: 'VARIETIE_CODE', label: '品种ID', width: 80, showOverflowTooltip: true },
-        { prop: 'MONTHLY_TIME', label: '月结月份', width: 90, showOverflowTooltip: true },
-        { prop: 'VARIETIE_CODE_NEW', label: '品种编码', width: 100, showOverflowTooltip: true },
+        { prop: 'VARIETIE_CODE', label: '品种ID', width: 120, showOverflowTooltip: true },
+        { prop: 'MONTHLY_TIME', label: '月结月份', width: 130, showOverflowTooltip: true },
+        { prop: 'VARIETIE_CODE_NEW', label: '品种编码', width: 110, showOverflowTooltip: true },
         { prop: 'VARIETIE_NAME', label: '品种名称', minWidth: 140, showOverflowTooltip: true },
         { prop: 'SPECIFICATION_OR_TYPE', label: '规格类型', minWidth: 120, showOverflowTooltip: true },
         { prop: 'UNIT', label: '单位', width: 60, align: 'center' },
         { prop: 'APPROVAL_NUMBER', label: '批准编号', minWidth: 120, showOverflowTooltip: true },
         { prop: 'MANUFACTURING_ENT_NAME', label: '生产企业名称', minWidth: 140, showOverflowTooltip: true },
-        { prop: 'MEDICAL_CODE27', label: '医保编码27', minWidth: 130, showOverflowTooltip: true },
-        { prop: 'YG_CODE', label: '产品码', width: 90, slot: 'YG_CODE', showOverflowTooltip: true },
-        { prop: 'YG_SPE_TYPE', label: '规格型号码', width: 110, slot: 'YG_SPE_TYPE', showOverflowTooltip: true },
-        { prop: 'IS_JC', label: '是否集采', width: 80, align: 'center', slot: 'IS_JC' },
+        { prop: 'MEDICAL_CODE27', label: '医保编码27', minWidth: 160, showOverflowTooltip: true },
+        { prop: 'YG_CODE', label: '产品码', width: 100, slot: 'YG_CODE', showOverflowTooltip: true },
+        { prop: 'YG_SPE_TYPE', label: '规格型号码', width: 130, slot: 'YG_SPE_TYPE', showOverflowTooltip: true },
+        { prop: 'IS_JC', label: '是否集采', width: 120, align: 'center', slot: 'IS_JC' },
         { prop: 'SOURCE_FROM', label: '品种来源', width: 100, showOverflowTooltip: true },
-        { prop: 'YG_IS_CAN_SEND', label: '是否允许发送', width: 100, align: 'center', slot: 'YG_IS_CAN_SEND' },
-        { prop: 'YG_SEND_BEGIN_TIME', label: '发送起始时间', width: 110, showOverflowTooltip: true },
+        { prop: 'YG_IS_CAN_SEND', label: '是否允许发送', width: 140, align: 'center', slot: 'YG_IS_CAN_SEND' },
+        { prop: 'YG_SEND_BEGIN_TIME', label: '发送起始时间', width: 140, showOverflowTooltip: true },
         { prop: 'SUPPLIER_NAME', label: '供应商名称', minWidth: 140, slot: 'SUPPLIER_NAME', showOverflowTooltip: true },
-        { prop: 'PRICE', label: 'SPD中标价格', width: 100, align: 'right' },
-        { prop: 'SUPPLY_PRICE', label: '消耗价格', width: 90, align: 'right', slot: 'SUPPLY_PRICE' },
-        { prop: 'PURCHASEPRICE', label: '阳光平台采购价', width: 110, align: 'right' },
-        { prop: 'YG_ZH_COUNT', label: '转换比例', width: 90, align: 'center', slot: 'YG_ZH_COUNT' },
+        { prop: 'PRICE', label: 'SPD中标价格', width: 140, align: 'right' },
+        { prop: 'SUPPLY_PRICE', label: '消耗价格', width: 120, align: 'right', slot: 'SUPPLY_PRICE' },
+        { prop: 'PURCHASEPRICE', label: '阳光平台采购价', width: 160, align: 'right' },
+        { prop: 'YG_ZH_COUNT', label: '转换比例', width: 120, align: 'center', slot: 'YG_ZH_COUNT' },
         { prop: 'IS_SEND_YG', label: '是否发送', width: 110, align: 'center', slot: 'IS_SEND_YG' },
-        { prop: 'YG_HOSPITAL_ID', label: '本院订单ID', width: 100, showOverflowTooltip: true },
-        { prop: 'YG_ORDER_ID', label: '阳光平台订单', width: 110, showOverflowTooltip: true },
+        { prop: 'YG_HOSPITAL_ID', label: '本院订单ID', width: 130, showOverflowTooltip: true },
+        { prop: 'YG_ORDER_ID', label: '阳光平台订单', width: 130, showOverflowTooltip: true },
         { prop: 'ORDER_CREATE_TIME', label: '订单创建时间', width: 150, slot: 'ORDER_CREATE_TIME' },
-        { prop: 'CONTRACTSTATUS', label: '平台合同状态', width: 100, slot: 'CONTRACTSTATUS', showOverflowTooltip: true },
-        { prop: 'TJ_YG_ZH_COUNT', label: '推荐转换比', width: 90, align: 'center' },
-        { prop: 'PURCHASECOUNT', label: '采购数量', width: 90, align: 'right' },
-        { prop: 'MONTH_ID', label: '月结ID', width: 80, showOverflowTooltip: true }
+        { prop: 'CONTRACTSTATUS', label: '平台合同状态', width: 130, slot: 'CONTRACTSTATUS', showOverflowTooltip: true },
+        { prop: 'TJ_YG_ZH_COUNT', label: '推荐转换比', width: 120, align: 'center' },
+        { prop: 'PURCHASECOUNT', label: '采购数量', width: 120, align: 'right' },
+        { prop: 'MONTH_ID', label: '月结ID', width: 120, showOverflowTooltip: true }
       ]
     };
   },

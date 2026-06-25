@@ -122,22 +122,33 @@
         </el-col>
       </el-row>
 
-      <el-row :gutter="12" class="chart-row">
-        <el-col :span="12">
-          <ele-chart :option="chartDeptPie" style="height: 400px" />
-        </el-col>
-        <el-col :span="12">
-          <ele-chart :option="chartDeptMonthBar" style="height: 400px" />
-        </el-col>
-      </el-row>
-      <el-row :gutter="12" class="chart-row">
-        <el-col :span="12">
-          <ele-chart :option="chartVarietyPie" style="height: 400px" />
-        </el-col>
-        <el-col :span="12">
-          <ele-chart :option="chartVarietyMonthBar" style="height: 400px" />
-        </el-col>
-      </el-row>
+      <div class="chart-section">
+        <div class="section-title">统计图表</div>
+        <el-row :gutter="16" class="chart-row">
+          <el-col :span="12">
+            <div class="chart-panel">
+              <ele-chart :option="chartDeptPie" class="chart-box" />
+            </div>
+          </el-col>
+          <el-col :span="12">
+            <div class="chart-panel">
+              <ele-chart :option="chartDeptMonthBar" class="chart-box" />
+            </div>
+          </el-col>
+        </el-row>
+        <el-row :gutter="16" class="chart-row">
+          <el-col :span="12">
+            <div class="chart-panel">
+              <ele-chart :option="chartVarietyPie" class="chart-box" />
+            </div>
+          </el-col>
+          <el-col :span="12">
+            <div class="chart-panel">
+              <ele-chart :option="chartVarietyMonthBar" class="chart-box" />
+            </div>
+          </el-col>
+        </el-row>
+      </div>
     </el-card>
   </div>
 </template>
@@ -434,8 +445,29 @@ export default {
 .table-row {
   margin-bottom: 12px;
 }
-.chart-row {
-  margin-top: 12px;
+.chart-section {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #ebeef5;
+}
+.section-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #303133;
+  margin-bottom: 12px;
+}
+.chart-row + .chart-row {
+  margin-top: 16px;
+}
+.chart-panel {
+  border: 1px solid #ebeef5;
+  border-radius: 4px;
+  background: #fafafa;
+  padding: 10px 8px 6px;
+  box-sizing: border-box;
+}
+.chart-box {
+  height: 400px;
 }
 .block-card {
   margin-bottom: 12px;

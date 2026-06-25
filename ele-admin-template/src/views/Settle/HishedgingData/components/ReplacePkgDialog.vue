@@ -25,11 +25,11 @@
         <template slot-scope="{ row }">{{ fmtIsHedge(row.Is_Hedge) }}</template>
       </el-table-column>
     </el-table>
-    <el-form size="small" inline @submit.native.prevent>
+    <el-form size="mini" :inline="true" class="ele-form-search" @submit.native.prevent>
       <el-form-item label="定数码">
         <el-input v-model="searchCode" clearable placeholder="定数码" style="width: 200px" @keyup.enter.native="load" />
       </el-form-item>
-      <el-form-item>
+      <el-form-item class="ele-form-actions">
         <el-button type="primary" icon="el-icon-search" @click="load">查询</el-button>
       </el-form-item>
     </el-form>
@@ -38,7 +38,7 @@
       :data="candidates"
       border
       stripe
-      size="small"
+      size="mini"
       height="480"
       highlight-current-row
       @current-change="(r) => (picked = r)"
@@ -61,8 +61,8 @@
       </el-table-column>
     </el-table>
     <div slot="footer" class="footer-center">
-      <el-button @click="innerVisible = false">取消</el-button>
-      <el-button type="primary" :loading="submitting" @click="submit">替换并对冲</el-button>
+      <el-button size="mini" @click="innerVisible = false">取消</el-button>
+      <el-button size="mini" type="primary" :loading="submitting" @click="submit">替换并对冲</el-button>
     </div>
   </el-dialog>
 </template>
@@ -154,7 +154,7 @@ export default {
 .footer-center {
   text-align: center;
 }
->>> .col-pkg {
+ .col-pkg {
   background: rgba(0, 150, 136, 0.15);
 }
 </style>

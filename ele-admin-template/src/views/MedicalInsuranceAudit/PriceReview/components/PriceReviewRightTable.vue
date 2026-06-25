@@ -6,7 +6,7 @@
       :initLoad="false"
       @current-change="onCurrentChange"
       ref="table"
-      height="70vh"
+      height="75vh"
       :rowClickChecked="true"
       :stripe="true"
       :pageSize="pageSize"
@@ -74,7 +74,7 @@
             label: '医保耗材编码',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 120
+            minWidth: 140
           },
           {
             prop: 'UNIT',
@@ -88,7 +88,7 @@
             label: '采购价格',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 80
+            minWidth: 120
           },
           {
             prop: 'APPLY_DEPARTMENT',
@@ -116,28 +116,28 @@
             label: '是否强制扫码收费',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 80
+            minWidth: 160
           },
           {
             prop: 'VJ1_LICENSE_NUMBER',
             label: 'VJ1总代经营许可证号',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 100
+            minWidth: 180
           },
           {
             prop: 'VJ1_LICENSE_VALID_DATE',
             label: '证件有效期',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 100
+            minWidth: 130
           },
           {
             prop: 'VJ_SUP_LICENSE_NUMBER',
             label: 'VJ供应商经营许可证号',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 100
+            minWidth: 200
           },
         ],
         toolbar: false,

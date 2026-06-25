@@ -277,15 +277,15 @@ export default {
           label: '备货日期',
           prop: 'PLAN_TIME',
           align: 'center',
-          width: 90,
+          width: 120,
           formatter: (row) =>
             row.PLAN_TIME != null ? row.PLAN_TIME.substr(0, 10) : row.PLAN_TIME
         },
         { label: '来源科室', prop: 'PLAN_DEPT_TWO_NAME', align: 'center', width: 120 },
-        { label: '品种编码', prop: 'Varietie_Code_New', align: 'center', width: 100 },
+        { label: '品种编码', prop: 'Varietie_Code_New', align: 'center', width: 120 },
         { label: '备注', prop: 'REMARKS', align: 'center', width: 90 },
-        { label: '省平台编码', prop: 'Province_Platform_Code', align: 'center', minWidth: 100 },
-        { label: '阳光产品码', prop: 'YG_CODE', align: 'center', minWidth: 100 },
+        { label: '省平台编码', prop: 'Province_Platform_Code', align: 'center', minWidth: 120 },
+        { label: '阳光产品码', prop: 'YG_CODE', align: 'center', minWidth: 120 },
         {
           label: '品种名称',
           prop: 'Varietie_Name',
@@ -314,40 +314,40 @@ export default {
           align: 'center',
           minWidth: 310
         },
-        { label: '折算散货', prop: 'Stock_Up_Plan_Goods_Quantity', align: 'center', width: 80 },
-        { label: '系数', prop: 'Coefficient', align: 'center', width: 50 },
+        { label: '折算散货', prop: 'Stock_Up_Plan_Goods_Quantity', align: 'center', width: 120 },
+        { label: '系数', prop: 'Coefficient', align: 'center', width: 80 },
         {
           label: '备货计划(包)',
           align: 'center',
-          width: 100,
+          width: 130,
           slot: 'defQty'
         },
         {
           label: '收货数量',
           prop: 'ReceiptQty',
-          width: 80,
+          width: 120,
           align: 'center',
           formatter: (row) => row.ReceiptQty + row.SANME_VARCODE_NUM
         },
-        { label: '上月用量', prop: 'USED_QTY', width: 80, align: 'center' },
-        { label: '三月平均量', prop: 'AVG_USED_QTY', width: 80, align: 'center' },
+        { label: '上月用量', prop: 'USED_QTY', width: 120, align: 'center' },
+        { label: '三月平均量', prop: 'AVG_USED_QTY', width: 120, align: 'center' },
         {
           label: '库存总量',
           prop: 'sumCount',
-          width: 80,
+          width: 120,
           align: 'center',
           formatter: (row) => row.sumCount + row.DEPT_NUM
         },
         {
           label: '中心库库存',
           prop: 'centerStockCount',
-          width: 80,
+          width: 140,
           align: 'center',
           formatter: (row) => row.sumCount
         },
-        { label: '科室库存', prop: 'DEPT_NUM', width: 80, align: 'center' },
-        { label: '备货计划单号', prop: 'Stock_Up_Plan_No', align: 'center', width: 100 },
-        { label: '备货人', prop: 'CREATOR', align: 'center', width: 80 },
+        { label: '科室库存', prop: 'DEPT_NUM', width: 120, align: 'center' },
+        { label: '备货计划单号', prop: 'Stock_Up_Plan_No', align: 'center', width: 140 },
+        { label: '备货人', prop: 'CREATOR', align: 'center', width: 100 },
         { label: '来源', prop: 'SOURCE_FROM', align: 'center', width: 120 }
       ]
     };

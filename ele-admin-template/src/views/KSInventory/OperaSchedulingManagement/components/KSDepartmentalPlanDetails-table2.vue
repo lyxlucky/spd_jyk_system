@@ -208,7 +208,7 @@
             label: '序号',
             columnKey: 'index',
             type: 'index',
-            width: 45,
+            width: 65,
             align: 'center',
             showOverflowTooltip: true,
             fixed: 'left'

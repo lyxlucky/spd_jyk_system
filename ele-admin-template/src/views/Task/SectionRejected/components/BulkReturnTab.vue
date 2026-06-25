@@ -19,7 +19,7 @@
         <ele-pro-table
           ref="deptTable"
           size="mini"
-          height="300px"
+          height="400px"
           highlight-current-row
           :columns="deptColumns"
           :datasource="deptDatasource"
@@ -66,7 +66,7 @@
         <ele-pro-table
           ref="varTable"
           size="mini"
-          height="300px"
+          height="500px"
           :init-load="false"
           :columns="varColumns"
           :datasource="varDatasource"

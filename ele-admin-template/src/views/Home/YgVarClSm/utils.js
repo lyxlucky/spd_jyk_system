@@ -150,7 +150,7 @@ export function buildColumns() {
     {
       prop: 'SENDYB_TYPE',
       label: '提交类型',
-      width: 90,
+      width: 120,
       align: 'center',
       slot: 'SENDYB_TYPE'
     },
@@ -158,7 +158,7 @@ export function buildColumns() {
     {
       prop: 'IS_CHARGE',
       label: '是否收费',
-      width: 80,
+      width: 120,
       align: 'center',
       slot: 'IS_CHARGE'
     },
@@ -172,10 +172,10 @@ export function buildColumns() {
     {
       prop: 'VARIETIE_CODE_NEW',
       label: '耗材物品编码',
-      width: 120,
+      width: 140,
       showOverflowTooltip: true
     },
-    { prop: 'CHARGING_CODE', label: '计费编码', width: 90, showOverflowTooltip: true },
+    { prop: 'CHARGING_CODE', label: '计费编码', width: 120, showOverflowTooltip: true },
     { prop: 'SUPPLIER_NAME', label: '供应商', width: 140, showOverflowTooltip: true },
     {
       prop: 'MEDICAL_CODE',
@@ -204,7 +204,7 @@ export function buildColumns() {
       width: 180,
       showOverflowTooltip: true
     },
-    { prop: 'PRICE', label: '中标价', width: 90, align: 'right' },
+    { prop: 'PRICE', label: '中标价', width: 100, align: 'right' },
     { prop: 'UNIT', label: '单位', width: 60, align: 'center' },
     {
       prop: 'MANUFACTURING_ENT_NAME',
@@ -235,45 +235,45 @@ export function buildColumns() {
     {
       prop: 'SIGN_OF_CHARGE_TO_AN_ACCOUNT',
       label: '记账标志',
-      width: 90,
+      width: 120,
       showOverflowTooltip: true
     },
     {
       prop: 'MEDICARE_PAYMENT_CAP',
       label: '医保支付上限',
-      width: 110,
+      width: 140,
       align: 'right',
       showOverflowTooltip: true
     },
     {
       prop: 'TYPE_OF_PRODUCTION_PLACE',
       label: '进口/国产',
-      width: 90,
+      width: 120,
       showOverflowTooltip: true
     },
     { prop: 'YBCLASS', label: '材料分类', width: 110, showOverflowTooltip: true },
     {
       prop: 'BASIC_MEDICAL_INSURANCE_START',
       label: '基本医保启用标志',
-      width: 120,
+      width: 160,
       showOverflowTooltip: true
     },
     {
       prop: 'LAUNCH_DATE_OF_BASIC_MEDICAL',
       label: '启用日期(基本医保)',
-      width: 130,
+      width: 160,
       slot: 'LAUNCH_DATE_OF_BASIC_MEDICAL'
     },
     {
       prop: 'TERMINATION_DATE_OF_BASIC_HEAL',
       label: '终止日期(基本医保)',
-      width: 130,
+      width: 160,
       slot: 'TERMINATION_DATE_OF_BASIC_HEAL'
     },
-    { prop: 'YG_CODE', label: '阳光产品码', width: 100, showOverflowTooltip: true },
-    { prop: 'YG_SPE_TYPE', label: '阳光规格型号码', width: 120, showOverflowTooltip: true },
+    { prop: 'YG_CODE', label: '阳光产品码', width: 120, showOverflowTooltip: true },
+    { prop: 'YG_SPE_TYPE', label: '阳光规格型号码', width: 140, showOverflowTooltip: true },
     { prop: 'SOURCE_FROM', label: '来源', width: 100, showOverflowTooltip: true },
-    { prop: 'IN_MATERIAL', label: '集采耗材', width: 90, showOverflowTooltip: true },
+    { prop: 'IN_MATERIAL', label: '集采耗材', width: 120, showOverflowTooltip: true },
     {
       prop: 'RESTRICTIVE_SPECIFICATION',
       label: '项目说明',

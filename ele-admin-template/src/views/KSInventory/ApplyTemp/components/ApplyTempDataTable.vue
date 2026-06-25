@@ -1,86 +1,103 @@
 <template>
-  <div>
+  <div class="apply-temp-data-table">
     <!-- 数据表格 -->
     <!-- 自定义指令实现当pageSizes改变时触发 -->
     <!-- :pageSize="pageSize" :pageSizes="pageSizes" -->
-    <ApplyTempDataSearch
-      ref="Apply"
-      @search="reload"
-      @addTempVar="$emit('addTempVar')"
-      @saveApplyNum="saveApplyNum"
-      @removeBatch="removeBatch"
-      :IntroduceUserDefinedTempSearch="IntroduceUserDefinedTempSearch"
-      @exportData="exportData"
-      :ApplyTempTableDataSearch="ApplyTempTableDataSearch"
-      :selection="selection"
-      @showEditReoad="showEditReoad"
-    />
-    <ele-pro-table
-      size="mini"
-      ref="table"
-      height="70vh"
-      style="background: #fff;"
-      highlight-current-row
-      :stripe="true"
-      :rowClickCheckedIntelligent="false"
-      :pageSize="pageSize"
-      :pageSizes="pageSizes"
-      :columns="columns"
-      :datasource="datasource"
-      :selection.sync="selection"
-      @selection-change="onSelectionChange"
-    >
-      <!-- 表头工具栏 -->
-      <!-- 右表头 -->
-      <!-- <template v-slot:toolkit>
+    <div class="spd-panel spd-panel--search">
+      <div class="spd-panel__head">品种查询</div>
+      <ApplyTempDataSearch
+        ref="Apply"
+        @search="reload"
+        @addTempVar="$emit('addTempVar')"
+        @saveApplyNum="saveApplyNum"
+        @removeBatch="removeBatch"
+        :IntroduceUserDefinedTempSearch="IntroduceUserDefinedTempSearch"
+        @exportData="exportData"
+        :ApplyTempTableDataSearch="ApplyTempTableDataSearch"
+        :selection="selection"
+        @showEditReoad="showEditReoad"
+      />
+    </div>
+
+    <div class="spd-panel spd-table-panel">
+      <div class="spd-panel__head spd-panel__head--split">
+        <span>模板品种列表</span>
+        <span class="spd-panel__head-meta">已勾选: <el-tag size="mini" effect="plain">{{ selection?.length || 0 }}</el-tag></span>
+      </div>
+      <div class="spd-table-panel__wrap">
+        <ele-pro-table
+          ref="table"
+          class="data-table"
+          size="mini"
+          border
+          stripe
+          highlight-current-row
+          :toolbar="false"
+          :header-overflow-hidden="false"
+          :height="tableHeight"
+          style="background: #fff;"
+          :rowClickCheckedIntelligent="false"
+          :pageSize="pageSize"
+          :pageSizes="pageSizes"
+          :columns="columns"
+          :datasource="datasource"
+          :selection.sync="selection"
+          cache-key="ApplyTempDetailTable"
+          @selection-change="onSelectionChange"
+        >
+          <!-- 表头工具栏 -->
+          <!-- 右表头 -->
+          <!-- <template v-slot:toolkit>
         <el-button size="small" type="danger" icon="el-icon-delete" class="ele-btn-icon" @click="removebatch">
           删除
         </el-button>
       </template> -->
-      <!-- 左表头 -->
-      <template v-slot:toolbar>
-        <!-- 搜索表单 -->
-        <!-- <el-button size="small" type="danger" icon="el-icon-delete" class="ele-btn-icon" @click="removebatch">
+          <!-- 左表头 -->
+          <template v-slot:toolbar>
+            <!-- 搜索表单 -->
+            <!-- <el-button size="small" type="danger" icon="el-icon-delete" class="ele-btn-icon" @click="removebatch">
           删除
         </el-button> -->
-        <span>已勾选:<el-tag size="mini" effect="plain">{{selection?.length || 0}}</el-tag></span>
-      </template>
-
-      <!-- 操作列 -->
-      <template v-slot:TempletQty="{ row }">
-        <el-input
-          style="width: 90%"
-          v-model="row.TempletQty"
-          :min="0"
-          :max="999999999"
-          :step="1"
-          size="mini"
-        />
-      </template>
-      <template v-slot:AUTH="{ row }">
-        <el-input
-          style="width: 120px"
-          v-model="row.AUTH"
-          :min="0"
-          :max="999999999"
-          :step="1"
-          size="mini"
-        />
-      </template>
-      <template v-slot:action="{ row }">
-        <el-popconfirm
-          class="ele-action"
-          title="确定要删除此品种？"
-          @confirm="remove(row)"
-        >
-          <template v-slot:reference>
-            <el-link type="danger" :underline="false" icon="el-icon-delete">
-              删除
-            </el-link>
+            <span>已勾选:<el-tag size="mini" effect="plain">{{selection?.length || 0}}</el-tag></span>
           </template>
-        </el-popconfirm>
-      </template>
-    </ele-pro-table>
+
+          <!-- 操作列 -->
+          <template v-slot:TempletQty="{ row }">
+            <el-input
+              style="width: 90%"
+              v-model="row.TempletQty"
+              :min="0"
+              :max="999999999"
+              :step="1"
+              size="mini"
+            />
+          </template>
+          <template v-slot:AUTH="{ row }">
+            <el-input
+              style="width: 120px"
+              v-model="row.AUTH"
+              :min="0"
+              :max="999999999"
+              :step="1"
+              size="mini"
+            />
+          </template>
+          <template v-slot:action="{ row }">
+            <el-popconfirm
+              class="ele-action"
+              title="确定要删除此品种？"
+              @confirm="remove(row)"
+            >
+              <template v-slot:reference>
+                <el-link type="danger" :underline="false" icon="el-icon-delete">
+                  删除
+                </el-link>
+              </template>
+            </el-popconfirm>
+          </template>
+        </ele-pro-table>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -155,21 +172,21 @@
 
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 80
+            minWidth: 150
           },
           {
             prop: 'Day_Consume_Qty',
             label: '平均使用数量',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 90
+            minWidth: 150
           },
           {
             prop: 'Day_Consume_Qty2',
             label: '上月使用数量',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 90
+            minWidth: 150
           },
           {
             prop: 'VARIETIE_CODE_NEW',
@@ -190,7 +207,7 @@
             label: '型号/规格',
             align: 'center',
             showOverflowTooltip: true,
-            width: 90
+            width: 120
           },
 
           {
@@ -284,7 +301,8 @@
             align: 'center',
             resizable: false,
             slot: 'action',
-            showOverflowTooltip: true
+            showOverflowTooltip: true,
+            className: 'action-col'
           }
         ],
         toolbar: false,
@@ -302,6 +320,7 @@
         // datasource: [],
         data: [],
         isHideDeptSup: true,
+        tableHeight: '70vh'
       };
     },
     methods: {
@@ -488,6 +507,7 @@
       }
     },
     created() {
+      localStorage.setItem('ApplyTempDetailTableSize', JSON.stringify('mini'));
       // this.getdatasource();
       this.checkHideManufacturingColumn();
     }
@@ -495,15 +515,25 @@
 </script>
 
 <style scoped lang="scss">
-  :deep(.el-table--mini .el-table__cell) {
-    padding: 1px 0px !important;
-  }
+.apply-temp-data-table >>> .el-table th .cell {
+  white-space: nowrap;
+}
 
-  :deep(.el-table th.el-table__cell > .cell) {
-    padding-left: 1px !important;
-    padding-right: 1px !important;
-  }
-  :deep(.el-table__row .el-table__cell) {
-    padding: 1px 0px !important;
-  }
+.apply-temp-data-table >>> .action-col .cell {
+  line-height: 23px;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+:deep(.el-table--mini .el-table__cell) {
+  padding: 1px 0px !important;
+}
+
+:deep(.el-table th.el-table__cell > .cell) {
+  padding-left: 1px !important;
+  padding-right: 1px !important;
+}
+:deep(.el-table__row .el-table__cell) {
+  padding: 1px 0px !important;
+}
 </style>

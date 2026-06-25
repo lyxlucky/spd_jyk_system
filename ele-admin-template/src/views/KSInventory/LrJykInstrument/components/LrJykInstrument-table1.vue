@@ -1,5 +1,5 @@
 <template>
-  <div class="ele-body" v-if="RenderTabel">
+  <div v-if="RenderTabel" class="lr-jyk-instrument-main">
     <template>
 
       <el-dialog title="二维码" :visible.sync="dialogVisible" width="30%">
@@ -13,18 +13,46 @@
     <user-edit :visible.sync="showEdit" :data="current" @done="reload" />
 
     <!-- 数据表格 -->
-    <ele-pro-table :paginationStyle=paginationStyle :key="key" :reserve-selection="true" highlight-current-row :row-key="(row) => row.PlanNum" @current-change="onCurrentChange" ref="table" height="30vh" :rowClickChecked="true" :stripe="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" cache-key="KSInventoryBasicDataTable">
+    <div class="spd-panel spd-panel--search">
+      <div class="spd-panel__head">查询条件</div>
       <!-- 表头工具栏 -->
-      <template v-slot:toolbar>
-        <LrJykInstrument-search @search="reload" />
-      </template>
+      <!-- 搜索表单 -->
+      <LrJykInstrument-search @search="reload" />
+    </div>
 
-      <!-- 操作列 -->
-      <template v-slot:action="{ row }">
-        <el-button size="small" type="primary" class="ele-btn-icon" @click="openScanningBinding(row)"> 扫码绑定</el-button>
-        <el-button size="small" type="primary" class="ele-btn-icon" @click="WachthQRCode(row)"> 查看二维码</el-button>
-      </template>
-    </ele-pro-table>
+    <div class="spd-panel spd-table-panel">
+      <div class="spd-panel__head">仪器列表</div>
+      <div class="spd-table-panel__wrap">
+        <ele-pro-table
+          :key="key"
+          ref="table"
+          class="data-table"
+          size="mini"
+          border
+          stripe
+          :reserve-selection="true"
+          highlight-current-row
+          :row-key="(row) => row.PlanNum"
+          :rowClickChecked="true"
+          :toolbar="false"
+          :header-overflow-hidden="false"
+          :height="tableHeight"
+          :pageSize="pageSize"
+          :pageSizes="pageSizes"
+          :columns="columns"
+          :datasource="datasource"
+          :selection.sync="selection"
+          cache-key="LrJykInstrumentMainTable"
+          @current-change="onCurrentChange"
+        >
+          <!-- 操作列 -->
+          <template v-slot:action="{ row }">
+            <el-link type="primary" :underline="false" @click="openScanningBinding(row)">扫码绑定</el-link>
+            <el-link type="primary" :underline="false" style="margin-left: 8px" @click="WachthQRCode(row)">查看二维码</el-link>
+          </template>
+        </ele-pro-table>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -62,12 +90,12 @@ export default {
         {
           columnKey: 'action',
           label: '操作',
-          width: 200,
+          width: 160,
           align: 'center',
           resizable: false,
           slot: 'action',
           showOverflowTooltip: true,
-          fixed: 'right'
+          className: 'action-col'
         },
         {
           prop: 'ID',
@@ -136,6 +164,7 @@ export default {
       applyPlanXhz: 0,
       applyPlanBl: '0%',
       key: 0,
+      tableHeight: '30vh',
       RenderTabel: true
     };
   },
@@ -220,6 +249,8 @@ export default {
     }
   },
   created() {
+    // ele-pro-table 初始化优先级：localStorage[cacheKey+Size] > size 属性
+    localStorage.setItem('LrJykInstrumentMainTableSize', JSON.stringify('mini'));
     // this.getdatasource();
     // this.GetConsume();
   },
@@ -232,16 +263,26 @@ export default {
 </script>
 
 <style scoped>
-.ele-body {
-  padding: 0px;
+.lr-jyk-instrument-main >>> .el-table th .cell {
+  white-space: nowrap;
 }
 
-::v-deep .ele-table-tool-default {
-  padding: 3px 0px 0px 5px;
+.lr-jyk-instrument-main >>> .action-col .cell {
+  line-height: 23px;
+  padding-top: 0;
+  padding-bottom: 0;
 }
 
-::v-deep .ele-table-tool .ele-table-tool-title{
-  margin-bottom: 0;
-  margin-top: 0;
+.lr-jyk-instrument-main :deep(.el-pagination) {
+  padding: 4px 0 0;
+}
+
+.lr-jyk-instrument-main :deep(.el-pagination .btn-prev),
+.lr-jyk-instrument-main :deep(.el-pagination .btn-next),
+.lr-jyk-instrument-main :deep(.el-pagination .el-pager li) {
+  min-width: 24px;
+  height: 24px;
+  line-height: 24px;
+  font-size: 12px;
 }
 </style>

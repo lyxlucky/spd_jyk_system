@@ -1,35 +1,74 @@
 <template>
-  <div class="">
-    <!-- 数据表格 -->
-    <ele-pro-table ref="table" v-if="IsRefDefNoPkgDataTable==false" height="65vh" highlight-current-row :stripe="true" :rowClickChecked="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" cache-key="DefNoPkgDataTable">
-      <template v-slot:KC_COUNT="{ row }">
-        <el-tag v-if="row.KC_DEF_NO_PKG_CODE == null" type="info">未收货</el-tag>
-        <el-tag v-else-if="row.KC_COUNT>0" type="success">在库</el-tag>
-        <el-tag v-if="row.KC_DEF_NO_PKG_CODE != null && row.KC_COUNT<=0" type="info">已消耗</el-tag>
-      </template>
+  <div class="ks-scan-def-pkg-table">
+    <div class="spd-panel spd-panel--search">
+      <DefNoPkgDataSearch @search="reload" />
+    </div>
+    <div class="spd-panel spd-table-panel">
+      <div class="spd-table-panel__wrap">
+        <!-- 数据表格 -->
+        <ele-pro-table
+          ref="table"
+          v-if="IsRefDefNoPkgDataTable==false"
+          class="data-table"
+          size="mini"
+          border
+          :toolbar="false"
+          :header-overflow-hidden="false"
+          :height="tableHeight"
+          highlight-current-row
+          :rowClickChecked="true"
+          :pageSize="pageSize"
+          :pageSizes="pageSizes"
+          :columns="columns"
+          :datasource="datasource"
+          :selection.sync="selection"
+          cache-key="KSScanCodeRecGoodDefPkgTable"
+        >
+          <template v-slot:KC_COUNT="{ row }">
+            <el-tag size="mini" v-if="row.KC_DEF_NO_PKG_CODE == null" type="info">未收货</el-tag>
+            <el-tag size="mini" v-else-if="row.KC_COUNT>0" type="success">在库</el-tag>
+            <el-tag size="mini" v-if="row.KC_DEF_NO_PKG_CODE != null && row.KC_COUNT<=0" type="info">已消耗</el-tag>
+          </template>
 
-      <!-- 表头工具栏 -->
-      <template v-slot:toolbar>
-        <!-- 搜索表单 -->
+          <!-- 表头工具栏 -->
+          <!-- <template v-slot:toolbar>
         <DefNoPkgDataSearch @search="reload" />
-      </template>
+      </template> -->
 
-    </ele-pro-table>
+        </ele-pro-table>
 
-    <ele-pro-table ref="table2" v-else height="67vh" highlight-current-row :stripe="true" :rowClickChecked="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource2" :selection.sync="selection" cache-key="DefNoPkgDataTable">
-      <template v-slot:KC_COUNT="{ row }">
-        <el-tag v-if="row.KC_DEF_NO_PKG_CODE == null" type="info">未收货</el-tag>
-        <el-tag v-if="row.KC_COUNT>0" type="success">在库</el-tag>
-        <!-- <el-tag v-else type="info">已消耗</el-tag> -->
-        <el-tag v-if="row.KC_DEF_NO_PKG_CODE != null && row.KC_COUNT<=0" type="info">已消耗</el-tag>
-      </template>
-      <!-- 表头工具栏 -->
-      <template v-slot:toolbar>
-        <!-- 搜索表单 -->
+        <ele-pro-table
+          ref="table2"
+          v-else
+          class="data-table"
+          size="mini"
+          border
+          :toolbar="false"
+          :header-overflow-hidden="false"
+          :height="tableHeight"
+          highlight-current-row
+          :rowClickChecked="true"
+          :pageSize="pageSize"
+          :pageSizes="pageSizes"
+          :columns="columns"
+          :datasource="datasource2"
+          :selection.sync="selection"
+          cache-key="KSScanCodeRecGoodDefPkgDetailTable"
+        >
+          <template v-slot:KC_COUNT="{ row }">
+            <el-tag size="mini" v-if="row.KC_DEF_NO_PKG_CODE == null" type="info">未收货</el-tag>
+            <el-tag size="mini" v-if="row.KC_COUNT>0" type="success">在库</el-tag>
+            <!-- <el-tag v-else type="info">已消耗</el-tag> -->
+            <el-tag size="mini" v-if="row.KC_DEF_NO_PKG_CODE != null && row.KC_COUNT<=0" type="info">已消耗</el-tag>
+          </template>
+          <!-- 表头工具栏 -->
+          <!-- <template v-slot:toolbar>
         <DefNoPkgDataSearch @search="reload" />
-      </template>
+      </template> -->
 
-    </ele-pro-table>
+        </ele-pro-table>
+      </div>
+    </div>
 
     <!-- 表头工具栏 -->
     <!-- 右表头 -->
@@ -97,7 +136,7 @@ export default {
 
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 80
+          minWidth: 120
         },
         {
           // prop: 'KC_COUNT',
@@ -182,6 +221,7 @@ export default {
         }
       ],
       toolbar: false,
+      tableHeight: 'calc(100vh - 200px)',
       pageSize: 20,
       pagerCount: 2,
       pageSizes: [10, 20, 50, 100, 9999999],
@@ -238,7 +278,16 @@ export default {
     reload(where) {
       // console.log(this.ReplenishGoodData);
       // console.log(this.$store.state.user.info);
-      this.$refs.table2.reload({ page: 1, where: where });
+      if (this.IsRefDefNoPkgDataTable && this.$refs.table2) {
+        this.$refs.table2.reload({ page: 1, where: where });
+      } else if (this.$refs.table) {
+        const reloadWhere = {
+          stock_out_distribute_number:
+            this.ReplenishGoodData?.stock_out_distribute_number,
+          ...where
+        };
+        this.$refs.table.reload({ page: 1, where: reloadWhere });
+      }
     }
   },
   computed: {
@@ -298,6 +347,8 @@ export default {
     }
   },
   created() {
+    localStorage.setItem('KSScanCodeRecGoodDefPkgTableSize', JSON.stringify('mini'));
+    localStorage.setItem('KSScanCodeRecGoodDefPkgDetailTableSize', JSON.stringify('mini'));
     // this.getdatasource();
   }
 };

@@ -9,25 +9,26 @@
   gap: 10px;
   min-height: 0;
 
-  /* 表头完整显示 + 勾选列居中 */
-  :deep(.el-table th > .cell) {
+  /* 表头完整显示 + 勾选列居中（全局样式勿用 :deep，否则规则不生效） */
+  .el-table th > .cell,
+  .el-table th.el-table__cell > .cell {
     white-space: nowrap;
   }
-  :deep(.ele-pro-table .el-table),
-  :deep(.data-table .el-table),
-  :deep(.el-table) {
+  .ele-pro-table .el-table,
+  .data-table .el-table,
+  .el-table {
     width: max-content;
     min-width: 100%;
   }
-  :deep(.spd-checkbox-col .cell),
-  :deep(.dpd-checkbox-col .cell),
-  :deep(.cim-checkbox-col .cell),
-  :deep(.el-table-column--selection .cell) {
+  .spd-checkbox-col .cell,
+  .dpd-checkbox-col .cell,
+  .cim-checkbox-col .cell,
+  .el-table-column--selection .cell {
     text-align: center;
     padding-left: 0;
     padding-right: 0;
   }
-  :deep(.el-table-column--selection .cell .el-checkbox) {
+  .el-table-column--selection .cell .el-checkbox {
     display: inline-flex;
     justify-content: center;
     width: 100%;
@@ -37,7 +38,7 @@
     border: 1px solid #ebeef5;
     box-shadow: none !important;
   }
-  > .el-card :deep(.el-card__body) {
+  > .el-card .el-card__body {
     padding: 12px;
   }
 }
@@ -92,11 +93,11 @@
   padding-bottom: 2px;
 }
 
-.spd-panel--search :deep(.el-form-item) {
+.spd-panel--search .el-form-item {
   margin-bottom: 8px;
 }
 
-.spd-panel--search :deep(.el-form-item__label) {
+.spd-panel--search .el-form-item__label {
   font-size: 12px;
 }
 
@@ -268,7 +269,7 @@
     margin-bottom: 0;
   }
 
-  .section-card :deep(.el-card__body) {
+  .section-card .el-card__body {
     padding: 12px;
   }
 
@@ -277,7 +278,7 @@
     box-shadow: none !important;
   }
 
-  .top-card :deep(.el-card__body) {
+  .top-card .el-card__body {
     padding: 12px;
   }
 

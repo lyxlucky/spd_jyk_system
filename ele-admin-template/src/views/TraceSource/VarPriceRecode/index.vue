@@ -1,36 +1,41 @@
 <template>
-  <div class="ele-body spd-page">
-    <el-card shadow="never">
-      <!-- 搜索表单 -->
-      <!-- <user-search @search="reload" @exportData="exportData" /> -->
-      <!-- 数据表格 -->
-      <user-search @search="reload" @exportData="exportData" @markAsProcessed="markAsProcessed" />
-      <ele-pro-table ref="table" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" cache-key="KSInventoryBasicDataTable">
-        <!-- 表头工具栏 -->
-        <template v-slot:toolbar>
-        </template>
-      </ele-pro-table>
+  <div class="ele-body spd-page var-price-recode-page">
+    <el-card shadow="never" class="var-price-recode-card">
+      <user-search
+        ref="search"
+        class="var-price-recode-search"
+        @search="reload"
+        @exportData="exportData"
+        @markAsProcessed="markAsProcessed"
+      />
+      <div ref="tableWrap" class="var-price-recode-table-wrap">
+        <ele-pro-table
+          ref="table"
+          class="data-table"
+          :height="tableHeight"
+          :page-size="pageSize"
+          :page-sizes="pageSizes"
+          :columns="columns"
+          :datasource="datasource"
+          :selection.sync="selection"
+          cache-key="TraceSourceVarPriceRecodeTable"
+          @done="updateTableHeight"
+        />
+      </div>
     </el-card>
-   
   </div>
 </template>
 
 <script>
 import { utils, writeFile } from 'xlsx';
 import UserSearch from './components/user-search.vue';
+import { GetPDAList, VarPriceRecodeCommit } from '@/api/TraceSource/VarPriceRecode';
 
-import {
-  GetPDAList,VarPriceRecodeCommit
-} from '@/api/TraceSource/VarPriceRecode';
 export default {
   name: 'VarPriceRecode',
-  components: {
-    UserSearch,
-    // UserImport
-  },
+  components: { UserSearch },
   data() {
     return {
-      // 表格列配置
       columns: [
         {
           columnKey: 'selection',
@@ -54,19 +59,15 @@ export default {
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 150,
-          formatter: (row) => {
-            return row.STATE === '1' ? '已处理' : '未处理';
-          }
+          formatter: (row) => (row.STATE === '1' ? '已处理' : '未处理')
         },
         {
           prop: 'CREATE_TIME',
           label: '记录时间',
           align: 'center',
           showOverflowTooltip: true,
-          width: 150,
-          formatter: (row) => {
-            return row.CREATE_TIME.replace('T', ' ');
-          }
+          width: 180,
+          formatter: (row) => row.CREATE_TIME.replace('T', ' ')
         },
         {
           prop: 'VARIETIE_CODE_NEW',
@@ -81,7 +82,7 @@ export default {
           label: '计费编码',
           align: 'center',
           showOverflowTooltip: true,
-          width: 80
+          width: 120
         },
         {
           prop: 'VARIETIE_NAME',
@@ -122,35 +123,35 @@ export default {
           label: '旧价格',
           align: 'center',
           showOverflowTooltip: true,
-          width: 80
+          width: 100
         },
         {
           prop: 'NEW_PRICE',
           label: '新价格',
           align: 'center',
           showOverflowTooltip: true,
-          width: 80
+          width: 120
         },
         {
           prop: 'UP_PRICE',
           label: '收货价格',
           align: 'center',
           showOverflowTooltip: true,
-          width: 80
+          width: 120
         },
         {
           prop: 'SUPPLIER_NAME',
           label: '合同供应商',
           align: 'center',
           showOverflowTooltip: true,
-          width: 100
+          width: 140
         },
         {
           prop: 'DELIVERY_NOTE_NUMBER',
           label: '收货单号',
           align: 'center',
           showOverflowTooltip: true,
-          width: 100
+          width: 120
         },
         {
           prop: 'DELIVERY_TIME',
@@ -158,151 +159,138 @@ export default {
           align: 'center',
           showOverflowTooltip: true,
           width: 250,
-          formatter: (row) => {
-            return row.DELIVERY_TIME === '0001-01-01T00:00:00' ? '' : row.DELIVERY_TIME.replace('T', ' ');
-          }
+          formatter: (row) =>
+            row.DELIVERY_TIME === '0001-01-01T00:00:00' ? '' : row.DELIVERY_TIME.replace('T', ' ')
         }
       ],
-      toolbar: false,
       pageSize: 10,
       pageSizes: [10, 20, 50, 100, 9999999],
-      pagerCount: 5,
-      // 表格选中数据
+      tableHeight: 400,
       selection: [],
-      // 当前编辑数据
-      current: null,
-      // 是否显示编辑弹窗
-      showEdit: false,
-      // 是否显示导入弹窗
-      showImport: false,
-      // datasource: [],
-      data: []
+      lastWhere: null
     };
   },
+  mounted() {
+    this.updateTableHeight();
+    window.addEventListener('resize', this.updateTableHeight);
+  },
+  beforeDestroy() {
+    window.removeEventListener('resize', this.updateTableHeight);
+  },
   methods: {
-    /* 表格数据源 */
+    updateTableHeight() {
+      this.$nextTick(() => {
+        const wrap = this.$refs.tableWrap;
+        if (!wrap) return;
+        const toolbar = wrap.querySelector('.ele-table-tool');
+        const pagination = wrap.querySelector('.el-pagination');
+        const reserved =
+          (toolbar?.offsetHeight || 0) + (pagination?.offsetHeight || 46) + 8;
+        this.tableHeight = Math.max(240, wrap.clientHeight - reserved);
+        this.$refs.table?.doLayout?.();
+      });
+    },
     datasource({ page, limit, where, order }) {
-      let data = GetPDAList({ page, limit, where, order }).then(
-        (res) => {
-          return res.result;
-        }
-      );
-      return data;
+      const w = where || this.lastWhere || this.$refs.search?.getWhere?.() || {};
+      this.lastWhere = w;
+      return GetPDAList({ page, limit, where: w, order }).then((res) => ({
+        count: res.total || 0,
+        list: res.result || []
+      }));
     },
-    /* 刷新表格 */
     reload(where) {
-      this.$refs.table.reload({ page: 1, where: where });
+      this.$refs.table.reload({ page: 1, where: where || this.$refs.search.getWhere() });
     },
-    /* 打开编辑弹窗 */
-    openEdit(row) {
-      this.current = row;
-      this.showEdit = true;
-    },
-    /* 打开导入弹窗 */
-    openImport() {
-      this.showImport = true;
-    },
-    /* 标记处理 */
     async markAsProcessed(where) {
-      // 获取选中行的数据
-      const selectedData = this.selection;
-      // 判断是否有选中的数据
-      if (selectedData.length === 0) {
+      if (!this.selection.length) {
         this.$message.warning('请选择需要标记处理的行');
         return;
       }
       try {
-        // 显示确认框
-        const confirmResult = await this.$confirm(
-          '确认标记已处理吗？',
-          '提示',
-          {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
-          }
-        );
-
-        
-        if (confirmResult) {
-          // 显示加载提示
-          // const loadingInstance = this.$message.loading({
-          //   message: '处理中...',
-          //   duration: 0
-          // });
-          // 调用封装的标记处理方法
-          const responseData = await VarPriceRecodeCommit(selectedData);
-          // 关闭加载提示
-          //loadingInstance.close();
-          // 根据响应结果处理
-          if (responseData.code === 200) {
-            this.$message.success(responseData.msg);
-            // 刷新表格
-            this.reload(where);
-          } else {
-            this.$message.error(responseData.msg);
-          }
-        }
-      } catch (error) {
-        if (error.message.includes('timeout')) {
-         // this.$message.error('请求超时，请检查网络');
+        await this.$confirm('确认标记已处理吗？', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        });
+        const responseData = await VarPriceRecodeCommit(this.selection);
+        if (responseData.code === 200) {
+          this.$message.success(responseData.msg);
+          this.reload(where || this.lastWhere);
         } else {
-          //this.$message.error('请求出错，请检查网络');
+          this.$message.error(responseData.msg);
         }
+      } catch (e) {
+        // 用户取消
       }
-    
-    
     },
     exportData(data) {
       const loading = this.$messageLoading('正在导出数据...');
-      this.$refs.table.doRequest(({ where, order }) => {
-        where = data;
-        where.Dept_One_Code = this.$store.state.user.info.DeptNow.Dept_Two_Code;
+      const where = data || this.$refs.search.getWhere();
+      where.Dept_One_Code = this.$store.state.user.info.DeptNow.Dept_Two_Code;
+      this.$refs.table.doRequest(({ order }) => {
         GetPDAList({
           page: 1,
           limit: 999999,
-          where: where,
-          order: order
+          where,
+          order
         })
           .then((res) => {
-            loading.close();
-            // 提取 columns 中的 label 作为表头
-            const headers = this.columns
-              .filter(column => column.prop)
-              .map(column => column.label);
+            const headers = this.columns.filter((column) => column.prop).map((column) => column.label);
+            const rows = res.result || [];
             const array = [headers];
-            res.result.forEach((d) => {
+            rows.forEach((d) => {
               const row = this.columns
-                .filter(column => column.prop)
-                .map(column => {
-                  if (column.formatter) {
-                    return column.formatter(d);
-                  }
-                  return d[column.prop];
-                });
+                .filter((column) => column.prop)
+                .map((column) => (column.formatter ? column.formatter(d) : d[column.prop]));
               array.push(row);
             });
             writeFile(
               {
                 SheetNames: ['Sheet1'],
-                Sheets: {
-                  Sheet1: utils.aoa_to_sheet(array)
-                }
+                Sheets: { Sheet1: utils.aoa_to_sheet(array) }
               },
               '价格变动记录.xlsx'
             );
-            this.$message.success("导出成功");
+            this.$message.success('导出成功');
           })
           .catch((e) => {
-            loading.close();
             this.$message.error(e.message);
+          })
+          .finally(() => {
+            loading.close();
           });
       });
     }
-  },
-  created() {
-    // this.getdatasource();
-    // console.log(this.$store.state.user.info)
   }
 };
 </script>
+
+<style lang="scss" scoped>
+.var-price-recode-page {
+  padding: 8px;
+}
+
+.var-price-recode-card {
+  height: calc(100vh - 112px);
+}
+
+.var-price-recode-page :deep(.el-card__body) {
+  height: 100%;
+  padding: 12px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.var-price-recode-search {
+  flex: none;
+  margin-bottom: 8px;
+}
+
+.var-price-recode-table-wrap {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+</style>

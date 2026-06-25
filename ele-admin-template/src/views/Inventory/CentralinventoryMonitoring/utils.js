@@ -503,9 +503,9 @@ export function createCenterMonitorWhere() {
     IsCoefficient: '0',
     UseLevel: '-1',
     StorageID: '-1',
-    EnableState: '1',
+    EnableState: '0',
     SearchName: '',
-    EnableLowUp: '0',
+    EnableLowUp: '1',
     Supplier: ''
   };
 }

@@ -81,7 +81,7 @@
       <div class="spd-toolbar">
         <div class="spd-toolbar__group">
           <div class="spd-toolbar__btns">
-            <el-select v-model="allocateSvc" size="mini" style="width: 140px">
+            <el-select v-model="allocateSvc" size="mini" style="width: 200px">
               <el-option :label="allocateLabels.outToIn" value="1" />
               <el-option :label="allocateLabels.inToOut" value="0" />
             </el-select>
@@ -199,7 +199,7 @@
         <ele-pro-table
           ref="pickingTable"
           size="mini"
-          height="265px"
+          height="305px"
           highlight-current-row
           :init-load="false"
           :toolkit="[]"
@@ -236,10 +236,10 @@
         <ele-pro-table
           ref="detailTable"
           size="mini"
-          height="265px"
+          height="335px"
           :init-load="false"
           :toolkit="[]"
-          :need-page="false"
+          :need-page="true"
           :page-size="9999"
           :columns="detailColumns"
           :datasource="detailDatasource"
@@ -416,11 +416,13 @@ export default {
       row.Pkg_plan = plan.pkg;
     },
     onFilterDisabledChange(val) {
-      this.filters.EnableState = val ? '1' : '0';
+      // 后端：0=过滤已停用，1=不过滤
+      this.filters.EnableState = val ? '0' : '1';
       this.reloadMonitor();
     },
     onFilterZeroLimitChange(val) {
-      this.filters.EnableLowUp = val ? '1' : '0';
+      // 后端：0=过滤上下线为0，1=不过滤
+      this.filters.EnableLowUp = val ? '0' : '1';
       this.reloadMonitor();
     },
     onLoadPlanByVarietyChange() {

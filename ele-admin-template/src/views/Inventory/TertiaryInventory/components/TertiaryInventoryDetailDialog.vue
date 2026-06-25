@@ -11,6 +11,12 @@
     <p v-if="summaryText" class="detail-summary">{{ summaryText }}</p>
     <ele-pro-table
       ref="table"
+      class="data-table"
+      size="mini"
+      border
+      stripe
+      :toolbar="false"
+      :header-overflow-hidden="false"
       :height="tableHeight"
       :columns="columns"
       :datasource="datasource"
@@ -91,8 +97,12 @@ export default {
 
 <style scoped>
 .detail-summary {
-  font-size: 16px;
-  margin: 0 0 12px;
-  color: #303133;
+  font-size: 13px;
+  margin: 0 0 10px;
+  color: #606266;
+}
+
+:deep(.el-table th .cell) {
+  white-space: nowrap;
 }
 </style>

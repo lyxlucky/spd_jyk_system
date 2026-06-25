@@ -39,7 +39,7 @@ export function createInventoryColumns({ hideStorageTwo, hidePdaCoun, showAction
       align: 'center',
       formatter: (row) => receivePropertyName(row.Receive_Property)
     },
-    { prop: 'Varietie_Code_New', label: '品种编码', width: 80, sortable: 'custom' },
+    { prop: 'Varietie_Code_New', label: '品种编码', width: 120, sortable: 'custom' },
     { prop: 'Varietie_Name', label: '品种全称', width: 220 },
     { prop: 'Specification_Or_Type', label: '型号/规格', width: 120 },
     { prop: 'Unit', label: '单位', width: 45, align: 'center' },
@@ -57,14 +57,14 @@ export function createInventoryColumns({ hideStorageTwo, hidePdaCoun, showAction
     {
       prop: 'Batch_Validity_Period',
       label: '有效到期',
-      width: 90,
+      width: 120,
       sortable: 'custom',
       slot: 'batchValidity'
     },
     {
       prop: 'CONTRACT_END_TIME',
       label: '合同到期',
-      width: 90,
+      width: 120,
       sortable: 'custom',
       slot: 'contractEnd'
     },
@@ -72,26 +72,26 @@ export function createInventoryColumns({ hideStorageTwo, hidePdaCoun, showAction
     {
       prop: 'Supply_Price',
       label: '结算价',
-      width: 80,
+      width: 100,
       align: 'right',
       formatter: (row) => formatSupplyPrice(row)
     },
-    { prop: 'Def_Qty', label: '库存定数包数', width: 90, sortable: 'custom', align: 'center' },
-    { prop: 'Storaged_Days', label: '在库天数', width: 80, sortable: 'custom', align: 'center' },
-    { prop: 'Def_Down_Shelf_Qty', label: '定数包未上架', width: 90, align: 'center' },
-    { prop: 'Goods_Down_Shelf_Qty', label: '散货未上架', width: 80, align: 'center' },
-    { prop: 'Goods_Look_Qty', label: '散货锁定', width: 80, align: 'center' },
-    { prop: 'Def_Locking_Qty', label: '定数包锁定', width: 80, align: 'center' },
-    { prop: 'Pre_Lock_Sum', label: '定数包预锁', width: 80, align: 'center' },
-    { prop: 'Batch_Id', label: '批次号ID', width: 60 },
-    { prop: 'Brand', label: '品牌', width: 55 },
-    { prop: 'Position', label: '货位号', width: 55 },
-    { prop: 'CONTRACT_NAME', label: '合同名称', width: 80 },
+    { prop: 'Def_Qty', label: '库存定数包数', width: 140, sortable: 'custom', align: 'center' },
+    { prop: 'Storaged_Days', label: '在库天数', width: 120, sortable: 'custom', align: 'center' },
+    { prop: 'Def_Down_Shelf_Qty', label: '定数包未上架', width: 120, align: 'center' },
+    { prop: 'Goods_Down_Shelf_Qty', label: '散货未上架', width: 120, align: 'center' },
+    { prop: 'Goods_Look_Qty', label: '散货锁定', width: 120, align: 'center' },
+    { prop: 'Def_Locking_Qty', label: '定数包锁定', width: 120, align: 'center' },
+    { prop: 'Pre_Lock_Sum', label: '定数包预锁', width: 120, align: 'center' },
+    { prop: 'Batch_Id', label: '批次号ID', width: 120 },
+    { prop: 'Brand', label: '品牌', width: 65 },
+    { prop: 'Position', label: '货位号', width: 105 },
+    { prop: 'CONTRACT_NAME', label: '合同名称', width: 120 },
     { prop: 'NOTE_DESCRIPTION', label: '备注', width: 55 },
     {
       prop: 'NO_CONSUME_NUM',
       label: '科室未结算',
-      width: 85,
+      width: 130,
       show: !hidePdaCoun,
       formatter: (row) => (row.NO_CONSUME_NUM == null ? 0 : row.NO_CONSUME_NUM)
     }

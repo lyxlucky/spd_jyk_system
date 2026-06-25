@@ -1,62 +1,72 @@
 <template>
   <div class="ele-body spd-page registration-limit-plan">
     <el-card shadow="never">
-      <el-form size="small" inline class="toolbar" @submit.native.prevent>
-        <el-form-item>
-          <el-input
-            v-model="filters.limitPlanName"
-            clearable
-            placeholder="限制名称"
-            style="width: 200px"
-            @keyup.enter.native="reloadPlan"
-          />
-        </el-form-item>
-        <el-form-item>
-          <el-select v-model="filters.isEnable" clearable placeholder="全部状态" style="width: 120px">
-            <el-option label="启用" value="1" />
-            <el-option label="停用" value="0" />
-          </el-select>
-        </el-form-item>
-        <el-form-item>
-          <el-select
-            v-model="filters.receiptIsOverLimit"
-            clearable
-            placeholder="收货是否超量"
-            style="width: 130px"
-          >
-            <el-option label="已超量" value="1" />
-            <el-option label="未超量" value="0" />
-          </el-select>
-        </el-form-item>
-        <el-form-item>
-          <el-select
-            v-model="filters.stockUpIsOverLimit"
-            clearable
-            placeholder="备货是否超量"
-            style="width: 130px"
-          >
-            <el-option label="已超量" value="1" />
-            <el-option label="未超量" value="0" />
-          </el-select>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" icon="el-icon-search" @click="reloadPlan">查询</el-button>
-          <el-button @click="resetFilters">重置</el-button>
-          <el-button type="primary" plain icon="el-icon-plus" @click="openAdd">新增</el-button>
-          <el-button type="primary" plain icon="el-icon-edit" @click="openEdit">编辑</el-button>
-          <el-button type="danger" plain icon="el-icon-delete" @click="removePlan">删除</el-button>
-          <el-button type="success" plain @click="changeEnable('1')">启用</el-button>
-          <el-button type="warning" plain @click="changeEnable('0')">停用</el-button>
-          <el-button
-            type="primary"
-            plain
-            icon="el-icon-download"
-            :loading="exporting"
-            @click="exportExcel"
-          >
-            导出
-          </el-button>
-        </el-form-item>
+      <el-form size="mini" inline label-width="auto" class="toolbar" @submit.native.prevent>
+        <div class="search-row">
+          <el-form-item label="限制名称">
+            <el-input
+              v-model="filters.limitPlanName"
+              size="mini"
+              clearable
+              placeholder="限制名称"
+              style="width: 160px"
+              @keyup.enter.native="reloadPlan"
+            />
+          </el-form-item>
+          <el-form-item label="状态">
+            <el-select v-model="filters.isEnable" size="mini" clearable placeholder="全部状态" style="width: 100px">
+              <el-option label="启用" value="1" />
+              <el-option label="停用" value="0" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="收货超量">
+            <el-select
+              v-model="filters.receiptIsOverLimit"
+              size="mini"
+              clearable
+              placeholder="全部"
+              style="width: 100px"
+            >
+              <el-option label="已超量" value="1" />
+              <el-option label="未超量" value="0" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="备货超量">
+            <el-select
+              v-model="filters.stockUpIsOverLimit"
+              size="mini"
+              clearable
+              placeholder="全部"
+              style="width: 100px"
+            >
+              <el-option label="已超量" value="1" />
+              <el-option label="未超量" value="0" />
+            </el-select>
+          </el-form-item>
+        </div>
+        <div class="toolbar-actions">
+          <el-form-item>
+            <el-button size="mini" type="primary" icon="el-icon-search" @click="reloadPlan">查询</el-button>
+            <el-button size="mini" icon="el-icon-refresh" @click="resetFilters">重置</el-button>
+          </el-form-item>
+          <el-form-item>
+            <el-button size="mini" type="primary" plain icon="el-icon-plus" @click="openAdd">新增</el-button>
+            <el-button size="mini" type="primary" plain icon="el-icon-edit" @click="openEdit">编辑</el-button>
+            <el-button size="mini" type="danger" plain icon="el-icon-delete" @click="removePlan">删除</el-button>
+            <el-button size="mini" type="success" plain @click="changeEnable('1')">启用</el-button>
+            <el-button size="mini" type="warning" plain @click="changeEnable('0')">停用</el-button>
+            <el-button
+              size="mini"
+              type="primary"
+              plain
+              icon="el-icon-download"
+              :loading="exporting"
+              @click="exportExcel"
+            >
+              导出
+            </el-button>
+          </el-form-item>
+        </div>
       </el-form>
 
       <div class="panel-title">限制方案列表</div>
@@ -96,7 +106,7 @@
           <div class="panel-title">注册证明细</div>
           <ele-pro-table
             ref="detailTable"
-            :height="420"
+            :height="500"
             :columns="detailColumns"
             :datasource="detailDatasource"
             :page-size="20"
@@ -106,46 +116,54 @@
         </el-col>
         <el-col :span="15">
           <div class="panel-title">统计明细</div>
-          <el-form size="small" inline class="stats-toolbar" @submit.native.prevent>
-            <el-form-item>
-              <el-select v-model="statsFilters.detailType" style="width: 120px" @change="onDetailTypeChange">
+          <el-form size="mini" inline label-width="auto" class="stats-toolbar" @submit.native.prevent>
+            <el-form-item label="明细类型">
+              <el-select
+                v-model="statsFilters.detailType"
+                size="mini"
+                style="width: 110px"
+                @change="onDetailTypeChange"
+              >
                 <el-option label="收货明细" value="receipt" />
                 <el-option label="备货明细" value="stockup" />
               </el-select>
             </el-form-item>
-            <el-form-item>
+            <el-form-item label="关键字">
               <el-input
                 v-model="statsFilters.keyword"
+                size="mini"
                 clearable
                 :placeholder="statsKeywordPlaceholder"
-                style="width: 240px"
+                style="width: 220px"
                 @keyup.enter.native="reloadReceipt"
               />
             </el-form-item>
-            <el-form-item>
+            <el-form-item label="开始">
               <el-date-picker
                 v-model="statsFilters.startTime"
+                size="mini"
                 type="date"
                 value-format="yyyy-MM-dd"
                 :placeholder="statsStartPlaceholder"
-                style="width: 140px"
+                style="width: 130px"
               />
             </el-form-item>
-            <el-form-item>
+            <el-form-item label="结束">
               <el-date-picker
                 v-model="statsFilters.endTime"
+                size="mini"
                 type="date"
                 value-format="yyyy-MM-dd"
                 :placeholder="statsEndPlaceholder"
-                style="width: 140px"
+                style="width: 130px"
               />
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" icon="el-icon-search" @click="reloadReceipt">查询</el-button>
+              <el-button size="mini" type="primary" icon="el-icon-search" @click="reloadReceipt">查询</el-button>
             </el-form-item>
-            <span class="receipt-summary">
-              {{ totalReceiptsLabel }}：<strong>{{ formatQty(totalReceipts) }}</strong>
-            </span>
+            <el-form-item :label="totalReceiptsLabel" class="receipt-summary-item">
+              <strong class="receipt-summary">{{ formatQty(totalReceipts) }}</strong>
+            </el-form-item>
           </el-form>
           <ele-pro-table
             ref="receiptTable"
@@ -268,52 +286,52 @@ export default {
         {
           prop: 'DETAIL_COUNT',
           label: '注册证明细数',
-          width: 110,
+          width: 150,
           align: 'right'
         },
         {
           prop: 'LIMIT_PLAN_NUM',
           label: '限制总数量',
-          width: 110,
+          width: 130,
           align: 'right'
         },
         {
           prop: 'TOTAL_STOCK_UP_QTY',
           label: '累计备货数量',
-          width: 110,
+          width: 130,
           align: 'right'
         },
         {
           prop: 'STOCK_UP_LIMIT_PERCENT',
           label: '备货已达限量%',
-          width: 120,
+          width: 160,
           align: 'right',
           formatter: (row) => formatPercent(row.STOCK_UP_LIMIT_PERCENT)
         },
         {
           prop: 'STOCK_UP_LIMIT_STATUS',
           label: '备货限量状态',
-          width: 110,
+          width: 140,
           align: 'center',
           slot: 'STOCK_UP_LIMIT_STATUS'
         },
         {
           prop: 'TOTAL_RECEIPTS',
           label: '累计收货数量',
-          width: 110,
+          width: 140,
           align: 'right'
         },
         {
           prop: 'RECEIPT_LIMIT_PERCENT',
           label: '收货已达限量%',
-          width: 120,
+          width: 160,
           align: 'right',
           formatter: (row) => formatPercent(row.RECEIPT_LIMIT_PERCENT)
         },
         {
           prop: 'RECEIPT_LIMIT_STATUS',
           label: '收货限量状态',
-          width: 110,
+          width: 140,
           align: 'center',
           slot: 'RECEIPT_LIMIT_STATUS'
         },
@@ -665,26 +683,69 @@ export default {
 };
 </script>
 
-<style scoped>
-.toolbar {
-  margin-bottom: 8px;
-}
-.panel-title {
-  font-weight: 600;
-  margin: 12px 0 8px;
-}
-.bottom-grid {
-  margin-top: 8px;
-}
+<style lang="scss" scoped>
+.toolbar,
 .stats-toolbar {
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
+
+.search-row,
+.toolbar-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.toolbar-actions {
+  margin-top: 2px;
+}
+
+.registration-limit-plan :deep(.el-form-item) {
+  margin-right: 8px;
+  margin-bottom: 6px;
+}
+
+.registration-limit-plan :deep(.el-form-item__label) {
+  padding-right: 6px;
+}
+
+.registration-limit-plan :deep(.el-form-item__content) {
+  line-height: 28px;
+}
+
+.panel-title {
+  font-size: 13px;
+  font-weight: 600;
+  margin: 8px 0 6px;
+  line-height: 1.4;
+}
+
+.bottom-grid {
+  margin-top: 4px;
+}
+
+.bottom-grid :deep(.el-col) {
+  min-width: 0;
+}
+
+.receipt-summary-item :deep(.el-form-item__label) {
+  color: #ff5722;
+  font-weight: 600;
+}
+
 .receipt-summary {
   color: #ff5722;
   font-weight: 600;
-  line-height: 32px;
-  margin-left: 8px;
 }
+
+.registration-limit-plan :deep(.el-table th .cell) {
+  white-space: nowrap;
+}
+
+.registration-limit-plan :deep(.ele-pro-table) {
+  font-size: 12px;
+}
+
 .plan-enabled {
   color: #1e9fff;
   font-weight: 600;

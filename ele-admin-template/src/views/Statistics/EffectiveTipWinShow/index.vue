@@ -351,49 +351,49 @@ export default {
           minWidth: 100,
           formatter: (row) => (row.REMARK == null ? '无' : row.REMARK)
         },
-        { prop: 'REPORT_ID', label: '报告编码', width: 70, align: 'center' },
+        { prop: 'REPORT_ID', label: '报告编码', width: 120, align: 'center' },
         { prop: 'REPORT_DATE', label: '报告日期', width: 90 },
-        { prop: 'PRODUCT_NAME', label: '产品名称', minWidth: 100 },
-        { prop: 'REGISTRATION_NUMBER', label: '注册证号', width: 80 },
-        { prop: 'PRODUCT_BATCH_NUMBER', label: '产品批号', width: 90 },
+        { prop: 'PRODUCT_NAME', label: '产品名称', minWidth: 120 },
+        { prop: 'REGISTRATION_NUMBER', label: '注册证号', width: 120 },
+        { prop: 'PRODUCT_BATCH_NUMBER', label: '产品批号', width: 120 },
         { prop: 'SPECIFICATION', label: '规格', width: 80 },
-        { prop: 'PRODUCT_ID', label: '产品编号', width: 80 },
+        { prop: 'PRODUCT_ID', label: '产品编号', width: 120 },
         { prop: 'PRODUCTION_DATE', label: '生产日期', width: 90, formatter: (r) => formatDate10(r.PRODUCTION_DATE) },
         {
           columnKey: 'blsjEffective',
           label: '有效期至',
-          width: 90,
+          width: 120,
           formatter: (r) => formatDate10(r.EFFECTIVE_DATE)
         },
-        { prop: 'MANUFACTURER_NAME', label: '生产企业名称', minWidth: 100 },
-        { prop: 'OCCURRENCE_DATE', label: '事件发生日期', width: 110, formatter: (r) => formatDate10(r.OCCURRENCE_DATE) },
-        { prop: 'KNOW_DATE', label: '获知日期', width: 90, formatter: (r) => formatDate10(r.KNOW_DATE) },
-        { prop: 'DAMAGE_PERFORMANCE', label: '伤害表现', width: 90 },
-        { prop: 'NAME', label: '姓名', width: 70 },
-        { prop: 'AGE', label: '年龄', width: 50 },
-        { prop: 'AGE_TYPE', label: '年龄类型', width: 90 },
-        { prop: 'GENDER', label: '性别', width: 50 },
-        { prop: 'MECHANICAL_MANIFESTATION', label: '器械故障表现', minWidth: 100 },
-        { prop: 'ROLE', label: '作用', width: 70 },
-        { prop: 'MACHINE_SERVICE_DATE', label: '机械使用日期', width: 110, formatter: (r) => formatDate10(r.MACHINE_SERVICE_DATE) },
-        { prop: 'USE_PLACE', label: '使用场所', width: 90 },
-        { prop: 'PLACE_NAME', label: '场所名称', width: 90 },
-        { prop: 'USE_PROCESS', label: '使用过程', width: 90 },
-        { prop: 'CAUSE_ANALYSIS', label: '原因分析', width: 90 },
-        { prop: 'PRELIMINARY_TREATMENT', label: '初步处置', width: 90 },
-        { prop: 'REPORTER', label: '报告人', width: 80 },
-        { prop: 'REPORT_DEPARTMENT', label: '上报科室', width: 90 },
-        { prop: 'CONTACT_PHONE', label: '联系电话', width: 90 },
-        { prop: 'REVIEW_STATUS', label: '审核状态', width: 90 }
+        { prop: 'MANUFACTURER_NAME', label: '生产企业名称', minWidth: 140 },
+        { prop: 'OCCURRENCE_DATE', label: '事件发生日期', width: 140, formatter: (r) => formatDate10(r.OCCURRENCE_DATE) },
+        { prop: 'KNOW_DATE', label: '获知日期', width: 120, formatter: (r) => formatDate10(r.KNOW_DATE) },
+        { prop: 'DAMAGE_PERFORMANCE', label: '伤害表现', width: 120 },
+        { prop: 'NAME', label: '姓名', width: 100 },
+        { prop: 'AGE', label: '年龄', width: 80 },
+        { prop: 'AGE_TYPE', label: '年龄类型', width: 120 },
+        { prop: 'GENDER', label: '性别', width: 100 },
+        { prop: 'MECHANICAL_MANIFESTATION', label: '器械故障表现', minWidth: 140 },
+        { prop: 'ROLE', label: '作用', width: 100 },
+        { prop: 'MACHINE_SERVICE_DATE', label: '机械使用日期', width: 140, formatter: (r) => formatDate10(r.MACHINE_SERVICE_DATE) },
+        { prop: 'USE_PLACE', label: '使用场所', width: 120 },
+        { prop: 'PLACE_NAME', label: '场所名称', width: 120 },
+        { prop: 'USE_PROCESS', label: '使用过程', width: 120 },
+        { prop: 'CAUSE_ANALYSIS', label: '原因分析', width: 120 },
+        { prop: 'PRELIMINARY_TREATMENT', label: '初步处置', width: 120 },
+        { prop: 'REPORTER', label: '报告人', width: 100 },
+        { prop: 'REPORT_DEPARTMENT', label: '上报科室', width: 120 },
+        { prop: 'CONTACT_PHONE', label: '联系电话', width: 120 },
+        { prop: 'REVIEW_STATUS', label: '审核状态', width: 120 }
       ],
       bhjhColumns: [
         { prop: 'CREATOR', label: '备货人', width: 80 },
-        { prop: 'Stock_Up_Plan_No', label: '备货计划单号', minWidth: 100 },
-        { prop: 'supplier_name', label: '供应商名称', minWidth: 100 },
+        { prop: 'Stock_Up_Plan_No', label: '备货计划单号', minWidth: 130 },
+        { prop: 'supplier_name', label: '供应商名称', minWidth: 140 },
         {
           prop: 'PLAN_TIME',
           label: '备货日期',
-          width: 90,
+          width: 120,
           formatter: (r) => formatDate10(r.PLAN_TIME)
         },
         {
@@ -408,7 +408,7 @@ export default {
           columnKey: 'bhjhDetEnd',
           prop: 'DET_CONTRACT_END',
           label: '合同明细到期',
-          width: 140,
+          width: 160,
           sortable: 'custom',
           slot: 'bhjhDetEnd'
         },
@@ -416,7 +416,7 @@ export default {
         { prop: 'Varietie_Code_New', label: '品种编码', width: 100 },
         { prop: 'Varietie_Name', label: '品种名称', minWidth: 140 },
         { prop: 'Specification_Or_Type', label: '型号/规格', width: 140 },
-        { prop: 'Unit', label: '单位', width: 50, align: 'center' },
+        { prop: 'Unit', label: '单位', width: 80, align: 'center' },
         {
           prop: 'supply_price',
           label: '价格',
@@ -429,19 +429,19 @@ export default {
             return Number(p).toFixed(bl);
           }
         },
-        { prop: 'Manufacturing_Ent_Name', label: '生产企业名称', minWidth: 120 },
-        { prop: 'Coefficient', label: '系数', width: 50, align: 'center' },
+        { prop: 'Manufacturing_Ent_Name', label: '生产企业名称', minWidth: 140 },
+        { prop: 'Coefficient', label: '系数', width: 60, align: 'center' },
         {
           columnKey: 'planDefQty',
           label: '备货计划(包)',
-          width: 100,
+          width: 140,
           align: 'center',
           formatter: (r) => r.Stock_Up_Plan_Def_Quantity
         },
-        { prop: 'Stock_Up_Plan_Goods_Quantity', label: '折算散货', width: 90, align: 'center' },
-        { prop: 'ReceiptQty', label: '收货数量', width: 90, align: 'center' },
-        { prop: 'USED_QTY', label: '上月用量', width: 90, align: 'center' },
-        { prop: 'AVG_USED_QTY', label: '三月平均量', width: 90, align: 'center' }
+        { prop: 'Stock_Up_Plan_Goods_Quantity', label: '折算散货', width: 120, align: 'center' },
+        { prop: 'ReceiptQty', label: '收货数量', width: 120, align: 'center' },
+        { prop: 'USED_QTY', label: '上月用量', width: 120, align: 'center' },
+        { prop: 'AVG_USED_QTY', label: '三月平均量', width: 120, align: 'center' }
       ],
       prodAuthColumns: [
         { prop: 'Prod_Registration_Name', label: '注册证名称', minWidth: 180 },
@@ -513,7 +513,7 @@ export default {
         }
       ],
       supplierAuthColumns: [
-        { prop: 'Supplier_Code', label: 'spd供应商编码', width: 140 },
+        { prop: 'Supplier_Code', label: 'spd供应商编码', width: 160 },
         { prop: 'Supplier_Name', label: '供应商名称', minWidth: 160 },
         { columnKey: 'blDate', prop: 'Business_License_Valid_Date', label: '营业执照有效期', minWidth: 170, slot: 'blDate' },
         {

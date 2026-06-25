@@ -1,19 +1,46 @@
 <template>
-  <div class="ele-body">
-    <el-card shadown="never">
-      <KSDepartmentalPlanDetails-search @exportData="exportData" @search="reload" :KSDepartmentalPlanDataSearch="KSDepartmentalPlanDataSearch" :selection="selection" @showEditReoad="showEditReoad" :datasourceList="datasourceList" />
+  <div class="ele-body spd-page ks-inventory-record-page">
+    <el-card shadow="never" class="ks-inventory-record-card">
+      <div class="spd-panel spd-panel--search">
+        <div class="spd-panel__head">查询条件</div>
+        <KSDepartmentalPlanDetails-search
+          @exportData="exportData"
+          @search="reload"
+          :KSDepartmentalPlanDataSearch="KSDepartmentalPlanDataSearch"
+          :selection="selection"
+          @showEditReoad="showEditReoad"
+          :datasourceList="datasourceList"
+        />
+      </div>
+
       <!-- <el-button type="danger" size="small" @click="aaa">aaa</el-button> -->
       <!-- 数据表格 -->
-      <ele-pro-table height="calc(100vh - 330px)" ref="table" highlight-current-row :stripe="true" :rowClickChecked="true" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" @selection-change="onSelectionChange" cache-key="KSInventoryBasicDataTable">
-        <!-- 表头工具栏 -->
-        <!-- 右表头 -->
-        <!-- <template v-slot:toolkit>
+      <div class="spd-panel spd-table-panel">
+        <div class="spd-panel__head spd-panel__head--split">
+          <span>库存流水列表</span>
+          <span class="ks-inventory-record-meta">
+            <span class="spd-panel__head-meta">入库数: <b>{{ SumCount1 }}</b></span>
+            <span class="spd-panel__head-meta">入库金额: <b>{{ RKSumAmount }}</b></span>
+            <span class="spd-panel__head-meta">出库数: <b>{{ SumCount2 * -1 }}</b></span>
+            <span class="spd-panel__head-meta">出库金额: <b>{{ CKSumAmount * -1 }}</b></span>
+            <span class="spd-panel__head-meta">入库数-出库数: <b>{{ netExport }}</b></span>
+            <span class="spd-panel__head-meta">入库金额-出库金额: <b>{{ SumAmount }}</b></span>
+          </span>
+        </div>
+        <div class="spd-table-panel__wrap">
+          <!-- 表头工具栏 -->
+          <!-- 右表头 -->
+          <!-- <template v-slot:toolkit>
         <el-button size="small" type="danger" icon="el-icon-delete" class="ele-btn-icon" @click="removebatch">
           删除
         </el-button>
       </template> -->
-        <!-- 左表头 -->
-        <template v-slot:toolbar>
+          <!-- 左表头 -->
+          <!-- 搜索表单 -->
+          <!-- <el-button size="small" type="danger" icon="el-icon-delete" class="ele-btn-icon" @click="removebatch">
+          删除
+        </el-button> -->
+          <!-- <template v-slot:toolbar>
           <label>
             <span style="padding-right: 8px;">入库数: <b>{{ SumCount1 }}</b></span>
             <span style="padding-right: 8px;">入库金额: <b>{{ RKSumAmount }}</b></span>
@@ -22,31 +49,45 @@
             <span style="padding-right: 8px;">入库数-出库数:<b>{{ netExport }}</b></span>
             <span style="padding-right: 8px;">入库金额-出库金额:<b>{{ SumAmount }}</b></span>
           </label>
-          <!-- 搜索表单 -->
-          <!-- <el-button size="small" type="danger" icon="el-icon-delete" class="ele-btn-icon" @click="removebatch">
-          删除
-        </el-button> -->
-        </template>
-
-        <template v-slot:PlanQty="{ row }">
-          <el-input-number v-model="row.PlanQty" :min="0" :max="9999" :step="1" size="mini" />
-          <!-- <el-input-number v-model="row.PlanQty" controls-position="right" @change="handleChange" :min="0" :max="9999" size="mini"></el-input-number> -->
-        </template>
-        <template v-slot:State="{ row }">
-          <el-tag v-if="row.State == 0" type="success">新增</el-tag>
-          <el-tag v-if="row.State == 1" type="success">已提交</el-tag>
-          <el-tag v-if="row.State == 2" type="success">配送中</el-tag>
-          <el-tag v-if="row.State == 5" type="success">已审核</el-tag>
-          <el-tag v-if="row.State == 10" type="success">强制结束</el-tag>
-          <el-tag v-if="
+        </template> -->
+          <ele-pro-table
+            ref="table"
+            class="data-table"
+            size="mini"
+            border
+            stripe
+            highlight-current-row
+            :rowClickChecked="true"
+            :toolbar="false"
+            :header-overflow-hidden="false"
+            :height="tableHeight"
+            :pageSize="pageSize"
+            :pageSizes="pageSizes"
+            :columns="columns"
+            :datasource="datasource"
+            :selection.sync="selection"
+            cache-key="KSInventoryRecordTable"
+            @selection-change="onSelectionChange"
+          >
+            <template v-slot:PlanQty="{ row }">
+              <el-input-number v-model="row.PlanQty" :min="0" :max="9999" :step="1" size="mini" />
+              <!-- <el-input-number v-model="row.PlanQty" controls-position="right" @change="handleChange" :min="0" :max="9999" size="mini"></el-input-number> -->
+            </template>
+            <template v-slot:State="{ row }">
+          <el-tag size="mini" v-if="row.State == 0" type="success">新增</el-tag>
+          <el-tag size="mini" v-if="row.State == 1" type="success">已提交</el-tag>
+          <el-tag size="mini" v-if="row.State == 2" type="success">配送中</el-tag>
+          <el-tag size="mini" v-if="row.State == 5" type="success">已审核</el-tag>
+          <el-tag size="mini" v-if="row.State == 10" type="success">强制结束</el-tag>
+          <el-tag size="mini" v-if="
             (row.State == 6 || row.State == 4) &&
             row.SUM_Left_Apply_Qty == row.SUM_Apply_Qty
           " type="success">已审批</el-tag>
-          <el-tag v-if="
+          <el-tag size="mini" v-if="
             row.SUM_Left_Apply_Qty > 0 &&
             row.SUM_Left_Apply_Qty != row.SUM_Apply_Qty
           " type="success">未收全</el-tag>
-          <el-tag v-if="row.SUM_Left_Apply_Qty == 0" type="success">已收全</el-tag>
+          <el-tag size="mini" v-if="row.SUM_Left_Apply_Qty == 0" type="success">已收全</el-tag>
           <!-- <el-tag v-for="(item) in row" :key="item.PlanNum" size="mini" type="primary" :disable-transitions="true">
           {{ item.State }}
         </el-tag> -->
@@ -56,17 +97,17 @@
           <!-- <el-tag v-if="row.RECORD_TYPE == 0" type="info">入库</el-tag>
           <el-tag v-if="row.RECORD_TYPE == 1" type="info">消耗</el-tag>
           <el-tag v-if="row.RECORD_TYPE == 2" type="success">退库</el-tag> -->
-          <el-tag v-if="row.RECORD_TYPE == 0" type="primary">库存初始化</el-tag>
-          <el-tag v-if="row.RECORD_TYPE == 1" type="success">散货申领入库</el-tag>
-          <el-tag v-if="row.RECORD_TYPE == 2" type="success">定数包入库</el-tag>
-          <el-tag v-if="row.RECORD_TYPE == 3" type="warning">定数包消耗</el-tag>
-          <el-tag v-if="row.RECORD_TYPE == 4" type="info">定数包退货</el-tag>
-          <el-tag v-if="row.RECORD_TYPE == 5" type="danger">散货手动出库</el-tag>
-          <el-tag v-if="row.RECORD_TYPE == 6" type="success">HIS计费</el-tag>
-          <el-tag v-if="row.RECORD_TYPE == 7" type="info">HIS退费</el-tag>
-          <el-tag v-if="row.RECORD_TYPE == 8" type="success">调库入库</el-tag>
-          <el-tag v-if="row.RECORD_TYPE == 9" type="warning">调库出库</el-tag>
-          <el-tag v-if="row.RECORD_TYPE == -1" type="info">HIS计费无库存扣减</el-tag>
+          <el-tag size="mini" v-if="row.RECORD_TYPE == 0" type="primary">库存初始化</el-tag>
+          <el-tag size="mini" v-if="row.RECORD_TYPE == 1" type="success">散货申领入库</el-tag>
+          <el-tag size="mini" v-if="row.RECORD_TYPE == 2" type="success">定数包入库</el-tag>
+          <el-tag size="mini" v-if="row.RECORD_TYPE == 3" type="warning">定数包消耗</el-tag>
+          <el-tag size="mini" v-if="row.RECORD_TYPE == 4" type="info">定数包退货</el-tag>
+          <el-tag size="mini" v-if="row.RECORD_TYPE == 5" type="danger">散货手动出库</el-tag>
+          <el-tag size="mini" v-if="row.RECORD_TYPE == 6" type="success">HIS计费</el-tag>
+          <el-tag size="mini" v-if="row.RECORD_TYPE == 7" type="info">HIS退费</el-tag>
+          <el-tag size="mini" v-if="row.RECORD_TYPE == 8" type="success">调库入库</el-tag>
+          <el-tag size="mini" v-if="row.RECORD_TYPE == 9" type="warning">调库出库</el-tag>
+          <el-tag size="mini" v-if="row.RECORD_TYPE == -1" type="info">HIS计费无库存扣减</el-tag>
         </template>
 
         <!-- 操作列 -->
@@ -79,7 +120,9 @@
             </template>
           </el-popconfirm>
         </template>
-      </ele-pro-table>
+          </ele-pro-table>
+        </div>
+      </div>
     </el-card>
   </div>
 </template>
@@ -374,6 +417,7 @@ export default {
 
       ],
       toolbar: false,
+      tableHeight: 'calc(100vh - 330px)',
       pageSize: 20,
       pagerCount: 2,
       pageSizes: [10, 20, 30, 50, 100, 9999999],
@@ -600,6 +644,7 @@ export default {
     }
   },
   created() {
+    localStorage.setItem('KSInventoryRecordTableSize', JSON.stringify('mini'));
     // this.getdatasource();
   },
   mounted() {
@@ -614,6 +659,24 @@ export default {
 </script>
 
 <style scoped>
+.ks-inventory-record-card :deep(.el-card__body) {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ks-inventory-record-meta {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-weight: normal;
+}
+
+.ks-inventory-record-page >>> .el-table th .cell {
+  white-space: nowrap;
+}
+
 /* 多选框 */
 ::v-deep span.el-checkbox__inner {
   height: 20px;

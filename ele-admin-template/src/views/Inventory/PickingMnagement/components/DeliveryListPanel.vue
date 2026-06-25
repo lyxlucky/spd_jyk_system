@@ -146,14 +146,24 @@
     <ele-pro-table
       ref="table"
       size="mini"
-      height="320px"
+      height="330px"
       highlight-current-row
       :columns="columns"
       :datasource="datasource"
       :row-class-name="rowClassName"
       cache-key="pickingMnagementDeliveryList"
       @row-click="handleRowClick"
-    />
+    >
+      <template v-slot:action="{ row }">
+        <el-button
+          type="text"
+          icon="el-icon-delete"
+          style="color: #f56c6c"
+          title="删除空补货单"
+          @click.stop="handleDeleteEmpty(row)"
+        />
+      </template>
+    </ele-pro-table>
     <DeptRegionDialog
       :visible.sync="regionDialogVisible"
       :title="regionDialogTitle"
@@ -176,7 +186,8 @@ import {
   createDeliveryExcelLh,
   insertDeptUpShelf,
   processDefEpcCk,
-  processOrder
+  processOrder,
+  deleteEmptyDistribute
 } from '@/api/Inventory/PickingMnagement';
 import {
   formatDateTime,
@@ -228,10 +239,10 @@ export default {
         {
           prop: 'stock_out_distribute_number',
           label: '补货单号',
-          minWidth: 110,
+          minWidth: 120,
           sortable: 'custom'
         },
-        { prop: 'dept_two_name', label: '配送科室', minWidth: 100, sortable: 'custom' }
+        { prop: 'dept_two_name', label: '配送科室', minWidth: 120, sortable: 'custom' }
       ];
       if (!this.hp.isLhLike) {
         base.push({ prop: 'REGION_NAME', label: '库区', width: 80, sortable: 'custom' });
@@ -253,7 +264,7 @@ export default {
         {
           prop: 'replenish_state',
           label: '补货状态',
-          width: 90,
+          width: 120,
           sortable: 'custom',
           formatter: (row) => formatReplenishState(row.replenish_state)
         }
@@ -262,7 +273,7 @@ export default {
         base.push({
           prop: 'Send_Herp_State',
           label: '医商云发送状态',
-          width: 110,
+          width: 160,
           sortable: 'custom',
           formatter: (row) => {
             if (String(row.Send_Herp_State) === '0') return '未发送';
@@ -271,9 +282,16 @@ export default {
           }
         });
       } else {
-        base.push({ prop: 'CALL_TIMES', label: '智能柜上架次数', width: 110 });
+        base.push({ prop: 'CALL_TIMES', label: '智能柜上架次数', width: 160 });
       }
-      base.push({ prop: 'Print_Count', label: '打印次数', width: 80 });
+      base.push({ prop: 'Print_Count', label: '打印次数', width: 120 });
+      base.push({
+        columnKey: 'action',
+        label: '选项',
+        width: 70,
+        align: 'center',
+        slot: 'action'
+      });
       return base;
     }
   },
@@ -346,6 +364,32 @@ export default {
             this.$message.error(data?.msg || '操作失败');
           }
         });
+      });
+    },
+    handleDeleteEmpty(row) {
+      const num = row?.stock_out_distribute_number || '';
+      if (!num) return;
+      this.$confirm(
+        `确定删除补货单[${num}]吗？仅定数包为空的补货单允许删除。`,
+        '提示',
+        { type: 'warning' }
+      ).then(() => {
+        const loading = this.$loading({ lock: true, text: '删除中...' });
+        deleteEmptyDistribute(num)
+          .then((res) => {
+            const data = unwrapData(res);
+            if (isOkCode(data?.code)) {
+              this.$message.success(data.msg || '删除成功');
+              this.selectedRow = null;
+              this.handleSearch();
+              this.$parent.$refs.pickList?.handleSearch();
+            } else if (data?.code === 301 || data?.code === '301') {
+              this.$message.error('登录失效，请重新登录');
+            } else {
+              this.$message.error(data?.msg || '删除失败');
+            }
+          })
+          .finally(() => loading.close());
       });
     },
     handleSendDelivery() {

@@ -86,7 +86,7 @@
               <div class="margin-top-10">
                 <ele-pro-table
                   ref="leftTableRef"
-                  height="500"
+                  height="calc(100vh - 240px)"
                   :needPage="false"
                   :toolbar="false"
                   :pageSize="9999"
@@ -163,7 +163,7 @@
               <!-- 表格 -->
               <div class="margin-top-10">
                 <ele-pro-table
-                  height="300"
+                  height="calc((100vh - 240px)/2)"
                   class="receipt-delivery-varietie-table"
                   :needPage="false"
                   :toolbar="false"
@@ -182,7 +182,7 @@
         <el-card shadow="never" class="margin-top-10">
           <div>
             <ele-pro-table
-              height="300"
+              height="calc((100vh - 120px)/2)"
               class="receipt-varietie-info-table"
               :needPage="false"
               :pageSize="9999"
@@ -338,7 +338,7 @@
           {
             prop: 'Delivery_Note_Number',
             label: '收货单号',
-            minWidth: 100,
+            minWidth: 120,
             sortable: 'custom',
             align: 'center',
             showOverflowTooltip: true
@@ -346,7 +346,7 @@
           {
             prop: 'Hospitalization_Number',
             label: '住院号',
-            minWidth: 85,
+            minWidth: 105,
             sortable: 'custom',
             align: 'center',
             showOverflowTooltip: true
@@ -354,7 +354,7 @@
           {
             prop: 'Patient',
             label: '病患',
-            minWidth: 70,
+            minWidth: 80,
             sortable: 'custom',
             align: 'center',
             showOverflowTooltip: true
@@ -362,7 +362,7 @@
           {
             prop: 'Dept_Two_Name',
             label: '使用科室',
-            minWidth: 100,
+            minWidth: 120,
             sortable: 'custom',
             align: 'center',
             showOverflowTooltip: true
@@ -370,7 +370,7 @@
           {
             prop: 'Receive_Receipt_State',
             label: '确认状态',
-            minWidth: 100,
+            minWidth: 120,
             sortable: 'custom',
             align: 'center',
             showOverflowTooltip: true
@@ -378,7 +378,7 @@
           {
             prop: 'Approve_Time',
             label: '审批时间',
-            minWidth: 100,
+            minWidth: 120,
             sortable: 'custom',
             align: 'center',
             showOverflowTooltip: true
@@ -386,7 +386,7 @@
           {
             prop: 'GT_LOOK_DSM_SP_STATE',
             label: '供应科审批',
-            minWidth: 120,
+            minWidth: 140,
             sortable: 'custom',
             align: 'center',
             showOverflowTooltip: true
@@ -394,7 +394,7 @@
           {
             prop: 'GT_PIC',
             label: '植入单',
-            minWidth: 85,
+            minWidth: 105,
             sortable: 'custom',
             align: 'center',
             showOverflowTooltip: true
@@ -412,7 +412,7 @@
           {
             prop: 'Varietie_Code',
             label: '品种(材料)编码',
-            minWidth: 100,
+            minWidth: 160,
             sortable: 'custom',
             align: 'center',
             showOverflowTooltip: true
@@ -420,42 +420,42 @@
           {
             prop: 'CHARGING_CODE',
             label: '计费编码',
-            minWidth: 100,
+            minWidth: 120,
             align: 'center',
             showOverflowTooltip: true
           },
           {
             prop: 'Varietie_Name',
             label: '品种全称',
-            minWidth: 100,
+            minWidth: 120,
             align: 'center',
             showOverflowTooltip: true
           },
           {
             prop: 'APPROVAL_NUMBER',
             label: '注册证号',
-            minWidth: 100,
+            minWidth: 120,
             align: 'center',
             showOverflowTooltip: true
           },
           {
             prop: 'PROD_REGISTRATION_NAME',
             label: '注册证名称',
-            minWidth: 100,
+            minWidth: 120,
             align: 'center',
             showOverflowTooltip: true
           },
           {
             prop: 'Specification_Or_Type',
             label: '型号/规格',
-            minWidth: 100,
+            minWidth: 120,
             align: 'center',
             showOverflowTooltip: true
           },
           {
             prop: 'Manufacturing_Ent_Name',
             label: '生产企业名称',
-            minWidth: 100,
+            minWidth: 140,
             align: 'center',
             showOverflowTooltip: true
           },
@@ -506,7 +506,7 @@
           {
             prop: 'Varietie_Code',
             label: '品种(材料)编码',
-            minWidth: 100,
+            minWidth: 160,
             sortable: 'custom',
             align: 'center',
             showOverflowTooltip: true
@@ -528,21 +528,21 @@
           {
             prop: 'PROD_REGISTRATION_NAME',
             label: '注册证名称',
-            minWidth: 100,
+            minWidth: 120,
             align: 'center',
             showOverflowTooltip: true
           },
           {
             prop: 'Specification_Or_Type',
             label: '型号/规格',
-            minWidth: 100,
+            minWidth: 120,
             align: 'center',
             showOverflowTooltip: true
           },
           {
             prop: 'Manufacturing_Ent_Name',
             label: '生产企业名称',
-            minWidth: 100,
+            minWidth: 160,
             align: 'center',
             showOverflowTooltip: true
           },
@@ -598,7 +598,7 @@
           {
             prop: 'TB_UNI_NUM',
             label: '套包唯一码',
-            minWidth: 100,
+            minWidth: 120,
             align: 'center',
             showOverflowTooltip: true
           }
@@ -614,7 +614,7 @@
           {
             prop: 'TB_JF_CODE',
             label: '套包计费编码',
-            minWidth: 100,
+            minWidth: 120,
             align: 'center',
             showOverflowTooltip: true
           },
@@ -642,14 +642,14 @@
           {
             prop: 'PJ_HAVE_COUNT',
             label: '订单满足配件数',
-            minWidth: 100,
+            minWidth: 160,
             align: 'center',
             showOverflowTooltip: true
           },
           {
             prop: 'PJ_CY_COUNT',
             label: '配件差异数',
-            minWidth: 100,
+            minWidth: 140,
             align: 'center',
             showOverflowTooltip: true
           },

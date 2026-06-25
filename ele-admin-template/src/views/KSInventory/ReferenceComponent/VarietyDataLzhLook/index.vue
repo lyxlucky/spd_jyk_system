@@ -192,7 +192,7 @@
             sortable: 'custom',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 120
+            minWidth: 150
           },
           {
             prop: 'PROD_REGISTRATION_NAME',

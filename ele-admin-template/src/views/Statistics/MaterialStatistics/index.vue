@@ -176,7 +176,7 @@ export default {
           label: '高值重点治理序号',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 140,
+          minWidth: 180,
           formatter: (row) => formatHighClassXh(row)
         },
         {
@@ -184,35 +184,35 @@ export default {
           label: '消耗数量',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 100
+          minWidth: 120
         },
         {
           prop: 'MAIN_PRICE',
           label: '消耗金额/元',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 110
+          minWidth: 130
         },
         {
           prop: 'HQ_QTY',
           label: '环期消耗数量',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 110
+          minWidth: 160
         },
         {
           prop: 'HQ_PRICE',
           label: '环期消耗金额/元',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 120
+          minWidth: 160
         },
         {
           prop: 'INCREASE_AMOUNT',
           label: '增幅金额',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 100,
+          minWidth: 120,
           formatter: (row) => calcIncreaseAmount(row)
         },
         {
@@ -220,7 +220,7 @@ export default {
           label: '环比增幅（%）',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 110,
+          minWidth: 140,
           formatter: (row) => formatHbZz(row)
         },
         ...buildDeptColumns()

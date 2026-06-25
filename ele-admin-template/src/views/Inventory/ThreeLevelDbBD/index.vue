@@ -1,177 +1,195 @@
 <template>
-  <div class="ele-container">
-    <ele-pro-table
-      class="style-table"
-      ref="table"
-      :columns="columns"
-      :datasource="datasource"
-      size="mini"
-      :pageSize="pageSize"
-      :pageSizes="pageSizes"
-      highlight-current-row
-      cache-key="ThreeLevelDbBDTable"
-      height="calc(100vh - 220px)"
-      max-height="calc(100vh - 220px)"
-    >
-      <template v-slot:toolbar>
-        <el-form
-          :model="form"
-          ref="form"
-          :inline="true"
-          class="ele-form-search"
-          size="mini"
-        >
-          <el-form-item prop="DeptName">
-            <el-input
-              v-model="form.DeptName"
-              placeholder="请输入科室名称"
-              clearable
-            />
-          </el-form-item>
-          <el-form-item prop="varCode">
-            <el-input
-              v-model="form.varCode"
-              placeholder="请输入品种编码"
-              clearable
-            />
-          </el-form-item>
-          <el-form-item prop="varName">
-            <el-input
-              v-model="form.varName"
-              placeholder="请输入品种名称"
-              clearable
-            />
-          </el-form-item>
-          <el-form-item prop="chargingCode">
-            <el-input
-              v-model="form.chargingCode"
-              placeholder="请输入计费编码"
-              clearable
-            />
-          </el-form-item>
-          <el-form-item prop="spec">
-            <el-input
-              v-model="form.spec"
-              placeholder="请输入规格型号"
-              clearable
-            />
-          </el-form-item>
-          <el-form-item prop="manufacter">
-            <el-input
-              v-model="form.manufacter"
-              placeholder="请输入生产企业"
-              clearable
-            />
-          </el-form-item>
-          <el-form-item prop="prodRegistrationCode">
-            <el-input
-              v-model="form.prodRegistrationCode"
-              placeholder="请输入批准文号"
-              clearable
-            />
-          </el-form-item>
-          <el-form-item prop="stockZero" label="库存数量">
-            <el-select
-              v-model="form.stockZero"
-              placeholder="库存数量筛选"
-              clearable
-            >
-              <el-option label="全部" value=""></el-option>
-              <el-option label="库存数量为零" value="1"></el-option>
-              <el-option label="库存数量不为零" value="2"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item class="ele-form-actions">
-            <el-button type="primary" @click="reload()">查询</el-button>
-            <el-button type="success" @click="exportData()">导出</el-button>
-            <el-button type="info" @click="showKcDialog()">库存汇总</el-button>
-          </el-form-item>
-          <el-form-item>
-            <el-upload
-              ref="upload"
-              :action="uploadUrl"
-              :headers="uploadHeaders"
-              :data="uploadData"
-              :show-file-list="false"
-              :on-success="handleUploadSuccess"
-              :on-error="handleUploadError"
-              :before-upload="beforeUpload"
-              accept=".xlsx,.xls,.csv"
-            >
-              <el-button type="warning" size="mini">上传初始化库存</el-button>
-            </el-upload>
-          </el-form-item>
-        </el-form>
-      </template>
-      <template v-slot:action="{ row }">
-        <el-button type="primary" size="mini" @click="showFlowDialog(row)"
-          >流向记录</el-button
-        >
-      </template>
-    </ele-pro-table>
+  <div class="ele-body spd-page three-level-db-bd">
+    <el-card shadow="never" class="three-level-db-bd-card">
+      <div class="spd-panel spd-panel--search">
+        <div class="spd-panel__head">查询条件</div>
+        <div class="spd-panel__body">
+          <el-form
+            ref="form"
+            :model="form"
+            size="mini"
+            :inline="true"
+            @keyup.enter.native="reload"
+            @submit.native.prevent
+          >
+            <el-form-item label="科室名称" prop="DeptName">
+              <el-input
+                v-model="form.DeptName"
+                placeholder="科室名称"
+                clearable
+                style="width: 120px"
+              />
+            </el-form-item>
+            <el-form-item label="品种编码" prop="varCode">
+              <el-input
+                v-model="form.varCode"
+                placeholder="品种编码"
+                clearable
+                style="width: 120px"
+              />
+            </el-form-item>
+            <el-form-item label="品种名称" prop="varName">
+              <el-input
+                v-model="form.varName"
+                placeholder="品种名称"
+                clearable
+                style="width: 120px"
+              />
+            </el-form-item>
+            <el-form-item label="计费编码" prop="chargingCode">
+              <el-input
+                v-model="form.chargingCode"
+                placeholder="计费编码"
+                clearable
+                style="width: 120px"
+              />
+            </el-form-item>
+            <el-form-item label="规格型号" prop="spec">
+              <el-input
+                v-model="form.spec"
+                placeholder="规格型号"
+                clearable
+                style="width: 120px"
+              />
+            </el-form-item>
+            <el-form-item label="生产企业" prop="manufacter">
+              <el-input
+                v-model="form.manufacter"
+                placeholder="生产企业"
+                clearable
+                style="width: 120px"
+              />
+            </el-form-item>
+            <el-form-item label="批准文号" prop="prodRegistrationCode">
+              <el-input
+                v-model="form.prodRegistrationCode"
+                placeholder="批准文号"
+                clearable
+                style="width: 120px"
+              />
+            </el-form-item>
+            <el-form-item label="库存数量" prop="stockZero">
+              <el-select
+                v-model="form.stockZero"
+                placeholder="全部"
+                clearable
+                style="width: 130px"
+              >
+                <el-option label="全部" value="" />
+                <el-option label="库存数量为零" value="1" />
+                <el-option label="库存数量不为零" value="2" />
+              </el-select>
+            </el-form-item>
+            <br />
+            <el-form-item>
+              <el-button type="primary" icon="el-icon-search" @click="reload()">查询</el-button>
+              <el-button type="success" icon="el-icon-download" @click="exportData()">导出</el-button>
+              <el-button type="info" @click="showKcDialog()">库存汇总</el-button>
+              <el-upload
+                ref="upload"
+                :action="uploadUrl"
+                :headers="uploadHeaders"
+                :data="uploadData"
+                :show-file-list="false"
+                :on-success="handleUploadSuccess"
+                :on-error="handleUploadError"
+                :before-upload="beforeUpload"
+                accept=".xlsx,.xls,.csv"
+                style="display: inline-block; margin-left: 10px"
+              >
+                <el-button type="warning">上传初始化库存</el-button>
+              </el-upload>
+            </el-form-item>
+          </el-form>
+        </div>
+      </div>
+      <div class="spd-panel spd-table-panel">
+        <div class="spd-panel__head">三级库列表</div>
+        <div class="spd-table-panel__wrap">
+          <ele-pro-table
+            ref="table"
+            class="data-table"
+            size="mini"
+            border
+            stripe
+            :toolbar="false"
+            :header-overflow-hidden="false"
+            height="calc(100vh - 300px)"
+            :pageSize="pageSize"
+            :pageSizes="pageSizes"
+            :columns="columns"
+            :datasource="datasource"
+            highlight-current-row
+            cache-key="ThreeLevelDbBDTable"
+          >
+            <template v-slot:action="{ row }">
+              <el-button type="text" size="mini" @click="showFlowDialog(row)">流向记录</el-button>
+            </template>
+          </ele-pro-table>
+        </div>
+      </div>
+    </el-card>
 
     <el-dialog
       title="流向记录"
       :visible.sync="flowDialogVisible"
       width="80%"
       :close-on-click-modal="false"
+      custom-class="three-level-db-bd-dialog"
     >
-      <div>
-        <ele-pro-table
-          class="style-table"
-          ref="flowTable"
-          height="50vh"
-          full-height="calc(100vh - 116px)"
-          :columns="flowColumns"
-          :datasource="flowDatasource"
-          :init-load="false"
-          size="mini"
-          :pageSize="flowPageSize"
-          :pageSizes="flowPageSizes"
-          highlight-current-row
-          cache-key="ThreeLevelDbBDFlowTable"
-        >
-          <template v-slot:toolbar>
-            <el-form :inline="true" size="mini">
-              <el-form-item label="开始时间">
-                <el-date-picker
-                  v-model="flowForm.startTime"
-                  type="date"
-                  placeholder="选择开始时间"
-                  value-format="yyyy-MM-dd"
-                  style="width: 180px"
-                />
-              </el-form-item>
-              <el-form-item label="结束时间">
-                <el-date-picker
-                  v-model="flowForm.endTime"
-                  type="date"
-                  placeholder="选择结束时间"
-                  value-format="yyyy-MM-dd"
-                  style="width: 180px"
-                />
-              </el-form-item>
-              <el-form-item>
-                <el-button type="primary" size="mini" @click="reloadFlowData"
-                  >查询</el-button
-                >
-                <el-button type="success" size="mini" @click="exportFlowData()"
-                  >导出Excel</el-button
-                >
-              </el-form-item>
-            </el-form>
-          </template>
-        </ele-pro-table>
-        <div style="text-align: right; margin-top: 10px; font-size: 24px">
-          总入库数量：{{ Number(flowRow.KS_QTY) }} | 总计费数量：{{
-            Number(flowRow.JF_QTY) + Number(flowRow.JF_DEF_QTY)
-          }}
-          | 库存数：{{
-            Number(flowRow.KS_QTY) +
-            Number(flowRow.JF_QTY) +
-            Number(flowRow.JF_DEF_QTY)
-          }}
+      <div class="spd-panel spd-panel--search">
+        <div class="spd-panel__body">
+          <el-form size="mini" :inline="true" @keyup.enter.native="reloadFlowData" @submit.native.prevent>
+            <el-form-item label="开始时间">
+              <el-date-picker
+                v-model="flowForm.startTime"
+                type="date"
+                placeholder="开始时间"
+                value-format="yyyy-MM-dd"
+                style="width: 140px"
+              />
+            </el-form-item>
+            <el-form-item label="结束时间">
+              <el-date-picker
+                v-model="flowForm.endTime"
+                type="date"
+                placeholder="结束时间"
+                value-format="yyyy-MM-dd"
+                style="width: 140px"
+              />
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" icon="el-icon-search" @click="reloadFlowData">查询</el-button>
+              <el-button type="success" icon="el-icon-download" @click="exportFlowData()">导出</el-button>
+            </el-form-item>
+          </el-form>
         </div>
+      </div>
+      <div class="spd-panel spd-table-panel">
+        <div class="spd-table-panel__wrap">
+          <ele-pro-table
+            ref="flowTable"
+            class="data-table"
+            size="mini"
+            border
+            stripe
+            :toolbar="false"
+            :header-overflow-hidden="false"
+            height="50vh"
+            :columns="flowColumns"
+            :datasource="flowDatasource"
+            :init-load="false"
+            :pageSize="flowPageSize"
+            :pageSizes="flowPageSizes"
+            highlight-current-row
+            cache-key="ThreeLevelDbBDFlowTable"
+          />
+        </div>
+      </div>
+      <div class="flow-summary">
+        总入库数量：{{ Number(flowRow.KS_QTY) }} |
+        总计费数量：{{ Number(flowRow.JF_QTY) + Number(flowRow.JF_DEF_QTY) }} |
+        库存数：{{ Number(flowRow.KS_QTY) + Number(flowRow.JF_QTY) + Number(flowRow.JF_DEF_QTY) }}
       </div>
     </el-dialog>
 
@@ -180,83 +198,86 @@
       :visible.sync="kcDialogVisible"
       width="80%"
       :close-on-click-modal="false"
+      custom-class="three-level-db-bd-dialog"
     >
-      <div>
-        <ele-pro-table
-          class="style-table"
-          ref="kcTable"
-          height="50vh"
-          full-height="calc(100vh - 116px)"
-          :columns="kcColumns"
-          :datasource="kcDatasource"
-          :init-load="false"
-          size="mini"
-          :pageSize="kcPageSize"
-          :pageSizes="kcPageSizes"
-          highlight-current-row
-          cache-key="ThreeLevelDbBDKcTable"
-        >
-          <template v-slot:toolbar>
-            <el-form :inline="true" size="mini">
-              <el-form-item label="品种编码">
-                <el-input
-                  v-model="kcForm.VARIETIE_CODE_NEW"
-                  placeholder="请输入品种编码"
-                  clearable
-                  style="width: 180px"
-                />
-              </el-form-item>
-              <el-form-item label="品种名称">
-                <el-input
-                  v-model="kcForm.VARIETIE_NAME"
-                  placeholder="请输入品种名称"
-                  clearable
-                  style="width: 180px"
-                />
-              </el-form-item>
-              <el-form-item label="规格型号">
-                <el-input
-                  v-model="kcForm.SPECIFICATION_OR_TYPE"
-                  placeholder="请输入规格型号"
-                  clearable
-                  style="width: 180px"
-                />
-              </el-form-item>
-              <el-form-item label="单位">
-                <el-input
-                  v-model="kcForm.UNIT"
-                  placeholder="请输入单位"
-                  clearable
-                  style="width: 180px"
-                />
-              </el-form-item>
-              <el-form-item label="价格">
-                <el-input
-                  v-model="kcForm.PRICE"
-                  placeholder="请输入价格"
-                  clearable
-                  style="width: 180px"
-                />
-              </el-form-item>
-              <el-form-item label="生产企业">
-                <el-input
-                  v-model="kcForm.MANUFACTURING_ENT_NAME"
-                  placeholder="请输入生产企业"
-                  clearable
-                  style="width: 180px"
-                />
-              </el-form-item>
-              <el-form-item>
-                <el-button type="primary" size="mini" @click="reloadKcData"
-                  >查询</el-button
-                >
-                <el-button type="success" size="mini" @click="exportKcData()"
-                  >导出Excel</el-button
-                >
-              </el-form-item>
-            </el-form>
-          </template>
-        </ele-pro-table>
+      <div class="spd-panel spd-panel--search">
+        <div class="spd-panel__body">
+          <el-form size="mini" :inline="true" @keyup.enter.native="reloadKcData" @submit.native.prevent>
+            <el-form-item label="品种编码">
+              <el-input
+                v-model="kcForm.VARIETIE_CODE_NEW"
+                placeholder="品种编码"
+                clearable
+                style="width: 120px"
+              />
+            </el-form-item>
+            <el-form-item label="品种名称">
+              <el-input
+                v-model="kcForm.VARIETIE_NAME"
+                placeholder="品种名称"
+                clearable
+                style="width: 120px"
+              />
+            </el-form-item>
+            <el-form-item label="规格型号">
+              <el-input
+                v-model="kcForm.SPECIFICATION_OR_TYPE"
+                placeholder="规格型号"
+                clearable
+                style="width: 120px"
+              />
+            </el-form-item>
+            <el-form-item label="单位">
+              <el-input
+                v-model="kcForm.UNIT"
+                placeholder="单位"
+                clearable
+                style="width: 80px"
+              />
+            </el-form-item>
+            <el-form-item label="价格">
+              <el-input
+                v-model="kcForm.PRICE"
+                placeholder="价格"
+                clearable
+                style="width: 90px"
+              />
+            </el-form-item>
+            <el-form-item label="生产企业">
+              <el-input
+                v-model="kcForm.MANUFACTURING_ENT_NAME"
+                placeholder="生产企业"
+                clearable
+                style="width: 120px"
+              />
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" icon="el-icon-search" @click="reloadKcData">查询</el-button>
+              <el-button type="success" icon="el-icon-download" @click="exportKcData()">导出</el-button>
+            </el-form-item>
+          </el-form>
+        </div>
+      </div>
+      <div class="spd-panel spd-table-panel">
+        <div class="spd-table-panel__wrap">
+          <ele-pro-table
+            ref="kcTable"
+            class="data-table"
+            size="mini"
+            border
+            stripe
+            :toolbar="false"
+            :header-overflow-hidden="false"
+            height="50vh"
+            :columns="kcColumns"
+            :datasource="kcDatasource"
+            :init-load="false"
+            :pageSize="kcPageSize"
+            :pageSizes="kcPageSizes"
+            highlight-current-row
+            cache-key="ThreeLevelDbBDKcTable"
+          />
+        </div>
       </div>
     </el-dialog>
   </div>
@@ -300,7 +321,7 @@
             label: '二级科室名称',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 120
+            minWidth: 130
           },
           {
             prop: 'VARIETIE_CODE_NEW',
@@ -377,7 +398,7 @@
             label: '定数包计费数量',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 140
+            minWidth: 150
           },
           {
             prop: 'KS_QTY',
@@ -433,12 +454,10 @@
           {
             columnKey: 'action',
             label: '操作',
-            width: 120,
+            width: 90,
             align: 'center',
             resizable: false,
-            slot: 'action',
-            showOverflowTooltip: true
-            //fixed: 'right'
+            slot: 'action'
           }
         ],
         flowDialogVisible: false,
@@ -1059,28 +1078,20 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '@/styles/common';
+.three-level-db-bd-card :deep(.el-card__body) {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
 
-  .ele-container {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-  }
+.three-level-db-bd >>> .el-table th .cell {
+  white-space: nowrap;
+}
 
-  :deep(.ele-form-search .el-input--mini .el-input__inner) {
-    width: 140px;
-  }
-
-  :deep(.ele-pro-table) {
-    flex: 1;
-    overflow: hidden;
-  }
-
-  :deep(.ele-pro-table .el-table) {
-    height: 100%;
-  }
-
-  :deep(.ele-pro-table .el-table__body-wrapper) {
-    overflow-y: auto;
-  }
+.flow-summary {
+  margin-top: 10px;
+  text-align: right;
+  font-size: 13px;
+  color: #606266;
+}
 </style>

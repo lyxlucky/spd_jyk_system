@@ -1,35 +1,51 @@
 <template>
-  <div class="ele-body">
-    <!-- <el-button type="danger" size="small" @click="aaa">aaa</el-button> -->
-    <!-- 数据表格 -->
-    <!-- :rowClickChecked="true"  -->
-    <!-- :rowClickCheckedIntelligent="false"  -->
-    <KSDepartmentalPlanDetails-search
-          @Approval="Approval"
-          @exportData="exportData"
-          @search="reload"
-          @ClickReload="ClickReload"
-          :KSDepartmentalPlanDataSearch="KSDepartmentalPlanDataSearch"
-          :selection="selection"
-          @showEditReoad="showEditReoad"
-          @BindBudget="handleBindBudget"
-          :datasourceList="datasourceList"
-        />
-    <ele-pro-table
-      ref="table"
-      :toolStyle="toolStyle"
-      height="40vh"
-      fullHeight="80vh"
-      highlight-current-row
-      :stripe="true"
-      :pageSize="pageSize"
-      :pageSizes="pageSizes"
-      :columns="columns"
-      :datasource="datasource"
-      :selection.sync="selection"
-      @selection-change="onSelectionChange"
-      cache-key="KSInventoryBasicDataTable"
-    >
+  <div class="ks-dept-plan-detail">
+    <div class="spd-panel spd-panel--search">
+      <div class="spd-panel__head spd-panel__head--split">
+        <span>明细操作</span>
+        <span class="spd-panel__head-meta">
+          实际申领数量合计: <b>{{ sumNumber }}</b>
+          实际申领金额合计: <b>{{ sumAount }}</b>
+        </span>
+      </div>
+      <KSDepartmentalPlanDetails-search
+        @Approval="Approval"
+        @exportData="exportData"
+        @search="reload"
+        @ClickReload="ClickReload"
+        :KSDepartmentalPlanDataSearch="KSDepartmentalPlanDataSearch"
+        :selection="selection"
+        @showEditReoad="showEditReoad"
+        @BindBudget="handleBindBudget"
+        :datasourceList="datasourceList"
+      />
+    </div>
+
+    <div class="spd-panel spd-table-panel">
+      <div class="spd-panel__head">申领单详情列表</div>
+      <div class="spd-table-panel__wrap">
+        <!-- <el-button type="danger" size="small" @click="aaa">aaa</el-button> -->
+        <!-- 数据表格 -->
+        <!-- :rowClickChecked="true"  -->
+        <!-- :rowClickCheckedIntelligent="false"  -->
+        <ele-pro-table
+          ref="table"
+          class="data-table"
+          size="mini"
+          border
+          stripe
+          :toolbar="false"
+          :header-overflow-hidden="false"
+          highlight-current-row
+          :pageSize="pageSize"
+          :pageSizes="pageSizes"
+          :columns="columns"
+          :datasource="datasource"
+          :selection.sync="selection"
+          :height="tableHeight"
+          cache-key="KSDepartmentalPlanDetailTable"
+          @selection-change="onSelectionChange"
+        >
       <!-- 表头工具栏 -->
       <!-- 右表头 -->
       <!-- <template v-slot:toolkit>
@@ -53,13 +69,12 @@
       </template>
 
       <!-- 左表头 -->
-      <template v-slot:toolbar>
-        <!-- 搜索表单 -->
+      <!-- <template v-slot:toolbar>
         <label
           >实际申领数量合计: <b>{{ sumNumber }}</b>&nbsp;&nbsp;实际申领金额合计:
           <b>{{ sumAount }}</b>
         </label>
-      </template>
+      </template> -->
 
       <template v-slot:PlanQty="{ row }">
         <el-input
@@ -79,10 +94,10 @@
           :content="row.VarCode + '中心库剩余库存 :' + row.StockQty"
           placement="top"
         >
-          <el-tag v-if="row.StockQty == 0" type="danger">{{
+          <el-tag v-if="row.StockQty == 0" type="danger" size="mini">{{
             row.VarCode
           }}</el-tag>
-          <el-tag v-else type="success">{{ row.VarCode }}</el-tag>
+          <el-tag v-else type="success" size="mini">{{ row.VarCode }}</el-tag>
         </el-tooltip>
       </template>
       <template v-slot:REMARK="{ row }">
@@ -92,22 +107,23 @@
           @click="OpenUpApplyPlanBZBox(row.ID)"
           >无</el-link
         >
-        <el-tag v-else type="primary" @click="OpenUpApplyPlanBZBox(row.ID)">{{
+        <el-tag v-else type="primary" size="mini" @click="OpenUpApplyPlanBZBox(row.ID)">{{
           row.REMARK
         }}</el-tag>
       </template>
       <template v-slot:State="{ row }">
-        <el-tag v-if="row.State == 0" type="success">新增</el-tag>
-        <el-tag v-if="row.State == 1" type="success">已提交</el-tag>
-        <el-tag v-if="row.State == 2" type="success">配送中</el-tag>
-        <el-tag v-if="row.State == 5" type="success">已审核</el-tag>
-        <el-tag v-if="row.State == 10" type="success">强制结束</el-tag>
+        <el-tag v-if="row.State == 0" type="success" size="mini">新增</el-tag>
+        <el-tag v-if="row.State == 1" type="success" size="mini">已提交</el-tag>
+        <el-tag v-if="row.State == 2" type="success" size="mini">配送中</el-tag>
+        <el-tag v-if="row.State == 5" type="success" size="mini">已审核</el-tag>
+        <el-tag v-if="row.State == 10" type="success" size="mini">强制结束</el-tag>
         <el-tag
           v-if="
             (row.State == 6 || row.State == 4) &&
             row.SUM_Left_Apply_Qty == row.SUM_Apply_Qty
           "
           type="success"
+          size="mini"
           >已审批</el-tag
         >
         <el-tag
@@ -116,10 +132,11 @@
             row.SUM_Left_Apply_Qty != row.SUM_Apply_Qty
           "
           type="success"
+          size="mini"
           >未收全</el-tag
         >
         <!-- <el-tag v-if="(row.SUM_Left_Apply_Qty == 0)" type="success">已收全</el-tag> -->
-        <el-tag v-if="row.SUM_Left_Apply_Qty == 0" type="success"
+        <el-tag v-if="row.SUM_Left_Apply_Qty == 0" type="success" size="mini"
           >已收全</el-tag
         >
         <!-- <el-tag v-for="(item) in row" :key="item.PlanNum" size="mini" type="primary" :disable-transitions="true">
@@ -217,6 +234,8 @@
         >
       </template>
     </ele-pro-table>
+      </div>
+    </div>
 
     <el-dialog
       title="包装规格"
@@ -631,6 +650,7 @@
           // }
         ],
         toolbar: false,
+        tableHeight: 'calc((100vh - 420px) / 2)',
         toolStyle: {
           display: 'flex',
           'flex-wrap': 'wrap',
@@ -1021,13 +1041,14 @@
       }
     },
     created() {
+      localStorage.setItem('KSDepartmentalPlanDetailTableSize', JSON.stringify('mini'));
       // this.getdatasource();
     }
   };
 </script>
 
 <style scoped>
-  .ele-body {
-    padding: 0px;
-  }
+.ks-dept-plan-detail >>> .el-table th .cell {
+  white-space: nowrap;
+}
 </style>

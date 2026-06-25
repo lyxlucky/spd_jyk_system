@@ -24,7 +24,7 @@ import { formatDateTime, formatDefPackageState, unwrapData } from '../utils';
 const PICK_COLUMNS = [
   { prop: 'batch', label: '生产批号', width: 100 },
   { prop: 'Coefficient', label: '系数', width: 60, align: 'center' },
-  { prop: 'def_no_pkg_code', label: '定数码', minWidth: 150 },
+  { prop: 'def_no_pkg_code', label: '定数码', minWidth: 150,align: 'center' },
   {
     prop: 'pack_time',
     label: '拣配时间',
@@ -33,7 +33,7 @@ const PICK_COLUMNS = [
   },
   { prop: 'packer', label: '拣配人', width: 80 },
   { prop: 'PositionNum', label: '货位号', width: 90 },
-  { prop: 'Supplier_Name', label: '供应商名称', minWidth: 120 }
+  { prop: 'Supplier_Name', label: '供应商名称', minWidth: 120 ,align: 'center'}
 ];
 
 const DELIVERY_COLUMNS = [

@@ -5,7 +5,7 @@
       highlight-current-row
       @current-change="onCurrentChange"
       ref="table"
-      height="70vh"
+      height="71vh"
       :rowClickChecked="true"
       :stripe="true"
       :pageSize="pageSize"
@@ -45,21 +45,21 @@
             label: '申请单号',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 80
+            minWidth: 120
           },
           {
             prop: 'APPLICANT_CODE',
             label: '申请人编码',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 80
+            minWidth: 120
           },
           {
             prop: 'APPLICANT_NAME',
             label: '申请人名称',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 80
+            minWidth: 120
           },
           {
             prop: 'APPLICANT_DEPARTMENT',

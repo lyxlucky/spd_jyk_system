@@ -1,43 +1,41 @@
 <!-- 搜索表单 -->
 <template>
-  <el-form
-    class="ele-form-search"
-    @keyup.enter.native="search"
-    @submit.native.prevent
-  >
-    <el-row :gutter="10">
-      <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 6 }">
-        <el-form-item>
+  <div class="spd-panel spd-panel--search">
+    <div class="spd-panel__head">查询条件</div>
+    <div class="spd-panel__body">
+      <el-form
+        size="mini"
+        :inline="true"
+        class="ele-form-search"
+        @keyup.enter.native="search"
+        @submit.native.prevent
+      >
+        <el-form-item label="定数码">
           <el-input
-            size="mini"
             clearable
+            style="width: 140px"
             v-model="where.condition"
-            placeholder="请输入定数码"
+            placeholder="定数码"
           />
         </el-form-item>
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 6 }">
-        <el-form-item>
+        <el-form-item label="品种">
           <el-input
-            size="mini"
             clearable
+            style="width: 160px"
             v-model="where.condition1"
             placeholder="品种名称/规格型号"
           />
         </el-form-item>
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 6 }">
-        <el-form-item label="近效期:">
-          <el-select size="mini" v-model="where.jxqSatte">
-            <el-option label="设置默认" value="-1"></el-option>
-            <el-option label="全部" value="0"></el-option>
-            <el-option label="1个月" value="1"></el-option>
-            <el-option label="3个月" value="3"></el-option>
-            <el-option label="6个月" value="6"></el-option>
+        <el-form-item label="近效期">
+          <el-select style="width: 110px" v-model="where.jxqSatte">
+            <el-option label="设置默认" value="-1" />
+            <el-option label="全部" value="0" />
+            <el-option label="1个月" value="1" />
+            <el-option label="3个月" value="3" />
+            <el-option label="6个月" value="6" />
           </el-select>
         </el-form-item>
-      </el-col>
-      <!-- <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 6 }" >
+        <!-- <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 6 }" >
         <el-form-item label="已退货:">
           <el-select v-model="where.isHaveTh" >
             <el-option label="不包含" value="0"></el-option>
@@ -45,49 +43,29 @@
           </el-select>
         </el-form-item>
       </el-col> -->
-      <el-col v-bind="styleResponsive ? { lg: 6, md: 12 } : { span: 6 }">
-        <el-form-item>
-          <div class="ele-form-actions">
-            <el-button
-              size="mini"
-              type="primary"
-              icon="el-icon-search"
-              class="ele-btn-icon"
-              @click="search"
-            >
-              查询
-            </el-button>
-            <el-button size="mini" icon="el-icon-refresh" @click="reset">重置</el-button>
-            <el-button
-              size="mini"
-              type="primary"
-              icon="el-icon-download"
-              class="ele-btn-icon"
-              @click="exportData"
-            >
-              导出
-            </el-button>
-          </div>
+        <el-form-item class="ele-form-actions">
+          <el-button type="primary" icon="el-icon-search" @click="search">查询</el-button>
+          <el-button icon="el-icon-refresh" @click="reset">重置</el-button>
+          <el-button type="primary" icon="el-icon-download" @click="exportData">导出</el-button>
         </el-form-item>
-      </el-col>
-    </el-row>
-  </el-form>
+      </el-form>
+    </div>
+  </div>
 </template>
 
 <script>
+  const defaultWhere = () => ({
+    condition: '',
+    condition1: '',
+    jxqSatte: '6',
+    isHaveTh: '0'
+  });
+
   export default {
     data() {
-      // 默认表单数据
-      const defaultWhere = {
-        condition: '',
-        condition1: '',
-        jxqSatte: '6',
-        isHaveTh: '0'
-      };
       return {
-        defaultWhere,
         // 表单数据
-        where: { ...defaultWhere }
+        where: defaultWhere()
       };
     },
     computed: {
@@ -103,7 +81,7 @@
       },
       /*  重置 */
       reset() {
-        this.where = { ...this.defaultWhere };
+        this.where = defaultWhere();
         this.search();
       },
       exportData() {
@@ -112,3 +90,21 @@
     }
   };
 </script>
+
+<style scoped lang="scss">
+:deep(.el-form-item) {
+  margin-bottom: 0;
+}
+
+.ele-form-actions :deep(.el-form-item__content) {
+  max-width: none !important;
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.ele-form-actions :deep(.el-button) {
+  margin: 0;
+}
+</style>

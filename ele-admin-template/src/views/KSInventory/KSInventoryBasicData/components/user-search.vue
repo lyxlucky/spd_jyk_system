@@ -1,158 +1,118 @@
 <!-- 搜索表单 -->
 <template>
-  <el-form
-    class="ele-form-search"
-    @keyup.enter.native="search"
-    @submit.native.prevent
-  >
-    <el-row :gutter="10">
-      <el-col v-bind="styleResponsive ? { lg: 2, md: 12 } : { span: 4 }">
-        <el-form-item>
+  <div class="spd-panel spd-panel--search">
+    <div class="spd-panel__head">查询条件</div>
+    <div class="spd-panel__body">
+      <el-form
+        size="mini"
+        :inline="true"
+        class="ele-form-search"
+        @keyup.enter.native="search"
+        @submit.native.prevent
+      >
+        <el-form-item label="品种">
           <el-input
             clearable
-            size="mini"
+            style="width: 140px"
             v-model="where.Varietie_Code_New"
-            placeholder="品种编码/品种名称"
+            placeholder="编码/名称"
           />
         </el-form-item>
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 2, md: 12 } : { span: 4 }">
-        <el-form-item>
+        <el-form-item label="注册证">
           <el-input
             clearable
-            size="mini"
+            style="width: 120px"
             v-model="where.APPROVAL_NUMBER"
             placeholder="注册证号"
           />
         </el-form-item>
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 2, md: 12 } : { span: 4 }">
-        <el-form-item>
+        <el-form-item label="包装规格">
           <el-input
             clearable
-            size="mini"
+            style="width: 120px"
             v-model="where.Specification_Or_Type"
             placeholder="包装规格"
           />
         </el-form-item>
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 2, md: 12 } : { span: 4 }">
-        <el-form-item>
+        <el-form-item label="使用科室">
           <el-input
             clearable
-            size="mini"
+            style="width: 110px"
             v-model="where.settlementDept"
             placeholder="有使用科室"
           />
         </el-form-item>
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 2, md: 12 } : { span: 4 }">
-        <el-form-item>
+        <el-form-item label="生产企业">
           <el-input
             clearable
-            size="mini"
+            style="width: 120px"
             v-model="where.Manufacturing_Ent_Name"
             placeholder="生产企业"
           />
         </el-form-item>
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 4 }">
-        <el-form-item label="是否主动补货：" label-width="120px">
+        <el-form-item label="主动补货">
           <el-select
-            size="mini"
+            style="width: 90px"
             v-model="where.isDeptTwoAuth"
             @change="search()"
           >
-            <el-option label="全部" value=""></el-option>
-            <el-option label="是" value="1"></el-option>
-            <el-option label="否" value="0"></el-option>
+            <el-option label="全部" value="" />
+            <el-option label="是" value="1" />
+            <el-option label="否" value="0" />
           </el-select>
         </el-form-item>
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 4 }">
-        <el-form-item label="是否启用：" label-width="100px">
-          <el-select size="mini" v-model="where.type" @change="search()">
-            <el-option label="全部" value=""></el-option>
-            <el-option label="是" value="1"></el-option>
-            <el-option label="否" value="0"></el-option>
+        <el-form-item label="是否启用">
+          <el-select style="width: 90px" v-model="where.type" @change="search()">
+            <el-option label="全部" value="" />
+            <el-option label="是" value="1" />
+            <el-option label="否" value="0" />
           </el-select>
         </el-form-item>
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 4 }">
-        <el-form-item label="高低值：" label-width="90px">
+        <el-form-item label="高低值">
           <el-select
-            size="mini"
+            style="width: 90px"
             v-model="where.HIGH_OR_LOW_CLASS"
             placeholder="全部"
             clearable
             @change="search()"
           >
-            <el-option label="全部" value=""></el-option>
-            <el-option label="低值" value="0"></el-option>
-            <el-option label="高值" value="1"></el-option>
-            <el-option label="试剂" value="2"></el-option>
+            <el-option label="全部" value="" />
+            <el-option label="低值" value="0" />
+            <el-option label="高值" value="1" />
+            <el-option label="试剂" value="2" />
           </el-select>
         </el-form-item>
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 6, md: 12 } : { span: 4 }">
-        <el-form-item>
-          <div class="ele-form-actions">
-            <el-button
-              size="mini"
-              type="primary"
-              icon="el-icon-search"
-              class="ele-btn-icon"
-              @click="search"
-            >
-              查询
-            </el-button>
-            <el-button size="mini" icon="el-icon-refresh" @click="reset"
-              >重置</el-button
-            >
-            <el-button
-              size="mini"
-              icon="el-icon-edit"
-              type="primary"
-              @click="openEdit2()"
-              >修改上下限</el-button
-            >
-            <el-button
-              size="mini"
-              type="primary"
-              icon="el-icon-download"
-              class="ele-btn-icon"
-              @click="exportData"
-            >
-              导出
-            </el-button>
-          </div>
+        <el-form-item class="ele-form-actions">
+          <el-button type="primary" icon="el-icon-search" @click="search">查询</el-button>
+          <el-button icon="el-icon-refresh" @click="reset">重置</el-button>
+          <el-button type="primary" icon="el-icon-edit" @click="openEdit2()">修改上下限</el-button>
+          <el-button type="primary" icon="el-icon-download" @click="exportData">导出</el-button>
         </el-form-item>
-      </el-col>
-    </el-row>
-  </el-form>
+      </el-form>
+    </div>
+  </div>
 </template>
 
 <script>
+  const defaultWhere = () => ({
+    Varietie_Code_New: '',
+    APPROVAL_NUMBER: '',
+    Manufacturing_Ent_Name: '',
+    Specification_Or_Type: '',
+    CLASS_NUM: '',
+    DEVICE_REMARK: '',
+    Dept_One_Code: '',
+    isDeptTwoAuth: '',
+    type: '1',
+    settlementDept: '',
+    HIGH_OR_LOW_CLASS: '2'
+  });
+
   export default {
     data() {
-      // 默认表单数据
-      const defaultWhere = {
-        Varietie_Code_New: '',
-        APPROVAL_NUMBER: '',
-        Manufacturing_Ent_Name: '',
-        Specification_Or_Type: '',
-        CLASS_NUM: '',
-        DEVICE_REMARK: '',
-        Dept_One_Code: '',
-        isDeptTwoAuth: '',
-        type: '1',
-        settlementDept: '',
-        HIGH_OR_LOW_CLASS: ''
-      };
       return {
-        defaultWhere,
         // 表单数据
-        where: { ...defaultWhere }
+        where: defaultWhere()
       };
     },
     computed: {
@@ -171,7 +131,7 @@
       },
       /*  重置 */
       reset() {
-        this.where = { ...this.defaultWhere };
+        this.where = defaultWhere();
         this.search();
       },
       exportData() {
@@ -180,3 +140,21 @@
     }
   };
 </script>
+
+<style scoped lang="scss">
+:deep(.el-form-item) {
+  margin-bottom: 0;
+}
+
+.ele-form-actions :deep(.el-form-item__content) {
+  max-width: none !important;
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.ele-form-actions :deep(.el-button) {
+  margin: 0;
+}
+</style>

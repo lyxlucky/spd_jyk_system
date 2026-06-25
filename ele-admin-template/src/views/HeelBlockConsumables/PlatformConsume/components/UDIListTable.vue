@@ -3,7 +3,7 @@
     <!-- <AdvanceReceiptNumberSearch @search="reload" :rowData="current" /> -->
     <!-- 数据表格 -->
     <ele-pro-table
-      height="300"
+      height="calc(100vh - 240px)"
       highlight-current-row
       @current-change="onCurrentChange"
       :row-class-name="tableRowClassName"

@@ -1,59 +1,68 @@
 <template>
-  <div>
-    <ProjectSearchBar
-      v-model="where"
-      :xm-name-options="xmNameOptions"
-      :xm-num-options="xmNumOptions"
-      :xm-type-options="xmTypeOptions"
-      @search="reload"
-    >
-      <template v-slot:actions>
-        <el-button
-          v-permission="'export-PrchaseDataV2-dlcgdc'"
-          size="small"
-          icon="el-icon-download"
-          :loading="exporting"
-          @click="onExportMain"
-        >
-          导出
-        </el-button>
-        <el-button
-          v-permission="'export-PrchaseDataV2-cgmxdc'"
-          size="small"
-          icon="el-icon-download"
-          :loading="exportingDetail"
-          @click="onExportDetail"
-        >
-          导出明细
-        </el-button>
-        <el-button size="small" type="primary" plain @click="openAdd">带量采购</el-button>
-        <el-button size="small" @click="openImportChoice('purchase')">导入</el-button>
-        <el-button size="small" @click="openImportChoice('var')">导入关联品种</el-button>
-        <el-button
-          v-permission="'export-PrchaseDataV2-ambdc'"
-          size="small"
-          @click="onExportJc"
-        >
-          按集采模板导出
-        </el-button>
-        <el-button size="small" :disabled="!selection.length" @click="onLinkByXmNum">
-          按集项目编号关联品种
-        </el-button>
-      </template>
-    </ProjectSearchBar>
+  <div class="project-list-panel">
+    <div class="spd-panel spd-panel--search">
+      <div class="spd-panel__head">查询与操作</div>
+      <ProjectSearchBar
+        v-model="where"
+        :xm-name-options="xmNameOptions"
+        :xm-num-options="xmNumOptions"
+        :xm-type-options="xmTypeOptions"
+        @search="reload"
+      >
+        <template v-slot:actions>
+          <el-button
+            v-permission="'export-PrchaseDataV2-dlcgdc'"
+            icon="el-icon-download"
+            :loading="exporting"
+            @click="onExportMain"
+          >
+            导出
+          </el-button>
+          <el-button
+            v-permission="'export-PrchaseDataV2-cgmxdc'"
+            icon="el-icon-download"
+            :loading="exportingDetail"
+            @click="onExportDetail"
+          >
+            导出明细
+          </el-button>
+          <el-button type="primary" plain @click="openAdd">带量采购</el-button>
+          <el-button @click="openImportChoice('purchase')">导入</el-button>
+          <el-button @click="openImportChoice('var')">导入关联品种</el-button>
+          <el-button
+            v-permission="'export-PrchaseDataV2-ambdc'"
+            @click="onExportJc"
+          >
+            按集采模板导出
+          </el-button>
+          <el-button :disabled="!selection.length" @click="onLinkByXmNum">
+            按集项目编号关联品种
+          </el-button>
+        </template>
+      </ProjectSearchBar>
+    </div>
 
-    <ele-pro-table
-      ref="table"
-      :height="tableHeight"
-      :columns="columns"
-      :datasource="datasource"
-      :selection.sync="selection"
-      :page-size="30"
-      :page-sizes="[30, 50, 100, 150, 200, 300, 99999]"
-      :row-class-name="rowClass"
-      cache-key="HomePrchaseDataV2ProjectTable"
-      @sort-change="onSortChange"
-    >
+    <div class="spd-panel spd-table-panel">
+      <div class="spd-panel__head">项目列表</div>
+      <div class="spd-table-panel__wrap">
+        <ele-pro-table
+          ref="table"
+          class="data-table"
+          size="mini"
+          border
+          stripe
+          :toolbar="false"
+          :header-overflow-hidden="false"
+          :height="tableHeight"
+          :columns="columns"
+          :datasource="datasource"
+          :selection.sync="selection"
+          :page-size="30"
+          :page-sizes="[30, 50, 100, 150, 200, 300, 99999]"
+          :row-class-name="rowClass"
+          cache-key="HomePrchaseDataV2ProjectTable"
+          @sort-change="onSortChange"
+        >
       <template v-slot:source="{ row }">
         <el-link type="primary" :underline="false" @click="openSource(row)">
           {{ row.PROD_SOURCE_FROM || '编辑' }}
@@ -75,7 +84,9 @@
         <el-button type="text" size="mini" @click="openVariety(row)">品种</el-button>
         <el-button type="text" size="mini" class="danger-link" @click="onDelete(row)">删除</el-button>
       </template>
-    </ele-pro-table>
+        </ele-pro-table>
+      </div>
+    </div>
 
     <ConsumeDetailDialog :visible.sync="detailVisible" :buy-id="activeBuyId" />
     <VarietyTableDialog :visible.sync="varietyVisible" :buy-id="activeBuyId" />
@@ -232,7 +243,7 @@ export default {
           fixed: 'left',
           slot: 'action'
         },
-        { columnKey: 'source', label: '自定义来源', width: 110, slot: 'source' },
+        { columnKey: 'source', label: '自定义来源', width: 140, slot: 'source' },
         {
           prop: 'PROD_REGISTRATION_NAME',
           label: '注册证名称',
@@ -269,28 +280,28 @@ export default {
         {
           prop: 'COUNT',
           label: this.countLabel,
-          width: 90,
+          width: 120,
           align: 'right',
           sortable: 'custom'
         },
-        { prop: 'GOODS_QTY', label: '已消耗数量', width: 100, align: 'right', sortable: 'custom' },
-        { columnKey: 'leftQty', label: '余可用数量', width: 100, align: 'right', slot: 'leftQty' },
-        { columnKey: 'wcl', label: '完成率%', width: 90, align: 'right', slot: 'wcl', sortable: 'custom' },
-        { columnKey: 'shProcess', label: '时序进度%', width: 100, align: 'right', slot: 'shProcess', sortable: 'custom' },
-        { prop: 'ADD_MAN', label: '操作人', width: 90 },
+        { prop: 'GOODS_QTY', label: '已消耗数量', width: 140, align: 'right', sortable: 'custom' },
+        { columnKey: 'leftQty', label: '剩余可用数量', width: 140, align: 'right', slot: 'leftQty' },
+        { columnKey: 'wcl', label: '完成率%', width: 120, align: 'right', slot: 'wcl', sortable: 'custom' },
+        { columnKey: 'shProcess', label: '时序进度%', width: 130, align: 'right', slot: 'shProcess', sortable: 'custom' },
+        { prop: 'ADD_MAN', label: '操作人', width: 100 },
         {
           prop: 'LAST_UPDATE_DATE',
           label: '添加时间',
           width: 160,
           formatter: (_r, _c, v) => fmtDateTime(v)
         },
-        { prop: 'BH_COUNT', label: '临时备货次数', width: 110 },
+        { prop: 'BH_COUNT', label: '临时备货次数', width: 140 },
         { prop: 'ID', label: 'ID', width: 80 },
         { prop: 'XM_NUM', label: '项目编号', minWidth: 120, sortable: 'custom' },
         { prop: 'XM_NAME', label: '项目名称', minWidth: 140, showOverflowTooltip: true, sortable: 'custom' },
         { prop: 'XM_TYPE', label: '项目类型', minWidth: 110, sortable: 'custom' },
         { prop: 'SOURCE_FROM', label: '阳光来源', minWidth: 120, showOverflowTooltip: true },
-        { prop: 'JC_STACK_XMPJ', label: '集采组套项目部件', minWidth: 130, showOverflowTooltip: true },
+        { prop: 'JC_STACK_XMPJ', label: '集采组套项目部件', minWidth: 180, showOverflowTooltip: true },
         { prop: 'PRICE2', label: '金额', width: 90, align: 'right' },
         { prop: 'BZ', label: '备注', minWidth: 120, showOverflowTooltip: true }
       ];
@@ -596,7 +607,13 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+.project-list-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 .danger-link {
   color: #f56c6c;
 }

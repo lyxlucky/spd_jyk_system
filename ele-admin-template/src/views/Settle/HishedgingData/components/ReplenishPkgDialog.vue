@@ -25,8 +25,8 @@
         <template slot-scope="{ row }">{{ fmtIsHedge(row.Is_Hedge) }}</template>
       </el-table-column>
     </el-table>
-    <el-form size="small" inline @submit.native.prevent>
-      <el-form-item>
+    <el-form size="mini" :inline="true" class="ele-form-search" @submit.native.prevent>
+      <el-form-item label="关键词">
         <el-input
           v-model="condition"
           clearable
@@ -35,7 +35,7 @@
           @keyup.enter.native="loadSource"
         />
       </el-form-item>
-      <el-form-item>
+      <el-form-item class="ele-form-actions">
         <el-button type="primary" icon="el-icon-search" @click="loadSource">查询</el-button>
       </el-form-item>
       <el-form-item class="hint">
@@ -49,7 +49,7 @@
           :data="sourceRows"
           border
           stripe
-          size="small"
+          size="mini"
           height="240"
           @selection-change="onPickSource"
         >
@@ -64,15 +64,15 @@
         </el-table>
       </el-col>
       <el-col :span="2" class="arrow-col">
-        <el-button type="primary" icon="el-icon-bottom" circle @click="moveDown" />
-        <el-button type="warning" icon="el-icon-top" circle class="mt8" @click="moveUp" />
+        <el-button size="mini" type="primary" icon="el-icon-bottom" circle @click="moveDown" />
+        <el-button size="mini" type="warning" icon="el-icon-top" circle class="mt8" @click="moveUp" />
       </el-col>
       <el-col :span="8">
         <el-table
           :data="pickedRows"
           border
           stripe
-          size="small"
+          size="mini"
           height="240"
           highlight-current-row
           @current-change="(r) => (pickedCurrent = r)"
@@ -84,8 +84,8 @@
       </el-col>
     </el-row>
     <div slot="footer" class="footer-center">
-      <el-button @click="innerVisible = false">取消</el-button>
-      <el-button type="primary" :loading="submitting" @click="submit">确认并对冲</el-button>
+      <el-button size="mini" @click="innerVisible = false">取消</el-button>
+      <el-button size="mini" type="primary" :loading="submitting" @click="submit">确认并对冲</el-button>
     </div>
   </el-dialog>
 </template>

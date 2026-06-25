@@ -64,7 +64,10 @@
             label: '记账日期',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 100
+            minWidth: 100,
+            formatter: (row, column, cellValue) => {
+              return this.$util.toDateString(cellValue, 'yyyy-MM-dd');
+            }
           },
           {
             prop: 'BILL_DEPT_CODE',
@@ -122,7 +125,7 @@
             showOverflowTooltip: true,
             minWidth: 100,
             formatter: (row, column, cellValue) => {
-              return this.$util.toDateString(cellValue, 'yyyy-MM-dd HH:mm:ss');
+              return this.$util.toDateString(cellValue, 'yyyy-MM-dd');
             }
           }
         ],

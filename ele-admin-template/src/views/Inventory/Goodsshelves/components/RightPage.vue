@@ -1,35 +1,32 @@
 <template>
-  <div class="ele-body">
-    <el-card shadow="never">
-      <!-- 搜索表单 -->
-      <!-- <user-search @search="reload" @exportData="exportData" /> -->
-      <!-- 数据表格 -->
-      <user-search @search="reload" @exportData="exportData" @returnData="returnData"/>
-      <ele-pro-table ref="table" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" cache-key="KSInventoryBasicDataTable">
-        <!-- 表头工具栏 -->
-        <template v-slot:toolbar>
-        </template>
-
-        <!-- 操作列 -->
-        <template v-slot:action="{ row }">
-          <el-link type="primary" :underline="false" icon="el-icon-edit" @click="openEdit(row)">
-            修改
-          </el-link>
-          <!-- <el-button type="primary" size="mini" @click="openEdit(row)">编辑</el-button> -->
-          <!-- <el-popconfirm class="ele-action" title="确定要删除此用户吗？" @confirm="remove(row)">
-            <template v-slot:reference>
-              <el-link type="danger" :underline="false" icon="el-icon-delete">
-                删除
-              </el-link>
-            </template>
-          </el-popconfirm> -->
-        </template>
-      </ele-pro-table>
-    </el-card>
-    <!-- 编辑弹窗 -->
+  <div class="goodsshelves-tab-page spd-page">
+    <user-search @search="reload" @exportData="exportData" @returnData="returnData" />
+    <div class="spd-panel spd-table-panel goodsshelves-table-panel">
+      <div class="spd-panel__head">出库列表</div>
+      <div class="spd-table-panel__wrap">
+        <ele-pro-table
+          ref="table"
+          class="data-table"
+          size="mini"
+          border
+          stripe
+          :toolbar="false"
+          :header-overflow-hidden="false"
+          height="calc(100vh - 480px)"
+          :pageSize="pageSize"
+          :pageSizes="pageSizes"
+          :columns="columns"
+          :datasource="datasource"
+          :selection.sync="selection"
+          cache-key="goodsshelvesOutTable"
+        >
+          <template v-slot:action="{ row }">
+            <el-button type="text" size="mini" @click="openEdit(row)">修改</el-button>
+          </template>
+        </ele-pro-table>
+      </div>
+    </div>
     <user-edit :visible.sync="showEdit" :data="current" @done="reload" />
-    <!-- 导入弹窗 -->
-    <!-- <user-import :visible.sync="showImport" @done="reload" /> -->
   </div>
 </template>
 
@@ -78,7 +75,7 @@ export default {
         label: '业务发起库区',
         align: 'center',
         showOverflowTooltip: true,
-        width: 100,
+        minWidth: 150,
         formatter: function (obj) {
             if (obj.Storage_ID === 1 || obj.Storage_ID === "1") {
                 return "院内库区";
@@ -94,7 +91,7 @@ export default {
         label: '科室/供应商名称',
         align: 'center',
         showOverflowTooltip: true,
-        minWidth: 100
+        minWidth: 180
     },
     {
         prop: 'From_Supplier_Name',
@@ -115,7 +112,7 @@ export default {
         label: '品种(材料)编码',
         align: 'center',
         showOverflowTooltip: true,
-        width: 100
+        minWidth: 150
     },
     {
         prop: 'YG_CODE',
@@ -129,7 +126,7 @@ export default {
         label: '上药HERP编码',
         align: 'center',
         showOverflowTooltip: true,
-        width: 100
+        minWidth: 150
     },
     {
         prop: 'VARIETIE_NAME',
@@ -268,7 +265,7 @@ export default {
         label: 'PDA出库确认',
         align: 'center',
         showOverflowTooltip: true,
-        width: 100,
+        minWidth: 150,
         formatter: function (d) {
             if (d.CHECK_STATE === "1") {
                 return "已出单";
@@ -287,7 +284,7 @@ export default {
         label: '高低值分类下级属性',
         align: 'center',
         showOverflowTooltip: true,
-        width: 120,
+        minWidth: 200,
         formatter: function (d) {
             if (d.HIGH_OR_LOW_CLASS_TWO === "1") {
                 return "重点治理";
@@ -349,7 +346,7 @@ export default {
         label: '检验报告图片',
         align: 'center',
         showOverflowTooltip: true,
-        width: 100
+        width: 150
     },
     {
         prop: '上传图片',
@@ -551,3 +548,22 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.goodsshelves-tab-page {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 0;
+}
+
+.goodsshelves-table-panel {
+  flex: 1;
+  min-height: 0;
+}
+
+.goodsshelves-tab-page >>> .el-table th .cell {
+  white-space: nowrap;
+}
+</style>

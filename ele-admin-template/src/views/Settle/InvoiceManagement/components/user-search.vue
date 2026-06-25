@@ -1,114 +1,135 @@
 <!-- 搜索表单 -->
 <template>
-  <el-form label-width="77px" class="ele-form-search" @keyup.enter.native="search" @submit.native.prevent>
-    <el-row :gutter="5">
-      <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 16 }">
-        <label>
-          是否集采:
-          <el-select style="width: 140px;" v-model="where.LS_IS_JC" size="mini" placeholder="请选择状态">
-            <el-option label="全部" value=""></el-option>
-            <el-option label="是" value="1"></el-option>
-            <el-option label="否" value="0"></el-option>
+  <div class="spd-panel__body invoice-management-search">
+    <el-form
+      size="mini"
+      :inline="true"
+      label-width="88px"
+      class="ele-form-search invoice-search-form"
+      @keyup.enter.native="search"
+      @submit.native.prevent
+    >
+      <div class="filter-row">
+        <el-form-item label="是否集采">
+          <el-select
+            v-model="where.LS_IS_JC"
+            clearable
+            placeholder="全部"
+            style="width: 100px"
+          >
+            <el-option label="全部" value="" />
+            <el-option label="是" value="1" />
+            <el-option label="否" value="0" />
           </el-select>
-        </label>
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 9 }">
-        <label>
-          审核日期:
-          <el-date-picker style="width:220px" v-model="where.EXAMINE_TIME" type="daterange" value-format="yyyy-MM-dd" size="mini" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
-          </el-date-picker>
-        </label>
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 12 }">
-        <el-input size="mini" clearable v-model="where.VARIETIE_CODE_NEW" placeholder="品种(材料)编码、品种全称" />
-      </el-col>
-      <!-- <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 16 }">
-        <label>
-          中心库发票签收:
-          <el-select style="width: 100px;" v-model="where.QSSTATE" size="mini" placeholder="请选择状态">
-            <el-option label="全部" value=""></el-option>
-            <el-option label="是" value="1"></el-option>
-            <el-option label="否" value="0"></el-option>
+        </el-form-item>
+        <el-form-item label="审核日期" class="date-range-item">
+          <el-date-picker
+            v-model="where.EXAMINE_TIME"
+            type="daterange"
+            value-format="yyyy-MM-dd"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            style="width: 220px"
+          />
+        </el-form-item>
+        <el-form-item label="品种">
+          <el-input
+            v-model="where.VARIETIE_CODE_NEW"
+            clearable
+            placeholder="编码/全称"
+            style="width: 160px"
+          />
+        </el-form-item>
+        <el-form-item label="发票号">
+          <el-input
+            v-model="where.MONTHBILLNUM"
+            clearable
+            placeholder="发票号"
+            style="width: 140px"
+          />
+        </el-form-item>
+        <el-form-item label="图片状态">
+          <el-select
+            v-model="where.PIC_STATE"
+            clearable
+            placeholder="全部"
+            style="width: 100px"
+          >
+            <el-option label="全部" value="" />
+            <el-option label="有图" value="1" />
+            <el-option label="无图" value="0" />
           </el-select>
-        </label>
-      </el-col> -->
-      <el-col v-bind="styleResponsive ? { lg: 2, md: 12 } : { span: 12 }">
-        <el-input size="mini" clearable v-model="where.MONTHBILLNUM" placeholder="发票号" />
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 12 }">
-        <label>
-          发票图片状态:
-          <el-select style="width: 120px;" v-model="where.PIC_STATE" size="mini" placeholder="请选择">
-            <el-option label="全部" value=""></el-option>
-            <el-option label="有图" value="1"></el-option>
-            <el-option label="无图" value="0"></el-option>
+        </el-form-item>
+        <el-form-item label="供应商">
+          <el-input
+            v-model="where.SUPPLIER_NAME"
+            clearable
+            placeholder="供应商"
+            style="width: 120px"
+          />
+        </el-form-item>
+        <el-form-item label="月结日期" class="date-range-item">
+          <el-date-picker
+            v-model="where.MONTHLY_TIME"
+            type="daterange"
+            value-format="yyyy-MM-dd"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            style="width: 220px"
+          />
+        </el-form-item>
+      </div>
+      <div class="filter-row filter-row--actions">
+        <el-form-item label="允许开票">
+          <el-select
+            v-model="where.EBS_CAN_SEND_INVOICE"
+            clearable
+            placeholder="全部"
+            style="width: 110px"
+            @change="search"
+          >
+            <el-option label="全部" value="" />
+            <el-option label="不允许" value="0" />
+            <el-option label="允许" value="1" />
           </el-select>
-        </label>
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 2, md: 12 } : { span: 12 }">
-        <el-input size="mini" clearable v-model="where.SUPPLIER_NAME" placeholder="供应商" />
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 9 }">
-        <label>
-          月结日期:
-          <el-date-picker style="width:220px" v-model="where.MONTHLY_TIME" type="daterange" value-format="yyyy-MM-dd" size="mini" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
-          </el-date-picker>
-        </label>
-      </el-col>
-    </el-row>
-    <el-row :gutter="5" style="margin-top: 10px;">
-      <el-col v-bind="styleResponsive ? { lg: 6, md: 12 } : { span: 6 }">
-        <label>
-          供应商是否允许开票：
-          <el-select style="width: 140px;" @change="search" v-model="where.EBS_CAN_SEND_INVOICE" size="mini" placeholder="请选择状态">
-            <el-option label="全部" value=""></el-option>
-            <el-option label="不允许开票" value="0"></el-option>
-            <el-option label="允许开票" value="1"></el-option>
-          </el-select>
-        </label>
-        <label style="margin-left: 10px;">一键审批</label>
-        <el-switch v-model="IS_EXAMINE"></el-switch>
-      </el-col>
-      
-      <el-col v-bind="styleResponsive ? { lg: 15, md: 12 } : { span: 6 }">
-        <div class="ele-form-actions">
-          <el-button size="mini" type="primary" icon="el-icon-search" class="ele-btn-icon" @click="search">
+        </el-form-item>
+        <el-form-item label="一键审批">
+          <el-switch v-model="IS_EXAMINE" />
+        </el-form-item>
+        <el-form-item class="ele-form-actions" label-width="0">
+          <el-button type="primary" icon="el-icon-search" @click="search">
             查询
           </el-button>
-          <el-popconfirm class="ele-action" title="确定取消审批？" @confirm="CancelExamineBtn()">
+          <el-popconfirm title="确定取消审批？" @confirm="CancelExamineBtn">
             <template v-slot:reference>
-              <el-button type="danger" icon="el-icon-delete" size="mini">取消审批</el-button>
+              <el-button type="danger" icon="el-icon-delete">取消审批</el-button>
             </template>
           </el-popconfirm>
-          <el-popconfirm class="ele-action" title="确定审批？" @confirm="ExamineBtn()">
+          <el-popconfirm title="确定审批？" @confirm="ExamineBtn">
             <template v-slot:reference>
-              <el-button type="primary" icon="el-icon-plus" size="mini">确定审批</el-button>
+              <el-button type="primary" icon="el-icon-plus">确定审批</el-button>
             </template>
           </el-popconfirm>
-          <!-- <el-popconfirm class="ele-action" title="确定发票签收？" @confirm="ReceiptInvoiceBtn()">
-            <template v-slot:reference>
-              <el-button type="primary" size="mini">发票签收</el-button>
-            </template>
-          </el-popconfirm>
-          <el-popconfirm class="ele-action" title="确定取消签收？" @confirm="CancelReceiptInvoiceBtn()">
-            <template v-slot:reference>
-              <el-button type="danger" size="mini">取消签收</el-button>
-            </template>
-          </el-popconfirm> -->
-
-          <el-button type="primary" icon="el-icon-phone" size="mini" @click="BillingDdviceBtn(1)">通知供应商开票通知</el-button>
-          <el-button type="danger" icon="el-icon-delete" size="mini" @click="BillingDdviceBtn(0)">取消供应商开票通知</el-button>
-          <el-button type="primary" size="mini" icon="el-icon-download" @click="exportData()">导出</el-button>
-        </div>
-      </el-col>
-    </el-row>
-  </el-form>
+          <el-button type="primary" icon="el-icon-phone" @click="BillingDdviceBtn(1)">
+            通知供应商开票
+          </el-button>
+          <el-button type="danger" icon="el-icon-delete" @click="BillingDdviceBtn(0)">
+            取消开票通知
+          </el-button>
+          <el-button type="primary" icon="el-icon-download" @click="exportData">
+            导出
+          </el-button>
+        </el-form-item>
+      </div>
+    </el-form>
+  </div>
 </template>
 
 <script>
 export default {
   data() {
-    // 默认表单数据
     const defaultWhere = {
       LS_IS_JC: '',
       EXAMINE_TIME: [],
@@ -118,22 +139,15 @@ export default {
       MONTHLY_TIME: [],
       EBS_CAN_SEND_INVOICE: '',
       QSSTATE: '',
-      PIC_STATE: '',
+      PIC_STATE: ''
     };
     return {
-      // 表单数据
+      defaultWhere,
       where: { ...defaultWhere },
       IS_EXAMINE: false
     };
   },
-  computed: {
-    // 是否开启响应式布局
-    styleResponsive() {
-      return this.$store.state.theme.styleResponsive;
-    }
-  },
   methods: {
-    /* 搜索 */
     search() {
       this.$emit('search', this.where);
     },
@@ -150,13 +164,11 @@ export default {
       this.$emit('CancelReceiptInvoiceBtn');
     },
     BillingDdviceBtn(state) {
-      var data ={
-        state:state,
-        IS_EXAMINE:this.IS_EXAMINE
-      }
-      this.$emit('BillingDdviceBtn', data);
+      this.$emit('BillingDdviceBtn', {
+        state,
+        IS_EXAMINE: this.IS_EXAMINE
+      });
     },
-    /*  重置 */
     reset() {
       this.where = { ...this.defaultWhere };
       this.search();
@@ -167,3 +179,52 @@ export default {
   }
 };
 </script>
+
+<style scoped lang="scss">
+.filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+.filter-row--actions {
+  margin-top: 4px;
+  padding-top: 8px;
+  border-top: 1px dashed #ebeef5;
+}
+
+.invoice-search-form :deep(.el-form-item:not(.ele-form-actions) .el-form-item__content) {
+  max-width: none;
+}
+
+.invoice-search-form :deep(.el-form-item) {
+  margin-right: 12px;
+  margin-bottom: 8px;
+}
+
+.invoice-search-form :deep(.el-form-item.ele-form-actions) {
+  margin-right: 0;
+  flex: 1;
+  min-width: 320px;
+}
+
+.invoice-search-form :deep(.el-form-item__label) {
+  padding-right: 8px;
+}
+
+.ele-form-actions :deep(.el-form-item__content) {
+  max-width: none !important;
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.ele-form-actions :deep(.el-button) {
+  margin: 0;
+}
+
+.date-range-item :deep(.el-date-editor) {
+  width: 220px;
+}
+</style>

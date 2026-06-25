@@ -1,8 +1,15 @@
 <!-- 搜索表单 -->
 
 <template>
-  <el-form class="ele-form-search" @keyup.enter.native="search" @submit.native.prevent>
-    <el-row :gutter="10">
+  <div class="spd-panel__body">
+    <el-form
+      size="mini"
+      :inline="true"
+      class="ele-form-search"
+      @keyup.enter.native="search"
+      @submit.native.prevent
+    >
+      <!-- <el-row :gutter="10">
       <el-col v-bind="styleResponsive ? { lg: 3, md: 4 } : { span: 4 }">
         <el-form-item label="">
           <el-date-picker v-model="where.topTableSearchTime" value-format="yyyy-MM-dd" type="daterange"
@@ -11,69 +18,103 @@
         </el-form-item>
       </el-col>
 
-      <!-- 请勿删除此行代码 -->
-      <!-- <el-col v-bind="styleResponsive ? { lg: 3, md: 4 } : { span: 4 }" style="padding-left: 150px;">
-        <div class="ele-form-actions">
-        </div>
-      </el-col> -->
-      <el-col v-bind="styleResponsive ? { lg: 2, md: 4 } : { span: 4 }" style="padding-left: 150px;">
+      <el-col v-bind="styleResponsive ? { lg: 3, md: 4 } : { span: 4 }" style="padding-left: 150px;">
         <div class="ele-form-actions">
         </div>
       </el-col>
-
       <el-col v-bind="styleResponsive ? { lg: 5, md: 4 } : { span: 4 }" style="padding-left: 20px;padding-top: 2px;">
         <div class="ele-form-actions">
-          <el-button size="mini " type="primary" icon="el-icon-search" class="ele-btn-icon" @click="search">
-            查询
-          </el-button>
-          <el-button size="mini " type="primary" icon="el-icon-plus" class="ele-btn-icon" @click="createItem">
-            创建
-          </el-button>
-
-          <el-button size="mini " type="danger" icon="el-icon-delete" @click="deleteItem" :disabled="isDisable"
-            class="ele-btn-icon">
-            剔除
-          </el-button>
-
-          <el-button size="mini " type="primary" icon="el-icon-finished" @click="submitItem" :disabled="isDisable" class="ele-btn-icon">
-            提交
-          </el-button>
+          ...
         </div>
       </el-col>
 
       <el-col style="" v-bind="styleResponsive ? { lg: 5, md: 4 } : { span: 4 }">
         <el-form-item label="状态：">
-          <el-select size="mini" v-model="where.status" @change="search()">
-            <el-option label="全部" value=""></el-option>
-            <el-option label="新增" value="0"></el-option>
-            <el-option label="已提交" value="1"></el-option>
-            <el-option label="已审核" value="2"></el-option>
-            <el-option label="已审批" value="3"></el-option>
-            <el-option label="未审批" value="1"></el-option>
-            <el-option label="审核不通过" value="4"></el-option>
-            <el-option label="审批不通过" value="5"></el-option>
-          </el-select>
+          ...
         </el-form-item>
       </el-col>
-    </el-row>
+    </el-row> -->
+
+      <el-form-item label="日期">
+        <el-date-picker
+          v-model="where.topTableSearchTime"
+          value-format="yyyy-MM-dd"
+          type="daterange"
+          style="width: 220px"
+          range-separator="至"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+        />
+      </el-form-item>
+
+      <el-form-item label="状态">
+        <el-select style="width: 120px" v-model="where.status" @change="search()">
+          <el-option label="全部" value="" />
+          <el-option label="新增" value="0" />
+          <el-option label="已提交" value="1" />
+          <el-option label="已审核" value="2" />
+          <el-option label="已审批" value="3" />
+          <el-option label="未审批" value="1" />
+          <el-option label="审核不通过" value="4" />
+          <el-option label="审批不通过" value="5" />
+        </el-select>
+      </el-form-item>
+
+      <!-- 请勿删除此行代码 -->
+      <!-- <el-col v-bind="styleResponsive ? { lg: 3, md: 4 } : { span: 4 }" style="padding-left: 150px;">
+        <div class="ele-form-actions">
+        </div>
+      </el-col> -->
+      <!-- <el-col v-bind="styleResponsive ? { lg: 2, md: 4 } : { span: 4 }" style="padding-left: 150px;">
+        <div class="ele-form-actions">
+        </div>
+      </el-col> -->
+
+      <el-form-item class="ele-form-actions">
+        <el-button type="primary" icon="el-icon-search" class="ele-btn-icon" @click="search">
+          查询
+        </el-button>
+        <el-button type="primary" icon="el-icon-plus" class="ele-btn-icon" @click="createItem">
+          创建
+        </el-button>
+        <el-button type="danger" icon="el-icon-delete" @click="deleteItem" :disabled="isDisable" class="ele-btn-icon">
+          剔除
+        </el-button>
+        <el-button type="primary" icon="el-icon-finished" @click="submitItem" :disabled="isDisable" class="ele-btn-icon">
+          提交
+        </el-button>
+      </el-form-item>
+    </el-form>
+
     <!-- 创建科室计划申报对话框 -->
-    <el-dialog title="科室申报"  center :visible.sync="where.createDeptPlandialogVisible" width="20%"
-      :before-close="where.createDeptPlanHandleClose">
+    <el-dialog
+      title="科室申报"
+      center
+      :visible.sync="where.createDeptPlandialogVisible"
+      width="20%"
+      :before-close="where.createDeptPlanHandleClose"
+    >
       <div>
-        <el-form :model="where.createDeptPlanForm" :rules="where.createDeptRules" ref="createDeptRuleRef"
-          label-width="100px" class="createDeptPlanRuleForm">
+        <el-form
+          size="mini"
+          :model="where.createDeptPlanForm"
+          :rules="where.createDeptRules"
+          ref="createDeptRuleRef"
+          label-width="100px"
+          class="createDeptPlanRuleForm"
+        >
           <el-form-item label="申报类型" prop="TYPE">
             <el-select v-model="where.createDeptPlanForm.TYPE">
-              <el-option label="正常申报" value="1"></el-option>
-              <el-option label="补充申报" value="2"></el-option>
+              <el-option label="正常申报" value="1" />
+              <el-option label="补充申报" value="2" />
             </el-select>
           </el-form-item>
           <el-form-item style="width: 317px;" label="申报月份：" prop="PLAN_MONTH_TIME">
-            <el-input v-model="where.createDeptPlanForm.PLAN_MONTH_TIME" placeholder="yyyy-MM"></el-input>
+            <el-input v-model="where.createDeptPlanForm.PLAN_MONTH_TIME" placeholder="yyyy-MM" />
           </el-form-item>
 
           <el-form-item style="width: 317px;" label="备注：" prop="REMARK">
-            <el-input v-model="where.createDeptPlanForm.REMARK" placeholder="请输入备注"></el-input>
+            <el-input v-model="where.createDeptPlanForm.REMARK" placeholder="请输入备注" />
           </el-form-item>
 
           <el-form-item>
@@ -82,7 +123,7 @@
         </el-form>
       </div>
     </el-dialog>
-  </el-form>
+  </div>
 </template>
 
 <script>
@@ -165,3 +206,21 @@ export default {
   }
 };
 </script>
+
+<style scoped lang="scss">
+:deep(.el-form-item) {
+  margin-bottom: 0;
+}
+
+.ele-form-actions :deep(.el-form-item__content) {
+  max-width: none !important;
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.ele-form-actions :deep(.el-button) {
+  margin: 0;
+}
+</style>

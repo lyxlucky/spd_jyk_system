@@ -1,24 +1,44 @@
 <template>
-  <div class="ele-body">
-    <el-card shadow="never">
+  <div class="ele-body spd-page ks-expiration-reminder-page">
+    <el-card shadow="never" class="ks-expiration-reminder-card">
       <!-- 搜索表单 -->
       <!-- <user-search @search="reload" @exportData="exportData" /> -->
       <!-- 数据表格 -->
       <user-search @search="reload" @exportData="exportData" />
-      <div class="expiry-legend">
-        <span class="legend-item">
-          <i class="legend-color legend-danger"></i>
-          3个月内（&lt;=90天）
-        </span>
-        <span class="legend-item">
-          <i class="legend-color legend-warning"></i>
-          6个月内（91~180天）
-        </span>
-      </div>
-      <ele-pro-table ref="table" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" :row-class-name="getRowClassName" cache-key="KSInventoryBasicDataTable">
+      <div class="spd-panel spd-table-panel">
+        <div class="spd-panel__head spd-panel__head--split">
+          <span>近效期提醒列表</span>
+          <span class="expiry-legend">
+            <span class="legend-item">
+              <i class="legend-color legend-danger"></i>
+              3个月内（&lt;=90天）
+            </span>
+            <span class="legend-item">
+              <i class="legend-color legend-warning"></i>
+              6个月内（91~180天）
+            </span>
+          </span>
+        </div>
+        <div class="spd-table-panel__wrap">
+          <ele-pro-table
+            ref="table"
+            class="data-table"
+            size="mini"
+            border
+            :toolbar="false"
+            :header-overflow-hidden="false"
+            :height="tableHeight"
+            :pageSize="pageSize"
+            :pageSizes="pageSizes"
+            :columns="columns"
+            :datasource="datasource"
+            :selection.sync="selection"
+            :row-class-name="getRowClassName"
+            cache-key="KSExpirationReminderTable"
+          >
         <!-- 表头工具栏 -->
-        <template v-slot:toolbar>
-        </template>
+        <!-- <template v-slot:toolbar>
+        </template> -->
 
         <!-- 操作列 -->
         <template v-slot:action="{ row }">
@@ -34,7 +54,9 @@
             </template>
           </el-popconfirm> -->
         </template>
-      </ele-pro-table>
+          </ele-pro-table>
+        </div>
+      </div>
     </el-card>
     <!-- 编辑弹窗 -->
     <user-edit :visible.sync="showEdit" :data="current" @done="reload" />
@@ -263,6 +285,7 @@ export default {
         // }
       ],
       toolbar: false,
+      tableHeight: 'calc(100vh - 330px)',
       pageSize: 10,
       pageSizes: [10, 20, 50, 100, 9999999],
       pagerCount: 5,
@@ -438,19 +461,31 @@ exportData(data) {
 }
   },
   created() {
+    localStorage.setItem('KSExpirationReminderTableSize', JSON.stringify('mini'));
     // this.getdatasource();
     // console.log(this.$store.state.user.info)
   }
 };
 </script>
 
-<style>
-.expiry-legend {
+<style scoped>
+.ks-expiration-reminder-card :deep(.el-card__body) {
   display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ks-expiration-reminder-page >>> .el-table th .cell {
+  white-space: nowrap;
+}
+
+.expiry-legend {
+  display: inline-flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 18px;
-  margin: 4px 0 10px;
   font-size: 13px;
+  font-weight: normal;
   color: #606266;
 }
 
@@ -473,12 +508,16 @@ exportData(data) {
 .legend-warning {
   background-color: #fff9db;
 }
+</style>
 
-.ele-pro-table .el-table .expiry-row-warning > td {
-  background-color: #fff9db;
+<style>
+.ks-expiration-reminder-page .ele-pro-table .el-table .expiry-row-warning > td,
+.ks-expiration-reminder-page .ele-pro-table .el-table .expiry-row-warning:hover > td {
+  background-color: #fff9db !important;
 }
 
-.ele-pro-table .el-table .expiry-row-danger > td {
-  background-color: #ffe3e3;
+.ks-expiration-reminder-page .ele-pro-table .el-table .expiry-row-danger > td,
+.ks-expiration-reminder-page .ele-pro-table .el-table .expiry-row-danger:hover > td {
+  background-color: #ffe3e3 !important;
 }
 </style>

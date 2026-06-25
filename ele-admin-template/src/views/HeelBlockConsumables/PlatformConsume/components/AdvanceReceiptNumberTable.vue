@@ -203,7 +203,7 @@
             // sortable: 'custom',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 80,
+            minWidth: 120,
             formatter(row, column, cellValue) {
               if (cellValue == '0') {
                 return '待确认';

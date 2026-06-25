@@ -176,8 +176,8 @@ export default {
       },
       columns: [
         { prop: 'Pack_Directive_Number', label: '拣配单号', minWidth: 150, sortable: 'custom' },
-        { prop: 'Dept_Two_Name', label: '配送科室', minWidth: 100, sortable: 'custom' },
-        { prop: 'Creater', label: '创建人', width: 80 },
+        { prop: 'Dept_Two_Name', label: '配送科室', minWidth: 120, sortable: 'custom' },
+        { prop: 'Creater', label: '创建人', width: 100 },
         {
           prop: 'Create_Time',
           label: '创建时间',
@@ -188,7 +188,7 @@ export default {
         {
           prop: 'Pack_State',
           label: '拣配状态',
-          width: 90,
+          width: 120,
           sortable: 'custom',
           formatter: (row) => formatPackState(row.Pack_State)
         },
@@ -203,15 +203,15 @@ export default {
         {
           prop: 'Transfer_State',
           label: '转单状态',
-          width: 100,
+          width: 120,
           sortable: 'custom',
           formatter: (row) => formatTransferState(row.Transfer_State)
         },
-        { prop: 'Print_Count', label: '打印次数', width: 80 },
+        { prop: 'Print_Count', label: '打印次数', width: 120 },
         {
           columnKey: 'action',
           label: '选项',
-          width: 70,
+          width: 80,
           align: 'center',
           slot: 'action'
         }

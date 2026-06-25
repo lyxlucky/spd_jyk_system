@@ -1,22 +1,36 @@
 <template>
-  <div class="ele-body">
-    <el-card shadow="never">
-      <!-- 搜索表单 -->
-      <user-search @search="reload" @exportData="exportData" />
-      <!-- 数据表格 -->
-      <ele-pro-table
-        ref="table"
-        height="35vh"
-        :pageSize="pageSize"
-        :pageSizes="pageSizes"
-        :columns="columns"
-        :datasource="datasource"
-        :selection.sync="selection"
-        cache-key="KSInventoryBasicDataTable"
-      >
-        <!-- 表头工具栏 -->
-        <template v-slot:toolbar> </template>
-      </ele-pro-table>
+  <div class="ele-body spd-page ks-consume-query">
+    <el-card shadow="never" class="ks-consume-query-card">
+      <div class="spd-panel spd-panel--search">
+        <div class="spd-panel__head">查询条件</div>
+        <!-- 搜索表单 -->
+        <user-search @search="reload" @exportData="exportData" />
+      </div>
+      <div class="spd-panel spd-table-panel">
+        <div class="spd-panel__head">科室消耗列表</div>
+        <div class="spd-table-panel__wrap">
+          <!-- 数据表格 -->
+          <ele-pro-table
+            ref="table"
+            class="data-table"
+            size="mini"
+            border
+            stripe
+            :toolbar="false"
+            :header-overflow-hidden="false"
+            :height="tableHeight"
+            :page-size="pageSize"
+            :page-sizes="pageSizes"
+            :columns="columns"
+            :datasource="datasource"
+            :selection.sync="selection"
+            cache-key="KSConsumeQueryTable"
+          >
+            <!-- 表头工具栏 -->
+            <template v-slot:toolbar> </template>
+          </ele-pro-table>
+        </div>
+      </div>
     </el-card>
   </div>
 </template>
@@ -40,14 +54,14 @@
             label: '收货一级科室',
             align: 'left',
             showOverflowTooltip: true,
-            minWidth: 80
+            minWidth: 160
           },
           {
             prop: 'Dept_Two_Name',
             label: '收货二级科室',
             align: 'left',
             showOverflowTooltip: true,
-            minWidth: 80,
+            minWidth: 160,
             sortable: true
           },
           {
@@ -55,14 +69,14 @@
             label: '计费科室名称',
             align: 'left',
             showOverflowTooltip: true,
-            minWidth: 100
+            minWidth: 140
           },
           {
             prop: 'SPD_COST_DEPT_NAME',
             label: 'SPD消耗成本二级科室',
             align: 'left',
             showOverflowTooltip: true,
-            minWidth: 80,
+            minWidth: 240,
             sortable: true
           },
           {
@@ -70,7 +84,7 @@
             label: '打印科室',
             align: 'left',
             showOverflowTooltip: true,
-            minWidth: 80,
+            minWidth: 120,
             sortable: true
           },
           {
@@ -78,7 +92,7 @@
             label: '微讯通成本科室',
             align: 'left',
             showOverflowTooltip: true,
-            minWidth: 80,
+            minWidth: 160,
             sortable: true,
             formatter: function (d) {
               return (
@@ -94,7 +108,7 @@
             label: '财务成本科室编码',
             align: 'left',
             showOverflowTooltip: true,
-            minWidth: 80,
+            minWidth: 180,
             sortable: true
           },
           {
@@ -102,7 +116,7 @@
             label: '财务成本科室名称',
             align: 'left',
             showOverflowTooltip: true,
-            minWidth: 80,
+            minWidth: 180,
             sortable: true
           },
           {
@@ -110,7 +124,7 @@
             label: '品种编码',
             align: 'left',
             showOverflowTooltip: true,
-            minWidth: 90,
+            minWidth: 120,
             sortable: true
           },
           {
@@ -132,7 +146,7 @@
             label: '单位',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 45
+            minWidth: 65
           },
           {
             prop: 'Manufacturing_Ent_Name',
@@ -167,7 +181,7 @@
             label: '生产批号',
             align: 'left',
             showOverflowTooltip: true,
-            minWidth: 90,
+            minWidth: 120,
             sortable: true
           },
           {
@@ -175,7 +189,7 @@
             label: '生产日期',
             align: 'left',
             showOverflowTooltip: true,
-            minWidth: 90,
+            minWidth: 120,
             sortable: true,
             formatter: function (d) {
               return d.Batch_Production_Date.substr(0, 10);
@@ -186,7 +200,7 @@
             label: '失效日期',
             align: 'left',
             showOverflowTooltip: true,
-            minWidth: 90,
+            minWidth: 120,
             sortable: true,
             formatter: function (d) {
               return d.Batch_Validity_Period.substr(0, 10);
@@ -197,7 +211,7 @@
             label: '系数',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 50,
+            minWidth: 80,
             sortable: true
           },
           {
@@ -238,7 +252,7 @@
             label: '消耗数量',
             align: 'right',
             showOverflowTooltip: true,
-            minWidth: 60
+            minWidth: 120
           },
           {
             prop: 'Cost',
@@ -256,7 +270,7 @@
             label: '药交ID',
             align: 'left',
             showOverflowTooltip: true,
-            minWidth: 60
+            minWidth: 120
           },
           {
             // prop: 'MEDICAL_INSURANCE_CODE',
@@ -294,7 +308,7 @@
             label: '消耗方式',
             align: 'left',
             showOverflowTooltip: true,
-            minWidth: 80,
+            minWidth: 160,
             sortable: true,
             formatter: function (d) {
               if (d.Consumption_Type == 0) {
@@ -329,7 +343,7 @@
             label: '消耗人',
             align: 'left',
             showOverflowTooltip: true,
-            minWidth: 80,
+            minWidth: 100,
             sortable: true
           },
           {
@@ -366,7 +380,7 @@
             label: '住院号/病患号/病人姓名',
             align: 'left',
             showOverflowTooltip: true,
-            minWidth: 120,
+            minWidth: 200,
             formatter: function (d) {
               return (
                 d.Hospitalization_Number +
@@ -382,28 +396,28 @@
             label: '品牌',
             align: 'left',
             showOverflowTooltip: true,
-            minWidth: 55
+            minWidth: 65
           },
           {
             prop: 'High_Or_Low_Class',
             label: '高低值',
             align: 'left',
             showOverflowTooltip: true,
-            minWidth: 60
+            minWidth: 100
           },
           {
             prop: 'Trade_Type',
             label: '国产/进口',
             align: 'left',
             showOverflowTooltip: true,
-            minWidth: 70
+            minWidth: 120
           },
           {
             prop: 'IS_CHARGE',
             label: '是否计费',
             align: 'left',
             showOverflowTooltip: true,
-            minWidth: 70,
+            minWidth: 120,
             formatter: function (d) {
               if (d.IS_CHARGE == 0) {
                 return '否';
@@ -417,7 +431,7 @@
             label: '是否日清',
             align: 'left',
             showOverflowTooltip: true,
-            minWidth: 70,
+            minWidth: 120,
             formatter: function (d) {
               if (d.Day_Clearing_Id == 0) {
                 return '未日清';
@@ -433,7 +447,7 @@
             label: '是否月结',
             align: 'left',
             showOverflowTooltip: true,
-            minWidth: 70,
+            minWidth: 120,
             formatter: function (d) {
               if (d.Month_Id == 0) {
                 return '未月结';
@@ -449,14 +463,14 @@
             label: '月结月份',
             align: 'left',
             showOverflowTooltip: true,
-            minWidth: 90
+            minWidth: 120
           },
           {
             prop: 'SEND_WXT_MARK',
             label: '微讯通结算月份',
             align: 'left',
             showOverflowTooltip: true,
-            minWidth: 80,
+            minWidth: 160,
             sortable: true,
             formatter: function (d) {
               if (d.SEND_WXT_MARK == null || d.SEND_WXT_MARK == undefined) {
@@ -470,7 +484,7 @@
             label: '是否允许逆向',
             align: 'left',
             showOverflowTooltip: true,
-            minWidth: 90,
+            minWidth: 160,
             formatter: function (d) {
               if (d.Reverse_State == 1) {
                 return '允许逆向消耗';
@@ -546,14 +560,14 @@
             label: '分类属性',
             align: 'left',
             showOverflowTooltip: true,
-            minWidth: 80
+            minWidth: 120
           },
           {
             prop: 'YB_CLASS',
             label: '医保分类',
             align: 'left',
             showOverflowTooltip: true,
-            minWidth: 80,
+            minWidth: 120,
             formatter: function (d) {
               if (d.YB_CLASS == '00') {
                 return '甲类';
@@ -571,14 +585,14 @@
             label: '二级库出库人(收货结算)',
             align: 'left',
             showOverflowTooltip: true,
-            minWidth: 120
+            minWidth: 180
           },
           {
             prop: 'PDA_CONSUME_TIME',
             label: '二级库出库时间(收货结算)',
             align: 'left',
             showOverflowTooltip: true,
-            minWidth: 120,
+            minWidth: 180,
             formatter: function (d) {
               if (d.PDA_CONSUME_TIME == '0001-01-01T00:00:00') {
                 return '';
@@ -634,21 +648,21 @@
             label: '计费编码',
             align: 'left',
             showOverflowTooltip: true,
-            minWidth: 90
+            minWidth: 100
           },
           {
             prop: 'DELIVERY_NOTE_NUMBER',
             label: '入库单号',
             align: 'left',
             showOverflowTooltip: true,
-            minWidth: 90
+            minWidth: 100
           },
           {
             prop: 'STOCK_OUT_DISTRIBUTE_NUMBER',
             label: '出库单号',
             align: 'left',
             showOverflowTooltip: true,
-            minWidth: 90,
+            minWidth: 100,
             formatter: function (d) {
               if (d.STOCK_OUT_DISTRIBUTE_NUMBER != null) {
                 return d.STOCK_OUT_DISTRIBUTE_NUMBER;
@@ -664,21 +678,21 @@
             label: '出库单备注',
             align: 'left',
             showOverflowTooltip: true,
-            minWidth: 90
+            minWidth: 140
           },
           {
             prop: 'SOURCE_FROM',
             label: '阳光平台来源',
             align: 'left',
             showOverflowTooltip: true,
-            minWidth: 90
+            minWidth: 140
           },
           {
             prop: 'IS_JC',
             label: '是否集采',
             align: 'left',
             showOverflowTooltip: true,
-            minWidth: 90,
+            minWidth: 120,
             formatter: function (d) {
               if (d.IS_JC == '1') {
                 return '是';
@@ -692,7 +706,7 @@
             label: '是否合格',
             align: 'left',
             showOverflowTooltip: true,
-            minWidth: 90,
+            minWidth: 120,
             sortable: true
           },
           {
@@ -700,7 +714,7 @@
             label: '审批情况',
             align: 'left',
             showOverflowTooltip: true,
-            minWidth: 90,
+            minWidth: 120,
             sortable: true
           },
           {
@@ -708,7 +722,7 @@
             label: '常备/临购',
             align: 'left',
             showOverflowTooltip: true,
-            minWidth: 90,
+            minWidth: 120,
             sortable: true
           },
           {
@@ -716,7 +730,7 @@
             label: '线上线下集采',
             align: 'left',
             showOverflowTooltip: true,
-            minWidth: 90,
+            minWidth: 160,
             sortable: true
           },
           {
@@ -731,21 +745,21 @@
             label: '管理类别名称',
             align: 'left',
             showOverflowTooltip: true,
-            minWidth: 90
+            minWidth: 160
           },
           {
             prop: 'Prod_Big_Class_Name',
             label: '产品大类名称',
             align: 'left',
             showOverflowTooltip: true,
-            minWidth: 90
+            minWidth: 160
           },
           {
             prop: 'Regulatory_Cat_Name',
             label: '监管类别名称',
             align: 'left',
             showOverflowTooltip: true,
-            minWidth: 90
+            minWidth: 160
           },
           {
             prop: 'XTLB',
@@ -766,7 +780,7 @@
             label: '是否发送UDI',
             align: 'left',
             showOverflowTooltip: true,
-            minWidth: 90,
+            minWidth: 160,
             formatter: function (d) {
               if (d.SEND_UDI == '1') {
                 return '是';
@@ -813,7 +827,7 @@
             label: '消耗备注',
             align: 'left',
             showOverflowTooltip: true,
-            minWidth: 70,
+            minWidth: 120,
             formatter: function (d) {
               return '<button   lay-event="table_KSConsume_hisbz" style="height:25px;background-color: #009688;color:#fff;padding:0px;border:0px;width:55px;">消耗备注</button>';
             }
@@ -837,7 +851,7 @@
             label: '是否植入',
             align: 'left',
             showOverflowTooltip: true,
-            minWidth: 70,
+            minWidth: 120,
             formatter: function (d) {
               if (d.Is_Embedded == 0) {
                 return '否';
@@ -853,7 +867,7 @@
             label: '是否介入',
             align: 'left',
             showOverflowTooltip: true,
-            minWidth: 70,
+            minWidth: 120,
             formatter: function (d) {
               if (d.Is_Intervened == 0) {
                 return '否';
@@ -882,6 +896,7 @@
           }
         ],
         toolbar: false,
+        tableHeight: 'calc(100vh - 420px)',
         pageSize: 10,
         pageSizes: [10, 20, 50, 100, 9999999],
         pagerCount: 5,
@@ -908,7 +923,7 @@
           };
           return tData;
         } catch (error) {
-          this.$message.error('获取表格数据源失败，请稍后重试');
+          this.$message.error(error.message || '获取表格数据源失败，请稍后重试');
           return { count: 0, list: [] };
         }
       },
@@ -988,6 +1003,18 @@
         });
       }
     },
-    created() {}
+    created() {
+      localStorage.setItem('KSConsumeQueryTableSize', JSON.stringify('mini'));
+    }
   };
 </script>
+
+<style scoped lang="scss">
+.ks-consume-query-card :deep(.el-card__body) {
+  padding: 10px;
+}
+
+.ks-consume-query >>> .el-table th .cell {
+  white-space: nowrap;
+}
+</style>

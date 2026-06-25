@@ -1,22 +1,87 @@
-<template lang="">
-  <div>
-    <ele-pro-table
-      highlight-current-row
-      highlight-selection-row
-      ref="table"
-      @current-change="onCurrentChange"
-      height="65vh"
-      :rowClickChecked="true"
-      :stripe="true"
-      :pageSize="pageSize"
-      :pageSizes="pageSizes"
-      :columns="columns"
-      :datasource="datasource"
-      :initLoad="false"
-      :selection.sync="selection"
-      cache-key="WarehouseTransferMiddleTable"
-    >
-      <template v-slot:toolbar>
+<template>
+  <div class="warehouse-transfer-middle">
+    <div class="spd-panel spd-panel--search">
+      <div class="spd-panel__head">明细操作</div>
+      <div class="spd-panel__body">
+        <el-form size="mini" :inline="true" class="ele-form-search">
+          <el-form-item class="ele-form-actions">
+            <el-button
+              type="primary"
+              icon="el-icon-circle-plus-outline"
+              :disabled="isEnableCreate"
+              @click="WarehouseTransferCreateDetailVisible = true"
+            >
+              创建
+            </el-button>
+            <el-button
+              type="danger"
+              icon="el-icon-delete"
+              :disabled="!isEnableDelete"
+              @click="deleteItem()"
+            >
+              删除
+            </el-button>
+            <el-button
+              type="primary"
+              icon="el-icon-position"
+              :disabled="!isEnableImport"
+              @click="quoteTemplateVisible = true"
+            >
+              引用模板
+            </el-button>
+            <el-button
+              type="primary"
+              icon="el-icon-edit"
+              :disabled="!isEnableDelete"
+              @click="updateQty"
+            >
+              修改数量
+            </el-button>
+
+            <!-- maybe can use in later -->
+            <!-- <el-button
+            type="success"
+            size="mini"
+            icon="el-icon-download"
+            @click="exportAsExcel"
+            >导出</el-button
+          > -->
+
+            <el-button
+              type="info"
+              icon="el-icon-s-management"
+              @click="logCatVisible = true"
+            >
+              调库记录
+            </el-button>
+          </el-form-item>
+        </el-form>
+      </div>
+    </div>
+
+    <div class="spd-panel spd-table-panel">
+      <div class="spd-table-panel__wrap">
+        <ele-pro-table
+          highlight-current-row
+          highlight-selection-row
+          ref="table"
+          class="data-table"
+          size="mini"
+          border
+          :toolbar="false"
+          :header-overflow-hidden="false"
+          :height="tableHeight"
+          :rowClickChecked="true"
+          :pageSize="pageSize"
+          :pageSizes="pageSizes"
+          :columns="columns"
+          :datasource="datasource"
+          :initLoad="false"
+          :selection.sync="selection"
+          cache-key="WarehouseTransferMiddleTable"
+          @current-change="onCurrentChange"
+        >
+          <!-- <template v-slot:toolbar>
         <div>
           <el-button
             type="primary"
@@ -52,15 +117,6 @@
             >修改数量</el-button
           >
 
-          <!-- maybe can use in later -->
-          <!-- <el-button
-            type="success"
-            size="mini"
-            icon="el-icon-download"
-            @click="exportAsExcel"
-            >导出</el-button
-          > -->
-
           <el-button
             type="info"
             size="mini"
@@ -71,19 +127,30 @@
 
 
         </div>
-      </template>
+      </template> -->
 
-      <template v-slot:action="{ row }">
-        <el-button
+          <template v-slot:action="{ row }">
+            <el-link
+              type="primary"
+              :underline="false"
+              icon="el-icon-circle-plus-outline"
+              :disabled="isEnableCreate"
+              @click="showCreateDefPkgModal(row)"
+            >
+              添加定数包
+            </el-link>
+            <!-- <el-button
           type="primary"
           size="mini"
           icon="el-icon-circle-plus-outline"
           :disabled="isEnableCreate"
           @click="showCreateDefPkgModal(row)"
           >添加定数包</el-button
-        >
-      </template>
-    </ele-pro-table>
+        > -->
+          </template>
+        </ele-pro-table>
+      </div>
+    </div>
 
     <WarehouseTransferCreateDetail
       :TK_MAIN_ID="where.ID"
@@ -99,6 +166,7 @@
     <LogCat :visible.sync="logCatVisible"/>
   </div>
 </template>
+
 <script>
   import { utils, writeFile } from 'xlsx';
   import WarehouseTransferCreateDetail from './WarehouseTransferCreateDetail';
@@ -138,7 +206,7 @@
             label: '序号',
             columnKey: 'index',
             type: 'index',
-            width: 45,
+            width: 60,
             align: 'center',
             showOverflowTooltip: true
           },
@@ -147,7 +215,8 @@
             label: '操作',
             minWidth: 140,
             align: 'center',
-            showOverflowTooltip: true
+            showOverflowTooltip: true,
+            className: 'action-col'
           },
           {
             prop: 'VARIETIE_CODE_NEW',
@@ -173,14 +242,14 @@
           {
             prop: 'UNIT',
             label: '单位',
-            minWidth: 50,
+            minWidth: 80,
             align: 'center',
             showOverflowTooltip: true
           },
           {
             prop: 'QTY',
             label: '数量',
-            minWidth: 50,
+            minWidth: 80,
             align: 'center',
             showOverflowTooltip: true
           },
@@ -199,6 +268,7 @@
             showOverflowTooltip: true
           }
         ],
+        tableHeight: 'calc(100vh - 300px)',
         pageSize: 10,
         pagerCount: 2,
         pageSizes: [10, 20, 50, 100, 9999999],
@@ -365,6 +435,9 @@
         return this.selection.length > 0;
       }
     },
+    created() {
+      localStorage.setItem('WarehouseTransferMiddleTableSize', JSON.stringify('mini'));
+    },
     mounted() {
       this.$bus.$on(`${this.$route.path}/LeftTableChange`, (row) => {
         if (row) {
@@ -382,4 +455,21 @@
     }
   };
 </script>
-<style lang=""></style>
+
+<style scoped lang="scss">
+:deep(.el-form-item) {
+  margin-bottom: 0;
+}
+
+.ele-form-actions :deep(.el-form-item__content) {
+  max-width: none !important;
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.ele-form-actions :deep(.el-button) {
+  margin: 0;
+}
+</style>

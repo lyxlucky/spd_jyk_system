@@ -1,10 +1,9 @@
 <!-- 搜索表单 -->
 <template>
-  <div>
-    <el-form class="ele-form-search" inline>
-      <el-form-item label="平均用量时间段：">
+  <div class="spd-panel__body">
+    <el-form size="mini" :inline="true" class="ele-form-search" @keyup.enter.native="search" @submit.native.prevent>
+      <el-form-item label="平均用量">
         <el-date-picker
-          size="mini"
           v-model="where.dateRange"
           type="daterange"
           style="width: 200px"
@@ -12,12 +11,10 @@
           range-separator="至"
           start-placeholder="开始日期"
           end-placeholder="结束日期"
-        >
-        </el-date-picker>
+        />
       </el-form-item>
-      <el-form-item>
+      <el-form-item label="品种">
         <el-input
-          size="mini"
           v-model="where.SerachName"
           style="width: 200px"
           placeholder="品名/编码/型号规格/生产企业"
@@ -25,95 +22,42 @@
         />
       </el-form-item>
       <el-form-item>
-        <el-button
-          size="mini"
-          class="ele-btn-icon"
-          icon="el-icon-search"
-          type="primary"
-          @click="search"
-          >查询</el-button
-        >
+        <el-button icon="el-icon-search" type="primary" @click="search">查询</el-button>
       </el-form-item>
       <el-form-item>
-        <el-button
-          size="mini"
-          class="ele-btn-icon"
-          icon="el-icon-refresh"
-          @click="reset"
-          v-if="false"
-          >重置</el-button
-        >
-      </el-form-item>
-      <el-form-item v-if="!IsDisabled">
-        <el-button
-          type="primary"
-          size="mini"
-          class="ele-btn-icon"
-          @click="addTempVar"
-          :style="{ display: IsDisabled == true ? 'none' : '' }"
-        >
-          确认申领
-        </el-button>
+        <el-button icon="el-icon-refresh" @click="reset" >重置</el-button>
       </el-form-item>
       <el-form-item>
-        <el-button
-          type="primary"
-          size="mini"
-          @click="showDialogTableVisible"
-          icon="el-icon-plus"
-          class="ele-btn-icon"
-          v-if="false"
-          >添加品种</el-button
-        >
+        <el-button type="success" icon="el-icon-plus" @click="saveApplyNum">保存</el-button>
       </el-form-item>
       <el-form-item>
-        <el-button
-          type="primary"
-          icon="el-icon-plus"
-          class="ele-btn-icon"
-          size="mini"
-          v-if="false"
-          @click="saveApplyNum"
-          >保存</el-button
-        >
+        <el-button type="primary" @click="showDialogTableVisible" icon="el-icon-plus">添加品种</el-button>
       </el-form-item>
       <el-form-item>
         <el-dropdown>
-          <el-button
-            size="mini"
-            icon="el-icon-s-grid"
-            class="ele-btn-icon"
-            type="primary"
-            v-if="false"
-          >
+          <el-button icon="el-icon-s-grid" type="primary">
             模板<i class="el-icon-arrow-down el-icon--right"></i>
           </el-button>
-          <el-dropdown-menu slot="dropdown" v-if="false">
+          <el-dropdown-menu slot="dropdown" >
             <el-dropdown-item style="margin-bottom: 4px">
-              <el-button
-                type="primary"
-                size="mini"
-                @click="showDialogTableVisible2"
-                >导入模板</el-button
-              >
+              <el-button type="primary" size="mini" @click="showDialogTableVisible2">导入模板</el-button>
             </el-dropdown-item>
             <el-dropdown-item>
-              <el-button type="primary" size="mini" @click="exportData"
-                >导出模板</el-button
-              >
+              <el-button type="primary" size="mini" @click="exportData">导出模板</el-button>
             </el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </el-form-item>
-      <el-form-item v-if="false">
+      <el-form-item>
         <el-button
-          type="danger"
-          icon="el-icon-delete"
-          class="ele-btn-icon"
-          size="mini"
-          @click="removeBatch"
-          >删除</el-button
-        >
+          v-if="!IsDisabled"
+          type="primary"
+          @click="addTempVar"
+          :style="{ display: IsDisabled == true ? 'none' : '' }"
+        >确认申领</el-button>
+      </el-form-item>
+      <el-form-item v-if="false">
+        <el-button type="danger" icon="el-icon-delete" @click="removeBatch">删除</el-button>
       </el-form-item>
     </el-form>
     <el-dialog
@@ -189,6 +133,23 @@
     ImportTempExcel
   } from '@/api/KSInventory/ApplyTemp';
   import AuthVarTable from './AuthVarTable.vue';
+
+  const defaultWhere = () => ({
+    Token: '',
+    PlanNum: '',
+    is_second_app: '',
+    SerachName: '',
+    dateRange: (() => {
+      const end = new Date();
+      const start = new Date();
+      start.setDate(start.getDate() - 30);
+      return [
+        start.toISOString().split('T')[0],
+        end.toISOString().split('T')[0]
+      ];
+    })()
+  });
+
   export default {
     props: [
       'ApplyTempTableDataSearch',
@@ -199,17 +160,8 @@
       AuthVarTable: AuthVarTable
     },
     data() {
-      // 默认表单数据
-      const defaultWhere = {
-        Token: '',
-        PlanNum: '',
-        is_second_app: '',
-        SerachName: '',
-        dateRange: this.getDefaultDateRange()
-      };
       return {
-        // 表单数据
-        where: { ...defaultWhere },
+        where: defaultWhere(),
         dialogTableVisible: false,
         dialogTableVisible2: false,
         TEMPLET_MAIN_ID: null,
@@ -274,7 +226,7 @@
       },
       /*  重置 */
       reset() {
-        this.where = { ...this.defaultWhere };
+        this.where = defaultWhere();
         this.search();
       },
       exportData() {

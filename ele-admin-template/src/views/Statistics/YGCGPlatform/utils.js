@@ -59,28 +59,28 @@ export function buildColumns() {
       label: '阳光平台编码',
       align: 'center',
       showOverflowTooltip: true,
-      minWidth: 110
+      minWidth: 140
     },
     {
       prop: 'MIN_PRICE',
       label: '最低价格',
       align: 'center',
       showOverflowTooltip: true,
-      minWidth: 90
+      minWidth: 120
     },
     {
       prop: 'AVG_PRICE',
       label: '平均价格',
       align: 'center',
       showOverflowTooltip: true,
-      minWidth: 90
+      minWidth: 120
     },
     {
       prop: 'MAX_PRICE',
       label: '最高价格',
       align: 'center',
       showOverflowTooltip: true,
-      minWidth: 90
+      minWidth: 120
     },
     {
       prop: 'PACKAGE_SPEC',
@@ -94,28 +94,28 @@ export function buildColumns() {
       label: '议价状态',
       align: 'center',
       showOverflowTooltip: true,
-      minWidth: 90
+      minWidth: 120
     },
     {
       prop: 'DISCUSS_PRICE',
       label: '议价价格',
       align: 'center',
       showOverflowTooltip: true,
-      minWidth: 90
+      minWidth: 120
     },
     {
       prop: 'EXAMPLE_PRICE_UNIT',
       label: '预警价格单位',
       align: 'center',
       showOverflowTooltip: true,
-      minWidth: 110
+      minWidth: 140
     },
     {
       prop: 'EXAMPLE_PRICE',
       label: '预警价格',
       align: 'center',
       showOverflowTooltip: true,
-      minWidth: 100
+      minWidth: 120
     },
     {
       prop: 'VARIETIE_CODE_NEW',
@@ -143,28 +143,28 @@ export function buildColumns() {
       label: '中标价',
       align: 'center',
       showOverflowTooltip: true,
-      minWidth: 90
+      minWidth: 100
     },
     {
       prop: 'UNIT',
       label: '中标单位',
       align: 'center',
       showOverflowTooltip: true,
-      minWidth: 90
+      minWidth: 120
     },
     {
       prop: 'YG_ZH_COUNT',
       label: '阳光转换比',
       align: 'center',
       showOverflowTooltip: true,
-      minWidth: 100
+      minWidth: 120
     },
     {
       prop: 'INVENTORY_QTY',
       label: '库存数量（中心库&二级库）',
       align: 'center',
       showOverflowTooltip: true,
-      minWidth: 180,
+      minWidth: 240,
       slot: 'INVENTORY_QTY'
     },
     {
@@ -193,14 +193,14 @@ export function buildColumns() {
       label: '明细合同编码',
       align: 'center',
       showOverflowTooltip: true,
-      minWidth: 130
+      minWidth: 140
     },
     {
       prop: 'CONTRACT_START_TIME',
       label: '合同开始时间',
       align: 'center',
       showOverflowTooltip: true,
-      minWidth: 120,
+      minWidth: 140,
       slot: 'CONTRACT_START_TIME'
     },
     {
@@ -208,7 +208,7 @@ export function buildColumns() {
       label: '合同结束时间',
       align: 'center',
       showOverflowTooltip: true,
-      minWidth: 120,
+      minWidth: 140,
       slot: 'CONTRACT_END_TIME'
     },
     {
@@ -216,7 +216,7 @@ export function buildColumns() {
       label: '合同明细开始时间',
       align: 'center',
       showOverflowTooltip: true,
-      minWidth: 140,
+      minWidth: 160,
       slot: 'DET_CONTRACT_START'
     },
     {
@@ -224,7 +224,7 @@ export function buildColumns() {
       label: '合同明细结束时间',
       align: 'center',
       showOverflowTooltip: true,
-      minWidth: 140,
+      minWidth: 160,
       slot: 'DET_CONTRACT_END'
     },
     {
@@ -246,7 +246,7 @@ export function buildColumns() {
       label: '业务联系人电话',
       align: 'center',
       showOverflowTooltip: true,
-      minWidth: 130
+      minWidth: 150
     },
     {
       prop: 'CREATE_TIME',

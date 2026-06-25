@@ -1,10 +1,12 @@
 <template lang="">
-  <div class="container">
-    <div style="display: flex;gap:20px">
+  <el-row :gutter="20" class="bottom-table-row">
+    <el-col :span="20" class="bottom-table-col">
       <CentralinventoryPackageBottomLeftTable />
+    </el-col>
+    <el-col :span="4" class="bottom-table-col">
       <CentralinventoryPackageBottomRightTable />
-    </div>
-  </div>
+    </el-col>
+  </el-row>
 </template>
 <script>
   import CentralinventoryPackageBottomLeftTable from './CentralinventoryPackageBottomLeftTable';
@@ -17,4 +19,8 @@
     }
   };
 </script>
-<style lang=""></style>
+<style lang="scss" scoped>
+.bottom-table-col {
+  min-width: 0;
+}
+</style>

@@ -30,14 +30,14 @@ export function buildColumns() {
   return [
     { prop: 'HIS_CODE', label: 'HIS序号', width: 110, showOverflowTooltip: true },
     { prop: 'PJ_NAME', label: 'HIS名称', minWidth: 150, showOverflowTooltip: true },
-    { prop: 'CHARGE_CODE', label: 'HIS计费编码', width: 130, showOverflowTooltip: true },
-    { prop: 'MATERIALS_CODE', label: 'HIS材料编码', width: 130, showOverflowTooltip: true },
+    { prop: 'CHARGE_CODE', label: 'HIS计费编码', width: 150, showOverflowTooltip: true },
+    { prop: 'MATERIALS_CODE', label: 'HIS材料编码', width: 150, showOverflowTooltip: true },
     { prop: 'PRICE', label: 'HIS价格', width: 90, align: 'right' },
-    { prop: 'SPD_PRICE_ZH', label: 'SPD转换价格', width: 100, align: 'right' },
-    { prop: 'SPD_PRICE', label: 'SPD价格', width: 90, align: 'right' },
-    { prop: 'UNIT', label: 'HIS单位', width: 80, align: 'center' },
-    { prop: 'HIS_ZHB', label: '转换比', width: 70, align: 'center' },
-    { prop: 'SPD_UNIT', label: 'SPD单位', width: 80, align: 'center' },
+    { prop: 'SPD_PRICE_ZH', label: 'SPD转换价格', width: 140, align: 'right' },
+    { prop: 'SPD_PRICE', label: 'SPD价格', width: 120, align: 'right' },
+    { prop: 'UNIT', label: 'HIS单位', width: 120, align: 'center' },
+    { prop: 'HIS_ZHB', label: '转换比', width: 100, align: 'center' },
+    { prop: 'SPD_UNIT', label: 'SPD单位', width: 120, align: 'center' },
     {
       prop: 'VARIETIE_CODE_NEW',
       label: 'SPD品种编码',
@@ -61,7 +61,7 @@ export function buildColumns() {
     {
       prop: 'IS_ENABLE',
       label: 'SPD状态',
-      width: 90,
+      width: 120,
       align: 'center',
       slot: 'IS_ENABLE'
     },
@@ -69,7 +69,7 @@ export function buildColumns() {
     {
       prop: 'IS_CHARGE',
       label: '是否收费',
-      width: 90,
+      width: 120,
       align: 'center',
       slot: 'IS_CHARGE'
     }

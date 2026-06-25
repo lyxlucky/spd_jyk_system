@@ -1,12 +1,13 @@
 <template>
-  <div class="ele-body">
+  <div class="ks-new-batch-reminder-table-wrap">
     <!-- 数据表格 -->
     <ele-pro-table
       :key="key"
       highlight-current-row
       ref="table"
+      class="ks-new-batch-reminder-table"
       @current-change="onCurrentChange"
-      height="60vh"
+      :height="tableHeight"
       :rowClickChecked="true"
       :stripe="true"
       :pageSize="pageSize"
@@ -17,23 +18,15 @@
       :initLoad="false"
       cache-key="KsNewBatchReminderTable"
     >
-      <!-- 表头工具栏 -->
-      <template v-slot:toolbar>
-        <KsNewBatchReminderTableSearch
-          @sure="makeSure"
-          @makeRead="makeRead"
-          @search="reload"
-        />
-      </template>
-
       <template v-slot:operation="{ row }">
         <el-button
           type="success"
           size="mini"
           icon="el-icon-check"
           @click="makeConfirmWithPic(row)"
-          >上传定标报告</el-button
         >
+          上传定标报告
+        </el-button>
       </template>
 
       <template v-slot:DB_FILE="{ row }">
@@ -52,6 +45,7 @@
     />
   </div>
 </template>
+
 <script>
   import { BACK_BASE_URL } from '@/config/setting';
   import {
@@ -59,12 +53,10 @@
     confirmBatch,
     makeItemRead
   } from '@/api/KSInventory/KSNewBatchReminder/index';
-  import KsNewBatchReminderTableSearch from './KsNewBatchReminderTableSearch';
   import KsNewBatchReminderUpload from './KsNewBatchReminderUpload';
   export default {
     name: 'KsNewBatchReminderTable',
     components: {
-      KsNewBatchReminderTableSearch,
       KsNewBatchReminderUpload
     },
     data() {
@@ -90,7 +82,7 @@
             label: '数量',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 40
+            minWidth: 60
           },
           {
             prop: 'BATCH_PRODUCTION_DATE',
@@ -169,7 +161,7 @@
             label: '定标时间',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 70,
+            minWidth: 120,
             formatter: (_row, _column, cellValue) => {
               return this.$util.toDateString(cellValue, 'yyyy-MM-dd HH:mm:ss');
             }
@@ -179,7 +171,7 @@
             label: '定标人',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 70
+            minWidth: 100
           },
           {
             prop: 'CREATE_TIME',
@@ -195,7 +187,7 @@
             label: '定标报告',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 70
+            minWidth: 100
           },
           {
             slot: 'operation',
@@ -206,6 +198,7 @@
           }
         ],
         toolbar: false,
+        tableHeight: 'calc(100vh - 320px)',
         pageSize: 10,
         pageSizes: [10, 20, 50, 100, 9999999],
         // 表格选中数据
@@ -236,7 +229,7 @@
       },
       /* 刷新表格 */
       reload(where) {
-        this.$refs.table.reload({ page: 1, where: where });
+        this.$refs.table.reload({ page: 1, where });
       },
       makeConfirmWithPic(row) {
         this.$bus.$emit('makeConfirmWithPic', row);
@@ -308,34 +301,77 @@
       onCurrentChange(current) {
         this.current = current;
         this.$emit('getCurrent', current);
+      },
+      updateTableHeight() {
+        this.$nextTick(() => {
+          const wrap = this.$el;
+          const tableVm = this.$refs.table;
+          if (!wrap || !tableVm || !tableVm.$el) return;
+
+          const tableRoot = tableVm.$el;
+          const elTable = tableRoot.querySelector('.el-table');
+          const pagination = tableRoot.querySelector('.el-pagination');
+          const paginationHeight = pagination ? pagination.offsetHeight + 8 : 48;
+
+          if (!elTable) {
+            const top = tableRoot.getBoundingClientRect().top;
+            this.tableHeight = Math.max(window.innerHeight - top - paginationHeight - 12, 300) + 'px';
+            return;
+          }
+
+          const tableBodyTop = elTable.getBoundingClientRect().top;
+          const wrapBottom = wrap.getBoundingClientRect().bottom;
+          const height = wrapBottom - tableBodyTop - paginationHeight;
+          this.tableHeight = Math.max(height, 300) + 'px';
+        });
       }
-    },
-    mounted() {
-      this.$bus.$on('handleCommand', (data) => {
-        this.reload();
-      });
     },
     computed: {
       BACK_BASE_URL() {
         return BACK_BASE_URL;
       }
     },
+    mounted() {
+      this.updateTableHeight();
+      setTimeout(this.updateTableHeight, 100);
+      window.addEventListener('resize', this.updateTableHeight);
+      this.$bus.$on('handleCommand', () => {
+        this.reload();
+      });
+    },
     beforeDestroy() {
+      window.removeEventListener('resize', this.updateTableHeight);
       this.$bus.$off('handleCommand');
     }
   };
 </script>
-<style scoped>
-  .image {
-    height: 28px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 5px; /* 图片之间的间距 */
-    max-width: 100%; /* 可根据需要设置最大宽度 */
-  }
-  .image-container {
-    display: flex; /* 使用 Flexbox 布局 */
-    flex-wrap: wrap; /* 允许图片换行 */
-  }
+
+<style scoped lang="scss">
+.ks-new-batch-reminder-table-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.ks-new-batch-reminder-table-wrap :deep(.ele-pro-table) {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.image {
+  height: 28px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 5px;
+  max-width: 100%;
+}
+
+.image-container {
+  display: flex;
+  flex-wrap: wrap;
+}
 </style>

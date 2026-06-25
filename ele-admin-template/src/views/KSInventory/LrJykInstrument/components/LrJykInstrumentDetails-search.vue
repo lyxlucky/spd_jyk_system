@@ -1,15 +1,26 @@
 <!-- 搜索表单 -->
 <template>
-  <el-form class="ele-form-search">
-    <el-row :gutter="10" style="margin-bottom: 5px;">
-      <el-col :lg="5" :md="12">
-        <el-input size="mini" v-model="where.BIND_DEF" placeholder="定数包" clearable />
-      </el-col>
-      <el-col :lg="3" :md="12">
-        <el-button size="mini" type="primary" icon="el-icon-search" @click="search">查询</el-button>
-      </el-col>
-    </el-row>
-  </el-form>
+  <div class="spd-panel__body">
+    <el-form
+      size="mini"
+      :inline="true"
+      class="ele-form-search"
+      @keyup.enter.native="search"
+      @submit.native.prevent
+    >
+      <el-form-item label="定数包">
+        <el-input
+          v-model="where.BIND_DEF"
+          placeholder="定数包"
+          clearable
+          style="width: 160px"
+        />
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" icon="el-icon-search" @click="search">查询</el-button>
+      </el-form-item>
+    </el-form>
+  </div>
 </template>
 
 <script>
@@ -25,17 +36,17 @@ import {
   ImportTempExcel
 } from '@/api/KSInventory/KSDepartmentalPlan';
 import { TOKEN_STORE_NAME } from '@/config/setting';
+
+const defaultWhere = () => ({
+  BIND_DEF: ''
+});
+
 export default {
   props: ['KSDepartmentalPlanDataSearch', 'selection', 'datasourceList'],
   components: {},
   data() {
-    // 默认表单数据
-    const defaultWhere = {
-      BIND_DEF: ''
-    };
     return {
-      // 表单数据
-      where: { ...defaultWhere },
+      where: defaultWhere(),
       Token: sessionStorage.getItem(TOKEN_STORE_NAME)
     };
   },
@@ -53,7 +64,7 @@ export default {
     },
     /*  重置 */
     reset() {
-      this.where = { ...this.defaultWhere };
+      this.where = defaultWhere();
       this.search();
     },
     /* 批量删除 */
@@ -300,9 +311,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-::v-deep .ele-table-tool-default {
-  margin-bottom: 5px;
-}
-</style>

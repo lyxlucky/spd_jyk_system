@@ -1,40 +1,68 @@
 <template>
-  <div class="stock-maintenance-search">
-    <el-form size="small" class="ele-form-search" @keyup.enter.native="search" @submit.native.prevent>
-      <el-row :gutter="10" class="search-row">
-        <el-col :span="4">
+  <div class="spd-panel spd-panel--search">
+    <div class="spd-panel__head">查询条件</div>
+    <div class="spd-panel__body">
+      <el-form
+        size="mini"
+        :inline="true"
+        @keyup.enter.native="search"
+        @submit.native.prevent
+      >
+        <el-form-item label="品种">
           <el-input
             v-model="where.varietie"
             clearable
-            placeholder="请输入品种编码/品种全称进行搜索"
+            placeholder="编码/全称"
+            style="width: 140px"
           />
-        </el-col>
-        <el-col :span="4">
+        </el-form-item>
+        <el-form-item label="供应商">
           <el-input
             v-model="where.supplierName"
             clearable
-            placeholder="请输入供应商名称进行搜索"
+            placeholder="供应商名称"
+            style="width: 130px"
           />
-        </el-col>
-        <el-col :span="3">
-          <el-input v-model="where.batch" clearable placeholder="请输入生产批号进行搜索" />
-        </el-col>
-        <el-col :span="3">
+        </el-form-item>
+        <el-form-item label="生产批号">
+          <el-input
+            v-model="where.batch"
+            clearable
+            placeholder="生产批号"
+            style="width: 110px"
+          />
+        </el-form-item>
+        <el-form-item label="规格型号">
           <el-input
             v-model="where.specifications"
             clearable
-            placeholder="请输入规格型号进行搜索"
+            placeholder="规格型号"
+            style="width: 110px"
           />
-        </el-col>
-        <el-col :span="3">
-          <el-input v-model="where.position" clearable placeholder="请输入库存位置进行搜索" />
-        </el-col>
-        <el-col :span="3">
-          <el-input v-model="where.remark" clearable placeholder="请输入备注内容" />
-        </el-col>
-        <el-col :span="4">
-          <span class="label-inline">所属区域：</span>
-          <el-select v-model="where.upShelfState" clearable placeholder="全部" style="width: 120px">
+        </el-form-item>
+        <el-form-item label="库存位置">
+          <el-input
+            v-model="where.position"
+            clearable
+            placeholder="库存位置"
+            style="width: 110px"
+          />
+        </el-form-item>
+        <el-form-item label="备注">
+          <el-input
+            v-model="where.remark"
+            clearable
+            placeholder="备注内容"
+            style="width: 100px"
+          />
+        </el-form-item>
+        <el-form-item label="所属区域">
+          <el-select
+            v-model="where.upShelfState"
+            clearable
+            placeholder="全部"
+            style="width: 120px"
+          >
             <el-option label="全部" value="" />
             <el-option label="合格区" value="1" />
             <el-option label="普通隔离区" value="6" />
@@ -43,25 +71,22 @@
             <el-option label="应急库" value="9" />
             <el-option label="拣配锁定区" value="2" />
           </el-select>
-        </el-col>
-      </el-row>
-      <el-row :gutter="10" type="flex" align="middle" class="search-row second-row">
-        <el-col :span="3">
-          <span class="label-inline">所属库区：</span>
+        </el-form-item>
+        <br />
+        <el-form-item label="所属库区">
           <el-select v-model="where.storageId" style="width: 90px">
             <el-option label="全部" value="0" />
             <el-option label="院内" value="1" />
             <el-option label="院外" value="2" />
           </el-select>
-        </el-col>
-        <el-col :span="6" class="date-range-col">
-          <span class="label-inline">有效到期：</span>
+        </el-form-item>
+        <el-form-item label="有效到期">
           <el-date-picker
             v-model="where.startDate"
             type="date"
             value-format="yyyy-MM-dd"
             placeholder="开始"
-            style="width: 140px"
+            style="width: 130px"
           />
           <span class="date-sep">至</span>
           <el-date-picker
@@ -69,27 +94,30 @@
             type="date"
             value-format="yyyy-MM-dd"
             placeholder="结束"
-            style="width: 140px"
+            style="width: 130px"
           />
-        </el-col>
-        <el-col :span="3" class="stock-day-col">
-          <span class="label-inline">在库天数大于：</span>
-          <el-input v-model="where.upStockDay" type="number" clearable style="width: 100px" />
-        </el-col>
-        <el-col :span="8" class="btn-col">
+        </el-form-item>
+        <el-form-item label="在库天数">
+          <el-input
+            v-model="where.upStockDay"
+            type="number"
+            clearable
+            placeholder="大于"
+            style="width: 100px"
+          />
+        </el-form-item>
+        <el-form-item>
           <el-button type="primary" icon="el-icon-search" @click="search">查询</el-button>
           <el-button
             v-permission="'export-StockmaintenanceDc'"
-            type="primary"
-            plain
+            type="success"
+            icon="el-icon-download"
             :loading="exporting"
             @click="$emit('export')"
           >
             导出
           </el-button>
-          <el-button type="primary" plain :loading="notifying" @click="$emit('notify')">
-            通知供应商
-          </el-button>
+          <el-button type="info" :loading="notifying" @click="$emit('notify')">通知供应商</el-button>
           <el-upload
             class="inline-upload"
             :action="importUrl"
@@ -100,22 +128,20 @@
             :on-success="onImportOk"
             :on-error="onImportErr"
           >
-            <el-button type="primary" plain>导入备注</el-button>
+            <el-button type="warning" plain>导入备注</el-button>
           </el-upload>
-        </el-col>
-        <el-col :span="5" class="summary-col">
-          <span class="summary-line">
-            <span class="summary-val">{{ summary.stockPosition || '' }}</span>
-            <span v-if="summary.stockPosition || summary.avgday">：</span>
-            <span class="summary-val">{{ summary.avgday || '' }}</span>
-          </span>
-          <span class="summary-hint">库存位置 ： 平均在库天数</span>
-        </el-col>
-      </el-row>
+        </el-form-item>
+        <el-form-item v-if="summary.stockPosition || summary.avgday" class="summary-item">
+          <span class="summary-val">{{ summary.stockPosition }}</span>
+          <span v-if="summary.stockPosition && summary.avgday">：</span>
+          <span class="summary-val">{{ summary.avgday }}</span>
+          <span class="summary-hint">（库存位置：平均在库天数）</span>
+        </el-form-item>
+      </el-form>
       <p class="page-tip">
         说明：本页面仅用于查询生产批号已过期的库存品种，包含中心库(合格库、不合格库、隔离库)和各个科室的库存效率统计，平均在库天数查询
       </p>
-    </el-form>
+    </div>
   </div>
 </template>
 
@@ -185,58 +211,32 @@ export default {
 </script>
 
 <style scoped>
-.stock-maintenance-search {
-  margin-bottom: 8px;
-}
-.search-row {
-  margin-bottom: 8px;
-}
-.label-inline {
-  font-size: 13px;
-  color: #606266;
-  white-space: nowrap;
-}
 .date-sep {
   margin: 0 6px;
-  color: #606266;
+  color: #909399;
 }
-.date-range-col {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-}
-.stock-day-col {
-  display: flex;
-  align-items: center;
-}
-.btn-col .el-button,
-.btn-col .inline-upload {
-  margin-right: 6px;
-  margin-bottom: 4px;
-}
+
 .inline-upload {
   display: inline-block;
+  margin-left: 6px;
 }
-.summary-col {
-  text-align: right;
-  font-size: 13px;
-}
-.summary-line {
-  display: block;
-  min-height: 20px;
-}
-.summary-hint {
-  display: block;
+
+.summary-item :deep(.el-form-item__content) {
   font-size: 12px;
-  color: #c0c4cc;
-  margin-top: 2px;
 }
+
 .summary-val {
   color: #303133;
   font-weight: 600;
 }
+
+.summary-hint {
+  margin-left: 4px;
+  color: #c0c4cc;
+}
+
 .page-tip {
-  margin: 8px 0 0;
+  margin: 4px 0 0;
   font-size: 12px;
   color: #909399;
   line-height: 1.5;

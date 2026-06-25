@@ -1,6 +1,6 @@
 <template>
   <div class="ele-body spd-page stock-maintenance">
-    <el-card shadow="never">
+    <el-card shadow="never" class="stock-maintenance-card">
       <StockmaintenanceSearch
         ref="search"
         :exporting="exporting"
@@ -10,41 +10,53 @@
         @export="onExport"
         @notify="onNotify"
       />
-      <ele-pro-table
-        ref="table"
-        :height="tableHeight"
-        :columns="columns"
-        :datasource="datasource"
-        :selection.sync="selection"
-        :page-size="10"
-        :page-sizes="[10, 30, 60, 90, 150, 300]"
-        :row-class-name="tableRowClass"
-        cache-key="KSInventoryStockmaintenanceTable"
-        @sort-change="onSortChange"
-      >
-        <template v-slot:remarks="{ row }">
-          <el-link type="primary" :underline="false" @click="openRemark(row)">
-            {{ row.Remarks == null || row.Remarks === '' ? '无' : row.Remarks }}
-          </el-link>
-        </template>
-        <template v-slot:storageId="{ row }">
-          {{ fmtStorageId(row.STORAGE_ID) }}
-        </template>
-        <template v-slot:upShelfState="{ row }">
-          {{ fmtUpShelfStateMaintenance(row) }}
-        </template>
-        <template v-slot:batchProdDate="{ row }">
-          {{ fmtDate10(row.BATCH_PRODUCTION_DATE) }}
-        </template>
-        <template v-slot:batchValidity="{ row }">
-          <span :class="{ 'batch-expired': isBatchExpired(row.BATCH_VALIDITY_PERIOD) }">
-            {{ fmtDate10(row.BATCH_VALIDITY_PERIOD) }}
-          </span>
-        </template>
-        <template v-slot:supplyPrice="{ row }">
-          {{ fmtPrice(row.SUPPLY_PRICE) }}
-        </template>
-      </ele-pro-table>
+      <div class="spd-panel spd-table-panel">
+        <div class="spd-panel__head spd-panel__head--split">
+          <span>库存列表</span>
+          <span v-if="selection.length" class="spd-panel__head-meta">已选 {{ selection.length }} 条</span>
+        </div>
+        <div class="spd-table-panel__wrap">
+          <ele-pro-table
+            ref="table"
+            class="data-table"
+            size="mini"
+            :toolbar="false"
+            :toolkit="['columns', 'fullscreen']"
+            :height="tableHeight"
+            :columns="columns"
+            :datasource="datasource"
+            :selection.sync="selection"
+            :page-size="10"
+            :page-sizes="[10, 30, 60, 90, 150, 300]"
+            :row-class-name="tableRowClass"
+            cache-key="stockMaintenanceTable"
+            @sort-change="onSortChange"
+          >
+            <template v-slot:remarks="{ row }">
+              <el-button type="text" size="mini" @click="openRemark(row)">
+                {{ row.Remarks == null || row.Remarks === '' ? '无' : row.Remarks }}
+              </el-button>
+            </template>
+            <template v-slot:storageId="{ row }">
+              {{ fmtStorageId(row.STORAGE_ID) }}
+            </template>
+            <template v-slot:upShelfState="{ row }">
+              {{ fmtUpShelfStateMaintenance(row) }}
+            </template>
+            <template v-slot:batchProdDate="{ row }">
+              {{ fmtDate10(row.BATCH_PRODUCTION_DATE) }}
+            </template>
+            <template v-slot:batchValidity="{ row }">
+              <span :class="{ 'batch-expired': isBatchExpired(row.BATCH_VALIDITY_PERIOD) }">
+                {{ fmtDate10(row.BATCH_VALIDITY_PERIOD) }}
+              </span>
+            </template>
+            <template v-slot:supplyPrice="{ row }">
+              {{ fmtPrice(row.SUPPLY_PRICE) }}
+            </template>
+          </ele-pro-table>
+        </div>
+      </div>
     </el-card>
 
     <el-dialog
@@ -54,10 +66,10 @@
       append-to-body
       @closed="remarkText = ''"
     >
-      <el-input v-model="remarkText" type="textarea" :rows="12" />
+      <el-input v-model="remarkText" type="textarea" :rows="12" size="mini" />
       <span slot="footer">
-        <el-button @click="remarkVisible = false">取消</el-button>
-        <el-button type="primary" :loading="remarkSaving" @click="saveRemark">确定</el-button>
+        <el-button size="mini" @click="remarkVisible = false">取消</el-button>
+        <el-button type="primary" size="mini" :loading="remarkSaving" @click="saveRemark">确定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -111,7 +123,7 @@ export default {
         {
           prop: 'StockPosition',
           label: '库存位置',
-          width: 100,
+          width: 150,
           sortable: 'custom',
           showOverflowTooltip: true
         },
@@ -119,7 +131,7 @@ export default {
           columnKey: 'storageId',
           prop: 'STORAGE_ID',
           label: '院区库房',
-          width: 100,
+          width: 150,
           sortable: 'custom',
           slot: 'storageId'
         },
@@ -127,14 +139,14 @@ export default {
           columnKey: 'upShelfState',
           prop: 'UP_SHELF_STATE',
           label: '所属区域',
-          width: 100,
+          width: 150,
           sortable: 'custom',
           slot: 'upShelfState'
         },
         {
           prop: 'VARIETIE_CODE_NEW',
           label: '品种编码',
-          width: 100,
+          width: 150,
           sortable: 'custom',
           showOverflowTooltip: true
         },
@@ -155,14 +167,14 @@ export default {
         {
           prop: 'UNIT',
           label: '单位',
-          width: 60,
+          width: 100,
           align: 'center',
           sortable: 'custom'
         },
         {
           prop: 'MANUFACTURING_ENT_NAME',
           label: '生产企业名称',
-          minWidth: 150,
+          minWidth: 180,
           sortable: 'custom',
           showOverflowTooltip: true
         },
@@ -200,7 +212,7 @@ export default {
           columnKey: 'supplyPrice',
           prop: 'SUPPLY_PRICE',
           label: '结算价',
-          width: 80,
+          width: 120,
           align: 'right',
           sortable: 'custom',
           slot: 'supplyPrice'
@@ -215,28 +227,28 @@ export default {
         {
           prop: 'DefQUANTITY',
           label: '库存定数包',
-          width: 100,
+          width: 150,
           align: 'center',
           sortable: 'custom'
         },
         {
           prop: 'GOODSQUANTITY',
           label: '库存散货',
-          width: 100,
+          width: 150,
           align: 'center',
           sortable: 'custom'
         },
         {
           prop: 'UpStockDay',
           label: '在库天数',
-          width: 100,
+          width: 150,
           align: 'center',
           sortable: 'custom'
         },
         {
           prop: 'AVGUPSTOCKDAY',
           label: '平均在库天数',
-          width: 110,
+          width: 160,
           align: 'center',
           sortable: 'custom'
         }
@@ -345,9 +357,16 @@ export default {
 </script>
 
 <style scoped>
+.stock-maintenance-card :deep(.el-card__body) {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 .batch-expired {
   color: #f56c6c;
 }
+
 ::v-deep .stock-maintenance-row-expired > td {
   background-color: #fde2e2 !important;
 }

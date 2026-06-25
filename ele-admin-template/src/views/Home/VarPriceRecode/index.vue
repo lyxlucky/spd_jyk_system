@@ -1,16 +1,27 @@
 <template>
-  <div class="ele-body spd-page">
-    <el-card shadow="never">
-      <user-search ref="search" @search="reload" @exportData="exportData" @markAsProcessed="markAsProcessed" />
-      <ele-pro-table
-        ref="table"
-        :page-size="pageSize"
-        :page-sizes="pageSizes"
-        :columns="columns"
-        :datasource="datasource"
-        :selection.sync="selection"
-        cache-key="HomeVarPriceRecodeTable"
+  <div class="ele-body spd-page var-price-recode-page">
+    <el-card shadow="never" class="var-price-recode-card">
+      <user-search
+        ref="search"
+        class="var-price-recode-search"
+        @search="reload"
+        @exportData="exportData"
+        @markAsProcessed="markAsProcessed"
       />
+      <div ref="tableWrap" class="var-price-recode-table-wrap">
+        <ele-pro-table
+          ref="table"
+          class="data-table"
+          :height="tableHeight"
+          :page-size="pageSize"
+          :page-sizes="pageSizes"
+          :columns="columns"
+          :datasource="datasource"
+          :selection.sync="selection"
+          cache-key="HomeVarPriceRecodeTable"
+          @done="updateTableHeight"
+        />
+      </div>
     </el-card>
   </div>
 </template>
@@ -46,14 +57,14 @@ export default {
           prop: 'VARIETIE_CODE_NEW',
           label: '品种编码',
           align: 'center',
-          width: 100,
+          width: 120,
           showOverflowTooltip: true
         },
         {
           prop: 'CHARGING_CODE',
           label: '计费编码',
           align: 'center',
-          width: 80,
+          width: 120,
           showOverflowTooltip: true
         },
         {
@@ -94,39 +105,39 @@ export default {
           prop: 'OLD_PRICE',
           label: '旧价格',
           align: 'right',
-          width: 80
+          width: 120
         },
         {
           prop: 'NEW_PRICE',
           label: '新价格',
           align: 'right',
-          width: 80
+          width: 120
         },
         {
           prop: 'UP_PRICE',
           label: '收货价格',
           align: 'right',
-          width: 80
+          width: 120
         },
         {
           prop: 'SUPPLIER_NAME',
           label: '合同供应商',
           align: 'right',
-          width: 80,
+          width: 140,
           showOverflowTooltip: true
         },
         {
           prop: 'DELIVERY_NOTE_NUMBER',
           label: '收货单号',
           align: 'center',
-          width: 100,
+          width: 120,
           showOverflowTooltip: true
         },
         {
           prop: 'DELIVERY_TIME',
           label: '价格变动第一次收货时间',
           align: 'center',
-          width: 250,
+          width: 300,
           formatter: (row) => {
             const v = row.DELIVERY_TIME;
             if (!v || String(v).startsWith('0001-01-01')) return '';
@@ -136,11 +147,24 @@ export default {
       ],
       pageSize: 30,
       pageSizes: [30, 50, 100, 150, 200, 300, 99999],
+      tableHeight: 400,
       selection: [],
       lastWhere: null
     };
   },
   methods: {
+    updateTableHeight() {
+      this.$nextTick(() => {
+        const wrap = this.$refs.tableWrap;
+        if (!wrap) return;
+        const toolbar = wrap.querySelector('.ele-table-tool');
+        const pagination = wrap.querySelector('.el-pagination');
+        const reserved =
+          (toolbar?.offsetHeight || 0) + (pagination?.offsetHeight || 46) + 8;
+        this.tableHeight = Math.max(240, wrap.clientHeight - reserved);
+        this.$refs.table?.doLayout?.();
+      });
+    },
     async datasource({ page, limit, where }) {
       const w = where || this.lastWhere || this.$refs.search?.getWhere?.() || {};
       this.lastWhere = w;
@@ -191,6 +215,47 @@ export default {
         loading.close();
       }
     }
+  },
+  mounted() {
+    this.updateTableHeight();
+    window.addEventListener('resize', this.updateTableHeight);
+  },
+  beforeDestroy() {
+    window.removeEventListener('resize', this.updateTableHeight);
   }
 };
 </script>
+
+<style lang="scss" scoped>
+.var-price-recode-page {
+  padding: 8px;
+}
+
+.var-price-recode-card {
+  height: calc(100vh - 112px);
+}
+
+.var-price-recode-page :deep(.el-card__body) {
+  height: 100%;
+  padding: 12px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.var-price-recode-search {
+  flex: none;
+  margin-bottom: 8px;
+}
+
+.var-price-recode-table-wrap {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.var-price-recode-page :deep(.ele-pro-table) {
+  height: 100%;
+}
+</style>

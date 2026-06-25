@@ -1,35 +1,36 @@
 <template>
-  <div class="ele-body">
-    <el-card shadow="never">
-      <!-- 搜索表单 -->
-      <!-- <user-search @search="reload" @exportData="exportData" /> -->
-      <!-- 数据表格 -->
+  <div class="ele-body spd-page instrumental-analysis-page">
+    <el-card shadow="never" class="instrumental-analysis-card">
       <user-search @search="reload" @exportData="exportData" />
-      <ele-pro-table ref="table" :pageSize="pageSize" :pageSizes="pageSizes" :columns="columns" :datasource="datasource" :selection.sync="selection" cache-key="KSInventoryBasicDataTable">
-        <!-- 表头工具栏 -->
-        <template v-slot:toolbar>
-        </template>
-
-        <!-- 操作列 -->
-        <template v-slot:action="{ row }">
-          <el-link type="primary" :underline="false" icon="el-icon-edit" @click="openEdit(row)">
-            修改
-          </el-link>
-          <!-- <el-button type="primary" size="mini" @click="openEdit(row)">编辑</el-button> -->
-          <!-- <el-popconfirm class="ele-action" title="确定要删除此用户吗？" @confirm="remove(row)">
-            <template v-slot:reference>
-              <el-link type="danger" :underline="false" icon="el-icon-delete">
-                删除
+      <div class="spd-panel spd-table-panel">
+        <div class="spd-panel__head">仪器分析列表</div>
+        <div class="spd-table-panel__wrap">
+          <ele-pro-table
+            ref="table"
+            class="data-table"
+            size="mini"
+            border
+            stripe
+            :toolbar="false"
+            :header-overflow-hidden="false"
+            :height="tableHeight"
+            :pageSize="pageSize"
+            :pageSizes="pageSizes"
+            :columns="columns"
+            :datasource="datasource"
+            :selection.sync="selection"
+            cache-key="InstrumentalAnalysisTable"
+          >
+            <template v-slot:action="{ row }">
+              <el-link type="primary" :underline="false" icon="el-icon-edit" @click="openEdit(row)">
+                修改
               </el-link>
             </template>
-          </el-popconfirm> -->
-        </template>
-      </ele-pro-table>
+          </ele-pro-table>
+        </div>
+      </div>
     </el-card>
-    <!-- 编辑弹窗 -->
     <user-edit :visible.sync="showEdit" :data="current" @done="reload" />
-    <!-- 导入弹窗 -->
-    <!-- <user-import :visible.sync="showImport" @done="reload" /> -->
   </div>
 </template>
 
@@ -37,19 +38,17 @@
 import { utils, writeFile } from 'xlsx';
 import UserSearch from './components/user-search.vue';
 import UserEdit from './components/user-edit.vue';
-import {
-  GetPDAList,
-} from '@/api/KSInventory/InstrumentalAnalysis';
+import { GetPDAList } from '@/api/KSInventory/InstrumentalAnalysis';
+
 export default {
   name: 'SystemUser',
   components: {
     UserSearch,
     UserEdit
-    // UserImport
   },
   data() {
     return {
-      // 表格列配置
+      tableHeight: 'calc(100vh - 300px)',
       columns: [
         {
           columnKey: 'selection',
@@ -67,16 +66,6 @@ export default {
           showOverflowTooltip: true,
           fixed: 'left'
         },
-        // {
-        //   columnKey: 'action',
-        //   label: '操作',
-        //   width: 120,
-        //   align: 'center',
-        //   resizable: false,
-        //   slot: 'action',
-        //   showOverflowTooltip: true,
-        //   fixed: 'left'
-        // },
         {
           prop: 'BIND_MACHINE',
           label: '机械号',
@@ -99,7 +88,7 @@ export default {
           label: '品种名称',
           sortable: 'custom',
           align: 'center',
-          howOverflowTooltip: true,
+          showOverflowTooltip: true,
           minWidth: 180
         },
         {
@@ -141,44 +130,30 @@ export default {
           sortable: 'custom',
           width: 120,
           showOverflowTooltip: true
-        },
+        }
       ],
-      toolbar: false,
       pageSize: 10,
       pageSizes: [10, 20, 50, 100, 9999999],
-      pagerCount: 5,
-      // 表格选中数据
       selection: [],
-      // 当前编辑数据
       current: null,
-      // 是否显示编辑弹窗
       showEdit: false,
-      // 是否显示导入弹窗
       showImport: false,
-      // datasource: [],
       data: []
     };
   },
   methods: {
-    /* 表格数据源 */
     datasource({ page, limit, where, order }) {
-      let data = GetPDAList({ page, limit, where, order }).then(
-        (res) => {
-          return res.result;
-        }
-      );
-      return data;
+      return GetPDAList({ page, limit, where, order }).then((res) => {
+        return res.result;
+      });
     },
-    /* 刷新表格 */
     reload(where) {
       this.$refs.table.reload({ page: 1, where: where });
     },
-    /* 打开编辑弹窗 */
     openEdit(row) {
       this.current = row;
       this.showEdit = true;
     },
-    /* 打开导入弹窗 */
     openImport() {
       this.showImport = true;
     },
@@ -207,7 +182,7 @@ export default {
                 '中标价',
                 '品种类别',
                 '换算比(试剂)',
-                '仪器备注',
+                '仪器备注'
               ]
             ];
             res.result.forEach((d) => {
@@ -219,11 +194,10 @@ export default {
                 d.Manufacturing_Ent_Name,
                 d.APPROVAL_NUMBER,
                 d.UNIT,
-                d.Price ,
+                d.Price,
                 d.CLASS_NUM,
                 d.CONVERSION_RATIO,
-                d.DEVICE_REMARK,
-                // this.$util.toDateString(d.createTime)
+                d.DEVICE_REMARK
               ]);
             });
             writeFile(
@@ -235,7 +209,7 @@ export default {
               },
               '科室入库品种.xlsx'
             );
-            this.$message.success("导出成功");
+            this.$message.success('导出成功');
           })
           .catch((e) => {
             loading.close();
@@ -243,10 +217,18 @@ export default {
           });
       });
     }
-  },
-  created() {
-    // this.getdatasource();
-    // console.log(this.$store.state.user.info)
   }
 };
 </script>
+
+<style scoped>
+.instrumental-analysis-card :deep(.el-card__body) {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.instrumental-analysis-page >>> .el-table th .cell {
+  white-space: nowrap;
+}
+</style>

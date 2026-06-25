@@ -1,208 +1,330 @@
 <template>
-  <div class="consume-search">
+  <div class="consume-search spd-panel__body">
     <el-form size="mini" label-width="0" class="ele-form-search" @keyup.enter.native="search" @submit.native.prevent>
       <el-row :gutter="10" class="filter-row">
-        <el-col :span="4"><el-input v-model="where.KSConsume_search1" clearable placeholder="品种编码/全称" /></el-col>
-        <el-col :span="4"><el-input v-model="where.KSConsume_ygcode" clearable placeholder="产品码" /></el-col>
-        <el-col :span="4"><el-input v-model="where.KSConsume_zcz" clearable placeholder="注册证" /></el-col>
-        <el-col :span="4"><el-input v-model="where.KSConsume_search2" clearable placeholder="供应商" /></el-col>
-        <el-col :span="4"><el-input v-model="where.KSConsume_search6" clearable placeholder="生产企业" /></el-col>
-        <el-col :span="4"><el-input v-model="where.KSConsume_search3" clearable placeholder="生产批号" /></el-col>
-      </el-row>
-      <el-row :gutter="10" class="filter-row">
-        <el-col :span="4"><el-input v-model="where.KSConsume_search4" clearable placeholder="科室名称" /></el-col>
-        <el-col :span="4"><el-input v-model="where.KSConsumeBD_search_j4" clearable placeholder="计费科室名称" /></el-col>
-        <el-col :span="4"><el-input v-model="where.KSConsumeBD_search_cost_dept" clearable placeholder="成本科室名称" /></el-col>
-        <el-col :span="4"><el-input v-model="where.KSConsume_search5" clearable placeholder="定数码" /></el-col>
-        <el-col :span="4"><el-input v-model="where.KSConsume_search8" clearable placeholder="国产/进口" /></el-col>
-        <el-col :span="4"><el-input v-model="where.KSConsume_search9" clearable placeholder="分类属性" /></el-col>
-      </el-row>
-      <el-row :gutter="10" class="filter-row">
-        <el-col :span="4"><el-input v-model="where.KSConsume_search11" clearable placeholder="规格型号" /></el-col>
-        <el-col :span="4"><el-input v-model="where.KSConsume_YgOrder" clearable placeholder="阳光订单号" /></el-col>
-        <el-col :span="4"><el-input v-model="where.KSConsume_SOURCE_FROM" clearable placeholder="来源" /></el-col>
-        <el-col :span="4"><el-input v-model="where.KSConsume_Patient_Number" clearable placeholder="病患号/住院号" /></el-col>
-        <el-col :span="4"><el-input v-model="where.KSConsume_Supply_Price" clearable placeholder="单价" /></el-col>
-        <el-col :span="4"><el-input v-model="where.KSConsume_CONFIRM_STAFF" clearable placeholder="消耗人" /></el-col>
-      </el-row>
-      <el-row :gutter="10" class="filter-row">
-        <el-col :span="4"><el-input v-model="where.KSConsume_MONTHBILLNUM" clearable placeholder="发票号" /></el-col>
-        <el-col :span="4"><el-input v-model="where.KSConsume_REGULATORY_CAT_NAME" clearable placeholder="监管类别名称" /></el-col>
-        <el-col :span="4"><el-input v-model="where.KSConsume_MEDICAL_NAME" clearable placeholder="医保通用名" /></el-col>
         <el-col :span="4">
-          <el-select v-model="where.KSConsume_IS_SEND_WXT" clearable placeholder="微讯通" style="width:100%">
-            <el-option label="微讯通-全部" value="" />
-            <el-option label="微讯通-是" value="1" />
-            <el-option label="微讯通-否" value="0" />
-          </el-select>
+          <el-form-item>
+            <el-input v-model="where.KSConsume_search1" clearable placeholder="品种编码/全称" />
+          </el-form-item>
         </el-col>
         <el-col :span="4">
-          <el-select v-model="where.checkInStorageTemp" clearable placeholder="院区" style="width:100%">
+          <el-form-item>
+            <el-input v-model="where.KSConsume_ygcode" clearable placeholder="产品码" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="4">
+          <el-form-item>
+            <el-input v-model="where.KSConsume_zcz" clearable placeholder="注册证" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="4">
+          <el-form-item>
+            <el-input v-model="where.KSConsume_search2" clearable placeholder="供应商" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="4">
+          <el-form-item>
+            <el-input v-model="where.KSConsume_search6" clearable placeholder="生产企业" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="4">
+          <el-form-item>
+            <el-input v-model="where.KSConsume_search3" clearable placeholder="生产批号" />
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row :gutter="10" class="filter-row">
+        <el-col :span="4">
+          <el-form-item>
+            <el-input v-model="where.KSConsume_search4" clearable placeholder="科室名称" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="4">
+          <el-form-item>
+            <el-input v-model="where.KSConsumeBD_search_j4" clearable placeholder="计费科室名称" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="4">
+          <el-form-item>
+            <el-input v-model="where.KSConsumeBD_search_cost_dept" clearable placeholder="成本科室名称" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="4">
+          <el-form-item>
+            <el-input v-model="where.KSConsume_search5" clearable placeholder="定数码" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="4">
+          <el-form-item>
+            <el-input v-model="where.KSConsume_search8" clearable placeholder="国产/进口" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="4">
+          <el-form-item>
+            <el-input v-model="where.KSConsume_search9" clearable placeholder="分类属性" />
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row :gutter="10" class="filter-row">
+        <el-col :span="4">
+          <el-form-item>
+            <el-input v-model="where.KSConsume_search11" clearable placeholder="规格型号" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="4">
+          <el-form-item>
+            <el-input v-model="where.KSConsume_YgOrder" clearable placeholder="阳光订单号" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="4">
+          <el-form-item>
+            <el-input v-model="where.KSConsume_SOURCE_FROM" clearable placeholder="来源" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="4">
+          <el-form-item>
+            <el-input v-model="where.KSConsume_Patient_Number" clearable placeholder="病患号/住院号" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="4">
+          <el-form-item>
+            <el-input v-model="where.KSConsume_Supply_Price" clearable placeholder="单价" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="4">
+          <el-form-item>
+            <el-input v-model="where.KSConsume_CONFIRM_STAFF" clearable placeholder="消耗人" />
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row :gutter="10" class="filter-row">
+        <el-col :span="4">
+          <el-form-item>
+            <el-input v-model="where.KSConsume_MONTHBILLNUM" clearable placeholder="发票号" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="4">
+          <el-form-item>
+            <el-input v-model="where.KSConsume_REGULATORY_CAT_NAME" clearable placeholder="监管类别名称" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="4">
+          <el-form-item>
+            <el-input v-model="where.KSConsume_MEDICAL_NAME" clearable placeholder="医保通用名" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="4">
+          <el-form-item>
+            <el-select v-model="where.KSConsume_IS_SEND_WXT" clearable placeholder="微讯通" style="width:100%">
+              <el-option label="微讯通-全部" value="" />
+              <el-option label="微讯通-是" value="1" />
+              <el-option label="微讯通-否" value="0" />
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="4">
+          <el-form-item>
+            <el-select v-model="where.checkInStorageTemp" clearable placeholder="院区" style="width:100%">
+              <el-option label="全部" value="" />
+              <el-option v-for="s in storageList" :key="s.ID" :label="s.NAME" :value="String(s.ID)" />
+            </el-select>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <div class="filter-row selects">
+        <el-form-item>
+          <el-select v-model="where.ksConsumeSearch10" clearable placeholder="消耗类型" style="width:120px">
+            <el-option label="消耗类型-全部" value="" />
+            <el-option label="PDA扫码消耗" value="0" />
+            <el-option label="RFID读码消耗" value="1" />
+            <el-option label="HIS计费消耗" value="2" />
+            <el-option label="散货申领消耗" value="3" />
+            <el-option label="HIS医嘱计费消耗" value="4" />
+            <el-option label="超时默认消耗" value="5" />
+            <el-option label="读码消耗" value="6" />
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-select v-model="where.ksConsumeSearch7" clearable placeholder="高低值" style="width:100px">
+            <el-option label="高低值-全部" value="" />
+            <el-option label="高值" value="高值" />
+            <el-option label="低值" value="低值" />
+            <el-option label="试剂" value="试剂" />
+            <el-option label="消毒" value="消毒" />
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-select v-model="where.ksConsumeFLsearch" clearable placeholder="分类属性" style="width:140px">
+            <el-option label="分类属性-全部" value="" />
+            <el-option v-for="o in classific2Options" :key="o.v" :label="o.l" :value="o.v" />
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-select v-model="where.ksConsumeIsProtect" clearable placeholder="防控物资" style="width:110px">
+            <el-option label="防控物资-全部" value="" />
+            <el-option label="防控物资-是" value="1" />
+            <el-option label="防控物资-否" value="0" />
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-select v-model="where.highOrLowClassTwo1" clearable placeholder="重点治理" style="width:120px">
+            <el-option label="重点治理-全部" value="" />
+            <el-option label="重点治理" value="1" />
+            <el-option label="非重点治理" value="2" />
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-select v-model="where.ksConsumeIsSpecialAircraft" clearable placeholder="专机专用" style="width:110px">
+            <el-option label="专机专用-全部" value="" />
+            <el-option label="专机专用-是" value="1" />
+            <el-option label="专机专用-否" value="0" />
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-select v-model="where.ksConsumeContractType" clearable placeholder="合同" style="width:110px">
+            <el-option label="合同-全部" value="" />
+            <el-option label="合同-中标" value="1" />
+            <el-option label="合同-临采" value="2" />
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-select v-model="where.ksConsumeIsPdaScan" clearable placeholder="PDA扫码" style="width:120px">
+            <el-option label="PDA扫码-全部" value="" />
+            <el-option label="PDA扫码-已扫码" value="1" />
+            <el-option label="PDA扫码-未扫码" value="2" />
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-select v-model="where.ksConsumeGoodsQty" clearable placeholder="数量" style="width:100px">
+            <el-option label="数量-全部" value="" />
+            <el-option label="数量-大于0" value="1" />
+            <el-option label="数量-小于0" value="0" />
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-select v-model="where.ksConsumeIsSendYg" clearable placeholder="发送阳光" style="width:120px">
+            <el-option label="发送阳光-全部" value="" />
+            <el-option label="已发送全部" value="1" />
+            <el-option label="已发送,成功" value="2" />
+            <el-option label="已发送,不成功" value="3" />
+            <el-option label="未发送" value="0" />
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-select v-model="where.ksConsumeIsJc" clearable placeholder="集采" style="width:100px">
+            <el-option label="集采-全部" value="" />
+            <el-option label="集采-是" value="1" />
+            <el-option label="集采-否" value="0" />
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-select v-model="where.ksConsumeSearchUdi" clearable placeholder="发送UDI" style="width:110px">
+            <el-option label="发送UDI-全部" value="" />
+            <el-option label="发送UDI-否" value="0" />
+            <el-option label="发送UDI-是" value="1" />
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-select v-model="where.ksConsumeIsJf" clearable placeholder="是否计费" style="width:110px">
+            <el-option label="是否计费-全部" value="" />
+            <el-option label="是否计费-是" value="1" />
+            <el-option label="是否计费-否" value="0" />
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-select v-model="where.KSConsume_KEY_MONITOR_CHARGE" clearable placeholder="重点收费监控" style="width:130px">
+            <el-option label="重点收费监控-全部" value="" />
+            <el-option label="重点收费监控-是" value="1" />
+            <el-option label="重点收费监控-否" value="0" />
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-select v-model="where.KSConsume_KEY_MONITOR_USE" clearable placeholder="重点使用监控" style="width:130px">
+            <el-option label="重点使用监控-全部" value="" />
+            <el-option label="重点使用监控-是" value="1" />
+            <el-option label="重点使用监控-否" value="0" />
+          </el-select>
+        </el-form-item>
+        <el-form-item v-if="showStzx">
+          <el-select v-model="where.stzx_state" clearable placeholder="中心医院库存" style="width:120px">
+            <el-option label="包含" value="1" />
+            <el-option label="不包含" value="0" />
+          </el-select>
+        </el-form-item>
+        <el-form-item v-if="showStzx">
+          <el-select v-model="where.stzx_gz_state" clearable placeholder="中心医院高值库存" style="width:140px">
+            <el-option label="包含" value="1" />
+            <el-option label="不包含" value="0" />
+          </el-select>
+        </el-form-item>
+        <el-form-item v-if="showStzx">
+          <el-select v-model="where.stzx_gkjc_state" clearable placeholder="骨科集采" style="width:100px">
             <el-option label="全部" value="" />
-            <el-option v-for="s in storageList" :key="s.ID" :label="s.NAME" :value="String(s.ID)" />
+            <el-option label="包含" value="1" />
+            <el-option label="不包含" value="0" />
           </el-select>
-        </el-col>
-      </el-row>
-      <el-row :gutter="10" class="filter-row selects">
-        <el-select v-model="where.ksConsumeSearch10" clearable placeholder="消耗类型" style="width:120px;margin-right:8px">
-          <el-option label="消耗类型-全部" value="" />
-          <el-option label="PDA扫码消耗" value="0" />
-          <el-option label="RFID读码消耗" value="1" />
-          <el-option label="HIS计费消耗" value="2" />
-          <el-option label="散货申领消耗" value="3" />
-          <el-option label="HIS医嘱计费消耗" value="4" />
-          <el-option label="超时默认消耗" value="5" />
-          <el-option label="读码消耗" value="6" />
-        </el-select>
-        <el-select v-model="where.ksConsumeSearch7" clearable placeholder="高低值" style="width:100px;margin-right:8px">
-          <el-option label="高低值-全部" value="" />
-          <el-option label="高值" value="高值" />
-          <el-option label="低值" value="低值" />
-          <el-option label="试剂" value="试剂" />
-          <el-option label="消毒" value="消毒" />
-        </el-select>
-        <el-select v-model="where.ksConsumeFLsearch" clearable placeholder="分类属性" style="width:140px;margin-right:8px">
-          <el-option label="分类属性-全部" value="" />
-          <el-option v-for="o in classific2Options" :key="o.v" :label="o.l" :value="o.v" />
-        </el-select>
-        <el-select v-model="where.ksConsumeIsProtect" clearable placeholder="防控物资" style="width:110px;margin-right:8px">
-          <el-option label="防控物资-全部" value="" />
-          <el-option label="防控物资-是" value="1" />
-          <el-option label="防控物资-否" value="0" />
-        </el-select>
-        <el-select v-model="where.highOrLowClassTwo1" clearable placeholder="重点治理" style="width:120px;margin-right:8px">
-          <el-option label="重点治理-全部" value="" />
-          <el-option label="重点治理" value="1" />
-          <el-option label="非重点治理" value="2" />
-        </el-select>
-        <el-select v-model="where.ksConsumeIsSpecialAircraft" clearable placeholder="专机专用" style="width:110px;margin-right:8px">
-          <el-option label="专机专用-全部" value="" />
-          <el-option label="专机专用-是" value="1" />
-          <el-option label="专机专用-否" value="0" />
-        </el-select>
-        <el-select v-model="where.ksConsumeContractType" clearable placeholder="合同" style="width:110px;margin-right:8px">
-          <el-option label="合同-全部" value="" />
-          <el-option label="合同-中标" value="1" />
-          <el-option label="合同-临采" value="2" />
-        </el-select>
-        <el-select v-model="where.ksConsumeIsPdaScan" clearable placeholder="PDA扫码" style="width:120px;margin-right:8px">
-          <el-option label="PDA扫码-全部" value="" />
-          <el-option label="PDA扫码-已扫码" value="1" />
-          <el-option label="PDA扫码-未扫码" value="2" />
-        </el-select>
-        <el-select v-model="where.ksConsumeGoodsQty" clearable placeholder="数量" style="width:100px;margin-right:8px">
-          <el-option label="数量-全部" value="" />
-          <el-option label="数量-大于0" value="1" />
-          <el-option label="数量-小于0" value="0" />
-        </el-select>
-        <el-select v-model="where.ksConsumeIsSendYg" clearable placeholder="发送阳光" style="width:120px;margin-right:8px">
-          <el-option label="发送阳光-全部" value="" />
-          <el-option label="已发送全部" value="1" />
-          <el-option label="已发送,成功" value="2" />
-          <el-option label="已发送,不成功" value="3" />
-          <el-option label="未发送" value="0" />
-        </el-select>
-        <el-select v-model="where.ksConsumeIsJc" clearable placeholder="集采" style="width:100px;margin-right:8px">
-          <el-option label="集采-全部" value="" />
-          <el-option label="集采-是" value="1" />
-          <el-option label="集采-否" value="0" />
-        </el-select>
-        <el-select v-model="where.ksConsumeSearchUdi" clearable placeholder="发送UDI" style="width:110px;margin-right:8px">
-          <el-option label="发送UDI-全部" value="" />
-          <el-option label="发送UDI-否" value="0" />
-          <el-option label="发送UDI-是" value="1" />
-        </el-select>
-        <el-select v-model="where.ksConsumeIsJf" clearable placeholder="是否计费" style="width:110px;margin-right:8px">
-          <el-option label="是否计费-全部" value="" />
-          <el-option label="是否计费-是" value="1" />
-          <el-option label="是否计费-否" value="0" />
-        </el-select>
-        <el-select v-model="where.KSConsume_KEY_MONITOR_CHARGE" clearable placeholder="重点收费监控" style="width:130px;margin-right:8px">
-          <el-option label="重点收费监控-全部" value="" />
-          <el-option label="重点收费监控-是" value="1" />
-          <el-option label="重点收费监控-否" value="0" />
-        </el-select>
-        <el-select v-model="where.KSConsume_KEY_MONITOR_USE" clearable placeholder="重点使用监控" style="width:130px;margin-right:8px">
-          <el-option label="重点使用监控-全部" value="" />
-          <el-option label="重点使用监控-是" value="1" />
-          <el-option label="重点使用监控-否" value="0" />
-        </el-select>
-        <el-select
-          v-if="showStzx"
-          v-model="where.stzx_state"
-          clearable
-          placeholder="中心医院库存"
-          style="width:120px;margin-right:8px"
-        >
-          <el-option label="包含" value="1" />
-          <el-option label="不包含" value="0" />
-        </el-select>
-        <el-select
-          v-if="showStzx"
-          v-model="where.stzx_gz_state"
-          clearable
-          placeholder="中心医院高值库存"
-          style="width:140px;margin-right:8px"
-        >
-          <el-option label="包含" value="1" />
-          <el-option label="不包含" value="0" />
-        </el-select>
-        <el-select
-          v-if="showStzx"
-          v-model="where.stzx_gkjc_state"
-          clearable
-          placeholder="骨科集采"
-          style="width:100px;margin-right:8px"
-        >
-          <el-option label="全部" value="" />
-          <el-option label="包含" value="1" />
-          <el-option label="不包含" value="0" />
-        </el-select>
-      </el-row>
-      <el-row :gutter="10" class="filter-row time-row">
+        </el-form-item>
+      </div>
+      <div class="filter-row time-row">
         <span class="time-label">消耗时间</span>
-        <el-date-picker
-          v-model="dateRange"
-          type="daterange"
-          value-format="yyyy-MM-dd"
-          range-separator="至"
-          start-placeholder="开始"
-          end-placeholder="结束"
-          style="width:240px"
-          @change="onDateRange"
-        />
-        <el-checkbox v-model="where.KSConsume_cb" class="ml12">按月结日期搜索</el-checkbox>
-        <el-date-picker
-          v-model="where.KSConsume_monthRange"
-          type="monthrange"
-          value-format="yyyy-MM"
-          range-separator="至"
-          start-placeholder="月结起"
-          end-placeholder="月结止"
-          :disabled="!where.KSConsume_cb"
-          style="width:220px;margin-left:8px"
-        />
+        <el-form-item class="time-item">
+          <el-date-picker
+            v-model="dateRange"
+            type="daterange"
+            value-format="yyyy-MM-dd"
+            range-separator="至"
+            start-placeholder="开始"
+            end-placeholder="结束"
+            style="width:240px"
+            @change="onDateRange"
+          />
+        </el-form-item>
+        <el-form-item class="time-item">
+          <el-checkbox v-model="where.KSConsume_cb">按月结日期搜索</el-checkbox>
+        </el-form-item>
+        <el-form-item class="time-item">
+          <el-date-picker
+            v-model="where.KSConsume_monthRange"
+            type="monthrange"
+            value-format="yyyy-MM"
+            range-separator="至"
+            start-placeholder="月结起"
+            end-placeholder="月结止"
+            :disabled="!where.KSConsume_cb"
+            style="width:220px"
+          />
+        </el-form-item>
         <span class="time-label ml12">日清时间</span>
-        <el-date-picker
-          v-model="where.KSConsumeBD_dayClearingDate"
-          type="date"
-          value-format="yyyy-MM-dd"
-          placeholder="yyyy-MM-dd"
-          style="width:140px"
-        />
+        <el-form-item class="time-item">
+          <el-date-picker
+            v-model="where.KSConsumeBD_dayClearingDate"
+            type="date"
+            value-format="yyyy-MM-dd"
+            placeholder="yyyy-MM-dd"
+            style="width:140px"
+          />
+        </el-form-item>
         <span class="time-label ml12">微讯通结算月份</span>
-        <el-input v-model="where.KSConsumeBD_SEND_WXT_MARK" clearable placeholder="yyyyMM" style="width:100px" />
-      </el-row>
+        <el-form-item class="time-item">
+          <el-input v-model="where.KSConsumeBD_SEND_WXT_MARK" clearable placeholder="yyyyMM" style="width:100px" />
+        </el-form-item>
+      </div>
       <el-row class="actions-row">
-        <el-button type="primary" icon="el-icon-search" size="mini" @click="search">查询</el-button>
-        <el-button size="mini" @click="reset">重置</el-button>
-        <el-button type="primary" plain size="mini" :loading="exporting" @click="$emit('export-front')">导出检索</el-button>
-        <el-button type="primary" plain size="mini" :loading="exportingEp" @click="$emit('export-ep')">后端导出(快速)</el-button>
-        <el-button type="warning" plain size="mini" :loading="refreshing" @click="$emit('refresh-data')">更新全部数据</el-button>
-        <el-button v-if="canReverse" type="danger" plain size="mini" :disabled="!reverseReady" @click="$emit('reverse')">
-          逆向消耗
-        </el-button>
+        <el-form-item class="ele-form-actions">
+          <el-button type="primary" icon="el-icon-search" @click="search">查询</el-button>
+          <el-button @click="reset">重置</el-button>
+          <el-button type="primary" plain :loading="exporting" @click="$emit('export-front')">导出检索</el-button>
+          <el-button type="primary" plain :loading="exportingEp" @click="$emit('export-ep')">后端导出(快速)</el-button>
+          <el-button type="warning" plain :loading="refreshing" @click="$emit('refresh-data')">更新全部数据</el-button>
+          <el-button v-if="canReverse" type="danger" plain :disabled="!reverseReady" @click="$emit('reverse')">
+            逆向消耗
+          </el-button>
+        </el-form-item>
       </el-row>
+      <!-- <el-row class="actions-row">
+        <el-button type="primary" icon="el-icon-search" size="mini" @click="search">查询</el-button>
+        ...
+      </el-row> -->
     </el-form>
   </div>
 </template>
@@ -338,36 +460,92 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .consume-search {
-  margin-bottom: 10px;
+  padding: 0;
 }
+
 .filter-row {
+  margin-bottom: 0;
+}
+
+.filter-row :deep(.el-col .el-form-item) {
   margin-bottom: 8px;
 }
+
+.filter-row :deep(.el-col .el-form-item__content) {
+  width: 100%;
+  max-width: none !important;
+  margin-left: 0 !important;
+}
+
+.filter-row :deep(.el-col .el-input),
+.filter-row :deep(.el-col .el-select) {
+  width: 100%;
+}
+
 .selects {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  gap: 8px;
 }
+
+.selects :deep(.el-form-item) {
+  margin: 0;
+}
+
+.selects :deep(.el-form-item__content) {
+  max-width: none !important;
+  margin-left: 0 !important;
+}
+
 .time-row {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  gap: 8px 12px;
   margin-bottom: 8px;
 }
+
 .time-label {
   font-size: 12px;
   color: #606266;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
+
 .ml12 {
-  margin-left: 12px;
+  margin-left: 0;
 }
+
+.time-row :deep(.time-item) {
+  margin: 0;
+}
+
+.time-row :deep(.time-item .el-form-item__content) {
+  max-width: none !important;
+  margin-left: 0 !important;
+}
+
+.ele-form-search :deep(.el-form-item__content) {
+  max-width: none !important;
+}
+
 .actions-row {
   margin-top: 4px;
 }
-.actions-row .el-button {
-  margin-right: 8px;
-  margin-bottom: 4px;
+
+.ele-form-actions :deep(.el-form-item__content) {
+  max-width: none !important;
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-left: 0 !important;
+}
+
+.ele-form-actions :deep(.el-button) {
+  margin: 0;
 }
 </style>

@@ -208,7 +208,7 @@
           <ele-pro-table
             size="mini"
             ref="table"
-            height="250px"
+            height="300px"
             :columns="columns"
             :datasource="datasource"
             :page-size="9"
