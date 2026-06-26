@@ -158,6 +158,11 @@ const envConfig = {
     publicPath: '/jyknw/',
     outputDir: 'jyknw'
   },
+  lglssk: {
+    target: 'http://172.31.71.152:16002/',
+    publicPath: '/jyksk/',
+    outputDir: 'jyksk'
+  },
 }
 
 const currentEnv = process.env.VUE_APP_ENV || 'local';
