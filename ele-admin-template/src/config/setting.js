@@ -9,7 +9,8 @@ const getRequestTimeout = () => {
   const env = process.env.VUE_APP_ENV;
   const envTimeoutMap = {
     'lglsww': 3600000,
-    'lgsnw': 3600000,
+    'lglsnw': 3600000,
+    'lglssk': 3600000,
     'lgnw': 3600000,
     'local': 3600000, // 1小时
     'test': 3600000,  // 1小时
@@ -81,6 +82,7 @@ const getHomeHp = () => {
     'lgnw': 'lg',
     'lglsww': 'lgls',
     'lglsnw': 'lgls',
+    'lglssk': 'lgls',
     'sebb': 'se2',  // 市二本部、大鹏院区、龙华院区统一使用同一个HOME_HP
     'sebbww': 'se2',  // 市二本部、大鹏院区、龙华院区统一使用同一个HOME_HP
     'sedp': 'se2',   // 三个环境使用同一个LOGO（待定）
@@ -150,6 +152,7 @@ const getBackBaseUrl = () => {
     'xhnw': 'http://172.21.152.3:891',
     'lglsww': '',
     'lglsnw': 'http://192.168.2.113:16002',
+    'lglssk': 'http://172.31.71.152:16002',
   };
   return envMap[env] || 'http://localhost:16416';
 }
