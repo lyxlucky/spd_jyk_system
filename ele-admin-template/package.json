@@ -37,6 +37,7 @@
     "build:sxys": "vue-cli-service build --mode sxys",
     "build:lglsnw": "vue-cli-service build --mode lglsnw",
     "build:lglsww": "vue-cli-service build --mode lglsww",
+    "build:lglssk": "vue-cli-service build --mode lglssk",
     "lint": "vue-cli-service lint",
     "clean:lib": "rimraf node_modules"
   },

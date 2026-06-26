@@ -147,6 +147,9 @@ export default {
       case 'lg':
         logoPath = require('@/assets/logoLG.png');
         break;
+      case 'lgls':
+        logoPath = require('@/assets/logoLS.png');
+        break;
       case 'stzx':
         logoPath = require('@/assets/logoSTZX.jpg');
         break;
@@ -163,7 +166,7 @@ export default {
         logoPath = require('@/assets/xh.png');
         break;
       default:
-        logoPath = require('@/assets/logoBJ.jpg');
+        logoPath = require('@/assets/logo.png');
       }
       return `${logoPath}?_t=${new Date().getTime()}`;
     }
