@@ -40,7 +40,7 @@ export async function GetPDAList(data) {
         conTime:where.conTime || '', //合同到期
         is_hptx:where.hptx|| '', //货票同行
         validDateFrom: where.start_time || '',//开始时间 
-        validDateTo: where.start_time || '',//结束时间 
+        validDateTo: where.end_time || '',//结束时间 
         field: '',
         order: '',
         isCharge: where.isCharge|| '',
