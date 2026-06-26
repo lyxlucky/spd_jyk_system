@@ -26,6 +26,7 @@
     "build:zxww": "vue-cli-service build --mode zxww",
     "build:zxnw": "vue-cli-service build --mode zxnw",
     "build:lgww": "vue-cli-service build --mode lgww",
+    "build:lgnw": "vue-cli-service build --mode lgnw",
     "build:sebb": "vue-cli-service build --mode sebb",
     "build:sebbww": "vue-cli-service build --mode sebbww",
     "build:sedp": "vue-cli-service build --mode sedp",
