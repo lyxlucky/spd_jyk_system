@@ -7,9 +7,9 @@
       <template v-slot:toolbar>
         <!-- 搜索表单 -->
         <!-- <label>合计数量:<b>{{sumCount}}</b></label> -->
-      <span v-if="['stzl', 'stzx'].includes(HOME_HP) || ENV == 'development'" style="font-size: 20px; padding-right: 20px;">当前设备： {{ bindMachine || '暂无' }}</span>
+        <span v-if="['stzl', 'stzx'].includes(HOME_HP) || ENV == 'development'" style="font-size: 14px; padding-right: 20px;">当前设备： {{ bindMachine || '暂无' }}</span>
 
-      <span style="font-size: 20px;">合计数量:<b>{{ sumCount }}</b></span>
+      <span style="font-size: 14px;">合计数量:<b>{{ sumCount }}</b></span>
       </template>
 
       <template v-slot:State="{ row }">

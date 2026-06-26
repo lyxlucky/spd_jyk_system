@@ -1,8 +1,19 @@
 import request from '@/utils/request';
-import { formdataify, DataToObject } from '@/utils/formdataify';
+import { formdataify, DataToObject, toUrlEncodedBody } from '@/utils/formdataify';
 import { TOKEN_STORE_NAME } from '@/config/setting';
 import store from '@/store';
 import App from '@/App.vue';
+
+function token() {
+  return sessionStorage.getItem(TOKEN_STORE_NAME);
+}
+
+/** 库区下拉 */
+export function getStorageList() {
+  return request.post('/Commons/GetStorageWithToken', toUrlEncodedBody({ Token: token() }), {
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+  });
+}
 
 /* 状态汇总统计 */
 export function getStockUpStateList(data) {
@@ -11,6 +22,7 @@ export function getStockUpStateList(data) {
   data2.size = data.limit || 9999;
   data2.start_time = data.where?.start_time || '';
   data2.end_time = data.where?.end_time || '';
+  data2.STORAGE_ID = data.where?.STORAGE_ID || '';
   data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
 
   return request.get('ANewStockUp/StockUpStateList', {
@@ -34,6 +46,8 @@ export function getStockUpVarInfo(data) {
   data2.end_time = data.where?.end_time || '';
   data2.state = data.where?.state || '';
   data2.remark = data.where?.remark || '';
+  data2.STORAGE_ID = data.where?.STORAGE_ID || '';
+  data2.varType = data.where?.varType || '';
   data2.order_pc = data.order?.order || 'desc';
   data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
 
@@ -61,6 +75,8 @@ export function getStockUpList(data) {
   data2.isQZJS = data.where?.isQZJS ? 1 : 0;
   data2.CREATOR = data.where?.CREATOR || '';
   data2.BZ = data.where?.BZ || '';
+  data2.STORAGE_ID = data.where?.STORAGE_ID || '';
+  data2.REVIEW_STATE = data.where?.REVIEW_STATE || '';
   data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
   return request.get('ANewStockUp/StockUpList', {
     params: data2

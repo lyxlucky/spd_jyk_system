@@ -2,13 +2,19 @@
   <div class="ele-body">
     <el-row :gutter="10">
       <el-col :span="8">
-        <StatusSummaryStatistics ref="table1" @onClickRow="clickTableRow1" />
+        <StatusSummaryStatistics 
+          ref="table1" 
+          @onClickRow="clickTableRow1" 
+          @onStorageChange="onStorageChange"
+          :storageId="currentStorageId"
+        />
       </el-col>
       <el-col :span="16">
         <StockPlanItemDetail
           ref="table2"
           :currentTableRow="currentTableRow"
           :currentTableRow3="currentTableRow3"
+          :storageId="currentStorageId"
           @onClickRow="clickTableRow2"
         />
       </el-col>
@@ -19,6 +25,7 @@
           ref="table3"
           :currentTableRow2="currentTableRow2"
           :currentTableRow="currentTableRow"
+          :storageId="currentStorageId"
           @onRowClick="clickTableRow3"
         />
       </el-col>
@@ -44,7 +51,9 @@
         //表2选中行
         currentTableRow2: {},
         // 表3选中行
-        currentTableRow3: {}
+        currentTableRow3: {},
+        // 当前库房ID
+        currentStorageId: ''
       };
     },
     methods: {
@@ -68,6 +77,13 @@
         this.currentTableRow3 = row;
         this.$nextTick(() => {
           this.$refs.table2.handleSearch();
+        });
+      },
+      onStorageChange(storageId) {
+        this.currentStorageId = storageId;
+        this.$nextTick(() => {
+          this.$refs.table2.handleSearch();
+          this.$refs.table3.handleSearch();
         });
       }
     }

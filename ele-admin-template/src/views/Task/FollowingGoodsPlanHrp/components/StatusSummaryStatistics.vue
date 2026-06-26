@@ -37,6 +37,23 @@
           <el-form-item>
             <el-button type="primary" @click="handleSearch">查询</el-button>
           </el-form-item>
+          <el-form-item>
+            <el-select
+              v-model="localStorageId"
+              placeholder="全院"
+              clearable
+              style="width: 120px"
+              @change="onStorageChange"
+            >
+              <el-option label="全院" value="" />
+              <el-option
+                v-for="item in storageList"
+                :key="item.ID"
+                :label="item.NAME"
+                :value="String(item.ID)"
+              />
+            </el-select>
+          </el-form-item>
 
           <!-- <el-row :gutter="20">
                         <el-col :span="6">
@@ -70,14 +87,21 @@
 </template>
 
 <script>
-  import { getStockUpStateList } from '@/api/Task/FollowingGoodsPlanHrp';
+  import { getStockUpStateList, getStorageList } from '@/api/Task/FollowingGoodsPlanHrp';
   export default {
     name: 'StatusSummaryStatistics',
     components: {},
-    props: {},
+    props: {
+      storageId: {
+        type: String,
+        default: ''
+      }
+    },
     data() {
       return {
         dateRange: ['', ''],
+        localStorageId: '',
+        storageList: [],
         summaryColumns: [
           {
             label: '订单状态',
@@ -124,6 +148,9 @@
       };
     },
     computed: {},
+    mounted() {
+      this.loadStorageList();
+    },
     methods: {
       search(e) {
         // 执行查询操作
@@ -132,6 +159,20 @@
       handleRowClick(row, column, event) {
         // console.log('表1',row)
         this.$emit('onClickRow', row);
+      },
+      onStorageChange() {
+        this.$emit('onStorageChange', this.localStorageId);
+        this.$refs.summaryTable?.reload({ page: 1 });
+      },
+      async loadStorageList() {
+        try {
+          const res = await getStorageList();
+          if (res.data?.code === 200 || res.data?.code === '200') {
+            this.storageList = res.data?.result || [];
+          }
+        } catch (e) {
+          console.error('加载库房列表失败', e);
+        }
       },
       // 查询当天数据
       queryToday() {
@@ -182,7 +223,8 @@
           where: {
             ...where,
             start_time: this.dateRange[0],
-            end_time: this.dateRange[1]
+            end_time: this.dateRange[1],
+            STORAGE_ID: this.localStorageId || this.storageId || ''
           }
         })
           .then((res) => {

@@ -67,6 +67,13 @@
             </el-select>
           </el-form-item>
           <el-form-item>
+            <el-select v-model="form.varType" placeholder="品种类型">
+              <el-option label="全部" value=""> </el-option>
+              <el-option label="高值" value="1"> </el-option>
+              <el-option label="低值" value="0"> </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item>
             <el-button type="primary" @click="handleSearch">查询</el-button>
           </el-form-item>
           <el-form-item>
@@ -109,19 +116,23 @@
   export default {
     name: 'StockPlanItemDetail',
     props: {
-      currentTableRow: {
-        type: Object,
-        default: () => {
-          return {};
-        }
-      },
-      currentTableRow3: {
-        type: Object,
-        default: () => {
-          return {};
-        }
+    currentTableRow: {
+      type: Object,
+      default: () => {
+        return {};
       }
     },
+    currentTableRow3: {
+      type: Object,
+      default: () => {
+        return {};
+      }
+    },
+    storageId: {
+      type: String,
+      default: ''
+    }
+  },
 
     data() {
       return {
@@ -140,7 +151,8 @@
           // remark: '', // 备注
           start_time: '',
           end_time: '',
-          order_pc: 'desc' // 排序方式
+          order_pc: 'desc', // 排序方式
+          varType: '' // 品种类型（全部/高值/低值）
         },
         columns: [
           {
@@ -457,7 +469,9 @@
           where: {
             ...this.form,
             order_state: this.currentTableRow?.ORDER_STATE || '',
-            id: this.currentTableRow3?.ID || ''
+            id: this.currentTableRow3?.ID || '',
+            STORAGE_ID: this.storageId || '',
+            varType: this.form.varType || ''
           }
         })
           .then((res) => {
@@ -546,7 +560,9 @@
           where: {
             ...this.form,
             order_state: this.currentTableRow?.ORDER_STATE || '',
-            id: this.currentTableRow3?.ID || ''
+            id: this.currentTableRow3?.ID || '',
+            STORAGE_ID: this.storageId || '',
+            varType: this.form.varType || ''
           }
         }).then((res) => {
           // console.log(res.data);

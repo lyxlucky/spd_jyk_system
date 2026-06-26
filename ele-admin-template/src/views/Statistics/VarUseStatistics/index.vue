@@ -35,31 +35,32 @@
         <el-col :span="19">
           <div class="panel-title">品种</div>
           <el-form size="small" inline class="filter-bar" @submit.native.prevent>
-            <el-select v-model="filters.heightOrLow" style="width: 90px">
+            <el-select v-model="filters.heightOrLow" style="width: 90px" class="jj">
               <el-option label="高值" value="1" />
               <el-option label="低值" value="0" />
               <el-option label="全部" value="2" />
             </el-select>
-            <el-select v-model="filters.isProtect" style="width: 110px">
+            <el-select v-model="filters.isProtect" style="width: 130px" class="jj">
               <el-option label="非防疫物资" value="0" />
               <el-option label="防疫物资" value="1" />
               <el-option label="全部" value="2" />
             </el-select>
-            <el-select v-model="filters.isVarName" style="width: 140px">
+            <el-select v-model="filters.isVarName" style="width: 150px" class="jj">
               <el-option label="按品种名称汇总" value="1" />
               <el-option label="按品种编码汇总" value="0" />
             </el-select>
-            <el-select v-model="filters.orderVal" style="width: 110px">
+            <el-select v-model="filters.orderVal" style="width: 120px" class="jj">
               <el-option label="按金额排序" value="sumPrice" />
               <el-option label="按数量排序" value="sumNum" />
             </el-select>
-            <span class="lbl">时间:</span>
+            <span class="lbl jj">时间:</span>
             <el-date-picker
               v-model="filters.dateStart"
               type="month"
               value-format="yyyy-MM"
               placeholder="yyyy-mm"
               style="width: 120px"
+              class="jj"
             />
             <span>-</span>
             <el-date-picker
@@ -69,7 +70,7 @@
               placeholder="yyyy-mm"
               style="width: 120px"
             />
-            <el-button type="primary" icon="el-icon-search" @click="searchAll">查询</el-button>
+            <el-button type="primary" icon="el-icon-search" @click="searchAll" class="jj">查询</el-button>
           </el-form>
           <el-table
             v-loading="varLoading"
@@ -104,11 +105,11 @@
           <div class="panel-title">品种每月使用情况</div>
           <el-form size="small" inline @submit.native.prevent>
             <span class="lbl">数据显示:</span>
-            <el-select v-model="varMonthlyShowAll" style="width: 140px" @change="loadVarMonthly">
+            <el-select v-model="varMonthlyShowAll" style="width: 140px;" @change="loadVarMonthly" class="jj">
               <el-option label="展示消耗月份" value="0" />
               <el-option label="展示全部月份" value="1" />
             </el-select>
-            <el-button type="primary" icon="el-icon-search" size="small" @click="loadVarMonthly">
+            <el-button type="primary" icon="el-icon-search" size="small" @click="loadVarMonthly" class="jj">
               查询
             </el-button>
           </el-form>
@@ -147,11 +148,11 @@
           <div class="panel-title">科室每月使用情况</div>
           <el-form size="small" inline @submit.native.prevent>
             <span class="lbl">数据显示:</span>
-            <el-select v-model="deptMonthlyShowAll" style="width: 140px" @change="loadDeptMonthly">
+            <el-select v-model="deptMonthlyShowAll" style="width: 140px" @change="loadDeptMonthly" class="jj">
               <el-option label="展示消耗月份" value="0" />
               <el-option label="展示全部月份" value="1" />
             </el-select>
-            <el-button type="primary" icon="el-icon-search" size="small" @click="loadDeptMonthly">
+            <el-button type="primary" icon="el-icon-search" size="small" @click="loadDeptMonthly" class="jj">
               查询
             </el-button>
           </el-form>
@@ -367,5 +368,8 @@ export default {
   margin: 0 4px;
   font-size: 13px;
   color: #606266;
+}
+.jj {
+  margin-left: 10px;
 }
 </style>

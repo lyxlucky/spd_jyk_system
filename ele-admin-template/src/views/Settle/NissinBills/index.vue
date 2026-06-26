@@ -80,7 +80,7 @@
             border
             stripe
             size="mini"
-            height="calc(100vh - 240px)"
+            height="calc(100vh - 200px)"
             highlight-current-row
             @selection-change="deptSelection = $event"
             @current-change="onDeptSelect"
@@ -167,7 +167,7 @@
             border
             stripe
             size="mini"
-            height="calc(100vh - 340px)"
+            height="calc(100vh - 240px)"
             @sort-change="onVarietySort"
           >
             <el-table-column prop="DateShow" label="手术计费日期" width="180" sortable="custom" />

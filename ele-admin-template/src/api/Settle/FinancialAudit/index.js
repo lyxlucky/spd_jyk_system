@@ -21,6 +21,7 @@ export async function getFinacialTableData(data) {
     isDL: data.where.isDL ? data.where.isDL : '',
     SaleNum: data.where.SaleNum ? data.where.SaleNum : '',
     VarietieCode: data.where.VarietieCode ? data.where.VarietieCode : '',
+    highOrLowClass: data.where.highOrLowClass ? data.where.highOrLowClass : '',
     hp: HOME_HP,
     field: "",
     order: "",

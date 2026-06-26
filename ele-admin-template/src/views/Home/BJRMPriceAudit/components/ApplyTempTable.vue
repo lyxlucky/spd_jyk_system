@@ -18,7 +18,7 @@
       :row-key="(row) => row.PlanNum"
       @current-change="onCurrentChange"
       ref="table"
-      height="60vh"
+      height="65vh"
       :stripe="true"
       :pageSize="pageSize"
       :pageSizes="pageSizes"

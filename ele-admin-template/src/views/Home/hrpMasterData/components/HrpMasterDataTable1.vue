@@ -7,7 +7,7 @@
       <ele-pro-table
         size="mini"
         ref="table"
-        height="550px"
+        height="calc(100vh - 330px)"
         :columns="columns"
         highlight-current-row
         :datasource="datasource"

@@ -10,7 +10,7 @@
     >
       <el-form-item label="补货单号">
         <el-input
-          style="width: 120px"
+          style="width: 200px"
           clearable
           v-model="where.stock_out_distribute_number"
           placeholder="补货单号"
@@ -18,7 +18,7 @@
       </el-form-item>
       <el-form-item label="日期">
         <el-date-picker
-          style="width: 200px"
+          style="width: 220px"
           v-model="deliveryDateRange"
           type="daterange"
           range-separator="至"

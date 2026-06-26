@@ -136,6 +136,7 @@
       :page-sizes="[10, 20, 30, 50, 100, 150, 300, 1000]"
       cache-key="cimCenterMonitorTable"
       @selection-change="onMonitorSelectionChange"
+      @row-click="onMonitorRowClick"
     >
       <template v-slot:contractType="{ row }">{{ formatContractType(row.CONTRACT_TYPE) }}</template>
       <template v-slot:pkgPlan="{ row }">
@@ -357,7 +358,8 @@ export default {
       planRemarkNo: '',
       planRemarkSaving: false,
       stockUpVisible: false,
-      monitorRows: []
+      monitorRows: [],
+      currentMonitorRow: null
     };
   },
   mounted() {
@@ -444,6 +446,11 @@ export default {
         this.pickingWhere.VarietieCode = rows[0].Varietie_Code_New || '';
         this.reloadPicking();
       }
+    },
+    onMonitorRowClick(row) {
+      this.currentMonitorRow = row;
+      this.pickingWhere.VarietieCode = row.Varietie_Code_New || '';
+      this.reloadPicking();
     },
     async loadStorageList() {
       try {

@@ -158,10 +158,16 @@
             >
           </el-form-item>
           <el-form-item>
+            <span style="margin-left: 20px; font-weight: bold;">总金额：{{ totalMoney.toFixed(2) }}</span>
+          </el-form-item>
+          <el-form-item>
             <el-checkbox v-model="form.isQZJS">过滤强制关闭订单</el-checkbox>
           </el-form-item>
         </el-form>
 
+        <div style="padding: 5px 15px; text-align: right;">
+          计划品种数量: <b>{{ varCount }}</b>
+        </div>
         <div>
           <ele-pro-table
             size="mini"
@@ -215,6 +221,10 @@
       currentTableRow: {
         type: Object,
         default: () => {}
+      },
+      storageId: {
+        type: String,
+        default: ''
       }
     },
     data() {
@@ -238,6 +248,8 @@
         currentTableData: null,
         selectedRows: [], // 选中的行
         hasSelection: false, // 是否有选中的行
+        totalMoney: 0, // 选中行总金额
+        varCount: 0, // 计划品种数量
         updateFundsDialogVisible: false,
         columns: [
           {
@@ -501,6 +513,7 @@
       handleSelectionChange(selection) {
         this.selectedRows = selection;
         this.hasSelection = selection.length > 0;
+        this.totalMoney = selection.reduce((sum, row) => sum + (row.SUM_MONEY || 0), 0);
       },
 
       // 审批不通过
@@ -923,7 +936,8 @@
             send_state: this.form.send_state,
             order_state: this.currentTableRow.ORDER_STATE,
             varietie_code: this.currentTableRow2.Varietie_Code_New,
-            isQZJS: this.form.isQZJS ? 1 : 0
+            isQZJS: this.form.isQZJS ? 1 : 0,
+            STORAGE_ID: this.storageId || ''
             // start_time: this.form.start_time,
             // end_time: this.form.end_time
           }
@@ -931,11 +945,13 @@
           .then((res) => {
             let data = res.data;
             if (data.code == '200') {
+              this.varCount = data.varCount || 0;
               return {
                 list: data.result,
                 count: data.total
               };
             }
+            this.varCount = 0;
             return {
               list: [],
               count: 0
