@@ -179,3 +179,54 @@ export async function pullVarietieBasicInfoSync() {
   );
   return unwrap(res);
 }
+
+/** 历史中标价变动记录 */
+export async function getPriceChangeRecord(varietieCode) {
+  const res = await request.post(
+    '/VarietieBasicInfo/GetPRICE_CHANGE_RECODE',
+    formdataify({
+      Token: token(),
+      varietieCode: varietieCode || ''
+    })
+  );
+  return unwrap(res);
+}
+
+/** 北大发送审批（备注后提交） */
+export async function updateOrInsertWxtVarInfo(rows, remark = '') {
+  const res = await request.post(
+    '/MonthClearing/updateOrInsertWxtVarInfo',
+    formdataify({
+      Token: token(),
+      json: JSON.stringify(rows || []),
+      BZ: remark ?? ''
+    })
+  );
+  return unwrap(res);
+}
+
+/** 更新品种基础资料（非市二） */
+export async function updateVarietieBasic(payload) {
+  const res = await request.post('/VarietieBasicInfo/UpdateVarietieBasic', formdataify(payload));
+  return unwrap(res);
+}
+
+/** 更新品种基础资料（市二） */
+export async function updateVarietieBasicStse(payload) {
+  const res = await request.post('/VarietieBasicInfo/UpdateVarietieBasic_STSE', payload);
+  return unwrap(res);
+}
+
+/** 市二发送同步品种 */
+export async function sendStseVarHis(rows, men = '') {
+  const payload = (rows || []).map((row) => ({ ID: row.ID }));
+  const res = await request.post(
+    '/AAxtzx_his/SendStseVarHis',
+    formdataify({
+      Token: token(),
+      json: JSON.stringify(payload),
+      men: men || ''
+    })
+  );
+  return unwrap(res);
+}

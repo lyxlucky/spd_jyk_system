@@ -80,6 +80,35 @@ export async function PicVarDiscardUse(data) {
   return Promise.reject(new Error(res.data.msg));
 }
 
+/** 品种资质图片上传（对应老系统 Frame/UploadPictures → UploadVarPic） */
+export async function uploadVarPic(data) {
+  const Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+  const fd = new FormData();
+  fd.append('Token', Token);
+  fd.append('VARIETIE_CODE', data.varietieCode || '');
+  fd.append('PROD_REGISTRATION_CODE', data.prodRegistrationCode || '');
+  fd.append('SUPPLIER_CODE', data.supplierCode != null ? String(data.supplierCode) : '0');
+  fd.append('TYPE', data.type != null ? String(data.type) : '');
+  fd.append('TB_STATE', data.tbState != null ? String(data.tbState) : '0');
+  fd.append('REMARK', data.remark || '');
+  fd.append('START_TIME', data.startTime || '0001-01-01');
+  fd.append('END_TIME', data.endTime || '9999-01-01');
+  if (data.file) {
+    fd.append('FILE', data.file);
+  }
+  const res = await request.post('/BtbGetVarietie/UploadVarPic', fd, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+    timeout: 120000
+  });
+  if (res.data === '301' || res.data === 301) {
+    return Promise.reject(new Error('登录失效，请重新登录'));
+  }
+  if (res.data.code == 200 || res.data.code === '200') {
+    return res.data;
+  }
+  return Promise.reject(new Error(res.data.msg || '上传失败'));
+}
+
 export async function deleteVarPic(data) {
   const res = await request.post(
     '/BtbGetVarietie/deleteVarPic',

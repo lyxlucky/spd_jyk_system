@@ -130,7 +130,10 @@ export default {
           item.path,
           item.title,
           item.Permission_Url,
-          item.PERMISSION_URL
+          item.PERMISSION_URL,
+          item.permission_name,
+          item.PERMISSION_NAME,
+          item.Permission_Name
         ].forEach((v) => {
           if (v) {
             authoritySet.add(v);
