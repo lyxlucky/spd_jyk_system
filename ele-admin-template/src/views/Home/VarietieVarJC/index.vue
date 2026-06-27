@@ -159,7 +159,7 @@ export default {
     datasource({ page, limit, where }) {
       this.currentWhere = where || this.where;
       return getVarietieJCData({ page, limit, where: this.currentWhere }).then((res) => ({
-        list: res.result || [],
+        list: (res.result || []).slice(0, limit),
         count: res.total || 0
       }));
     },
