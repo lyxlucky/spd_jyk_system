@@ -225,7 +225,8 @@ export default {
         SUPPLIER_NAME: this.where.supplierName,
         YEAR: this.where.year
       });
-      return { count: res.total, list: res.result };
+      const list = (res.result || []).slice(0, limit);
+      return { count: res.total, list };
     },
     async recordDatasource({ page, limit }) {
       if (!this.selectedSupplier?.SUPPLIER_CODE) {

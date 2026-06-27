@@ -409,7 +409,7 @@ export default {
     datasource({ page, limit, where, order }) {
       this.currentWhere = where;
       return queryAuditPageLayUI({ page, limit, where, order }).then((res) => ({
-        list: res.result || [],
+        list: (res.result || []).slice(0, limit),
         count: res.total || 0
       }));
     },
