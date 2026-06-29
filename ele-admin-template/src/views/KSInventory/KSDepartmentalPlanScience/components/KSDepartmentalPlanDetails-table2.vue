@@ -30,7 +30,7 @@
           size="mini"
           border
           stripe
-          :toolbar="false"
+          :toolkit="['columns', 'fullscreen']"
           :header-overflow-hidden="false"
           highlight-current-row
           :pageSize="pageSize"
@@ -39,6 +39,7 @@
           :datasource="datasource"
           :selection.sync="selection"
           :height="tableHeight"
+          full-height="calc(100vh - 100px)"
           cache-key="KSDepartmentalPlanScienceDetailTable"
           @selection-change="onSelectionChange"
         >
@@ -318,10 +319,9 @@
           //   fixed: 'right'
           // },
           {
-            // prop: 'VarCode',
+            columnKey: 'VarCode',
             slot: 'VarCode',
             label: '品种编码',
-
             align: 'center',
             showOverflowTooltip: true,
             width: 150
@@ -444,10 +444,9 @@
             width: 120
           },
           {
+            columnKey: 'PlanQty',
             slot: 'PlanQty',
-            // prop: 'PlanQty',
             label: '实际申领数量',
-
             align: 'center',
             showOverflowTooltip: true,
             width: 160,
@@ -473,16 +472,15 @@
             }
           },
           {
+            columnKey: 'PAG_TYPE',
             slot: 'PAG_TYPE',
-            // prop: 'PAG_TYPE',
             label: '包装规格',
-
             align: 'center',
             showOverflowTooltip: true,
             width: 110
           },
           {
-            prop: '',
+            columnKey: 'TotalAmount',
             label: '总金额',
             align: 'center',
             showOverflowTooltip: true,
@@ -519,13 +517,14 @@
             }
           },
           {
+            columnKey: 'IMAGE_BUTTON',
             slot: 'IMAGE_BUTTON',
             label: '图片',
             align: 'center',
             width: 80
           },
           {
-            // prop: 'REMARK',
+            columnKey: 'REMARK',
             slot: 'REMARK',
             label: '备注',
             align: 'center',
@@ -533,7 +532,7 @@
             width: 110
           },
           {
-            // prop: 'REMARK',
+            columnKey: 'SKU',
             slot: 'SKU',
             label: 'SKU',
             align: 'center',
@@ -550,6 +549,7 @@
             width: 110
           },
           {
+            columnKey: 'REGISTRATION_VALID_DATE',
             slot: 'REGISTRATION_VALID_DATE',
             label: '注册证到期',
             align: 'center',
@@ -558,6 +558,7 @@
             show: HOME_HP == 'bdrm'
           },
           {
+            columnKey: 'MAN_XKZ_END',
             slot: 'MAN_XKZ_END',
             label: '生产许可证到期',
             align: 'center',
@@ -566,6 +567,7 @@
             show: HOME_HP == 'bdrm'
           },
           {
+            columnKey: 'AUTH_VALID',
             slot: 'AUTH_VALID',
             label: '品种授权到期',
             align: 'center',
@@ -574,6 +576,7 @@
             show: HOME_HP == 'bdrm'
           },
           {
+            columnKey: 'BUSINESS_LICENSE_VALID_DATE2',
             slot: 'BUSINESS_LICENSE_VALID_DATE2',
             label: '供应商经营许可证',
             align: 'center',
@@ -582,6 +585,7 @@
             show: HOME_HP == 'bdrm'
           },
           {
+            columnKey: 'BUSINESS_LICENSE_VALID_DATE',
             slot: 'BUSINESS_LICENSE_VALID_DATE',
             label: '集配商经营许可证',
             align: 'center',
@@ -590,7 +594,6 @@
             show: HOME_HP == 'bdrm'
           }
         ],
-        toolbar: false,
         pageSize: 9999999,
         pagerCount: 2,
         pageSizes: [100, 9999999],
@@ -948,5 +951,13 @@
 <style scoped>
 .ks-dept-plan-detail >>> .el-table th .cell {
   white-space: nowrap;
+}
+
+.ks-dept-plan-detail >>> .ele-table-tool-default {
+  padding: 2px 0 0 4px;
+}
+
+.ks-dept-plan-detail >>> .ele-table-tool .ele-table-tool-title {
+  margin: 0;
 }
 </style>

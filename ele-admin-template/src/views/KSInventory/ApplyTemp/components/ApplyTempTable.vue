@@ -24,7 +24,6 @@
           :pageSize="pageSize"
           :pageSizes="pageSizes"
           :columns="columns"
-          :needPage="false"
           :datasource="datasource"
           :selection.sync="selection"
           cache-key="ApplyTempMainTable"
@@ -290,7 +289,7 @@
         showImport: false,
         // datasource: [],
         data: [],
-        tableHeight: '65vh'
+        tableHeight: '75vh'
       };
     },
     methods: {

@@ -32,9 +32,10 @@
           border
           stripe
           highlight-current-row
-          :toolbar="false"
+          :toolkit="['columns', 'fullscreen']"
           :header-overflow-hidden="false"
           :height="tableHeight"
+          full-height="calc(100vh - 100px)"
           style="background: #fff;"
           :rowClickCheckedIntelligent="false"
           :pageSize="pageSize"
@@ -45,22 +46,6 @@
           cache-key="ApplyTempDetailTable"
           @selection-change="onSelectionChange"
         >
-          <!-- 表头工具栏 -->
-          <!-- 右表头 -->
-          <!-- <template v-slot:toolkit>
-        <el-button size="small" type="danger" icon="el-icon-delete" class="ele-btn-icon" @click="removebatch">
-          删除
-        </el-button>
-      </template> -->
-          <!-- 左表头 -->
-          <template v-slot:toolbar>
-            <!-- 搜索表单 -->
-            <!-- <el-button size="small" type="danger" icon="el-icon-delete" class="ele-btn-icon" @click="removebatch">
-          删除
-        </el-button> -->
-            <span>已勾选:<el-tag size="mini" effect="plain">{{selection?.length || 0}}</el-tag></span>
-          </template>
-
           <!-- 操作列 -->
           <template v-slot:TempletQty="{ row }">
             <el-input
@@ -136,7 +121,7 @@
             showOverflowTooltip: true
           },
           {
-            // prop: 'TempletQty',
+            columnKey: 'TempletQty',
             slot: 'TempletQty',
             label: '模板申领数量',
             align: 'center',
@@ -158,50 +143,6 @@
           //     return cellValue;
           //   }
           // },
-          {
-            prop: 'DeptQty',
-            label: '科室库存',
-            // sortable: 'custom',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 80
-          },
-          {
-            prop: 'StockQty',
-            label: '中心库库存',
-
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 150
-          },
-          {
-            prop: 'Day_Consume_Qty',
-            label: '平均使用数量',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 150
-          },
-          {
-            prop: 'Day_Consume_Qty2',
-            label: '上月使用数量',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 150
-          },
-          {
-            prop: 'VARIETIE_CODE_NEW',
-            label: '品种编码',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 120
-          },
-          {
-            prop: 'VarName',
-            label: '品种全称',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 180
-          },
           {
             prop: 'GG',
             label: '型号/规格',
@@ -235,12 +176,20 @@
             minWidth: 180,
             show: this.isHideDeptSup
           },
+         
           {
-            prop: 'SUPPLIER_NAME',
-            label: '供应商',
+            prop: 'VARIETIE_CODE_NEW',
+            label: '品种编码',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 150
+            minWidth: 120
+          },
+          {
+            prop: 'VarName',
+            label: '品种全称',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 180
           },
           {
             prop: 'BigBoxCount',
@@ -260,7 +209,43 @@
             minWidth: 110,
             show: true
           },
+          {
+            prop: 'SUPPLIER_NAME',
+            label: '供应商',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 150
+          },
+          {
+            prop: 'DeptQty',
+            label: '科室库存',
+            // sortable: 'custom',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 80
+          },
+          {
+            prop: 'StockQty',
+            label: '中心库库存',
 
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 150
+          },
+          {
+            prop: 'Day_Consume_Qty',
+            label: '平均使用数量',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 150
+          },
+          {
+            prop: 'Day_Consume_Qty2',
+            label: '上月使用数量',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 150
+          },
           {
             prop: 'ZB',
             label: '是否中标',
@@ -286,7 +271,7 @@
             minWidth: 110
           },
           {
-            // prop: 'TempletQty',
+            columnKey: 'AUTH',
             prop: 'AUTH',
             slot: 'AUTH',
             label: '排序',
@@ -305,7 +290,6 @@
             className: 'action-col'
           }
         ],
-        toolbar: false,
         pageSize: 9999999,
         pagerCount: 2,
         pageSizes: [10, 20, 50, 100, 9999999],
@@ -517,6 +501,14 @@
 <style scoped lang="scss">
 .apply-temp-data-table >>> .el-table th .cell {
   white-space: nowrap;
+}
+
+.apply-temp-data-table >>> .ele-table-tool-default {
+  padding: 2px 0 0 4px;
+}
+
+.apply-temp-data-table >>> .ele-table-tool .ele-table-tool-title {
+  margin: 0;
 }
 
 .apply-temp-data-table >>> .action-col .cell {

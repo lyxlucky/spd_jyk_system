@@ -34,7 +34,7 @@
           size="mini"
           border
           stripe
-          :toolbar="false"
+          :toolkit="['columns', 'fullscreen']"
           :header-overflow-hidden="false"
           highlight-current-row
           :pageSize="pageSize"
@@ -43,6 +43,7 @@
           :datasource="datasource"
           :selection.sync="selection"
           :height="tableHeight"
+          full-height="calc(100vh - 100px)"
           cache-key="KSDepartmentalPlanDetailTable"
           @selection-change="onSelectionChange"
         >
@@ -358,13 +359,20 @@
           //   fixed: 'right'
           // },
           {
+            columnKey: 'VarCode',
             prop: 'VarCode',
             slot: 'VarCode',
             label: '品种编码',
-
             align: 'center',
             showOverflowTooltip: true,
             width: 150
+          },
+          {
+            prop: 'CHARGING_CODE',
+            label: '收费编码',
+            align: 'center',
+            showOverflowTooltip: true,
+            width: 120
           },
 
           {
@@ -465,7 +473,7 @@
 
             align: 'center',
             showOverflowTooltip: true,
-            width: 110
+            width: 150
           },
           {
             prop: 'StockQty',
@@ -484,11 +492,9 @@
             width: 80
           },
           {
-            prop:"planQty",
+            columnKey: 'PlanQty',
             slot: 'PlanQty',
-            // prop: 'PlanQty',
             label: '实际申领数量',
-
             align: 'center',
             showOverflowTooltip: true,
             width: 160,
@@ -514,9 +520,9 @@
             }
           },
           {
-            prop:"PAG_TYPE",
+            columnKey: 'PAG_TYPE',
+            prop: 'PAG_TYPE',
             slot: 'PAG_TYPE',
-            // prop: 'PAG_TYPE',
             label: '包装规格',
             align: 'center',
             showOverflowTooltip: true,
@@ -576,13 +582,14 @@
             }
           },
           {
-            prop:"IMAGE_BUTTON",
+            columnKey: 'IMAGE_BUTTON',
             slot: 'IMAGE_BUTTON',
             label: '图片',
             align: 'center',
             width: 80
           },
           {
+            columnKey: 'REMARK',
             prop: 'REMARK',
             slot: 'REMARK',
             label: '备注',
@@ -591,7 +598,7 @@
             width: 110
           },
           {
-            prop: 'SKU_BDRM',
+            columnKey: 'SKU',
             slot: 'SKU',
             label: 'SKU',
             align: 'center',
@@ -608,7 +615,7 @@
             width: 110
           },
           {
-            prop:"REGISTRATION_VALID_DATE",
+            columnKey: 'REGISTRATION_VALID_DATE',
             slot: 'REGISTRATION_VALID_DATE',
             label: '注册证到期',
             align: 'center',
@@ -649,7 +656,6 @@
           //   show: HOME_HP == 'bdrm'
           // }
         ],
-        toolbar: false,
         tableHeight: 'calc((100vh - 420px) / 2)',
         toolStyle: {
           display: 'flex',
@@ -1050,5 +1056,13 @@
 <style scoped>
 .ks-dept-plan-detail >>> .el-table th .cell {
   white-space: nowrap;
+}
+
+.ks-dept-plan-detail >>> .ele-table-tool-default {
+  padding: 2px 0 0 4px;
+}
+
+.ks-dept-plan-detail >>> .ele-table-tool .ele-table-tool-title {
+  margin: 0;
 }
 </style>
