@@ -4,6 +4,7 @@
 import { formatMenus, toTreeData, formatTreeData, deepClone } from 'ele-admin';
 import { USER_MENUS, BLACK_LIST_ROUTERS } from '@/config/setting';
 import { getUserInfo, getConfig } from '@/api/layout';
+import { isMenuRoutePermission } from '@/utils/permissionType';
 
 /**
  * 将 PRIMARY_ROUT / PERMISSION 扁平菜单转为可建树结构（menuKey / parentKey 全局唯一）
@@ -146,10 +147,12 @@ export default {
       // const roles = result.Group_Name?.map((d) => d.Group_ID) ?? [];
       const roles = result.Group_Name;
       commit('setRoles', roles);
-      // 用户菜单, 过滤掉按钮类型并转为 children 形式
-      //过滤
+      // 用户菜单：TYPE=1 为按钮权限，不注入路由；其余过滤黑名单后转树
       const childrens = normalizeMenuForTree(
         result.permission_group.filter((d) => {
+          if (!isMenuRoutePermission(d)) {
+            return false;
+          }
           return !BLACK_LIST_ROUTERS.includes(d.component);
         })
       );

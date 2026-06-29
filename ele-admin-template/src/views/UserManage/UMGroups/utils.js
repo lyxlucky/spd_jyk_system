@@ -6,9 +6,11 @@ export function mapPermissionTree(nodes) {
   return (nodes || []).map((node) => {
     const remarks =
       node.REMARKS != null && node.REMARKS !== '' ? `（${node.REMARKS}）` : '';
+    const typeTag = node.TYPE === 1 || node.TYPE === '1' ? '（按钮）' : '';
     return {
       ID: node.ID,
-      label: `${node.PERMISSION_NAME || ''}${remarks}`,
+      TYPE: node.TYPE,
+      label: `${node.PERMISSION_NAME || ''}${typeTag}${remarks}`,
       children: mapPermissionTree(node.children)
     };
   });

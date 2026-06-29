@@ -46,7 +46,7 @@ import AddPermissionDialog from './components/AddPermissionDialog.vue';
 import NewAddPermissionDialog from './components/NewAddPermissionDialog.vue';
 import RemarkDialog from './components/RemarkDialog.vue';
 import { delPermissionByID, getPermissionList } from '@/api/UserManage/UMPermissions';
-import { exportPermissionExcel, formatRemark, isDeleteOk } from './utils';
+import { exportPermissionExcel, formatRemark, formatPermissionType, isDeleteOk } from './utils';
 
 export default {
   name: 'UMPermissions',
@@ -65,6 +65,11 @@ export default {
       columns: [
         { label: '权限名称', prop: 'Permission_Name', minWidth: 200, sortable: true },
         { label: '链接', prop: 'Permission_Url', minWidth: 240, showOverflowTooltip: true },
+        {
+          label: '类型',
+          width: 80,
+          formatter: (row) => formatPermissionType(row.TYPE)
+        },
         { label: '备注', minWidth: 160, slot: 'remarks' },
         { label: '操作', width: 90, fixed: 'right', slot: 'action' }
       ]
@@ -72,6 +77,7 @@ export default {
   },
   methods: {
     formatRemark,
+    formatPermissionType,
     datasource() {
       return getPermissionList().then((res) => ({
         list: res.result || [],
