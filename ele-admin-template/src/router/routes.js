@@ -18,11 +18,6 @@ export const routes = [
     component: () => import('@/views/forget/index.vue'),
     meta: { title: '忘记密码' }
   },
-  {
-    path: '/KSInventory/MenuList',
-    component: () => import('@/views/KSInventory/MenuList/index.vue'),
-    meta: { title: '主页' }
-  },
   // 404
   {
     path: '*',
@@ -51,6 +46,13 @@ export function getMenuRoutes(menus, homePath) {
       routes.push({ ...route, children: null });
     }
   );
+  if (HOME_PATH && !routes.some((route) => route.path === HOME_PATH)) {
+    routes.push({
+      path: HOME_PATH,
+      component: () => import('@/views/KSInventory/MenuList/index.vue'),
+      meta: { title: '主页' }
+    });
+  }
   // 仅开发环境：便于未在库里配菜单时联调「暂存库查询(新)」。生产构建 NODE_ENV=production 不会注入。
   // 正式环境仍以 /Commons/login 返回的 permission_group + 后台菜单为准。
   if (process.env.NODE_ENV === 'development') {
