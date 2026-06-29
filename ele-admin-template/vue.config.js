@@ -59,12 +59,12 @@ const envConfig = {
     outputDir: 'jyknw'
   },
   hnww: {
-    target: 'http://183.62.200.242:82/',
+    target: 'https://nat.sch-szu.com/spdapi/',
     publicPath: '/jyk/',
     outputDir: 'jyk'
   },
   hnnw: {
-    target: 'http://172.16.4.59:82/',
+    target: 'https://172.16.1.66:82/',
     publicPath: '/jyknw/',
     outputDir: 'jyknw'
   },
