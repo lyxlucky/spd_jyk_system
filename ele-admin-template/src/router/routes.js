@@ -321,6 +321,11 @@ export function getMenuRoutes(menus, homePath) {
       meta: { title: '品种资料审批' }
     });
     routes.push({
+      path: '/Home/SupplierScoreLast',
+      component: () => import('@/views/Home/SupplierScoreLast/index.vue'),
+      meta: { title: '供应商评价(华南)' }
+    });
+    routes.push({
       path: '/Home/YGPT',
       component: () => import('@/views/Home/YGPT/index.vue'),
       meta: { title: '平台编码审核' }
