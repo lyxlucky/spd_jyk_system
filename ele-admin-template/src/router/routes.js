@@ -18,11 +18,6 @@ export const routes = [
     component: () => import('@/views/forget/index.vue'),
     meta: { title: '忘记密码' }
   },
-  {
-    path: '/KSInventory/MenuList',
-    component: () => import('@/views/KSInventory/MenuList/index.vue'),
-    meta: { title: '主页' }
-  },
   // 404
   {
     path: '*',
