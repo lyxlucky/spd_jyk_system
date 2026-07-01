@@ -118,6 +118,16 @@ export function getMenuRoutes(menus, homePath) {
       meta: { title: '科室消耗查询V2' }
     });
     routes.push({
+      path: '/KSInventory/KSQuery',
+      component: () => import('@/views/KSInventory/KSQuery/index.vue'),
+      meta: { title: '科室库存查询' }
+    });
+    routes.push({
+      path: '/KSInventory/KSConsumeQuery',
+      component: () => import('@/views/KSInventory/KSConsumeQuery/index.vue'),
+      meta: { title: '科室消耗查询' }
+    });
+    routes.push({
       path: '/KSInventory/FinancialAudit',
       component: () => import('@/views/KSInventory/FinancialAudit/index.vue'),
       meta: { title: '发票签收' }
