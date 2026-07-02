@@ -84,6 +84,21 @@
           <el-button type="success" icon="el-icon-download" :loading="exporting" @click="$emit('export')">
             导出
           </el-button>
+          <el-button
+            type="warning"
+            icon="el-icon-upload2"
+            :loading="importing"
+            @click="chooseImportFile"
+          >
+            初始化库存
+          </el-button>
+          <input
+            ref="importFile"
+            type="file"
+            accept=".xls,.xlsx"
+            class="hidden-file"
+            @change="onImportFileChange"
+          />
         </el-form-item>
       </el-form>
     </div>
@@ -91,7 +106,10 @@
 </template>
 
 <script>
-import { queryWarehouseAreaOptions } from '@/api/Inventory/WarehouseAreaThreeInventory';
+import {
+  importInitialInventory,
+  queryWarehouseAreaOptions
+} from '@/api/Inventory/WarehouseAreaThreeInventory';
 import {
   areaTypeName,
   STOCK_DEDUCT_TYPE_OPTIONS,
@@ -120,6 +138,7 @@ export default {
       where: defaultWhere(),
       warehouseOptions: [],
       warehouseLoading: false,
+      importing: false,
       stockStatusOptions: STOCK_STATUS_OPTIONS,
       stockDeductTypeOptions: STOCK_DEDUCT_TYPE_OPTIONS
     };
@@ -173,6 +192,32 @@ export default {
         .finally(() => {
           this.warehouseLoading = false;
         });
+    },
+    chooseImportFile() {
+      if (this.importing) return;
+      this.$refs.importFile.value = '';
+      this.$refs.importFile.click();
+    },
+    async onImportFileChange(e) {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+      const ext = file.name.slice(file.name.lastIndexOf('.')).toLowerCase();
+      if (ext !== '.xls' && ext !== '.xlsx') {
+        this.$message.warning('请选择Excel文件');
+        e.target.value = '';
+        return;
+      }
+      this.importing = true;
+      try {
+        const res = await importInitialInventory(file);
+        this.$message.success(res.msg || '导入成功');
+        this.$emit('import-success', this.getWhere());
+      } catch (err) {
+        this.$message.error(err.message || '导入失败');
+      } finally {
+        this.importing = false;
+        e.target.value = '';
+      }
     }
   }
 };
@@ -199,6 +244,10 @@ export default {
   float: right;
   color: #909399;
   font-size: 12px;
+}
+
+.warehouse-area-search .hidden-file {
+  display: none;
 }
 
 .warehouse-area-search :deep(.el-form-item) {

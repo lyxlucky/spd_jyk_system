@@ -7,6 +7,7 @@
         @search="reload"
         @warehouse-change="onWarehouseChange"
         @export="onExport"
+        @import-success="onImportSuccess"
       />
 
       <el-tabs v-model="activeTab" class="inventory-tabs" @tab-click="onTabChange">
@@ -251,6 +252,12 @@ export default {
       this.lastWhere = where || this.currentWhere();
       this.selectedDept = null;
       this.$nextTick(() => this.reload(this.lastWhere));
+    },
+    onImportSuccess(where) {
+      this.lastWhere = where || this.currentWhere();
+      if (this.lastWhere?.WAREHOUSE_AREA_ID) {
+        this.reload(this.lastWhere);
+      }
     },
     onTabChange() {
       this.$nextTick(() => this.reload(this.currentWhere()));
