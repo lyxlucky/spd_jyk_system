@@ -10,8 +10,8 @@
     <el-row :gutter="12">
       <el-col :span="12">
         <div class="rule-panel-head">
-          <span>科室</span>
-          <el-select v-model="form.statisticsTime" size="mini" style="width: 110px" @change="loadDeptList">
+          <span>供应商</span>
+          <el-select v-model="form.statisticsTime" size="mini" style="width: 110px" @change="loadSupplierList">
             <el-option label="按年统计" value="0" />
             <el-option label="按月统计" value="1" />
           </el-select>
@@ -22,7 +22,7 @@
             placeholder="YYYY"
             style="width: 100px"
             maxlength="4"
-            @change="loadDeptList"
+            @change="loadSupplierList"
           />
           <el-date-picker
             v-else
@@ -32,39 +32,39 @@
             value-format="yyyy-MM"
             placeholder="YYYY-MM"
             style="width: 130px"
-            @change="loadDeptList"
+            @change="loadSupplierList"
           />
           <el-input
-            v-model="deptSearch"
+            v-model="supplierSearch"
             size="mini"
             clearable
-            placeholder="搜索科室"
+            placeholder="搜索供应商"
             style="width: 130px"
-            @input="filterDeptRows"
+            @input="filterSupplierRows"
           />
         </div>
-        <div v-loading="deptLoading" class="rule-table-wrap">
+        <div v-loading="supplierLoading" class="rule-table-wrap">
           <ele-pro-table
-            ref="deptTable"
+            ref="supplierTable"
             size="mini"
             border
             stripe
-            :columns="deptColumns"
-            :datasource="deptDatasource"
-            :selection.sync="deptSelection"
+            :columns="supplierColumns"
+            :datasource="supplierDatasource"
+            :selection.sync="supplierSelection"
             :toolkit="['columns', 'fullscreen']"
             :need-page="false"
             height="52vh"
             highlight-current-row
-            cache-key="DeptStatisticsRuleDeptTable"
-            @current-change="onDeptCurrentChange"
-            @row-dblclick="onDeptRowDblclick"
+            cache-key="SupStatisticsRuleSupplierTable"
+            @current-change="onSupplierCurrentChange"
+            @row-dblclick="onSupplierRowDblclick"
           >
             <template v-slot:toolbar>
-              <el-button size="mini" type="success" icon="el-icon-download" @click="exportDeptTable">
+              <el-button size="mini" type="success" icon="el-icon-download" @click="exportSupplierTable">
                 导出
               </el-button>
-              <el-button size="mini" type="primary" icon="el-icon-printer" @click="printDeptTable">
+              <el-button size="mini" type="primary" icon="el-icon-printer" @click="printSupplierTable">
                 打印
               </el-button>
             </template>
@@ -74,8 +74,8 @@
 
       <el-col :span="12">
         <div class="rule-panel-head">
-          <span>{{ currentDept.DeptName || '科室' }}-品种</span>
-          <span v-if="!currentDept.DeptCode" class="rule-hint">请单击左侧科室行</span>
+          <span>{{ currentSupplier.SupplierName || '供应商' }}-品种</span>
+          <span v-if="!currentSupplier.SupplierCode" class="rule-hint">请单击左侧供应商行</span>
           <el-input
             v-model="varietySearch"
             size="mini"
@@ -97,7 +97,7 @@
             :toolkit="['columns', 'fullscreen']"
             :need-page="false"
             height="52vh"
-            cache-key="DeptStatisticsRuleVarietyTable"
+            cache-key="SupStatisticsRuleVarietyTable"
           >
             <template v-slot:toolbar>
               <el-button size="mini" type="success" icon="el-icon-download" @click="exportVarietyTable">
@@ -122,20 +122,20 @@
 <script>
 import { Message } from 'element-ui';
 import {
-  getDeptVarietieStatisticsAll,
-  getDeptVarietieStatisticsByDept
-} from '@/api/Statistics/DeptStatistics';
+  getSupplierVarietieStatisticsAll,
+  getSupplierVarietieStatisticsByCode
+} from '@/api/Statistics/SupStatistics';
 import { exportToExcel } from '@/utils/excel-util';
 import {
-  processDeptRows,
+  processSupplierRows,
   processVarietyRows,
   printHtmlTable,
-  DEPT_TABLE_COLUMNS,
-  VARIETY_TABLE_COLUMNS
+  SUPPLIER_TABLE_COLUMNS,
+  SUP_VARIETY_TABLE_COLUMNS
 } from '../utils';
 
 export default {
-  name: 'DeptStatisticsRuleDialog',
+  name: 'SupStatisticsRuleDialog',
   props: {
     visible: Boolean,
     value: {
@@ -150,21 +150,21 @@ export default {
         statisticsTime: '0',
         date: String(new Date().getFullYear())
       },
-      deptSearch: '',
+      supplierSearch: '',
       varietySearch: '',
-      deptLoading: false,
+      supplierLoading: false,
       varietyLoading: false,
-      deptRows: [],
-      filteredDeptRows: [],
+      supplierRows: [],
+      filteredSupplierRows: [],
       varietyRows: [],
       filteredVarietyRows: [],
-      deptSelection: [],
+      supplierSelection: [],
       varietySelection: [],
-      currentDept: { DeptCode: '', DeptName: '' },
+      currentSupplier: { SupplierCode: '', SupplierName: '' },
       hospitalMoney: 0,
       hospitalQty: 0,
-      deptColumns: DEPT_TABLE_COLUMNS,
-      varietyColumns: VARIETY_TABLE_COLUMNS
+      supplierColumns: SUPPLIER_TABLE_COLUMNS,
+      varietyColumns: SUP_VARIETY_TABLE_COLUMNS
     };
   },
   watch: {
@@ -184,37 +184,37 @@ export default {
         if (!v) return;
         this.form.statisticsTime = v.statisticsTime ?? '0';
         this.form.date = v.date ?? String(new Date().getFullYear());
-        if (v.currentDept) {
-          this.currentDept = { ...v.currentDept };
+        if (v.currentSupplier) {
+          this.currentSupplier = { ...v.currentSupplier };
         }
       }
     }
   },
   methods: {
     beginOpenLoading() {
-      if (!this.deptRows.length) {
-        this.deptLoading = true;
+      if (!this.supplierRows.length) {
+        this.supplierLoading = true;
         this.varietyLoading = true;
         return;
       }
-      if (this.currentDept.DeptCode) {
+      if (this.currentSupplier.SupplierCode) {
         this.varietyLoading = true;
       }
     },
     async onOpen() {
-      if (this.deptRows.length === 0) {
-        await this.loadDeptList();
+      if (this.supplierRows.length === 0) {
+        await this.loadSupplierList();
         return;
       }
-      if (this.currentDept.DeptCode) {
-        await this.loadVarietyList(this.currentDept.DeptCode);
-        this.highlightDeptRow(this.currentDept.DeptCode);
+      if (this.currentSupplier.SupplierCode) {
+        await this.loadVarietyList(this.currentSupplier.SupplierCode);
+        this.highlightSupplierRow(this.currentSupplier.SupplierCode);
       }
     },
-    deptDatasource() {
+    supplierDatasource() {
       return Promise.resolve({
-        count: this.filteredDeptRows.length,
-        list: this.filteredDeptRows
+        count: this.filteredSupplierRows.length,
+        list: this.filteredSupplierRows
       });
     },
     varietyDatasource() {
@@ -223,8 +223,8 @@ export default {
         list: this.filteredVarietyRows
       });
     },
-    reloadDeptTable() {
-      this.$refs.deptTable?.reload({ page: 1 });
+    reloadSupplierTable() {
+      this.$refs.supplierTable?.reload({ page: 1 });
     },
     reloadVarietyTable() {
       this.$refs.varietyTable?.reload({ page: 1 });
@@ -241,48 +241,48 @@ export default {
       }
       return true;
     },
-    async loadDeptList() {
+    async loadSupplierList() {
       if (!this.validateDate()) {
-        this.deptLoading = false;
+        this.supplierLoading = false;
         this.varietyLoading = false;
         return;
       }
-      this.deptLoading = true;
+      this.supplierLoading = true;
       try {
-        const res = await getDeptVarietieStatisticsAll({
+        const res = await getSupplierVarietieStatisticsAll({
           statisticsTime: this.form.statisticsTime,
           date: this.form.date,
           statisticsType: this.form.statisticsTime
         });
-        this.deptRows = processDeptRows(res.result);
-        this.filteredDeptRows = [...this.deptRows];
-        if (this.deptRows.length) {
-          this.hospitalMoney = parseFloat(this.deptRows[0].HospitalMoney) || 0;
-          this.hospitalQty = parseFloat(this.deptRows[0].HospitalQty) || 0;
+        this.supplierRows = processSupplierRows(res.result);
+        this.filteredSupplierRows = [...this.supplierRows];
+        if (this.supplierRows.length) {
+          this.hospitalMoney = parseFloat(this.supplierRows[0].HospitalMoney) || 0;
+          this.hospitalQty = parseFloat(this.supplierRows[0].HospitalQty) || 0;
         }
-        this.filterDeptRows();
-        await this.syncDeptLinkage();
+        this.filterSupplierRows();
+        await this.syncSupplierLinkage();
       } catch (e) {
-        Message.error(e.message || '加载科室失败');
-        this.deptRows = [];
-        this.filteredDeptRows = [];
+        Message.error(e.message || '加载供应商失败');
+        this.supplierRows = [];
+        this.filteredSupplierRows = [];
         this.varietyLoading = false;
-        this.reloadDeptTable();
+        this.reloadSupplierTable();
       } finally {
-        this.deptLoading = false;
+        this.supplierLoading = false;
       }
     },
-    filterDeptRows() {
-      const kw = (this.deptSearch || '').trim();
+    filterSupplierRows() {
+      const kw = (this.supplierSearch || '').trim();
       if (!kw) {
-        this.filteredDeptRows = [...this.deptRows];
+        this.filteredSupplierRows = [...this.supplierRows];
       } else {
         const reg = new RegExp(kw, 'i');
-        this.filteredDeptRows = this.deptRows.filter(
-          (r) => reg.test(r.DeptName) || reg.test(r.DeptCode)
+        this.filteredSupplierRows = this.supplierRows.filter(
+          (r) => reg.test(r.SupplierName) || reg.test(r.SupplierCode)
         );
       }
-      this.reloadDeptTable();
+      this.reloadSupplierTable();
     },
     filterVarietyRows() {
       const kw = (this.varietySearch || '').trim();
@@ -295,60 +295,64 @@ export default {
       const matched = this.varietyRows.filter((r) => reg.test(r.VarietieName));
       this.filteredVarietyRows = matched.length ? matched : [...this.varietyRows];
       this.reloadVarietyTable();
+      this.reloadVarietyTable();
       this.$nextTick(() => {
         matched.forEach((row) => {
           this.$refs.varietyTable?.$refs?.table?.toggleRowSelection(row, true);
         });
       });
     },
-    highlightDeptRow(deptCode) {
+    highlightSupplierRow(supplierCode) {
       this.$nextTick(() => {
-        const row = this.filteredDeptRows.find((r) => r.DeptCode === deptCode);
+        const row = this.filteredSupplierRows.find((r) => r.SupplierCode === supplierCode);
         if (row) {
-          this.$refs.deptTable?.setCurrentRow(row);
+          this.$refs.supplierTable?.setCurrentRow(row);
         }
       });
     },
-    async syncDeptLinkage() {
+    async syncSupplierLinkage() {
       await this.$nextTick();
-      if (!this.filteredDeptRows.length) {
-        this.currentDept = { DeptCode: '', DeptName: '' };
+      if (!this.filteredSupplierRows.length) {
+        this.currentSupplier = { SupplierCode: '', SupplierName: '' };
         this.varietyRows = [];
         this.filteredVarietyRows = [];
         this.varietyLoading = false;
         this.reloadVarietyTable();
         return;
       }
-      const keep = this.filteredDeptRows.find(
-        (r) => r.DeptCode === this.currentDept.DeptCode
+      const keep = this.filteredSupplierRows.find(
+        (r) => r.SupplierCode === this.currentSupplier.SupplierCode
       );
-      const target = keep || this.filteredDeptRows[0];
-      await this.selectDept(target, true);
+      const target = keep || this.filteredSupplierRows[0];
+      await this.selectSupplier(target, true);
     },
-    onDeptCurrentChange(row) {
-      if (!row || row.DeptCode === this.currentDept.DeptCode) return;
-      this.selectDept(row, false);
+    onSupplierCurrentChange(row) {
+      if (!row || row.SupplierCode === this.currentSupplier.SupplierCode) return;
+      this.selectSupplier(row, false);
     },
-    onDeptRowDblclick(row) {
-      this.selectDept(row, true);
+    onSupplierRowDblclick(row) {
+      this.selectSupplier(row, true);
     },
-    selectDept(row, highlight = true) {
+    selectSupplier(row, highlight = true) {
       if (!row) return Promise.resolve();
-      this.currentDept = { DeptCode: row.DeptCode, DeptName: row.DeptName };
+      this.currentSupplier = {
+        SupplierCode: row.SupplierCode,
+        SupplierName: row.SupplierName
+      };
       if (highlight) {
-        this.highlightDeptRow(row.DeptCode);
+        this.highlightSupplierRow(row.SupplierCode);
       }
-      return this.loadVarietyList(row.DeptCode);
+      return this.loadVarietyList(row.SupplierCode);
     },
-    async loadVarietyList(deptCode) {
-      if (!deptCode || !this.validateDate()) {
+    async loadVarietyList(supplierCode) {
+      if (!supplierCode || !this.validateDate()) {
         this.varietyLoading = false;
         return;
       }
       this.varietyLoading = true;
       try {
-        const res = await getDeptVarietieStatisticsByDept({
-          deptCode,
+        const res = await getSupplierVarietieStatisticsByCode({
+          supplierCode,
           statisticsTime: this.form.statisticsTime,
           date: this.form.date,
           statisticsType: this.form.statisticsTime
@@ -367,12 +371,12 @@ export default {
         this.varietyLoading = false;
       }
     },
-    exportDeptTable() {
-      if (!this.filteredDeptRows.length) {
+    exportSupplierTable() {
+      if (!this.filteredSupplierRows.length) {
         Message.warning('没有数据可导出');
         return;
       }
-      exportToExcel(this.filteredDeptRows, this.deptColumns, '科室统计列表');
+      exportToExcel(this.filteredSupplierRows, this.supplierColumns, '供应商统计列表');
       Message.success('导出成功');
     },
     exportVarietyTable() {
@@ -380,50 +384,50 @@ export default {
         Message.warning('没有数据可导出');
         return;
       }
-      const name = this.currentDept.DeptName || '科室';
+      const name = this.currentSupplier.SupplierName || '供应商';
       exportToExcel(this.filteredVarietyRows, this.varietyColumns, `${name}品种统计`);
       Message.success('导出成功');
     },
-    printDeptTable() {
-      if (!this.filteredDeptRows.length) {
+    printSupplierTable() {
+      if (!this.filteredSupplierRows.length) {
         Message.warning('没有数据可打印');
         return;
       }
-      printHtmlTable('科室统计列表', this.deptColumns, this.filteredDeptRows);
+      printHtmlTable('供应商统计列表', this.supplierColumns, this.filteredSupplierRows);
     },
     printVarietyTable() {
       if (!this.filteredVarietyRows.length) {
         Message.warning('没有数据可打印');
         return;
       }
-      const name = this.currentDept.DeptName || '科室';
+      const name = this.currentSupplier.SupplierName || '供应商';
       printHtmlTable(`${name}品种统计`, this.varietyColumns, this.filteredVarietyRows);
     },
     apply() {
       if (!this.validateDate()) return;
-      const selectedDepts = this.deptSelection.length
-        ? [...this.deptSelection]
-        : this.deptRows.slice(0, 5);
-      if (!selectedDepts.length) {
-        Message.warning('请先加载并选择科室');
+      const selectedSuppliers = this.supplierSelection.length
+        ? [...this.supplierSelection]
+        : this.supplierRows.slice(0, 5);
+      if (!selectedSuppliers.length) {
+        Message.warning('请先加载并选择供应商');
         return;
       }
-      if (!this.currentDept.DeptCode && selectedDepts[0]) {
-        this.currentDept = {
-          DeptCode: selectedDepts[0].DeptCode,
-          DeptName: selectedDepts[0].DeptName
+      if (!this.currentSupplier.SupplierCode && selectedSuppliers[0]) {
+        this.currentSupplier = {
+          SupplierCode: selectedSuppliers[0].SupplierCode,
+          SupplierName: selectedSuppliers[0].SupplierName
         };
       }
       const applyFn = async () => {
-        if (this.currentDept.DeptCode) {
-          await this.loadVarietyList(this.currentDept.DeptCode);
+        if (this.currentSupplier.SupplierCode) {
+          await this.loadVarietyList(this.currentSupplier.SupplierCode);
         }
         this.$emit('apply', {
           statisticsTime: this.form.statisticsTime,
           date: this.form.date,
           statYear: String(this.form.date).substring(0, 4),
-          selectedDepts,
-          currentDept: { ...this.currentDept },
+          selectedSuppliers,
+          currentSupplier: { ...this.currentSupplier },
           selectedVarieties: [...this.varietySelection],
           hospitalMoney: this.hospitalMoney,
           hospitalQty: this.hospitalQty,

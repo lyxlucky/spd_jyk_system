@@ -1,5 +1,5 @@
 <template>
-  <div class="ele-body spd-page dept-statistics-page">
+  <div class="ele-body spd-page sup-statistics-page">
     <div class="spd-panel spd-panel--search">
       <div class="spd-panel__body">
         <el-button type="primary" size="mini" icon="el-icon-setting" @click="ruleVisible = true">
@@ -10,9 +10,9 @@
             导出图表<i class="el-icon-arrow-down el-icon--right"></i>
           </el-button>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item command="1">科室耗材使用</el-dropdown-item>
-            <el-dropdown-item command="2">科室使用趋势</el-dropdown-item>
-            <el-dropdown-item command="3">科室消耗金额</el-dropdown-item>
+            <el-dropdown-item command="1">供应商耗材金额</el-dropdown-item>
+            <el-dropdown-item command="2">供应趋势图</el-dropdown-item>
+            <el-dropdown-item command="3">消耗金额统计</el-dropdown-item>
             <el-dropdown-item command="4">年度对比</el-dropdown-item>
             <el-dropdown-item divided command="all">导出全部</el-dropdown-item>
           </el-dropdown-menu>
@@ -22,9 +22,9 @@
             打印图表<i class="el-icon-arrow-down el-icon--right"></i>
           </el-button>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item command="1">科室耗材使用</el-dropdown-item>
-            <el-dropdown-item command="2">科室使用趋势</el-dropdown-item>
-            <el-dropdown-item command="3">科室消耗金额</el-dropdown-item>
+            <el-dropdown-item command="1">供应商耗材金额</el-dropdown-item>
+            <el-dropdown-item command="2">供应趋势图</el-dropdown-item>
+            <el-dropdown-item command="3">消耗金额统计</el-dropdown-item>
             <el-dropdown-item command="4">年度对比</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
@@ -45,11 +45,7 @@
       </el-col>
       <el-col :span="12">
         <el-card shadow="never" class="chart-card" v-loading="chartLoading[2]">
-          <ele-chart
-            ref="chart2"
-            :option="chart2Option"
-            :style="{ height: chartHeight }"
-          />
+          <ele-chart ref="chart2" :option="chart2Option" :style="{ height: chartHeight }" />
         </el-card>
       </el-col>
     </el-row>
@@ -67,20 +63,12 @@
       </el-col>
       <el-col :span="12">
         <el-card shadow="never" class="chart-card" v-loading="chartLoading[4]">
-          <ele-chart
-            ref="chart4"
-            :option="chart4Option"
-            :style="{ height: chartHeight }"
-          />
+          <ele-chart ref="chart4" :option="chart4Option" :style="{ height: chartHeight }" />
         </el-card>
       </el-col>
     </el-row>
 
-    <rule-dialog
-      :visible.sync="ruleVisible"
-      :value="ruleForm"
-      @apply="onRuleApply"
-    />
+    <rule-dialog :visible.sync="ruleVisible" :value="ruleForm" @apply="onRuleApply" />
   </div>
 </template>
 
@@ -89,17 +77,17 @@ import { Message } from 'element-ui';
 import EleChart from 'ele-admin/packages/ele-chart';
 import RuleDialog from './components/RuleDialog.vue';
 import {
-  getDeptVarietieStatisticsByDept,
-  getDeptConsumptionMonthYearMulti,
-  getDeptConsumptionMonthYearVariety
-} from '@/api/Statistics/DeptStatistics';
+  getSupplierVarietieStatisticsByCode,
+  getSupplierConsumptionMonthYearMulti,
+  getSingleSupplierConsumptionMonthYear
+} from '@/api/Statistics/SupStatistics';
 import {
-  buildDeptPieOption,
-  buildDeptTrendOption,
-  buildVarietyPieOption,
+  buildSupplierPieOption,
+  buildSupplierTrendOption,
+  buildSupplierVarietyPieOption,
   buildYearCompareOption,
-  buildDeptCodeParam,
-  buildMultiDeptCodeParam,
+  buildSupplierCodeParam,
+  buildMultiSupplierCodeParam,
   parseMonthValues,
   processVarietyRows,
   downloadChartImage,
@@ -112,7 +100,7 @@ const emptyPie = (title) => ({
 });
 
 export default {
-  name: 'DeptStatistics',
+  name: 'SupStatistics',
   components: { EleChart, RuleDialog },
   data() {
     return {
@@ -121,17 +109,16 @@ export default {
       statDate: '',
       statisticsTime: '0',
       statYear: String(new Date().getFullYear()),
-      selectedDepts: [],
-      currentDept: { DeptCode: '', DeptName: '' },
+      selectedSuppliers: [],
+      currentSupplier: { SupplierCode: '', SupplierName: '' },
       selectedVarieties: [],
       varietyRows: [],
-      varietyDeptCode: '',
+      varietySupplierCode: '',
       hospitalMoney: 0,
-      chart1Option: emptyPie('科室耗材使用'),
-      chart2Option: { title: { text: '科室耗材使用趋势图', left: 'center' }, series: [] },
-      chart3Option: emptyPie('科室消耗金额统计'),
+      chart1Option: emptyPie('供应商耗材金额'),
+      chart2Option: { title: { text: '供应趋势图', left: 'center' }, series: [] },
+      chart3Option: emptyPie('消耗金额统计'),
       chart4Option: { title: { text: '年度对比', left: 'center' }, series: [] },
-      chart4VarietyName: '其他耗材',
       chartLoading: { 1: false, 2: false, 3: false, 4: false }
     };
   },
@@ -144,7 +131,7 @@ export default {
       return {
         statisticsTime: this.statisticsTime,
         date: this.statDate || this.statYear,
-        currentDept: this.currentDept
+        currentSupplier: this.currentSupplier
       };
     }
   },
@@ -156,37 +143,32 @@ export default {
       this.statisticsTime = config.statisticsTime;
       this.statDate = config.date;
       this.statYear = config.statYear;
-      this.selectedDepts = config.selectedDepts;
-      this.currentDept = config.currentDept;
+      this.selectedSuppliers = config.selectedSuppliers;
+      this.currentSupplier = config.currentSupplier;
       this.selectedVarieties = config.selectedVarieties;
       this.varietyRows = config.varietyRows;
-      this.varietyDeptCode = config.currentDept?.DeptCode || '';
+      this.varietySupplierCode = config.currentSupplier?.SupplierCode || '';
       this.hospitalMoney = config.hospitalMoney;
-      this.chart4VarietyName = '其他耗材';
 
-      this.chart1Option = buildDeptPieOption(
-        this.selectedDepts,
+      this.chart1Option = buildSupplierPieOption(
+        this.selectedSuppliers,
         this.hospitalMoney,
         this.statDate
       );
 
-      await Promise.all([
-        this.loadChart2(),
-        this.loadChart3(),
-        this.loadChart4Dept()
-      ]);
+      await Promise.all([this.loadChart2(), this.loadChart3(), this.loadChart4Supplier()]);
     },
     async loadChart2() {
-      const deptCode = buildMultiDeptCodeParam(this.selectedDepts);
-      if (!deptCode) return;
+      const supplierCode = buildMultiSupplierCodeParam(this.selectedSuppliers);
+      if (!supplierCode) return;
       this.setChartLoading(2, true);
       try {
-        const res = await getDeptConsumptionMonthYearMulti({
-          deptCode,
+        const res = await getSupplierConsumptionMonthYearMulti({
+          supplierCode,
           year: this.statYear,
           startYear: this.statYear
         });
-        this.chart2Option = buildDeptTrendOption(res.result);
+        this.chart2Option = buildSupplierTrendOption(res.result);
       } catch (e) {
         Message.error(e.message || '加载趋势图失败');
       } finally {
@@ -194,23 +176,23 @@ export default {
       }
     },
     async loadChart3() {
-      if (!this.currentDept.DeptCode) return;
+      if (!this.currentSupplier.SupplierCode) return;
       this.setChartLoading(3, true);
       try {
         let rows = this.varietyRows;
-        if (!rows.length || this.varietyDeptCode !== this.currentDept.DeptCode) {
-          const res = await getDeptVarietieStatisticsByDept({
-            deptCode: this.currentDept.DeptCode,
+        if (!rows.length || this.varietySupplierCode !== this.currentSupplier.SupplierCode) {
+          const res = await getSupplierVarietieStatisticsByCode({
+            supplierCode: this.currentSupplier.SupplierCode,
             statisticsTime: this.statisticsTime,
             date: this.statDate,
             statisticsType: this.statisticsTime
           });
           rows = processVarietyRows(res.result);
           this.varietyRows = rows;
-          this.varietyDeptCode = this.currentDept.DeptCode;
+          this.varietySupplierCode = this.currentSupplier.SupplierCode;
         }
-        this.chart3Option = buildVarietyPieOption(
-          this.currentDept.DeptName,
+        this.chart3Option = buildSupplierVarietyPieOption(
+          this.currentSupplier.SupplierName,
           this.statDate,
           rows,
           this.selectedVarieties
@@ -221,34 +203,36 @@ export default {
         this.setChartLoading(3, false);
       }
     },
-    async loadChart4Dept() {
-      await this.loadChart4(this.currentDept, '其他耗材', true);
+    async loadChart4Supplier() {
+      await this.loadChart4(this.currentSupplier, '其他耗材', true);
     },
-    async loadChart4(dept, varietieName, isDeptLevel = false) {
-      if (!dept?.DeptCode || dept.DeptCode === '0') return;
-      const deptParam = buildDeptCodeParam(dept.DeptCode, dept.DeptName);
+    async loadChart4(supplier, varietieName, isSupplierLevel = false) {
+      if (!supplier?.SupplierCode || supplier.SupplierCode === '0') return;
+      const supplierParam = buildSupplierCodeParam(
+        supplier.SupplierCode,
+        supplier.SupplierName
+      );
       const prevYear = String(Number(this.statYear) - 1);
-      this.chart4VarietyName = varietieName || '其他耗材';
 
       this.setChartLoading(4, true);
       try {
-        if (isDeptLevel || varietieName === '其他耗材') {
+        if (isSupplierLevel || varietieName === '其他耗材') {
           const [prevRes, currRes] = await Promise.all([
-            getDeptConsumptionMonthYearMulti({
-              deptCode: deptParam,
+            getSupplierConsumptionMonthYearMulti({
+              supplierCode: supplierParam,
               year: prevYear,
-              startYear: this.statYear
-            }),
-            getDeptConsumptionMonthYearMulti({
-              deptCode: deptParam,
-              year: this.statYear,
               startYear: prevYear
+            }),
+            getSupplierConsumptionMonthYearMulti({
+              supplierCode: supplierParam,
+              year: this.statYear,
+              startYear: this.statYear
             })
           ]);
           const prevData = parseMonthValues(prevRes.result?.[0]?.AllManthMoney);
           const currData = parseMonthValues(currRes.result?.[0]?.AllManthMoney);
           this.chart4Option = buildYearCompareOption(
-            `${dept.DeptName}${varietieName || ''}`,
+            supplier.SupplierName,
             prevYear,
             this.statYear,
             prevData,
@@ -256,15 +240,15 @@ export default {
           );
         } else {
           const [prevRes, currRes] = await Promise.all([
-            getDeptConsumptionMonthYearVariety({
+            getSingleSupplierConsumptionMonthYear({
               varietieName,
-              deptCode: deptParam,
+              supplierCode: supplierParam,
               year: prevYear,
               startYear: prevYear
             }),
-            getDeptConsumptionMonthYearVariety({
+            getSingleSupplierConsumptionMonthYear({
               varietieName,
-              deptCode: deptParam,
+              supplierCode: supplierParam,
               year: this.statYear,
               startYear: this.statYear
             })
@@ -272,7 +256,7 @@ export default {
           const prevData = parseMonthValues(prevRes.result?.[0]?.AllManthMoney);
           const currData = parseMonthValues(currRes.result?.[0]?.AllManthMoney);
           this.chart4Option = buildYearCompareOption(
-            `${dept.DeptName}${varietieName}`,
+            varietieName.substring(0, 10),
             prevYear,
             this.statYear,
             prevData,
@@ -288,37 +272,31 @@ export default {
     async onChart1Click(params) {
       const code = params?.data?.code;
       const name = params?.data?.name;
-      if (!code || code === '0' || code === this.currentDept.DeptCode) return;
+      if (!code || code === '0' || code === this.currentSupplier.SupplierCode) return;
 
-      this.currentDept = { DeptCode: code, DeptName: name };
+      this.currentSupplier = { SupplierCode: code, SupplierName: name };
       this.selectedVarieties = [];
-      this.varietyDeptCode = '';
+      this.varietySupplierCode = '';
       try {
         await this.loadChart3();
-        await this.loadChart4Dept();
+        await this.loadChart4Supplier();
       } catch (e) {
-        Message.error(e.message || '切换科室失败');
+        Message.error(e.message || '切换供应商失败');
       }
     },
     onChart3Click(params) {
       const name = params?.data?.name;
-      if (!name || !this.currentDept.DeptCode) return;
-      this.loadChart4(this.currentDept, name, name === '其他耗材');
+      if (!name || !this.currentSupplier.SupplierCode) return;
+      this.loadChart4(this.currentSupplier, name, name === '其他耗材');
     },
     getChartRef(key) {
-      const map = {
-        1: 'chart1',
-        2: 'chart2',
-        3: 'chart3',
-        4: 'chart4'
-      };
-      return this.$refs[map[key]];
+      return this.$refs[`chart${key}`];
     },
     getChartTitle(key) {
       const titles = {
-        1: '科室耗材使用',
-        2: '科室耗材使用趋势图',
-        3: `${this.currentDept.DeptName || ''}消耗金额统计`,
+        1: '供应商耗材金额',
+        2: '供应趋势图',
+        3: `${this.currentSupplier.SupplierName || ''}消耗金额统计`,
         4: this.chart4Option?.title?.text || '年度对比'
       };
       return titles[key] || '图表';
@@ -356,7 +334,7 @@ export default {
 </script>
 
 <style scoped>
-.dept-statistics-page {
+.sup-statistics-page {
   padding-bottom: 8px;
 }
 .stat-meta {
