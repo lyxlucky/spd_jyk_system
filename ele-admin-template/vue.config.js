@@ -163,6 +163,11 @@ const envConfig = {
     publicPath: '/jyksk/',
     outputDir: 'jyksk'
   },
+  stse: {
+    target: 'http://172.32.202.17:82/',
+    publicPath: '/jyknw/',
+    outputDir: 'jyknw'
+  }
 }
 
 const currentEnv = process.env.VUE_APP_ENV || 'local';

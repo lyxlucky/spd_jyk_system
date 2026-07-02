@@ -100,3 +100,13 @@ export async function getMaterialDetail(where, page, size) {
   );
   return unwrap(res);
 }
+
+export async function importInitialInventory(file) {
+  const fd = new FormData();
+  fd.append('file', file);
+  fd.append('Token', token());
+  const res = await request.post('/WarehouseAreaThreeInventory/ImportInitialInventory', fd, {
+    headers: { 'Content-Type': 'multipart/form-data' }
+  });
+  return unwrap(res, '导入失败');
+}
