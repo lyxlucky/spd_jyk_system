@@ -30,7 +30,7 @@
           :reserve-selection="true"
           highlight-current-row
           :row-key="(row) => row.PlanNum"
-          :toolbar="false"
+          :toolkit="['columns', 'fullscreen']"
           :header-overflow-hidden="false"
           :rowClickChecked="true"
           :pageSize="pageSize"
@@ -40,6 +40,7 @@
           :selection.sync="selection"
           :needPage="false"
           :height="tableHeight"
+          full-height="calc(100vh - 100px)"
           cache-key="KSDepartmentalPlanMainTable"
           @current-change="onCurrentChange"
         >
@@ -315,7 +316,6 @@
             minWidth: 110
           }
         ],
-        toolbar: false,
         tableHeight: 'calc((100vh - 420px) / 2)',
         pageSize: 9999999,
         pagerCount: 2,
@@ -641,6 +641,14 @@
 <style scoped>
 .ks-dept-plan-main >>> .el-table th .cell {
   white-space: nowrap;
+}
+
+.ks-dept-plan-main >>> .ele-table-tool-default {
+  padding: 2px 0 0 4px;
+}
+
+.ks-dept-plan-main >>> .ele-table-tool .ele-table-tool-title {
+  margin: 0;
 }
 
 .ks-dept-plan-main >>> .action-col .cell {

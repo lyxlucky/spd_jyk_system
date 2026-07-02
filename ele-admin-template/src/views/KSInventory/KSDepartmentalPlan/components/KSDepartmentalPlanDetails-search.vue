@@ -343,12 +343,13 @@
         size="mini"
         border
         stripe
-        :toolbar="false"
+        :toolkit="['columns', 'fullscreen']"
         :header-overflow-hidden="false"
         :columns="budgetColumns"
         :datasource="budgetDatasource"
         :selection.sync="budgetSelection"
         height="400px"
+        full-height="calc(100vh - 100px)"
         :page-sizes="[10, 20, 50, 100]"
         :page-size="20"
         :highlight-current-row="true"

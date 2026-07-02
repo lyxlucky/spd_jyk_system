@@ -93,13 +93,14 @@
     <ele-pro-table
       ref="table"
       height="55vh"
+      full-height="calc(100vh - 100px)"
       :row-key="(row) => row.VarID"
       :columns="columns"
       :datasource="datasource"
       :selection.sync="selection"
       :page-size="20"
       :page-sizes="[20, 50, 100, 200]"
-      :tool-style="{ display: 'none' }"
+      :toolkit="['columns', 'fullscreen']"
       @selection-change="onSelectionChange"
     >
       <template v-slot:APPLY_QTY="{ row }">

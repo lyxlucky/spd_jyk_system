@@ -7,7 +7,9 @@
       :selection.sync="selection"
       :page-size="pageSize"
       :page-sizes="pageSizes"
+      :toolkit="['columns', 'fullscreen']"
       height="600px"
+      full-height="calc(100vh - 100px)"
       cache-key="ImageViewTable"
     >
       <!-- 类型列 -->
