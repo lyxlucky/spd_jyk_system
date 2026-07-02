@@ -153,6 +153,9 @@ export default {
       case 'stzx':
         logoPath = require('@/assets/logoSTZX.jpg');
         break;
+      case 'stse':
+        logoPath = require('@/assets/logoSTSE.png');
+        break;
       case 'szlhfy':
         logoPath = require('@/assets/logoFY.jpg');
         break;

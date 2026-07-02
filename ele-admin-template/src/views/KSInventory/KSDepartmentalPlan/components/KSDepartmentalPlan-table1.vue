@@ -30,7 +30,7 @@
           :reserve-selection="true"
           highlight-current-row
           :row-key="(row) => row.PlanNum"
-          :toolbar="false"
+          :toolkit="['columns', 'fullscreen']"
           :header-overflow-hidden="false"
           :rowClickChecked="true"
           :pageSize="pageSize"
@@ -40,6 +40,7 @@
           :selection.sync="selection"
           :needPage="false"
           :height="tableHeight"
+          full-height="calc(100vh - 100px)"
           cache-key="KSDepartmentalPlanMainTable"
           @current-change="onCurrentChange"
         >
@@ -67,31 +68,8 @@
           color="#2ee693"
           >已审核</el-tag
         >
-
-        <el-tag
-          size="mini"
-          v-else-if="row.State == 6 && row.QUANITY == 0"
-          type="success"
-          >已审批</el-tag
-        >
         <el-tag size="mini" v-else-if="row.State == -6" type="danger"
           >未审批</el-tag
-        >
-        <el-tag
-          size="mini"
-          v-else-if="
-            row.QUANITY > 0 &&
-            row.QUANITY != row.SUM_Apply_Qty &&
-            row.State != 10
-          "
-          type="danger"
-          >未收全</el-tag
-        >
-        <el-tag
-          size="mini"
-          v-else-if="row.SUM_Apply_Qty == row.QUANITY"
-          type="success"
-          >已收全</el-tag
         >
         <el-tag
           size="mini"
@@ -101,27 +79,30 @@
           style="color: white"
           >强制结束</el-tag
         >
-
-        <!-- <el-tag
+        <el-tag
+          size="mini"
+          v-else-if="
+            (row.State == 6 || row.State == 4) &&
+            row.SUM_Left_Apply_Qty == row.SUM_Apply_Qty
+          "
+          type="success"
+          >已审批</el-tag
+        >
+        <el-tag
           size="mini"
           v-else-if="
             row.SUM_Left_Apply_Qty > 0 &&
-            row.SUM_Left_Apply_Qty != row.SUM_Apply_Qty &&
-            row.State != 6
+            row.SUM_Left_Apply_Qty != row.SUM_Apply_Qty
           "
           type="danger"
           >未收全</el-tag
         >
         <el-tag
           size="mini"
-          v-else-if="row.SUM_Apply_Qty == row.QUANITY"
+          v-else-if="row.SUM_Left_Apply_Qty == 0"
           type="success"
           >已收全</el-tag
-        > -->
-
-        <!-- <el-tag v-for="(item) in row" :key="item.PlanNum" size="mini" type="primary" :disable-transitions="true">
-          {{ item.State }}
-        </el-tag> -->
+        >
       </template>
       <template v-slot:BZ="{ row }">
         <el-link
@@ -335,7 +316,6 @@
             minWidth: 110
           }
         ],
-        toolbar: false,
         tableHeight: 'calc((100vh - 420px) / 2)',
         pageSize: 9999999,
         pagerCount: 2,
@@ -385,24 +365,26 @@
         if (row.State == 5) {
           return '已审核';
         }
-        if (row.State == 6 && row.QUANITY == 0) {
-          return '已审批';
-        }
         if (row.State == -6) {
           return '未审批';
         }
+        if (row.State == 10) {
+          return '强制结束';
+        }
         if (
-          row.QUANITY > 0 &&
-          row.QUANITY != row.SUM_Apply_Qty &&
-          row.State != 10
+          (row.State == 6 || row.State == 4) &&
+          row.SUM_Left_Apply_Qty == row.SUM_Apply_Qty
+        ) {
+          return '已审批';
+        }
+        if (
+          row.SUM_Left_Apply_Qty > 0 &&
+          row.SUM_Left_Apply_Qty != row.SUM_Apply_Qty
         ) {
           return '未收全';
         }
-        if (row.SUM_Apply_Qty == row.QUANITY) {
+        if (row.SUM_Left_Apply_Qty == 0) {
           return '已收全';
-        }
-        if (row.State == 10) {
-          return '强制结束';
         }
         return row.State;
       },
@@ -659,6 +641,14 @@
 <style scoped>
 .ks-dept-plan-main >>> .el-table th .cell {
   white-space: nowrap;
+}
+
+.ks-dept-plan-main >>> .ele-table-tool-default {
+  padding: 2px 0 0 4px;
+}
+
+.ks-dept-plan-main >>> .ele-table-tool .ele-table-tool-title {
+  margin: 0;
 }
 
 .ks-dept-plan-main >>> .action-col .cell {

@@ -14,6 +14,8 @@
         highlight-current-row
         ref="table"
         height="40vh"
+        full-height="calc(100vh - 100px)"
+        :toolkit="['columns', 'fullscreen']"
         :stripe="true"
         :pageSize="pageSize"
         :pageSizes="pageSizes"
