@@ -40,6 +40,12 @@
         <el-form-item label="货位号">
           <el-input v-model="where.inventory_Position" clearable placeholder="货位号" style="width: 90px" />
         </el-form-item>
+        <el-form-item label="院区">
+          <el-select v-model="where.STORAGE_ID" clearable placeholder="全部" style="width: 110px">
+            <el-option label="全部" value="" />
+            <el-option v-for="s in storageList" :key="s.ID" :label="s.NAME" :value="String(s.ID)" />
+          </el-select>
+        </el-form-item>
         <el-form-item label="所属区域">
           <el-select v-model="where.UpShelfState" clearable placeholder="全部" style="width: 110px">
             <el-option label="全部" value="" />
@@ -147,6 +153,12 @@
             <el-option label="非重点治理" value="2" />
           </el-select>
         </el-form-item>
+        <el-form-item label="散货总数">
+          <span class="stat-text">{{ sumText }}</span>
+        </el-form-item>
+        <el-form-item label="合计金额">
+          <span class="stat-text">{{ amountSumText }}</span>
+        </el-form-item>
         <el-form-item>
           <el-button type="primary" icon="el-icon-search" @click="search">查询</el-button>
           <el-button type="success" icon="el-icon-download" @click="exportData">导出</el-button>
@@ -157,9 +169,16 @@
 </template>
 
 <script>
+import { getStorageList } from '@/api/Inventory/InventoryQueryNewJyk';
+
 export default {
+  props: {
+    sum: { type: [Number, String], default: 0 },
+    amountSum: { type: [Number, String], default: 0 }
+  },
   data() {
     return {
+      storageList: [],
       defaultWhere: {
         inventoryNew_search1: '',
         inventoryNew_search2: '',
@@ -169,6 +188,7 @@ export default {
         inventoryNew_APPROVAL_NUMBER: '',
         inventoryNew_search4: '',
         inventory_Position: '',
+        STORAGE_ID: '',
         UpShelfState: '',
         conTime: '',
         hptx: '',
@@ -190,10 +210,26 @@ export default {
       dateRange: []
     };
   },
+  computed: {
+    sumText() {
+      return this.sum != null && this.sum !== '' ? String(this.sum) : '0';
+    },
+    amountSumText() {
+      return this.amountSum != null && this.amountSum !== '' ? String(this.amountSum) : '0';
+    }
+  },
   created() {
     this.where = { ...this.defaultWhere };
+    this.loadStorage();
   },
   methods: {
+    async loadStorage() {
+      try {
+        this.storageList = await getStorageList();
+      } catch {
+        this.storageList = [];
+      }
+    },
     search() {
       this.$emit('search', this.where);
     },
@@ -212,3 +248,10 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.stat-text {
+  font-weight: 600;
+  color: #009688;
+}
+</style>

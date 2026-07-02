@@ -1,88 +1,86 @@
-import request from '@/utils/request';
-import { formdataify, DataToObject } from '@/utils/formdataify';
-import { TOKEN_STORE_NAME } from '@/config/setting';
-import { Message } from 'element-ui';
-// 封装通用的请求函数
-async function sendRequest(url, data, method = 'post') {
-    const token = sessionStorage.getItem(TOKEN_STORE_NAME);
-    const requestData = { Token: token, ...data };
-    const formData = formdataify(requestData);
+import {
+  parseSort,
+  searchMain,
+  searchMainAll,
+  searchDef,
+  getStorageList
+} from '@/api/Inventory/InventoryQueryNew';
 
-    let res;
-    if (method === 'post') {
-        res = await request.post(url, formData);
-    } else if (method === 'get') {
-        
-        res = await request.get(url, { params: requestData }); 
-      
-    }
-
-    if (res.data.code == 200) {
-        return res.data;
-    } else {
-        return Promise.reject(new Error(`请求 ${url} 失败: ${res.data.msg}`));
-    }
+/**
+ * 将 Jyk 页面查询条件映射为 CentralWarehouseDept/Search 参数
+ * 字段名与旧 InventoryQueryNew.cshtml 的 DOM id 保持一致
+ */
+export function mapJykWhere(where = {}) {
+  return {
+    varietie: where.inventoryNew_search1 ?? '',
+    supplier: where.inventoryNew_search2 ?? '',
+    batch: where.inventoryNew_search3 ?? '',
+    sourceFrom: where.inventoryNew_search4 ?? '',
+    manuEntName: where.inventoryNew_search5 ?? '',
+    approvalNumber: where.inventoryNew_APPROVAL_NUMBER ?? '',
+    classificName: where.inventoryNew_classificName ?? '',
+    position: where.inventory_Position ?? '',
+    storageId: where.STORAGE_ID ?? where.storageId ?? '',
+    upShelfState: where.UpShelfState ?? '',
+    conTime: where.conTime ?? '',
+    isHptx: where.hptx ?? '',
+    validDateFrom: where.start_time ?? '',
+    validDateTo: where.end_time ?? '',
+    isCharge: where.isCharge ?? '-1',
+    highOrLowClass: where.highOrLowClass ?? '-1',
+    isBidding: where.isBidding ?? '-1',
+    specialPurchase: where.specialPurchase ?? '-1',
+    oneoffSterilizationPackaging: where.oneoffSterilizationPackaging ?? '-1',
+    storageType: where.storageType ?? '-1',
+    isEmbedded: where.isEmbedded ?? '-1',
+    isSerialNumber: where.isSerialNumber ?? '-1',
+    isProtect: where.isProtect ?? '-1',
+    isIntervened: where.isIntervened ?? '-1',
+    highOrLowClassTwo: where.highOrLowClassTwo2 ?? ''
+  };
 }
 
-// 获取库存
-export async function GetPDAList(data) {
-    const { page, limit, where = {}, order = '', field = '' } = data;
-    const requestData = {
-        page,
-        size: limit,
-        varietie: where.inventoryNew_search1 || '',
-        supplier: where.inventoryNew_search2 || '',
-        batch: where.inventoryNew_search3 || '', 
-        sourceFrom: where.inventoryNew_search4 || '', 
-        manuEntName: where.inventoryNew_search5 || '', 
-        APPROVAL_NUMBER:  where.inventoryNew_APPROVAL_NUMBER || '',//注册证
-        Up_Shelf_State: where.UpShelfState || '',//所属区域
-        conTime:where.conTime || '', //合同到期
-        is_hptx:where.hptx|| '', //货票同行
-        validDateFrom: where.start_time || '',//开始时间 
-        validDateTo: where.end_time || '',//结束时间 
-        field: '',
-        order: '',
-        isCharge: where.isCharge|| '',
-        highOrLowClass: where.highOrLowClass|| '',
-        isBidding: where.isBidding|| '',
-        specialPurchase: where.specialPurchase|| '',
-        oneoffSterilizationPackaging: where.oneoffSterilizationPackaging|| '',
-        storageType:where.storageType|| '',
-        isEmbedded: where.isEmbedded|| '',
-        isSerialNumber: where.isSerialNumber|| '',
-        isProtect:where.isProtect|| '',
-        classificName:where.inventoryNew_classificName || '',//分类属性 
-        isIntervened: where.isIntervened|| '',
-        highOrLowClassTwo: where.highOrLowClassTwo2 || '',//高低值分类下级属性
-        Position:where.inventory_Position || ''  //货位号
-    };
-    // 假设服务器端接口支持 GET 方法
-    return sendRequest('/CentralWarehouseDept/Search', requestData, 'get'); 
+/** 主表 — GET /CentralWarehouseDept/Search */
+export async function GetPDAList({ page, limit, where = {}, order }) {
+  const sort = parseSort(order);
+  const res = await searchMain(mapJykWhere(where), page, limit, sort);
+  return {
+    code: res.auditRequired ? 303 : 200,
+    total: res.total ?? 0,
+    sum: res.sum ?? 0,
+    amountSum: res.amountSum ?? 0,
+    result: res.result || [],
+    requesturl: res.requesturl,
+    datatype: res.datatype,
+    keyparams: res.keyparams,
+    auditRequired: res.auditRequired
+  };
 }
 
+/** 主表全量（导出） */
+export async function GetPDAListAll(where = {}, order) {
+  const sort = parseSort(order);
+  return searchMainAll(mapJykWhere(where), sort);
+}
 
-// 获取详情数据
-export async function GetPDAList2(data) {
+/** 明细 — GET /CentralWarehouseDept/SearchDef */
+export async function GetPDAList2({ page, limit, where = {}, order }) {
+  const sort = parseSort(order);
+  const ctx = {
+    sourceFrom: where.sourceFrom ?? '',
+    batchId: where.batchId ?? '',
+    varietieCode: where.varietieCode ?? '',
+    batch: where.batch ?? '',
+    coefficient: where.coefficient ?? '',
+    currUpShelfState: where.currUpShelfState ?? '',
+    condition: where.condition ?? '',
+    storageId: where.storageId ?? ''
+  };
+  const res = await searchDef(ctx, page, limit, sort);
+  return {
+    total: res.total ?? 0,
+    result: res.result || []
+  };
+}
 
-   
-    const { page, limit, where = {}, order = '', field = '' } = data;
-    const requestData = {
-        page,
-        size: limit,
-        sourceFrom: where.sourceFrom || '',
-        batchId: where.batchId || '',
-        varietieCode:  where.varietieCode || '',
-        batch:  where.batch || '',
-        coefficient:  where.coefficient || '',
-        currUpShelfState:  where.currUpShelfState || '',
-        condition:  where.condition || '',
-        field: '',
-        order: '',
-        storageId:  where.storageId || ''
-      
-    };
-    //window.alert(JSON.stringify(requestData, null, 2));
-    // 假设服务器端接口支持 GET 方法
-    return sendRequest('/CentralWarehouseDept/SearchDef', requestData, 'get'); 
-  }
+export { getStorageList, parseSort };

@@ -178,6 +178,11 @@ export function getMenuRoutes(menus, homePath) {
       meta: { title: '库存查询' }
     });
     routes.push({
+      path: '/Inventory/InventoryQueryNewJyk',
+      component: () => import('@/views/Inventory/InventoryQueryNewJyk/index.vue'),
+      meta: { title: '库存查询v2' }
+    });
+    routes.push({
       path: '/KSInventory/DeptPlannedDeliveryNew',
       component: () => import('@/views/KSInventory/DeptPlannedDeliveryNew/index.vue'),
       meta: { title: '科室计划配送新' }
