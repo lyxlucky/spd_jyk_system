@@ -303,6 +303,11 @@ export function getMenuRoutes(menus, homePath) {
       meta: { title: '供应商统计' }
     });
     routes.push({
+      path: '/Statistics/EchVar',
+      component: () => import('@/views/Statistics/EchVar/index.vue'),
+      meta: { title: '品种统计' }
+    });
+    routes.push({
       path: '/Statistics/MaterialStatistics',
       component: () => import('@/views/Statistics/MaterialStatistics/index.vue'),
       meta: { title: '耗材监管统计' }
