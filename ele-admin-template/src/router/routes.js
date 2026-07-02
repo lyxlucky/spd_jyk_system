@@ -293,6 +293,11 @@ export function getMenuRoutes(menus, homePath) {
       meta: { title: '科室统计分析' }
     });
     routes.push({
+      path: '/Statistics/DeptStatistics',
+      component: () => import('@/views/Statistics/DeptStatistics/index.vue'),
+      meta: { title: '科室统计' }
+    });
+    routes.push({
       path: '/Statistics/MaterialStatistics',
       component: () => import('@/views/Statistics/MaterialStatistics/index.vue'),
       meta: { title: '耗材监管统计' }
