@@ -338,6 +338,11 @@ export function getMenuRoutes(menus, homePath) {
       meta: { title: '注册证限量' }
     });
     routes.push({
+      path: '/Statistics/RegistrationWarn',
+      component: () => import('@/views/Statistics/RegistrationWarn/index.vue'),
+      meta: { title: '注册证统计预警' }
+    });
+    routes.push({
       path: '/Home/YgVarInfo',
       component: () => import('@/views/Home/YgVarInfo/index.vue'),
       meta: { title: '阳光本院目录' }
@@ -411,6 +416,11 @@ export function getMenuRoutes(menus, homePath) {
       path: '/Home/YGVARCLLOOK_SM',
       component: () => import('@/views/Home/YgVarClLookSm/index.vue'),
       meta: { title: '物价目录审核查看(萨米)' }
+    });
+    routes.push({
+      path: '/Home/YGVARCLLOOK',
+      component: () => import('@/views/Home/YgVarClLook/index.vue'),
+      meta: { title: '物价目录审核查看' }
     });
     routes.push({
       path: '/KSInventory/GY_CLML_SPD',
