@@ -39,6 +39,7 @@ const getRequestTimeout = () => {
     'selhww': 3600000,   // 1小时
     'xhww': 3600000,  // 1小时
     'xhnw': 3600000,   // 1小时
+    'stse': 3600000
   };
   console.log(env,envTimeoutMap[env]);
   return envTimeoutMap[env] || 3600000;
@@ -91,6 +92,7 @@ const getHomeHp = () => {
     'selhww': 'se2',    // 三个环境使用同一个LOGO（待定）
     'xhww': 'xh',   // 新华外网
     'xhnw': 'xh',    // 新华内网
+    'stse': 'stse'
   };
   return envHpMap[env] || 'bd';
 }
@@ -153,6 +155,7 @@ const getBackBaseUrl = () => {
     'lglsww': '',
     'lglsnw': 'http://192.168.2.113:16002',
     'lglssk': 'http://172.31.71.152:16002',
+    'stse': 'http://172.32.202.17:82'
   };
   return envMap[env] || 'http://localhost:16416';
 }

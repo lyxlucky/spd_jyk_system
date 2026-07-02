@@ -74,6 +74,11 @@ npm run build:selh     # 龙华院区
 npm run build:selhww     # 龙华院区外网
 ```
 
+#### 汕头市二环境
+```bash
+npm run build:stse    # 汕头市二内网
+```
+
 ## 环境配置说明
 
 每个环境都有对应的 `.env.{环境名}` 配置文件，包含：
