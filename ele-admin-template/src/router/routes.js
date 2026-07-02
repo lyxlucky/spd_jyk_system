@@ -133,6 +133,11 @@ export function getMenuRoutes(menus, homePath) {
       meta: { title: '申领计划管理' }
     });
     routes.push({
+      path: '/KSInventory/DeptApplyTwoAudit',
+      component: () => import('@/views/KSInventory/DeptApplyTwoAudit/index.vue'),
+      meta: { title: '科室申领二级审批' }
+    });
+    routes.push({
       path: '/KSInventory/FinancialAudit',
       component: () => import('@/views/KSInventory/FinancialAudit/index.vue'),
       meta: { title: '发票签收' }
