@@ -1,7 +1,7 @@
 <template>
   <div class="ele-body spd-page centre-bank-take-goods">
-    <el-card shadow="never">
-      <el-tabs v-model="activeTab">
+    <el-card shadow="never" class="page-card">
+      <el-tabs v-model="activeTab" class="page-tabs">
         <el-tab-pane label="人工收货单" name="manual">
           <ManualPanel v-if="activeTab === 'manual'" />
         </el-tab-pane>
@@ -33,7 +33,48 @@ export default {
 
 <style lang="scss" scoped>
 @import './styles/table.scss';
-.centre-bank-take-goods :deep(.el-tabs__content) {
-  padding-top: 8px;
+
+.centre-bank-take-goods {
+  padding: 8px;
+  height: calc(100vh - 88px);
+  box-sizing: border-box;
+  overflow: hidden;
+
+  .page-card {
+    height: 100%;
+    border: none;
+
+    :deep(.el-card__body) {
+      height: 100%;
+      padding: 8px 12px 10px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      overflow: hidden;
+    }
+  }
+
+  .page-tabs {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+
+    :deep(.el-tabs__header) {
+      flex: none;
+      margin-bottom: 8px;
+    }
+    :deep(.el-tabs__content) {
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+    }
+    :deep(.el-tab-pane) {
+      height: 100%;
+      overflow: hidden;
+    }
+  }
 }
 </style>

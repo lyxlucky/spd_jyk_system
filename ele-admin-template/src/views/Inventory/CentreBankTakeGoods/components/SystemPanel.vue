@@ -1,8 +1,10 @@
 <template>
-  <div class="take-system">
-    <el-row :gutter="12">
-      <el-col :span="7">
-        <el-card shadow="never" class="panel-card">
+  <div class="take-panel take-system">
+    <el-row :gutter="12" class="take-row">
+      <el-col :span="7" class="take-col">
+        <el-card shadow="never" class="panel-card panel-card--fill">
+          <div class="take-card-body">
+            <div class="take-card-tools">
           <div class="toolbar">
             <el-input
               v-model="receiptQuery.condition"
@@ -43,13 +45,15 @@
             </el-button>
             <el-button size="mini" @click="pendingVisible = true">待收货详情</el-button>
           </div>
+            </div>
+            <div class="take-table-box">
           <el-table
             v-loading="receiptLoading"
             :data="receiptList"
             border
             stripe
             size="mini"
-            height="460"
+            height="100%"
             highlight-current-row
             @current-change="onReceiptSelect"
           >
@@ -71,16 +75,13 @@
               </template>
             </el-table-column>
           </el-table>
+            </div>
+          </div>
         </el-card>
       </el-col>
-      <el-col :span="17">
-        <el-card v-if="receiptHeader" shadow="never" class="header-card">
-          <span>收货单：{{ receiptHeader.Delivery_Note_Number }}</span>
-          <span class="ml">备货单：{{ receiptHeader.Prepare_Goods_Plan_Number }}</span>
-          <span class="ml">创建：{{ fmtDateTime(receiptHeader.Supplier_Delivery_Time) }}</span>
-          <span class="ml">状态：{{ fmtReceiveState(receiptHeader.Receive_Receipt_State) }}</span>
-        </el-card>
-        <el-card shadow="never" class="panel-card">
+      <el-col :span="17" class="take-col">
+        <el-card shadow="never" class="panel-card panel-card--fill">
+          <div class="take-card-body">
           <div class="section-title">品种收货明细</div>
           <div class="sum-tip" v-if="currentReceipt">
             <span>实收合计：{{ qtySum }}</span>
@@ -113,6 +114,7 @@
             <el-button size="mini" :disabled="!detailSelection.length" @click="onInitPPContract">发起省平台合同</el-button>
             <el-button size="mini" :disabled="!currentReceipt" @click="openInvoiceDialog">填写发票</el-button>
           </div>
+          <div class="take-table-box">
           <el-table
             ref="detailTable"
             v-loading="detailLoading"
@@ -121,7 +123,7 @@
             border
             stripe
             size="mini"
-            height="560"
+            height="100%"
             @selection-change="onDetailSelectionChange"
           >
             <el-table-column type="selection" width="48" align="center" fixed="left" />
@@ -278,6 +280,8 @@
               </template>
             </el-table-column>
           </el-table>
+          </div>
+          </div>
         </el-card>
       </el-col>
     </el-row>
@@ -915,42 +919,11 @@ export default {
 };
 </script>
 
+<style lang="scss">
+@import '../styles/table.scss';
+</style>
+
 <style scoped>
-.take-system .toolbar {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-bottom: 8px;
-  align-items: center;
-}
-.take-system .toolbar.wrap {
-  max-height: 80px;
-  overflow-y: auto;
-}
-.take-system .lbl {
-  font-size: 12px;
-  color: #606266;
-}
-.take-system .section-title {
-  font-weight: 600;
-  margin-bottom: 8px;
-  border-bottom: 2px solid #3e9ef7;
-  display: inline-block;
-}
-.take-system .sum-tip {
-  margin-bottom: 8px;
-  font-size: 13px;
-}
-.take-system .sum-tip .ml {
-  margin-left: 16px;
-}
-.take-system .header-card {
-  margin-bottom: 8px;
-  font-size: 13px;
-}
-.take-system .header-card .ml {
-  margin-left: 16px;
-}
 .take-system .pic-cell {
   display: flex;
   flex-wrap: wrap;

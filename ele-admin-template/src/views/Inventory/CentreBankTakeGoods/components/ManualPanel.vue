@@ -1,8 +1,10 @@
 <template>
-  <div class="take-manual">
-    <el-row :gutter="12">
-      <el-col :span="7">
-        <el-card shadow="never" class="panel-card">
+  <div class="take-panel take-manual">
+    <el-row :gutter="12" class="take-row">
+      <el-col :span="7" class="take-col">
+        <el-card shadow="never" class="panel-card panel-card--fill">
+          <div class="take-card-body">
+            <div class="take-card-tools">
           <div class="toolbar">
             <el-input v-model="receiptQuery.condition" size="mini" clearable placeholder="收货单/备货单号" @keyup.enter.native="loadReceipts" />
             <el-date-picker v-model="receiptQuery.timeStart" type="date" size="mini" value-format="yyyy-MM-dd" placeholder="开始" style="width: 118px" />
@@ -30,7 +32,9 @@
               <el-option label="已收货" value="1" />
             </el-select>
           </div>
-          <el-table v-loading="receiptLoading" :data="receiptList" border stripe size="mini" height="380" highlight-current-row @current-change="onReceiptSelect">
+            </div>
+            <div class="take-table-box">
+          <el-table v-loading="receiptLoading" :data="receiptList" border stripe size="mini" height="100%" highlight-current-row @current-change="onReceiptSelect">
             <el-table-column prop="Name" label="库区" width="80" show-overflow-tooltip />
             <el-table-column prop="Delivery_Note_Number" label="收货单号" min-width="110" show-overflow-tooltip />
             <el-table-column prop="Prepare_Goods_Plan_Number" label="备货单号" min-width="100" show-overflow-tooltip />
@@ -45,25 +49,24 @@
             </el-table-column>
             <el-table-column prop="Note_Description" label="备注" min-width="80" show-overflow-tooltip />
           </el-table>
+            </div>
+          </div>
         </el-card>
       </el-col>
-      <el-col :span="17">
-        <el-card v-if="receiptHeader" shadow="never" class="header-card">
-          <span>收货单：{{ receiptHeader.Delivery_Note_Number }}</span>
-          <span class="ml">备货单：{{ receiptHeader.Prepare_Goods_Plan_Number }}</span>
-          <span class="ml">创建：{{ fmtDateTime(receiptHeader.Supplier_Delivery_Time) }}</span>
-          <span class="ml">状态：{{ fmtReceiveState(receiptHeader.Receive_Receipt_State) }}</span>
-          <span v-if="storageTip" class="storage-tip">{{ storageTip }}</span>
-        </el-card>
-        <el-card shadow="never" class="panel-card">
+      <el-col :span="17" class="take-col">
+        <el-card shadow="never" class="panel-card panel-card--fill">
+          <div class="take-card-body take-card-body--split">
+            <div class="take-block take-block--top">
           <div class="section-title">请选择收货品种</div>
           <div class="toolbar">
             <el-input v-model="varietySearch" size="mini" clearable placeholder="编码/名称/企业/规格/供应商" style="flex: 1; min-width: 280px" @keyup.enter.native="loadSearchVarieties" />
             <el-button size="mini" type="primary" icon="el-icon-search" @click="loadSearchVarieties" />
             <el-button size="mini" type="primary" :disabled="!currentReceipt || !searchSelection.length" @click="onAddVarieties">添加</el-button>
             <el-button size="mini" :disabled="!currentReceipt" @click="openInvoiceDialog('header')">填写发票</el-button>
+            <span v-if="storageTip" class="storage-tip">{{ storageTip }}</span>
           </div>
-          <el-table v-loading="searchLoading" :data="searchVarieties" border stripe size="mini" height="240" @selection-change="(s) => (searchSelection = s)">
+          <div class="take-table-box">
+          <el-table v-loading="searchLoading" :data="searchVarieties" border stripe size="mini" height="100%" @selection-change="(s) => (searchSelection = s)">
             <el-table-column type="selection" width="48" align="center" fixed="left" />
             <el-table-column prop="Varietie_Code_New" label="品种编码" width="100" />
             <el-table-column prop="Varietie_Name" label="品种全称" min-width="140" show-overflow-tooltip />
@@ -132,8 +135,11 @@
               </template>
             </el-table-column>
           </el-table>
+          </div>
+            </div>
 
-          <div class="section-title mt">已添加的收货品种列表</div>
+            <div class="take-block take-block--bottom">
+          <div class="section-title">已添加的收货品种列表</div>
           <div class="toolbar wrap">
             <el-button size="mini" type="danger" :disabled="!addedSelection.length" @click="onDeleteAdded">删除</el-button>
             <el-button size="mini" :disabled="!addedSelection.length" @click="openBatchDialog('orderType')">修改采购方式</el-button>
@@ -148,6 +154,7 @@
             <el-button size="mini" :disabled="!addedSelection.length" @click="openBatchDialog('ptBz')">平台单号备注</el-button>
             <el-button size="mini" :disabled="!addedSelection.length" @click="onSaveAdded">保存</el-button>
           </div>
+          <div class="take-table-box">
           <el-table
             ref="addedTable"
             v-loading="addedLoading"
@@ -155,7 +162,7 @@
             border
             stripe
             size="mini"
-            height="280"
+            height="100%"
             @selection-change="(s) => (addedSelection = s)"
           >
             <el-table-column type="selection" width="48" align="center" fixed="left" />
@@ -232,6 +239,9 @@
             <el-table-column prop="TJ_POSITION" label="推荐货位" width="90" />
             <el-table-column prop="JC_TYPE" label="集采类型" width="90" />
           </el-table>
+          </div>
+            </div>
+          </div>
         </el-card>
       </el-col>
     </el-row>
@@ -808,44 +818,6 @@ export default {
 };
 </script>
 
-<style scoped>
-.take-manual .toolbar {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-bottom: 8px;
-  align-items: center;
-}
-.take-manual .toolbar.wrap {
-  max-height: 72px;
-  overflow-y: auto;
-}
-.take-manual .lbl {
-  font-size: 12px;
-  color: #606266;
-}
-.take-manual .panel-card {
-  margin-bottom: 0;
-}
-.take-manual .header-card {
-  margin-bottom: 8px;
-  font-size: 13px;
-}
-.take-manual .header-card .ml {
-  margin-left: 16px;
-}
-.take-manual .storage-tip {
-  margin-left: 16px;
-  color: #f56c6c;
-}
-.take-manual .section-title {
-  font-weight: 600;
-  margin-bottom: 8px;
-  border-bottom: 2px solid #3e9ef7;
-  display: inline-block;
-  padding-bottom: 4px;
-}
-.take-manual .section-title.mt {
-  margin-top: 12px;
-}
+<style lang="scss">
+@import '../styles/table.scss';
 </style>
