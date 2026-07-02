@@ -168,6 +168,11 @@ export function getMenuRoutes(menus, homePath) {
       meta: { title: '科室缺货统计' }
     });
     routes.push({
+      path: '/Inventory/OutOfStock',
+      component: () => import('@/views/Inventory/OutOfStock/index.vue'),
+      meta: { title: '中心库缺货统计' }
+    });
+    routes.push({
       path: '/KSInventory/DeptPlannedDeliveryNew',
       component: () => import('@/views/KSInventory/DeptPlannedDeliveryNew/index.vue'),
       meta: { title: '科室计划配送新' }
