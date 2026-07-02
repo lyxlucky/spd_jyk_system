@@ -90,15 +90,37 @@
 .take-table-box {
   flex: 1;
   min-height: 0;
+  height: 0;
   overflow: hidden;
-  position: relative;
+  display: flex;
+  flex-direction: column;
 
   :deep(.el-table) {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    flex: 1;
+    width: 100% !important;
+    min-height: 0;
+  }
+
+  :deep(.el-table-column--selection .cell) {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  :deep(.el-table-column--selection .el-checkbox) {
+    margin: 0;
+  }
+
+  :deep(.el-table__body td.el-table-column--selection),
+  :deep(.el-table__fixed-body-wrapper td.el-table-column--selection) {
+    vertical-align: middle;
+  }
+
+  :deep(.el-table__fixed-body-wrapper .el-table__body tr),
+  :deep(.el-table__body-wrapper .el-table__body tr) {
+    height: inherit;
   }
 }
 

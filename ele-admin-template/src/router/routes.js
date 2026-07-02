@@ -163,6 +163,11 @@ export function getMenuRoutes(menus, homePath) {
       meta: { title: '主动补货(库存监控)' }
     });
     routes.push({
+      path: '/Inventory/DeptQhStatistics',
+      component: () => import('@/views/Inventory/DeptQhStatistics/index.vue'),
+      meta: { title: '科室缺货统计' }
+    });
+    routes.push({
       path: '/KSInventory/DeptPlannedDeliveryNew',
       component: () => import('@/views/KSInventory/DeptPlannedDeliveryNew/index.vue'),
       meta: { title: '科室计划配送新' }

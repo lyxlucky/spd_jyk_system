@@ -126,7 +126,7 @@
             height="100%"
             @selection-change="onDetailSelectionChange"
           >
-            <el-table-column type="selection" width="48" align="center" fixed="left" />
+            <el-table-column type="selection" width="48" align="center" class-name="spd-checkbox-col" />
             <el-table-column label="包装图片" width="100" align="center">
               <template slot-scope="{ row }">
                 <div v-if="!row.PIC_URL" class="pic-cell">—</div>
@@ -471,6 +471,15 @@ export default {
     this.loadReceipts();
     if (hpFlags.showStorageTwo) this.loadStorageTwoList();
   },
+  mounted() {
+    this._onTableResize = () => this.layoutDetailTable();
+    window.addEventListener('resize', this._onTableResize);
+  },
+  beforeDestroy() {
+    if (this._onTableResize) {
+      window.removeEventListener('resize', this._onTableResize);
+    }
+  },
   methods: {
     fmtReceiveState,
     fmtDateTime,
@@ -491,6 +500,14 @@ export default {
     },
     onDetailSelectionChange(rows) {
       this.detailSelection = rows;
+    },
+    layoutDetailTable() {
+      this.$nextTick(() => {
+        const tb = this.$refs.detailTable;
+        if (tb && typeof tb.doLayout === 'function') {
+          tb.doLayout();
+        }
+      });
     },
     mapDetailRow(r) {
       return {
@@ -684,6 +701,7 @@ export default {
           this.detailRows.forEach((r) => {
             tb.toggleRowSelection(r, true);
           });
+          this.layoutDetailTable();
         });
       } catch (e) {
         Message.error(e.message || '加载明细失败');

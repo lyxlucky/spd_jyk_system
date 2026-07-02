@@ -67,7 +67,7 @@
           </div>
           <div class="take-table-box">
           <el-table v-loading="searchLoading" :data="searchVarieties" border stripe size="mini" height="100%" @selection-change="(s) => (searchSelection = s)">
-            <el-table-column type="selection" width="48" align="center" fixed="left" />
+            <el-table-column type="selection" width="48" align="center" class-name="spd-checkbox-col" />
             <el-table-column prop="Varietie_Code_New" label="品种编码" width="100" />
             <el-table-column prop="Varietie_Name" label="品种全称" min-width="140" show-overflow-tooltip />
             <el-table-column prop="Approval_Number" label="批准文号" width="110" show-overflow-tooltip />
@@ -165,7 +165,7 @@
             height="100%"
             @selection-change="(s) => (addedSelection = s)"
           >
-            <el-table-column type="selection" width="48" align="center" fixed="left" />
+            <el-table-column type="selection" width="48" align="center" class-name="spd-checkbox-col" />
             <el-table-column prop="Name" label="院区库房" width="90" align="center" />
             <el-table-column v-if="flags.isStHospital" prop="PT_HTNUM" label="平台单号" width="100" />
             <el-table-column prop="Varietie_Code" label="品种编码" width="95" />
