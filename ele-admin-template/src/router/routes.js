@@ -173,6 +173,11 @@ export function getMenuRoutes(menus, homePath) {
       meta: { title: '中心库缺货统计' }
     });
     routes.push({
+      path: '/Inventory/InventoryQueryNew',
+      component: () => import('@/views/Inventory/InventoryQueryNew/index.vue'),
+      meta: { title: '库存查询' }
+    });
+    routes.push({
       path: '/KSInventory/DeptPlannedDeliveryNew',
       component: () => import('@/views/KSInventory/DeptPlannedDeliveryNew/index.vue'),
       meta: { title: '科室计划配送新' }
