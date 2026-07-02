@@ -685,6 +685,121 @@ export async function ApplyPlanUpdateRemarks(data) {
   }
 }
 
+/** 打印申领单 */
+export async function createApplyDateExcel(planNum, deptName) {
+  const res = await request.get('/DeptApplyPlan/CreateApplyDateExcel', {
+    params: {
+      Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+      PlanNum: planNum || '',
+      DeptName: deptName || store?.state?.user?.info?.DeptNow?.Dept_Two_Name || ''
+    }
+  });
+  if (res.data?.code == 200) {
+    return res.data;
+  }
+  throw new Error(res.data?.msg || '打印失败');
+}
+
+/** STZX 计划单打印 */
+export async function stzxMonthPlanJYPrint(planNum) {
+  const res = await request.get('/MonthClearing/STZX_MonthPlanJYPrint', {
+    params: {
+      Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+      PlanNum: planNum || ''
+    }
+  });
+  if (res.data?.code == 200) {
+    return res.data;
+  }
+  throw new Error(res.data?.msg || '打印失败');
+}
+
+/** 消耗超限校验 */
+export async function getApplyPlanIsCanAdd(consumedCost, purchaseCost) {
+  const res = await request.get('/DeptApplyPlan/getApplyPlanIsCanAdd', {
+    params: {
+      Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+      Consumed_Cost: consumedCost,
+      Purchase_Cost: purchaseCost
+    }
+  });
+  if (res.data?.code == 200) {
+    return res.data;
+  }
+  throw new Error(res.data?.msg || '不可创建申领单');
+}
+
+/** 引用常规模板 */
+export async function serachCommonDeta(planNum) {
+  const res = await request.post(
+    '/DeptApplyPlan/SerachCommonDeta',
+    formdataify({
+      Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+      DeptCode: store?.state?.user?.info?.DeptNow?.Dept_Two_Code || '',
+      PlanNum: planNum || ''
+    })
+  );
+  if (res.data?.code == 200) {
+    return res.data;
+  }
+  throw new Error(res.data?.msg || '引用失败');
+}
+
+/** 订单收货明细 */
+export async function getDeptTwoGoodsOperateDtl(data) {
+  const { page = 1, limit = 50, where = {} } = data;
+  const deptCodes = (store?.state?.user?.info?.userDept || [])
+    .map((d) => d.Dept_Two_Code)
+    .join(',');
+  const res = await request.post(
+    '/DeptApplyPlan/getDEPT_TWO_GOODS_OPERATE_DTL',
+    formdataify({
+      Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+      page,
+      size: limit,
+      VARIETIE_SEARCH_VALUE: where.varietieSearch || '',
+      ORDER_NUM: where.orderNum || '',
+      STATE: where.state ?? '0',
+      DEPT_TWO_CODE: where.deptTwoCode || deptCodes
+    })
+  );
+  if (res.data?.code == 200 || res.data?.code === '200') {
+    return res.data;
+  }
+  throw new Error(res.data?.msg || '查询失败');
+}
+
+/** 确认订单收货 */
+export async function commitDeptTwoGoodsOperateDtl(rows) {
+  const res = await request.post(
+    '/DeptApplyPlan/getDEPT_TWO_GOODS_OPERATE_DTLCommit',
+    formdataify({
+      Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+      json: JSON.stringify(rows || [])
+    })
+  );
+  if (res.data?.code == 200 || res.data?.code === '200') {
+    return res.data;
+  }
+  throw new Error(res.data?.msg || '收货失败');
+}
+
+/** 合并订单 */
+export async function hbApplyPlanOrder(mainOrder, rows) {
+  const res = await request.post(
+    '/DeptApplyPlan/hbApplyPlanOrder',
+    formdataify({
+      Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+      mainOrder: mainOrder || '',
+      json: JSON.stringify(rows || [])
+    })
+  );
+  if (res.data?.code == 200 || res.data?.code === '200') {
+    return res.data;
+  }
+  throw new Error(res.data?.msg || '合并失败');
+}
+
 export async function cancelOneAuthVarWithDept(data) {
   const postData = {
     Varietie_Code: data.Varietie_Code,

@@ -8,37 +8,32 @@
       @keyup.enter.native="search"
       @submit.native.prevent
     >
-    <!-- <el-row :gutter="10" style="display: none">
-      <el-col v-bind="styleResponsive ? { lg: 6, md: 12 } : { span: 6 }">
-        <el-form-item label="状态：">
-          <el-select v-model="where.State" @change="search()">
-            <el-option label="显示所有申领品种" value="-1"></el-option>
-            <el-option label="仅显示实际申领为空品种" value="0"></el-option>
-            <el-option label="仅显示实际申领非空品种" value="1"></el-option>
-          </el-select>
-        </el-form-item>
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 11, md: 12 } : { span: 6 }">
-        <el-form-item label="平均用量时间段：" label-width="130px">
-          <el-date-picker
-            v-model="where.dateFrom"
-            type="date"
-            value-format="yyyy-MM-dd"
-            placeholder="yyyy-MM-dd"
-          >
-          </el-date-picker>
-        </el-form-item>
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 4, md: 12 } : { span: 6 }">
+    >
+      <el-form-item label="品种筛选">
+        <el-select v-model="where.varietyFilter" style="width: 180px" @change="search">
+          <el-option label="显示所有申领品种" value="-1" />
+          <el-option label="仅显示实际申领为空品种" value="0" />
+          <el-option label="仅显示实际申领非空品种" value="1" />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="平均用量时间段" label-width="120px">
+        <el-date-picker
+          v-model="where.dateFrom"
+          type="date"
+          value-format="yyyy-MM-dd"
+          placeholder="开始日期"
+          style="width: 140px"
+        />
+      </el-form-item>
+      <el-form-item label="至">
         <el-date-picker
           v-model="where.dateTo"
           type="date"
           value-format="yyyy-MM-dd"
-          placeholder="yyyy-MM-dd"
-        >
-        </el-date-picker>
-      </el-col>
-    </el-row> -->
+          placeholder="结束日期"
+          style="width: 140px"
+        />
+      </el-form-item>
       <el-form-item label="品种">
         <el-input
           style="width: 200px"
@@ -63,6 +58,16 @@
                 :disabled="!IsDisabled"
               >
                 自定义新增
+              </el-button>
+            </el-dropdown-item>
+            <el-dropdown-item>
+              <el-button
+                type="text"
+                icon="el-icon-document-copy"
+                @click="introduceCommonTemp"
+                :disabled="!IsDisabled"
+              >
+                引用常规模板
               </el-button>
             </el-dropdown-item>
             <el-dropdown-item>
@@ -139,6 +144,14 @@
         <el-button type="primary" icon="el-icon-view" @click="ApplyOperateTipShow = true">
           查看订单详情
         </el-button>
+        <el-button
+          type="primary"
+          icon="el-icon-connection"
+          :disabled="!KSDepartmentalPlanDataSearch?.PlanNum"
+          @click="mergeOrderVisible = true"
+        >
+          合并订单
+        </el-button>
         <el-dropdown>
           <el-button type="primary" icon="el-icon-s-unfold">
             目录<i class="el-icon-arrow-down el-icon--right"></i>
@@ -184,7 +197,12 @@
         <el-button type="primary" icon="el-icon-upload" @click="dialogTableVisible2 = true">
           导入模板
         </el-button>
-        <el-button type="primary" icon="el-icon-download" @click="exportData">
+        <el-button
+          v-if="canExportDetail"
+          type="primary"
+          icon="el-icon-download"
+          @click="exportData"
+        >
           导出
         </el-button>
         <el-button
@@ -329,6 +347,12 @@
       @cancel="handleExpiredCertificateCancel"
     />
 
+    <MergeApplyPlanOrderDialog
+      :visible.sync="mergeOrderVisible"
+      :main-order="KSDepartmentalPlanDataSearch?.PlanNum || ''"
+      @done="onMergeDone"
+    />
+
     <!-- 绑定费用项对话框 -->
     <el-dialog
       title="绑定费用项"
@@ -402,8 +426,10 @@
     checkHasPendingOrder,
     deleteZeroDel,
     ImportTempExcel,
-    ApplyPlanUpdateRemarks
+    ApplyPlanUpdateRemarks,
+    serachCommonDeta
   } from '@/api/KSInventory/KSDepartmentalPlan';
+  import { hasExportPermission } from '../utils';
   import { getBudgets, bindBudget } from '@/api/pekingApplication';
   import IntroduceUserDefinedTemp from '@/views/KSInventory/IntroduceUserDefinedTemp/index.vue';
   import BidVarInfoDept from '@/views/KSInventory/ReferenceComponent/BidVarInfoDept/index.vue';
@@ -414,6 +440,7 @@
   import IntroduceDefinedTemp from './aaaaccc.vue';
   import ExpiredCertificateDialog from './ExpiredCertificateDialog.vue';
   import HistoryCycleConsumeDialog from './HistoryCycleConsumeDialog.vue';
+  import MergeApplyPlanOrderDialog from './MergeApplyPlanOrderDialog.vue';
   import { TOKEN_STORE_NAME } from '@/config/setting';
 
   const defaultWhere = () => ({
@@ -421,7 +448,8 @@
     is_second_app: '',
     SerachName: '',
     dateFrom: '',
-    dateTo: ''
+    dateTo: '',
+    varietyFilter: '-1'
   });
 
   export default {
@@ -435,7 +463,8 @@
       VarietyDataLzhLook,
       DpetOneAuthWithDept,
       ExpiredCertificateDialog,
-      HistoryCycleConsumeDialog
+      HistoryCycleConsumeDialog,
+      MergeApplyPlanOrderDialog
     },
     data() {
       return {
@@ -458,6 +487,7 @@
         expiredCertificateDialogVisible: false,
         expiredCertificateList: [],
         bindBudgetDialogVisible: false,
+        mergeOrderVisible: false,
         budgetItemList: [],
         budgetSelection: [],
         budgetColumns: [
@@ -546,6 +576,9 @@
       },
       HOME_HP() {
         return HOME_HP;
+      },
+      canExportDetail() {
+        return hasExportPermission('export-ApplyPlan-slddc');
       }
     },
     watch: {
@@ -605,6 +638,27 @@
       showApplyTemp() {
         // console.log(this.KSDepartmentalPlanDataSearch);
         this.ApplyTempPage = true;
+      },
+      introduceCommonTemp() {
+        if (!this.KSDepartmentalPlanDataSearch?.PlanNum) {
+          this.$message.warning('请先选择申领单');
+          return;
+        }
+        const loading = this.$messageLoading('引用中...');
+        serachCommonDeta(this.KSDepartmentalPlanDataSearch.PlanNum)
+          .then((res) => {
+            loading.close();
+            this.$message.success(res.msg || '引用成功');
+            this.$emit('search', { PlanNum: this.KSDepartmentalPlanDataSearch.PlanNum });
+          })
+          .catch((err) => {
+            loading.close();
+            this.$message.error(err.message || '引用失败');
+          });
+      },
+      onMergeDone() {
+        this.$emit('ClickReload', true);
+        this.$emit('search', { PlanNum: this.KSDepartmentalPlanDataSearch.PlanNum });
       },
       openHistoryCycleConsume() {
         if (

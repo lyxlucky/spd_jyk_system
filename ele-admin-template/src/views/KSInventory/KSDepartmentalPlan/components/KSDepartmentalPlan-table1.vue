@@ -12,6 +12,9 @@
       <KSDepartmentalPlan-search
         @search="reload"
         @exportData="exportData"
+        @printPlan="printPlan"
+        @printPlanJhd="printPlanJhd"
+        @showReceive="showReceiveVisible = true"
         ref="search"
       />
     </div>
@@ -147,25 +150,34 @@
         </ele-pro-table>
       </div>
     </div>
+    <ApplyPlanReceiveDialog
+      :visible.sync="showReceiveVisible"
+      @done="reload()"
+    />
   </div>
 </template>
 
 <script>
   import KSDepartmentalPlanSearch from './KSDepartmentalPlan-search.vue';
+  import ApplyPlanReceiveDialog from './ApplyPlanReceiveDialog.vue';
   import {
     SerachPlanList,
     DeletePlanList,
     SearchHistoryConsumedAndPurchaseDept,
     ReturnInitState,
-    ApplyPlanUpdateRemarks
+    ApplyPlanUpdateRemarks,
+    createApplyDateExcel,
+    stzxMonthPlanJYPrint
   } from '@/api/KSInventory/KSDepartmentalPlan';
+  import { openExcelFile } from '../utils';
   import { getDeptAuthVarNew } from '@/api/KSInventory/KSInventoryBasicData';
   import { exportToExcel } from '@/utils/excel-util';
   export default {
     name: 'KSDepartmentalPlanTable',
     props: ['IsReload'],
     components: {
-      KSDepartmentalPlanSearch
+      KSDepartmentalPlanSearch,
+      ApplyPlanReceiveDialog
     },
     data() {
       return {
@@ -334,7 +346,8 @@
         applyPlanXhz: 0,
         applyPlanBl: '0%',
         key: 0,
-        RenderTabel: true
+        RenderTabel: true,
+        showReceiveVisible: false
       };
     },
     mounted() {
@@ -546,22 +559,55 @@
         };
         SearchHistoryConsumedAndPurchaseDept(data)
           .then((res) => {
-            this.applyPlanSbz = res.result[0].Purchase_Cost.toFixed(2);
-            this.applyPlanXhz = res.result[0].Consumed_Cost.toFixed(2);
-            if (data.result[0].Purchase_Cost > 0) {
+            const row = res.result?.[0];
+            if (!row) return;
+            this.applyPlanSbz = row.Purchase_Cost.toFixed(2);
+            this.applyPlanXhz = row.Consumed_Cost.toFixed(2);
+            if (row.Purchase_Cost > 0) {
               this.applyPlanBl =
-                (
-                  (data.result[0].Consumed_Cost /
-                    data.result[0].Purchase_Cost) *
-                  100
-                ).toFixed(2) + '%';
+                ((row.Consumed_Cost / row.Purchase_Cost) * 100).toFixed(2) + '%';
             } else {
-              this.applyPlanBl = 0 + '%';
+              this.applyPlanBl = '0%';
             }
+            this.$refs.search?.checkApplyLimit(row.Consumed_Cost, row.Purchase_Cost);
           })
           .catch((err) => {
             console.log(err);
           });
+      },
+      printPlan() {
+        if (!this.current?.PlanNum) {
+          this.$message.warning('请先选择申领单');
+          return;
+        }
+        const loading = this.$loading({ lock: true, text: '生成中...' });
+        createApplyDateExcel(this.current.PlanNum, this.current.DEPT_TWO_NAME)
+          .then((res) => {
+            openExcelFile(res.msg);
+          })
+          .catch((err) => {
+            this.$message.error(err.message || '打印失败');
+          })
+          .finally(() => loading.close());
+      },
+      printPlanJhd() {
+        if (!this.current?.PlanNum) {
+          this.$message.warning('请先选择申领单');
+          return;
+        }
+        const loading = this.$loading({ lock: true, text: '生成中...' });
+        stzxMonthPlanJYPrint(this.current.PlanNum)
+          .then((res) => {
+            if (res.code == 301) {
+              this.$alert(res.msg || '打印失败', '提示');
+              return;
+            }
+            openExcelFile(res.msg);
+          })
+          .catch((err) => {
+            this.$message.error(err.message || '打印失败');
+          })
+          .finally(() => loading.close());
       },
       OpenUpdateRemarksBox(row) {
         this.$prompt('请输入备注信息', '提示', {
