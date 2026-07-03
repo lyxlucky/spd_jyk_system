@@ -80,7 +80,7 @@ jobs:
 
           TARGET_DIR=""
 
-          for dir in jyk jyknw jykww; do
+          for dir in jyk jyknw jykww jyksk ; do
             if [ -d "$dir" ]; then
               TARGET_DIR="$dir"
               break
