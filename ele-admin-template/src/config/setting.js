@@ -152,7 +152,7 @@ const getBackBaseUrl = () => {
     'selhww': 'http://47.106.243.154:18101/selh',
     'xhww': 'http://47.106.243.154:891',
     'xhnw': 'http://172.21.152.3:891',
-    'lglsww': '',
+    'lglsww': 'https://spd.lg3h.com:16004',
     'lglsnw': 'http://192.168.2.113:16002',
     'lglssk': 'http://172.31.71.152:16002',
     'stse': 'http://172.32.202.17:82'
