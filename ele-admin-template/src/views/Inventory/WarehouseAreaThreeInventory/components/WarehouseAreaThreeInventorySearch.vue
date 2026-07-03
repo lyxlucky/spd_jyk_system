@@ -92,6 +92,14 @@
           >
             初始化库存
           </el-button>
+          <el-button
+            type="danger"
+            icon="el-icon-connection"
+            :loading="syncingHisCharge"
+            @click="openHisChargePreview"
+          >
+            同步HIS计费记录
+          </el-button>
           <input
             ref="importFile"
             type="file"
@@ -100,15 +108,130 @@
             @change="onImportFileChange"
           />
         </el-form-item>
+        
       </el-form>
     </div>
+
+    <el-dialog
+      :visible.sync="hisPreviewVisible"
+      title="同步HIS计费记录"
+      width="1280px"
+      append-to-body
+      :close-on-click-modal="false"
+    >
+      <el-form size="mini" :inline="true" class="his-preview-query" @submit.native.prevent>
+        <el-form-item label="库房/库区">
+          <el-select
+            v-model="hisPreviewQuery.WAREHOUSE_AREA_IDS"
+            multiple
+            filterable
+            remote
+            clearable
+            collapse-tags
+            reserve-keyword
+            placeholder="请选择库房/库区"
+            :remote-method="loadHisWarehouseOptions"
+            :loading="hisWarehouseLoading"
+            class="his-preview-warehouse"
+            @change="onHisWarehouseChange"
+          >
+            <el-option
+              v-for="item in hisWarehouseOptions"
+              :key="item.VALUE"
+              :label="item.LABEL"
+              :value="String(item.VALUE)"
+            >
+              <span>{{ item.LABEL }}</span>
+              <span class="option-type">{{ areaTypeName(item.TYPE) }}</span>
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="开始时间">
+          <el-date-picker
+            v-model="hisPreviewQuery.START_TIME"
+            type="datetime"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            placeholder="请选择开始时间"
+            class="his-preview-time"
+          />
+        </el-form-item>
+        <el-form-item label="结束时间">
+          <el-date-picker
+            v-model="hisPreviewQuery.END_TIME"
+            type="datetime"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            placeholder="不选则开始时间之后"
+            class="his-preview-time"
+          />
+        </el-form-item>
+        <el-form-item>
+          <el-button
+            type="primary"
+            icon="el-icon-search"
+            :loading="hisPreviewLoading"
+            @click="loadHisChargePreview"
+          >
+            查询预览
+          </el-button>
+        </el-form-item>
+      </el-form>
+      <div class="his-preview-summary">
+        <span>HIS记录：{{ hisPreviewStats.TotalCount || 0 }}</span>
+        <span>本次可插入：{{ hisPreviewStats.NewCount || 0 }}</span>
+        <span>已存在：{{ hisPreviewStats.ExistingCount || 0 }}</span>
+        <span>HIS重复：{{ hisPreviewStats.DuplicateCount || 0 }}</span>
+        <span>失败：{{ hisPreviewStats.FailCount || 0 }}</span>
+        <span>未匹配库房/库区：{{ hisPreviewStats.NoWarehouseAreaCount || 0 }}</span>
+        <span>未匹配SPD科室：{{ hisPreviewStats.NoDeptTwoCodeCount || 0 }}</span>
+      </div>
+      <vxe-table
+        v-loading="hisPreviewLoading"
+        :data="hisPreviewRows"
+        border
+        size="mini"
+        height="480"
+        show-overflow
+        :row-config="{ isHover: true }"
+        :column-config="{ resizable: true }"
+        empty-text="暂无本次可插入数据"
+      >
+        <vxe-column type="seq" title="序号" width="55" align="center" fixed="left" />
+        <vxe-column field="UniqueId" title="医嘱ID" width="130" />
+        <vxe-column field="DeptCode" title="HIS科室编码" width="110" />
+        <vxe-column field="DeptName" title="HIS科室名称" width="150" />
+        <vxe-column field="DeptTwoCode" title="SPD科室编码" width="120" />
+        <vxe-column field="AreaCode" title="库房/库区编码" width="130" />
+        <vxe-column field="AreaName" title="库房/库区名称" width="150" />
+        <vxe-column field="ChargeCode" title="计费编码" width="110" />
+        <vxe-column field="ChargeName" title="费用名称" min-width="220" />
+        <vxe-column field="Specification" title="规格" width="160" />
+        <vxe-column field="Price" title="单价" width="90" align="right" />
+        <vxe-column field="Qty" title="HIS数量" width="90" align="right" />
+        <vxe-column field="InsertQty" title="插入数量" width="90" align="right" />
+        <vxe-column field="ChargeTimeText" title="HIS时间" width="140" />
+      </vxe-table>
+      <div slot="footer" class="dialog-footer">
+        <el-button size="mini" @click="hisPreviewVisible = false">取消</el-button>
+        <el-button
+          type="primary"
+          size="mini"
+          :loading="syncingHisCharge"
+          :disabled="hisPreviewLoading || !hisPreviewRows.length"
+          @click="confirmSyncHisChargeRecords"
+        >
+          确认插入
+        </el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import {
   importInitialInventory,
-  queryWarehouseAreaOptions
+  previewHisChargeRecords,
+  queryWarehouseAreaOptions,
+  syncHisChargeRecords as syncHisChargeRecordsApi
 } from '@/api/Inventory/WarehouseAreaThreeInventory';
 import {
   areaTypeName,
@@ -128,6 +251,12 @@ const defaultWhere = () => ({
   DATE_RANGE: []
 });
 
+const defaultHisPreviewQuery = () => ({
+  WAREHOUSE_AREA_IDS: [],
+  START_TIME: '',
+  END_TIME: ''
+});
+
 export default {
   name: 'WarehouseAreaThreeInventorySearch',
   props: {
@@ -138,7 +267,16 @@ export default {
       where: defaultWhere(),
       warehouseOptions: [],
       warehouseLoading: false,
+      hisWarehouseOptions: [],
+      hisWarehouseLoading: false,
       importing: false,
+      hisPreviewVisible: false,
+      hisPreviewLoading: false,
+      hisPreviewQuery: defaultHisPreviewQuery(),
+      hisPreviewLoadedParams: null,
+      hisPreviewRows: [],
+      hisPreviewStats: {},
+      syncingHisCharge: false,
       stockStatusOptions: STOCK_STATUS_OPTIONS,
       stockDeductTypeOptions: STOCK_DEDUCT_TYPE_OPTIONS
     };
@@ -193,6 +331,40 @@ export default {
           this.warehouseLoading = false;
         });
     },
+    normalizeWarehouseAreaIds(value) {
+      const source = Array.isArray(value) ? value : value ? [value] : [];
+      const ids = source.map((item) => String(item || '').trim()).filter(Boolean);
+      return Array.from(new Set(ids));
+    },
+    mergeWarehouseOptions(options, selectedIds) {
+      const optionMap = new Map();
+      const addOption = (item) => {
+        if (!item || item.VALUE == null) return;
+        optionMap.set(String(item.VALUE), { ...item, VALUE: String(item.VALUE) });
+      };
+      (this.hisWarehouseOptions || []).forEach(addOption);
+      (options || []).forEach(addOption);
+      (this.warehouseOptions || []).forEach((item) => {
+        if (selectedIds.includes(String(item.VALUE))) addOption(item);
+      });
+      return Array.from(optionMap.values());
+    },
+    loadHisWarehouseOptions(keyword) {
+      const selectedIds = this.normalizeWarehouseAreaIds(this.hisPreviewQuery.WAREHOUSE_AREA_IDS);
+      this.hisWarehouseLoading = true;
+      queryWarehouseAreaOptions(keyword || '')
+        .then((res) => {
+          this.hisWarehouseOptions = this.mergeWarehouseOptions(res.result || [], selectedIds);
+        })
+        .catch((err) => this.$message.error(err.message || '加载库房/库区失败'))
+        .finally(() => {
+          this.hisWarehouseLoading = false;
+        });
+    },
+    onHisWarehouseChange(value) {
+      this.hisPreviewQuery.WAREHOUSE_AREA_IDS = this.normalizeWarehouseAreaIds(value);
+      this.hisPreviewLoadedParams = null;
+    },
     chooseImportFile() {
       if (this.importing) return;
       this.$refs.importFile.value = '';
@@ -217,6 +389,86 @@ export default {
       } finally {
         this.importing = false;
         e.target.value = '';
+      }
+    },
+    async openHisChargePreview() {
+      if (this.syncingHisCharge) return;
+      const selectedIds = this.normalizeWarehouseAreaIds(this.where.WAREHOUSE_AREA_ID);
+      this.hisPreviewVisible = true;
+      this.hisPreviewQuery = {
+        ...defaultHisPreviewQuery(),
+        WAREHOUSE_AREA_IDS: selectedIds
+      };
+      this.hisWarehouseOptions = this.mergeWarehouseOptions(this.warehouseOptions, selectedIds);
+      this.hisPreviewRows = [];
+      this.hisPreviewStats = {};
+      this.hisPreviewLoadedParams = null;
+      this.loadHisWarehouseOptions('');
+    },
+    buildHisChargeSyncParams() {
+      return {
+        WAREHOUSE_AREA_IDS: this.normalizeWarehouseAreaIds(this.hisPreviewQuery.WAREHOUSE_AREA_IDS),
+        START_TIME: this.hisPreviewQuery.START_TIME || '',
+        END_TIME: this.hisPreviewQuery.END_TIME || ''
+      };
+    },
+    validateHisChargeSyncQuery() {
+      const selectedIds = this.normalizeWarehouseAreaIds(this.hisPreviewQuery.WAREHOUSE_AREA_IDS);
+      this.hisPreviewQuery.WAREHOUSE_AREA_IDS = selectedIds;
+      if (!selectedIds.length) {
+        this.$message.warning('请选择库房/库区');
+        return false;
+      }
+      if (!this.hisPreviewQuery.START_TIME) {
+        this.$message.warning('请选择开始时间');
+        return false;
+      }
+      return true;
+    },
+    async loadHisChargePreview() {
+      if (this.hisPreviewLoading || this.syncingHisCharge) return;
+      if (!this.validateHisChargeSyncQuery()) return;
+      const params = this.buildHisChargeSyncParams();
+      this.hisPreviewLoading = true;
+      this.hisPreviewRows = [];
+      this.hisPreviewStats = {};
+      this.hisPreviewLoadedParams = null;
+      try {
+        const res = await previewHisChargeRecords(params);
+        const result = res.result || {};
+        this.hisPreviewStats = result;
+        this.hisPreviewRows = result.Rows || [];
+        this.hisPreviewLoadedParams = JSON.stringify(params);
+        if (!this.hisPreviewRows.length) {
+          this.$message.info(res.msg || '暂无本次可插入数据');
+        }
+      } catch (err) {
+        this.$message.error(err.message || '预览失败');
+      } finally {
+        this.hisPreviewLoading = false;
+      }
+    },
+    async confirmSyncHisChargeRecords() {
+      if (this.syncingHisCharge || !this.hisPreviewRows.length) return;
+      if (!this.validateHisChargeSyncQuery()) return;
+      const params = this.buildHisChargeSyncParams();
+      if (this.hisPreviewLoadedParams !== JSON.stringify(params)) {
+        this.$message.warning('同步条件已变更，请重新查询预览');
+        return;
+      }
+      this.syncingHisCharge = true;
+      try {
+        const res = await syncHisChargeRecordsApi(params);
+        this.$message.success(res.msg || '同步成功');
+        this.hisPreviewVisible = false;
+        this.$emit('import-success', {
+          ...this.getWhere(),
+          WAREHOUSE_AREA_ID: this.where.WAREHOUSE_AREA_ID || params.WAREHOUSE_AREA_IDS[0] || ''
+        });
+      } catch (err) {
+        this.$message.error(err.message || '同步失败');
+      } finally {
+        this.syncingHisCharge = false;
       }
     }
   }
@@ -248,6 +500,28 @@ export default {
 
 .warehouse-area-search .hidden-file {
   display: none;
+}
+
+.his-preview-query {
+  margin-bottom: 8px;
+}
+
+.his-preview-warehouse {
+  width: 320px;
+}
+
+.his-preview-time {
+  width: 190px;
+}
+
+.his-preview-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  margin-bottom: 10px;
+  color: #606266;
+  font-size: 12px;
+  line-height: 20px;
 }
 
 .warehouse-area-search :deep(.el-form-item) {

@@ -110,3 +110,29 @@ export async function importInitialInventory(file) {
   });
   return unwrap(res, '导入失败');
 }
+
+function buildHisChargeSyncParams(params = {}) {
+  const ids = Array.isArray(params.WAREHOUSE_AREA_IDS)
+    ? params.WAREHOUSE_AREA_IDS.join(',')
+    : params.WAREHOUSE_AREA_IDS || '';
+  return {
+    Token: token(),
+    WAREHOUSE_AREA_IDS: ids,
+    START_TIME: params.START_TIME || '',
+    END_TIME: params.END_TIME || ''
+  };
+}
+
+export async function previewHisChargeRecords(params) {
+  const res = await postForm('/WarehouseAreaThreeInventory/PreviewHisChargeRecords', {
+    ...buildHisChargeSyncParams(params)
+  });
+  return unwrap(res, '预览失败');
+}
+
+export async function syncHisChargeRecords(params) {
+  const res = await postForm('/WarehouseAreaThreeInventory/SyncHisChargeRecords', {
+    ...buildHisChargeSyncParams(params)
+  });
+  return unwrap(res, '同步失败');
+}
