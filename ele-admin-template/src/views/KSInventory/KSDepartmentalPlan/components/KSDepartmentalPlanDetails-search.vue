@@ -117,9 +117,18 @@
         >
           审核申领单
         </el-button>
-        <el-button
+        <!-- <el-button
           v-permission="'ApplyPlan_审核'"
           v-if="['stzl', 'stzx', 'bd'].includes(HOME_HP) || ENV == 'development'"
+          type="primary"
+          icon="el-icon-s-cooperation"
+          @click="Approval"
+          :disabled="!IsToExamine"
+        >
+          审批申领单
+        </el-button> -->
+        <el-button
+          v-permission="'ApplyPlan_审核'"
           type="primary"
           icon="el-icon-s-cooperation"
           @click="Approval"
