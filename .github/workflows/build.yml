@@ -46,7 +46,10 @@ jobs:
 
     strategy:
       matrix:
-        env: [bjww, bjwwnew, bjnw, bjnwhttps, bdww, bdnw, lhfyww, lhfynw, hnww, hnnw, smww, smnw, stzlww, stzlnw, zxww, zxnw, lgww, sebb, sebbww, sedp, sedpww, selh, selhww, xhww, xhnw]
+        env: [
+          bjww, bjwwnew, bjnw, bjnwhttps, bdww, bdnw, lhfyww, lhfynw, hnww, hnnw, smww, smnw, stzlww, stzlnw, zxww,
+          zxnw, lgww, sebb, sebbww, sedp, sedpww, selh, selhww, xhww, xhnw, lglsww, lglsnw, lglssk
+        ]
 
     defaults:
       run:
