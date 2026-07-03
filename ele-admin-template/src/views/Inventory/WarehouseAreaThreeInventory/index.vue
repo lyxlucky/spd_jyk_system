@@ -181,9 +181,11 @@ export default {
       this.lastWhere = where || {};
       return this.lastWhere;
     },
-    requireWarehouse(where) {
+    requireWarehouse(where, silent = false) {
       if (!where?.WAREHOUSE_AREA_ID) {
-        Message.warning('请选择库房/库区');
+        if (!silent) {
+          Message.warning('请选择库房/库区');
+        }
         return false;
       }
       return true;
@@ -191,7 +193,7 @@ export default {
     async warehouseDatasource({ page, limit, where }) {
       const query = where || this.lastWhere;
       this.lastWhere = query || {};
-      if (!this.requireWarehouse(this.lastWhere)) {
+      if (!this.requireWarehouse(this.lastWhere, true)) {
         return { count: 0, list: [] };
       }
       try {
@@ -205,7 +207,7 @@ export default {
     async deptDatasource({ page, limit, where }) {
       const query = where || this.lastWhere;
       this.lastWhere = query || {};
-      if (!this.requireWarehouse(this.lastWhere)) {
+      if (!this.requireWarehouse(this.lastWhere, true)) {
         this.clearSelectedDept();
         return { count: 0, list: [] };
       }
@@ -223,7 +225,7 @@ export default {
     async deptMaterialDatasource({ page, limit, where }) {
       const query = where || this.lastWhere;
       this.lastWhere = query || {};
-      if (!this.requireWarehouse(this.lastWhere) || !this.selectedDept?.DEPT_TWO_CODE) {
+      if (!this.requireWarehouse(this.lastWhere, true) || !this.selectedDept?.DEPT_TWO_CODE) {
         return { count: 0, list: [] };
       }
       try {
