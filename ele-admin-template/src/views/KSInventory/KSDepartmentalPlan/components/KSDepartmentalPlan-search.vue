@@ -73,7 +73,19 @@
       <el-form-item class="ele-form-actions">
         <el-button type="primary" icon="el-icon-search" @click="search">查询</el-button>
         <el-button icon="el-icon-refresh" @click="reset">重置</el-button>
-        <el-button type="primary" icon="el-icon-download" @click="exportData">导出</el-button>
+        <el-button type="primary" icon="el-icon-printer" @click="$emit('printPlan')">打印申领单</el-button>
+        <el-button v-if="showStzxPrint" type="primary" icon="el-icon-printer" @click="$emit('printPlanJhd')">
+          计划单打印
+        </el-button>
+        <el-button type="primary" @click="$emit('showReceive')">订单收货</el-button>
+        <el-button
+          v-if="canExport"
+          type="success"
+          icon="el-icon-download"
+          @click="exportData"
+        >
+          导出
+        </el-button>
       </el-form-item>
     </el-form>
 
@@ -93,8 +105,10 @@
   import {
     CreatList,
     ReturnInitState,
-    getResearchProjects
+    getResearchProjects,
+    getApplyPlanIsCanAdd
   } from '@/api/KSInventory/KSDepartmentalPlan';
+  import { hasExportPermission } from '../utils';
   import ProjectTypeDialog from './ProjectTypeDialog.vue';
 
   const defaultWhere = () => ({
@@ -117,7 +131,8 @@
         where: defaultWhere(),
         BZ: '',
         showProjectTypeDialog: false,
-        dateRange: []
+        dateRange: [],
+        applyPlanBlocked: false
       };
     },
     computed: {
@@ -129,8 +144,13 @@
         return this.$HOME_HP == 'bdrm';
       },
       isSzse() {
-        console.log(this.$HOME_HP);
         return this.$HOME_HP?.startsWith('se2');
+      },
+      showStzxPrint() {
+        return ['stzx', 'stzl'].includes(this.$HOME_HP);
+      },
+      canExport() {
+        return hasExportPermission('export-ApplyPlan-slddc');
       }
     },
     methods: {
@@ -157,6 +177,10 @@
       },
       /* 创建申领单 */
       CreatApplicationForm() {
+        if (this.applyPlanBlocked) {
+          this.$message.warning('当月消耗已超过计划限额，无法创建申领单');
+          return;
+        }
         if (this.isBDRM || this.isSzse) {
           // 如果是bdrm环境，显示项目类型选择对话框
           this.showProjectTypeDialog = true;
@@ -202,6 +226,21 @@
       /* 处理对话框取消 */
       handleDialogCancel() {
         this.showProjectTypeDialog = false;
+      },
+
+      /** 由主表统计加载后调用：消耗超限则禁止创建 */
+      async checkApplyLimit(consumedCost, purchaseCost) {
+        if (!purchaseCost || purchaseCost <= 0) {
+          this.applyPlanBlocked = false;
+          return;
+        }
+        try {
+          await getApplyPlanIsCanAdd(consumedCost, purchaseCost);
+          this.applyPlanBlocked = false;
+        } catch (e) {
+          this.applyPlanBlocked = true;
+          this.$alert(e.message || '不可创建申领单', '提示');
+        }
       }
     },
 

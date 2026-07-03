@@ -32,6 +32,9 @@ export async function GetJykMainShelf(data) {
     data2.xqDay = data.where.xqDay ? data.where.xqDay : 0;
     data2.order = getJykMainShelfOrder(data.order);
     data2.batch = data.where.batch ? data.where.batch : '';
+    data2.CLASSIFIC_PROPERTIES = data.where.CLASSIFIC_PROPERTIES
+        ? data.where.CLASSIFIC_PROPERTIES
+        : '';
     const res = await request.get('/AJykDept/GetJykMainShelf', {
         params: data2,
     });
@@ -224,6 +227,10 @@ export async function GenerateStockData(data) {
     data2.xqDay = data.where.xqDay ? data.where.xqDay : 0;
     data2.order = data.order ? data.order : '';
     data2.Nickname = data.Nickname ? data.Nickname : '';
+    data2.batch = data.where.batch ? data.where.batch : '';
+    data2.CLASSIFIC_PROPERTIES = data.where.CLASSIFIC_PROPERTIES
+        ? data.where.CLASSIFIC_PROPERTIES
+        : '';
 
     var data3 = formdataify(data2)
 
@@ -261,6 +268,19 @@ export async function BatchInsertScanDef2(data) {
     }
 }
 
+
+export async function GetClassificProp() {
+    const res = await request.get('/AJykDept/GetClassificProp', {
+        params: {
+            Token: sessionStorage.getItem(TOKEN_STORE_NAME)
+        }
+    });
+    if (res.data.code == 200) {
+        return res.data;
+    } else {
+        return Promise.reject(new Error(res.data.msg));
+    }
+}
 
 export async function getJykMainShelfWithUdi(data) {
     var data2 = {};

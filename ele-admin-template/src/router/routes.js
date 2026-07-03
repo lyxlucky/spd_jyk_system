@@ -128,6 +128,16 @@ export function getMenuRoutes(menus, homePath) {
       meta: { title: '科室消耗查询' }
     });
     routes.push({
+      path: '/KSInventory/ApplyPlan',
+      component: () => import('@/views/KSInventory/ApplyPlan/index.vue'),
+      meta: { title: '申领计划管理' }
+    });
+    routes.push({
+      path: '/KSInventory/DeptApplyTwoAudit',
+      component: () => import('@/views/KSInventory/DeptApplyTwoAudit/index.vue'),
+      meta: { title: '科室申领二级审批' }
+    });
+    routes.push({
       path: '/KSInventory/FinancialAudit',
       component: () => import('@/views/KSInventory/FinancialAudit/index.vue'),
       meta: { title: '发票签收' }
@@ -156,6 +166,26 @@ export function getMenuRoutes(menus, homePath) {
       path: '/Inventory/CentralinventoryMonitoring',
       component: () => import('@/views/Inventory/CentralinventoryMonitoring/index.vue'),
       meta: { title: '主动补货(库存监控)' }
+    });
+    routes.push({
+      path: '/Inventory/DeptQhStatistics',
+      component: () => import('@/views/Inventory/DeptQhStatistics/index.vue'),
+      meta: { title: '科室缺货统计' }
+    });
+    routes.push({
+      path: '/Inventory/OutOfStock',
+      component: () => import('@/views/Inventory/OutOfStock/index.vue'),
+      meta: { title: '中心库缺货统计' }
+    });
+    routes.push({
+      path: '/Inventory/InventoryQueryNew',
+      component: () => import('@/views/Inventory/InventoryQueryNew/index.vue'),
+      meta: { title: '库存查询' }
+    });
+    routes.push({
+      path: '/Inventory/InventoryQueryNewJyk',
+      component: () => import('@/views/Inventory/InventoryQueryNewJyk/index.vue'),
+      meta: { title: '库存查询v2' }
     });
     routes.push({
       path: '/KSInventory/DeptPlannedDeliveryNew',
@@ -288,6 +318,21 @@ export function getMenuRoutes(menus, homePath) {
       meta: { title: '科室统计分析' }
     });
     routes.push({
+      path: '/Statistics/DeptStatistics',
+      component: () => import('@/views/Statistics/DeptStatistics/index.vue'),
+      meta: { title: '科室统计' }
+    });
+    routes.push({
+      path: '/Statistics/SupStatistics',
+      component: () => import('@/views/Statistics/SupStatistics/index.vue'),
+      meta: { title: '供应商统计' }
+    });
+    routes.push({
+      path: '/Statistics/EchVar',
+      component: () => import('@/views/Statistics/EchVar/index.vue'),
+      meta: { title: '品种统计' }
+    });
+    routes.push({
       path: '/Statistics/MaterialStatistics',
       component: () => import('@/views/Statistics/MaterialStatistics/index.vue'),
       meta: { title: '耗材监管统计' }
@@ -296,6 +341,11 @@ export function getMenuRoutes(menus, homePath) {
       path: '/Statistics/RegistrationLimitPlan',
       component: () => import('@/views/Statistics/RegistrationLimitPlan/index.vue'),
       meta: { title: '注册证限量' }
+    });
+    routes.push({
+      path: '/Statistics/RegistrationWarn',
+      component: () => import('@/views/Statistics/RegistrationWarn/index.vue'),
+      meta: { title: '注册证统计预警' }
     });
     routes.push({
       path: '/Home/YgVarInfo',
@@ -368,9 +418,19 @@ export function getMenuRoutes(menus, homePath) {
       meta: { title: '物价目录审核(萨米)' }
     });
     routes.push({
+      path: '/Home/YGVARCL',
+      component: () => import('@/views/Home/YgVarCl/index.vue'),
+      meta: { title: '物价目录审核' }
+    });
+    routes.push({
       path: '/Home/YGVARCLLOOK_SM',
       component: () => import('@/views/Home/YgVarClLookSm/index.vue'),
       meta: { title: '物价目录审核查看(萨米)' }
+    });
+    routes.push({
+      path: '/Home/YGVARCLLOOK',
+      component: () => import('@/views/Home/YgVarClLook/index.vue'),
+      meta: { title: '物价目录审核查看' }
     });
     routes.push({
       path: '/KSInventory/GY_CLML_SPD',

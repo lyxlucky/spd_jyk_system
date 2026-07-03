@@ -1,7 +1,7 @@
 <template>
   <div class="ele-body spd-page inventory-query-jyk">
     <el-card shadow="never" class="inventory-query-jyk-card">
-      <user-search @search="reload" @exportData="exportData" />
+      <user-search :sum="mainSum" :amount-sum="mainAmountSum" @search="reload" @exportData="exportData" />
       <div class="spd-panel spd-table-panel">
         <div class="spd-panel__head">库存列表</div>
         <div class="spd-table-panel__wrap">
@@ -24,7 +24,7 @@
           />
         </div>
       </div>
-      <UserSearch2 @search="reload2" />
+      <UserSearch2 @search="onDetailSearch" />
       <div class="spd-panel spd-table-panel">
         <div class="spd-panel__head">定数码明细</div>
         <div class="spd-table-panel__wrap">
@@ -54,10 +54,11 @@
 import { utils, writeFile } from 'xlsx';
 import UserSearch from './components/user-search.vue';
 import UserSearch2 from './components/user-search2.vue';
-import { GetPDAList,GetPDAList2 } from '@/api/Inventory/InventoryQueryNewJyk';
+import { GetPDAList, GetPDAList2, GetPDAListAll } from '@/api/Inventory/InventoryQueryNewJyk';
+import { buildDefaultExportRows } from '@/views/Inventory/InventoryQueryNew/utils';
 
 export default {
-  name: 'SystemUser',
+  name: 'InventoryQueryNewJyk',
   components: {
     UserSearch,
     UserSearch2
@@ -71,6 +72,10 @@ export default {
       coefficient: '',
       currUpShelfState: '',
       storageId: '',
+      detailCondition: '',
+      mainWhere: {},
+      mainSum: 0,
+      mainAmountSum: 0,
       // 表格列配置
       columns: [
         {
@@ -740,40 +745,42 @@ export default {
     /* 表格数据源 */
     async datasource({ page, limit, where, order }) {
       try {
-        const res = await GetPDAList({ page, limit, where, order });
-        var tData = {
-          count: res.total,
-          list: res.result
+        const w = where || this.mainWhere;
+        this.mainWhere = w;
+        const res = await GetPDAList({ page, limit, where: w, order });
+        this.mainSum = res.sum ?? 0;
+        this.mainAmountSum = res.amountSum ?? 0;
+        return {
+          count: res.total ?? 0,
+          list: res.result || []
         };
-        return tData;
       } catch (error) {
-         this.$message.error('获取表格数据源失败，请稍后重试');
+        this.$message.error(error.message || '获取表格数据源失败，请稍后重试');
         return { count: 0, list: [] };
       }
     },
-    async datasource2({ page, limit, where, order }) {
- 
+    async datasource2({ page, limit, order }) {
+      if (!this.batchId && !this.varietieCode) {
+        return { count: 0, list: [] };
+      }
       try {
-        // if (this.selectedDeptTwoName) {
-     
-       where = { ...where, sourceFrom: this.sourceFrom, 
-        batchId: this.batchId,
-        varietieCode: this.varietieCode,
-        batch: this.batch,
-        coefficient: this.coefficient,
-        currUpShelfState: this.currUpShelfState,
-        storageId: this.storageId,
-       };
-        
-        const res = await GetPDAList2({ page, limit, where, order });
-        var tData = {
-          count: res.total,
-          list: res.result
+        const where = {
+          sourceFrom: this.sourceFrom,
+          batchId: this.batchId,
+          varietieCode: this.varietieCode,
+          batch: this.batch,
+          coefficient: this.coefficient,
+          currUpShelfState: this.currUpShelfState,
+          storageId: this.storageId,
+          condition: this.detailCondition
         };
-        return tData;
+        const res = await GetPDAList2({ page, limit, where, order });
+        return {
+          count: res.total ?? 0,
+          list: res.result || []
+        };
       } catch (error) {
-        //console.error('获取表格2数据源失败:', error);
-        this.$message.error('获取表格2数据源失败，请稍后重试');
+        this.$message.error(error.message || '获取表格2数据源失败，请稍后重试');
         return { count: 0, list: [] };
       }
     },
@@ -790,10 +797,15 @@ export default {
     },
     /* 刷新表格 */
     reload(where) {
-      this.$refs.table.reload({ page: 1, where: where });
+      this.mainWhere = where || this.mainWhere;
+      this.$refs.table.reload({ page: 1, where: this.mainWhere });
     },
-    reload2(where) {
-      this.$refs.table2.reload({ page: 1, where: where });
+    onDetailSearch(payload) {
+      this.detailCondition = payload?.condition ?? '';
+      this.reload2();
+    },
+    reload2() {
+      this.$refs.table2.reload({ page: 1 });
     },
     /* 打开编辑弹窗 */
     openEdit(row) {
@@ -804,64 +816,25 @@ export default {
     openImport() {
       this.showImport = true;
     },
-    exportData(data) {
-      const loading = this.$messageLoading('正在导出数据...');
-      this.$refs.table.doRequest(async ({ where, order }) => {
-        where = data;
-        where.Dept_One_Code = this.$store.state.user.info.DeptNow.Dept_Two_Code;
-        try {
-          const response = await GetPDAList({
-            page: 1,
-            limit: 999999,
-            where: where,
-            order: order
-          });
-          loading.close();
-          const headers = [
-            '品种编码',
-            '品种id',
-            '品种名称',
-            '规格/型号',
-            '生产企业名称',
-            '注册证号',
-            '单位',
-            '中标价',
-            '品种类别',
-            '换算比(试剂)',
-            '仪器备注'
-          ];
-          const dataArray = [headers];
-          response.result.forEach((d) => {
-            dataArray.push([
-              d.Varietie_Code_New,
-              d.Varietie_Code,
-              d.Varietie_Name,
-              d.Specification_Or_Type,
-              d.Manufacturing_Ent_Name,
-              d.APPROVAL_NUMBER,
-              d.UNIT,
-              d.Price,
-              d.CLASS_NUM,
-              d.CONVERSION_RATIO,
-              d.DEVICE_REMARK
-            ]);
-          });
-          writeFile(
-            {
-              SheetNames: ['Sheet1'],
-              Sheets: {
-                Sheet1: utils.aoa_to_sheet(dataArray)
-              }
-            },
-            '科室入库品种.xlsx'
-          );
-          this.$message.success("导出成功");
-        } catch (error) {
-          loading.close();
-          console.error('导出数据失败:', error);
-          this.$message.error('导出数据失败，请稍后重试');
+    async exportData(data) {
+      const loading = this.$loading({ lock: true, text: '正在导出数据...' });
+      try {
+        const res = await GetPDAListAll(data);
+        if (res.auditRequired) {
+          this.$message.warning('导出需审计审批，请使用库存查询完整版页面申请导出');
+          return;
         }
-      });
+        const rows = buildDefaultExportRows(res.result);
+        writeFile(
+          { SheetNames: ['库存查询'], Sheets: { 库存查询: utils.aoa_to_sheet(rows) } },
+          '库存查询.xlsx'
+        );
+        this.$message.success('导出成功');
+      } catch (error) {
+        this.$message.error(error.message || '导出数据失败，请稍后重试');
+      } finally {
+        loading.close();
+      }
     }
   },
   created() {

@@ -317,6 +317,7 @@
     getVarietieSku,
     upPlanListDelCount
   } from '@/api/KSInventory/KSDepartmentalPlan';
+  import { filterPlanDetailByVariety } from '../utils';
   import { utils, writeFile } from 'xlsx';
   import { HOME_HP } from '@/config/setting';
   export default {
@@ -835,10 +836,14 @@
               SELECTED_SKU_ID: '',
               _originalPlanQty: item.PlanQty
             }));
+            const displayList = filterPlanDetailByVariety(
+              processedResult,
+              where.varietyFilter
+            );
 
             var tData = {
-              count: res.total,
-              list: processedResult
+              count: displayList.length,
+              list: displayList
             };
             this.datasourceList = processedResult;
             this.sumNumber = res.sumNumber;

@@ -149,7 +149,7 @@ const envConfig = {
     outputDir: 'jyknw'
   },
   lglsww: {
-    target: '',
+    target: 'https://spd.lg3h.com:16004/',
     publicPath: '/jyk/',
     outputDir: 'jyk'
   },
