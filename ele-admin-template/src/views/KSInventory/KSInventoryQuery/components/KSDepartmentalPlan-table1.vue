@@ -198,6 +198,15 @@ export default {
           sortable: true
         },
         {
+          prop: 'CLASSIFIC_NAME',
+          label: '耗材分类',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 120,
+          formatter: (row) =>
+            row.CLASSIFIC_NAME || row.CLASSIFIC_PROPERTIES || '无'
+        },
+        {
           prop: 'SPECIFICATION_OR_TYPE',
           label: '规格型号',
           // sortable: 'custom',
@@ -468,6 +477,7 @@ export default {
                 // '品种ID',
                 '品种编码',
                 '品种名称',
+                '耗材分类',
                 '在库天数',
                 '规格型号',
                 '生产企业',
@@ -492,6 +502,7 @@ export default {
                 // d.VARIETIE_CODE,
                 d.VARIETIE_CODE_NEW,
                 d.VARIETIE_NAME,
+                d.CLASSIFIC_NAME || d.CLASSIFIC_PROPERTIES || '无',
                 inwarehouseDate,
                 d.SPECIFICATION_OR_TYPE,
                 d.MANUFACTURING_ENT_NAME,

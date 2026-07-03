@@ -97,6 +97,24 @@
         />
       </el-form-item>
       <el-form-item>
+        <el-select
+          size="mini"
+          clearable
+          style="width: 140px"
+          v-model="where.CLASSIFIC_PROPERTIES"
+          placeholder="耗材分类"
+          @change="search()"
+        >
+          <el-option label="全部" value="" />
+          <el-option
+            v-for="item in classificPropList"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item>
         <el-button
           size="mini"
           type="primary"
@@ -225,7 +243,8 @@
   import udiOutStock from './udiOutStock';
   import {
     DeptReceivingScanOrder,
-    GenerateStockData
+    GenerateStockData,
+    GetClassificProp
   } from '@/api/KSInventory/KSInventoryQuery';
   import KSInventoryQuery2 from '@/views/KSInventory/ReferenceComponent/KSInventoryQuery/index.vue';
   export default {
@@ -247,11 +266,14 @@
         DELIVERY_NUMBER: '',
         xqDay: null,
         bindMachine: '',
-        batch:''
+        batch: '',
+        CLASSIFIC_PROPERTIES: ''
       };
       return {
+        defaultWhere,
         // 表单数据
         where: { ...defaultWhere },
+        classificPropList: [],
         BZ: '',
         showEdit: false,
         DistributeNumber: '',
@@ -451,6 +473,24 @@
         man: this.$store.state.user.info.UserName
       };
       this.actionUrl = `${API_BASE_URL}/TwoDeptApply/initJykInfo?Token=${sessionStorage.Token}`;
+      GetClassificProp()
+        .then((res) => {
+          this.classificPropList = (res.result || [])
+            .map((item) => {
+              const value = String(
+                item.Classific_Properties ??
+                  item.CLASSIFIC_PROPERTIES ??
+                  ''
+              );
+              const label =
+                item.Classific_Name ??
+                item.CLASSIFIC_NAME ??
+                value;
+              return { value, label };
+            })
+            .filter((item) => item.value !== '');
+        })
+        .catch(() => {});
     }
   };
 </script>
