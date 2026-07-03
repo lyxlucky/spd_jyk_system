@@ -1089,7 +1089,11 @@
             // console.log(BACK_BASE_URL + "/api/Commons/GetReportById_BDOne?id=3&format=pdf&inline=true&deliveryNumberId=" + deliveryNumberId + "&Token=" + localStorage.Token)
             let data = res.data;
             if (data.code == 200) {
-              if (HOME_HP == 'zq' || HOME_HP == 'stzx') {
+              if (
+                ['zq', 'stzx', 'csyy', 'chrmyy', 'ybyy', 'lgls'].includes(
+                  HOME_HP
+                )
+              ) {
                 window.open(
                   BACK_BASE_URL +
                     '/api/Commons/GetReportById_BDOne?id=3&format=pdf&inline=true&deliveryNumberId=' +
@@ -1114,7 +1118,7 @@
                     '/api/Commons/GetReportById_BDOne?id=12&format=pdf&inline=true&deliveryNumberId=' +
                     deliveryNumberId +
                     '&Token=' +
-                    localStorage.Token
+                    sessionStorage.getItem(TOKEN_STORE_NAME)
                 );
                 window.open(
                   BACK_BASE_URL +
