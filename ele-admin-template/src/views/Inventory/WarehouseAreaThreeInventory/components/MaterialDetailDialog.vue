@@ -63,7 +63,7 @@ export default {
       });
     },
     async datasource({ page, limit }) {
-      if (!this.filters?.WAREHOUSE_AREA_ID) {
+      if (!this.filters?.AREA_CODE) {
         return { count: 0, list: [] };
       }
       try {

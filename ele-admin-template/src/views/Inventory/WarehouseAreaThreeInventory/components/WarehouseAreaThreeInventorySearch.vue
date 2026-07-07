@@ -10,7 +10,7 @@
       >
         <el-form-item label="库房/库区">
           <el-select
-            v-model="where.WAREHOUSE_AREA_ID"
+            v-model="where.AREA_CODE"
             filterable
             remote
             clearable
@@ -122,7 +122,7 @@
       <el-form size="mini" :inline="true" class="his-preview-query" @submit.native.prevent>
         <el-form-item label="库房/库区">
           <el-select
-            v-model="hisPreviewQuery.WAREHOUSE_AREA_IDS"
+            v-model="hisPreviewQuery.AREA_CODES"
             multiple
             filterable
             remote
@@ -240,7 +240,7 @@ import {
 } from '../utils';
 
 const defaultWhere = () => ({
-  WAREHOUSE_AREA_ID: '',
+  AREA_CODE: '',
   CHARGE_CODE: '',
   VARIETIE_CODE_NEW: '',
   VARIETIE_NAME: '',
@@ -252,7 +252,7 @@ const defaultWhere = () => ({
 });
 
 const defaultHisPreviewQuery = () => ({
-  WAREHOUSE_AREA_IDS: [],
+  AREA_CODES: [],
   START_TIME: '',
   END_TIME: ''
 });
@@ -289,7 +289,7 @@ export default {
     getWhere() {
       const range = this.where.DATE_RANGE || [];
       return {
-        WAREHOUSE_AREA_ID: this.where.WAREHOUSE_AREA_ID || '',
+        AREA_CODE: this.where.AREA_CODE || '',
         CHARGE_CODE: this.where.CHARGE_CODE || '',
         VARIETIE_CODE_NEW: this.where.VARIETIE_CODE_NEW || '',
         VARIETIE_NAME: this.where.VARIETIE_NAME || '',
@@ -302,15 +302,15 @@ export default {
       };
     },
     emitSearch() {
-      if (!this.where.WAREHOUSE_AREA_ID) {
+      if (!this.where.AREA_CODE) {
         this.$message.warning('请选择库房/库区');
         return;
       }
       this.$emit('search', this.getWhere());
     },
     reset() {
-      const warehouseAreaId = this.where.WAREHOUSE_AREA_ID;
-      this.where = { ...defaultWhere(), WAREHOUSE_AREA_ID: warehouseAreaId };
+      const areaCode = this.where.AREA_CODE;
+      this.where = { ...defaultWhere(), AREA_CODE: areaCode };
       this.emitSearch();
     },
     onWarehouseChange() {
@@ -321,8 +321,8 @@ export default {
       queryWarehouseAreaOptions(keyword || '')
         .then((res) => {
           this.warehouseOptions = res.result || [];
-          if (autoSelect && !this.where.WAREHOUSE_AREA_ID && this.warehouseOptions.length) {
-            this.where.WAREHOUSE_AREA_ID = String(this.warehouseOptions[0].VALUE);
+          if (autoSelect && !this.where.AREA_CODE && this.warehouseOptions.length) {
+            this.where.AREA_CODE = String(this.warehouseOptions[0].VALUE);
             this.onWarehouseChange();
           }
         })
@@ -331,12 +331,12 @@ export default {
           this.warehouseLoading = false;
         });
     },
-    normalizeWarehouseAreaIds(value) {
+    normalizeAreaCodes(value) {
       const source = Array.isArray(value) ? value : value ? [value] : [];
-      const ids = source.map((item) => String(item || '').trim()).filter(Boolean);
-      return Array.from(new Set(ids));
+      const codes = source.map((item) => String(item || '').trim()).filter(Boolean);
+      return Array.from(new Set(codes));
     },
-    mergeWarehouseOptions(options, selectedIds) {
+    mergeWarehouseOptions(options, selectedAreaCodes) {
       const optionMap = new Map();
       const addOption = (item) => {
         if (!item || item.VALUE == null) return;
@@ -345,16 +345,16 @@ export default {
       (this.hisWarehouseOptions || []).forEach(addOption);
       (options || []).forEach(addOption);
       (this.warehouseOptions || []).forEach((item) => {
-        if (selectedIds.includes(String(item.VALUE))) addOption(item);
+        if (selectedAreaCodes.includes(String(item.VALUE))) addOption(item);
       });
       return Array.from(optionMap.values());
     },
     loadHisWarehouseOptions(keyword) {
-      const selectedIds = this.normalizeWarehouseAreaIds(this.hisPreviewQuery.WAREHOUSE_AREA_IDS);
+      const selectedAreaCodes = this.normalizeAreaCodes(this.hisPreviewQuery.AREA_CODES);
       this.hisWarehouseLoading = true;
       queryWarehouseAreaOptions(keyword || '')
         .then((res) => {
-          this.hisWarehouseOptions = this.mergeWarehouseOptions(res.result || [], selectedIds);
+          this.hisWarehouseOptions = this.mergeWarehouseOptions(res.result || [], selectedAreaCodes);
         })
         .catch((err) => this.$message.error(err.message || '加载库房/库区失败'))
         .finally(() => {
@@ -362,7 +362,7 @@ export default {
         });
     },
     onHisWarehouseChange(value) {
-      this.hisPreviewQuery.WAREHOUSE_AREA_IDS = this.normalizeWarehouseAreaIds(value);
+      this.hisPreviewQuery.AREA_CODES = this.normalizeAreaCodes(value);
       this.hisPreviewLoadedParams = null;
     },
     chooseImportFile() {
@@ -393,29 +393,30 @@ export default {
     },
     async openHisChargePreview() {
       if (this.syncingHisCharge) return;
-      const selectedIds = this.normalizeWarehouseAreaIds(this.where.WAREHOUSE_AREA_ID);
+      const selectedAreaCodes = this.normalizeAreaCodes(this.where.AREA_CODE);
       this.hisPreviewVisible = true;
       this.hisPreviewQuery = {
         ...defaultHisPreviewQuery(),
-        WAREHOUSE_AREA_IDS: selectedIds
+        AREA_CODES: selectedAreaCodes
       };
-      this.hisWarehouseOptions = this.mergeWarehouseOptions(this.warehouseOptions, selectedIds);
+      this.hisWarehouseOptions = this.mergeWarehouseOptions(this.warehouseOptions, selectedAreaCodes);
       this.hisPreviewRows = [];
       this.hisPreviewStats = {};
       this.hisPreviewLoadedParams = null;
       this.loadHisWarehouseOptions('');
     },
     buildHisChargeSyncParams() {
+      const areaCodes = this.normalizeAreaCodes(this.hisPreviewQuery.AREA_CODES);
       return {
-        WAREHOUSE_AREA_IDS: this.normalizeWarehouseAreaIds(this.hisPreviewQuery.WAREHOUSE_AREA_IDS),
+        AREA_CODES: areaCodes,
         START_TIME: this.hisPreviewQuery.START_TIME || '',
         END_TIME: this.hisPreviewQuery.END_TIME || ''
       };
     },
     validateHisChargeSyncQuery() {
-      const selectedIds = this.normalizeWarehouseAreaIds(this.hisPreviewQuery.WAREHOUSE_AREA_IDS);
-      this.hisPreviewQuery.WAREHOUSE_AREA_IDS = selectedIds;
-      if (!selectedIds.length) {
+      const selectedAreaCodes = this.normalizeAreaCodes(this.hisPreviewQuery.AREA_CODES);
+      this.hisPreviewQuery.AREA_CODES = selectedAreaCodes;
+      if (!selectedAreaCodes.length) {
         this.$message.warning('请选择库房/库区');
         return false;
       }
@@ -463,7 +464,7 @@ export default {
         this.hisPreviewVisible = false;
         this.$emit('import-success', {
           ...this.getWhere(),
-          WAREHOUSE_AREA_ID: this.where.WAREHOUSE_AREA_ID || params.WAREHOUSE_AREA_IDS[0] || ''
+          AREA_CODE: this.where.AREA_CODE || params.AREA_CODES[0] || ''
         });
       } catch (err) {
         this.$message.error(err.message || '同步失败');

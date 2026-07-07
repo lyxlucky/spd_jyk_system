@@ -182,7 +182,7 @@ export default {
       return this.lastWhere;
     },
     requireWarehouse(where, silent = false) {
-      if (!where?.WAREHOUSE_AREA_ID) {
+      if (!where?.AREA_CODE) {
         if (!silent) {
           Message.warning('请选择库房/库区');
         }
@@ -257,7 +257,7 @@ export default {
     },
     onImportSuccess(where) {
       this.lastWhere = where || this.currentWhere();
-      if (this.lastWhere?.WAREHOUSE_AREA_ID) {
+      if (this.lastWhere?.AREA_CODE) {
         this.reload(this.lastWhere);
       }
     },
@@ -303,7 +303,7 @@ export default {
       const baseWhere = this.currentWhere();
       this.detailFilters = {
         ...baseWhere,
-        WAREHOUSE_AREA_ID: row.WAREHOUSE_AREA_ID || baseWhere.WAREHOUSE_AREA_ID,
+        AREA_CODE: row.AREA_CODE || baseWhere.AREA_CODE || '',
         DEPT_TWO_CODE: scope === 'dept' ? row.DEPT_TWO_CODE || this.selectedDept?.DEPT_TWO_CODE || '' : '',
         CHARGE_CODE: row.CHARGE_CODE || ''
       };

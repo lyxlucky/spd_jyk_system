@@ -48,6 +48,7 @@ export function buildWarehouseAreaThreeInventoryParams(where = {}, page = 1, siz
     page: normPage(page),
     size: normSize(size),
     WAREHOUSE_AREA_ID: where.WAREHOUSE_AREA_ID || '',
+    AREA_CODE: where.AREA_CODE || where.WAREHOUSE_AREA_ID || '',
     DEPT_TWO_CODE: where.DEPT_TWO_CODE || '',
     CHARGE_CODE: where.CHARGE_CODE || '',
     VARIETIE_CODE_NEW: where.VARIETIE_CODE_NEW || '',
@@ -112,11 +113,15 @@ export async function importInitialInventory(file) {
 }
 
 function buildHisChargeSyncParams(params = {}) {
+  const codes = Array.isArray(params.AREA_CODES)
+    ? params.AREA_CODES.join(',')
+    : params.AREA_CODES || '';
   const ids = Array.isArray(params.WAREHOUSE_AREA_IDS)
     ? params.WAREHOUSE_AREA_IDS.join(',')
     : params.WAREHOUSE_AREA_IDS || '';
   return {
     Token: token(),
+    AREA_CODES: codes || ids,
     WAREHOUSE_AREA_IDS: ids,
     START_TIME: params.START_TIME || '',
     END_TIME: params.END_TIME || ''
