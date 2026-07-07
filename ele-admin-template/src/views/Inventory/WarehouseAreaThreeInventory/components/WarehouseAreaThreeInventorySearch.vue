@@ -115,7 +115,8 @@
     <el-dialog
       :visible.sync="hisPreviewVisible"
       title="同步HIS计费记录"
-      width="1280px"
+      width="90%"
+      top="1vh"
       append-to-body
       :close-on-click-modal="false"
     >
@@ -184,18 +185,53 @@
         <span>未匹配库房/库区：{{ hisPreviewStats.NoWarehouseAreaCount || 0 }}</span>
         <span>未匹配SPD科室：{{ hisPreviewStats.NoDeptTwoCodeCount || 0 }}</span>
       </div>
+      <div class="his-preview-table-title">
+        <span>本次可插入数据</span>
+        <span>{{ hisPreviewRows.length }}条</span>
+      </div>
       <vxe-table
         v-loading="hisPreviewLoading"
         :data="hisPreviewRows"
         border
         size="mini"
-        height="480"
+        height="320"
         show-overflow
         :row-config="{ isHover: true }"
         :column-config="{ resizable: true }"
         empty-text="暂无本次可插入数据"
       >
         <vxe-column type="seq" title="序号" width="55" align="center" fixed="left" />
+        <vxe-column field="UniqueId" title="医嘱ID" width="130" />
+        <vxe-column field="DeptCode" title="HIS科室编码" width="110" />
+        <vxe-column field="DeptName" title="HIS科室名称" width="150" />
+        <vxe-column field="DeptTwoCode" title="SPD科室编码" width="120" />
+        <vxe-column field="AreaCode" title="库房/库区编码" width="130" />
+        <vxe-column field="AreaName" title="库房/库区名称" width="150" />
+        <vxe-column field="ChargeCode" title="计费编码" width="110" />
+        <vxe-column field="ChargeName" title="费用名称" min-width="220" />
+        <vxe-column field="Specification" title="规格" width="160" />
+        <vxe-column field="Price" title="单价" width="90" align="right" />
+        <vxe-column field="Qty" title="HIS数量" width="90" align="right" />
+        <vxe-column field="InsertQty" title="插入数量" width="90" align="right" />
+        <vxe-column field="ChargeTimeText" title="HIS时间" width="140" />
+      </vxe-table>
+      <div class="his-preview-table-title his-preview-table-title--repeat">
+        <span>已重复数据</span>
+        <span>{{ hisRepeatedRows.length }}条</span>
+      </div>
+      <vxe-table
+        v-loading="hisPreviewLoading"
+        :data="hisRepeatedRows"
+        border
+        size="mini"
+        height="220"
+        show-overflow
+        :row-config="{ isHover: true }"
+        :column-config="{ resizable: true }"
+        empty-text="暂无已重复数据"
+      >
+        <vxe-column type="seq" title="序号" width="55" align="center" fixed="left" />
+        <vxe-column field="RepeatType" title="重复类型" width="95" fixed="left" />
         <vxe-column field="UniqueId" title="医嘱ID" width="130" />
         <vxe-column field="DeptCode" title="HIS科室编码" width="110" />
         <vxe-column field="DeptName" title="HIS科室名称" width="150" />
@@ -275,6 +311,7 @@ export default {
       hisPreviewQuery: defaultHisPreviewQuery(),
       hisPreviewLoadedParams: null,
       hisPreviewRows: [],
+      hisRepeatedRows: [],
       hisPreviewStats: {},
       syncingHisCharge: false,
       stockStatusOptions: STOCK_STATUS_OPTIONS,
@@ -365,6 +402,17 @@ export default {
       this.hisPreviewQuery.AREA_CODES = this.normalizeAreaCodes(value);
       this.hisPreviewLoadedParams = null;
     },
+    buildHisRepeatedRows(result = {}) {
+      const existingRows = (result.ExistingRows || []).map((item) => ({
+        ...item,
+        RepeatType: '已存在'
+      }));
+      const duplicateRows = (result.DuplicateRows || []).map((item) => ({
+        ...item,
+        RepeatType: 'HIS重复'
+      }));
+      return existingRows.concat(duplicateRows);
+    },
     chooseImportFile() {
       if (this.importing) return;
       this.$refs.importFile.value = '';
@@ -401,6 +449,7 @@ export default {
       };
       this.hisWarehouseOptions = this.mergeWarehouseOptions(this.warehouseOptions, selectedAreaCodes);
       this.hisPreviewRows = [];
+      this.hisRepeatedRows = [];
       this.hisPreviewStats = {};
       this.hisPreviewLoadedParams = null;
       this.loadHisWarehouseOptions('');
@@ -432,6 +481,7 @@ export default {
       const params = this.buildHisChargeSyncParams();
       this.hisPreviewLoading = true;
       this.hisPreviewRows = [];
+      this.hisRepeatedRows = [];
       this.hisPreviewStats = {};
       this.hisPreviewLoadedParams = null;
       try {
@@ -439,6 +489,7 @@ export default {
         const result = res.result || {};
         this.hisPreviewStats = result;
         this.hisPreviewRows = result.Rows || [];
+        this.hisRepeatedRows = this.buildHisRepeatedRows(result);
         this.hisPreviewLoadedParams = JSON.stringify(params);
         if (!this.hisPreviewRows.length) {
           this.$message.info(res.msg || '暂无本次可插入数据');
@@ -523,6 +574,20 @@ export default {
   color: #606266;
   font-size: 12px;
   line-height: 20px;
+}
+
+.his-preview-table-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 8px 0 6px;
+  color: #303133;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.his-preview-table-title--repeat {
+  margin-top: 12px;
 }
 
 .warehouse-area-search :deep(.el-form-item) {
