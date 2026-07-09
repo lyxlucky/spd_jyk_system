@@ -110,6 +110,19 @@ export default {
           minWidth: 190,
           showOverflowTooltip: true
         },
+        { prop: 'IS_JC',
+          label: '集采',
+          align: 'center',
+          width: 65,
+          formatter: (row) => (row.IS_JC === '1' ? '是' : '否')
+        },
+        {
+          prop: 'CBLG',
+          label: '临购',
+          align: 'center',
+          width: 65,
+          formatter: (row) => (row.CBLG === '临购' ? '是' : '否')
+        },
         {
           prop: 'Unit',
           label: '单位',
@@ -169,6 +182,19 @@ export default {
           align: 'left',
           width: 120,
           showOverflowTooltip: true
+        },
+        {
+          prop: 'Consume_Time',
+          label: '使用时间',
+          sortable: 'custom',
+          align: 'left',
+          width: 120,
+          showOverflowTooltip: true,
+          formatter: (row) => {
+            if (!row.Consume_Time) return '';
+            const val = String(row.Consume_Time);
+            return val.length >= 10 ? val.substr(0, 10) : val;
+          }
         },
         {
           prop: 'Serial_Number',

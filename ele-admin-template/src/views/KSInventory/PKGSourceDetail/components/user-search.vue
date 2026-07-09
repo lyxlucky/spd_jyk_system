@@ -36,10 +36,28 @@
           style="width: 240px"
         />
       </el-form-item>
+      <el-form-item label="使用时间" class="field-date-item">
+        <el-date-picker
+          v-model="consumeDateRange"
+          type="daterange"
+          value-format="yyyy-MM-dd"
+          range-separator="至"
+          start-placeholder="开始时间"
+          end-placeholder="结束时间"
+          style="width: 240px"
+        />
+      </el-form-item>
       <el-form-item label="仓库" class="field-storage-item">
         <el-select v-model="where.Storage" placeholder="全部" style="width: 120px">
           <el-option label="全部" value="" />
           <el-option v-for="s in storageList" :key="s.ID" :label="s.NAME" :value="String(s.ID)" />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="采购类型" class="field-procurement-item">
+        <el-select v-model="where.procurementType" placeholder="全部" style="width: 100px">
+          <el-option label="全部" value="" />
+          <el-option label="集采" value="集采" />
+          <el-option label="临购" value="临购" />
         </el-select>
       </el-form-item>
       <el-form-item class="search-form-actions">
@@ -63,7 +81,10 @@ export default {
         bhOrYs: '',
         startTime: '',
         endTime: '',
+        consumeStartTime: '',
+        consumeEndTime: '',
         Storage: '',
+        procurementType: '',
         IsEnd: ''
       }
     };
@@ -81,6 +102,21 @@ export default {
         } else {
           this.where.startTime = '';
           this.where.endTime = '';
+        }
+      }
+    },
+    consumeDateRange: {
+      get() {
+        const { consumeStartTime, consumeEndTime } = this.where;
+        return consumeStartTime && consumeEndTime ? [consumeStartTime, consumeEndTime] : null;
+      },
+      set(val) {
+        if (val && val.length === 2) {
+          this.where.consumeStartTime = val[0];
+          this.where.consumeEndTime = val[1];
+        } else {
+          this.where.consumeStartTime = '';
+          this.where.consumeEndTime = '';
         }
       }
     }

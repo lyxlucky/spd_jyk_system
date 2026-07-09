@@ -33,6 +33,9 @@ export async function GetPDAList(data) {
         bhOrYs: where.ks_gs1_search_bhOrYs || '',
         startTime: where.ks_UseTimeStart || '',
         endTime: where.ks_UseTimeEnd || '',
+        consumeStartTime: where.consumeStartTime || '',
+        consumeEndTime: where.consumeEndTime || '',
+        procurementType: where.procurementType || '',
         IsEnd: '',
         order:'',
         field

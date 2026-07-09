@@ -18,12 +18,32 @@
           start-placeholder="开始日期"
           end-placeholder="结束日期"
           v-model="dateRange"
-          @change="handleDateRangeChange"
         >
         </el-date-picker>
       </label>
       </el-col>
-     
+      <el-col v-bind="styleResponsive ? { lg: 6, md: 12 } : { span: 6 }">
+        <label>
+          使用时间:
+        <el-date-picker
+          type="daterange"
+          value-format="yyyy-MM-dd"
+          size="mini"
+          range-separator="至"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          v-model="consumeDateRange"
+        >
+        </el-date-picker>
+      </label>
+      </el-col>
+      <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 6 }">
+        <el-select size="mini" clearable v-model="where.procurementType" placeholder="全部" style="width: 100px">
+          <el-option label="全部" value="" />
+          <el-option label="集采" value="集采" />
+          <el-option label="临购" value="临购" />
+        </el-select>
+      </el-col>
       <el-col v-bind="styleResponsive ? { lg: 6, md: 12 } : { span: 6 }">
         <div class="ele-form-actions">
           <el-button size="mini" type="primary" icon="el-icon-search" class="ele-btn-icon" @click="search">
@@ -39,44 +59,51 @@
 export default {
   data() {
     return {
-      // 默认表单数据
       defaultWhere: {
         ks_gs1_search_inp: '',
         ks_gs1_search_bhOrYs: '',
         ks_UseTimeStart: '',
-        ks_UseTimeEnd: ''
+        ks_UseTimeEnd: '',
+        consumeStartTime: '',
+        consumeEndTime: '',
+        procurementType: ''
       },
-      // 表单数据
       where: {},
-      // 日期范围
-      dateRange: []
+      dateRange: [],
+      consumeDateRange: []
     };
   },
   computed: {
-    // 是否开启响应式布局
     styleResponsive() {
       return this.$store.state.theme.styleResponsive;
     }
   },
+  watch: {
+    dateRange(range) {
+      if (range && range.length === 2) {
+        this.where.ks_UseTimeStart = range[0];
+        this.where.ks_UseTimeEnd = range[1];
+      } else {
+        this.where.ks_UseTimeStart = '';
+        this.where.ks_UseTimeEnd = '';
+      }
+    },
+    consumeDateRange(range) {
+      if (range && range.length === 2) {
+        this.where.consumeStartTime = range[0];
+        this.where.consumeEndTime = range[1];
+      } else {
+        this.where.consumeStartTime = '';
+        this.where.consumeEndTime = '';
+      }
+    }
+  },
   created() {
-    // 初始化 where 对象
     this.where = { ...this.defaultWhere };
   },
   methods: {
-    /* 搜索 */
     search() {
-     
       this.$emit('search', this.where);
-    },
-    // 处理日期范围选择
-    handleDateRangeChange(range) {
-      if (range && range.length === 2) {
-        this.where.start_time = range[0];
-        this.where.end_time = range[1];
-      } else {
-        this.where.start_time = '';
-        this.where.end_time = '';
-      }
     }
   }
 };

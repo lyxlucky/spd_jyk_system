@@ -29,7 +29,10 @@ export async function searchGs1({ page, size, where = {}, field = '', order = ''
       order: order || '',
       startTime: where.startTime ?? '',
       endTime: where.endTime ?? '',
-      Storage: where.Storage ?? ''
+      consumeStartTime: where.consumeStartTime ?? '',
+      consumeEndTime: where.consumeEndTime ?? '',
+      Storage: where.Storage ?? '',
+      procurementType: where.procurementType ?? ''
     }
   });
   return unwrap(res);
