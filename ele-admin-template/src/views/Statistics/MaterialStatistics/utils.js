@@ -45,6 +45,11 @@ export function formatHighClassXh(row) {
   return v;
 }
 
+/** 是否临购耗材：CBLG=临购 为是 */
+export function formatIsTemporaryPurchase(row) {
+  return row.CBLG === '临购' ? '是' : '否';
+}
+
 export function getDeptName(row, index) {
   const list = row.DeptList || [];
   if (list.length <= index) {

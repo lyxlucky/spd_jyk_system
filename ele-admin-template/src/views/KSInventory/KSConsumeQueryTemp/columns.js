@@ -4,9 +4,11 @@ import {
   fmtContractType,
   fmtDate10,
   fmtHisPrice,
+  fmtLgZb,
   fmtPatientInfo,
   fmtPriceNum,
   fmtPriceWithDiff,
+  fmtRestrictConsumable,
   fmtYesNo01
 } from './utils';
 
@@ -67,6 +69,22 @@ export function getConsumeColumns() {
     { prop: 'Varietie_Name', label: '品种全称', minWidth: 200, showOverflowTooltip: true },
     { prop: 'XTLB', label: '系统类别', minWidth: 120, hidden: !isStzl, showOverflowTooltip: true },
     { prop: 'XTMC', label: '产品系统名称', minWidth: 160, hidden: !isStzl, showOverflowTooltip: true },
+    {
+      columnKey: 'LG_ZB',
+      label: '临购/中标',
+      minWidth: 90,
+      align: 'center',
+      showOverflowTooltip: true,
+      formatter: (row) => fmtLgZb(row)
+    },
+    {
+      columnKey: 'RESTRICT_CONSUMABLE',
+      label: '限制性耗材',
+      minWidth: 100,
+      align: 'center',
+      showOverflowTooltip: true,
+      formatter: (row) => fmtRestrictConsumable(row)
+    },
     {
       prop: 'Specification_Or_Type',
       label: '型号/规格',

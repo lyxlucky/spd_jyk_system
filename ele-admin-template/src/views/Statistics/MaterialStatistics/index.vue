@@ -121,6 +121,7 @@ import {
   calcIncreaseAmount,
   formatHbZz,
   formatHighClassXh,
+  formatIsTemporaryPurchase,
   buildDeptColumns
 } from './utils';
 
@@ -178,6 +179,14 @@ export default {
           showOverflowTooltip: true,
           minWidth: 180,
           formatter: (row) => formatHighClassXh(row)
+        },
+        {
+          prop: 'CBLG',
+          label: '是否临购耗材',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 120,
+          formatter: (row) => formatIsTemporaryPurchase(row)
         },
         {
           prop: 'MAIN_QTY',

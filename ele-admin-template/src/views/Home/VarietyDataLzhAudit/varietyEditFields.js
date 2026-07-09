@@ -191,7 +191,10 @@ export const VARIETY_EDIT_GROUPS = [
       { key: 'IS_HANG_UP', label: '是否挂起', type: 'select', span: 8, options: yesNo },
       { key: 'YB_CLASS', label: '医保分类', type: 'select', span: 8, options: ybClassOpts },
       { key: 'SYZ', label: '适应症', type: 'select', span: 8, options: yesNo },
-      { key: 'SYZ_TEXT', label: '适应症提示', type: 'input', span: 16 }
+      { key: 'SYZ_TEXT', label: '适应症提示', type: 'input', span: 16 },
+      { key: 'YB_BX', label: '医保报销限制', type: 'select', span: 8, options: yesNo },
+      { key: 'YB_BX_BZ', label: '医保报销备注', type: 'input', span: 8 },
+      { key: 'RESTRICTIVE_SPECIFICATION', label: '限制性耗材', type: 'input', span: 16, placeholder: '如：限胰岛素专用针头、限工伤保险' }
     ]
   },
   {
@@ -247,8 +250,6 @@ export const VARIETY_EDIT_GROUPS = [
       { key: 'KEY_MONITOR_CHARGE', label: '重点收费监控', type: 'select', span: 8, options: yesNo },
       { key: 'KEY_MONITOR_USE', label: '重点使用监控', type: 'select', span: 8, options: yesNo },
       { key: 'SE_CHARGE_ITEM_CODE', label: '市二收费项目代码', type: 'input', span: 8 },
-      { key: 'YB_BX', label: '医保报销', type: 'input', span: 8 },
-      { key: 'YB_BX_BZ', label: '医保报销备注', type: 'input', span: 8 },
       { key: 'JYZY_CC', label: '经营专业层次', type: 'input', span: 8 },
       { key: 'MZ_USE', label: '门诊使用', type: 'input', span: 8 },
       { key: 'ZY_USE', label: '住院使用', type: 'input', span: 8 },

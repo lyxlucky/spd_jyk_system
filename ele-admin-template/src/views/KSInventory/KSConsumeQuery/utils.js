@@ -43,6 +43,21 @@ export function fmtYesNo01(v) {
   return '否';
 }
 
+/** 临购/中标 */
+export function fmtLgZb(row) {
+  if (row.CBLG === '临购') return '临购';
+  if (row.Contract_Type === '1' || row.Is_Bidding === '1') return '中标';
+  if (row.Contract_Type === '2') return '临采';
+  return row.CBLG || '';
+}
+
+/** 限制性耗材 */
+export function fmtRestrictConsumable(row) {
+  if (row.YB_BX === '1') return '是';
+  if (row.YB_BX === '0') return '否';
+  return row.YB_BX_BZ || '';
+}
+
 export function fmtPriceNum(d, field = 'Supply_Price') {
   const bl = d.price_bl != null ? d.price_bl : 2;
   const val = d[field];
