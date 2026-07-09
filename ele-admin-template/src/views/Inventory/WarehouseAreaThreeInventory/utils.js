@@ -11,31 +11,37 @@ export const STOCK_DEDUCT_TYPE_OPTIONS = [
   { label: '预扣', value: '2' }
 ];
 
+// 格式化数量，保留有效小数位。
 export function fmtQty(value) {
   const n = Number(value);
   if (Number.isNaN(n)) return value == null ? '0' : String(value);
   return n.toFixed(4).replace(/\.?0+$/, '');
 }
 
+// 格式化接口返回时间。
 export function fmtDateTime(value) {
   if (!value) return '';
   return String(value).replace('T', ' ').substring(0, 19);
 }
 
+// 库房/库区类型显示名称。
 export function areaTypeName(value) {
   if (value === 'WAREHOUSE') return '库房';
   if (value === 'AREA') return '库区';
   return value || '';
 }
 
+// 默认标记显示名称。
 export function flagName(value) {
   return value === '1' || value === 'Y' ? '是' : '否';
 }
 
+// 启用标记显示名称。
 export function enabledName(value) {
   return value === '1' || value === 'Y' ? '启用' : '停用';
 }
 
+// 扣费类型显示名称。
 export function stockDeductTypeName(value) {
   if (value === '1') return '实际扣费';
   if (value === '2') return '预扣';
@@ -92,6 +98,7 @@ export const DEPT_MATERIAL_EXPORT_HEADERS = [
   '最近使用时间'
 ];
 
+// 库房/库区汇总导出行转换。
 export function warehouseRowToExportArray(row, index) {
   return [
     index + 1,
@@ -111,6 +118,7 @@ export function warehouseRowToExportArray(row, index) {
   ];
 }
 
+// SPD科室汇总导出行转换。
 export function deptRowToExportArray(row, index) {
   return [
     index + 1,
@@ -128,6 +136,7 @@ export function deptRowToExportArray(row, index) {
   ];
 }
 
+// 科室耗材汇总导出行转换。
 export function deptMaterialRowToExportArray(row, index) {
   return [
     index + 1,

@@ -100,6 +100,14 @@
           >
             同步HIS计费记录
           </el-button>
+          <el-button
+            type="primary"
+            icon="el-icon-connection"
+            :loading="syncingSpdInStock"
+            @click="openSpdInStockPreview"
+          >
+            同步入库记录
+          </el-button>
           <input
             ref="importFile"
             type="file"
@@ -259,6 +267,160 @@
         </el-button>
       </div>
     </el-dialog>
+
+    <el-dialog
+      :visible.sync="spdInStockPreviewVisible"
+      title="同步入库记录"
+      width="90%"
+      top="1vh"
+      append-to-body
+      :close-on-click-modal="false"
+    >
+      <el-form size="mini" :inline="true" class="his-preview-query" @submit.native.prevent>
+        <el-form-item label="库房/库区">
+          <el-select
+            v-model="spdInStockQuery.AREA_CODES"
+            multiple
+            filterable
+            remote
+            clearable
+            collapse-tags
+            reserve-keyword
+            placeholder="请选择库房/库区"
+            :remote-method="loadSpdWarehouseOptions"
+            :loading="spdWarehouseLoading"
+            class="his-preview-warehouse"
+            @change="onSpdWarehouseChange"
+          >
+            <el-option
+              v-for="item in spdWarehouseOptions"
+              :key="item.VALUE"
+              :label="item.LABEL"
+              :value="String(item.VALUE)"
+            >
+              <span>{{ item.LABEL }}</span>
+              <span class="option-type">{{ areaTypeName(item.TYPE) }}</span>
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="开始时间">
+          <el-date-picker
+            v-model="spdInStockQuery.START_TIME"
+            type="datetime"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            placeholder="请选择开始时间"
+            class="his-preview-time"
+          />
+        </el-form-item>
+        <el-form-item label="结束时间">
+          <el-date-picker
+            v-model="spdInStockQuery.END_TIME"
+            type="datetime"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            placeholder="不选则开始时间之后"
+            class="his-preview-time"
+          />
+        </el-form-item>
+        <el-form-item>
+          <el-button
+            type="primary"
+            icon="el-icon-search"
+            :loading="spdInStockPreviewLoading"
+            @click="loadSpdInStockPreview"
+          >
+            查询预览
+          </el-button>
+        </el-form-item>
+      </el-form>
+      <div class="his-preview-summary">
+        <span>入库记录：{{ spdInStockStats.TotalCount || 0 }}</span>
+        <span>本次可插入：{{ spdInStockStats.NewCount || 0 }}</span>
+        <span>已存在：{{ spdInStockStats.ExistingCount || 0 }}</span>
+        <span>SPD重复：{{ spdInStockStats.DuplicateCount || 0 }}</span>
+        <span>失败：{{ spdInStockStats.FailCount || 0 }}</span>
+        <span>未匹配库房/库区：{{ spdInStockStats.NoWarehouseAreaCount || 0 }}</span>
+        <span>未匹配HIS科室：{{ spdInStockStats.NoHisDeptCodeCount || 0 }}</span>
+      </div>
+      <div class="his-preview-table-title">
+        <span>本次可插入数据</span>
+        <span>{{ spdInStockRows.length }}条</span>
+      </div>
+      <vxe-table
+        v-loading="spdInStockPreviewLoading"
+        :data="spdInStockRows"
+        border
+        size="mini"
+        height="320"
+        show-overflow
+        :row-config="{ isHover: true }"
+        :column-config="{ resizable: true }"
+        empty-text="暂无本次可插入数据"
+      >
+        <vxe-column type="seq" title="序号" width="55" align="center" fixed="left" />
+        <vxe-column field="UniqueId" title="SPD_ID" width="130" />
+        <vxe-column field="OperateNumber" title="入库单号" width="130" />
+        <vxe-column field="OperateTypeName" title="入库类型" width="130" />
+        <vxe-column field="DeptTwoCode" title="SPD科室编码" width="120" />
+        <vxe-column field="DeptTwoName" title="SPD科室名称" width="150" />
+        <vxe-column field="DeptCode" title="HIS科室编码" width="110" />
+        <vxe-column field="AreaCode" title="库房/库区编码" width="130" />
+        <vxe-column field="AreaName" title="库房/库区名称" width="150" />
+        <vxe-column field="ChargeCode" title="计费编码" width="110" />
+        <vxe-column field="ChargeName" title="品种名称" min-width="220" />
+        <vxe-column field="Specification" title="规格" width="160" />
+        <vxe-column field="Qty" title="入库数量" width="90" align="right" />
+        <vxe-column field="InsertQty" title="插入数量" width="90" align="right" />
+        <vxe-column field="OperateTimeText" title="入库时间" width="140" />
+        <vxe-column field="OperatorName" title="操作人" width="100" />
+        <vxe-column field="Batch" title="批号" width="120" />
+      </vxe-table>
+      <div class="his-preview-table-title his-preview-table-title--repeat">
+        <span>已重复数据</span>
+        <span>{{ spdInStockRepeatedRows.length }}条</span>
+      </div>
+      <vxe-table
+        v-loading="spdInStockPreviewLoading"
+        :data="spdInStockRepeatedRows"
+        border
+        size="mini"
+        height="220"
+        show-overflow
+        :row-config="{ isHover: true }"
+        :column-config="{ resizable: true }"
+        empty-text="暂无已重复数据"
+      >
+        <vxe-column type="seq" title="序号" width="55" align="center" fixed="left" />
+        <vxe-column field="RepeatType" title="重复类型" width="95" fixed="left" />
+        <vxe-column field="UniqueId" title="SPD_ID" width="130" />
+        <vxe-column field="OperateNumber" title="入库单号" width="130" />
+        <vxe-column field="OperateTypeName" title="入库类型" width="130" />
+        <vxe-column field="DeptTwoCode" title="SPD科室编码" width="120" />
+        <vxe-column field="DeptTwoName" title="SPD科室名称" width="150" />
+        <vxe-column field="DeptCode" title="HIS科室编码" width="110" />
+        <vxe-column field="AreaCode" title="库房/库区编码" width="130" />
+        <vxe-column field="AreaName" title="库房/库区名称" width="150" />
+        <vxe-column field="ChargeCode" title="计费编码" width="110" />
+        <vxe-column field="ChargeName" title="品种名称" min-width="220" />
+        <vxe-column field="Specification" title="规格" width="160" />
+        <vxe-column field="Qty" title="入库数量" width="90" align="right" />
+        <vxe-column field="InsertQty" title="插入数量" width="90" align="right" />
+        <vxe-column field="OperateTimeText" title="入库时间" width="140" />
+        <vxe-column field="OperatorName" title="操作人" width="100" />
+        <vxe-column field="Batch" title="批号" width="120" />
+      </vxe-table>
+      <div slot="footer" class="dialog-footer">
+        <el-button size="mini" @click="spdInStockPreviewVisible = false">取消</el-button>
+        <el-button
+          type="primary"
+          size="mini"
+          :loading="syncingSpdInStock"
+          :disabled="spdInStockPreviewLoading || !spdInStockRows.length"
+          @click="confirmSyncSpdInStockRecords"
+        >
+          确认插入
+        </el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -266,8 +428,10 @@
 import {
   importInitialInventory,
   previewHisChargeRecords,
+  previewSpdInStockRecords,
   queryWarehouseAreaOptions,
-  syncHisChargeRecords as syncHisChargeRecordsApi
+  syncHisChargeRecords as syncHisChargeRecordsApi,
+  syncSpdInStockRecords as syncSpdInStockRecordsApi
 } from '@/api/Inventory/WarehouseAreaThreeInventory';
 import {
   areaTypeName,
@@ -293,6 +457,12 @@ const defaultHisPreviewQuery = () => ({
   END_TIME: ''
 });
 
+const defaultSpdInStockQuery = () => ({
+  AREA_CODES: [],
+  START_TIME: '',
+  END_TIME: ''
+});
+
 export default {
   name: 'WarehouseAreaThreeInventorySearch',
   props: {
@@ -305,6 +475,8 @@ export default {
       warehouseLoading: false,
       hisWarehouseOptions: [],
       hisWarehouseLoading: false,
+      spdWarehouseOptions: [],
+      spdWarehouseLoading: false,
       importing: false,
       hisPreviewVisible: false,
       hisPreviewLoading: false,
@@ -314,6 +486,14 @@ export default {
       hisRepeatedRows: [],
       hisPreviewStats: {},
       syncingHisCharge: false,
+      spdInStockPreviewVisible: false,
+      spdInStockPreviewLoading: false,
+      spdInStockQuery: defaultSpdInStockQuery(),
+      spdInStockLoadedParams: null,
+      spdInStockRows: [],
+      spdInStockRepeatedRows: [],
+      spdInStockStats: {},
+      syncingSpdInStock: false,
       stockStatusOptions: STOCK_STATUS_OPTIONS,
       stockDeductTypeOptions: STOCK_DEDUCT_TYPE_OPTIONS
     };
@@ -323,6 +503,7 @@ export default {
   },
   methods: {
     areaTypeName,
+    // 组装主页面表格查询条件。
     getWhere() {
       const range = this.where.DATE_RANGE || [];
       return {
@@ -338,6 +519,7 @@ export default {
         END_TIME: range[1] || ''
       };
     },
+    // 触发表格查询。
     emitSearch() {
       if (!this.where.AREA_CODE) {
         this.$message.warning('请选择库房/库区');
@@ -345,14 +527,17 @@ export default {
       }
       this.$emit('search', this.getWhere());
     },
+    // 重置查询条件，保留当前库房/库区。
     reset() {
       const areaCode = this.where.AREA_CODE;
       this.where = { ...defaultWhere(), AREA_CODE: areaCode };
       this.emitSearch();
     },
+    // 主查询库房/库区变化时通知父组件刷新。
     onWarehouseChange() {
       this.$emit('warehouse-change', this.getWhere());
     },
+    // 加载主查询库房/库区下拉选项。
     loadWarehouseOptions(keyword, autoSelect = false) {
       this.warehouseLoading = true;
       queryWarehouseAreaOptions(keyword || '')
@@ -368,24 +553,35 @@ export default {
           this.warehouseLoading = false;
         });
     },
+    // 统一库房/库区编码数组格式并去重。
     normalizeAreaCodes(value) {
       const source = Array.isArray(value) ? value : value ? [value] : [];
       const codes = source.map((item) => String(item || '').trim()).filter(Boolean);
       return Array.from(new Set(codes));
     },
+    // 合并HIS同步弹窗可选库房，保留当前已选项。
     mergeWarehouseOptions(options, selectedAreaCodes) {
+      return this.mergeWarehouseOptionSets(this.hisWarehouseOptions, options, selectedAreaCodes);
+    },
+    // 合并SPD入库同步弹窗可选库房，保留当前已选项。
+    mergeSpdWarehouseOptions(options, selectedAreaCodes) {
+      return this.mergeWarehouseOptionSets(this.spdWarehouseOptions, options, selectedAreaCodes);
+    },
+    // 合并多个库房/库区下拉来源，避免远程搜索后已选项丢失。
+    mergeWarehouseOptionSets(currentOptions, options, selectedAreaCodes) {
       const optionMap = new Map();
       const addOption = (item) => {
         if (!item || item.VALUE == null) return;
         optionMap.set(String(item.VALUE), { ...item, VALUE: String(item.VALUE) });
       };
-      (this.hisWarehouseOptions || []).forEach(addOption);
+      (currentOptions || []).forEach(addOption);
       (options || []).forEach(addOption);
       (this.warehouseOptions || []).forEach((item) => {
         if (selectedAreaCodes.includes(String(item.VALUE))) addOption(item);
       });
       return Array.from(optionMap.values());
     },
+    // 加载HIS计费同步弹窗库房/库区选项。
     loadHisWarehouseOptions(keyword) {
       const selectedAreaCodes = this.normalizeAreaCodes(this.hisPreviewQuery.AREA_CODES);
       this.hisWarehouseLoading = true;
@@ -398,26 +594,48 @@ export default {
           this.hisWarehouseLoading = false;
         });
     },
+    // 加载SPD入库同步弹窗库房/库区选项。
+    loadSpdWarehouseOptions(keyword) {
+      const selectedAreaCodes = this.normalizeAreaCodes(this.spdInStockQuery.AREA_CODES);
+      this.spdWarehouseLoading = true;
+      queryWarehouseAreaOptions(keyword || '')
+        .then((res) => {
+          this.spdWarehouseOptions = this.mergeSpdWarehouseOptions(res.result || [], selectedAreaCodes);
+        })
+        .catch((err) => this.$message.error(err.message || '加载库房/库区失败'))
+        .finally(() => {
+          this.spdWarehouseLoading = false;
+        });
+    },
+    // HIS计费同步条件变化后标记预览失效。
     onHisWarehouseChange(value) {
       this.hisPreviewQuery.AREA_CODES = this.normalizeAreaCodes(value);
       this.hisPreviewLoadedParams = null;
     },
-    buildHisRepeatedRows(result = {}) {
+    // SPD入库同步条件变化后标记预览失效。
+    onSpdWarehouseChange(value) {
+      this.spdInStockQuery.AREA_CODES = this.normalizeAreaCodes(value);
+      this.spdInStockLoadedParams = null;
+    },
+    // 将后端返回的已存在和重复记录合并成重复数据表格。
+    buildRepeatedRows(result = {}, duplicateLabel = '重复') {
       const existingRows = (result.ExistingRows || []).map((item) => ({
         ...item,
         RepeatType: '已存在'
       }));
       const duplicateRows = (result.DuplicateRows || []).map((item) => ({
         ...item,
-        RepeatType: 'HIS重复'
+        RepeatType: duplicateLabel
       }));
       return existingRows.concat(duplicateRows);
     },
+    // 打开初始化库存Excel文件选择框。
     chooseImportFile() {
       if (this.importing) return;
       this.$refs.importFile.value = '';
       this.$refs.importFile.click();
     },
+    // 校验并上传初始化库存Excel。
     async onImportFileChange(e) {
       const file = e.target.files && e.target.files[0];
       if (!file) return;
@@ -439,6 +657,7 @@ export default {
         e.target.value = '';
       }
     },
+    // 打开HIS计费同步预览弹窗，并默认带入当前库房/库区。
     async openHisChargePreview() {
       if (this.syncingHisCharge) return;
       const selectedAreaCodes = this.normalizeAreaCodes(this.where.AREA_CODE);
@@ -454,6 +673,7 @@ export default {
       this.hisPreviewLoadedParams = null;
       this.loadHisWarehouseOptions('');
     },
+    // 组装HIS计费同步请求参数。
     buildHisChargeSyncParams() {
       const areaCodes = this.normalizeAreaCodes(this.hisPreviewQuery.AREA_CODES);
       return {
@@ -462,6 +682,7 @@ export default {
         END_TIME: this.hisPreviewQuery.END_TIME || ''
       };
     },
+    // 校验HIS计费同步必填条件。
     validateHisChargeSyncQuery() {
       const selectedAreaCodes = this.normalizeAreaCodes(this.hisPreviewQuery.AREA_CODES);
       this.hisPreviewQuery.AREA_CODES = selectedAreaCodes;
@@ -475,6 +696,7 @@ export default {
       }
       return true;
     },
+    // 查询HIS计费同步预览数据。
     async loadHisChargePreview() {
       if (this.hisPreviewLoading || this.syncingHisCharge) return;
       if (!this.validateHisChargeSyncQuery()) return;
@@ -489,7 +711,7 @@ export default {
         const result = res.result || {};
         this.hisPreviewStats = result;
         this.hisPreviewRows = result.Rows || [];
-        this.hisRepeatedRows = this.buildHisRepeatedRows(result);
+        this.hisRepeatedRows = this.buildRepeatedRows(result, 'HIS重复');
         this.hisPreviewLoadedParams = JSON.stringify(params);
         if (!this.hisPreviewRows.length) {
           this.$message.info(res.msg || '暂无本次可插入数据');
@@ -500,6 +722,7 @@ export default {
         this.hisPreviewLoading = false;
       }
     },
+    // 确认同步当前预览的HIS计费记录。
     async confirmSyncHisChargeRecords() {
       if (this.syncingHisCharge || !this.hisPreviewRows.length) return;
       if (!this.validateHisChargeSyncQuery()) return;
@@ -521,6 +744,95 @@ export default {
         this.$message.error(err.message || '同步失败');
       } finally {
         this.syncingHisCharge = false;
+      }
+    },
+    // 打开SPD入库同步预览弹窗，并默认带入当前库房/库区。
+    async openSpdInStockPreview() {
+      if (this.syncingSpdInStock) return;
+      const selectedAreaCodes = this.normalizeAreaCodes(this.where.AREA_CODE);
+      this.spdInStockPreviewVisible = true;
+      this.spdInStockQuery = {
+        ...defaultSpdInStockQuery(),
+        AREA_CODES: selectedAreaCodes
+      };
+      this.spdWarehouseOptions = this.mergeSpdWarehouseOptions(this.warehouseOptions, selectedAreaCodes);
+      this.spdInStockRows = [];
+      this.spdInStockRepeatedRows = [];
+      this.spdInStockStats = {};
+      this.spdInStockLoadedParams = null;
+      this.loadSpdWarehouseOptions('');
+    },
+    // 组装SPD入库同步请求参数。
+    buildSpdInStockSyncParams() {
+      const areaCodes = this.normalizeAreaCodes(this.spdInStockQuery.AREA_CODES);
+      return {
+        AREA_CODES: areaCodes,
+        START_TIME: this.spdInStockQuery.START_TIME || '',
+        END_TIME: this.spdInStockQuery.END_TIME || ''
+      };
+    },
+    // 校验SPD入库同步必填条件。
+    validateSpdInStockQuery() {
+      const selectedAreaCodes = this.normalizeAreaCodes(this.spdInStockQuery.AREA_CODES);
+      this.spdInStockQuery.AREA_CODES = selectedAreaCodes;
+      if (!selectedAreaCodes.length) {
+        this.$message.warning('请选择库房/库区');
+        return false;
+      }
+      if (!this.spdInStockQuery.START_TIME) {
+        this.$message.warning('请选择开始时间');
+        return false;
+      }
+      return true;
+    },
+    // 查询SPD入库同步预览数据。
+    async loadSpdInStockPreview() {
+      if (this.spdInStockPreviewLoading || this.syncingSpdInStock) return;
+      if (!this.validateSpdInStockQuery()) return;
+      const params = this.buildSpdInStockSyncParams();
+      this.spdInStockPreviewLoading = true;
+      this.spdInStockRows = [];
+      this.spdInStockRepeatedRows = [];
+      this.spdInStockStats = {};
+      this.spdInStockLoadedParams = null;
+      try {
+        const res = await previewSpdInStockRecords(params);
+        const result = res.result || {};
+        this.spdInStockStats = result;
+        this.spdInStockRows = result.Rows || [];
+        this.spdInStockRepeatedRows = this.buildRepeatedRows(result, 'SPD重复');
+        this.spdInStockLoadedParams = JSON.stringify(params);
+        if (!this.spdInStockRows.length) {
+          this.$message.info(res.msg || '暂无本次可插入数据');
+        }
+      } catch (err) {
+        this.$message.error(err.message || '预览失败');
+      } finally {
+        this.spdInStockPreviewLoading = false;
+      }
+    },
+    // 确认同步当前预览的SPD入库记录。
+    async confirmSyncSpdInStockRecords() {
+      if (this.syncingSpdInStock || !this.spdInStockRows.length) return;
+      if (!this.validateSpdInStockQuery()) return;
+      const params = this.buildSpdInStockSyncParams();
+      if (this.spdInStockLoadedParams !== JSON.stringify(params)) {
+        this.$message.warning('同步条件已变更，请重新查询预览');
+        return;
+      }
+      this.syncingSpdInStock = true;
+      try {
+        const res = await syncSpdInStockRecordsApi(params);
+        this.$message.success(res.msg || '同步成功');
+        this.spdInStockPreviewVisible = false;
+        this.$emit('import-success', {
+          ...this.getWhere(),
+          AREA_CODE: this.where.AREA_CODE || params.AREA_CODES[0] || ''
+        });
+      } catch (err) {
+        this.$message.error(err.message || '同步失败');
+      } finally {
+        this.syncingSpdInStock = false;
       }
     }
   }

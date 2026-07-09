@@ -13,11 +13,14 @@ function cellValue(row, column, value, prop) {
   return key ? row?.[key] : '';
 }
 
+// 数量列统一格式化，去掉多余小数位。
 const qtyFormatter = (prop) => (row, column, value) =>
   fmtQty(cellValue(row, column, value, prop));
+// 时间列统一截取到秒。
 const timeFormatter = (prop) => (row, column, value) =>
   fmtDateTime(cellValue(row, column, value, prop));
 
+// 库房/库区耗材汇总表格列。
 export function getWarehouseMaterialColumns() {
   return [
     { type: 'index', label: '序号', width: 60, align: 'center', fixed: 'left' },
@@ -39,6 +42,7 @@ export function getWarehouseMaterialColumns() {
   ];
 }
 
+// SPD科室库存汇总表格列。
 export function getWarehouseDeptColumns() {
   return [
     { type: 'index', label: '序号', width: 60, align: 'center', fixed: 'left' },
@@ -56,6 +60,7 @@ export function getWarehouseDeptColumns() {
   ];
 }
 
+// 选中SPD科室后的耗材汇总表格列。
 export function getDeptMaterialColumns() {
   return [
     { type: 'index', label: '序号', width: 60, align: 'center', fixed: 'left' },
@@ -75,6 +80,7 @@ export function getDeptMaterialColumns() {
   ];
 }
 
+// 库存流水明细表格列。
 export function getMaterialDetailColumns() {
   return [
     { type: 'index', label: '序号', width: 60, align: 'center', fixed: 'left' },
