@@ -51,7 +51,7 @@
         <el-button type="primary" icon="el-icon-search" @click="search">查询</el-button>
         <el-button icon="el-icon-refresh" @click="reset">重置</el-button>
       </el-form-item>
-      <br />
+      
       <el-form-item label="操作">
         <div class="stocktaking-detail-actions">
           <el-popconfirm class="ele-action" title="确定删除？" @confirm="removeBatch()">
@@ -237,8 +237,12 @@ export default {
 </script>
 
 <style scoped lang="scss">
+:deep(.el-form-item:has(.stocktaking-detail-actions) .el-form-item__content) {
+  max-width: none !important;
+}
+
 .stocktaking-detail-actions {
-  display: flex;
+  display: inline-flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 6px;
@@ -250,5 +254,6 @@ export default {
 
 .stocktaking-detail-actions :deep(.ele-action) {
   display: inline-flex;
+  flex: 0 0 auto;
 }
 </style>

@@ -1,13 +1,18 @@
 import request from '@/utils/request';
 import { formdataify, DataToObject } from '@/utils/formdataify';
 import { TOKEN_STORE_NAME } from '@/config/setting';
+import { unwrapResponse } from '@/utils/login-expired';
 import { toDateString } from 'ele-admin';
 import moment from 'moment';
+
+function token() {
+  return sessionStorage.getItem(TOKEN_STORE_NAME);
+}
 
 export async function getBdSzYyHisSs(params) {
   console.log(params)
   const formatData = {
-    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+    Token: token(),
     MZZY: params.where.MZZY == 'ALL' ? '' : params.where.MZZY || '-1',
     SSFJ: params.where.SSFJ || '',
     SSBH: params.where?.SSBH || '',
@@ -26,32 +31,24 @@ export async function getBdSzYyHisSs(params) {
     order: params.order.order || ''
   };
 
-  let res = await request.post('/DeptPlanTransfer/getBdSzYyHisSs', formatData);
-
-  if (res.data.code == 200) {
-    return res.data;
-  }
-  return Promise.reject(res.data);
+  const res = await request.post('/DeptPlanTransfer/getBdSzYyHisSs', formatData);
+  return unwrapResponse(res);
 }
 
 export async function syncBdSzYyHisSurgeryByCode(data) {
   const formatData = {
-    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+    Token: token(),
     condition: data.condition || ''
   };
 
-  let res = await request.post('/Commons/SyncBdSzYyHisSurgeryByCode', formatData);
-
-  if (res.data.code == 200) {
-    return res.data;
-  }
-  return Promise.reject(res.data);
+  const res = await request.post('/Commons/SyncBdSzYyHisSurgeryByCode', formatData);
+  return unwrapResponse(res);
 }
 
 export async function getBdSzYyHisSsWithNoUse(params) {
   console.log(params)
   const formatData = {
-    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+    Token: token(),
     MZZY: params.where.MZZY == 'ALL' ? '' : params.where.MZZY || '-1',
     SSFJ: params.where.SSFJ || '',
     SSBH: params.where?.SSBH || '',
@@ -66,37 +63,29 @@ export async function getBdSzYyHisSsWithNoUse(params) {
     order: params.order.order || ''
   };
 
-  let res = await request.post('/DeptPlanTransfer/getBdSzYyHisSs', formatData);
-
-  if (res.data.code == 200) {
-    return res.data;
-  }
-  return Promise.reject(res.data);
+  const res = await request.post('/DeptPlanTransfer/getBdSzYyHisSs', formatData);
+  return unwrapResponse(res);
 }
 
 
 export async function getBdszgsjMainDel(params) {
   const formatData = {
-    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+    Token: token(),
     MZZY: params.where.MZZY || '',
     page: params.page || 1,
     size: params.limit || 10
   };
 
-  let res = await request.post(
+  const res = await request.post(
     '/DeptPlanTransfer/GetBdszgsjMainDel',
     formatData
   );
-
-  if (res.data.code == 200) {
-    return res.data;
-  }
-  return Promise.reject(res.data);
+  return unwrapResponse(res);
 }
 
 export async function getBdszZgsjMainPsDel(params) {
   const formatData = {
-    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+    Token: token(),
     BDSZ_ZQSJ_ID: params.where.BDSZ_ZQSJ_ID || '-1',
     SSBH: params.where.SSBH || '',
     VARIETIE_CODE_NEW: params.where.VARIETIE_CODE_NEW || '',
@@ -105,54 +94,42 @@ export async function getBdszZgsjMainPsDel(params) {
     size: params.limit || 10
   };
 
-  let res = await request.post(
+  const res = await request.post(
     '/DeptPlanTransfer/GetBdszZgsjMainPsDel',
     formatData
   );
-
-  if (res.data.code == 200) {
-    return res.data;
-  }
-  return Promise.reject(res.data);
+  return unwrapResponse(res);
 }
 
 export async function updateBdszZqsjMainPsDelUse(params) {
-  params[0].Token = sessionStorage.getItem(TOKEN_STORE_NAME);
-  let res = await request.post(
+  params[0].Token = token();
+  const res = await request.post(
     '/DeptPlanTransfer/updateBdszZqsjMainPsDelUse',
     params
   );
-
-  if (res.data.code == 200) {
-    return res.data;
-  }
-  return Promise.reject(res.data);
+  return unwrapResponse(res);
 }
 
 //获取耗材使用明细
 export async function GetBdszZqsjMainUseDel(params) {
   const formatData = {
-    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+    Token: token(),
     VARIETIE_CODE_NEW: params.where.VARIETIE_CODE_NEW || '',
     page: params.page || 1,
     SSBH: params.where.SSBH || '',
     size: params.limit || 10
   };
-  let res = await request.post(
+  const res = await request.post(
     '/DeptPlanTransfer/GetBdszZqsjMainUseDel',
     formatData
   );
-
-  if (res.data.code == 200) {
-    return res.data;
-  }
-  return Promise.reject(res.data);
+  return unwrapResponse(res);
 }
 
 //UDI扫码添加
 export async function addBdszZqsjMainPsDelUse(params) {
   const formatData = {
-    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+    Token: token(),
     ID: params.ID || '',
     UDI: params.UDI || '',
     USE_COUNT: params.USE_COUNT,
@@ -160,139 +137,107 @@ export async function addBdszZqsjMainPsDelUse(params) {
     page: params.page || 1,
     size: params.limit || 10
   };
-  let res = await request.post(
+  const res = await request.post(
     '/DeptPlanTransfer/addBdszZqsjMainPsDelUse',
     formatData
   );
-
-  if (res.data.code == 200) {
-    return res.data;
-  }
-  return Promise.reject(res.data);
+  return unwrapResponse(res);
 }
 
 //护士审批
 export async function BdSsApprove(params) {
   const formatData = {
-    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+    Token: token(),
     qdid: params.qdid,
     APPRO_DOC_GH: params.APPRO_DOC_GH || '',
     APPRO_NER_GH: params.APPRO_NER_GH || '',
   };
-  let res = await request.post('/Abdzczh/BdSsApprove', formatData);
-
-  if (res.data.code == 200) {
-    return res.data;
-  }
-  return Promise.reject(res.data);
+  const res = await request.post('/Abdzczh/BdSsApprove', formatData);
+  return unwrapResponse(res);
 }
 
 //删除确认明细
 export async function deleteUsedQty(params) {
   const formatData = {
-    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+    Token: token(),
     ID: params.ID
   };
-  let res = await request.post('/DeptPlanTransfer/deleteUsedQty', formatData);
-
-  if (res.data.code == 200) {
-    return res.data;
-  }
-  return Promise.reject(res.data);
+  const res = await request.post('/DeptPlanTransfer/deleteUsedQty', formatData);
+  return unwrapResponse(res);
 }
 
 // 扫码交接
 export async function commitBdszSsyyInfo(data) {
   const formatData = {
     ...data,
-    Token: sessionStorage.getItem(TOKEN_STORE_NAME)
+    Token: token()
   };
 
   const reFormatData = formdataify(formatData);
 
-  let res = await request.post('/DeptConsume/commitBdszSsyyInfo', reFormatData);
-
-  if (res.data.code == 200) {
-    return res.data;
-  }
-  return Promise.reject(res.data);
+  const res = await request.post('/DeptConsume/commitBdszSsyyInfo', reFormatData);
+  return unwrapResponse(res);
 }
 
 // 勾选确认数据源
 export async function GetBdszZqsjMainNoUseDel(data) {
   const formatData = {
-    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+    Token: token(),
     page: data.page || 1,
     size: data.limit || 10,
     SSBH: data.where.SSBH || '',
     VARIETIE_CODE_NEW: data.where.VARIETIE_CODE_NEW || ''
   };
 
-  let res = await request.post(
+  const res = await request.post(
     '/DeptPlanTransfer/GetBdszZqsjMainNoUseDel',
     formatData
   );
-
-  if (res.data.code == 200) {
-    return res.data;
-  }
-  return Promise.reject(res.data);
+  return unwrapResponse(res);
 }
 
 export async function addBdszZqsjMainPsDelUseV2(data) {
   const formatData = {
-    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+    Token: token(),
     data: data.json
   };
 
-  let res = await request.post(
+  const res = await request.post(
     '/DeptPlanTransfer/addBdszZqsjMainPsDelUseV2',
     formatData
   );
-
-  if (res.data.code == 200) {
-    return res.data;
-  }
-  return Promise.reject(res.data);
+  return unwrapResponse(res);
 }
 
 // 术中交接
 export async function addBdSzHisInSurgery(data) {
   const formatData = {
-    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+    Token: token(),
     SSBH: data.SSBH,
     REMARK: data.REMARK
   };
 
-  let res = await request.post('/Commons/BdSzHisInSurgery', formatData);
-
-  if (res.data.code == 200) {
-    return res.data;
-  }
-  return Promise.reject(res.data);
+  const res = await request.post('/Commons/BdSzHisInSurgery', formatData);
+  return unwrapResponse(res);
 }
 
 // 获取交接记录
 export async function ListBdSzHisInSurgery(data) {
   const formatData = {
-    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+    Token: token(),
     SSBH: data.where?.SSBH || '',
     page: data.page || 1,
     size: data.size || 10
   };
 
-  let res = await request.post('/Commons/ListBdSzHisInSurgery', formatData);
-
-  if (res.data.code == 200) {
-    return res.data;
-  }
-  return Promise.reject(res.data);
+  const res = await request.post('/Commons/ListBdSzHisInSurgery', formatData);
+  return unwrapResponse(res);
 }
 
 // 新增使用
 export async function addNewBdszZq(data) {
   const formatData = {
-    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+    Token: token(),
     SSBH: data.SSBH || '', // 手术编号
     // SSFJ: data.SSFJ || '', // 手术房间
     // SSTH: data.SSTH || '', // 手术台号
@@ -306,123 +251,94 @@ export async function addNewBdszZq(data) {
     data: data.data || [] // 数据列表
   };
 
-  let res = await request.post('/DeptPlanTransfer/addNewBdszZq', formatData);
-
-  if (res.data.code == 200) {
-    return res.data;
-  }
-  return Promise.reject(res.data);
+  const res = await request.post('/DeptPlanTransfer/addNewBdszZq', formatData);
+  return unwrapResponse(res);
 }
 
 // 扫码查询信息
 export async function getBdszScanInfo(data) {
   const formatData = {
-    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+    Token: token(),
     SSBH: data.SSBH || '', // 手术编号
     UDI: data.UDI || '' // 条码
   };
 
-  let res = await request.post('/DeptPlanTransfer/getBdszScanInfo', formatData);
-
-  if (res.data.code == 200) {
-    return res.data;
-  }
-  return Promise.reject(res.data);
+  const res = await request.post('/DeptPlanTransfer/getBdszScanInfo', formatData);
+  return unwrapResponse(res);
 }
 
 // 北大深圳取消预约
 export async function cancelBdszApprove(data) {
   const formatData = {
-    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+    Token: token(),
     SSBH: data.SSBH
   };
 
-  let res = await request.post(
+  const res = await request.post(
     '/DeptPlanTransfer/cancelBdszApprove',
     formatData
   );
-
-  if (res.data.code == 200) {
-    return res.data;
-  }
-  return Promise.reject(res.data);
+  return unwrapResponse(res);
 }
 
 // 获取手术房间列表
 export async function getBdszZqsjSsfjList(params) {
   const formatData = {
-    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+    Token: token(),
     SSFJ: params.SSFJ || ''
   };
 
-  let res = await request.post(
+  const res = await request.post(
     '/DeptPlanTransfer/GetBdszZqsjSsfjList',
     formatData
   );
-
-  if (res.data.code == 200) {
-    return res.data;
-  }
-  return Promise.reject(res.data);
+  return unwrapResponse(res);
 }
 
 
 export async function getTransferedSSBH(params) {
   const formatData = {
-    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+    Token: token(),
     SSBH: params.where.SSBH || ''
   };
 
-  let res = await request.post(
+  const res = await request.post(
     '/DeptPlanTransfer/getTransferedSSBH',
     formatData
   );
-
-  if (res.data.code == 200) {
-    return res.data;
-  }
-  return Promise.reject(res.data);
+  return unwrapResponse(res);
 }
 
 
 // 批量更新IS_XM字段
 export async function upIS_XM(params) {
   const formatData = {
-    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+    Token: token(),
     data: params.data || [],
     state: params.state || ''
   };
-  let res = await request.post('/DeptPlanTransfer/upIS_XM', formatData);
-  if (res.data.code == 200) {
-    return res.data;
-  }
-  return Promise.reject(res.data);
+  const res = await request.post('/DeptPlanTransfer/upIS_XM', formatData);
+  return unwrapResponse(res);
 }
 
 // 北大深圳预约历史新增缺失
 export async function bdszyyLsAddDef(params) {
   const formatData = {
-    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+    Token: token(),
     SSBH: params.SSBH || '',
     DEF_NO_PKG_CODE: params.DEF_NO_PKG_CODE || ''
   };
-  let res = await request.post('/DeptPlanTransfer/bdszyyLsAddDef', formatData);
-  if (res.data.code == 200) {
-    return res.data;
-  }
-  return Promise.reject(res.data);
+  const res = await request.post('/DeptPlanTransfer/bdszyyLsAddDef', formatData);
+  return unwrapResponse(res);
 }
 
 // 转单扫码录入
 export async function bdszyyZsAddDef(params) {
   const formatData = {
-    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+    Token: token(),
     SSBH: params.SSBH || '',
     DEF_NO_PKG_CODE: params.DEF_NO_PKG_CODE || ''
   };
-  let res = await request.post('/DeptPlanTransfer/bdszyyZsAddDef', formatData);
-  if (res.data.code == 200) {
-    return res.data;
-  }
-  return Promise.reject(res.data);
+  const res = await request.post('/DeptPlanTransfer/bdszyyZsAddDef', formatData);
+  return unwrapResponse(res);
 }

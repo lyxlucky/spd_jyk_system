@@ -192,8 +192,6 @@ module.exports = {
     } else {
       config.cache = false
     }
-
-
   },
   chainWebpack(config) {
     // set svg-sprite-loader
@@ -211,8 +209,47 @@ module.exports = {
       .end();
 
     config.plugins.delete('prefetch');
+
     if (process.env.NODE_ENV !== 'development') {
       // gzip 压缩
+      config.output
+        .filename('js/[name].[contenthash:8].js')
+        .chunkFilename('js/[name].[contenthash:8].js');
+
+      config.plugin('extract-css').tap(args => {
+        args[0].filename = 'css/[name].[contenthash:8].css';
+        args[0].chunkFilename = 'css/[name].[contenthash:8].css';
+        return args;
+      });
+
+      config.optimization.runtimeChunk('single');
+
+      config.optimization.splitChunks({
+        chunks: 'all',
+        cacheGroups: {
+          vueLib: {
+            name: 'vue-lib',
+            test: /[\\/]node_modules[\\/](vue|vue-router|vuex|vue-i18n)[\\/]/,
+            priority: 10,
+            chunks: 'initial'
+          },
+          element: {
+            name: 'element',
+            test: /[\\/]node_modules[\\/](element-ui|ele-admin)[\\/]/,
+            priority: 9,
+            chunks: 'initial'
+          },
+          vendors: {
+            name: 'vendors',
+            test: /[\\/]node_modules[\\/]/,
+            priority: 8,
+            chunks: 'initial',
+            minSize: 30000,
+            minChunks: 1
+          }
+        }
+      });
+
       config.plugin('compressionPlugin').use(
         new CompressionWebpackPlugin({
           test: /\.(js|css|html)$/,
