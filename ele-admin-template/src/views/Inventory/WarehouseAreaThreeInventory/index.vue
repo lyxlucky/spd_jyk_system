@@ -176,11 +176,13 @@ export default {
   methods: {
     enabledName,
     flagName,
+    // 获取当前查询条件，并缓存为表格数据源的默认条件。
     currentWhere() {
       const where = this.$refs.search ? this.$refs.search.getWhere() : this.lastWhere;
       this.lastWhere = where || {};
       return this.lastWhere;
     },
+    // 库存查询必须先选择库房/库区。
     requireWarehouse(where, silent = false) {
       if (!where?.AREA_CODE) {
         if (!silent) {
@@ -190,6 +192,7 @@ export default {
       }
       return true;
     },
+    // 库房维度表格数据源。
     async warehouseDatasource({ page, limit, where }) {
       const query = where || this.lastWhere;
       this.lastWhere = query || {};
@@ -204,6 +207,7 @@ export default {
         return { count: 0, list: [] };
       }
     },
+    // SPD科室表格数据源，刷新后同步当前选中科室。
     async deptDatasource({ page, limit, where }) {
       const query = where || this.lastWhere;
       this.lastWhere = query || {};
@@ -222,6 +226,7 @@ export default {
         return { count: 0, list: [] };
       }
     },
+    // 选中SPD科室后的耗材汇总表格数据源。
     async deptMaterialDatasource({ page, limit, where }) {
       const query = where || this.lastWhere;
       this.lastWhere = query || {};
@@ -240,6 +245,7 @@ export default {
         return { count: 0, list: [] };
       }
     },
+    // 根据当前页签刷新对应表格。
     reload(where) {
       this.lastWhere = where || this.currentWhere();
       if (!this.requireWarehouse(this.lastWhere)) return;
@@ -250,17 +256,20 @@ export default {
         this.reloadDeptList();
       }
     },
+    // 库房/库区切换时清空科室选择并重新加载。
     onWarehouseChange(where) {
       this.lastWhere = where || this.currentWhere();
       this.selectedDept = null;
       this.$nextTick(() => this.reload(this.lastWhere));
     },
+    // 导入或同步成功后按当前条件刷新页面数据。
     onImportSuccess(where) {
       this.lastWhere = where || this.currentWhere();
       if (this.lastWhere?.AREA_CODE) {
         this.reload(this.lastWhere);
       }
     },
+    // 页签切换后加载当前页签的数据。
     onTabChange() {
       this.$nextTick(() => this.reload(this.currentWhere()));
     },
@@ -275,6 +284,7 @@ export default {
       this.$refs.deptMaterialTable &&
         this.$refs.deptMaterialTable.reload({ page: 1, where: this.lastWhere });
     },
+    // 保留当前选中科室；若当前科室不在新数据中则默认选第一行。
     syncSelectedDept(rows) {
       if (!rows.length) {
         this.clearSelectedDept();
@@ -295,6 +305,7 @@ export default {
       this.selectedDept = row;
       this.reloadDeptMaterial();
     },
+    // 打开库存流水明细弹窗，并把当前筛选条件传入明细查询。
     openDetail(row, scope) {
       if (!row?.CHARGE_CODE) {
         Message.warning('缺少计费编码');
@@ -313,6 +324,7 @@ export default {
           : `耗材使用明细 - ${row.AREA_NAME || ''}`;
       this.detailVisible = true;
     },
+    // 按当前页签导出对应维度的数据。
     async onExport() {
       const where = this.currentWhere();
       if (!this.requireWarehouse(where)) return;
@@ -332,12 +344,14 @@ export default {
         this.exporting = false;
       }
     },
+    // 写出Excel文件。
     writeSheet(headers, rows, filename, sheetName) {
       const sheet = utils.aoa_to_sheet([headers, ...rows]);
       const book = utils.book_new();
       utils.book_append_sheet(book, sheet, sheetName);
       writeFile(book, filename);
     },
+    // 导出库房/库区耗材汇总。
     async exportWarehouse(where) {
       const res = await getWarehouseMaterialSummary(where, 1, 999999);
       const rows = (res.result || []).map((row, index) => warehouseRowToExportArray(row, index));
@@ -348,11 +362,13 @@ export default {
         '库房维度'
       );
     },
+    // 导出SPD科室库存汇总。
     async exportDeptList(where) {
       const res = await getWarehouseDeptList(where, 1, 999999);
       const rows = (res.result || []).map((row, index) => deptRowToExportArray(row, index));
       this.writeSheet(DEPT_EXPORT_HEADERS, rows, '库房库区三级库库存-SPD科室.xlsx', 'SPD科室');
     },
+    // 导出选中SPD科室的耗材汇总。
     async exportDeptMaterial(where) {
       const res = await getDeptMaterialSummary(
         { ...where, DEPT_TWO_CODE: this.selectedDept.DEPT_TWO_CODE },
