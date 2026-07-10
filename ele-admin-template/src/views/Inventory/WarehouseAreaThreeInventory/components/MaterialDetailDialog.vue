@@ -57,11 +57,13 @@ export default {
     }
   },
   methods: {
+    // 弹窗打开后重新加载明细表格。
     onOpen() {
       this.$nextTick(() => {
         this.$refs.table && this.$refs.table.reload({ page: 1 });
       });
     },
+    // 三级库库存流水明细表格数据源。
     async datasource({ page, limit }) {
       if (!this.filters?.AREA_CODE) {
         return { count: 0, list: [] };

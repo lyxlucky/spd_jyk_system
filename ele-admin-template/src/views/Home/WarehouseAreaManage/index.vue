@@ -887,22 +887,22 @@ export default {
   text-align: right;
 }
 
->>> .vxe-table {
+::v-deep .vxe-table {
   font-size: 12px;
 }
 
->>> .vxe-table .vxe-header--column {
+::v-deep .vxe-table .vxe-header--column {
   background: #f5f7fa;
   color: #606266;
   font-weight: 600;
 }
 
->>> .vxe-table .vxe-cell {
+::v-deep .vxe-table .vxe-cell {
   padding-left: 8px;
   padding-right: 8px;
 }
 
->>> .vxe-body--row.row--current {
+::v-deep .vxe-body--row.row--current {
   background-color: #ecf5ff;
 }
 
