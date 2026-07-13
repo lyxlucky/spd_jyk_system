@@ -217,6 +217,7 @@
         <vxe-column field="AreaName" title="库房/库区名称" width="150" />
         <vxe-column field="ChargeCode" title="计费编码" width="110" />
         <vxe-column field="ChargeName" title="费用名称" min-width="220" />
+        <vxe-column field="PaymentChannel" title="缴费渠道" width="120" />
         <vxe-column field="Specification" title="规格" width="160" />
         <vxe-column field="Price" title="单价" width="90" align="right" />
         <vxe-column field="Qty" title="HIS数量" width="90" align="right" />
