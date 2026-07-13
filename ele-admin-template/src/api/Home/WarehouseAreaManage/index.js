@@ -66,6 +66,11 @@ export async function deleteSpdDeptRel(data) {
   return unwrap(res);
 }
 
+export async function batchUpdateSpdDeptAutoStock(data) {
+  const res = await request.post('/WarehouseAreaManage/BatchUpdateSpdDeptAutoStock', withToken(data));
+  return unwrap(res);
+}
+
 export async function queryHisDeptOptions(keyword) {
   const res = await request.post('/WarehouseAreaManage/QueryHisDeptOptions', withToken({ keyword }));
   return unwrap(res);

@@ -102,7 +102,27 @@
               <div class="panel-title">SPD科室关系</div>
               <div class="panel-subtitle">{{ selectedAreaSubtitle }}</div>
             </div>
-            <el-button type="success" size="mini" icon="el-icon-plus" :disabled="!selectedAreaCode" @click="openSpdDialog()">新增关系</el-button>
+            <div class="relation-actions">
+              <el-button
+                size="mini"
+                type="primary"
+                icon="el-icon-edit-outline"
+                :disabled="!selectedAreaCode || spdCheckedCount === 0"
+                @click="openSpdAutoStockBatchDialog(false)"
+              >
+                批量修改{{ spdCheckedCount ? `(${spdCheckedCount})` : '' }}
+              </el-button>
+              <el-button
+                size="mini"
+                type="warning"
+                icon="el-icon-setting"
+                :disabled="!selectedAreaCode"
+                @click="openSpdAutoStockBatchDialog(true)"
+              >
+                配置当前库房
+              </el-button>
+              <el-button type="success" size="mini" icon="el-icon-plus" :disabled="!selectedAreaCode" @click="openSpdDialog()">新增关系</el-button>
+            </div>
           </div>
 
           <el-form :inline="true" :model="spdQuery" size="mini" class="query-form">
@@ -125,6 +145,7 @@
           </el-form>
 
           <vxe-table
+            ref="spdTable"
             v-loading="spdLoading"
             :data="spdRows"
             border
@@ -133,9 +154,13 @@
             height="225"
             show-overflow
             :row-config="{ isHover: true }"
+            :checkbox-config="{ highlight: true }"
             :column-config="{ resizable: true }"
             :empty-text="selectedAreaCode ? '暂无SPD绑定关系' : '请先选择库房/库区'"
+            @checkbox-change="handleSpdCheckboxChange"
+            @checkbox-all="handleSpdCheckboxAll"
           >
+            <vxe-column type="checkbox" width="46" align="center" />
             <vxe-column type="seq" title="序号" width="55" align="center" />
             <vxe-column field="DEPT_TWO_CODE" title="SPD科室编码" width="130" />
             <vxe-column field="DEPT_TWO_NAME" title="SPD科室名称" min-width="160" />
@@ -153,6 +178,14 @@
                 </el-tag>
               </template>
             </vxe-column>
+            <vxe-column title="自动入库" width="85" align="center">
+              <template #default="{ row }">
+                <el-tag size="mini" :type="row.IS_AUTO_STOCK === '1' ? 'success' : 'info'">
+                  {{ row.IS_AUTO_STOCK === '1' ? '开启' : '关闭' }}
+                </el-tag>
+              </template>
+            </vxe-column>
+            <vxe-column field="AUTO_STOCK_START_TIME" title="开始时间" width="155" align="center" />
             <vxe-column field="REMARK" title="备注" min-width="120" />
             <vxe-column title="操作" width="130" align="center" fixed="right">
               <template #default="{ row }">
@@ -363,6 +396,24 @@
             <el-radio-button label="0">停用</el-radio-button>
           </el-radio-group>
         </el-form-item>
+        <el-form-item v-if="relFormType === 'spd'" label="自动入库">
+          <el-switch
+            v-model="relForm.IS_AUTO_STOCK"
+            active-value="1"
+            inactive-value="0"
+            @change="handleRelAutoStockChange"
+          />
+        </el-form-item>
+        <el-form-item v-if="relFormType === 'spd' && relForm.IS_AUTO_STOCK === '1'" label="开始时间">
+          <el-date-picker
+            v-model="relForm.AUTO_STOCK_START_TIME"
+            type="datetime"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            format="yyyy-MM-dd HH:mm:ss"
+            placeholder="请选择开始日期时间"
+            class="full-width"
+          />
+        </el-form-item>
         <el-form-item label="备注">
           <el-input v-model="relForm.REMARK" type="textarea" maxlength="500" show-word-limit />
         </el-form-item>
@@ -370,6 +421,45 @@
       <span slot="footer">
         <el-button size="mini" @click="relDialogVisible = false">取消</el-button>
         <el-button size="mini" type="primary" :loading="submitLoading" @click="submitRel">保存</el-button>
+      </span>
+    </el-dialog>
+
+    <el-dialog
+      :title="spdAutoStockBatchTitle"
+      :visible.sync="spdAutoStockBatchDialogVisible"
+      width="420px"
+      @closed="resetSpdAutoStockBatchForm"
+    >
+      <el-alert
+        :title="spdAutoStockBatchScope === 'area' ? '将更新当前库房/库区下全部SPD科室关系。' : `将更新已勾选的${spdCheckedCount}条SPD科室关系。`"
+        type="warning"
+        :closable="false"
+        show-icon
+        class="batch-tip"
+      />
+      <el-form :model="spdAutoStockBatchForm" label-width="110px" size="mini">
+        <el-form-item label="自动入库">
+          <el-switch
+            v-model="spdAutoStockBatchForm.IS_AUTO_STOCK"
+            active-value="1"
+            inactive-value="0"
+            @change="handleSpdAutoStockBatchChange"
+          />
+        </el-form-item>
+        <el-form-item v-if="spdAutoStockBatchForm.IS_AUTO_STOCK === '1'" label="开始时间">
+          <el-date-picker
+            v-model="spdAutoStockBatchForm.AUTO_STOCK_START_TIME"
+            type="datetime"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            format="yyyy-MM-dd HH:mm:ss"
+            placeholder="请选择开始日期时间"
+            class="full-width"
+          />
+        </el-form-item>
+      </el-form>
+      <span slot="footer">
+        <el-button size="mini" @click="spdAutoStockBatchDialogVisible = false">取消</el-button>
+        <el-button size="mini" type="primary" :loading="spdAutoStockBatchLoading" @click="submitSpdAutoStockBatch">保存</el-button>
       </span>
     </el-dialog>
   </div>
@@ -387,6 +477,7 @@ import {
   querySpdDeptRel,
   saveSpdDeptRel,
   deleteSpdDeptRel,
+  batchUpdateSpdDeptAutoStock,
   queryHisDeptOptions,
   querySpdDeptOptions,
   queryWarehouseAreaOptions
@@ -425,7 +516,14 @@ const defaultRelForm = () => ({
   AREA_CODE: '',
   DEFAULT_FLAG: '0',
   ENABLED_FLAG: '1',
+  IS_AUTO_STOCK: '0',
+  AUTO_STOCK_START_TIME: '',
   REMARK: ''
+});
+
+const defaultSpdAutoStockBatchForm = () => ({
+  IS_AUTO_STOCK: '0',
+  AUTO_STOCK_START_TIME: ''
 });
 
 export default {
@@ -447,14 +545,19 @@ export default {
       areaLoading: false,
       hisLoading: false,
       spdLoading: false,
+      spdCheckedCount: 0,
       areaCodeLoading: false,
       submitLoading: false,
       optionLoading: false,
+      spdAutoStockBatchLoading: false,
       areaDialogVisible: false,
       relDialogVisible: false,
+      spdAutoStockBatchDialogVisible: false,
       areaForm: defaultAreaForm(),
       relForm: defaultRelForm(),
+      spdAutoStockBatchForm: defaultSpdAutoStockBatchForm(),
       relFormType: 'his',
+      spdAutoStockBatchScope: 'selected',
       warehouseOptions: [],
       areaOptions: [],
       deptOptions: [],
@@ -475,6 +578,9 @@ export default {
     relDialogTitle() {
       const prefix = this.relFormType === 'his' ? 'HIS科室关系' : 'SPD科室关系';
       return this.relForm.ID ? `编辑${prefix}` : `新增${prefix}`;
+    },
+    spdAutoStockBatchTitle() {
+      return this.spdAutoStockBatchScope === 'area' ? '配置当前库房/库区自动入库' : '批量修改自动入库配置';
     },
     selectedAreaId() {
       return this.selectedArea && this.selectedArea.ID ? this.selectedArea.ID : '';
@@ -537,6 +643,7 @@ export default {
       return this.requestList(queryHisDeptRel, this.hisQuery, this.hisPage, 'hisLoading', 'hisRows', 'hisPage');
     },
     loadSpdRels() {
+      this.clearSpdCheckbox();
       if (!this.spdQuery.AREA_CODE) {
         this.spdRows = [];
         this.spdPage.total = 0;
@@ -575,6 +682,7 @@ export default {
       this.spdQuery = { ...this.spdQuery, AREA_CODE: row.AREA_CODE };
       this.hisPage.page = 1;
       this.spdPage.page = 1;
+      this.clearSpdCheckbox();
       this.$nextTick(() => {
         if (this.$refs.areaTable) {
           this.$refs.areaTable.setCurrentRow(row);
@@ -593,6 +701,7 @@ export default {
       this.spdRows = [];
       this.hisPage.total = 0;
       this.spdPage.total = 0;
+      this.clearSpdCheckbox();
     },
     resetAreaQuery() {
       this.areaQuery = defaultAreaQuery();
@@ -711,6 +820,8 @@ export default {
           AREA_CODE: row.AREA_CODE,
           DEFAULT_FLAG: row.DEFAULT_FLAG || '0',
           ENABLED_FLAG: row.ENABLED_FLAG || '1',
+          IS_AUTO_STOCK: row.IS_AUTO_STOCK || '0',
+          AUTO_STOCK_START_TIME: row.AUTO_STOCK_START_TIME || '',
           REMARK: row.REMARK || ''
         };
         this.deptOptions = [{
@@ -742,6 +853,9 @@ export default {
           this.$message.warning('请选择科室');
           return;
         }
+        if (this.relFormType === 'spd' && !this.validateAutoStockConfiguration(this.relForm)) {
+          return;
+        }
         this.submitLoading = true;
         const data = {
           ID: this.relForm.ID,
@@ -749,6 +863,8 @@ export default {
           AREA_CODE: this.relForm.AREA_CODE,
           DEFAULT_FLAG: this.relForm.DEFAULT_FLAG,
           ENABLED_FLAG: this.relForm.ENABLED_FLAG,
+          IS_AUTO_STOCK: this.relFormType === 'spd' ? this.relForm.IS_AUTO_STOCK : '',
+          AUTO_STOCK_START_TIME: this.relFormType === 'spd' ? this.relForm.AUTO_STOCK_START_TIME : '',
           REMARK: this.relForm.REMARK
         };
         api(data)
@@ -784,6 +900,95 @@ export default {
           if (err && err !== 'cancel' && err !== 'close') {
             this.$message.error(err.message || err);
           }
+        });
+    },
+    getSpdCheckboxRecords() {
+      if (!this.$refs.spdTable || typeof this.$refs.spdTable.getCheckboxRecords !== 'function') {
+        return [];
+      }
+      return this.$refs.spdTable.getCheckboxRecords() || [];
+    },
+    syncSpdCheckedCount() {
+      this.spdCheckedCount = this.getSpdCheckboxRecords().length;
+    },
+    handleSpdCheckboxChange() {
+      this.syncSpdCheckedCount();
+    },
+    handleSpdCheckboxAll() {
+      this.syncSpdCheckedCount();
+    },
+    clearSpdCheckbox() {
+      this.spdCheckedCount = 0;
+      if (this.$refs.spdTable && typeof this.$refs.spdTable.clearCheckboxRow === 'function') {
+        this.$refs.spdTable.clearCheckboxRow();
+      }
+    },
+    handleRelAutoStockChange(value) {
+      if (value !== '1') {
+        this.relForm.AUTO_STOCK_START_TIME = '';
+      }
+    },
+    handleSpdAutoStockBatchChange(value) {
+      if (value !== '1') {
+        this.spdAutoStockBatchForm.AUTO_STOCK_START_TIME = '';
+      }
+    },
+    validateAutoStockConfiguration(form) {
+      if (form.IS_AUTO_STOCK !== '1') {
+        form.AUTO_STOCK_START_TIME = '';
+        return true;
+      }
+      if (!/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]) ([01]\d|2[0-3]):[0-5]\d:[0-5]\d$/.test(form.AUTO_STOCK_START_TIME || '')) {
+        this.$message.warning('开启自动入库时，请选择开始日期时间');
+        return false;
+      }
+      return true;
+    },
+    openSpdAutoStockBatchDialog(updateAllByArea) {
+      if (!this.selectedAreaCode) {
+        this.$message.warning('请先在左侧选择库房/库区');
+        return;
+      }
+      if (!updateAllByArea && !this.getSpdCheckboxRecords().length) {
+        this.$message.warning('请勾选需要修改的SPD科室关系');
+        return;
+      }
+      this.spdAutoStockBatchScope = updateAllByArea ? 'area' : 'selected';
+      this.spdAutoStockBatchForm = defaultSpdAutoStockBatchForm();
+      this.spdAutoStockBatchDialogVisible = true;
+    },
+    resetSpdAutoStockBatchForm() {
+      this.spdAutoStockBatchForm = defaultSpdAutoStockBatchForm();
+      this.spdAutoStockBatchScope = 'selected';
+    },
+    submitSpdAutoStockBatch() {
+      if (!this.validateAutoStockConfiguration(this.spdAutoStockBatchForm)) {
+        return;
+      }
+      const updateAllByArea = this.spdAutoStockBatchScope === 'area';
+      const ids = updateAllByArea
+        ? []
+        : this.getSpdCheckboxRecords().map((row) => Number(row.ID)).filter((id) => id > 0);
+      if (!updateAllByArea && !ids.length) {
+        this.$message.warning('请勾选需要修改的SPD科室关系');
+        return;
+      }
+      this.spdAutoStockBatchLoading = true;
+      batchUpdateSpdDeptAutoStock({
+        IDS: ids,
+        AREA_CODE: this.selectedAreaCode,
+        UPDATE_ALL_BY_AREA: updateAllByArea ? '1' : '0',
+        IS_AUTO_STOCK: this.spdAutoStockBatchForm.IS_AUTO_STOCK,
+        AUTO_STOCK_START_TIME: this.spdAutoStockBatchForm.AUTO_STOCK_START_TIME
+      })
+        .then((res) => {
+          this.$message.success(res.msg || '保存成功');
+          this.spdAutoStockBatchDialogVisible = false;
+          this.loadSpdRels();
+        })
+        .catch((err) => this.$message.error(err.message))
+        .finally(() => {
+          this.spdAutoStockBatchLoading = false;
         });
     },
     loadAreaOptions(keyword) {
@@ -848,6 +1053,13 @@ export default {
   margin-bottom: 10px;
 }
 
+.relation-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
 .panel-title {
   color: #303133;
   font-size: 16px;
@@ -887,6 +1099,10 @@ export default {
   text-align: right;
 }
 
+.batch-tip {
+  margin-bottom: 16px;
+}
+
 ::v-deep .vxe-table {
   font-size: 12px;
 }
@@ -916,6 +1132,10 @@ export default {
   .panel-header {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .relation-actions {
+    justify-content: flex-start;
   }
 }
 </style>
