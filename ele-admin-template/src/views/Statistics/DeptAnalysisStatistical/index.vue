@@ -23,6 +23,14 @@
             <el-option label="否" value="0" />
           </el-select>
         </el-form-item>
+        <el-form-item label="科室查询">
+          <el-input
+            v-model="where.DEPT_TWO_NAME"
+            clearable
+            placeholder="科室名称"
+            style="width: 120px"
+          />
+        </el-form-item>
         <el-form-item label="日期方式">
           <el-select v-model="where.timeState" style="width: 110px">
             <el-option label="自然日" value="1" />
@@ -105,6 +113,7 @@ export default {
       where: {
         deptState: '1',
         IS_CHARGE: '',
+        DEPT_TWO_NAME: '',
         timeState: '1',
         orderState: '1',
         time1Range: ranges.time1Range,

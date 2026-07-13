@@ -43,7 +43,7 @@
             :selection.sync="selection"
             :page-size="20"
             :page-sizes="[20, 50, 100, 150, 300, 99999]"
-            cache-key="KSConsumeQueryTable"
+            cache-key="KSConsumeQueryTable_v2"
             @row-click="onRowClick"
             @selection-change="onSelectionChange"
           />

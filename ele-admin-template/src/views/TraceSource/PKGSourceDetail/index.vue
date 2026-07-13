@@ -122,6 +122,20 @@ export default {
           minWidth: 165
         },
         {
+          prop: 'IS_JC',
+          label: '集采',
+          align: 'center',
+          width: 65,
+          formatter: (row) => (row.IS_JC === '1' ? '是' : '否')
+        },
+        {
+          prop: 'CBLG',
+          label: '临购',
+          align: 'center',
+          width: 65,
+          formatter: (row) => (row.CBLG === '临购' ? '是' : '否')
+        },
+        {
           prop: 'Batch',
           label: '生产批号',
           align: 'center',
@@ -158,6 +172,18 @@ export default {
           align: 'center',
           showOverflowTooltip: true,
           width: 120
+        },
+        {
+          prop: 'Consume_Time',
+          label: '使用时间',
+          align: 'center',
+          showOverflowTooltip: true,
+          width: 120,
+          formatter: (row) => {
+            if (!row.Consume_Time) return '';
+            const val = String(row.Consume_Time);
+            return val.length >= 10 ? val.substr(0, 10) : val;
+          }
         },
         {
           prop: 'Serial_Number',

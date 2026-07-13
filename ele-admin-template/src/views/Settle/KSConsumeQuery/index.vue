@@ -24,7 +24,7 @@
             :columns="columns"
             :datasource="datasource"
             :selection.sync="selection"
-            cache-key="KSConsumeQueryTable"
+            cache-key="KSConsumeQueryTable_v2"
           >
             <!-- 表头工具栏 -->
             <template v-slot:toolbar> </template>
@@ -133,6 +133,29 @@
             align: 'left',
             showOverflowTooltip: true,
             minWidth: 250
+          },
+          {
+            label: '临购/中标',
+            align: 'center',
+            minWidth: 90,
+            showOverflowTooltip: true,
+            formatter: (row) => {
+              if (row.CBLG === '临购') return '临购';
+              if (row.Contract_Type === '1' || row.Is_Bidding === '1') return '中标';
+              if (row.Contract_Type === '2') return '临采';
+              return row.CBLG || '';
+            }
+          },
+          {
+            label: '限制性耗材',
+            align: 'center',
+            minWidth: 100,
+            showOverflowTooltip: true,
+            formatter: (row) => {
+              if (row.YB_BX === '1') return '是';
+              if (row.YB_BX === '0') return '否';
+              return row.YB_BX_BZ || '';
+            }
           },
           {
             prop: 'Specification_Or_Type',

@@ -23,6 +23,7 @@ function buildFields(where, page, size) {
     Token: token(),
     deptState: where.deptState ?? '1',
     IS_CHARGE: where.IS_CHARGE ?? '',
+    DEPT_TWO_NAME: where.DEPT_TWO_NAME ?? '',
     timeState: where.timeState ?? '1',
     time1Start: time1Start || '2023-01',
     time1End: time1End || '2023-12',
