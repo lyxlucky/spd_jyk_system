@@ -98,9 +98,7 @@ export default {
         code: ''
       },
       // 验证码base64数据
-      captcha: '',
-      // 验证码内容, 实际项目去掉
-      text: ''
+      captcha: ''
     };
   },
   computed: {
@@ -119,6 +117,14 @@ export default {
           {
             required: true,
             message: this.$t('login.password'),
+            type: 'string',
+            trigger: 'blur'
+          }
+        ],
+        code: [
+          {
+            required: true,
+            message: this.$t('login.code'),
             type: 'string',
             trigger: 'blur'
           }
@@ -198,10 +204,6 @@ export default {
         if (!valid) {
           return false;
         }
-        if (this.form.code.toLowerCase() !== this.text) {
-          this.$message.error('验证码错误');
-          return;
-        }
         this.loading = true;
         var data = this.form;
         var data2 = {
@@ -230,7 +232,8 @@ export default {
           })
           .catch((e) => {
             this.loading = false;
-            this.$message.error('请核对账号密码');
+            this.$message.error(e.message || '登录失败');
+            this.changeCaptcha();
           });
       });
     },
@@ -245,15 +248,11 @@ export default {
     },
     /* 更换图形验证码 */
     changeCaptcha() {
-      // 这里演示的验证码是后端返回base64格式的形式, 如果后端地址直接是图片请参考忘记密码页面
       getCaptcha()
         .then((data) => {
           this.captcha = data.base64;
-          // 实际项目后端一般会返回验证码的key而不是直接返回验证码的内容, 登录用key去验证, 可以根据自己后端接口修改
-          this.text = data.text.toLowerCase();
-          // 自动回填验证码, 实际项目去掉这个
-          this.form.code = this.text;
-          this.$refs?.form?.clearValidate();
+          this.form.code = data.captchaEnabled ? '' : (data.text || '');
+          this.$refs?.form?.clearValidate('code');
         })
         .catch((e) => {
           this.$message.error(e.message);
