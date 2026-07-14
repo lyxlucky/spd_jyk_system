@@ -1,4 +1,4 @@
-import {
+﻿import {
   areaTypeName,
   enabledName,
   flagName,
@@ -88,6 +88,7 @@ export function getMaterialDetailColumns() {
     { prop: 'DEPT_TWO_CODE', label: 'SPD科室编码', width: 130, align: 'center', showOverflowTooltip: true },
     { prop: 'DEPT_TWO_NAME', label: 'SPD科室名称', width: 160, align: 'center', showOverflowTooltip: true },
     { prop: 'CHARGE_CODE', label: '计费编码', width: 130, align: 'center', showOverflowTooltip: true },
+    { prop: 'BARCODE_NUMBER', label: '定数码', width: 130, align: 'center', showOverflowTooltip: true },
     { prop: 'VARIETIE_NAME', label: '品种名称', width: 220, align: 'center', showOverflowTooltip: true },
     { prop: 'SPECIFICATION_OR_TYPE', label: '规格型号', width: 180, align: 'center', showOverflowTooltip: true },
     { prop: 'MANUFACTURING_ENT_NAME', label: '生产企业', width: 220, align: 'center', showOverflowTooltip: true },

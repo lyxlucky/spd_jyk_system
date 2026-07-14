@@ -34,6 +34,16 @@
       <el-form-item>
         <el-button type="success" icon="el-icon-check" @click="handleMakeRead">已读</el-button>
       </el-form-item>
+      <el-form-item>
+        <el-button
+          type="primary"
+          icon="el-icon-download"
+          :loading="exporting"
+          @click="handleExport"
+        >
+          导出
+        </el-button>
+      </el-form-item>
     </el-form>
   </div>
 </template>
@@ -41,6 +51,12 @@
 <script>
   export default {
     name: 'KsNewBatchReminderTableSearch',
+    props: {
+      exporting: {
+        type: Boolean,
+        default: false
+      }
+    },
     data() {
       const defaultWhere = {
         code: '',
@@ -57,6 +73,9 @@
       },
       handleMakeRead() {
         this.$emit('makeRead', this.where);
+      },
+      handleExport() {
+        this.$emit('export', this.where);
       }
     }
   };
