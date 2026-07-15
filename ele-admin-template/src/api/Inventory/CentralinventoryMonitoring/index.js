@@ -507,8 +507,11 @@ export async function updateApply(jsonStr) {
   return res.data;
 }
 
-export async function deleteApplyVarietie(jsonStr) {
-  const res = await request.post('/TwoDeptApply/DeleteVarietie', formdataify({ json: jsonStr, Token: token() }));
+export async function deleteApplyVarietie(id) {
+  const res = await request.post(
+    '/TwoDeptApply/DeleteVarietie',
+    formdataify({ ID: id, Token: token() })
+  );
   return res.data;
 }
 
@@ -529,6 +532,39 @@ export async function pdaConfirmApply(deptTwoCode, operateNumber, staff) {
       staff
     }
   });
+  return res.data;
+}
+
+/** bdrm PDA 确认 */
+export async function kyDzConfirmApply(operateNumber, deptTwoCode, staff) {
+  const res = await request.post(
+    '/DeptApplyPlan/KyDzComfirmApply',
+    formdataify({ Token: token(), operateNumber }),
+    {
+      params: { operateNumber, deptTwoCode, staff, Token: token() }
+    }
+  );
+  return res.data;
+}
+
+/** lg 超计划提醒（不阻断） */
+export async function searchHistoryConsumedCompare(deptTwoCode, json) {
+  const res = await request.post(
+    '/PurchaseOrderApply/SearchHistoryConsumedAndPurchaseCompare',
+    formdataify({
+      deptTwoCode,
+      json,
+      page: 1,
+      size: 999999,
+      Token: token()
+    })
+  );
+  return res.data;
+}
+
+/** csyy 确认后旁路 */
+export async function csyyManHoo7Ss() {
+  const res = await request.get('/Abdzczh/CSYYMAN_HOO7_SS', { params: {} });
   return res.data;
 }
 
@@ -558,5 +594,108 @@ export async function lhApplyDetailDel(ids) {
     '/TwoDeptApply/lh_applydatail_del',
     formdataify({ JSON: json, Token: token() })
   );
+  return res.data;
+}
+
+export async function upSignState(id, state) {
+  const res = await request.post(
+    '/TwoDeptApply/upSignState',
+    formdataify({ id, state, Token: token() })
+  );
+  return res.data;
+}
+
+export async function upMark(id, mark) {
+  const res = await request.post('/TwoDeptApply/upMark', formdataify({ id, mark, Token: token() }));
+  return res.data;
+}
+
+export async function upSignMark(id, mark) {
+  const res = await request.post('/TwoDeptApply/upSignMark', formdataify({ id, mark, Token: token() }));
+  return res.data;
+}
+
+export async function forbidSendHis(id) {
+  const res = await request.post(
+    '/TwoDeptApply/upSPD_HIS_STOCK_RECODE_SL_NO_SEND',
+    formdataify({ ID: id, Token: token() })
+  );
+  return res.data;
+}
+
+export async function sendHisStockBd(id, type = '1') {
+  const res = await request.get('/TwoDeptApply/sendHisStock_BD', {
+    params: { ID: id, Token: token(), type }
+  });
+  return res.data;
+}
+
+export async function updateApplyType(operateNumber, value, remark) {
+  const res = await request.post(
+    '/TwoDeptApply/updateApplyType',
+    formdataify({
+      Token: token(),
+      id: operateNumber,
+      value,
+      remark: remark ?? ''
+    })
+  );
+  return res.data;
+}
+
+export async function slGlJh(operateId, planNumber) {
+  const res = await request.post(
+    '/TwoDeptApply/slGlJh',
+    formdataify({
+      Token: token(),
+      DEPT_TWO_GOODS_OPERATE_ID: operateId,
+      PLAN_NUMBER: planNumber
+    })
+  );
+  return res.data;
+}
+
+export async function glDeptPlanSl(detailId, planId) {
+  const res = await request.post(
+    '/TwoDeptApply/glDeptPlanSl',
+    formdataify({ ID: detailId, PLAN_ID: planId, Token: token() })
+  );
+  return res.data;
+}
+
+/** 中心库选中预览扩展信息 */
+export async function getCentralExtend(varietieCode) {
+  const res = await request.get('/CentralWarehouse/GetExtend', {
+    params: { VarietieCode: varietieCode, Token: token() }
+  });
+  return res.data;
+}
+
+/** 科室监控选中预览 */
+export async function getDeptMonitorExtend(varietieCode, deptTwoName, contractCode) {
+  const res = await request.get('/DeptMonitor/DeptMonitorExtend', {
+    params: {
+      varietieCode,
+      deptTwoName,
+      contractCode: contractCode ?? '',
+      Token: token()
+    }
+  });
+  return res.data;
+}
+
+export async function importGeneratePickingTemplate() {
+  return `${request.defaults?.baseURL || ''}/DeptMonitor/ImportGeneratePickingTemplate?Token=${token()}`;
+}
+
+export async function importGeneratePicking(file, storageId) {
+  const fd = new FormData();
+  fd.append('FILE', file);
+  fd.append('Token', token());
+  fd.append('STORAGE_ID', storageId ?? '');
+  const res = await request.post('/DeptMonitor/ImportGeneratePicking', fd, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+    timeout: 120000
+  });
   return res.data;
 }

@@ -19,7 +19,7 @@
               clearable
               placeholder="院区"
               style="width: 100%"
-              @change="reloadDept"
+              @change="onDeptStorageChange"
             >
               <el-option v-for="item in storageList" :key="item.ID" :label="item.NAME" :value="String(item.ID)" />
             </el-select>
@@ -34,12 +34,15 @@
           height="300px"
           highlight-current-row
           :toolkit="[]"
+          :need-page="false"
           :columns="deptColumns"
           :datasource="deptDatasource"
           :page-size="9999"
           cache-key="twoDeptApplyDeptTable"
           @row-click="onDeptRowClick"
-        />
+        >
+          <template v-slot:isPrint="{ row }">{{ formatDeptIsPrint(row.isprint) }}</template>
+        </ele-pro-table>
       </el-col>
       <el-col :span="19">
         <div class="panel-title">选配申领品种</div>
@@ -92,7 +95,6 @@
           <el-form-item>
             <el-select
               v-model="varietyStorageId"
-              clearable
               placeholder="申领库区"
               style="width: 120px"
               @change="reloadVariety"
@@ -101,7 +103,14 @@
             </el-select>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" icon="el-icon-search" :disabled="!deptTwoCode" @click="reloadVariety">查询</el-button>
+            <el-button
+              type="primary"
+              icon="el-icon-search"
+              :disabled="!deptTwoCode || !varietyStorageId"
+              @click="reloadVariety"
+            >
+              查询
+            </el-button>
           </el-form-item>
         </el-form>
         <div class="local-toolbar">
@@ -125,6 +134,8 @@
           :selection.sync="varietySelection"
           cache-key="twoDeptApplyVarietyTable"
         >
+          <template v-slot:batchProdDate="{ row }">{{ formatDate10(row.Batch_Production_Date) }}</template>
+          <template v-slot:batchValidDate="{ row }">{{ formatDate10(row.Batch_Validity_Period) }}</template>
           <template v-slot:applySum="{ row }">
             <el-input
               :value="getApplySum(row)"
@@ -209,13 +220,20 @@
                 打印借货单
               </el-button>
               <el-button
-                v-if="homeHp === 'szlh'"
+                v-if="homeHp === 'szlh' && selectedApply && !isNewApply"
                 size="mini"
-                :disabled="!applyId"
                 :loading="sendingYsy"
                 @click="onSendYsy"
               >
                 补发医商云
+              </el-button>
+              <el-button
+                v-if="homeHp === 'szlh' && selectedApply && !isNewApply"
+                size="mini"
+                :loading="printingYsy"
+                @click="onPrintYsy"
+              >
+                打印申领单(医商云)
               </el-button>
             </div>
           </div>
@@ -235,6 +253,7 @@
           highlight-current-row
           :toolkit="[]"
           :init-load="false"
+          :need-page="false"
           :page-size="9999"
           :columns="applyListColumns"
           :datasource="applyDatasource"
@@ -243,11 +262,46 @@
         >
           <template v-slot:operateState="{ row }">{{ formatApplyState(row.Operate_State) }}</template>
           <template v-slot:operateType="{ row }">{{ formatOperateType(row.Operate_Type) }}</template>
+          <template v-slot:operateTime="{ row }">{{ formatDateTime(row.Operate_Time) }}</template>
+          <template v-slot:sendYsy="{ row }">{{ formatSendYsy(row.SendYSY ?? row.SEND_YSY) }}</template>
+          <template v-slot:orderRemark="{ row }">
+            <el-button type="text" size="mini" @click.stop="onEditMark(row)">备注</el-button>
+          </template>
+          <template v-slot:signState="{ row }">{{ formatSignState(row) }}</template>
+          <template v-slot:signAction="{ row }">
+            <el-button type="text" size="mini" @click.stop="onToggleSign(row)">
+              {{ String(row.IS_SIGN) === '1' ? '取消标记' : '标记' }}
+            </el-button>
+          </template>
+          <template v-slot:signRemark="{ row }">
+            <el-button type="text" size="mini" @click.stop="onEditSignMark(row)">备注</el-button>
+          </template>
+          <template v-slot:sendHisState="{ row }">
+            <span>{{ formatSendHisState(row.SEND_HIS_STATE) }}</span>
+            <el-button
+              v-if="String(row.SEND_HIS_STATE) === '0'"
+              type="text"
+              size="mini"
+              @click.stop="onForbidSendHis(row)"
+            >
+              禁止推送
+            </el-button>
+          </template>
+          <template v-slot:sendHisAction="{ row }">
+            <el-button type="text" size="mini" @click.stop="onSendHis(row)">推送HIS</el-button>
+          </template>
+          <template v-slot:orderTypeEdit="{ row }">
+            <el-button type="text" size="mini" @click.stop="onEditOrderType(row)">修改类型</el-button>
+          </template>
+          <template v-slot:orderType="{ row }">{{ formatApplyOrderType(row.ORDER_TYPE) }}</template>
+          <template v-slot:syncPlan="{ row }">
+            <el-button type="text" size="mini" @click.stop="onSyncPlan(row)">同步</el-button>
+          </template>
         </ele-pro-table>
       </el-col>
       <el-col :span="19">
         <div class="panel-title">申领品种明细</div>
-        <div v-if="homeHp === 'szlh' && isNewApply" class="local-toolbar">
+        <div v-if="homeHp === 'szlh' && selectedApply && !isNewApply" class="local-toolbar">
           <div class="spd-toolbar__btns">
             <el-button
               type="danger"
@@ -267,13 +321,31 @@
           :stripe="true"
           :toolkit="[]"
           :init-load="false"
+          :need-page="false"
           :page-size="9999"
           :columns="detailColumns"
           :datasource="detailDatasource"
           :selection.sync="detailSelection"
           cache-key="twoDeptApplyDetailTable"
         >
-          <template v-slot:storageName="{ row }">{{ formatStorageName(row.STORAGE_ID) }}</template>
+          <template v-slot:zjSupplyPrice="{ row }">
+            <span :style="String(row.ZJ_SUPPLY_PRICE) !== String(row.supply_price) ? 'color:red' : ''">
+              {{ row.ZJ_SUPPLY_PRICE }}
+            </span>
+          </template>
+          <template v-slot:goodsStock="{ row }">
+            <span v-if="String(row.STORAGE_ID) === '1'">{{ row.Goodsstock }}/{{ row.STORAGE_NAME }}</span>
+            <span v-else-if="String(row.STORAGE_ID) === '2'">{{ row.OutGoodsstock }}/{{ row.STORAGE_NAME }}</span>
+            <span v-else>未知库区</span>
+          </template>
+          <template v-slot:batchProdDate="{ row }">{{ formatDate10(row.Batch_Production_Date) }}</template>
+          <template v-slot:batchValidDate="{ row }">{{ formatDate10(row.Batch_Validity_Period) }}</template>
+          <template v-slot:linkPlan="{ row }">
+            <el-button type="text" size="mini" @click.stop="onLinkPlan(row)">关联计划</el-button>
+          </template>
+          <template v-slot:detailAction="{ row }">
+            <el-button type="text" size="mini" style="color: red" @click.stop="onDeleteDetailRow(row)">删除</el-button>
+          </template>
         </ele-pro-table>
         <div class="detail-total">
           <span>总数量：</span>
@@ -281,6 +353,30 @@
         </div>
       </el-col>
     </el-row>
+
+    <el-dialog
+      :title="orderTypeDialog.title"
+      :visible.sync="orderTypeDialog.visible"
+      width="420px"
+      append-to-body
+    >
+      <el-form size="mini" label-width="80px">
+        <el-form-item label="订单类型">
+          <el-select v-model="orderTypeDialog.value" placeholder="请选择" style="width: 100%">
+            <el-option label="普通" value="0" />
+            <el-option label="经费" value="1" />
+            <el-option label="专项资金" value="2" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="备注">
+          <el-input v-model="orderTypeDialog.remark" clearable placeholder="备注" />
+        </el-form-item>
+      </el-form>
+      <div slot="footer">
+        <el-button size="mini" @click="orderTypeDialog.visible = false">取消</el-button>
+        <el-button size="mini" type="primary" :loading="orderTypeDialog.loading" @click="submitOrderType">确定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -297,22 +393,40 @@ import {
   insertApplyVarietie,
   updateApply,
   deleteApplyOrder,
+  deleteApplyVarietie,
   pdaConfirmApply,
+  kyDzConfirmApply,
+  searchHistoryConsumedCompare,
+  csyyManHoo7Ss,
   exportApplyListAll,
   createClaimExcel,
   sendLuoHuYSY,
-  lhApplyDetailDel
+  lhApplyDetailDel,
+  upSignState,
+  upMark,
+  upSignMark,
+  forbidSendHis,
+  sendHisStockBd,
+  updateApplyType,
+  slGlJh,
+  glDeptPlanSl
 } from '@/api/Inventory/CentralinventoryMonitoring';
 import {
+  monitorHpFlags,
   getClaimExcelApiPath,
   openExcelDownload,
   formatApplyState,
   formatOperateType,
+  formatSendYsy,
+  formatSignState,
+  formatApplyOrderType,
+  formatSendHisState,
+  formatDate10,
+  formatDateTime,
   buildApplyDeptColumns,
   buildApplyVarietieColumns,
   buildApplyListColumns,
-  buildApplyDetailColumns,
-  formatStorageName
+  buildApplyDetailColumns
 } from '../utils';
 
 export default {
@@ -327,9 +441,7 @@ export default {
       deptOneCode: '',
       deptTwoName: '',
       deptColumns: buildApplyDeptColumns(),
-      varietyColumns: buildApplyVarietieColumns(),
-      applyListColumns: buildApplyListColumns(),
-      detailColumns: buildApplyDetailColumns(),
+      varietyColumns: buildApplyVarietieColumns(monitorHpFlags),
       varietyPageSize: 10,
       varietyFilters: {
         searchName: '',
@@ -355,6 +467,7 @@ export default {
       deletingDetail: false,
       sendingYsy: false,
       printingJhd: false,
+      printingYsy: false,
       selectedApply: null,
       applyId: '',
       operateNumber: '',
@@ -363,13 +476,29 @@ export default {
       confirming: false,
       printing: false,
       deletingApply: false,
-      exporting: false
+      exporting: false,
+      orderTypeDialog: {
+        visible: false,
+        title: '修改类型',
+        operateNumber: '',
+        value: '',
+        remark: '',
+        loading: false
+      }
     };
   },
   computed: {
     isNewApply() {
       if (!this.selectedApply) return false;
       return String(this.selectedApply.Operate_State) === '0';
+    },
+    applyListColumns() {
+      void this.homeHp;
+      return buildApplyListColumns(monitorHpFlags);
+    },
+    detailColumns() {
+      void this.homeHp;
+      return buildApplyDetailColumns({ isNew: this.isNewApply });
     },
     canAddVariety() {
       if (!this.isNewApply || !this.applyId) return false;
@@ -394,16 +523,37 @@ export default {
   methods: {
     formatApplyState,
     formatOperateType,
-    formatStorageName,
+    formatSendYsy,
+    formatSignState,
+    formatApplyOrderType,
+    formatSendHisState,
+    formatDate10,
+    formatDateTime,
+    formatDeptIsPrint(val) {
+      if (val === '1' || val === 1) return '存在';
+      if (val === '0' || val === 0) return '无';
+      return val ?? '';
+    },
     loadStorage() {
       getStorageList()
         .then((res) => {
           const data = res?.data || res;
           this.storageList = data?.result || [];
+          // 后端 GetVarietie 把 StorageID 直接拼进 SQL，空值会 500；与老系统一致默认选中第一个库区
+          if (!this.varietyStorageId && this.storageList.length) {
+            this.varietyStorageId = String(this.storageList[0].ID);
+          }
         })
         .catch((e) => {
           this.$message.error(e.message || '加载院区失败');
         });
+    },
+    onDeptStorageChange() {
+      // 老系统：左侧院区变更会同步到申领库区下拉
+      if (this.deptStorageId) {
+        this.varietyStorageId = this.deptStorageId;
+      }
+      this.reloadDept();
     },
     varietyRowKey(row) {
       return `${row.Batch_ID || ''}_${row.Varietie_Code || ''}`;
@@ -411,7 +561,8 @@ export default {
     getApplySum(row) {
       const key = this.varietyRowKey(row);
       if (this.applySumMap[key] !== undefined) return this.applySumMap[key];
-      return row.ApplySum || '';
+      // ApplySum 后端默认是 0；不能用 ||，否则 0 会被当成空
+      return row.ApplySum ?? 0;
     },
     setApplySum(row, val) {
       this.$set(this.applySumMap, this.varietyRowKey(row), val);
@@ -420,7 +571,7 @@ export default {
       return this.varietySelection.some((item) => this.varietyRowKey(item) === this.varietyRowKey(row));
     },
     deptDatasource({ page, limit }) {
-      return getTwoDeptApplyDept(this.deptSearch, this.deptStorageId, page, limit)
+      return getTwoDeptApplyDept(this.deptSearch, this.deptStorageId, page, limit || 9999)
         .then((res) => ({ count: res.total || 0, list: res.result || [] }))
         .catch((e) => {
           this.$message.error(e.message || '查询科室失败');
@@ -429,6 +580,11 @@ export default {
     },
     varietyDatasource({ page, limit, order }) {
       if (!this.deptTwoCode) {
+        return Promise.resolve({ count: 0, list: [] });
+      }
+      // StorageID 为空时后端 SQL 非法（Storage_ID = ），直接拦截避免 500
+      if (!this.varietyStorageId) {
+        this.$message.warning('请先选择申领库区');
         return Promise.resolve({ count: 0, list: [] });
       }
       if (order?.sort) {
@@ -455,7 +611,7 @@ export default {
           list.forEach((row) => {
             const key = this.varietyRowKey(row);
             if (this.applySumMap[key] === undefined) {
-              this.$set(this.applySumMap, key, row.ApplySum || '');
+              this.$set(this.applySumMap, key, row.ApplySum ?? 0);
             }
           });
           return { count: res.total || 0, list };
@@ -474,13 +630,14 @@ export default {
         {
           DeptTwoCode: this.deptTwoCode,
           SearchName: this.applyFilters.searchName,
-          StartTime: start || '',
-          EndTime: end || '',
+          // 空字符串不会走后端 null 默认值，会导致日期 SQL 异常；与后端默认对齐
+          StartTime: start || '0001-01-01',
+          EndTime: end || '9999-12-30',
           is_sign: this.applyFilters.is_sign,
           is_Print: this.applyFilters.is_Print
         },
         page,
-        limit
+        limit || 9999
       )
         .then((res) => ({ count: res.total || 0, list: res.result || [] }))
         .catch((e) => {
@@ -494,7 +651,7 @@ export default {
         this.detailTotal = 0;
         return Promise.resolve({ count: 0, list: [] });
       }
-      return getApplyDetail(this.applyId, '', page, limit)
+      return getApplyDetail(this.applyId, '', page, limit || 9999)
         .then((res) => {
           const list = res.result || [];
           this.detailRows = list;
@@ -604,9 +761,14 @@ export default {
       return true;
     },
     buildInsertJson(rows) {
+      // 老系统顺序：DeptTwoCode, Apply_Id, Operate_Number, Varietie_Code, Batch,
+      // Batch_Production_Date, Batch_Validity_Period, ApplySum, Batch_ID, Contract_Code,
+      // supplier_name, STORAGE_ID, dept_two_name, supply_price, supplier_code, homehp
       const arr = rows.map((row) => {
         const qty = parseInt(this.getApplySum(row), 10);
-        return `{${this.applyId},${row.Varietie_Code},${row.Batch_ID},${qty},${row.supplier_code || ''},${row.Contract_Code || ''},${row.supply_price || ''},${row.STORAGE_ID || ''}}`;
+        const prodDate = formatDate10(row.Batch_Production_Date);
+        const validDate = formatDate10(row.Batch_Validity_Period);
+        return `{${this.deptTwoCode},${this.applyId},${this.operateNumber},${row.Varietie_Code},${row.Batch},${prodDate},${validDate},${qty},${row.Batch_ID},${row.Contract_Code || ''},${row.supplier_name || ''},${row.STORAGE_ID || ''},${this.deptTwoName},${row.supply_price || ''},${row.supplier_code || ''},${this.homeHp}}`;
       });
       return JSON.stringify(arr);
     },
@@ -648,9 +810,28 @@ export default {
       });
       return JSON.stringify(arr);
     },
+    buildCompareJson(rows) {
+      return JSON.stringify(
+        (rows || []).map((row) => ({
+          Varietie_Code: row.Varietie_Code,
+          Count: row.quanity
+        }))
+      );
+    },
     isPdaApplyType() {
       const type = this.selectedApply?.Operate_Type;
       return String(type) === '3' || formatOperateType(type) === '科室PDA收货';
+    },
+    async checkHistoryConsumedCompare() {
+      if (this.homeHp !== 'lg') return;
+      try {
+        const data = await searchHistoryConsumedCompare(this.deptTwoCode, this.buildCompareJson(this.detailRows));
+        if (data?.code == 300 || data?.code === '300') {
+          window.alert(data.msg || '超计划提醒');
+        }
+      } catch {
+        // 不阻断确认
+      }
     },
     async onConfirmApply() {
       if (!this.applyId) {
@@ -663,8 +844,12 @@ export default {
       }
       this.confirming = true;
       try {
+        await this.checkHistoryConsumedCompare();
         if (this.isPdaApplyType()) {
-          const data = await pdaConfirmApply(this.deptTwoCode, this.operateNumber, this.staffName);
+          const data =
+            this.homeHp === 'bdrm'
+              ? await kyDzConfirmApply(this.operateNumber, this.deptTwoCode, this.staffName)
+              : await pdaConfirmApply(this.deptTwoCode, this.operateNumber, this.staffName);
           if (data?.code == 200 || data?.code === '200') {
             this.$message.success('已成功申领');
             this.afterConfirmSuccess();
@@ -676,6 +861,9 @@ export default {
         const data = await updateApply(this.buildConfirmJson(this.detailRows));
         if (data?.code == 200 || data?.code === '200') {
           this.$message.success('已成功申领');
+          if (this.homeHp === 'csyy') {
+            csyyManHoo7Ss().catch(() => {});
+          }
           this.afterConfirmSuccess();
         } else {
           this.$message.error(data?.msg || '确认申领失败');
@@ -690,6 +878,199 @@ export default {
       this.clearApplySelection();
       this.reloadApplyList();
       this.reloadVariety();
+    },
+    async onEditMark(row) {
+      try {
+        const { value } = await this.$prompt(`申领${row.Operate_Number}备注:`, '订单备注', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          inputValue: row.mark || '',
+          inputType: 'textarea',
+          closeOnClickModal: false
+        });
+        const data = await upMark(row.ID, value ?? '');
+        if (data?.code == 200 || data?.code === '200') {
+          this.$message.success(data.msg || '保存成功');
+          this.$refs.applyTable?.reload();
+        } else {
+          this.$message.error(data?.msg || '保存失败');
+        }
+      } catch {
+        // 取消
+      }
+    },
+    async onEditSignMark(row) {
+      try {
+        const { value } = await this.$prompt(`申领${row.Operate_Number}标记备注:`, '标记备注', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          inputValue: row.SIGN_MARK || '',
+          inputType: 'textarea',
+          closeOnClickModal: false
+        });
+        const data = await upSignMark(row.ID, value ?? '');
+        if (data?.code == 200 || data?.code === '200') {
+          this.$message.success(data.msg || '保存成功');
+          this.$refs.applyTable?.reload();
+        } else {
+          this.$message.error(data?.msg || '保存失败');
+        }
+      } catch {
+        // 取消
+      }
+    },
+    async onToggleSign(row) {
+      const isSigned = String(row.IS_SIGN) === '1';
+      const nextState = isSigned ? '0' : '1';
+      const tip = isSigned
+        ? `确定取消标记申领单${row.Operate_Number}吗?`
+        : `确定标记申领单${row.Operate_Number}吗?`;
+      try {
+        await this.$confirm(tip, '提示', { type: 'warning' });
+      } catch {
+        return;
+      }
+      try {
+        const data = await upSignState(row.ID, nextState);
+        if (data?.code == 200 || data?.code === '200') {
+          this.$message.success(data.msg || '操作成功');
+          this.$refs.applyTable?.reload();
+        } else {
+          this.$message.error(data?.msg || '操作失败');
+        }
+      } catch (e) {
+        this.$message.error(e.message || '操作失败');
+      }
+    },
+    async onForbidSendHis(row) {
+      try {
+        await this.$confirm(`确定禁止推送${row.Operate_Number}吗?`, '提示', { type: 'warning' });
+      } catch {
+        return;
+      }
+      try {
+        const data = await forbidSendHis(row.ID);
+        if (data?.code == 200 || data?.code === '200') {
+          this.$message.success(data.msg || '操作成功');
+          this.$refs.applyTable?.reload();
+        } else {
+          this.$message.error(data?.msg || '操作失败');
+        }
+      } catch (e) {
+        this.$message.error(e.message || '操作失败');
+      }
+    },
+    async onSendHis(row) {
+      try {
+        await this.$confirm(`确定推送${row.Operate_Number}吗?系统将再次推送给his请勿重复推送`, '提示', {
+          type: 'warning'
+        });
+      } catch {
+        return;
+      }
+      try {
+        const data = await sendHisStockBd(row.ID, '1');
+        if (data?.code == 200 || data?.code === '200') {
+          this.$message.success(data.msg || '推送成功');
+          this.$refs.applyTable?.reload();
+        } else {
+          this.$message.error(data?.msg || '推送失败');
+        }
+      } catch (e) {
+        this.$message.error(e.message || '推送失败');
+      }
+    },
+    onEditOrderType(row) {
+      this.orderTypeDialog = {
+        visible: true,
+        title: '修改类型',
+        operateNumber: row.Operate_Number || '',
+        value: row.ORDER_TYPE != null && row.ORDER_TYPE !== '' ? String(row.ORDER_TYPE) : '',
+        remark: row.ORDER_TYPE_MARK || '',
+        loading: false
+      };
+    },
+    async submitOrderType() {
+      if (this.orderTypeDialog.value === '' || this.orderTypeDialog.value == null) {
+        this.$message.warning('请选择订单类型');
+        return;
+      }
+      this.orderTypeDialog.loading = true;
+      try {
+        const data = await updateApplyType(
+          this.orderTypeDialog.operateNumber,
+          this.orderTypeDialog.value,
+          this.orderTypeDialog.remark
+        );
+        if (data?.code == 200 || data?.code === '200') {
+          this.$message.success(data.msg || '修改成功');
+          this.orderTypeDialog.visible = false;
+          this.$refs.applyTable?.reload();
+        } else {
+          this.$message.error(data?.msg || '修改失败');
+        }
+      } catch (e) {
+        this.$message.error(e.message || '修改失败');
+      } finally {
+        this.orderTypeDialog.loading = false;
+      }
+    },
+    async onSyncPlan(row) {
+      try {
+        const { value } = await this.$prompt('请输入计划单号', '同步计划', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          inputPlaceholder: '同步单号',
+          closeOnClickModal: false
+        });
+        const data = await slGlJh(row.ID, value ?? '');
+        if (data?.code == 200 || data?.code === '200') {
+          this.$message.success(data.msg || '同步成功');
+          this.reloadDetail();
+          this.$refs.applyTable?.reload();
+        } else {
+          this.$message.error(data?.msg || '同步失败');
+        }
+      } catch {
+        // 取消
+      }
+    },
+    async onLinkPlan(row) {
+      try {
+        const { value } = await this.$prompt('请输入计划单号明细id', '关联计划', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          inputPlaceholder: '计划明细id',
+          closeOnClickModal: false
+        });
+        const data = await glDeptPlanSl(row.ID, value ?? '');
+        if (data?.code == 200 || data?.code === '200') {
+          this.$message.success(data.msg || '关联成功');
+          this.reloadDetail();
+        } else {
+          this.$message.error(data?.msg || '关联失败');
+        }
+      } catch {
+        // 取消
+      }
+    },
+    async onDeleteDetailRow(row) {
+      try {
+        await this.$confirm('真的删除行么?', '提示', { type: 'warning' });
+      } catch {
+        return;
+      }
+      try {
+        const data = await deleteApplyVarietie(row.ID);
+        if (data?.code == 200 || data?.code === '200') {
+          this.$message.success('删除成功');
+          this.reloadDetail();
+        } else {
+          this.$message.error(data?.msg || '删除失败');
+        }
+      } catch (e) {
+        this.$message.error(e.message || '删除失败');
+      }
     },
     async onPrintApply() {
       if (!this.operateNumber) {
@@ -751,6 +1132,29 @@ export default {
         this.$message.error(e.message || '打印借货单失败');
       } finally {
         this.printingJhd = false;
+      }
+    },
+    async onPrintYsy() {
+      if (!this.operateNumber) {
+        this.$message.warning('请选择要打印的申领单');
+        return;
+      }
+      this.printingYsy = true;
+      try {
+        const data = await createClaimExcel('CreatedeClaimExcelszlh_ysy', {
+          ID: this.applyId,
+          Operate_Number: this.operateNumber,
+          dept: this.deptTwoName
+        });
+        if (data?.code == 200 || data?.code === '200') {
+          openExcelDownload(data.msg);
+        } else {
+          this.$message.error(data?.msg || '打印申领单(医商云)失败');
+        }
+      } catch (e) {
+        this.$message.error(e.message || '打印申领单(医商云)失败');
+      } finally {
+        this.printingYsy = false;
       }
     },
     async onSendYsy() {

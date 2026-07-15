@@ -1,20 +1,44 @@
 import { utils, writeFile } from 'xlsx';
 import { API_BASE_URL, HOME_HP } from '@/config/setting';
+import store from '@/store';
+
+/** 与老系统 Home.cshtml HN_PAG_TYPE 医院集合对齐 */
+const HN_PAG_TYPE_HPS = ['szhn', 'lg', 'bd', 'bdrm', 'zq', 'szlhfy', 'szsmyl', 'szse', 'szse_lh', 'szse_dp'];
 
 export const monitorHpFlags = {
   isSpt: ['bd', 'bdrm'].includes(HOME_HP),
   isStzl: HOME_HP === 'stzl',
-  isHnPagType: HOME_HP === 'szhn',
+  isHnPagType: HN_PAG_TYPE_HPS.includes(HOME_HP),
   isBd: HOME_HP === 'bd',
-  isCg: HOME_HP === 'szlh'
+  isCg: HOME_HP === 'szlh',
+  showKubao: HOME_HP === 'bd',
+  isSzlh: HOME_HP === 'szlh'
 };
 
-export function monitorWarningRowClass({ row }) {
+export function hasMonitorPermission(permissionUrl) {
+  const list = store?.state?.user?.info?.permission_group || [];
+  return list.some((p) => (p.Permission_Url || p.permission_url || p.component) === permissionUrl);
+}
+
+/** Tab1 中心库：warning 1红 2蓝；Tab2 科室：1红 2黄 3蓝 */
+export function monitorWarningRowClass({ row }, tab = 'dept') {
   const w = String(row.warning ?? '');
   if (w === '1') return 'monitor-warn-1';
+  if (tab === 'center') {
+    if (w === '2') return 'monitor-warn-3';
+    return '';
+  }
   if (w === '2') return 'monitor-warn-2';
   if (w === '3') return 'monitor-warn-3';
   return '';
+}
+
+export function centerWarningRowClass({ row }) {
+  return monitorWarningRowClass({ row }, 'center');
+}
+
+export function deptWarningRowClass({ row }) {
+  return monitorWarningRowClass({ row }, 'dept');
 }
 
 export function formatSendState(state) {
@@ -75,21 +99,61 @@ export function formatOrderType(val) {
 }
 
 export function formatApplyState(state) {
-  const map = {
-    '0': '新增',
-    '1': '已申领',
-    '2': '已配送',
-    '3': '已收货'
-  };
-  return map[String(state)] || state || '';
+  // 本页老逻辑仅区分新增/已申领
+  if (String(state) === '0') return '新增';
+  return '已申领';
 }
 
 export function formatOperateType(type) {
   const map = {
-    '0': '普通申领',
-    '1': 'PDA申领'
+    '0': '(旧)科室申领',
+    '1': '散货退货',
+    '2': '（新）科室申领',
+    '3': '科室PDA收货'
   };
   return map[String(type)] || type || '';
+}
+
+export function formatSendYsy(val) {
+  if (String(val) === '0') return '未发送';
+  if (String(val) === '1') return '已发送';
+  return '未知';
+}
+
+export function formatSignState(row) {
+  if (String(row.IS_SIGN) === '1') {
+    const man = row.SIGN_MAN || '';
+    const time = formatDateTime(row.SING_TIME);
+    return `已标记${man ? '/' + man : ''}${time ? '/' + time : ''}`;
+  }
+  return '未标记';
+}
+
+export function formatApplyOrderType(val) {
+  if (String(val) === '0') return '普通';
+  if (String(val) === '1') return '经费';
+  if (String(val) === '2') return '专项资金';
+  return val ?? '';
+}
+
+export function formatSendHisState(val) {
+  if (String(val) === '0') return '可推送';
+  if (String(val) === '1') return '已推送';
+  if (String(val) === '2') return '已禁止';
+  return val ?? '';
+}
+
+export function formatXsxxJc(val) {
+  if (String(val) === '1') return '线上';
+  if (String(val) === '2') return '线下';
+  if (String(val) === '3') return '集采';
+  return '无';
+}
+
+export function formatIsBidding(val) {
+  if (String(val) === '1') return '是';
+  if (String(val) === '0') return '否';
+  return val ?? '';
 }
 
 export function formatDateTime(val) {
@@ -150,6 +214,47 @@ export function selectionCol(fixed) {
 }
 
 export function buildCenterMonitorColumns(hp = monitorHpFlags) {
+  if (hp.isCg || hp.isSzlh) {
+    const cols = [
+      selectionCol('left'),
+      { label: '品种（材料）编码', prop: 'Varietie_Code_New', minWidth: 120, showOverflowTooltip: true },
+      { label: '计费编码', prop: 'CHARGING_CODE', minWidth: 100, showOverflowTooltip: true },
+      { label: '品种全称', prop: 'Varietie_Name', minWidth: 120, showOverflowTooltip: true },
+      { label: '型号/规格', prop: 'Specification_Or_Type', minWidth: 110, showOverflowTooltip: true },
+      { label: '单位', prop: 'Unit', minWidth: 60, align: 'center' },
+      { label: '生产企业名称', prop: 'Manufacturing_Ent_Name', minWidth: 130, showOverflowTooltip: true },
+      { label: '系数', prop: 'Def_No_Pkg_Coefficient', minWidth: 60, align: 'center' },
+      { label: '中标', minWidth: 60, align: 'center', slot: 'isBidding' },
+      { label: '价格', prop: 'PRICE', minWidth: 90, align: 'right' },
+      { label: '库存上限', prop: 'Storehouse_Uppper', minWidth: 90, align: 'right' },
+      { label: '库存下限', prop: 'Storehouse_Lower', minWidth: 90, align: 'right' },
+      { label: '定数包库存（院内）', prop: 'Defsum', minWidth: 130, align: 'right' },
+      { label: '定数包库存（院外）', prop: 'OutdefSum', minWidth: 130, align: 'right' },
+      { label: '散货库（院内）', prop: 'Goodssum', minWidth: 120, align: 'right' },
+      { label: '散货库（院外）', prop: 'OutGoodsUp', minWidth: 120, align: 'right' },
+      { label: '备货数（包）', minWidth: 110, align: 'center', slot: 'pkgPlan' },
+      { label: '备货数（散）', minWidth: 110, align: 'center', slot: 'goodsPlan' },
+      { label: '中包装数量', prop: 'MIDDLE_PACKAGE_COUNT', minWidth: 100, align: 'right' },
+      { label: '大包装数量', prop: 'BigBoxCount', minWidth: 100, align: 'right' },
+      { label: '包预锁（院内）', prop: 'PackQty', minWidth: 110, align: 'right' },
+      { label: '包预锁（院外）', prop: 'OutPackQty', minWidth: 110, align: 'right' },
+      { label: '计划总量(90天内)', prop: 'QTY', minWidth: 130, align: 'right' },
+      { label: '主控库区', prop: 'Name', minWidth: 90, showOverflowTooltip: true }
+    ];
+    if (hp.isSpt) {
+      cols.splice(1, 0, {
+        label: '省平台编码',
+        prop: 'PROVINCE_PLATFORM_CODE',
+        minWidth: 120,
+        showOverflowTooltip: true
+      });
+    }
+    if (hp.isHnPagType) {
+      return cols.filter((c) => !['MIDDLE_PACKAGE_COUNT', 'BigBoxCount'].includes(c.prop));
+    }
+    return cols;
+  }
+
   const cols = [
     selectionCol('left'),
     { label: '品种（材料）编码', prop: 'Varietie_Code_New', minWidth: 180, showOverflowTooltip: true },
@@ -200,27 +305,44 @@ export function buildCenterPickingColumns() {
   ];
 }
 
-export function buildCenterDetailColumns() {
-  return [
+export function buildCenterDetailColumns(options = {}) {
+  const showXsxx = options.showXsxx ?? hasMonitorPermission('备货新增线上线下');
+  const isCg = options.isCg ?? monitorHpFlags.isCg;
+  const cols = [
     selectionCol(),
-    { label: '备注', prop: 'REMARKS', minWidth: 90, showOverflowTooltip: true },
-    { label: '品种编码', prop: 'Varietie_Code_New', minWidth: 120, showOverflowTooltip: true },
+    ...(showXsxx
+      ? [{ label: '线上线下', minWidth: 90, align: 'center', slot: 'xsxxJc' }]
+      : []),
+    { label: '品种(材料)编码', prop: 'Varietie_Code_New', minWidth: 120, showOverflowTooltip: true },
     { label: '品种全称', prop: 'Varietie_Name', minWidth: 150, showOverflowTooltip: true },
     { label: '型号/规格', prop: 'Specification_Or_Type', minWidth: 120, showOverflowTooltip: true },
     { label: '单位', prop: 'Unit', minWidth: 60, align: 'center' },
-    { label: '生产企业', prop: 'Manufacturing_Ent_Name', minWidth: 120, showOverflowTooltip: true },
-    { label: '价格', prop: 'Supply_Price', minWidth: 75, align: 'right' },
+    { label: '生产企业名称', prop: 'Manufacturing_Ent_Name', minWidth: 120, showOverflowTooltip: true },
+    { label: '供应商名称', prop: 'supplier_name', minWidth: 130, showOverflowTooltip: true },
+    {
+      label: '价格',
+      minWidth: 80,
+      align: 'right',
+      prop: isCg ? 'Purchase_Price' : 'Supply_Price',
+      slot: 'detailPrice'
+    },
     { label: '系数', prop: 'Coefficient', minWidth: 60, align: 'center' },
-    { label: '备货/包', prop: 'Stock_Up_Plan_Def_Quantity', minWidth: 80, align: 'center' },
-    { label: '备货/散', prop: 'Stock_Up_Plan_Goods_Quantity', minWidth: 80, align: 'center' },
+    { label: '备货数（包）', prop: 'Stock_Up_Plan_Def_Quantity', minWidth: 90, align: 'center' },
+    { label: '备货数（散）', prop: 'Stock_Up_Plan_Goods_Quantity', minWidth: 90, align: 'center' },
     { label: '实收数量', prop: 'ReceiptQty', minWidth: 85, align: 'center' },
-    { label: '备货时间', prop: 'Plan_Time', minWidth: 105 },
-    { label: '供应商名称', prop: 'supplier_name', minWidth: 130, showOverflowTooltip: true }
+    { label: '备货时间', prop: 'Plan_Time', minWidth: 105 }
   ];
+  return cols;
 }
 
-export function buildDeptMonitorColumns(options = '院内') {
-  const storageLabel = typeof options === 'string' ? options : options.storageLabel || '院内';
+export function buildDeptMonitorColumns(options = {}) {
+  const storageLabel =
+    typeof options === 'string' ? options : options.storageLabel || '院内';
+  const isYn = typeof options === 'object' ? options.isYn !== false : true;
+  const hp = typeof options === 'object' ? options.hp || monitorHpFlags : monitorHpFlags;
+  const goodsProp = isYn ? 'GoodsSum' : 'OutGoodsSum';
+  const defProp = isYn ? 'defSum' : 'OutdefSum';
+  const packProp = isYn ? 'PackQty' : 'OutPackQty';
   const cols = [
     selectionCol('left'),
     { label: '品种（材料）编码', prop: 'Varietie_Code_New', minWidth: 160, showOverflowTooltip: true },
@@ -234,8 +356,9 @@ export function buildDeptMonitorColumns(options = '院内') {
     { label: '库存(上架)', prop: 'deptStockSum', minWidth: 120, align: 'center' },
     { label: '库存(暂借)', prop: 'deptStockSum2', minWidth: 120, align: 'center' },
     { label: '补货在途', prop: 'DeptOnwaySum', minWidth: 120, align: 'center' },
-    { label: `散存(${storageLabel})`, prop: 'GoodsSum', minWidth: 180, align: 'center' },
-    { label: `包存(${storageLabel})`, prop: 'defSum', minWidth: 10, align: 'center' },
+    { label: `散存(${storageLabel})`, prop: goodsProp, minWidth: 140, align: 'center' },
+    { label: `包存(${storageLabel})`, prop: defProp, minWidth: 140, align: 'center' },
+    { label: `包预锁(${storageLabel})`, prop: packProp, minWidth: 120, align: 'center' },
     { label: '补货包数', minWidth: 120, align: 'center', slot: 'bhPackCount' },
     { label: '备货在途(散)', prop: 'onWay', minWidth: 120, align: 'center' },
     { label: '分组名称', prop: 'Group_Name', minWidth: 120, align: 'center', showOverflowTooltip: true },
@@ -243,9 +366,11 @@ export function buildDeptMonitorColumns(options = '院内') {
     { label: '计费编码', prop: 'CHARGING_CODE', minWidth: 120, showOverflowTooltip: true },
     { label: '是否RFID', minWidth: 120, align: 'center', slot: 'relatedRfid' },
     { label: '消耗类型', minWidth: 120, align: 'center', slot: 'consumptionType' },
-    { label: '下单类型', minWidth: 120, align: 'center', slot: 'orderType' },
-    { label: '是否库宝', minWidth: 120, align: 'center', slot: 'isKuBao' }
+    { label: '下单类型', minWidth: 120, align: 'center', slot: 'orderType' }
   ];
+  if (hp.showKubao) {
+    cols.push({ label: '是否库宝', minWidth: 100, align: 'center', slot: 'isKuBao' });
+  }
   return cols;
 }
 
@@ -253,7 +378,7 @@ export function buildDirectiveListColumns() {
   return [
     { label: '拣配单号', prop: 'Pack_Directive_Number', minWidth: 140, showOverflowTooltip: true },
     { label: '科室名称', prop: 'Dept_Two_Name', minWidth: 120, showOverflowTooltip: true },
-    { label: '创建人', prop: 'Creator', minWidth: 80, align: 'center' },
+    { label: '创建人', minWidth: 80, align: 'center', slot: 'creator' },
     { label: '创建时间', minWidth: 155, slot: 'createTime' },
     { label: '拣配状态', minWidth: 120, align: 'center', slot: 'packState' },
     { label: '操作', minWidth: 80, align: 'center', slot: 'action' }
@@ -263,67 +388,123 @@ export function buildDirectiveListColumns() {
 export function buildDirectiveDetailColumns() {
   return [
     selectionCol(),
-    { label: '品种编码', prop: 'Varietie_Code_New', minWidth: 120, showOverflowTooltip: true },
+    { label: '品种(材料)编码', prop: 'Varietie_Code_New', minWidth: 120, showOverflowTooltip: true },
     { label: '品种全称', prop: 'Varietie_Name', minWidth: 150, showOverflowTooltip: true },
-    { label: '规格型号', prop: 'Specification_Or_Type', minWidth: 120, showOverflowTooltip: true },
-    { label: '系数', prop: 'Def_No_Pkg_Coefficient', minWidth: 60, align: 'center' },
-    { label: '补货包数', prop: 'Pack_Quantity', minWidth: 120, align: 'center' },
-    { label: '供应商', prop: 'supplier_name', minWidth: 120, showOverflowTooltip: true }
+    { label: '型号/规格', prop: 'Specification_Or_Type', minWidth: 120, showOverflowTooltip: true },
+    { label: '单位', prop: 'Unit', minWidth: 60, align: 'center' },
+    { label: '生产企业名称', prop: 'Manufacturing_Ent_Name', minWidth: 120, showOverflowTooltip: true },
+    { label: '系数', prop: 'Coefficient', minWidth: 60, align: 'center' },
+    { label: '拣配数量', prop: 'Except_Pack_Quantity', minWidth: 90, align: 'center' }
   ];
 }
 
 export function buildApplyDeptColumns() {
   return [
-    { label: '配送科室', prop: 'Dept_Two_Name', minWidth: 120 },
+    { label: '二级科室编码', prop: 'dept_two_code', minWidth: 100, showOverflowTooltip: true },
+    { label: '二级科室名称', prop: 'dept_two_name', minWidth: 120, showOverflowTooltip: true },
+    { label: '未打印单据', minWidth: 90, align: 'center', slot: 'isPrint' },
+    { label: '未申领单据', prop: 'COUNT_DEPT', minWidth: 90, align: 'center' },
     { label: '院区', prop: 'STORAGE_NAME', minWidth: 80 }
   ];
 }
 
-export function buildApplyVarietieColumns() {
-  return [
+export function buildApplyVarietieColumns(hp = monitorHpFlags) {
+  const cols = [
     selectionCol(),
     { label: '院区', prop: 'NAME', minWidth: 75, align: 'center' },
-    { label: '品种编码', prop: 'Varietie_Code_New', minWidth: 125, showOverflowTooltip: true },
+    { label: '品种（材料）编码', prop: 'Varietie_Code_New', minWidth: 125, showOverflowTooltip: true },
     { label: '计费编码', prop: 'CHARGING_CODE', minWidth: 120, showOverflowTooltip: true },
     { label: '品种全称', prop: 'Varietie_Name', minWidth: 120, showOverflowTooltip: true },
     { label: '型号/规格', prop: 'Specification_Or_Type', minWidth: 120, showOverflowTooltip: true },
     { label: '单位', prop: 'Unit', minWidth: 60, align: 'center' },
-    { label: '生产企业', prop: 'Manufacturing_Ent_Name', minWidth: 120, showOverflowTooltip: true },
-    { label: '供应商', prop: 'supplier_name', minWidth: 120, showOverflowTooltip: true },
-    { label: '散货库存', prop: 'Goodsstock', minWidth: 120, align: 'right' },
-    { label: '生产批号', prop: 'Batch', minWidth: 120, showOverflowTooltip: true },
-    { label: '生产日期', prop: 'Batch_Production_Date', minWidth: 125 },
-    { label: '失效日期', prop: 'Batch_Validity_Period', minWidth: 125 },
-    { label: '申领数量', minWidth: 120, align: 'center', slot: 'applySum' },
-    { label: '收货单号', prop: 'DELIVERY_NOTE_NUMBER', minWidth: 120, showOverflowTooltip: true }
+    { label: '生产企业名称', prop: 'Manufacturing_Ent_Name', minWidth: 120, showOverflowTooltip: true },
+    { label: '供应商名称', prop: 'supplier_name', minWidth: 120, showOverflowTooltip: true },
+    { label: '包装规格', prop: 'PAG_TYPE', minWidth: 90, showOverflowTooltip: true },
+    { label: '散货库存', prop: 'Goodsstock', minWidth: 100, align: 'right' },
+    { label: '生产批号', prop: 'Batch', minWidth: 100, showOverflowTooltip: true },
+    { label: '生产日期', minWidth: 110, slot: 'batchProdDate' },
+    { label: '失效日期', minWidth: 110, slot: 'batchValidDate' },
+    { label: '申领数量', minWidth: 100, align: 'center', slot: 'applySum' }
   ];
+  if (!hp.isHnPagType) {
+    cols.push(
+      { label: '大包装数量', prop: 'BIG_BOX_COUNT', minWidth: 100, align: 'center' },
+      { label: '中包装数量', prop: 'MIDDLE_PACKAGE_COUNT', minWidth: 100, align: 'center' }
+    );
+  }
+  cols.push({ label: '收货单号', prop: 'DELIVERY_NOTE_NUMBER', minWidth: 120, showOverflowTooltip: true });
+  return cols;
 }
 
-export function buildApplyListColumns() {
+export function buildApplyListColumns(hp = monitorHpFlags) {
+  if (hp.isSzlh || hp.isCg) {
+    return [
+      { label: '申领单号', prop: 'Operate_Number', minWidth: 140, showOverflowTooltip: true },
+      { label: '类型', minWidth: 120, align: 'center', slot: 'operateType' },
+      { label: '医商云状态', minWidth: 100, align: 'center', slot: 'sendYsy' },
+      { label: '申领状态', minWidth: 90, align: 'center', slot: 'operateState' },
+      { label: '时间', minWidth: 155, slot: 'operateTime' },
+      { label: '打印次数', prop: 'Print_Count', minWidth: 90, align: 'center' },
+      { label: '订单备注', minWidth: 90, align: 'center', slot: 'orderRemark' },
+      { label: '标记状态', minWidth: 160, showOverflowTooltip: true, slot: 'signState' },
+      { label: '标记', minWidth: 90, align: 'center', slot: 'signAction' },
+      { label: '标记备注', minWidth: 90, align: 'center', slot: 'signRemark' }
+    ];
+  }
   return [
     { label: '申领单号', prop: 'Operate_Number', minWidth: 140, showOverflowTooltip: true },
-    { label: '申领状态', minWidth: 120, align: 'center', slot: 'operateState' },
-    { label: '申领类型', minWidth: 120, align: 'center', slot: 'operateType' },
-    { label: '创建时间', prop: 'Create_Time', minWidth: 155 },
-    { label: '创建人', prop: 'Creator', minWidth: 100, align: 'center' },
-    { label: '是否标记', prop: 'is_sign', minWidth: 120, align: 'center' },
-    { label: '是否打印', prop: 'is_Print', minWidth: 120, align: 'center' }
+    { label: '类型', minWidth: 120, align: 'center', slot: 'operateType' },
+    { label: '申领状态', minWidth: 90, align: 'center', slot: 'operateState' },
+    { label: '打印次数', prop: 'Print_Count', minWidth: 90, align: 'center' },
+    { label: '备注', minWidth: 80, align: 'center', slot: 'orderRemark' },
+    { label: '推送HIS状态', minWidth: 110, align: 'center', slot: 'sendHisState' },
+    { label: '推送HIS', minWidth: 90, align: 'center', slot: 'sendHisAction' },
+    { label: '时间', minWidth: 155, slot: 'operateTime' },
+    { label: '标记状态', minWidth: 160, showOverflowTooltip: true, slot: 'signState' },
+    { label: '标记', minWidth: 90, align: 'center', slot: 'signAction' },
+    { label: '标记备注', minWidth: 90, align: 'center', slot: 'signRemark' },
+    { label: '订单类型(改)', minWidth: 110, align: 'center', slot: 'orderTypeEdit' },
+    { label: '订单类型', minWidth: 90, align: 'center', slot: 'orderType' },
+    { label: '订单类型备注', prop: 'ORDER_TYPE_MARK', minWidth: 120, showOverflowTooltip: true },
+    { label: '同步计划', minWidth: 90, align: 'center', slot: 'syncPlan' }
   ];
 }
 
-export function buildApplyDetailColumns() {
-  return [
+export function buildApplyDetailColumns(options = {}) {
+  const showErp = options.showErp ?? hasMonitorPermission('上药ERP品种编码');
+  const showStorageTwo = options.showStorageTwo ?? hasMonitorPermission('仓库-二级仓库');
+  const isNew = options.isNew ?? false;
+  const cols = [
     selectionCol(),
-    { label: '品种编码', prop: 'Varietie_Code_New', minWidth: 120, showOverflowTooltip: true },
-    { label: '品种全称', prop: 'Varietie_Name', minWidth: 160, showOverflowTooltip: true },
-    { label: '规格型号', prop: 'Specification_Or_Type', minWidth: 120, showOverflowTooltip: true },
-    { label: '单位', prop: 'Unit', minWidth: 60, align: 'center' },
-    { label: '批号', prop: 'Batch', minWidth: 90, showOverflowTooltip: true },
+    { type: 'index', label: '序号', width: 55, align: 'center', columnKey: 'index' },
+    { label: '库区院房', prop: 'STORAGE_NAME', minWidth: 90, showOverflowTooltip: true },
+    { label: '品种（材料）编码', prop: 'Varietie_Code_New', minWidth: 120, showOverflowTooltip: true },
+    { label: '计费编码', prop: 'CHARGING_CODE', minWidth: 110, showOverflowTooltip: true },
+    ...(showErp
+      ? [{ label: 'ERP操作码', prop: 'SPH_ERP_VARIETIE_CODE', minWidth: 110, showOverflowTooltip: true }]
+      : []),
+    { label: '品种全称', prop: 'Varietie_Name', minWidth: 140, showOverflowTooltip: true },
+    { label: '型号/规格', prop: 'Specification_Or_Type', minWidth: 110, showOverflowTooltip: true },
     { label: '申领数量', prop: 'quanity', minWidth: 85, align: 'center' },
-    { label: '供应商', prop: 'supplier_name', minWidth: 120, showOverflowTooltip: true },
-    { label: '收货库区', minWidth: 120, align: 'center', slot: 'storageName' },
-    { label: '价格', prop: 'supply_price', minWidth: 80, align: 'right' }
+    { label: '价格', prop: 'supply_price', minWidth: 80, align: 'right' },
+    { label: '最近出库价', minWidth: 100, align: 'right', slot: 'zjSupplyPrice' },
+    { label: '单位', prop: 'Unit', minWidth: 60, align: 'center' },
+    { label: '生产企业名称', prop: 'Manufacturing_Ent_Name', minWidth: 120, showOverflowTooltip: true },
+    { label: '供应商名称', prop: 'supplier_name', minWidth: 120, showOverflowTooltip: true },
+    { label: '散货库存', minWidth: 120, showOverflowTooltip: true, slot: 'goodsStock' },
+    { label: '生产批号', prop: 'Batch', minWidth: 100, showOverflowTooltip: true },
+    { label: '生产日期', minWidth: 110, slot: 'batchProdDate' },
+    { label: '失效日期', minWidth: 110, slot: 'batchValidDate' },
+    ...(showStorageTwo
+      ? [{ label: '仓库位置', prop: 'STORAGE_TWO_NAME', minWidth: 100, showOverflowTooltip: true }]
+      : []),
+    { label: '计划单号', prop: 'Plan_Number', minWidth: 120, showOverflowTooltip: true },
+    { label: '备注', prop: 'SQREMARK', minWidth: 100, showOverflowTooltip: true },
+    { label: '科室备注', prop: 'SPDBZ', minWidth: 100, showOverflowTooltip: true },
+    { label: '关联计划', minWidth: 90, align: 'center', slot: 'linkPlan' },
+    ...(isNew ? [{ label: '操作', minWidth: 70, align: 'center', fixed: 'right', slot: 'detailAction' }] : [])
   ];
+  return cols;
 }
 
 export function exportCentralMonitorExcel(rows) {
