@@ -262,8 +262,8 @@
             resizable: false,
             slot: 'action',
             showOverflowTooltip: true,
-            className: 'action-col'
-            //fixed: 'right'
+            className: 'action-col',
+            fixed: 'right'
           },
           {
             prop: 'ID',
