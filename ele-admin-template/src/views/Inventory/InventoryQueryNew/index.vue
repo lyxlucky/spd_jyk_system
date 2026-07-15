@@ -14,6 +14,7 @@
         :exporting-inventory="exportingInventory"
         :generating="generating"
         @search="reloadMain"
+        @advanced-change="onAdvancedChange"
         @summary="summaryVisible = true"
         @supplier-summary="supplierSummaryVisible = true"
         @export-center-defs="onExportCenterDefs"
@@ -28,8 +29,7 @@
         @lock-view="onLockView"
       />
 
-      <div class="spd-panel spd-table-panel">
-        <div class="spd-panel__head">库存汇总</div>
+      <div class="spd-panel spd-table-panel spd-table-panel--main">
         <div class="spd-table-panel__wrap">
           <ele-pro-table
             ref="mainTable"
@@ -38,8 +38,10 @@
             border
             stripe
             highlight-current-row
-            :toolbar="false"
-            :height="tableHeight"
+            title="库存汇总"
+            :toolkit="['reload', 'size', 'columns', 'fullscreen']"
+            :columns-sort="true"
+            :height="mainTableHeight"
             :columns="mainColumns"
             :datasource="mainDatasource"
             :selection.sync="mainSelection"
@@ -47,8 +49,10 @@
             :page-sizes="[10, 30, 60, 90, 150, 300]"
             :row-class-name="mainRowClassName"
             cache-key="InventoryQueryNewMain"
+            @done="onTableLayoutDone"
             @current-change="onMainRowChange"
             @sort-change="onMainSortChange"
+            @row-contextmenu="onMainContextMenu"
           >
             <template v-slot:upShelfState="{ row }">
               {{ fmtMainUpShelfState(row) }}
@@ -83,7 +87,7 @@
         @move-defs="onMoveDefs"
       />
 
-      <div class="spd-panel spd-table-panel">
+      <div class="spd-panel spd-table-panel spd-table-panel--detail">
         <div class="spd-table-panel__wrap">
           <ele-pro-table
             ref="detailTable"
@@ -91,14 +95,17 @@
             size="mini"
             border
             stripe
-            :toolbar="false"
-            :height="tableHeight"
+            title=""
+            :toolkit="['reload', 'size', 'columns', 'fullscreen']"
+            :columns-sort="true"
+            :height="detailTableHeight"
             :columns="detailColumns"
             :datasource="detailDatasource"
             :selection.sync="detailSelection"
             :page-size="10"
             :page-sizes="[10, 30, 60, 90, 150, 300]"
             cache-key="InventoryQueryNewDetail"
+            @done="onTableLayoutDone"
             @sort-change="onDetailSortChange"
           >
             <template v-slot:batchValidity="{ row }">
@@ -143,6 +150,17 @@
         <el-button type="primary" :loading="simpleLoading" @click="onSimpleConfirm">确定</el-button>
       </div>
     </el-dialog>
+
+    <ul
+      v-show="ctxMenuVisible"
+      class="inv-ctx-menu"
+      :style="{ left: ctxMenuX + 'px', top: ctxMenuY + 'px' }"
+      @contextmenu.prevent
+    >
+      <li @click="onCtxLock('goods')">查看散货锁定</li>
+      <li @click="onCtxLock('def')">查看定数包锁定</li>
+      <li @click="onCtxLock('prelock')">查看定数包预锁</li>
+    </ul>
   </div>
 </template>
 
@@ -221,7 +239,10 @@ export default {
   },
   data() {
     return {
-      tableHeight: 'calc((100vh - 520px) / 2)',
+      mainTableHeight: 395,
+      detailTableHeight: 395,
+      advancedOpen: false,
+      layoutTimer: null,
       mainWhere: defaultMainWhere(),
       mainSort: { field: '', order: '' },
       detailSort: { field: '', order: '' },
@@ -259,7 +280,10 @@ export default {
       simpleDialogTitle: '',
       simpleDialogMode: '',
       simpleInputValue: '',
-      simpleLoading: false
+      simpleLoading: false,
+      ctxMenuVisible: false,
+      ctxMenuX: 0,
+      ctxMenuY: 0
     };
   },
   computed: {
@@ -282,6 +306,22 @@ export default {
   created() {
     this.initPage();
   },
+  mounted() {
+    document.addEventListener('click', this.hideCtxMenu);
+    window.addEventListener('resize', this.scheduleUpdateHeights);
+    // 表格内部滚动吞掉滚轮时，允许把滚动交给页面，从而滑到下方明细表
+    this.$el.addEventListener('wheel', this.onPageWheel, { passive: false });
+    this.$nextTick(() => {
+      this.updateTableHeights();
+      requestAnimationFrame(() => this.updateTableHeights());
+    });
+  },
+  beforeDestroy() {
+    document.removeEventListener('click', this.hideCtxMenu);
+    window.removeEventListener('resize', this.scheduleUpdateHeights);
+    this.$el?.removeEventListener('wheel', this.onPageWheel);
+    if (this.layoutTimer) clearTimeout(this.layoutTimer);
+  },
   methods: {
     fmtDate10,
     fmtMainUpShelfState,
@@ -291,6 +331,65 @@ export default {
     isContractExpired(val) {
       if (!val) return false;
       return new Date(fmtDate10(val)).getTime() <= Date.now();
+    },
+    onAdvancedChange(open) {
+      this.advancedOpen = !!open;
+      this.scheduleUpdateHeights();
+    },
+    onTableLayoutDone() {
+      this.scheduleUpdateHeights();
+    },
+    scheduleUpdateHeights() {
+      if (this.layoutTimer) clearTimeout(this.layoutTimer);
+      this.layoutTimer = setTimeout(() => {
+        this.updateTableHeights();
+        this.layoutTimer = null;
+      }, 50);
+    },
+    /** 表格滚轮到顶/底后转交外层页面滚动，避免卡在主表滑不动下面 */
+    onPageWheel(e) {
+      const scrollRoot = this.$el;
+      if (!scrollRoot) return;
+      const tableBody = e.target?.closest?.('.el-table__body-wrapper');
+      if (!tableBody) return;
+      const delta = e.deltaY;
+      if (!delta) return;
+      const noInnerScroll = tableBody.scrollHeight <= tableBody.clientHeight + 1;
+      const atTop = tableBody.scrollTop <= 0;
+      const atBottom =
+        tableBody.scrollTop + tableBody.clientHeight >= tableBody.scrollHeight - 1;
+      const passToPage =
+        noInnerScroll || (delta < 0 && atTop) || (delta > 0 && atBottom);
+      if (!passToPage) return;
+      const maxScroll = scrollRoot.scrollHeight - scrollRoot.clientHeight;
+      if (maxScroll <= 0) return;
+      const next = Math.min(maxScroll, Math.max(0, scrollRoot.scrollTop + delta));
+      if (next === scrollRoot.scrollTop) return;
+      scrollRoot.scrollTop = next;
+      e.preventDefault();
+    },
+    /**
+     * 对齐老系统 invNew_box / invNew2_box 固定 height:395px。
+     * 视口仍有富余时，剩余空间均分给上下两表再抬高。
+     */
+    updateTableHeights() {
+      const root = this.$el;
+      if (!root) return;
+      const OLD_BOX = 395;
+      const PAGE_H = 46;
+      const search = root.querySelector('.inv-query-search');
+      const detailBar = root.querySelector('.inv-query-detail-bar');
+      const top = root.getBoundingClientRect?.().top ?? 88;
+      const avail =
+        window.innerHeight -
+        top -
+        (search?.offsetHeight || 0) -
+        (detailBar?.offsetHeight || 0) -
+        16;
+      const eachBox = Math.max(OLD_BOX, Math.floor(avail / 2));
+      const tableH = Math.max(360, eachBox - PAGE_H);
+      this.mainTableHeight = tableH;
+      this.detailTableHeight = tableH;
     },
     async initPage() {
       try {
@@ -583,39 +682,51 @@ export default {
         Message.warning('请先选择主表行');
         return;
       }
-      this.moveMode = 'defs';
-      this.moveTarget = target;
-      this.moveDialogTitle = MOVE_DEFS_TITLE[target] || '定数码移区';
-      this.moveMaxQty = 0;
-      this.moveDialogVisible = true;
+      const title = MOVE_DEFS_TITLE[target] || '定数码移区';
+      MessageBox.confirm(`确认将选中定数码${title}？`, '提示', { type: 'warning' })
+        .then(async () => {
+          this.moveLoading = true;
+          try {
+            const storageId =
+              this.detailSelection[0]?.Storage_Id || this.detailCtx.storageId || '';
+            const defArray = JSON.stringify(
+              this.detailSelection.map((r) => r.Def_No_Pkg_Code)
+            );
+            await removeDefsTo(target, {
+              storageId,
+              sourceFrom: this.detailCtx.sourceFrom,
+              batchId: this.detailCtx.batchId,
+              varietieCode: this.detailCtx.varietieCode,
+              batch: this.detailCtx.batch,
+              currUpShelfState: this.detailCtx.currUpShelfState,
+              Supply_Price: this.detailCtx.supplyPrice,
+              defArray
+            });
+            Message.success('移区成功');
+            this.reloadMain();
+            this.reloadDetail();
+          } catch (e) {
+            Message.error(e.message || '移区失败');
+          } finally {
+            this.moveLoading = false;
+          }
+        })
+        .catch(() => {});
     },
     async onMoveConfirm(quantity) {
       this.moveLoading = true;
       try {
-        if (this.moveMode === 'goods') {
-          const row = this.selectedMainRow;
-          const ctx = rowToDetailCtx(row);
-          await removeGoodsTo(this.moveTarget, {
-            storageId: ctx.storageId,
-            batchId: ctx.batchId,
-            varietieCode: ctx.varietieCode,
-            batch: ctx.batch,
-            currUpShelfState: ctx.currUpShelfState,
-            quantity,
-            Supply_Price: ctx.supplyPrice
-          });
-        } else {
-          const defArray = JSON.stringify(this.detailSelection.map((r) => r.Def_No_Pkg_Code));
-          await removeDefsTo(this.moveTarget, {
-            storageId: this.detailCtx.storageId,
-            sourceFrom: this.detailCtx.sourceFrom,
-            batchId: this.detailCtx.batchId,
-            varietieCode: this.detailCtx.varietieCode,
-            batch: this.detailCtx.batch,
-            currUpShelfState: this.detailCtx.currUpShelfState,
-            defArray
-          });
-        }
+        const row = this.selectedMainRow;
+        const ctx = rowToDetailCtx(row);
+        await removeGoodsTo(this.moveTarget, {
+          storageId: ctx.storageId,
+          batchId: ctx.batchId,
+          varietieCode: ctx.varietieCode,
+          batch: ctx.batch,
+          currUpShelfState: ctx.currUpShelfState,
+          quantity,
+          Supply_Price: ctx.supplyPrice
+        });
         Message.success('移区成功');
         this.moveDialogVisible = false;
         this.reloadMain();
@@ -625,6 +736,26 @@ export default {
       } finally {
         this.moveLoading = false;
       }
+    },
+    onMainContextMenu(row, _column, event) {
+      if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+      if (row) {
+        this.selectedMainRow = row;
+        this.detailCtx = rowToDetailCtx(row);
+      }
+      this.ctxMenuX = event?.clientX || 0;
+      this.ctxMenuY = event?.clientY || 0;
+      this.ctxMenuVisible = true;
+    },
+    hideCtxMenu() {
+      this.ctxMenuVisible = false;
+    },
+    onCtxLock(type) {
+      this.hideCtxMenu();
+      this.onLockView(type);
     },
     onLockView(type) {
       const row = this.getActiveMainRow();
@@ -641,24 +772,48 @@ export default {
 </script>
 
 <style scoped>
-.inv-query-page .page-card {
+.inv-query-page {
   height: calc(100vh - 88px);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
+  min-height: 0;
+  /* 页面自身滚动，才能滑到下方定数码列表 */
+  overflow: auto;
+  overflow-x: hidden;
+}
+.inv-query-page .page-card {
+  min-height: 100%;
+  height: auto;
+  display: block;
+  overflow: visible;
 }
 .inv-query-page .page-card >>> .el-card__body {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  overflow: auto;
-  padding: 12px;
+  display: block;
+  overflow: visible;
+  padding: 8px 12px;
+  box-sizing: border-box;
+}
+.inv-query-page .inv-query-search {
+  position: relative;
+  z-index: 5;
+  background: #fff;
 }
 .inv-query-page .spd-table-panel {
-  flex-shrink: 0;
+  display: block;
+  margin-top: 6px;
+  overflow: visible;
 }
 .inv-query-page .spd-table-panel__wrap {
-  min-height: 0;
+  display: block;
+  overflow: visible;
+}
+.inv-query-page .spd-table-panel__wrap >>> .el-pagination {
+  padding: 4px 0 8px;
+  margin: 0;
+}
+.inv-query-page .inv-query-detail-bar {
+  position: relative;
+  z-index: 3;
+  background: #fff;
+  margin-top: 4px;
 }
 .text-danger {
   color: #f56c6c;
@@ -671,5 +826,25 @@ export default {
 }
 ::v-deep .inv-query-row-warning90 td {
   background-color: rgba(255, 255, 0, 0.2) !important;
+}
+.inv-ctx-menu {
+  position: fixed;
+  z-index: 3000;
+  margin: 0;
+  padding: 4px 0;
+  list-style: none;
+  min-width: 140px;
+  background: #304156;
+  border-radius: 2px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+.inv-ctx-menu li {
+  padding: 8px 14px;
+  color: #fff;
+  font-size: 13px;
+  cursor: pointer;
+}
+.inv-ctx-menu li:hover {
+  background: #409eff;
 }
 </style>

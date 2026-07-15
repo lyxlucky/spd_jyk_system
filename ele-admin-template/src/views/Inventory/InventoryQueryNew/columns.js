@@ -66,7 +66,7 @@ export function buildMainColumns(opts = {}) {
       label: '平台合同编码',
       minWidth: 100,
       showOverflowTooltip: true,
-      hide: isStHospital()
+      hide: !isStHospital()
     },
     { prop: 'YG_CODE', label: '阳光产品码', minWidth: 90, showOverflowTooltip: true },
     { prop: 'Manufacturing_Ent_Name', label: '生产企业名称', minWidth: 120, showOverflowTooltip: true },
