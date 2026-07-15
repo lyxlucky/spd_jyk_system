@@ -101,9 +101,19 @@
 
             <el-form-item label="审批时间" class="cell cell--date">
               <div class="date-range">
-                <el-date-picker v-model="where.priceChangeTimeStart" type="date" placeholder="开始日期" />
+                <el-date-picker
+                  v-model="where.priceChangeTimeStart"
+                  type="date"
+                  value-format="yyyy-MM-dd"
+                  placeholder="开始日期"
+                />
                 <span class="date-sep">~</span>
-                <el-date-picker v-model="where.priceChangeTimeEnd" type="date" placeholder="结束日期" />
+                <el-date-picker
+                  v-model="where.priceChangeTimeEnd"
+                  type="date"
+                  value-format="yyyy-MM-dd"
+                  placeholder="结束日期"
+                />
               </div>
             </el-form-item>
 
@@ -178,7 +188,7 @@ export default {
         UDI_TOP: '',
         BZ_TI: '',
         JF_BJ: '',
-        IS_HANG_UP: ''
+        IS_HANG_UP: '0'
       }
     };
   },

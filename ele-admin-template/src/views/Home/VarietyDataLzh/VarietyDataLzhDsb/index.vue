@@ -171,7 +171,7 @@
               </el-tag>
             </template>
           </el-table-column>
-          <el-table-column label="操作" width="120" align="center" fixed="right">
+          <el-table-column label="操作" width="140" align="center" fixed="right">
             <template slot-scope="scope">
               <el-button type="text" size="mini" icon="el-icon-edit-outline" @click="editDetail(scope.row)">编辑</el-button>
               <el-button type="text" size="mini" class="ele-text-danger" icon="el-icon-delete" @click="deleteDetail(scope.row)">删除</el-button>

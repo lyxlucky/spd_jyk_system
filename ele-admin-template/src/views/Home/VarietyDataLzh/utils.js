@@ -1,19 +1,47 @@
 /**
- * 按钮/导出权限（对齐旧系统 Permission_Url，如 export-VarietyDataLzhDc）
+ * 按钮/导出权限（对齐旧系统 Permission_Url）
+ * 市二(szse*)：缺权限时隐藏导出；其他院始终显示导出类按钮的「是否有码」判定可放宽为 true
  */
+import { HOME_HP } from '@/config/setting';
+
 export function hasExportPermission(store, key) {
-  if (!key) {
-    return true;
+  if (!key) return true;
+  const isSzse = String(HOME_HP || '').startsWith('szse');
+  if (!isSzse) {
+    // 非市二：与老系统一致，export-permission 默认可见
+    if (String(key).startsWith('export-')) return true;
   }
   if (process.env.NODE_ENV === 'development') {
     return true;
   }
   const authorities = store?.state?.user?.authorities || [];
-  if (authorities.includes(key)) {
-    return true;
-  }
+  if (authorities.includes(key)) return true;
   const pg = store?.state?.user?.info?.permission_group || [];
   return pg.some((p) =>
     [p.component, p.path, p.title, p.Permission_Url, p.PERMISSION_URL].some((v) => v === key)
+  );
+}
+
+/** 是否禁用品种资料编辑（隐藏启用/删除等需编辑权限的按钮） */
+export function isVarietyEditDisabled(store) {
+  const pg = store?.state?.user?.info?.permission_group || [];
+  const authorities = store?.state?.user?.authorities || [];
+  if (authorities.includes('禁用品种资料编辑')) return true;
+  return pg.some((p) =>
+    [p.component, p.path, p.title, p.Permission_Url, p.PERMISSION_URL].some(
+      (v) => v === '禁用品种资料编辑'
+    )
+  );
+}
+
+/** 基础资料-品种启用权限 */
+export function canEnableVariety(store) {
+  const pg = store?.state?.user?.info?.permission_group || [];
+  const authorities = store?.state?.user?.authorities || [];
+  if (authorities.includes('基础资料-品种启用')) return true;
+  return pg.some((p) =>
+    [p.component, p.path, p.title, p.Permission_Url, p.PERMISSION_URL].some(
+      (v) => v === '基础资料-品种启用'
+    )
   );
 }
