@@ -15,9 +15,29 @@ export function openExcelFile(fileName) {
   }
 }
 
+/**
+ * 导出权限（对齐老系统 Home.cshtml）
+ * - 非市二：export-* 默认可见
+ * - 市二(szse*)：需有对应 Permission_Url
+ * - 开发环境：始终可见
+ */
 export function hasExportPermission(permissionUrl) {
+  if (!permissionUrl) return true;
+  const isSzse = String(HOME_HP || '').startsWith('szse');
+  if (!isSzse && String(permissionUrl).startsWith('export-')) {
+    return true;
+  }
+  if (process.env.NODE_ENV === 'development') {
+    return true;
+  }
+  const authorities = store?.state?.user?.authorities || [];
+  if (authorities.includes(permissionUrl)) return true;
   const list = store?.state?.user?.info?.permission_group || [];
-  return list.some((p) => p.Permission_Url === permissionUrl);
+  return list.some((p) =>
+    [p.Permission_Url, p.PERMISSION_URL, p.component, p.path, p.title].some(
+      (v) => v === permissionUrl
+    )
+  );
 }
 
 export function buildUserDeptCodes() {

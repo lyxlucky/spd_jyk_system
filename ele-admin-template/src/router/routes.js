@@ -383,6 +383,11 @@ export function getMenuRoutes(menus, homePath) {
       meta: { title: '品种资料审批' }
     });
     routes.push({
+      path: '/Home/VarietyHealthCode',
+      component: () => import('@/views/Home/VarietyHealthCode/index.vue'),
+      meta: { title: '品种医保对码' }
+    });
+    routes.push({
       path: '/Home/SupplierScoreLast',
       component: () => import('@/views/Home/SupplierScoreLast/index.vue'),
       meta: { title: '供应商评价(华南)' }
