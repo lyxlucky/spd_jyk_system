@@ -13,9 +13,12 @@ export async function QueryPageLayUI(data) {
     var data2 = {};
     data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
     data2.varietieCode = data.where.varietieCode ? data.where.varietieCode : '';
-    data2.enable = data.where.enable ? data.where.enable : '1';
+    // enable='' 表示全部；不能用三元假值判断，否则会把「全部」回落成「启用」
+    data2.enable =
+      data.where.enable === undefined || data.where.enable === null
+        ? '1'
+        : data.where.enable;
     data2.varietieName = data.where.varietieName ? data.where.varietieName : '';
-    // data2.enable = data.where.enable ? data.where.enable : '';
     data2.state = data.where.state ? data.where.state : '';
 
     data2.IS_CHARGE = data.where.IS_CHARGE ? data.where.IS_CHARGE : '-1';
