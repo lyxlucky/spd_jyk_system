@@ -113,6 +113,11 @@ export function getMenuRoutes(menus, homePath) {
       meta: { title: 'HIS消耗数据管理' }
     });
     routes.push({
+      path: '/Settle/ReadjustPrice',
+      component: () => import('@/views/Settle/ReadjustPrice/index.vue'),
+      meta: { title: '品种调价计划' }
+    });
+    routes.push({
       path: '/KSInventory/KSConsumeQueryTemp',
       component: () => import('@/views/KSInventory/KSConsumeQueryTemp/index.vue'),
       meta: { title: '科室消耗查询V2' }
