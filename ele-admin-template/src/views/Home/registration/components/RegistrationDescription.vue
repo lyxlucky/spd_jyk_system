@@ -61,6 +61,9 @@
       <el-descriptions-item label="品牌：">{{
         current.Brand
       }}</el-descriptions-item>
+      <el-descriptions-item label="产地信息：">{{
+        formatOrigin(current.ORIGIN_TYPE ?? current.ORIGIN ?? current.ORIGIN_NAME)
+      }}</el-descriptions-item>
     </el-descriptions>
 
     <!-- 第二大行 -->
@@ -122,7 +125,7 @@
       <el-descriptions-item label="品种授权书：">
         <div class="image-container" v-viewer>
           <template v-for="(item, index) in varPicCurrent">
-            <div :key="index" v-if="item.TYPE == 3">
+            <div :key="index" v-if="item.TYPE == 4">
               <img
                 class="image"
                 v-if="item?.PIC_URL && !item.PIC_URL.includes('pdf')"
@@ -139,7 +142,7 @@
       <el-descriptions-item label="厂家营业执照：">
         <div class="image-container" v-viewer>
           <template v-for="(item, index) in varPicCurrent">
-            <div :key="index" v-if="item.TYPE == 3">
+            <div :key="index" v-if="item.TYPE == 5">
               <img
                 class="image"
                 v-if="item?.PIC_URL && !item.PIC_URL.includes('pdf')"
@@ -155,7 +158,7 @@
       <el-descriptions-item label="厂家生产许可证：">
         <div class="image-container" v-viewer>
           <template v-for="(item, index) in varPicCurrent">
-            <div :key="index" v-if="item.TYPE == 3">
+            <div :key="index" v-if="item.TYPE == 6">
               <img
                 class="image"
                 v-if="item?.PIC_URL && !item.PIC_URL.includes('pdf')"
@@ -174,6 +177,16 @@
 <script>
   import { BACK_BASE_URL } from '@/config/setting';
   import { getVarPic } from '@/api/Home/registration/index';
+
+  const ORIGIN_MAP = {
+    '0': '默认',
+    '1': '国外',
+    '2': '国内省外',
+    '3': '省内市外',
+    '4': '市内区外',
+    '5': '区内'
+  };
+
   export default {
     name: 'registrationDescription',
     data() {
@@ -194,6 +207,11 @@
       };
     },
     methods: {
+      formatOrigin(val) {
+        if (val == null || val === '') return '';
+        const key = String(val);
+        return ORIGIN_MAP[key] || key;
+      },
       downloadPDf(url) {
         let pdfUrl = BACK_BASE_URL + this.picturePrefix + url;
         window.open(pdfUrl);
@@ -207,7 +225,11 @@
     created() {},
     mounted() {
       this.$bus.$on(`${this.$route.path}/handleCurrent`, (val) => {
-        this.current = val;
+        this.current = val || {};
+        if (!val?.PROD_REGISTRATION_CODE) {
+          this.varPicCurrent = [];
+          return;
+        }
         getVarPic({ code: val.PROD_REGISTRATION_CODE }).then((res) => {
           if (res.code == 200) {
             this.varPicCurrent = res.result;

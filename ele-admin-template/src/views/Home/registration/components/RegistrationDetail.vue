@@ -230,6 +230,35 @@
             </el-select>
           </el-descriptions-item>
 
+          <!-- 产地信息 | 医用耗材级别 -->
+          <el-descriptions-item label="产地信息">
+            <el-select v-model="where.current.ORIGIN_TYPE" placeholder="请选择" size="mini" style="width: 100%">
+              <el-option label="默认" value="0" />
+              <el-option label="国外" value="1" />
+              <el-option label="国内省外" value="2" />
+              <el-option label="省内市外" value="3" />
+              <el-option label="市内区外" value="4" />
+              <el-option label="区内" value="5" />
+            </el-select>
+          </el-descriptions-item>
+          <el-descriptions-item label="医用耗材级别">
+            <div
+              v-if="!editing.PRO_MEDICAL_CONSUMABLE_GRADE"
+              @click="enableEdit('PRO_MEDICAL_CONSUMABLE_GRADE')"
+            >
+              {{ where.current.PRO_MEDICAL_CONSUMABLE_GRADE || '空' }}
+            </div>
+            <el-input
+              v-else
+              size="mini"
+              v-model="where.current.PRO_MEDICAL_CONSUMABLE_GRADE"
+              @blur="saveEdit('PRO_MEDICAL_CONSUMABLE_GRADE')"
+              @keydown.enter="saveEdit('PRO_MEDICAL_CONSUMABLE_GRADE')"
+              @keydown.esc="cancelEdit('PRO_MEDICAL_CONSUMABLE_GRADE')"
+              :ref="'input-PRO_MEDICAL_CONSUMABLE_GRADE'"
+            />
+          </el-descriptions-item>
+
           <!-- 第8行 -->
           <el-descriptions-item label="储存条件">
             <el-select
@@ -697,6 +726,7 @@
           >取 消</el-button
         >
         <el-button
+          v-if="canEditProd"
           size="mini"
           icon="el-icon-check"
           type="primary"
@@ -765,7 +795,8 @@
           Brand: false,
           SCOPE_APPLICATION: false,
           STRUCTURE_COMPOSITION: false,
-          QXBZ: false
+          QXBZ: false,
+          PRO_MEDICAL_CONSUMABLE_GRADE: false
         },
         oneoffSterilizationOptions: [
           { value: '1', label: '是' },
@@ -1008,6 +1039,15 @@
     computed: {
       BACK_BASE_URL() {
         return BACK_BASE_URL;
+      },
+      /** 无「禁用注册证编辑」权限时允许保存 */
+      canEditProd() {
+        const list = this.$store.state.user?.info?.permission_group || [];
+        const blocked = list.some(
+          (p) =>
+            (p.Permission_Url || p.permission_url || p.component || '') === '禁用注册证编辑'
+        );
+        return !blocked;
       }
     }
   };
