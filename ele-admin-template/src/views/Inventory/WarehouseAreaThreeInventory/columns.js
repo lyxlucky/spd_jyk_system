@@ -42,6 +42,42 @@ export function getWarehouseMaterialColumns() {
   ];
 }
 
+export function getMaterialLocationSummaryColumns() {
+  return [
+    { type: 'index', label: '序号', width: 60, align: 'center', fixed: 'left' },
+    { prop: 'VARIETIE_CODE_NEW', label: '品种编码', width: 140, align: 'center', showOverflowTooltip: true },
+    { prop: 'CHARGE_CODE', label: '计费编码', width: 140, align: 'center', showOverflowTooltip: true },
+    { prop: 'VARIETIE_NAME', label: '品种名称', minWidth: 220, align: 'center', showOverflowTooltip: true },
+    { prop: 'SPECIFICATION_OR_TYPE', label: '规格型号', width: 180, align: 'center', showOverflowTooltip: true },
+    { prop: 'UNIT', label: '单位', width: 70, align: 'center', showOverflowTooltip: true },
+    { prop: 'STOCK_QTY', label: '当前总库存', width: 110, align: 'right', formatter: qtyFormatter('STOCK_QTY') },
+    { prop: 'WAREHOUSE_COUNT', label: '库房/库区数', width: 110, align: 'right' },
+    { prop: 'SPD_DEPT_COUNT', label: 'SPD科室数', width: 100, align: 'right' },
+    { prop: 'HIS_DEPT_COUNT', label: 'HIS科室数', width: 100, align: 'right' },
+    { prop: 'ABNORMAL_COUNT', label: '异常记录数', width: 105, align: 'right' },
+    { prop: 'LAST_OPERATE_TIME', label: '最近业务时间', width: 170, align: 'center', formatter: timeFormatter('LAST_OPERATE_TIME') },
+    // { columnKey: 'locationSummaryAction', label: '操作', width: 90, align: 'center', fixed: 'right', slot: 'locationSummaryAction', className: 'action-col' }
+  ];
+}
+
+export function getMaterialLocationDetailColumns() {
+  return [
+    { type: 'index', label: '序号', width: 60, align: 'center', fixed: 'left' },
+    { prop: 'AREA_CODE', label: '库房/库区编码', width: 130, align: 'center', showOverflowTooltip: true },
+    { prop: 'AREA_NAME', label: '库房/库区名称', width: 150, align: 'center', showOverflowTooltip: true },
+    { prop: 'DEPT_TWO_CODE', label: 'SPD科室编码', width: 125, align: 'center', showOverflowTooltip: true },
+    { prop: 'DEPT_TWO_NAME', label: 'SPD科室名称', width: 150, align: 'center', showOverflowTooltip: true },
+    { prop: 'DEPT_CODE', label: 'HIS科室编码', width: 120, align: 'center', showOverflowTooltip: true },
+    { prop: 'DEPT_NAME', label: 'HIS科室名称', width: 150, align: 'center', showOverflowTooltip: true },
+    { prop: 'STOCK_QTY', label: '当前库存', width: 105, align: 'right', formatter: qtyFormatter('STOCK_QTY') },
+    { prop: 'REAL_DEDUCT_QTY', label: '实际扣费', width: 100, align: 'right', formatter: qtyFormatter('REAL_DEDUCT_QTY') },
+    { prop: 'PRE_DEDUCT_QTY', label: '预扣数量', width: 100, align: 'right', formatter: qtyFormatter('PRE_DEDUCT_QTY') },
+    { prop: 'LAST_OPERATE_TIME', label: '最近业务时间', width: 170, align: 'center', formatter: timeFormatter('LAST_OPERATE_TIME') },
+    { prop: 'DATA_STATUS', label: '数据状态', width: 140, align: 'center', showOverflowTooltip: true },
+    { columnKey: 'locationDetailAction', label: '操作', width: 130, align: 'center', fixed: 'right', slot: 'locationDetailAction', className: 'action-col' }
+  ];
+}
+
 // SPD科室库存汇总表格列。
 export function getWarehouseDeptColumns() {
   return [
