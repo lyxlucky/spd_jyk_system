@@ -1,5 +1,5 @@
 import { utils, writeFile } from 'xlsx';
-import { API_BASE_URL, HOME_HP } from '@/config/setting';
+import { BACK_BASE_URL, HOME_HP } from '@/config/setting';
 import store from '@/store';
 
 /** 与老系统 Home.cshtml HN_PAG_TYPE 医院集合对齐 */
@@ -669,7 +669,9 @@ export function getClaimExcelApiPath(homeHp) {
 
 export function openExcelDownload(fileName) {
   if (!fileName) return;
-  const url = `${API_BASE_URL}/Excel/files/${fileName}`;
+  // Excel 静态文件在站点根路径，不能走 /api
+  const base = (BACK_BASE_URL || '').replace(/\/$/, '');
+  const url = `${base}/Excel/files/${encodeURIComponent(fileName)}`;
   window.open(url, '_blank');
 }
 
