@@ -58,6 +58,7 @@ export function buildWarehouseAreaThreeInventoryParams(where = {}, page = 1, siz
     AREA_CODE: where.AREA_CODE || where.WAREHOUSE_AREA_ID || '',
     DEPT_TWO_CODE: where.DEPT_TWO_CODE || '',
     CHARGE_CODE: where.CHARGE_CODE || '',
+    BARCODE_NUMBER: where.BARCODE_NUMBER || '',
     VARIETIE_CODE_NEW: where.VARIETIE_CODE_NEW || '',
     VARIETIE_NAME: where.VARIETIE_NAME || '',
     SPECIFICATION_OR_TYPE: where.SPECIFICATION_OR_TYPE || '',
@@ -109,6 +110,22 @@ export async function getDeptMaterialSummary(where, page, size) {
 export async function getMaterialDetail(where, page, size) {
   const res = await postForm(
     '/WarehouseAreaThreeInventory/GetMaterialDetail',
+    buildWarehouseAreaThreeInventoryParams(where, page, size)
+  );
+  return unwrap(res);
+}
+
+export async function getMaterialLocationSummary(where, page, size) {
+  const res = await postForm(
+    '/WarehouseAreaThreeInventory/GetMaterialLocationSummary',
+    buildWarehouseAreaThreeInventoryParams(where, page, size)
+  );
+  return unwrap(res);
+}
+
+export async function getMaterialLocationDetail(where, page, size) {
+  const res = await postForm(
+    '/WarehouseAreaThreeInventory/GetMaterialLocationDetail',
     buildWarehouseAreaThreeInventoryParams(where, page, size)
   );
   return unwrap(res);

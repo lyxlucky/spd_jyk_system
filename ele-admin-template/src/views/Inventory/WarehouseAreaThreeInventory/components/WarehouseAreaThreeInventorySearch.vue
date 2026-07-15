@@ -8,7 +8,13 @@
         @keyup.enter.native="emitSearch"
         @submit.native.prevent
       >
-        <el-form-item label="库房/库区">
+        <el-form-item label="查询方式">
+          <el-radio-group v-model="modeSync" size="mini">
+            <el-radio-button label="material">按耗材定位</el-radio-button>
+            <el-radio-button label="warehouse">按库房/库区查看</el-radio-button>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item v-if="mode === 'warehouse'" label="库房/库区">
           <el-select
             v-model="where.AREA_CODE"
             filterable
@@ -34,6 +40,9 @@
         </el-form-item>
         <el-form-item label="计费编码">
           <el-input v-model="where.CHARGE_CODE" clearable placeholder="计费编码" class="query-input" />
+        </el-form-item>
+        <el-form-item label="定数码">
+          <el-input v-model="where.BARCODE_NUMBER" clearable placeholder="定数码" class="query-input" />
         </el-form-item>
         <el-form-item label="品种编码">
           <el-input v-model="where.VARIETIE_CODE_NEW" clearable placeholder="品种编码" class="query-input" />
@@ -81,10 +90,11 @@
         <el-form-item>
           <el-button type="primary" icon="el-icon-search" @click="emitSearch">查询</el-button>
           <el-button icon="el-icon-refresh" @click="reset">重置</el-button>
-          <el-button type="success" icon="el-icon-download" :loading="exporting" @click="$emit('export')">
+          <el-button v-if="mode === 'warehouse'" type="success" icon="el-icon-download" :loading="exporting" @click="$emit('export')">
             导出
           </el-button>
           <el-button
+            v-if="mode === 'warehouse'"
             type="warning"
             icon="el-icon-upload2"
             :loading="importing"
@@ -93,6 +103,7 @@
             初始化库存
           </el-button>
           <el-button
+            v-if="mode === 'warehouse'"
             type="danger"
             icon="el-icon-connection"
             :loading="syncingHisCharge"
@@ -101,6 +112,7 @@
             同步HIS计费记录
           </el-button>
           <el-button
+            v-if="mode === 'warehouse'"
             type="primary"
             icon="el-icon-connection"
             :loading="syncingSpdInStock"
@@ -443,6 +455,7 @@ import {
 const defaultWhere = () => ({
   AREA_CODE: '',
   CHARGE_CODE: '',
+  BARCODE_NUMBER: '',
   VARIETIE_CODE_NEW: '',
   VARIETIE_NAME: '',
   SPECIFICATION_OR_TYPE: '',
@@ -467,7 +480,8 @@ const defaultSpdInStockQuery = () => ({
 export default {
   name: 'WarehouseAreaThreeInventorySearch',
   props: {
-    exporting: Boolean
+    exporting: Boolean,
+    mode: { type: String, default: 'material' }
   },
   data() {
     return {
@@ -499,8 +513,18 @@ export default {
       stockDeductTypeOptions: STOCK_DEDUCT_TYPE_OPTIONS
     };
   },
+  computed: {
+    modeSync: {
+      get() {
+        return this.mode;
+      },
+      set(value) {
+        this.$emit('mode-change', value);
+      }
+    }
+  },
   created() {
-    this.loadWarehouseOptions('', true);
+    this.loadWarehouseOptions('');
   },
   methods: {
     areaTypeName,
@@ -510,6 +534,7 @@ export default {
       return {
         AREA_CODE: this.where.AREA_CODE || '',
         CHARGE_CODE: this.where.CHARGE_CODE || '',
+        BARCODE_NUMBER: this.where.BARCODE_NUMBER || '',
         VARIETIE_CODE_NEW: this.where.VARIETIE_CODE_NEW || '',
         VARIETIE_NAME: this.where.VARIETIE_NAME || '',
         SPECIFICATION_OR_TYPE: this.where.SPECIFICATION_OR_TYPE || '',
@@ -522,7 +547,7 @@ export default {
     },
     // 触发表格查询。
     emitSearch() {
-      if (!this.where.AREA_CODE) {
+      if (this.mode === 'warehouse' && !this.where.AREA_CODE) {
         this.$message.warning('请选择库房/库区');
         return;
       }
@@ -530,9 +555,12 @@ export default {
     },
     // 重置查询条件，保留当前库房/库区。
     reset() {
-      const areaCode = this.where.AREA_CODE;
+      const areaCode = this.mode === 'warehouse' ? this.where.AREA_CODE : '';
       this.where = { ...defaultWhere(), AREA_CODE: areaCode };
       this.emitSearch();
+    },
+    setAreaCode(areaCode) {
+      this.where.AREA_CODE = areaCode || '';
     },
     // 主查询库房/库区变化时通知父组件刷新。
     onWarehouseChange() {

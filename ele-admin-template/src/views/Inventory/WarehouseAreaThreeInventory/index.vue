@@ -4,17 +4,26 @@
       <WarehouseAreaThreeInventorySearch
         ref="search"
         :exporting="exporting"
+        :mode="queryMode"
         @search="reload"
+        @mode-change="onQueryModeChange"
         @warehouse-change="onWarehouseChange"
         @export="onExport"
         @import-success="onImportSuccess"
       />
 
-      <el-tabs v-model="activeTab" class="inventory-tabs" @tab-click="onTabChange">
+      <MaterialLocationPanel
+        v-if="queryMode === 'material'"
+        ref="materialLocation"
+        @locate="openWarehouseLocation"
+        @detail="openLocationDetail"
+      />
+
+      <el-tabs v-else v-model="activeTab" class="inventory-tabs" @tab-click="onTabChange">
         <el-tab-pane label="库房维度" name="warehouse">
           <div class="spd-panel spd-table-panel">
             <div class="spd-panel__head">库房/库区耗材汇总</div>
-            <div class="spd-table-panel__wrap">
+            <div class="spd-table-panel__wrap" v-loading="warehouseJumpLoading">
               <ele-pro-table
                 ref="warehouseTable"
                 class="data-table"
@@ -22,13 +31,16 @@
                 border
                 stripe
                 :toolbar="false"
+                :init-load="false"
                 :header-overflow-hidden="false"
                 :height="warehouseTableHeight"
                 :columns="warehouseColumns"
                 :datasource="warehouseDatasource"
+                :where="lastWhere"
                 :page-size="30"
                 :page-sizes="[30, 50, 100, 150, 200, 300, 999999]"
                 cache-key="WarehouseAreaThreeInventoryWarehouseTable"
+                @done="onWarehouseTableDone"
               >
                 <template v-slot:warehouseAction="{ row }">
                   <el-link type="primary" :underline="false" @click="openDetail(row, 'warehouse')">明细</el-link>
@@ -121,6 +133,7 @@
 import { Message } from 'element-ui';
 import { utils, writeFile } from 'xlsx';
 import WarehouseAreaThreeInventorySearch from './components/WarehouseAreaThreeInventorySearch.vue';
+import MaterialLocationPanel from './components/MaterialLocationPanel.vue';
 import MaterialDetailDialog from './components/MaterialDetailDialog.vue';
 import {
   enabledName,
@@ -145,10 +158,11 @@ import {
 
 export default {
   name: 'WarehouseAreaThreeInventory',
-  components: { WarehouseAreaThreeInventorySearch, MaterialDetailDialog },
+  components: { WarehouseAreaThreeInventorySearch, MaterialLocationPanel, MaterialDetailDialog },
   data() {
     return {
       activeTab: 'warehouse',
+      queryMode: 'material',
       warehouseColumns: getWarehouseMaterialColumns(),
       deptColumns: getWarehouseDeptColumns(),
       deptMaterialColumns: getDeptMaterialColumns(),
@@ -157,6 +171,7 @@ export default {
       deptMaterialTableHeight: 'calc(100vh - 640px)',
       lastWhere: {},
       selectedDept: null,
+      warehouseJumpLoading: false,
       exporting: false,
       detailVisible: false,
       detailTitle: '',
@@ -248,6 +263,10 @@ export default {
     // 根据当前页签刷新对应表格。
     reload(where) {
       this.lastWhere = where || this.currentWhere();
+      if (this.queryMode === 'material') {
+        this.$nextTick(() => this.$refs.materialLocation && this.$refs.materialLocation.reload(this.lastWhere));
+        return;
+      }
       if (!this.requireWarehouse(this.lastWhere)) return;
       if (this.activeTab === 'warehouse') {
         this.reloadWarehouse();
@@ -259,8 +278,18 @@ export default {
     // 库房/库区切换时清空科室选择并重新加载。
     onWarehouseChange(where) {
       this.lastWhere = where || this.currentWhere();
+      if (this.queryMode !== 'warehouse') return;
       this.selectedDept = null;
       this.$nextTick(() => this.reload(this.lastWhere));
+    },
+    onQueryModeChange(mode) {
+      this.queryMode = mode === 'warehouse' ? 'warehouse' : 'material';
+      this.selectedDept = null;
+      this.lastWhere = this.currentWhere();
+      // 库房表格关闭了 init-load，切换模式后需要主动刷新。
+      if (this.queryMode === 'warehouse' && this.lastWhere?.AREA_CODE) {
+        this.$nextTick(() => this.reload(this.lastWhere));
+      }
     },
     // 导入或同步成功后按当前条件刷新页面数据。
     onImportSuccess(where) {
@@ -268,6 +297,46 @@ export default {
       if (this.lastWhere?.AREA_CODE) {
         this.reload(this.lastWhere);
       }
+    },
+    openWarehouseLocation(row) {
+      if (!row?.AREA_CODE) return;
+      const currentWhere = this.currentWhere();
+      const targetWhere = {
+        ...currentWhere,
+        AREA_CODE: row.AREA_CODE,
+        CHARGE_CODE: row.CHARGE_CODE || currentWhere.CHARGE_CODE || ''
+      };
+      // 先写好查询条件，再切换到库房视图，避免表格空条件初始化把加载动画提前关掉。
+      this.lastWhere = targetWhere;
+      this.activeTab = 'warehouse';
+      this.warehouseJumpLoading = true;
+      this.queryMode = 'warehouse';
+      this.$nextTick(() => {
+        if (this.$refs.search) {
+          this.$refs.search.setAreaCode(targetWhere.AREA_CODE);
+          if (targetWhere.CHARGE_CODE !== undefined && this.$refs.search.where) {
+            this.$refs.search.where.CHARGE_CODE = targetWhere.CHARGE_CODE || '';
+          }
+        }
+        // 再等一帧确保 ele-pro-table 已挂载，然后主动 reload 并显示加载动画。
+        this.$nextTick(() => {
+          const table = this.$refs.warehouseTable;
+          if (!table) {
+            this.warehouseJumpLoading = false;
+            return;
+          }
+          table.tableLoading = true;
+          table.reload({ page: 1, where: targetWhere });
+        });
+      });
+    },
+    onWarehouseTableDone() {
+      this.warehouseJumpLoading = false;
+    },
+    openLocationDetail(filters) {
+      this.detailFilters = filters || {};
+      this.detailTitle = '耗材使用明细';
+      this.detailVisible = true;
     },
     // 页签切换后加载当前页签的数据。
     onTabChange() {
