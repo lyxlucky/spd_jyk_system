@@ -3,22 +3,52 @@
     <el-card shadow="never">
       <el-form size="small" inline class="filter-block" @submit.native.prevent>
         <el-form-item label="品种编码">
-          <el-input v-model="filters.VARIETIE_CODE_NEW" clearable style="width: 120px" />
+          <el-input
+            v-model="filters.VARIETIE_CODE_NEW"
+            clearable
+            style="width: 120px"
+            @keyup.enter.native="reload"
+          />
         </el-form-item>
         <el-form-item label="品种名称">
-          <el-input v-model="filters.PROD_REGISTRATION_NAME" clearable style="width: 150px" />
+          <el-input
+            v-model="filters.PROD_REGISTRATION_NAME"
+            clearable
+            style="width: 150px"
+            @keyup.enter.native="reload"
+          />
         </el-form-item>
         <el-form-item label="规格型号">
-          <el-input v-model="filters.GG" clearable style="width: 120px" />
+          <el-input
+            v-model="filters.GG"
+            clearable
+            style="width: 120px"
+            @keyup.enter.native="reload"
+          />
         </el-form-item>
         <el-form-item label="注册证号">
-          <el-input v-model="filters.APPROVAL_NUMBER" clearable style="width: 120px" />
+          <el-input
+            v-model="filters.APPROVAL_NUMBER"
+            clearable
+            style="width: 120px"
+            @keyup.enter.native="reload"
+          />
         </el-form-item>
         <el-form-item label="供应商">
-          <el-input v-model="filters.SUP_NAME" clearable style="width: 120px" />
+          <el-input
+            v-model="filters.SUP_NAME"
+            clearable
+            style="width: 120px"
+            @keyup.enter.native="reload"
+          />
         </el-form-item>
         <el-form-item label="使用科室">
-          <el-input v-model="filters.USE_DEPT" clearable style="width: 120px" />
+          <el-input
+            v-model="filters.USE_DEPT"
+            clearable
+            style="width: 120px"
+            @keyup.enter.native="reload"
+          />
         </el-form-item>
         <el-form-item label="导入时间">
           <el-date-picker
@@ -42,10 +72,20 @@
 
       <el-form size="small" inline class="filter-block" @submit.native.prevent>
         <el-form-item label="生产企业">
-          <el-input v-model="filters.MANUFACTURING_ENT_NAME" clearable style="width: 120px" />
+          <el-input
+            v-model="filters.MANUFACTURING_ENT_NAME"
+            clearable
+            style="width: 120px"
+            @keyup.enter.native="reload"
+          />
         </el-form-item>
         <el-form-item label="合同编码">
-          <el-input v-model="filters.CONTRACT_CODE" clearable style="width: 120px" />
+          <el-input
+            v-model="filters.CONTRACT_CODE"
+            clearable
+            style="width: 120px"
+            @keyup.enter.native="reload"
+          />
         </el-form-item>
         <el-form-item label="合同开始">
           <el-date-picker
@@ -64,7 +104,7 @@
           />
         </el-form-item>
         <el-form-item label="使用状态">
-          <el-select v-model="filters.IS_USE" clearable style="width: 90px">
+          <el-select v-model="filters.IS_USE" clearable style="width: 90px" @change="reload">
             <el-option label="使用" value="1" />
             <el-option label="全部" value="" />
             <el-option label="弃用" value="0" />
@@ -79,34 +119,49 @@
           </el-select>
         </el-form-item>
         <el-form-item label="是否高值">
-          <el-select v-model="filters.HIGH_OR_LOW_CLASS" clearable style="width: 80px">
+          <el-select
+            v-model="filters.HIGH_OR_LOW_CLASS"
+            clearable
+            style="width: 80px"
+            @change="reload"
+          >
             <el-option label="全部" value="" />
             <el-option label="否" value="0" />
             <el-option label="是" value="1" />
           </el-select>
         </el-form-item>
         <el-form-item label="重点治理">
-          <el-select v-model="filters.IS_IN_COUNTRY_IMPORT" clearable style="width: 80px">
+          <el-select
+            v-model="filters.IS_IN_COUNTRY_IMPORT"
+            clearable
+            style="width: 80px"
+            @change="reload"
+          >
             <el-option label="全部" value="" />
             <el-option label="否" value="0" />
             <el-option label="是" value="1" />
           </el-select>
         </el-form-item>
         <el-form-item label="重点治理序号">
-          <el-input v-model="filters.HIGH_CLASS_XH" clearable style="width: 80px" />
+          <el-input
+            v-model="filters.HIGH_CLASS_XH"
+            clearable
+            style="width: 80px"
+            @keyup.enter.native="reload"
+          />
         </el-form-item>
       </el-form>
 
       <el-form size="small" inline class="filter-block" @submit.native.prevent>
         <el-form-item label="价格是否一致">
-          <el-select v-model="filters.IS_PRICE" clearable style="width: 80px">
+          <el-select v-model="filters.IS_PRICE" clearable style="width: 80px" @change="reload">
             <el-option label="全部" value="" />
             <el-option label="是" value="1" />
             <el-option label="否" value="0" />
           </el-select>
         </el-form-item>
         <el-form-item label="是否含有库存">
-          <el-select v-model="filters.KC" clearable style="width: 80px">
+          <el-select v-model="filters.KC" clearable style="width: 80px" @change="reload">
             <el-option label="全部" value="" />
             <el-option label="是" value="1" />
             <el-option label="否" value="0" />
@@ -127,7 +182,7 @@
             <el-button :loading="importing">导入</el-button>
           </el-upload>
           <el-button
-            v-permission="'export-BidVarInfo-mldc'"
+            v-if="canExportBidVar"
             type="primary"
             plain
             :loading="exporting"
@@ -236,7 +291,7 @@
 
 <script>
 import { Message, MessageBox } from 'element-ui';
-import { BACK_BASE_URL } from '@/config/setting';
+import { BACK_BASE_URL, HOME_HP } from '@/config/setting';
 import {
   searchBidVarInfo,
   bidVarInfoEnableCommit,
@@ -260,6 +315,7 @@ import {
 import EditBidVarDialog from './components/EditBidVarDialog.vue';
 import SyncFieldDialog from './components/SyncFieldDialog.vue';
 import RemarkDialog from './components/RemarkDialog.vue';
+import { hasPermission } from '@/utils/permission';
 
 export default {
   name: 'BidVarInfo',
@@ -289,6 +345,16 @@ export default {
   computed: {
     tableHeight() {
       return 'calc(100vh - 360px)';
+    },
+    /**
+     * 与老系统一致：仅市二(szse*)默认隐藏导出，有 export-BidVarInfo-mldc 才显示；
+     * 其他院始终显示导出按钮。
+     */
+    canExportBidVar() {
+      if (!String(HOME_HP || '').startsWith('szse')) {
+        return true;
+      }
+      return hasPermission('export-BidVarInfo-mldc');
     }
   },
   methods: {
@@ -312,9 +378,9 @@ export default {
     onTableDone(res) {
       this.tableTotal = res?.count ?? 0;
     },
-    requireSelection() {
+    requireSelection(msg = '请选择数据') {
       if (!this.selection.length) {
-        Message.warning('请先勾选数据');
+        Message.warning(msg);
         return false;
       }
       return true;
@@ -342,7 +408,7 @@ export default {
       }
     },
     openBatchRemark() {
-      if (!this.requireSelection()) return;
+      if (!this.requireSelection('请至少选中一行数据')) return;
       this.batchRemarkVisible = true;
     },
     async saveBatchRemark(remark) {
@@ -360,7 +426,7 @@ export default {
       }
     },
     async onEnable() {
-      if (!this.requireSelection()) return;
+      if (!this.requireSelection('请选择数据')) return;
       try {
         await MessageBox.confirm('是否启用当前品种？', '提示', { type: 'warning' });
         const res = await bidVarInfoEnableCommit(this.selection, 1);
@@ -371,7 +437,7 @@ export default {
       }
     },
     async onDisable() {
-      if (!this.requireSelection()) return;
+      if (!this.requireSelection('请选择数据')) return;
       try {
         await MessageBox.confirm('是否停用当前品种？', '提示', { type: 'warning' });
         const res = await bidVarInfoEnableCommit(this.selection, 0);
@@ -382,7 +448,7 @@ export default {
       }
     },
     openSyncDialog() {
-      if (!this.requireSelection()) return;
+      if (!this.requireSelection('请选择要同步的数据')) return;
       this.syncVisible = true;
     },
     async onSyncConfirm(fields) {
@@ -400,7 +466,7 @@ export default {
       }
     },
     async onSyncAdd() {
-      if (!this.requireSelection()) return;
+      if (!this.requireSelection('请选择要同步的数据')) return;
       this.syncAdding = true;
       try {
         const res = await synchAddVar(this.selection);

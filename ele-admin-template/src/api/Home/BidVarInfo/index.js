@@ -129,22 +129,32 @@ export async function synchAddVar(rows) {
 
 /** 导入中标目录 */
 export async function importBidVar(file) {
+  const t = token();
   const fd = new FormData();
   fd.append('file', file);
-  fd.append('Token', token());
-  const res = await request.post('/VarietieBasicInfo/ImportBIDVAR', fd, {
-    headers: { 'Content-Type': 'multipart/form-data' }
-  });
+  fd.append('Token', t);
+  const res = await request.post(
+    `/VarietieBasicInfo/ImportBIDVAR?Token=${encodeURIComponent(t)}`,
+    fd,
+    {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    }
+  );
   return unwrap(res);
 }
 
 /** 批量停用导入 */
 export async function importBidVarBatchStop(file) {
+  const t = token();
   const fd = new FormData();
   fd.append('file', file);
-  fd.append('Token', token());
-  const res = await request.post('/VarietieBasicInfo/ImportBidVarBatchStopState', fd, {
-    headers: { 'Content-Type': 'multipart/form-data' }
-  });
+  fd.append('Token', t);
+  const res = await request.post(
+    `/VarietieBasicInfo/ImportBidVarBatchStopState?Token=${encodeURIComponent(t)}`,
+    fd,
+    {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    }
+  );
   return unwrap(res);
 }

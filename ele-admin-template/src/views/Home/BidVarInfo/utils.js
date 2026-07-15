@@ -47,7 +47,8 @@ export function formatDateOnly(value) {
 }
 
 export function formatIsNeedAdd(row) {
-  if (row.SPD_VARIETIE_CODE_NEW != null && row.SPD_VARIETIE_CODE_NEW !== '') {
+  // 与老系统一致：SPD_VARIETIE_CODE_NEW != null 即「启用」
+  if (row.SPD_VARIETIE_CODE_NEW != null) {
     return '启用';
   }
   if (row.IS_NEED_ADD == '1') {
@@ -236,8 +237,7 @@ export function buildColumns() {
       width: 140,
       align: 'center',
       showOverflowTooltip: true
-    },
-    { prop: 'CREATE_TIME', label: '创建时间', width: 140, showOverflowTooltip: true }
+    }
   ];
 }
 
@@ -293,7 +293,8 @@ function normalizeExportRow(row) {
 }
 
 function buildExportStatus(row) {
-  if (row.SPD_VARIETIE_CODE_NEW != null && row.SPD_VARIETIE_CODE_NEW !== '') {
+  // 与老系统一致：SPD_VARIETIE_CODE_NEW != null 即「启用」
+  if (row.SPD_VARIETIE_CODE_NEW != null) {
     return '启用';
   }
   if (row.IS_NEED_ADD == '1') return '已申请';
@@ -302,8 +303,6 @@ function buildExportStatus(row) {
 
 function buildExportRow(row) {
   const r = normalizeExportRow(row);
-  const qty = Number(r.QTY) || 0;
-  const deptQty = Number(r.DEPT_TWO_QTY) || 0;
   return [
     r.CONTRACT_CODE,
     r.VARIETIE_CODE_NEW,
@@ -339,7 +338,7 @@ function buildExportRow(row) {
     r.CREATE_BATCH,
     r.SPD_VARIETIE_CODE_NEW,
     r.SPD_PRICE,
-    qty + deptQty,
+    r.QTY,
     r.SUPPLY_PRICE,
     r.SPD_UNIT,
     buildExportStatus(r),
