@@ -8,7 +8,7 @@
     />
     <div class="spd-panel spd-table-panel goodsshelves-table-panel">
       <div class="spd-panel__head">入库列表</div>
-      <div class="spd-table-panel__wrap">
+      <div ref="tableWrap" class="spd-table-panel__wrap">
         <ele-pro-table
           ref="table"
           class="data-table"
@@ -17,7 +17,7 @@
           stripe
           :toolbar="false"
           :header-overflow-hidden="false"
-          height="calc(100vh - 520px)"
+          :height="tableHeight"
           :pageSize="pageSize"
           :pageSizes="pageSizes"
           :columns="columns"
@@ -105,6 +105,7 @@ export default {
   },
   data() {
     return {
+      tableHeight: 400,
       lastWhere: {},
       inCheckVisible: false,
       auditVisible: false,
@@ -482,7 +483,49 @@ export default {
       ]
     };
   },
+  mounted() {
+    this.bindTableHeight();
+  },
+  beforeDestroy() {
+    this.unbindTableHeight();
+  },
   methods: {
+    bindTableHeight() {
+      this.$nextTick(() => {
+        const el = this.$refs.tableWrap;
+        if (!el) return;
+        const update = () => {
+          const pager = el.querySelector('.el-pagination');
+          const pagerH = pager ? pager.offsetHeight + 12 : 48;
+          const h = Math.floor(el.clientHeight - pagerH);
+          if (h > 120 && h !== this.tableHeight) {
+            this.tableHeight = h;
+          }
+        };
+        update();
+        this.$nextTick(() => {
+          update();
+          setTimeout(update, 80);
+        });
+        if (typeof ResizeObserver !== 'undefined') {
+          this._tableRo = new ResizeObserver(update);
+          this._tableRo.observe(el);
+        } else {
+          window.addEventListener('resize', update);
+          this._tableResizeHandler = update;
+        }
+      });
+    },
+    unbindTableHeight() {
+      if (this._tableRo) {
+        this._tableRo.disconnect();
+        this._tableRo = null;
+      }
+      if (this._tableResizeHandler) {
+        window.removeEventListener('resize', this._tableResizeHandler);
+        this._tableResizeHandler = null;
+      }
+    },
     datasource({ page, limit, where, order }) {
       this.lastWhere = where || this.lastWhere;
       return GetPDAList({ page, limit, where, order })
@@ -726,9 +769,25 @@ export default {
   min-height: 0;
 }
 
+.goodsshelves-tab-page > *:first-child {
+  flex: none;
+}
+
 .goodsshelves-table-panel {
   flex: 1;
   min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.spd-table-panel__wrap {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.spd-panel__head {
+  flex: none;
 }
 
 .goodsshelves-tab-page >>> .el-table th .cell {

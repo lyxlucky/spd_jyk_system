@@ -19,7 +19,7 @@
           | 品种总金额：{{ totalAmount }}
         </span>
       </div>
-      <div class="spd-table-panel__wrap">
+      <div ref="tableWrap" class="spd-table-panel__wrap">
         <ele-pro-table
           ref="table"
           class="data-table"
@@ -29,7 +29,7 @@
           highlight-current-row
           :toolbar="false"
           :header-overflow-hidden="false"
-          height="calc(100vh - 520px)"
+          :height="tableHeight"
           :pageSize="pageSize"
           :pageSizes="pageSizes"
           :columns="columns"
@@ -122,6 +122,7 @@ export default {
   },
   data() {
     return {
+      tableHeight: 400,
       storageList: [],
       lastWhere: {},
       pageQty: 0,
@@ -143,7 +144,49 @@ export default {
       columns: this.buildColumns()
     };
   },
+  mounted() {
+    this.bindTableHeight();
+  },
+  beforeDestroy() {
+    this.unbindTableHeight();
+  },
   methods: {
+    bindTableHeight() {
+      this.$nextTick(() => {
+        const el = this.$refs.tableWrap;
+        if (!el) return;
+        const update = () => {
+          const pager = el.querySelector('.el-pagination');
+          const pagerH = pager ? pager.offsetHeight + 12 : 48;
+          const h = Math.floor(el.clientHeight - pagerH);
+          if (h > 120 && h !== this.tableHeight) {
+            this.tableHeight = h;
+          }
+        };
+        update();
+        this.$nextTick(() => {
+          update();
+          setTimeout(update, 80);
+        });
+        if (typeof ResizeObserver !== 'undefined') {
+          this._tableRo = new ResizeObserver(update);
+          this._tableRo.observe(el);
+        } else {
+          window.addEventListener('resize', update);
+          this._tableResizeHandler = update;
+        }
+      });
+    },
+    unbindTableHeight() {
+      if (this._tableRo) {
+        this._tableRo.disconnect();
+        this._tableRo = null;
+      }
+      if (this._tableResizeHandler) {
+        window.removeEventListener('resize', this._tableResizeHandler);
+        this._tableResizeHandler = null;
+      }
+    },
     buildColumns() {
       const cols = [
         {
@@ -697,9 +740,21 @@ export default {
   min-height: 0;
 }
 
+.goodsshelves-tab-page > *:first-child {
+  flex: none;
+}
+
 .goodsshelves-table-panel {
   flex: 1;
   min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.spd-table-panel__wrap {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .spd-panel__head {
@@ -707,6 +762,7 @@ export default {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+  flex: none;
 }
 
 .summary-bar {

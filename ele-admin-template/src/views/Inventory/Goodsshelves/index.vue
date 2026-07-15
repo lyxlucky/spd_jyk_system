@@ -83,9 +83,13 @@ export default {
 .goodsshelves-content {
   flex: 1;
   min-height: 0;
+  display: flex;
+  flex-direction: column;
 }
 
-.goodsshelves-content :deep(> .goodsshelves-tab-page) {
-  height: 100%;
+.goodsshelves-content >>> .goodsshelves-tab-page {
+  flex: 1;
+  min-height: 0;
+  height: auto;
 }
 </style>
