@@ -56,6 +56,26 @@
             <el-button size="mini" @click="onUpdateField">更新选定字段</el-button>
             <el-button size="mini" @click="onWxtAudit">微讯通品种审核</el-button>
             <el-button size="mini" @click="onExportFzShow">导出物资分类品种</el-button>
+            <el-button
+              v-if="canEdit"
+              size="mini"
+              icon="el-icon-upload2"
+              :loading="importing"
+              @click="onImportClick"
+            >
+              导入
+            </el-button>
+            <el-button v-if="canEdit" size="mini" plain @click="onDownloadImportTemplate">
+              导出模板
+            </el-button>
+            <el-button
+              size="mini"
+              icon="el-icon-upload2"
+              :loading="ybImporting"
+              @click="onYbImportClick"
+            >
+              批量提交医保审批
+            </el-button>
           </div>
         </div>
         <div class="spd-toolbar__divider" />
@@ -275,6 +295,20 @@
       :variety-code-new="szsmBidRow?.Varietie_Code_New"
     />
     <OldZczDialog :visible.sync="oldZczVisible" />
+    <input
+      ref="importFile"
+      type="file"
+      accept=".xls,.xlsx"
+      style="display: none"
+      @change="onImportFileChange"
+    />
+    <input
+      ref="ybImportFile"
+      type="file"
+      accept=".xls,.xlsx"
+      style="display: none"
+      @change="onYbImportFileChange"
+    />
     <el-dialog
       title="导出物资分类品种"
       :visible.sync="exportFzVisible"
@@ -327,8 +361,11 @@ import {
   UpstopDeptSl,
   createStorageExcelCwj,
   stopConWithStopVar,
-  ExcelVarFZdata
+  ExcelVarFZdata,
+  ImportVarietieExcel,
+  batchSubmitYbCheck
 } from '@/api/Home/VarietyDataLzhMain';
+import { getVarietyImportTemplateAoa } from '../varietyImportTemplate';
 import {
   approvalVarietieCommit,
   createStorageExcelCwjEpPlus,
@@ -411,6 +448,8 @@ export default {
       tempRemarkLoading: false,
       batchRemarkLoading: false,
       stopConLoading: false,
+      importing: false,
+      ybImporting: false,
       showKubaoBtn: HOME_HP === 'bd',
       showSzsmBid: HOME_HP === 'szsmyl',
       isStse: isStseLikeHp(HOME_HP),
@@ -1047,6 +1086,93 @@ export default {
     openRemark(row) {
       this.currentRow = row;
       this.remarkVisible = true;
+    },
+    onImportClick() {
+      if (this.$refs.importFile) {
+        this.$refs.importFile.value = '';
+        this.$refs.importFile.click();
+      }
+    },
+    async onImportFileChange(e) {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+      const name = (file.name || '').toLowerCase();
+      if (!name.endsWith('.xls') && !name.endsWith('.xlsx')) {
+        this.$message.error('文件格式错误，请上传 .xls 或 .xlsx 品种导入模板。');
+        e.target.value = '';
+        return;
+      }
+      const fd = new FormData();
+      fd.append('file', file);
+      this.importing = true;
+      try {
+        const res = await ImportVarietieExcel(fd);
+        const code = res?.code != null ? res.code : res?.Code;
+        const msg = (res?.msg || res?.Msg || '').toString();
+        if (code == 301 || code === '301') {
+          this.$message.error(msg || '登录失效，请重新登录');
+          return;
+        }
+        if (code == 200 || code === '200') {
+          await this.$alert((msg || '导入成功').replace(/\n/g, '<br/>'), '导入成功', {
+            dangerouslyUseHTMLString: true,
+            type: 'success'
+          });
+          this.reloadTable();
+        } else {
+          this.$alert(
+            (msg || '导入失败，服务器未返回具体原因，请检查模板列是否完整或联系管理员').replace(
+              /\n/g,
+              '<br/>'
+            ),
+            '导入失败',
+            { dangerouslyUseHTMLString: true, type: 'error' }
+          );
+        }
+      } catch (err) {
+        this.$message.error(err?.message || '上传失败，请检查网络或接口地址');
+      } finally {
+        this.importing = false;
+        e.target.value = '';
+      }
+    },
+    onDownloadImportTemplate() {
+      try {
+        const data = getVarietyImportTemplateAoa();
+        const ws = utils.aoa_to_sheet(data);
+        const wb = utils.book_new();
+        utils.book_append_sheet(wb, ws, 'Sheet1');
+        writeFile(wb, '品种资料导入模板.xlsx');
+      } catch (err) {
+        this.$message.error(err?.message || '模板导出失败');
+      }
+    },
+    onYbImportClick() {
+      if (this.$refs.ybImportFile) {
+        this.$refs.ybImportFile.value = '';
+        this.$refs.ybImportFile.click();
+      }
+    },
+    async onYbImportFileChange(e) {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+      this.ybImporting = true;
+      try {
+        const res = await batchSubmitYbCheck(file);
+        const code = res?.code != null ? res.code : res?.Code;
+        const msg = (res?.msg || res?.Msg || '').toString();
+        if (code == 200 || code === '200') {
+          this.$message.success(msg || '提交成功');
+          this.reloadTable();
+        } else {
+          this.$message.error(msg || '上传失败');
+        }
+      } catch (err) {
+        this.$message.error(err?.message || '上传错误，请重试');
+      } finally {
+        this.ybImporting = false;
+        e.target.value = '';
+      }
     },
     async onExport() {
       this.exporting = true;

@@ -1,6 +1,6 @@
 ﻿import request from '@/utils/request';
 import { formdataify, DataToObject } from '@/utils/formdataify';
-import { TOKEN_STORE_NAME, } from '@/config/setting';
+import { TOKEN_STORE_NAME, HOME_HP } from '@/config/setting';
 import { Encrypt } from '@/utils/aes-util';
 import store from '@/store';
 //日期处理
@@ -199,6 +199,33 @@ export async function ImportDefinitePackages(formData) {
         timeout: 120000
     });
     return res.data;
+}
+
+/** 品种资料 Excel 导入（chrmyy 走 ImportVarietieExcel_CH） */
+export async function ImportVarietieExcel(formData) {
+  const Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+  const apiName = HOME_HP === 'chrmyy' ? 'ImportVarietieExcel_CH' : 'ImportVarietieExcel';
+  const res = await request.post(
+    `/VarietieBasicInfo/${apiName}?Token=${encodeURIComponent(Token)}`,
+    formData,
+    {
+      headers: { 'Content-Type': 'multipart/form-data' },
+      timeout: 120000
+    }
+  );
+  return res.data;
+}
+
+/** 批量提交医保审批（FormData: file + Token） */
+export async function batchSubmitYbCheck(file) {
+  const fd = new FormData();
+  fd.append('file', file);
+  fd.append('Token', token());
+  const res = await request.post('/AAPDDATE/batchSubmitYbCheck', fd, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+    timeout: 120000
+  });
+  return res.data;
 }
 
 function token() {
