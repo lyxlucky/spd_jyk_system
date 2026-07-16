@@ -120,7 +120,7 @@ const caculateB2bCode = () => {
 export const B2B_BASE_CODE = caculateB2bCode();
 
 
-// 后端地址
+// 后端地址（各院区原始站点根；Excel 下载请用 getStaticBaseUrl，勿直接拼 API_BASE_URL）
 const getBackBaseUrl = () => {
   const env = process.env.VUE_APP_ENV;
   const envMap = {
@@ -161,6 +161,23 @@ const getBackBaseUrl = () => {
 }
 
 export const BACK_BASE_URL = getBackBaseUrl();
+
+/**
+ * Excel/图片等静态资源根地址。
+ * API_BASE_URL 形如 https://nat.sch-szu.com/spdapi/api，静态文件在 /spdapi/Excel，不能带末尾 /api。
+ * 绝对 API 地址时去掉 /api 与页面同源；相对 /api（本地代理）时用 BACK_BASE_URL。
+ */
+export function getStaticBaseUrl() {
+  const api = (API_BASE_URL || '').replace(/\/$/, '');
+  if (/^https?:\/\//i.test(api)) {
+    return api.replace(/\/api\/?$/i, '') || api;
+  }
+  const target = (process.env.VUE_APP_TARGET || '').replace(/\/$/, '');
+  if (/^https?:\/\//i.test(target)) {
+    return target;
+  }
+  return (BACK_BASE_URL || '').replace(/\/$/, '');
+}
 
 // 项目名称
 export const PROJECT_NAME = process.env.VUE_APP_NAME;
