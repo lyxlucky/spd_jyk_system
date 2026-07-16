@@ -1,31 +1,52 @@
 import request from '@/utils/request';
-import { formdataify } from '@/utils/formdataify';
+import { formdataify, toUrlEncodedBody } from '@/utils/formdataify';
 import { TOKEN_STORE_NAME } from '@/config/setting';
-import { EncryptWithCustomKey } from '@/utils/aes-util.js';
+import { Encrypt } from '@/utils/aes-util.js';
+import store from '@/store';
 
 function token() {
   return sessionStorage.getItem(TOKEN_STORE_NAME) || '';
 }
 
-export async function SearchProdInfo(data) {
+/** 对齐老系统：field/order 必须是字符串，不能把表格 order 对象塞进加密参数 */
+function buildProdSearchPrams(data) {
   const where = data.where || {};
-  const formatData = {
-    page: data.page,
-    size: data.limit,
-    prams: EncryptWithCustomKey(
-      JSON.stringify({
-        Token: token(),
-        keyword: where.registrationNo || '',
-        filed: data.filed || data.field || '',
-        order: data.order || '',
-        enable: where.isEnable != null ? where.isEnable : '',
-        scqy: where.manufacture || ''
-      }),
-      localStorage.getItem('AesKey')
-    ),
-    AesKey: localStorage.getItem('AesKey')
+  const order = data.order && typeof data.order === 'object' ? data.order : {};
+  const orderStr =
+    typeof data.order === 'string'
+      ? data.order
+      : order.order === 'descending'
+        ? 'desc'
+        : order.order === 'ascending'
+          ? 'asc'
+          : '';
+  const fieldStr =
+    typeof data.field === 'string'
+      ? data.field
+      : typeof data.filed === 'string'
+        ? data.filed
+        : order.sort || '';
+  return {
+    Token: token(),
+    keyword: where.registrationNo || '',
+    field: fieldStr,
+    order: orderStr,
+    enable: where.isEnable != null ? where.isEnable : '',
+    scqy: where.manufacture || ''
   };
-  const res = await request.post('/ProdInfo/SearchProdInfo', formdataify(formatData));
+}
+
+export async function SearchProdInfo(data) {
+  // 老系统 $.ajax 用 x-www-form-urlencoded；multipart 时本接口 Request.Form 读不到会 500/302
+  const body = toUrlEncodedBody({
+    page: data.page || 1,
+    size: data.limit || 10,
+    prams: Encrypt(JSON.stringify(buildProdSearchPrams(data))),
+    AesKey: store.state.user.encrypted.KEY
+  });
+  const res = await request.post('/ProdInfo/SearchProdInfo', body, {
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' }
+  });
   if (res.data.code == 200) {
     return res.data;
   }
