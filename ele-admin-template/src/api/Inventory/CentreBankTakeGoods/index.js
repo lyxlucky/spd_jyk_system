@@ -456,15 +456,49 @@ export async function printSystemExcel(path, params) {
   return printReceiptExcel(path, params);
 }
 
-/** B2B 拉取收货单 */
-export async function fetchB2bOrder(sendOrderNum, b2bJson) {
-  const b2bRes = await request.get(`${B2B_BASE_URL}/api/Stock/sendPlanToSpdByAdmin2`, {
-    params: { SEND_ORDER_NUM: sendOrderNum, STOCK_UP_PLAN_NO: '1' }
+/**
+ * 直连 B2B（不用 axios request，避免带上 Authorization 触发 CORS 预检）
+ * 对齐老系统 CentreBankTakeGoogs.getB2BorderCommit 的 $.ajax GET
+ */
+async function fetchB2bJson(path, query = {}) {
+  const base = (B2B_BASE_URL || '').replace(/\/$/, '');
+  if (!base) {
+    throw new Error('未配置 B2B 地址');
+  }
+  const qs = new URLSearchParams(
+    Object.fromEntries(
+      Object.entries(query).map(([k, v]) => [k, v == null ? '' : String(v)])
+    )
+  ).toString();
+  const url = `${base}${path.startsWith('/') ? path : `/${path}`}${qs ? `?${qs}` : ''}`;
+  let res;
+  try {
+    res = await fetch(url, { method: 'GET' });
+  } catch (e) {
+    // 浏览器常见：HTTPS 页访问 HTTP B2B（混合内容）、CORS、主机不可达 → Network Error
+    throw new Error(
+      `无法连接 B2B（${base}），请检查网络/跨域/是否被混合内容拦截`
+    );
+  }
+  if (!res.ok) {
+    throw new Error(`B2B 请求失败（HTTP ${res.status}）`);
+  }
+  return res.json();
+}
+
+/** B2B 拉取收货单：先调 B2B 取单，再交给 SPD 落库 */
+export async function fetchB2bOrder(sendOrderNum) {
+  const b2bData = await fetchB2bJson('/api/Stock/sendPlanToSpdByAdmin2', {
+    SEND_ORDER_NUM: sendOrderNum,
+    STOCK_UP_PLAN_NO: '1'
   });
-  const jsonStr = JSON.stringify(b2bRes.data);
   const res = await request.post(
     '/B2BNormal/getb2bOrderInfo',
-    formdataify({ Token: token(), SEND_ORDER_NUM: sendOrderNum, JSON: jsonStr })
+    formdataify({
+      Token: token(),
+      SEND_ORDER_NUM: sendOrderNum,
+      JSON: JSON.stringify(b2bData)
+    })
   );
   return unwrap(res);
 }
@@ -538,7 +572,7 @@ export async function transferToManual(payload) {
 
 /** B2B 同步订单收货状态 */
 export async function syncB2bOrderReceive(deliveryNoteNumber) {
-  await request.get(`${B2B_BASE_URL}/api/Stock/upOrderReceive`, {
-    params: { Delivery_Note_Number: deliveryNoteNumber }
+  await fetchB2bJson('/api/Stock/upOrderReceive', {
+    Delivery_Note_Number: deliveryNoteNumber
   });
 }
