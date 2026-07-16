@@ -486,19 +486,17 @@ async function fetchB2bJson(path, query = {}) {
   return res.json();
 }
 
-/** B2B 拉取收货单：先调 B2B 取单，再交给 SPD 落库 */
+/**
+ * B2B 拉取收货单：只调 SPD，由后端按 CONFIG.b2bUrl 代调 B2B 再落库
+ */
 export async function fetchB2bOrder(sendOrderNum) {
-  const b2bData = await fetchB2bJson('/api/Stock/sendPlanToSpdByAdmin2', {
-    SEND_ORDER_NUM: sendOrderNum,
-    STOCK_UP_PLAN_NO: '1'
-  });
   const res = await request.post(
     '/B2BNormal/getb2bOrderInfo',
     formdataify({
       Token: token(),
-      SEND_ORDER_NUM: sendOrderNum,
-      JSON: JSON.stringify(b2bData)
-    })
+      SEND_ORDER_NUM: sendOrderNum
+    }),
+    { timeout: 600000 }
   );
   return unwrap(res);
 }
