@@ -248,6 +248,7 @@
     />
     <VarietyEditDialog
       :visible.sync="editDialogVisible"
+      :mode="editDialogMode"
       :varietie-code="editRow?.Varietie_Code"
       @done="reloadTable"
     />
@@ -295,6 +296,9 @@
       :variety-code-new="szsmBidRow?.Varietie_Code_New"
     />
     <OldZczDialog :visible.sync="oldZczVisible" />
+    <VarExpirationDialog :visible.sync="expirationVisible" />
+    <ImpSelectedFieldDialog :visible.sync="updateFieldVisible" @success="reloadTable" />
+    <WxtSpVarInfoDialog :visible.sync="wxtAuditVisible" />
     <input
       ref="importFile"
       type="file"
@@ -346,6 +350,9 @@ import VarLimitBuyDialog from './components/VarLimitBuyDialog.vue';
 import BhRuleDialog from './components/BhRuleDialog.vue';
 import SzsmBidDialog from './components/SzsmBidDialog.vue';
 import OldZczDialog from './components/OldZczDialog.vue';
+import VarExpirationDialog from './components/VarExpirationDialog.vue';
+import ImpSelectedFieldDialog from './components/ImpSelectedFieldDialog.vue';
+import WxtSpVarInfoDialog from './components/WxtSpVarInfoDialog.vue';
 import RemarkDialog from '@/views/Home/VarietyDataLzhAudit/components/RemarkDialog.vue';
 import PriceChangeDialog from '@/views/Home/VarietyDataLzhAudit/components/PriceChangeDialog.vue';
 import VarietyEditDialog from '@/views/Home/VarietyDataLzhAudit/components/VarietyEditDialog.vue';
@@ -404,6 +411,9 @@ export default {
     BhRuleDialog,
     SzsmBidDialog,
     OldZczDialog,
+    VarExpirationDialog,
+    ImpSelectedFieldDialog,
+    WxtSpVarInfoDialog,
     RemarkDialog,
     PriceChangeDialog,
     VarietyEditDialog,
@@ -418,6 +428,7 @@ export default {
       currentWhere: null,
       currentRow: null,
       editRow: null,
+      editDialogMode: 'edit',
       priceChangeRow: null,
       changePriceRow: null,
       restDeptRow: null,
@@ -439,6 +450,9 @@ export default {
       exportFzVisible: false,
       exportFzClass: '',
       oldZczVisible: false,
+      expirationVisible: false,
+      updateFieldVisible: false,
+      wxtAuditVisible: false,
       commitLoading: false,
       kuboLoading: false,
       deleting: false,
@@ -673,34 +687,17 @@ export default {
       this.currentRow = row;
       this.$emit('row-click', row);
     },
-    openOldPage(path, tip) {
-      const oldWeb = process.env.VUE_APP_OLD_WEB_BASE_URL || '';
-      if (!oldWeb) {
-        this.$message.info(tip || '请配置环境变量 VUE_APP_OLD_WEB_BASE_URL');
-        return;
-      }
-      window.open(`${oldWeb.replace(/\/$/, '')}${path}`, '_blank');
-    },
     onOpenOldZcz() {
       this.oldZczVisible = true;
     },
     onOpenExpiration() {
-      this.openOldPage(
-        '/Frame/VarExpirationData',
-        '请配置 VUE_APP_OLD_WEB_BASE_URL 以打开品种效期资料'
-      );
+      this.expirationVisible = true;
     },
     onUpdateField() {
-      this.openOldPage(
-        '/Frame/imp_SelectedField',
-        '请配置 VUE_APP_OLD_WEB_BASE_URL 以打开更新选定字段'
-      );
+      this.updateFieldVisible = true;
     },
     onWxtAudit() {
-      this.openOldPage(
-        '/Home/WxtSpVarInfo',
-        '请配置 VUE_APP_OLD_WEB_BASE_URL 以打开微讯通品种审核'
-      );
+      this.wxtAuditVisible = true;
     },
     openBhRule() {
       const row = this.currentRow || this.selection[0];
@@ -886,17 +883,9 @@ export default {
       return true;
     },
     onAdd() {
-      const oldWeb = process.env.VUE_APP_OLD_WEB_BASE_URL || '';
-      if (oldWeb) {
-        window.open(
-          `${oldWeb.replace(/\/$/, '')}/Frame/add_RarietieszjshpzV2New`,
-          '_blank'
-        );
-        return;
-      }
-      this.$message.info(
-        '添加品种请配置环境变量 VUE_APP_OLD_WEB_BASE_URL 以打开老系统添加页；已有品种请使用「编辑/详情」'
-      );
+      this.editDialogMode = 'add';
+      this.editRow = null;
+      this.editDialogVisible = true;
     },
     async onDelete() {
       if (!this.ensureSelection('请至少勾选一行')) return;
@@ -1072,6 +1061,7 @@ export default {
         this.$message.warning('未选中任何一行');
         return;
       }
+      this.editDialogMode = 'edit';
       this.editRow = row;
       this.editDialogVisible = true;
     },

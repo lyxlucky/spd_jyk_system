@@ -1,5 +1,5 @@
 ﻿import request from '@/utils/request';
-import { formdataify, DataToObject } from '@/utils/formdataify';
+import { formdataify, DataToObject, toUrlEncodedBody } from '@/utils/formdataify';
 import { TOKEN_STORE_NAME, HOME_HP } from '@/config/setting';
 import { Encrypt } from '@/utils/aes-util';
 import store from '@/store';
@@ -617,4 +617,147 @@ export async function GetStzxVarApp({
     return { code: 200, msg: body.msg || '', data: [], total: 0 };
   }
   throw new Error(body?.msg || '查询失败');
+}
+
+/** 批准文号下拉（新增品种） */
+export async function GetApprovalNumberList() {
+  const res = await request.get('/VarietieBasicInfo/GetApprovalNumberList', {
+    params: { Token: token() }
+  });
+  const body = res.data;
+  if (body === '301' || body === 301 || body?.code == 301) {
+    throw new Error(body?.msg || '登录失效，请重新登录');
+  }
+  if (typeof body === 'string') {
+    try {
+      return JSON.parse(body) || [];
+    } catch (e) {
+      return [];
+    }
+  }
+  return Array.isArray(body) ? body : body?.result || [];
+}
+
+/** 根据注册证编码取批准文号详情 */
+export async function GetApprovalNumberInfo(prodRegistrationCode) {
+  const res = await request.get('/VarietieBasicInfo/GetApprovalNumberInfo', {
+    params: {
+      Token: token(),
+      ProdRegistrationCode: prodRegistrationCode || ''
+    }
+  });
+  const body = res.data;
+  if (body === '301' || body === 301 || body?.code == 301) {
+    throw new Error(body?.msg || '登录失效，请重新登录');
+  }
+  if (typeof body === 'string') {
+    try {
+      return JSON.parse(body) || [];
+    } catch (e) {
+      return [];
+    }
+  }
+  return Array.isArray(body) ? body : body?.result || [];
+}
+
+/** 品种编码是否已存在（新增前校验） */
+export async function IsVarietieExist(varietieCode) {
+  const res = await request.get('/VarietieBasicInfo/IsVarietieExist', {
+    params: {
+      Token: token(),
+      varietieCode: varietieCode || ''
+    }
+  });
+  return res.data === true || res.data === 'true';
+}
+
+/** 新增散货品种（字段与 UpdateVarietieBasic / 老页 InsertVarietieBasic 一致） */
+export async function InsertVarietieBasic(payload) {
+  const res = await request.post(
+    '/VarietieBasicInfo/InsertVarietieBasic',
+    formdataify(payload)
+  );
+  return unwrap(res);
+}
+
+/** Excel 批量更新选定字段（对齐老页 Imp_updataField） */
+export async function ImpUpdataField(file, updataField, priceBox = 0) {
+  const fd = new FormData();
+  fd.append('FILE', file);
+  fd.append('Token', token());
+  fd.append('updataField', String(updataField));
+  fd.append('price_box', String(priceBox ?? 0));
+  fd.append('nickname', '');
+  const res = await request.post('/VarietieBasicInfo/Imp_updataField', fd, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+    timeout: 120000
+  });
+  return res.data;
+}
+
+/** 与老 layui table/$.post 一致：x-www-form-urlencoded，供 Request.Form 绑定 */
+const urlEncodedHeaders = {
+  headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+};
+
+/** 品种效期资料分页 */
+export async function GetVarExpirationData({
+  VARIETIE_CODE_NEW = '',
+  page = 1,
+  size = 30
+} = {}) {
+  const res = await request.post(
+    '/VarietiesQuery/GetVarExpirationData',
+    toUrlEncodedBody({
+      Token: token(),
+      VARIETIE_CODE_NEW: VARIETIE_CODE_NEW || '',
+      page: String(page || 1),
+      size: String(size || 30)
+    }),
+    urlEncodedHeaders
+  );
+  return unwrap(res);
+}
+
+/** 停用合同过期品种（后端实现可能不完整，保持与老页一致入口） */
+export async function StopVarExpirationData() {
+  const res = await request.post(
+    '/VarietiesQuery/StopVarExpirationData',
+    toUrlEncodedBody({ Token: token() }),
+    urlEncodedHeaders
+  );
+  return unwrap(res);
+}
+
+/** 微讯通品种审核列表（对齐老页 WxtSpVarInfo layui table 入参） */
+export async function getWxtSpVarInfo({
+  page = 1,
+  size = 30,
+  wpmc = '',
+  sycStatus = '',
+  SPDstate = ''
+} = {}) {
+  const res = await request.post(
+    '/MonthClearing/getWxtSpVarInfo',
+    toUrlEncodedBody({
+      Token: token(),
+      page: String(page || 1),
+      size: String(size || 30),
+      wpmc: wpmc || '',
+      sycStatus: sycStatus == null ? '' : String(sycStatus),
+      SPDstate: SPDstate == null ? '' : String(SPDstate)
+    }),
+    urlEncodedHeaders
+  );
+  return unwrap(res);
+}
+
+/** 微讯通品种同步处理 */
+export async function updateNewVarCode() {
+  const res = await request.post(
+    '/MonthClearing/updateNewVarCode',
+    toUrlEncodedBody({ Token: token() }),
+    urlEncodedHeaders
+  );
+  return unwrap(res);
 }
