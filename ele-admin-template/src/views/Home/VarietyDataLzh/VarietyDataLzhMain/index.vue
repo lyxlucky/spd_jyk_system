@@ -360,6 +360,7 @@ import {
   varUpdateLargeBz,
   UpstopDeptSl,
   createStorageExcelCwj,
+  createStorageExcelCwjEpPlus,
   stopConWithStopVar,
   ExcelVarFZdata,
   ImportVarietieExcel,
@@ -368,7 +369,6 @@ import {
 import { getVarietyImportTemplateAoa } from '../varietyImportTemplate';
 import {
   approvalVarietieCommit,
-  createStorageExcelCwjEpPlus,
   sendVarToKuBo
 } from '@/api/Home/VarietyDataLzhAudit';
 import {
@@ -1177,14 +1177,24 @@ export default {
     async onExport() {
       this.exporting = true;
       try {
-        const useB = HOME_HP === 'bd' || HOME_HP === 'bdrm';
-        const res = await createStorageExcelCwj(this.currentWhere || {}, useB);
-        if (res?.msg) {
-          openExcelFile(res.msg);
-          this.$message.success('导出成功');
-        } else {
-          this.$message.success(res?.msg || '导出成功');
+        // 对齐老系统 PrintStorageSingleRari：size=50000，按总数分页循环导出
+        const total = this.$refs.table?.tableTotal || 0;
+        if (!total) {
+          this.$message.warning('没有可导出的数据');
+          return;
         }
+        const size = 50000;
+        const pageCount = Math.ceil(total / size) || 1;
+        for (let page = 1; page <= pageCount; page += 1) {
+          const res = await createStorageExcelCwj(this.currentWhere || {}, {
+            page,
+            size
+          });
+          if (res?.msg) {
+            openExcelFile(res.msg);
+          }
+        }
+        this.$message.success('导出成功');
       } catch (e) {
         this.$message.error(e.message || '导出失败');
       } finally {
@@ -1194,12 +1204,17 @@ export default {
     async onExportHp() {
       this.exportingHp = true;
       try {
+        // 与「导出」相同：按当前搜索条件；后端 EPPlus 分批查、一次生成一个文件
         const res = await createStorageExcelCwjEpPlus(this.currentWhere || {});
-        if (res.msg) {
+        if (res?.msg) {
           openExcelFile(res.msg);
           this.$message.success(
-            res.totalCount ? `导出成功，共 ${res.totalCount} 条` : '导出成功'
+            res.totalCount != null
+              ? `导出成功，共 ${res.totalCount} 条`
+              : '导出成功'
           );
+        } else {
+          this.$message.warning('导出完成，但未返回文件名');
         }
       } catch (e) {
         this.$message.error(e.message || '导出失败');
