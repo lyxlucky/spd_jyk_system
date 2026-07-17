@@ -1,5 +1,30 @@
 import { utils, writeFile } from 'xlsx';
+import store from '@/store';
 import { HOME_HP } from '@/config/setting';
+
+/**
+ * 导出权限（对齐老系统 Home.cshtml）
+ * - 市二(szse*)：需有对应 Permission_Url（export-*）才显示
+ * - 其它院区：export-* 默认可见，不必落库
+ */
+export function hasExportPermission(permissionUrl) {
+  if (!permissionUrl) return true;
+  const isSzse = String(HOME_HP || '').startsWith('szse');
+  if (!isSzse && String(permissionUrl).startsWith('export-')) {
+    return true;
+  }
+  if (process.env.NODE_ENV === 'development') {
+    return true;
+  }
+  const authorities = store?.state?.user?.authorities || [];
+  if (authorities.includes(permissionUrl)) return true;
+  const list = store?.state?.user?.info?.permission_group || [];
+  return list.some((p) =>
+    [p.Permission_Url, p.PERMISSION_URL, p.component, p.path, p.title].some(
+      (v) => v === permissionUrl
+    )
+  );
+}
 
 export const IS_SEND_OPTIONS = [
   { value: '', label: '全部' },

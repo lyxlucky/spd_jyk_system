@@ -188,24 +188,28 @@ export function upStockToHrp(json) {
   );
 }
 
-/** 批量发送审批 */
+/**
+ * 批量发送审批
+ * 对齐老系统 SendHRPList：Stock_Up_Plan_No_List 为数组，供 WebApi 绑定 UpStockToHrpObj
+ * （勿用 formdataify：数组会被 stringify 成单字段，导致绑 List 失败 → 500）
+ */
 export function upStockToHrpList(stockUpPlanNoList) {
-  return request.post(
-    'ANewStockUp/UpStockToHrpList',
-    formdataify({ Stock_Up_Plan_No_List: stockUpPlanNoList, Token: token() })
-  );
+  return request.post('ANewStockUp/UpStockToHrpList', {
+    Stock_Up_Plan_No_List: stockUpPlanNoList || [],
+    Token: token()
+  });
 }
 
-/** 设置订单类型 */
+/**
+ * 设置订单类型
+ * 同 UpStockToHrpList，数组需走 JSON body
+ */
 export function setOrderType(stockUpPlanNoList, orderLevel) {
-  return request.post(
-    'ANewStockUp/SetOrderType',
-    formdataify({
-      Stock_Up_Plan_No_List: stockUpPlanNoList,
-      ORDER_LEVEL: orderLevel,
-      Token: token()
-    })
-  );
+  return request.post('ANewStockUp/SetOrderType', {
+    Stock_Up_Plan_No_List: stockUpPlanNoList || [],
+    ORDER_LEVEL: String(orderLevel ?? ''),
+    Token: token()
+  });
 }
 
 /** 科室列表（批量备注） */

@@ -93,7 +93,7 @@
           中七获取回传订单
         </el-button>
         <el-button
-          v-permission="'export-YgPlatView-fsdc'"
+          v-if="canExport('export-YgPlatView-fsdc')"
           size="small"
           :loading="exporting"
           @click="exportData"
@@ -101,7 +101,7 @@
           导出
         </el-button>
         <el-button
-          v-permission="'export-YgPlatView-htdc'"
+          v-if="canExport('export-YgPlatView-htdc')"
           size="small"
           :loading="exportingHb"
           @click="exportBackfillTemplate"
@@ -215,7 +215,8 @@ import {
   isZhCountMismatch,
   isContractInvalid,
   exportSendViewExcel,
-  exportBackfillTemplateExcel
+  exportBackfillTemplateExcel,
+  hasExportPermission
 } from './utils';
 import HbYgOrderDialog from './components/HbYgOrderDialog.vue';
 import ZqResendDialog from './components/ZqResendDialog.vue';
@@ -282,6 +283,9 @@ export default {
     }
   },
   methods: {
+    canExport(key) {
+      return hasExportPermission(key);
+    },
     formatIsJc,
     formatYgCanSend,
     formatIsSendYg,
