@@ -685,6 +685,16 @@
 </script>
 
 <style scoped>
+.ks-dept-plan-main {
+  width: 100%;
+  min-width: 0;
+}
+
+.ks-dept-plan-main >>> .spd-table-panel__wrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
 .ks-dept-plan-main >>> .el-table th .cell {
   white-space: nowrap;
 }

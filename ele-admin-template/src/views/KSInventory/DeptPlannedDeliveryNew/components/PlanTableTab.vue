@@ -230,17 +230,20 @@
       <div class="spd-table-panel__wrap">
         <ele-pro-table
           ref="table"
+          class="plan-compact-table"
           size="mini"
           :height="tableHeight"
           :stripe="true"
+          :init-load="false"
           :need-page="false"
           :page-size="9999999"
           :columns="columns"
           :datasource="datasource"
           :selection.sync="selection"
           highlight-current-row
-          cache-key="deptPlannedDeliveryNewPlanTable"
+          cache-key="deptPlannedDeliveryNewPlanTableV2"
           @current-change="onCurrentChange"
+          @row-click="onPlanRowClick"
         >
       <template v-slot:deptTwoName="{ row }">
         <span v-if="row.SECOND_APP_DEPT_NAME" style="color: red">
@@ -254,8 +257,8 @@
           size="mini"
           :min="0"
           :disabled="!isRowSelected(row)"
-          controls-position="right"
-          style="width: 80px"
+          :controls="false"
+          style="width: 50px"
           @change="(val) => setPlanQty(row, val)"
         />
       </template>
@@ -264,7 +267,7 @@
           :value="getRowStorage(row)"
           size="mini"
           :disabled="!isRowSelected(row)"
-          style="width: 100px"
+          style="width: 80px"
           @change="(val) => setRowStorage(row, val)"
         >
           <el-option label="院内库区" value="1" />
@@ -272,11 +275,11 @@
         </el-select>
       </template>
       <template v-slot:batchInfo="{ row }">
-        <el-button type="primary" size="mini" @click="openBatchInfo(row)">查看</el-button>
+        <el-button type="primary" size="mini" class="plan-cell-btn" @click="openBatchInfo(row)">查看</el-button>
       </template>
       <template v-slot:actions="{ row }">
-        <el-button type="primary" size="mini" @click="openSpdRemark(row)">SPD备注</el-button>
-        <el-button type="primary" size="mini" plain @click="openChangeQty(row)">变更申请数量</el-button>
+        <el-button type="primary" size="mini" class="plan-cell-btn" @click="openSpdRemark(row)">SPD备注</el-button>
+        <el-button type="primary" size="mini" plain class="plan-cell-btn plan-cell-btn--wide" @click="openChangeQty(row)">变更申请数量</el-button>
       </template>
         </ele-pro-table>
       </div>
@@ -400,7 +403,9 @@ export default {
       activeDtlId: '',
       activeRow: {},
       exporting: false,
-      tableHeight: 'calc(100vh - 520px)'
+      // 对齐老系统 layui table height: 450，缩屏时高度不随视口压缩
+      tableHeight: 450,
+      planLoaded: false
     };
   },
   computed: {
@@ -413,14 +418,15 @@ export default {
     storageId: {
       immediate: true,
       handler(val) {
-        if (val) this.localStorageId = val;
+        if (!val) return;
+        const changed = String(this.localStorageId) !== String(val);
+        this.localStorageId = val;
+        // 库区异步到位后再查；避免进页时 STORAGE_ID 为空导致无数据
+        if (changed || !this.planLoaded) {
+          this.$nextTick(() => this.reload());
+        }
       }
     }
-  },
-  mounted() {
-    this.$nextTick(() => {
-      if (this.localStorageId) this.reload();
-    });
   },
   methods: {
     onStorageChange(val) {
@@ -429,6 +435,8 @@ export default {
       this.$emit('reload-picking');
     },
     reload() {
+      if (!this.localStorageId) return;
+      this.planLoaded = true;
       this.$refs.table?.reload({ page: 1, where: { ...this.where, STORAGE_ID: this.localStorageId } });
     },
     datasource({ where }) {
@@ -462,6 +470,13 @@ export default {
     },
     onCurrentChange(row) {
       this.currentRow = row;
+    },
+    // 对齐老系统 row 事件：点计划行按品种编码刷新下方备货单列表
+    onPlanRowClick(row) {
+      this.currentRow = row;
+      if (row?.Varietie_Code_New) {
+        this.$emit('plan-row-select', row);
+      }
     },
     openSpdRemark(row) {
       this.activeDtlId = row.Dtl_Id;
@@ -661,6 +676,8 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  width: 100%;
+  min-width: 0;
 }
 
 .storage-select {
@@ -673,5 +690,49 @@ export default {
   font-size: 12px;
   font-weight: normal;
   color: #606266;
+}
+
+.spd-table-panel__wrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.plan-cell-btn {
+  padding: 3px 6px;
+  height: 22px;
+  line-height: 1;
+  font-size: 12px;
+}
+
+.plan-cell-btn--wide {
+  padding: 3px 8px;
+}
+</style>
+
+<style lang="scss">
+/* 紧凑行高，贴近老系统 size:sm */
+.plan-table-tab .plan-compact-table {
+  .el-table--mini td,
+  .el-table--mini th {
+    padding: 2px 0;
+  }
+  .el-table .cell {
+    padding-left: 4px;
+    padding-right: 4px;
+    line-height: 20px;
+    font-size: 12px;
+  }
+  .el-input-number--mini {
+    line-height: 22px;
+  }
+  .el-input-number--mini .el-input__inner {
+    height: 22px;
+    line-height: 22px;
+    padding: 0 4px;
+  }
+  .el-select--mini .el-input__inner {
+    height: 22px;
+    line-height: 22px;
+  }
 }
 </style>

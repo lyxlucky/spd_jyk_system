@@ -33,11 +33,13 @@
       size="mini"
       height="240px"
       highlight-current-row
+      :init-load="false"
       :toolkit="[]"
       :columns="columns"
       :datasource="datasource"
       cache-key="deptPlannedDeliveryNewPickingLeft"
       @current-change="onCurrentChange"
+      @row-click="onRowClick"
     >
       <template v-slot:createTime="{ row }">
         {{ row.Create_Time ? $moment(row.Create_Time).format('YYYY-MM-DD') : '' }}
@@ -69,16 +71,34 @@ export default {
     return {
       where: { date: '', state: '-1', planNo: '', keyword: '' },
       columns: buildPickingListColumns(),
+      current: null,
       remarkVisible: false,
       remarkPlanNo: ''
     };
   },
+  watch: {
+    storageId: {
+      immediate: true,
+      handler(val) {
+        if (!val) return;
+        this.$nextTick(() => this.reload());
+      }
+    }
+  },
   methods: {
     reload() {
+      if (!this.storageId) return;
       this.$refs.table?.reload({
         page: 1,
         where: { ...this.where, storageId: this.storageId }
       });
+    },
+    /** 按关键字/品种编码刷新（计划行联动时传入 Varietie_Code_New） */
+    reloadByKeyword(keyword) {
+      if (keyword !== undefined && keyword !== null) {
+        this.where.keyword = keyword;
+      }
+      this.reload();
     },
     datasource({ page, limit, where }) {
       return getPickingList(
@@ -91,7 +111,11 @@ export default {
       }));
     },
     onCurrentChange(row) {
-      this.$emit('select-plan', row);
+      // 仅同步高亮；明细加载走 row-click，避免重复请求
+      this.current = row;
+    },
+    onRowClick(row) {
+      if (row) this.$emit('select-plan', row);
     },
     openRemark(row) {
       this.remarkPlanNo = row.Stock_Up_Plan_No;

@@ -42,9 +42,7 @@
         @sort-change="onSortChange"
       >
         <template v-slot:monthBill="{ row }">
-          <el-link type="primary" :underline="false" @click="openDetail(row.MONTHBILLNUM)">
-            {{ row.MONTHBILLNUM }}
-          </el-link>
+          <span class="bill-link" @click.stop="openDetail(row)">{{ row.MONTHBILLNUM }}</span>
         </template>
         <template v-slot:pic="{ row }">
           <template v-if="!row.PIC_URL">无图片</template>
@@ -62,7 +60,11 @@
         </template>
       </ele-pro-table>
     </el-card>
-    <InvoiceDetailDialog :visible.sync="detailVisible" :month-bill-num="detailBillNum" />
+    <InvoiceDetailDialog
+      :visible.sync="detailVisible"
+      :month-bill-num="detailBillNum"
+      :supplier-code="detailSupplierCode"
+    />
     <el-dialog :visible.sync="picPreviewVisible" width="800px" append-to-body title="发票图片">
       <img v-if="previewUrl" :src="previewUrl" style="max-width: 100%" />
     </el-dialog>
@@ -108,6 +110,7 @@ export default {
       lastSort: { field: '', order: '' },
       detailVisible: false,
       detailBillNum: '',
+      detailSupplierCode: '',
       picPreviewVisible: false,
       previewUrl: '',
       loadingFpqs: false,
@@ -130,9 +133,11 @@ export default {
       this.previewUrl = this.picUrl(name);
       this.picPreviewVisible = true;
     },
-    openDetail(billNum) {
+    openDetail(row) {
+      const billNum = row?.MONTHBILLNUM;
       if (!billNum) return;
       this.detailBillNum = billNum;
+      this.detailSupplierCode = row?.SUPPLIER_CODE || '';
       this.detailVisible = true;
     },
     onSortChange({ prop, order }) {
@@ -370,5 +375,12 @@ export default {
   height: 24px;
   cursor: pointer;
   object-fit: cover;
+}
+.bill-link {
+  color: #409eff;
+  cursor: pointer;
+}
+.bill-link:hover {
+  text-decoration: underline;
 }
 </style>

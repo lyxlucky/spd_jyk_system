@@ -138,6 +138,7 @@
               v-if="canExport('export-VarietyDataLzhDc')"
               size="mini"
               icon="el-icon-download"
+              title="普通导出：数据量过大易超时，建议不超过 1 万条"
               :loading="exporting"
               @click="onExport"
             >
@@ -146,6 +147,9 @@
             <el-button
               v-if="canExport('export-VarietyDataLzhDc')"
               size="mini"
+              type="primary"
+              plain
+              title="高性能导出：后端分批查询，适合大批量数据"
               :loading="exportingHp"
               @click="onExportHp"
             >
@@ -1164,16 +1168,31 @@ export default {
         e.target.value = '';
       }
     },
+    /** 当前列表总条数（与筛选条件一致） */
+    getExportTotal() {
+      return Number(this.$refs.table?.tableTotal) || 0;
+    },
     async onExport() {
+      // 普通导出：CreateStorageExcelCwj，旧式整包生成，数据量大易网关 504
+      // 超过阈值请改用「导出(高性能)」
+      const NORMAL_EXPORT_MAX = 10000;
+      const total = this.getExportTotal();
+      if (!total) {
+        this.$message.warning('没有可导出的数据');
+        return;
+      }
+      if (total > NORMAL_EXPORT_MAX) {
+        this.$alert(
+          `当前筛选结果共 ${total} 条，已超过普通导出上限 ${NORMAL_EXPORT_MAX} 条，继续使用易超时。\n请改用「导出(高性能)」。`,
+          '提示',
+          { type: 'warning', confirmButtonText: '知道了' }
+        );
+        return;
+      }
       this.exporting = true;
       try {
-        // 对齐老系统 PrintStorageSingleRari：size=50000，按总数分页循环导出
-        const total = this.$refs.table?.tableTotal || 0;
-        if (!total) {
-          this.$message.warning('没有可导出的数据');
-          return;
-        }
-        const size = 50000;
+        // 对齐老系统 PrintStorageSingleRari：按页导出（上限内一般一页即可）
+        const size = Math.min(total, NORMAL_EXPORT_MAX);
         const pageCount = Math.ceil(total / size) || 1;
         for (let page = 1; page <= pageCount; page += 1) {
           const res = await createStorageExcelCwj(this.currentWhere || {}, {
@@ -1184,7 +1203,7 @@ export default {
             openExcelFile(res.msg);
           }
         }
-        this.$message.success('导出成功');
+        this.$message.success(`导出成功，共 ${total} 条`);
       } catch (e) {
         this.$message.error(e.message || '导出失败');
       } finally {
@@ -1194,7 +1213,7 @@ export default {
     async onExportHp() {
       this.exportingHp = true;
       try {
-        // 与「导出」相同：按当前搜索条件；后端 EPPlus 分批查、一次生成一个文件
+        // 高性能：CreateStorageExcelCwjEpPlus，后端 EPPlus 分批查询、一次出文件
         const res = await createStorageExcelCwjEpPlus(this.currentWhere || {});
         if (res?.msg) {
           openExcelFile(res.msg);

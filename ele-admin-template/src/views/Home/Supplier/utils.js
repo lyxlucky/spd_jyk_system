@@ -81,6 +81,126 @@ export function openExcelFile(fileName, subPath = '/Excel/files/') {
   window.open(`${LEGACY_BASE}${subPath}${fileName}`);
 }
 
+/** 接口日期 → yyyy-MM-dd；无效/占位日期返回空 */
+export function toDateInput(val) {
+  if (!val || val === '0001-01-01T00:00:00' || String(val).startsWith('0001-01-01')) return '';
+  const s = String(val);
+  return s.substring(0, 10);
+}
+
+/** 新增表单默认值（对齐旧 AddSupplier） */
+export function createEmptySupplierForm() {
+  return {
+    Supplier_Name: '',
+    Licence_File_Full_Name: '',
+    SOCIAL_CREDIT_CODE: '',
+    Contact_Phone2: '',
+    Supplier_Nature: '0',
+    File_Location: '',
+    RODUCTION_CLASS_1_VALID_DATE: '',
+    WTS_VALID_DATE: '',
+    Roduction_class_2_Valid_Date: '',
+    Contact_Person: '',
+    Roduction_class_3_Valid_Date: '',
+    YWY_PEO_ID: '',
+    DR_VALID_DATE: '',
+    Contact_Phone: '',
+    code_charging: '',
+    YG_SUP_CODE: '',
+    Cold_Chain_Apparatus_Supply: '1',
+    Enable: '1',
+    Roduction_License_Valid_Date: '',
+    Business_License_Valid_Date: '',
+    SUP_CODE_TWO: '',
+    COMPANY_PHONE: '',
+    // 仅编辑
+    thirdLicenseNumber: '',
+    sup_QXBZ: '',
+    INVOICE_LIMIT_PRICE: '',
+    Brand_BZ: ''
+  };
+}
+
+/** 详情 → 编辑表单 */
+export function detailToSupplierForm(detail = {}) {
+  return {
+    Supplier_Name: detail.Supplier_Name || '',
+    Licence_File_Full_Name: detail.Licence_File_Full_Name || '',
+    SOCIAL_CREDIT_CODE: detail.SOCIAL_CREDIT_CODE || '',
+    Contact_Phone2: detail.Contact_Phone2 || '',
+    Supplier_Nature: String(detail.Supplier_Nature ?? '0'),
+    File_Location: detail.File_Location || '',
+    RODUCTION_CLASS_1_VALID_DATE: toDateInput(detail.RODUCTION_CLASS_1_VALID_DATE),
+    WTS_VALID_DATE: toDateInput(detail.WTS_VALID_DATE),
+    Roduction_class_2_Valid_Date: toDateInput(detail.Roduction_class_2_Valid_Date),
+    Contact_Person: detail.Contact_Person || '',
+    Roduction_class_3_Valid_Date: toDateInput(detail.Roduction_class_3_Valid_Date),
+    YWY_PEO_ID: detail.YWY_PEO_ID || '',
+    DR_VALID_DATE: toDateInput(detail.DR_VALID_DATE),
+    Contact_Phone: detail.Contact_Phone || '',
+    code_charging: detail.Supplier_Code_Charging || '',
+    YG_SUP_CODE: detail.YG_SUP_CODE || '',
+    Cold_Chain_Apparatus_Supply: String(detail.Cold_Chain_Apparatus_Supply ?? '1'),
+    Enable: String(detail.Enable ?? '1'),
+    Roduction_License_Valid_Date: toDateInput(detail.Roduction_License_Valid_Date) || '2099-12-31',
+    Business_License_Valid_Date: toDateInput(detail.Business_License_Valid_Date),
+    SUP_CODE_TWO: detail.SUP_CODE_TWO || '',
+    COMPANY_PHONE: detail.COMPANY_PHONE || '',
+    thirdLicenseNumber: detail.THIRD_LICENSE_NUMBER || '',
+    sup_QXBZ: detail.QXBZ || '',
+    INVOICE_LIMIT_PRICE: detail.INVOICE_LIMIT_PRICE != null ? String(detail.INVOICE_LIMIT_PRICE) : '',
+    Brand_BZ: detail.BRAND_BZ || ''
+  };
+}
+
+/** 组装提交 payload（与旧 Insert/Update 字段名一致） */
+export function buildSupplierSubmitPayload(form, { isEdit, supplierCode }) {
+  const address = (form.Licence_File_Full_Name || '').trim() || '无';
+  const payload = {
+    Supplier_Name: (form.Supplier_Name || '').trim(),
+    Supplier_Nature: form.Supplier_Nature,
+    Cold_Chain_Apparatus_Supply: form.Cold_Chain_Apparatus_Supply,
+    Business_License_Valid_Date: form.Business_License_Valid_Date || '',
+    Roduction_License_Valid_Date: form.Roduction_License_Valid_Date || (isEdit ? '2099-12-31' : ''),
+    Licence_File_Full_Name: address,
+    Contact_Person: form.Contact_Person || '',
+    Contact_Phone: form.Contact_Phone || '',
+    Enable: form.Enable,
+    code_charging: form.code_charging || '',
+    Contact_Phone2: form.Contact_Phone2 || '',
+    File_Location: form.File_Location || '',
+    Roduction_class_2_Valid_Date: form.Roduction_class_2_Valid_Date || '',
+    Roduction_class_3_Valid_Date: form.Roduction_class_3_Valid_Date || '',
+    YG_SUP_CODE: form.YG_SUP_CODE || '',
+    SUP_CODE_TWO: form.SUP_CODE_TWO || '',
+    RODUCTION_CLASS_1_VALID_DATE: form.RODUCTION_CLASS_1_VALID_DATE || '',
+    SOCIAL_CREDIT_CODE: (form.SOCIAL_CREDIT_CODE || '').trim(),
+    DR_VALID_DATE: form.DR_VALID_DATE || '',
+    WTS_VALID_DATE: form.WTS_VALID_DATE || '',
+    YWY_PEO_ID: form.YWY_PEO_ID || '',
+    COMPANY_PHONE: form.COMPANY_PHONE || ''
+  };
+  if (isEdit) {
+    payload.Supplier_Code = String(supplierCode ?? '');
+    payload.INVOICE_LIMIT_PRICE = form.INVOICE_LIMIT_PRICE || '';
+    payload.sup_QXBZ = form.sup_QXBZ || '';
+    payload.Brand_BZ = form.Brand_BZ || '';
+    payload.thirdLicenseNumber = form.thirdLicenseNumber || '';
+  }
+  return payload;
+}
+
+/** 前端校验（与后端一致） */
+export function validateSupplierForm(form, { isEdit }) {
+  if (!(form.Supplier_Name || '').trim()) return '请填写供应商名称';
+  if (!(form.SOCIAL_CREDIT_CODE || '').trim()) return '社会统一信用代码不能为空';
+  if (!form.Business_License_Valid_Date) return '请填写营业执照有效期';
+  if (!form.Contact_Phone && !form.Contact_Phone2) return '企业电话和业务员电话必填其一';
+  if (!isEdit && !(form.Contact_Person || '').trim()) return '请填写业务员姓名';
+  if (isEdit && !(form.Brand_BZ || '').trim()) return '请填写品牌备注';
+  return '';
+}
+
 export function buildColumns(flags) {
   const cols = [
     { type: 'index', columnKey: 'index', label: '序号', width: 55, align: 'center', fixed: 'left' },

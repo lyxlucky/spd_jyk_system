@@ -59,9 +59,17 @@ export async function financeAudit(where, page, size, sort) {
   throw new Error(res.data?.msg || '查询失败');
 }
 
-export async function getFinanceAuditByItem(monthBillNum, page = 1, size = 99999) {
+/** 发票关联品种明细（与老系统一致：id=发票号，supplierCode=供应商编码） */
+export async function getFinanceAuditByItem(monthBillNum, page = 1, size = 20, supplierCode = '') {
   const res = await request.get('/HrpMonthly/getFinanceAuditByItem', {
-    params: { Token: token(), id: monthBillNum, page, size }
+    params: {
+      Token: token(),
+      id: monthBillNum || '',
+      supplierCode: supplierCode || '',
+      // ASP.NET Web API 的 int 参数缺失会直接 404，必须始终传
+      page: page || 1,
+      size: size || 20
+    }
   });
   check301(res.data);
   if (okCode(res.data?.code)) return res.data;

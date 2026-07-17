@@ -1059,6 +1059,11 @@
 </script>
 
 <style scoped>
+.ks-dept-plan-detail {
+  width: 100%;
+  min-width: 0;
+}
+
 .ks-dept-plan-detail >>> .el-table th .cell {
   white-space: nowrap;
 }

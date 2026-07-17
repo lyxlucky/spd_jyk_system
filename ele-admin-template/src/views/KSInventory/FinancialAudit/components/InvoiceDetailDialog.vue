@@ -29,7 +29,8 @@ export default {
   name: 'InvoiceDetailDialog',
   props: {
     visible: Boolean,
-    monthBillNum: String
+    monthBillNum: String,
+    supplierCode: { type: String, default: '' }
   },
   data() {
     return {
@@ -66,15 +67,21 @@ export default {
         return { count: 0, list: [] };
       }
       try {
-        const res = await getFinanceAuditByItem(this.monthBillNum, page, limit);
-        let totalNum = 0;
-        let totalMoney = 0;
-        (res.result || []).forEach((item) => {
-          totalNum += Number(item.QTY) || 0;
-          totalMoney += (Number(item.QTY) || 0) * (Number(item.PRICE) || 0);
-        });
-        this.totalNum = totalNum;
-        this.totalMoney = totalMoney;
+        const res = await getFinanceAuditByItem(
+          this.monthBillNum,
+          page || 1,
+          limit || 20,
+          this.supplierCode
+        );
+        // 优先用后端汇总；无则按当前页估算
+        this.totalNum = Number(res.totalNum) || 0;
+        this.totalMoney = Number(res.totalMoney) || 0;
+        if (!this.totalNum && !this.totalMoney) {
+          (res.result || []).forEach((item) => {
+            this.totalNum += Number(item.QTY) || 0;
+            this.totalMoney += (Number(item.QTY) || 0) * (Number(item.PRICE) || 0);
+          });
+        }
         return { count: res.total || 0, list: res.result || [] };
       } catch (e) {
         Message.error(e.message || '加载明细失败');

@@ -25,12 +25,10 @@
               <el-option label="未推送" value="0" />
             </el-select>
           </el-col>
-          <el-col :lg="12" :md="14" :sm="24">
+          <el-col :lg="14" :md="14" :sm="24">
             <el-button type="primary" icon="el-icon-search" @click="reload">搜索</el-button>
-            <!-- 旧页 add_supplier → Frame/AddSupplier，待迁移 -->
             <el-button v-if="!hpFlags.disableEdit" icon="el-icon-plus" @click="onAdd">添加</el-button>
             <el-button icon="el-icon-download" :loading="exporting" @click="onExport">导出供应商信息</el-button>
-            <!-- 旧页 SendSzhnSupHis，仅华南 szhn -->
             <el-button
               v-if="hpFlags.isSzhn"
               :loading="sendingOes"
@@ -39,11 +37,24 @@
             >
               推送供应商(OES)
             </el-button>
-            <!-- 旧页 showSupZong，需「总目录」权限 -->
             <el-button v-if="hpFlags.showZongMl" @click="zongVisible = true">总目录</el-button>
-            <!-- 旧页 STOP_SEND(1)，需先选中行 -->
-            <el-button :disabled="!currentRow" @click="onStopSend(1)">禁止配送</el-button>
-            <el-button :disabled="!currentRow" @click="onStopSend(0)">取消禁止</el-button>
+            <!-- 旧页禁止配送与总目录同属 zml 权限 -->
+            <el-button v-if="hpFlags.showZongMl" :disabled="!currentRow" @click="onStopSend(1)">
+              禁止配送
+            </el-button>
+            <el-button v-if="hpFlags.showZongMl" :disabled="!currentRow" @click="onStopSend(0)">
+              取消禁止
+            </el-button>
+            <el-button
+              v-if="!hpFlags.disableEdit"
+              type="danger"
+              plain
+              :disabled="!currentRow"
+              :loading="deleting"
+              @click="onDelete"
+            >
+              删除
+            </el-button>
           </el-col>
         </el-row>
       </el-form>
@@ -65,7 +76,6 @@
           <el-button type="text" size="mini" @click="openSeal(row)">上传送货章</el-button>
           <el-button v-if="hpFlags.hasScope" type="text" size="mini" @click="onScope(row)">经营范围</el-button>
           <el-button type="text" size="mini" @click="openGx(row)">上传购销合同</el-button>
-          <!-- 旧页 edit_supplier → Frame/EditSupplier，待迁移 -->
           <el-button type="text" size="mini" @click="onEdit(row)">编辑</el-button>
         </template>
         <template v-slot:cw="{ row }">
@@ -146,8 +156,22 @@
       :visible.sync="historyVisible"
       :supplier-code="actionRow?.Supplier_Code"
       :supplier-name="actionRow?.Supplier_Name"
+      @done="reloadTable"
     />
     <SupZongDialog :visible.sync="zongVisible" @done="reloadTable" />
+    <SupplierFormDialog
+      :visible.sync="formVisible"
+      :mode="formMode"
+      :supplier-code="formSupplierCode"
+      :readonly="hpFlags.disableEdit && formMode === 'edit'"
+      :show-sup-code-two="hpFlags.isStzx"
+      @done="reload"
+    />
+    <ScopeDialog
+      :visible.sync="scopeVisible"
+      :supplier-code="actionRow?.Supplier_Code"
+      @done="reloadTable"
+    />
   </div>
 </template>
 
@@ -157,8 +181,16 @@ import UploadSealDialog from './components/UploadSealDialog.vue';
 import UploadGxDialog from './components/UploadGxDialog.vue';
 import HistoryPicDialog from './components/HistoryPicDialog.vue';
 import SupZongDialog from './components/SupZongDialog.vue';
+import SupplierFormDialog from './components/SupplierFormDialog.vue';
+import ScopeDialog from './components/ScopeDialog.vue';
 import DateLink from './components/DateLink.vue';
-import { exportAllSuppliers, getSupplierList, sendSupToOes, upStopSend } from '@/api/Home/Supplier';
+import {
+  deleteSupplier,
+  exportAllSuppliers,
+  getSupplierList,
+  sendSupToOes,
+  upStopSend
+} from '@/api/Home/Supplier';
 import {
   buildColumns,
   buildSupplierHpFlags,
@@ -180,6 +212,8 @@ export default {
     UploadGxDialog,
     HistoryPicDialog,
     SupZongDialog,
+    SupplierFormDialog,
+    ScopeDialog,
     DateLink
   },
   data() {
@@ -196,11 +230,16 @@ export default {
       columns: buildColumns(hpFlags),
       exporting: false,
       sendingOes: false,
+      deleting: false,
       cwVisible: false,
       sealVisible: false,
       gxVisible: false,
       historyVisible: false,
-      zongVisible: false
+      zongVisible: false,
+      formVisible: false,
+      formMode: 'add',
+      formSupplierCode: '',
+      scopeVisible: false
     };
   },
   mounted() {
@@ -249,13 +288,18 @@ export default {
       this.$refs.table.reload({ where: this.currentWhere || this.where });
     },
     onAdd() {
-      this.$message.info('添加供应商功能待迁移（旧页 Frame/AddSupplier）');
+      this.formMode = 'add';
+      this.formSupplierCode = '';
+      this.formVisible = true;
     },
     onEdit(row) {
-      this.$message.info(`编辑「${row.Supplier_Name}」待迁移（旧页 Frame/EditSupplier）`);
+      this.formMode = 'edit';
+      this.formSupplierCode = row.Supplier_Code;
+      this.formVisible = true;
     },
     onScope(row) {
-      this.$message.info(`「${row.Supplier_Name}」经营范围待迁移（旧页 /Home/ScopeOfBusiness）`);
+      this.actionRow = row;
+      this.scopeVisible = true;
     },
     openCw(row) {
       this.actionRow = row;
@@ -317,6 +361,29 @@ export default {
         if (e !== 'cancel') {
           this.$message.error(e.message || '操作失败');
         }
+      }
+    },
+    async onDelete() {
+      if (!this.requireCurrentRow()) return;
+      try {
+        await this.$confirm(
+          `确认删除供应商「${this.currentRow.Supplier_Name}」？`,
+          '提示',
+          { type: 'warning' }
+        );
+      } catch {
+        return;
+      }
+      this.deleting = true;
+      try {
+        const res = await deleteSupplier(this.currentRow.Supplier_Code);
+        this.$message.success(res.msg || '删除成功');
+        this.currentRow = null;
+        this.reload();
+      } catch (e) {
+        this.$message.error(e.message || '删除失败');
+      } finally {
+        this.deleting = false;
       }
     }
   }

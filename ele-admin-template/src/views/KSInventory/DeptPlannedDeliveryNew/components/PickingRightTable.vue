@@ -41,13 +41,23 @@ export default {
     loadByPlan(planNo) {
       this.planNo = planNo || '';
       this.selection = [];
+      if (!this.planNo) {
+        this.clear();
+        return;
+      }
       this.$refs.table?.reload({ page: 1, where: { Stock_Up_Plan_No: this.planNo } });
+    },
+    clear() {
+      this.planNo = '';
+      this.selection = [];
+      this.$refs.table?.reload({ page: 1, where: { Stock_Up_Plan_No: '' } });
     },
     datasource({ where }) {
       if (!where?.Stock_Up_Plan_No && !this.planNo) {
         return Promise.resolve({ count: 0, list: [] });
       }
       const no = where?.Stock_Up_Plan_No || this.planNo;
+      if (!no) return Promise.resolve({ count: 0, list: [] });
       return getPickingInfo(no).then((res) => ({
         count: res.total,
         list: res.result || []
