@@ -239,3 +239,102 @@ export function mergeFormToDetail(detail, form) {
   });
   return merged;
 }
+
+/** 新增品种空详情（默认值对齐老页 add_RarietieszjshpzV2New / InsertVarietieBasic） */
+export function createEmptyDetail() {
+  const detail = {
+    Varietie_Code: '',
+    Varietie_Code_New: '',
+    Varietie_Name: '',
+    Prod_Registration_Code: '',
+    Approval_Number: '',
+    Common_Name: '',
+    prod_big_class_name: '',
+    manufacturing_ent_name: '',
+    Specification_Or_Type: '',
+    Unit: '',
+    Price: '',
+    Is_Charge: '0',
+    Charging_Code: '',
+    Middle_Package_Count: 0,
+    Big_Box_Count: 0,
+    PAG_TYPE: '',
+    Oneoff_Sterilization_Packaging: '0',
+    Storage_Type: '0',
+    Is_Embedded: '0',
+    Is_Intervened: '0',
+    Is_Serial_Number: '0',
+    Is_Bidding: '0',
+    Special_Purchase: '0',
+    StoreHouse_Uppper: 0,
+    StoreHouse_Lower: 0,
+    Use_Level: '0',
+    STORAGE_ID: 1,
+    Is_Protect: '0',
+    DEF_POSITION: '无',
+    DEF_POSITION_TWO: '',
+    Enable: '1',
+    IS_SPECIAL_AIRCRAFT: '0',
+    High_Or_Low_Class: '0',
+    HIGH_OR_LOW_CLASS_TWO: '0',
+    YG_ZH_COUNT: 1,
+    HIS_ZHB: 1,
+    HIS_PRICE: 0,
+    YG_IS_CAN_SEND: '0',
+    Is_KuBao: '0',
+    JYZY_CC: '1',
+    MZ_USE: '1',
+    ZY_USE: '1',
+    YJ_USE: '0',
+    CLASSIFIC_PROPERTIES2: '',
+    CLASSIFIC_PROPERTIES3: ''
+  };
+  VARIETY_EDIT_FIELD_KEYS.forEach((key) => {
+    if (detail[key] === undefined) detail[key] = '';
+  });
+  return detail;
+}
+
+/** 新增提交：复用 Update 字段映射，并补齐 Insert 必需数值默认（全部转字符串，兼容 formdataify） */
+export function buildInsertPayload(detail, meta = {}) {
+  const payload = buildUpdatePayload(detail, { ...meta, useStseApi: false });
+  delete payload.ID;
+  delete payload.ENABLE;
+  delete payload.type;
+  delete payload.YSY_GUID;
+  // Insert 接口强制 Convert.ToInt32 / ToDecimal，空串会失败
+  payload.MiddlePackageCount = String(num(detail?.Middle_Package_Count, 0));
+  payload.BigBoxCount = String(num(detail?.Big_Box_Count, 0));
+  payload.StoreHouseUppper = String(num(detail?.StoreHouse_Uppper, 0));
+  payload.StoreHouseLower = String(num(detail?.StoreHouse_Lower, 0));
+  payload.STORAGE_ID = String(num(detail?.STORAGE_ID, 1));
+  payload.Price = String(num(detail?.Price, 0));
+  payload.HIS_ZHB = String(num(detail?.HIS_ZHB, 1));
+  payload.HIS_PRICE = String(num(detail?.HIS_PRICE, 0));
+  payload.YG_ZH_COUNT = str(
+    detail?.YG_ZH_COUNT != null && detail?.YG_ZH_COUNT !== '' ? detail.YG_ZH_COUNT : '1'
+  );
+  payload.NoteDescription = '1';
+  payload.DEF_POSITION = str(detail?.DEF_POSITION) || '无';
+  payload.Is_KuBao = str(detail?.Is_KuBao, '0');
+  payload.Add_Iskubo = payload.Is_KuBao;
+  // 表单 key 与详情字段大小写不一致时兜底
+  payload.CLASSIFIC_PROPERTIES2 = str(
+    detail?.CLASSIFIC_PROPERTIES2 || detail?.Classific_Properties2
+  );
+  payload.CLASSIFIC_PROPERTIES3 = str(
+    detail?.CLASSIFIC_PROPERTIES3 || detail?.Classific_Properties3
+  );
+  payload.ProdRegistrationCode = str(detail?.Prod_Registration_Code);
+  payload.VarietieCode = str(detail?.Varietie_Code_New);
+  // 避免 formdataify 对 number 做 JSON.stringify 导致个别字段异常
+  Object.keys(payload).forEach((key) => {
+    const v = payload[key];
+    if (v == null || v === undefined) {
+      payload[key] = '';
+    } else if (typeof v !== 'string') {
+      payload[key] = String(v);
+    }
+  });
+  return payload;
+}

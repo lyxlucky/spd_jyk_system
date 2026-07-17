@@ -1,4 +1,4 @@
-import { BACK_BASE_URL } from '@/config/setting';
+import { getStaticBaseUrl } from '@/config/setting';
 
 export function formatEnable(val) {
   if (val === '0' || val === 0) return '冻结';
@@ -108,8 +108,11 @@ export function showVarietyPicColumn(_hp) {
 
 export function openExcelFile(fileName, subPath = '/Excel/files/') {
   if (!fileName) return;
-  const base = (BACK_BASE_URL || '').replace(/\/$/, '');
-  window.open(`${base}${subPath}${fileName}`);
+  // 用 getStaticBaseUrl：去掉 API 的 /api，避免 .../spdapi/api/Excel/...
+  const base = getStaticBaseUrl();
+  const path = subPath.endsWith('/') ? subPath : `${subPath}/`;
+  const name = String(fileName).replace(/^.*[\\/]/, '');
+  window.open(`${base}${path}${encodeURIComponent(name)}`);
 }
 
 /** 清理 el-dialog / v-loading 关闭后可能残留的遮罩，避免页面无法点击 */

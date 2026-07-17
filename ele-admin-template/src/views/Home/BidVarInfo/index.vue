@@ -375,8 +375,9 @@ export default {
     reloadCurrentPage() {
       this.$refs.table.reload({ where: { ...this.filters } });
     },
-    onTableDone(res) {
-      this.tableTotal = res?.count ?? 0;
+    onTableDone(res, _page, total) {
+      // ele-pro-table @done 参数为 (result, page, total)，result 含 total 而非 count
+      this.tableTotal = total ?? res?.total ?? 0;
     },
     requireSelection(msg = '请选择数据') {
       if (!this.selection.length) {

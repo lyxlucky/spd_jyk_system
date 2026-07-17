@@ -1,5 +1,5 @@
 ﻿import request from '@/utils/request';
-import { formdataify, DataToObject } from '@/utils/formdataify';
+import { formdataify, DataToObject, toUrlEncodedBody } from '@/utils/formdataify';
 import { TOKEN_STORE_NAME, HOME_HP } from '@/config/setting';
 import { Encrypt } from '@/utils/aes-util';
 import store from '@/store';
@@ -13,9 +13,12 @@ export async function QueryPageLayUI(data) {
     var data2 = {};
     data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
     data2.varietieCode = data.where.varietieCode ? data.where.varietieCode : '';
-    data2.enable = data.where.enable ? data.where.enable : '1';
+    // enable='' 表示全部；不能用三元假值判断，否则会把「全部」回落成「启用」
+    data2.enable =
+      data.where.enable === undefined || data.where.enable === null
+        ? '1'
+        : data.where.enable;
     data2.varietieName = data.where.varietieName ? data.where.varietieName : '';
-    // data2.enable = data.where.enable ? data.where.enable : '';
     data2.state = data.where.state ? data.where.state : '';
 
     data2.IS_CHARGE = data.where.IS_CHARGE ? data.where.IS_CHARGE : '-1';
@@ -316,39 +319,123 @@ export async function UpstopDeptSl(rows, state) {
   return unwrap(res);
 }
 
-/** 普通导出（非 EpPlus） */
-export async function createStorageExcelCwj(where = {}, useB = false) {
+/**
+ * 对齐老系统 VarietyDataLzh.buildVarietyQueryPrams
+ * （导出/列表筛选共用字段；空串需带上，避免后端 Form[].Trim() 空引用）
+ */
+export function buildVarietyQueryParams(where = {}, extra = {}) {
+  const w = where || {};
+  const code = w.varietieCode || '';
+  const enable =
+    w.enable === undefined || w.enable === null ? '1' : w.enable;
+  return {
+    Token: token(),
+    varietieCode: code,
+    // 老系统：名称与编码同源（同一搜索框）
+    varietieName: w.varietieName || code,
+    field: '',
+    order: '',
+    state: w.state ?? '',
+    IS_CHARGE: w.IS_CHARGE ?? '-1',
+    IS_BIDDING: w.IS_BIDDING ?? '-1',
+    SPECIAL_PURCHASE: w.SPECIAL_PURCHASE ?? '-1',
+    ONEOFF_STERILIZATION_PACKAGING: w.ONEOFF_STERILIZATION_PACKAGING ?? '-1',
+    STORAGE_TYPE: w.STORAGE_TYPE ?? '-1',
+    IS_EMBEDDED: w.IS_EMBEDDED ?? '-1',
+    IS_SERIAL_NUMBER: w.IS_SERIAL_NUMBER ?? '-1',
+    IS_INTERVENED: w.IS_INTERVENED ?? '-1',
+    IS_PROTECT: w.IS_PROTECT ?? '-1',
+    HIGH_OR_LOW_CLASS: w.HIGH_OR_LOW_CLASS || '-1',
+    HIGH_OR_LOW_CLASS_TWO: w.HIGH_OR_LOW_CLASS_TWO || '-1',
+    IS_EQUIPMENT_CHANGE: w.IS_EQUIPMENT_CHANGE ?? '-1',
+    SENDYB_STATE: w.SENDYB_STATE ?? '',
+    HIGH_CLASS_XH: w.HIGH_CLASS_XH ?? '',
+    // 后端 CreateStorageExcelCwj 读 HIGH_CLASS_XH_SEARCH
+    HIGH_CLASS_XH_SEARCH: w.HIGH_CLASS_XH ?? '',
+    enable,
+    enableChargingCode: w.enableChargingCode ?? '',
+    updateTime: w.updateTime ?? '',
+    priceChangeTimeStart: w.priceChangeTimeStart ?? '',
+    priceChangeTimeEnd: w.priceChangeTimeEnd ?? '',
+    APPROVAL_STATE: w.APPROVAL_STATE ?? '',
+    vdzh_sx: w.vdzh_sx ?? '',
+    SCQY: w.SCQY ?? '',
+    SUP: w.SUP ?? '',
+    Specification_Or_Type: w.Specification_Or_Type ?? '',
+    ZCZ: w.ZCZ ?? '',
+    CZ: w.CZ ?? '',
+    VARYB_STATE: w.VARYB_STATE ?? '',
+    VARSB_STATE: w.VARSB_STATE ?? '',
+    VARJF_STATE: w.VARJF_STATE ?? '',
+    VARSPD_STATE: w.VARSPD_STATE ?? '',
+    VARBZ_STATE: w.VARBZ_STATE ?? '',
+    VAROES_STATE: w.VAROES_STATE ?? '',
+    FSWY_STATE: w.FSWY_STATE ?? '',
+    Y_M_P_CODE: w.Y_M_P_CODE ?? '',
+    CLASS_ONE: w.CLASS_ONE ?? '',
+    CLASS_TWO: w.CLASS_TWO ?? '',
+    CLASS_THREE: w.CLASS_THREE ?? '',
+    UDI_TOP: w.UDI_TOP ?? '',
+    BZ_TI: w.BZ_TI ?? '',
+    JF_BJ: w.JF_BJ ?? '',
+    IS_HANG_UP: w.IS_HANG_UP ?? '',
+    STSEHIS_STATE: w.STSEHIS_STATE ?? '',
+    HOSPITAL_SYNC: w.HOSPITAL_SYNC ?? '',
+    VAR_CREATETIMESTART: w.VAR_CREATETIMESTART ?? '',
+    VAR_CREATETIMEEND: w.VAR_CREATETIMEEND ?? '',
+    CLASSIFIC_PROPERTIES3: w.CLASSIFIC_PROPERTIES3 ?? '',
+    ...extra
+  };
+}
+
+/** 老系统 PrintStorageSingleRari：走 CreateStorageExcelCwj_B 的院区 */
+export function shouldUseCreateStorageExcelCwjB(hp = HOME_HP) {
+  return ['szhn', 'lg', 'bd', 'zq', 'szlhfy', 'szsmyl'].includes(hp);
+}
+
+/**
+ * 普通导出（非 EpPlus）
+ * 对齐老系统：buildVarietyQueryPrams + hp/page/size；默认每页 50000
+ * @param {object} where
+ * @param {{ useB?: boolean, page?: number, size?: number }} [options]
+ */
+export async function createStorageExcelCwj(where = {}, options = {}) {
+  // 兼容旧调用 createStorageExcelCwj(where, true)
+  const opts = typeof options === 'boolean' ? { useB: options } : options || {};
+  const useB =
+    opts.useB !== undefined ? opts.useB : shouldUseCreateStorageExcelCwjB();
+  const page = opts.page ?? 1;
+  const size = opts.size ?? 50000;
   const path = useB
     ? '/VarietieBasicInfo/CreateStorageExcelCwj_B'
     : '/VarietieBasicInfo/CreateStorageExcelCwj';
-  const data2 = {
-    Token: token(),
-    varietieCode: where.varietieCode || '',
-    enable: where.enable ?? '1',
-    varietieName: where.varietieName || where.varietieCode || '',
-    state: where.state || '0',
-    HIGH_OR_LOW_CLASS: where.HIGH_OR_LOW_CLASS ?? '-1',
-    HIGH_OR_LOW_CLASS_TWO: where.HIGH_OR_LOW_CLASS_TWO ?? '-1',
-    IS_EQUIPMENT_CHANGE: where.IS_EQUIPMENT_CHANGE ?? '-1',
-    APPROVAL_STATE: where.APPROVAL_STATE ?? '',
-    vdzh_sx: where.vdzh_sx ?? '0',
-    SCQY: where.SCQY || '',
-    ZCZ: where.ZCZ || '',
-    SUP: where.SUP || '',
-    Specification_Or_Type: where.Specification_Or_Type || '',
-    Y_M_P_CODE: where.Y_M_P_CODE || '',
-    UDI_TOP: where.UDI_TOP || '',
-    BZ_TI: where.BZ_TI || '',
-    JF_BJ: where.JF_BJ || '',
-    IS_HANG_UP: where.IS_HANG_UP ?? '',
-    enableChargingCode: where.enableChargingCode || '',
-    updateTime: where.updateTime || '',
-    priceChangeTimeStart: where.priceChangeTimeStart || '',
-    priceChangeTimeEnd: where.priceChangeTimeEnd || '',
-    HIGH_CLASS_XH: where.HIGH_CLASS_XH || '',
-    SENDYB_STATE: where.SENDYB_STATE || ''
-  };
+  const data2 = buildVarietyQueryParams(where, {
+    field: '',
+    order: '',
+    hp: HOME_HP || '',
+    page: String(page),
+    size: String(size)
+  });
   const res = await request.post(path, formdataify(data2), { timeout: 600000 });
+  return unwrap(res);
+}
+
+/**
+ * 高性能导出（EPPlus）
+ * 对齐老系统 PrintStorageEpPlus：同一套 buildVarietyQueryPrams + hp，后端内部分批写入单文件
+ */
+export async function createStorageExcelCwjEpPlus(where = {}, extra = {}) {
+  const data2 = buildVarietyQueryParams(where, {
+    field: '',
+    order: '',
+    hp: HOME_HP || '',
+    ...extra
+  });
+  const res = await request.post(
+    '/VarietieBasicInfo/CreateStorageExcelCwjEpPlus',
+    formdataify(data2),
+    { timeout: 600000 }
+  );
   return unwrap(res);
 }
 
@@ -530,4 +617,147 @@ export async function GetStzxVarApp({
     return { code: 200, msg: body.msg || '', data: [], total: 0 };
   }
   throw new Error(body?.msg || '查询失败');
+}
+
+/** 批准文号下拉（新增品种） */
+export async function GetApprovalNumberList() {
+  const res = await request.get('/VarietieBasicInfo/GetApprovalNumberList', {
+    params: { Token: token() }
+  });
+  const body = res.data;
+  if (body === '301' || body === 301 || body?.code == 301) {
+    throw new Error(body?.msg || '登录失效，请重新登录');
+  }
+  if (typeof body === 'string') {
+    try {
+      return JSON.parse(body) || [];
+    } catch (e) {
+      return [];
+    }
+  }
+  return Array.isArray(body) ? body : body?.result || [];
+}
+
+/** 根据注册证编码取批准文号详情 */
+export async function GetApprovalNumberInfo(prodRegistrationCode) {
+  const res = await request.get('/VarietieBasicInfo/GetApprovalNumberInfo', {
+    params: {
+      Token: token(),
+      ProdRegistrationCode: prodRegistrationCode || ''
+    }
+  });
+  const body = res.data;
+  if (body === '301' || body === 301 || body?.code == 301) {
+    throw new Error(body?.msg || '登录失效，请重新登录');
+  }
+  if (typeof body === 'string') {
+    try {
+      return JSON.parse(body) || [];
+    } catch (e) {
+      return [];
+    }
+  }
+  return Array.isArray(body) ? body : body?.result || [];
+}
+
+/** 品种编码是否已存在（新增前校验） */
+export async function IsVarietieExist(varietieCode) {
+  const res = await request.get('/VarietieBasicInfo/IsVarietieExist', {
+    params: {
+      Token: token(),
+      varietieCode: varietieCode || ''
+    }
+  });
+  return res.data === true || res.data === 'true';
+}
+
+/** 新增散货品种（字段与 UpdateVarietieBasic / 老页 InsertVarietieBasic 一致） */
+export async function InsertVarietieBasic(payload) {
+  const res = await request.post(
+    '/VarietieBasicInfo/InsertVarietieBasic',
+    formdataify(payload)
+  );
+  return unwrap(res);
+}
+
+/** Excel 批量更新选定字段（对齐老页 Imp_updataField） */
+export async function ImpUpdataField(file, updataField, priceBox = 0) {
+  const fd = new FormData();
+  fd.append('FILE', file);
+  fd.append('Token', token());
+  fd.append('updataField', String(updataField));
+  fd.append('price_box', String(priceBox ?? 0));
+  fd.append('nickname', '');
+  const res = await request.post('/VarietieBasicInfo/Imp_updataField', fd, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+    timeout: 120000
+  });
+  return res.data;
+}
+
+/** 与老 layui table/$.post 一致：x-www-form-urlencoded，供 Request.Form 绑定 */
+const urlEncodedHeaders = {
+  headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+};
+
+/** 品种效期资料分页 */
+export async function GetVarExpirationData({
+  VARIETIE_CODE_NEW = '',
+  page = 1,
+  size = 30
+} = {}) {
+  const res = await request.post(
+    '/VarietiesQuery/GetVarExpirationData',
+    toUrlEncodedBody({
+      Token: token(),
+      VARIETIE_CODE_NEW: VARIETIE_CODE_NEW || '',
+      page: String(page || 1),
+      size: String(size || 30)
+    }),
+    urlEncodedHeaders
+  );
+  return unwrap(res);
+}
+
+/** 停用合同过期品种（后端实现可能不完整，保持与老页一致入口） */
+export async function StopVarExpirationData() {
+  const res = await request.post(
+    '/VarietiesQuery/StopVarExpirationData',
+    toUrlEncodedBody({ Token: token() }),
+    urlEncodedHeaders
+  );
+  return unwrap(res);
+}
+
+/** 微讯通品种审核列表（对齐老页 WxtSpVarInfo layui table 入参） */
+export async function getWxtSpVarInfo({
+  page = 1,
+  size = 30,
+  wpmc = '',
+  sycStatus = '',
+  SPDstate = ''
+} = {}) {
+  const res = await request.post(
+    '/MonthClearing/getWxtSpVarInfo',
+    toUrlEncodedBody({
+      Token: token(),
+      page: String(page || 1),
+      size: String(size || 30),
+      wpmc: wpmc || '',
+      sycStatus: sycStatus == null ? '' : String(sycStatus),
+      SPDstate: SPDstate == null ? '' : String(SPDstate)
+    }),
+    urlEncodedHeaders
+  );
+  return unwrap(res);
+}
+
+/** 微讯通品种同步处理 */
+export async function updateNewVarCode() {
+  const res = await request.post(
+    '/MonthClearing/updateNewVarCode',
+    toUrlEncodedBody({ Token: token() }),
+    urlEncodedHeaders
+  );
+  return unwrap(res);
 }
