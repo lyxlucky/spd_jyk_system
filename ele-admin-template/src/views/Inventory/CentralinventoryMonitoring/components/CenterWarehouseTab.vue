@@ -133,12 +133,13 @@
       class="data-table"
       size="mini"
       :height="monitorTableHeight"
-      :row-class-name="centerWarningRowClass"
+      :row-class-name="monitorRowClassName"
       :columns="monitorColumns"
       :datasource="monitorDatasource"
       :selection.sync="monitorSelection"
       :page-size="monitorPageSize"
       :page-sizes="[10, 20, 30, 50, 100, 150, 300, 1000]"
+      highlight-current-row
       cache-key="cimCenterMonitorTable"
       @selection-change="onMonitorSelectionChange"
       @row-click="onMonitorRowClick"
@@ -398,7 +399,6 @@ export default {
     this.loadStorageList();
   },
   methods: {
-    centerWarningRowClass,
     formatContractType,
     formatIsBidding,
     formatXsxxJc,
@@ -406,6 +406,19 @@ export default {
     formatApproveState,
     formatDateTime,
     planGoodsQtyDisplay,
+    /** 告警色 + 勾选高亮（Element 勾选行默认无整行样式） */
+    monitorRowClassName({ row }) {
+      const warn = centerWarningRowClass({ row });
+      const selected = this.isRowSelected(row) ? 'monitor-row-selected' : '';
+      return [warn, selected].filter(Boolean).join(' ');
+    },
+    refreshMonitorRowClass() {
+      // selection 变化时 el-table 不会自动重算 row-class-name，需强制刷新
+      this.$nextTick(() => {
+        const table = this.$refs.monitorTable?.$refs?.table;
+        table?.$forceUpdate?.();
+      });
+    },
     formatDetailPrice(row) {
       const raw = monitorHpFlags.isCg
         ? row.Purchase_Price
@@ -476,6 +489,7 @@ export default {
     },
     onMonitorSelectionChange(rows) {
       (rows || []).forEach((row) => this.ensurePlanMap(row));
+      this.refreshMonitorRowClass();
       if (this.loadPlanByVariety && rows?.length) {
         this.pickingWhere.VarietieCode = rows[0].Varietie_Code_New || '';
         this.reloadPicking();
@@ -851,14 +865,33 @@ export default {
   .text-danger {
     color: #f56c6c;
   }
-  :deep(.monitor-warn-1) {
+  :deep(.monitor-warn-1 > td.el-table__cell) {
     background-color: #f9d5d5 !important;
   }
-  :deep(.monitor-warn-2) {
+  :deep(.monitor-warn-2 > td.el-table__cell) {
     background-color: #f7f4a8 !important;
   }
-  :deep(.monitor-warn-3) {
+  :deep(.monitor-warn-3 > td.el-table__cell) {
     background-color: #a6e4f7 !important;
+  }
+  /* 勾选行高亮：左侧蓝条 + 浅蓝底，告警色行略加深以便仍可区分 */
+  :deep(.monitor-row-selected > td.el-table__cell) {
+    background-color: #d9ecff !important;
+  }
+  :deep(.monitor-row-selected > td.el-table__cell:first-child) {
+    box-shadow: inset 3px 0 0 #409eff;
+  }
+  :deep(.monitor-row-selected.monitor-warn-1 > td.el-table__cell) {
+    background-color: #f0b4b4 !important;
+  }
+  :deep(.monitor-row-selected.monitor-warn-2 > td.el-table__cell) {
+    background-color: #efe98a !important;
+  }
+  :deep(.monitor-row-selected.monitor-warn-3 > td.el-table__cell) {
+    background-color: #7fd4f0 !important;
+  }
+  :deep(.el-table__body tr.current-row > td.el-table__cell) {
+    background-color: #ecf5ff !important;
   }
 }
 </style>
