@@ -2,7 +2,7 @@
 export const API_BASE_URL = process.env.VUE_APP_API_BASE_URL;
 
 //b2b后端地址
-export const B2B_BASE_URL = "http://47.106.243.154:802";
+export const B2B_BASE_URL = process.env.VUE_APP_B2B_BASE_URL || "http://47.106.243.154:802";
 
 // 请求超时时间配置（毫秒）
 const getRequestTimeout = () => {
@@ -134,7 +134,7 @@ const getBackBaseUrl = () => {
     'bdnw': 'http://100.100.100.45:8001',
     'lhfyww': 'http://61.145.158.182:10082',
     'lhfynw': 'http://10.88.10.209:82',
-    'hnww': 'http://183.62.200.242:82',
+    'hnww': 'https://nat.sch-szu.com/spdapi',
     'hnnw': 'http://172.16.4.59:82',
     'smww': 'http://120.78.226.92:18002',
     'smnw': 'http://192.168.8.90:18002',
