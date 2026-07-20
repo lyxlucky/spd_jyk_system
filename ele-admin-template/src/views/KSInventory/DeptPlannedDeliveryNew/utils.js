@@ -279,11 +279,20 @@ export function buildPlanColumns() {
     },
     { prop: 'Dtl_Id', label: '唯一ID', width: 90, align: 'center', showOverflowTooltip: true }
   );
-  return cols.filter((c) => !c.hide);
+  // 后端 SearchDeptPlanMsg 无 field/order；本表一次拉全量，用前端本地排序
+  const noSortProps = new Set(['actions', 'BatchInfo', 'Storage_Id', 'BH_NUM']);
+  return cols
+    .filter((c) => !c.hide)
+    .map((col) =>
+      col.prop && !col.type && !noSortProps.has(col.prop)
+        ? { ...col, sortable: true }
+        : col
+    );
 }
 
 export function buildPickingListColumns() {
-  return [
+  // 后端 GetPickingList 无 field/order（固定 create_time DESC）；对齐老系统 layui 当前页本地排序
+  const cols = [
     { prop: 'Stock_Up_Plan_No', label: '备货计划单号', minWidth: 130, align: 'center', showOverflowTooltip: true },
     { prop: 'Creator', label: '创建人', minWidth: 80, align: 'center', showOverflowTooltip: true },
     { prop: 'supplier_name', label: '供应商名称', minWidth: 120, align: 'center', showOverflowTooltip: true },
@@ -311,10 +320,14 @@ export function buildPickingListColumns() {
       formatter: (row) => formatSendState(row.Send_State)
     }
   ];
+  return cols.map((col) =>
+    col.prop && col.prop !== 'REMARK' ? { ...col, sortable: true } : col
+  );
 }
 
 export function buildPickingDetailColumns() {
-  return [
+  // 后端 GetPickingInfo 无 field/order（固定 VARIETIE_CODE_NEW）；本表明细一次拉全量，用前端本地排序
+  const cols = [
     selectionCol(),
     { prop: 'REMARKS', label: '备注', minWidth: 90, align: 'center', showOverflowTooltip: true },
     { prop: 'Varietie_Code_New', label: '品种(材料)编码', minWidth: 160, align: 'center', showOverflowTooltip: true },
@@ -333,11 +346,18 @@ export function buildPickingDetailColumns() {
       minWidth: 90,
       align: 'center',
       formatter: (row) =>
-        Number(row.Stock_Up_Plan_Goods_Quantity || 0) - Number(row.ReceiptQty || 0)
+        Number(row.Stock_Up_Plan_Goods_Quantity || 0) - Number(row.ReceiptQty || 0),
+      sortMethod: (a, b) =>
+        Number(a.Stock_Up_Plan_Goods_Quantity || 0) -
+        Number(a.ReceiptQty || 0) -
+        (Number(b.Stock_Up_Plan_Goods_Quantity || 0) - Number(b.ReceiptQty || 0))
     },
     { prop: 'Plan_Time', label: '备货时间', minWidth: 100, align: 'center' },
     { prop: 'supplier_name', label: '供应商名称', minWidth: 120, align: 'center', showOverflowTooltip: true }
   ];
+  return cols.map((col) =>
+    col.prop && !col.type ? { ...col, sortable: true } : col
+  );
 }
 
 export function exportPlanTable(rows) {

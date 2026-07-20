@@ -557,8 +557,21 @@ export default {
       this.pickingWhere.STORAGE_ID = this.bhkqStorageId;
       this.$refs.pickingTable?.reload({ page: 1, where: this.pickingWhere });
     },
-    monitorDatasource({ page, limit }) {
-      return searchCentralMonitor(this.filters, page, limit)
+    monitorDatasource({ page, limit, order }) {
+      const where = { ...this.filters };
+      if (order?.sort) {
+        where.field = order.sort;
+        where.order =
+          order.order === 'descending'
+            ? 'desc'
+            : order.order === 'ascending'
+              ? 'asc'
+              : '';
+      } else {
+        where.field = '';
+        where.order = '';
+      }
+      return searchCentralMonitor(where, page, limit)
         .then((res) => {
           const list = res.result || [];
           list.forEach((row) => {

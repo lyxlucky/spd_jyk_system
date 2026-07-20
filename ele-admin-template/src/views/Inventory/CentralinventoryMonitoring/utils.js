@@ -213,6 +213,42 @@ export function selectionCol(fixed) {
   return col;
 }
 
+function withCenterMonitorSort(cols) {
+  // 仅对后端 ORDER BY 白名单内字段开服务端排序（备货数输入列除外）
+  const sortableProps = new Set([
+    'Varietie_Code_New',
+    'Varietie_Name',
+    'Specification_Or_Type',
+    'Unit',
+    'Manufacturing_Ent_Name',
+    'Def_No_Pkg_Coefficient',
+    'Is_Bidding',
+    'PRICE',
+    'Storehouse_Uppper',
+    'Storehouse_Lower',
+    'Defsum',
+    'OutdefSum',
+    'Goodssum',
+    'OutGoodsUp',
+    'MIDDLE_PACKAGE_COUNT',
+    'BigBoxCount',
+    'PackQty',
+    'OutPackQty',
+    'QTY',
+    'Name',
+    'PAG_TYPE',
+    'supplier_name',
+    'supply_price',
+    'PlanGoodsQty',
+    'PROVINCE_PLATFORM_CODE'
+  ]);
+  return cols.map((col) => {
+    if (!col.prop || col.type || !sortableProps.has(col.prop)) return col;
+    if (col.slot === 'pkgPlan' || col.slot === 'goodsPlan') return col;
+    return { ...col, sortable: 'custom' };
+  });
+}
+
 export function buildCenterMonitorColumns(hp = monitorHpFlags) {
   if (hp.isCg || hp.isSzlh) {
     const cols = [
@@ -224,7 +260,7 @@ export function buildCenterMonitorColumns(hp = monitorHpFlags) {
       { label: '单位', prop: 'Unit', minWidth: 60, align: 'center' },
       { label: '生产企业名称', prop: 'Manufacturing_Ent_Name', minWidth: 130, showOverflowTooltip: true },
       { label: '系数', prop: 'Def_No_Pkg_Coefficient', minWidth: 60, align: 'center' },
-      { label: '中标', minWidth: 60, align: 'center', slot: 'isBidding' },
+      { label: '中标', prop: 'Is_Bidding', minWidth: 60, align: 'center', slot: 'isBidding' },
       { label: '价格', prop: 'PRICE', minWidth: 90, align: 'right' },
       { label: '库存上限', prop: 'Storehouse_Uppper', minWidth: 90, align: 'right' },
       { label: '库存下限', prop: 'Storehouse_Lower', minWidth: 90, align: 'right' },
@@ -250,9 +286,11 @@ export function buildCenterMonitorColumns(hp = monitorHpFlags) {
       });
     }
     if (hp.isHnPagType) {
-      return cols.filter((c) => !['MIDDLE_PACKAGE_COUNT', 'BigBoxCount'].includes(c.prop));
+      return withCenterMonitorSort(
+        cols.filter((c) => !['MIDDLE_PACKAGE_COUNT', 'BigBoxCount'].includes(c.prop))
+      );
     }
-    return cols;
+    return withCenterMonitorSort(cols);
   }
 
   const cols = [
@@ -266,7 +304,7 @@ export function buildCenterMonitorColumns(hp = monitorHpFlags) {
     { label: '启用合同供应商', prop: 'supplier_name', minWidth: 200, showOverflowTooltip: true },
     { label: '生产企业名称', prop: 'Manufacturing_Ent_Name', minWidth: 130, showOverflowTooltip: true },
     { label: '系数', prop: 'Def_No_Pkg_Coefficient', minWidth: 60, align: 'center' },
-    { label: '合同类型', minWidth: 120, align: 'center', slot: 'contractType' },
+    { label: '合同类型', prop: 'CONTRACT_TYPE', minWidth: 120, align: 'center', slot: 'contractType' },
     { label: '中标价格', prop: 'PRICE', minWidth: 120, align: 'right' },
     { label: '合同价格', prop: 'supply_price', minWidth: 120, align: 'right' },
     { label: '库存上限', prop: 'Storehouse_Uppper', minWidth: 120, align: 'right' },
@@ -277,18 +315,20 @@ export function buildCenterMonitorColumns(hp = monitorHpFlags) {
     { label: '备货数（散）', minWidth: 120, align: 'center', slot: 'goodsPlan' },
     { label: '中包装数量', prop: 'MIDDLE_PACKAGE_COUNT', minWidth: 120, align: 'right' },
     { label: '大包装数量', prop: 'BigBoxCount', minWidth: 120, align: 'right' },
-    { label: '计划总量(散)', minWidth: 120, align: 'right', slot: 'planGoodsQty' }
+    { label: '计划总量(散)', prop: 'PlanGoodsQty', minWidth: 120, align: 'right', slot: 'planGoodsQty' }
   ];
   if (hp.isSpt) {
     cols.splice(1, 0, { label: '省平台编码', prop: 'PROVINCE_PLATFORM_CODE', minWidth: 120, showOverflowTooltip: true });
   }
   if (hp.isStzl) {
-    return cols.filter((c) => c.prop !== 'BigBoxCount');
+    return withCenterMonitorSort(cols.filter((c) => c.prop !== 'BigBoxCount'));
   }
   if (hp.isHnPagType) {
-    return cols.filter((c) => !['MIDDLE_PACKAGE_COUNT', 'BigBoxCount'].includes(c.prop));
+    return withCenterMonitorSort(
+      cols.filter((c) => !['MIDDLE_PACKAGE_COUNT', 'BigBoxCount'].includes(c.prop))
+    );
   }
-  return cols;
+  return withCenterMonitorSort(cols);
 }
 
 export function buildCenterPickingColumns() {
