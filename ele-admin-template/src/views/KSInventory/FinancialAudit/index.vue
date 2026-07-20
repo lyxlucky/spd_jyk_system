@@ -89,6 +89,7 @@ import {
   sendInvoiceToHop,
   excelExport
 } from '@/api/KSInventory/FinancialAudit';
+import { setPageTab, getRouteTabKey } from '@/utils/page-tab-util';
 
 export default {
   name: 'KSFinancialAudit',
@@ -121,6 +122,13 @@ export default {
       exportingQs: false,
       exportingMonth: false
     };
+  },
+  mounted() {
+    // 补全页签 components，纳入 keep-alive（异步路由首次匹配常拿不到 name）
+    const name = this.$options.name;
+    if (name) {
+      setPageTab({ key: getRouteTabKey(), components: [name] });
+    }
   },
   methods: {
     picUrl(name) {

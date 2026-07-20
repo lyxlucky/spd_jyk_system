@@ -20,8 +20,11 @@
 <script>
 import LeftPage from '../../Inventory/Goodsshelves/components/LeftPage.vue';
 import RightPage from '../../Inventory/Goodsshelves/components/RightPage.vue';
+import { setPageTab, getRouteTabKey } from '@/utils/page-tab-util';
 
 export default {
+  // keep-alive 按组件 name 缓存；缺 name 时切换菜单会销毁重建，表现为整页刷新
+  name: 'Goodsshelves',
   components: {
     LeftPage,
     RightPage
@@ -30,6 +33,12 @@ export default {
     return {
       activeTab: 'in'
     };
+  },
+  mounted() {
+    const name = this.$options.name;
+    if (name) {
+      setPageTab({ key: getRouteTabKey(), components: [name] });
+    }
   }
 };
 </script>
