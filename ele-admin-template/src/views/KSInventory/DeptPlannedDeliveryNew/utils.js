@@ -159,26 +159,26 @@ export function buildPlanColumns() {
       align: 'center',
       fixed: 'left'
     },
-    { prop: 'Plan_Number', label: '计划单号', width: 90, align: 'center', showOverflowTooltip: true },
+    { prop: 'Plan_Number', label: '计划单号', width: 120, align: 'center', showOverflowTooltip: true },
     {
       prop: 'Priority',
       label: '订单优先级',
-      width: 50,
+      width: 140,
       align: 'center',
       formatter: (row) => formatPriority(row.Priority)
     },
-    { prop: 'Plan_Time', label: '计划时间', width: 90, align: 'center', showOverflowTooltip: true },
+    { prop: 'Plan_Time', label: '计划时间', width: 120, align: 'center', showOverflowTooltip: true },
     {
       prop: 'Apply_State',
       label: '计划单状态',
-      width: 90,
+      width: 130,
       align: 'center',
       formatter: (row) => formatPlanApplyState(row)
     },
     {
       prop: 'Dept_Two_Name',
       label: '二级科室名称/审核科室',
-      width: 90,
+      width: 180,
       align: 'center',
       showOverflowTooltip: true,
       slot: 'deptTwoName'
@@ -196,7 +196,7 @@ export function buildPlanColumns() {
     {
       prop: 'DEPT_AUTH_CODE',
       label: '二级科室授权',
-      width: 50,
+      width: 160,
       align: 'center',
       formatter: (row) => formatDeptAuth(row.DEPT_AUTH_CODE)
     }
@@ -205,67 +205,67 @@ export function buildPlanColumns() {
     cols.push({
       prop: 'CLASSIFIC_NAME',
       label: '耗材分类',
-      width: 90,
+      width: 120,
       align: 'center',
       showOverflowTooltip: true
     });
   }
   cols.push(
-    { prop: 'Varietie_Code_New', label: '品种编码', width: 90, align: 'center', showOverflowTooltip: true },
-    { prop: 'CHARGING_CODE', label: '计费编码', width: 90, align: 'center', showOverflowTooltip: true }
+    { prop: 'Varietie_Code_New', label: '品种编码', width: 120, align: 'center', showOverflowTooltip: true },
+    { prop: 'CHARGING_CODE', label: '计费编码', width: 120, align: 'center', showOverflowTooltip: true }
   );
   if (!f.isSpt) {
-    cols.push({ prop: 'YG_CODE', label: '阳光产品码', width: 95, align: 'center', showOverflowTooltip: true });
+    cols.push({ prop: 'YG_CODE', label: '阳光产品码', width: 135, align: 'center', showOverflowTooltip: true });
   }
   cols.push(
-    { prop: 'PROVINCE_PLATFORM_CODE', label: '药交ID', width: 100, align: 'center', showOverflowTooltip: true },
+    { prop: 'PROVINCE_PLATFORM_CODE', label: '药交ID', width: 120, align: 'center', showOverflowTooltip: true },
     { prop: 'Varietie_Name', label: '品种名称', width: 180, align: 'center', showOverflowTooltip: true },
     { prop: 'Specification_Or_Type', label: '规格型号', width: 180, align: 'center', showOverflowTooltip: true },
-    { prop: 'Unit', label: '单位', width: 50, align: 'center' },
-    { prop: 'Price', label: '中标价', width: 70, align: 'center' },
-    { prop: 'Apply_Qty', label: '申请数量', width: 60, align: 'center' },
-    { prop: 'Left_Apply_Qty', label: '剩余申请数量', width: 70, align: 'center' }
+    { prop: 'Unit', label: '单位', width: 80, align: 'center' },
+    { prop: 'Price', label: '中标价', width: 90, align: 'center' },
+    { prop: 'Apply_Qty', label: '申请数量', width: 120, align: 'center' },
+    { prop: 'Left_Apply_Qty', label: '剩余申请数量', width: 140, align: 'center' }
   );
   if (f.isJp) {
-    cols.push({ prop: 'GET_QTY', label: '科室收货数量', width: 70, align: 'center' });
+    cols.push({ prop: 'GET_QTY', label: '科室收货数量', width: 140, align: 'center' });
   }
   cols.push(
-    { prop: 'Center_Inside_Goods_Qty', label: '院内散货数量', width: 60, align: 'center' },
-    { prop: 'Center_Outside_Goods_Qty', label: '院外散货数量', width: 60, align: 'center', hide: f.isHideYw },
-    { prop: 'Center_Inside_Def_Qty', label: '院内定数包', width: 60, align: 'center' },
-    { prop: 'Center_Outside_Def_Qty', label: '院外定数包', width: 80, align: 'center', hide: f.isHideYw },
-    { prop: 'BH_NUM', label: '备货数（散）', width: 90, align: 'center', slot: 'planQty' },
+    { prop: 'Center_Inside_Goods_Qty', label: '院内散货数量', width: 140, align: 'center' },
+    { prop: 'Center_Outside_Goods_Qty', label: '院外散货数量', width: 140, align: 'center', hide: f.isHideYw },
+    { prop: 'Center_Inside_Def_Qty', label: '院内定数包', width: 140, align: 'center' },
+    { prop: 'Center_Outside_Def_Qty', label: '院外定数包', width: 140, align: 'center', hide: f.isHideYw },
+    { prop: 'BH_NUM', label: '备货数（散）', width: 120, align: 'center', slot: 'planQty' },
     { prop: 'SUPPLIER_NAME', label: '供应商', width: 120, align: 'center', showOverflowTooltip: true },
-    { prop: 'CONTRACT_CODE', label: '合同编码', width: 100, align: 'center', showOverflowTooltip: true },
+    { prop: 'CONTRACT_CODE', label: '合同编码', width: 120, align: 'center', showOverflowTooltip: true },
     {
       prop: 'CONTRACT_TYPE',
       label: '合同类型',
-      width: 50,
+      width: 120,
       align: 'center',
       formatter: (row) => formatContractType(row.CONTRACT_TYPE)
     },
     { prop: 'Manufacturing_Ent_Name', label: '生产企业名称', width: 120, align: 'center', showOverflowTooltip: true },
-    { prop: 'USE_GOODS_QTY', label: '近30天用量（对应科室）', width: 80, align: 'center' },
-    { prop: 'STOREHOUSE_UPPPER', label: '中心库上限', width: 80, align: 'center' },
-    { prop: 'STOREHOUSE_LOWER', label: '中心库下限', width: 80, align: 'center' }
+    { prop: 'USE_GOODS_QTY', label: '近30天用量（对应科室）', width: 160, align: 'center' },
+    { prop: 'STOREHOUSE_UPPPER', label: '中心库上限', width: 140, align: 'center' },
+    { prop: 'STOREHOUSE_LOWER', label: '中心库下限', width: 140, align: 'center' }
   );
   if (!f.isHnPagType) {
     cols.push(
-      { prop: 'MIDDLE_PACKAGE_COUNT', label: '中包装数量', width: 80, align: 'center' },
-      { prop: 'BIG_BOX_COUNT', label: '大包装数量', width: 80, align: 'center' }
+      { prop: 'MIDDLE_PACKAGE_COUNT', label: '中包装数量', width: 140, align: 'center' },
+      { prop: 'BIG_BOX_COUNT', label: '大包装数量', width: 140, align: 'center' }
     );
   } else {
-    cols.push({ prop: 'PAG_TYPE', label: '包装规格', width: 80, align: 'center' });
+    cols.push({ prop: 'PAG_TYPE', label: '包装规格', width: 140, align: 'center' });
   }
   cols.push(
-    { prop: 'APPROVAL_NUMBER', label: '注册证', width: 150, align: 'center', showOverflowTooltip: true },
-    { prop: 'PLAN_SUBMITTER', label: '申领人', width: 80, align: 'center', showOverflowTooltip: true },
-    { prop: 'Storage_Id', label: '收货库区', width: 90, align: 'center', slot: 'rowStorage' },
-    { prop: 'BatchInfo', label: '批次号信息', width: 90, align: 'center', slot: 'batchInfo' },
+    { prop: 'APPROVAL_NUMBER', label: '注册证', width: 180, align: 'center', showOverflowTooltip: true },
+    { prop: 'PLAN_SUBMITTER', label: '申领人', width: 120, align: 'center', showOverflowTooltip: true },
+    { prop: 'Storage_Id', label: '收货库区', width: 120, align: 'center', slot: 'rowStorage' },
+    { prop: 'BatchInfo', label: '批次号信息', width: 140, align: 'center', slot: 'batchInfo' },
     {
       prop: 'Is_Bidding',
       label: '是否中标',
-      width: 70,
+      width: 120,
       align: 'center',
       formatter: (row) => formatIsBidding(row.Is_Bidding)
     },
@@ -273,11 +273,11 @@ export function buildPlanColumns() {
     {
       prop: 'DTL_IS_DELETE',
       label: '剔除标记',
-      width: 70,
+      width: 120,
       align: 'center',
       formatter: (row) => formatDeleteFlag(row.DTL_IS_DELETE)
     },
-    { prop: 'Dtl_Id', label: '唯一ID', width: 90, align: 'center', showOverflowTooltip: true }
+    { prop: 'Dtl_Id', label: '唯一ID', width: 100, align: 'center', showOverflowTooltip: true }
   );
   // 后端 SearchDeptPlanMsg 无 field/order；本表一次拉全量，用前端本地排序
   const noSortProps = new Set(['actions', 'BatchInfo', 'Storage_Id', 'BH_NUM']);
@@ -333,17 +333,17 @@ export function buildPickingDetailColumns() {
     { prop: 'Varietie_Code_New', label: '品种(材料)编码', minWidth: 160, align: 'center', showOverflowTooltip: true },
     { prop: 'Varietie_Name', label: '品种全称', minWidth: 140, align: 'center', showOverflowTooltip: true },
     { prop: 'Specification_Or_Type', label: '型号/规格', minWidth: 120, align: 'center', showOverflowTooltip: true },
-    { prop: 'Unit', label: '单位', minWidth: 55, align: 'center' },
+    { prop: 'Unit', label: '单位', minWidth: 85, align: 'center' },
     { prop: 'Manufacturing_Ent_Name', label: '生产企业名称', minWidth: 120, align: 'center', showOverflowTooltip: true },
     { prop: 'Purchase_Price', label: '价格', minWidth: 80, align: 'center', formatter: (row) => formatPrice(row) },
-    { prop: 'Coefficient', label: '系数', minWidth: 55, align: 'center' },
-    { prop: 'Stock_Up_Plan_Def_Quantity', label: '备货/包', minWidth: 80, align: 'center' },
-    { prop: 'Stock_Up_Plan_Goods_Quantity', label: '备货/散', minWidth: 80, align: 'center' },
-    { prop: 'ReceiptQty', label: '实收数量', minWidth: 90, align: 'center' },
+    { prop: 'Coefficient', label: '系数', minWidth: 85, align: 'center' },
+    { prop: 'Stock_Up_Plan_Def_Quantity', label: '备货/包', minWidth: 100, align: 'center' },
+    { prop: 'Stock_Up_Plan_Goods_Quantity', label: '备货/散', minWidth: 100, align: 'center' },
+    { prop: 'ReceiptQty', label: '实收数量', minWidth: 120, align: 'center' },
     {
       prop: 'RemainQty',
       label: '剩余备货',
-      minWidth: 90,
+      minWidth: 120,
       align: 'center',
       formatter: (row) =>
         Number(row.Stock_Up_Plan_Goods_Quantity || 0) - Number(row.ReceiptQty || 0),
@@ -352,7 +352,15 @@ export function buildPickingDetailColumns() {
         Number(a.ReceiptQty || 0) -
         (Number(b.Stock_Up_Plan_Goods_Quantity || 0) - Number(b.ReceiptQty || 0))
     },
-    { prop: 'Plan_Time', label: '备货时间', minWidth: 100, align: 'center' },
+    {
+      prop: 'Plan_Time',
+      label: '备货时间',
+      minWidth: 150,
+      align: 'center',
+      showOverflowTooltip: true,
+      formatter: (row) =>
+        row.Plan_Time ? String(row.Plan_Time).replace('T', ' ').substring(0, 19) : ''
+    },
     { prop: 'supplier_name', label: '供应商名称', minWidth: 120, align: 'center', showOverflowTooltip: true }
   ];
   return cols.map((col) =>

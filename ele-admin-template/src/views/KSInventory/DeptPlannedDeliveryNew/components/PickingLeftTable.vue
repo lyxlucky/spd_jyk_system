@@ -1,5 +1,5 @@
 <template>
-  <div class="picking-left">
+  <div class="picking-left picking-compact-table">
     <div class="sub-panel-head spd-sub-panel__head">备货单列表</div>
     <el-form size="mini" inline class="filter-row" @submit.native.prevent>
       <el-form-item>
@@ -139,5 +139,25 @@ export default {
 }
 .filter-row {
   margin-bottom: 8px;
+}
+</style>
+
+<style lang="scss">
+/* 与备货明细、计划表一致的紧凑行高 */
+.picking-compact-table {
+  .el-table--mini td,
+  .el-table--mini th,
+  .el-table .el-table__cell {
+    padding: 2px 0;
+  }
+  .el-table .el-table__row {
+    height: auto !important;
+  }
+  .el-table .cell {
+    padding-left: 4px;
+    padding-right: 4px;
+    line-height: 20px;
+    font-size: 12px;
+  }
 }
 </style>

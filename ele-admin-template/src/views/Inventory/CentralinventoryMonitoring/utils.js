@@ -358,10 +358,10 @@ export function buildCenterDetailColumns(options = {}) {
     ...(showXsxx
       ? [{ label: '线上线下', prop: 'XSXX_JC', minWidth: 90, align: 'center', slot: 'xsxxJc' }]
       : []),
-    { label: '品种(材料)编码', prop: 'Varietie_Code_New', minWidth: 120, showOverflowTooltip: true },
+    { label: '品种(材料)编码', prop: 'Varietie_Code_New', minWidth: 130, showOverflowTooltip: true },
     { label: '品种全称', prop: 'Varietie_Name', minWidth: 150, showOverflowTooltip: true },
     { label: '型号/规格', prop: 'Specification_Or_Type', minWidth: 120, showOverflowTooltip: true },
-    { label: '单位', prop: 'Unit', minWidth: 60, align: 'center' },
+    { label: '单位', prop: 'Unit', minWidth: 80, align: 'center' },
     { label: '生产企业名称', prop: 'Manufacturing_Ent_Name', minWidth: 120, showOverflowTooltip: true },
     { label: '供应商名称', prop: 'supplier_name', minWidth: 130, showOverflowTooltip: true },
     {
@@ -371,11 +371,11 @@ export function buildCenterDetailColumns(options = {}) {
       prop: isCg ? 'Purchase_Price' : 'Supply_Price',
       slot: 'detailPrice'
     },
-    { label: '系数', prop: 'Coefficient', minWidth: 60, align: 'center' },
-    { label: '备货数（包）', prop: 'Stock_Up_Plan_Def_Quantity', minWidth: 90, align: 'center' },
-    { label: '备货数（散）', prop: 'Stock_Up_Plan_Goods_Quantity', minWidth: 90, align: 'center' },
-    { label: '实收数量', prop: 'ReceiptQty', minWidth: 85, align: 'center' },
-    { label: '备货时间', prop: 'Plan_Time', minWidth: 105 }
+    { label: '系数', prop: 'Coefficient', minWidth: 80, align: 'center' },
+    { label: '备货数（包）', prop: 'Stock_Up_Plan_Def_Quantity', minWidth: 120, align: 'center' },
+    { label: '备货数（散）', prop: 'Stock_Up_Plan_Goods_Quantity', minWidth: 120, align: 'center' },
+    { label: '实收数量', prop: 'ReceiptQty', minWidth: 125, align: 'center' },
+    { label: '备货时间', prop: 'Plan_Time', minWidth: 125 }
   ];
   return cols.map((col) =>
     col.prop && !col.type ? { ...col, sortable: true } : col
@@ -395,7 +395,7 @@ export function buildDeptMonitorColumns(options = {}) {
     { label: '品种（材料）编码', prop: 'Varietie_Code_New', minWidth: 160, showOverflowTooltip: true },
     { label: '品种全称', prop: 'Varietie_Name', minWidth: 160, showOverflowTooltip: true },
     { label: '型号/规格', prop: 'Specification_Or_Type', minWidth: 120, showOverflowTooltip: true },
-    { label: '单位', prop: 'Unit', minWidth: 60, align: 'center' },
+    { label: '单位', prop: 'Unit', minWidth: 80, align: 'center' },
     { label: '生产企业名称', prop: 'Manufacturing_Ent_Name', minWidth: 160, showOverflowTooltip: true },
     { label: '系数', prop: 'Def_No_Pkg_Coefficient', minWidth: 60, align: 'center' },
     { label: '上限', prop: 'def_no_pkg_upper', minWidth: 70, align: 'center' },
