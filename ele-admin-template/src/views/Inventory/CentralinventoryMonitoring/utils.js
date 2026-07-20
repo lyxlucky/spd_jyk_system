@@ -332,26 +332,31 @@ export function buildCenterMonitorColumns(hp = monitorHpFlags) {
 }
 
 export function buildCenterPickingColumns() {
-  return [
+  // 后端 GetPickingList 无 field/order（固定 create_time DESC）；对齐老系统当前页本地排序
+  const cols = [
     { label: '备货计划单号', prop: 'Stock_Up_Plan_No', minWidth: 140, showOverflowTooltip: true },
     { label: '创建人', prop: 'Creator', minWidth: 80, align: 'center' },
     { label: '供应商名称', prop: 'supplier_name', minWidth: 130, showOverflowTooltip: true },
     { label: '收货院区', prop: 'NAME', minWidth: 90, align: 'center' },
-    { label: '创建时间', minWidth: 155, slot: 'createTime' },
+    { label: '创建时间', prop: 'Create_Time', minWidth: 155, slot: 'createTime' },
     { label: '备注', minWidth: 70, align: 'center', slot: 'planRemark' },
-    { label: '审批状态', minWidth: 95, align: 'center', slot: 'approveState' },
-    { label: '发送状态', minWidth: 130, align: 'center', slot: 'sendState' },
+    { label: '审批状态', prop: 'Approve_State', minWidth: 95, align: 'center', slot: 'approveState' },
+    { label: '发送状态', prop: 'Send_State', minWidth: 130, align: 'center', slot: 'sendState' },
     { label: '操作', minWidth: 185, fixed: 'right', slot: 'planAction' }
   ];
+  return cols.map((col) =>
+    col.prop ? { ...col, sortable: true } : col
+  );
 }
 
 export function buildCenterDetailColumns(options = {}) {
+  // 后端 GetPickingInfo 无 field/order（固定 VARIETIE_CODE_NEW）；明细一次拉全量，用前端本地排序
   const showXsxx = options.showXsxx ?? hasMonitorPermission('备货新增线上线下');
   const isCg = options.isCg ?? monitorHpFlags.isCg;
   const cols = [
     selectionCol(),
     ...(showXsxx
-      ? [{ label: '线上线下', minWidth: 90, align: 'center', slot: 'xsxxJc' }]
+      ? [{ label: '线上线下', prop: 'XSXX_JC', minWidth: 90, align: 'center', slot: 'xsxxJc' }]
       : []),
     { label: '品种(材料)编码', prop: 'Varietie_Code_New', minWidth: 120, showOverflowTooltip: true },
     { label: '品种全称', prop: 'Varietie_Name', minWidth: 150, showOverflowTooltip: true },
@@ -372,7 +377,9 @@ export function buildCenterDetailColumns(options = {}) {
     { label: '实收数量', prop: 'ReceiptQty', minWidth: 85, align: 'center' },
     { label: '备货时间', prop: 'Plan_Time', minWidth: 105 }
   ];
-  return cols;
+  return cols.map((col) =>
+    col.prop && !col.type ? { ...col, sortable: true } : col
+  );
 }
 
 export function buildDeptMonitorColumns(options = {}) {
