@@ -73,9 +73,23 @@ export async function QueryPageLayUI(data) {
 
     // data2.page = data.page ? data.page : 1;
     // data2.size = data.limit ? data.limit : 30;
-    data2.field = (typeof data.field === 'string') ? data.field : '';
-    // 对齐老系统：order 必须为字符串（"asc"/"desc"），而不是对象
-    data2.order = (typeof data.order === 'string') ? data.order : '';
+    // ele-pro-table 传入 order: { sort, order: ascending|descending }
+    // 老系统/后端需要 field + order 字符串（asc/desc）
+    const sorter = data.order && typeof data.order === 'object' ? data.order : null;
+    if (sorter) {
+      data2.field = typeof sorter.sort === 'string' ? sorter.sort : '';
+      data2.order =
+        sorter.order === 'descending'
+          ? 'desc'
+          : sorter.order === 'ascending'
+            ? 'asc'
+            : typeof sorter.order === 'string'
+              ? sorter.order
+              : '';
+    } else {
+      data2.field = typeof data.field === 'string' ? data.field : '';
+      data2.order = typeof data.order === 'string' ? data.order : '';
+    }
 
 
     var pramsStr = Encrypt(JSON.stringify(data2))

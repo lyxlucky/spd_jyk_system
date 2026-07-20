@@ -1,4 +1,5 @@
 import { getStaticBaseUrl } from '@/config/setting';
+import { downloadBlob } from '@/utils/downloadfile';
 
 export function formatEnable(val) {
   if (val === '0' || val === 0) return '冻结';
@@ -106,13 +107,34 @@ export function showVarietyPicColumn(_hp) {
   return true;
 }
 
-export function openExcelFile(fileName, subPath = '/Excel/files/') {
+/**
+ * 拉取服务端 Excel 为 Blob 后本地下载（与中标目录 writeFile 同类：不新开标签、不进 Office 在线预览）
+ */
+export async function openExcelFile(fileName, subPath = '/Excel/files/') {
   if (!fileName) return;
   // 用 getStaticBaseUrl：去掉 API 的 /api，避免 .../spdapi/api/Excel/...
   const base = getStaticBaseUrl();
   const path = subPath.endsWith('/') ? subPath : `${subPath}/`;
   const name = String(fileName).replace(/^.*[\\/]/, '');
-  window.open(`${base}${path}${encodeURIComponent(name)}`);
+  const url = `${base}${path}${encodeURIComponent(name)}`;
+  try {
+    const res = await fetch(url, { credentials: 'same-origin' });
+    if (!res.ok) {
+      throw new Error(`下载失败(${res.status})`);
+    }
+    const blob = await res.blob();
+    downloadBlob(blob, name);
+  } catch (e) {
+    // 跨域或网络失败时退回 <a download>，仍避免 window.open
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = name;
+    a.rel = 'noopener';
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
 }
 
 /** 清理 el-dialog / v-loading 关闭后可能残留的遮罩，避免页面无法点击 */

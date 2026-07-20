@@ -525,7 +525,7 @@ export default {
         });
       }
       cols.push(
-        { slot: 'remark', label: '备注', minWidth: 100, showOverflowTooltip: true },
+        { slot: 'remark', prop: 'BZ', label: '备注', minWidth: 100, showOverflowTooltip: true },
         {
           prop: 'Varietie_Code_New',
           label: '品种（材料）编码',
@@ -662,7 +662,10 @@ export default {
         },
         { prop: 'Province_Platform_Code', label: '省平台/药交ID', minWidth: 130, showOverflowTooltip: true }
       );
-      return cols;
+      // 有 prop 的数据列开启服务端排序（对齐老系统 layui sort）
+      return cols.map((col) =>
+        col.prop && !col.type ? { ...col, sortable: 'custom' } : col
+      );
     }
   },
   methods: {
@@ -1183,7 +1186,7 @@ export default {
       }
       if (total > NORMAL_EXPORT_MAX) {
         this.$alert(
-          `当前筛选结果共 ${total} 条，已超过普通导出上限 ${NORMAL_EXPORT_MAX} 条，继续使用易超时。\n请改用「导出(高性能)」。`,
+          `当前筛选结果共 ${total} 条，已超过普通导出上限 ${NORMAL_EXPORT_MAX} 条，继续使用易超时。`,
           '提示',
           { type: 'warning', confirmButtonText: '知道了' }
         );
