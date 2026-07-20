@@ -182,7 +182,7 @@
           :columns="tableColumns"
           :datasource="datasource"
           :selection.sync="selection"
-          cache-key="varietyDataLzhMainTable"
+          cache-key="varietyDataLzhMainTableV2"
           @current-change="onCurrentChange"
         >
           <template v-slot:action="{ row }">
@@ -563,6 +563,13 @@ export default {
           align: 'right'
         },
         { prop: 'Approval_Number', label: '批准文号', minWidth: 160, showOverflowTooltip: true },
+        {
+          prop: 'VARIETIE_CODE_OLD',
+          columnKey: 'VARIETIE_CODE_OLD',
+          label: '原品种编码',
+          minWidth: 150,
+          showOverflowTooltip: true
+        },
         { prop: 'SUPPLIER_NAME', label: '启用合同供应商', minWidth: 180, showOverflowTooltip: true },
         { prop: 'CONTRACT_NAME', label: '启用合同', minWidth: 140, showOverflowTooltip: true },
         {
