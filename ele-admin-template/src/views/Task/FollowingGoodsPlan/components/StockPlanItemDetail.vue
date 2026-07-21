@@ -179,8 +179,10 @@
           <el-select
             v-model="batchRemarkDept"
             filterable
-            placeholder="请选择科室"
+            clearable
+            placeholder="请选择科室（可不选）"
             style="width: 100%"
+            @change="onBatchRemarkDeptChange"
           >
             <el-option
               v-for="item in deptList"
@@ -476,6 +478,8 @@ export default {
         this.$message.warning('请至少选择一行数据');
         return;
       }
+      this.batchRemarkDept = '';
+      this.batchRemarkText = '';
       const loadDepts = () => {
         getDeptTwoBasicInfoAll()
           .then((res) => {
@@ -502,11 +506,15 @@ export default {
         this.batchRemarkVisible = true;
       }
     },
-    submitBatchRemark() {
-      if (!this.batchRemarkDept) {
-        this.$message.warning('请选择科室');
-        return;
+    onBatchRemarkDeptChange(deptCode) {
+      // 对齐老系统：选科室时把科室名填入备注（可再改）
+      if (!deptCode) return;
+      const dept = this.deptList.find((d) => d.Dept_Two_Code === deptCode);
+      if (dept?.Dept_Two_Name) {
+        this.batchRemarkText = dept.Dept_Two_Name;
       }
+    },
+    submitBatchRemark() {
       if (!this.batchRemarkText) {
         this.$message.warning('请输入备注');
         return;
@@ -516,7 +524,7 @@ export default {
       batchUpDelRemarks({
         IDS: this.selection.map((r) => r.ID).join(','),
         REMARKS: this.batchRemarkText,
-        DEPT_TWO_CODE: this.batchRemarkDept,
+        DEPT_TWO_CODE: this.batchRemarkDept || '',
         DEPT_TWO_NAME: dept?.Dept_Two_Name || ''
       })
         .then((res) => {

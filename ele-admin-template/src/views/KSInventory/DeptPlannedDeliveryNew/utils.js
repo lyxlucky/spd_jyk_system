@@ -159,26 +159,26 @@ export function buildPlanColumns() {
       align: 'center',
       fixed: 'left'
     },
-    { prop: 'Plan_Number', label: '计划单号', width: 120, align: 'center', showOverflowTooltip: true },
+    { prop: 'Plan_Number', label: '计划单号', width: 90, align: 'center', showOverflowTooltip: true },
     {
       prop: 'Priority',
       label: '订单优先级',
-      width: 140,
+      width:90,
       align: 'center',
       formatter: (row) => formatPriority(row.Priority)
     },
-    { prop: 'Plan_Time', label: '计划时间', width: 120, align: 'center', showOverflowTooltip: true },
+    { prop: 'Plan_Time', label: '计划时间', width: 100, align: 'center', showOverflowTooltip: true },
     {
       prop: 'Apply_State',
       label: '计划单状态',
-      width: 130,
+      width: 80,
       align: 'center',
       formatter: (row) => formatPlanApplyState(row)
     },
     {
       prop: 'Dept_Two_Name',
       label: '二级科室名称/审核科室',
-      width: 180,
+      width: 100,
       align: 'center',
       showOverflowTooltip: true,
       slot: 'deptTwoName'
@@ -186,7 +186,7 @@ export function buildPlanColumns() {
     {
       prop: 'BZ',
       label: '备注',
-      width: 100,
+      width: 80,
       align: 'center',
       showOverflowTooltip: true,
       formatter: (row) => formatRemark(row)
@@ -196,7 +196,7 @@ export function buildPlanColumns() {
     {
       prop: 'DEPT_AUTH_CODE',
       label: '二级科室授权',
-      width: 160,
+      width: 80,
       align: 'center',
       formatter: (row) => formatDeptAuth(row.DEPT_AUTH_CODE)
     }
@@ -205,7 +205,7 @@ export function buildPlanColumns() {
     cols.push({
       prop: 'CLASSIFIC_NAME',
       label: '耗材分类',
-      width: 120,
+      width: 80,
       align: 'center',
       showOverflowTooltip: true
     });
@@ -215,26 +215,26 @@ export function buildPlanColumns() {
     { prop: 'CHARGING_CODE', label: '计费编码', width: 120, align: 'center', showOverflowTooltip: true }
   );
   if (!f.isSpt) {
-    cols.push({ prop: 'YG_CODE', label: '阳光产品码', width: 135, align: 'center', showOverflowTooltip: true });
+    cols.push({ prop: 'YG_CODE', label: '阳光产品码', width: 105, align: 'center', showOverflowTooltip: true });
   }
   cols.push(
-    { prop: 'PROVINCE_PLATFORM_CODE', label: '药交ID', width: 120, align: 'center', showOverflowTooltip: true },
-    { prop: 'Varietie_Name', label: '品种名称', width: 180, align: 'center', showOverflowTooltip: true },
-    { prop: 'Specification_Or_Type', label: '规格型号', width: 180, align: 'center', showOverflowTooltip: true },
+    { prop: 'PROVINCE_PLATFORM_CODE', label: '药交ID', width: 100, align: 'center', showOverflowTooltip: true },
+    { prop: 'Varietie_Name', label: '品种名称', width: 150, align: 'center', showOverflowTooltip: true },
+    { prop: 'Specification_Or_Type', label: '规格型号', width: 150, align: 'center', showOverflowTooltip: true },
     { prop: 'Unit', label: '单位', width: 80, align: 'center' },
     { prop: 'Price', label: '中标价', width: 90, align: 'center' },
-    { prop: 'Apply_Qty', label: '申请数量', width: 120, align: 'center' },
-    { prop: 'Left_Apply_Qty', label: '剩余申请数量', width: 140, align: 'center' }
+    { prop: 'Apply_Qty', label: '申请数量', width: 105, align: 'center' },
+    { prop: 'Left_Apply_Qty', label: '剩余申请数量', width: 100, align: 'center' }
   );
   if (f.isJp) {
-    cols.push({ prop: 'GET_QTY', label: '科室收货数量', width: 140, align: 'center' });
+    cols.push({ prop: 'GET_QTY', label: '科室收货数量', width: 80, align: 'center' });
   }
   cols.push(
-    { prop: 'Center_Inside_Goods_Qty', label: '院内散货数量', width: 140, align: 'center' },
-    { prop: 'Center_Outside_Goods_Qty', label: '院外散货数量', width: 140, align: 'center', hide: f.isHideYw },
-    { prop: 'Center_Inside_Def_Qty', label: '院内定数包', width: 140, align: 'center' },
-    { prop: 'Center_Outside_Def_Qty', label: '院外定数包', width: 140, align: 'center', hide: f.isHideYw },
-    { prop: 'BH_NUM', label: '备货数（散）', width: 120, align: 'center', slot: 'planQty' },
+    { prop: 'Center_Inside_Goods_Qty', label: '院内散货数量', width: 100, align: 'center' },
+    { prop: 'Center_Outside_Goods_Qty', label: '院外散货数量', width: 100, align: 'center', hide: f.isHideYw },
+    { prop: 'Center_Inside_Def_Qty', label: '院内定数包', width: 100, align: 'center' },
+    { prop: 'Center_Outside_Def_Qty', label: '院外定数包', width: 100, align: 'center', hide: f.isHideYw },
+    { prop: 'BH_NUM', label: '备货数（散）', width: 100, align: 'center', slot: 'planQty' },
     { prop: 'SUPPLIER_NAME', label: '供应商', width: 120, align: 'center', showOverflowTooltip: true },
     { prop: 'CONTRACT_CODE', label: '合同编码', width: 120, align: 'center', showOverflowTooltip: true },
     {
