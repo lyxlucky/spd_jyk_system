@@ -180,6 +180,18 @@ export function batchUpDelRemarks(data) {
   );
 }
 
+/** 单条备注（旧页 cwjOpenDelBZCommit → ANewStockUp/UpDelRemarks） */
+export function upDelRemarks(id, remarks) {
+  return request.post(
+    'ANewStockUp/UpDelRemarks',
+    formdataify({
+      ID: String(id ?? ''),
+      REMARKS: remarks ?? '',
+      Token: token()
+    })
+  );
+}
+
 /** 发送审批 */
 export function upStockToHrp(json) {
   return request.post(
