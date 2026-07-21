@@ -462,6 +462,299 @@ export async function stopConWithStopVar() {
   return unwrap(res);
 }
 
+/** 华南推送品种到 OES（旧页 SendSzhnVarHis → Abdzczh/SendVarToOes） */
+export async function sendVarToOes(rows, men) {
+  const payload = (rows || []).map((r) => ({ ID: r.ID }));
+  const res = await request.post(
+    '/Abdzczh/SendVarToOes',
+    formdataify({
+      Token: token(),
+      json: JSON.stringify(payload),
+      men: men ?? ''
+    }),
+    { timeout: 600000 }
+  );
+  return unwrap(res);
+}
+
+const LONG_TIMEOUT = { timeout: 600000 };
+
+function mapIdPayload(rows) {
+  return (rows || []).map((r) => ({ ID: r.ID }));
+}
+
+function mapVarietieCodePayload(rows) {
+  return (rows || []).map((r) => ({ Varietie_Code: r.Varietie_Code }));
+}
+
+/** 市二系：品种备注已处理 */
+export async function commitVarStseBZ(rows, nickname, type = '2') {
+  const payload = (rows || []).map((r) => ({ ID: r.Varietie_Code }));
+  const res = await request.post(
+    '/VarietieBasicInfo/CommitVarStseBZ',
+    formdataify({
+      Token: token(),
+      json: JSON.stringify(payload),
+      nickname: nickname ?? '',
+      type: String(type)
+    }),
+    LONG_TIMEOUT
+  );
+  return unwrap(res);
+}
+
+/** 市二系：提交字典 */
+export async function commitVarStseSB(rows, nickname, type = '0') {
+  const res = await request.post(
+    '/VarietieBasicInfo/CommitVarStseSB',
+    formdataify({
+      Token: token(),
+      json: JSON.stringify(mapIdPayload(rows)),
+      nickname: nickname ?? '',
+      type: String(type)
+    }),
+    LONG_TIMEOUT
+  );
+  return unwrap(res);
+}
+
+/** 市二：发送同步品种 */
+export async function sendStseVarHis(rows, men = '') {
+  const res = await request.post(
+    '/AAxtzx_his/SendStseVarHis',
+    formdataify({
+      Token: token(),
+      json: JSON.stringify(mapIdPayload(rows)),
+      men: men || ''
+    }),
+    LONG_TIMEOUT
+  );
+  return unwrap(res);
+}
+
+/** 市二：SyncItem（与 SendStseVarHis 配套） */
+export async function syncStseItem(rows) {
+  const ids = (rows || []).map((r) => r.Varietie_Code).filter(Boolean).join(',');
+  const res = await request.post(
+    '/ShanTou/SyncItem',
+    formdataify({ Token: token(), varietieCode: ids }),
+    LONG_TIMEOUT
+  );
+  return unwrap(res);
+}
+
+/** 市二调价 */
+export async function stseUpdatePrice(rows) {
+  const ids = (rows || []).map((r) => r.Varietie_Code).filter(Boolean).join(',');
+  const res = await request.post(
+    '/ShanTou/UpdatePrice',
+    formdataify({ Token: token(), varietieCode: ids }),
+    LONG_TIMEOUT
+  );
+  return unwrap(res);
+}
+
+/** 发送品种 CSYY */
+export async function sendCsyyVarHis(rows) {
+  const res = await request.post(
+    '/Abdzczh/CSYYVAR_H006',
+    formdataify({ Token: token(), json: JSON.stringify(mapIdPayload(rows)) }),
+    LONG_TIMEOUT
+  );
+  return unwrap(res);
+}
+
+/** 发送品种 STZY */
+export async function sendStzyVarHis(rows) {
+  const res = await request.post(
+    '/Abdzczh/AddVarStzy',
+    formdataify({ Token: token(), json: JSON.stringify(mapVarietieCodePayload(rows)) }),
+    LONG_TIMEOUT
+  );
+  return unwrap(res);
+}
+
+/** 发送品种 STZL */
+export async function sendStzlVarHis(rows, men = '') {
+  const payload = (rows || []).map((r) => ({ ID: r.Varietie_Code, men: men || '' }));
+  const res = await request.post(
+    '/VarietieBasicInfo/sendMaterialToHis',
+    formdataify({ Token: token(), Json: JSON.stringify(payload) }),
+    LONG_TIMEOUT
+  );
+  return unwrap(res);
+}
+
+/** 发送品种 CHRM（模型绑定 List） */
+export async function sendChrmVarHis(rows, men = '') {
+  const json = (rows || []).map((r) => ({ ID: r.Varietie_Code, men: men || '' }));
+  const res = await request.post(
+    '/Abdzczh/sendVarTo',
+    { Token: token(), json },
+    LONG_TIMEOUT
+  );
+  return unwrap(res);
+}
+
+/** 发送品种 南中 */
+export async function sendDhThreeHis(rows, men = '') {
+  const res = await request.post(
+    '/VarietieBasicInfo/SendDHTHREEHis',
+    formdataify({
+      Token: token(),
+      json: JSON.stringify(mapIdPayload(rows)),
+      men: men || ''
+    }),
+    LONG_TIMEOUT
+  );
+  return unwrap(res);
+}
+
+/** 北大计费编码回传标记 */
+export async function sendBdJfBm(rows) {
+  const payload = (rows || []).map((r) => ({ CHARGING_CODE: r.CHARGING_CODE }));
+  const res = await request.post(
+    '/Commons/GetBDUpGzHcHis',
+    formdataify({ Token: token(), json: JSON.stringify(payload) }),
+    LONG_TIMEOUT
+  );
+  return unwrap(res);
+}
+
+/** 佛山审批品种：fsdwrmyy→SendVarFsWy；fszxy→SaveArcItemAndTarItem */
+export async function sendFsApproveVar(rows, men = '', homehp = HOME_HP) {
+  const api =
+    homehp === 'fszxy' ? 'SaveArcItemAndTarItem' : 'SendVarFsWy';
+  const res = await request.post(
+    `/Abdzczh/${api}`,
+    formdataify({
+      Token: token(),
+      json: JSON.stringify(mapVarietieCodePayload(rows)),
+      men: men || ''
+    }),
+    LONG_TIMEOUT
+  );
+  return unwrap(res);
+}
+
+/** 提交医保审批（品种维护页） */
+export async function tjybspCommitMain(rows, { nickname = '', bz = '', sendYbType = '' } = {}) {
+  const res = await request.post(
+    '/VarietieBasicInfo/tjybspCommit',
+    formdataify({
+      Token: token(),
+      json: JSON.stringify(mapIdPayload(rows)),
+      nickname: nickname || '',
+      type: '1',
+      BZ: bz ?? '',
+      SENDYB_TYPE: sendYbType ?? ''
+    }),
+    LONG_TIMEOUT
+  );
+  return unwrap(res);
+}
+
+/** 推送到 DAP */
+export async function pushMaterialsToDap(varietyCodes) {
+  const res = await request.post(
+    '/DapMaterialPush/pushMaterialsToDap',
+    {
+      Token: token(),
+      VarietyCodes: varietyCodes || []
+    },
+    LONG_TIMEOUT
+  );
+  return unwrap(res);
+}
+
+/** 佛山：推送分院 */
+export async function createVarietieBasicInfoSync({
+  fromHospitalId = 'dwrmyy',
+  toHospitalId,
+  varietieCode = [],
+  varietieCodeNew = []
+}) {
+  const res = await request.post(
+    `/VarietieBasicInfo/CreateVarietieBasicInfoSync?Token=${encodeURIComponent(token())}`,
+    {
+      FROM_HOSPITAL_ID: fromHospitalId,
+      TO_HOSPITAL_ID: toHospitalId,
+      VARIETIE_CODE: varietieCode,
+      VARIETIE_CODE_NEW: varietieCodeNew
+    },
+    LONG_TIMEOUT
+  );
+  return unwrap(res);
+}
+
+/** 佛山第六：推送 HIS */
+export async function pullVarietieBasicInfoToHIS(varietieCodes) {
+  const res = await request.post(
+    `/VarietieBasicInfo/PullVarietieBasicInfoToHIS?Token=${encodeURIComponent(token())}`,
+    varietieCodes || [],
+    {
+      ...LONG_TIMEOUT,
+      headers: { 'Content-Type': 'application/json; charset=utf-8' }
+    }
+  );
+  if (res.data?.code == 301 || res.data === 301) {
+    throw new Error(res.data?.msg || '登录失效，请重新登录');
+  }
+  return res.data;
+}
+
+/** 龙三：推送 HIS */
+export async function pushLongGangHis(varietieCodes, operator = '') {
+  const fd = new FormData();
+  fd.append(
+    'request',
+    JSON.stringify({
+      header: { operator: operator || '' },
+      varietieCodes: varietieCodes || []
+    })
+  );
+  const res = await request.post(
+    `/LongGangSpdHis/spdAddNewItem?Token=${encodeURIComponent(token())}`,
+    fd,
+    {
+      ...LONG_TIMEOUT,
+      headers: { 'Content-Type': 'multipart/form-data' }
+    }
+  );
+  return res.data;
+}
+
+/** 导入省平台 / 添加省平台品种 */
+export async function importProvinceVar(file, addMode = false) {
+  const fd = new FormData();
+  fd.append('file', file);
+  const api = addMode ? 'ImportPROVINCE_VAR_Add' : 'ImportPROVINCE_VAR';
+  const res = await request.post(
+    `/VarietieBasicInfo/${api}?Token=${encodeURIComponent(token())}`,
+    fd,
+    {
+      headers: { 'Content-Type': 'multipart/form-data' },
+      timeout: 120000
+    }
+  );
+  return res.data;
+}
+
+/** 深汕中标信息导入 */
+export async function importSzsmBidInfo(file) {
+  const fd = new FormData();
+  fd.append('file', file);
+  const res = await request.post(
+    `/VarietieBasicInfo/ImportSzsmBidInfo?Token=${encodeURIComponent(token())}`,
+    fd,
+    {
+      headers: { 'Content-Type': 'multipart/form-data' },
+      timeout: 120000
+    }
+  );
+  return res.data;
+}
+
 /** 改价（启用合同结算价/采购价同步） */
 export async function UpdateVarPrice(id, price) {
   const res = await request.post(

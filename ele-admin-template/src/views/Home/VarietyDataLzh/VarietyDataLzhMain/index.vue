@@ -53,8 +53,207 @@
             <el-button size="mini" :loading="stopConLoading" @click="onStopCon">
               停用已停用品种的合同
             </el-button>
+            <el-button
+              v-if="showSzhnOesBtn"
+              size="mini"
+              type="primary"
+              plain
+              :disabled="!selection.length"
+              :loading="oesSending"
+              @click="onSendSzhnOes"
+            >
+              推送品种(OES)
+            </el-button>
+            <el-button
+              v-if="showDapBtn"
+              size="mini"
+              type="primary"
+              plain
+              :disabled="!selection.length"
+              :loading="hpActionLoading"
+              @click="onPushDap"
+            >
+              推送到DAP
+            </el-button>
+            <el-button
+              v-if="showStseBzBtn"
+              size="mini"
+              :disabled="!selection.length"
+              :loading="hpActionLoading"
+              @click="onCommitStseBz"
+            >
+              品种备注已处理
+            </el-button>
+            <el-button
+              v-if="showCommitSbBtn"
+              size="mini"
+              :disabled="!selection.length"
+              :loading="hpActionLoading"
+              @click="onCommitStseSb"
+            >
+              提交字典
+            </el-button>
+            <el-button
+              v-if="showStseSyncBtn"
+              size="mini"
+              type="primary"
+              plain
+              :disabled="!selection.length"
+              :loading="hpActionLoading"
+              @click="onSendStseVarHis"
+            >
+              发送同步品种
+            </el-button>
+            <el-button
+              v-if="showStsePriceBtn"
+              size="mini"
+              :disabled="!selection.length"
+              :loading="hpActionLoading"
+              @click="onStseUpdatePrice"
+            >
+              市二调价
+            </el-button>
+            <el-button
+              v-if="showCsyyBtn"
+              size="mini"
+              :disabled="!selection.length"
+              :loading="hpActionLoading"
+              @click="onSendCsyy"
+            >
+              发送品种(CSYY)
+            </el-button>
+            <el-button
+              v-if="showStzyBtn"
+              size="mini"
+              :disabled="!selection.length"
+              :loading="hpActionLoading"
+              @click="onSendStzy"
+            >
+              发送品种(STZY)
+            </el-button>
+            <el-button
+              v-if="showStzlBtn"
+              size="mini"
+              :disabled="!selection.length"
+              :loading="hpActionLoading"
+              @click="onSendStzl"
+            >
+              发送品种(STZL)
+            </el-button>
+            <el-button
+              v-if="showChrmBtn"
+              size="mini"
+              :disabled="!selection.length"
+              :loading="hpActionLoading"
+              @click="onSendChrm"
+            >
+              发送品种(CHRM)
+            </el-button>
+            <el-button
+              v-if="showDhThreeBtn"
+              size="mini"
+              :disabled="!selection.length"
+              :loading="hpActionLoading"
+              @click="onSendDhThree"
+            >
+              发送品种(南中)
+            </el-button>
+            <el-button
+              v-if="showBdJfBtn"
+              size="mini"
+              :disabled="!selection.length"
+              :loading="hpActionLoading"
+              @click="onSendBdJfBm"
+            >
+              计费编码回传标记
+            </el-button>
+            <el-button
+              v-if="showFsApproveBtn"
+              size="mini"
+              :disabled="!selection.length"
+              :loading="hpActionLoading"
+              @click="onSendFsApprove"
+            >
+              审批品种(佛山)
+            </el-button>
+            <el-button
+              v-if="showFsSyncBtn"
+              size="mini"
+              :disabled="!selection.length"
+              :loading="hpActionLoading"
+              @click="onFsSyncBranch"
+            >
+              推送分院
+            </el-button>
+            <el-button
+              v-if="showFsSyncBtn"
+              size="mini"
+              :loading="hpActionLoading"
+              @click="onFsSyncExcelClick"
+            >
+              上传Excel推送分院
+            </el-button>
+            <el-button
+              v-if="showFsdlHisBtn"
+              size="mini"
+              :disabled="!selection.length"
+              :loading="hpActionLoading"
+              @click="onPullHis"
+            >
+              推送HIS
+            </el-button>
+            <el-button
+              v-if="showLglsHisBtn"
+              size="mini"
+              :disabled="!selection.length"
+              :loading="hpActionLoading"
+              @click="onPushLongGangHis"
+            >
+              推送HIS
+            </el-button>
+            <el-button
+              v-if="showTjybspBtn"
+              size="mini"
+              :disabled="!selection.length"
+              @click="onOpenTjybsp"
+            >
+              提交医保审批
+            </el-button>
+            <el-button v-if="showZqReceiveBtn" size="mini" @click="onCheckReceive">
+              查看品种对接
+            </el-button>
+            <el-button
+              v-if="showProvinceImport"
+              size="mini"
+              icon="el-icon-upload2"
+              :loading="provinceImporting"
+              @click="onProvinceImportClick(false)"
+            >
+              导入省平台
+            </el-button>
+            <el-button
+              v-if="showProvinceImport"
+              size="mini"
+              icon="el-icon-upload2"
+              :loading="provinceImporting"
+              @click="onProvinceImportClick(true)"
+            >
+              添加省平台品种
+            </el-button>
+            <el-button
+              v-if="showSzsmBidImport"
+              size="mini"
+              icon="el-icon-upload2"
+              :loading="szsmBidImporting"
+              @click="onSzsmBidImportClick"
+            >
+              中标信息导入
+            </el-button>
+            <el-button v-if="showSzsmBidImport" size="mini" plain @click="onDownloadSzsmBidTemplate">
+              中标信息模板
+            </el-button>
             <el-button size="mini" @click="onUpdateField">更新选定字段</el-button>
-            <el-button size="mini" @click="onWxtAudit">微讯通品种审核</el-button>
+            <el-button v-if="showWxtBtn" size="mini" @click="onWxtAudit">微讯通品种审核</el-button>
             <el-button size="mini" @click="onExportFzShow">导出物资分类品种</el-button>
             <el-button
               v-if="canEdit"
@@ -145,7 +344,7 @@
               导出
             </el-button>
             <el-button
-              v-if="canExport('export-VarietyDataLzhDc')"
+              v-if="canExport('export-VarietyDataLzhDc') && showExportHp"
               size="mini"
               type="primary"
               plain
@@ -182,7 +381,7 @@
           :columns="tableColumns"
           :datasource="datasource"
           :selection.sync="selection"
-          cache-key="varietyDataLzhMainTableV2"
+          cache-key="varietyDataLzhMainTableV3"
           @current-change="onCurrentChange"
         >
           <template v-slot:action="{ row }">
@@ -317,6 +516,70 @@
       style="display: none"
       @change="onYbImportFileChange"
     />
+    <input
+      ref="provinceImportFile"
+      type="file"
+      accept=".xls,.xlsx"
+      style="display: none"
+      @change="onProvinceImportFileChange"
+    />
+    <input
+      ref="szsmBidImportFile"
+      type="file"
+      accept=".xls,.xlsx"
+      style="display: none"
+      @change="onSzsmBidImportFileChange"
+    />
+    <input
+      ref="fsSyncExcelFile"
+      type="file"
+      accept=".xlsx"
+      style="display: none"
+      @change="onFsSyncExcelChange"
+    />
+    <el-dialog
+      title="提交医保审批"
+      :visible.sync="tjybspVisible"
+      width="520px"
+      append-to-body
+    >
+      <el-form size="mini" label-width="90px">
+        <el-form-item v-if="showSzsmBid" label="提交类型">
+          <el-select v-model="tjybspType" clearable placeholder="请选择提交类型" style="width: 100%">
+            <el-option label="新增" value="0" />
+            <el-option label="修改" value="1" />
+            <el-option label="调价" value="2" />
+            <el-option label="停用/启用" value="3" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="备注">
+          <el-input
+            v-model="tjybspBz"
+            type="textarea"
+            :rows="6"
+            placeholder="请输入备注"
+          />
+        </el-form-item>
+      </el-form>
+      <div slot="footer">
+        <el-button size="mini" @click="tjybspVisible = false">取消</el-button>
+        <el-button type="primary" size="mini" :loading="tjybspLoading" @click="onSubmitTjybsp">
+          确认
+        </el-button>
+      </div>
+    </el-dialog>
+    <el-dialog title="选择目标医院" :visible.sync="fsSyncVisible" width="360px" append-to-body>
+      <el-select v-model="fsSyncTarget" style="width: 100%" size="mini">
+        <el-option label="南海第六人民医院" value="fsdl" />
+        <el-option label="南海第七人民医院" value="ybyy" />
+      </el-select>
+      <div slot="footer">
+        <el-button size="mini" @click="fsSyncVisible = false">取消</el-button>
+        <el-button type="primary" size="mini" :loading="hpActionLoading" @click="onConfirmFsSync">
+          确定
+        </el-button>
+      </div>
+    </el-dialog>
     <el-dialog
       title="导出物资分类品种"
       :visible.sync="exportFzVisible"
@@ -375,7 +638,27 @@ import {
   stopConWithStopVar,
   ExcelVarFZdata,
   ImportVarietieExcel,
-  batchSubmitYbCheck
+  batchSubmitYbCheck,
+  sendVarToOes,
+  commitVarStseBZ,
+  commitVarStseSB,
+  sendStseVarHis,
+  syncStseItem,
+  stseUpdatePrice,
+  sendCsyyVarHis,
+  sendStzyVarHis,
+  sendStzlVarHis,
+  sendChrmVarHis,
+  sendDhThreeHis,
+  sendBdJfBm,
+  sendFsApproveVar,
+  tjybspCommitMain,
+  pushMaterialsToDap,
+  createVarietieBasicInfoSync,
+  pullVarietieBasicInfoToHIS,
+  pushLongGangHis,
+  importProvinceVar,
+  importSzsmBidInfo
 } from '@/api/Home/VarietyDataLzhMain';
 import { getVarietyImportTemplateAoa } from '../varietyImportTemplate';
 import {
@@ -466,9 +749,44 @@ export default {
       tempRemarkLoading: false,
       batchRemarkLoading: false,
       stopConLoading: false,
+      oesSending: false,
+      hpActionLoading: false,
       importing: false,
       ybImporting: false,
+      provinceImporting: false,
+      szsmBidImporting: false,
+      provinceImportAddMode: false,
+      tjybspVisible: false,
+      tjybspBz: '',
+      tjybspType: '',
+      tjybspLoading: false,
+      fsSyncVisible: false,
+      fsSyncTarget: 'fsdl',
+      fsSyncCodes: [],
+      fsSyncCodesNew: [],
       showKubaoBtn: HOME_HP === 'bd',
+      showSzhnOesBtn: HOME_HP === 'szhn',
+      showDapBtn: ['szse', 'szse_dp', 'szse_lh'].includes(HOME_HP),
+      showStseBzBtn: ['stse', 'csyy', 'stzyyy', 'chrmyy'].includes(HOME_HP),
+      showCommitSbBtn: ['stse', 'stzl', 'csyy', 'stzyyy', 'chrmyy'].includes(HOME_HP),
+      showStseSyncBtn: HOME_HP === 'stse',
+      showStsePriceBtn: HOME_HP === 'stse',
+      showCsyyBtn: HOME_HP === 'csyy',
+      showStzyBtn: HOME_HP === 'stzyyy' || HOME_HP === 'chrmyy',
+      showStzlBtn: HOME_HP === 'stzl',
+      showChrmBtn: HOME_HP === 'chrmyy',
+      showDhThreeBtn: HOME_HP === 'fszxy',
+      showBdJfBtn: HOME_HP === 'bd',
+      showFsApproveBtn: HOME_HP === 'fsdwrmyy' || HOME_HP === 'fszxy',
+      showFsSyncBtn: HOME_HP === 'fsdwrmyy',
+      showFsdlHisBtn: HOME_HP === 'fsdl',
+      showLglsHisBtn: HOME_HP === 'lgls',
+      showTjybspBtn: ['lg', 'bd', 'szlhfy', 'zq', 'szsmyl'].includes(HOME_HP),
+      showWxtBtn: HOME_HP === 'bd' || HOME_HP === 'szsmyl',
+      showZqReceiveBtn: HOME_HP === 'zq',
+      showProvinceImport: HOME_HP === 'fszxy',
+      showSzsmBidImport: HOME_HP === 'szsmyl',
+      showExportHp: HOME_HP !== 'stse',
       showSzsmBid: HOME_HP === 'szsmyl',
       isStse: isStseLikeHp(HOME_HP),
       showPicColumn: showVarietyPicColumn(HOME_HP)
@@ -489,6 +807,9 @@ export default {
     },
     showDeptApplyBtn() {
       return hasMenuPermission(this.$store, 'var_dept_apply_btn');
+    },
+    nickname() {
+      return this.$store.state.user?.info?.Nickname || '';
     },
     showExportToolbar() {
       return (
@@ -533,8 +854,22 @@ export default {
           showOverflowTooltip: true
         }
       );
-      if (HOME_HP === 'szlh') {
+      if (HOME_HP === 'szlh' || HOME_HP === 'szhn' || HOME_HP === 'lg') {
         cols.push({ prop: 'Herp_ID', label: '医商云ID', minWidth: 120, showOverflowTooltip: true });
+      }
+      if (HOME_HP === 'szhn') {
+        cols.push({
+          prop: 'STSEHIS_STATE',
+          label: 'OES推送状态',
+          minWidth: 110,
+          align: 'center',
+          formatter: (_r, _c, v) => {
+            if (v == '0' || v === 0) return '未推送';
+            if (v == '2' || v === 2) return '已推送';
+            if (v == '1' || v === 1) return '已同步';
+            return v == null || v === '' ? '' : String(v);
+          }
+        });
       }
       cols.push(
         { prop: 'CHARGING_CODE', label: '计费编码', minWidth: 120, showOverflowTooltip: true },
@@ -986,6 +1321,386 @@ export default {
         this.$message.error(e.message || '操作失败');
       } finally {
         this.stopConLoading = false;
+      }
+    },
+    async onSendSzhnOes() {
+      if (!this.ensureSelection()) return;
+      this.oesSending = true;
+      try {
+        const res = await sendVarToOes(this.selection, this.nickname);
+        this.$alert(res.msg || '推送完成', '提示');
+        this.reloadTable();
+      } catch (e) {
+        this.$message.error(e.message || '推送失败');
+      } finally {
+        this.oesSending = false;
+      }
+    },
+    async runHpAction(fn, { reload = true, alert = true } = {}) {
+      this.hpActionLoading = true;
+      try {
+        const res = await fn();
+        if (alert) this.$alert(res?.msg || '操作完成', '提示');
+        else if (res?.msg) this.$message.success(res.msg);
+        if (reload) this.reloadTable();
+        return res;
+      } catch (e) {
+        this.$message.error(e.message || '操作失败');
+        return null;
+      } finally {
+        this.hpActionLoading = false;
+      }
+    },
+    async onPushDap() {
+      if (!this.ensureSelection()) return;
+      if (this.selection.length > 50) {
+        this.$message.warning('单次最多推送50个品种');
+        return;
+      }
+      const varietyCodes = this.selection
+        .map((r) => r.Varietie_Code_New)
+        .filter(Boolean);
+      if (!varietyCodes.length) {
+        this.$message.warning('选中行缺少品种编码');
+        return;
+      }
+      try {
+        await this.$confirm(`确定推送选中的品种到DAP吗？共${varietyCodes.length}条`, '提示', {
+          type: 'warning'
+        });
+      } catch {
+        return;
+      }
+      await this.runHpAction(() => pushMaterialsToDap(varietyCodes));
+    },
+    onCommitStseBz() {
+      if (!this.ensureSelection()) return;
+      this.runHpAction(() => commitVarStseBZ(this.selection, this.nickname, '2'));
+    },
+    onCommitStseSb() {
+      if (!this.ensureSelection()) return;
+      this.runHpAction(() => commitVarStseSB(this.selection, this.nickname, '0'));
+    },
+    async onSendStseVarHis() {
+      if (!this.ensureSelection()) return;
+      this.hpActionLoading = true;
+      try {
+        const res = await sendStseVarHis(this.selection, this.nickname);
+        this.$alert(res.msg || '操作完成', '提示');
+        try {
+          await syncStseItem(this.selection);
+        } catch (e) {
+          this.$message.warning(e.message || 'SyncItem 调用失败');
+        }
+        this.reloadTable();
+      } catch (e) {
+        this.$message.error(e.message || '发送失败');
+      } finally {
+        this.hpActionLoading = false;
+      }
+    },
+    onStseUpdatePrice() {
+      if (!this.ensureSelection()) return;
+      this.runHpAction(() => stseUpdatePrice(this.selection));
+    },
+    onSendCsyy() {
+      if (!this.ensureSelection()) return;
+      this.runHpAction(() => sendCsyyVarHis(this.selection));
+    },
+    onSendStzy() {
+      if (!this.ensureSelection()) return;
+      this.runHpAction(() => sendStzyVarHis(this.selection));
+    },
+    onSendStzl() {
+      if (!this.ensureSelection()) return;
+      this.runHpAction(() => sendStzlVarHis(this.selection, this.nickname));
+    },
+    onSendChrm() {
+      if (!this.ensureSelection()) return;
+      this.runHpAction(() => sendChrmVarHis(this.selection, this.nickname));
+    },
+    onSendDhThree() {
+      if (!this.ensureSelection()) return;
+      this.runHpAction(() => sendDhThreeHis(this.selection, this.nickname));
+    },
+    onSendBdJfBm() {
+      if (!this.ensureSelection()) return;
+      this.runHpAction(() => sendBdJfBm(this.selection));
+    },
+    onSendFsApprove() {
+      if (!this.ensureSelection()) return;
+      this.runHpAction(() => sendFsApproveVar(this.selection, this.nickname, HOME_HP));
+    },
+    onFsSyncBranch() {
+      if (!this.ensureSelection()) return;
+      this.fsSyncCodes = this.selection.map((r) => r.Varietie_Code).filter(Boolean);
+      this.fsSyncCodesNew = this.selection.map((r) => r.Varietie_Code_New).filter(Boolean);
+      this.fsSyncTarget = 'fsdl';
+      this.fsSyncVisible = true;
+    },
+    onFsSyncExcelClick() {
+      if (this.$refs.fsSyncExcelFile) {
+        this.$refs.fsSyncExcelFile.value = '';
+        this.$refs.fsSyncExcelFile.click();
+      }
+    },
+    async onFsSyncExcelChange(e) {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+      const name = (file.name || '').toLowerCase();
+      if (!name.endsWith('.xlsx')) {
+        this.$message.warning('仅支持 .xlsx 文件，请先另存为xlsx后上传');
+        e.target.value = '';
+        return;
+      }
+      try {
+        const buf = await file.arrayBuffer();
+        const wb = utils.read(buf, { type: 'array' });
+        const sheet = wb.Sheets[wb.SheetNames[0]];
+        const rows = utils.sheet_to_json(sheet, { header: 1, defval: '' });
+        const header = String(rows[0]?.[0] || '').trim();
+        if (header !== '品种编码') {
+          this.$message.warning('第一列表头需为“品种编码”');
+          return;
+        }
+        const codeMap = {};
+        const codeArr = [];
+        for (let i = 1; i < rows.length; i++) {
+          const code = String(rows[i]?.[0] || '').trim();
+          if (!code || codeMap[code]) continue;
+          codeMap[code] = true;
+          codeArr.push(code);
+        }
+        if (!codeArr.length) {
+          this.$message.warning('Excel第一列没有可用品种编码');
+          return;
+        }
+        this.fsSyncCodes = [];
+        this.fsSyncCodesNew = codeArr;
+        this.fsSyncTarget = 'fsdl';
+        this.fsSyncVisible = true;
+      } catch (err) {
+        this.$message.error(err?.message || 'Excel解析失败');
+      } finally {
+        e.target.value = '';
+      }
+    },
+    async onConfirmFsSync() {
+      this.hpActionLoading = true;
+      try {
+        const res = await createVarietieBasicInfoSync({
+          toHospitalId: this.fsSyncTarget,
+          varietieCode: this.fsSyncCodes,
+          varietieCodeNew: this.fsSyncCodesNew
+        });
+        this.fsSyncVisible = false;
+        this.$alert(res.msg || '推送完成', '提示');
+        this.reloadTable();
+      } catch (e) {
+        this.$message.error(e.message || '推送失败');
+      } finally {
+        this.hpActionLoading = false;
+      }
+    },
+    async onPullHis() {
+      if (!this.ensureSelection()) return;
+      this.hpActionLoading = true;
+      try {
+        const codes = this.selection.map((r) => r.Varietie_Code).filter(Boolean);
+        const resp = await pullVarietieBasicInfoToHIS(codes);
+        if (resp?.code == 301) {
+          this.$alert(resp.msg || '登录失效', '提示');
+          return;
+        }
+        const list = resp?.data || resp?.result || [];
+        const arr = Array.isArray(list) ? list : [];
+        let successCount = 0;
+        let failCount = 0;
+        const failItems = [];
+        arr.forEach((item) => {
+          const status = String(item.status || item.Status || '').toLowerCase();
+          const isFail =
+            status.includes('失败') || status.includes('fail') || status.includes('error');
+          if (isFail) {
+            failCount++;
+            failItems.push(item);
+          } else {
+            successCount++;
+          }
+        });
+        let html = `<p>推送完成，成功：${successCount} 条，失败：${failCount} 条</p>`;
+        if (failItems.length) {
+          html +=
+            '<hr/><ul style="max-height:220px;overflow:auto;padding-left:18px;">' +
+            failItems
+              .map((it) => {
+                const id = it.id || it.ID || it.Id || it.varCode || '';
+                const message = it.message || it.msg || it.Message || '无详细信息';
+                return `<li>${id}：${message}</li>`;
+              })
+              .join('') +
+            '</ul>';
+        }
+        this.$alert(html, '推送结果', { dangerouslyUseHTMLString: true });
+      } catch (e) {
+        this.$message.error(e.message || '推送失败');
+      } finally {
+        this.hpActionLoading = false;
+      }
+    },
+    async onPushLongGangHis() {
+      if (!this.ensureSelection()) return;
+      const codeMap = {};
+      const varietieCodes = [];
+      this.selection.forEach((item) => {
+        const code = String(item.Varietie_Code_New || item.Varietie_Code || '').trim();
+        if (code && !codeMap[code]) {
+          codeMap[code] = true;
+          varietieCodes.push(code);
+        }
+      });
+      if (!varietieCodes.length) {
+        this.$message.warning('选中品种没有可用的品种编码');
+        return;
+      }
+      this.hpActionLoading = true;
+      try {
+        const resp = await pushLongGangHis(varietieCodes, this.nickname);
+        const resultData = resp?.data || {};
+        const results = Array.isArray(resultData.results) ? resultData.results : [];
+        const successCount = resultData.successCount || 0;
+        const failCount = resultData.failCount || 0;
+        if (resp?.code !== 0 && results.length <= 0) {
+          this.$alert(`HIS报错信息：${resp?.msg || '推送失败'}`, '提示');
+          return;
+        }
+        let html = `<p>推送完成，成功：${successCount} 条，失败：${failCount} 条</p>`;
+        if (failCount > 0) {
+          html +=
+            '<hr/><ul style="max-height:260px;overflow:auto;padding-left:18px;">' +
+            results
+              .filter((item) => !item.success)
+              .map(
+                (item) =>
+                  `<li>${item.code || ''}：HIS报错信息：${item.msg || '无详细信息'}</li>`
+              )
+              .join('') +
+            '</ul>';
+        }
+        this.$alert(html, resp?.code === 0 ? '推送结果' : '推送存在失败', {
+          dangerouslyUseHTMLString: true
+        });
+      } catch (e) {
+        this.$message.error(e.message || '推送失败');
+      } finally {
+        this.hpActionLoading = false;
+      }
+    },
+    onOpenTjybsp() {
+      if (!this.ensureSelection()) return;
+      this.tjybspBz = '';
+      this.tjybspType = '';
+      this.tjybspVisible = true;
+    },
+    async onSubmitTjybsp() {
+      if (this.showSzsmBid && this.tjybspType === '') {
+        this.$message.warning('请选择提交类型');
+        return;
+      }
+      this.tjybspLoading = true;
+      try {
+        const res = await tjybspCommitMain(this.selection, {
+          nickname: this.nickname,
+          bz: this.tjybspBz,
+          sendYbType: this.tjybspType
+        });
+        this.tjybspVisible = false;
+        this.$alert(res.msg || '提交完成', '提示');
+        this.reloadTable();
+      } catch (e) {
+        this.$message.error(e.message || '提交失败');
+      } finally {
+        this.tjybspLoading = false;
+      }
+    },
+    onCheckReceive() {
+      this.$router.push({ path: '/Home/CheckReceiveVarieties' });
+    },
+    onProvinceImportClick(addMode) {
+      this.provinceImportAddMode = !!addMode;
+      if (this.$refs.provinceImportFile) {
+        this.$refs.provinceImportFile.value = '';
+        this.$refs.provinceImportFile.click();
+      }
+    },
+    async onProvinceImportFileChange(e) {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+      this.provinceImporting = true;
+      try {
+        const res = await importProvinceVar(file, this.provinceImportAddMode);
+        this.$message[res?.code == 200 || res?.code === '200' ? 'success' : 'error'](
+          res?.msg || (res?.code == 200 ? '导入成功' : '导入失败')
+        );
+        if (res?.code == 200 || res?.code === '200') this.reloadTable();
+      } catch (err) {
+        this.$message.error(err?.message || '上传失败');
+      } finally {
+        this.provinceImporting = false;
+        e.target.value = '';
+      }
+    },
+    onSzsmBidImportClick() {
+      if (this.$refs.szsmBidImportFile) {
+        this.$refs.szsmBidImportFile.value = '';
+        this.$refs.szsmBidImportFile.click();
+      }
+    },
+    async onSzsmBidImportFileChange(e) {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+      const name = (file.name || '').toLowerCase();
+      if (!name.endsWith('.xls') && !name.endsWith('.xlsx')) {
+        this.$message.error('请上传 .xls 或 .xlsx 文件');
+        e.target.value = '';
+        return;
+      }
+      this.szsmBidImporting = true;
+      try {
+        const res = await importSzsmBidInfo(file);
+        const code = res?.code != null ? res.code : res?.Code;
+        const msg = (res?.msg || res?.Msg || '').toString();
+        if (code == 200 || code === '200') {
+          await this.$alert((msg || '导入成功').replace(/\n/g, '<br/>'), '中标信息导入', {
+            dangerouslyUseHTMLString: true,
+            type: 'success'
+          });
+          this.reloadTable();
+        } else {
+          this.$alert((msg || '导入失败').replace(/\n/g, '<br/>'), '中标信息导入', {
+            dangerouslyUseHTMLString: true,
+            type: 'error'
+          });
+        }
+      } catch (err) {
+        this.$message.error(err?.message || '上传失败');
+      } finally {
+        this.szsmBidImporting = false;
+        e.target.value = '';
+      }
+    },
+    onDownloadSzsmBidTemplate() {
+      try {
+        const data = [
+          ['品种编码', '项目名称（全称）', '项目编号（招标编号）', '中标生效日期', '中标到期时间', '需求科室'],
+          ['示例：00001', '示例项目', 'ZB-2026-001', '2026-01-01', '2026-12-31', '示例需求科室']
+        ];
+        const ws = utils.aoa_to_sheet(data);
+        const wb = utils.book_new();
+        utils.book_append_sheet(wb, ws, 'Sheet1');
+        writeFile(wb, '中标信息导入模板.xlsx');
+      } catch (err) {
+        this.$message.error(err?.message || '模板导出失败');
       }
     },
     async onStopDeptSl(state) {

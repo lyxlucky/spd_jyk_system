@@ -53,6 +53,14 @@ export function getMenuRoutes(menus, homePath) {
       meta: { title: '主页' }
     });
   }
+  // 中七品种对接拦截：按钮入口固定路由（不依赖菜单是否配置）
+  if (!routes.some((route) => route.path === '/Home/CheckReceiveVarieties')) {
+    routes.push({
+      path: '/Home/CheckReceiveVarieties',
+      component: () => import('@/views/Home/CheckReceiveVarieties/index.vue'),
+      meta: { title: '中七品种对接拦截' }
+    });
+  }
   // 仅开发环境：便于未在库里配菜单时联调「暂存库查询(新)」。生产构建 NODE_ENV=production 不会注入。
   // 正式环境仍以 /Commons/login 返回的 permission_group + 后台菜单为准。
   if (process.env.NODE_ENV === 'development') {

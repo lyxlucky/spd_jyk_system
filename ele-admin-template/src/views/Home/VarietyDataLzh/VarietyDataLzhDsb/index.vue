@@ -70,7 +70,7 @@
               </el-tag>
             </template>
           </el-table-column>
-          <el-table-column prop="STORAGE_TWO_ID" label="仓库" width="86" align="center" v-if="!isBDHost">
+          <el-table-column prop="STORAGE_TWO_ID" label="仓库" width="86" align="center" v-if="showStorageTwoCol">
             <template slot-scope="{ row }">
               <el-tag
                 size="mini"
@@ -260,6 +260,8 @@ import {
   GetVarietyDetailsInfo,
   ImportDefinitePackages
 } from '@/api/Home/VarietyDataLzhMain';
+import { HOME_HP } from '@/config/setting';
+import { isVarietyEditDisabled } from '../utils';
 
 export default {
   name: 'VarietyDataLzhDsb',
@@ -301,11 +303,8 @@ export default {
         enable: 1
       },
 
-      // 权限控制
-      showCreateBtn: true,
-      showImportBtn: true,
-      showDownloadBtn: true,
-      isBDHost: false,
+      // 老系统 hide: IS_BD_host —— 仅 bd 显示「仓库」列
+      showStorageTwoCol: HOME_HP === 'bd',
 
       // 表头统一样式（提升信息层级与可读性，对齐 8dp 节奏）
       tableHeaderStyle: {
@@ -317,6 +316,21 @@ export default {
         padding: '6px 0'
       }
     };
+  },
+  computed: {
+    nickname() {
+      return this.$store.state.user?.info?.Nickname || '';
+    },
+    // 对齐老系统 btnSure / isUpVar：禁用品种资料编辑时隐藏创建/导入/模板
+    showCreateBtn() {
+      return !isVarietyEditDisabled(this.$store);
+    },
+    showImportBtn() {
+      return !isVarietyEditDisabled(this.$store);
+    },
+    showDownloadBtn() {
+      return !isVarietyEditDisabled(this.$store);
+    }
   },
   created() {
     this.loadPkgList();
@@ -538,7 +552,10 @@ export default {
       if (!this.selectedPkg) return;
       const varietieCode = this.selectedPkg.Varietie_Code;
       try {
-        const check = await CheckVarietieBasic({ varietieCode: "'" + varietieCode + "'", nickname: '' });
+        const check = await CheckVarietieBasic({
+          varietieCode: "'" + varietieCode + "'",
+          nickname: this.nickname
+        });
         if (check == 301 || check === '301') {
           this.$message.error('登录失效，请重新登录');
           return;
@@ -610,6 +627,7 @@ export default {
               dangerouslyUseHTMLString: true,
               type: 'success'
             });
+            this.loadPkgList();
             if (this.selectedPkg) {
               this.loadDetailList(this.selectedPkg.Varietie_Code);
             }
