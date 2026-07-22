@@ -154,6 +154,9 @@
           @selection-change="handleSelectionChange"
           @row-click="handleRowClick"
         >
+          <template v-slot:rowRemark="{ row }">
+            <el-button type="text" size="mini" @click.stop="openRowRemark(row)">备注</el-button>
+          </template>
           <template v-slot:defQty="{ row }">
             <el-input-number
               :value="getDefQty(row)"
@@ -170,6 +173,26 @@
     </el-card>
 
     <el-dialog
+      title="备注"
+      :visible.sync="rowRemarkVisible"
+      width="520px"
+      append-to-body
+    >
+      <el-input
+        v-model="rowRemarkText"
+        type="textarea"
+        :rows="8"
+        placeholder="请输入备注"
+      />
+      <span slot="footer">
+        <el-button size="mini" @click="rowRemarkVisible = false">取消</el-button>
+        <el-button size="mini" type="primary" :loading="rowRemarkLoading" @click="submitRowRemark">
+          确定
+        </el-button>
+      </span>
+    </el-dialog>
+
+    <el-dialog
       title="批量添加备注"
       :visible.sync="batchRemarkVisible"
       width="500px"
@@ -179,8 +202,10 @@
           <el-select
             v-model="batchRemarkDept"
             filterable
-            placeholder="请选择科室"
+            clearable
+            placeholder="请选择科室（可不选）"
             style="width: 100%"
+            @change="onBatchRemarkDeptChange"
           >
             <el-option
               v-for="item in deptList"
@@ -216,6 +241,7 @@ import {
   upStockUpDefNum,
   upStockUpVarInfoState,
   batchUpDelRemarks,
+  upDelRemarks,
   getDeptTwoBasicInfoAll,
   closeStokOrderDel,
   upStockUpVars
@@ -251,6 +277,10 @@ export default {
       selection: [],
       editQtyMap: {},
       batchRemarkVisible: false,
+      rowRemarkVisible: false,
+      rowRemarkLoading: false,
+      rowRemarkId: '',
+      rowRemarkText: '',
       notToDeptVisible: false,
       monitoringVisible: false,
       monitoringCodes: '',
@@ -283,7 +313,22 @@ export default {
         },
         { label: '来源科室', prop: 'PLAN_DEPT_TWO_NAME', align: 'center', width: 120 },
         { label: '品种编码', prop: 'Varietie_Code_New', align: 'center', width: 120 },
-        { label: '备注', prop: 'REMARKS', align: 'center', width: 90 },
+        {
+          label: '备注',
+          prop: 'REMARKS',
+          align: 'center',
+          width: 100,
+          showOverflowTooltip: true,
+          formatter: (row) =>
+            row.REMARKS == null || row.REMARKS === 'null' ? '' : row.REMARKS
+        },
+        {
+          label: '备注',
+          width: 70,
+          align: 'center',
+          slot: 'rowRemark',
+          fixed: 'left'
+        },
         { label: '省平台编码', prop: 'Province_Platform_Code', align: 'center', minWidth: 120 },
         { label: '阳光产品码', prop: 'YG_CODE', align: 'center', minWidth: 120 },
         {
@@ -471,11 +516,41 @@ export default {
         })
         .catch(() => {});
     },
+    openRowRemark(row) {
+      if (!row?.ID) {
+        this.$message.warning('未获取到明细ID');
+        return;
+      }
+      this.rowRemarkId = row.ID;
+      this.rowRemarkText =
+        row.REMARKS == null || row.REMARKS === 'null' ? '' : String(row.REMARKS);
+      this.rowRemarkVisible = true;
+    },
+    submitRowRemark() {
+      this.rowRemarkLoading = true;
+      upDelRemarks(this.rowRemarkId, this.rowRemarkText)
+        .then((res) => {
+          const data = res.data;
+          if (data.code == 200) {
+            this.$message.success(data.msg || '操作成功');
+            this.rowRemarkVisible = false;
+            this.handleSearch();
+          } else {
+            this.$message.warning(data.msg || '操作失败');
+          }
+        })
+        .catch(() => this.$message.error('操作失败'))
+        .finally(() => {
+          this.rowRemarkLoading = false;
+        });
+    },
     handleBatchRemark() {
       if (this.selection.length === 0) {
         this.$message.warning('请至少选择一行数据');
         return;
       }
+      this.batchRemarkDept = '';
+      this.batchRemarkText = '';
       const loadDepts = () => {
         getDeptTwoBasicInfoAll()
           .then((res) => {
@@ -502,11 +577,15 @@ export default {
         this.batchRemarkVisible = true;
       }
     },
-    submitBatchRemark() {
-      if (!this.batchRemarkDept) {
-        this.$message.warning('请选择科室');
-        return;
+    onBatchRemarkDeptChange(deptCode) {
+      // 对齐老系统：选科室时把科室名填入备注（可再改）
+      if (!deptCode) return;
+      const dept = this.deptList.find((d) => d.Dept_Two_Code === deptCode);
+      if (dept?.Dept_Two_Name) {
+        this.batchRemarkText = dept.Dept_Two_Name;
       }
+    },
+    submitBatchRemark() {
       if (!this.batchRemarkText) {
         this.$message.warning('请输入备注');
         return;
@@ -516,7 +595,7 @@ export default {
       batchUpDelRemarks({
         IDS: this.selection.map((r) => r.ID).join(','),
         REMARKS: this.batchRemarkText,
-        DEPT_TWO_CODE: this.batchRemarkDept,
+        DEPT_TWO_CODE: this.batchRemarkDept || '',
         DEPT_TWO_NAME: dept?.Dept_Two_Name || ''
       })
         .then((res) => {

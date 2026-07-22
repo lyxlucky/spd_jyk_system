@@ -1,28 +1,70 @@
 <template>
   <el-dialog
-    title="编辑散货品种"
+    :title="isAddMode ? '添加散货品种' : '编辑散货品种'"
     :visible.sync="innerVisible"
     width="96%"
     top="3vh"
     append-to-body
     :close-on-click-modal="false"
     custom-class="variety-edit-dialog"
-    @open="loadDetail"
+    @open="onOpen"
     :before-close="handleBeforeClose"
     @closed="onClosed"
   >
     <div v-loading="loading" element-loading-text="加载中..." class="edit-body">
+      <div v-if="isAddMode" class="add-reg-row">
+        <span class="add-reg-label">批准文号</span>
+        <el-select
+          v-model="selectedRegCode"
+          filterable
+          clearable
+          remote
+          reserve-keyword
+          placeholder="请选择批准文号/注册证"
+          :remote-method="filterApprovalOptions"
+          :loading="approvalLoading"
+          style="width: 480px"
+          size="mini"
+          @change="onApprovalChange"
+        >
+          <el-option
+            v-for="item in approvalOptions"
+            :key="item.Prod_Registration_Code"
+            :label="approvalOptionLabel(item)"
+            :value="String(item.Prod_Registration_Code)"
+          />
+        </el-select>
+      </div>
+
       <el-descriptions v-if="detail" :column="4" size="mini" border class="summary-desc">
         <el-descriptions-item label="批准文号">{{ detail.Approval_Number }}</el-descriptions-item>
-        <el-descriptions-item label="注册证名称">{{ detail.prod_big_class_name || detail.Common_Name }}</el-descriptions-item>
-        <el-descriptions-item label="生产企业" :span="2">{{ detail.manufacturing_ent_name }}</el-descriptions-item>
-        <el-descriptions-item label="内部ID">{{ detail.Varietie_Code }}</el-descriptions-item>
+        <el-descriptions-item label="注册证名称">
+          {{ detail.prod_big_class_name || detail.Common_Name }}
+        </el-descriptions-item>
+        <el-descriptions-item label="生产企业" :span="2">
+          {{ detail.manufacturing_ent_name }}
+        </el-descriptions-item>
+        <el-descriptions-item v-if="!isAddMode" label="内部ID">
+          {{ detail.Varietie_Code }}
+        </el-descriptions-item>
         <el-descriptions-item label="注册证ID">{{ detail.Prod_Registration_Code }}</el-descriptions-item>
-        <el-descriptions-item label="创建时间">{{ formatTime(detail.Create_Time) }}</el-descriptions-item>
-        <el-descriptions-item label="最后更新">{{ formatTime(detail.Last_Update_Time) }}</el-descriptions-item>
+        <el-descriptions-item v-if="!isAddMode" label="创建时间">
+          {{ formatTime(detail.Create_Time) }}
+        </el-descriptions-item>
+        <el-descriptions-item v-if="!isAddMode" label="最后更新">
+          {{ formatTime(detail.Last_Update_Time) }}
+        </el-descriptions-item>
       </el-descriptions>
 
-      <el-form v-if="form" ref="editFormRef" :model="form" :rules="formRules" label-width="140px" size="mini" class="variety-edit-form">
+      <el-form
+        v-if="form"
+        ref="editFormRef"
+        :model="form"
+        :rules="formRules"
+        label-width="140px"
+        size="mini"
+        class="variety-edit-form"
+      >
         <el-tabs v-model="activeTab">
           <el-tab-pane v-for="group in editGroups" :key="group.name" :label="group.label" :name="group.name">
             <el-row :gutter="12">
@@ -33,14 +75,14 @@
                     v-model="form[field.key]"
                     :type="field.type === 'number' ? 'number' : 'text'"
                     :placeholder="field.placeholder"
-                    :disabled="field.disabled"
+                    :disabled="isFieldDisabled(field)"
                     clearable
                   />
                   <el-input
                     v-else-if="field.type === 'text'"
                     v-model="form[field.key]"
-                    :disabled="field.disabled"
-                    readonly
+                    :disabled="isFieldDisabled(field)"
+                    :readonly="!isAddMode || field.key !== 'Varietie_Code_New'"
                   />
                   <el-input
                     v-else-if="field.type === 'textarea'"
@@ -72,17 +114,32 @@
 
     <span slot="footer" class="dialog-footer">
       <el-button size="mini" @click="innerVisible = false">取消</el-button>
-      <el-button type="primary" size="mini" :loading="saving" :disabled="loading" @click="onSave">保存</el-button>
+      <el-button type="primary" size="mini" :loading="saving" :disabled="loading" @click="onSave">
+        {{ isAddMode ? '确定' : '保存' }}
+      </el-button>
     </span>
   </el-dialog>
 </template>
 
 <script>
 import { HOME_HP, TOKEN_STORE_NAME } from '@/config/setting';
-import { CheckVarietieBasic, GetVarietyDetailsInfo } from '@/api/Home/VarietyDataLzhMain';
+import {
+  CheckVarietieBasic,
+  GetVarietyDetailsInfo,
+  GetApprovalNumberList,
+  GetApprovalNumberInfo,
+  IsVarietieExist,
+  InsertVarietieBasic
+} from '@/api/Home/VarietyDataLzhMain';
 import { updateVarietieBasic, updateVarietieBasicStse } from '@/api/Home/VarietyDataLzhAudit';
 import { isStseLikeHp, cleanupDialogOverlays } from '../utils';
-import { buildUpdatePayload, detailToForm, mergeFormToDetail } from '../varietyEditMapper';
+import {
+  buildUpdatePayload,
+  buildInsertPayload,
+  createEmptyDetail,
+  detailToForm,
+  mergeFormToDetail
+} from '../varietyEditMapper';
 import { VARIETY_EDIT_GROUPS } from '../varietyEditFields';
 
 const NUMERIC_SELECT_KEYS = new Set(['STORAGE_ID']);
@@ -91,7 +148,9 @@ export default {
   name: 'VarietyEditDialog',
   props: {
     visible: { type: Boolean, default: false },
-    varietieCode: { type: String, default: '' }
+    varietieCode: { type: String, default: '' },
+    /** edit | add */
+    mode: { type: String, default: 'edit' }
   },
   data() {
     return {
@@ -101,13 +160,10 @@ export default {
       activeTab: 'basic',
       detail: null,
       form: null,
-      editGroups: VARIETY_EDIT_GROUPS,
-      formRules: {
-        Varietie_Name: [{ required: true, message: '必填', trigger: 'blur' }],
-        Specification_Or_Type: [{ required: true, message: '必填', trigger: 'blur' }],
-        Unit: [{ required: true, message: '必填', trigger: 'blur' }],
-        Price: [{ required: true, message: '必填', trigger: 'blur' }]
-      }
+      approvalAll: [],
+      approvalOptions: [],
+      approvalLoading: false,
+      selectedRegCode: ''
     };
   },
   watch: {
@@ -126,8 +182,39 @@ export default {
         this.$emit('update:visible', v);
       }
     },
+    isAddMode() {
+      return this.mode === 'add';
+    },
     useStseApi() {
       return isStseLikeHp(HOME_HP) || HOME_HP === 'stzyyy';
+    },
+    editGroups() {
+      if (!this.isAddMode) return VARIETY_EDIT_GROUPS;
+      return VARIETY_EDIT_GROUPS.map((group) => ({
+        ...group,
+        fields: group.fields.map((field) => {
+          if (field.key !== 'Varietie_Code_New') return field;
+          return {
+            ...field,
+            type: 'input',
+            disabled: false,
+            required: true,
+            placeholder: '请输入品种材料编码'
+          };
+        })
+      }));
+    },
+    formRules() {
+      const rules = {
+        Varietie_Name: [{ required: true, message: '必填', trigger: 'blur' }],
+        Specification_Or_Type: [{ required: true, message: '必填', trigger: 'blur' }],
+        Unit: [{ required: true, message: '必填', trigger: 'blur' }],
+        Price: [{ required: true, message: '必填', trigger: 'blur' }]
+      };
+      if (this.isAddMode) {
+        rules.Varietie_Code_New = [{ required: true, message: '必填', trigger: 'blur' }];
+      }
+      return rules;
     }
   },
   beforeDestroy() {
@@ -140,11 +227,107 @@ export default {
       if (!v) return '';
       return String(v).replace('T', ' ').substring(0, 19);
     },
+    approvalOptionLabel(item) {
+      const no = item.Approval_Number || '';
+      const name = item.Prod_Registration_Name || item.prod_big_class_name || '';
+      const ent = item.Manufacturing_Ent_Name || '';
+      return [no, name, ent].filter(Boolean).join(' | ');
+    },
+    isFieldDisabled(field) {
+      if (this.isAddMode && field.key === 'Varietie_Code_New') return false;
+      if (this.isAddMode && field.key === 'Enable') return true;
+      return !!field.disabled;
+    },
     handleBeforeClose(done) {
       this.loadSeq += 1;
       this.loading = false;
       this.saving = false;
       done();
+    },
+    onOpen() {
+      if (this.isAddMode) {
+        this.initAdd();
+      } else {
+        this.loadDetail();
+      }
+    },
+    async initAdd() {
+      const seq = ++this.loadSeq;
+      this.loading = true;
+      this.detail = null;
+      this.form = null;
+      this.activeTab = 'basic';
+      this.selectedRegCode = '';
+      this.approvalOptions = [];
+      try {
+        this.detail = createEmptyDetail();
+        this.form = detailToForm(this.detail);
+        this.approvalLoading = true;
+        const list = await GetApprovalNumberList();
+        if (seq !== this.loadSeq) return;
+        this.approvalAll = Array.isArray(list) ? list : [];
+        this.approvalOptions = this.approvalAll.slice(0, 80);
+      } catch (e) {
+        if (seq !== this.loadSeq) return;
+        this.$message.error(e.message || '初始化失败');
+        this.innerVisible = false;
+      } finally {
+        if (seq === this.loadSeq) {
+          this.approvalLoading = false;
+          this.loading = false;
+        }
+      }
+    },
+    filterApprovalOptions(query) {
+      const q = String(query || '')
+        .trim()
+        .toLowerCase();
+      if (!q) {
+        this.approvalOptions = this.approvalAll.slice(0, 80);
+        return;
+      }
+      this.approvalOptions = this.approvalAll
+        .filter((item) => {
+          const text = this.approvalOptionLabel(item).toLowerCase();
+          return text.includes(q);
+        })
+        .slice(0, 80);
+    },
+    async onApprovalChange(code) {
+      if (!code) {
+        this.detail.Prod_Registration_Code = '';
+        this.detail.Approval_Number = '';
+        this.detail.manufacturing_ent_name = '';
+        this.detail.prod_big_class_name = '';
+        this.detail.Common_Name = '';
+        return;
+      }
+      try {
+        const list = await GetApprovalNumberInfo(code);
+        const info = Array.isArray(list) ? list[0] : null;
+        const fallback = this.approvalAll.find(
+          (x) => String(x.Prod_Registration_Code) === String(code)
+        );
+        const row = info || fallback || {};
+        this.detail.Prod_Registration_Code = String(
+          row.Prod_Registration_Code || code
+        );
+        this.detail.Approval_Number = row.Approval_Number || '';
+        this.detail.manufacturing_ent_name = row.Manufacturing_Ent_Name || '';
+        this.detail.prod_big_class_name =
+          row.prod_big_class_name || row.Prod_Registration_Name || '';
+        this.detail.Common_Name = row.Prod_Registration_Name || '';
+        if (!this.form.Varietie_Name && row.Prod_Registration_Name) {
+          this.form.Varietie_Name = row.Prod_Registration_Name;
+        }
+        if (row.STRUCTURE_COMPOSITION) this.form.FEATURE = row.STRUCTURE_COMPOSITION;
+        if (row.SCOPE_APPLICATION) this.form.PURPOSE = row.SCOPE_APPLICATION;
+        if (row.PRO_MEDICAL_CONSUMABLE_GRADE) {
+          this.form.MEDICAL_CONSUMABLE_GRADE = row.PRO_MEDICAL_CONSUMABLE_GRADE;
+        }
+      } catch (e) {
+        this.$message.error(e.message || '加载批准文号信息失败');
+      }
     },
     async loadDetail() {
       if (!this.varietieCode) return;
@@ -209,6 +392,10 @@ export default {
         this.$message.warning('请完善必填项');
         return;
       }
+      if (this.isAddMode) {
+        await this.onSaveAdd();
+        return;
+      }
       this.saving = true;
       try {
         const merged = mergeFormToDetail(this.detail, this.form);
@@ -230,12 +417,50 @@ export default {
         this.saving = false;
       }
     },
+    async onSaveAdd() {
+      if (!this.detail?.Prod_Registration_Code) {
+        this.$message.warning('请选择批准文号');
+        return;
+      }
+      const code = String(this.form.Varietie_Code_New || '').trim();
+      if (!code) {
+        this.$message.warning('请填写品种材料编码');
+        return;
+      }
+      this.saving = true;
+      try {
+        const exists = await IsVarietieExist(code);
+        if (exists) {
+          this.$message.warning('品种编码已存在，请更换编码');
+          return;
+        }
+        const merged = mergeFormToDetail(this.detail, this.form);
+        merged.Varietie_Code_New = code;
+        merged.Prod_Registration_Code = this.detail.Prod_Registration_Code;
+        const payload = buildInsertPayload(merged, {
+          token: sessionStorage.getItem(TOKEN_STORE_NAME),
+          nickname: this.$store.state.user?.info?.Nickname || '',
+          hp: HOME_HP
+        });
+        const res = await InsertVarietieBasic(payload);
+        this.$message.success(res.msg || '创建成功');
+        this.innerVisible = false;
+        this.$emit('done');
+      } catch (e) {
+        this.$message.error(e.message || '创建失败');
+      } finally {
+        this.saving = false;
+      }
+    },
     onClosed() {
       this.loadSeq += 1;
       this.loading = false;
       this.saving = false;
       this.detail = null;
       this.form = null;
+      this.selectedRegCode = '';
+      this.approvalAll = [];
+      this.approvalOptions = [];
       this.$nextTick(() => cleanupDialogOverlays());
       this.$emit('closed');
     }
@@ -249,6 +474,18 @@ export default {
 }
 .summary-desc {
   margin-bottom: 12px;
+}
+.add-reg-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.add-reg-label {
+  width: 70px;
+  color: #606266;
+  font-size: 12px;
+  flex-shrink: 0;
 }
 .variety-edit-form ::v-deep .el-form-item {
   margin-bottom: 10px;

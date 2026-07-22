@@ -284,14 +284,23 @@
         </el-form-item>
         <el-form-item class="time-item">
           <el-date-picker
-            v-model="where.KSConsume_monthRange"
-            type="monthrange"
+            v-model="where.KSConsume_monthDate"
+            type="month"
             value-format="yyyy-MM"
-            range-separator="至"
-            start-placeholder="月结起"
-            end-placeholder="月结止"
+            placeholder="yyyy-MM"
             :disabled="!where.KSConsume_cb"
-            style="width:220px"
+            style="width:120px"
+          />
+        </el-form-item>
+        <span class="time-sep">至</span>
+        <el-form-item class="time-item">
+          <el-date-picker
+            v-model="where.KSConsume_monthDate2"
+            type="month"
+            value-format="yyyy-MM"
+            placeholder="yyyy-MM"
+            :disabled="!where.KSConsume_cb"
+            style="width:120px"
           />
         </el-form-item>
         <span class="time-label ml12">日清时间</span>
@@ -394,7 +403,8 @@ function defaultWhere() {
     ksConsumeIsJf: '',
     ksConsumeIsHisPriceDeff: '',
     KSConsume_cb: false,
-    KSConsume_monthRange: null,
+    KSConsume_monthDate: '',
+    KSConsume_monthDate2: '',
     KSConsumeBD_dayClearingDate: '',
     KSConsumeBD_SEND_WXT_MARK: '',
     stzx_state: '1',
@@ -512,6 +522,12 @@ export default {
   font-size: 12px;
   color: #606266;
   white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.time-sep {
+  font-size: 12px;
+  color: #606266;
   flex-shrink: 0;
 }
 

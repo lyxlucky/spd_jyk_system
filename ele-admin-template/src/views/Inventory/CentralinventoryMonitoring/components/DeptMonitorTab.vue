@@ -37,6 +37,7 @@
         <el-button @click="onStatShortage">统计缺货</el-button>
         <el-button @click="onAddToDirective">添加至已选拣配单</el-button>
         <el-button type="primary" @click="onCreateDirective">新建并生成拣配单</el-button>
+        <el-button @click="importVisible = true">导入生成拣配单</el-button>
       </el-form-item>
     </el-form>
 
@@ -127,6 +128,20 @@
       </el-col>
       <el-col :span="19">
         <div class="panel-title">二级科室定数包库存监控</div>
+        <div v-if="extendPreview.length" class="selected-preview">
+          <el-table :data="extendPreview" size="mini" border max-height="120">
+            <el-table-column prop="Dept_Two_Name" label="科室名称" width="100" show-overflow-tooltip />
+            <el-table-column prop="Varietie_Code_New" label="品种编码" width="100" show-overflow-tooltip />
+            <el-table-column prop="Varietie_Name" label="品种全称" min-width="160" show-overflow-tooltip />
+            <el-table-column prop="Approval_Number" label="批准文号" width="120" show-overflow-tooltip />
+            <el-table-column prop="Registration_Issuing_Date" label="发证日期" width="110" />
+            <el-table-column prop="Registration_Valid_Date" label="有效到期" width="110" />
+            <el-table-column prop="supplier_name" label="供应商" min-width="120" show-overflow-tooltip />
+            <el-table-column prop="Prod_Big_Class_Name" label="产品类型" width="100" show-overflow-tooltip />
+            <el-table-column prop="Mgmt_Cat_Name" label="管理类别" width="100" show-overflow-tooltip />
+            <el-table-column prop="Regulatory_Cat_Name" label="监管类别" width="100" show-overflow-tooltip />
+          </el-table>
+        </div>
         <ele-pro-table
           ref="monitorTable"
           size="mini"
@@ -136,7 +151,7 @@
           :columns="monitorColumns"
           :datasource="monitorDatasource"
           :selection.sync="monitorSelection"
-          :row-class-name="monitorRowClassName"
+          :row-class-name="deptWarningRowClass"
           cache-key="deptMonitorMainTable"
           @row-click="onMonitorRowClick"
           @sort-change="onMonitorSortChange"
@@ -153,9 +168,7 @@
           <template v-slot:relatedRfid="{ row }">{{ formatRelatedRfid(row.Related_RFID) }}</template>
           <template v-slot:consumptionType="{ row }">{{ formatConsumptionType(row.Consumption_Type) }}</template>
           <template v-slot:orderType="{ row }">{{ formatOrderType(row.ORDER_TYPE) }}</template>
-          <template v-slot:isKuBao="{ row }">
-            <span v-if="hp.showKubao">{{ formatIsKuBao(row.Is_KuBao) }}</span>
-          </template>
+          <template v-slot:isKuBao="{ row }">{{ formatIsKuBao(row.Is_KuBao) }}</template>
         </ele-pro-table>
       </el-col>
     </el-row>
@@ -198,6 +211,7 @@
           @row-click="onDirectiveRowClick"
         >
           <template v-slot:packState="{ row }">{{ formatPackState(row.Pack_State) }}</template>
+          <template v-slot:creator="{ row }">{{ row.Creater || row.Creator || '' }}</template>
           <template v-slot:createTime="{ row }">{{ formatCreateTime(row.Create_Time) }}</template>
           <template v-slot:action="{ row }">
             <el-button type="text" icon="el-icon-delete" style="color: #f56c6c" @click.stop="onDeleteDirectiveList(row)" />
@@ -225,11 +239,41 @@
       </el-col>
     </el-row>
     <AllocateCreateDialog :visible.sync="allocateVisible" mode="dsb" :svc="allocateSvc" />
+
+    <el-dialog
+      title="导入生成拣配单"
+      :visible.sync="importVisible"
+      width="480px"
+      append-to-body
+      @closed="onImportDialogClosed"
+    >
+      <div class="import-dialog-body">
+        <div class="import-template-row">
+          <a :href="importTemplateUrl" target="_blank" rel="noopener">下载模板</a>
+        </div>
+        <el-upload
+          ref="importUpload"
+          action=""
+          :auto-upload="false"
+          :limit="1"
+          accept=".xls,.xlsx"
+          :on-change="onImportFileChange"
+          :on-remove="onImportFileRemove"
+          :file-list="importFileList"
+        >
+          <el-button size="mini">选择文件</el-button>
+        </el-upload>
+      </div>
+      <span slot="footer">
+        <el-button size="mini" @click="importVisible = false">取消</el-button>
+        <el-button type="primary" size="mini" :loading="importing" @click="onImportGeneratePicking">确定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { HOME_HP } from '@/config/setting';
+import { API_BASE_URL, HOME_HP, TOKEN_STORE_NAME } from '@/config/setting';
 import AllocateCreateDialog from './AllocateCreateDialog.vue';
 import {
   getStorageList,
@@ -241,15 +285,18 @@ import {
   updateDirective,
   deleteDirectiveList,
   deleteDirectiveDetail,
-  inDefDept
+  inDefDept,
+  importGeneratePicking,
+  getDeptMonitorExtend
 } from '@/api/Inventory/CentralinventoryMonitoring';
 import {
   monitorHpFlags,
-  monitorWarningRowClass,
+  deptWarningRowClass,
   formatConsumptionType,
   formatRelatedRfid,
   formatIsKuBao,
   formatOrderType,
+  formatDate10,
   exportDeptMonitorExcel,
   buildDeptMonitorColumns,
   buildDirectiveListColumns,
@@ -266,6 +313,10 @@ export default {
       allocateLabels: getAllocateSvcLabels(HOME_HP),
       allocateSvc: '1',
       allocateVisible: false,
+      importVisible: false,
+      importFile: null,
+      importFileList: [],
+      importing: false,
       storageList: [],
       deptSearch: '',
       varietySearch: '',
@@ -286,9 +337,11 @@ export default {
       monitorSelection: [],
       monitorSort: { field: '', order: '' },
       bhPackCountMap: {},
+      extendPreview: [],
       deptColumns: [
         { prop: 'Dept_Two_Name', label: '配送科室', minWidth: 100 },
-        { prop: 'STORAGE_NAME', label: '院区', minWidth: 80 }
+        { prop: 'STORAGE_NAME', label: '院区', minWidth: 80 },
+        { prop: 'Dept_Two_Code', label: '二级科室编码', minWidth: 120 }
       ],
       directiveListColumns: buildDirectiveListColumns(),
       directiveDetailColumns: buildDirectiveDetailColumns(),
@@ -315,6 +368,10 @@ export default {
     isYnStorage() {
       return String(this.filters.storageId) === '1';
     },
+    importTemplateUrl() {
+      const token = sessionStorage.getItem(TOKEN_STORE_NAME) || '';
+      return `${API_BASE_URL}/DeptMonitor/ImportGeneratePickingTemplate?Token=${token}`;
+    },
     monitorColumns() {
       return buildDeptMonitorColumns({
         storageLabel: this.storageLabel,
@@ -332,7 +389,7 @@ export default {
     formatRelatedRfid,
     formatIsKuBao,
     formatOrderType,
-    monitorRowClassName: monitorWarningRowClass,
+    deptWarningRowClass,
     formatPackState(val) {
       const s = String(val);
       if (s === '0') return '未拣配';
@@ -406,6 +463,7 @@ export default {
     },
     onStorageChange() {
       this.selectedDept = null;
+      this.extendPreview = [];
       this.reloadDept();
       this.reloadMonitor();
       this.reloadDirectiveList();
@@ -484,9 +542,56 @@ export default {
     },
     onMonitorRowClick(row) {
       this.clickedMonitorRow = row;
+      this.loadDeptExtendPreview(row);
       if (this.loadDirectiveByVariety) {
         this.directiveSearch = row.Varietie_Code_New || '';
         this.reloadDirectiveList();
+      }
+    },
+    async loadDeptExtendPreview(row) {
+      const varietieCode = row?.Varietie_Code;
+      if (!varietieCode) {
+        this.extendPreview = [];
+        return;
+      }
+      try {
+        const data = await getDeptMonitorExtend(
+          varietieCode,
+          row.Dept_Two_Name || '',
+          row.Contract_Code || ''
+        );
+        if (data == 301 || data === '301' || data?.code == 301) {
+          this.extendPreview = [];
+          this.$message.error(data?.msg || '登录失效，请重新登录');
+          return;
+        }
+        let list = data?.result ?? data;
+        if (typeof list === 'string') {
+          try {
+            list = JSON.parse(list);
+          } catch (e) {
+            list = [];
+          }
+        }
+        if (!Array.isArray(list)) {
+          this.extendPreview = [];
+          return;
+        }
+        this.extendPreview = list.map((item) => ({
+          Dept_Two_Name: item.Dept_Two_Name,
+          Varietie_Code_New: item.Varietie_Code_New,
+          Varietie_Name: item.Varietie_Name,
+          Approval_Number: item.Approval_Number,
+          Registration_Issuing_Date: formatDate10(item.Registration_Issuing_Date),
+          Registration_Valid_Date: formatDate10(item.Registration_Valid_Date),
+          supplier_name: item.supplier_name,
+          Prod_Big_Class_Name: item.Prod_Big_Class_Name,
+          Mgmt_Cat_Name: item.Mgmt_Cat_Name,
+          Regulatory_Cat_Name: item.Regulatory_Cat_Name
+        }));
+      } catch (e) {
+        this.extendPreview = [];
+        this.$message.error(e.message || '加载扩展信息失败');
       }
     },
     onMonitorSortChange({ prop, order }) {
@@ -500,6 +605,54 @@ export default {
       this.selectedDirective = row;
       this.detailSelection = [];
       this.reloadDirectiveDetail();
+    },
+    onImportFileChange(file, fileList) {
+      this.importFile = file?.raw || null;
+      this.importFileList = fileList.slice(-1);
+    },
+    onImportFileRemove() {
+      this.importFile = null;
+      this.importFileList = [];
+    },
+    onImportDialogClosed() {
+      this.importFile = null;
+      this.importFileList = [];
+      this.importing = false;
+    },
+    async onImportGeneratePicking() {
+      if (!this.importFile) {
+        this.$message.warning('请选择导入文件');
+        return;
+      }
+      if (this.importing) return;
+      this.importing = true;
+      const loading = this.$loading({ lock: true, text: '导入中...' });
+      try {
+        const data = await importGeneratePicking(this.importFile, this.filters.storageId);
+        if (data?.code == 301) {
+          this.$message.error(data.msg || '登录失效，请重新登录');
+          return;
+        }
+        if (this.isOkCode(data?.code)) {
+          this.importVisible = false;
+          const msg = data.msg || '导入成功';
+          if (String(msg).includes('；二级科室编码')) {
+            this.$alert(msg, '提示');
+          } else {
+            this.$message.success(msg);
+          }
+          this.reloadMonitor();
+          this.directiveSearch = '';
+          this.reloadDirectiveList();
+        } else {
+          this.$message.error(data?.msg || '导入失败');
+        }
+      } catch (e) {
+        this.$message.error(e.message || '上传失败');
+      } finally {
+        loading.close();
+        this.importing = false;
+      }
     },
     async onExportExcel() {
       if (this.exporting) return;
@@ -712,13 +865,23 @@ export default {
   margin-bottom: 6px;
   text-align: right;
 }
-.dept-monitor-tab ::v-deep .warning-level-1 td {
+.selected-preview {
+  margin-bottom: 8px;
+}
+.import-dialog-body {
+  text-align: center;
+  padding: 8px 0 4px;
+}
+.import-template-row {
+  margin-bottom: 16px;
+}
+.dept-monitor-tab ::v-deep .monitor-warn-1 td {
   background-color: #f9d5d5 !important;
 }
-.dept-monitor-tab ::v-deep .warning-level-2 td {
+.dept-monitor-tab ::v-deep .monitor-warn-2 td {
   background-color: #f7f4a8 !important;
 }
-.dept-monitor-tab ::v-deep .warning-level-3 td {
+.dept-monitor-tab ::v-deep .monitor-warn-3 td {
   background-color: #a6e4f7 !important;
 }
 .dept-monitor-tab ::v-deep .el-table {

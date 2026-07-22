@@ -5,10 +5,10 @@
       <div class="spd-panel__body">
         <el-form size="mini" class="search-form" label-position="left" label-width="auto" @submit.native.prevent>
           <div class="search-row">
-            <el-form-item class="cell cell--xs">
+            <el-form-item v-if="!isBdrm" class="cell cell--xs">
               <el-select v-model="where.vdzh_sx" clearable placeholder="全部筛选">
                 <el-option label="全部筛选" value="0" />
-                <el-option label="防控物资女" value="1" />
+                <el-option label="防控物资" value="1" />
                 <el-option label="阳光采购平台品种" value="2" />
               </el-select>
             </el-form-item>
@@ -35,7 +35,7 @@
               <el-input v-model="where.HIGH_CLASS_XH" placeholder="高值序号" clearable />
             </el-form-item>
 
-            <el-form-item label="设备科修改" class="cell cell--sm">
+            <el-form-item v-if="!isStseLike" label="设备科修改" class="cell cell--sm">
               <el-select v-model="where.IS_EQUIPMENT_CHANGE" clearable placeholder="请选择">
                 <el-option label="全部" value="-1" />
                 <el-option label="是" value="1" />
@@ -43,7 +43,7 @@
               </el-select>
             </el-form-item>
 
-            <el-form-item class="cell cell--xs">
+            <el-form-item v-if="!isBdrm" class="cell cell--xs">
               <el-select v-model="where.SENDYB_STATE" clearable placeholder="物价状态">
                 <el-option label="物价-全部" value="" />
                 <el-option label="物价-已提交" value="1" />
@@ -74,7 +74,7 @@
               </el-select>
             </el-form-item>
 
-            <el-form-item label="审批状态" class="cell cell--sm">
+            <el-form-item v-if="!isBdrm" label="审批状态" class="cell cell--sm">
               <el-select v-model="where.APPROVAL_STATE" clearable placeholder="请选择">
                 <el-option label="全部" value="" />
                 <el-option label="审批通过" value="1" />
@@ -83,7 +83,15 @@
               </el-select>
             </el-form-item>
 
-            <el-form-item label="北大回传" class="cell cell--sm">
+            <el-form-item v-if="isSzhn" label="OES推送状态" class="cell cell--sm">
+              <el-select v-model="where.VAROES_STATE" clearable placeholder="请选择">
+                <el-option label="全部" value="" />
+                <el-option label="未推送" value="0" />
+                <el-option label="已推送" value="2" />
+              </el-select>
+            </el-form-item>
+
+            <el-form-item v-if="isBd" label="北大回传" class="cell cell--sm">
               <el-select v-model="where.JF_BJ" clearable placeholder="请选择">
                 <el-option label="全部" value="" />
                 <el-option label="未标记" value="0" />
@@ -99,29 +107,203 @@
               </el-select>
             </el-form-item>
 
-            <el-form-item label="审批时间" class="cell cell--date">
+            <el-form-item label="是否同步" class="cell cell--sm">
+              <el-select v-model="where.STSEHIS_STATE" clearable placeholder="请选择">
+                <el-option label="全部" value="" />
+                <el-option label="未同步" value="0" />
+                <el-option label="已同步" value="1" />
+                <el-option label="同步失败" value="2" />
+              </el-select>
+            </el-form-item>
+
+            <el-form-item v-if="isFsSync" label="跨院同步" class="cell cell--sm">
+              <el-select v-model="where.HOSPITAL_SYNC" clearable placeholder="请选择">
+                <el-option label="全部" value="" />
+                <el-option label="初始目录" value="no" />
+                <el-option label="多院区启用" value="all" />
+                <el-option label="仅南五启用" value="dwrmyy" />
+                <el-option label="仅南六启用" value="fsdl" />
+                <el-option label="仅南七启用" value="ybyy" />
+              </el-select>
+            </el-form-item>
+
+            <el-form-item v-if="isFsState" label="品种状态" class="cell cell--sm">
+              <el-select v-model="where.FSWY_STATE" clearable placeholder="请选择">
+                <el-option label="全部" value="" />
+                <el-option label="未发送" value="0" />
+                <el-option label="已发送" value="1" />
+              </el-select>
+            </el-form-item>
+
+            <el-form-item v-if="!isBdrm" label="审批时间" class="cell cell--date">
               <div class="date-range">
-                <el-date-picker v-model="where.priceChangeTimeStart" type="date" placeholder="开始日期" />
+                <el-date-picker
+                  v-model="where.priceChangeTimeStart"
+                  type="date"
+                  value-format="yyyy-MM-dd"
+                  placeholder="开始日期"
+                />
                 <span class="date-sep">~</span>
-                <el-date-picker v-model="where.priceChangeTimeEnd" type="date" placeholder="结束日期" />
+                <el-date-picker
+                  v-model="where.priceChangeTimeEnd"
+                  type="date"
+                  value-format="yyyy-MM-dd"
+                  placeholder="结束日期"
+                />
               </div>
             </el-form-item>
 
-            <el-form-item class="cell cell--auto">
+            <el-form-item label="创建时间" class="cell cell--date">
+              <div class="date-range">
+                <el-date-picker
+                  v-model="where.VAR_CREATETIMESTART"
+                  type="date"
+                  value-format="yyyy-MM-dd"
+                  placeholder="开始日期"
+                />
+                <span class="date-sep">~</span>
+                <el-date-picker
+                  v-model="where.VAR_CREATETIMEEND"
+                  type="date"
+                  value-format="yyyy-MM-dd"
+                  placeholder="结束日期"
+                />
+              </div>
+            </el-form-item>
+
+            <el-form-item v-if="isBdOnly" class="cell cell--auto">
               <el-checkbox v-model="checked">是否过滤非库宝品种</el-checkbox>
             </el-form-item>
           </div>
 
+          <div v-if="isStseFlow" class="search-row search-row--sub">
+            <el-form-item label="SPD审批状态" class="cell cell--md">
+              <el-select v-model="where.VARSPD_STATE" clearable placeholder="请选择">
+                <el-option label="全部" value="" />
+                <el-option label="维护" value="0" />
+                <el-option label="修改" value="1" />
+                <el-option label="提交" value="2" />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="设备科状态" class="cell cell--md">
+              <el-select v-model="where.VARSB_STATE" clearable placeholder="请选择">
+                <el-option label="全部" value="" />
+                <el-option label="维护" value="0" />
+                <el-option label="修改" value="1" />
+                <el-option label="提交" value="2" />
+                <el-option label="审核" value="3" />
+              </el-select>
+            </el-form-item>
+            <el-form-item :label="jfStateLabel" class="cell cell--md">
+              <el-select v-model="where.VARJF_STATE" clearable placeholder="请选择">
+                <el-option label="全部" value="" />
+                <el-option label="维护" value="0" />
+                <el-option label="修改" value="1" />
+                <el-option label="提交" value="2" />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="医保办状态" class="cell cell--md">
+              <el-select v-model="where.VARYB_STATE" clearable placeholder="请选择">
+                <el-option label="全部" value="" />
+                <el-option label="维护" value="0" />
+                <el-option label="修改" value="1" />
+                <el-option label="提交" value="2" />
+              </el-select>
+            </el-form-item>
+            <el-form-item v-if="isStseBz" label="备注确认状态" class="cell cell--md">
+              <el-select v-model="where.VARBZ_STATE" clearable placeholder="请选择">
+                <el-option label="全部" value="" />
+                <el-option label="未备注" value="0" />
+                <el-option label="待处理" value="1" />
+                <el-option label="已处理" value="2" />
+              </el-select>
+            </el-form-item>
+          </div>
+
           <div class="filter-row">
-            <el-input v-model="where.varietieCode" clearable placeholder="编码/名称" class="kw kw--md" @keyup.enter.native="reload" />
-            <el-input v-model="where.Specification_Or_Type" clearable placeholder="规格型号" class="kw kw--sm" @keyup.enter.native="reload" />
-            <el-input v-model="where.SCQY" clearable placeholder="生产企业" class="kw kw--sm" @keyup.enter.native="reload" />
-            <el-input v-model="where.ZCZ" clearable placeholder="注册证" class="kw kw--sm" @keyup.enter.native="reload" />
-            <el-input v-model="where.SUP" clearable placeholder="供应商" class="kw kw--sm" @keyup.enter.native="reload" />
-            <el-input v-model="where.Y_M_P_CODE" clearable placeholder="阳光/医保/省平台编码" class="kw kw--lg" @keyup.enter.native="reload" />
-            <el-input v-model="where.UDI_TOP" clearable placeholder="UDI编码" class="kw kw--sm" @keyup.enter.native="reload" />
-            <el-input v-model="where.BZ_TI" clearable placeholder="备注" class="kw kw--xs" @keyup.enter.native="reload" />
-            <el-button type="primary" icon="el-icon-search" class="search-btn" @click="reload">查询</el-button>
+            <el-input
+              v-model="where.varietieCode"
+              clearable
+              placeholder="编码/名称"
+              class="kw kw--md"
+              @keyup.enter.native="reload"
+            />
+            <el-input
+              v-model="where.Specification_Or_Type"
+              clearable
+              placeholder="规格型号"
+              class="kw kw--sm"
+              @keyup.enter.native="reload"
+            />
+            <el-input
+              v-model="where.SCQY"
+              clearable
+              placeholder="生产企业"
+              class="kw kw--sm"
+              @keyup.enter.native="reload"
+            />
+            <el-input
+              v-model="where.ZCZ"
+              clearable
+              placeholder="注册证"
+              class="kw kw--sm"
+              @keyup.enter.native="reload"
+            />
+            <el-input
+              v-model="where.SUP"
+              clearable
+              placeholder="供应商"
+              class="kw kw--sm"
+              @keyup.enter.native="reload"
+            />
+            <el-input
+              v-model="where.Y_M_P_CODE"
+              clearable
+              placeholder="阳光/医保/省平台编码"
+              class="kw kw--lg"
+              @keyup.enter.native="reload"
+            />
+            <el-input
+              v-if="!isStseLike"
+              v-model="where.CLASS_ONE"
+              clearable
+              placeholder="设备科目录"
+              class="kw kw--sm"
+              @keyup.enter.native="reload"
+            />
+            <el-input
+              v-if="!isStseLike"
+              v-model="where.CLASS_TWO"
+              clearable
+              placeholder="计费目录"
+              class="kw kw--sm"
+              @keyup.enter.native="reload"
+            />
+            <el-input
+              v-if="!isStseLike"
+              v-model="where.CLASS_THREE"
+              clearable
+              placeholder="医保目录"
+              class="kw kw--sm"
+              @keyup.enter.native="reload"
+            />
+            <el-input
+              v-model="where.UDI_TOP"
+              clearable
+              placeholder="UDI编码"
+              class="kw kw--sm"
+              @keyup.enter.native="reload"
+            />
+            <el-input
+              v-model="where.BZ_TI"
+              clearable
+              placeholder="备注"
+              class="kw kw--xs"
+              @keyup.enter.native="reload"
+            />
+            <el-button type="primary" icon="el-icon-search" class="search-btn" @click="reload">
+              查询
+            </el-button>
           </div>
         </el-form>
       </div>
@@ -130,11 +312,27 @@
 </template>
 
 <script>
+import { HOME_HP } from '@/config/setting';
+
+const STSE_FLOW = ['stse', 'stzl', 'csyy', 'stzyyy', 'chrmyy'];
+const STSE_BZ = ['stse', 'csyy', 'stzyyy', 'chrmyy'];
+
 export default {
   name: 'VarietyDataLzhMainSearch',
   data() {
     return {
       checked: false,
+      isSzhn: HOME_HP === 'szhn',
+      isBd: HOME_HP === 'bd' || HOME_HP === 'bdrm',
+      isBdOnly: HOME_HP === 'bd',
+      isBdrm: HOME_HP === 'bdrm',
+      isStseLike: HOME_HP === 'stse' || HOME_HP === 'se2',
+      isStseFlow: STSE_FLOW.includes(HOME_HP),
+      isStseBz: STSE_BZ.includes(HOME_HP),
+      isFsSync: HOME_HP === 'fsdwrmyy',
+      isFsState: HOME_HP === 'fsdwrmyy' || HOME_HP === 'fszxy',
+      isFszxy: HOME_HP === 'fszxy',
+      jfStateLabel: HOME_HP === 'chrmyy' ? '运营管理状态' : '计费办状态',
       where: {
         varietieCode: '',
         varietieName: '',
@@ -178,16 +376,24 @@ export default {
         UDI_TOP: '',
         BZ_TI: '',
         JF_BJ: '',
-        IS_HANG_UP: ''
+        IS_HANG_UP: '0',
+        STSEHIS_STATE: '',
+        HOSPITAL_SYNC: '',
+        VAR_CREATETIMESTART: '',
+        VAR_CREATETIMEEND: '',
+        CLASS_ONE: '',
+        CLASS_TWO: '',
+        CLASS_THREE: '',
+        CLASSIFIC_PROPERTIES3: ''
       }
     };
   },
   methods: {
     reload() {
-      // 对齐老系统：varietieName 与 varietieCode 使用同一个搜索值
       this.where.varietieName = this.where.varietieCode;
-      // 对齐老系统：库宝过滤 checked 映射到 state（0=不过滤, 1=过滤非库宝）
-      this.where.state = this.checked ? '1' : '0';
+      this.where.state = this.isBdOnly && this.checked ? '1' : '0';
+      // 南中：查询固定带 CLASSIFIC_PROPERTIES3=1（对齐老系统）
+      this.where.CLASSIFIC_PROPERTIES3 = this.isFszxy ? '1' : '';
       this.$emit('search', { ...this.where });
     }
   }
@@ -199,29 +405,41 @@ export default {
   margin-bottom: 8px;
 }
 
-/* —— 表单行：flex-wrap，控件按内容宽度排列 —— */
 .search-row {
   display: flex;
   flex-wrap: wrap;
   gap: 4px 10px;
   align-items: center;
 }
+.search-row--sub {
+  margin-top: 4px;
+  padding-top: 4px;
+  border-top: 1px dashed #ebeef5;
+}
 .cell {
   margin-bottom: 0 !important;
   flex: none;
 }
 
-/* 各档宽度：无 label 的短下拉 / 短输入 */
-.cell--xs { width: 110px; }
-.cell--xs ::v-deep .el-form-item__content { margin-left: 0 !important; }
-/* 带 label + 短下拉 */
-.cell--sm { width: 156px; }
-/* 审批时间双日期区 */
-.cell--date { width: 260px; }
-/* checkbox 自适应内容宽 */
-.cell--auto { width: auto; }
+.cell--xs {
+  width: 110px;
+}
+.cell--xs ::v-deep .el-form-item__content {
+  margin-left: 0 !important;
+}
+.cell--sm {
+  width: 156px;
+}
+.cell--md {
+  width: 180px;
+}
+.cell--date {
+  width: 260px;
+}
+.cell--auto {
+  width: auto;
+}
 
-/* —— label / content 紧凑化 —— */
 .search-form ::v-deep .el-form-item__label {
   font-size: 12px;
   color: #606266;
@@ -233,7 +451,6 @@ export default {
   line-height: 26px;
 }
 
-/* 控件统一 26px 高度 */
 .search-form ::v-deep .el-input__inner {
   height: 26px;
   line-height: 26px;
@@ -248,7 +465,6 @@ export default {
   padding-left: 24px;
 }
 
-/* 日期区 */
 .date-range {
   display: flex;
   align-items: center;
@@ -263,7 +479,6 @@ export default {
   font-size: 12px;
 }
 
-/* —— 关键字筛选行 —— */
 .filter-row {
   display: flex;
   flex-wrap: wrap;
@@ -273,11 +488,18 @@ export default {
   padding-top: 6px;
   border-top: 1px dashed #ebeef5;
 }
-/* 各输入框宽度 */
-.kw--xs { width: 72px; }
-.kw--sm { width: 100px; }
-.kw--md { width: 120px; }
-.kw--lg { width: 160px; }
+.kw--xs {
+  width: 72px;
+}
+.kw--sm {
+  width: 100px;
+}
+.kw--md {
+  width: 120px;
+}
+.kw--lg {
+  width: 160px;
+}
 
 .search-btn {
   height: 26px;

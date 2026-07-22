@@ -1,5 +1,5 @@
 <template>
-  <div class="picking-left">
+  <div class="picking-left picking-compact-table">
     <div class="sub-panel-head spd-sub-panel__head">备货单列表</div>
     <el-form size="mini" inline class="filter-row" @submit.native.prevent>
       <el-form-item>
@@ -33,11 +33,13 @@
       size="mini"
       height="240px"
       highlight-current-row
+      :init-load="false"
       :toolkit="[]"
       :columns="columns"
       :datasource="datasource"
       cache-key="deptPlannedDeliveryNewPickingLeft"
       @current-change="onCurrentChange"
+      @row-click="onRowClick"
     >
       <template v-slot:createTime="{ row }">
         {{ row.Create_Time ? $moment(row.Create_Time).format('YYYY-MM-DD') : '' }}
@@ -69,16 +71,35 @@ export default {
     return {
       where: { date: '', state: '-1', planNo: '', keyword: '' },
       columns: buildPickingListColumns(),
+      current: null,
       remarkVisible: false,
       remarkPlanNo: ''
     };
   },
+  watch: {
+    storageId: {
+      immediate: true,
+      handler(val) {
+        if (!val) return;
+        this.$nextTick(() => this.reload());
+      }
+    }
+  },
   methods: {
     reload() {
+      if (!this.storageId) return;
       this.$refs.table?.reload({
         page: 1,
         where: { ...this.where, storageId: this.storageId }
       });
+    },
+    /** 按关键字/品种编码刷新；传 '' 清空；不传则保留当前关键字仅重查 */
+    reloadByKeyword(keyword) {
+      if (keyword !== undefined) {
+        this.where.keyword = keyword == null ? '' : String(keyword);
+      }
+      this.current = null;
+      this.reload();
     },
     datasource({ page, limit, where }) {
       return getPickingList(
@@ -86,12 +107,16 @@ export default {
         page,
         limit || 30
       ).then((res) => ({
-        count: res.total,
+        count: Number(res.total) || 0,
         list: res.result || []
       }));
     },
     onCurrentChange(row) {
-      this.$emit('select-plan', row);
+      // 仅同步高亮；明细加载走 row-click，避免重复请求
+      this.current = row;
+    },
+    onRowClick(row) {
+      if (row) this.$emit('select-plan', row);
     },
     openRemark(row) {
       this.remarkPlanNo = row.Stock_Up_Plan_No;
@@ -115,5 +140,25 @@ export default {
 }
 .filter-row {
   margin-bottom: 8px;
+}
+</style>
+
+<style lang="scss">
+/* 与备货明细、计划表一致的紧凑行高 */
+.picking-compact-table {
+  .el-table--mini td,
+  .el-table--mini th,
+  .el-table .el-table__cell {
+    padding: 2px 0;
+  }
+  .el-table .el-table__row {
+    height: auto !important;
+  }
+  .el-table .cell {
+    padding-left: 4px;
+    padding-right: 4px;
+    line-height: 20px;
+    font-size: 12px;
+  }
 }
 </style>

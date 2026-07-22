@@ -11,10 +11,10 @@
         <el-input v-model="where.Monthbillnum" clearable placeholder="发票号" style="width: 120px" />
       </el-form-item>
       <el-form-item label="月结开始">
-        <el-date-picker v-model="where.StartDate" type="date" value-format="yyyy-MM-dd" placeholder="yyyy-MM-dd" style="width: 130px" />
+        <el-date-picker v-model="where.StartDate" type="month" value-format="yyyy-MM" placeholder="yyyy-MM" style="width: 120px" />
       </el-form-item>
       <el-form-item label="月结结束">
-        <el-date-picker v-model="where.EndDate" type="date" value-format="yyyy-MM-dd" placeholder="yyyy-MM-dd" style="width: 130px" />
+        <el-date-picker v-model="where.EndDate" type="month" value-format="yyyy-MM" placeholder="yyyy-MM" style="width: 120px" />
       </el-form-item>
       <el-form-item label="审批状态">
         <el-select v-model="where.State" style="width: 100px">

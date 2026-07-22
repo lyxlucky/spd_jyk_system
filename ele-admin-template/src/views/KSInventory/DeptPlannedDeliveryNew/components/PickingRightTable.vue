@@ -1,5 +1,5 @@
 <template>
-  <div class="picking-right">
+  <div class="picking-right picking-compact-table">
     <div class="sub-panel-head spd-sub-panel__head">备货单明细</div>
     <el-form size="mini" inline class="filter-row">
       <el-form-item>
@@ -11,7 +11,7 @@
     <ele-pro-table
       ref="table"
       size="mini"
-      height="240px"
+      height="280px"
       :init-load="false"
       :toolkit="[]"
       :need-page="false"
@@ -41,13 +41,23 @@ export default {
     loadByPlan(planNo) {
       this.planNo = planNo || '';
       this.selection = [];
+      if (!this.planNo) {
+        this.clear();
+        return;
+      }
       this.$refs.table?.reload({ page: 1, where: { Stock_Up_Plan_No: this.planNo } });
+    },
+    clear() {
+      this.planNo = '';
+      this.selection = [];
+      this.$refs.table?.reload({ page: 1, where: { Stock_Up_Plan_No: '' } });
     },
     datasource({ where }) {
       if (!where?.Stock_Up_Plan_No && !this.planNo) {
         return Promise.resolve({ count: 0, list: [] });
       }
       const no = where?.Stock_Up_Plan_No || this.planNo;
+      if (!no) return Promise.resolve({ count: 0, list: [] });
       return getPickingInfo(no).then((res) => ({
         count: res.total,
         list: res.result || []
@@ -88,5 +98,25 @@ export default {
 }
 .filter-row {
   margin-bottom: 8px;
+}
+</style>
+
+<style lang="scss">
+/* 紧凑行高，贴近老系统 size:sm，覆盖全局 table-density 行高 */
+.picking-compact-table {
+  .el-table--mini td,
+  .el-table--mini th,
+  .el-table .el-table__cell {
+    padding: 2px 0;
+  }
+  .el-table .el-table__row {
+    height: auto !important;
+  }
+  .el-table .cell {
+    padding-left: 4px;
+    padding-right: 4px;
+    line-height: 20px;
+    font-size: 12px;
+  }
 }
 </style>

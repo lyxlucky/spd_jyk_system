@@ -8,7 +8,6 @@
       @keyup.enter.native="search"
       @submit.native.prevent
     >
-    >
       <el-form-item label="品种筛选">
         <el-select v-model="where.varietyFilter" style="width: 180px" @change="search">
           <el-option label="显示所有申领品种" value="-1" />
@@ -43,185 +42,232 @@
         />
       </el-form-item>
       <el-form-item class="ele-form-actions ks-dept-plan-detail-actions">
-        <el-button type="primary" icon="el-icon-search" @click="search">查询</el-button>
-        <el-button icon="el-icon-refresh" @click="reset">重置</el-button>
-        <el-dropdown>
-          <el-button type="primary" icon="el-icon-plus">
-            新增<i class="el-icon-arrow-down el-icon--right"></i>
-          </el-button>
-          <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item>
-              <el-button
-                type="text"
-                icon="el-icon-plus"
-                @click="openIntroduceUserDefinedTemp"
-                :disabled="!IsDisabled"
-              >
-                自定义新增
+        <el-button type="primary" icon="el-icon-search" @click="search" title="按条件查询明细">
+          查询
+        </el-button>
+        <el-button icon="el-icon-refresh" @click="reset" title="清空筛选条件">重置</el-button>
+        <el-tooltip :content="tipEditPlanDetail" placement="top" :open-delay="300">
+          <span class="btn-tip-wrap">
+            <el-dropdown :disabled="!canEditPlanDetail">
+              <el-button type="primary" icon="el-icon-plus" :disabled="!canEditPlanDetail">
+                新增<i class="el-icon-arrow-down el-icon--right"></i>
               </el-button>
-            </el-dropdown-item>
-            <el-dropdown-item>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item :disabled="!canEditPlanDetail" :title="tipCustomAdd">
+                  <el-button
+                    type="text"
+                    icon="el-icon-plus"
+                    @click="openIntroduceUserDefinedTemp"
+                    :disabled="!canEditPlanDetail"
+                  >
+                    自定义新增
+                  </el-button>
+                </el-dropdown-item>
+                <el-dropdown-item :disabled="!canEditPlanDetail" :title="tipCommonTemp">
+                  <el-button
+                    type="text"
+                    icon="el-icon-document-copy"
+                    @click="introduceCommonTemp"
+                    :disabled="!canEditPlanDetail"
+                  >
+                    引用常规模板
+                  </el-button>
+                </el-dropdown-item>
+                <el-dropdown-item :disabled="!canEditPlanDetail" :title="tipApplyTemp">
+                  <el-button
+                    type="text"
+                    icon="el-icon-upload"
+                    @click="showApplyTemp"
+                    :disabled="!canEditPlanDetail"
+                  >
+                    引入模板
+                  </el-button>
+                </el-dropdown-item>
+                <el-dropdown-item :disabled="!canEditPlanDetail" :title="tipHistoryCycle">
+                  <el-button
+                    type="text"
+                    icon="el-icon-time"
+                    @click="openHistoryCycleConsume"
+                    :disabled="!canEditPlanDetail"
+                  >
+                    按历史周期申领
+                  </el-button>
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+          </span>
+        </el-tooltip>
+        <el-tooltip :content="tipKeepDraft" placement="top" :open-delay="300">
+          <span class="btn-tip-wrap">
+            <el-button
+              type="primary"
+              icon="el-icon-s-check"
+              @click="KeeptApplyDate"
+              :disabled="!canEditPlanDetail"
+            >
+              暂存申领单
+            </el-button>
+          </span>
+        </el-tooltip>
+        <el-tooltip :content="tipSaveAndSubmit" placement="top" :open-delay="300">
+          <span class="btn-tip-wrap">
+            <el-button
+              type="success"
+              icon="el-icon-finished"
+              @click="addPutInListDeta2"
+              :disabled="!canSaveAndSubmit"
+            >
+              保存并提交
+            </el-button>
+          </span>
+        </el-tooltip>
+        <el-tooltip
+          v-if="$hasPermission('ApplyPlan_审核')"
+          :content="tipAudit"
+          placement="top"
+          :open-delay="300"
+        >
+          <span class="btn-tip-wrap">
+            <el-button
+              type="success"
+              icon="el-icon-s-order"
+              @click="subToExamine"
+              :disabled="!IsPutInListDeta"
+            >
+              审核申领单
+            </el-button>
+          </span>
+        </el-tooltip>
+        <el-tooltip
+          v-if="$hasPermission('ApplyPlan_审核')"
+          :content="tipApprove"
+          placement="top"
+          :open-delay="300"
+        >
+          <span class="btn-tip-wrap">
+            <el-button
+              type="primary"
+              icon="el-icon-s-cooperation"
+              @click="Approval"
+              :disabled="!IsToExamine"
+            >
+              审批申领单
+            </el-button>
+          </span>
+        </el-tooltip>
+        <el-tooltip :content="tipDeleteDetail" placement="top" :open-delay="300">
+          <span class="btn-tip-wrap">
+            <el-popconfirm
+              class="ele-action"
+              title="确定删除所选明细？"
+              @confirm="removeBatch()"
+            >
               <el-button
-                type="text"
-                icon="el-icon-document-copy"
-                @click="introduceCommonTemp"
-                :disabled="!IsDisabled"
+                slot="reference"
+                type="danger"
+                icon="el-icon-delete"
+                :disabled="!canEditPlanDetail"
               >
-                引用常规模板
+                删除
               </el-button>
-            </el-dropdown-item>
-            <el-dropdown-item>
-              <el-button
-                type="text"
-                icon="el-icon-upload"
-                @click="showApplyTemp"
-                :disabled="!IsDisabled"
-              >
-                引入模板
+            </el-popconfirm>
+          </span>
+        </el-tooltip>
+        <el-tooltip content="查看当前申领单的操作与流转详情" placement="top" :open-delay="300">
+          <span class="btn-tip-wrap">
+            <el-button type="primary" icon="el-icon-view" @click="ApplyOperateTipShow = true">
+              查看订单详情
+            </el-button>
+          </span>
+        </el-tooltip>
+        <el-tooltip :content="tipMergeOrder" placement="top" :open-delay="300">
+          <span class="btn-tip-wrap">
+            <el-button
+              type="primary"
+              icon="el-icon-connection"
+              :disabled="!KSDepartmentalPlanDataSearch?.PlanNum"
+              @click="mergeOrderVisible = true"
+            >
+              合并订单
+            </el-button>
+          </span>
+        </el-tooltip>
+        <el-tooltip content="查看中标/在用/科室目录" placement="top" :open-delay="300">
+          <span class="btn-tip-wrap">
+            <el-dropdown>
+              <el-button type="primary" icon="el-icon-s-unfold">
+                目录<i class="el-icon-arrow-down el-icon--right"></i>
               </el-button>
-            </el-dropdown-item>
-            <el-dropdown-item>
-              <el-button
-                type="text"
-                icon="el-icon-time"
-                @click="openHistoryCycleConsume"
-                :disabled="!IsDisabled"
-              >
-                按历史周期申领
-              </el-button>
-            </el-dropdown-item>
-          </el-dropdown-menu>
-        </el-dropdown>
-        <el-button
-          type="primary"
-          icon="el-icon-s-check"
-          @click="KeeptApplyDate"
-          :disabled="!IsDisabled"
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item>
+                  <el-button
+                    type="text"
+                    v-permission="'zhongbiaomulu'"
+                    @click="BidListShowEdit = true"
+                  >
+                    中标目录
+                  </el-button>
+                </el-dropdown-item>
+                <el-dropdown-item>
+                  <el-button
+                    type="text"
+                    v-permission="'zaiyongmulu'"
+                    @click="VarietyDataLzhLookShow = true"
+                  >
+                    在用目录
+                  </el-button>
+                </el-dropdown-item>
+                <el-dropdown-item>
+                  <el-button
+                    type="text"
+                    v-permission="'keshimulu'"
+                    @click="DpetOneAuthWithDeptShow = true"
+                  >
+                    科室目录
+                  </el-button>
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+          </span>
+        </el-tooltip>
+        <el-tooltip
+          v-if="$hasPermission('shenlinzhiyin')"
+          content="下载申领操作指引"
+          placement="top"
+          :open-delay="300"
         >
-          暂存申领单
-        </el-button>
-        <el-button
-          type="success"
-          icon="el-icon-finished"
-          @click="addPutInListDeta2"
-          :disabled="!IsDisabled"
-        >
-          保存并提交
-        </el-button>
-        <el-button
-          v-permission="'ApplyPlan_审核'"
-          type="success"
-          icon="el-icon-s-order"
-          @click="subToExamine"
-          :disabled="!IsPutInListDeta"
-        >
-          审核申领单
-        </el-button>
-        <!-- <el-button
-          v-permission="'ApplyPlan_审核'"
-          v-if="['stzl', 'stzx', 'bd'].includes(HOME_HP) || ENV == 'development'"
-          type="primary"
-          icon="el-icon-s-cooperation"
-          @click="Approval"
-          :disabled="!IsToExamine"
-        >
-          审批申领单
-        </el-button> -->
-        <el-button
-          v-permission="'ApplyPlan_审核'"
-          type="primary"
-          icon="el-icon-s-cooperation"
-          @click="Approval"
-          :disabled="!IsToExamine"
-        >
-          审批申领单
-        </el-button>
-        <el-popconfirm
-          class="ele-action"
-          title="确定删除？"
-          @confirm="removeBatch()"
-        >
-          <el-button
-            slot="reference"
-            type="danger"
-            icon="el-icon-delete"
-            :disabled="!IsDisabledByDel"
-          >
-            删除
-          </el-button>
-        </el-popconfirm>
-        <el-button type="primary" icon="el-icon-view" @click="ApplyOperateTipShow = true">
-          查看订单详情
-        </el-button>
-        <el-button
-          type="primary"
-          icon="el-icon-connection"
-          :disabled="!KSDepartmentalPlanDataSearch?.PlanNum"
-          @click="mergeOrderVisible = true"
-        >
-          合并订单
-        </el-button>
-        <el-dropdown>
-          <el-button type="primary" icon="el-icon-s-unfold">
-            目录<i class="el-icon-arrow-down el-icon--right"></i>
-          </el-button>
-          <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item>
-              <el-button
-                type="text"
-                v-permission="'zhongbiaomulu'"
-                @click="BidListShowEdit = true"
-              >
-                中标目录
-              </el-button>
-            </el-dropdown-item>
-            <el-dropdown-item>
-              <el-button
-                type="text"
-                v-permission="'zaiyongmulu'"
-                @click="VarietyDataLzhLookShow = true"
-              >
-                在用目录
-              </el-button>
-            </el-dropdown-item>
-            <el-dropdown-item>
-              <el-button
-                type="text"
-                v-permission="'keshimulu'"
-                @click="DpetOneAuthWithDeptShow = true"
-              >
-                科室目录
-              </el-button>
-            </el-dropdown-item>
-          </el-dropdown-menu>
-        </el-dropdown>
-        <el-button
-          type="primary"
-          icon="el-icon-question"
-          v-permission="'shenlinzhiyin'"
-          @click="DownloadGuide"
-        >
-          申领指引
-        </el-button>
-        <el-button type="primary" icon="el-icon-upload" @click="dialogTableVisible2 = true">
-          导入模板
-        </el-button>
-        <el-button
-          v-if="canExportDetail"
-          type="primary"
-          icon="el-icon-download"
-          @click="exportData"
-        >
-          导出
-        </el-button>
-        <el-button
-          type="primary"
-          icon="el-icon-s-grid"
-          @click="handleBindBudget"
-          :disabled="!selection || selection.length === 0"
-        >
-          绑定费用项
-        </el-button>
+          <span class="btn-tip-wrap">
+            <el-button type="primary" icon="el-icon-question" @click="DownloadGuide">
+              申领指引
+            </el-button>
+          </span>
+        </el-tooltip>
+        <el-tooltip content="通过 Excel 模板批量导入明细" placement="top" :open-delay="300">
+          <span class="btn-tip-wrap">
+            <el-button type="primary" icon="el-icon-upload" @click="dialogTableVisible2 = true">
+              导入模板
+            </el-button>
+          </span>
+        </el-tooltip>
+        <el-tooltip v-if="canExportDetail" content="导出当前明细数据" placement="top" :open-delay="300">
+          <span class="btn-tip-wrap">
+            <el-button type="primary" icon="el-icon-download" @click="exportData">
+              导出
+            </el-button>
+          </span>
+        </el-tooltip>
+        <el-tooltip :content="tipBindBudget" placement="top" :open-delay="300">
+          <span class="btn-tip-wrap">
+            <el-button
+              type="primary"
+              icon="el-icon-s-grid"
+              @click="handleBindBudget"
+              :disabled="!selection || selection.length === 0"
+            >
+              绑定费用项
+            </el-button>
+          </span>
+        </el-tooltip>
       </el-form-item>
     </el-form>
     <!-- <el-row :gutter="10">
@@ -420,6 +466,17 @@
 .ele-form-actions :deep(.el-button) {
   margin: 0;
 }
+
+/* 包裹禁用按钮，使 el-tooltip 仍可悬停提示 */
+.btn-tip-wrap {
+  display: inline-flex;
+  vertical-align: middle;
+}
+
+.btn-tip-wrap :deep(.el-button.is-disabled),
+.btn-tip-wrap :deep(.el-dropdown.is-disabled) {
+  pointer-events: none;
+}
 </style>
 
 <script>
@@ -538,47 +595,145 @@
         return this.$store.state.theme.styleResponsive;
       },
 
-      /* 保存提交 */
-      IsDisabled() {
-        if (this.KSDepartmentalPlanDataSearch) {
-          return this.KSDepartmentalPlanDataSearch.State == '0';
-        } else {
-          return false;
+      /* 当前选中申领单状态（无单号则视为未选中） */
+      planState() {
+        const row = this.KSDepartmentalPlanDataSearch;
+        if (!row || row.PlanNum == null || row.PlanNum === '') {
+          return null;
         }
-        // return (
-        //   this.KSDepartmentalPlanDataSearch.State == '0' &&
-        //   (this.KSDepartmentalPlanDataSearch.PlanNum != null ||
-        //     this.KSDepartmentalPlanDataSearch.PlanNum != undefined ||
-        //     this.KSDepartmentalPlanDataSearch.PlanNum.length != 0)
-        // );
+        return String(row.State);
+      },
+      /**
+       * 对齐老系统 ApplyPlan：新增(0)、已提交(1) 时可操作
+       * 自定义新增 / 引用常规模板 / 引入模板 / 按历史周期 / 暂存 / 删除
+       */
+      canEditPlanDetail() {
+        return this.planState === '0' || this.planState === '1';
+      },
+      /** 对齐老系统：保存并提交仅「新增」可点，「已提交」禁用 */
+      canSaveAndSubmit() {
+        return this.planState === '0';
+      },
+      /* 兼容旧命名 */
+      IsDisabled() {
+        return this.canEditPlanDetail;
       },
       IsDisabledIsNot() {
         return false;
       },
-      /* 删除键 */
       IsDisabledByDel() {
-        if (this.KSDepartmentalPlanDataSearch) {
-          return this.KSDepartmentalPlanDataSearch.State == '0';
-        } else {
-          return false;
-        }
+        return this.canEditPlanDetail;
       },
-
-      /* 审核申领单 */
+      /** 审核申领单：仅已提交 */
       IsPutInListDeta() {
-        if (this.KSDepartmentalPlanDataSearch) {
-          return this.KSDepartmentalPlanDataSearch.State == '1';
-        } else {
-          return false;
-        }
+        return this.planState === '1';
       },
-
-      /* 审批申领单 */
+      /** 审批申领单：仅已审核(5)；已审批(6)在老系统属其他状态，按钮禁用 */
       IsToExamine() {
-        return (
-          this.KSDepartmentalPlanDataSearch.State == '6' ||
-          this.KSDepartmentalPlanDataSearch.State == '5'
-        );
+        return this.planState === '5';
+      },
+      /** 状态中文名，用于禁用提示 */
+      planStateLabel() {
+        if (this.planState == null) {
+          return '未选择申领单';
+        }
+        const map = {
+          '0': '新增',
+          '1': '已提交',
+          '2': '配送中',
+          '4': '已收全',
+          '5': '已审核',
+          '6': '已审批',
+          '10': '强制结束',
+          '-6': '未审批'
+        };
+        return map[this.planState] || `状态 ${this.planState}`;
+      },
+      tipEditUnavailable() {
+        if (this.planState == null) {
+          return '请先在上方列表选择一条申领单';
+        }
+        return `仅「新增」或「已提交」时可操作`;
+      },
+      tipEditPlanDetail() {
+        if (!this.canEditPlanDetail) {
+          return this.tipEditUnavailable;
+        }
+        return '可自定义新增、引用模板或按历史周期添加明细（新增/已提交）';
+      },
+      tipCustomAdd() {
+        return this.canEditPlanDetail
+          ? '手动选择品种添加到当前申领单'
+          : this.tipEditUnavailable;
+      },
+      tipCommonTemp() {
+        return this.canEditPlanDetail
+          ? '按本科室常规模板批量引入明细'
+          : this.tipEditUnavailable;
+      },
+      tipApplyTemp() {
+        return this.canEditPlanDetail
+          ? '从其他申领模板引入明细'
+          : this.tipEditUnavailable;
+      },
+      tipHistoryCycle() {
+        return this.canEditPlanDetail
+          ? '按历史消耗周期生成申领明细'
+          : this.tipEditUnavailable;
+      },
+      tipKeepDraft() {
+        if (!this.canEditPlanDetail) {
+          return this.tipEditUnavailable;
+        }
+        return '暂存当前明细数量与内容（不提交）';
+      },
+      tipSaveAndSubmit() {
+        if (this.planState == null) {
+          return '请先在上方列表选择一条申领单';
+        }
+        if (this.canSaveAndSubmit) {
+          return '保存明细并将申领单提交审核';
+        }
+        if (this.planState === '1') {
+          return '当前已提交，无法再次提交；可暂存修改后等待审核';
+        }
+        return `仅「新增」时可保存并提交`;
+      },
+      tipAudit() {
+        if (this.planState == null) {
+          return '请先在上方列表选择一条申领单';
+        }
+        if (this.IsPutInListDeta) {
+          return '审核已提交的申领单';
+        }
+        return `仅「已提交」时可审核`;
+      },
+      tipApprove() {
+        if (this.planState == null) {
+          return '请先在上方列表选择一条申领单';
+        }
+        if (this.IsToExamine) {
+          return '对已审核的申领单进行审批';
+        }
+        return `仅「已审核」时可审批`;
+      },
+      tipDeleteDetail() {
+        if (!this.canEditPlanDetail) {
+          return this.tipEditUnavailable;
+        }
+        return '删除勾选的申领明细（新增/已提交）';
+      },
+      tipMergeOrder() {
+        if (!this.KSDepartmentalPlanDataSearch?.PlanNum) {
+          return '请先在上方列表选择一条申领单';
+        }
+        return '将其他已提交订单合并到当前申领单';
+      },
+      tipBindBudget() {
+        if (!this.selection || this.selection.length === 0) {
+          return '请先勾选需要绑定费用项的明细行';
+        }
+        return '为勾选明细绑定预算费用项';
       },
       ENV() {
         return process.env.NODE_ENV;

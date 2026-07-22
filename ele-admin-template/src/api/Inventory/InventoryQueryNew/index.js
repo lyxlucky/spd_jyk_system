@@ -1,5 +1,5 @@
 import request from '@/utils/request';
-import { formdataify } from '@/utils/formdataify';
+import { formdataify, toUrlEncodedBody } from '@/utils/formdataify';
 import { TOKEN_STORE_NAME } from '@/config/setting';
 
 function token() {
@@ -90,12 +90,21 @@ export function buildDetailSearchParams(ctx = {}, page = 1, size = 10, sort = {}
 }
 
 export async function getStorageList() {
-  const res = await request.post('/Commons/GetStorageWithToken', formdataify({ Token: token() }));
+  // 与老系统 $.post 一致：urlencoded，才能绑定 CommonsController.GetStorageWithToken(BaseParam)
+  const res = await request.post(
+    '/Commons/GetStorageWithToken',
+    toUrlEncodedBody({ Token: token() }),
+    { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
+  );
   return unwrap(res).result || [];
 }
 
 export async function getDeptTwoNameByInven() {
-  const res = await request.post('/CentralWarehouseDept/GetDeptTwoNameByInven', formdataify({ Token: token() }));
+  const res = await request.post(
+    '/CentralWarehouseDept/GetDeptTwoNameByInven',
+    toUrlEncodedBody({ Token: token() }),
+    { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
+  );
   return unwrap(res).result || [];
 }
 
@@ -200,7 +209,7 @@ export async function exportCenterDefs(where) {
     approvalNumber: where.approvalNumber ?? '',
     validateStart: where.validDateFrom ?? '',
     validateEnd: where.validDateTo ?? '',
-    upShelfLocation: where.upShelfState ?? '',
+    upShelfLocation: where.position ?? '',
     manufacter: where.manuEntName ?? '',
     STORAGE_ID: where.storageId ?? '',
     page: 1,

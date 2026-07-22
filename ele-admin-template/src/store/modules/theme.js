@@ -468,12 +468,21 @@ export default {
       const i = state.tabs.findIndex((d) => d.key === data.key);
       if (i === -1) {
         dispatch('setTabs', state.tabs.concat([data]));
-      } else if (data.fullPath !== state.tabs[i].fullPath) {
+        return;
+      }
+      const old = state.tabs[i];
+      // 同 key 时也要补全 components：异步组件首次匹配常拿不到 name，导致 keep-alive 永久失效
+      const oldComps = old.components || [];
+      const newComps = data.components || [];
+      const compsChanged =
+        newComps.length > 0 &&
+        (oldComps.length === 0 || oldComps.join('\0') !== newComps.join('\0'));
+      if (data.fullPath !== old.fullPath || compsChanged || data.title !== old.title) {
         dispatch(
           'setTabs',
           state.tabs
             .slice(0, i)
-            .concat([data])
+            .concat([{ ...old, ...data, components: newComps.length ? newComps : oldComps }])
             .concat(state.tabs.slice(i + 1))
         );
       }

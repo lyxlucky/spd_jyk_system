@@ -18,18 +18,23 @@ function check301(data) {
 
 /** 将搜索表单转为接口参数（与旧 KSConsumeQueryTemp 一致） */
 export function buildSearchParams(where = {}, page = 1, size = 20, sort = {}) {
-  const monthRange = where.KSConsume_monthRange;
   let monthFmt = '';
   let monthFmt2 = '';
-  if (where.KSConsume_cb && monthRange && monthRange.length === 2) {
+  if (where.KSConsume_cb) {
     const fmt = (d) => {
       if (!d) return '';
       if (typeof d === 'string') return d.slice(0, 7);
       const dt = new Date(d);
       return `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, '0')}`;
     };
-    monthFmt = fmt(monthRange[0]);
-    monthFmt2 = fmt(monthRange[1]);
+    // 兼容旧字段 KSConsume_monthRange（月区间）与拆分后的起止月
+    if (where.KSConsume_monthDate || where.KSConsume_monthDate2) {
+      monthFmt = fmt(where.KSConsume_monthDate);
+      monthFmt2 = fmt(where.KSConsume_monthDate2);
+    } else if (where.KSConsume_monthRange?.length === 2) {
+      monthFmt = fmt(where.KSConsume_monthRange[0]);
+      monthFmt2 = fmt(where.KSConsume_monthRange[1]);
+    }
   }
   return {
     page,

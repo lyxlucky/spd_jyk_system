@@ -1,9 +1,17 @@
 <template>
   <div class="ele-body">
     <registrationTableSearch
+      :current-row="current"
+      :can-edit-prod="canEditProd"
       @registrationExport="handleRegistrationExport"
       @search="reload"
       @itemDelete="handleItemDelete"
+      @add="addVisible = true"
+      @import="handleImport"
+      @updateField="updateFieldVisible = true"
+      @toggleEnable="handleToggleEnable"
+      @expire="expireVisible = true"
+      @upLog="upLogVisible = true"
     />
     <ele-pro-table
       highlight-current-row
@@ -107,23 +115,54 @@
       :visible.sync="registrationUpdatevisible"
       :tableCurrent="tableCurrent"
     />
+    <AddRegistrationDialog :visible.sync="addVisible" @success="reload(null)" />
+    <UpdateFieldDialog :visible.sync="updateFieldVisible" @success="reload(null)" />
+    <ExpireProdDialog :visible.sync="expireVisible" />
+    <ProductUpLogDialog :visible.sync="upLogVisible" />
+    <LimitBuyDialog
+      :visible.sync="limitBuyVisible"
+      :prod-registration-code="limitBuyCode"
+      @success="reload(null)"
+    />
   </div>
 </template>
 <script>
   import registrationTableSearch from './RegistrationTableSearch';
   import RegistrationDetail from './RegistrationDetail';
+  import AddRegistrationDialog from './AddRegistrationDialog';
+  import UpdateFieldDialog from './UpdateFieldDialog';
+  import ExpireProdDialog from './ExpireProdDialog';
+  import ProductUpLogDialog from './ProductUpLogDialog';
+  import LimitBuyDialog from './LimitBuyDialog';
   import {
     SearchProdInfo,
     disAppro,
     disApproBatch,
-    DeleteProd
+    DeleteProd,
+    ImportZCZ,
+    EnableProdInfo
   } from '@/api/Home/registration/index';
   import { utils, writeFile } from 'xlsx';
+
+  const ORIGIN_MAP = {
+    '0': '默认',
+    '1': '国外',
+    '2': '国内省外',
+    '3': '省内市外',
+    '4': '市内区外',
+    '5': '区内'
+  };
+
   export default {
     name: 'RegistrationTable',
     components: {
       registrationTableSearch,
-      RegistrationDetail
+      RegistrationDetail,
+      AddRegistrationDialog,
+      UpdateFieldDialog,
+      ExpireProdDialog,
+      ProductUpLogDialog,
+      LimitBuyDialog
     },
     data() {
       return {
@@ -254,7 +293,21 @@
             align: 'center',
             showOverflowTooltip: true
           },
-          
+          {
+            prop: 'ORIGIN_TYPE',
+            label: '产地信息',
+            minWidth: 120,
+            align: 'center',
+            showOverflowTooltip: true,
+            formatter: (_row, _column, cellValue) => {
+              if (cellValue == null || cellValue === '') {
+                const name = _row.ORIGIN_NAME ?? _row.ORIGIN;
+                if (name == null || name === '') return '';
+                return ORIGIN_MAP[String(name)] || name;
+              }
+              return ORIGIN_MAP[String(cellValue)] || cellValue;
+            }
+          }
         ],
         toolbar: false,
         pageSize: 10,
@@ -264,8 +317,26 @@
         // 当前编辑数据
         current: null,
         registrationUpdatevisible: false,
-        tableCurrent: null
+        tableCurrent: null,
+        addVisible: false,
+        updateFieldVisible: false,
+        expireVisible: false,
+        upLogVisible: false,
+        limitBuyVisible: false,
+        limitBuyCode: ''
       };
+    },
+    computed: {
+      /** 无「禁用注册证编辑」权限时允许启用/停用 */
+      canEditProd() {
+        const list = this.$store.state.user?.info?.permission_group || [];
+        const blocked = list.some(
+          (p) =>
+            (p.Permission_Url || p.permission_url || p.component || '') ===
+            '禁用注册证编辑'
+        );
+        return !blocked;
+      }
     },
     methods: {
       datasource({ page, limit, where, order }) {
@@ -336,7 +407,7 @@
       },
       handleItemDelete(data) {
         if (!this.selection.length) {
-          this.$message.error('请选择要删除的数据');
+          this.$message.error('请选择要剔除的数据');
           return;
         }
         const ids = this.selection
@@ -344,7 +415,7 @@
             return item.PROD_REGISTRATION_CODE;
           })
           .join(',');
-        this.$confirm('是否删除此产品注册证', '提示', {
+        this.$confirm('是否剔除此产品注册证', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
@@ -387,6 +458,7 @@
                 '储存条件',
                 '创建日期',
                 '生产企业地址',
+                '产地信息',
                 '是否启用',
                 '结构及组成',
                 '适用范围'
@@ -394,6 +466,11 @@
               const array = [headers];
               const date10 = (v) =>
                 v == null || v === '' ? '' : String(v).substring(0, 10);
+              const originText = (d) => {
+                const v = d.ORIGIN_TYPE ?? d.ORIGIN ?? d.ORIGIN_NAME;
+                if (v == null || v === '') return '';
+                return ORIGIN_MAP[String(v)] || v;
+              };
               res.result.forEach((d) => {
                 const p = this.docPicProgress(d);
                 const licenseCount =
@@ -419,6 +496,7 @@
                   d.STORAGE_CONDITION,
                   createDate,
                   d.PRODUCTION_SITE,
+                  originText(d),
                   d.ENABLE === '0' || d.ENABLE === 0 ? '否' : '是',
                   d.STRUCTURE_COMPOSITION,
                   d.SCOPE_APPLICATION
@@ -440,7 +518,70 @@
             });
         });
       },
-      handlePurchase(data) {},
+      handlePurchase(data) {
+        this.limitBuyCode = data?.PROD_REGISTRATION_CODE || '';
+        this.limitBuyVisible = true;
+      },
+      async handleImport(file) {
+        if (!file) return;
+        const name = (file.name || '').toLowerCase();
+        if (!(name.endsWith('.xls') || name.endsWith('.xlsx'))) {
+          this.$message.error('文件格式错误，请上传 .xls 或 .xlsx');
+          return;
+        }
+        const loading = this.$messageLoading('正在导入...');
+        try {
+          const res = await ImportZCZ(file);
+          const msg = res?.msg || res?.Msg || (typeof res === 'string' ? res : '');
+          if (res?.code == 200 || res?.code === '200') {
+            this.$alert(String(msg || '导入成功'), '导入注册证', { type: 'success' });
+            this.reload(null);
+          } else {
+            this.$alert(String(msg || '导入失败'), '导入注册证', { type: 'error' });
+          }
+        } catch (e) {
+          this.$alert(e.message || '导入失败', '导入注册证', { type: 'error' });
+        } finally {
+          loading.close();
+        }
+      },
+      handleToggleEnable(row) {
+        if (!row?.PROD_REGISTRATION_CODE) {
+          this.$message.warning('请先选择一条注册证产品');
+          return;
+        }
+        const disabled = row.ENABLE === '0' || row.ENABLE === 0 || row.ENABLE === '停用';
+        const state = disabled ? 1 : 0;
+        const tip = disabled ? '启用' : '停用';
+        this.$confirm(`是否${tip}该产品注册证？`, '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          const loading = this.$messageLoading('请求中...');
+          EnableProdInfo([row.PROD_REGISTRATION_CODE], state)
+            .then((res) => {
+              if (res?.code == 200 || res?.code === '200') {
+                this.$message.success(res.msg || `${tip}成功`);
+                if (
+                  this.current?.PROD_REGISTRATION_CODE ===
+                  row.PROD_REGISTRATION_CODE
+                ) {
+                  this.current = { ...this.current, ENABLE: String(state) };
+                }
+                this.reload(null);
+              } else {
+                this.$message.error(res?.msg || `${tip}失败`);
+              }
+            })
+            .catch((e) => {
+              this.$message.error(e.message || `${tip}失败`);
+            })
+            .finally(() => {
+              loading.close();
+            });
+        });
+      },
       buildDisApproBatchResultText(successes, failures, summary) {
         const lines = [String(summary || ''), ''];
         lines.push('【成功】共 ' + successes.length + ' 条');

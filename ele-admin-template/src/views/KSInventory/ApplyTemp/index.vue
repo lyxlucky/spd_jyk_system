@@ -168,7 +168,8 @@ export default {
 }
 
 .apply-temp-aside {
-  flex: 0 0 42%;
+  flex: 0 0 35%;
+  max-width: 500px;
   min-width: 0;
   overflow: hidden;
 }

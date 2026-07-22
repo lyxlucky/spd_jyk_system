@@ -2,7 +2,7 @@
 export const API_BASE_URL = process.env.VUE_APP_API_BASE_URL;
 
 //b2b后端地址
-export const B2B_BASE_URL = "http://47.106.243.154:802";
+export const B2B_BASE_URL = process.env.VUE_APP_B2B_BASE_URL || "http://47.106.243.154:802";
 
 // 请求超时时间配置（毫秒）
 const getRequestTimeout = () => {
@@ -120,7 +120,7 @@ const caculateB2bCode = () => {
 export const B2B_BASE_CODE = caculateB2bCode();
 
 
-// 后端地址
+// 后端地址（各院区原始站点根；Excel 下载请用 getStaticBaseUrl，勿直接拼 API_BASE_URL）
 const getBackBaseUrl = () => {
   const env = process.env.VUE_APP_ENV;
   const envMap = {
@@ -134,7 +134,7 @@ const getBackBaseUrl = () => {
     'bdnw': 'http://100.100.100.45:8001',
     'lhfyww': 'http://61.145.158.182:10082',
     'lhfynw': 'http://10.88.10.209:82',
-    'hnww': 'http://183.62.200.242:82',
+    'hnww': 'https://nat.sch-szu.com/spdapi',
     'hnnw': 'http://172.16.4.59:82',
     'smww': 'http://120.78.226.92:18002',
     'smnw': 'http://192.168.8.90:18002',
@@ -161,6 +161,23 @@ const getBackBaseUrl = () => {
 }
 
 export const BACK_BASE_URL = getBackBaseUrl();
+
+/**
+ * Excel/图片等静态资源根地址。
+ * API_BASE_URL 形如 https://nat.sch-szu.com/spdapi/api，静态文件在 /spdapi/Excel，不能带末尾 /api。
+ * 绝对 API 地址时去掉 /api 与页面同源；相对 /api（本地代理）时用 BACK_BASE_URL。
+ */
+export function getStaticBaseUrl() {
+  const api = (API_BASE_URL || '').replace(/\/$/, '');
+  if (/^https?:\/\//i.test(api)) {
+    return api.replace(/\/api\/?$/i, '') || api;
+  }
+  const target = (process.env.VUE_APP_TARGET || '').replace(/\/$/, '');
+  if (/^https?:\/\//i.test(target)) {
+    return target;
+  }
+  return (BACK_BASE_URL || '').replace(/\/$/, '');
+}
 
 // 项目名称
 export const PROJECT_NAME = process.env.VUE_APP_NAME;

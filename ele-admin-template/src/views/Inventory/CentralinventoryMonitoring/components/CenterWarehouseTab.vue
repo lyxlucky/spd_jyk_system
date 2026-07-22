@@ -112,8 +112,13 @@
         <el-table-column prop="DIY_STORAGE" label="库房名称" width="90" />
         <el-table-column prop="Varietie_Code_New" label="品种编码" width="100" />
         <el-table-column prop="Varietie_Name" label="品种全称" min-width="160" show-overflow-tooltip />
-        <el-table-column prop="APPROVAL_NUMBER" label="批准文号" width="100" />
-        <el-table-column prop="supplier_name" label="供应商名称" min-width="120" show-overflow-tooltip />
+        <el-table-column prop="Approval_Number" label="批准文号" width="120" show-overflow-tooltip />
+        <el-table-column prop="Registration_Issuing_Date" label="发证日期" width="110" />
+        <el-table-column prop="Registration_Valid_Date" label="有效到期" width="110" />
+        <el-table-column prop="Supplier_Name" label="供应商" min-width="120" show-overflow-tooltip />
+        <el-table-column prop="Prod_Big_Class_Name" label="产品类型" width="100" show-overflow-tooltip />
+        <el-table-column prop="Mgmt_cat_Name" label="管理类别" width="100" show-overflow-tooltip />
+        <el-table-column prop="Regulatory_Cat_Name" label="监管类别" width="100" show-overflow-tooltip />
       </el-table>
     </div>
 
@@ -128,17 +133,19 @@
       class="data-table"
       size="mini"
       :height="monitorTableHeight"
-      :row-class-name="monitorWarningRowClass"
+      :row-class-name="monitorRowClassName"
       :columns="monitorColumns"
       :datasource="monitorDatasource"
       :selection.sync="monitorSelection"
       :page-size="monitorPageSize"
       :page-sizes="[10, 20, 30, 50, 100, 150, 300, 1000]"
+      highlight-current-row
       cache-key="cimCenterMonitorTable"
       @selection-change="onMonitorSelectionChange"
       @row-click="onMonitorRowClick"
     >
       <template v-slot:contractType="{ row }">{{ formatContractType(row.CONTRACT_TYPE) }}</template>
+      <template v-slot:isBidding="{ row }">{{ formatIsBidding(row.Is_Bidding) }}</template>
       <template v-slot:pkgPlan="{ row }">
         <el-input-number
           v-model="planMap[rowKey(row)].pkg"
@@ -228,7 +235,14 @@
         <div class="spd-sub-panel__head row-title">
           <span>备货单明细</span>
           <div class="spd-toolbar__btns">
-            <el-button size="mini" :disabled="!detailSelection.length" @click="openBhXsDialog">增加线上线下</el-button>
+            <el-button
+              v-if="showBhXsBtn"
+              size="mini"
+              :disabled="!detailSelection.length"
+              @click="openBhXsDialog"
+            >
+              增加线上线下
+            </el-button>
             <el-button type="danger" size="mini" plain :disabled="!detailSelection.length" @click="onDeleteDetails">
               删除
             </el-button>
@@ -246,7 +260,10 @@
           :datasource="detailDatasource"
           :selection.sync="detailSelection"
           cache-key="cimCenterDetailTable"
-        />
+        >
+          <template v-slot:xsxxJc="{ row }">{{ formatXsxxJc(row.XSXX_JC) }}</template>
+          <template v-slot:detailPrice="{ row }">{{ formatDetailPrice(row) }}</template>
+        </ele-pro-table>
         </div>
       </el-col>
     </el-row>
@@ -286,6 +303,7 @@ import {
   addBhXsDetalis,
   deletePickingDetails,
   deletePickingList,
+  getCentralExtend,
   getMonitorPopup,
   getPickingInfo,
   getPickingList,
@@ -304,15 +322,20 @@ import {
   buildCenterPickingColumns,
   buildMonitorPopupItems,
   buildUpdateInfoPayload,
+  centerWarningRowClass,
   createCenterMonitorWhere,
   createCenterPickingWhere,
   exportCentralMonitorExcel,
   formatApproveState,
   formatContractType,
+  formatDate10,
   formatDateTime,
+  formatIsBidding,
   formatSendState,
+  formatXsxxJc,
   getAllocateSvcLabels,
-  monitorWarningRowClass,
+  hasMonitorPermission,
+  monitorHpFlags,
   planGoodsQtyDisplay,
   syncGoodsFromPkg,
   syncPkgFromGoods
@@ -343,7 +366,6 @@ export default {
       loadPlanByVariety: false,
       monitorColumns: buildCenterMonitorColumns(),
       pickingColumns: buildCenterPickingColumns(),
-      detailColumns: buildCenterDetailColumns(),
       monitorPageSize: 300,
       monitorSelection: [],
       selectedRowsPreview: [],
@@ -362,16 +384,48 @@ export default {
       currentMonitorRow: null
     };
   },
+  computed: {
+    showBhXsBtn() {
+      return hasMonitorPermission('备货新增线上线下');
+    },
+    detailColumns() {
+      return buildCenterDetailColumns({
+        showXsxx: hasMonitorPermission('备货新增线上线下'),
+        isCg: monitorHpFlags.isCg
+      });
+    }
+  },
   mounted() {
     this.loadStorageList();
   },
   methods: {
-    monitorWarningRowClass,
     formatContractType,
+    formatIsBidding,
+    formatXsxxJc,
     formatSendState,
     formatApproveState,
     formatDateTime,
     planGoodsQtyDisplay,
+    /** 告警色 + 勾选高亮（Element 勾选行默认无整行样式） */
+    monitorRowClassName({ row }) {
+      const warn = centerWarningRowClass({ row });
+      const selected = this.isRowSelected(row) ? 'monitor-row-selected' : '';
+      return [warn, selected].filter(Boolean).join(' ');
+    },
+    refreshMonitorRowClass() {
+      // selection 变化时 el-table 不会自动重算 row-class-name，需强制刷新
+      this.$nextTick(() => {
+        const table = this.$refs.monitorTable?.$refs?.table;
+        table?.$forceUpdate?.();
+      });
+    },
+    formatDetailPrice(row) {
+      const raw = monitorHpFlags.isCg
+        ? row.Purchase_Price
+        : row.Supply_Price ?? row.supply_price;
+      const n = Number(raw);
+      return Number.isFinite(n) ? n.toFixed(4) : '';
+    },
     rowKey(row) {
       return `${row.Varietie_Code}_${row.contract_code || ''}_${row.Def_No_Pkg_Coefficient}`;
     },
@@ -434,23 +488,61 @@ export default {
       }
     },
     onMonitorSelectionChange(rows) {
-      this.selectedRowsPreview = (rows || []).slice(0, 5).map((r) => ({
-        DIY_STORAGE: r.Name || r.DIY_STORAGE,
-        Varietie_Code_New: r.Varietie_Code_New,
-        Varietie_Name: r.Varietie_Name,
-        APPROVAL_NUMBER: r.APPROVAL_NUMBER,
-        supplier_name: r.supplier_name
-      }));
       (rows || []).forEach((row) => this.ensurePlanMap(row));
-      if (this.loadPlanByVariety && rows?.length) {
-        this.pickingWhere.VarietieCode = rows[0].Varietie_Code_New || '';
-        this.reloadPicking();
-      }
-    },
-    onMonitorRowClick(row) {
-      this.currentMonitorRow = row;
-      this.pickingWhere.VarietieCode = row.Varietie_Code_New || '';
+      this.refreshMonitorRowClass();
+      if (!this.loadPlanByVariety) return;
+      // 勾选联动：有选中按首行品种；取消全选时清空关键字，避免残留旧编码
+      this.pickingWhere.VarietieCode = rows?.length ? rows[0].Varietie_Code_New || '' : '';
       this.reloadPicking();
+    },
+    async onMonitorRowClick(row) {
+      this.currentMonitorRow = row;
+      this.pickingWhere.VarietieCode = row?.Varietie_Code_New || '';
+      this.reloadPicking();
+      await this.loadCentralExtendPreview(row);
+    },
+    /** 库存列表重查后旧选中/品种联动失效，清空备货关键字与明细 */
+    resetPickingLinkage() {
+      this.currentMonitorRow = null;
+      this.selectedRowsPreview = [];
+      this.pickingWhere.VarietieCode = '';
+      this.selectedPlanNo = '';
+      this.selectedPlanSendState = '';
+      this.reloadPicking();
+      this.$refs.detailTable?.reload({ page: 1 });
+    },
+    async loadCentralExtendPreview(row) {
+      const code = row?.Varietie_Code;
+      if (!code) {
+        this.selectedRowsPreview = [];
+        return;
+      }
+      try {
+        const data = await getCentralExtend(code);
+        const json = data?.result;
+        if (!json || json === '') {
+          this.selectedRowsPreview = [];
+          return;
+        }
+        // 与老系统一致：替换为当前点击行扩展信息
+        this.selectedRowsPreview = [
+          {
+            DIY_STORAGE: '中心库',
+            Varietie_Code_New: json.Varietie_Code_New,
+            Varietie_Name: json.Varietie_Name,
+            Approval_Number: json.Approval_Number,
+            Registration_Issuing_Date: formatDate10(json.Registration_Issuing_Date),
+            Registration_Valid_Date: formatDate10(json.Registration_Valid_Date),
+            Supplier_Name: json.Supplier_Name,
+            Prod_Big_Class_Name: json.Prod_Big_Class_Name,
+            Mgmt_cat_Name: json.Mgmt_cat_Name,
+            Regulatory_Cat_Name: json.Regulatory_Cat_Name
+          }
+        ];
+      } catch (e) {
+        this.selectedRowsPreview = [];
+        this.$message.error(e.message || '加载扩展信息失败');
+      }
     },
     async loadStorageList() {
       try {
@@ -470,13 +562,28 @@ export default {
     },
     reloadMonitor() {
       this.$refs.monitorTable?.reload({ page: 1, where: this.filters });
+      // 仅在主动查询时清联动；翻页走 datasource 不清，避免打断当前品种筛选
+      this.resetPickingLinkage();
     },
     reloadPicking() {
       this.pickingWhere.STORAGE_ID = this.bhkqStorageId;
       this.$refs.pickingTable?.reload({ page: 1, where: this.pickingWhere });
     },
-    monitorDatasource({ page, limit }) {
-      return searchCentralMonitor(this.filters, page, limit)
+    monitorDatasource({ page, limit, order }) {
+      const where = { ...this.filters };
+      if (order?.sort) {
+        where.field = order.sort;
+        where.order =
+          order.order === 'descending'
+            ? 'desc'
+            : order.order === 'ascending'
+              ? 'asc'
+              : '';
+      } else {
+        where.field = '';
+        where.order = '';
+      }
+      return searchCentralMonitor(where, page, limit)
         .then((res) => {
           const list = res.result || [];
           list.forEach((row) => {
@@ -654,8 +761,6 @@ export default {
         if (data.code == 200) {
           this.$message.success(data.msg || '导入成功');
           this.reloadMonitor();
-          this.pickingWhere.VarietieCode = '';
-          this.reloadPicking();
         } else {
           this.$message.error(data.msg || '导入失败');
         }
@@ -783,14 +888,33 @@ export default {
   .text-danger {
     color: #f56c6c;
   }
-  :deep(.monitor-warn-1) {
+  :deep(.monitor-warn-1 > td.el-table__cell) {
     background-color: #f9d5d5 !important;
   }
-  :deep(.monitor-warn-2) {
+  :deep(.monitor-warn-2 > td.el-table__cell) {
     background-color: #f7f4a8 !important;
   }
-  :deep(.monitor-warn-3) {
+  :deep(.monitor-warn-3 > td.el-table__cell) {
     background-color: #a6e4f7 !important;
+  }
+  /* 勾选行高亮：左侧蓝条 + 浅蓝底，告警色行略加深以便仍可区分 */
+  :deep(.monitor-row-selected > td.el-table__cell) {
+    background-color: #d9ecff !important;
+  }
+  :deep(.monitor-row-selected > td.el-table__cell:first-child) {
+    box-shadow: inset 3px 0 0 #409eff;
+  }
+  :deep(.monitor-row-selected.monitor-warn-1 > td.el-table__cell) {
+    background-color: #f0b4b4 !important;
+  }
+  :deep(.monitor-row-selected.monitor-warn-2 > td.el-table__cell) {
+    background-color: #efe98a !important;
+  }
+  :deep(.monitor-row-selected.monitor-warn-3 > td.el-table__cell) {
+    background-color: #7fd4f0 !important;
+  }
+  :deep(.el-table__body tr.current-row > td.el-table__cell) {
+    background-color: #ecf5ff !important;
   }
 }
 </style>
