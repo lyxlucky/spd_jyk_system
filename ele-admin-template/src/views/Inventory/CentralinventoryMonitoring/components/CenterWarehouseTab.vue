@@ -490,16 +490,26 @@ export default {
     onMonitorSelectionChange(rows) {
       (rows || []).forEach((row) => this.ensurePlanMap(row));
       this.refreshMonitorRowClass();
-      if (this.loadPlanByVariety && rows?.length) {
-        this.pickingWhere.VarietieCode = rows[0].Varietie_Code_New || '';
-        this.reloadPicking();
-      }
+      if (!this.loadPlanByVariety) return;
+      // 勾选联动：有选中按首行品种；取消全选时清空关键字，避免残留旧编码
+      this.pickingWhere.VarietieCode = rows?.length ? rows[0].Varietie_Code_New || '' : '';
+      this.reloadPicking();
     },
     async onMonitorRowClick(row) {
       this.currentMonitorRow = row;
-      this.pickingWhere.VarietieCode = row.Varietie_Code_New || '';
+      this.pickingWhere.VarietieCode = row?.Varietie_Code_New || '';
       this.reloadPicking();
       await this.loadCentralExtendPreview(row);
+    },
+    /** 库存列表重查后旧选中/品种联动失效，清空备货关键字与明细 */
+    resetPickingLinkage() {
+      this.currentMonitorRow = null;
+      this.selectedRowsPreview = [];
+      this.pickingWhere.VarietieCode = '';
+      this.selectedPlanNo = '';
+      this.selectedPlanSendState = '';
+      this.reloadPicking();
+      this.$refs.detailTable?.reload({ page: 1 });
     },
     async loadCentralExtendPreview(row) {
       const code = row?.Varietie_Code;
@@ -552,6 +562,8 @@ export default {
     },
     reloadMonitor() {
       this.$refs.monitorTable?.reload({ page: 1, where: this.filters });
+      // 仅在主动查询时清联动；翻页走 datasource 不清，避免打断当前品种筛选
+      this.resetPickingLinkage();
     },
     reloadPicking() {
       this.pickingWhere.STORAGE_ID = this.bhkqStorageId;
@@ -749,8 +761,6 @@ export default {
         if (data.code == 200) {
           this.$message.success(data.msg || '导入成功');
           this.reloadMonitor();
-          this.pickingWhere.VarietieCode = '';
-          this.reloadPicking();
         } else {
           this.$message.error(data.msg || '导入失败');
         }
