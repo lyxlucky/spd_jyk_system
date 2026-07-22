@@ -7,7 +7,7 @@
     :visible="visible"
     :close-on-click-modal="false"
     custom-class="ele-dialog-form"
-    title="自定义新增"
+    title="授权品种目录"
     @update:visible="updateVisible"
   >
     <div class="">
