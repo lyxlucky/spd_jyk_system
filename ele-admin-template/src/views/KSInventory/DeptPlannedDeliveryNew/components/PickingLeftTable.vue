@@ -93,11 +93,12 @@ export default {
         where: { ...this.where, storageId: this.storageId }
       });
     },
-    /** 按关键字/品种编码刷新（计划行联动时传入 Varietie_Code_New） */
+    /** 按关键字/品种编码刷新；传 '' 清空；不传则保留当前关键字仅重查 */
     reloadByKeyword(keyword) {
-      if (keyword !== undefined && keyword !== null) {
-        this.where.keyword = keyword;
+      if (keyword !== undefined) {
+        this.where.keyword = keyword == null ? '' : String(keyword);
       }
+      this.current = null;
       this.reload();
     },
     datasource({ page, limit, where }) {
@@ -106,7 +107,7 @@ export default {
         page,
         limit || 30
       ).then((res) => ({
-        count: res.total,
+        count: Number(res.total) || 0,
         list: res.result || []
       }));
     },

@@ -432,7 +432,7 @@ export default {
     onStorageChange(val) {
       this.$emit('storage-change', val);
       this.reload();
-      this.$emit('reload-picking');
+      // 备货单清空由父级 onStorageChange / plan-data-change 统一处理
     },
     reload() {
       if (!this.localStorageId) return;
@@ -447,6 +447,10 @@ export default {
           return { ...row, Plan_Qty: planQty, _planQty: planQty };
         });
         this.tableRows = list;
+        // 计划表重查后原选中行失效，避免备货单仍按旧品种联动
+        this.currentRow = null;
+        this.selection = [];
+        this.$emit('plan-data-change', { list });
         return { count: res.total, list };
       });
     },
@@ -474,9 +478,7 @@ export default {
     // 对齐老系统 row 事件：点计划行按品种编码刷新下方备货单列表
     onPlanRowClick(row) {
       this.currentRow = row;
-      if (row?.Varietie_Code_New) {
-        this.$emit('plan-row-select', row);
-      }
+      this.$emit('plan-row-select', row || null);
     },
     openSpdRemark(row) {
       this.activeDtlId = row.Dtl_Id;
@@ -593,7 +595,7 @@ export default {
     },
     onStockUpSuccess() {
       this.reload();
-      this.$emit('reload-picking');
+      // 计划重查会触发 plan-data-change，父级会清空并刷新备货单
     },
     onBatchRemark() {
       if (!this.selection.length) {

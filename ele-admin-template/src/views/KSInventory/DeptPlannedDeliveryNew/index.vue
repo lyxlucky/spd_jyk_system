@@ -9,6 +9,7 @@
             :storage-list="storageList"
             @storage-change="onStorageChange"
             @reload-picking="reloadPicking"
+            @plan-data-change="onPlanDataChange"
             @plan-row-select="onPlanRowSelect"
           />
         </div>
@@ -81,7 +82,12 @@ export default {
     reloadPicking(keyword) {
       this.$refs.pickingLeft?.reloadByKeyword(keyword);
     },
-    /** 点击科室计划行 → 按品种编码刷新备货单列表（老系统联动） */
+    /** 计划表查询完成：清空旧联动（无数据时尤其要把旧备货单清掉） */
+    onPlanDataChange() {
+      this.reloadPicking('');
+      this.$refs.pickingRight?.clear();
+    },
+    /** 点击科室计划行 → 按当前行品种编码刷新备货单关键字与列表 */
     onPlanRowSelect(row) {
       const code = row?.Varietie_Code_New || '';
       this.reloadPicking(code);
