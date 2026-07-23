@@ -27,7 +27,8 @@ const highLowOpts = [
   { label: '低值', value: '0' },
   { label: '高值', value: '1' },
   { label: '试剂', value: '2' },
-  { label: '消毒', value: '3' }
+  { label: '消毒', value: '3' },
+  { label: '设备耗材', value: '4' }
 ];
 
 const highLowTwoOpts = [

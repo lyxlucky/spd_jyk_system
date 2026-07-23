@@ -1,4 +1,4 @@
-import request from '@/utils/request';
+﻿import request from '@/utils/request';
 import { TOKEN_STORE_NAME } from '@/config/setting';
 
 /**
@@ -6,6 +6,7 @@ import { TOKEN_STORE_NAME } from '@/config/setting';
  * @param {Object} data - 请求参数
  * @param {string} [data.page='1'] - 当前页码
  * @param {string} [data.limit='10'] - 每页显示条数
+ * @param {'department'|'material'} [data.queryMode] - 全景页服务端排序维度
  * @param {Object} [data.where] - 查询条件
  * @param {string} [data.where.DeptName] - 科室名称
  * @param {string} [data.where.varCode] - 品种编码
@@ -17,11 +18,52 @@ import { TOKEN_STORE_NAME } from '@/config/setting';
  * @returns {Promise<Object>} 返回查询结果
  * @throws {Error} 当请求失败时抛出错误
  */
+export function buildThirdStockInfoRequest(data = {}, token = '') {
+    const where = data.where || {};
+    return {
+        Token: token,
+        page: parseInt(data.page) || 1,
+        size: parseInt(data.limit) || 10,
+        queryMode: data.queryMode || '',
+        DeptCode: where.DeptCode || '',
+        DeptName: where.DeptName || '',
+        varCode: where.varCode || '',
+        varName: where.varName || '',
+        chargingCode: where.chargingCode || '',
+        spec: where.spec || '',
+        manufacter: where.manufacter || '',
+        prodRegistrationCode: where.prodRegistrationCode || '',
+        stockZero: where.stockZero || ''
+    };
+}
+
 export async function getThirdStockInfo(data) {
+    const requestData = buildThirdStockInfoRequest(
+        data,
+        sessionStorage.getItem(TOKEN_STORE_NAME)
+    );
+
+    const res = await request.post(`/PekingApplication/getThirdStockInfo`, requestData);
+
+    if (res.data.code === 200) {
+        return res.data;
+    }
+    return Promise.reject(res.data.msg);
+}
+
+/**
+ * 获取三级库全景查询的主维度列表。
+ * @param {Object} data - 查询参数
+ * @param {'department'|'material'} data.dimension - 主维度
+ * @param {Object} [data.where] - 筛选条件
+ * @returns {Promise<Object>} 返回科室或品种列表
+ */
+export async function getThirdStockDimensionOptions(data) {
     let requestData = {};
     requestData.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
     requestData.page = parseInt(data.page) || 1;
-    requestData.size = parseInt(data.limit) || 10;
+    requestData.size = parseInt(data.limit) || 20;
+    requestData.dimension = data.dimension || 'department';
     requestData.DeptName = data.where?.DeptName || '';
     requestData.varCode = data.where?.varCode || '';
     requestData.varName = data.where?.varName || '';
@@ -29,9 +71,8 @@ export async function getThirdStockInfo(data) {
     requestData.spec = data.where?.spec || '';
     requestData.manufacter = data.where?.manufacter || '';
     requestData.prodRegistrationCode = data.where?.prodRegistrationCode || '';
-    requestData.stockZero = data.where?.stockZero || '';
 
-    const res = await request.post(`/PekingApplication/getThirdStockInfo`, requestData);
+    const res = await request.post(`/PekingApplication/getThirdStockDimensionOptions`, requestData);
 
     if (res.data.code === 200) {
         return res.data;
@@ -58,6 +99,12 @@ export async function getThirdStockInfoFlow(data) {
     requestData.chargingCode = data.where?.chargingCode;
     requestData.startTime = data.where?.startTime;
     requestData.endTime = data.where?.endTime;
+    requestData.flowDirection = data.where?.flowDirection;
+    requestData.origingCode = data.where?.origingCode;
+    requestData.barcodeNumber = data.where?.barcodeNumber;
+    requestData.consumer = data.where?.consumer;
+    requestData.patientNumber = data.where?.patientNumber;
+    requestData.hospitalizationNumber = data.where?.hospitalizationNumber;
     requestData.page = parseInt(data.page) || 1;
     requestData.size = parseInt(data.limit) || 10;
 

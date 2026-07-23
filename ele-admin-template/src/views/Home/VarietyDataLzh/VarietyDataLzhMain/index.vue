@@ -946,6 +946,7 @@ export default {
             if (v == '0') return '低值';
             if (v == '2') return '试剂';
             if (v == '3') return '消毒';
+            if (v == '4') return '设备耗材';
             return v ?? '';
           }
         },
