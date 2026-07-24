@@ -141,6 +141,11 @@ export function getMenuRoutes(menus, homePath) {
       meta: { title: '科室消耗查询' }
     });
     routes.push({
+      path: '/KSInventory/KSConsumeQueryByDept',
+      component: () => import('@/views/KSInventory/KSConsumeQueryByDept/index.vue'),
+      meta: { title: '科室消耗查询' }
+    });
+    routes.push({
       path: '/KSInventory/ApplyPlan',
       component: () => import('@/views/KSInventory/ApplyPlan/index.vue'),
       meta: { title: '申领计划管理' }
