@@ -7,21 +7,24 @@
     custom-class="not-to-dept-dialog"
     @update:visible="updateVisible"
   >
-    <el-form :inline="true" size="mini" class="filter-form">
+    <el-form :inline="true" size="mini" class="filter-form" @submit.native.prevent="reload">
       <el-form-item>
-        <el-input v-model="form.varietie_code" placeholder="品种编码/名称" clearable />
+        <el-input v-model="form.varietie_code" placeholder="品种编码/名称" clearable @keyup.enter.native="reload" />
       </el-form-item>
       <el-form-item>
-        <el-input v-model="form.stock_up_plan_no" placeholder="备货计划单号" clearable />
+        <el-input v-model="form.stock_up_plan_no" placeholder="备货计划单号" clearable @keyup.enter.native="reload" />
       </el-form-item>
       <el-form-item>
-        <el-input v-model="form.supplier_name" placeholder="供应商名称" clearable />
+        <el-input v-model="form.supplier_name" placeholder="供应商名称" clearable @keyup.enter.native="reload" />
       </el-form-item>
       <el-form-item>
-        <el-input v-model="form.Manufacturing_Ent_Name" placeholder="生产企业" clearable />
+        <el-input v-model="form.Manufacturing_Ent_Name" placeholder="生产企业" clearable @keyup.enter.native="reload" />
       </el-form-item>
       <el-form-item>
-        <el-input v-model="form.Specification_Or_Type" placeholder="规格型号" clearable />
+        <el-input v-model="form.Specification_Or_Type" placeholder="规格型号" clearable @keyup.enter.native="reload" />
+      </el-form-item>
+      <el-form-item>
+        <el-input v-model="form.creator" placeholder="备货人" clearable @keyup.enter.native="reload" />
       </el-form-item>
       <el-form-item label="院区">
         <el-select v-model="form.storage" clearable style="width: 120px">
@@ -51,8 +54,9 @@
         />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="reload">查询</el-button>
+        <el-button type="primary" native-type="submit">查询</el-button>
         <el-button type="primary" plain :loading="exporting" @click="exportExcel">导出excel</el-button>
+        <el-button type="primary" @click="handleBatchRemark">批量备注</el-button>
         <el-button type="warning" @click="handleUpStockDelSame">更新备货数为收货数</el-button>
       </el-form-item>
     </el-form>
@@ -67,6 +71,45 @@
       :page-sizes="[9, 30, 60, 90, 150, 300]"
       @selection-change="(rows) => (selection = rows)"
     />
+
+    <el-dialog
+      title="批量添加备注"
+      :visible.sync="batchRemarkVisible"
+      width="500px"
+      append-to-body
+    >
+      <el-form label-width="60px" size="mini">
+        <el-form-item label="科室">
+          <el-select
+            v-model="batchRemarkDept"
+            filterable
+            clearable
+            placeholder="请选择科室（可不选）"
+            style="width: 100%"
+            @change="onBatchRemarkDeptChange"
+          >
+            <el-option
+              v-for="item in deptList"
+              :key="item.Dept_Two_Code"
+              :label="item.Dept_Two_Name"
+              :value="item.Dept_Two_Code"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="备注">
+          <el-input
+            v-model="batchRemarkText"
+            type="textarea"
+            rows="4"
+            placeholder="请输入备注"
+          />
+        </el-form-item>
+      </el-form>
+      <span slot="footer">
+        <el-button size="mini" @click="batchRemarkVisible = false">取消</el-button>
+        <el-button size="mini" type="primary" @click="submitBatchRemark">确定</el-button>
+      </span>
+    </el-dialog>
   </ele-modal>
 </template>
 
@@ -74,7 +117,9 @@
 import {
   getStockUpNotVarInfo,
   getStorageList,
-  upStockDelSame
+  upStockDelSame,
+  batchUpDelRemarks,
+  getDeptTwoBasicInfoAll
 } from '@/api/Task/FollowingGoodsPlan';
 import { utils, writeFile } from 'xlsx';
 
@@ -91,6 +136,7 @@ export default {
         supplier_name: '',
         Manufacturing_Ent_Name: '',
         Specification_Or_Type: '',
+        creator: '',
         storage: '',
         start_time: '',
         end_time: ''
@@ -98,6 +144,10 @@ export default {
       storageList: [],
       selection: [],
       exporting: false,
+      batchRemarkVisible: false,
+      batchRemarkDept: '',
+      batchRemarkText: '',
+      deptList: [],
       columns: [
         { type: 'selection', width: 45, fixed: 'left' },
         { label: '备货人', prop: 'CREATOR', width: 80, align: 'center' },
@@ -193,6 +243,67 @@ export default {
         }
         return { list: [], count: 0 };
       });
+    },
+    handleBatchRemark() {
+      if (this.selection.length === 0) {
+        this.$message.warning('请至少选择一行数据');
+        return;
+      }
+      this.batchRemarkDept = '';
+      this.batchRemarkText = '';
+      getDeptTwoBasicInfoAll()
+        .then((res) => {
+          try {
+            const parsed =
+              typeof res.data === 'string' ? JSON.parse(res.data) : res.data;
+            let list = Array.isArray(parsed) ? parsed : parsed.result || [];
+            if (this.form.storage) {
+              list = list.filter(
+                (item) => String(item.STORAGE_ID) === String(this.form.storage)
+              );
+            }
+            this.deptList = list;
+          } catch (e) {
+            this.deptList = [];
+          }
+          this.batchRemarkVisible = true;
+        })
+        .catch(() => this.$message.error('加载科室失败'));
+    },
+    onBatchRemarkDeptChange(deptCode) {
+      if (!deptCode) return;
+      const dept = this.deptList.find((d) => d.Dept_Two_Code === deptCode);
+      if (dept?.Dept_Two_Name) {
+        this.batchRemarkText = dept.Dept_Two_Name;
+      }
+    },
+    submitBatchRemark() {
+      if (!this.batchRemarkText) {
+        this.$message.warning('请输入备注');
+        return;
+      }
+      const dept = this.deptList.find(
+        (d) => d.Dept_Two_Code === this.batchRemarkDept
+      );
+      const loading = this.$messageLoading('处理中...');
+      batchUpDelRemarks({
+        IDS: this.selection.map((r) => r.ID).join(','),
+        REMARKS: this.batchRemarkText,
+        DEPT_TWO_CODE: this.batchRemarkDept || '',
+        DEPT_TWO_NAME: dept?.Dept_Two_Name || ''
+      })
+        .then((res) => {
+          const data = res.data;
+          if (data.code == 200) {
+            this.$message.success(data.msg || '操作成功');
+            this.batchRemarkVisible = false;
+            this.reload();
+          } else {
+            this.$message.warning(data.msg);
+          }
+        })
+        .catch(() => this.$message.error('操作失败'))
+        .finally(() => loading.close());
     },
     handleUpStockDelSame() {
       if (this.selection.length === 0) {

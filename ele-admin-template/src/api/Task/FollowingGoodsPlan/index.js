@@ -250,6 +250,7 @@ export function getStockUpNotVarInfo(data) {
       state: where.state || '',
       remark: where.remark || '',
       storage: where.storage || '',
+      creator: where.creator || '',
       order_pc: where.order_pc || 'desc',
       Token: token()
     }
