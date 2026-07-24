@@ -7,7 +7,6 @@
           clearable
           placeholder="编码/名称"
           style="width: 140px"
-          @keyup.enter.native="doSearch"
         />
       </el-form-item>
       <el-form-item label="供应商">
@@ -16,7 +15,6 @@
           clearable
           placeholder="供应商"
           style="width: 180px"
-          @keyup.enter.native="doSearch"
         />
       </el-form-item>
       <el-form-item label="发票">
@@ -25,7 +23,6 @@
           clearable
           placeholder="发票号"
           style="width: 120px"
-          @keyup.enter.native="doSearch"
         />
       </el-form-item>
       <el-form-item label="月结开始">
@@ -47,7 +44,6 @@
           clearable
           placeholder="yyyyMM"
           style="width: 100px"
-          @keyup.enter.native="doSearch"
         />
       </el-form-item>
       <el-form-item v-if="flags.isBd" label="微讯通">
@@ -114,7 +110,7 @@
         <el-date-picker v-model="where.spEndDate" type="date" value-format="yyyy-MM-dd" style="width: 130px" />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" icon="el-icon-search" native-type="submit" @click="doSearch">查询</el-button>
+        <el-button type="primary" icon="el-icon-search" native-type="submit">查询</el-button>
         <el-button @click="reset">重置</el-button>
       </el-form-item>
     </el-form>

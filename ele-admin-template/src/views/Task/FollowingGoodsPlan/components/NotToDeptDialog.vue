@@ -9,22 +9,22 @@
   >
     <el-form :inline="true" size="mini" class="filter-form" @submit.native.prevent="reload">
       <el-form-item>
-        <el-input v-model="form.varietie_code" placeholder="品种编码/名称" clearable @keyup.enter.native="reload" />
+        <el-input v-model="form.varietie_code" placeholder="品种编码/名称" clearable />
       </el-form-item>
       <el-form-item>
-        <el-input v-model="form.stock_up_plan_no" placeholder="备货计划单号" clearable @keyup.enter.native="reload" />
+        <el-input v-model="form.stock_up_plan_no" placeholder="备货计划单号" clearable />
       </el-form-item>
       <el-form-item>
-        <el-input v-model="form.supplier_name" placeholder="供应商名称" clearable @keyup.enter.native="reload" />
+        <el-input v-model="form.supplier_name" placeholder="供应商名称" clearable />
       </el-form-item>
       <el-form-item>
-        <el-input v-model="form.Manufacturing_Ent_Name" placeholder="生产企业" clearable @keyup.enter.native="reload" />
+        <el-input v-model="form.Manufacturing_Ent_Name" placeholder="生产企业" clearable />
       </el-form-item>
       <el-form-item>
-        <el-input v-model="form.Specification_Or_Type" placeholder="规格型号" clearable @keyup.enter.native="reload" />
+        <el-input v-model="form.Specification_Or_Type" placeholder="规格型号" clearable />
       </el-form-item>
       <el-form-item>
-        <el-input v-model="form.creator" placeholder="备货人" clearable @keyup.enter.native="reload" />
+        <el-input v-model="form.creator" placeholder="备货人" clearable />
       </el-form-item>
       <el-form-item label="院区">
         <el-select v-model="form.storage" clearable style="width: 120px">

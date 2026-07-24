@@ -156,6 +156,11 @@ export function getMenuRoutes(menus, homePath) {
       meta: { title: '发票签收' }
     });
     routes.push({
+      path: '/KSInventory/FinancialSend',
+      component: () => import('@/views/KSInventory/FinancialSend/index.vue'),
+      meta: { title: '华南发票发送' }
+    });
+    routes.push({
       path: '/Inventory/CentreBankTakeGoogs',
       component: () => import('@/views/Inventory/CentreBankTakeGoods/index.vue'),
       meta: { title: '收货作业' }
