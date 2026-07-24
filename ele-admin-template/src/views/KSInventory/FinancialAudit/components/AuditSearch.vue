@@ -1,14 +1,32 @@
 <template>
   <div class="audit-search">
-    <el-form size="mini" inline @submit.native.prevent>
+    <el-form size="mini" inline @submit.native.prevent="doSearch">
       <el-form-item label="品种">
-        <el-input v-model="where.VarietieCode" clearable placeholder="编码/名称" style="width: 140px" />
+        <el-input
+          v-model="where.VarietieCode"
+          clearable
+          placeholder="编码/名称"
+          style="width: 140px"
+          @keyup.enter.native="doSearch"
+        />
       </el-form-item>
       <el-form-item label="供应商">
-        <el-input v-model="where.Supplier" clearable placeholder="供应商" style="width: 180px" />
+        <el-input
+          v-model="where.Supplier"
+          clearable
+          placeholder="供应商"
+          style="width: 180px"
+          @keyup.enter.native="doSearch"
+        />
       </el-form-item>
       <el-form-item label="发票">
-        <el-input v-model="where.Monthbillnum" clearable placeholder="发票号" style="width: 120px" />
+        <el-input
+          v-model="where.Monthbillnum"
+          clearable
+          placeholder="发票号"
+          style="width: 120px"
+          @keyup.enter.native="doSearch"
+        />
       </el-form-item>
       <el-form-item label="月结开始">
         <el-date-picker v-model="where.StartDate" type="month" value-format="yyyy-MM" placeholder="yyyy-MM" style="width: 120px" />
@@ -24,7 +42,13 @@
         </el-select>
       </el-form-item>
       <el-form-item v-if="flags.isBd" label="微讯通月份">
-        <el-input v-model="where.SEND_WXT_MARK" clearable placeholder="yyyyMM" style="width: 100px" />
+        <el-input
+          v-model="where.SEND_WXT_MARK"
+          clearable
+          placeholder="yyyyMM"
+          style="width: 100px"
+          @keyup.enter.native="doSearch"
+        />
       </el-form-item>
       <el-form-item v-if="flags.isBd" label="微讯通">
         <el-select v-model="where.isSendWxt" style="width: 120px">
@@ -48,7 +72,7 @@
         </el-select>
       </el-form-item>
     </el-form>
-    <el-form size="mini" inline @submit.native.prevent>
+    <el-form size="mini" inline @submit.native.prevent="doSearch">
       <el-form-item label="阳光订单">
         <el-select v-model="where.isYG" style="width: 90px">
           <el-option label="全部" value="" />
@@ -90,7 +114,7 @@
         <el-date-picker v-model="where.spEndDate" type="date" value-format="yyyy-MM-dd" style="width: 130px" />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" icon="el-icon-search" @click="$emit('search', getWhere())">查询</el-button>
+        <el-button type="primary" icon="el-icon-search" native-type="submit" @click="doSearch">查询</el-button>
         <el-button @click="reset">重置</el-button>
       </el-form-item>
     </el-form>
@@ -155,9 +179,12 @@ export default {
     getWhere() {
       return { ...this.where };
     },
+    doSearch() {
+      this.$emit('search', this.getWhere());
+    },
     reset() {
       this.where = defaultWhere();
-      this.$emit('search', this.getWhere());
+      this.doSearch();
     }
   }
 };

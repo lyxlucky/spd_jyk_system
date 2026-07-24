@@ -1,14 +1,6 @@
 <template>
   <div class="ele-body spd-page financial-audit">
     <el-card shadow="never">
-      <div class="summary-bar">
-        <span>总金额: <b>{{ summary.sumMoney }}</b></span>
-        <span>已审批金额: <b>{{ summary.examineMoney }}</b></span>
-        <span>未审批金额: <b>{{ summary.disExamineMoney }}</b></span>
-        <span>总数量: <b>{{ summary.allSumCount }}</b></span>
-        <span>当前页数量: <b>{{ summary.pageCount }}</b></span>
-        <span>当前页金额: <b>{{ summary.pageMoney }}</b></span>
-      </div>
       <AuditSearch
         ref="search"
         :loading-fpqs="loadingFpqs"
@@ -59,6 +51,18 @@
           />
         </template>
       </ele-pro-table>
+      <div class="summary-bar">
+        <div class="summary-left">
+          <span>当前页数量: <b>{{ summary.pageCount }}</b></span>
+          <span>当前页金额: <b>{{ summary.pageMoney }}</b></span>
+        </div>
+        <div class="summary-right">
+          <span>总数量: <b>{{ summary.allSumCount }}</b></span>
+          <span>总金额: <b>{{ summary.sumMoney }}</b></span>
+          <span>已审批金额: <b>{{ summary.examineMoney }}</b></span>
+          <span>未审批金额: <b>{{ summary.disExamineMoney }}</b></span>
+        </div>
+      </div>
     </el-card>
     <InvoiceDetailDialog
       :visible.sync="detailVisible"
@@ -97,7 +101,7 @@ export default {
   data() {
     return {
       columns: getAuditColumns(),
-      tableHeight: 'calc(100vh - 420px)',
+      tableHeight: 'calc(100vh - 400px)',
       selection: [],
       summary: {
         sumMoney: '0.00',
@@ -374,9 +378,18 @@ export default {
 .financial-audit .summary-bar {
   display: flex;
   flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
   gap: 16px;
-  margin-bottom: 12px;
+  margin-top: 8px;
+  padding: 6px 4px;
   font-size: 13px;
+}
+.financial-audit .summary-left,
+.financial-audit .summary-right {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
 }
 .invoice-thumb {
   width: 24px;
