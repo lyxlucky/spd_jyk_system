@@ -113,7 +113,7 @@
             >
               查看所有合同
             </el-button>
-            <el-button size="mini" @click="openImport('contractMain')">导入合同</el-button>
+            <ContractImportButton label="导入合同" template-type="contractMain" @done="onImportDone('contractMain')" />
             <el-button size="mini" type="danger" :disabled="!currentContract" @click="onDeleteContract">
               删除
             </el-button>
@@ -200,14 +200,26 @@
           中七更新合同明细
         </el-button>
         <el-button size="mini" :disabled="!authSelection.length" @click="twoSupVisible = true">选择授权二级供应商</el-button>
-        <el-button size="mini" @click="openImport('twoSupplier')">导入授权二级供应商</el-button>
+        <ContractImportButton label="导入授权二级供应商" template-type="twoSupplier" @done="onImportDone('twoSupplier')" />
         <el-button size="mini" :disabled="!currentAuthRow" @click="openBatch('lcNum')">修改临采数量</el-button>
         <el-button size="mini" :disabled="!authSelection.length" @click="openBatch('varType')">修改品种类型</el-button>
         <el-button size="mini" @click="onStopConWithNoVar">停用无启用明细合同</el-button>
-        <el-button size="mini" @click="openImport('contractDetail')">导入</el-button>
-        <el-button size="mini" @click="openImport('contractDetailWithoutAuth')">导入(无授权到期)</el-button>
-        <el-button size="mini" @click="openImport('contractExtend')">导入原结束/延期</el-button>
-        <el-button size="mini" @click="openImport('contractAuditMark')">导入合同明细备注</el-button>
+        <ContractImportButton label="导入" template-type="contractDetail" @done="onImportDone('contractDetail')" />
+        <ContractImportButton
+          label="导入(无授权到期)"
+          template-type="contractDetailWithoutAuth"
+          @done="onImportDone('contractDetailWithoutAuth')"
+        />
+        <ContractImportButton
+          label="导入原结束/延期"
+          template-type="contractExtend"
+          @done="onImportDone('contractExtend')"
+        />
+        <ContractImportButton
+          label="导入合同明细备注"
+          template-type="contractAuditMark"
+          @done="onImportDone('contractAuditMark')"
+        />
       </div>
 
       <ele-pro-table
@@ -293,7 +305,6 @@
       @done="reloadAuth"
     />
     <TwoSupDialog :visible.sync="twoSupVisible" :auth-rows="authSelection" @done="reloadAuth" />
-    <ImportChooserDialog :visible.sync="importVisible" :template-type="importType" @done="onImportDone" />
     <AllContractsDialog :visible.sync="allContractsVisible" />
     <AuthContractInfoDialog :visible.sync="authContractInfoVisible" />
   </div>
@@ -309,7 +320,7 @@ import ModifyDateDialog from './components/ModifyDateDialog.vue';
 import BatchFieldDialog from './components/BatchFieldDialog.vue';
 import CopyAuthDialog from './components/CopyAuthDialog.vue';
 import TwoSupDialog from './components/TwoSupDialog.vue';
-import ImportChooserDialog from './components/ImportChooserDialog.vue';
+import ContractImportButton from './components/ContractImportButton.vue';
 import AllContractsDialog from './components/AllContractsDialog.vue';
 import AuthContractInfoDialog from './components/AuthContractInfoDialog.vue';
 import {
@@ -356,7 +367,7 @@ export default {
     BatchFieldDialog,
     CopyAuthDialog,
     TwoSupDialog,
-    ImportChooserDialog,
+    ContractImportButton,
     AllContractsDialog,
     AuthContractInfoDialog
   },
@@ -397,8 +408,6 @@ export default {
       batchType: 'extend',
       copyAuthVisible: false,
       twoSupVisible: false,
-      importVisible: false,
-      importType: 'contractMain',
       allContractsVisible: false,
       authContractInfoVisible: false
     };
@@ -538,13 +547,9 @@ export default {
         this.onContractChange(this.currentContract);
       }
     },
-    openImport(type) {
-      this.importType = type;
-      this.importVisible = true;
-    },
-    onImportDone() {
+    onImportDone(type) {
       this.reloadAuth();
-      if (this.importType === 'contractMain') this.loadContracts();
+      if (type === 'contractMain') this.loadContracts();
     },
     openModifyDate(mode, row) {
       this.modifyDateMode = mode;
