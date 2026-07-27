@@ -1,5 +1,5 @@
 import request from '@/utils/request';
-import { formdataify } from '@/utils/formdataify';
+import { formdataify, toUrlEncodedBody } from '@/utils/formdataify';
 import { TOKEN_STORE_NAME, HOME_HP } from '@/config/setting';
 
 function token() {
@@ -158,9 +158,13 @@ export async function getStorageList() {
   return [];
 }
 
-/** 结算状态来源（北大） */
+/** 结算状态来源（北大）；与老页 $.ajax POST 一致用 urlencoded，multipart 无法绑定 ThirdStockInfo */
 export async function getJsStates() {
-  const res = await request.post('/PekingApplication/getTheJcStates', formdataify({ Token: token() }));
+  const res = await request.post(
+    '/PekingApplication/getTheJcStates',
+    toUrlEncodedBody({ Token: token() }),
+    { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
+  );
   if (res.data?.code == 200) return res.data.data || [];
   return [];
 }

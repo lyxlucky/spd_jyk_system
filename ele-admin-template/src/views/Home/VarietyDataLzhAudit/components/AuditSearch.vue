@@ -20,6 +20,7 @@
                 <el-option label="低值" value="0" />
                 <el-option label="试剂" value="2" />
                 <el-option label="消毒" value="3" />
+                <el-option label="设备耗材" value="4" />
               </el-select>
             </el-form-item>
 
