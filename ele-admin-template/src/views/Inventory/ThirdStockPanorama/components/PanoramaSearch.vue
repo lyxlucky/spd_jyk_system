@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <section class="panorama-search spd-panel spd-panel--search">
     <div class="spd-panel__head panorama-search__head">
       <span>查询条件</span>
@@ -70,6 +70,17 @@
             @keyup.enter.native="$emit('search')"
           />
         </el-form-item>
+        <el-form-item label="统计时间">
+          <el-date-picker
+            v-model="statDateRange"
+            type="daterange"
+            value-format="yyyy-MM-dd"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            style="width: 240px"
+          />
+        </el-form-item>
         <el-form-item class="panorama-search__actions">
           <el-button type="primary" icon="el-icon-search" :loading="loading" @click="$emit('search')">
             查询
@@ -90,7 +101,9 @@
       chargingCode: '',
       spec: '',
       manufacter: '',
-      prodRegistrationCode: ''
+      prodRegistrationCode: '',
+      startTime: '2024-03-01',
+      endTime: ''
     };
   }
 
@@ -111,8 +124,17 @@
         set(value) {
           this.$emit('mode-change', value);
         }
+      },
+      statDateRange: {
+        get() {
+          return [this.form.startTime, this.form.endTime];
+        },
+        set(value) {
+          this.form.startTime = value?.[0] || '';
+          this.form.endTime = value?.[1] || '';
+        }
       }
-    },
+    }, 
     methods: {
       getWhere() {
         return { ...this.form };

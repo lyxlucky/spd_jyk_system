@@ -408,6 +408,20 @@
             minWidth: 100
           },
           {
+            prop: 'IN_STOCK_TOTAL_QTY',
+            label: '入库总数量',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 120
+          },
+          {
+            prop: 'HIS_CHARGE_TOTAL_QTY',
+            label: 'HIS收费总数',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 120
+          },
+          {
             prop: 'STORAGE_TYPE',
             label: '入库类型',
             align: 'center',
@@ -780,6 +794,8 @@
                 '散货计费数量',
                 '定数包计费数量',
                 '入库数量',
+                '入库总数量',
+                'HIS收费总数',
                 '库存数量'
               ];
               const dataArray = [headers];
@@ -801,6 +817,8 @@
                   d.JF_QTY || '',
                   d.JF_DEF_QTY || '',
                   d.KS_QTY || '',
+                  d.IN_STOCK_TOTAL_QTY || '',
+                  d.HIS_CHARGE_TOTAL_QTY || '',
                   ksQtyTotal || ''
                 ]);
               });

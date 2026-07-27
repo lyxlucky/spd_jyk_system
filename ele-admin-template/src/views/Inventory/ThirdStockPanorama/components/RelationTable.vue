@@ -54,6 +54,8 @@
             <span class="relation-table__qty">{{ calcCurrentStock(row) }}</span>
           </template>
         </el-table-column>
+        <el-table-column prop="IN_STOCK_TOTAL_QTY" label="入库总数量" width="116" align="right" />
+        <el-table-column prop="HIS_CHARGE_TOTAL_QTY" label="HIS收费总数" width="116" align="right" />
         <el-table-column label="入库类型" width="102" align="center">
           <template slot-scope="{ row }">{{ formatStorageType(row.STORAGE_TYPE) }}</template>
         </el-table-column>

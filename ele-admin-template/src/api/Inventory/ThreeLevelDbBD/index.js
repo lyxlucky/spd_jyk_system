@@ -33,7 +33,9 @@ export function buildThirdStockInfoRequest(data = {}, token = '') {
         spec: where.spec || '',
         manufacter: where.manufacter || '',
         prodRegistrationCode: where.prodRegistrationCode || '',
-        stockZero: where.stockZero || ''
+        stockZero: where.stockZero || '',
+        startTime: where.startTime || '',
+        endTime: where.endTime || ''
     };
 }
 
