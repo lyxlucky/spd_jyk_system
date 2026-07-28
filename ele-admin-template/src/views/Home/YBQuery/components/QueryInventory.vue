@@ -21,13 +21,16 @@
                 :selection.sync="selection"
                 :initLoad="false"
             >
+                <template #state="scope">
+                    <div :class="stateColorMap[scope.row.ybstate_cshpc]">{{stateMap[scope.row.ybstate_cshpc]}}</div>
+                </template>
             </ele-pro-table>
         </div>
     </div>
 </template>
 <script>
 import YBQueryFilter from './Filter.vue';
-import { pageSize, pageSizes, inventoryColumns } from '../constants';
+import { pageSize, pageSizes, stateMap, stateColorMap, inventoryColumns } from '../constants';
 import { GetYB3501List } from '@/api/Home/YBQuery';
 export default {
     name: 'QueryInventory',
@@ -38,6 +41,8 @@ export default {
         return {
             pageSize,
             pageSizes,
+            stateMap,
+            stateColorMap,
             inventoryColumns,
             selection: [],
             successCount: 0,
@@ -83,12 +88,12 @@ export default {
         div {
             padding: 0 6px;
         }
-        .success {
-            color: #059257;
-        }
-        .fail {
-            color: #f56c6c;
-        }
     }
+}
+.success {
+    color: #059257;
+}
+.fail {
+    color: #f56c6c;
 }
 </style>

@@ -1,5 +1,13 @@
 export const pageSize = 20;
 export const pageSizes = [20, 50, 100, 200];
+export const stateMap = {
+  1: '成功',
+  2: '失败'
+};
+export const stateColorMap = {
+  1: 'success',
+  2: 'fail'
+};
 export const inventoryColumns = [
   {
     columnKey: 'selection',
@@ -77,6 +85,7 @@ export const inventoryColumns = [
     showOverflowTooltip: true
   },
   {
+    slot: 'state',
     prop: 'ybstate_cshpc',
     label: '状态',
     width: 80,
@@ -154,7 +163,13 @@ export const outboundColumns = [
     width: 100,
     showOverflowTooltip: true
   },
-  { prop: 'ybstate_bg', label: '状态', width: 80, showOverflowTooltip: true }
+  {
+    slot: 'state',
+    prop: 'ybstate_bg',
+    label: '状态',
+    width: 80,
+    showOverflowTooltip: true
+  }
 ];
 export const procurementColumns = [
   {
@@ -246,6 +261,7 @@ export const procurementColumns = [
   },
   { prop: 'udi', label: 'UDI码', width: 150, showOverflowTooltip: true },
   {
+    slot: 'state',
     prop: 'ybbj_pc',
     label: '状态',
     width: 80,
@@ -342,7 +358,13 @@ export const returnColumns = [
     showOverflowTooltip: true
   },
   { prop: 'udi', label: 'UDI码', width: 150, showOverflowTooltip: true },
-  { prop: 'ybbj_pc', label: '状态', width: 80, showOverflowTooltip: true }
+  {
+    slot: 'state',
+    prop: 'ybbj_pc',
+    label: '状态',
+    width: 80,
+    showOverflowTooltip: true
+  }
 ];
 export const warehousingColumns = [
   {
@@ -415,5 +437,11 @@ export const warehousingColumns = [
     width: 100,
     showOverflowTooltip: true
   },
-  { prop: 'ybstate_bg', label: '状态', width: 80, showOverflowTooltip: true }
+  {
+    slot: 'state',
+    prop: 'ybstate_bg',
+    label: '状态',
+    width: 80,
+    showOverflowTooltip: true
+  }
 ];
