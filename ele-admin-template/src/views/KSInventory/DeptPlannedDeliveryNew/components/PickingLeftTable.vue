@@ -1,6 +1,9 @@
 <template>
   <div class="picking-left picking-compact-table">
-    <div class="sub-panel-head spd-sub-panel__head">备货单列表</div>
+    <div class="sub-panel-head spd-sub-panel__head spd-sub-panel__head--split">
+      <span>备货单列表</span>
+      <span class="picking-total">共 {{ pickingTotal }} 条</span>
+    </div>
     <el-form size="mini" inline class="filter-row" @submit.native.prevent>
       <el-form-item>
         <el-input v-model="where.date" clearable placeholder="YYYY-MM" style="width: 100px" />
@@ -31,13 +34,18 @@
     <ele-pro-table
       ref="table"
       size="mini"
-      height="240px"
+      height="200px"
       highlight-current-row
       :init-load="false"
+      :need-page="true"
+      :page-size="10"
+      :page-sizes="[10, 30, 60, 90, 150, 300]"
+      layout="total, sizes, prev, pager, next, jumper"
+      :hide-on-single-page="false"
       :toolkit="[]"
       :columns="columns"
       :datasource="datasource"
-      cache-key="deptPlannedDeliveryNewPickingLeft"
+      cache-key="deptPlannedDeliveryNewPickingLeftV2"
       @current-change="onCurrentChange"
       @row-click="onRowClick"
     >
@@ -73,7 +81,8 @@ export default {
       columns: buildPickingListColumns(),
       current: null,
       remarkVisible: false,
-      remarkPlanNo: ''
+      remarkPlanNo: '',
+      pickingTotal: 0
     };
   },
   watch: {
@@ -102,14 +111,19 @@ export default {
       this.reload();
     },
     datasource({ page, limit, where }) {
+      // 对齐老系统：默认每页 10，可选 10/30/60/90/150/300
       return getPickingList(
         { ...where, storageId: this.storageId },
-        page,
-        limit || 30
-      ).then((res) => ({
-        count: Number(res.total) || 0,
-        list: res.result || []
-      }));
+        page || 1,
+        limit || 10
+      ).then((res) => {
+        const count = Number(res.total) || 0;
+        this.pickingTotal = count;
+        return {
+          count,
+          list: res.result || []
+        };
+      });
     },
     onCurrentChange(row) {
       // 仅同步高亮；明细加载走 row-click，避免重复请求
@@ -137,6 +151,16 @@ export default {
   margin-bottom: 8px;
   padding-bottom: 6px;
   border-bottom: 1px solid #ebeef5;
+}
+.spd-sub-panel__head--split {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.picking-total {
+  font-size: 12px;
+  font-weight: normal;
+  color: #409eff;
 }
 .filter-row {
   margin-bottom: 8px;

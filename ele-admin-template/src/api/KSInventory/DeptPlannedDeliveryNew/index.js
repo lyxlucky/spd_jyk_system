@@ -66,7 +66,7 @@ export async function searchDeptPlanMsg(where = {}) {
   return unwrapRes(res);
 }
 
-export async function getPickingList(where = {}, page = 1, size = 30) {
+export async function getPickingList(where = {}, page = 1, size = 10) {
   const formatData = {
     Token: token(),
     VarietieCode: where.keyword || '',
