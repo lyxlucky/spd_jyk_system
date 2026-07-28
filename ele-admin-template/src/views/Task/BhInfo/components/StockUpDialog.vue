@@ -12,22 +12,31 @@
       <el-col :span="6">
         <el-table
           ref="supTable"
-          :data="suppliers"
+          :data="pagedSuppliers"
           size="mini"
           border
-          height="500"
+          height="460"
           highlight-current-row
           @row-click="handleSupClick"
           @selection-change="(rows) => (checkedSuppliers = rows)"
         >
-          <el-table-column type="selection" width="40" />
+          <el-table-column type="selection" width="40" align="center" />
           <el-table-column prop="Supplier_Name" label="供应商名称" min-width="120" show-overflow-tooltip />
           <el-table-column prop="Supplier_Code" label="编码" width="60" />
           <el-table-column prop="Name" label="收货院区" width="80" show-overflow-tooltip />
         </el-table>
+        <el-pagination
+          class="stock-up-pager"
+          small
+          layout="total, sizes, prev, pager, next"
+          :total="suppliers.length"
+          :current-page.sync="supPage"
+          :page-size.sync="supPageSize"
+          :page-sizes="[10, 30, 60, 90, 150, 300, 9999]"
+        />
       </el-col>
       <el-col :span="18">
-        <el-table :data="currentVarieties" size="mini" border height="500">
+        <el-table :data="pagedVarieties" size="mini" border height="460">
           <el-table-column label="合同到期" width="100">
             <template slot-scope="{ row }">
               <span :class="{ 'text-danger': isContractNearExpiry(row.CONTRACT_END_TIME) }">
@@ -45,17 +54,29 @@
           <el-table-column prop="varietie_Code_New" label="品种编码" width="100" />
           <el-table-column prop="Varietie_Name" label="品种名称" min-width="140" show-overflow-tooltip />
           <el-table-column prop="Specification_Or_Type" label="规格/型号" min-width="120" show-overflow-tooltip />
+          <el-table-column prop="PAG_TYPE" label="包装规格" width="80" show-overflow-tooltip />
           <el-table-column prop="Unit" label="单位" width="50" align="center" />
           <el-table-column prop="Manufacturing_Ent_Name" label="生产企业" width="120" show-overflow-tooltip />
           <el-table-column prop="Def_No_Pkg_Coefficient" label="系数" width="50" align="center" />
-          <el-table-column prop="Arg_Plan" label="备货数（包）" width="90" align="center" />
-          <el-table-column prop="Goods_Qty" label="备货数（散）" width="90" align="center" />
+          <el-table-column label="备货数（散）" width="100" align="center">
+            <template slot-scope="{ row }">
+              <el-input
+                v-model.number="row.Goods_Qty"
+                size="mini"
+                type="number"
+                :min="1"
+                @change="onGoodsQtyChange(row)"
+              />
+            </template>
+          </el-table-column>
           <el-table-column label="价格" width="90" align="right">
             <template slot-scope="{ row }">{{ formatPrice(row) }}</template>
           </el-table-column>
           <el-table-column label="合同类型" width="80" align="center">
             <template slot-scope="{ row }">{{ formatContractType(row.CONTRACT_TYPE) }}</template>
           </el-table-column>
+          <el-table-column prop="PLAN_DEPT_TWO_NAME" label="来源科室" width="120" show-overflow-tooltip />
+          <el-table-column prop="Dtl_Id" label="计划ID" width="100" show-overflow-tooltip />
           <el-table-column label="备货单号" width="130" fixed="right">
             <template slot-scope="{ row }">
               <el-select
@@ -74,6 +95,15 @@
             </template>
           </el-table-column>
         </el-table>
+        <el-pagination
+          class="stock-up-pager"
+          small
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="currentVarieties.length"
+          :current-page.sync="varPage"
+          :page-size.sync="varPageSize"
+          :page-sizes="[10, 30, 60, 90, 150, 300, 9999]"
+        />
       </el-col>
     </el-row>
     <div slot="footer">
@@ -111,12 +141,24 @@ export default {
       suppliers: [],
       checkedSuppliers: [],
       currentSup: null,
-      submitting: false
+      submitting: false,
+      supPage: 1,
+      supPageSize: 9999,
+      varPage: 1,
+      varPageSize: 9999
     };
   },
   computed: {
     currentVarieties() {
       return this.currentSup?.listVarietie || [];
+    },
+    pagedSuppliers() {
+      const start = (this.supPage - 1) * this.supPageSize;
+      return this.suppliers.slice(start, start + this.supPageSize);
+    },
+    pagedVarieties() {
+      const start = (this.varPage - 1) * this.varPageSize;
+      return this.currentVarieties.slice(start, start + this.varPageSize);
     },
     isCg() {
       return bhInfoHpFlags.isCg;
@@ -145,14 +187,27 @@ export default {
       this.suppliers = buildStockUpSuppliers(this.monitorRows, creator);
       this.checkedSuppliers = [];
       this.currentSup = this.suppliers[0] || null;
+      this.supPage = 1;
+      this.varPage = 1;
+      this.supPageSize = 9999;
+      this.varPageSize = 9999;
       this.$nextTick(() => {
         if (this.currentSup) {
           this.$refs.supTable?.setCurrentRow(this.currentSup);
+          this.$refs.supTable?.toggleRowSelection(this.currentSup, true);
         }
       });
     },
     handleSupClick(row) {
       this.currentSup = row;
+      this.varPage = 1;
+    },
+    onGoodsQtyChange(row) {
+      const qty = Number(row.Goods_Qty);
+      if (!qty || qty < 1) {
+        this.$message.warning('备货数量需大于等于1');
+        row.Goods_Qty = 0;
+      }
     },
     getPlanOptions(row) {
       return parsePlanNoOptions(row);
@@ -161,11 +216,27 @@ export default {
       this.suppliers = [];
       this.checkedSuppliers = [];
       this.currentSup = null;
+      this.supPage = 1;
+      this.varPage = 1;
     },
     async handleSubmit() {
       if (!this.checkedSuppliers.length) {
         this.$message.warning('请至少勾选一个供应商');
         return;
+      }
+      for (const checked of this.checkedSuppliers) {
+        const source = this.suppliers.find(
+          (s) =>
+            s.Supplier_Code === checked.Supplier_Code &&
+            String(s.StorageID) === String(checked.StorageID)
+        );
+        const bad = (source?.listVarietie || []).find((v) => !v.Goods_Qty || Number(v.Goods_Qty) < 1);
+        if (bad) {
+          this.$message.warning(
+            `${bad.varietie_Code_New}/${bad.Varietie_Name}/备货数量异常,备货数量需大于等于1且不能为空`
+          );
+          return;
+        }
       }
       this.submitting = true;
       try {
@@ -188,5 +259,9 @@ export default {
 .text-danger {
   color: #f56c6c;
   font-weight: bold;
+}
+.stock-up-pager {
+  margin-top: 8px;
+  text-align: right;
 }
 </style>

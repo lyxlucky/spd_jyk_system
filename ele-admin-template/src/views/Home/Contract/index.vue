@@ -193,8 +193,20 @@
         </el-button>
         <el-button size="mini" type="danger" :disabled="!authSelection.length" @click="onDeleteAuth">删除品种</el-button>
         <el-button v-if="hpFlags.isZq" size="mini" @click="onCheckReceiveContract">查看合同对接</el-button>
-        <el-button size="mini" @click="openModifyDate('auth')">修改授权到期</el-button>
-        <el-button size="mini" @click="openModifyDate('detailTime')">修改合同明细起始结束日期</el-button>
+        <el-button
+          size="mini"
+          :disabled="!authSelection.length && !currentAuthRow"
+          @click="openModifyDate('auth')"
+        >
+          修改授权到期
+        </el-button>
+        <el-button
+          size="mini"
+          :disabled="!authSelection.length && !currentAuthRow"
+          @click="openModifyDate('detailTime')"
+        >
+          修改合同明细起始结束日期
+        </el-button>
         <el-button size="mini" :disabled="!authSelection.length" @click="copyAuthVisible = true">复制合同授权</el-button>
         <el-button v-if="hpFlags.isZq" size="mini" :disabled="!currentContract" @click="onZqContractUpDel">
           中七更新合同明细
@@ -552,8 +564,14 @@ export default {
       if (type === 'contractMain') this.loadContracts();
     },
     openModifyDate(mode, row) {
+      // 单元格点击传 row；工具栏按钮需回退到当前高亮行 / 勾选行
+      const target = row || this.currentAuthRow || this.authSelection[0] || null;
+      if (!target) {
+        this.$message.warning('请先点击选中一行，或勾选要修改的品种');
+        return;
+      }
       this.modifyDateMode = mode;
-      this.modifyDateRow = row || null;
+      this.modifyDateRow = target;
       this.modifyDateVisible = true;
     },
     openBatch(type) {

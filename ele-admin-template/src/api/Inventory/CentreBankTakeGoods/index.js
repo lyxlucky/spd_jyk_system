@@ -445,10 +445,33 @@ export async function checkExpireProdInfoSystem(receiptId) {
   return unwrap(res);
 }
 
+/** 历史收货补打印（对齐老页 Printoldbd） */
+export function getHistoryPrintApiPath() {
+  if (['stzx', 'stse', 'csyy', 'stzl', 'stzyyy', 'chrmyy'].includes(HOME_HP)) {
+    return '/SystemDelivered/PreprintHistoryDelivery_XG';
+  }
+  return '/SystemDelivered/PreprintHistoryDelivery';
+}
+
 export async function printHistoryDelivery(params) {
-  const res = await request.get('/SystemDelivered/PreprintHistoryDelivery', {
-    params: { Token: token(), homehp: HOME_HP, ...params }
-  });
+  const deliveryTime = params.Delivery_Time || params.deliveryTime || '';
+  const shTime =
+    typeof deliveryTime === 'string' && deliveryTime.length >= 10
+      ? deliveryTime.substring(0, 10)
+      : deliveryTime;
+  const size = params.CentreBankSIZE ?? params.centreBankSize ?? 4;
+  const res = await request.post(
+    getHistoryPrintApiPath(),
+    formdataify({
+      Token: token(),
+      homehp: HOME_HP,
+      deliveryNoteNumber: params.deliveryNoteNumber || '',
+      Delivery_Time: shTime,
+      Receipt_Id: String(params.Receipt_Id ?? params.receiptId ?? ''),
+      CentreBankSIZE: String(size)
+    }),
+    { timeout: 60000 }
+  );
   return unwrap(res);
 }
 
