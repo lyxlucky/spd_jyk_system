@@ -87,10 +87,16 @@
       </template>
 
       <template v-slot:toolkit>
-        <div>
-          <span
-            >耗材总数量:<el-tag type="success">{{ totalCount }}</el-tag></span
-          >
+        <div class="consume-counts">
+          <span>
+            耗材总数量:<el-tag type="success">{{ totalCount }}</el-tag>
+          </span>
+          <span>
+            计费耗材数量:<el-tag type="primary">{{ chargeCount }}</el-tag>
+          </span>
+          <span>
+            不计费耗材数量:<el-tag type="warning">{{ noChargeCount }}</el-tag>
+          </span>
         </div>
       </template>
 
@@ -122,7 +128,13 @@
         </el-tag>
         <span v-else>{{ row.DEPT_TWO_QTY }}</span>
         /
-        <span>{{ row.IS_XM == 1 ? '是' : '否' }}</span>
+        <el-tag
+          :type="isNoChargeRow(row) ? 'warning' : 'primary'"
+          size="mini"
+          effect="plain"
+        >
+          {{ isNoChargeRow(row) ? '打包/不计费' : '计费' }}
+        </el-tag>
       </template>
     </ele-pro-table>
 
@@ -216,20 +228,35 @@
   } */
 
   /* 扫码录入行的绿色背景样式 */
-  ::v-deep .el-table .scan-input-row {
+  :deep(.el-table .scan-input-row) {
     background-color: #e8f5e8 !important;
   }
 
-  ::v-deep .el-table .scan-input-row:hover {
+  :deep(.el-table .scan-input-row:hover) {
     background-color: #d4edda !important;
   }
 
-  ::v-deep .el-table .scan-input-row td {
+  :deep(.el-table .scan-input-row td) {
     background-color: #e8f5e8 !important;
   }
 
-  ::v-deep .el-table .scan-input-row:hover td {
+  :deep(.el-table .scan-input-row:hover td) {
     background-color: #d4edda !important;
+  }
+
+  :deep(.el-table .no-charge-row td) {
+    background-color: #fff4e5 !important;
+  }
+
+  :deep(.el-table .no-charge-row:hover td) {
+    background-color: #ffe8bf !important;
+  }
+
+  .consume-counts {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
   }
 </style>
 <script>
@@ -359,6 +386,8 @@
           }
         ],
         totalCount: 0,
+        chargeCount: 0,
+        noChargeCount: 0,
         toolbar: false,
         pageSize: 50,
         pagerCount: 2,
@@ -423,11 +452,14 @@
           };
           return tData;
         });
-        // this.totalCount = data.list.reduce((pre, cur) => {
-        //   return pre + cur.TRUE_PS_QTY;
-        // }, 0);
-        this.totalCount = data?.list.length;
+        const list = data?.list || [];
+        this.totalCount = list.length;
+        this.noChargeCount = list.filter((row) => this.isNoChargeRow(row)).length;
+        this.chargeCount = this.totalCount - this.noChargeCount;
         return data;
+      },
+      isNoChargeRow(row) {
+        return row?.IS_XM === 1 || row?.IS_XM === '1';
       },
       catDefNoPkgCode() {
         console.log(this.parentCurrent);
@@ -448,6 +480,9 @@
         this.current = current;
       },
       getRowClassName({ row, rowIndex }) {
+        if (this.isNoChargeRow(row)) {
+          return 'no-charge-row';
+        }
         if (row.REMARK == '扫码录入') {
           return 'scan-input-row';
         }

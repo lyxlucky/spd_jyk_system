@@ -29,6 +29,12 @@ import {
 export default {
   name: 'NewTemporaryRepositoryLeft',
   components: { UserSearch },
+  mounted() {
+    this.$bus.$on('handleCommand', this.onDeptChanged);
+  },
+  beforeDestroy() {
+    this.$bus.$off('handleCommand', this.onDeptChanged);
+  },
   data() {
     return {
       totalPackages: 0,
@@ -148,6 +154,11 @@ export default {
     };
   },
   methods: {
+    onDeptChanged() {
+      this.$nextTick(() => {
+        this.$refs.table?.reload({ page: 1 });
+      });
+    },
     datasource({ page, limit, where, order }) {
       const deptTwo = this.$store.state.user.info.DeptNow.Dept_Two_Code;
       const w = { ...where, DEPT_TWO_CODE: deptTwo };
