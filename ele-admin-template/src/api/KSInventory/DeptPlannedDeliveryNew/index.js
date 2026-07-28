@@ -27,6 +27,13 @@ function buildPlanSearchBody(where = {}) {
   const planState = Array.isArray(where.planState)
     ? where.planState.join(',')
     : where.planState || '6,3';
+  // 后端 bool.TryParse 只认 true/false；老系统传 boolean。'0'/'1' 解析失败会变成 false，导致「包含」失效
+  const leftZeroRaw = where.containLeftZero;
+  const containLeftZero =
+    leftZeroRaw === true ||
+    leftZeroRaw === 'true' ||
+    leftZeroRaw === '1' ||
+    leftZeroRaw === 1;
   return {
     page: where.page ?? 1,
     size: where.size ?? 9999999,
@@ -41,7 +48,7 @@ function buildPlanSearchBody(where = {}) {
     dateFrom: where.dateFrom || '',
     dateTo: where.dateTo || '',
     deptPlanMan: where.deptPlanMan || '',
-    containLeftZero: where.containLeftZero ?? '0',
+    containLeftZero,
     isDelete: where.isDelete ?? '1',
     planIsZb: where.planIsZb ?? '',
     planIsZg: where.planIsZg ?? '',
