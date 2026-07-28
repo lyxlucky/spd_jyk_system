@@ -34,8 +34,9 @@ export function buildThirdStockInfoRequest(data = {}, token = '') {
         manufacter: where.manufacter || '',
         prodRegistrationCode: where.prodRegistrationCode || '',
         stockZero: where.stockZero || '',
-        startTime: where.startTime || '',
-        endTime: where.endTime || ''
+        statStartTime: where.statStartTime || '',
+        operationChargingStartTime: where.operationChargingStartTime || '',
+        operationChargingEndTime: where.operationChargingEndTime || ''
     };
 }
 
@@ -73,6 +74,9 @@ export async function getThirdStockDimensionOptions(data) {
     requestData.spec = data.where?.spec || '';
     requestData.manufacter = data.where?.manufacter || '';
     requestData.prodRegistrationCode = data.where?.prodRegistrationCode || '';
+    requestData.statStartTime = data.where?.statStartTime || '';
+    requestData.operationChargingStartTime = data.where?.operationChargingStartTime || '';
+    requestData.operationChargingEndTime = data.where?.operationChargingEndTime || '';
 
     const res = await request.post(`/PekingApplication/getThirdStockDimensionOptions`, requestData);
 

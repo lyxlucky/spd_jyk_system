@@ -70,9 +70,18 @@
             @keyup.enter.native="$emit('search')"
           />
         </el-form-item>
-        <el-form-item label="统计时间">
+        <el-form-item label="统计开始时间">
           <el-date-picker
-            v-model="statDateRange"
+            v-model="form.statStartTime"
+            type="date"
+            value-format="yyyy-MM-dd"
+            placeholder="统计开始日期"
+            style="width: 132px"
+          />
+        </el-form-item>
+        <el-form-item label="发生时间时间">
+          <el-date-picker
+            v-model="operationChargingDateRange"
             type="daterange"
             value-format="yyyy-MM-dd"
             range-separator="至"
@@ -102,8 +111,9 @@
       spec: '',
       manufacter: '',
       prodRegistrationCode: '',
-      startTime: '2024-03-01',
-      endTime: ''
+      statStartTime: '2024-03-01',
+      operationChargingStartTime: '',
+      operationChargingEndTime: ''
     };
   }
 
@@ -125,13 +135,16 @@
           this.$emit('mode-change', value);
         }
       },
-      statDateRange: {
+      operationChargingDateRange: {
         get() {
-          return [this.form.startTime, this.form.endTime];
+          return [
+            this.form.operationChargingStartTime,
+            this.form.operationChargingEndTime
+          ];
         },
         set(value) {
-          this.form.startTime = value?.[0] || '';
-          this.form.endTime = value?.[1] || '';
+          this.form.operationChargingStartTime = value?.[0] || '';
+          this.form.operationChargingEndTime = value?.[1] || '';
         }
       }
     }, 
