@@ -18,14 +18,20 @@
       </el-form-item>
       <el-form-item label="日期">
         <el-date-picker
-          style="width: 220px"
-          v-model="deliveryDateRange"
-          type="daterange"
-          range-separator="至"
-          start-placeholder="开始"
-          end-placeholder="结束"
+          v-model="where.delivery_start_date"
+          type="date"
           value-format="yyyy-MM-dd"
-          @change="onDeliveryDateChange"
+          placeholder="开始"
+          style="width: 140px"
+        />
+      </el-form-item>
+      <el-form-item label="-">
+        <el-date-picker
+          v-model="where.delivery_end_date"
+          type="date"
+          value-format="yyyy-MM-dd"
+          placeholder="结束"
+          style="width: 140px"
         />
       </el-form-item>
       <el-form-item class="ele-form-actions">
@@ -106,12 +112,10 @@
 
   export default {
     data() {
-      const defaultDateRange = getDefaultDateRange();
       return {
         // 表单数据
         where: defaultWhere(),
         DistributeNumber: null,
-        deliveryDateRange: defaultDateRange,
         scanDialogVisible: false,
         // 扫码表单数据
         scanForm: {
@@ -144,24 +148,8 @@
       },
       /*  重置 */
       reset() {
-        const defaultDateRange = getDefaultDateRange();
-        this.where = {
-          stock_out_distribute_number: '',
-          delivery_start_date: defaultDateRange[0],
-          delivery_end_date: defaultDateRange[1]
-        };
-        this.deliveryDateRange = defaultDateRange;
+        this.where = defaultWhere();
         this.search();
-      },
-      /* 送货时间范围变化处理 */
-      onDeliveryDateChange(dateRange) {
-        if (dateRange && dateRange.length == 2) {
-          this.where.delivery_start_date = dateRange[0];
-          this.where.delivery_end_date = dateRange[1];
-        } else {
-          this.where.delivery_start_date = '';
-          this.where.delivery_end_date = '';
-        }
       },
       /* 获取库区数据 */
       async fetchRegions() {

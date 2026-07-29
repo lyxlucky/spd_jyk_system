@@ -152,7 +152,8 @@ export default {
           showOverflowTooltip: true,
           width: 150,
           formatter: (row) => {
-            return row.Operate_Time.replace('T', ' ');
+            const t = row?.Operate_Time;
+            return t ? String(t).replace('T', ' ') : '';
           }
         },
         {
@@ -217,50 +218,50 @@ export default {
         }
       }
     },
-    exportData(data) {
+    async exportData(data) {
       const loading = this.$messageLoading('正在导出数据...');
-      this.$refs.table.doRequest(({ where, order }) => {
-        where = data;
-        where.Dept_One_Code = this.$store.state.user.info.DeptNow.Dept_Two_Code;
-        GetPDAList({
+      try {
+        const where = { ...(data || {}) };
+        const res = await GetPDAList({
           page: 1,
           limit: 999999,
-          where: where,
-          order: order
-        })
-          .then((res) => {
-            loading.close();
-            const headers = this.columns
-              .filter(column => column.prop)
-              .map(column => column.label);
-            const array = [headers];
-            res.result.forEach((d) => {
-              const row = this.columns
-                .filter(column => column.prop)
-                .map(column => {
-                  if (column.formatter) {
-                    return column.formatter(d);
-                  }
-                  return d[column.prop];
-                });
-              array.push(row);
-            });
-            writeFile(
-              {
-                SheetNames: ['Sheet1'],
-                Sheets: {
-                  Sheet1: utils.aoa_to_sheet(array)
+          where
+        });
+        const list = res?.result || [];
+        const exportCols = this.columns.filter(
+          (column) => column.prop && column.type !== 'space'
+        );
+        const array = [exportCols.map((column) => column.label)];
+        list.forEach((d) => {
+          array.push(
+            exportCols.map((column) => {
+              try {
+                if (typeof column.formatter === 'function') {
+                  return column.formatter(d, column, d[column.prop]);
                 }
-              },
-              '暂借记录.xlsx'
-            );
-            this.$message.success('导出成功');
-          })
-          .catch((e) => {
-            loading.close();
-            this.$message.error(e.message);
-          });
-      });
+                const val = d[column.prop];
+                return val == null ? '' : val;
+              } catch (_) {
+                return d[column.prop] == null ? '' : d[column.prop];
+              }
+            })
+          );
+        });
+        writeFile(
+          {
+            SheetNames: ['Sheet1'],
+            Sheets: {
+              Sheet1: utils.aoa_to_sheet(array)
+            }
+          },
+          '暂借记录.xlsx'
+        );
+        this.$message.success(list.length ? '导出成功' : '导出成功（无数据）');
+      } catch (e) {
+        this.$message.error(e.message || '导出失败');
+      } finally {
+        loading.close();
+      }
     }
   }
 };

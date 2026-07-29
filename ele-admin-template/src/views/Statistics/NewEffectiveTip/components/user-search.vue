@@ -18,13 +18,21 @@
       <el-col v-bind="styleResponsive ? { lg: 6, md: 12 } : { span: 6 }">
         <!-- <el-input size="mini" clearable v-model="where.VARIETIE_CODE_NEW" placeholder="品种编码/品种名称" /> -->
         <el-date-picker
-          v-model="where.date"
-          type="daterange"
+          v-model="where.dateStart"
+          type="date"
           value-format="yyyy-MM-dd"
           size="mini"
-          range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
+          placeholder="开始日期"
+          style="width: 140px"
+        >
+        </el-date-picker>
+        <el-date-picker
+          v-model="where.dateEnd"
+          type="date"
+          value-format="yyyy-MM-dd"
+          size="mini"
+          placeholder="结束日期"
+          style="width: 140px; margin-left: 8px"
         >
         </el-date-picker>
       </el-col>
@@ -93,7 +101,8 @@
       const defaultWhere = {
         VarPriceRecode_varScarch: '',
         VARIETIE_CODE_NEW: '',
-
+        dateStart: '',
+        dateEnd: '',
         SPECIFICATION_OR_TYPE: '未处理' // 默认选中未处理
       };
       return {

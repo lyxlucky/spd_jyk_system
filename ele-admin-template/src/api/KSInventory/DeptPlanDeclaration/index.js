@@ -10,9 +10,8 @@ export async function getDeptPlanTableData(data) {
   data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
   data2.page = data.page;
   data2.size = data.limit;
-  const [timeStart, timeEnd] = data.where.topTableSearchTime || '';
-  data2.startTime = timeStart ? timeStart : '';
-  data2.endTime = timeEnd ? timeEnd : '';
+  data2.startTime = data.where.startTime ? data.where.startTime : '';
+  data2.endTime = data.where.endTime ? data.where.endTime : '';
   data2.state = data.where.status ? data.where.status : '';
   data2.DEPT_TWO_CODE = store.state.user.info.DeptNow.Dept_Two_Code
     ? store.state.user.info.DeptNow.Dept_Two_Code

@@ -15,15 +15,22 @@
         style="width: 200px"
       />
     </el-form-item>
-    <el-form-item label="记录时间">
+    <el-form-item label="记录开始">
       <el-date-picker
-        v-model="dateRange"
-        type="daterange"
+        v-model="where.start_time"
+        type="date"
         value-format="yyyy-MM-dd"
-        range-separator="至"
-        start-placeholder="开始日期"
-        end-placeholder="结束日期"
-        style="width: 240px"
+        placeholder="开始日期"
+        style="width: 135px"
+      />
+    </el-form-item>
+    <el-form-item label="-">
+      <el-date-picker
+        v-model="where.end_time"
+        type="date"
+        value-format="yyyy-MM-dd"
+        placeholder="结束日期"
+        style="width: 135px"
       />
     </el-form-item>
     <el-form-item label="处理状态">
@@ -64,23 +71,6 @@ export default {
       },
       where: {}
     };
-  },
-  computed: {
-    dateRange: {
-      get() {
-        const { start_time, end_time } = this.where;
-        return start_time && end_time ? [start_time, end_time] : null;
-      },
-      set(val) {
-        if (val && val.length === 2) {
-          this.where.start_time = val[0];
-          this.where.end_time = val[1];
-        } else {
-          this.where.start_time = '';
-          this.where.end_time = '';
-        }
-      }
-    }
   },
   created() {
     this.where = { ...this.defaultWhere };

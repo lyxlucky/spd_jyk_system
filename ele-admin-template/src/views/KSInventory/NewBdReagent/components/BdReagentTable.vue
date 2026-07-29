@@ -10,15 +10,22 @@
           @keyup.enter.native="search"
           @submit.native.prevent
         >
-          <el-form-item label="日期" class="date-range-item">
+          <el-form-item label="开始">
             <el-date-picker
-              v-model="where.date"
-              type="daterange"
+              v-model="where.dateFrom"
+              type="date"
               value-format="yyyy-MM-dd"
-              style="width: 240px"
-              range-separator="至"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
+              style="width: 135px"
+              placeholder="开始日期"
+            />
+          </el-form-item>
+          <el-form-item label="-">
+            <el-date-picker
+              v-model="where.dateTo"
+              type="date"
+              value-format="yyyy-MM-dd"
+              style="width: 135px"
+              placeholder="结束日期"
             />
           </el-form-item>
           <el-form-item label="耗材编码">
@@ -68,13 +75,11 @@
             <el-row :gutter="10">
               <el-col v-bind="styleResponsive ? { lg: 6, md: 2 } : { span: 4 }">
                 <el-date-picker
-                  v-model="where.date"
-                  type="daterange"
+                  v-model="where.dateFrom"
+                  type="date"
                   value-format="yyyy-MM-dd"
                   size="mini"
-                  range-separator="至"
-                  start-placeholder="开始日期"
-                  end-placeholder="结束日期"
+                  placeholder="开始日期"
                 >
                 </el-date-picker>
               </el-col>
@@ -106,14 +111,14 @@
   import { queryPickAllDetail } from '@/api/KSInventory/NewBdReagent/index';
   import moment from 'moment';
 
-  const getDefaultDateRange = () => [
-    moment().startOf('month').format('YYYY-MM-DD'),
-    moment().endOf('month').format('YYYY-MM-DD')
-  ];
+  const getDefaultDateRange = () => ({
+    dateFrom: moment().startOf('month').format('YYYY-MM-DD'),
+    dateTo: moment().endOf('month').format('YYYY-MM-DD')
+  });
 
   const defaultWhere = () => ({
     drugsCode: '',
-    date: getDefaultDateRange()
+    ...getDefaultDateRange()
   });
 
   export default {
@@ -280,7 +285,7 @@
   margin-bottom: 0;
 }
 
-/* ele-form-search 默认限制 content 最大 200px，daterange 会溢出盖住下一项 label */
+/* ele-form-search 默认限制 content 最大 200px，双日期框需放宽 */
 .date-range-item :deep(.el-form-item__content) {
   max-width: none !important;
 }

@@ -24,16 +24,26 @@
         placeholder="单号"
       />
     </el-form-item>
-    <el-form-item style="width: 220px">
+    <el-form-item>
       <el-date-picker
         size="mini"
-        v-model="where.PLAN_TIME_RANGE"
-        type="daterange"
-        style="width: 220px"
+        v-model="where.PLAN_TIME_START"
+        type="date"
+        style="width: 140px"
         value-format="yyyy-MM-dd"
-        range-separator="至"
-        start-placeholder="收货开始日期"
-        end-placeholder="收货结束日期"
+        placeholder="收货开始日期"
+        clearable
+      >
+      </el-date-picker>
+    </el-form-item>
+    <el-form-item label="-">
+      <el-date-picker
+        size="mini"
+        v-model="where.PLAN_TIME_END"
+        type="date"
+        style="width: 140px"
+        value-format="yyyy-MM-dd"
+        placeholder="收货结束日期"
         clearable
       >
       </el-date-picker>
@@ -129,8 +139,7 @@
         DEPT_TWO_CODE: '',
         PLAN_NUMBER: '',
         PLAN_TIME_START: '',
-        PLAN_TIME_END: '',
-        PLAN_TIME_RANGE: []
+        PLAN_TIME_END: ''
       };
       return {
         // 表单数据
@@ -143,18 +152,6 @@
       // 是否开启响应式布局
       styleResponsive() {
         return this.$store.state.theme.styleResponsive;
-      }
-    },
-    watch: {
-      // 监听日期范围变化，同步开始/结束时间
-      'where.PLAN_TIME_RANGE'(val) {
-        if (Array.isArray(val) && val.length === 2 && val[0] && val[1]) {
-          this.where.PLAN_TIME_START = val[0];
-          this.where.PLAN_TIME_END = val[1];
-        } else {
-          this.where.PLAN_TIME_START = '';
-          this.where.PLAN_TIME_END = '';
-        }
       }
     },
     methods: {
@@ -180,7 +177,6 @@
         endDate.getFullYear() + '-' + pad(endDate.getMonth() + 1) + '-' + pad(endDate.getDate());
       const startStr =
         startDate.getFullYear() + '-' + pad(startDate.getMonth() + 1) + '-' + pad(startDate.getDate());
-      this.where.PLAN_TIME_RANGE = [startStr, endStr];
       this.where.PLAN_TIME_START = startStr;
       this.where.PLAN_TIME_END = endStr;
       // 在 created 阶段仅初始化数据，不触发查询

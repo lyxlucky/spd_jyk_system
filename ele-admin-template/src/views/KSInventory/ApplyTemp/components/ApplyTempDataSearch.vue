@@ -2,15 +2,22 @@
 <template>
   <div class="spd-panel__body">
     <el-form size="mini" :inline="true" class="ele-form-search" @keyup.enter.native="search" @submit.native.prevent>
-      <el-form-item label="平均用量">
+      <el-form-item label="平均用量开始">
         <el-date-picker
-          v-model="where.dateRange"
-          type="daterange"
-          style="width: 200px"
+          v-model="where.dateFrom"
+          type="date"
+          style="width: 135px"
           value-format="yyyy-MM-dd"
-          range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
+          placeholder="开始日期"
+        />
+      </el-form-item>
+      <el-form-item label="-">
+        <el-date-picker
+          v-model="where.dateTo"
+          type="date"
+          style="width: 135px"
+          value-format="yyyy-MM-dd"
+          placeholder="结束日期"
         />
       </el-form-item>
       <el-form-item label="品种">
@@ -134,21 +141,19 @@
   } from '@/api/KSInventory/ApplyTemp';
   import AuthVarTable from './AuthVarTable.vue';
 
-  const defaultWhere = () => ({
-    Token: '',
-    PlanNum: '',
-    is_second_app: '',
-    SerachName: '',
-    dateRange: (() => {
-      const end = new Date();
-      const start = new Date();
-      start.setDate(start.getDate() - 30);
-      return [
-        start.toISOString().split('T')[0],
-        end.toISOString().split('T')[0]
-      ];
-    })()
-  });
+  const defaultWhere = () => {
+    const end = new Date();
+    const start = new Date();
+    start.setDate(start.getDate() - 30);
+    return {
+      Token: '',
+      PlanNum: '',
+      is_second_app: '',
+      SerachName: '',
+      dateFrom: start.toISOString().split('T')[0],
+      dateTo: end.toISOString().split('T')[0]
+    };
+  };
 
   export default {
     props: [
@@ -181,15 +186,6 @@
       }
     },
     methods: {
-      getDefaultDateRange() {
-        const end = new Date();
-        const start = new Date();
-        start.setDate(start.getDate() - 30);
-        return [
-          start.toISOString().split('T')[0],
-          end.toISOString().split('T')[0]
-        ];
-      },
       showDialogTableVisible() {
         this.dialogTableVisible = true;
       },

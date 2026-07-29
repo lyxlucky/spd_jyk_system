@@ -117,26 +117,40 @@
             style="width: 150px"
           />
         </el-form-item>
-        <el-form-item label="手术计划" >
+        <el-form-item label="手术计划">
           <el-date-picker
-            v-model="surgeryPlanDateRange"
-            type="daterange"
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
+            v-model="searchForm.PLAN_SURGERY_DATE_START"
+            type="date"
+            placeholder="开始日期"
             value-format="yyyy-MM-dd"
-            style="width: 100%"
+            style="width: 140px"
+          />
+        </el-form-item>
+        <el-form-item label="-">
+          <el-date-picker
+            v-model="searchForm.PLAN_SURGERY_DATE_END"
+            type="date"
+            placeholder="结束日期"
+            value-format="yyyy-MM-dd"
+            style="width: 140px"
           />
         </el-form-item>
         <el-form-item label="手术时间">
           <el-date-picker
-            v-model="surgeryTimeDateRange"
-            type="daterange"
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
+            v-model="searchForm.ACTUAL_SURGERY_DATE_START"
+            type="date"
+            placeholder="开始日期"
             value-format="yyyy-MM-dd"
-            style="width: 100%"
+            style="width: 140px"
+          />
+        </el-form-item>
+        <el-form-item label="-">
+          <el-date-picker
+            v-model="searchForm.ACTUAL_SURGERY_DATE_END"
+            type="date"
+            placeholder="结束日期"
+            value-format="yyyy-MM-dd"
+            style="width: 140px"
           />
         </el-form-item>
         <el-form-item label="是否上传植入物单">
@@ -1193,9 +1207,6 @@ export default {
         IS_FOLLOW_STAGE: '',
         CREATOR: '',
       },
-      // 日期范围
-      surgeryPlanDateRange: [],
-      surgeryTimeDateRange: [],
       // 选项数据
       surgeryLocationOptions: [],
       deptOptions: [],
@@ -1350,28 +1361,6 @@ export default {
     },
     // 搜索
     search() {
-      // 处理手术计划日期范围
-      if (
-        this.surgeryPlanDateRange &&
-        this.surgeryPlanDateRange.length === 2
-      ) {
-        this.searchForm.PLAN_SURGERY_DATE_START = this.surgeryPlanDateRange[0];
-        this.searchForm.PLAN_SURGERY_DATE_END = this.surgeryPlanDateRange[1];
-      } else {
-        this.searchForm.PLAN_SURGERY_DATE_START = '';
-        this.searchForm.PLAN_SURGERY_DATE_END = '';
-      }
-      // 处理手术时间日期范围
-      if (
-        this.surgeryTimeDateRange &&
-        this.surgeryTimeDateRange.length === 2
-      ) {
-        this.searchForm.ACTUAL_SURGERY_DATE_START = this.surgeryTimeDateRange[0];
-        this.searchForm.ACTUAL_SURGERY_DATE_END = this.surgeryTimeDateRange[1];
-      } else {
-        this.searchForm.ACTUAL_SURGERY_DATE_START = '';
-        this.searchForm.ACTUAL_SURGERY_DATE_END = '';
-      }
       this.mainTablePage.page = 1;
       this.loadMainTableData();
     },
@@ -1394,8 +1383,6 @@ export default {
         IS_FOLLOW_STAGE: '',
         CREATOR: '',
       };
-      this.surgeryPlanDateRange = [];
-      this.surgeryTimeDateRange = [];
       this.mainTablePage.page = 1;
       this.loadMainTableData();
     },

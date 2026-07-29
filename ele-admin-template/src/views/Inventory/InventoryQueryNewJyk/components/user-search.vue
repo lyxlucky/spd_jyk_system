@@ -23,14 +23,20 @@
         </el-form-item>
         <el-form-item label="日期">
           <el-date-picker
-            v-model="dateRange"
-            type="daterange"
+            v-model="where.start_time"
+            type="date"
             value-format="yyyy-MM-dd"
-            range-separator="至"
-            start-placeholder="开始"
-            end-placeholder="结束"
-            style="width: 240px"
-            @change="handleDateRangeChange"
+            placeholder="开始"
+            style="width: 140px"
+          />
+        </el-form-item>
+        <el-form-item label="-">
+          <el-date-picker
+            v-model="where.end_time"
+            type="date"
+            value-format="yyyy-MM-dd"
+            placeholder="结束"
+            style="width: 140px"
           />
         </el-form-item>
         <br />
@@ -206,8 +212,7 @@ export default {
         start_time: '',
         end_time: ''
       },
-      where: {},
-      dateRange: []
+      where: {}
     };
   },
   computed: {
@@ -235,15 +240,6 @@ export default {
     },
     exportData() {
       this.$emit('exportData', this.where);
-    },
-    handleDateRangeChange(range) {
-      if (range && range.length === 2) {
-        this.where.start_time = range[0];
-        this.where.end_time = range[1];
-      } else {
-        this.where.start_time = '';
-        this.where.end_time = '';
-      }
     }
   }
 };

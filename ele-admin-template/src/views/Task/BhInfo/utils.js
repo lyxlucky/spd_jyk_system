@@ -158,6 +158,7 @@ export function buildStockUpSuppliers(monitorRows, creator) {
       Supplier_Code: item.Supplier_Code,
       StorageID: item.StorageID,
       Name: item.Name,
+      Storage_ADDRESS: item.ADDRESS || item.Storage_ADDRESS || '',
       Creator: creator,
       listVarietie: []
     });
@@ -187,7 +188,8 @@ export function buildStockUpSuppliers(monitorRows, creator) {
         Contract_Code: item.Contract_Code,
         varietie_Code_New: item.varietie_Code_New,
         Varietie_Name: item.Varietie_Name,
-        Specification_Or_Type: item.Specification_Or_Type,
+        Specification_Or_Type: item.Specification_Or_Type || item.SPECIFICATION_OR_TYPE,
+        PAG_TYPE: item.PAG_TYPE,
         Unit: item.Unit,
         Def_No_Pkg_Coefficient: item.Def_No_Pkg_Coefficient,
         EnableVarietie: item.EnableVarietie,
@@ -199,7 +201,10 @@ export function buildStockUpSuppliers(monitorRows, creator) {
         DET_CONTRACT_END: item.DET_CONTRACT_END,
         CONTRACT_TYPE: item.CONTRACT_TYPE,
         LC_USE_NUM: item.LC_USE_NUM,
-        LC_NUM: item.LC_NUM
+        LC_NUM: item.LC_NUM,
+        PLAN_DEPT_TWO_CODE: item.PLAN_DEPT_TWO_CODE,
+        PLAN_DEPT_TWO_NAME: item.PLAN_DEPT_TWO_NAME,
+        Dtl_Id: item.Dtl_Id
       });
     });
   });
@@ -230,14 +235,17 @@ export function buildInsertNewInfoPayload(checkedSuppliers, allSuppliers) {
       listVarietie: (source.listVarietie || []).map((v) => ({
         Stock_Up_Plan_No: v.Stock_Up_Plan_No,
         Varietie_Code: v.Varietie_Code,
-        Arg_Plan: v.Arg_Plan,
+        Arg_Plan: v.Goods_Qty,
         Goods_Plan: v.Goods_Qty,
         Supplier_Name: v.Supplier_Name,
         Supplier_Code: v.Supplier_Code,
         Supply_Price: v.Supply_Price,
         Contract_Code: v.Contract_Code,
-        Coefficient: v.Coefficient,
-        Purchase_Price: v.Purchase_Price
+        Coefficient: v.Coefficient ?? 1,
+        Purchase_Price: v.Purchase_Price,
+        PLAN_DEPT_TWO_CODE: v.PLAN_DEPT_TWO_CODE,
+        PLAN_DEPT_TWO_NAME: v.PLAN_DEPT_TWO_NAME,
+        Dtl_Id: v.Dtl_Id
       }))
     };
     postData.push(item);

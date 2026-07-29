@@ -56,14 +56,20 @@
           </el-form-item>
           <el-form-item label="有效到期">
             <el-date-picker
-              v-model="dateRange"
-              type="daterange"
+              v-model="localWhere.validDateFrom"
+              type="date"
               value-format="yyyy-MM-dd"
-              range-separator="至"
-              start-placeholder="开始"
-              end-placeholder="结束"
-              style="width: 240px"
-              @change="onDateChange"
+              placeholder="开始"
+              style="width: 140px"
+            />
+          </el-form-item>
+          <el-form-item label="-">
+            <el-date-picker
+              v-model="localWhere.validDateTo"
+              type="date"
+              value-format="yyyy-MM-dd"
+              placeholder="结束"
+              style="width: 140px"
             />
           </el-form-item>
           <el-form-item>
@@ -347,13 +353,11 @@ export default {
   data() {
     return {
       showAdvanced: false,
-      dateRange: [],
       localWhere: {}
     };
   },
   created() {
     this.localWhere = { ...this.where };
-    this.syncDateRange();
   },
   computed: {
     sumText() {
@@ -389,26 +393,10 @@ export default {
       deep: true,
       handler(val) {
         this.localWhere = { ...val };
-        this.syncDateRange();
       }
-    },
-    'localWhere.validDateFrom'() {
-      this.syncDateRange();
-    },
-    'localWhere.validDateTo'() {
-      this.syncDateRange();
     }
   },
   methods: {
-    syncDateRange() {
-      const from = this.localWhere.validDateFrom;
-      const to = this.localWhere.validDateTo;
-      if (from && to) {
-        this.dateRange = [from, to];
-      } else if (!from && !to) {
-        this.dateRange = [];
-      }
-    },
     syncWhere() {
       this.$emit('update:where', { ...this.localWhere });
     },
@@ -428,15 +416,6 @@ export default {
     search() {
       this.syncWhere();
       this.$emit('search');
-    },
-    onDateChange(range) {
-      if (range && range.length === 2) {
-        this.localWhere.validDateFrom = range[0];
-        this.localWhere.validDateTo = range[1];
-      } else {
-        this.localWhere.validDateFrom = '';
-        this.localWhere.validDateTo = '';
-      }
     },
     querySourceFrom(query, cb) {
       const list = [

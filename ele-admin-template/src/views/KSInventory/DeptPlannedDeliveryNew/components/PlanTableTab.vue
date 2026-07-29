@@ -225,7 +225,10 @@
     <div class="spd-panel spd-table-panel">
       <div class="spd-panel__head spd-panel__head--split">
         <span class="spd-panel__title">科室计划列表</span>
-        <span v-if="selection.length" class="spd-panel__head-meta">已选 {{ selection.length }} 条</span>
+        <span class="spd-panel__head-meta">
+          共 {{ planTotal }} 条
+          <template v-if="selection.length">，已选 {{ selection.length }} 条</template>
+        </span>
       </div>
       <div class="spd-table-panel__wrap">
         <ele-pro-table
@@ -235,13 +238,16 @@
           :height="tableHeight"
           :stripe="true"
           :init-load="false"
-          :need-page="false"
-          :page-size="9999999"
+          :need-page="true"
+          :page-size="99999"
+          :page-sizes="[20, 50, 100, 300, 99999]"
+          layout="total, sizes, prev, pager, next, jumper"
+          :hide-on-single-page="false"
           :columns="columns"
           :datasource="datasource"
           :selection.sync="selection"
           highlight-current-row
-          cache-key="deptPlannedDeliveryNewPlanTableV2"
+          cache-key="deptPlannedDeliveryNewPlanTableV3"
           @current-change="onCurrentChange"
           @row-click="onPlanRowClick"
         >
@@ -403,9 +409,10 @@ export default {
       activeDtlId: '',
       activeRow: {},
       exporting: false,
-      // 对齐老系统 layui table height: 450，缩屏时高度不随视口压缩
-      tableHeight: 450,
-      planLoaded: false
+      // 对齐老系统 layui table height: 450；略减以留给底部分页条
+      tableHeight: 420,
+      planLoaded: false,
+      planTotal: 0
     };
   },
   computed: {
@@ -439,19 +446,26 @@ export default {
       this.planLoaded = true;
       this.$refs.table?.reload({ page: 1, where: { ...this.where, STORAGE_ID: this.localStorageId } });
     },
-    datasource({ where }) {
-      const query = { ...where, STORAGE_ID: this.localStorageId };
+    datasource({ page, limit, where }) {
+      const query = {
+        ...where,
+        STORAGE_ID: this.localStorageId,
+        page: page || 1,
+        // 对齐老系统 limits/limit：默认尽量一页拉全，也可切 20/50/100/300
+        size: limit || 99999
+      };
       return searchDeptPlanMsg(query).then((res) => {
         const list = (res.result || []).map((row) => {
           const planQty = this.planQtyMap[row.Dtl_Id] ?? row.Plan_Qty ?? 0;
           return { ...row, Plan_Qty: planQty, _planQty: planQty };
         });
         this.tableRows = list;
+        this.planTotal = Number(res.total) || list.length || 0;
         // 计划表重查后原选中行失效，避免备货单仍按旧品种联动
         this.currentRow = null;
         this.selection = [];
         this.$emit('plan-data-change', { list });
-        return { count: res.total, list };
+        return { count: this.planTotal, list };
       });
     },
     isRowSelected(row) {

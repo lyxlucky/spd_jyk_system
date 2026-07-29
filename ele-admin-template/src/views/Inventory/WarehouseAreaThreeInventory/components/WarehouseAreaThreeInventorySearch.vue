@@ -78,13 +78,20 @@
         </el-form-item>
         <el-form-item label="计费时间">
           <el-date-picker
-            v-model="where.DATE_RANGE"
-            type="daterange"
+            v-model="where.START_TIME"
+            type="date"
             value-format="yyyy-MM-dd"
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            class="date-range"
+            placeholder="开始"
+            style="width: 140px"
+          />
+        </el-form-item>
+        <el-form-item label="-">
+          <el-date-picker
+            v-model="where.END_TIME"
+            type="date"
+            value-format="yyyy-MM-dd"
+            placeholder="结束"
+            style="width: 140px"
           />
         </el-form-item>
         <el-form-item>
@@ -462,7 +469,8 @@ const defaultWhere = () => ({
   MANUFACTURING_ENT_NAME: '',
   STOCK_STATUS: '',
   STOCK_DEDUCT_TYPE: '',
-  DATE_RANGE: []
+  START_TIME: '',
+  END_TIME: ''
 });
 
 const defaultHisPreviewQuery = () => ({
@@ -530,7 +538,6 @@ export default {
     areaTypeName,
     // 组装主页面表格查询条件。
     getWhere() {
-      const range = this.where.DATE_RANGE || [];
       return {
         AREA_CODE: this.where.AREA_CODE || '',
         CHARGE_CODE: this.where.CHARGE_CODE || '',
@@ -541,8 +548,8 @@ export default {
         MANUFACTURING_ENT_NAME: this.where.MANUFACTURING_ENT_NAME || '',
         STOCK_STATUS: this.where.STOCK_STATUS || '',
         STOCK_DEDUCT_TYPE: this.where.STOCK_DEDUCT_TYPE || '',
-        START_TIME: range[0] || '',
-        END_TIME: range[1] || ''
+        START_TIME: this.where.START_TIME || '',
+        END_TIME: this.where.END_TIME || ''
       };
     },
     // 触发表格查询。

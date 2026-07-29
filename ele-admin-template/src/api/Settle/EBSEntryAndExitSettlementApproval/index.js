@@ -17,8 +17,8 @@ export async function getSpdGlSpdTransactionIface(data) {
         size: data.limit || 10,
         IFACE_BATCH_ID: data.where?.IFACE_BATCH_ID || '',
         LEDGER_NAME: data.where?.LEDGER_NAME || '',
-        TRANSACTION_DATE_START: data.where?.TRANSACTION_DATE[0] || '',
-        TRANSACTION_DATE_END: data.where?.TRANSACTION_DATE[1] || '',
+        TRANSACTION_DATE_START: data.where?.TRANSACTION_DATE_START || '',
+        TRANSACTION_DATE_END: data.where?.TRANSACTION_DATE_END || '',
         SP_STATE: data.where?.SP_STATE || ''
       }
       

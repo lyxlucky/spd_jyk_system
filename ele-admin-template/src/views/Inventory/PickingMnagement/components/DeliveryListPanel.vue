@@ -12,15 +12,23 @@
       </el-form-item>
     </el-form>
     <el-form :inline="true" size="mini" class="filter-row" @submit.native.prevent>
-      <el-form-item>
+      <el-form-item label="开始">
         <el-date-picker
-          v-model="form.dateRange"
-          type="daterange"
-          range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
+          v-model="form.StateDate"
+          type="date"
+          placeholder="开始日期"
           value-format="yyyy-MM-dd"
-          style="width: 240px"
+          style="width: 135px"
+          @change="handleSearch"
+        />
+      </el-form-item>
+      <el-form-item label="-">
+        <el-date-picker
+          v-model="form.EndDate"
+          type="date"
+          placeholder="结束日期"
+          value-format="yyyy-MM-dd"
+          style="width: 135px"
           @change="handleSearch"
         />
       </el-form-item>
@@ -219,7 +227,8 @@ export default {
       pendingAction: '',
       form: {
         replenish_state: -1,
-        dateRange: [start, end],
+        StateDate: start,
+        EndDate: end,
         DeptCode: '',
         StockNumber: '',
         field: '',
@@ -297,12 +306,11 @@ export default {
   },
   methods: {
     buildWhere() {
-      const [start, end] = this.form.dateRange || ['', ''];
       return {
         DeptCode: this.form.DeptCode,
         StockNumber: this.form.StockNumber,
-        StateDate: start || '',
-        EndDate: end || '',
+        StateDate: this.form.StateDate || '',
+        EndDate: this.form.EndDate || '',
         replenish_state: this.form.replenish_state,
         field: this.form.field,
         order: this.form.order

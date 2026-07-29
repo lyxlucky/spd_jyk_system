@@ -24,15 +24,22 @@
             style="width: 220px"
           />
         </el-form-item>
-        <el-form-item label="暂借日期">
+        <el-form-item label="暂借开始">
           <el-date-picker
-            v-model="where.timerange"
-            type="daterange"
+            v-model="where.startTime"
+            type="date"
             value-format="yyyy-MM-dd"
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            style="width: 240px"
+            placeholder="开始日期"
+            style="width: 135px"
+          />
+        </el-form-item>
+        <el-form-item label="-">
+          <el-date-picker
+            v-model="where.endTime"
+            type="date"
+            value-format="yyyy-MM-dd"
+            placeholder="结束日期"
+            style="width: 135px"
           />
         </el-form-item>
         <el-form-item>
@@ -52,7 +59,8 @@ export default {
       defaultWhere: {
         divrjks2_search_inpName: '',
         divrjks2_search_inp: '',
-        timerange: []
+        startTime: '',
+        endTime: ''
       },
       where: {}
     };

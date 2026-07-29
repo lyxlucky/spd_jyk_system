@@ -72,13 +72,21 @@
       <el-row>
         <el-col v-bind="styleResponsive ? { lg: 6, md: 2 } : { span: 4 }">
           <el-date-picker
-            v-model="where.time"
+            v-model="where.timeStart"
             size="mini"
-            type="daterange"
-            range-separator="至"
+            type="date"
             value-format="yyyy-MM-dd"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
+            placeholder="开始日期"
+            style="width: 140px"
+          >
+          </el-date-picker>
+          <el-date-picker
+            v-model="where.timeEnd"
+            size="mini"
+            type="date"
+            value-format="yyyy-MM-dd"
+            placeholder="结束日期"
+            style="width: 140px; margin-left: 8px"
           >
           </el-date-picker>
         </el-col>
@@ -129,7 +137,8 @@
         type: '',
         code: '',
         factory: '',
-        time: []
+        timeStart: '',
+        timeEnd: ''
       };
       return {
         // 表单数据

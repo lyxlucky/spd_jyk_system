@@ -11,16 +11,24 @@
             @keyup.enter.native="search"
             @submit.native.prevent
           >
-            <el-form-item label="领用时间">
+            <el-form-item label="领用开始">
               <el-date-picker
-                v-model="dateRange"
-                type="datetimerange"
-                range-separator="至"
-                start-placeholder="开始时间"
-                end-placeholder="结束时间"
+                v-model="searchForm.StartTime"
+                type="datetime"
+                placeholder="开始时间"
                 value-format="yyyy-MM-dd HH:mm:ss"
-                :default-time="['00:00:00', '23:59:59']"
-                style="width: 340px"
+                default-time="00:00:00"
+                style="width: 140px"
+              />
+            </el-form-item>
+            <el-form-item label="-">
+              <el-date-picker
+                v-model="searchForm.EndTime"
+                type="datetime"
+                placeholder="结束时间"
+                value-format="yyyy-MM-dd HH:mm:ss"
+                default-time="23:59:59"
+                style="width: 140px"
               />
             </el-form-item>
             <el-form-item label="领用人">
@@ -408,7 +416,6 @@ export default {
         DefNoPkgCode: '',
         ChargePerson: ''
       },
-      dateRange: null,
       // 主表
       mainTableData: [],
       mainTableLoading: false,
@@ -429,24 +436,20 @@ export default {
     };
   },
   methods: {
-    // 获取默认日期范围（当天）
-    getDefaultDateRange() {
+    // 获取默认日期（当天起止）
+    getDefaultDateTimes() {
       const now = new Date();
       const year = now.getFullYear();
       const month = String(now.getMonth() + 1).padStart(2, '0');
       const day = String(now.getDate()).padStart(2, '0');
       const dateStr = `${year}-${month}-${day}`;
-      return [`${dateStr} 00:00:00`, `${dateStr} 23:59:59`];
+      return {
+        StartTime: `${dateStr} 00:00:00`,
+        EndTime: `${dateStr} 23:59:59`
+      };
     },
     // 搜索
     search() {
-      if (this.dateRange && this.dateRange.length === 2) {
-        this.searchForm.StartTime = this.dateRange[0];
-        this.searchForm.EndTime = this.dateRange[1];
-      } else {
-        this.searchForm.StartTime = '';
-        this.searchForm.EndTime = '';
-      }
       this.mainTablePage.page = 1;
       this.currentMainRow = null;
       this.detailTableData = [];
@@ -455,9 +458,10 @@ export default {
     },
     // 重置
     reset() {
+      const { StartTime, EndTime } = this.getDefaultDateTimes();
       this.searchForm = {
-        StartTime: '',
-        EndTime: '',
+        StartTime,
+        EndTime,
         OperatePerson: this.$store.state.user.info.Nickname || '',
         VarietieCode: '',
         VarietieName: '',
@@ -465,7 +469,6 @@ export default {
         DefNoPkgCode: '',
         ChargePerson: ''
       };
-      this.dateRange = this.getDefaultDateRange();
       this.mainTablePage.page = 1;
       this.currentMainRow = null;
       this.detailTableData = [];
@@ -615,11 +618,9 @@ export default {
     }
   },
   created() {
-    this.dateRange = this.getDefaultDateRange();
-    if (this.dateRange && this.dateRange.length === 2) {
-      this.searchForm.StartTime = this.dateRange[0];
-      this.searchForm.EndTime = this.dateRange[1];
-    }
+    const { StartTime, EndTime } = this.getDefaultDateTimes();
+    this.searchForm.StartTime = StartTime;
+    this.searchForm.EndTime = EndTime;
     this.searchForm.OperatePerson = this.$store.state.user.info.Nickname || '';
     this.loadMainTableData();
   }

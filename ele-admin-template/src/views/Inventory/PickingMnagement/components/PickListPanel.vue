@@ -36,15 +36,23 @@
       </el-form-item>
     </el-form>
     <el-form :inline="true" size="mini" class="filter-row" @submit.native.prevent>
-      <el-form-item>
+      <el-form-item label="开始">
         <el-date-picker
-          v-model="form.dateRange"
-          type="daterange"
-          range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
+          v-model="form.StateDate"
+          type="date"
+          placeholder="开始日期"
           value-format="yyyy-MM-dd"
-          style="width: 240px"
+          style="width: 135px"
+          @change="handleSearch"
+        />
+      </el-form-item>
+      <el-form-item label="-">
+        <el-date-picker
+          v-model="form.EndDate"
+          type="date"
+          placeholder="结束日期"
+          value-format="yyyy-MM-dd"
+          style="width: 135px"
           @change="handleSearch"
         />
       </el-form-item>
@@ -168,7 +176,8 @@ export default {
         PackState: -1,
         TransferState: -1,
         storageId: '',
-        dateRange: [start, end],
+        StateDate: start,
+        EndDate: end,
         DeptCode: '',
         PackNumber: '',
         field: '',
@@ -234,12 +243,11 @@ export default {
       });
     },
     buildWhere() {
-      const [start, end] = this.form.dateRange || ['', ''];
       return {
         DeptCode: this.form.DeptCode,
         PackNumber: this.form.PackNumber,
-        StateDate: start || '',
-        EndDate: end || '',
+        StateDate: this.form.StateDate || '',
+        EndDate: this.form.EndDate || '',
         PackState: this.form.PackState,
         TransferState: this.form.TransferState,
         storageId: this.form.storageId,

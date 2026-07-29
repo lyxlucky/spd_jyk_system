@@ -138,15 +138,22 @@
             <el-option label="否" value="0" />
           </el-select>
         </el-form-item>
-        <el-form-item label="计划手术日期">
+        <el-form-item label="计划手术开始">
           <el-date-picker
-            v-model="surgeryDateRange"
-            type="daterange"
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
+            v-model="searchForm.SURGERY_DATE_START"
+            type="date"
+            placeholder="开始日期"
             value-format="yyyy-MM-dd"
-            style="width: 100%"
+            style="width: 140px"
+          />
+        </el-form-item>
+        <el-form-item label="-">
+          <el-date-picker
+            v-model="searchForm.SURGERY_DATE_END"
+            type="date"
+            placeholder="结束日期"
+            value-format="yyyy-MM-dd"
+            style="width: 140px"
           />
         </el-form-item>
         <el-form-item label="审核状态">
@@ -183,26 +190,40 @@
             <el-option label="否" value="0" />
           </el-select>
         </el-form-item>
-        <el-form-item label="品种收费日期">
+        <el-form-item label="品种收费开始">
           <el-date-picker
-            v-model="varietieChargeDateRange"
-            type="daterange"
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
+            v-model="searchForm.VARIETIE_CHARGE_START"
+            type="date"
+            placeholder="开始日期"
             value-format="yyyy-MM-dd"
-            style="width: 100%"
+            style="width: 140px"
           />
         </el-form-item>
-        <el-form-item label="科室审批日期">
+        <el-form-item label="-">
           <el-date-picker
-            v-model="deptApprovalDateRange"
-            type="daterange"
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
+            v-model="searchForm.VARIETIE_CHARGE_END"
+            type="date"
+            placeholder="结束日期"
             value-format="yyyy-MM-dd"
-            style="width: 100%"
+            style="width: 140px"
+          />
+        </el-form-item>
+        <el-form-item label="科室审批开始">
+          <el-date-picker
+            v-model="searchForm.DEPT_APPROVAL_START"
+            type="date"
+            placeholder="开始日期"
+            value-format="yyyy-MM-dd"
+            style="width: 140px"
+          />
+        </el-form-item>
+        <el-form-item label="-">
+          <el-date-picker
+            v-model="searchForm.DEPT_APPROVAL_END"
+            type="date"
+            placeholder="结束日期"
+            value-format="yyyy-MM-dd"
+            style="width: 140px"
           />
         </el-form-item>
         <el-form-item>
@@ -715,10 +736,6 @@ export default {
         DEPT_APPROVAL_END: '',
         ID: ''
       },
-      // 日期范围
-      surgeryDateRange: [],
-      varietieChargeDateRange: [],
-      deptApprovalDateRange: [],
       // 科室选项
       deptOptions: [],
       // 主表数据
@@ -756,36 +773,6 @@ export default {
   methods: {
     // 搜索
     search() {
-      // 处理手术日期范围
-      if (this.surgeryDateRange && this.surgeryDateRange.length === 2) {
-        this.searchForm.SURGERY_DATE_START = this.surgeryDateRange[0];
-        this.searchForm.SURGERY_DATE_END = this.surgeryDateRange[1];
-      } else {
-        this.searchForm.SURGERY_DATE_START = '';
-        this.searchForm.SURGERY_DATE_END = '';
-      }
-      // 处理品种收费日期范围
-      if (
-        this.varietieChargeDateRange &&
-        this.varietieChargeDateRange.length === 2
-      ) {
-        this.searchForm.VARIETIE_CHARGE_START = this.varietieChargeDateRange[0];
-        this.searchForm.VARIETIE_CHARGE_END = this.varietieChargeDateRange[1];
-      } else {
-        this.searchForm.VARIETIE_CHARGE_START = '';
-        this.searchForm.VARIETIE_CHARGE_END = '';
-      }
-      // 处理科室审批日期范围
-      if (
-        this.deptApprovalDateRange &&
-        this.deptApprovalDateRange.length === 2
-      ) {
-        this.searchForm.DEPT_APPROVAL_START = this.deptApprovalDateRange[0];
-        this.searchForm.DEPT_APPROVAL_END = this.deptApprovalDateRange[1];
-      } else {
-        this.searchForm.DEPT_APPROVAL_START = '';
-        this.searchForm.DEPT_APPROVAL_END = '';
-      }
       this.mainTablePage.page = 1;
       this.loadMainTableData();
     },
@@ -814,9 +801,6 @@ export default {
         DEPT_APPROVAL_END: '',
         ID: ''
       };
-      this.surgeryDateRange = [];
-      this.varietieChargeDateRange = [];
-      this.deptApprovalDateRange = [];
       this.mainTablePage.page = 1;
       this.loadMainTableData();
     },

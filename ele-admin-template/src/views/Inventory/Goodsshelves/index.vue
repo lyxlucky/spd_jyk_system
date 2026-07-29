@@ -10,8 +10,13 @@
         </el-form-item>
       </el-form>
       <div class="goodsshelves-content">
-        <LeftPage v-if="activeTab === 'in'" />
-        <RightPage v-if="activeTab === 'out'" />
+        <!-- keep-alive：切换 tab 保留查询条件、列表数据与 pageSize，避免销毁重建 -->
+        <keep-alive>
+          <component
+            :is="activeTab === 'in' ? 'LeftPage' : 'RightPage'"
+            :page-size.sync="sharedPageSize"
+          />
+        </keep-alive>
       </div>
     </el-card>
   </div>
@@ -31,7 +36,9 @@ export default {
   },
   data() {
     return {
-      activeTab: 'in'
+      activeTab: 'in',
+      // 两侧 tab 共用，切换后首次进入的另一侧也沿用已选条数
+      sharedPageSize: 10
     };
   },
   mounted() {

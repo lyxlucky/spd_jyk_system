@@ -86,15 +86,18 @@ export default {
   },
   methods: {
     onOpen() {
-      const row = this.singleRow || this.rows?.[0] || {};
-      this.originAuthValid = formatContractDate(row.Auth_Valid);
-      this.originStart = formatContractDate(row.DET_CONTRACT_START);
-      this.originEnd = formatContractDate(row.DET_CONTRACT_END);
-      this.newAuthValid = this.originAuthValid;
-      this.startDetail = this.originStart;
-      this.endDetail = this.originEnd;
-      this.syncRegCert = false;
-      this.syncContract = false;
+      // nextTick：避免 visible 与 singleRow 同帧更新时读到旧 props
+      this.$nextTick(() => {
+        const row = this.singleRow || this.rows?.[0] || {};
+        this.originAuthValid = formatContractDate(row.Auth_Valid);
+        this.originStart = formatContractDate(row.DET_CONTRACT_START);
+        this.originEnd = formatContractDate(row.DET_CONTRACT_END);
+        this.newAuthValid = this.originAuthValid;
+        this.startDetail = this.originStart;
+        this.endDetail = this.originEnd;
+        this.syncRegCert = false;
+        this.syncContract = false;
+      });
     },
     buildGuidsJson() {
       return JSON.stringify(

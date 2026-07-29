@@ -744,8 +744,17 @@ export default {
       }
       if (!this.validateSystemReceiptSku()) return;
       try {
-        await checkVarietieBatch(this.currentReceipt.Goods_Var_Cargo_Receipt_Id);
-        await MessageBox.confirm('确定要进行收货操作吗？', '提示', { type: 'warning' });
+        const check = await checkVarietieBatch(
+          this.currentReceipt.Goods_Var_Cargo_Receipt_Id
+        );
+        // 对齐老页：400 提示后可强收
+        await MessageBox.confirm(
+          check.warn
+            ? `${check.msg}  继续确认收货？`
+            : '确定要进行收货操作吗？',
+          '提示',
+          { type: 'warning' }
+        );
         const receiptId = this.currentReceipt.Goods_Var_Cargo_Receipt_Id;
         await confirmSystemReceipt(receiptId);
         Message.success('收货成功');

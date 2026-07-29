@@ -116,15 +116,23 @@
               <el-option label="否" value="0" />
             </el-select>
           </el-form-item>
-          <el-form-item>
+          <el-form-item label="开始日期">
             <el-date-picker
-              v-model="orderFilters.dateRange"
-              type="daterange"
-              range-separator="至"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
+              v-model="orderFilters.dateFrom"
+              type="date"
+              placeholder="开始日期"
               value-format="yyyy-MM-dd"
-              style="width: 240px"
+              style="width: 140px"
+              @change="reloadOrders"
+            />
+          </el-form-item>
+          <el-form-item label="-">
+            <el-date-picker
+              v-model="orderFilters.dateTo"
+              type="date"
+              placeholder="结束日期"
+              value-format="yyyy-MM-dd"
+              style="width: 140px"
               @change="reloadOrders"
             />
           </el-form-item>
@@ -311,7 +319,8 @@ export default {
         condition: '',
         state: '',
         isHaveGoods: '',
-        dateRange: []
+        dateFrom: '',
+        dateTo: ''
       },
       detailFilters: { str: '' },
       inventoryColumns: [
@@ -478,7 +487,6 @@ export default {
       });
     },
     orderDatasource({ page, limit }) {
-      const [dateFrom, dateTo] = this.orderFilters.dateRange || ['', ''];
       return searchGoodsReturnList({
         page,
         limit,
@@ -486,8 +494,8 @@ export default {
           condition: this.orderFilters.condition,
           state: this.orderFilters.state,
           isHaveGoods: this.orderFilters.isHaveGoods,
-          dateFrom: dateFrom || '',
-          dateTo: dateTo || '',
+          dateFrom: this.orderFilters.dateFrom || '',
+          dateTo: this.orderFilters.dateTo || '',
           STORAGE_ID: this.filters.storageId
         }
       }).then((res) => {

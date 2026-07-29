@@ -37,15 +37,22 @@
               clearable
             ></el-input>
           </el-form-item> -->
-          <!-- <el-form-item label="推送时间" prop="SPD_PUSH_TIME">
+          <!-- <el-form-item label="推送开始" prop="SPD_PUSH_TIME_START">
             <el-date-picker
-              v-model="form.SPD_PUSH_TIME"
-              type="daterange"
-              range-separator="至"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
+              v-model="form.SPD_PUSH_TIME_START"
+              type="date"
+              placeholder="开始日期"
               value-format="yyyy-MM-dd"
-              style="width: 240px"
+              style="width: 140px"
+            ></el-date-picker>
+          </el-form-item>
+          <el-form-item label="-" prop="SPD_PUSH_TIME_END">
+            <el-date-picker
+              v-model="form.SPD_PUSH_TIME_END"
+              type="date"
+              placeholder="结束日期"
+              value-format="yyyy-MM-dd"
+              style="width: 140px"
             ></el-date-picker>
           </el-form-item> -->
           <el-form-item>
@@ -111,7 +118,8 @@
           SP_STATE: '',
           LEDGER_NAME: '',
           SPD_PUSH_MAN: '',
-          SPD_PUSH_TIME: []
+          SPD_PUSH_TIME_START: '',
+          SPD_PUSH_TIME_END: ''
         },
         columns: [
           //   {

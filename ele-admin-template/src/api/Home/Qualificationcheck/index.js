@@ -241,9 +241,8 @@ export async function getFactory(data) {
     formataData.page = data.page;
     formataData.size = data.limit;
     formataData.MANUFACTURING_ENT_NAME = data.where.MANUFACTURING_ENT_NAME ? data.where.MANUFACTURING_ENT_NAME : '';
-    const [startTime, endTime] = data.where.date ? data.where.date : ['', ''];
-    formataData.startTime = startTime;
-    formataData.endTime = endTime;
+    formataData.startTime = data.where.dateStart || '';
+    formataData.endTime = data.where.dateEnd || '';
     let req = formdataify(formataData);
     const res = await request.post('/ProdInfo/getMANUFACTURING_ENT',req);
     if (res.data.code == 200) {

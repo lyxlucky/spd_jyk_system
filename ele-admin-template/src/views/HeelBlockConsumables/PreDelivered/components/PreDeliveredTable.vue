@@ -35,6 +35,16 @@
         <el-tag v-if="row.CommonState == 1">已提交</el-tag>
       </template>
 
+      <template v-slot:SBK_APPROVE_STATE="{ row }">
+        <span v-if="row.SBK_APPROVE_STATE == '1' || row.SBK_APPROVE_STATE == 1" class="approve-passed">
+          已审批
+        </span>
+        <span v-else-if="row.SBK_APPROVE_STATE == '0' || row.SBK_APPROVE_STATE == 0">
+          未审批
+        </span>
+        <span v-else>{{ row.SBK_APPROVE_STATE }}</span>
+      </template>
+
       <template v-slot:TempletName="{ row }">
         <span
           style="color: #409eff"
@@ -170,19 +180,11 @@
           {
             prop: 'SBK_APPROVE_STATE',
             label: '审批状态',
+            slot: 'SBK_APPROVE_STATE',
             // sortable: 'custom',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 120,
-            formatter(row, column, cellValue) {
-              if (cellValue == '0') {
-                return '未审批';
-              } else if (cellValue == '1') {
-                return '已审批';
-              } else {
-                return cellValue;
-              }
-            }
+            minWidth: 120
           },
           {
             prop: 'SBK_APPROVE_MAN',
@@ -491,12 +493,12 @@
             });
         });
       },
-      tableRowClassName({ row, rowIndex }) {
-        if (row.CommonState == 1) {
-          return 'success-row';
-        } else {
-          return '';
+      tableRowClassName({ row }) {
+        // 审批状态已通过：整行绿色区分（对齐老页 preDeli_green）
+        if (row.SBK_APPROVE_STATE == '1' || row.SBK_APPROVE_STATE == 1) {
+          return 'approve-passed-row';
         }
+        return '';
       }
     },
     mounted() {
@@ -520,7 +522,16 @@
     background: oldlace;
   }
 
-  .el-table .success-row {
-    background: #65bb37;
+  .el-table .approve-passed-row {
+    background: #e8f8e0;
+  }
+
+  .el-table .approve-passed-row td {
+    background: #e8f8e0 !important;
+  }
+
+  .approve-passed {
+    color: #65bb37;
+    font-weight: 600;
   }
 </style>

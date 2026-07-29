@@ -152,16 +152,24 @@
     <el-row :gutter="8" class="bottom-row">
       <el-col :span="5">
         <div class="panel-title">散货申领单列表</div>
-        <el-form size="mini" class="apply-filter-form">
-          <el-form-item>
+        <el-form size="mini" inline class="apply-filter-form">
+          <el-form-item label="申领日期">
             <el-date-picker
-              v-model="applyDateRange"
-              type="daterange"
-              range-separator="至"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
+              v-model="applyStartDate"
+              type="date"
               value-format="yyyy-MM-dd"
-              style="width: 100%"
+              placeholder="开始"
+              style="width: 140px"
+              @change="reloadApplyList"
+            />
+          </el-form-item>
+          <el-form-item label="-">
+            <el-date-picker
+              v-model="applyEndDate"
+              type="date"
+              value-format="yyyy-MM-dd"
+              placeholder="结束"
+              style="width: 140px"
               @change="reloadApplyList"
             />
           </el-form-item>
@@ -457,7 +465,8 @@ export default {
       applySumMap: {},
       detailRows: [],
       detailTotal: 0,
-      applyDateRange: [],
+      applyStartDate: '',
+      applyEndDate: '',
       applyFilters: {
         searchName: '',
         is_sign: '0',
@@ -625,7 +634,8 @@ export default {
       if (!this.deptTwoCode) {
         return Promise.resolve({ count: 0, list: [] });
       }
-      const [start, end] = this.applyDateRange || [];
+      const start = this.applyStartDate;
+      const end = this.applyEndDate;
       return getApplyList(
         {
           DeptTwoCode: this.deptTwoCode,
@@ -1229,7 +1239,8 @@ export default {
       }
     },
     async onExportApply() {
-      const [start, end] = this.applyDateRange || [];
+      const start = this.applyStartDate;
+      const end = this.applyEndDate;
       this.exporting = true;
       try {
         const data = await exportApplyListAll({

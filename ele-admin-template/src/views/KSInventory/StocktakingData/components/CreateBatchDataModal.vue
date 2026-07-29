@@ -20,14 +20,23 @@
               <!-- 日期筛选 -->
               <el-col v-if="!KSDepartmentalPlanData.GENERATE_DATE"
                 v-bind="styleResponsive ? { lg: 8, md: 12 } : { span: 4 }">
-                <el-form-item label="">
-                  <el-date-picker v-model="where.date" 
-                  type="daterange" 
-                  range-separator="至" 
-                  start-placeholder="开始日期"
-                  end-placeholder="结束日期"
-                  value-format = "yyyy-MM-dd HH:mm:ss"
-                  :default-time="['00:00:00', '23:59:59']"
+                <el-form-item label="开始">
+                  <el-date-picker v-model="where.dateStart"
+                  type="datetime"
+                  placeholder="开始日期"
+                  value-format="yyyy-MM-dd HH:mm:ss"
+                  default-time="00:00:00"
+                  style="width: 140px"
+                  >
+                  </el-date-picker>
+                </el-form-item>
+                <el-form-item label="-">
+                  <el-date-picker v-model="where.dateEnd"
+                  type="datetime"
+                  placeholder="结束日期"
+                  value-format="yyyy-MM-dd HH:mm:ss"
+                  default-time="23:59:59"
+                  style="width: 140px"
                   >
                   </el-date-picker>
                 </el-form-item>
@@ -95,7 +104,8 @@ export default {
   data() {
     const defaultForm = {
       VARIETIE_CODE_NEW: '',
-      date: '',
+      dateStart: '',
+      dateEnd: ''
     };
     return {
       defaultForm,
@@ -276,7 +286,8 @@ export default {
       where.GENERATE_DATE = this.KSDepartmentalPlanData.GENERATE_DATE;
       where.DEPT_TWO_CODE = this.KSDepartmentalPlanData.DEPT_TWO_CODE;
       where.VARIETIE_CODE_NEW = this.where.VARIETIE_CODE_NEW;
-      where.BETWEENDATE = this.where.date;
+      where.dateStart = this.where.dateStart;
+      where.dateEnd = this.where.dateEnd;
       let data = GetStockDataDelHz({ page, limit, where, order }).then(
         (res) => {
           var tData = {
@@ -314,7 +325,8 @@ export default {
         where.GENERATE_DATE = this.KSDepartmentalPlanData.GENERATE_DATE;
         where.DEPT_TWO_CODE = this.KSDepartmentalPlanData.DEPT_TWO_CODE;
         where.VARIETIE_CODE_NEW = this.where.VARIETIE_CODE_NEW;
-        where.BETWEENDATE = this.where.date;
+        where.dateStart = this.where.dateStart;
+        where.dateEnd = this.where.dateEnd;
         GetStockDataDelHz({
           page: 1,
           limit: 999999,

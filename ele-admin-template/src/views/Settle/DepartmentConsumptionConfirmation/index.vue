@@ -9,16 +9,24 @@
         size="mini"
         @keyup.enter.native="search"
       >
-        <el-form-item label="计费时间" class="date-range-item" style="width: 400px">
+        <el-form-item label="计费开始" class="date-range-item">
           <el-date-picker
-            v-model="dateRange"
-            type="datetimerange"
-            range-separator="至"
-            start-placeholder="开始时间"
-            end-placeholder="结束时间"
+            v-model="searchForm.OPEARTION_CHARGING_TIME_START"
+            type="datetime"
+            placeholder="开始时间"
             value-format="yyyy-MM-dd HH:mm:ss"
-            :default-time="['00:00:00', '23:59:59']"
-            style="width: 100%;"
+            default-time="00:00:00"
+            style="width: 140px"
+          />
+        </el-form-item>
+        <el-form-item label="-" class="date-range-item">
+          <el-date-picker
+            v-model="searchForm.OPEARTION_CHARGING_TIME_END"
+            type="datetime"
+            placeholder="结束时间"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            default-time="23:59:59"
+            style="width: 140px"
           />
         </el-form-item>
         <el-form-item label="执行科室">
@@ -538,7 +546,6 @@ export default {
         IS_GT: '', // 是否跟台
         ID: ''
       },
-      dateRange: null, // 日期范围，将在created中初始化
       // 统计数据
       totalQuantity: 0, // 总数量
       totalAmount: '0.00', // 总金额
@@ -585,26 +592,19 @@ export default {
       }
       const endDateStr = `${endDate.getFullYear()}-${String(endDate.getMonth() + 1).padStart(2, '0')}-${String(endDate.getDate()).padStart(2, '0')} 23:59:59`;
 
-      return [startDateStr, endDateStr];
+      return { start: startDateStr, end: endDateStr };
     },
     // 搜索
     search() {
-      // 处理日期范围
-      if (this.dateRange && this.dateRange.length === 2) {
-        this.searchForm.OPEARTION_CHARGING_TIME_START = this.dateRange[0];
-        this.searchForm.OPEARTION_CHARGING_TIME_END = this.dateRange[1];
-      } else {
-        this.searchForm.OPEARTION_CHARGING_TIME_START = '';
-        this.searchForm.OPEARTION_CHARGING_TIME_END = '';
-      }
       this.mainTablePage.page = 1;
       this.loadMainTableData();
     },
     // 重置
     reset() {
+      const defaultRange = this.getDefaultDateRange();
       this.searchForm = {
-        OPEARTION_CHARGING_TIME_START: '',
-        OPEARTION_CHARGING_TIME_END: '',
+        OPEARTION_CHARGING_TIME_START: defaultRange.start,
+        OPEARTION_CHARGING_TIME_END: defaultRange.end,
         ZX_DEPT: '',
         DEPT_TWO_NAME: '',
         SPECIFICATION_OR_TYPE: '',
@@ -618,7 +618,6 @@ export default {
         IS_GT: '',
         ID: ''
       };
-      this.dateRange = this.getDefaultDateRange();
       this.mainTablePage.page = 1;
       this.search();
     },
@@ -930,13 +929,9 @@ export default {
     }
   },
   created() {
-    // 设置默认日期范围
-    this.dateRange = this.getDefaultDateRange();
-    // 设置搜索表单的日期字段
-    if (this.dateRange && this.dateRange.length === 2) {
-      this.searchForm.OPEARTION_CHARGING_TIME_START = this.dateRange[0];
-      this.searchForm.OPEARTION_CHARGING_TIME_END = this.dateRange[1];
-    }
+    const defaultRange = this.getDefaultDateRange();
+    this.searchForm.OPEARTION_CHARGING_TIME_START = defaultRange.start;
+    this.searchForm.OPEARTION_CHARGING_TIME_END = defaultRange.end;
     this.loadMainTableData();
   }
 };

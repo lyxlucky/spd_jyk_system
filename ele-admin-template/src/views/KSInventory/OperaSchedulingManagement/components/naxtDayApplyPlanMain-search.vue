@@ -52,15 +52,22 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="日期" class="date-range-item">
+      <el-form-item label="开始">
         <el-date-picker
-          v-model="where.date"
-          type="daterange"
+          v-model="where.dateFrom"
+          type="date"
           value-format="yyyy-MM-dd"
-          style="width: 240px"
-          range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
+          style="width: 135px"
+          placeholder="开始日期"
+        />
+      </el-form-item>
+      <el-form-item label="-">
+        <el-date-picker
+          v-model="where.dateTo"
+          type="date"
+          value-format="yyyy-MM-dd"
+          style="width: 135px"
+          placeholder="结束日期"
         />
       </el-form-item>
       <br />
@@ -107,7 +114,8 @@
   const createDefaultWhere = () => ({
     NAXT_DAT_PLAN_NUM: '',
     CREATE_MAN: '',
-    date: [],
+    dateFrom: '',
+    dateTo: '',
     YY_TYPE: '',
     STORAGE: '',
     JP_STATE: ''
@@ -158,7 +166,8 @@
     mounted() {
       const currentDate = this.$moment().add(1, 'days').format('YYYY-MM-DD');
       const threeMonthsAgo = this.$moment().subtract(3, 'months').format('YYYY-MM-DD');
-      this.where.date = [threeMonthsAgo, currentDate];
+      this.where.dateFrom = threeMonthsAgo;
+      this.where.dateTo = currentDate;
     },
     methods: {
       search() {
@@ -168,7 +177,8 @@
         this.where = createDefaultWhere();
         const currentDate = this.$moment().add(1, 'days').format('YYYY-MM-DD');
         const threeMonthsAgo = this.$moment().subtract(3, 'months').format('YYYY-MM-DD');
-        this.where.date = [threeMonthsAgo, currentDate];
+        this.where.dateFrom = threeMonthsAgo;
+        this.where.dateTo = currentDate;
         this.search();
       },
       cancel() {

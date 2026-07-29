@@ -269,14 +269,21 @@
         <span class="time-label">消耗时间</span>
         <el-form-item class="time-item">
           <el-date-picker
-            v-model="dateRange"
-            type="daterange"
+            v-model="where.start_time"
+            type="date"
             value-format="yyyy-MM-dd"
-            range-separator="至"
-            start-placeholder="开始"
-            end-placeholder="结束"
-            style="width:240px"
-            @change="onDateRange"
+            placeholder="开始"
+            style="width:140px"
+          />
+        </el-form-item>
+        <span class="time-sep">至</span>
+        <el-form-item class="time-item">
+          <el-date-picker
+            v-model="where.end_time"
+            type="date"
+            value-format="yyyy-MM-dd"
+            placeholder="结束"
+            style="width:140px"
           />
         </el-form-item>
         <el-form-item class="time-item">
@@ -425,7 +432,6 @@ export default {
   data() {
     return {
       where: defaultWhere(),
-      dateRange: [],
       storageList: [],
       classific2Options: CLASSIFIC2
     };
@@ -446,21 +452,11 @@ export default {
         this.storageList = [];
       }
     },
-    onDateRange(range) {
-      if (range && range.length === 2) {
-        this.where.start_time = range[0];
-        this.where.end_time = range[1];
-      } else {
-        this.where.start_time = '';
-        this.where.end_time = '';
-      }
-    },
     search() {
       this.$emit('search', { ...this.where });
     },
     reset() {
       this.where = defaultWhere();
-      this.dateRange = [];
       this.search();
     },
     getWhere() {

@@ -12,8 +12,8 @@
       <!-- <el-row :gutter="10">
       <el-col v-bind="styleResponsive ? { lg: 3, md: 4 } : { span: 4 }">
         <el-form-item label="">
-          <el-date-picker v-model="where.topTableSearchTime" value-format="yyyy-MM-dd" type="daterange"
-            range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
+          <el-date-picker v-model="where.startTime" value-format="yyyy-MM-dd" type="date"
+            placeholder="开始日期">
           </el-date-picker>
         </el-form-item>
       </el-col>
@@ -35,15 +35,22 @@
       </el-col>
     </el-row> -->
 
-      <el-form-item label="日期">
+      <el-form-item label="开始">
         <el-date-picker
-          v-model="where.topTableSearchTime"
+          v-model="where.startTime"
           value-format="yyyy-MM-dd"
-          type="daterange"
-          style="width: 220px"
-          range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
+          type="date"
+          style="width: 135px"
+          placeholder="开始日期"
+        />
+      </el-form-item>
+      <el-form-item label="-">
+        <el-date-picker
+          v-model="where.endTime"
+          value-format="yyyy-MM-dd"
+          type="date"
+          style="width: 135px"
+          placeholder="结束日期"
         />
       </el-form-item>
 
@@ -133,7 +140,8 @@ export default {
     // 默认表单数据
     const defaultWhere = {
       //查询时间
-      topTableSearchTime: [],
+      startTime: '',
+      endTime: '',
       //查询状态
       status: '',
       //新增科室申报对话框

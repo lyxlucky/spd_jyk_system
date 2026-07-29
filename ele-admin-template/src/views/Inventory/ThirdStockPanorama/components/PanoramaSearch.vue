@@ -79,15 +79,22 @@
             style="width: 132px"
           />
         </el-form-item>
-        <el-form-item label="发生时间时间">
+        <el-form-item label="发生时间">
           <el-date-picker
-            v-model="operationChargingDateRange"
-            type="daterange"
+            v-model="form.operationChargingStartTime"
+            type="date"
             value-format="yyyy-MM-dd"
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            style="width: 240px"
+            placeholder="开始"
+            style="width: 140px"
+          />
+        </el-form-item>
+        <el-form-item label="-">
+          <el-date-picker
+            v-model="form.operationChargingEndTime"
+            type="date"
+            value-format="yyyy-MM-dd"
+            placeholder="结束"
+            style="width: 140px"
           />
         </el-form-item>
         <el-form-item class="panorama-search__actions">
@@ -137,18 +144,6 @@
         },
         set(value) {
           this.$emit('mode-change', value);
-        }
-      },
-      operationChargingDateRange: {
-        get() {
-          return [
-            this.form.operationChargingStartTime,
-            this.form.operationChargingEndTime
-          ];
-        },
-        set(value) {
-          this.form.operationChargingStartTime = value?.[0] || '';
-          this.form.operationChargingEndTime = value?.[1] || '';
         }
       }
     }, 
