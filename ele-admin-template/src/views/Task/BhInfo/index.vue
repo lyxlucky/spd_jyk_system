@@ -81,7 +81,7 @@
         :columns="mainColumns"
         :datasource="mainDatasource"
         :selection.sync="mainSelection"
-        cache-key="bhInfoMainTable"
+        cache-key="bhInfoMainTableV2"
         @current-change="onMainRowChange"
         @selection-change="onMainSelectionChange"
       >
@@ -175,12 +175,14 @@
           </div>
           <ele-pro-table
             ref="detailTable"
+            class="bh-info-nowrap-table"
             size="mini"
             height="335px"
             :init-load="false"
             :toolkit="[]"
             :need-page="false"
             :page-size="9999"
+            :header-overflow-hidden="true"
             :columns="detailColumns"
             :datasource="detailDatasource"
             :selection.sync="detailSelection"
@@ -322,37 +324,49 @@ export default {
       stockUpVisible: false,
       monitorRows: [],
       mainColumns: [
-        { type: 'selection', width: 45, fixed: 'left' },
-        { label: '库房名称', prop: 'DIY_STORAGE', width: 120 },
-        { label: '备注', width: 120, align: 'center', slot: 'remark' },
-        { label: '备货数量', width: 120, align: 'center', slot: 'planQty' },
-        { label: '是否常备', width: 120, align: 'center', slot: 'isCgBh' },
-        { label: '阳光编码', prop: 'YG_CODE', width: 120 },
-        { label: '品种编码', prop: 'VARIETIE_CODE_NEW', width: 100 },
-        { label: '品种名称', prop: 'VARIETIE_NAME', minWidth: 180 },
-        { label: '规格型号', prop: 'SPECIFICATION_OR_TYPE', minWidth: 160 },
-        { label: '生产厂家', prop: 'MANUFACTURING_ENT_NAME', minWidth: 160 },
-        { label: '注册证号', prop: 'APPROVAL_NUMBER', width: 120 },
-        { label: '启用合同供应商', prop: 'SUPPLIER_NAME', minWidth: 160 },
-        { label: '合同结束日期', prop: 'CONTRACT_END_TIME', width: 140 },
-        { label: '合同明细结束日期', prop: 'DET_CONTRACT_END', width: 180 },
-        { label: '近三个月用量', prop: 'USED_QTY', width: 140, align: 'right' },
-        { label: '月均用量', prop: 'YUE_USED_QTY', width: 120, align: 'right' },
-        { label: '周均用量', prop: 'ZHOU_USED_QTY', width: 120, align: 'right' },
-        { label: '中心库存量', width: 120, align: 'right', slot: 'centerQty' },
-        { label: '中心%', width: 100, align: 'right', slot: 'centerPct' },
-        { label: '二级库存量', prop: 'DEPT_NUM', width: 120, align: 'right' },
-        { label: '二级%', width: 100, align: 'right', slot: 'deptPct' },
-        { label: '库存上限', prop: 'STOREHOUSE_UPPPER', width: 120, align: 'right' },
-        { label: '库存下限', width: 120, align: 'right', slot: 'lower' },
-        { label: '中包装数', prop: 'MIDDLE_PACKAGE_COUNT', width: 120, align: 'right' },
-        { label: '中包装单位', prop: 'MIDDLE_PACKAGE_UNIT', width: 120, align: 'right' },
-        { label: '大包装数', prop: 'BIG_BOX_COUNT', width: 120, align: 'right' },
-        { label: '大包装单位', prop: 'BIG_BOX_UNIT', width: 120, align: 'right' },
-        { label: '未到货最后一次下计划数量', prop: 'STOCK_UP_PLAN_GOODS_QUANTITY', width: 260, align: 'right' },
-        { label: '未到货最后一次下计划时间', width: 260, slot: 'planTime' },
-        { label: '发送状态', width: 120, slot: 'sendState' },
-        { label: '操作', width: 110, fixed: 'right', slot: 'action' }
+        { type: 'selection', columnKey: 'selection', width: 45, fixed: 'left', hideInSetting: true },
+        { label: '库房名称', prop: 'DIY_STORAGE', columnKey: 'DIY_STORAGE', width: 120 },
+        { label: '备注', columnKey: 'remark', width: 120, align: 'center', slot: 'remark' },
+        { label: '备货数量', columnKey: 'planQty', width: 120, align: 'center', slot: 'planQty' },
+        { label: '是否常备', columnKey: 'isCgBh', width: 120, align: 'center', slot: 'isCgBh' },
+        { label: '阳光编码', prop: 'YG_CODE', columnKey: 'YG_CODE', width: 120 },
+        { label: '品种编码', prop: 'VARIETIE_CODE_NEW', columnKey: 'VARIETIE_CODE_NEW', width: 100 },
+        {
+          label: '品种名称',
+          prop: 'VARIETIE_NAME',
+          columnKey: 'VARIETIE_NAME',
+          minWidth: 180,
+          showOverflowTooltip: true
+        },
+        { label: '规格型号', prop: 'SPECIFICATION_OR_TYPE', columnKey: 'SPECIFICATION_OR_TYPE', minWidth: 160, showOverflowTooltip: true },
+        { label: '生产厂家', prop: 'MANUFACTURING_ENT_NAME', columnKey: 'MANUFACTURING_ENT_NAME', minWidth: 160, showOverflowTooltip: true },
+        { label: '注册证号', prop: 'APPROVAL_NUMBER', columnKey: 'APPROVAL_NUMBER', width: 120 },
+        { label: '启用合同供应商', prop: 'SUPPLIER_NAME', columnKey: 'SUPPLIER_NAME', minWidth: 160, showOverflowTooltip: true },
+        { label: '合同结束日期', prop: 'CONTRACT_END_TIME', columnKey: 'CONTRACT_END_TIME', width: 140 },
+        { label: '合同明细结束日期', prop: 'DET_CONTRACT_END', columnKey: 'DET_CONTRACT_END', width: 180 },
+        { label: '近三个月用量', prop: 'USED_QTY', columnKey: 'USED_QTY', width: 140, align: 'right' },
+        { label: '月均用量', prop: 'YUE_USED_QTY', columnKey: 'YUE_USED_QTY', width: 120, align: 'right' },
+        { label: '周均用量', prop: 'ZHOU_USED_QTY', columnKey: 'ZHOU_USED_QTY', width: 120, align: 'right' },
+        { label: '中心库存量', columnKey: 'centerQty', width: 120, align: 'right', slot: 'centerQty' },
+        { label: '中心%', columnKey: 'centerPct', width: 100, align: 'right', slot: 'centerPct' },
+        { label: '二级库存量', prop: 'DEPT_NUM', columnKey: 'DEPT_NUM', width: 120, align: 'right' },
+        { label: '二级%', columnKey: 'deptPct', width: 100, align: 'right', slot: 'deptPct' },
+        { label: '库存上限', prop: 'STOREHOUSE_UPPPER', columnKey: 'STOREHOUSE_UPPPER', width: 120, align: 'right' },
+        { label: '库存下限', columnKey: 'lower', width: 120, align: 'right', slot: 'lower' },
+        { label: '中包装数', prop: 'MIDDLE_PACKAGE_COUNT', columnKey: 'MIDDLE_PACKAGE_COUNT', width: 120, align: 'right' },
+        { label: '中包装单位', prop: 'MIDDLE_PACKAGE_UNIT', columnKey: 'MIDDLE_PACKAGE_UNIT', width: 120, align: 'right' },
+        { label: '大包装数', prop: 'BIG_BOX_COUNT', columnKey: 'BIG_BOX_COUNT', width: 120, align: 'right' },
+        { label: '大包装单位', prop: 'BIG_BOX_UNIT', columnKey: 'BIG_BOX_UNIT', width: 120, align: 'right' },
+        {
+          label: '未到货最后一次下计划数量',
+          prop: 'STOCK_UP_PLAN_GOODS_QUANTITY',
+          columnKey: 'STOCK_UP_PLAN_GOODS_QUANTITY',
+          width: 200,
+          align: 'right'
+        },
+        { label: '未到货最后一次下计划时间', columnKey: 'planTime', width: 200, slot: 'planTime' },
+        { label: '发送状态', columnKey: 'sendState', width: 120, slot: 'sendState' },
+        { label: '操作', columnKey: 'action', width: 110, fixed: 'right', slot: 'action', hideInSetting: true }
       ],
       pickingColumns: [
         { label: '备货计划单号', prop: 'Stock_Up_Plan_No', width: 140 },
@@ -366,19 +380,19 @@ export default {
       ],
       detailColumns: [
         { type: 'selection', width: 45 },
-        { label: '备注', prop: 'REMARKS', width: 90 },
-        { label: '品种编码', prop: 'Varietie_Code_New', width: 120 },
-        { label: '品种全称', prop: 'Varietie_Name', minWidth: 140 },
-        { label: '型号/规格', prop: 'Specification_Or_Type', minWidth: 120 },
+        { label: '备注', prop: 'REMARKS', width: 120, showOverflowTooltip: true },
+        { label: '品种编码', prop: 'Varietie_Code_New', width: 120, showOverflowTooltip: true },
+        { label: '品种全称', prop: 'Varietie_Name', minWidth: 140, showOverflowTooltip: true },
+        { label: '型号/规格', prop: 'Specification_Or_Type', minWidth: 120, showOverflowTooltip: true },
         { label: '单位', prop: 'Unit', width: 55, align: 'center' },
-        { label: '生产企业', prop: 'Manufacturing_Ent_Name', width: 120 },
+        { label: '生产企业', prop: 'Manufacturing_Ent_Name', width: 120, showOverflowTooltip: true },
         { label: '价格', width: 70, align: 'right', slot: 'price' },
         { label: '系数', prop: 'Coefficient', width: 55, align: 'center' },
         { label: '备货/包', prop: 'Stock_Up_Plan_Def_Quantity', width: 100, align: 'center' },
         { label: '备货/散', prop: 'Stock_Up_Plan_Goods_Quantity', width: 100, align: 'center' },
         { label: '实收数量', prop: 'ReceiptQty', width: 120, align: 'center' },
-        { label: '备货时间', prop: 'Plan_Time', width: 100 },
-        { label: '供应商名称', prop: 'supplier_name', width: 140 }
+        { label: '备货时间', prop: 'Plan_Time', width: 100, showOverflowTooltip: true },
+        { label: '供应商名称', prop: 'supplier_name', width: 140, showOverflowTooltip: true }
       ]
     };
   },
@@ -739,5 +753,34 @@ export default {
 }
 .bottom-row {
   margin-top: 0;
+}
+</style>
+
+<style>
+/* 列展示弹层挂到 body，需非 scoped；单行显示以便一次多看几项 */
+.ele-tool-column.el-popover {
+  width: 320px !important;
+  min-width: 280px;
+}
+.ele-tool-column .ele-tool-column-body {
+  max-height: 65vh;
+}
+.ele-tool-column .ele-tool-column-item {
+  padding-top: 2px;
+  padding-bottom: 2px;
+  line-height: 20px;
+}
+.ele-tool-column .ele-tool-column-item .el-checkbox {
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+.ele-tool-column .ele-tool-column-item .el-checkbox__label {
+  white-space: nowrap !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+  padding-left: 6px;
+  line-height: 20px;
 }
 </style>

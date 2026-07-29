@@ -25,7 +25,7 @@
         </div>
       </div>
       <div class="right-card">
-        <UserSearch2 @search="reload2" />
+        <UserSearch2 @search="reload2" @exportData="exportData" />
         <div class="spd-panel spd-table-panel temporary-table-panel">
           <div class="spd-panel__head">出库明细</div>
           <div class="spd-table-panel__wrap">
@@ -55,7 +55,6 @@ import { utils, writeFile } from 'xlsx';
 import UserSearch from './rightpage-search.vue';
 import UserSearch2 from './rightpage-search2.vue';
 import {
-  GetPDAList,
   initTemporary1,
   initTemporary2
 } from '@/api/Inventory/TemporaryRepositoryQuery';
@@ -205,45 +204,44 @@ export default {
       this.selectedDeptTwoName = row.Dept_two_name;
       this.reload2();
     },
-    exportData(data) {
+    async exportData(data) {
       const loading = this.$messageLoading('正在导出数据...');
-      this.$refs.table1.doRequest(({ where, order }) => {
-        where = data;
-        where.Dept_One_Code = this.$store.state.user.info.DeptNow.Dept_Two_Code;
-        GetPDAList({
+      try {
+        const where = {
+          ...(data || {}),
+          deptName: this.selectedDeptTwoName || (data && data.deptName) || ''
+        };
+        const res = await initTemporary2({
           page: 1,
           limit: 999999,
-          where: where,
-          order: order
-        })
-          .then((res) => {
-            loading.close();
-            const headers = this.columns1
-              .filter(column => column.prop)
-              .map(column => column.label);
-            const array = [headers];
-            res.result.forEach((d) => {
-              const row = this.columns1
-                .filter(column => column.prop)
-                .map(column => d[column.prop]);
-              array.push(row);
-            });
-            writeFile(
-              {
-                SheetNames: ['Sheet1'],
-                Sheets: {
-                  Sheet1: utils.aoa_to_sheet(array)
-                }
-              },
-              '暂借记录.xlsx'
-            );
-            this.$message.success('导出成功');
-          })
-          .catch((e) => {
-            loading.close();
-            this.$message.error(e.message);
-          });
-      });
+          where
+        });
+        const list = res?.result || [];
+        const exportCols = (this.columns2 || []).filter((column) => column.prop);
+        const array = [exportCols.map((column) => column.label)];
+        list.forEach((d) => {
+          array.push(
+            exportCols.map((column) => {
+              const val = d[column.prop];
+              return val == null ? '' : val;
+            })
+          );
+        });
+        writeFile(
+          {
+            SheetNames: ['Sheet1'],
+            Sheets: {
+              Sheet1: utils.aoa_to_sheet(array)
+            }
+          },
+          '暂存库出库明细.xlsx'
+        );
+        this.$message.success(list.length ? '导出成功' : '导出成功（无数据）');
+      } catch (e) {
+        this.$message.error(e.message || '导出失败');
+      } finally {
+        loading.close();
+      }
     }
   }
 };
