@@ -120,6 +120,12 @@ export default {
     UploadProReportDialog,
     UploadOrderPicDialog
   },
+  props: {
+    pageSize: {
+      type: Number,
+      default: 10
+    }
+  },
   data() {
     return {
       tableHeight: 400,
@@ -138,7 +144,6 @@ export default {
       orderPicVisible: false,
       orderPicType: '1',
       orderPicParams: { orderNum: '0', batchId: '0', batch: '0' },
-      pageSize: 10,
       pageSizes: [10, 30, 60, 90, 150, 300],
       selection: [],
       columns: this.buildColumns()
@@ -146,11 +151,50 @@ export default {
   },
   mounted() {
     this.bindTableHeight();
+    this.bindPageSizeSync();
+  },
+  activated() {
+    // tab 切回时重新量高并刷新表格布局
+    this.refreshTableLayout();
   },
   beforeDestroy() {
     this.unbindTableHeight();
+    if (this._pageSizeUnwatch) {
+      this._pageSizeUnwatch();
+      this._pageSizeUnwatch = null;
+    }
   },
   methods: {
+    refreshTableLayout() {
+      this.$nextTick(() => {
+        if (typeof this._tableResizeHandler === 'function') {
+          this._tableResizeHandler();
+        } else {
+          const el = this.$refs.tableWrap;
+          if (el) {
+            const pager = el.querySelector('.el-pagination');
+            const pagerH = pager ? pager.offsetHeight + 12 : 48;
+            const h = Math.floor(el.clientHeight - pagerH);
+            if (h > 120 && h !== this.tableHeight) {
+              this.tableHeight = h;
+            }
+          }
+        }
+        this.$refs.table?.doLayout?.();
+      });
+    },
+    bindPageSizeSync() {
+      this.$nextTick(() => {
+        this._pageSizeUnwatch = this.$watch(
+          () => this.$refs.table && this.$refs.table.tableLimit,
+          (val) => {
+            if (val != null && val !== this.pageSize) {
+              this.$emit('update:pageSize', val);
+            }
+          }
+        );
+      });
+    },
     bindTableHeight() {
       this.$nextTick(() => {
         const el = this.$refs.tableWrap;
@@ -163,6 +207,7 @@ export default {
             this.tableHeight = h;
           }
         };
+        this._tableResizeHandler = update;
         update();
         this.$nextTick(() => {
           update();
@@ -173,7 +218,6 @@ export default {
           this._tableRo.observe(el);
         } else {
           window.addEventListener('resize', update);
-          this._tableResizeHandler = update;
         }
       });
     },
@@ -181,11 +225,10 @@ export default {
       if (this._tableRo) {
         this._tableRo.disconnect();
         this._tableRo = null;
-      }
-      if (this._tableResizeHandler) {
+      } else if (this._tableResizeHandler) {
         window.removeEventListener('resize', this._tableResizeHandler);
-        this._tableResizeHandler = null;
       }
+      this._tableResizeHandler = null;
     },
     buildColumns() {
       const cols = [
