@@ -178,7 +178,8 @@
           { label: '全部', value: '' },
           { label: '低值', value: '0' },
           { label: '高值', value: '1' },
-          { label: '试剂', value: '2' }
+          { label: '试剂', value: '2' },
+          { label: '设备耗材', value: '4' }
         ];
         // 只有低值选项
         const lowValueOptions = [
