@@ -44,50 +44,34 @@
       <!-- 对齐老页 CentreBankSIZE_BD：隐藏，默认 4 -->
       <input v-show="false" v-model="printSize" type="text" />
     </el-form>
-    <el-table
+    <ele-pro-table
       ref="table"
-      v-loading="loading"
-      :data="rows"
+      height="420px"
+      size="small"
       border
       stripe
-      size="small"
-      height="420"
-      @selection-change="onSelectionChange"
-    >
-      <el-table-column type="selection" width="45" />
-      <el-table-column type="index" width="45" />
-      <el-table-column prop="Name" label="院区库房" width="100" />
-      <el-table-column prop="Delivery_Note_Number" label="收货单号" min-width="120" />
-      <el-table-column prop="Varietie_Code_New" label="品种编码" width="110" />
-      <el-table-column prop="Varietie_Name" label="品种全称" min-width="160" show-overflow-tooltip />
-      <el-table-column prop="Specification_Or_Type" label="规格型号" width="100" />
-      <el-table-column prop="Batch" label="批号" width="90" />
-      <el-table-column prop="Supplier_Name" label="供应商" min-width="120" show-overflow-tooltip />
-      <el-table-column prop="Delivery_Time" label="收货时间" width="150">
-        <template slot-scope="{ row }">{{ fmtDateTime(row.Delivery_Time) }}</template>
-      </el-table-column>
-    </el-table>
-    <!-- 对齐老页 layui：page + limits [10,30,60,90,150,300]，默认每页 10 -->
-    <div class="pager-wrap">
-      <el-pagination
-        small
-        background
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total"
-        :page-size="pageSize"
-        :page-sizes="pageSizes"
-        :current-page="page"
-        @size-change="onSizeChange"
-        @current-change="onPageChange"
-      />
-    </div>
+      :columns="columns"
+      :datasource="datasource"
+      :selection.sync="selection"
+      :page-size="pageSize"
+      :page-sizes="pageSizes"
+      :toolkit="['columns', 'fullscreen']"
+      cache-key="centreBankDeliveryHistory"
+      :init-load="false"
+    />
   </ele-modal>
 </template>
 
 <script>
 import { Message } from 'element-ui';
 import { searchDeliveryHistory, printHistoryDelivery } from '@/api/Inventory/CentreBankTakeGoods';
-import { fmtDateTime, openExcelFile } from '../utils';
+import { fmtDateTime, openExcelFile, hpFlags } from '../utils';
+
+function receivePropertyText(v) {
+  if (v === '0' || v === 0) return '普通收货';
+  if (v === '1' || v === 1) return '盘溢收货';
+  return v == null || v === '' ? '' : String(v);
+}
 
 export default {
   name: 'DeliveryHistoryDialog',
@@ -103,17 +87,85 @@ export default {
         batch: '',
         supplierName: ''
       },
-      rows: [],
-      loading: false,
       reprinting: false,
-      total: 0,
-      page: 1,
       /** 对齐老页 limit: 10 */
       pageSize: 10,
       pageSizes: [10, 30, 60, 90, 150, 300],
       selection: [],
       /** 对齐老页 CentreBankSIZE_BD，未填时默认 4 */
-      printSize: '4'
+      printSize: '4',
+      columns: [
+        {
+          columnKey: 'selection',
+          type: 'selection',
+          width: 48,
+          align: 'center',
+          fixed: 'left'
+        },
+        {
+          label: '序',
+          columnKey: 'index',
+          type: 'index',
+          width: 45,
+          align: 'center',
+          fixed: 'left'
+        },
+        { prop: 'Name', label: '院区库房', width: 100, showOverflowTooltip: true },
+        { prop: 'Delivery_Note_Number', label: '收货单号', minWidth: 120, showOverflowTooltip: true },
+        { prop: 'JC_TYPE', label: '线上线下', width: 90, showOverflowTooltip: true, show: false },
+        {
+          prop: 'Receive_Property',
+          label: '收货性质',
+          width: 100,
+          show: false,
+          formatter: (_r, _c, v) => receivePropertyText(v)
+        },
+        { prop: 'Receiver', label: '收货人', width: 100, showOverflowTooltip: true },
+        {
+          prop: 'Delivery_Time',
+          label: '收货时间',
+          width: 150,
+          formatter: (row) => fmtDateTime(row.Delivery_Time)
+        },
+        { prop: 'Varietie_Code_New', label: '品种编码', width: 110, showOverflowTooltip: true },
+        { prop: 'Varietie_Name', label: '品种全称', minWidth: 160, showOverflowTooltip: true },
+        { prop: 'Specification_Or_Type', label: '规格型号', width: 100, showOverflowTooltip: true },
+        { prop: 'Unit', label: '单位', width: 70, align: 'center', show: false },
+        { prop: 'Batch', label: '批号', width: 90, showOverflowTooltip: true },
+        {
+          prop: 'Batch_Production_Date',
+          label: '生产日期',
+          width: 110,
+          show: false,
+          formatter: (row) => fmtDateTime(row.Batch_Production_Date)
+        },
+        {
+          prop: 'Batch_Validity_Period',
+          label: '有效期',
+          width: 110,
+          show: false,
+          formatter: (row) => fmtDateTime(row.Batch_Validity_Period)
+        },
+        { prop: 'Netreceipts', label: '实收数量', width: 90, align: 'center', show: false },
+        { prop: 'Supply_Price', label: '结算价', width: 90, align: 'right', show: false },
+        {
+          prop: 'Purchase_Price',
+          label: '采购价',
+          width: 90,
+          align: 'right',
+          show: hpFlags.isCg
+        },
+        { prop: 'Supplier_Name', label: '供应商', minWidth: 120, showOverflowTooltip: true },
+        {
+          prop: 'Manufacturing_Ent_Name',
+          label: '生产企业',
+          minWidth: 120,
+          showOverflowTooltip: true,
+          show: false
+        },
+        { prop: 'Print_Count', label: '打印次数', width: 90, align: 'center', show: false },
+        { prop: 'Amount', label: '总金额', width: 90, align: 'right', show: false }
+      ]
     };
   },
   computed: {
@@ -133,47 +185,36 @@ export default {
     visible(v) {
       if (v) {
         this.selection = [];
-        this.page = 1;
-        this.$nextTick(() => this.$refs.table && this.$refs.table.clearSelection());
-        this.load();
+        this.$nextTick(() => this.onSearch());
       }
     }
   },
   methods: {
-    fmtDateTime,
     onSearch() {
-      this.page = 1;
-      this.load();
-    },
-    onSizeChange(size) {
-      this.pageSize = size;
-      this.page = 1;
-      this.load();
-    },
-    onPageChange(p) {
-      this.page = p || 1;
-      this.load();
-    },
-    async load() {
-      this.loading = true;
       this.selection = [];
-      this.$nextTick(() => this.$refs.table && this.$refs.table.clearSelection());
-      try {
-        const res = await searchDeliveryHistory({
-          ...this.q,
-          page: this.page,
-          size: this.pageSize
-        });
-        this.rows = res.result || [];
-        this.total = Number(res.total) || 0;
-      } catch (e) {
-        Message.error(e.message || '查询失败');
-      } finally {
-        this.loading = false;
-      }
+      this.$refs.table?.reload?.({ page: 1 });
     },
-    onSelectionChange(rows) {
-      this.selection = rows || [];
+    async datasource({ page, limit }) {
+      const res = await searchDeliveryHistory({
+        ...this.q,
+        page,
+        size: limit
+      });
+      const list = (res.result || []).map((row, i) => ({
+        ...row,
+        __rowKey:
+          String(row.Receipt_Id ?? row.Goods_Var_Cargo_Receipt_Id ?? '') +
+          '_' +
+          String(row.Varietie_Code_New ?? row.Varietie_Code ?? '') +
+          '_' +
+          String(row.Batch ?? '') +
+          '_' +
+          String(i)
+      }));
+      return {
+        list,
+        count: Number(res.total) || 0
+      };
     },
     rowReceiptId(row) {
       return row.Receipt_Id ?? row.Goods_Var_Cargo_Receipt_Id ?? '';
@@ -238,12 +279,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-.pager-wrap {
-  margin-top: 10px;
-  padding: 4px 0 2px;
-  text-align: right;
-  flex-shrink: 0;
-}
-</style>
