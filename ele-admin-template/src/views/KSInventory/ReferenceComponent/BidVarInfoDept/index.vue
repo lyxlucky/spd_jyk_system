@@ -40,6 +40,7 @@ import {
   SerachPlanList,
   KeeptListDeta
 } from '@/api/KSInventory/IntroduceUserDefinedTemp';
+import { formatIsNeedAdd } from '@/views/Home/BidVarInfo/utils';
 export default {
   name: 'IntroduceUserDefinedTemp',
   props: {
@@ -86,24 +87,11 @@ export default {
         {
           prop: 'IS_NEED_ADD',
           label: '在用状态',
-          // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
           minWidth: 120,
-          formatter: (_row, _column, cellValue) => {
-            if (cellValue != null) {
-              return '启用';
-            }
-            if (cellValue == '1') {
-              return (
-                '已申请' + '/' + _row.SQ_DEPT_NAME + '/' + _row.SQ_DEPT_MAN
-              );
-            } else if (cellValue == '0') {
-              return '未使用';
-            } else {
-              return '未使用';
-            }
-          }
+          // 与本院中标目录 / 老页一致：有 SPD 编码才算启用
+          formatter: (row) => formatIsNeedAdd(row)
         },
         {
           prop: 'VARIETIE_CODE_NEW',
