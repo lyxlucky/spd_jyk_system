@@ -37,18 +37,26 @@
           <el-option label="已提交" value="1"></el-option>
         </el-select>
       </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 6, md: 12 } : { span: 9 }">
-        <el-date-picker
-          style="width: 220px"
-          v-model="where.date"
-          type="daterange"
-          value-format="yyyy-MM-dd"
-          size="mini"
-          range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-        >
-        </el-date-picker>
+      <el-col v-bind="styleResponsive ? { lg: 8, md: 12 } : { span: 12 }">
+        <div class="date-range-two">
+          <el-date-picker
+            v-model="where.dateStart"
+            type="date"
+            value-format="yyyy-MM-dd"
+            size="mini"
+            placeholder="开始日期"
+            style="width: 130px"
+          />
+          <span class="date-sep">至</span>
+          <el-date-picker
+            v-model="where.dateEnd"
+            type="date"
+            value-format="yyyy-MM-dd"
+            size="mini"
+            placeholder="结束日期"
+            style="width: 130px"
+          />
+        </div>
       </el-col>
     </el-row>
     <div class="condition-row">
@@ -154,15 +162,20 @@
       rowData: Object
     },
     data() {
+      const dateStart = getDayOfDate('yyyy-MM-dd', -7);
+      const dateEnd = getDayOfDate('yyyy-MM-dd', 1);
       // 默认表单数据
       const defaultWhere = {
         state: '',
         condition: '',
-        date: [getDayOfDate('yyyy-MM-dd', -7), getDayOfDate('yyyy-MM-dd', 1)],
+        dateStart,
+        dateEnd,
+        date: [dateStart, dateEnd],
         strApprove: '',
         strYanShou: ''
       };
       return {
+        defaultWhere,
         // 表单数据
         where: { ...defaultWhere },
         BZ: '',
@@ -185,11 +198,15 @@
       }
     },
     methods: {
+      buildWhere() {
+        return {
+          ...this.where,
+          date: [this.where.dateStart || '', this.where.dateEnd || '']
+        };
+      },
       /* 搜索 */
       search() {
-        // console.log(this.$store.state.user.info.userDept)
-        console.log(this.where);
-        this.$emit('search', this.where);
+        this.$emit('search', this.buildWhere());
       },
       Approve_btn() {
         this.$emit('Approve_btn');
@@ -201,11 +218,17 @@
         this.$emit('Confirm_btn');
       },
       exportData() {
-        this.$emit('exportData', this.where);
+        this.$emit('exportData', this.buildWhere());
       },
       /*  重置 */
       reset() {
-        this.where = { ...this.defaultWhere };
+        const d = this.defaultWhere;
+        this.where = {
+          ...d,
+          dateStart: d.dateStart,
+          dateEnd: d.dateEnd,
+          date: [d.dateStart, d.dateEnd]
+        };
         this.search();
       },
       /* 创建申领单 */
@@ -270,6 +293,17 @@
 
 .condition-input {
   width: 100%;
+}
+
+.date-range-two {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.date-sep {
+  color: #909399;
+  flex: none;
 }
 
 .toolbar-actions {
