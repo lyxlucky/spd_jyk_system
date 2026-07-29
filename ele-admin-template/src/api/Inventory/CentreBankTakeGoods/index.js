@@ -127,12 +127,26 @@ export async function deleteManualVarieties(json) {
   return res.data === true || unwrap(res);
 }
 
+/**
+ * 收货前批次校验。对齐老页：
+ * - 200：通过
+ * - 400：警告（近效期/效期倒挂等），前端可提示后强收
+ * - 其它：抛错
+ */
 export async function checkVarietieBatch(receiptId) {
   const res = await request.post(
     '/ManualDelivered/CheckVarietieBatch',
     formdataify({ Token: token(), receiptId })
   );
-  return unwrap(res);
+  check301(res.data);
+  const data = res.data || {};
+  if (okCode(data.code)) {
+    return { ok: true, warn: false, msg: data.msg || '' };
+  }
+  if (String(data.code) === '400') {
+    return { ok: false, warn: true, msg: data.msg || '校验未通过' };
+  }
+  throw new Error(data.msg || '批次校验失败');
 }
 
 export async function confirmManualReceipt(receiptId) {

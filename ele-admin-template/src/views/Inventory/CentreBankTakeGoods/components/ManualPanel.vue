@@ -695,8 +695,17 @@ export default {
       }
       if (!this.validateManualSearchSku()) return;
       try {
-        await checkVarietieBatch(this.currentReceipt.Goods_Var_Cargo_Receipt_Id);
-        await MessageBox.confirm('确定要进行收货操作吗？', '提示', { type: 'warning' });
+        const check = await checkVarietieBatch(
+          this.currentReceipt.Goods_Var_Cargo_Receipt_Id
+        );
+        // 对齐老页：400 提示后可强收
+        await MessageBox.confirm(
+          check.warn
+            ? `${check.msg}  继续确认收货？`
+            : '确定要进行收货操作吗？',
+          '提示',
+          { type: 'warning' }
+        );
         await confirmManualReceipt(this.currentReceipt.Goods_Var_Cargo_Receipt_Id);
         Message.success('收货成功');
         this.loadReceipts();
