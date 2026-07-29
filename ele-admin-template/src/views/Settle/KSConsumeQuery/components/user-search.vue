@@ -173,16 +173,22 @@
           </el-form-item>
         </el-col>
         <el-col v-bind="styleResponsive ? { lg: 6, md: 12 } : { span: 6 }">
-          <el-form-item>
+          <el-form-item label="消耗开始">
             <el-date-picker
-              v-model="dateRange"
-              type="daterange"
+              v-model="where.start_time"
+              type="date"
               value-format="yyyy-MM-dd"
-              range-separator="至"
-              start-placeholder="消耗开始日期"
-              end-placeholder="消耗结束日期"
-              style="width: 240px"
-              @change="handleDateRangeChange"
+              placeholder="消耗开始日期"
+              style="width: 135px"
+            />
+          </el-form-item>
+          <el-form-item label="-">
+            <el-date-picker
+              v-model="where.end_time"
+              type="date"
+              value-format="yyyy-MM-dd"
+              placeholder="消耗结束日期"
+              style="width: 135px"
             />
           </el-form-item>
         </el-col>
@@ -364,9 +370,7 @@ export default {
         KSConsume_REGULATORY_CAT_NAME: ''
       },
       // 表单数据
-      where: {},
-      // 日期范围
-      dateRange: []
+      where: {}
     };
   },
   computed: {
@@ -387,7 +391,6 @@ export default {
     /*  重置 */
     reset() {
       this.where = { ...this.defaultWhere };
-      this.dateRange = [];
       this.search();
     },
     /* 标记处理 */
@@ -397,16 +400,6 @@ export default {
     /* 导出数据 */
     exportData() {
       this.$emit('exportData', this.where);
-    },
-    // 处理日期范围选择
-    handleDateRangeChange(range) {
-      if (range && range.length === 2) {
-        this.where.start_time = range[0];
-        this.where.end_time = range[1];
-      } else {
-        this.where.start_time = '';
-        this.where.end_time = '';
-      }
     }
   }
 };

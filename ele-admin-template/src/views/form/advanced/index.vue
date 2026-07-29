@@ -65,15 +65,22 @@
               </el-form-item>
             </el-col>
             <el-col v-bind="styleResponsive ? { lg: 8, md: 12 } : { span: 8 }">
-              <el-form-item label="生效日期:" prop="datetime">
+              <el-form-item label="开始日期:" prop="dateStart">
                 <el-date-picker
-                  v-model="form.datetime"
-                  type="daterange"
-                  unlink-panels
-                  range-separator="至"
-                  start-placeholder="开始日期"
-                  end-placeholder="结束日期"
-                  class="ele-fluid"
+                  v-model="form.dateStart"
+                  type="date"
+                  placeholder="开始日期"
+                  style="width: 140px"
+                />
+              </el-form-item>
+            </el-col>
+            <el-col v-bind="styleResponsive ? { lg: 8, md: 12 } : { span: 8 }">
+              <el-form-item label="结束日期:" prop="dateEnd">
+                <el-date-picker
+                  v-model="form.dateEnd"
+                  type="date"
+                  placeholder="结束日期"
+                  style="width: 140px"
                 />
               </el-form-item>
             </el-col>
@@ -217,10 +224,17 @@
               trigger: 'blur'
             }
           ],
-          datetime: [
+          dateStart: [
             {
               required: true,
-              message: '请选择生效日期',
+              message: '请选择开始日期',
+              trigger: 'blur'
+            }
+          ],
+          dateEnd: [
+            {
+              required: true,
+              message: '请选择结束日期',
               trigger: 'blur'
             }
           ],

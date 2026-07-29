@@ -155,14 +155,21 @@
         <span class="time-label">消耗时间</span>
         <el-form-item class="time-item">
           <el-date-picker
-            v-model="dateRange"
-            type="daterange"
+            v-model="where.validDateFrom"
+            type="date"
             value-format="yyyy-MM-dd"
-            range-separator="至"
-            start-placeholder="开始"
-            end-placeholder="结束"
-            style="width:240px"
-            @change="onDateRange"
+            placeholder="开始"
+            style="width:140px"
+          />
+        </el-form-item>
+        <span class="time-label">至</span>
+        <el-form-item class="time-item">
+          <el-date-picker
+            v-model="where.validDateTo"
+            type="date"
+            value-format="yyyy-MM-dd"
+            placeholder="结束"
+            style="width:140px"
           />
         </el-form-item>
         <el-form-item class="time-item">
@@ -294,8 +301,7 @@ export default {
   },
   data() {
     return {
-      where: defaultWhere(),
-      dateRange: []
+      where: defaultWhere()
     };
   },
   computed: {
@@ -314,15 +320,6 @@ export default {
     }
   },
   methods: {
-    onDateRange(range) {
-      if (range && range.length === 2) {
-        this.where.validDateFrom = range[0];
-        this.where.validDateTo = range[1];
-      } else {
-        this.where.validDateFrom = '';
-        this.where.validDateTo = '';
-      }
-    },
     search() {
       this.$emit('search', { ...this.where });
     },

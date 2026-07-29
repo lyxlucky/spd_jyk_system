@@ -12,14 +12,20 @@
       </el-form-item>
       <el-form-item label="时间">
         <el-date-picker
-          v-model="dateRange"
-          type="daterange"
+          v-model="where.ORDER_TIME_START"
+          type="date"
           value-format="yyyy-MM-dd"
-          range-separator="至"
-          start-placeholder="开始"
-          end-placeholder="结束"
-          style="width: 240px"
-          @change="onDateChange"
+          placeholder="开始"
+          style="width: 140px"
+        />
+      </el-form-item>
+      <el-form-item label="-">
+        <el-date-picker
+          v-model="where.ORDER_TIME_END"
+          type="date"
+          value-format="yyyy-MM-dd"
+          placeholder="结束"
+          style="width: 140px"
         />
       </el-form-item>
       <el-form-item>
@@ -63,7 +69,6 @@ export default {
     const today = todayStr();
     return {
       innerVisible: false,
-      dateRange: [today, today],
       where: {
         ORDER_NUM: '',
         ORDER_TIME_START: today,
@@ -109,15 +114,6 @@ export default {
     }
   },
   methods: {
-    onDateChange(range) {
-      if (range && range.length === 2) {
-        this.where.ORDER_TIME_START = range[0];
-        this.where.ORDER_TIME_END = range[1];
-      } else {
-        this.where.ORDER_TIME_START = '';
-        this.where.ORDER_TIME_END = '';
-      }
-    },
     reload() {
       this.$refs.table?.reload?.({ page: 1, where: { ...this.where } });
     },

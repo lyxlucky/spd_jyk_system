@@ -298,9 +298,8 @@ export async function getlogInfoTable(data) {
   data2.page = data.page;
   data2.size = data.limit;
   data2.tkOrder = data.where.search ? data.where.search : '';
-  const [startDate,endDate] = data.where.date ? data.where.date : '';
-  data2.startDate = startDate ? startDate : '';
-  data2.endDate = endDate ? endDate : '';
+  data2.startDate = data.where.dateStart || '';
+  data2.endDate = data.where.dateEnd || '';
   data2.sort = data.order.sort ? data.order.sort : '';
   data2.order = data.order.order ? data.order.order : '';
   let data3 = formdataify(data2);

@@ -11,15 +11,22 @@
               clearable
             ></el-input>
           </el-form-item>
-          <el-form-item label="交易时间" prop="TRANSACTION_DATE">
+          <el-form-item label="交易开始" prop="TRANSACTION_DATE_START">
             <el-date-picker
-              v-model="form.TRANSACTION_DATE"
-              type="daterange"
-              range-separator="至"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
+              v-model="form.TRANSACTION_DATE_START"
+              type="date"
+              placeholder="开始日期"
               value-format="yyyy-MM-dd"
-              style="width: 240px"
+              style="width: 140px"
+            ></el-date-picker>
+          </el-form-item>
+          <el-form-item label="-" prop="TRANSACTION_DATE_END">
+            <el-date-picker
+              v-model="form.TRANSACTION_DATE_END"
+              type="date"
+              placeholder="结束日期"
+              value-format="yyyy-MM-dd"
+              style="width: 140px"
             ></el-date-picker>
           </el-form-item>
           <!-- <el-form-item label="" prop="SP_STATE">
@@ -67,7 +74,8 @@
       return {
         form: {
           LEDGER_NAME: '',
-          TRANSACTION_DATE: ['', ''],
+          TRANSACTION_DATE_START: '',
+          TRANSACTION_DATE_END: '',
           SP_STATE: ''
         },
         selectedRowKeys: [], // 存储选中行的key

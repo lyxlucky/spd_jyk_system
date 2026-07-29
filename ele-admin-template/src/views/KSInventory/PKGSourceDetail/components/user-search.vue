@@ -27,24 +27,38 @@
       </el-form-item>
       <el-form-item label="上架时间" class="field-date-item">
         <el-date-picker
-          v-model="dateRange"
-          type="daterange"
+          v-model="where.startTime"
+          type="date"
           value-format="yyyy-MM-dd"
-          range-separator="至"
-          start-placeholder="开始时间"
-          end-placeholder="结束时间"
-          style="width: 240px"
+          placeholder="开始"
+          style="width: 140px"
+        />
+      </el-form-item>
+      <el-form-item label="-" class="field-date-item">
+        <el-date-picker
+          v-model="where.endTime"
+          type="date"
+          value-format="yyyy-MM-dd"
+          placeholder="结束"
+          style="width: 140px"
         />
       </el-form-item>
       <el-form-item label="使用时间" class="field-date-item">
         <el-date-picker
-          v-model="consumeDateRange"
-          type="daterange"
+          v-model="where.consumeStartTime"
+          type="date"
           value-format="yyyy-MM-dd"
-          range-separator="至"
-          start-placeholder="开始时间"
-          end-placeholder="结束时间"
-          style="width: 240px"
+          placeholder="开始"
+          style="width: 140px"
+        />
+      </el-form-item>
+      <el-form-item label="-" class="field-date-item">
+        <el-date-picker
+          v-model="where.consumeEndTime"
+          type="date"
+          value-format="yyyy-MM-dd"
+          placeholder="结束"
+          style="width: 140px"
         />
       </el-form-item>
       <el-form-item label="仓库" class="field-storage-item">
@@ -88,38 +102,6 @@ export default {
         IsEnd: ''
       }
     };
-  },
-  computed: {
-    dateRange: {
-      get() {
-        const { startTime, endTime } = this.where;
-        return startTime && endTime ? [startTime, endTime] : null;
-      },
-      set(val) {
-        if (val && val.length === 2) {
-          this.where.startTime = val[0];
-          this.where.endTime = val[1];
-        } else {
-          this.where.startTime = '';
-          this.where.endTime = '';
-        }
-      }
-    },
-    consumeDateRange: {
-      get() {
-        const { consumeStartTime, consumeEndTime } = this.where;
-        return consumeStartTime && consumeEndTime ? [consumeStartTime, consumeEndTime] : null;
-      },
-      set(val) {
-        if (val && val.length === 2) {
-          this.where.consumeStartTime = val[0];
-          this.where.consumeEndTime = val[1];
-        } else {
-          this.where.consumeStartTime = '';
-          this.where.consumeEndTime = '';
-        }
-      }
-    }
   },
   created() {
     this.loadStorage();

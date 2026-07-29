@@ -63,14 +63,20 @@
       </el-form-item>
       <el-form-item label="入库时间">
         <el-date-picker
-          v-model="dateRange"
-          type="daterange"
+          v-model="where.ADD_TIME_START"
+          type="date"
           value-format="yyyy-MM-dd"
-          range-separator="至"
-          start-placeholder="开始"
-          end-placeholder="结束"
-          style="width: 240px"
-          @change="onDateChange"
+          placeholder="开始"
+          style="width: 140px"
+        />
+      </el-form-item>
+      <el-form-item label="-">
+        <el-date-picker
+          v-model="where.ADD_TIME_END"
+          type="date"
+          value-format="yyyy-MM-dd"
+          placeholder="结束"
+          style="width: 140px"
         />
       </el-form-item>
       <el-form-item>
@@ -139,7 +145,6 @@ export default {
   data() {
     return {
       innerVisible: false,
-      dateRange: [],
       where: this.emptyWhere(),
       columns: [
         {
@@ -291,18 +296,8 @@ export default {
         ADD_TIME_END: ''
       };
     },
-    onDateChange(range) {
-      if (range && range.length === 2) {
-        this.where.ADD_TIME_START = range[0];
-        this.where.ADD_TIME_END = range[1];
-      } else {
-        this.where.ADD_TIME_START = '';
-        this.where.ADD_TIME_END = '';
-      }
-    },
     reset() {
       this.where = this.emptyWhere();
-      this.dateRange = [];
       this.reload();
     },
     reload() {

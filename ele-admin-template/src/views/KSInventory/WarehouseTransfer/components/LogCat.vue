@@ -51,15 +51,25 @@
                 <el-col
                   v-bind="styleResponsive ? { lg: 5, md: 2 } : { span: 4 }"
                 > -->
-              <el-form-item style="width: 350px">
+              <el-form-item label="调库开始">
                 <el-date-picker
-                  v-model="where.date"
-                  type="daterange"
+                  v-model="where.dateStart"
+                  type="date"
                   value-format="yyyy-MM-dd"
                   size="mini"
-                  range-separator="至"
-                  start-placeholder="调库开始日期"
-                  end-placeholder="调库结束日期"
+                  placeholder="调库开始日期"
+                  style="width: 140px"
+                >
+                </el-date-picker>
+              </el-form-item>
+              <el-form-item label="-">
+                <el-date-picker
+                  v-model="where.dateEnd"
+                  type="date"
+                  value-format="yyyy-MM-dd"
+                  size="mini"
+                  placeholder="调库结束日期"
+                  style="width: 140px"
                 >
                 </el-date-picker>
               </el-form-item>
@@ -103,7 +113,8 @@
     data() {
       const defaultWhere = {
         search: '',
-        date: ''
+        dateStart: '',
+        dateEnd: ''
       };
       return {
         where: { ...defaultWhere },

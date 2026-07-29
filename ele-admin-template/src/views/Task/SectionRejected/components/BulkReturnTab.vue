@@ -98,15 +98,23 @@
       <el-col :span="6">
         <div class="section-title">散货退货单列表</div>
         <el-form size="mini" class="order-filter-form">
-          <el-form-item>
+          <el-form-item label="开始">
             <el-date-picker
-              v-model="orderFilters.dateRange"
-              type="daterange"
+              v-model="orderFilters.StartTime"
+              type="date"
               value-format="yyyy-MM-dd"
-              range-separator="至"
-              start-placeholder="开始时间"
-              end-placeholder="结束时间"
-              style="width: 100%"
+              placeholder="开始时间"
+              style="width: 135px"
+              @change="reloadOrders"
+            />
+          </el-form-item>
+          <el-form-item label="-">
+            <el-date-picker
+              v-model="orderFilters.EndTime"
+              type="date"
+              value-format="yyyy-MM-dd"
+              placeholder="结束时间"
+              style="width: 135px"
               @change="reloadOrders"
             />
           </el-form-item>
@@ -303,7 +311,8 @@ export default {
       },
       orderFilters: {
         SearchName: '',
-        dateRange: [start, end],
+        StartTime: start,
+        EndTime: end,
         OrderType: '',
         IsHaveGoods: '',
         printCount: ''
@@ -446,15 +455,14 @@ export default {
       if (!this.selectedDept?.dept_two_code) {
         return Promise.resolve({ count: 0, list: [] });
       }
-      const [start, end] = this.orderFilters.dateRange || ['', ''];
       return getReturnGoodsList({
         page,
         limit,
         where: {
           SearchName: this.orderFilters.SearchName,
           DeptTwoCode: this.selectedDept.dept_two_code,
-          StartTime: start || '',
-          EndTime: end || '',
+          StartTime: this.orderFilters.StartTime || '',
+          EndTime: this.orderFilters.EndTime || '',
           OrderType: this.orderFilters.OrderType,
           IsHaveGoods: this.orderFilters.IsHaveGoods
         }

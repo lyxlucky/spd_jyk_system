@@ -58,15 +58,22 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="盘点时间" v-if="false">
+        <el-form-item label="盘点开始" v-if="false">
           <el-date-picker
-            v-model="checkStartRange"
-            type="daterange"
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
+            v-model="searchForm.CHECK_START_TIME_BEGIN"
+            type="date"
+            placeholder="开始日期"
             value-format="yyyy-MM-dd"
-            style="width: 100%"
+            style="width: 140px"
+          />
+        </el-form-item>
+        <el-form-item label="-" v-if="false">
+          <el-date-picker
+            v-model="searchForm.CHECK_START_TIME_END"
+            type="date"
+            placeholder="结束日期"
+            value-format="yyyy-MM-dd"
+            style="width: 140px"
           />
         </el-form-item>
         <el-form-item>
@@ -544,7 +551,6 @@ export default {
         CHECK_START_TIME_BEGIN: '',
         CHECK_START_TIME_END: ''
       },
-      checkStartRange: [],
       periodOptions: [],
       deptOptions: [],
       deptLoading: false,
@@ -611,13 +617,6 @@ export default {
   methods: {
     // ——————————————————— 搜索 ———————————————————
     search() {
-      if (this.checkStartRange && this.checkStartRange.length === 2) {
-        this.searchForm.CHECK_START_TIME_BEGIN = this.checkStartRange[0];
-        this.searchForm.CHECK_START_TIME_END = this.checkStartRange[1];
-      } else {
-        this.searchForm.CHECK_START_TIME_BEGIN = '';
-        this.searchForm.CHECK_START_TIME_END = '';
-      }
       this.mainTablePage.page = 1;
       this.clearDetailTable();
       this.loadMainTableData();
@@ -631,7 +630,6 @@ export default {
         CHECK_START_TIME_BEGIN: '',
         CHECK_START_TIME_END: ''
       };
-      this.checkStartRange = [];
       this.mainTablePage.page = 1;
       this.clearDetailTable();
       this.loadMainTableData();

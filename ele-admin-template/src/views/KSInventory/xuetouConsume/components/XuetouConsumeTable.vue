@@ -55,46 +55,76 @@
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item label="排班日期:">
+            <el-form-item label="排班开始:">
               <el-date-picker
-                v-model="dateRange1"
-                type="daterange"
-                range-separator="-"
-                start-placeholder="起始"
-                end-placeholder="结束"
+                v-model="where.TYPESETTING_DATE_START"
+                type="date"
+                placeholder="起始"
                 value-format="yyyy-MM-dd"
                 clearable
-                @change="handleDateRange1Change"
+                style="width: 140px"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item label="-">
+              <el-date-picker
+                v-model="where.TYPESETTING_DATE_END"
+                type="date"
+                placeholder="结束"
+                value-format="yyyy-MM-dd"
+                clearable
+                style="width: 140px"
               />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row :gutter="12">
           <el-col :span="5">
-            <el-form-item label="血透创建时间:">
+            <el-form-item label="血透创建开始:">
               <el-date-picker
-                v-model="dateRange2"
-                type="daterange"
-                range-separator="-"
-                start-placeholder="起始"
-                end-placeholder="结束"
+                v-model="where.HD_CREATE_TIME_START"
+                type="date"
+                placeholder="起始"
                 value-format="yyyy-MM-dd"
                 clearable
-                @change="handleDateRange2Change"
+                style="width: 140px"
               />
             </el-form-item>
           </el-col>
           <el-col :span="4">
-            <el-form-item label="SPD转单时间:">
+            <el-form-item label="-">
               <el-date-picker
-                v-model="dateRange3"
-                type="daterange"
-                range-separator="-"
-                start-placeholder="起始"
-                end-placeholder="结束"
+                v-model="where.HD_CREATE_TIME_END"
+                type="date"
+                placeholder="结束"
                 value-format="yyyy-MM-dd"
                 clearable
-                @change="handleDateRange3Change"
+                style="width: 140px"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="4">
+            <el-form-item label="SPD转单开始:">
+              <el-date-picker
+                v-model="where.SL_CREATE_TIME_START"
+                type="date"
+                placeholder="起始"
+                value-format="yyyy-MM-dd"
+                clearable
+                style="width: 140px"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="4">
+            <el-form-item label="-">
+              <el-date-picker
+                v-model="where.SL_CREATE_TIME_END"
+                type="date"
+                placeholder="结束"
+                value-format="yyyy-MM-dd"
+                clearable
+                style="width: 140px"
               />
             </el-form-item>
           </el-col>
@@ -173,9 +203,6 @@ export default {
         SL_CREATE_TIME_END: '',
         IdCard: ''
       },
-      dateRange1: null, // 排班日期
-      dateRange2: null, // 血透创建时间
-      dateRange3: null, // SPD转单时间
       selection: [],
       showBindDialog: false,
       showDialysisRecords: false,
@@ -252,33 +279,6 @@ export default {
     }
   },
   methods: {
-    handleDateRange1Change(val) {
-      if (val && val.length === 2) {
-        this.where.TYPESETTING_DATE_START = val[0]
-        this.where.TYPESETTING_DATE_END = val[1]
-      } else {
-        this.where.TYPESETTING_DATE_START = ''
-        this.where.TYPESETTING_DATE_END = ''
-      }
-    },
-    handleDateRange2Change(val) {
-      if (val && val.length === 2) {
-        this.where.HD_CREATE_TIME_START = val[0]
-        this.where.HD_CREATE_TIME_END = val[1]
-      } else {
-        this.where.HD_CREATE_TIME_START = ''
-        this.where.HD_CREATE_TIME_END = ''
-      }
-    },
-    handleDateRange3Change(val) {
-      if (val && val.length === 2) {
-        this.where.SL_CREATE_TIME_START = val[0]
-        this.where.SL_CREATE_TIME_END = val[1]
-      } else {
-        this.where.SL_CREATE_TIME_START = ''
-        this.where.SL_CREATE_TIME_END = ''
-      }
-    },
     reload() {
       this.$refs.table.reload()
     },

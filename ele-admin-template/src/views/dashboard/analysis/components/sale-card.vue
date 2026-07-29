@@ -21,17 +21,22 @@
       </div>
       <div
         :class="['ele-inline-block', { 'hidden-sm-and-down': styleResponsive }]"
-        style="width: 260px; margin-left: 10px"
+        style="margin-left: 10px; display: inline-flex; align-items: center; gap: 6px"
       >
         <el-date-picker
-          unlink-panels
-          type="daterange"
-          class="ele-fluid"
-          end-placeholder="结束日期"
-          start-placeholder="开始日期"
-          v-model="saleSearch.datetime"
-          range-separator="至"
+          type="date"
+          placeholder="开始日期"
+          v-model="saleSearch.dateStart"
           size="small"
+          style="width: 140px"
+        />
+        <span style="color: #909399">至</span>
+        <el-date-picker
+          type="date"
+          placeholder="结束日期"
+          v-model="saleSearch.dateEnd"
+          size="small"
+          style="width: 140px"
         />
       </div>
     </div>
@@ -101,7 +106,8 @@
         saleSearch: {
           type: 'saleroom',
           dateType: 0,
-          datetime: ''
+          dateStart: '',
+          dateEnd: ''
         },
         // 销售量趋势数据
         saleroomData1: [],

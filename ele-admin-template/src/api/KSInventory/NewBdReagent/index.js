@@ -5,10 +5,10 @@ import store from '@/store/index';
 import moment from 'moment';
 
 function formatQueryDateRange(where = {}) {
-  if (where.date && where.date.length === 2 && where.date[0] && where.date[1]) {
+  if (where.dateFrom && where.dateTo) {
     return {
-      start_date: moment(where.date[0]).startOf('day').format('YYYY-MM-DD HH:mm:ss'),
-      end_date: moment(where.date[1]).endOf('day').format('YYYY-MM-DD HH:mm:ss')
+      start_date: moment(where.dateFrom).startOf('day').format('YYYY-MM-DD HH:mm:ss'),
+      end_date: moment(where.dateTo).endOf('day').format('YYYY-MM-DD HH:mm:ss')
     };
   }
   return {

@@ -32,26 +32,40 @@
             <el-option label="已过期" value="1" />
           </el-select>
         </el-form-item>
-        <el-form-item label="起始日期" class="date-range-item">
+        <el-form-item label="起始开始">
           <el-date-picker
-            v-model="buyTimeRange"
-            type="daterange"
+            v-model="form.statrTime"
+            type="date"
             value-format="yyyy-MM-dd"
-            range-separator="至"
-            start-placeholder="开始"
-            end-placeholder="结束"
-            style="width: 220px"
+            placeholder="开始"
+            style="width: 135px"
           />
         </el-form-item>
-        <el-form-item label="终止日期" class="date-range-item">
+        <el-form-item label="-">
           <el-date-picker
-            v-model="endTimeRange"
-            type="daterange"
+            v-model="form.endTime"
+            type="date"
             value-format="yyyy-MM-dd"
-            range-separator="至"
-            start-placeholder="开始"
-            end-placeholder="结束"
-            style="width: 220px"
+            placeholder="结束"
+            style="width: 135px"
+          />
+        </el-form-item>
+        <el-form-item label="终止开始">
+          <el-date-picker
+            v-model="form.statrTime2"
+            type="date"
+            value-format="yyyy-MM-dd"
+            placeholder="开始"
+            style="width: 135px"
+          />
+        </el-form-item>
+        <el-form-item label="-">
+          <el-date-picker
+            v-model="form.endTime2"
+            type="date"
+            value-format="yyyy-MM-dd"
+            placeholder="结束"
+            style="width: 135px"
           />
         </el-form-item>
       </div>
@@ -101,15 +115,22 @@
         </el-form-item>
       </div>
       <div class="filter-row filter-row--actions">
-        <el-form-item label="消耗时间" class="date-range-item">
+        <el-form-item label="消耗开始">
           <el-date-picker
-            v-model="consumeTimeRange"
-            type="daterange"
+            v-model="form.statrTime3"
+            type="date"
             value-format="yyyy-MM-dd"
-            range-separator="至"
-            start-placeholder="开始"
-            end-placeholder="结束"
-            style="width: 220px"
+            placeholder="开始"
+            style="width: 135px"
+          />
+        </el-form-item>
+        <el-form-item label="-">
+          <el-date-picker
+            v-model="form.endTime3"
+            type="date"
+            value-format="yyyy-MM-dd"
+            placeholder="结束"
+            style="width: 135px"
           />
         </el-form-item>
         <el-form-item class="ele-form-actions" label-width="0">
@@ -140,36 +161,6 @@ export default {
       },
       set(v) {
         this.$emit('input', v);
-      }
-    },
-    buyTimeRange: {
-      get() {
-        const { statrTime, endTime } = this.form;
-        return statrTime && endTime ? [statrTime, endTime] : null;
-      },
-      set(val) {
-        this.form.statrTime = val && val.length === 2 ? val[0] : '';
-        this.form.endTime = val && val.length === 2 ? val[1] : '';
-      }
-    },
-    endTimeRange: {
-      get() {
-        const { statrTime2, endTime2 } = this.form;
-        return statrTime2 && endTime2 ? [statrTime2, endTime2] : null;
-      },
-      set(val) {
-        this.form.statrTime2 = val && val.length === 2 ? val[0] : '';
-        this.form.endTime2 = val && val.length === 2 ? val[1] : '';
-      }
-    },
-    consumeTimeRange: {
-      get() {
-        const { statrTime3, endTime3 } = this.form;
-        return statrTime3 && endTime3 ? [statrTime3, endTime3] : null;
-      },
-      set(val) {
-        this.form.statrTime3 = val && val.length === 2 ? val[0] : '';
-        this.form.endTime3 = val && val.length === 2 ? val[1] : '';
       }
     }
   },

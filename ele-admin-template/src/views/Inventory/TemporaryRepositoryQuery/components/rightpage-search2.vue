@@ -16,16 +16,22 @@
             style="width: 200px"
           />
         </el-form-item>
-        <el-form-item label="计划日期">
+        <el-form-item label="计划开始">
           <el-date-picker
-            v-model="dateRange"
-            type="daterange"
+            v-model="where.start_time"
+            type="date"
             value-format="yyyy-MM-dd"
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            style="width: 240px"
-            @change="handleDateRangeChange"
+            placeholder="开始日期"
+            style="width: 135px"
+          />
+        </el-form-item>
+        <el-form-item label="-">
+          <el-date-picker
+            v-model="where.end_time"
+            type="date"
+            value-format="yyyy-MM-dd"
+            placeholder="结束日期"
+            style="width: 135px"
           />
         </el-form-item>
         <el-form-item>
@@ -47,8 +53,7 @@ export default {
         start_time: '',
         end_time: ''
       },
-      where: {},
-      dateRange: []
+      where: {}
     };
   },
   created() {
@@ -60,15 +65,6 @@ export default {
     },
     exportData() {
       this.$emit('exportData', this.where);
-    },
-    handleDateRangeChange(range) {
-      if (range && range.length === 2) {
-        this.where.start_time = range[0];
-        this.where.end_time = range[1];
-      } else {
-        this.where.start_time = '';
-        this.where.end_time = '';
-      }
     }
   }
 };

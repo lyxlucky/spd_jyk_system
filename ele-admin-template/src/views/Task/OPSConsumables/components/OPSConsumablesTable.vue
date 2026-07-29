@@ -29,28 +29,22 @@
 
       <template v-slot:toolbar>
         <el-form :inline="true" :model="where" size="mini">
-          <!-- <el-form-item label="日期范围">
+          <el-form-item label="手术开始">
             <el-date-picker
-              v-model="where.dateRange"
-              type="daterange"
-              range-separator="至"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
+              v-model="where.SSRQ_start_time"
+              type="date"
+              placeholder="开始日期"
               value-format="yyyy-MM-dd"
-              :picker-options="pickerOptions"
-              style="width: 240px"
+              style="width: 140px"
             ></el-date-picker>
-          </el-form-item> -->
-          <el-form-item label="手术日期">
+          </el-form-item>
+          <el-form-item label="-">
             <el-date-picker
-              v-model="where.SSRQDateRange"
-              type="daterange"
-              range-separator="至"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
+              v-model="where.SSRQ_end_time"
+              type="date"
+              placeholder="结束日期"
               value-format="yyyy-MM-dd"
-              :picker-options="pickerOptions"
-              style="width: 240px"
+              style="width: 140px"
             ></el-date-picker>
           </el-form-item>
           <el-form-item style="margin-right: 16px; margin-bottom: 8px">
@@ -295,14 +289,8 @@
         },
         // 查询参数
         where: {
-          // dateRange: [
-          //   threeDaysAgo.toISOString().split('T')[0],
-          //   today.toISOString().split('T')[0]
-          // ],
-          SSRQDateRange: [
-            threeDaysAgo.toISOString().split('T')[0],
-            today.toISOString().split('T')[0]
-          ],
+          SSRQ_start_time: threeDaysAgo.toISOString().split('T')[0],
+          SSRQ_end_time: today.toISOString().split('T')[0],
           MZZY: '',
           ZFBZ: '',
           IS_ADD: '',

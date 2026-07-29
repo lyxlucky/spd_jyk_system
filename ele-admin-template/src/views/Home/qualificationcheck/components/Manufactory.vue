@@ -42,16 +42,26 @@
                 ></el-input>
               </el-form-item>
 
-              <el-form-item style="width: 350px">
+              <el-form-item label="开始">
                 <el-date-picker
-                  v-model="where.date"
-                  type="daterange"
+                  v-model="where.dateStart"
+                  type="date"
                   size="mini"
                   clearable
                   value-format="yyyy-MM-dd"
-                  range-separator="至"
-                  start-placeholder="开始日期"
-                  end-placeholder="结束日期"
+                  placeholder="开始日期"
+                  style="width: 140px"
+                ></el-date-picker>
+              </el-form-item>
+              <el-form-item label="-">
+                <el-date-picker
+                  v-model="where.dateEnd"
+                  type="date"
+                  size="mini"
+                  clearable
+                  value-format="yyyy-MM-dd"
+                  placeholder="结束日期"
+                  style="width: 140px"
                 ></el-date-picker>
               </el-form-item>
 
@@ -95,7 +105,8 @@
     data() {
       const defaultWhere = {
         MANUFACTURING_ENT_NAME: '',
-        date: ''
+        dateStart: '',
+        dateEnd: ''
       };
       return {
         where: { ...defaultWhere },

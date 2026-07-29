@@ -102,15 +102,19 @@
           <!-- 日期范围选择 -->
           <el-form-item label="订单创建日期：" style="display: none">
             <el-date-picker
-              v-model="form.dateRange"
-              type="daterange"
-              range-separator="至"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
+              v-model="form.start_time"
+              type="date"
               value-format="yyyy-MM-dd"
+              placeholder="开始"
               @change="handleSearch"
-            >
-            </el-date-picker>
+            />
+            <el-date-picker
+              v-model="form.end_time"
+              type="date"
+              value-format="yyyy-MM-dd"
+              placeholder="结束"
+              @change="handleSearch"
+            />
           </el-form-item>
 
           <el-form-item>
@@ -287,10 +291,9 @@
           send_state: '',
           coefficient: '',
           SENDHRP: '',
-          isQZJS: true, // 默认选中过滤强制关闭订单
+          isQZJS: true, // 默认过滤强制关闭订单
           CREATOR: '',
-          BZ: '',
-          dateRange: [] // 日期范围
+          BZ: ''
         },
         currentTableData: null,
         selectedRows: [], // 选中的行
@@ -554,8 +557,7 @@
           SENDHRP: '',
           isQZJS: true,
           CREATOR: '',
-          BZ: '',
-          dateRange: []
+          BZ: ''
         };
         this.handleSearch();
       },

@@ -7,15 +7,25 @@
       <el-form-item>
         <el-input v-model="filters.condition" placeholder="品种编码、名称、生产企业、规格" clearable style="width: 240px" @keyup.enter.native="reload" />
       </el-form-item>
-      <el-form-item>
+      <el-form-item label="开始">
         <el-date-picker
-          v-model="filters.dateRange"
-          type="datetimerange"
+          v-model="filters.dateFrom"
+          type="datetime"
           value-format="yyyy-MM-dd HH:mm:ss"
-          range-separator="至"
-          start-placeholder="开始时间"
-          end-placeholder="结束时间"
-          style="width: 340px"
+          placeholder="开始时间"
+          default-time="00:00:00"
+          style="width: 140px"
+          @change="reload"
+        />
+      </el-form-item>
+      <el-form-item label="-">
+        <el-date-picker
+          v-model="filters.dateTo"
+          type="datetime"
+          value-format="yyyy-MM-dd HH:mm:ss"
+          placeholder="结束时间"
+          default-time="23:59:59"
+          style="width: 140px"
           @change="reload"
         />
       </el-form-item>
@@ -125,7 +135,8 @@ export default {
         deliveryNoteNumber: '',
         deliveryNoteRfid: '',
         storageId: '',
-        dateRange: [dateFrom, dateTo],
+        dateFrom,
+        dateTo,
         field: '',
         order: ''
       },
@@ -167,11 +178,10 @@ export default {
       return String(val).replace('T', ' ').substr(0, 19);
     },
     buildWhere() {
-      const [dateFrom, dateTo] = this.filters.dateRange || ['', ''];
       return {
         ...this.filters,
-        dateFrom: dateFrom || '',
-        dateTo: dateTo || ''
+        dateFrom: this.filters.dateFrom || '',
+        dateTo: this.filters.dateTo || ''
       };
     },
     datasource({ page, limit, order }) {

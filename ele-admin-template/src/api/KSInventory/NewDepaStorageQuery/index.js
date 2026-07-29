@@ -20,7 +20,12 @@ export async function GetDeptInStockDetail(data){
     data2.Specifications = data.where.packagerSpec ? data.where.packagerSpec : '';
     let today = moment().format('YYYY-MM-DD');
     let sevenDaysBefore = moment(today).subtract(7, 'days').format('YYYY-MM-DD');
-    const [startTime,EndTime] = Array.isArray(data.where.time) && data.where.time.length != 0 ? data.where.time : [sevenDaysBefore, today];
+    let startTime = data.where.timeStart || '';
+    let EndTime = data.where.timeEnd || '';
+    if (!startTime && !EndTime) {
+      startTime = sevenDaysBefore;
+      EndTime = today;
+    }
     data2.StartTime = startTime;
     data2.EndTime = EndTime;
     data2.Production = data.where.factory ? data.where.factory : '';

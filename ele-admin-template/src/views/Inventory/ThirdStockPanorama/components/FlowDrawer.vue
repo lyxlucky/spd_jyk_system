@@ -18,14 +18,22 @@
       <el-form :inline="true" size="mini" class="flow-drawer__search" @submit.native.prevent>
         <el-form-item label="发生日期">
           <el-date-picker
-            v-model="dateRange"
-            type="daterange"
+            v-model="flowForm.startTime"
+            type="date"
             value-format="yyyy-MM-dd"
-            :picker-options="pickerOptions"
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            @change="onDateRangeChange"
+            placeholder="开始"
+            style="width: 140px"
+            @change="reload"
+          />
+        </el-form-item>
+        <el-form-item label="-">
+          <el-date-picker
+            v-model="flowForm.endTime"
+            type="date"
+            value-format="yyyy-MM-dd"
+            placeholder="结束"
+            style="width: 140px"
+            @change="reload"
           />
         </el-form-item>
         <el-form-item label="出入库">
@@ -125,7 +133,6 @@
 <script>
   import { utils, writeFile } from 'xlsx';
   import { getThirdStockInfoFlow } from '@/api/Inventory/ThreeLevelDbBD';
-  import { DATE_SHORTCUTS } from '@/directives/dateShortcuts';
   import {
     buildFlowWhere,
     createDefaultFlowForm,
@@ -150,10 +157,7 @@
         tableData: [],
         flowForm: createDefaultFlowForm(),
         flowDirection: '',
-        advancedVisible: false,
-        pickerOptions: {
-          shortcuts: DATE_SHORTCUTS
-        }
+        advancedVisible: false
       };
     },
     computed: {
@@ -163,18 +167,6 @@
         },
         set(value) {
           this.$emit('update:visible', value);
-        }
-      },
-      dateRange: {
-        get() {
-          return [this.flowForm.startTime, this.flowForm.endTime];
-        },
-        set(value) {
-          this.flowForm = {
-            ...this.flowForm,
-            startTime: value?.[0] || '',
-            endTime: value?.[1] || ''
-          };
         }
       },
       drawerTitle() {
@@ -190,9 +182,6 @@
         this.flowDirection = '';
         this.page = 1;
         this.loadData(1);
-      },
-      onDateRangeChange() {
-        this.reload();
       },
       onFlowDirectionChange() {
         this.reload();

@@ -56,18 +56,22 @@
           placeholder="批号"
         />
       </el-form-item>
-      <el-form-item label="日期">
+      <el-form-item label="开始">
         <el-date-picker
-          v-model="where.date"
-          type="daterange"
-          align="right"
-          unlink-panels
+          v-model="where.startTime"
+          type="date"
           value-format="yyyy-MM-dd"
-          range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          :picker-options="pickerOptions"
-          style="width: 200px"
+          placeholder="开始日期"
+          style="width: 135px"
+        />
+      </el-form-item>
+      <el-form-item label="-">
+        <el-date-picker
+          v-model="where.endTime"
+          type="date"
+          value-format="yyyy-MM-dd"
+          placeholder="结束日期"
+          style="width: 135px"
         />
       </el-form-item>
       <el-form-item label="流向类型">
@@ -116,7 +120,8 @@
     MANUFACTURER: '',
     PROD_REGISTRATION: '',
     BATCH: '',
-    date: []
+    startTime: '',
+    endTime: ''
   });
 
   export default {
@@ -130,37 +135,6 @@
       return {
         where: defaultWhere(),
         KSDepartmentalPlanDetailsGroupTipShow: false,
-        pickerOptions: {
-          shortcuts: [
-            {
-              text: '最近一周',
-              onClick(picker) {
-                const end = new Date();
-                const start = new Date();
-                start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
-                picker.$emit('pick', [start, end]);
-              }
-            },
-            {
-              text: '最近一个月',
-              onClick(picker) {
-                const end = new Date();
-                const start = new Date();
-                start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
-                picker.$emit('pick', [start, end]);
-              }
-            },
-            {
-              text: '最近三个月',
-              onClick(picker) {
-                const end = new Date();
-                const start = new Date();
-                start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
-                picker.$emit('pick', [start, end]);
-              }
-            }
-          ]
-        },
         showEdit: false,
         showEdit2: false
       };

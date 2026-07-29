@@ -55,7 +55,8 @@ export default {
     },
     methods: {
         datasource({ page, limit, where }) {
-            const [startTime, endTime] = where.sendDate;
+            const startTime = where.sendDateStart;
+            const endTime = where.sendDateEnd;
             return GetYB3501List({
                 page,
                 size: limit,

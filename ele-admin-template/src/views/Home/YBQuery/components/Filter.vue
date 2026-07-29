@@ -1,15 +1,23 @@
 <template>
     <div class="yb-query-filter">
         <el-form :model="form" :rules="rules" ref="form" inline="inline">
-            <el-form-item label="发送时间" prop="sendDate">
-                <el-date-picker 
-                    v-model="form.sendDate"
-                    unlink-panels
-                    type="daterange"
+            <el-form-item label="发送时间" prop="sendDateStart">
+                <el-date-picker
+                    v-model="form.sendDateStart"
+                    type="date"
                     value-format="yyyy-MM-dd"
-                    range-separator="至"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期" />
+                    placeholder="开始"
+                    style="width: 140px"
+                />
+            </el-form-item>
+            <el-form-item label="-" prop="sendDateEnd">
+                <el-date-picker
+                    v-model="form.sendDateEnd"
+                    type="date"
+                    value-format="yyyy-MM-dd"
+                    placeholder="结束"
+                    style="width: 140px"
+                />
             </el-form-item>
             <el-form-item label="状态">
                 <el-select v-model="form.state" placeholder="请选择" clearable>
@@ -30,11 +38,13 @@ export default {
     data() {
         return {
             form: {
-                sendDate: [],
+                sendDateStart: '',
+                sendDateEnd: '',
                 state: ''
             },
             rules: {
-                sendDate: [{ required: true, message: '请选择发送时间', trigger: 'blur' }],
+                sendDateStart: [{ required: true, message: '请选择开始日期', trigger: 'blur' }],
+                sendDateEnd: [{ required: true, message: '请选择结束日期', trigger: 'blur' }]
             }
         };
     },
@@ -52,7 +62,8 @@ export default {
                 String(last7DaysStart.getMonth() + 1).padStart(2, '0') + '-' +
                 String(last7DaysStart.getDate()).padStart(2, '0');
             this.form = {
-                sendDate: [last7DaysStartTime, todayStr],
+                sendDateStart: last7DaysStartTime,
+                sendDateEnd: todayStr,
                 state: ''
             };
         },

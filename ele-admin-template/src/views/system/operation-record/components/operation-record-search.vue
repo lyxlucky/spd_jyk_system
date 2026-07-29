@@ -18,17 +18,24 @@
         </el-form-item>
       </el-col>
       <el-col v-bind="styleResponsive ? { lg: 6, md: 12 } : { span: 6 }">
-        <el-form-item label="操作时间:">
+        <el-form-item label="操作开始:">
           <el-date-picker
-            unlink-panels
-            v-model="dateRange"
-            range-separator="-"
-            type="datetimerange"
-            end-placeholder="结束日期"
-            start-placeholder="开始日期"
-            :picker-options="pickerOptions"
+            v-model="where.createTimeStart"
+            type="datetime"
+            placeholder="开始时间"
             value-format="yyyy-MM-dd HH:mm:ss"
-            class="ele-fluid"
+            style="width: 140px"
+          />
+        </el-form-item>
+      </el-col>
+      <el-col v-bind="styleResponsive ? { lg: 6, md: 12 } : { span: 6 }">
+        <el-form-item label="-">
+          <el-date-picker
+            v-model="where.createTimeEnd"
+            type="datetime"
+            placeholder="结束时间"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            style="width: 140px"
           />
         </el-form-item>
       </el-col>
@@ -55,45 +62,14 @@
       // 默认表单数据
       const defaultWhere = {
         username: '',
-        module: ''
+        module: '',
+        createTimeStart: '',
+        createTimeEnd: ''
       };
       return {
         // 表单数据
         where: { ...defaultWhere },
-        // 日期范围选择
-        dateRange: [],
-        // 日期时间选择器快捷项
-        pickerOptions: {
-          shortcuts: [
-            {
-              text: '最近一周',
-              onClick(picker) {
-                const end = new Date();
-                const start = new Date();
-                start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
-                picker.$emit('pick', [start, end]);
-              }
-            },
-            {
-              text: '最近一个月',
-              onClick(picker) {
-                const end = new Date();
-                const start = new Date();
-                start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
-                picker.$emit('pick', [start, end]);
-              }
-            },
-            {
-              text: '最近三个月',
-              onClick(picker) {
-                const end = new Date();
-                const start = new Date();
-                start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
-                picker.$emit('pick', [start, end]);
-              }
-            }
-          ]
-        }
+        defaultWhere
       };
     },
     computed: {
@@ -105,17 +81,11 @@
     methods: {
       /* 搜索 */
       search() {
-        const [createTimeStart, createTimeEnd] = this.dateRange;
-        this.$emit('search', {
-          ...this.where,
-          createTimeStart,
-          createTimeEnd
-        });
+        this.$emit('search', { ...this.where });
       },
       /*  重置 */
       reset() {
         this.where = { ...this.defaultWhere };
-        this.dateRange = [];
         this.search();
       }
     }

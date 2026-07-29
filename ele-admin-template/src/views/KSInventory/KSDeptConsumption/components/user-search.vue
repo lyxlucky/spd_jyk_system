@@ -125,15 +125,22 @@
           />
         </el-form-item>
         <br />
-        <el-form-item label="消耗时间">
+        <el-form-item label="消耗开始">
           <el-date-picker
-            v-model="validDateRange"
-            type="daterange"
-            style="width: 220px"
+            v-model="where.validDateFrom"
+            type="date"
+            style="width: 135px"
             value-format="yyyy-MM-dd"
-            range-separator="至"
-            start-placeholder="开始"
-            end-placeholder="结束"
+            placeholder="开始"
+          />
+        </el-form-item>
+        <el-form-item label="-">
+          <el-date-picker
+            v-model="where.validDateTo"
+            type="date"
+            style="width: 135px"
+            value-format="yyyy-MM-dd"
+            placeholder="结束"
           />
         </el-form-item>
         <el-form-item label="日清时间:" style="display: none">
@@ -249,7 +256,6 @@ export default {
       where: defaultWhere(),
       KSDeptConsumpHZTipShow: false,
       KSDeptConsumpKSHZTipShow: false,
-      validDateRange: [],
       monthRange: []
     };
   },
@@ -260,15 +266,6 @@ export default {
     }
   },
   watch: {
-    validDateRange(val) {
-      if (val && val.length === 2) {
-        this.where.validDateFrom = val[0];
-        this.where.validDateTo = val[1];
-      } else {
-        this.where.validDateFrom = '';
-        this.where.validDateTo = '';
-      }
-    },
     monthRange(val) {
       if (val && val.length === 2) {
         this.where.monthFmt = val[0];
@@ -285,7 +282,6 @@ export default {
     },
     reset() {
       this.where = defaultWhere();
-      this.validDateRange = [];
       this.monthRange = [];
       this.search();
     }

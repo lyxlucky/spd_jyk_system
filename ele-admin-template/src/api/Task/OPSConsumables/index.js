@@ -13,14 +13,10 @@ export async function getBdSzYyHisSs(params) {
   // console.log(params);
   const formatData = {
     Token: sessionStorage.getItem(TOKEN_STORE_NAME),
-    start_time: params.where?.dateRange ? params.where?.dateRange[0] : '',
-    end_time: params.where?.dateRange ? params.where?.dateRange[1] : '',
-    SSRQ_start_time: params.where?.SSRQDateRange
-      ? params.where?.SSRQDateRange[0]
-      : '',
-    SSRQ_end_time: params.where?.SSRQDateRange
-      ? params.where?.SSRQDateRange[1]
-      : '',
+    start_time: params.where?.start_time || '',
+    end_time: params.where?.end_time || '',
+    SSRQ_start_time: params.where?.SSRQ_start_time || '',
+    SSRQ_end_time: params.where?.SSRQ_end_time || '',
     MZZY: params.where?.MZZY || '',
     BRXM_OR_SSMC: params.where?.BRXM_OR_SSMC || '',
     SSBH: params.where?.SSBH || '',

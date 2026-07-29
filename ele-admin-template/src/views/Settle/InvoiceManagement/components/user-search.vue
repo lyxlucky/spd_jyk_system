@@ -22,15 +22,22 @@
             <el-option label="否" value="0" />
           </el-select>
         </el-form-item>
-        <el-form-item label="审核日期" class="date-range-item">
+        <el-form-item label="审核开始">
           <el-date-picker
-            v-model="where.EXAMINE_TIME"
-            type="daterange"
+            v-model="where.EXAMINE_TIMEStart"
+            type="date"
             value-format="yyyy-MM-dd"
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            style="width: 220px"
+            placeholder="开始日期"
+            style="width: 135px"
+          />
+        </el-form-item>
+        <el-form-item label="-">
+          <el-date-picker
+            v-model="where.EXAMINE_TIMEEnd"
+            type="date"
+            value-format="yyyy-MM-dd"
+            placeholder="结束日期"
+            style="width: 135px"
           />
         </el-form-item>
         <el-form-item label="品种">
@@ -69,15 +76,22 @@
             style="width: 120px"
           />
         </el-form-item>
-        <el-form-item label="月结日期" class="date-range-item">
+        <el-form-item label="月结开始">
           <el-date-picker
-            v-model="where.MONTHLY_TIME"
-            type="daterange"
+            v-model="where.MONTHLY_TIMEStart"
+            type="date"
             value-format="yyyy-MM-dd"
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            style="width: 220px"
+            placeholder="开始日期"
+            style="width: 135px"
+          />
+        </el-form-item>
+        <el-form-item label="-">
+          <el-date-picker
+            v-model="where.MONTHLY_TIMEEnd"
+            type="date"
+            value-format="yyyy-MM-dd"
+            placeholder="结束日期"
+            style="width: 135px"
           />
         </el-form-item>
       </div>
@@ -132,11 +146,13 @@ export default {
   data() {
     const defaultWhere = {
       LS_IS_JC: '',
-      EXAMINE_TIME: [],
+      EXAMINE_TIMEStart: '',
+      EXAMINE_TIMEEnd: '',
       EXAMINE_STATE: '',
       MONTHBILLNUM: '',
       SUPPLIER_NAME: '',
-      MONTHLY_TIME: [],
+      MONTHLY_TIMEStart: '',
+      MONTHLY_TIMEEnd: '',
       EBS_CAN_SEND_INVOICE: '',
       QSSTATE: '',
       PIC_STATE: ''

@@ -105,16 +105,22 @@
         <el-form-item label="回复人">
           <el-input v-model="feedQuery.RESPONDER" clearable placeholder="回复人" style="width: 140px" />
         </el-form-item>
-        <el-form-item label="回复日期">
+        <el-form-item label="回复开始">
           <el-date-picker
-            v-model="feedDateRange"
-            type="daterange"
-            range-separator="至"
-            start-placeholder="开始"
-            end-placeholder="结束"
+            v-model="feedDateStart"
+            type="date"
+            placeholder="开始"
             value-format="yyyy-MM-dd"
-            unlink-panels
-            style="width: 260px"
+            style="width: 140px"
+          />
+        </el-form-item>
+        <el-form-item label="-">
+          <el-date-picker
+            v-model="feedDateEnd"
+            type="date"
+            placeholder="结束"
+            value-format="yyyy-MM-dd"
+            style="width: 140px"
           />
         </el-form-item>
         <el-form-item>
@@ -232,7 +238,8 @@ export default {
       feedTotal: 0,
       feedPage: { page: 1, size: 10 },
       feedQuery: { SUPPLIER_NAME: '', RESPONDER: '' },
-      feedDateRange: null,
+      feedDateStart: '',
+      feedDateEnd: '',
       attLoading: false,
       attRows: [],
       attTotal: 0,
@@ -325,12 +332,11 @@ export default {
       if (page) this.feedPage.page = page;
       this.feedLoading = true;
       try {
-        const [start, end] = this.feedDateRange || [null, null];
         const data = await getFeedbackInfo({
           SUPPLIER_NAME: this.feedQuery.SUPPLIER_NAME,
           RESPONDER: this.feedQuery.RESPONDER,
-          UPDATE_TIMEstart: start || '',
-          UPDATE_TIMEend: end || '',
+          UPDATE_TIMEstart: this.feedDateStart || '',
+          UPDATE_TIMEend: this.feedDateEnd || '',
           page: this.feedPage.page,
           size: this.feedPage.size
         });

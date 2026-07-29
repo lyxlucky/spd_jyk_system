@@ -1,15 +1,15 @@
-<!-- 搜索表单 -->
+<!-- 搜索表单：字段对齐老页 BidVarInfoDept / 本院中标目录 -->
 <template>
   <el-form
     class="ele-form-search"
     inline
+    size="mini"
     @keyup.enter.native="search"
     @submit.native.prevent
   >
     <el-form-item>
       <el-input
-        size="mini"
-        style="width: 180px"
+        style="width: 140px"
         clearable
         v-model="where.VARIETIE_CODE_NEW"
         placeholder="品种编码"
@@ -17,129 +17,105 @@
     </el-form-item>
     <el-form-item>
       <el-input
-        size="mini"
-        style="width: 180px"
+        style="width: 140px"
         clearable
         v-model="where.PROD_REGISTRATION_NAME"
         placeholder="品种名称"
       />
     </el-form-item>
     <el-form-item>
-      <el-input
-        size="mini"
-        style="width: 180px"
-        clearable
-        v-model="where.GG"
-        placeholder="规格型号"
-      />
+      <el-input style="width: 140px" clearable v-model="where.GG" placeholder="规格型号" />
     </el-form-item>
     <el-form-item>
       <el-input
-        size="mini"
-        style="width: 180px"
+        style="width: 140px"
         clearable
         v-model="where.APPROVAL_NUMBER"
         placeholder="注册证号"
       />
     </el-form-item>
     <el-form-item>
-      <el-input
-        size="mini"
-        style="width: 180px"
-        clearable
-        v-model="where.SUP_NAME"
-        placeholder="供应商"
-      />
+      <el-input style="width: 140px" clearable v-model="where.SUP_NAME" placeholder="供应商" />
     </el-form-item>
     <el-form-item>
       <el-input
-        size="mini"
-        style="width: 180px"
+        style="width: 140px"
         clearable
         v-model="where.MANUFACTURING_ENT_NAME"
         placeholder="生产企业"
       />
     </el-form-item>
     <el-form-item>
-      <el-input
-        size="mini"
-        style="width: 180px"
-        clearable
-        v-model="where.USE_DEPT"
-        placeholder="使用科室"
+      <el-input style="width: 140px" clearable v-model="where.USE_DEPT" placeholder="使用科室" />
+    </el-form-item>
+    <el-form-item label="导入时间">
+      <el-date-picker
+        v-model="where.CREATE_BATCH"
+        type="date"
+        value-format="yyyy-MM-dd"
+        placeholder="开始"
+        style="width: 130px"
       />
     </el-form-item>
-    <el-form-item style="width: 280px">
+    <el-form-item label="-">
       <el-date-picker
-        size="mini"
-        v-model="where.importTimeRange"
-        type="daterange"
-        style="width: 280px"
+        v-model="where.CREATE_BATCH2"
+        type="date"
         value-format="yyyy-MM-dd"
-        range-separator="至"
-        start-placeholder="导入开始日期"
-        end-placeholder="导入结束日期"
-      >
-      </el-date-picker>
+        placeholder="结束"
+        style="width: 130px"
+      />
     </el-form-item>
     <el-form-item>
       <el-input
-        size="mini"
-        style="width: 180px"
+        style="width: 140px"
         clearable
         v-model="where.CONTRACT_CODE"
         placeholder="合同编码"
       />
     </el-form-item>
-    <el-form-item>
-      <el-input
-        size="mini"
-        style="width: 180px"
-        clearable
-        v-model="where.CREATE_BATCH"
+    <el-form-item label="合同开始">
+      <el-date-picker
+        v-model="where.start_time"
+        type="date"
+        value-format="yyyy-MM-dd"
         placeholder="合同开始"
+        style="width: 130px"
       />
     </el-form-item>
-    <el-form-item>
-      <el-input
-        size="mini"
-        style="width: 180px"
-        clearable
-        v-model="where.CREATE_BATCH2"
+    <el-form-item label="合同结束">
+      <el-date-picker
+        v-model="where.end_time"
+        type="date"
+        value-format="yyyy-MM-dd"
         placeholder="合同结束"
+        style="width: 130px"
       />
     </el-form-item>
     <el-form-item>
       <el-select
-        size="mini"
-        style="width: 180px"
+        style="width: 120px"
         v-model="where.IS_HAVE"
-        @change="search()"
+        clearable
         placeholder="在用状态"
+        @change="search"
       >
-        <el-option label="在用状态" value="">全部</el-option>
-        <el-option label="启用" value="1"></el-option>
-        <el-option label="已申请" value="2"></el-option>
-        <el-option label="未使用" value="0"></el-option>
+        <el-option label="全部" value="" />
+        <el-option label="启用" value="1" />
+        <el-option label="已申请" value="2" />
+        <el-option label="未使用" value="0" />
       </el-select>
     </el-form-item>
     <el-form-item>
-      <el-button
-        size="mini"
-        type="primary"
-        icon="el-icon-search"
-        class="ele-btn-icon"
-        @click="search"
-      >
+      <el-button type="primary" icon="el-icon-search" class="ele-btn-icon" @click="search">
         查询
       </el-button>
     </el-form-item>
     <el-form-item>
-      <el-button size="mini" class="ele-btn-icon" icon="el-icon-refresh" @click="reset">重置</el-button>
+      <el-button class="ele-btn-icon" icon="el-icon-refresh" @click="reset">重置</el-button>
     </el-form-item>
     <el-form-item v-permission="'zhongbiao-export'">
       <el-button
-        size="mini"
         type="primary"
         icon="el-icon-download"
         class="ele-btn-icon"
@@ -147,10 +123,9 @@
       >
         导出
       </el-button>
-      </el-form-item>
+    </el-form-item>
     <el-form-item>
       <el-button
-        size="mini"
         type="primary"
         class="ele-btn-icon"
         icon="el-icon-upload2"
@@ -158,10 +133,9 @@
       >
         申请至在用目录
       </el-button>
-      </el-form-item>
+    </el-form-item>
     <el-form-item>
       <el-button
-        size="mini"
         type="danger"
         class="ele-btn-icon"
         icon="el-icon-download"
@@ -169,119 +143,100 @@
       >
         取消申请至在用目录
       </el-button>
-      </el-form-item>
+    </el-form-item>
   </el-form>
 </template>
 
 <script>
-  import { CreateTempletDeta } from '@/api/KSInventory/BidVarInfoDept';
-  export default {
-    props: ['selection'],
-    data() {
-      // 默认表单数据
-      const defaultWhere = {
-        VARIETIE_CODE_NEW: '',
-        PROD_REGISTRATION_NAME: '',
-        GG: '',
-        APPROVAL_NUMBER: '',
-        SUP_NAME: '',
-        MANUFACTURING_ENT_NAME: '',
-        USE_DEPT: '',
-        IS_ENABLE: '',
-        IS_HAVE: '',
-        IS_USE: '',
-        IS_IN_COUNTRY_IMPORT: '',
-        CONTRACT_CODE: '',
-        CREATE_BATCH: '',
-        CREATE_BATCH2: '',
-        importTimeRange: [],
-        HIGH_OR_LOW_CLASS: '',
-        HIGH_CLASS_XH: '',
-        IS_PRICE: '',
-        KC: ''
-      };
-      return {
-        // 表单数据
-        where: { ...defaultWhere }
-      };
-    },
-    computed: {
-      // 是否开启响应式布局
-      styleResponsive() {
-        return this.$store.state.theme.styleResponsive;
-      }
-    },
-    methods: {
-      /* 搜索 */
-      search() {
-        this.$emit('search', { ...this.where });
-      },
-      /*  重置 */
-      reset() {
-        this.where = { ...this.defaultWhere };
-        this.search();
-      },
-      exportData() {
-        this.$emit('exportData', this.where);
-      },
-      ApplyToVarietyDataLzhLook() {
-        if (this.selection.length == 0) {
-          this.$message.warning('请选择数据');
-          return;
-        }
-        const loading = this.$messageLoading('保存中。。。');
-        var data = this.selection;
-        data.dept_two_code = this.$store.state.user.info.DeptNow.Dept_Two_Code;
-        data.state = 3;
-        CreateTempletDeta(data)
-          .then((res) => {
-            loading.close();
-            this.$message.success(res.msg);
-            this.search();
-          })
-          .catch((err) => {
-            loading.close();
-            this.$message.error(err);
-          });
-      },
-      CalApplyToVarietyDataLzhLook() {
-        if (this.selection.length == 0) {
-          this.$message.warning('请选择数据');
-          return;
-        }
-        const loading = this.$messageLoading('保存中。。。');
-        var data = this.selection;
-        data.dept_two_code = this.$store.state.user.info.DeptNow.Dept_Two_Code;
-        data.state = 0;
-        CreateTempletDeta(data)
-          .then((res) => {
-            loading.close();
-            this.$message.success(res.msg);
-            this.search();
-          })
-          .catch((err) => {
-            loading.close();
-            this.$message.error(err);
-          });
-      }
-    },
-    created() {
-      // 获取各种类型当前时间
-      var date = new Date(); //获取当前时间国标版
-      var year = date.getFullYear(); // 获取年
-      var month = date.getMonth() + 1; //获取当前月
-      var day = date.getDate(); //日
-      var now_time = year + '-' + month + '-' + day;
-      this.where.EndTime = now_time;
+import { CreateTempletDeta } from '@/api/KSInventory/BidVarInfoDept';
 
-      //获取7天前的时间
-      var now2 = new Date();
-      var date2 = new Date(now2.getTime() - 7 * 24 * 3600 * 1000);
-      var year2 = date2.getFullYear();
-      var month2 = date2.getMonth() + 1;
-      var day2 = date2.getDate();
-      var now_time2 = year2 + '-' + month2 + '-' + day2;
-      this.where.StartTime = now_time2;
-    }
+function createDefaultWhere() {
+  return {
+    VARIETIE_CODE_NEW: '',
+    PROD_REGISTRATION_NAME: '',
+    GG: '',
+    APPROVAL_NUMBER: '',
+    SUP_NAME: '',
+    MANUFACTURING_ENT_NAME: '',
+    USE_DEPT: '',
+    IS_ENABLE: '',
+    IS_HAVE: '',
+    IS_USE: '1',
+    IS_IN_COUNTRY_IMPORT: '',
+    CONTRACT_CODE: '',
+    // 导入时间（对齐老页 CREATE_BATCH / CREATE_BATCH2）
+    CREATE_BATCH: '',
+    CREATE_BATCH2: '',
+    // 合同起止（对齐老页 start_time / end_time）
+    start_time: '',
+    end_time: '',
+    HIGH_OR_LOW_CLASS: '',
+    HIGH_CLASS_XH: '',
+    IS_PRICE: '',
+    KC: ''
   };
+}
+
+export default {
+  props: ['selection'],
+  data() {
+    const defaultWhere = createDefaultWhere();
+    return {
+      defaultWhere,
+      where: { ...defaultWhere }
+    };
+  },
+  methods: {
+    search() {
+      this.$emit('search', { ...this.where });
+    },
+    reset() {
+      this.where = { ...this.defaultWhere };
+      this.search();
+    },
+    exportData() {
+      this.$emit('exportData', { ...this.where });
+    },
+    ApplyToVarietyDataLzhLook() {
+      if (this.selection.length == 0) {
+        this.$message.warning('请选择数据');
+        return;
+      }
+      const loading = this.$messageLoading('保存中。。。');
+      var data = this.selection;
+      data.dept_two_code = this.$store.state.user.info.DeptNow.Dept_Two_Code;
+      data.state = 3;
+      CreateTempletDeta(data)
+        .then((res) => {
+          loading.close();
+          this.$message.success(res.msg);
+          this.search();
+        })
+        .catch((err) => {
+          loading.close();
+          this.$message.error(err);
+        });
+    },
+    CalApplyToVarietyDataLzhLook() {
+      if (this.selection.length == 0) {
+        this.$message.warning('请选择数据');
+        return;
+      }
+      const loading = this.$messageLoading('保存中。。。');
+      var data = this.selection;
+      data.dept_two_code = this.$store.state.user.info.DeptNow.Dept_Two_Code;
+      data.state = 0;
+      CreateTempletDeta(data)
+        .then((res) => {
+          loading.close();
+          this.$message.success(res.msg);
+          this.search();
+        })
+        .catch((err) => {
+          loading.close();
+          this.$message.error(err);
+        });
+    }
+  }
+};
 </script>

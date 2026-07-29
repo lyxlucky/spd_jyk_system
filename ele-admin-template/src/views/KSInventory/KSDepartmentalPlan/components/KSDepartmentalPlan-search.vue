@@ -29,16 +29,22 @@
           placeholder="申领单号"
         />
       </el-form-item>
-      <el-form-item label="日期">
+      <el-form-item label="申领开始">
         <el-date-picker
-          v-model="dateRange"
-          type="daterange"
-          style="width: 200px"
+          v-model="where.Start"
+          type="date"
+          style="width: 140px"
           value-format="yyyy-MM-dd"
-          range-separator="至"
-          start-placeholder="申领开始"
-          end-placeholder="申领结束"
-          @change="onDateRangeChange"
+          placeholder="申领开始"
+        />
+      </el-form-item>
+      <el-form-item label="申领结束">
+        <el-date-picker
+          v-model="where.End"
+          type="date"
+          style="width: 140px"
+          value-format="yyyy-MM-dd"
+          placeholder="申领结束"
         />
       </el-form-item>
       <el-form-item label="状态">
@@ -131,7 +137,6 @@
         where: defaultWhere(),
         BZ: '',
         showProjectTypeDialog: false,
-        dateRange: [],
         applyPlanBlocked: false
       };
     },
@@ -154,13 +159,6 @@
       }
     },
     methods: {
-      /* 日期范围变化处理 */
-      onDateRangeChange() {
-        if (this.dateRange && this.dateRange.length === 2) {
-          this.where.Start = this.dateRange[0];
-          this.where.End = this.dateRange[1];
-        }
-      },
       /* 搜索 */
       search() {
         this.$emit('search', this.where);
@@ -172,7 +170,6 @@
       /*  重置 */
       reset() {
         this.where = defaultWhere();
-        this.dateRange = [];
         this.search();
       },
       /* 创建申领单 */
@@ -253,9 +250,8 @@
       const threeMonthsAgo = this.$moment()
         .subtract(3, 'months')
         .format('YYYY-MM-DD');
-      this.dateRange = [threeMonthsAgo, currentDate]; // 绑定日期范围
-      this.where.Start = threeMonthsAgo; // 绑定开始日期
-      this.where.End = currentDate; // 绑定结束日期
+      this.where.Start = threeMonthsAgo;
+      this.where.End = currentDate;
     }
   };
 </script>

@@ -14,10 +14,8 @@ export async function GetNaxtDayApplyPlanMain(data) {
     : '';
   data2.CREATE_MAN = data.where.CREATE_MAN ? data.where.CREATE_MAN : '';
   data2.YY_TYPE = data.where.YY_TYPE ? data.where.YY_TYPE : '';
-  if (data.where.date && data.where.date.length > 0) {
-    data2.START_TIME = data?.where?.date[0] ? data?.where?.date[0] : '';
-    data2.END_TIME = data?.where?.date[1] ? data?.where?.date[1] : '';
-  }
+  data2.START_TIME = data.where.dateFrom ? data.where.dateFrom : '';
+  data2.END_TIME = data.where.dateTo ? data.where.dateTo : '';
   data2.page = data.page ? data.page : 1;
   data2.size = data.limit ? data.limit : 10;
   data2.STORAGE = data.where.STORAGE ? data.where.STORAGE : '';
@@ -46,8 +44,8 @@ export async function GetNaxtDayApplyPlanMainVar(data) {
     ? data.where.NAXT_DAT_PLAN_NUM
     : '';
   data2.CREATE_MAN = data.where.CREATE_MAN ? data.where.CREATE_MAN : '';
-  data2.START_TIME = data.where.date[0] ? data.where.date[0] : '';
-  data2.END_TIME = data.where.date[1] ? data.where.date[1] : '';
+  data2.START_TIME = data.where.dateFrom ? data.where.dateFrom : '';
+  data2.END_TIME = data.where.dateTo ? data.where.dateTo : '';
   data2.page = data.page ? data.page : 1;
   data2.size = data.limit ? data.limit : 10;
 

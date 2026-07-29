@@ -10,32 +10,44 @@
       <el-col v-bind="styleResponsive ? { lg: 6, md: 12 } : { span: 6 }">
         <label>
           上架时间:
-        <el-date-picker
-          type="daterange"
-          value-format="yyyy-MM-dd"
-          size="mini"
-          range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          v-model="dateRange"
-        >
-        </el-date-picker>
-      </label>
+          <el-date-picker
+            v-model="where.ks_UseTimeStart"
+            type="date"
+            value-format="yyyy-MM-dd"
+            size="mini"
+            placeholder="开始"
+            style="width: 140px"
+          />
+          <el-date-picker
+            v-model="where.ks_UseTimeEnd"
+            type="date"
+            value-format="yyyy-MM-dd"
+            size="mini"
+            placeholder="结束"
+            style="width: 140px; margin-left: 8px"
+          />
+        </label>
       </el-col>
       <el-col v-bind="styleResponsive ? { lg: 6, md: 12 } : { span: 6 }">
         <label>
           使用时间:
-        <el-date-picker
-          type="daterange"
-          value-format="yyyy-MM-dd"
-          size="mini"
-          range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          v-model="consumeDateRange"
-        >
-        </el-date-picker>
-      </label>
+          <el-date-picker
+            v-model="where.consumeStartTime"
+            type="date"
+            value-format="yyyy-MM-dd"
+            size="mini"
+            placeholder="开始"
+            style="width: 140px"
+          />
+          <el-date-picker
+            v-model="where.consumeEndTime"
+            type="date"
+            value-format="yyyy-MM-dd"
+            size="mini"
+            placeholder="结束"
+            style="width: 140px; margin-left: 8px"
+          />
+        </label>
       </el-col>
       <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 6 }">
         <el-select size="mini" clearable v-model="where.procurementType" placeholder="全部" style="width: 100px">
@@ -68,34 +80,12 @@ export default {
         consumeEndTime: '',
         procurementType: ''
       },
-      where: {},
-      dateRange: [],
-      consumeDateRange: []
+      where: {}
     };
   },
   computed: {
     styleResponsive() {
       return this.$store.state.theme.styleResponsive;
-    }
-  },
-  watch: {
-    dateRange(range) {
-      if (range && range.length === 2) {
-        this.where.ks_UseTimeStart = range[0];
-        this.where.ks_UseTimeEnd = range[1];
-      } else {
-        this.where.ks_UseTimeStart = '';
-        this.where.ks_UseTimeEnd = '';
-      }
-    },
-    consumeDateRange(range) {
-      if (range && range.length === 2) {
-        this.where.consumeStartTime = range[0];
-        this.where.consumeEndTime = range[1];
-      } else {
-        this.where.consumeStartTime = '';
-        this.where.consumeEndTime = '';
-      }
     }
   },
   created() {
