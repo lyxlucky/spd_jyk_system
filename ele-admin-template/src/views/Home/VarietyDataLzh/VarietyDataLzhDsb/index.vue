@@ -124,7 +124,7 @@
             <span>{{ selectedPkg.varietie_name }}</span>
           </div>
           <div class="panel-subtitle panel-subtitle--muted" v-else>
-            请在左侧选择一条定数包品种，查看其系数方案
+            请在下方散货品种列表选中品种后创建系数；已有系数的可在左侧点选查看
           </div>
         </div>
         <el-table
@@ -356,21 +356,38 @@ export default {
       }
     },
 
-    /* 供父组件调用：根据品种编码同时加载左侧列表和右侧详情（对齐老系统 R_rowSelect） */
-    async loadByVarietyCode(code, name) {
+    /* 供父组件调用：对齐老系统 R_rowSelect —— 以下方散货选中行为准创建/查看 */
+    loadByVarietyCode(code, name, codeNew) {
+      return this.loadByVariety({ code, name, codeNew });
+    },
+    async loadByVariety(variety) {
+      if (!variety) return;
+      const code = String(variety.code || variety.Varietie_Code || '').trim();
       if (!code) return;
-      // 对齐老系统：搜索框显示品种全称，VARIETIE_CODE 传编码，VARIETIE_NAME 传名称
-      this.searchKeyword = name || code;
-      this.pkgPage = 1;
+      const codeNew = String(
+        variety.codeNew || variety.Varietie_Code_New || ''
+      ).trim();
+      const name = String(variety.name || variety.Varietie_Name || '').trim();
+
+      // 对齐老系统 rowIndex_Code：创建定数包系数始终用下方散货选中的内部编码
+      this.selectedPkg = {
+        Varietie_Code: code,
+        Varietie_Code_New: codeNew,
+        varietie_name: name
+      };
       this.selectedDetail = null;
-      // 并行加载：左侧定数包品种列表 + 右侧定数包系数方案详情
+      // 搜索框展示名称；左侧列表按品种编码查，避免同名旧品种抢走选中
+      this.searchKeyword = name || codeNew || code;
+      this.pkgPage = 1;
+
       this.leftLoading = true;
       this.rightLoading = true;
       try {
+        const listKeyword = codeNew || code;
         const [pkgRes, detailRes] = await Promise.all([
           GetDefinitePkgList({
-            VARIETIE_CODE: code,
-            VARIETIE_NAME: name || code,
+            VARIETIE_CODE: listKeyword,
+            VARIETIE_NAME: listKeyword,
             wheres: 1,
             page: 1,
             size: this.pkgPageSize
@@ -380,11 +397,24 @@ export default {
         this.pkgList = pkgRes.result || [];
         this.pkgTotal = Number(pkgRes.total) || 0;
         this.detailList = detailRes.result || [];
-        if (this.pkgList.length > 0) {
-          this.$nextTick(() => {
-            this.$refs.leftTable.setCurrentRow(this.pkgList[0]);
-            this.selectedPkg = this.pkgList[0];
-          });
+
+        await this.$nextTick();
+        const matched = this.pkgList.find(
+          (r) => String(r.Varietie_Code) === code
+        );
+        if (matched && this.$refs.leftTable) {
+          this.$refs.leftTable.setCurrentRow(matched);
+          this.selectedPkg = {
+            ...matched,
+            Varietie_Code: matched.Varietie_Code,
+            Varietie_Code_New:
+              matched.Varietie_Code_New || codeNew,
+            varietie_name:
+              matched.varietie_name || matched.Varietie_Name || name
+          };
+        } else if (this.$refs.leftTable) {
+          // 尚未进入定数包目录：清空左侧高亮，保留下方选中品种用于创建
+          this.$refs.leftTable.setCurrentRow(null);
         }
       } catch (e) {
         this.$message.error(e.message || '加载失败');
@@ -414,7 +444,12 @@ export default {
     /* 左侧行选中 → 加载右侧详情 */
     onLeftRowSelect(row) {
       if (!row) return;
-      this.selectedPkg = row;
+      this.selectedPkg = {
+        ...row,
+        Varietie_Code: row.Varietie_Code,
+        Varietie_Code_New: row.Varietie_Code_New,
+        varietie_name: row.varietie_name || row.Varietie_Name || ''
+      };
       this.selectedDetail = null;
       this.loadDetailList(row.Varietie_Code);
     },
@@ -437,10 +472,10 @@ export default {
       this.selectedDetail = row;
     },
 
-    /* 打开创建弹窗 */
+    /* 打开创建弹窗（对齐老系统 add_Rarieties_dsb：用下方散货选中的 rowIndex_Code） */
     async openCreateDialog() {
-      if (!this.selectedPkg) {
-        this.$message.warning('请先在左侧选择一个品种');
+      if (!this.selectedPkg || !this.selectedPkg.Varietie_Code) {
+        this.$message.warning('请先在下方散货品种列表选中要维护的品种');
         return;
       }
       this.isEdit = false;
@@ -534,7 +569,12 @@ export default {
             if (res === 'True' || res === true) {
               this.$message.success('添加成功');
               this.dialogVisible = false;
-              this.loadDetailList(varietieCode);
+              // 创建后刷新左侧目录与右侧详情（新中标品种会进入定数包品种列表）
+              await this.loadByVariety({
+                code: varietieCode,
+                codeNew: this.selectedPkg.Varietie_Code_New || this.form.varietieCodeNew,
+                name: this.selectedPkg.varietie_name || this.form.varietieName
+              });
             } else {
               this.$message.error('添加失败');
             }

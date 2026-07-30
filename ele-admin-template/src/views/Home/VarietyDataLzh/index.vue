@@ -35,16 +35,15 @@ export default {
   methods: {
     onMainRowClick(row) {
       if (!row) return;
+      // 对齐老系统 rowIndex_Code：以下方散货选中行为准
       this.lastSelectedVariety = {
         code: row.Varietie_Code || row.VARIETIE_CODE || '',
+        codeNew: row.Varietie_Code_New || row.VARIETIE_CODE_NEW || '',
         name: row.Varietie_Name || row.VARIETIE_NAME || ''
       };
       // 定数包 tab 下点击散货行直接联动
       if (this.activeName === 'second' && this.$refs.dsbRef) {
-        this.$refs.dsbRef.loadByVarietyCode(
-          this.lastSelectedVariety.code,
-          this.lastSelectedVariety.name
-        );
+        this.$refs.dsbRef.loadByVariety(this.lastSelectedVariety);
       }
     }
   },
@@ -53,10 +52,7 @@ export default {
       if (val === 'second' && this.lastSelectedVariety) {
         this.$nextTick(() => {
           if (this.$refs.dsbRef) {
-            this.$refs.dsbRef.loadByVarietyCode(
-              this.lastSelectedVariety.code,
-              this.lastSelectedVariety.name
-            );
+            this.$refs.dsbRef.loadByVariety(this.lastSelectedVariety);
           }
         });
       }
