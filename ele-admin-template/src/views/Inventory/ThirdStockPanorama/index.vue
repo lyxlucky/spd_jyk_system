@@ -118,7 +118,8 @@
       buildRelationWhere,
       isCurrentRequest,
       getWhere() {
-        return this.$refs.search?.getWhere() || {};
+        const where = this.$refs.search?.getWhere() || {};
+        return { ...where, excludeNegativeStock: true };
       },
       async loadDimensions(page = this.dimensionPage) {
         this.dimensionPage = page;

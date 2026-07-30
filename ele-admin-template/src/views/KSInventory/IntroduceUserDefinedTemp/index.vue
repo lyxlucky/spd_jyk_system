@@ -309,6 +309,13 @@
             }
           },
           {
+            prop: 'CLASSIFIC_NAME',
+            label: '物料分类',
+            width: 120,
+            align: 'center',
+            showOverflowTooltip: true
+          },
+          {
             slot: 'APPLY_QTY',
             label: '实际申领数量',
             width: 150,

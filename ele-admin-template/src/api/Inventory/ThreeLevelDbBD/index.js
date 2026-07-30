@@ -15,6 +15,7 @@ import { TOKEN_STORE_NAME } from '@/config/setting';
  * @param {string} [data.where.spec] - 规格型号
  * @param {string} [data.where.manufacter] - 生产企业
  * @param {string} [data.where.prodRegistrationCode] - 批准文号
+ * @param {boolean} [data.where.excludeNegativeStock] - 是否排除负库存
  * @returns {Promise<Object>} 返回查询结果
  * @throws {Error} 当请求失败时抛出错误
  */
@@ -33,6 +34,7 @@ export function buildThirdStockInfoRequest(data = {}, token = '') {
         spec: where.spec || '',
         manufacter: where.manufacter || '',
         prodRegistrationCode: where.prodRegistrationCode || '',
+        excludeNegativeStock: where.excludeNegativeStock === true,
         stockZero: where.stockZero || '',
         statStartTime: where.statStartTime || '',
         operationChargingStartTime: where.operationChargingStartTime || '',
@@ -74,6 +76,7 @@ export async function getThirdStockDimensionOptions(data) {
     requestData.spec = data.where?.spec || '';
     requestData.manufacter = data.where?.manufacter || '';
     requestData.prodRegistrationCode = data.where?.prodRegistrationCode || '';
+    requestData.excludeNegativeStock = data.where?.excludeNegativeStock === true;
     requestData.statStartTime = data.where?.statStartTime || '';
     requestData.operationChargingStartTime = data.where?.operationChargingStartTime || '';
     requestData.operationChargingEndTime = data.where?.operationChargingEndTime || '';

@@ -101,6 +101,7 @@
           <el-button type="primary" icon="el-icon-search" :loading="loading" @click="$emit('search')">
             查询
           </el-button>
+          <el-button type="success" icon="el-icon-download" @click="exportData()">导出</el-button>
           <el-button icon="el-icon-refresh-left" @click="reset">重置</el-button>
         </el-form-item>
       </el-form>
@@ -109,6 +110,9 @@
 </template>
 
 <script>
+  import { utils, writeFile } from 'xlsx';
+  import { getThirdStockInfo } from '@/api/Inventory/ThreeLevelDbBD';
+
   function createForm() {
     return {
       DeptName: '',
@@ -146,6 +150,78 @@
     methods: {
       getWhere() {
         return { ...this.form };
+      },
+      exportData() {
+        const loading = this.$messageLoading('正在导出数据...');
+        try {
+          getThirdStockInfo({
+            page: 1,
+            limit: 999999,
+            where: this.form
+          })
+            .then((response) => {
+              loading.close();
+              const headers = [
+                '二级科室名称',
+                '品种编码',
+                '计费编码',
+                '品种名称',
+                '规格型号',
+                '生产企业',
+                '单位',
+                '单价',
+                '转换比',
+                '批准文号',
+                '散货计费数量',
+                '定数包计费数量',
+                '入库数量',
+                '入库总数量',
+                'HIS收费总数',
+                '库存数量'
+              ];
+              const dataArray = [headers];
+              response.data.forEach((d) => {
+                const ksQtyTotal =
+                  Number(d.KS_QTY) + Number(d.JF_QTY) + Number(d.JF_DEF_QTY);
+                dataArray.push([
+                  d.DEPT_TWO_NAME || '',
+                  d.VARIETIE_CODE_NEW || '',
+                  d.CHARGE_CODE || '',
+                  d.VARIETIE_NAME || '',
+                  d.SPECIFICATION_OR_TYPE || '',
+                  d.MANUFACTURING_ENT_NAME || '',
+                  d.UNIT || '',
+                  d.PRICE || '',
+                  d.HIS_ZHB || '',
+                  d.APPROVAL_NUMBER || '',
+                  d.JF_QTY || '',
+                  d.JF_DEF_QTY || '',
+                  d.KS_QTY || '',
+                  d.IN_STOCK_TOTAL_QTY || '',
+                  d.HIS_CHARGE_TOTAL_QTY || '',
+                  ksQtyTotal || ''
+                ]);
+              });
+              writeFile(
+                {
+                  SheetNames: ['Sheet1'],
+                  Sheets: {
+                    Sheet1: utils.aoa_to_sheet(dataArray)
+                  }
+                },
+                '三级库-库存信息.xlsx'
+              );
+              this.$message.success('导出成功');
+            })
+            .catch(() => {
+              loading.close();
+              this.$message.error('导出数据失败，请稍后重试');
+            });
+        } catch (error) {
+          loading.close();
+          console.error('导出数据失败:', error);
+          this.$message.error('导出数据失败，请稍后重试');
+        }
       },
       reset() {
         this.form = createForm();
