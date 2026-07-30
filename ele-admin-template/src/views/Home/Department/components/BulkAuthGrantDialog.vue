@@ -10,8 +10,14 @@
     @closed="onClosed"
   >
     <div v-loading="bootLoading" class="bulk-auth-wrap">
-      <el-table :data="detailRows" border size="small" height="140" empty-text="点击左侧品种行查看注册/证照信息">
-        <el-table-column prop="Varietie_Code" label="品种（材料）编码" width="130" show-overflow-tooltip />
+      <el-table
+        :data="detailRows"
+        border
+        size="small"
+        height="120"
+        empty-text="点击下方品种行查看注册/证照信息"
+      >
+        <el-table-column prop="Varietie_Code" label="品种（材料）编码" width="150" show-overflow-tooltip />
         <el-table-column prop="Varietie_Name" label="品种全称" min-width="140" show-overflow-tooltip />
         <el-table-column prop="Approval_Number" label="批准文号" width="120" show-overflow-tooltip />
         <el-table-column label="发证日期" width="110">
@@ -25,105 +31,129 @@
         <el-table-column prop="Regulatory_Cat_Name" label="监管类别" width="100" show-overflow-tooltip />
       </el-table>
 
-      <el-row :gutter="8" class="mt8 main-split">
-        <el-col :span="11">
-          <el-form :inline="true" size="small" class="toolbar-inline" @submit.native.prevent>
-            <el-form-item label="品种">
-              <el-input v-model="keyword" clearable placeholder="编码/名称" style="width: 160px" @keyup.enter.native="search(1)" />
-            </el-form-item>
-            <el-form-item>
-              <el-button type="primary" icon="el-icon-search" @click="search(1)">查询</el-button>
-            </el-form-item>
-          </el-form>
-          <el-table
-            ref="leftTable"
-            v-loading="leftLoading"
-            :data="leftRows"
-            border
-            stripe
-            height="700"
-            highlight-current-row
-            :row-class-name="leftRowClass"
-            @selection-change="onLeftSelection"
-            @row-click="onLeftRowClick"
-          >
-            <el-table-column type="selection" width="45" :selectable="leftRowSelectable" align="center"/>
-            <el-table-column prop="Varietie_Code_New" label="品种编码" width="110" show-overflow-tooltip />
-            <el-table-column prop="Varietie_Name" label="品种全称" min-width="120" show-overflow-tooltip />
-            <el-table-column prop="Specification_Or_Type" label="规格" width="90" show-overflow-tooltip />
-            <el-table-column prop="Unit" label="单位" width="50" />
-            <el-table-column prop="Price" label="中标价" width="70" align="right" />
-            <el-table-column prop="Manufacturing_Ent_Name" label="生产企业" min-width="100" show-overflow-tooltip />
-            <el-table-column label="启用" width="60">
-              <template slot-scope="{ row }">{{ row.Enable == 1 ? '启用' : row.Enable == 0 ? '冻结' : '—' }}</template>
-            </el-table-column>
-          </el-table>
-          <el-pagination
-            class="pager"
-            small
-            background
-            layout="total, sizes, prev, pager, next"
-            :total="leftTotal"
-            :page-size="pageSize"
-            :current-page="page"
-            :page-sizes="[15, 20, 30, 50, 100]"
-            @size-change="onPageSizeChange"
-            @current-change="search"
-          />
-        </el-col>
-        <el-col :span="2" class="arrow-col">
-          <el-button type="primary" size="mini" class="arrow-btn" @click="moveIn">移入 »</el-button>
-          <el-button type="warning" size="mini" plain class="arrow-btn" @click="moveOut">« 移出</el-button>
-        </el-col>
-        <el-col :span="11">
-          <div class="sub-title">待授权（由左侧勾选编码经接口生成；移出会按剩余勾选刷新）</div>
-          <el-table
-            ref="rightTable"
-            v-loading="rightLoading"
-            :data="pendingRows"
-            border
-            stripe
-            height="700"
-            highlight-current-row
-            @selection-change="(s) => (rightSelected = s)"
-            @row-click="onRightRowClick"
-          >
-            <el-table-column type="selection" width="45" align="center"/>
-            <el-table-column prop="Varietie_Code_New" label="品种编码" width="100" show-overflow-tooltip />
-            <el-table-column prop="Varietie_Name" label="品种全称" min-width="110" show-overflow-tooltip />
-            <el-table-column prop="Specification_Or_Type" label="规格" width="80" show-overflow-tooltip />
-            <el-table-column prop="Unit" label="单位" width="50" />
-            <el-table-column prop="Price" label="中标价" width="70" align="right" />
-            <el-table-column prop="Manufacturing_Ent_Name" label="生产企业" min-width="90" show-overflow-tooltip />
-            <el-table-column label="授权模式" width="120">
-              <template slot-scope="{ row }">
-                <el-select v-model="row.authorizationModel" size="mini" disabled style="width: 100%">
-                  <el-option label="不限制" value="0" />
-                  <el-option label="不限时限量" value="1" />
-                  <el-option label="限时限量" value="2" />
-                  <el-option label="按年限量" value="3" />
-                  <el-option label="按月限量" value="4" />
-                </el-select>
-              </template>
-            </el-table-column>
-            <el-table-column label="授权到期" width="150">
-              <template slot-scope="{ row }">
-                <el-date-picker v-model="row.mandateExpire" type="date" value-format="yyyy-MM-dd" size="mini" style="width: 130px" />
-              </template>
-            </el-table-column>
-            <el-table-column label="授权散货总数" width="110">
-              <template slot-scope="{ row }">
-                <el-input-number v-model="row.authorizedAmount" size="mini" :min="0" :controls="false" style="width: 100px" />
-              </template>
-            </el-table-column>
-            <el-table-column label="PDA自动申领基数" width="120">
-              <template slot-scope="{ row }">
-                <el-input-number v-model="row.autoApplyRadix" size="mini" :min="0" :controls="false" style="width: 100px" />
-              </template>
-            </el-table-column>
-          </el-table>
-        </el-col>
-      </el-row>
+      <div class="mt8 panel-block">
+        <el-form :inline="true" size="small" class="toolbar-inline" @submit.native.prevent>
+          <el-form-item label="品种">
+            <el-input
+              v-model="keyword"
+              clearable
+              placeholder="编码/名称"
+              style="width: 200px"
+              @keyup.enter.native="search(1)"
+            />
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" icon="el-icon-search" @click="search(1)">查询</el-button>
+          </el-form-item>
+        </el-form>
+        <el-table
+          ref="leftTable"
+          v-loading="leftLoading"
+          :data="leftRows"
+          border
+          stripe
+          height="280"
+          highlight-current-row
+          :row-class-name="leftRowClass"
+          @selection-change="onLeftSelection"
+          @row-click="onLeftRowClick"
+        >
+          <el-table-column type="selection" width="45" :selectable="leftRowSelectable" align="center" />
+          <el-table-column prop="Varietie_Code_New" label="品种（材料）编码" width="140" show-overflow-tooltip />
+          <el-table-column prop="Varietie_Name" label="品种全称" min-width="160" show-overflow-tooltip />
+          <el-table-column prop="Specification_Or_Type" label="型号/规格" width="110" show-overflow-tooltip />
+          <el-table-column prop="Unit" label="单位" width="60" />
+          <el-table-column prop="Price" label="中标价" width="80" align="right" />
+          <el-table-column prop="Manufacturing_Ent_Name" label="生产企业名称" min-width="140" show-overflow-tooltip />
+          <el-table-column label="启用状态" width="80">
+            <template slot-scope="{ row }">{{ row.Enable == 1 ? '启用' : row.Enable == 0 ? '冻结' : '—' }}</template>
+          </el-table-column>
+        </el-table>
+        <el-pagination
+          class="pager"
+          small
+          background
+          layout="total, sizes, prev, pager, next"
+          :total="leftTotal"
+          :page-size="pageSize"
+          :current-page="page"
+          :page-sizes="[15, 20, 30, 50, 100]"
+          @size-change="onPageSizeChange"
+          @current-change="search"
+        />
+      </div>
+
+      <div class="arrow-row">
+        <el-button type="primary" size="mini" class="arrow-btn" @click="moveIn">移入 ↓</el-button>
+        <el-button type="warning" size="mini" plain class="arrow-btn" @click="moveOut">↑ 移出</el-button>
+      </div>
+
+      <div class="panel-block">
+          <div class="sub-title">待授权（上方勾选后移入；授权数量可不填，确定即可关联）</div>
+        <el-table
+          ref="rightTable"
+          v-loading="rightLoading"
+          :data="pendingRows"
+          border
+          stripe
+          height="280"
+          highlight-current-row
+          @selection-change="(s) => (rightSelected = s)"
+          @row-click="onRightRowClick"
+        >
+          <el-table-column type="selection" width="45" align="center" />
+          <el-table-column prop="Varietie_Code_New" label="品种（材料）编码" width="140" show-overflow-tooltip />
+          <el-table-column prop="Varietie_Name" label="品种全称" min-width="140" show-overflow-tooltip />
+          <el-table-column prop="Specification_Or_Type" label="型号/规格" width="100" show-overflow-tooltip />
+          <el-table-column prop="Unit" label="单位" width="60" />
+          <el-table-column prop="Price" label="中标价" width="80" align="right" />
+          <el-table-column prop="Manufacturing_Ent_Name" label="生产企业名称" min-width="120" show-overflow-tooltip />
+          <el-table-column label="授权模式" width="120">
+            <template slot-scope="{ row }">
+              <el-select v-model="row.authorizationModel" size="mini" disabled style="width: 100%">
+                <el-option label="不限制" value="0" />
+                <el-option label="不限时限量" value="1" />
+                <el-option label="限时限量" value="2" />
+                <el-option label="按年限量" value="3" />
+                <el-option label="按月限量" value="4" />
+              </el-select>
+            </template>
+          </el-table-column>
+          <el-table-column label="授权到期" width="140">
+            <template slot-scope="{ row }">
+              <el-date-picker
+                v-model="row.mandateExpire"
+                type="date"
+                value-format="yyyy-MM-dd"
+                size="mini"
+                style="width: 120px"
+              />
+            </template>
+          </el-table-column>
+          <el-table-column label="授权散货总数" width="110">
+            <template slot-scope="{ row }">
+              <el-input-number
+                v-model="row.authorizedAmount"
+                size="mini"
+                :min="0"
+                :controls="false"
+                style="width: 100px"
+              />
+            </template>
+          </el-table-column>
+          <el-table-column label="PDA自动申领基数" width="120">
+            <template slot-scope="{ row }">
+              <el-input-number
+                v-model="row.autoApplyRadix"
+                size="mini"
+                :min="0"
+                :controls="false"
+                style="width: 100px"
+              />
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
     </div>
     <div slot="footer" class="footer-center">
       <el-button size="small" @click="visible = false">取消</el-button>
@@ -138,6 +168,7 @@ import * as api from '@/api/Home/Department';
 import { operatorName } from '../utils';
 
 function mapPendingFromApi(rows) {
+  // 对齐老页移入默认：模式不限制、到期 2999-01-01、数量可空、PDA基数 0
   return (rows || []).map((r) => ({
     ...r,
     authorizationModel: '0',
@@ -164,7 +195,7 @@ export default {
       page: 1,
       pageSize: 20,
       serverAuthedCodes: new Set(),
-      /** 左侧灰显/禁用：已入库授权 ∪ 已成功「移入」待授权池的品种编码 */
+      /** 上方列表灰显/禁用：已入库授权 ∪ 已成功「移入」待授权池的品种编码 */
       poolCodes: new Set(),
       leftCheckedCodes: new Set(),
       pendingRows: [],
@@ -288,7 +319,7 @@ export default {
     async moveIn() {
       const codes = [...this.leftCheckedCodes];
       if (!codes.length) {
-        Message.warning('请在左侧勾选要移入的品种');
+        Message.warning('请在上方列表勾选要移入的品种');
         return;
       }
       this.rightLoading = true;
@@ -313,7 +344,7 @@ export default {
     },
     async moveOut() {
       if (!this.rightSelected.length) {
-        Message.warning('请在右侧待授权表中勾选要移出的行');
+        Message.warning('请在下方待授权表中勾选要移出的行');
         return;
       }
       const remove = new Set(this.rightSelected.map((r) => String(r.Varietie_Code)));
@@ -351,16 +382,16 @@ export default {
         Message.warning('没有要授权的品种');
         return;
       }
+      // 对齐老页：可不填数量；空数量后端→int.MaxValue，空到期→9999-12-31
       const op = operatorName(this);
-      for (const r of this.pendingRows) {
-        if (r.authorizedAmount == null || r.authorizedAmount === '') {
-          Message.warning(`请填写品种「${r.Varietie_Code_New || r.Varietie_Code}」的授权散货总数`);
-          return;
-        }
-      }
       const list = this.pendingRows.map((r) => {
-        const radix = r.autoApplyRadix == null || r.autoApplyRadix === '' ? 0 : r.autoApplyRadix;
-        return `{${r.Varietie_Code},${r.authorizedAmount},${r.mandateExpire},${op},${this.deptOneCode},${r.authorizationModel ?? '0'},${radix}}`;
+        const amount =
+          r.authorizedAmount == null || r.authorizedAmount === '' ? '' : r.authorizedAmount;
+        const expire = r.mandateExpire || '2999-01-01';
+        const model = r.authorizationModel ?? '0';
+        const radix =
+          r.autoApplyRadix == null || r.autoApplyRadix === '' ? 0 : r.autoApplyRadix;
+        return `{${r.Varietie_Code},${amount},${expire},${op},${this.deptOneCode},${model},${radix}}`;
       });
       this.saving = true;
       try {
@@ -386,19 +417,18 @@ export default {
 .mt8 {
   margin-top: 8px;
 }
-.main-split {
-  align-items: stretch;
+.panel-block {
+  width: 100%;
 }
-.arrow-col {
+.arrow-row {
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 12px;
-  padding-top: 48px;
+  gap: 16px;
+  padding: 10px 0;
 }
 .arrow-btn {
-  width: 88px;
+  min-width: 88px;
 }
 .pager {
   margin-top: 6px;
