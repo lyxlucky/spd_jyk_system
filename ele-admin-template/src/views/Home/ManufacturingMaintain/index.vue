@@ -51,6 +51,7 @@
       >
         <el-table-column type="selection" width="45" align="center" />
         <el-table-column prop="MANUFACTURING_ENT_NAME" label="生产企业名称" min-width="160" show-overflow-tooltip />
+        <el-table-column prop="SOCIAL_CREDIT_CODE" label="社会统一信用代码" min-width="180" show-overflow-tooltip />
         <el-table-column prop="MANUFACTURING_LICENSE" label="生产许可证号" min-width="140" show-overflow-tooltip />
         <el-table-column prop="LICENSE_VALID" label="营业执照效期" width="120" show-overflow-tooltip />
         <el-table-column prop="MANUFACTURING_NUMBER" label="生产商号" width="120" show-overflow-tooltip />
@@ -86,6 +87,9 @@
       <el-form ref="formRef" :model="form" label-width="200px" size="small">
         <el-form-item label="生产企业名称" prop="MANUFACTURING_ENT_NAME" :rules="[{ required: true, message: '必填' }]">
           <el-input v-model="form.MANUFACTURING_ENT_NAME" />
+        </el-form-item>
+        <el-form-item label="社会统一信用代码">
+          <el-input v-model="form.SOCIAL_CREDIT_CODE" placeholder="请输入社会统一信用代码" />
         </el-form-item>
         <el-form-item label="生产许可证号">
           <el-input v-model="form.MANUFACTURING_LICENSE" />
@@ -135,6 +139,7 @@ import {
 const emptyForm = () => ({
   ID: '',
   MANUFACTURING_ENT_NAME: '',
+  SOCIAL_CREDIT_CODE: '',
   MANUFACTURING_LICENSE: '',
   LICENSE_VALID: '',
   MANUFACTURING_LICENSE_TIME: '',
@@ -217,6 +222,7 @@ export default {
       this.form = {
         ID: row.ID,
         MANUFACTURING_ENT_NAME: row.MANUFACTURING_ENT_NAME || '',
+        SOCIAL_CREDIT_CODE: row.SOCIAL_CREDIT_CODE || '',
         MANUFACTURING_LICENSE: row.MANUFACTURING_LICENSE || '',
         LICENSE_VALID: row.LICENSE_VALID || '',
         MANUFACTURING_LICENSE_TIME: this.fmtDate(row.MANUFACTURING_LICENSE_TIME),
@@ -290,6 +296,7 @@ export default {
         });
         const header = [
           '生产企业名称',
+          '社会统一信用代码',
           '生产许可证号',
           '许可证有效期',
           '生产企业地址',
@@ -302,6 +309,7 @@ export default {
         (data.result || []).forEach((d) => {
           sheetData.push([
             d.MANUFACTURING_ENT_NAME,
+            d.SOCIAL_CREDIT_CODE,
             d.MANUFACTURING_LICENSE,
             this.fmtDate(d.MANUFACTURING_LICENSE_TIME),
             d.MANUFACTURING_ADDRES,
@@ -312,7 +320,7 @@ export default {
           ]);
         });
         const sheet = utils.aoa_to_sheet(sheetData);
-        sheet['!cols'] = [{ wch: 28 }, { wch: 18 }, { wch: 14 }, { wch: 24 }, { wch: 14 }, { wch: 14 }, { wch: 10 }, { wch: 20 }];
+        sheet['!cols'] = [{ wch: 28 }, { wch: 22 }, { wch: 18 }, { wch: 14 }, { wch: 24 }, { wch: 14 }, { wch: 14 }, { wch: 10 }, { wch: 20 }];
         writeFile({ SheetNames: ['生产企业'], Sheets: { 生产企业: sheet } }, '生产企业.xlsx');
       } catch (e) {
         this.$message.error(e.message || '导出失败');

@@ -33,6 +33,7 @@ export async function insertManufacturingEnt(payload) {
   const fd = formdataify({
     Token: getToken(),
     MANUFACTURING_ENT_NAME: payload.MANUFACTURING_ENT_NAME ?? '',
+    SOCIAL_CREDIT_CODE: payload.SOCIAL_CREDIT_CODE ?? '',
     MANUFACTURING_LICENSE: payload.MANUFACTURING_LICENSE ?? '',
     MANUFACTURING_LICENSE_TIME: payload.MANUFACTURING_LICENSE_TIME ?? '',
     MANUFACTURING_ADDRES: payload.MANUFACTURING_ADDRES ?? '',
@@ -53,6 +54,7 @@ export async function updateManufacturingEnt(payload) {
     Token: getToken(),
     ID: String(payload.ID ?? ''),
     MANUFACTURING_ENT_NAME: payload.MANUFACTURING_ENT_NAME ?? '',
+    SOCIAL_CREDIT_CODE: payload.SOCIAL_CREDIT_CODE ?? '',
     MANUFACTURING_LICENSE: payload.MANUFACTURING_LICENSE ?? '',
     MANUFACTURING_LICENSE_TIME: payload.MANUFACTURING_LICENSE_TIME ?? '',
     MANUFACTURING_ADDRES: payload.MANUFACTURING_ADDRES ?? '',
