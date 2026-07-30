@@ -163,6 +163,57 @@ export function abdzczhPrint(action, params) {
   return getJson(`/Abdzczh/${action}`, params);
 }
 
+export function getLhfyMonDtlPreview(params) {
+  return getJson('/Abdzczh/GetLhfyMonDtlPreview', params);
+}
+
+async function postCloudSignJson(url, data = {}) {
+  const res = await request.post(url, { Token: token(), ...data });
+  const body = res.data || {};
+  if (body.code == 200) return body;
+  if (body.code == 202 || body.pending) {
+    const err = new Error(body.msg || '等待扫码');
+    err.pending = true;
+    err.code = body.code;
+    throw err;
+  }
+  return Promise.reject(new Error(body.msg || '请求失败'));
+}
+
+export function cloudSignGenLoginQrCode() {
+  return postCloudSignJson('/CloudSign/GenLoginQrCode');
+}
+
+export function cloudSignGetLoginResult(claimUuid) {
+  return postCloudSignJson('/CloudSign/GetLoginResult', { claimUuid });
+}
+
+export function cloudSignPrepareMonthReportSign(data) {
+  return postCloudSignJson('/CloudSign/PrepareMonthReportSign', data);
+}
+
+export function getMonthDeptSignStatus(monthId, deptName = '', onlyUserDept = false) {
+  return getJson('/CloudSign/GetMonthDeptSignStatus', {
+    MonthID: monthId,
+    DeptName: deptName || '',
+    onlyUserDept: onlyUserDept ? '1' : ''
+  });
+}
+
+export function getDeptSignDetail(monthId, deptTwoCode) {
+  return getJson('/CloudSign/GetDeptSignDetail', {
+    MonthID: monthId,
+    DeptTwoCode: deptTwoCode
+  });
+}
+
+export function getDeptSignStamps(monthId, deptTwoCode) {
+  return getJson('/CloudSign/GetDeptSignStamps', {
+    MonthID: monthId,
+    DeptTwoCode: deptTwoCode
+  });
+}
+
 export function getTextExport(action, params) {
   return getAction(action, params);
 }

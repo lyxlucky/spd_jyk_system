@@ -344,6 +344,23 @@ export default {
     },
 
     async mensLhfyPrint(action) {
+      if (!this.selectedMonth?.ID) {
+        this.$message.warning('请先选中月结单');
+        return;
+      }
+      if (action === 'PrintLhfyMonDtl' && this.hp === 'szlhfy') {
+        try {
+          await this.mensConfirmLhfyDtlCloudSignPrint({
+            MonthID: this.selectedMonth.ID,
+            Number: this.printPageNum
+          });
+        } catch (e) {
+          if (e.message !== '已取消统一打印') {
+            this.$message.error(e.message);
+          }
+        }
+        return;
+      }
       const loading = this.$loading({ lock: true });
       try {
         const res = await api.abdzczhPrint(action, {
@@ -355,6 +372,35 @@ export default {
         this.$message.error(e.message);
       } finally {
         loading.close();
+      }
+    },
+
+    async mensConfirmLhfyDtlCloudSignPrint(params) {
+      const statusRes = await api.getMonthDeptSignStatus(this.selectedMonth.ID);
+      const list = statusRes.result || [];
+      this.cloudSignStatusRows = list;
+      this.cloudSignConfirmVisible = true;
+      const confirmed = await new Promise((resolve) => {
+        this.cloudSignConfirmResolve = resolve;
+      });
+      if (!confirmed) {
+        throw new Error('已取消统一打印');
+      }
+      const signLoading = this.$loading({ lock: true, text: '正在生成带章月结明细…' });
+      try {
+        const printParams = { ...params, useCloudSign: '1' };
+        const res = await api.abdzczhPrint('PrintLhfyMonDtl', printParams);
+        if (res.msg) openExcelFile(res.msg);
+      } finally {
+        signLoading.close();
+      }
+    },
+
+    resolveCloudSignConfirm(ok) {
+      this.cloudSignConfirmVisible = false;
+      if (this.cloudSignConfirmResolve) {
+        this.cloudSignConfirmResolve(!!ok);
+        this.cloudSignConfirmResolve = null;
       }
     },
 

@@ -106,6 +106,11 @@ export function getMenuRoutes(menus, homePath) {
       meta: { title: '月结管理' }
     });
     routes.push({
+      path: '/Settle/MonthDeptCloudSign',
+      component: () => import('@/views/Settle/MonthDeptCloudSign/index.vue'),
+      meta: { title: '科室月结明细云签（妇幼）' }
+    });
+    routes.push({
       path: '/Settle/NissinBills',
       component: () => import('@/views/Settle/NissinBills/index.vue'),
       meta: { title: '日清管理' }

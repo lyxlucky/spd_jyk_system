@@ -246,6 +246,42 @@
       <el-button type="primary" size="mini" class="print-opt-btn" @click="mensPrintMonthSheetByType('lhfyDept')">科室领用报表</el-button>
       <el-button type="primary" size="mini" class="print-opt-btn" @click="mensPrintMonthSheetByType('lhfyDtl')">科室月结明细表</el-button>
     </el-dialog>
+
+    <el-dialog
+      title="科室月结明细表 · 云签状态确认"
+      :visible.sync="cloudSignConfirmVisible"
+      width="720px"
+      append-to-body
+      :close-on-click-modal="false"
+      @close="resolveCloudSignConfirm(false)"
+    >
+      <p class="cloud-sign-confirm-tip">
+        已双签 {{ cloudSignBothCount }} 个，仅签领用 {{ cloudSignOnlyReceiverCount }} 个，仅签审核 {{ cloudSignOnlyAuditorCount }} 个，未签 {{ cloudSignNoneCount }} 个。
+        确认后将统一打印全部科室（已签科室带章，未签留空）。
+      </p>
+      <el-table :data="cloudSignStatusRows" border stripe size="mini" max-height="360">
+        <el-table-column prop="deptTwoName" label="科室" min-width="140" show-overflow-tooltip />
+        <el-table-column label="领用" width="150">
+          <template slot-scope="{ row }">
+            <el-tag size="mini" :type="row.receiverSigned ? 'success' : 'info'">
+              {{ row.receiverSigned ? (row.receiverSignTime || '已签') : '未签' }}
+            </el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column label="审核人" width="150">
+          <template slot-scope="{ row }">
+            <el-tag size="mini" :type="row.auditorSigned ? 'success' : 'info'">
+              {{ row.auditorSigned ? (row.auditorSignTime || '已签') : '未签' }}
+            </el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column prop="statusLabel" label="状态" width="90" />
+      </el-table>
+      <span slot="footer">
+        <el-button size="mini" @click="resolveCloudSignConfirm(false)">取消</el-button>
+        <el-button size="mini" type="primary" @click="resolveCloudSignConfirm(true)">确认打印</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -289,10 +325,25 @@ export default {
       sureDialogVisible: false,
       printOptionsVisible: false,
       sureForm: { remark: '', monthDate: '' },
-      pendingSureJson: ''
+      pendingSureJson: '',
+      cloudSignConfirmVisible: false,
+      cloudSignStatusRows: [],
+      cloudSignConfirmResolve: null
     };
   },
   computed: {
+    cloudSignBothCount() {
+      return this.cloudSignStatusRows.filter((r) => r.bothSigned).length;
+    },
+    cloudSignOnlyReceiverCount() {
+      return this.cloudSignStatusRows.filter((r) => r.receiverSigned && !r.auditorSigned).length;
+    },
+    cloudSignOnlyAuditorCount() {
+      return this.cloudSignStatusRows.filter((r) => !r.receiverSigned && r.auditorSigned).length;
+    },
+    cloudSignNoneCount() {
+      return this.cloudSignStatusRows.filter((r) => !r.receiverSigned && !r.auditorSigned).length;
+    },
     showHerpCol() {
       return ['nyd', 'bd', 'bdrm', 'stzx', 'stse', 'csyy'].includes(this.hp);
     },
@@ -618,6 +669,13 @@ export default {
   display: block;
   width: 100%;
   margin: 0 0 8px !important;
+}
+
+.cloud-sign-confirm-tip {
+  margin: 0 0 12px;
+  color: #606266;
+  font-size: 13px;
+  line-height: 1.5;
 }
 
 :deep(.el-form-item) {
