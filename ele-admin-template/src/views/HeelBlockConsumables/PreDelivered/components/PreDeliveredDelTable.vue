@@ -134,6 +134,13 @@
             minWidth: 130
           },
           {
+            prop: 'Unit',
+            label: '单位',
+            align: 'center',
+            showOverflowTooltip: true,
+            width: 60
+          },
+          {
             slot: 'STATE',
             label: '合同效期',
             align: 'center',

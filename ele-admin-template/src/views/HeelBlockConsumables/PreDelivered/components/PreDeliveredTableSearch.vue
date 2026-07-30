@@ -8,57 +8,59 @@
     @submit.native.prevent
   >
     <el-row :gutter="5">
-      <el-col v-bind="styleResponsive ? { lg: 5, md: 12 } : { span: 16 }">
-        <el-select v-model="where.state" size="mini" placeholder="请选择状态">
+      <el-col :span="8">
+        <el-select v-model="where.state" size="mini" placeholder="请选择状态" style="width: 100%">
           <el-option label="收货全部" value=""></el-option>
           <el-option label="待确认" value="0"></el-option>
           <el-option label="已确认" value="1"></el-option>
         </el-select>
       </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 5, md: 12 } : { span: 16 }">
+      <el-col :span="8">
         <el-select
           v-model="where.strApprove"
           size="mini"
           placeholder="请选择状态"
+          style="width: 100%"
         >
           <el-option label="审批全部" value=""></el-option>
           <el-option label="未审批" value="0"></el-option>
           <el-option label="已审批" value="1"></el-option>
         </el-select>
       </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 5, md: 12 } : { span: 16 }">
+      <el-col :span="8">
         <el-select
           v-model="where.strYanShou"
           size="mini"
           placeholder="请选择状态"
+          style="width: 100%"
         >
           <el-option label="提交全部" value=""></el-option>
           <el-option label="未提交" value="0"></el-option>
           <el-option label="已提交" value="1"></el-option>
         </el-select>
       </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 8, md: 12 } : { span: 12 }">
-        <div class="date-range-two">
-          <el-date-picker
-            v-model="where.dateStart"
-            type="date"
-            value-format="yyyy-MM-dd"
-            size="mini"
-            placeholder="开始日期"
-            style="width: 130px"
-          />
-          <span class="date-sep">至</span>
-          <el-date-picker
-            v-model="where.dateEnd"
-            type="date"
-            value-format="yyyy-MM-dd"
-            size="mini"
-            placeholder="结束日期"
-            style="width: 130px"
-          />
-        </div>
-      </el-col>
     </el-row>
+    <div class="date-range-row">
+      <div class="date-range-two">
+        <el-date-picker
+          v-model="where.dateStart"
+          type="date"
+          value-format="yyyy-MM-dd"
+          size="mini"
+          placeholder="开始日期"
+          class="date-picker-item"
+        />
+        <span class="date-sep">至</span>
+        <el-date-picker
+          v-model="where.dateEnd"
+          type="date"
+          value-format="yyyy-MM-dd"
+          size="mini"
+          placeholder="结束日期"
+          class="date-picker-item"
+        />
+      </div>
+    </div>
     <div class="condition-row">
       <el-input
         size="mini"
@@ -295,10 +297,19 @@
   width: 100%;
 }
 
+.date-range-row {
+  margin-top: 5px;
+}
+
 .date-range-two {
   display: flex;
   align-items: center;
   gap: 6px;
+}
+
+.date-picker-item {
+  width: 140px;
+  flex: none;
 }
 
 .date-sep {
