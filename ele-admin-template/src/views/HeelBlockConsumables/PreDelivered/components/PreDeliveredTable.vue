@@ -130,6 +130,13 @@
             minWidth: 130
           },
           {
+            prop: 'Supplier_Name',
+            label: '供应商',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 120
+          },
+          {
             prop: 'Hospitalization_Number',
             label: '住院号',
             // sortable: 'custom',
@@ -147,9 +154,26 @@
             minWidth: 80
           },
           {
+            prop: 'Delivery_Time',
+            label: '收货时间',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 160,
+            formatter: (row, column, cellValue) => {
+              return this.$util.toDateString(cellValue, 'yyyy-MM-dd HH:mm:ss');
+            }
+          },
+          {
             prop: 'Dept_Two_Name',
             label: '使用科室',
             // sortable: 'custom',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 100
+          },
+          {
+            prop: 'NAME',
+            label: '库区',
             align: 'center',
             showOverflowTooltip: true,
             minWidth: 100
@@ -160,12 +184,12 @@
             // sortable: 'custom',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 180,
+            minWidth: 100,
             formatter(row, column, cellValue) {
               if (cellValue == '0') {
                 return '待确认';
               } else if (cellValue == '1') {
-                return '待提交';
+                return '已确认';
               } else if (cellValue == '2') {
                 return '已提交';
               } else if (cellValue == '3') {
@@ -329,21 +353,25 @@
           this.$message.warning('请选择一条数据');
           return;
         }
+        const row = this.current || this.selection[0];
+        if (!row?.Delivery_Note_Number_Id) {
+          this.$message.warning('请选中收货单号');
+          return;
+        }
         const loading = this.$messageLoading('删除中...');
-
-        var data = {
+        SoftDeleteDeliveryNumber({
           staff: this.$store.state.user.info.Nickname,
-          deliveryNumberId: this.current.Delivery_Note_Number_Id
-        };
-        SoftDeleteDeliveryNumber(data)
+          deliveryNumberId: row.Delivery_Note_Number_Id
+        })
           .then((res) => {
             this.$message.success(res.msg);
-            loading.close();
             this.reload();
           })
           .catch((err) => {
+            this.$message.error(err?.message || err);
+          })
+          .finally(() => {
             loading.close();
-            this.$message.error(err);
           });
       },
       ConfirmFun() {
@@ -351,21 +379,25 @@
           this.$message.warning('请选择一条数据');
           return;
         }
+        const row = this.current || this.selection[0];
+        if (!row?.Delivery_Note_Number_Id) {
+          this.$message.warning('请选中收货单号');
+          return;
+        }
         const loading = this.$messageLoading('处理中...');
-
-        var data = {
+        Confirm({
           staff: this.$store.state.user.info.Nickname,
-          deliveryNumberId: this.current.Delivery_Note_Number_Id
-        };
-        Confirm(data)
+          deliveryNumberId: row.Delivery_Note_Number_Id
+        })
           .then((res) => {
             this.$message.success(res.msg);
-            loading.close();
             this.reload();
           })
           .catch((err) => {
+            this.$message.error(err?.message || err);
+          })
+          .finally(() => {
             loading.close();
-            this.$message.error(err);
           });
       },
       ApproveFun() {
@@ -386,13 +418,14 @@
         };
         Approve(data)
           .then((res) => {
-            loading.close();
             this.reload();
             this.$message.success(res.msg);
           })
           .catch((err) => {
+            this.$message.error(err?.message || err);
+          })
+          .finally(() => {
             loading.close();
-            this.$message.error(err);
           });
       },
       handleUpdate(data) {
@@ -467,13 +500,10 @@
                   d.Patient,
                   d.Delivery_Time,
                   d.Dept_Two_Name,
-
                   d.Receive_Receipt_State,
                   d.SBK_APPROVE_STATE,
                   d.SBK_APPROVE_MAN,
-                  d.SBK_APPROVE_TIME,
-                  d.Day_Consume_Qty
-                  // this.$util.toDateString(d.createTime)
+                  d.SBK_APPROVE_TIME
                 ]);
               });
               writeFile(
