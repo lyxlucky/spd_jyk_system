@@ -23,6 +23,12 @@ export const inventoryColumns = [
     showOverflowTooltip: true
   },
   {
+    prop: 'charging_dept_name',
+    label: '计费科室',
+    width: 150,
+    showOverflowTooltip: true
+  },
+  {
     prop: 'med_list_codg',
     label: '医保编码',
     width: 150,
@@ -47,9 +53,21 @@ export const inventoryColumns = [
     showOverflowTooltip: true
   },
   {
+    prop: 'spler_name',
+    label: '供应商名称',
+    width: 150,
+    showOverflowTooltip: true
+  },
+  {
     prop: 'manu_lotnum',
     label: '生产批号',
     width: 120,
+    showOverflowTooltip: true
+  },
+  {
+    prop: 'prodentp_name',
+    label: '生产企业名称',
+    width: 150,
     showOverflowTooltip: true
   },
   {
@@ -107,6 +125,12 @@ export const outboundColumns = [
     showOverflowTooltip: true
   },
   {
+    prop: 'charging_dept_name',
+    label: '计费科室',
+    width: 150,
+    showOverflowTooltip: true
+  },
+  {
     prop: 'med_list_codg',
     label: '医保编码',
     width: 150,
@@ -131,9 +155,21 @@ export const outboundColumns = [
     showOverflowTooltip: true
   },
   {
+    prop: 'spler_name',
+    label: '供应商名称',
+    width: 150,
+    showOverflowTooltip: true
+  },
+  {
     prop: 'manu_lotnum',
     label: '生产批号',
     width: 120,
+    showOverflowTooltip: true
+  },
+  {
+    prop: 'prodentp_name',
+    label: '生产企业名称',
+    width: 150,
     showOverflowTooltip: true
   },
   {
@@ -183,6 +219,12 @@ export const procurementColumns = [
     prop: 'his_id',
     label: '消耗记录ID',
     width: 120,
+    showOverflowTooltip: true
+  },
+  {
+    prop: 'charging_dept_name',
+    label: '计费科室',
+    width: 150,
     showOverflowTooltip: true
   },
   {
@@ -284,6 +326,12 @@ export const returnColumns = [
     showOverflowTooltip: true
   },
   {
+    prop: 'charging_dept_name',
+    label: '计费科室',
+    width: 150,
+    showOverflowTooltip: true
+  },
+  {
     prop: 'med_list_codg',
     label: '医保编码',
     width: 150,
@@ -381,6 +429,12 @@ export const warehousingColumns = [
     showOverflowTooltip: true
   },
   {
+    prop: 'charging_dept_name',
+    label: '计费科室',
+    width: 150,
+    showOverflowTooltip: true
+  },
+  {
     prop: 'med_list_codg',
     label: '医保编码',
     width: 150,
@@ -405,9 +459,21 @@ export const warehousingColumns = [
     showOverflowTooltip: true
   },
   {
+    prop: 'spler_name',
+    label: '供应商名称',
+    width: 150,
+    showOverflowTooltip: true
+  },
+  {
     prop: 'manu_lotnum',
     label: '生产批号',
     width: 120,
+    showOverflowTooltip: true
+  },
+  {
+    prop: 'prodentp_name',
+    label: '生产企业名称',
+    width: 150,
     showOverflowTooltip: true
   },
   {
