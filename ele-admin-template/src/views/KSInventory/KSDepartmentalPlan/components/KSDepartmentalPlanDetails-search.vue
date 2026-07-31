@@ -300,32 +300,25 @@
       title="导入模板品种"
       :visible.sync="dialogTableVisible2"
       width="30%"
+      @closed="onImportDialogClosed"
     >
       <div style="width: 100%; text-align: center">
-        <form action="" id="CreateBydFpform">
+        <form ref="importPlanForm" action="" id="DeptPlanImportForm">
           <input
-            type="text"
-            size="mini"
-            style="display: none"
+            type="hidden"
             name="PlanNum"
-            autocomplete="off"
-            placeholder=""
-            :value="PlanNum"
+            :value="currentPlanNum"
           />
           <input
-            type="text"
-            size="mini"
-            style="display: none"
+            type="hidden"
             name="Token"
-            autocomplete="off"
-            placeholder=""
             :value="Token"
           />
 
           <div class="layui-form-item">
             <label style="width: 170px">选择文件:</label>
             <input
-              id="FILE"
+              ref="importFileInput"
               size="mini"
               style="
                 height: 30px;
@@ -335,7 +328,7 @@
               "
               name="FILE"
               type="file"
-              value=""
+              accept=".xlsx,.xls"
               required="required"
               autocomplete="off"
             />
@@ -743,6 +736,13 @@
       },
       canExportDetail() {
         return hasExportPermission('export-ApplyPlan-slddc');
+      },
+      currentPlanNum() {
+        return (
+          this.PlanNum ||
+          this.KSDepartmentalPlanDataSearch?.PlanNum ||
+          ''
+        ).toString();
       }
     },
     watch: {
@@ -751,9 +751,11 @@
           this.$emit('showEditReoad', false);
         }
       },
-      KSDepartmentalPlanDataSearch() {
-        this.PlanNum = this.KSDepartmentalPlanDataSearch.PlanNum;
-        return this.KSDepartmentalPlanDataSearch.PlanNum;
+      KSDepartmentalPlanDataSearch: {
+        immediate: true,
+        handler(val) {
+          this.PlanNum = val && val.PlanNum ? val.PlanNum : '';
+        }
       }
     },
     methods: {
@@ -1349,24 +1351,52 @@
           this.$message.warning('只能选择一个费用项');
         }
       },
+      onImportDialogClosed() {
+        if (this.$refs.importFileInput) {
+          this.$refs.importFileInput.value = '';
+        }
+      },
       importFile() {
-        console.log(this.PlanNum);
-        if (this.PlanNum.length <= 0) {
+        const planNum = (this.currentPlanNum || '').trim();
+        if (!planNum) {
           this.$message.warning('请先选择计划单号');
           return;
         }
+        this.PlanNum = planNum;
+        const fileInput = this.$refs.importFileInput;
+        if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
+          this.$message.warning('请选择要导入的 Excel 文件');
+          return;
+        }
+        const file = fileInput.files[0];
+        const fileName = (file.name || '').toLowerCase();
+        if (!fileName.endsWith('.xlsx') && !fileName.endsWith('.xls')) {
+          this.$message.warning('文件类型错误，请上传 .xls 或 .xlsx');
+          return;
+        }
         const loading = this.$messageLoading('导入中...');
-        var formData = new FormData(document.getElementById('CreateBydFpform'));
+        const formData = new FormData();
+        formData.append('PlanNum', planNum);
+        formData.append(
+          'Token',
+          sessionStorage.getItem(TOKEN_STORE_NAME) || this.Token || ''
+        );
+        formData.append('FILE', file);
         ImportTempExcel(formData)
           .then((res) => {
             loading.close();
             this.dialogTableVisible2 = false;
-            this.$message.success(res.msg);
-            this.$emit('search', this.where);
+            this.$message.success(res.msg || '导入成功');
+            this.$emit('search', {
+              ...this.where,
+              PlanNum: planNum
+            });
           })
           .catch((err) => {
             loading.close();
-            this.$message.error(err);
+            this.$message.error(
+              (err && err.message) || err || '导入失败'
+            );
           });
       }
     },
