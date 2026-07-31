@@ -549,13 +549,22 @@ export async function deleteStockingDataItem(data) {
 }
 
 export async function ImportTempExcel(data) {
-  data.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
-  const res = await request.post('/DeptApplyPlan/ImpApplyPlanV2Var', data);
-  if (res.data.code == 200) {
-    return res.data;
-  } else {
-    return Promise.reject(new Error(res.data.msg));
+  const token = sessionStorage.getItem(TOKEN_STORE_NAME) || '';
+  if (data instanceof FormData) {
+    if (data.has('Token')) {
+      data.set('Token', token);
+    } else {
+      data.append('Token', token);
+    }
+  } else if (data && typeof data === 'object') {
+    data.Token = token;
   }
+  const res = await request.post('/DeptApplyPlan/ImpApplyPlanV2Var', data);
+  const code = res.data && res.data.code;
+  if (code == 200 || code === '200') {
+    return res.data;
+  }
+  return Promise.reject(new Error((res.data && res.data.msg) || '导入失败'));
 }
 
 export async function Approval(data) {
