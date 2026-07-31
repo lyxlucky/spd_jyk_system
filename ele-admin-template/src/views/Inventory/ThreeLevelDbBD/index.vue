@@ -804,22 +804,22 @@
                 const ksQtyTotal =
                   Number(d.KS_QTY) + Number(d.JF_QTY) + Number(d.JF_DEF_QTY);
                 dataArray.push([
-                  d.DEPT_TWO_NAME || '',
-                  d.VARIETIE_CODE_NEW || '',
-                  d.CHARGE_CODE || '',
-                  d.VARIETIE_NAME || '',
-                  d.SPECIFICATION_OR_TYPE || '',
-                  d.MANUFACTURING_ENT_NAME || '',
-                  d.UNIT || '',
-                  d.PRICE || '',
-                  d.HIS_ZHB || '',
-                  d.APPROVAL_NUMBER || '',
-                  d.JF_QTY || '',
-                  d.JF_DEF_QTY || '',
-                  d.KS_QTY || '',
-                  d.IN_STOCK_TOTAL_QTY || '',
-                  d.HIS_CHARGE_TOTAL_QTY || '',
-                  ksQtyTotal || ''
+                  d.DEPT_TWO_NAME ?? '',
+                  d.VARIETIE_CODE_NEW ?? '',
+                  d.CHARGE_CODE ?? '',
+                  d.VARIETIE_NAME ?? '',
+                  d.SPECIFICATION_OR_TYPE ?? '',
+                  d.MANUFACTURING_ENT_NAME ?? '',
+                  d.UNIT ?? '',
+                  d.PRICE ?? '',
+                  d.HIS_ZHB ?? '',
+                  d.APPROVAL_NUMBER ?? '',
+                  d.JF_QTY ?? '',
+                  d.JF_DEF_QTY ?? '',
+                  d.KS_QTY ?? '',
+                  d.IN_STOCK_TOTAL_QTY ?? '',
+                  d.HIS_CHARGE_TOTAL_QTY ?? '',
+                  ksQtyTotal ?? ''
                 ]);
               });
               writeFile(
