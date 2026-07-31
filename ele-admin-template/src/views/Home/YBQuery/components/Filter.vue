@@ -103,6 +103,11 @@
       handleSearch() {
         this.$refs.form.validate((valid) => {
           if (valid) {
+            const {sendDateStart, sendDateEnd} = this.form;
+            if(new Date(sendDateStart) > new Date(sendDateEnd)){
+              this.$message.error('开始日期不能晚于结束日期');
+              return;
+            }
             this.$emit('search', this.form);
           }
         });
