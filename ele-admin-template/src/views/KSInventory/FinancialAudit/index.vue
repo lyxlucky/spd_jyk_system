@@ -30,7 +30,7 @@
         :selection.sync="selection"
         :page-size="50"
         :page-sizes="[10, 50, 100, 150, 200, 300, 1000]"
-        cache-key="KSFinancialAuditTable"
+        cache-key="KSFinancialAuditTable_v2"
         @sort-change="onSortChange"
       >
         <template v-slot:monthBill="{ row }">

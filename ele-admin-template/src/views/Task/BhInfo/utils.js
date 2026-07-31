@@ -66,9 +66,13 @@ export function formatStorehouseLower(val) {
 }
 
 export function formatPrice(row, isCg = bhInfoHpFlags.isCg) {
-  const price = isCg ? row.Purchase_Price : row.supply_price;
+  // 备货弹窗/接口多为 Supply_Price；明细列表可能为 supply_price，兼容两种写法
+  const price = isCg
+    ? row.Purchase_Price ?? row.purchase_price
+    : row.Supply_Price ?? row.supply_price;
   if (price == null || price === '') return '';
-  return parseFloat(price).toFixed(4);
+  const num = parseFloat(price);
+  return Number.isNaN(num) ? '' : num.toFixed(4);
 }
 
 export function isContractNearExpiry(dateStr) {

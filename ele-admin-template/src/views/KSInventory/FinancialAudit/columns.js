@@ -12,15 +12,19 @@ import {
 
 const { isBd, isStzx, isHptx, isSzse } = hpFlags;
 
+/** 服务端排序列（对齐老系统 sort:true） */
+const S = { sortable: 'custom' };
+
 export function getAuditColumns() {
   return [
     { columnKey: 'selection', type: 'selection', width: 45, fixed: 'left' },
-    { prop: 'MONTHLY_BALANCE_NUMBER', label: '月结单号', minWidth: 120, align: 'center' },
+    { prop: 'MONTHLY_BALANCE_NUMBER', label: '月结单号', minWidth: 120, align: 'center', ...S },
     {
       prop: 'MONTHLY_TIME',
       label: '月结月份',
       minWidth: 125,
       align: 'center',
+      ...S,
       formatter: (row) => fmtMonth(row.MONTHLY_TIME)
     },
     {
@@ -28,14 +32,24 @@ export function getAuditColumns() {
       label: '微讯通月份',
       minWidth: 155,
       hidden: !isBd,
+      ...S,
       formatter: (row) => row.SEND_WXT_MARK ?? '-'
     },
-    { columnKey: 'monthBill', label: '发票号', minWidth: 140, align: 'center', slot: 'monthBill', prop: 'MONTHBILLNUM' },
+    {
+      columnKey: 'monthBill',
+      label: '发票号',
+      minWidth: 140,
+      align: 'center',
+      slot: 'monthBill',
+      prop: 'MONTHBILLNUM',
+      ...S
+    },
     {
       prop: 'FP_DATE',
       label: '开票日期',
       minWidth: 120,
       hidden: !isStzx,
+      ...S,
       formatter: (row) => fmtDate10(row.FP_DATE)
     },
     { columnKey: 'pic', label: '发票图片', width: 120, align: 'center', slot: 'pic' },
@@ -45,7 +59,8 @@ export function getAuditColumns() {
       label: '本院发票(收货自带)',
       minWidth: 160,
       hidden: !isStzx,
-      align: 'center'
+      align: 'center',
+      ...S
     },
     {
       columnKey: 'billfpHptx',
@@ -53,20 +68,23 @@ export function getAuditColumns() {
       label: '发票(货票同行)',
       minWidth: 160,
       hidden: !isHptx,
-      align: 'center'
+      align: 'center',
+      ...S
     },
-    { prop: 'SUPPLIER_NAME', label: '供应商名称', minWidth: 140, showOverflowTooltip: true },
+    { prop: 'SUPPLIER_NAME', label: '供应商名称', minWidth: 140, showOverflowTooltip: true, ...S },
     {
       prop: 'CLASSIFIC_PROPERTIES',
       label: '财务类别',
       minWidth: 120,
       hidden: isBd,
+      ...S,
       formatter: (row) => fmtClassific(row)
     },
     {
       prop: 'HIGH_OR_LOW_CLASS',
       label: '高低值分类',
       width: 130,
+      ...S,
       formatter: (row) => fmtHighOrLowClass(row.HIGH_OR_LOW_CLASS)
     },
     {
@@ -74,29 +92,38 @@ export function getAuditColumns() {
       label: '入库类型',
       minWidth: 160,
       hidden: !isSzse,
+      ...S,
       formatter: (row) => fmtOrderJsType(row.ORDER_JS_TYPE)
     },
-    { prop: 'VARIETIE_CODE_NEW', label: '品种编码', minWidth: 120 },
-    { prop: 'SOURCE_FROM', label: '来源', minWidth: 90 },
-    { prop: 'VARIETIE_NAME', label: '品种全称', minWidth: 200, showOverflowTooltip: true },
-    { prop: 'SPECIFICATION_OR_TYPE', label: '型号/规格', minWidth: 120, showOverflowTooltip: true },
+    { prop: 'VARIETIE_CODE_NEW', label: '品种编码', minWidth: 120, ...S },
+    { prop: 'SOURCE_FROM', label: '来源', minWidth: 90, ...S },
+    { prop: 'VARIETIE_NAME', label: '品种全称', minWidth: 200, showOverflowTooltip: true, ...S },
+    { prop: 'SPECIFICATION_OR_TYPE', label: '型号/规格', minWidth: 120, showOverflowTooltip: true, ...S },
     { prop: 'UNIT', label: '单位', width: 80, align: 'center' },
-    { prop: 'PRICE', label: '单价', width: 80, align: 'right' },
-    { prop: 'QTY', label: '数量', width: 80, align: 'center' },
-    { prop: 'Money', label: '金额', width: 120, align: 'right' },
-    { prop: 'MANUFACTURING_ENT_NAME', label: '生产企业名称', minWidth: 130, showOverflowTooltip: true },
-    { prop: 'BATCH', label: '批号', minWidth: 120 },
-    { prop: 'BATCH_ID', label: '批次号', minWidth: 120 },
+    { prop: 'PRICE', label: '单价', width: 80, align: 'right', ...S },
+    { prop: 'QTY', label: '数量', width: 80, align: 'center', ...S },
+    { prop: 'Money', label: '金额', width: 120, align: 'right', ...S },
+    {
+      prop: 'MANUFACTURING_ENT_NAME',
+      label: '生产企业名称',
+      minWidth: 130,
+      showOverflowTooltip: true,
+      ...S
+    },
+    { prop: 'BATCH', label: '批号', minWidth: 120, ...S },
+    { prop: 'BATCH_ID', label: '批次号', minWidth: 120, ...S },
     {
       prop: 'BATCH_PRODUCTION_DATE',
       label: '生产日期',
       width: 125,
+      ...S,
       formatter: (row) => fmtDate10(row.BATCH_PRODUCTION_DATE)
     },
     {
       prop: 'BATCH_VALIDITY_PERIOD',
       label: '有效期',
       width: 105,
+      ...S,
       formatter: (row) => fmtDate10(row.BATCH_VALIDITY_PERIOD)
     },
     {
@@ -104,33 +131,38 @@ export function getAuditColumns() {
       label: '医秒付签收状态',
       width: 150,
       hidden: !isBd,
+      ...S,
       formatter: (row) => fmtQsState(row.SIGNSTATUS)
     },
     {
       prop: 'Examine_State',
       label: '审批状态',
       width: 120,
+      ...S,
       formatter: (row) => fmtExamineState(row.Examine_State)
     },
     {
       prop: 'Examine_Time',
       label: '审批时间',
       minWidth: 150,
+      ...S,
       formatter: (row) => fmtDateTime(row.Examine_Time)
     },
-    { prop: 'YG_ORDER_ID', label: '阳光订单', minWidth: 110 },
+    { prop: 'YG_ORDER_ID', label: '阳光订单', minWidth: 110, ...S },
     {
       prop: 'LS_IS_JC',
       label: '是否集采(时限)',
       width: 160,
+      ...S,
       formatter: (row) => (row.LS_IS_JC == 1 ? '集采' : '非集采')
     },
-    { prop: 'JC_REMARK', label: '集采备注', minWidth: 120, showOverflowTooltip: true },
-    { prop: 'CHECKSTATUS', label: '医秒付发票状态', minWidth: 150, hidden: !isBd },
+    { prop: 'JC_REMARK', label: '集采备注', minWidth: 120, showOverflowTooltip: true, ...S },
+    { prop: 'CHECKSTATUS', label: '医秒付发票状态', minWidth: 150, hidden: !isBd, ...S },
     {
       prop: 'QSSTATE',
       label: '中心库发票签收',
       width: 150,
+      ...S,
       formatter: (row) => fmtQsState(row.QSSTATE)
     }
   ];
