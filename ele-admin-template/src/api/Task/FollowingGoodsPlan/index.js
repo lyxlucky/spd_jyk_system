@@ -7,7 +7,12 @@ function token() {
   return sessionStorage.getItem(TOKEN_STORE_NAME);
 }
 
-export { needSendState, PostPrepareCloseOrderData } from '@/api/Task/FollowingGoodsPlanHrp';
+export {
+  needSendState,
+  PostPrepareCloseOrderData,
+  closeStokOrder,
+  closeStockOrderLikeOld
+} from '@/api/Task/FollowingGoodsPlanHrp';
 
 /** 库区下拉 */
 export function getStorageList() {
