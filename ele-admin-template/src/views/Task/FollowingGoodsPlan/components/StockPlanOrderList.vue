@@ -244,7 +244,7 @@
   import {
     getStockUpList,
     postNoApprove,
-    PostPrepareCloseOrderData,
+    closeStockOrderLikeOld,
     UpFundsSource,
     YesApprove,
     CheckPlanPriceInfo,
@@ -600,7 +600,7 @@
           });
       },
 
-      // 关闭订单
+      // 关闭订单已推送先关 B2B，再关 SPD
       handleCloseOrder() {
         if (!this.currentTableData) {
           this.$message.warning('请先选择要操作的数据');
@@ -611,24 +611,24 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          // 实现关闭订单的逻辑
           const loading = this.$messageLoading('关闭订单操作中...');
-          PostPrepareCloseOrderData({
+          closeStockOrderLikeOld({
             ID: this.currentTableData.ID,
+            STOCK_UP_PLAN_NO: this.currentTableData.STOCK_UP_PLAN_NO,
             Approve_State: this.currentTableData.APPROVE_STATE,
             Send_State: this.currentTableData.SEND_STATE,
             hp: HOME_HP
           })
             .then((res) => {
               if (res.data.code == 200) {
-                this.$message.success(res.data.msg);
-                this.handleSearch(); // 刷新列表
+                this.$message.success(res.data.msg || '订单关闭成功');
+                this.handleSearch();
               } else {
-                this.$message.warning(res.data.msg);
+                this.$message.warning(res.data.msg || '关闭订单失败');
               }
             })
             .catch((err) => {
-              this.$message.error('关闭订单操作失败');
+              this.$message.error(err?.message || '关闭订单操作失败');
             })
             .finally(() => {
               loading.close();

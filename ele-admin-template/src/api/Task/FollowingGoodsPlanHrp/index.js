@@ -1,8 +1,9 @@
 import request from '@/utils/request';
 import { formdataify, DataToObject, toUrlEncodedBody } from '@/utils/formdataify';
-import { TOKEN_STORE_NAME } from '@/config/setting';
+import { TOKEN_STORE_NAME, B2B_BASE_URL } from '@/config/setting';
 import store from '@/store';
 import App from '@/App.vue';
+import { getB2bHospitalCode } from '@/views/Task/FollowingGoodsPlan/utils';
 
 function token() {
   return sessionStorage.getItem(TOKEN_STORE_NAME);
@@ -177,29 +178,90 @@ export function needSendState(homehp) {
 }
 
 /**
- * 准备关闭订单的请求数据
+ * 准备关闭订单的请求数据（仅 SPD UpOvertime）
  * @param {Object} data 原始数据
- * @returns {Object} 处理后的请求数据
+ * @returns {Promise}
  */
 export function PostPrepareCloseOrderData(data) {
   let { dataJ, yycode } = needSendState(data.hp);
+  const hospitalCode =
+    yycode || dataJ?.HOSPITAL_CODE || getB2bHospitalCode(data.hp) || data.HOSPITAL_CODE || '';
   const requestData = {
-    HOSPITAL_CODE: dataJ?.HOSPITAL_CODE || '',
+    HOSPITAL_CODE: hospitalCode,
     Token: sessionStorage.getItem(TOKEN_STORE_NAME),
     ID: data.ID,
     Person: data.Person || store.state.user.info.Nickname,
-    Approve_State: data.Approve_State
+    Approve_State: data.Approve_State,
+    Send_State: data.Send_State
   };
-  if (dataJ?.Send_State) {
-    requestData.Send_State = data.Send_State;
-  }
-
-  // 只有特定医院需要Send_State参数
-  if (needSendState(data.HOSPITAL_CODE) && data.Send_State !== undefined) {
-    requestData.Approve_State = data.Approve_State;
-  }
 
   return request.post('ANewStockUp/UpOvertime', formdataify(requestData));
+}
+
+/**
+ * 关闭整单-B2B
+ */
+export async function closeStokOrder(planNumber, hospitalCode) {
+  const base = (B2B_BASE_URL || '').replace(/\/$/, '');
+  const res = await request.get(`${base}/api/Stock/closeStokOrder`, {
+    params: {
+      PLAN_NUMBER: planNumber,
+      HOSPITAL_CODE: hospitalCode
+    }
+  });
+  return res.data;
+}
+
+/**
+ * 关闭订单（未发送只关 SPD；已推送先关 B2B 再关 SPD）
+ * @param {Object} data
+ * @param {string|number} data.ID
+ * @param {string} data.STOCK_UP_PLAN_NO
+ * @param {string|number} data.Send_State / data.SEND_STATE
+ * @param {string} data.Approve_State
+ * @param {string} [data.hp]
+ */
+export async function closeStockOrderLikeOld(data) {
+  const sendState = data.Send_State ?? data.SEND_STATE ?? '';
+  const sendStateNum = parseInt(sendState, 10);
+  if (!Number.isNaN(sendStateNum) && sendStateNum > 3) {
+    return Promise.reject(new Error('供应商已供货，无法关闭订单'));
+  }
+
+  let { dataJ, yycode } = needSendState(data.hp);
+  const hospitalCode =
+    yycode || dataJ?.HOSPITAL_CODE || getB2bHospitalCode(data.hp) || data.HOSPITAL_CODE || '';
+  if (!hospitalCode) {
+    return Promise.reject(new Error('非法请求：未配置院区编码'));
+  }
+
+  const planNo = data.STOCK_UP_PLAN_NO || data.stock_up_plan_no || '';
+  const isUnsent =
+    sendState === '0' ||
+    sendState === 0 ||
+    sendState === '未发送(SPD)' ||
+    sendState === '' ||
+    sendState == null;
+
+  // 已推送：先通知 B2B 作废，成功后再关 SPD
+  if (!isUnsent) {
+    if (!planNo) {
+      return Promise.reject(new Error('缺少备货单号，无法通知供应商关闭'));
+    }
+    const b2bRes = await closeStokOrder(planNo, hospitalCode);
+    if (!(b2bRes?.code == 200 || b2bRes?.code === '200')) {
+      return Promise.reject(new Error(b2bRes?.msg || 'B2B订单关闭失败'));
+    }
+  }
+
+  return PostPrepareCloseOrderData({
+    ID: data.ID,
+    Approve_State: data.Approve_State,
+    Send_State: sendState,
+    hp: data.hp,
+    HOSPITAL_CODE: hospitalCode,
+    Person: data.Person
+  });
 }
 
 export async function UpFundsSource(data) {
