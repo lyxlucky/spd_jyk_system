@@ -336,21 +336,21 @@ export async function upPROD_REGISTRATION_BA_INFO(data) {
     }
 }
 
+/** 供应商总目录：经 SPD 后端转发 B2B，避免浏览器直连跨域/混合内容失败 */
 export async function spdGetSupplierInfoForZong(data) {
     let formataData = {}
+    formataData.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
     formataData.page = data.page;
     formataData.size = data.limit;
-    formataData.supName = data.where.supName ? data.where.supName : '';
-    formataData.hospitalName = data.where.hospitalName ? data.where.hospitalName : '';
+    formataData.supName = data.where?.supName ? data.where.supName : '';
+    formataData.hospitalName = data.where?.hospitalName ? data.where.hospitalName : '';
     formataData.hospitalId = B2B_BASE_CODE;
-    const res = await fetch(`${B2B_BASE_URL}/api/Supplier/spdGetSupplierInfoForZong`,{
-        method: 'POST',
-        body:formdataify(formataData)
-    }).then(response => response.json())
-    if (res.code == 200) {
-        return res;
+    let req = formdataify(formataData);
+    const res = await request.post('/Supplier/spdGetSupplierInfoForZong', req);
+    if (res.data.code == 200 || res.data.code === '200') {
+        return res.data;
     } else {
-        return Promise.reject(new Error(res.msg));
+        return Promise.reject(new Error(res.data.msg || '查询失败'));
     }
 }
 
