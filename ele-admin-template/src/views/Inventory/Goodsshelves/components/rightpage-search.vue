@@ -232,6 +232,14 @@
               />
             </el-select>
           </el-form-item>
+          <el-form-item label="PDA出库确认">
+            <el-select v-model="where.checkState" style="width: 110px">
+              <el-option label="全部" value="-1" />
+              <el-option label="未登记" value="0" />
+              <el-option label="已出单" value="1" />
+              <el-option label="已回单" value="2" />
+            </el-select>
+          </el-form-item>
         </div>
       </el-form>
     </div>
@@ -269,6 +277,7 @@ export default {
         highOrLowClassTwo: '-1',
         change: '-1',
         repositoryFrom: '-1',
+        checkState: '-1',
         orderJsType: '',
         xsearchinplt1: '',
         xsearchinplt2: '',

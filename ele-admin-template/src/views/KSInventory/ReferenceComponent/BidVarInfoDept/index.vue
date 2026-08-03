@@ -132,6 +132,14 @@ export default {
           minWidth: 150
         },
         {
+          prop: 'APPROVAL_NUMBER',
+          label: '注册证号',
+          // sortable: 'custom',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 150
+        },
+        {
           label: '型号/规格',
           // sortable: 'custom',
           align: 'center',

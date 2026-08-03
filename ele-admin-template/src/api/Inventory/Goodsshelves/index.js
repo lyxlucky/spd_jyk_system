@@ -131,7 +131,8 @@ export function buildOutStockParams(data) {
     HIGH_OR_LOW_CLASS_TWO: str(where.highOrLowClassTwo || '-1'),
     IS_EQUIPMENT_CHANGE: str(where.change || '-1'),
     REPOSITORY_FROM: str(where.repositoryFrom || '-1'),
-    ORDER_JS_TYPE: str(where.orderJsType || '')
+    ORDER_JS_TYPE: str(where.orderJsType || ''),
+    CHECK_STATE: str(where.checkState || '-1')
   };
 }
 
