@@ -118,7 +118,7 @@
           ...form,
           startTime: form.sendDateStart,
           endTime: form.sendDateEnd,
-          ids: this.selection.map((item) => item.id)
+          ids: this.selection.map((item) => item.his_id)
         });
         this.$refs.filter.exportLoading = false;
         handleCommonExport(res);
