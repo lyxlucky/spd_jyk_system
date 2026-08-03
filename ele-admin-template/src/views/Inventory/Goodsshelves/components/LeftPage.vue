@@ -23,7 +23,7 @@
           :columns="columns"
           :datasource="datasource"
           :selection.sync="selection"
-          cache-key="goodsshelvesInTable"
+          cache-key="goodsshelvesInTable_v2"
         >
           <template v-slot:reportPic="{ row }">
             <el-button type="text" size="mini" @click="openProReport(row)">
@@ -90,7 +90,9 @@ import {
   getOrderJsTypeText,
   formatHighLowClassTwo,
   formatUploadState,
-  formatContractType
+  formatContractType,
+  IN_SORTABLE_PROPS,
+  withCustomSort
 } from '../utils';
 
 export default {
@@ -124,7 +126,8 @@ export default {
       udiVisible: false,
       pageSizes: [10, 30, 60, 90, 150, 300],
       selection: [],
-      columns: [
+      columns: withCustomSort(
+        [
         {
           prop: 'UP_SHELF_TYPE',
           label: '入库类型',
@@ -485,7 +488,9 @@ export default {
           formatter: (row) =>
             row.IS_JC === '1' || row.IS_JC === 1 ? '是' : '否'
         }
-      ]
+      ],
+        IN_SORTABLE_PROPS
+      )
     };
   },
   mounted() {

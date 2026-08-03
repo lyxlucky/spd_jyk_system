@@ -148,7 +148,10 @@
 </template>
 
 <script>
-import { CreateTempletDeta } from '@/api/KSInventory/BidVarInfoDept';
+import {
+  CreateTempletDeta,
+  CancelBID_VAR_INFOIsEnbaleCommit
+} from '@/api/KSInventory/BidVarInfoDept';
 
 function createDefaultWhere() {
   return {
@@ -223,10 +226,10 @@ export default {
         return;
       }
       const loading = this.$messageLoading('保存中。。。');
-      var data = this.selection;
-      data.dept_two_code = this.$store.state.user.info.DeptNow.Dept_Two_Code;
+      // 对齐老页：取消申请走 CancelBID_VAR_INFOIsEnbaleCommit，state=0 将 IS_NEED_ADD 置回 0
+      const data = this.selection.slice();
       data.state = 0;
-      CreateTempletDeta(data)
+      CancelBID_VAR_INFOIsEnbaleCommit(data)
         .then((res) => {
           loading.close();
           this.$message.success(res.msg);

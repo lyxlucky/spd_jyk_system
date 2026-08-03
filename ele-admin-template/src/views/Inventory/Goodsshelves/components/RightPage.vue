@@ -35,7 +35,7 @@
           :columns="columns"
           :datasource="datasource"
           :selection.sync="selection"
-          cache-key="goodsshelvesOutTable"
+          cache-key="goodsshelvesOutTable_v2"
           @done="onTableDone"
           @current-change="onCurrentChange"
         >
@@ -107,7 +107,9 @@ import {
   formatCheckState,
   formatUploadState,
   formatContractType,
-  storageName
+  storageName,
+  OUT_SORTABLE_PROPS,
+  withCustomSort
 } from '../utils';
 
 export default {
@@ -524,7 +526,10 @@ export default {
           fixed: 'right'
         }
       ];
-      return cols.filter((c) => !c.hide);
+      return withCustomSort(
+        cols.filter((c) => !c.hide),
+        OUT_SORTABLE_PROPS
+      );
     },
     onStorageLoaded(list) {
       this.storageList = list || [];
