@@ -203,13 +203,26 @@ export function PostPrepareCloseOrderData(data) {
  */
 export async function closeStokOrder(planNumber, hospitalCode) {
   const base = (B2B_BASE_URL || '').replace(/\/$/, '');
-  const res = await request.get(`${base}/api/Stock/closeStokOrder`, {
-    params: {
-      PLAN_NUMBER: planNumber,
-      HOSPITAL_CODE: hospitalCode
+  if (!base) {
+    return Promise.reject(new Error('未配置 B2B 地址(VUE_APP_B2B_BASE_URL)，无法关闭已推送订单'));
+  }
+  try {
+    const res = await request.get(`${base}/api/Stock/closeStokOrder`, {
+      params: {
+        PLAN_NUMBER: planNumber,
+        HOSPITAL_CODE: hospitalCode
+      }
+    });
+    return res.data;
+  } catch (err) {
+    const msg = err?.message || '';
+    if (msg === 'Network Error' || err?.code === 'ERR_NETWORK') {
+      return Promise.reject(
+        new Error(`B2B关闭订单网络失败，请检查B2B地址是否可达：${base}`)
+      );
     }
-  });
-  return res.data;
+    return Promise.reject(new Error(msg || 'B2B订单关闭失败'));
+  }
 }
 
 /**
