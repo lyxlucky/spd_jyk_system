@@ -1,6 +1,6 @@
 <template>
   <div class="yb-query-warehousing">
-    <YBQueryFilter ref="filter" @search="handleSearch" />
+    <YBQueryFilter ref="filter" @search="handleSearch" @export="handleExport" />
     <div class="yb-query-warehousing-stats">
       <div
         >成功: <span class="success">{{ successCount }}</span></div
@@ -45,7 +45,8 @@
     stateColorMap,
     warehousingColumns
   } from '../constants';
-  import { GetYB3502RKList } from '@/api/Home/YBQuery';
+  import { GetYB3502RKList, ExportYB3502RK } from '@/api/Home/YBQuery';
+  import { handleCommonExport } from '../utils';
   export default {
     name: 'QueryWarehousing',
     components: {
@@ -86,18 +87,41 @@
           supplierName,
           startTime,
           endTime
-        }).then((res) => {
-          this.successCount = res.successCount;
-          this.failCount = res.failCount;
-          this.total = res.total;
-          return {
-            count: res.total,
-            list: res.result
-          };
-        });
+        })
+          .then((res) => {
+            this.successCount = res.successCount;
+            this.failCount = res.failCount;
+            this.total = res.total;
+            return {
+              count: res.total,
+              list: res.result
+            };
+          })
+          .catch((err) => {
+            this.$message.error(err);
+            return {
+              count: 0,
+              list: []
+            };
+          })
+          .finally(() => {
+            this.$refs.filter.queryLoading = false;
+          });
       },
       handleSearch(form) {
+        this.$refs.filter.queryLoading = true;
         this.$refs.table.reload({ page: 1, where: form });
+      },
+      async handleExport(form) {
+        this.$refs.filter.exportLoading = true;
+        const res = await ExportYB3502RK({
+          ...form,
+          startTime: form.sendDateStart,
+          endTime: form.sendDateEnd,
+          ids: this.selection.map((item) => item.id)
+        });
+        this.$refs.filter.exportLoading = false;
+        handleCommonExport(res);
       }
     }
   };

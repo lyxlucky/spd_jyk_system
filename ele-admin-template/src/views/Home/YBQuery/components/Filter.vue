@@ -39,10 +39,20 @@
         </el-select>
       </el-form-item>
       <el-form-item label="">
-        <el-button type="primary" icon="el-icon-search" @click="handleSearch"
+        <el-button
+          type="primary"
+          icon="el-icon-search"
+          :loading="queryLoading"
+          @click="handleSearch"
           >查询</el-button
         >
         <el-button icon="el-icon-refresh" @click="handleReset">重置</el-button>
+        <el-button
+          icon="el-icon-download"
+          :loading="exportLoading"
+          @click="handleExport"
+          >导出</el-button
+        >
       </el-form-item>
     </el-form>
   </div>
@@ -67,7 +77,9 @@
           sendDateEnd: [
             { required: true, message: '请选择结束日期', trigger: 'blur' }
           ]
-        }
+        },
+        queryLoading: false,
+        exportLoading: false
       };
     },
     created() {
@@ -103,8 +115,8 @@
       handleSearch() {
         this.$refs.form.validate((valid) => {
           if (valid) {
-            const {sendDateStart, sendDateEnd} = this.form;
-            if(new Date(sendDateStart) > new Date(sendDateEnd)){
+            const { sendDateStart, sendDateEnd } = this.form;
+            if (new Date(sendDateStart) > new Date(sendDateEnd)) {
               this.$message.error('开始日期不能晚于结束日期');
               return;
             }
@@ -116,6 +128,9 @@
         this.reset();
         this.$refs.form?.resetFields();
         this.$emit('search', this.form);
+      },
+      handleExport() {
+        this.$emit('export', this.form);
       }
     }
   };

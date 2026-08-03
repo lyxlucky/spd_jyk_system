@@ -149,3 +149,47 @@ export async function GetYB3504List({
   }
   return Promise.reject(new Error(res.data?.msg || '查询失败'));
 }
+
+const getFormData = (params) => {
+  const formData = new FormData();
+  for (const [key, value] of Object.entries(params)) {
+    formData.append(key, value);
+  }
+  return formData;
+};
+
+export async function ExportYB3501(params) {
+  delete params.sendDateStart;
+  delete params.sendDateEnd;
+  const formData = getFormData({ ...params, Token: getToken() });
+  const res = await request.post('/YBManagement/ExportYB3501', formData);
+  return res;
+}
+export async function ExportYB3502RK(params) {
+  delete params.sendDateStart;
+  delete params.sendDateEnd;
+  const formData = getFormData({ ...params, Token: getToken() });
+  const res = await request.post('/YBManagement/ExportYB3502RK', formData);
+  return res;
+}
+export async function ExportYB3502CK(params) {
+  delete params.sendDateStart;
+  delete params.sendDateEnd;
+  const formData = getFormData({ ...params, Token: getToken() });
+  const res = await request.post('/YBManagement/ExportYB3502CK', formData);
+  return res;
+}
+export async function ExportYB3503(params) {
+  delete params.sendDateStart;
+  delete params.sendDateEnd;
+  const formData = getFormData({ ...params, Token: getToken() });
+  const res = await request.post('/YBManagement/ExportYB3503', formData);
+  return res;
+}
+export async function ExportYB3504(params) {
+  delete params.sendDateStart;
+  delete params.sendDateEnd;
+  const formData = getFormData({ ...params, Token: getToken() });
+  const res = await request.post('/YBManagement/ExportYB3504', formData);
+  return res;
+}
