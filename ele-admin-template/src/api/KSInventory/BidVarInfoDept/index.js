@@ -66,16 +66,44 @@ export async function searchBID_VAR_INFO(data) {
     }
 }
 
+/** 申请至在用目录（state=3） */
 export async function CreateTempletDeta(data) {
     var data2 = {};
     data2.json = JSON.stringify(data);
     data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
-    data2.state = data.state ? data.state : '';
+    // state=0 为合法值，不能用 truthy 判断
+    data2.state =
+      data.state !== undefined && data.state !== null && data.state !== ''
+        ? data.state
+        : '';
     data2.dept_two_code = data.dept_two_code ? data.dept_two_code : '';
 
     var rep = formdataify(data2);
 
     const res = await request.post('/VarietieBasicInfo/BID_VAR_INFOIsEnbaleCommit', rep);
+    if (res.data.code == 200) {
+        return res.data;
+    } else {
+        return Promise.reject(new Error(res.data.msg));
+    }
+}
+
+/** 取消申请至在用目录（对齐老页 CancelBID_VAR_INFOIsEnbaleCommit，state=0） */
+export async function CancelBID_VAR_INFOIsEnbaleCommit(data) {
+    var data2 = {};
+    data2.json = JSON.stringify(data);
+    data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+    data2.state =
+      data.state !== undefined && data.state !== null && data.state !== ''
+        ? data.state
+        : '0';
+
+    var rep = formdataify(data2);
+
+    const res = await request.post(
+      '/VarietieBasicInfo/CancelBID_VAR_INFOIsEnbaleCommit',
+      rep
+    );
     if (res.data.code == 200) {
         return res.data;
     } else {
