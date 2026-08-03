@@ -1,17 +1,17 @@
 <template>
   <div class="yb-query-filter">
     <el-form :model="form" :rules="rules" ref="form" inline="inline">
-      <el-form-item label="计费科室">
+      <el-form-item label="计费科室" class="custom-form-item-width">
         <el-input v-model="form.deptName" clearable placeholder="请输入" />
       </el-form-item>
-      <el-form-item label="品种">
+      <el-form-item label="品种" class="custom-form-item-width">
         <el-input
           v-model="form.varietieName"
           clearable
           placeholder="请输入品种名称或编码"
         />
       </el-form-item>
-      <el-form-item label="供应商">
+      <el-form-item label="供应商" class="custom-form-item-width">
         <el-input v-model="form.supplierName" clearable placeholder="请输入" />
       </el-form-item>
       <el-form-item label="发送时间" prop="sendDateStart">
@@ -32,7 +32,7 @@
           style="width: 140px"
         />
       </el-form-item>
-      <el-form-item label="状态">
+      <el-form-item label="状态" class="custom-form-item-width-select">
         <el-select v-model="form.state" placeholder="请选择" clearable>
           <el-option label="成功" value="1"></el-option>
           <el-option label="失败" value="2"></el-option>
@@ -53,11 +53,15 @@
           @click="handleExport"
           >导出</el-button
         >
+        <el-button :loading="printLoading" @click="handlePrint"
+          >打印日志</el-button
+        >
       </el-form-item>
     </el-form>
   </div>
 </template>
 <script>
+  import { pick } from 'lodash-es';
   export default {
     name: 'YBQueryFilter',
     data() {
@@ -79,7 +83,8 @@
           ]
         },
         queryLoading: false,
-        exportLoading: false
+        exportLoading: false,
+        printLoading: false
       };
     },
     created() {
@@ -131,6 +136,10 @@
       },
       handleExport() {
         this.$emit('export', this.form);
+      },
+      handlePrint() {
+        const formData = pick(this.form, ['sendDateStart', 'sendDateEnd']);
+        this.$emit('print', formData);
       }
     }
   };
@@ -138,5 +147,11 @@
 <style scoped lang="scss">
   .yb-query-filter {
     margin-bottom: -8px;
+  }
+  .custom-form-item-width :deep(.el-form-item__content) {
+    width: 200px;
+  }
+  .custom-form-item-width-select :deep(.el-form-item__content) {
+    width: 100px;
   }
 </style>

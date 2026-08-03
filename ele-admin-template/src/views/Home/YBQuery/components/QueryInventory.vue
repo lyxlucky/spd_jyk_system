@@ -1,6 +1,6 @@
 <template>
   <div class="yb-query-inventory">
-    <YBQueryFilter ref="filter" @search="handleSearch" @export="handleExport" />
+    <YBQueryFilter ref="filter" @search="handleSearch" @export="handleExport" @print="handlePrint" />
     <div class="yb-query-inventory-stats">
       <div
         >成功: <span class="success">{{ successCount }}</span></div
@@ -45,7 +45,11 @@
     stateColorMap,
     inventoryColumns
   } from '../constants';
-  import { GetYB3501List, ExportYB3501 } from '@/api/Home/YBQuery';
+  import {
+    GetYB3501List,
+    ExportYB3501,
+    PrintYBApiLog
+  } from '@/api/Home/YBQuery';
   import { handleCommonExport } from '../utils';
   export default {
     name: 'QueryInventory',
@@ -121,6 +125,16 @@
           ids: this.selection.map((item) => item.his_id)
         });
         this.$refs.filter.exportLoading = false;
+        handleCommonExport(res);
+      },
+      async handlePrint(form) {
+        this.$refs.filter.printLoading = true;
+        const res = await PrintYBApiLog({
+          startTime: form.sendDateStart,
+          endTime: form.sendDateEnd,
+          type: '3501'
+        });
+        this.$refs.filter.printLoading = false;
         handleCommonExport(res);
       }
     }
