@@ -365,6 +365,13 @@ export default {
         minWidth: 120
     },
     {
+        prop: 'CONTRACT_CODE',
+        label: '合同编码',
+        align: 'center',
+        showOverflowTooltip: true,
+        minWidth: 120
+    },
+    {
         prop: 'CONTRACT_END_TIME',
         label: '合同到期',
         align: 'center',

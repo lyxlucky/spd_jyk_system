@@ -112,6 +112,7 @@ export function buildMainColumns(opts = {}) {
     { prop: 'MEDICAL_CODE', label: '医保码', minWidth: 120, showOverflowTooltip: true },
     { prop: 'Position', label: '货位号', width: 75, sortable: 'custom', showOverflowTooltip: true },
     { prop: 'CONTRACT_NAME', label: '合同名称', minWidth: 90, showOverflowTooltip: true },
+    { prop: 'CONTRACT_CODE', label: '合同编码', minWidth: 110, showOverflowTooltip: true },
     {
       prop: 'CONTRACT_END_TIME',
       label: '合同到期',

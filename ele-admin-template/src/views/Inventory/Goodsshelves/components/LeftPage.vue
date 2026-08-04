@@ -23,7 +23,7 @@
           :columns="columns"
           :datasource="datasource"
           :selection.sync="selection"
-          cache-key="goodsshelvesInTable_v2"
+          cache-key="goodsshelvesInTable_v3"
         >
           <template v-slot:reportPic="{ row }">
             <el-button type="text" size="mini" @click="openProReport(row)">
@@ -91,7 +91,6 @@ import {
   formatHighLowClassTwo,
   formatUploadState,
   formatContractType,
-  IN_SORTABLE_PROPS,
   withCustomSort
 } from '../utils';
 
@@ -488,9 +487,7 @@ export default {
           formatter: (row) =>
             row.IS_JC === '1' || row.IS_JC === 1 ? '是' : '否'
         }
-      ],
-        IN_SORTABLE_PROPS
-      )
+      ])
     };
   },
   mounted() {

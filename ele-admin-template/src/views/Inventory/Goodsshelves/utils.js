@@ -127,49 +127,14 @@ export function storageName(storageList, id) {
   return hit ? hit.name : '-';
 }
 
-/** 入库列表可服务端排序字段（对齐 InStockCheckApp switch） */
-export const IN_SORTABLE_PROPS = [
-  'UP_SHELF_TYPE',
-  'SUPPLIER_NAME',
-  'UP_SHELF_TIME',
-  'VARIETIE_CODE_NEW',
-  'VARIETIE_NAME',
-  'SPECIFICATION_OR_TYPE',
-  'UNIT',
-  'MANUFACTURING_ENT_NAME',
-  'BATCH',
-  'BATCH_PRODUCTION_DATE',
-  'BATCH_VALIDITY_PERIOD',
-  'COEFFICIENT',
-  'GOODS_QTY',
-  'DEF_NO_PKG_CODE',
-  'UP_SHELF_QUANTITY',
-  'BUSINESS_BILL'
-];
-
-/** 出库列表可服务端排序字段（对齐 InStockCheckApp switch） */
-export const OUT_SORTABLE_PROPS = [
-  'UP_SHELF_TYPE',
-  'SUPPLIER_NAME',
-  'RECEIVING_TIME',
-  'VARIETIE_CODE_NEW',
-  'VARIETIE_NAME',
-  'SPECIFICATION_OR_TYPE',
-  'UNIT',
-  'MANUFACTURING_ENT_NAME',
-  'BATCH',
-  'BATCH_PRODUCTION_DATE',
-  'BATCH_VALIDITY_PERIOD',
-  'COEFFICIENT',
-  'RECEIVING_QUANTITY',
-  'GOODS_QTY',
-  'BUSINESS_BILL'
-];
-
-/** 为白名单列开启 custom 排序 */
-export function withCustomSort(columns, sortableProps) {
-  const set = new Set(sortableProps || []);
+/**
+ * 有 prop 的数据列开启 custom 排序（后端按字段名反射排序当前页）
+ * 操作列/插槽列无 prop 则跳过
+ */
+export function withCustomSort(columns) {
   return (columns || []).map((col) =>
-    col?.prop && set.has(col.prop) ? { ...col, sortable: 'custom' } : col
+    col?.prop && col.sortable !== false
+      ? { ...col, sortable: 'custom' }
+      : col
   );
 }

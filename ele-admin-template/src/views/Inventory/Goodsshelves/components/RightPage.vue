@@ -35,7 +35,7 @@
           :columns="columns"
           :datasource="datasource"
           :selection.sync="selection"
-          cache-key="goodsshelvesOutTable_v2"
+          cache-key="goodsshelvesOutTable_v3"
           @done="onTableDone"
           @current-change="onCurrentChange"
         >
@@ -108,7 +108,6 @@ import {
   formatUploadState,
   formatContractType,
   storageName,
-  OUT_SORTABLE_PROPS,
   withCustomSort
 } from '../utils';
 
@@ -526,10 +525,8 @@ export default {
           fixed: 'right'
         }
       ];
-      return withCustomSort(
-        cols.filter((c) => !c.hide),
-        OUT_SORTABLE_PROPS
-      );
+      // 所有有 prop 的列开启 custom 排序
+      return withCustomSort(cols.filter((c) => !c.hide));
     },
     onStorageLoaded(list) {
       this.storageList = list || [];
