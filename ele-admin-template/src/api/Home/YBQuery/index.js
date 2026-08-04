@@ -193,3 +193,8 @@ export async function ExportYB3504(params) {
   const res = await request.post('/YBManagement/ExportYB3504', formData);
   return res;
 }
+export async function PrintYBApiLog(params) {
+  const formData = getFormData({ ...params, Token: getToken() });
+  const res = await request.post('/YBManagement/PrintYBApiLog', formData);
+  return res;
+}
