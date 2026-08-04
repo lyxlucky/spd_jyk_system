@@ -168,6 +168,16 @@
               @change="(val) => setDefQty(row, val)"
             />
           </template>
+          <template v-slot:contractEndTime="{ row }">
+            <span :style="{ color: isDateExpired(row.CONTRACT_END_TIME) ? 'red' : '' }">
+              {{ formatContractDate(row.CONTRACT_END_TIME) }}
+            </span>
+          </template>
+          <template v-slot:detContractEnd="{ row }">
+            <span :style="{ color: isDateExpired(row.DET_CONTRACT_END) ? 'red' : '' }">
+              {{ formatContractDate(row.DET_CONTRACT_END) }}
+            </span>
+          </template>
         </ele-pro-table>
       </div>
     </el-card>
@@ -391,9 +401,76 @@ export default {
           formatter: (row) => row.sumCount
         },
         { label: '科室库存', prop: 'DEPT_NUM', width: 120, align: 'center' },
+        {
+          label: '合同到期',
+          prop: 'CONTRACT_END_TIME',
+          width: 140,
+          align: 'center',
+          sortable: true,
+          slot: 'contractEndTime',
+          formatter: (row) => this.formatContractDate(row.CONTRACT_END_TIME)
+        },
+        {
+          label: '合同明细到期',
+          prop: 'DET_CONTRACT_END',
+          width: 140,
+          align: 'center',
+          sortable: true,
+          slot: 'detContractEnd',
+          formatter: (row) => this.formatContractDate(row.DET_CONTRACT_END)
+        },
+        {
+          label: '合同名称',
+          prop: 'CONTRACT_NAME',
+          align: 'center',
+          minWidth: 160,
+          showOverflowTooltip: true
+        },
+        {
+          label: '收货间期',
+          prop: 'DELIVERY_TIME',
+          align: 'center',
+          minWidth: 100,
+          formatter: (row) => this.formatDeliveryPeriod(row)
+        },
+        {
+          label: '通知科室',
+          prop: 'STATE',
+          align: 'center',
+          width: 90,
+          formatter: (row) => (String(row.STATE) === '0' ? '否' : '是')
+        },
         { label: '备货计划单号', prop: 'Stock_Up_Plan_No', align: 'center', width: 140 },
         { label: '备货人', prop: 'CREATOR', align: 'center', width: 100 },
-        { label: '来源', prop: 'SOURCE_FROM', align: 'center', width: 120 }
+        { label: '来源', prop: 'SOURCE_FROM', align: 'center', width: 120 },
+        {
+          label: '主单审批状态',
+          prop: 'APPROVE_STATE',
+          align: 'center',
+          width: 120,
+          sortable: true,
+          formatter: (row) => {
+            const v = String(row.APPROVE_STATE);
+            if (v === '0') return '未审批';
+            if (v === '1') return '已审批';
+            if (v === '2') return '不通过';
+            return '未知';
+          }
+        },
+        {
+          label: '明细审批状态',
+          prop: 'APP_STATE',
+          align: 'center',
+          width: 120,
+          sortable: true,
+          formatter: (row) => {
+            const v = String(row.APP_STATE);
+            if (v === '0') return '未审批';
+            if (v === '1') return '审批通过';
+            if (v === '2') return '审批不通过';
+            return '未知';
+          }
+        }
       ]
     };
   },
@@ -412,6 +489,47 @@ export default {
     }
   },
   methods: {
+    toDateStr(val) {
+      if (val == null || val === '') return '';
+      const s = String(val);
+      return s.length >= 10 ? s.substr(0, 10) : s;
+    },
+    isDateExpired(val) {
+      const dateStr = this.toDateStr(val);
+      if (!dateStr || dateStr === '0001-01-01') return false;
+      const thisDate = new Date(dateStr).getTime();
+      if (Number.isNaN(thisDate)) return false;
+      return thisDate <= Date.now();
+    },
+    formatContractDate(val) {
+      const dateStr = this.toDateStr(val);
+      if (!dateStr || dateStr === '0001-01-01') return '';
+      const thisDate = new Date(dateStr).getTime();
+      if (Number.isNaN(thisDate)) return dateStr;
+      if (thisDate <= Date.now()) {
+        return dateStr;
+      }
+      const days = parseInt(
+        ((thisDate - Date.now()) / (60 * 60 * 24 * 1000)).toFixed(0),
+        10
+      );
+      return `${dateStr}|${days}天`;
+    },
+    formatDeliveryPeriod(row) {
+      const bvpDate = this.toDateStr(row.DELIVERY_TIME);
+      const planTime = this.toDateStr(row.PLAN_TIME);
+      if (!bvpDate || bvpDate === '0001-01-01') {
+        return '未收货';
+      }
+      if (!planTime) return '';
+      const thisDate = new Date(bvpDate).getTime();
+      const planDate = new Date(planTime).getTime();
+      if (Number.isNaN(thisDate) || Number.isNaN(planDate)) return '';
+      return (
+        parseInt(((thisDate - planDate) / (60 * 60 * 24 * 1000)).toFixed(0), 10) +
+        '天'
+      );
+    },
     getDefQty(row) {
       const key = row.ID;
       if (this.editQtyMap[key] !== undefined) {
