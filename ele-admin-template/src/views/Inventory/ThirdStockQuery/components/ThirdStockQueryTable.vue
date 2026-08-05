@@ -14,9 +14,21 @@
         prop="DEPT_TWO_NAME"
         label="二级科室名称"
         align="center"
-        min-width="120"
+        min-width="140"
         show-overflow-tooltip
-      />
+      >
+        <template slot-scope="{ row }">
+          <el-tooltip
+            v-if="row.IS_MERGED === '1' && row.MEMBER_DEPT_NAMES"
+            effect="dark"
+            placement="top"
+            :content="row.MEMBER_DEPT_NAMES"
+          >
+            <span>{{ row.DEPT_TWO_NAME }}</span>
+          </el-tooltip>
+          <span v-else>{{ row.DEPT_TWO_NAME }}</span>
+        </template>
+      </el-table-column>
       <el-table-column
         prop="VARIETIE_CODE_NEW"
         label="品种编码"

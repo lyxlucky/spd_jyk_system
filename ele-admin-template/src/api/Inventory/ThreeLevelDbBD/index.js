@@ -1,4 +1,4 @@
-﻿import request from '@/utils/request';
+import request from '@/utils/request';
 import { TOKEN_STORE_NAME } from '@/config/setting';
 
 /**
@@ -38,7 +38,8 @@ export function buildThirdStockInfoRequest(data = {}, token = '') {
         stockZero: where.stockZero || '',
         statStartTime: where.statStartTime || '',
         operationChargingStartTime: where.operationChargingStartTime || '',
-        operationChargingEndTime: where.operationChargingEndTime || ''
+        operationChargingEndTime: where.operationChargingEndTime || '',
+        mergeByGroup: where.mergeByGroup === true
     };
 }
 
@@ -106,6 +107,7 @@ export async function getThirdStockInfoFlow(data) {
     requestData.varCode = data.where?.varCode;
     requestData.DeptCode = data.where?.DeptCode;
     requestData.chargingCode = data.where?.chargingCode;
+    requestData.MergeGroupId = data.where?.MergeGroupId || '';
     requestData.startTime = data.where?.startTime;
     requestData.endTime = data.where?.endTime;
     requestData.flowDirection = data.where?.flowDirection;
@@ -119,6 +121,64 @@ export async function getThirdStockInfoFlow(data) {
 
     const res = await request.post(`/PekingApplication/getThirdStockInfoFlow`, requestData);
 
+    if (res.data.code === 200) {
+        return res.data;
+    }
+    return Promise.reject(res.data.msg);
+}
+
+/**
+ * 三级库汇总分组列表
+ */
+export async function getThirdStockMergeDepts() {
+    const res = await request.post(`/PekingApplication/getThirdStockMergeDepts`, {
+        Token: sessionStorage.getItem(TOKEN_STORE_NAME)
+    });
+    if (res.data.code === 200) {
+        return res.data;
+    }
+    return Promise.reject(res.data.msg);
+}
+
+export async function createThirdStockMergeGroup(deptCodes) {
+    const res = await request.post(`/PekingApplication/createThirdStockMergeGroup`, {
+        Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+        DeptCodes: deptCodes
+    });
+    if (res.data.code === 200) {
+        return res.data;
+    }
+    return Promise.reject(res.data.msg);
+}
+
+export async function joinThirdStockMergeGroup(deptCodes, mergeGroupId) {
+    const res = await request.post(`/PekingApplication/joinThirdStockMergeGroup`, {
+        Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+        DeptCodes: deptCodes,
+        MergeGroupId: mergeGroupId
+    });
+    if (res.data.code === 200) {
+        return res.data;
+    }
+    return Promise.reject(res.data.msg);
+}
+
+export async function removeThirdStockMergeDept(deptCodes) {
+    const res = await request.post(`/PekingApplication/removeThirdStockMergeDept`, {
+        Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+        DeptCodes: deptCodes
+    });
+    if (res.data.code === 200) {
+        return res.data;
+    }
+    return Promise.reject(res.data.msg);
+}
+
+export async function dissolveThirdStockMergeGroup(mergeGroupId) {
+    const res = await request.post(`/PekingApplication/dissolveThirdStockMergeGroup`, {
+        Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+        MergeGroupId: mergeGroupId
+    });
     if (res.data.code === 200) {
         return res.data;
     }

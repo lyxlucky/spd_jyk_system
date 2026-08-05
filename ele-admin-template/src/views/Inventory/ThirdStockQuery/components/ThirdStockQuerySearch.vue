@@ -70,6 +70,9 @@
         <el-option label="库存数量不为零" value="2" />
       </el-select>
     </el-form-item>
+    <el-form-item>
+      <el-checkbox v-model="form.mergeByGroup">按汇总组合并</el-checkbox>
+    </el-form-item>
     <el-form-item class="ele-form-actions">
       <el-button type="primary" :loading="loading" @click="$emit('search')">
         查询
@@ -78,6 +81,14 @@
         导出
       </el-button>
       <el-button type="info" @click="$emit('kc-summary')">库存汇总</el-button>
+      <el-button
+        v-if="canManageMerge"
+        type="warning"
+        plain
+        @click="$emit('merge-group')"
+      >
+        汇总分组
+      </el-button>
     </el-form-item>
     <el-form-item>
       <el-dropdown
@@ -112,6 +123,7 @@
 
 <script>
   import { TOKEN_STORE_NAME, API_BASE_URL } from '@/config/setting';
+  import { getThirdStockMergeDepts } from '@/api/Inventory/ThreeLevelDbBD';
 
   export default {
     name: 'ThirdStockQuerySearch',
@@ -121,6 +133,7 @@
     },
     data() {
       return {
+        canManageMerge: false,
         form: {
           DeptName: '',
           varCode: '',
@@ -129,7 +142,8 @@
           spec: '',
           manufacter: '',
           prodRegistrationCode: '',
-          stockZero: ''
+          stockZero: '',
+          mergeByGroup: false
         },
         uploadUrl: API_BASE_URL + '/lhfy/uploadThirdInventory',
         uploadHeaders: {
@@ -140,7 +154,19 @@
         }
       };
     },
+    mounted() {
+      this.loadManageFlag();
+    },
     methods: {
+      async loadManageFlag() {
+        try {
+          const res = await getThirdStockMergeDepts();
+          this.canManageMerge =
+            res.canmanage === true || res.canManage === true;
+        } catch (e) {
+          this.canManageMerge = false;
+        }
+      },
       getWhere() {
         return { ...this.form };
       },
