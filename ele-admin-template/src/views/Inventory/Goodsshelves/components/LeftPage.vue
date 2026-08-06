@@ -8,6 +8,12 @@
     />
     <div class="spd-panel spd-table-panel goodsshelves-table-panel">
       <div class="spd-panel__head">入库列表</div>
+      <pic-preview-bar
+        ref="picPreview"
+        :batch-id="previewCtx.batchId"
+        :order-num="previewCtx.orderNum"
+        :batch-key="previewCtx.batchKey"
+      />
       <div ref="tableWrap" class="spd-table-panel__wrap">
         <ele-pro-table
           ref="table"
@@ -15,6 +21,7 @@
           size="mini"
           border
           stripe
+          highlight-current-row
           :toolbar="false"
           :header-overflow-hidden="false"
           :height="tableHeight"
@@ -24,6 +31,7 @@
           :datasource="datasource"
           :selection.sync="selection"
           cache-key="goodsshelvesInTable_v3"
+          @current-change="onCurrentChange"
         >
           <template v-slot:reportPic="{ row }">
             <el-button type="text" size="mini" @click="openProReport(row)">
@@ -60,7 +68,7 @@
     <upload-pro-report-dialog
       :visible.sync="proReportVisible"
       :batch-id="actionRow?.BATCH_ID"
-      @uploaded="reload()"
+      @uploaded="onPicUploaded"
     />
     <upload-order-pic-dialog
       :visible.sync="orderPicVisible"
@@ -68,7 +76,7 @@
       :order-num="orderPicParams.orderNum"
       :batch-id="orderPicParams.batchId"
       :batch="orderPicParams.batch"
-      @uploaded="reload()"
+      @uploaded="onPicUploaded"
     />
     <watch-udi-dialog
       :visible.sync="udiVisible"
@@ -85,6 +93,7 @@ import ExportAuditDialog from '@/views/Inventory/InventoryQueryNew/components/Ex
 import UploadProReportDialog from './UploadProReportDialog.vue';
 import UploadOrderPicDialog from './UploadOrderPicDialog.vue';
 import WatchUdiDialog from './WatchUdiDialog.vue';
+import PicPreviewBar from './PicPreviewBar.vue';
 import { GetPDAList, GetInStockDetailRaw } from '@/api/Inventory/Goodsshelves';
 import {
   getOrderJsTypeText,
@@ -102,7 +111,8 @@ export default {
     ExportAuditDialog,
     UploadProReportDialog,
     UploadOrderPicDialog,
-    WatchUdiDialog
+    WatchUdiDialog,
+    PicPreviewBar
   },
   props: {
     pageSize: {
@@ -123,6 +133,7 @@ export default {
       orderPicType: '1',
       orderPicParams: { orderNum: '0', batchId: '0', batch: '0' },
       udiVisible: false,
+      previewCtx: { batchId: '', orderNum: '', batchKey: '' },
       pageSizes: [10, 30, 60, 90, 150, 300],
       selection: [],
       columns: withCustomSort(
@@ -591,8 +602,28 @@ export default {
       const bill = row?.BUSINESS_BILL || '';
       return String(bill).split('/')[0] || '';
     },
+    /** 对齐老系统：点行后上方展示检验报告 + ORDER_PIC 图 */
+    onCurrentChange(row) {
+      if (!row) {
+        this.previewCtx = { batchId: '', orderNum: '', batchKey: '' };
+        return;
+      }
+      this.actionRow = row;
+      this.previewCtx = {
+        batchId: row.BATCH_ID || '',
+        orderNum: this.billNo(row),
+        batchKey: `${row.BATCH || ''}/${row.VARIETIE_CODE || ''}`
+      };
+    },
+    onPicUploaded() {
+      this.reload();
+      this.$nextTick(() => {
+        this.$refs.picPreview?.reload?.();
+      });
+    },
     openProReport(row) {
       this.actionRow = row;
+      this.onCurrentChange(row);
       this.proReportVisible = true;
     },
     openUdi(row) {
@@ -605,6 +636,7 @@ export default {
     },
     openOrderPic(row, type) {
       this.actionRow = row;
+      this.onCurrentChange(row);
       this.orderPicType = String(type);
       this.orderPicParams = {
         orderNum: this.billNo(row) || '0',

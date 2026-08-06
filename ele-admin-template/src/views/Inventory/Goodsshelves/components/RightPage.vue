@@ -19,6 +19,12 @@
           | 品种总金额：{{ totalAmount }}
         </span>
       </div>
+      <pic-preview-bar
+        ref="picPreview"
+        :batch-id="previewCtx.batchId"
+        :order-num="previewCtx.orderNum"
+        :batch-key="previewCtx.batchKey"
+      />
       <div ref="tableWrap" class="spd-table-panel__wrap">
         <ele-pro-table
           ref="table"
@@ -73,7 +79,7 @@
     <upload-pro-report-dialog
       :visible.sync="proReportVisible"
       :batch-id="actionRow?.BATCH_ID"
-      @uploaded="reload()"
+      @uploaded="onPicUploaded"
     />
     <upload-order-pic-dialog
       :visible.sync="orderPicVisible"
@@ -81,7 +87,7 @@
       :order-num="orderPicParams.orderNum"
       :batch-id="orderPicParams.batchId"
       :batch="orderPicParams.batch"
-      @uploaded="reload()"
+      @uploaded="onPicUploaded"
     />
   </div>
 </template>
@@ -94,6 +100,7 @@ import OutCheckRecDialog from './OutCheckRecDialog.vue';
 import ExportAuditDialog from '@/views/Inventory/InventoryQueryNew/components/ExportAuditDialog.vue';
 import UploadProReportDialog from './UploadProReportDialog.vue';
 import UploadOrderPicDialog from './UploadOrderPicDialog.vue';
+import PicPreviewBar from './PicPreviewBar.vue';
 import {
   GetPDAList2,
   GetOutStockDetailRaw,
@@ -119,7 +126,8 @@ export default {
     OutCheckRecDialog,
     ExportAuditDialog,
     UploadProReportDialog,
-    UploadOrderPicDialog
+    UploadOrderPicDialog,
+    PicPreviewBar
   },
   props: {
     pageSize: {
@@ -145,6 +153,7 @@ export default {
       orderPicVisible: false,
       orderPicType: '1',
       orderPicParams: { orderNum: '0', batchId: '0', batch: '0' },
+      previewCtx: { batchId: '', orderNum: '', batchKey: '' },
       pageSizes: [10, 30, 60, 90, 150, 300],
       selection: [],
       columns: this.buildColumns()
@@ -538,13 +547,15 @@ export default {
     },
     openProReport(row) {
       this.actionRow = row;
+      this.onCurrentChange(row);
       this.proReportVisible = true;
     },
     openOrderPic(row, type) {
       this.actionRow = row;
+      this.onCurrentChange(row);
       this.orderPicType = String(type);
       this.orderPicParams = {
-        orderNum: row?.BUSINESS_BILL || '0',
+        orderNum: this.billNo(row) || '0',
         batchId: row?.BATCH_ID || '0',
         batch:
           String(type) === '3'
@@ -582,8 +593,23 @@ export default {
     onTableDone() {
       // ele-pro-table done hook placeholder
     },
-    onCurrentChange() {
-      // 行点击预览图片：后续与入库侧一并补齐
+    onCurrentChange(row) {
+      if (!row) {
+        this.previewCtx = { batchId: '', orderNum: '', batchKey: '' };
+        return;
+      }
+      this.actionRow = row;
+      this.previewCtx = {
+        batchId: row.BATCH_ID || '',
+        orderNum: this.billNo(row),
+        batchKey: `${row.BATCH || ''}/${row.VARIETIE_CODE || ''}`
+      };
+    },
+    onPicUploaded() {
+      this.reload();
+      this.$nextTick(() => {
+        this.$refs.picPreview?.reload?.();
+      });
     },
     reload(where) {
       if (where) this.lastWhere = where;

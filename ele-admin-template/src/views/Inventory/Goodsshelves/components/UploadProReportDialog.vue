@@ -43,7 +43,7 @@
 </template>
 
 <script>
-import { BACK_BASE_URL } from '@/config/setting';
+import { BACK_BASE_URL, getStaticBaseUrl } from '@/config/setting';
 import {
   uploadProPic,
   getBatchPicture,
@@ -52,8 +52,10 @@ import {
 
 function picUrl(name) {
   if (!name || name === '-') return '';
-  const base = (BACK_BASE_URL || '').replace(/\/$/, '');
-  return `${base}/Upload/ProPic/${name}`;
+  const base = (getStaticBaseUrl() || BACK_BASE_URL || '').replace(/\/$/, '');
+  const file = String(name).replace(/^.*[/\\]/, '');
+  if (!file) return '';
+  return `${base}/Upload/ProPic/${file}`;
 }
 
 export default {
