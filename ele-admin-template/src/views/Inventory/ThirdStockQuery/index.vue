@@ -8,6 +8,7 @@
         @search="reload"
         @export="exportData"
         @kc-summary="kcDialogVisible = true"
+        @merge-group="mergeDialogVisible = true"
         @upload-success="reload"
       />
       <ThirdStockQueryTable
@@ -25,6 +26,10 @@
 
     <FlowRecordDialog :visible.sync="flowDialogVisible" :row="flowRow" />
     <KcSummaryDialog :visible.sync="kcDialogVisible" />
+    <MergeGroupDialog
+      :visible.sync="mergeDialogVisible"
+      @changed="onMergeChanged"
+    />
   </div>
 </template>
 
@@ -35,6 +40,7 @@
   import ThirdStockQueryTable from './components/ThirdStockQueryTable.vue';
   import FlowRecordDialog from './components/FlowRecordDialog.vue';
   import KcSummaryDialog from './components/KcSummaryDialog.vue';
+  import MergeGroupDialog from './components/MergeGroupDialog.vue';
 
   export default {
     name: 'ThirdStockQuery',
@@ -42,7 +48,8 @@
       ThirdStockQuerySearch,
       ThirdStockQueryTable,
       FlowRecordDialog,
-      KcSummaryDialog
+      KcSummaryDialog,
+      MergeGroupDialog
     },
     data() {
       return {
@@ -55,7 +62,8 @@
         tableData: [],
         flowDialogVisible: false,
         flowRow: {},
-        kcDialogVisible: false
+        kcDialogVisible: false,
+        mergeDialogVisible: false
       };
     },
     mounted() {
@@ -97,6 +105,11 @@
       },
       reload() {
         this.loadData(1);
+      },
+      onMergeChanged() {
+        if (this.$refs.search?.form?.mergeByGroup) {
+          this.reload();
+        }
       },
       onPageSizeChange(size) {
         this.pageSize = size;

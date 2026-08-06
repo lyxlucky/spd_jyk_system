@@ -95,6 +95,14 @@
         show-overflow-tooltip
       />
       <el-table-column
+        v-if="isMergedFlow"
+        prop="DEPT_TWO_NAME"
+        label="二级科室"
+        align="center"
+        min-width="120"
+        show-overflow-tooltip
+      />
+      <el-table-column
         prop="PATIENT_NUMBER"
         label="病患号"
         align="center"
@@ -199,6 +207,9 @@
         set(v) {
           this.$emit('update:visible', v);
         }
+      },
+      isMergedFlow() {
+        return this.row && this.row.IS_MERGED === '1' && !!this.row.MERGE_GROUP_ID;
       }
     },
     methods: {
@@ -248,13 +259,18 @@
         this.loadData(1);
       },
       getWhere() {
-        return {
+        const where = {
           varCode: this.row.VARIETIE_CODE_NEW,
           chargingCode: this.row.CHARGE_CODE,
-          DeptCode: this.row.DEPT_TWO_CODE,
           startTime: this.flowForm.startTime,
           endTime: this.flowForm.endTime
         };
+        if (this.isMergedFlow) {
+          where.MergeGroupId = this.row.MERGE_GROUP_ID;
+        } else {
+          where.DeptCode = this.row.DEPT_TWO_CODE;
+        }
+        return where;
       },
       async loadData(page = this.page) {
         this.page = page;
@@ -292,6 +308,7 @@
             '单位',
             '批准文号',
             '生产企业',
+            ...(this.isMergedFlow ? ['二级科室'] : []),
             '病患号',
             '住院号',
             '计费时间',
@@ -310,6 +327,7 @@
               d.UNIT || '',
               d.APPROVAL_NUMBER || '',
               d.MANUFACTURING_ENT_NAME || '',
+              ...(this.isMergedFlow ? [d.DEPT_TWO_NAME || ''] : []),
               d.PATIENT_NUMBER || '',
               d.HOSPITALIZATION_NUMBER || '',
               d.OPEARTION_CHARGING_TIME || '',
