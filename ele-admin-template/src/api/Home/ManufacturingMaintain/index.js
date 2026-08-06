@@ -83,3 +83,18 @@ export async function deleteManufacturingEnt(payload) {
   }
   return Promise.reject(new Error(res.data?.msg || '删除失败'));
 }
+
+/**
+ * Excel 批量导入生产企业（按名称：不存在新增，存在更新）
+ * 字段名需为 file，后端 Request.Files[0]
+ */
+export async function importManufacturingEntExcel(file) {
+  const fd = new FormData();
+  fd.append('file', file);
+  fd.append('Token', getToken());
+  const res = await request.post('/ProdInfo/ImportManufacturingEntExcel', fd);
+  if (ok(res) || res.data?.code === 200) {
+    return res.data;
+  }
+  return Promise.reject(new Error(res.data?.msg || '导入失败'));
+}

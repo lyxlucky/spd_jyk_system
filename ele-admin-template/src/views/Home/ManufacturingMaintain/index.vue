@@ -38,6 +38,7 @@
           <el-button type="primary" plain icon="el-icon-edit" @click="openEdit">修改</el-button>
           <el-button type="danger" plain icon="el-icon-delete" @click="onDelete">删除</el-button>
           <el-button plain icon="el-icon-download" @click="onExport">导出</el-button>
+          <el-button plain icon="el-icon-upload2" @click="importVisible = true">导入</el-button>
         </el-form-item>
       </el-form>
       <el-table
@@ -124,6 +125,34 @@
         <el-button type="primary" :loading="saving" @click="submitForm">确 定</el-button>
       </span>
     </el-dialog>
+
+    <el-dialog
+      title="批量导入生产企业"
+      :visible.sync="importVisible"
+      width="520px"
+      append-to-body
+      @closed="onImportDialogClosed"
+    >
+      <div class="import-tips">
+        <p>带 * 为必填；按<strong>生产企业名称</strong>匹配：不存在则新增，已存在则更新。</p>
+        <p>日期格式 yyyy-MM-dd；营业执照效期可填「长期」；许可证有效期为空/null 时：新增不写日期，更新则不改原值。</p>
+        <p>也可先「导出」改完再导入（表头需含「生产企业名称」）。</p>
+      </div>
+      <div class="import-actions">
+        <el-button size="small" icon="el-icon-document" @click="onDownloadTemplate">下载模板</el-button>
+        <el-upload
+          class="import-upload"
+          action=""
+          :show-file-list="false"
+          accept=".xlsx,.xls"
+          :http-request="onImportUpload"
+        >
+          <el-button type="primary" size="small" icon="el-icon-upload2" :loading="importing">
+            选择文件并导入
+          </el-button>
+        </el-upload>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -133,7 +162,8 @@ import {
   getManufacturingList,
   insertManufacturingEnt,
   updateManufacturingEnt,
-  deleteManufacturingEnt
+  deleteManufacturingEnt,
+  importManufacturingEntExcel
 } from '@/api/Home/ManufacturingMaintain';
 
 const emptyForm = () => ({
@@ -154,6 +184,8 @@ export default {
     return {
       loading: false,
       saving: false,
+      importing: false,
+      importVisible: false,
       rows: [],
       selected: [],
       total: 0,
@@ -327,6 +359,48 @@ export default {
       } finally {
         loading.close();
       }
+    },
+    onDownloadTemplate() {
+      const sheetData = [
+        ['填写说明：带*为必填；按生产企业名称匹配（不存在新增、已存在更新）；日期yyyy-MM-dd；营业执照效期可填长期；许可证有效期为空则不写入/更新该字段'],
+        [
+          '*生产企业名称',
+          '社会统一信用代码',
+          '生产许可证号',
+          '营业执照效期',
+          '生产商号',
+          '许可证有效期',
+          '生产企业地址'
+        ],
+        [
+          '示例医疗器械生产企业有限公司',
+          '91440300MA5XXXXXX',
+          '粤食药监械生产许20240001号',
+          '2099-12-31',
+          'HRP001',
+          '2027-12-31',
+          '深圳市南山区科技园南路100号'
+        ]
+      ];
+      const sheet = utils.aoa_to_sheet(sheetData);
+      sheet['!cols'] = [{ wch: 32 }, { wch: 22 }, { wch: 24 }, { wch: 14 }, { wch: 12 }, { wch: 14 }, { wch: 28 }];
+      writeFile({ SheetNames: ['导入模板'], Sheets: { 导入模板: sheet } }, '生产企业批量导入模板.xlsx');
+    },
+    async onImportUpload({ file }) {
+      this.importing = true;
+      try {
+        const res = await importManufacturingEntExcel(file);
+        this.$message.success(res.msg || '导入成功');
+        this.importVisible = false;
+        this.load(1);
+      } catch (e) {
+        this.$message.error(e.message || '导入失败');
+      } finally {
+        this.importing = false;
+      }
+    },
+    onImportDialogClosed() {
+      this.importing = false;
     }
   }
 };
@@ -348,5 +422,25 @@ export default {
 .pager {
   margin-top: 12px;
   text-align: right;
+}
+.import-tips {
+  background: #f4f4f5;
+  border-radius: 4px;
+  padding: 12px 14px;
+  color: #606266;
+  font-size: 13px;
+  line-height: 1.7;
+  margin-bottom: 16px;
+}
+.import-tips p {
+  margin: 0;
+}
+.import-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.import-upload {
+  display: inline-block;
 }
 </style>
