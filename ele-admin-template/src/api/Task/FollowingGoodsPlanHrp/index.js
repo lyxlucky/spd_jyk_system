@@ -1,6 +1,6 @@
 import request from '@/utils/request';
 import { formdataify, DataToObject, toUrlEncodedBody } from '@/utils/formdataify';
-import { TOKEN_STORE_NAME, B2B_BASE_URL } from '@/config/setting';
+import { TOKEN_STORE_NAME } from '@/config/setting';
 import store from '@/store';
 import App from '@/App.vue';
 import { getB2bHospitalCode } from '@/views/Task/FollowingGoodsPlan/utils';
@@ -199,40 +199,7 @@ export function PostPrepareCloseOrderData(data) {
 }
 
 /**
- * 关闭整单-B2B
- */
-export async function closeStokOrder(planNumber, hospitalCode) {
-  const base = (B2B_BASE_URL || '').replace(/\/$/, '');
-  if (!base) {
-    return Promise.reject(new Error('未配置 B2B 地址(VUE_APP_B2B_BASE_URL)，无法关闭已推送订单'));
-  }
-  try {
-    const res = await request.get(`${base}/api/Stock/closeStokOrder`, {
-      params: {
-        PLAN_NUMBER: planNumber,
-        HOSPITAL_CODE: hospitalCode
-      }
-    });
-    return res.data;
-  } catch (err) {
-    const msg = err?.message || '';
-    if (msg === 'Network Error' || err?.code === 'ERR_NETWORK') {
-      return Promise.reject(
-        new Error(`B2B关闭订单网络失败，请检查B2B地址是否可达：${base}`)
-      );
-    }
-    return Promise.reject(new Error(msg || 'B2B订单关闭失败'));
-  }
-}
-
-/**
- * 关闭订单（未发送只关 SPD；已推送先关 B2B 再关 SPD）
- * @param {Object} data
- * @param {string|number} data.ID
- * @param {string} data.STOCK_UP_PLAN_NO
- * @param {string|number} data.Send_State / data.SEND_STATE
- * @param {string} data.Approve_State
- * @param {string} [data.hp]
+ * 关闭整单：仅调 SPD；已推送时由后端按 CONFIG.b2bUrl 代调 B2B
  */
 export async function closeStockOrderLikeOld(data) {
   const sendState = data.Send_State ?? data.SEND_STATE ?? '';
@@ -246,25 +213,6 @@ export async function closeStockOrderLikeOld(data) {
     yycode || dataJ?.HOSPITAL_CODE || getB2bHospitalCode(data.hp) || data.HOSPITAL_CODE || '';
   if (!hospitalCode) {
     return Promise.reject(new Error('非法请求：未配置院区编码'));
-  }
-
-  const planNo = data.STOCK_UP_PLAN_NO || data.stock_up_plan_no || '';
-  const isUnsent =
-    sendState === '0' ||
-    sendState === 0 ||
-    sendState === '未发送(SPD)' ||
-    sendState === '' ||
-    sendState == null;
-
-  // 已推送：先通知 B2B 作废，成功后再关 SPD
-  if (!isUnsent) {
-    if (!planNo) {
-      return Promise.reject(new Error('缺少备货单号，无法通知供应商关闭'));
-    }
-    const b2bRes = await closeStokOrder(planNo, hospitalCode);
-    if (!(b2bRes?.code == 200 || b2bRes?.code === '200')) {
-      return Promise.reject(new Error(b2bRes?.msg || 'B2B订单关闭失败'));
-    }
   }
 
   return PostPrepareCloseOrderData({

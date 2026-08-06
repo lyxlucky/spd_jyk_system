@@ -253,7 +253,6 @@ import {
   batchUpDelRemarks,
   upDelRemarks,
   getDeptTwoBasicInfoAll,
-  closeStokOrderDel,
   upStockUpVars
 } from '@/api/Task/FollowingGoodsPlan';
 import { utils, writeFile } from 'xlsx';
@@ -757,32 +756,21 @@ export default {
             ID: obj.ID,
             Varietie_Code_New: obj.Varietie_Code_New
           }));
-          const spdids = this.selection.map((obj) => obj.Varietie_Code).join(',');
           const loading = this.$messageLoading('处理中...');
-          closeStokOrderDel(
-            this.currentTableRow3.STOCK_UP_PLAN_NO,
-            hospitalCode,
-            spdids
-          )
-            .then((b2bRes) => {
-              if (b2bRes.code != 200) {
-                this.$message.warning('品种剔除失败');
-                return;
-              }
-              return upStockUpVars(JSON.stringify(arrList), hospitalCode);
-            })
+          upStockUpVars(JSON.stringify(arrList), hospitalCode)
             .then((res) => {
-              if (!res) return;
               const data = res.data;
               if (data.code == 200) {
-                this.$message.success('已成功删除');
+                this.$message.success(data.msg || '已成功删除');
                 this.handleSearch();
                 this.$emit('refresh-order-list');
               } else {
-                this.$message.warning('品种剔除失败');
+                this.$message.warning(data.msg || '品种剔除失败');
               }
             })
-            .catch(() => this.$message.error('操作失败'))
+            .catch((err) =>
+              this.$message.error(err?.message || '操作失败')
+            )
             .finally(() => loading.close());
         })
         .catch(() => {});

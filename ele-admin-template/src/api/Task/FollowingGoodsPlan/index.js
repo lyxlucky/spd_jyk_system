@@ -10,7 +10,6 @@ function token() {
 export {
   needSendState,
   PostPrepareCloseOrderData,
-  closeStokOrder,
   closeStockOrderLikeOld
 } from '@/api/Task/FollowingGoodsPlanHrp';
 
@@ -320,25 +319,12 @@ export function addStockData(json, stockUpPlanNo) {
   );
 }
 
-/** 剔除品种-SPD */
+/** 剔除品种：仅调 SPD；已推送时由后端按 CONFIG.b2bUrl 代调 B2B */
 export function upStockUpVars(json, hospitalCode) {
   return request.post(
     'ANewStockUp/UpStockUpVars',
     formdataify({ json, HOSPITAL_CODE: hospitalCode, Token: token() })
   );
-}
-
-/** 剔除品种-B2B */
-export async function closeStokOrderDel(planNumber, hospitalCode, spdIds) {
-  const base = (B2B_BASE_URL || '').replace(/\/$/, '');
-  const res = await request.get(`${base}/api/Stock/closeStokOrderDel`, {
-    params: {
-      PLAN_NUMBER: planNumber,
-      HOSPITAL_CODE: hospitalCode,
-      SPDID: spdIds
-    }
-  });
-  return res.data;
 }
 
 /** 中心库扩展信息 */
