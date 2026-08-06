@@ -24,6 +24,7 @@
         :batch-id="previewCtx.batchId"
         :order-num="previewCtx.orderNum"
         :batch-key="previewCtx.batchKey"
+        @deleted="onPicDeleted"
       />
       <div ref="tableWrap" class="spd-table-panel__wrap">
         <ele-pro-table
@@ -610,6 +611,9 @@ export default {
       this.$nextTick(() => {
         this.$refs.picPreview?.reload?.();
       });
+    },
+    onPicDeleted() {
+      this.reload();
     },
     reload(where) {
       if (where) this.lastWhere = where;

@@ -322,11 +322,27 @@ export async function getOrderPicture(params) {
   throw new Error(res.data?.msg || '获取图片失败');
 }
 
-/** 按文件名删图 */
+/**
+ * 按文件名删图。
+ * 与 GetBatchPicture 一样把 Token/picName 放在 Query，由 Web API 方法参数绑定（避免 POST Form 读不到导致假 301）。
+ */
 export async function deletePhotoByPicName(picName) {
-  return sendRequest('/InStockCheck/deletePhotoByPicName', {
-    picName: str(picName)
-  });
+  const token = getToken() || '';
+  const name = str(picName);
+  try {
+    const res = await request.post('/InStockCheck/deletePhotoByPicName', null, {
+      params: {
+        Token: token,
+        picName: name
+      }
+    });
+    if (okCode(res.data?.code)) {
+      return res.data;
+    }
+    throw new Error(res.data?.msg || '删除失败');
+  } catch (err) {
+    throw new Error(err?.message || err?.response?.data?.msg || '删除失败');
+  }
 }
 
 // 获取详情数据

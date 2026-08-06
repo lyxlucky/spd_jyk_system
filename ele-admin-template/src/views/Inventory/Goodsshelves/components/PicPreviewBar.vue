@@ -4,21 +4,29 @@
       点击下方列表某一行，可查看该行关联的检验报告 / 单号批次图片
     </div>
     <div v-else-if="loading" class="pic-preview-bar__empty">图片加载中...</div>
-    <div v-else-if="!urls.length" class="pic-preview-bar__empty">
+    <div v-else-if="!pics.length" class="pic-preview-bar__empty">
       当前行暂无已上传图片
     </div>
     <div v-else class="pic-preview-bar__list">
-      <el-image
-        v-for="(url, idx) in urls"
-        :key="`${url}-${idx}`"
-        class="pic-preview-bar__item"
-        :src="url"
-        fit="contain"
-        :preview-src-list="urls"
-        :initial-index="idx"
-      >
-        <div slot="error" class="pic-preview-bar__error">加载失败</div>
-      </el-image>
+      <div v-for="(pic, idx) in pics" :key="`${pic.name}-${idx}`" class="pic-preview-bar__card">
+        <el-image
+          class="pic-preview-bar__item"
+          :src="pic.url"
+          fit="contain"
+          :preview-src-list="previewUrls"
+          :initial-index="idx"
+        >
+          <div slot="error" class="pic-preview-bar__error">加载失败</div>
+        </el-image>
+        <button
+          type="button"
+          class="pic-preview-bar__close"
+          title="删除"
+          @click.stop="onDelete(pic)"
+        >
+          ×
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -27,7 +35,8 @@
 import { getStaticBaseUrl } from '@/config/setting';
 import {
   getBatchPicture,
-  getOrderPicture
+  getOrderPicture,
+  deletePhotoByPicName
 } from '@/api/Inventory/Goodsshelves';
 
 function picUrl(name) {
@@ -41,17 +50,14 @@ function picUrl(name) {
 export default {
   name: 'GoodsshelvesPicPreviewBar',
   props: {
-    /** 批次 ID */
     batchId: { type: [String, Number], default: '' },
-    /** 入库/业务单号（可含 / 后缀，会取前半段） */
     orderNum: { type: String, default: '' },
-    /** 生产批号/品种：BATCH/VARIETIE_CODE，对齐老系统 */
     batchKey: { type: String, default: '' }
   },
   data() {
     return {
       loading: false,
-      urls: [],
+      pics: [],
       loadSeq: 0
     };
   },
@@ -62,6 +68,9 @@ export default {
     normalizedOrderNum() {
       const raw = String(this.orderNum || '');
       return raw.split('/')[0] || '';
+    },
+    previewUrls() {
+      return this.pics.map((p) => p.url);
     }
   },
   watch: {
@@ -78,19 +87,25 @@ export default {
   methods: {
     async reload() {
       const seq = ++this.loadSeq;
-      this.urls = [];
+      this.pics = [];
       if (!this.hasContext) return;
       this.loading = true;
       const list = [];
+      const seen = new Set();
+      const pushPic = (name) => {
+        const file = String(name || '').replace(/^.*[/\\]/, '');
+        const url = picUrl(file);
+        if (!url || seen.has(file)) return;
+        seen.add(file);
+        list.push({ name: file, url });
+      };
       try {
         if (this.batchId) {
           try {
             const res = await getBatchPicture(this.batchId);
-            const name = res?.result;
-            const url = picUrl(name);
-            if (url) list.push(url);
+            pushPic(res?.result);
           } catch (e) {
-            // 无检验报告时接口可能 400，忽略
+            // 无检验报告时接口可能 400
           }
         }
         try {
@@ -101,20 +116,33 @@ export default {
             batch: this.batchKey || ''
           });
           const rows = Array.isArray(res?.result) ? res.result : [];
-          rows.forEach((r) => {
-            const url = picUrl(r?.PIC_PATH);
-            if (url && !list.includes(url)) list.push(url);
-          });
+          rows.forEach((r) => pushPic(r?.PIC_PATH));
         } catch (e) {
           // ignore
         }
         if (seq === this.loadSeq) {
-          this.urls = list;
+          this.pics = list;
         }
       } finally {
         if (seq === this.loadSeq) {
           this.loading = false;
         }
+      }
+    },
+    async onDelete(pic) {
+      if (!pic?.name) return;
+      try {
+        await this.$confirm('确定删除图片吗?', '提示', { type: 'warning' });
+      } catch (e) {
+        return;
+      }
+      try {
+        const res = await deletePhotoByPicName(pic.name);
+        this.$message.success(res?.msg || '图片删除成功');
+        this.$emit('deleted', pic);
+        await this.reload();
+      } catch (e) {
+        this.$message.error(e.message || '删除失败');
       }
     }
   }
@@ -146,6 +174,11 @@ export default {
   gap: 10px;
   align-items: flex-start;
 }
+.pic-preview-bar__card {
+  position: relative;
+  width: 120px;
+  height: 140px;
+}
 .pic-preview-bar__item {
   width: 120px;
   height: 140px;
@@ -153,6 +186,28 @@ export default {
   border-radius: 2px;
   cursor: pointer;
   background: #fafafa;
+}
+.pic-preview-bar__close {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  z-index: 2;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  font-size: 14px;
+  line-height: 18px;
+  text-align: center;
+  cursor: pointer;
+  opacity: 0.85;
+}
+.pic-preview-bar__close:hover {
+  opacity: 1;
+  background: rgba(245, 108, 108, 0.95);
 }
 .pic-preview-bar__error {
   height: 100%;
