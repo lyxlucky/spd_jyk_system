@@ -1069,3 +1069,38 @@ export async function updateNewVarCode() {
   );
   return unwrap(res);
 }
+
+/** 财务分类属性列表（对齐老页 GetClassificProp） */
+export async function GetClassificProp() {
+  const res = await request.get('/VarietieBasicInfo/GetClassificProp', {
+    params: { Token: token() }
+  });
+  return unwrap(res);
+}
+
+/** 财务分类属性2（CLASSIFIC_PROP2） */
+export async function GetClassificProp2() {
+  const res = await request.get('/VarietieBasicInfo/GetClassificProp2', {
+    params: { Token: token() }
+  });
+  return unwrap(res);
+}
+
+/** 财务分类属性3（CLASSIFIC_PROP3，对齐老页 listClassIfic3） */
+export async function listClassIfic3() {
+  const res = await request.post(
+    '/VarietieBasicInfo/listClassIfic3',
+    formdataify({ Token: token() })
+  );
+  if (res.data?.code == 301 || res.data === 301) {
+    throw new Error(res.data?.msg || '登录失效，请重新登录');
+  }
+  if (res.data?.code == 200 || res.data?.code === '200' || res.data?.success) {
+    return res.data;
+  }
+  // ApiResponse.Success 可能用 data 字段
+  if (Array.isArray(res.data?.data)) {
+    return res.data;
+  }
+  throw new Error(res.data?.msg || '获取分类属性3失败');
+}

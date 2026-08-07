@@ -95,10 +95,12 @@
                     v-else-if="field.type === 'select'"
                     v-model="form[field.key]"
                     clearable
+                    :filterable="!!field.filterable"
+                    placeholder="请选择"
                     style="width: 100%"
                   >
                     <el-option
-                      v-for="opt in field.options"
+                      v-for="opt in resolveFieldOptions(field)"
                       :key="String(opt.value)"
                       :label="opt.label"
                       :value="normalizeOptionValue(field.key, opt.value)"
@@ -129,7 +131,10 @@ import {
   GetApprovalNumberList,
   GetApprovalNumberInfo,
   IsVarietieExist,
-  InsertVarietieBasic
+  InsertVarietieBasic,
+  GetClassificProp,
+  GetClassificProp2,
+  listClassIfic3
 } from '@/api/Home/VarietyDataLzhMain';
 import { updateVarietieBasic, updateVarietieBasicStse } from '@/api/Home/VarietyDataLzhAudit';
 import { isStseLikeHp, cleanupDialogOverlays } from '../utils';
@@ -143,6 +148,31 @@ import {
 import { VARIETY_EDIT_GROUPS } from '../varietyEditFields';
 
 const NUMERIC_SELECT_KEYS = new Set(['STORAGE_ID']);
+const CLASSIFIC_OPTION_KEYS = new Set([
+  'Classific_Properties',
+  'CLASSIFIC_PROPERTIES2',
+  'CLASSIFIC_PROPERTIES3'
+]);
+
+function mapClassificOptions(list, { codeKeys, nameKeys, stseStyle }) {
+  return (Array.isArray(list) ? list : [])
+    .map((item) => {
+      const code = String(
+        codeKeys.map((k) => item?.[k]).find((v) => v != null && v !== '') ?? ''
+      );
+      const name = String(
+        nameKeys.map((k) => item?.[k]).find((v) => v != null && v !== '') ?? ''
+      );
+      if (!code) return null;
+      const label = stseStyle
+        ? `${name}${code}`
+        : name
+          ? `${code}-${name}`
+          : code;
+      return { value: code, label };
+    })
+    .filter(Boolean);
+}
 
 export default {
   name: 'VarietyEditDialog',
@@ -163,7 +193,10 @@ export default {
       approvalAll: [],
       approvalOptions: [],
       approvalLoading: false,
-      selectedRegCode: ''
+      selectedRegCode: '',
+      classificPropOptions: [],
+      classificProp2Options: [],
+      classificProp3Options: []
     };
   },
   watch: {
@@ -188,20 +221,42 @@ export default {
     useStseApi() {
       return isStseLikeHp(HOME_HP) || HOME_HP === 'stzyyy';
     },
+    stseClassificLabel() {
+      return HOME_HP === 'stse';
+    },
     editGroups() {
-      if (!this.isAddMode) return VARIETY_EDIT_GROUPS;
+      const optionMap = {
+        classificProp: this.classificPropOptions,
+        classificProp2: this.classificProp2Options,
+        classificProp3: this.classificProp3Options
+      };
+      const injectOptions = (fields) =>
+        fields.map((field) => {
+          if (field.optionsKey && optionMap[field.optionsKey]) {
+            return { ...field, options: optionMap[field.optionsKey] };
+          }
+          return field;
+        });
+      if (!this.isAddMode) {
+        return VARIETY_EDIT_GROUPS.map((group) => ({
+          ...group,
+          fields: injectOptions(group.fields)
+        }));
+      }
       return VARIETY_EDIT_GROUPS.map((group) => ({
         ...group,
-        fields: group.fields.map((field) => {
-          if (field.key !== 'Varietie_Code_New') return field;
-          return {
-            ...field,
-            type: 'input',
-            disabled: false,
-            required: true,
-            placeholder: '请输入品种材料编码'
-          };
-        })
+        fields: injectOptions(
+          group.fields.map((field) => {
+            if (field.key !== 'Varietie_Code_New') return field;
+            return {
+              ...field,
+              type: 'input',
+              disabled: false,
+              required: true,
+              placeholder: '请输入品种材料编码'
+            };
+          })
+        )
       }));
     },
     formRules() {
@@ -238,6 +293,49 @@ export default {
       if (this.isAddMode && field.key === 'Enable') return true;
       return !!field.disabled;
     },
+    resolveFieldOptions(field) {
+      return Array.isArray(field.options) ? field.options : [];
+    },
+    async loadClassificOptions() {
+      const stseStyle = this.stseClassificLabel;
+      const tasks = [
+        GetClassificProp()
+          .then((res) => {
+            this.classificPropOptions = mapClassificOptions(res?.result || [], {
+              codeKeys: ['Classific_Properties', 'CLASSIFIC_PROPERTIES'],
+              nameKeys: ['Classific_Name', 'CLASSIFIC_NAME'],
+              stseStyle
+            });
+          })
+          .catch(() => {
+            this.classificPropOptions = [];
+          }),
+        GetClassificProp2()
+          .then((res) => {
+            this.classificProp2Options = mapClassificOptions(res?.result || [], {
+              codeKeys: ['Classific_Properties2', 'CLASSIFIC_PROPERTIES2'],
+              nameKeys: ['Classific_Name2', 'CLASSIFIC_NAME2'],
+              stseStyle: false
+            });
+          })
+          .catch(() => {
+            this.classificProp2Options = [];
+          }),
+        listClassIfic3()
+          .then((res) => {
+            const list = res?.data || res?.result || [];
+            this.classificProp3Options = mapClassificOptions(list, {
+              codeKeys: ['CLASSIFIC_PROPERTIES3', 'Classific_Properties3'],
+              nameKeys: ['CLASSIFIC_NAME3', 'Classific_Name3'],
+              stseStyle: false
+            });
+          })
+          .catch(() => {
+            this.classificProp3Options = [];
+          })
+      ];
+      await Promise.all(tasks);
+    },
     handleBeforeClose(done) {
       this.loadSeq += 1;
       this.loading = false;
@@ -260,6 +358,8 @@ export default {
       this.selectedRegCode = '';
       this.approvalOptions = [];
       try {
+        await this.loadClassificOptions();
+        if (seq !== this.loadSeq) return;
         this.detail = createEmptyDetail();
         this.form = detailToForm(this.detail);
         this.approvalLoading = true;
@@ -337,6 +437,8 @@ export default {
       this.form = null;
       this.activeTab = 'basic';
       try {
+        await this.loadClassificOptions();
+        if (seq !== this.loadSeq) return;
         const nickname = this.$store.state.user?.info?.Nickname || '';
         const check = await CheckVarietieBasic({
           varietieCode: `'${this.varietieCode}'`,
@@ -378,6 +480,9 @@ export default {
       if (NUMERIC_SELECT_KEYS.has(key)) {
         const n = Number(value);
         return Number.isFinite(n) ? n : value;
+      }
+      if (CLASSIFIC_OPTION_KEYS.has(key)) {
+        return value != null && value !== '' ? String(value) : value;
       }
       return value != null ? String(value) : value;
     },
@@ -461,6 +566,9 @@ export default {
       this.selectedRegCode = '';
       this.approvalAll = [];
       this.approvalOptions = [];
+      this.classificPropOptions = [];
+      this.classificProp2Options = [];
+      this.classificProp3Options = [];
       this.$nextTick(() => cleanupDialogOverlays());
       this.$emit('closed');
     }

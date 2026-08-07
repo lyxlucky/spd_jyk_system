@@ -150,7 +150,15 @@ export const VARIETY_EDIT_GROUPS = [
     fields: [
       { key: 'High_Or_Low_Class', label: '高低值分类', type: 'select', span: 8, options: highLowOpts },
       { key: 'HIGH_OR_LOW_CLASS_TWO', label: '高低值下级属性', type: 'select', span: 8, options: highLowTwoOpts },
-      { key: 'Classific_Properties', label: '财务分类属性', type: 'input', span: 8 },
+      {
+        key: 'Classific_Properties',
+        label: '财务分类属性',
+        type: 'select',
+        span: 8,
+        filterable: true,
+        optionsKey: 'classificProp',
+        options: []
+      },
       { key: 'hosp_class_Common_name', label: '医用类别分类', type: 'input', span: 8 },
       { key: 'HIGH_CLASS_XH', label: '高值重点治理序号', type: 'input', span: 8 },
       { key: 'IMPORT_DUAL_VAR_NAME', label: '重点治理耗材名称', type: 'input', span: 16 },
@@ -161,8 +169,24 @@ export const VARIETY_EDIT_GROUPS = [
       { key: 'Classific_Propertie_Two', label: '下级类别', type: 'input', span: 8 },
       { key: 'Trade_Type', label: '进口/国产', type: 'select', span: 8, options: tradeTypeOpts },
       { key: 'IS_EQUIPMENT_CHANGE', label: '设备科是否修改', type: 'select', span: 8, options: yesNo },
-      { key: 'Classific_Properties2', label: '分类属性2', type: 'input', span: 8 },
-      { key: 'Classific_Properties3', label: '分类属性3', type: 'input', span: 8 }
+      {
+        key: 'CLASSIFIC_PROPERTIES2',
+        label: '财务分类属性2',
+        type: 'select',
+        span: 8,
+        filterable: true,
+        optionsKey: 'classificProp2',
+        options: []
+      },
+      {
+        key: 'CLASSIFIC_PROPERTIES3',
+        label: '财务分类属性3',
+        type: 'select',
+        span: 8,
+        filterable: true,
+        optionsKey: 'classificProp3',
+        options: []
+      }
     ]
   },
   {

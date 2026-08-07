@@ -53,7 +53,30 @@ function normalizeFormValue(key, value) {
     const n = Number(value);
     return Number.isFinite(n) ? n : value;
   }
+  if (
+    key === 'Classific_Properties' ||
+    key === 'CLASSIFIC_PROPERTIES2' ||
+    key === 'CLASSIFIC_PROPERTIES3'
+  ) {
+    return String(value);
+  }
   return value;
+}
+
+const CLASSIFIC_FORM_ALIASES = {
+  Classific_Properties: ['Classific_Properties', 'CLASSIFIC_PROPERTIES'],
+  CLASSIFIC_PROPERTIES2: ['CLASSIFIC_PROPERTIES2', 'Classific_Properties2'],
+  CLASSIFIC_PROPERTIES3: ['CLASSIFIC_PROPERTIES3', 'Classific_Properties3']
+};
+
+function pickDetailValue(detail, key) {
+  const aliases = CLASSIFIC_FORM_ALIASES[key];
+  if (!aliases) return detail?.[key];
+  for (const alias of aliases) {
+    const v = detail?.[alias];
+    if (v != null && v !== '') return v;
+  }
+  return detail?.[key];
 }
 
 export function buildUpdatePayload(detail, meta = {}) {
@@ -223,7 +246,7 @@ export function detailToForm(detail) {
   const d = detail || {};
   const form = {};
   VARIETY_EDIT_FIELD_KEYS.forEach((key) => {
-    form[key] = normalizeFormValue(key, d[key]);
+    form[key] = normalizeFormValue(key, pickDetailValue(d, key));
   });
   return form;
 }
