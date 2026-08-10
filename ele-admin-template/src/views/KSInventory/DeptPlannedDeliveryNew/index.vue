@@ -1,7 +1,7 @@
 <template>
   <div class="ele-body spd-page dept-planned-delivery-new">
     <!-- 外层受限宽 + overflow-x，内层固定最小宽：布局层 overflow-x:hidden 时仍能出现横向滚动条 -->
-    <div class="dept-planned-delivery-new__scroll">
+    <div ref="pageScroll" class="dept-planned-delivery-new__scroll">
       <div class="dept-planned-delivery-new__inner">
         <div class="spd-section page-section-main">
           <PlanTableTab
@@ -40,11 +40,13 @@
 
 <script>
 import { getSTORAGE } from '@/api/login';
+import { setPageTab, getRouteTabKey } from '@/utils/page-tab-util';
 import PlanTableTab from './components/PlanTableTab.vue';
 import PickingLeftTable from './components/PickingLeftTable.vue';
 import PickingRightTable from './components/PickingRightTable.vue';
 
 export default {
+  // keep-alive 按组件 name 缓存；缺 name / 未写入页签 components 时切换菜单会销毁重建
   name: 'DeptPlannedDeliveryNew',
   components: {
     PlanTableTab,
@@ -54,14 +56,36 @@ export default {
   data() {
     return {
       storageList: [],
-      storageId: ''
+      storageId: '',
+      pageScrollTop: 0,
+      pageScrollLeft: 0
     };
   },
   mounted() {
+    const name = this.$options.name;
+    if (name) {
+      setPageTab({ key: getRouteTabKey(), components: [name] });
+    }
     this.loadStorage();
+  },
+  activated() {
+    this.$nextTick(() => {
+      const el = this.$refs.pageScroll;
+      if (!el) return;
+      el.scrollTop = this.pageScrollTop || 0;
+      el.scrollLeft = this.pageScrollLeft || 0;
+    });
+  },
+  deactivated() {
+    const el = this.$refs.pageScroll;
+    if (!el) return;
+    this.pageScrollTop = el.scrollTop || 0;
+    this.pageScrollLeft = el.scrollLeft || 0;
   },
   methods: {
     async loadStorage() {
+      // 已加载过则不重复请求（keep-alive 切回时 mounted 不会再跑；防御性保留）
+      if (this.storageList.length && this.storageId) return;
       try {
         const res = await getSTORAGE();
         this.storageList = res.result || [];
