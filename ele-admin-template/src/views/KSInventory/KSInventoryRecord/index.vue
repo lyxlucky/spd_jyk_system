@@ -673,6 +673,10 @@ export default {
   font-weight: normal;
 }
 
+.ks-inventory-record-meta .spd-panel__head-meta {
+  font-size: 16px;
+}
+
 .ks-inventory-record-page >>> .el-table th .cell {
   white-space: nowrap;
 }
