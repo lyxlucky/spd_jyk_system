@@ -209,6 +209,7 @@ import {
   removeDefsTo
 } from '@/api/Inventory/InventoryQueryNew';
 import { getUserGroupByName } from '@/api/layout/index';
+import { setPageTab, getRouteTabKey } from '@/utils/page-tab-util';
 
 const MOVE_GOODS_TITLE = {
   qualified: '移至合格区',
@@ -283,7 +284,15 @@ export default {
       simpleLoading: false,
       ctxMenuVisible: false,
       ctxMenuX: 0,
-      ctxMenuY: 0
+      ctxMenuY: 0,
+      // 切换菜单 keep-alive 时还原页面/表格滚动位置
+      savedScroll: {
+        page: 0,
+        mainTop: 0,
+        mainLeft: 0,
+        detailTop: 0,
+        detailLeft: 0
+      }
     };
   },
   computed: {
@@ -307,6 +316,11 @@ export default {
     this.initPage();
   },
   mounted() {
+    // 补全页签 components，纳入 keep-alive（异步路由首次匹配常拿不到 name）
+    const name = this.$options.name;
+    if (name) {
+      setPageTab({ key: getRouteTabKey(), components: [name] });
+    }
     document.addEventListener('click', this.hideCtxMenu);
     window.addEventListener('resize', this.scheduleUpdateHeights);
     // 表格内部滚动吞掉滚轮时，允许把滚动交给页面，从而滑到下方明细表
@@ -316,6 +330,16 @@ export default {
       requestAnimationFrame(() => this.updateTableHeights());
     });
   },
+  activated() {
+    // 切回页签：保持查询结果与滚动位置，不重新拉数
+    this.$nextTick(() => {
+      this.updateTableHeights();
+      this.$nextTick(() => this.restoreScroll());
+    });
+  },
+  deactivated() {
+    this.captureScroll();
+  },
   beforeDestroy() {
     document.removeEventListener('click', this.hideCtxMenu);
     window.removeEventListener('resize', this.scheduleUpdateHeights);
@@ -323,6 +347,52 @@ export default {
     if (this.layoutTimer) clearTimeout(this.layoutTimer);
   },
   methods: {
+    getTableBodyWrapper(refName) {
+      const table = this.$refs[refName];
+      const root = table?.$el || table?.$refs?.table?.$el;
+      return root?.querySelector?.('.el-table__body-wrapper') || null;
+    },
+    captureScroll() {
+      const main = this.getTableBodyWrapper('mainTable');
+      const detail = this.getTableBodyWrapper('detailTable');
+      this.savedScroll = {
+        page: this.$el?.scrollTop || 0,
+        mainTop: main?.scrollTop || 0,
+        mainLeft: main?.scrollLeft || 0,
+        detailTop: detail?.scrollTop || 0,
+        detailLeft: detail?.scrollLeft || 0
+      };
+    },
+    restoreScroll() {
+      const scroll = this.savedScroll || {};
+      if (this.$el) this.$el.scrollTop = scroll.page || 0;
+      const main = this.getTableBodyWrapper('mainTable');
+      const detail = this.getTableBodyWrapper('detailTable');
+      if (main) {
+        main.scrollTop = scroll.mainTop || 0;
+        main.scrollLeft = scroll.mainLeft || 0;
+      }
+      if (detail) {
+        detail.scrollTop = scroll.detailTop || 0;
+        detail.scrollLeft = scroll.detailLeft || 0;
+      }
+      // 恢复主表当前行高亮；跳过 current-change 联动，避免切回时重查明细把滚动打回顶部
+      if (this.selectedMainRow) {
+        this._skipMainRowReload = true;
+        const pro = this.$refs.mainTable;
+        const elTable = pro?.$refs?.table || pro;
+        elTable?.setCurrentRow?.(this.selectedMainRow);
+        this.$nextTick(() => {
+          this._skipMainRowReload = false;
+          // 明细表可能在布局后被重置，再刷一次滚动
+          const detail = this.getTableBodyWrapper('detailTable');
+          if (detail) {
+            detail.scrollTop = scroll.detailTop || 0;
+            detail.scrollLeft = scroll.detailLeft || 0;
+          }
+        });
+      }
+    },
     fmtDate10,
     fmtMainUpShelfState,
     fmtContractEnd,
@@ -462,6 +532,7 @@ export default {
     },
     onMainRowChange(row) {
       this.selectedMainRow = row;
+      if (this._skipMainRowReload) return;
       this.detailCtx = rowToDetailCtx(row);
       this.detailCondition = '';
       this.$refs.detailToolbar?.setCondition('');
