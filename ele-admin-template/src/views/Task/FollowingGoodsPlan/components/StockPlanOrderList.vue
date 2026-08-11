@@ -1,9 +1,9 @@
 <template>
-  <div>
+  <div class="stock-plan-order-list">
     <el-card>
       <div slot="header">备货计划单号列表</div>
       <div>
-        <el-form :model="form" :inline="true" size="mini">
+        <el-form class="stock-plan-toolbar" :model="form" :inline="true" size="mini">
           <!-- 创建人搜索 -->
           <el-form-item>
             <el-input
@@ -208,7 +208,7 @@
         <div style="margin-bottom: 8px; text-align: right">
           计划品种数量：<b>{{ varCount }}</b>
         </div>
-        <div>
+        <div class="stock-plan-table-wrap">
           <ele-pro-table
             size="mini"
             ref="table"
@@ -1083,4 +1083,29 @@
   };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.stock-plan-order-list {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.stock-plan-toolbar.el-form--inline {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center;
+  width: 100%;
+  max-width: 100%;
+}
+
+.stock-plan-toolbar :deep(.el-form-item) {
+  flex-shrink: 0;
+  margin-bottom: 6px;
+}
+
+.stock-plan-table-wrap {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+}
+</style>

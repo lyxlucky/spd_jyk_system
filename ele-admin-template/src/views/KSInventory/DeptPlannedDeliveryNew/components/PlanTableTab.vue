@@ -191,29 +191,29 @@
           <el-checkbox label="10">强制结束</el-checkbox>
         </el-checkbox-group>
         <span class="spd-filter-bar__divider" />
-        <el-select v-model="where.planIsZxk_sh" size="mini" style="width: 118px" clearable placeholder="散货库存" @change="reload">
+        <el-select v-model="where.planIsZxk_sh" size="mini" class="plan-filter-select" clearable placeholder="散货库存" @change="reload">
           <el-option label="散货-全部" value="" />
           <el-option label="散货-有" value="1" />
           <el-option label="散货-无" value="0" />
         </el-select>
-        <el-select v-model="where.planIsZxk_dsb" size="mini" style="width: 118px" clearable placeholder="定数包库存" @change="reload">
+        <el-select v-model="where.planIsZxk_dsb" size="mini" class="plan-filter-select" clearable placeholder="定数包库存" @change="reload">
           <el-option label="定数包-全部" value="" />
           <el-option label="定数包-有" value="1" />
           <el-option label="定数包-无" value="0" />
         </el-select>
-        <el-select v-model="where.isHaveBh" size="mini" style="width: 110px" clearable placeholder="已转备货" @change="reload">
+        <el-select v-model="where.isHaveBh" size="mini" class="plan-filter-select" clearable placeholder="已转备货" @change="reload">
           <el-option label="备货-全部" value="" />
           <el-option label="备货-是" value="1" />
           <el-option label="备货-否" value="0" />
         </el-select>
-        <el-select v-model="where.STORAGE_TYPE" size="mini" style="width: 110px" clearable placeholder="存储条件" @change="reload">
+        <el-select v-model="where.STORAGE_TYPE" size="mini" class="plan-filter-select" clearable placeholder="存储条件" @change="reload">
           <el-option label="条件-全部" value="" />
           <el-option label="常温" value="0" />
           <el-option label="阴凉" value="1" />
           <el-option label="冷藏" value="2" />
           <el-option label="冷冻" value="3" />
         </el-select>
-        <el-select v-model="where.RELATED_RFID" size="mini" style="width: 100px" clearable placeholder="RFID" @change="reload">
+        <el-select v-model="where.RELATED_RFID" size="mini" class="plan-filter-select" clearable placeholder="RFID" @change="reload">
           <el-option label="RFID-全部" value="" />
           <el-option label="RFID-否" value="0" />
           <el-option label="RFID-是" value="1" />
@@ -784,6 +784,26 @@ export default {
   font-size: 12px;
   font-weight: normal;
   color: #606266;
+}
+
+/* 操作按钮行与筛选行同宽、左边距对齐 */
+.plan-table-tab >>> .spd-toolbar {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px 0;
+}
+
+.plan-table-tab >>> .spd-filter-bar {
+  width: auto;
+  max-width: 100%;
+  box-sizing: border-box;
+  margin: 10px 12px 12px;
+  padding: 8px 12px;
+}
+
+.plan-table-tab >>> .plan-filter-select {
+  width: 120px;
 }
 
 .spd-table-panel__wrap {

@@ -31,31 +31,33 @@
         <el-button type="primary" icon="el-icon-search" @click="reload">搜索</el-button>
       </el-form-item>
     </el-form>
-    <ele-pro-table
-      ref="table"
-      size="mini"
-      height="200px"
-      highlight-current-row
-      :init-load="false"
-      :need-page="true"
-      :page-size="10"
-      :page-sizes="[10, 30, 60, 90, 150, 300]"
-      layout="total, sizes, prev, pager, next, jumper"
-      :hide-on-single-page="false"
-      :toolkit="[]"
-      :columns="columns"
-      :datasource="datasource"
-      cache-key="deptPlannedDeliveryNewPickingLeftV2"
-      @current-change="onCurrentChange"
-      @row-click="onRowClick"
-    >
-      <template v-slot:createTime="{ row }">
-        {{ row.Create_Time ? $moment(row.Create_Time).format('YYYY-MM-DD') : '' }}
-      </template>
-      <template v-slot:pickingRemark="{ row }">
-        <el-button type="text" size="mini" @click.stop="openRemark(row)">备注</el-button>
-      </template>
-    </ele-pro-table>
+    <div class="picking-table-wrap">
+      <ele-pro-table
+        ref="table"
+        size="mini"
+        height="200px"
+        highlight-current-row
+        :init-load="false"
+        :need-page="true"
+        :page-size="10"
+        :page-sizes="[10, 30, 60, 90, 150, 300]"
+        layout="total, sizes, prev, pager, next, jumper"
+        :hide-on-single-page="false"
+        :toolkit="[]"
+        :columns="columns"
+        :datasource="datasource"
+        cache-key="deptPlannedDeliveryNewPickingLeftV2"
+        @current-change="onCurrentChange"
+        @row-click="onRowClick"
+      >
+        <template v-slot:createTime="{ row }">
+          {{ row.Create_Time ? $moment(row.Create_Time).format('YYYY-MM-DD') : '' }}
+        </template>
+        <template v-slot:pickingRemark="{ row }">
+          <el-button type="text" size="mini" @click.stop="openRemark(row)">备注</el-button>
+        </template>
+      </ele-pro-table>
+    </div>
     <PickingRemarkDialog
       :visible.sync="remarkVisible"
       :plan-no="remarkPlanNo"
@@ -143,6 +145,9 @@ export default {
 <style scoped>
 .picking-left {
   height: 100%;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
 }
 .sub-panel-head {
   font-size: 12px;
@@ -164,6 +169,20 @@ export default {
 }
 .filter-row {
   margin-bottom: 8px;
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center;
+  width: 100%;
+  max-width: 100%;
+}
+.filter-row >>> .el-form-item {
+  flex-shrink: 0;
+  margin-bottom: 6px;
+}
+.picking-table-wrap {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
 }
 </style>
 

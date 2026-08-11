@@ -1,9 +1,9 @@
 <template>
-  <div>
+  <div class="status-summary-statistics">
     <el-card>
       <div slot="header">状态汇总统计</div>
       <div>
-        <el-form :inline="true" size="mini">
+        <el-form class="stock-plan-toolbar" :inline="true" size="mini">
           <el-form-item>
             <el-date-picker
               v-model="dateRange[0]"
@@ -52,17 +52,19 @@
           </el-form-item>
         </el-form>
 
-        <ele-pro-table
-          size="mini"
-          ref="summaryTable"
-          height="300px"
-          :columns="summaryColumns"
-          highlight-current-row
-          :datasource="summaryDatasource"
-          cache-key="followingGoodsPlanSummaryTable"
-          :paging="false"
-          @row-click="handleRowClick"
-        />
+        <div class="stock-plan-table-wrap">
+          <ele-pro-table
+            size="mini"
+            ref="summaryTable"
+            height="300px"
+            :columns="summaryColumns"
+            highlight-current-row
+            :datasource="summaryDatasource"
+            cache-key="followingGoodsPlanSummaryTable"
+            :paging="false"
+            @row-click="handleRowClick"
+          />
+        </div>
       </div>
     </el-card>
   </div>
@@ -200,3 +202,30 @@ export default {
   }
 };
 </script>
+
+<style lang="scss" scoped>
+.status-summary-statistics {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.stock-plan-toolbar.el-form--inline {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center;
+  width: 100%;
+  max-width: 100%;
+}
+
+.stock-plan-toolbar :deep(.el-form-item) {
+  flex-shrink: 0;
+  margin-bottom: 6px;
+}
+
+.stock-plan-table-wrap {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+}
+</style>

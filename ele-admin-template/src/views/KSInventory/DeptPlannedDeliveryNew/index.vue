@@ -128,22 +128,67 @@ export default {
 .dept-planned-delivery-new {
   width: 100%;
   max-width: 100%;
-  min-width: 0;
-  /* 占满布局内容区，让横向滚动条贴在可视区域底部，而不是整页最下方 */
+  /* 覆盖全局 .spd-page min-width，避免宽表把整页撑出右侧大空白 */
+  min-width: 0 !important;
   height: 100%;
   min-height: calc(100vh - 110px);
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  /* 覆盖 spd-panel 默认 overflow:hidden，避免裁掉横向滚动 */
+  overflow: hidden;
+
   :deep(.spd-panel) {
     overflow: visible;
+  }
+
+  :deep(.el-col) {
+    min-width: 0;
+  }
+
+  :deep(.spd-sub-panel) {
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  /* 备货单筛选/按钮按面板宽换行，不跟宽表一起横向拉长 */
+  :deep(.filter-row.el-form--inline) {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: center;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  :deep(.filter-row .el-form-item) {
+    flex-shrink: 0;
+    margin-bottom: 6px;
+  }
+
+  :deep(.spd-toolbar),
+  :deep(.spd-filter-bar) {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  /* 表格在各自容器内横滚 */
+  :deep(.ele-pro-table),
+  :deep(.picking-table-wrap),
+  :deep(.spd-table-panel__wrap) {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+
+  :deep(.ele-pro-table .el-table) {
+    width: max-content;
+    min-width: 100%;
   }
 }
 
 .dept-planned-delivery-new__scroll {
   flex: 1;
   min-height: 0;
+  min-width: 0;
   width: 100%;
   max-width: 100%;
   overflow: auto;
@@ -151,7 +196,8 @@ export default {
 }
 
 .dept-planned-delivery-new__inner {
-  min-width: 1280px;
+  width: 100%;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -161,9 +207,13 @@ export default {
   padding: 12px;
   border: none;
   background: transparent;
+  max-width: 100%;
+  min-width: 0;
 }
 .page-section-picking {
   margin-top: 0;
+  max-width: 100%;
+  min-width: 0;
 }
 </style>
 

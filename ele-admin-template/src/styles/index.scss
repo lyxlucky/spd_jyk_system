@@ -12,3 +12,8 @@ body.ele-body-limit-width {
   }
 }
 
+/* 兜底：固定主体内容区默认也允许横向滚动，避免业务页按钮被裁切 */
+.ele-admin-fixed-body .ele-admin-content {
+  overflow-x: auto;
+}
+

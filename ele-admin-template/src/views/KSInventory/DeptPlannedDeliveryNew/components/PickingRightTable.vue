@@ -8,19 +8,21 @@
         </el-button>
       </el-form-item>
     </el-form>
-    <ele-pro-table
-      ref="table"
-      size="mini"
-      height="280px"
-      :init-load="false"
-      :toolkit="[]"
-      :need-page="false"
-      :page-size="9999999"
-      :columns="columns"
-      :datasource="datasource"
-      :selection.sync="selection"
-      cache-key="deptPlannedDeliveryNewPickingRight"
-    />
+    <div class="picking-table-wrap">
+      <ele-pro-table
+        ref="table"
+        size="mini"
+        height="280px"
+        :init-load="false"
+        :toolkit="[]"
+        :need-page="false"
+        :page-size="9999999"
+        :columns="columns"
+        :datasource="datasource"
+        :selection.sync="selection"
+        cache-key="deptPlannedDeliveryNewPickingRight"
+      />
+    </div>
   </div>
 </template>
 
@@ -87,6 +89,9 @@ export default {
 <style scoped>
 .picking-right {
   height: 100%;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
 }
 .sub-panel-head {
   font-size: 12px;
@@ -98,6 +103,15 @@ export default {
 }
 .filter-row {
   margin-bottom: 8px;
+  display: flex !important;
+  flex-wrap: wrap !important;
+  width: 100%;
+  max-width: 100%;
+}
+.picking-table-wrap {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
 }
 </style>
 

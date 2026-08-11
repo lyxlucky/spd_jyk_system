@@ -261,12 +261,33 @@
   margin-bottom: 0;
 }
 
+.ele-form-search.el-form--inline {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center;
+  width: 100%;
+  max-width: 100%;
+}
+
+.ele-form-search :deep(.el-form-item) {
+  flex-shrink: 0;
+}
+
+/* 操作按钮占满可用宽度，超出换多行 */
+.ele-form-actions.el-form-item {
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin-right: 0 !important;
+}
+
 .ele-form-actions :deep(.el-form-item__content) {
-  max-width: none !important;
-  display: inline-flex;
-  flex-wrap: wrap;
+  max-width: 100% !important;
+  display: flex !important;
+  flex-wrap: wrap !important;
   align-items: center;
   gap: 6px;
+  width: 100% !important;
 }
 
 .ele-form-actions :deep(.el-button) {

@@ -328,7 +328,8 @@
             minWidth: 110
           }
         ],
-        tableHeight: 'calc((100vh - 420px) / 2)',
+        // 固定高度，不随窗口缩小重算（对齐「缩窗靠滚动、布局不变」）
+        tableHeight: 280,
         pageSize: 9999999,
         pagerCount: 2,
         pageSizes: [2, 10, 20, 50, 100, 9999999],
@@ -687,11 +688,47 @@
 <style scoped>
 .ks-dept-plan-main {
   width: 100%;
+  max-width: 100%;
   min-width: 0;
+}
+
+.ks-dept-plan-main >>> .spd-panel--search,
+.ks-dept-plan-main >>> .spd-panel__body {
+  overflow: visible;
+  max-width: 100%;
+}
+
+.ks-dept-plan-main >>> .ele-form-search.el-form--inline {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center;
+  width: 100%;
+  max-width: 100%;
+}
+
+.ks-dept-plan-main >>> .ele-form-search .el-form-item {
+  flex-shrink: 0;
+  margin-bottom: 6px;
+}
+
+.ks-dept-plan-main >>> .ele-form-actions.el-form-item {
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin-right: 0 !important;
+}
+
+.ks-dept-plan-main >>> .ele-form-actions .el-form-item__content {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 6px;
+  width: 100% !important;
+  max-width: 100% !important;
 }
 
 .ks-dept-plan-main >>> .spd-table-panel__wrap {
   width: 100%;
+  max-width: 100%;
   overflow-x: auto;
 }
 
