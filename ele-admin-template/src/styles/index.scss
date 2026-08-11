@@ -5,4 +5,10 @@ $--ele-font-path: '~ele-admin/es/style/fonts';
 @import './transition/index.scss';
 @import './spd-page-layout.scss';
 
+/* 关闭响应式时：内容区允许横向滚动（对齐老系统窗口缩小靠滚动查看） */
+body.ele-body-limit-width {
+  .ele-admin-fixed-body .ele-admin-content {
+    overflow-x: auto;
+  }
+}
 

@@ -78,8 +78,8 @@ const DEFAULT_STATE = Object.freeze({
   contentWidth: contentWidth(),
   // 内容区域高度
   contentHeight: contentHeight(),
-  // 是否开启响应式
-  styleResponsive: true,
+  // 是否开启响应式（默认关闭：窗口缩小不重排，靠滚动查看，对齐老系统）
+  styleResponsive: false,
   // 字体大小
   fontSize: '16px',
   // 表格密度
@@ -87,6 +87,9 @@ const DEFAULT_STATE = Object.freeze({
 });
 // 延时操作定时器
 let disableTransitionTimer, updateContentSizeTimer;
+
+/** 一次性迁移：历史缓存里 styleResponsive=true 的用户统一切到关闭 */
+const STYLE_RESPONSIVE_MIGRATE_KEY = 'spdStyleResponsiveFixedV1';
 
 /**
  * 读取缓存配置
@@ -174,6 +177,12 @@ export default {
         state[key] = cache[key];
       }
     });
+    // 历史默认开启响应式会挤扁布局；迁移一次为关闭，之后尊重用户在设置里的手动开关
+    if (!cache[STYLE_RESPONSIVE_MIGRATE_KEY]) {
+      state.styleResponsive = false;
+      cacheSetting(STYLE_RESPONSIVE_MIGRATE_KEY, true);
+      cacheSetting('styleResponsive', false);
+    }
     return state;
   })(),
   getters: {
@@ -439,10 +448,8 @@ export default {
      * 恢复主题
      */
     recoverTheme({ state }) {
-      // 关闭响应式布局
-      if (!state.styleResponsive) {
-        changeStyleResponsive(false);
-      }
+      // 关闭响应式布局（对齐老系统：窗口变小靠滚动，不重排）
+      changeStyleResponsive(!!state.styleResponsive);
       // 恢复色弱模式
       if (state.weakMode) {
         changeWeakMode(true);

@@ -240,10 +240,10 @@ export default {
   },
   data() {
     return {
+      // 对齐老系统 invNew_box / invNew2_box 固定 height:395，不随窗口重算
       mainTableHeight: 395,
       detailTableHeight: 395,
       advancedOpen: false,
-      layoutTimer: null,
       mainWhere: defaultMainWhere(),
       mainSort: { field: '', order: '' },
       detailSort: { field: '', order: '' },
@@ -322,29 +322,19 @@ export default {
       setPageTab({ key: getRouteTabKey(), components: [name] });
     }
     document.addEventListener('click', this.hideCtxMenu);
-    window.addEventListener('resize', this.scheduleUpdateHeights);
     // 表格内部滚动吞掉滚轮时，允许把滚动交给页面，从而滑到下方明细表
     this.$el.addEventListener('wheel', this.onPageWheel, { passive: false });
-    this.$nextTick(() => {
-      this.updateTableHeights();
-      requestAnimationFrame(() => this.updateTableHeights());
-    });
   },
   activated() {
     // 切回页签：保持查询结果与滚动位置，不重新拉数
-    this.$nextTick(() => {
-      this.updateTableHeights();
-      this.$nextTick(() => this.restoreScroll());
-    });
+    this.$nextTick(() => this.restoreScroll());
   },
   deactivated() {
     this.captureScroll();
   },
   beforeDestroy() {
     document.removeEventListener('click', this.hideCtxMenu);
-    window.removeEventListener('resize', this.scheduleUpdateHeights);
     this.$el?.removeEventListener('wheel', this.onPageWheel);
-    if (this.layoutTimer) clearTimeout(this.layoutTimer);
   },
   methods: {
     getTableBodyWrapper(refName) {
@@ -385,10 +375,10 @@ export default {
         this.$nextTick(() => {
           this._skipMainRowReload = false;
           // 明细表可能在布局后被重置，再刷一次滚动
-          const detail = this.getTableBodyWrapper('detailTable');
-          if (detail) {
-            detail.scrollTop = scroll.detailTop || 0;
-            detail.scrollLeft = scroll.detailLeft || 0;
+          const detailWrap = this.getTableBodyWrapper('detailTable');
+          if (detailWrap) {
+            detailWrap.scrollTop = scroll.detailTop || 0;
+            detailWrap.scrollLeft = scroll.detailLeft || 0;
           }
         });
       }
@@ -404,17 +394,9 @@ export default {
     },
     onAdvancedChange(open) {
       this.advancedOpen = !!open;
-      this.scheduleUpdateHeights();
     },
     onTableLayoutDone() {
-      this.scheduleUpdateHeights();
-    },
-    scheduleUpdateHeights() {
-      if (this.layoutTimer) clearTimeout(this.layoutTimer);
-      this.layoutTimer = setTimeout(() => {
-        this.updateTableHeights();
-        this.layoutTimer = null;
-      }, 50);
+      // 表高固定，无需随布局重算
     },
     /** 表格滚轮到顶/底后转交外层页面滚动，避免卡在主表滑不动下面 */
     onPageWheel(e) {
@@ -437,29 +419,6 @@ export default {
       if (next === scrollRoot.scrollTop) return;
       scrollRoot.scrollTop = next;
       e.preventDefault();
-    },
-    /**
-     * 对齐老系统 invNew_box / invNew2_box 固定 height:395px。
-     * 视口仍有富余时，剩余空间均分给上下两表再抬高。
-     */
-    updateTableHeights() {
-      const root = this.$el;
-      if (!root) return;
-      const OLD_BOX = 395;
-      const PAGE_H = 46;
-      const search = root.querySelector('.inv-query-search');
-      const detailBar = root.querySelector('.inv-query-detail-bar');
-      const top = root.getBoundingClientRect?.().top ?? 88;
-      const avail =
-        window.innerHeight -
-        top -
-        (search?.offsetHeight || 0) -
-        (detailBar?.offsetHeight || 0) -
-        16;
-      const eachBox = Math.max(OLD_BOX, Math.floor(avail / 2));
-      const tableH = Math.max(360, eachBox - PAGE_H);
-      this.mainTableHeight = tableH;
-      this.detailTableHeight = tableH;
     },
     async initPage() {
       try {
@@ -846,11 +805,12 @@ export default {
 .inv-query-page {
   height: calc(100vh - 88px);
   min-height: 0;
-  /* 页面自身滚动，才能滑到下方定数码列表 */
+  min-width: 1280px;
+  /* 窗口变小：内容尺寸不变，靠滚动查看（含横向） */
   overflow: auto;
-  overflow-x: hidden;
 }
 .inv-query-page .page-card {
+  min-width: 1280px;
   min-height: 100%;
   height: auto;
   display: block;
