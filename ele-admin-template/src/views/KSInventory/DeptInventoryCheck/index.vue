@@ -317,7 +317,7 @@
             <span class="charging-qty-blue">{{ row.CHARGING_QTY }}</span>
           </template>
         </vxe-column>
-        <vxe-column v-if="canViewAllChecks" field="PROFIT_LOSS_NUMBER" title="盈亏数" width="80" align="right" footer-align="right">
+        <vxe-column field="PROFIT_LOSS_NUMBER" title="盈亏数" width="80" align="right" footer-align="right">
           <template #default="{ row }">
             <span
               :class="{
@@ -773,7 +773,7 @@ export default {
         const workbook = new ExcelJS.Workbook();
         const sheet = workbook.addWorksheet('盘点明细');
 
-        const includeProfitLoss = this.canViewAllChecks;
+        const includeProfitLoss = true;
         const headers = ['盘点单明细ID', '上期库存', '入库数', '退还数', '本期库存', '实存数', '计费数量']
           .concat(includeProfitLoss ? ['盈亏数'] : [])
           .concat(['品种编码', '品种名称', '规格型号', '计费编码', '是否收费', 'SPD单位', '计费单位', '厂家', 'SPD单价', '转换比', '是否入柜', '盈亏备注']);
