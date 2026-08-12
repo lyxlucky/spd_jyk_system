@@ -53,6 +53,8 @@
         <el-table-column type="selection" width="45" align="center" />
         <el-table-column prop="MANUFACTURING_ENT_NAME" label="生产企业名称" min-width="160" show-overflow-tooltip />
         <el-table-column prop="SOCIAL_CREDIT_CODE" label="社会统一信用代码" min-width="180" show-overflow-tooltip />
+        <el-table-column prop="FIRST_AGENT_NAME" label="一级代理商名称" min-width="160" show-overflow-tooltip />
+        <el-table-column prop="FIRST_AGENT_CREDIT_CODE" label="一级代理商社会统一信用代码" min-width="200" show-overflow-tooltip />
         <el-table-column prop="MANUFACTURING_LICENSE" label="生产许可证号" min-width="140" show-overflow-tooltip />
         <el-table-column prop="LICENSE_VALID" label="营业执照效期" width="120" show-overflow-tooltip />
         <el-table-column prop="MANUFACTURING_NUMBER" label="生产商号" width="120" show-overflow-tooltip />
@@ -81,16 +83,22 @@
     <el-dialog
       :title="dialogTitle"
       :visible.sync="dialogVisible"
-      width="560px"
+      width="640px"
       append-to-body
       @closed="resetForm"
     >
-      <el-form ref="formRef" :model="form" label-width="200px" size="small">
+      <el-form ref="formRef" :model="form" label-width="220px" size="small">
         <el-form-item label="生产企业名称" prop="MANUFACTURING_ENT_NAME" :rules="[{ required: true, message: '必填' }]">
           <el-input v-model="form.MANUFACTURING_ENT_NAME" />
         </el-form-item>
         <el-form-item label="社会统一信用代码">
           <el-input v-model="form.SOCIAL_CREDIT_CODE" placeholder="请输入社会统一信用代码" />
+        </el-form-item>
+        <el-form-item label="一级代理商名称">
+          <el-input v-model="form.FIRST_AGENT_NAME" placeholder="外国生产企业可填一级代理商" />
+        </el-form-item>
+        <el-form-item label="一级代理商社会统一信用代码">
+          <el-input v-model="form.FIRST_AGENT_CREDIT_CODE" placeholder="请输入一级代理商社会统一信用代码" />
         </el-form-item>
         <el-form-item label="生产许可证号">
           <el-input v-model="form.MANUFACTURING_LICENSE" />
@@ -170,6 +178,8 @@ const emptyForm = () => ({
   ID: '',
   MANUFACTURING_ENT_NAME: '',
   SOCIAL_CREDIT_CODE: '',
+  FIRST_AGENT_NAME: '',
+  FIRST_AGENT_CREDIT_CODE: '',
   MANUFACTURING_LICENSE: '',
   LICENSE_VALID: '',
   MANUFACTURING_LICENSE_TIME: '',
@@ -255,6 +265,8 @@ export default {
         ID: row.ID,
         MANUFACTURING_ENT_NAME: row.MANUFACTURING_ENT_NAME || '',
         SOCIAL_CREDIT_CODE: row.SOCIAL_CREDIT_CODE || '',
+        FIRST_AGENT_NAME: row.FIRST_AGENT_NAME || '',
+        FIRST_AGENT_CREDIT_CODE: row.FIRST_AGENT_CREDIT_CODE || '',
         MANUFACTURING_LICENSE: row.MANUFACTURING_LICENSE || '',
         LICENSE_VALID: row.LICENSE_VALID || '',
         MANUFACTURING_LICENSE_TIME: this.fmtDate(row.MANUFACTURING_LICENSE_TIME),
@@ -329,6 +341,8 @@ export default {
         const header = [
           '生产企业名称',
           '社会统一信用代码',
+          '一级代理商名称',
+          '一级代理商社会统一信用代码',
           '生产许可证号',
           '许可证有效期',
           '生产企业地址',
@@ -342,6 +356,8 @@ export default {
           sheetData.push([
             d.MANUFACTURING_ENT_NAME,
             d.SOCIAL_CREDIT_CODE,
+            d.FIRST_AGENT_NAME,
+            d.FIRST_AGENT_CREDIT_CODE,
             d.MANUFACTURING_LICENSE,
             this.fmtDate(d.MANUFACTURING_LICENSE_TIME),
             d.MANUFACTURING_ADDRES,
@@ -352,7 +368,19 @@ export default {
           ]);
         });
         const sheet = utils.aoa_to_sheet(sheetData);
-        sheet['!cols'] = [{ wch: 28 }, { wch: 22 }, { wch: 18 }, { wch: 14 }, { wch: 24 }, { wch: 14 }, { wch: 14 }, { wch: 10 }, { wch: 20 }];
+        sheet['!cols'] = [
+          { wch: 28 },
+          { wch: 22 },
+          { wch: 22 },
+          { wch: 26 },
+          { wch: 18 },
+          { wch: 14 },
+          { wch: 24 },
+          { wch: 14 },
+          { wch: 14 },
+          { wch: 10 },
+          { wch: 20 }
+        ];
         writeFile({ SheetNames: ['生产企业'], Sheets: { 生产企业: sheet } }, '生产企业.xlsx');
       } catch (e) {
         this.$message.error(e.message || '导出失败');
@@ -362,10 +390,12 @@ export default {
     },
     onDownloadTemplate() {
       const sheetData = [
-        ['填写说明：带*为必填；按生产企业名称匹配（不存在新增、已存在更新）；日期yyyy-MM-dd；营业执照效期可填长期；许可证有效期为空则不写入/更新该字段'],
+        ['填写说明：带*为必填；按生产企业名称匹配（不存在新增、已存在更新）；日期yyyy-MM-dd；营业执照效期可填长期；许可证有效期为空则不写入/更新该字段；外国生产企业可填一级代理商及信用代码'],
         [
           '*生产企业名称',
           '社会统一信用代码',
+          '一级代理商名称',
+          '一级代理商社会统一信用代码',
           '生产许可证号',
           '营业执照效期',
           '生产商号',
@@ -375,6 +405,8 @@ export default {
         [
           '示例医疗器械生产企业有限公司',
           '91440300MA5XXXXXX',
+          '',
+          '',
           '粤食药监械生产许20240001号',
           '2099-12-31',
           'HRP001',
@@ -383,7 +415,17 @@ export default {
         ]
       ];
       const sheet = utils.aoa_to_sheet(sheetData);
-      sheet['!cols'] = [{ wch: 32 }, { wch: 22 }, { wch: 24 }, { wch: 14 }, { wch: 12 }, { wch: 14 }, { wch: 28 }];
+      sheet['!cols'] = [
+        { wch: 32 },
+        { wch: 22 },
+        { wch: 22 },
+        { wch: 26 },
+        { wch: 24 },
+        { wch: 14 },
+        { wch: 12 },
+        { wch: 14 },
+        { wch: 28 }
+      ];
       writeFile({ SheetNames: ['导入模板'], Sheets: { 导入模板: sheet } }, '生产企业批量导入模板.xlsx');
     },
     async onImportUpload({ file }) {
