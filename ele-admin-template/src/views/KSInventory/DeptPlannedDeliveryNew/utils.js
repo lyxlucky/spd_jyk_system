@@ -197,6 +197,13 @@ export function buildPlanColumns() {
       showOverflow: overflow,
       formatter: ({ row }) => formatRemark(row)
     },
+    {
+      field: 'SOURCE_FROM',
+      title: '来源',
+      width: 100,
+      align: 'center',
+      showOverflow: overflow
+    },
     { field: 'SPDBZ', title: 'SPD备注', width: 100, align: 'center', showOverflow: overflow },
     { field: 'REMARK', title: '科室备注', width: 100, align: 'center', showOverflow: overflow },
     {
@@ -397,6 +404,7 @@ export function exportPlanTable(rows) {
     '院内定数包',
     '院外定数包',
     '备注',
+    '来源',
     'SPD备注',
     '科室备注',
     '是否中标',
@@ -438,6 +446,7 @@ export function exportPlanTable(rows) {
       row.Center_Inside_Def_Qty,
       row.Center_Outside_Def_Qty,
       formatRemark(row),
+      row.SOURCE_FROM,
       row.SPDBZ,
       row.REMARK,
       formatIsBidding(row.Is_Bidding),
