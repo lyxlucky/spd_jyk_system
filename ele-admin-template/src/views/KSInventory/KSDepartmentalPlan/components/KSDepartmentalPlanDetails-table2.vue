@@ -657,7 +657,8 @@
           //   show: HOME_HP == 'bdrm'
           // }
         ],
-        tableHeight: 'calc((100vh - 420px) / 2)',
+        // 固定高度，不随窗口缩小重算（对齐「缩窗靠滚动、布局不变」）
+        tableHeight: 320,
         toolStyle: {
           display: 'flex',
           'flex-wrap': 'wrap',
@@ -1061,7 +1062,48 @@
 <style scoped>
 .ks-dept-plan-detail {
   width: 100%;
+  max-width: 100%;
   min-width: 0;
+}
+
+.ks-dept-plan-detail >>> .spd-panel--search,
+.ks-dept-plan-detail >>> .spd-panel__body {
+  overflow: visible;
+  max-width: 100%;
+}
+
+.ks-dept-plan-detail >>> .ele-form-search.el-form--inline {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center;
+  width: 100%;
+  max-width: 100%;
+}
+
+.ks-dept-plan-detail >>> .ele-form-search .el-form-item {
+  flex-shrink: 0;
+  margin-bottom: 6px;
+}
+
+.ks-dept-plan-detail >>> .ele-form-actions.el-form-item {
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin-right: 0 !important;
+}
+
+.ks-dept-plan-detail >>> .ele-form-actions .el-form-item__content {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 6px;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.ks-dept-plan-detail >>> .spd-table-panel__wrap {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
 }
 
 .ks-dept-plan-detail >>> .el-table th .cell {

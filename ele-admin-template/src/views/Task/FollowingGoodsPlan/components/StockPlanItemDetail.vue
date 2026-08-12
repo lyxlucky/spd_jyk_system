@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="stock-plan-item-detail">
     <el-card>
       <div slot="header">
         备货计划单品种明细
@@ -8,7 +8,7 @@
         </span>
       </div>
       <div>
-        <el-form :model="form" :inline="true" size="mini">
+        <el-form class="stock-plan-toolbar" :model="form" :inline="true" size="mini">
           <el-form-item>
             <el-input
               v-model="form.varietie_code"
@@ -143,6 +143,7 @@
             </el-button>
           </el-form-item>
         </el-form>
+        <div class="stock-plan-table-wrap">
         <ele-pro-table
           ref="table"
           height="250px"
@@ -179,6 +180,7 @@
             </span>
           </template>
         </ele-pro-table>
+        </div>
       </div>
     </el-card>
 
@@ -838,10 +840,35 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.stock-plan-item-detail {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
 .plan-tip {
   margin-left: 10px;
   color: red;
   font-size: 12px;
   font-weight: normal;
+}
+
+.stock-plan-toolbar.el-form--inline {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center;
+  width: 100%;
+  max-width: 100%;
+}
+
+.stock-plan-toolbar :deep(.el-form-item) {
+  flex-shrink: 0;
+  margin-bottom: 6px;
+}
+
+.stock-plan-table-wrap {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
 }
 </style>

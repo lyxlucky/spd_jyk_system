@@ -869,7 +869,38 @@ export default {
           deliveryNoteNumber: first.Delivery_Note_Number || this.currentReceipt.Delivery_Note_Number,
           detailIds: this.detailSelection.map((r) => r.Def_No_Pkg_Receipt_Detail_Id)
         });
-        Message.success(res.msg || '操作成功');
+        const results = res.results || [];
+        const fails = results.filter((it) => String(it.code) !== '200');
+        const successes = results.filter((it) => String(it.code) === '200');
+        const summary = `处理完成，成功：${successes.length} 条，失败：${fails.length} 条`;
+        let html = `<div style="padding:4px 0;"><p>${summary}</p>`;
+        if (successes.length) {
+          html +=
+            '<hr/><p>成功明细：</p><div style="max-height:160px;overflow:auto;"><ul style="padding-left:18px;margin:0;">';
+          successes.forEach((it) => {
+            const id = it.Def_No_Pkg_Receipt_Detail_Id || '';
+            const contractId = it.contractId ? `，合同号：${it.contractId}` : '';
+            html += `<li>${id}：${it.msg || '成功'}${contractId}</li>`;
+          });
+          html += '</ul></div>';
+        }
+        if (fails.length) {
+          html +=
+            '<hr/><p>失败明细：</p><div style="max-height:160px;overflow:auto;"><ul style="padding-left:18px;margin:0;">';
+          fails.forEach((it) => {
+            const id = it.Def_No_Pkg_Receipt_Detail_Id || '';
+            html += `<li>${id}：${it.msg || it.message || '无详细信息'}</li>`;
+          });
+          html += '</ul></div>';
+        }
+        html += '</div>';
+        await MessageBox.alert(html, '省平台合同处理结果', {
+          dangerouslyUseHTMLString: true,
+          customClass: 'pp-contract-result-box'
+        });
+        if (successes.length) {
+          await this.loadDetails();
+        }
       } catch (e) {
         Message.error(e.message || '操作失败');
       }

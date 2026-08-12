@@ -191,29 +191,29 @@
           <el-checkbox label="10">强制结束</el-checkbox>
         </el-checkbox-group>
         <span class="spd-filter-bar__divider" />
-        <el-select v-model="where.planIsZxk_sh" size="mini" style="width: 118px" clearable placeholder="散货库存" @change="reload">
+        <el-select v-model="where.planIsZxk_sh" size="mini" class="plan-filter-select" clearable placeholder="散货库存" @change="reload">
           <el-option label="散货-全部" value="" />
           <el-option label="散货-有" value="1" />
           <el-option label="散货-无" value="0" />
         </el-select>
-        <el-select v-model="where.planIsZxk_dsb" size="mini" style="width: 118px" clearable placeholder="定数包库存" @change="reload">
+        <el-select v-model="where.planIsZxk_dsb" size="mini" class="plan-filter-select" clearable placeholder="定数包库存" @change="reload">
           <el-option label="定数包-全部" value="" />
           <el-option label="定数包-有" value="1" />
           <el-option label="定数包-无" value="0" />
         </el-select>
-        <el-select v-model="where.isHaveBh" size="mini" style="width: 110px" clearable placeholder="已转备货" @change="reload">
+        <el-select v-model="where.isHaveBh" size="mini" class="plan-filter-select" clearable placeholder="已转备货" @change="reload">
           <el-option label="备货-全部" value="" />
           <el-option label="备货-是" value="1" />
           <el-option label="备货-否" value="0" />
         </el-select>
-        <el-select v-model="where.STORAGE_TYPE" size="mini" style="width: 110px" clearable placeholder="存储条件" @change="reload">
+        <el-select v-model="where.STORAGE_TYPE" size="mini" class="plan-filter-select" clearable placeholder="存储条件" @change="reload">
           <el-option label="条件-全部" value="" />
           <el-option label="常温" value="0" />
           <el-option label="阴凉" value="1" />
           <el-option label="冷藏" value="2" />
           <el-option label="冷冻" value="3" />
         </el-select>
-        <el-select v-model="where.RELATED_RFID" size="mini" style="width: 100px" clearable placeholder="RFID" @change="reload">
+        <el-select v-model="where.RELATED_RFID" size="mini" class="plan-filter-select" clearable placeholder="RFID" @change="reload">
           <el-option label="RFID-全部" value="" />
           <el-option label="RFID-否" value="0" />
           <el-option label="RFID-是" value="1" />
@@ -231,63 +231,83 @@
         </span>
       </div>
       <div class="spd-table-panel__wrap">
-        <ele-pro-table
+        <vxe-grid
           ref="table"
           class="plan-compact-table"
           size="mini"
+          border
+          stripe
+          show-overflow
           :height="tableHeight"
-          :stripe="true"
-          :init-load="false"
-          :need-page="true"
-          :page-size="99999"
-          :page-sizes="[20, 50, 100, 300, 99999]"
-          layout="total, sizes, prev, pager, next, jumper"
-          :hide-on-single-page="false"
+          :loading="tableLoading"
           :columns="columns"
-          :datasource="datasource"
-          :selection.sync="selection"
-          highlight-current-row
-          cache-key="deptPlannedDeliveryNewPlanTableV3"
+          :data="tableRows"
+          :row-config="{ keyField: 'Dtl_Id', isCurrent: true, isHover: true }"
+          :checkbox-config="{ highlight: true, reserve: true }"
+          :virtual-y-config="{ enabled: true, gt: 80 }"
+          @checkbox-change="onCheckboxChange"
+          @checkbox-all="onCheckboxChange"
           @current-change="onCurrentChange"
-          @row-click="onPlanRowClick"
+          @cell-click="onPlanCellClick"
         >
-      <template v-slot:deptTwoName="{ row }">
-        <span v-if="row.SECOND_APP_DEPT_NAME" style="color: red">
-          {{ row.Dept_Two_Name }}/{{ row.SECOND_APP_DEPT_NAME }}
-        </span>
-        <span v-else>{{ row.Dept_Two_Name }}</span>
-      </template>
-      <template v-slot:planQty="{ row }">
-        <el-input-number
-          :value="getPlanQty(row)"
-          size="mini"
-          :min="0"
-          :disabled="!isRowSelected(row)"
-          :controls="false"
-          style="width: 50px"
-          @change="(val) => setPlanQty(row, val)"
-        />
-      </template>
-      <template v-slot:rowStorage="{ row }">
-        <el-select
-          :value="getRowStorage(row)"
-          size="mini"
-          :disabled="!isRowSelected(row)"
-          style="width: 80px"
-          @change="(val) => setRowStorage(row, val)"
-        >
-          <el-option label="院内库区" value="1" />
-          <el-option label="院外库区" value="2" />
-        </el-select>
-      </template>
-      <template v-slot:batchInfo="{ row }">
-        <el-button type="primary" size="mini" class="plan-cell-btn" @click="openBatchInfo(row)">查看</el-button>
-      </template>
-      <template v-slot:actions="{ row }">
-        <el-button type="primary" size="mini" class="plan-cell-btn" @click="openSpdRemark(row)">SPD备注</el-button>
-        <el-button type="primary" size="mini" plain class="plan-cell-btn plan-cell-btn--wide" @click="openChangeQty(row)">变更申请数量</el-button>
-      </template>
-        </ele-pro-table>
+          <template #deptTwoName="{ row }">
+            <span v-if="row.SECOND_APP_DEPT_NAME" style="color: red">
+              {{ row.Dept_Two_Name }}/{{ row.SECOND_APP_DEPT_NAME }}
+            </span>
+            <span v-else>{{ row.Dept_Two_Name }}</span>
+          </template>
+          <template #planQty="{ row }">
+            <el-input-number
+              :value="getPlanQty(row)"
+              size="mini"
+              :min="0"
+              :disabled="!isRowSelected(row)"
+              :controls="false"
+              style="width: 50px"
+              @change="(val) => setPlanQty(row, val)"
+            />
+          </template>
+          <template #rowStorage="{ row }">
+            <el-select
+              :value="getRowStorage(row)"
+              size="mini"
+              :disabled="!isRowSelected(row)"
+              style="width: 80px"
+              @change="(val) => setRowStorage(row, val)"
+            >
+              <el-option label="院内库区" value="1" />
+              <el-option label="院外库区" value="2" />
+            </el-select>
+          </template>
+          <template #batchInfo="{ row }">
+            <el-button type="primary" size="mini" class="plan-cell-btn" @click.stop="openBatchInfo(row)">查看</el-button>
+          </template>
+          <template #actions="{ row }">
+            <el-button type="primary" size="mini" class="plan-cell-btn" @click.stop="openSpdRemark(row)">SPD备注</el-button>
+            <el-button
+              type="primary"
+              size="mini"
+              plain
+              class="plan-cell-btn plan-cell-btn--wide"
+              @click.stop="openChangeQty(row)"
+            >
+              变更申请数量
+            </el-button>
+          </template>
+        </vxe-grid>
+        <div class="plan-table-pager">
+          <el-pagination
+            background
+            small
+            layout="total, sizes, prev, pager, next, jumper"
+            :current-page="page"
+            :page-size="limit"
+            :page-sizes="pageSizes"
+            :total="planTotal"
+            @size-change="onPageSizeChange"
+            @current-change="onPageChange"
+          />
+        </div>
       </div>
     </div>
 
@@ -386,6 +406,7 @@ export default {
       columns: buildPlanColumns(),
       selection: [],
       tableRows: [],
+      tableLoading: false,
       currentRow: null,
       localStorageId: '',
       planQtyMap: {},
@@ -412,7 +433,12 @@ export default {
       // 对齐老系统 layui table height: 450；略减以留给底部分页条
       tableHeight: 420,
       planLoaded: false,
-      planTotal: 0
+      planTotal: 0,
+      page: 1,
+      limit: 99999,
+      pageSizes: [20, 50, 100, 300, 99999],
+      // 切换菜单 keep-alive 时还原表格滚动位置
+      savedScroll: { top: 0, left: 0 }
     };
   },
   computed: {
@@ -429,11 +455,18 @@ export default {
         const changed = String(this.localStorageId) !== String(val);
         this.localStorageId = val;
         // 库区异步到位后再查；避免进页时 STORAGE_ID 为空导致无数据
+        // keep-alive 再次激活时不重查（planLoaded 已为 true 且库区未变）
         if (changed || !this.planLoaded) {
           this.$nextTick(() => this.reload());
         }
       }
     }
+  },
+  activated() {
+    this.$nextTick(() => this.restoreTableScroll());
+  },
+  deactivated() {
+    this.captureTableScroll();
   },
   methods: {
     onStorageChange(val) {
@@ -441,20 +474,50 @@ export default {
       this.reload();
       // 备货单清空由父级 onStorageChange / plan-data-change 统一处理
     },
+    captureTableScroll() {
+      const $grid = this.$refs.table;
+      if (!$grid || typeof $grid.getScroll !== 'function') return;
+      const scroll = $grid.getScroll() || {};
+      this.savedScroll = {
+        top: scroll.scrollTop || 0,
+        left: scroll.scrollLeft || 0
+      };
+    },
+    restoreTableScroll() {
+      const $grid = this.$refs.table;
+      if (!$grid || typeof $grid.scrollTo !== 'function') return;
+      const { top, left } = this.savedScroll || {};
+      if (!top && !left) return;
+      $grid.scrollTo(left || 0, top || 0);
+    },
     reload() {
       if (!this.localStorageId) return;
       this.planLoaded = true;
-      this.$refs.table?.reload({ page: 1, where: { ...this.where, STORAGE_ID: this.localStorageId } });
+      this.page = 1;
+      this.loadData();
     },
-    datasource({ page, limit, where }) {
-      const query = {
-        ...where,
-        STORAGE_ID: this.localStorageId,
-        page: page || 1,
-        // 对齐老系统 limits/limit：默认尽量一页拉全，也可切 20/50/100/300
-        size: limit || 99999
-      };
-      return searchDeptPlanMsg(query).then((res) => {
+    onPageSizeChange(size) {
+      this.limit = size;
+      this.page = 1;
+      this.loadData();
+    },
+    onPageChange(page) {
+      // size-change 时分页组件可能再抛一次同页 current-change，避免重复请求
+      if (page === this.page) return;
+      this.page = page;
+      this.loadData();
+    },
+    async loadData() {
+      if (!this.localStorageId) return;
+      this.tableLoading = true;
+      try {
+        const res = await searchDeptPlanMsg({
+          ...this.where,
+          STORAGE_ID: this.localStorageId,
+          page: this.page || 1,
+          // 对齐老系统 limits/limit：默认尽量一页拉全，也可切 20/50/100/300
+          size: this.limit || 99999
+        });
         const list = (res.result || []).map((row) => {
           const planQty = this.planQtyMap[row.Dtl_Id] ?? row.Plan_Qty ?? 0;
           return { ...row, Plan_Qty: planQty, _planQty: planQty };
@@ -464,9 +527,22 @@ export default {
         // 计划表重查后原选中行失效，避免备货单仍按旧品种联动
         this.currentRow = null;
         this.selection = [];
+        this.$nextTick(() => {
+          this.$refs.table?.clearCheckboxRow?.();
+          this.$refs.table?.clearCurrentRow?.();
+        });
         this.$emit('plan-data-change', { list });
-        return { count: this.planTotal, list };
-      });
+      } catch (e) {
+        this.tableRows = [];
+        this.planTotal = 0;
+        this.selection = [];
+        this.$message.error(e.message || '查询失败');
+      } finally {
+        this.tableLoading = false;
+      }
+    },
+    onCheckboxChange({ records }) {
+      this.selection = records || [];
     },
     isRowSelected(row) {
       return this.selection.some((r) => r.Dtl_Id === row.Dtl_Id);
@@ -486,13 +562,15 @@ export default {
       this.$set(this.rowStorageMap, row.Dtl_Id, val);
       row.Storage_Id = val;
     },
-    onCurrentChange(row) {
+    onCurrentChange({ row }) {
       this.currentRow = row;
     },
-    // 对齐老系统 row 事件：点计划行按品种编码刷新下方备货单列表
-    onPlanRowClick(row) {
+    // 对齐老系统 row 事件：点计划行按品种编码刷新下方备货单列表（点复选框列不联动）
+    onPlanCellClick({ row, column }) {
+      if (!row || column?.type === 'checkbox') return;
       this.currentRow = row;
-      this.$emit('plan-row-select', row || null);
+      this.$refs.table?.setCurrentRow?.(row);
+      this.$emit('plan-row-select', row);
     },
     openSpdRemark(row) {
       this.activeDtlId = row.Dtl_Id;
@@ -708,9 +786,35 @@ export default {
   color: #606266;
 }
 
+/* 操作按钮行与筛选行同宽、左边距对齐 */
+.plan-table-tab >>> .spd-toolbar {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px 0;
+}
+
+.plan-table-tab >>> .spd-filter-bar {
+  width: auto;
+  max-width: 100%;
+  box-sizing: border-box;
+  margin: 10px 12px 12px;
+  padding: 8px 12px;
+}
+
+.plan-table-tab >>> .plan-filter-select {
+  width: 120px;
+}
+
 .spd-table-panel__wrap {
   width: 100%;
   overflow-x: auto;
+}
+
+.plan-table-pager {
+  display: flex;
+  justify-content: flex-end;
+  padding: 8px 4px 0;
 }
 
 .plan-cell-btn {
@@ -728,13 +832,13 @@ export default {
 <style lang="scss">
 /* 紧凑行高，贴近老系统 size:sm */
 .plan-table-tab .plan-compact-table {
-  .el-table--mini td,
-  .el-table--mini th {
-    padding: 2px 0;
+  .vxe-body--column,
+  .vxe-header--column {
+    padding: 2px 0 !important;
   }
-  .el-table .cell {
-    padding-left: 4px;
-    padding-right: 4px;
+  .vxe-cell {
+    padding-left: 4px !important;
+    padding-right: 4px !important;
     line-height: 20px;
     font-size: 12px;
   }

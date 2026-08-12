@@ -1,7 +1,7 @@
 <template>
   <div class="ele-body spd-page dept-planned-delivery-new">
     <!-- 外层受限宽 + overflow-x，内层固定最小宽：布局层 overflow-x:hidden 时仍能出现横向滚动条 -->
-    <div class="dept-planned-delivery-new__scroll">
+    <div ref="pageScroll" class="dept-planned-delivery-new__scroll">
       <div class="dept-planned-delivery-new__inner">
         <div class="spd-section page-section-main">
           <PlanTableTab
@@ -40,11 +40,13 @@
 
 <script>
 import { getSTORAGE } from '@/api/login';
+import { setPageTab, getRouteTabKey } from '@/utils/page-tab-util';
 import PlanTableTab from './components/PlanTableTab.vue';
 import PickingLeftTable from './components/PickingLeftTable.vue';
 import PickingRightTable from './components/PickingRightTable.vue';
 
 export default {
+  // keep-alive 按组件 name 缓存；缺 name / 未写入页签 components 时切换菜单会销毁重建
   name: 'DeptPlannedDeliveryNew',
   components: {
     PlanTableTab,
@@ -54,14 +56,36 @@ export default {
   data() {
     return {
       storageList: [],
-      storageId: ''
+      storageId: '',
+      pageScrollTop: 0,
+      pageScrollLeft: 0
     };
   },
   mounted() {
+    const name = this.$options.name;
+    if (name) {
+      setPageTab({ key: getRouteTabKey(), components: [name] });
+    }
     this.loadStorage();
+  },
+  activated() {
+    this.$nextTick(() => {
+      const el = this.$refs.pageScroll;
+      if (!el) return;
+      el.scrollTop = this.pageScrollTop || 0;
+      el.scrollLeft = this.pageScrollLeft || 0;
+    });
+  },
+  deactivated() {
+    const el = this.$refs.pageScroll;
+    if (!el) return;
+    this.pageScrollTop = el.scrollTop || 0;
+    this.pageScrollLeft = el.scrollLeft || 0;
   },
   methods: {
     async loadStorage() {
+      // 已加载过则不重复请求（keep-alive 切回时 mounted 不会再跑；防御性保留）
+      if (this.storageList.length && this.storageId) return;
       try {
         const res = await getSTORAGE();
         this.storageList = res.result || [];
@@ -104,22 +128,67 @@ export default {
 .dept-planned-delivery-new {
   width: 100%;
   max-width: 100%;
-  min-width: 0;
-  /* 占满布局内容区，让横向滚动条贴在可视区域底部，而不是整页最下方 */
+  /* 覆盖全局 .spd-page min-width，避免宽表把整页撑出右侧大空白 */
+  min-width: 0 !important;
   height: 100%;
   min-height: calc(100vh - 110px);
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  /* 覆盖 spd-panel 默认 overflow:hidden，避免裁掉横向滚动 */
+  overflow: hidden;
+
   :deep(.spd-panel) {
     overflow: visible;
+  }
+
+  :deep(.el-col) {
+    min-width: 0;
+  }
+
+  :deep(.spd-sub-panel) {
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  /* 备货单筛选/按钮按面板宽换行，不跟宽表一起横向拉长 */
+  :deep(.filter-row.el-form--inline) {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: center;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  :deep(.filter-row .el-form-item) {
+    flex-shrink: 0;
+    margin-bottom: 6px;
+  }
+
+  :deep(.spd-toolbar),
+  :deep(.spd-filter-bar) {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  /* 表格在各自容器内横滚 */
+  :deep(.ele-pro-table),
+  :deep(.picking-table-wrap),
+  :deep(.spd-table-panel__wrap) {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+
+  :deep(.ele-pro-table .el-table) {
+    width: max-content;
+    min-width: 100%;
   }
 }
 
 .dept-planned-delivery-new__scroll {
   flex: 1;
   min-height: 0;
+  min-width: 0;
   width: 100%;
   max-width: 100%;
   overflow: auto;
@@ -127,7 +196,8 @@ export default {
 }
 
 .dept-planned-delivery-new__inner {
-  min-width: 1280px;
+  width: 100%;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -137,9 +207,13 @@ export default {
   padding: 12px;
   border: none;
   background: transparent;
+  max-width: 100%;
+  min-width: 0;
 }
 .page-section-picking {
   margin-top: 0;
+  max-width: 100%;
+  min-width: 0;
 }
 </style>
 
