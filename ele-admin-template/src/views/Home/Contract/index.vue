@@ -63,6 +63,7 @@
             style="width: 100%"
             @current-change="onContractChange"
           >
+            <el-table-column prop="Contract_Code" label="合同编码" min-width="120" show-overflow-tooltip />
             <el-table-column prop="Contract_Name" label="合同名称" min-width="140" show-overflow-tooltip />
             <el-table-column label="合同类型" min-width="88">
               <template slot-scope="{ row }">{{ formatContractType(row.contract_Type) }}</template>
@@ -173,7 +174,7 @@
           查询
         </el-button>
         <el-button
-          v-permission="'export-ContractDc'"
+          v-if="canExport('export-ContractDc')"
           size="mini"
           icon="el-icon-download"
           :loading="exporting"
@@ -188,7 +189,7 @@
         <el-button size="mini" :disabled="!authSelection.length" @click="onDisableAuth">停用授权品种</el-button>
         <el-button size="mini" :disabled="!authSelection.length" @click="openBatch('extend')">修改原结束/延期</el-button>
         <el-button size="mini" :disabled="!authSelection.length" @click="openBatch('auditMark')">修改合同明细备注</el-button>
-        <el-button v-permission="'export-ContractDcsy'" size="mini" @click="authContractInfoVisible = true">
+        <el-button size="mini" @click="authContractInfoVisible = true">
           导出所有合同
         </el-button>
         <el-button size="mini" type="danger" :disabled="!authSelection.length" @click="onDeleteAuth">删除品种</el-button>
@@ -356,6 +357,7 @@ import {
   buildContractHpFlags,
   createAuthWhere,
   exportContractAuthExcel,
+  hasExportPermission,
   formatContractDate,
   formatContractType,
   formatEnableState,
@@ -436,6 +438,9 @@ export default {
     formatYesNo,
     formatLcNum,
     htPicUrl,
+    canExport(key) {
+      return hasExportPermission(this.$store, key);
+    },
     isPdf(name) {
       return String(name || '').toLowerCase().includes('pdf');
     },
@@ -523,7 +528,14 @@ export default {
         contract_code: this.currentContract.Contract_Code
       };
       return getContractAuthList({ page, limit, where, order })
-        .then((res) => ({ count: res.total || 0, list: res.result || [] }))
+        .then((res) => {
+          const code = this.currentContract.Contract_Code || '';
+          const list = (res.result || []).map((row) => ({
+            ...row,
+            contract_code: row.contract_code || row.CONTRACT_CODE || row.Contract_Code || code
+          }));
+          return { count: res.total || 0, list };
+        })
         .catch((e) => {
           this.$message.error(e.message || '查询失败');
           return { count: 0, list: [] };
@@ -680,7 +692,11 @@ export default {
           contract_code: this.currentContract.Contract_Code
         };
         const res = await getAllContractAuthList(where, this.authOrder);
-        exportContractAuthExcel(res.result || []);
+        exportContractAuthExcel(
+          res.result || [],
+          '合同授权品种.xlsx',
+          this.currentContract.Contract_Code || this.currentContract.contract_code || ''
+        );
         this.$message.success('导出成功');
       } catch (e) {
         this.$message.error(e.message || '导出失败');
