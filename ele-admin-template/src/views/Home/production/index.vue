@@ -315,18 +315,26 @@ export default {
 <style lang="scss" scoped>
 .production-page {
     padding: 8px;
+    height: calc(100vh - 112px);
+    box-sizing: border-box;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .production-card {
-    height: calc(100vh - 112px);
+    min-height: 100%;
+    height: auto;
+    overflow: visible !important;
 }
 
 .production-page :deep(.el-card__body) {
-    height: 100%;
+    min-height: calc(100vh - 136px);
+    height: auto;
     padding: 12px;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
+    overflow: visible;
 }
 
 .production-search {
@@ -350,6 +358,6 @@ export default {
 
 .production-page :deep(.ele-pro-table) {
     flex: 1;
-    min-height: 0;
+    min-height: 400px;
 }
 </style>

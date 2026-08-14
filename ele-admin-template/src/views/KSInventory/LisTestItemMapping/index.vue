@@ -472,7 +472,7 @@ export default {
         const pager = wrap.querySelector('.lis-test-item-mapping-pager')
         const pagerHeight = (pager?.offsetHeight || 40) + 8
         const height = wrap.clientHeight - pagerHeight
-        this.tableHeight = Math.max(height, 240)
+        this.tableHeight = Math.max(height, 400)
       })
     },
     onTablePageChange({ currentPage, pageSize }) {
@@ -888,34 +888,41 @@ export default {
   flex-direction: column;
   height: calc(100vh - 120px);
   box-sizing: border-box;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .lis-test-item-mapping-card {
   flex: 1;
   display: flex;
   flex-direction: column;
-  min-height: 0;
+  min-height: 100%;
+  height: auto;
+  overflow: visible !important;
 }
 
 .lis-test-item-mapping-card :deep(.el-card__body) {
   flex: 1;
   display: flex;
   flex-direction: column;
-  min-height: 0;
+  min-height: calc(100vh - 144px);
+  height: auto;
   padding: 10px;
   gap: 10px;
+  overflow: visible;
 }
 
 .lis-test-item-mapping-card .spd-table-panel {
   flex: 1;
-  min-height: 0;
+  min-height: 400px;
   display: flex;
   flex-direction: column;
+  overflow: visible;
 }
 
 .lis-test-item-mapping-card .spd-table-panel__wrap {
   flex: 1;
-  min-height: 0;
+  min-height: 400px;
   display: flex;
   flex-direction: column;
 }

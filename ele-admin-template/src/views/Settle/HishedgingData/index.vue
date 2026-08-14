@@ -64,16 +64,24 @@ export default {
 
 
 
+.hishedging-data {
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
 .tabs-card {
   min-height: calc(100vh - 120px);
+  height: auto;
   display: flex;
   flex-direction: column;
+  overflow: visible !important;
 
   :deep(.el-card__body) {
     flex: 1;
     display: flex;
     flex-direction: column;
-    min-height: 0;
+    min-height: 560px;
+    overflow: visible;
   }
 }
 
@@ -81,15 +89,17 @@ export default {
   flex: 1;
   display: flex;
   flex-direction: column;
-  min-height: 0;
+  min-height: 560px;
 
   :deep(.el-tabs__content) {
     flex: 1;
-    min-height: 0;
+    min-height: 520px;
+    overflow: visible;
   }
 
   :deep(.el-tab-pane) {
-    height: 100%;
+    min-height: 520px;
+    height: auto;
   }
 }
 

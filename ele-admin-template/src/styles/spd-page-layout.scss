@@ -289,3 +289,13 @@
     margin-bottom: 10px;
   }
 }
+
+/**
+ * 小窗口可滚、大屏铺满：
+ * 页面根节点加 overflow:auto（各页仍用自己的 height: calc(100vh - xx) 做视口）
+ * 卡片不要写死 height:100% + overflow:hidden，改为 min-height:100% 可长高
+ * 表格容器加 .spd-table-min，保证列表不低于 400px
+ */
+.spd-table-min {
+  min-height: 400px !important;
+}
