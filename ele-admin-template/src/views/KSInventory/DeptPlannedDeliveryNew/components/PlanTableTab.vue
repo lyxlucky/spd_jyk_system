@@ -225,13 +225,25 @@
     <div class="spd-panel spd-table-panel">
       <div class="spd-panel__head spd-panel__head--split">
         <span class="spd-panel__title">科室计划列表</span>
-        <span class="spd-panel__head-meta">
-          共 {{ planTotal }} 条
-          <template v-if="selection.length">，已选 {{ selection.length }} 条</template>
-        </span>
+        <div class="spd-panel__head-actions">
+          <span class="spd-panel__head-meta">
+            共 {{ planTotal }} 条
+            <template v-if="selection.length">，已选 {{ selection.length }} 条</template>
+          </span>
+          <el-tooltip content="列设置" placement="top">
+            <el-button
+              type="text"
+              size="mini"
+              icon="el-icon-s-operation"
+              class="plan-col-setting-btn"
+              @click="openColumnCustom"
+            />
+          </el-tooltip>
+        </div>
       </div>
       <div class="spd-table-panel__wrap">
         <vxe-grid
+          id="deptPlannedDeliveryNewPlan"
           ref="table"
           class="plan-compact-table"
           size="mini"
@@ -242,6 +254,8 @@
           :loading="tableLoading"
           :columns="columns"
           :data="tableRows"
+          :column-config="columnConfig"
+          :custom-config="customConfig"
           :row-config="{ keyField: 'Dtl_Id', isCurrent: true, isHover: true }"
           :checkbox-config="{ highlight: true, reserve: true }"
           :virtual-y-config="{ enabled: true, gt: 80 }"
@@ -404,6 +418,13 @@ export default {
     return {
       where: defaultPlanWhere(),
       columns: buildPlanColumns(),
+      columnConfig: { resizable: true },
+      customConfig: {
+        storage: true,
+        checkMethod({ column }) {
+          return column.type !== 'checkbox' && column.type !== 'seq';
+        }
+      },
       selection: [],
       tableRows: [],
       tableLoading: false,
@@ -469,6 +490,12 @@ export default {
     this.captureTableScroll();
   },
   methods: {
+    openColumnCustom() {
+      const $grid = this.$refs.table;
+      if ($grid && typeof $grid.openCustom === 'function') {
+        $grid.openCustom();
+      }
+    },
     onStorageChange(val) {
       this.$emit('storage-change', val);
       this.reload();
@@ -778,6 +805,22 @@ export default {
   display: flex;
   align-items: center;
   gap: 8px;
+}
+
+.spd-panel__head-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.plan-col-setting-btn {
+  padding: 4px;
+  font-size: 16px;
+  color: #606266;
+}
+
+.plan-col-setting-btn:hover {
+  color: #409eff;
 }
 
 .storage-label {
