@@ -138,6 +138,7 @@ export default {
   },
   data() {
     return {
+      // 固定表高，不随剩余视口压缩（小窗口靠页面滚动查看）
       tableHeight: 400,
       storageList: [],
       lastWhere: {},
@@ -161,39 +162,18 @@ export default {
     };
   },
   mounted() {
-    this.bindTableHeight();
     this.bindPageSizeSync();
   },
   activated() {
-    // tab 切回时重新量高并刷新表格布局
-    this.refreshTableLayout();
+    this.$nextTick(() => this.$refs.table?.doLayout?.());
   },
   beforeDestroy() {
-    this.unbindTableHeight();
     if (this._pageSizeUnwatch) {
       this._pageSizeUnwatch();
       this._pageSizeUnwatch = null;
     }
   },
   methods: {
-    refreshTableLayout() {
-      this.$nextTick(() => {
-        if (typeof this._tableResizeHandler === 'function') {
-          this._tableResizeHandler();
-        } else {
-          const el = this.$refs.tableWrap;
-          if (el) {
-            const pager = el.querySelector('.el-pagination');
-            const pagerH = pager ? pager.offsetHeight + 12 : 48;
-            const h = Math.floor(el.clientHeight - pagerH);
-            if (h > 120 && h !== this.tableHeight) {
-              this.tableHeight = h;
-            }
-          }
-        }
-        this.$refs.table?.doLayout?.();
-      });
-    },
     bindPageSizeSync() {
       this.$nextTick(() => {
         this._pageSizeUnwatch = this.$watch(
@@ -205,41 +185,6 @@ export default {
           }
         );
       });
-    },
-    bindTableHeight() {
-      this.$nextTick(() => {
-        const el = this.$refs.tableWrap;
-        if (!el) return;
-        const update = () => {
-          const pager = el.querySelector('.el-pagination');
-          const pagerH = pager ? pager.offsetHeight + 12 : 48;
-          const h = Math.floor(el.clientHeight - pagerH);
-          if (h > 120 && h !== this.tableHeight) {
-            this.tableHeight = h;
-          }
-        };
-        this._tableResizeHandler = update;
-        update();
-        this.$nextTick(() => {
-          update();
-          setTimeout(update, 80);
-        });
-        if (typeof ResizeObserver !== 'undefined') {
-          this._tableRo = new ResizeObserver(update);
-          this._tableRo.observe(el);
-        } else {
-          window.addEventListener('resize', update);
-        }
-      });
-    },
-    unbindTableHeight() {
-      if (this._tableRo) {
-        this._tableRo.disconnect();
-        this._tableRo = null;
-      } else if (this._tableResizeHandler) {
-        window.removeEventListener('resize', this._tableResizeHandler);
-      }
-      this._tableResizeHandler = null;
     },
     buildColumns() {
       const cols = [
@@ -808,28 +753,21 @@ export default {
 
 <style scoped>
 .goodsshelves-tab-page {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+  height: auto;
   min-height: 0;
-}
-
-.goodsshelves-tab-page > *:first-child {
-  flex: none;
+  display: block;
 }
 
 .goodsshelves-table-panel {
-  flex: 1;
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
+  display: block;
+  overflow: visible;
+  margin-top: 10px;
 }
 
 .spd-table-panel__wrap {
-  flex: 1;
+  display: block;
+  overflow: visible;
   min-height: 0;
-  overflow: hidden;
 }
 
 .spd-panel__head {

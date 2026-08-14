@@ -53,23 +53,29 @@ export default {
 <style scoped>
 .goodsshelves-page {
   padding: 8px;
+  height: calc(100vh - 100px);
+  min-width: 1280px;
+  box-sizing: border-box;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .goodsshelves-card {
-  height: calc(100vh - 100px);
+  min-width: 1280px;
+  height: auto;
+  flex-shrink: 0;
+  overflow: visible !important;
 }
 
 .goodsshelves-page :deep(.el-card__body) {
-  height: 100%;
+  display: block;
+  overflow: visible;
+  height: auto;
   padding: 12px;
   box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  min-height: 0;
 }
 
 .goodsshelves-tabs-form {
-  flex: none;
   width: 100%;
   margin-bottom: 10px;
 }
@@ -97,15 +103,12 @@ export default {
 }
 
 .goodsshelves-content {
-  flex: 1;
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
+  display: block;
+  overflow: visible;
 }
 
 .goodsshelves-content >>> .goodsshelves-tab-page {
-  flex: 1;
-  min-height: 0;
   height: auto;
+  min-height: 0;
 }
 </style>
