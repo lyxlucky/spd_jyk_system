@@ -50,8 +50,10 @@ const FIELD_OPTIONS = [
   { value: '19', label: '适用范围' },
   { value: '20', label: '医用耗材级别' },
   { value: '21', label: '缺项备注' },
-  { value: '22', label: '是否启用' },
-  { value: '23', label: '产地信息' }
+          { value: '22', label: '是否启用' },
+          { value: '23', label: '产地信息' },
+          { value: '24', label: '投标企业' },
+          { value: '25', label: '投标企业信用代码' }
 ];
 
 export default {

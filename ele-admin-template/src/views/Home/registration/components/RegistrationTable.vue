@@ -307,6 +307,20 @@
               }
               return ORIGIN_MAP[String(cellValue)] || cellValue;
             }
+          },
+          {
+            prop: 'BIDDING_ENT_NAME',
+            label: '投标企业',
+            minWidth: 160,
+            align: 'center',
+            showOverflowTooltip: true
+          },
+          {
+            prop: 'BIDDING_ENT_CREDIT_CODE',
+            label: '投标企业信用代码',
+            minWidth: 180,
+            align: 'center',
+            showOverflowTooltip: true
           }
         ],
         toolbar: false,
@@ -461,7 +475,9 @@
                 '产地信息',
                 '是否启用',
                 '结构及组成',
-                '适用范围'
+                '适用范围',
+                '投标企业',
+                '投标企业信用代码'
               ];
               const array = [headers];
               const date10 = (v) =>
@@ -499,7 +515,9 @@
                   originText(d),
                   d.ENABLE === '0' || d.ENABLE === 0 ? '否' : '是',
                   d.STRUCTURE_COMPOSITION,
-                  d.SCOPE_APPLICATION
+                  d.SCOPE_APPLICATION,
+                  d.BIDDING_ENT_NAME,
+                  d.BIDDING_ENT_CREDIT_CODE
                 ]);
               });
               writeFile(
