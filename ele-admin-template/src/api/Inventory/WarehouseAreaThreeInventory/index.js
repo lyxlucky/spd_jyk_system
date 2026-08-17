@@ -147,6 +147,9 @@ function buildWarehouseSyncParams(params = {}) {
   const codes = Array.isArray(params.AREA_CODES)
     ? params.AREA_CODES.join(',')
     : params.AREA_CODES || '';
+  const spdDeptRelIds = Array.isArray(params.SPD_DEPT_REL_IDS)
+    ? params.SPD_DEPT_REL_IDS.join(',')
+    : params.SPD_DEPT_REL_IDS || '';
   const ids = Array.isArray(params.WAREHOUSE_AREA_IDS)
     ? params.WAREHOUSE_AREA_IDS.join(',')
     : params.WAREHOUSE_AREA_IDS || '';
@@ -154,9 +157,28 @@ function buildWarehouseSyncParams(params = {}) {
     Token: token(),
     AREA_CODES: codes || ids,
     WAREHOUSE_AREA_IDS: ids,
+    SPD_DEPT_REL_IDS: spdDeptRelIds,
     START_TIME: params.START_TIME || '',
     END_TIME: params.END_TIME || ''
   };
+}
+
+// 查询指定库房/库区下可用于HIS计费同步的SPD科室关系。
+export async function queryHisChargeSpdDeptRelations(areaCode) {
+  const res = await postForm('/WarehouseAreaThreeInventory/QueryHisChargeSpdDeptRelations', {
+    Token: token(),
+    AREA_CODE: areaCode || ''
+  });
+  return unwrap(res);
+}
+
+// 查询指定库房/库区下可用于SPD入库同步的SPD科室关系。
+export async function querySpdInStockDeptRelations(areaCode) {
+  const res = await postForm('/WarehouseAreaThreeInventory/QuerySpdInStockDeptRelations', {
+    Token: token(),
+    AREA_CODE: areaCode || ''
+  });
+  return unwrap(res);
 }
 
 // 预览待同步的HIS计费记录。
