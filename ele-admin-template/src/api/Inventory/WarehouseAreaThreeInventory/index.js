@@ -147,9 +147,6 @@ function buildWarehouseSyncParams(params = {}) {
   const codes = Array.isArray(params.AREA_CODES)
     ? params.AREA_CODES.join(',')
     : params.AREA_CODES || '';
-  const spdDeptRelIds = Array.isArray(params.SPD_DEPT_REL_IDS)
-    ? params.SPD_DEPT_REL_IDS.join(',')
-    : params.SPD_DEPT_REL_IDS || '';
   const ids = Array.isArray(params.WAREHOUSE_AREA_IDS)
     ? params.WAREHOUSE_AREA_IDS.join(',')
     : params.WAREHOUSE_AREA_IDS || '';
@@ -157,7 +154,6 @@ function buildWarehouseSyncParams(params = {}) {
     Token: token(),
     AREA_CODES: codes || ids,
     WAREHOUSE_AREA_IDS: ids,
-    SPD_DEPT_REL_IDS: spdDeptRelIds,
     START_TIME: params.START_TIME || '',
     END_TIME: params.END_TIME || ''
   };
