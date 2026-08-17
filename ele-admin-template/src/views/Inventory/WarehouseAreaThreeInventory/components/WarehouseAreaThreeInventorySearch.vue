@@ -153,11 +153,9 @@
         </el-form-item>
         <el-form-item label="SPD科室">
           <el-select
-            v-model="hisPreviewQuery.SPD_DEPT_REL_IDS"
-            multiple
+            v-model="hisPreviewQuery.SPD_DEPT_REL_ID"
             filterable
             clearable
-            collapse-tags
             placeholder="请选择SPD科室"
             :loading="hisSpdDeptRelationLoading"
             class="his-preview-dept"
@@ -176,6 +174,16 @@
               </span>
             </el-option>
           </el-select>
+        </el-form-item>
+        <el-form-item label="开始时间">
+          <el-date-picker
+            v-model="hisPreviewQuery.START_TIME"
+            type="datetime"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            placeholder="请选择SPD科室"
+            class="his-preview-time"
+            disabled
+          />
         </el-form-item>
         <el-form-item label="结束时间">
           <el-date-picker
@@ -296,11 +304,9 @@
         </el-form-item>
         <el-form-item label="SPD科室">
           <el-select
-            v-model="spdInStockQuery.SPD_DEPT_REL_IDS"
-            multiple
+            v-model="spdInStockQuery.SPD_DEPT_REL_ID"
             filterable
             clearable
-            collapse-tags
             placeholder="请选择SPD科室"
             :loading="spdInStockDeptRelationLoading"
             class="his-preview-dept"
@@ -317,6 +323,16 @@
               <span class="option-type">{{ item.AUTO_STOCK_START_TIME || '未配置开始时间' }}</span>
             </el-option>
           </el-select>
+        </el-form-item>
+        <el-form-item label="开始时间">
+          <el-date-picker
+            v-model="spdInStockQuery.START_TIME"
+            type="datetime"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            placeholder="请选择SPD科室"
+            class="his-preview-time"
+            disabled
+          />
         </el-form-item>
         <el-form-item label="结束时间">
           <el-date-picker
@@ -463,13 +479,15 @@ const defaultWhere = () => ({
 
 const defaultHisPreviewQuery = () => ({
   AREA_CODE: '',
-  SPD_DEPT_REL_IDS: [],
+  SPD_DEPT_REL_ID: '',
+  START_TIME: '',
   END_TIME: ''
 });
 
 const defaultSpdInStockQuery = () => ({
   AREA_CODE: '',
-  SPD_DEPT_REL_IDS: [],
+  SPD_DEPT_REL_ID: '',
+  START_TIME: '',
   END_TIME: ''
 });
 
@@ -596,14 +614,12 @@ export default {
     },
     // HIS计费同步SPD科室变化后标记预览失效。
     onHisSpdDeptRelationChange(value) {
-      this.hisPreviewQuery.SPD_DEPT_REL_IDS = this.normalizeRelationIds(value);
+      const relation = this.hisSpdDeptRelations.find((item) => String(item.ID) === String(value || ''));
+      this.hisPreviewQuery.SPD_DEPT_REL_ID = relation ? String(relation.ID) : '';
+      this.hisPreviewQuery.START_TIME = relation && this.hasHisSpdDeptRelationStartTime(relation)
+        ? relation.AUTO_STOCK_START_TIME
+        : '';
       this.hisPreviewLoadedParams = null;
-    },
-    // 统一SPD科室关系ID数组格式并去重。
-    normalizeRelationIds(value) {
-      const source = Array.isArray(value) ? value : value ? [value] : [];
-      const ids = source.map((item) => String(item || '').trim()).filter(Boolean);
-      return Array.from(new Set(ids));
     },
     // 格式化SPD科室关系下拉项，明确各关系使用的独立开始时间。
     hisSpdDeptRelationLabel(item) {
@@ -620,15 +636,13 @@ export default {
     async loadHisChargeSpdDeptRelations(areaCode) {
       const targetAreaCode = String(areaCode || '').trim();
       this.hisSpdDeptRelations = [];
-      this.hisPreviewQuery.SPD_DEPT_REL_IDS = [];
+      this.hisPreviewQuery.SPD_DEPT_REL_ID = '';
+      this.hisPreviewQuery.START_TIME = '';
       if (!targetAreaCode) return;
       this.hisSpdDeptRelationLoading = true;
       try {
         const res = await queryHisChargeSpdDeptRelations(targetAreaCode);
         this.hisSpdDeptRelations = res.result || [];
-        this.hisPreviewQuery.SPD_DEPT_REL_IDS = this.hisSpdDeptRelations
-          .filter((item) => this.hasHisSpdDeptRelationStartTime(item))
-          .map((item) => String(item.ID));
       } catch (err) {
         this.$message.error(err.message || '加载SPD科室失败');
       } finally {
@@ -646,21 +660,23 @@ export default {
     },
     // SPD入库同步SPD科室变化后标记预览失效。
     onSpdInStockDeptRelationChange(value) {
-      this.spdInStockQuery.SPD_DEPT_REL_IDS = this.normalizeRelationIds(value);
+      const relation = this.spdInStockDeptRelations.find((item) => String(item.ID) === String(value || ''));
+      this.spdInStockQuery.SPD_DEPT_REL_ID = relation ? String(relation.ID) : '';
+      this.spdInStockQuery.START_TIME = relation && this.hasHisSpdDeptRelationStartTime(relation)
+        ? relation.AUTO_STOCK_START_TIME
+        : '';
       this.spdInStockLoadedParams = null;
     },
     async loadSpdInStockDeptRelations(areaCode) {
       const targetAreaCode = String(areaCode || '').trim();
       this.spdInStockDeptRelations = [];
-      this.spdInStockQuery.SPD_DEPT_REL_IDS = [];
+      this.spdInStockQuery.SPD_DEPT_REL_ID = '';
+      this.spdInStockQuery.START_TIME = '';
       if (!targetAreaCode) return;
       this.spdInStockDeptRelationLoading = true;
       try {
         const res = await querySpdInStockDeptRelations(targetAreaCode);
         this.spdInStockDeptRelations = res.result || [];
-        this.spdInStockQuery.SPD_DEPT_REL_IDS = this.spdInStockDeptRelations
-          .filter((item) => this.hasHisSpdDeptRelationStartTime(item))
-          .map((item) => String(item.ID));
       } catch (err) {
         this.$message.error(err.message || '加载SPD科室失败');
       } finally {
@@ -740,7 +756,7 @@ export default {
     buildHisChargeSyncParams() {
       return {
         AREA_CODES: [this.hisPreviewQuery.AREA_CODE || ''].filter(Boolean),
-        SPD_DEPT_REL_IDS: this.normalizeRelationIds(this.hisPreviewQuery.SPD_DEPT_REL_IDS),
+        START_TIME: this.hisPreviewQuery.START_TIME || '',
         END_TIME: this.hisPreviewQuery.END_TIME || ''
       };
     },
@@ -750,9 +766,7 @@ export default {
         this.$message.warning('请选择库房/库区');
         return false;
       }
-      const selectedRelationIds = this.normalizeRelationIds(this.hisPreviewQuery.SPD_DEPT_REL_IDS);
-      this.hisPreviewQuery.SPD_DEPT_REL_IDS = selectedRelationIds;
-      if (!selectedRelationIds.length) {
+      if (!this.hisPreviewQuery.SPD_DEPT_REL_ID || !this.hisPreviewQuery.START_TIME) {
         this.$message.warning('请选择SPD科室');
         return false;
       }
@@ -830,7 +844,7 @@ export default {
     buildSpdInStockSyncParams() {
       return {
         AREA_CODES: [this.spdInStockQuery.AREA_CODE || ''].filter(Boolean),
-        SPD_DEPT_REL_IDS: this.normalizeRelationIds(this.spdInStockQuery.SPD_DEPT_REL_IDS),
+        START_TIME: this.spdInStockQuery.START_TIME || '',
         END_TIME: this.spdInStockQuery.END_TIME || ''
       };
     },
@@ -840,8 +854,7 @@ export default {
         this.$message.warning('请选择库房/库区');
         return false;
       }
-      this.spdInStockQuery.SPD_DEPT_REL_IDS = this.normalizeRelationIds(this.spdInStockQuery.SPD_DEPT_REL_IDS);
-      if (!this.spdInStockQuery.SPD_DEPT_REL_IDS.length) {
+      if (!this.spdInStockQuery.SPD_DEPT_REL_ID || !this.spdInStockQuery.START_TIME) {
         this.$message.warning('请选择SPD科室');
         return false;
       }
