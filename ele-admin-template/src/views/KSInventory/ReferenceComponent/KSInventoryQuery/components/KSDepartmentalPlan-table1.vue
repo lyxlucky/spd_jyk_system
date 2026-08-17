@@ -1,6 +1,9 @@
 <template>
   <div class="ele-body">
-    <KSDepartmentalPlan-search @search="reload" />
+    <KSDepartmentalPlan-search
+      @search="reload"
+      @exportDataExcel="exportDataExcel"
+    />
     <!-- 数据表格 -->
     <ele-pro-table
       highlight-current-row
@@ -149,6 +152,7 @@
     DeletePlanList
   } from '@/api/KSInventory/KSDepartmentalPlan';
   import { GetJykMainShelfHz } from '@/api/KSInventory/KSInventoryQuery';
+  import { exportToExcel } from '@/utils/excel-util';
   export default {
     name: 'KSDepartmentalPlanTable2',
     components: {
@@ -337,6 +341,50 @@
       /* 刷新表格 */
       reload(where) {
         this.$refs.table.reload({ page: 1, where: where });
+      },
+      exportDataExcel() {
+        const loading = this.$messageLoading('正在导出数据...');
+        this.$refs.table.doRequest(({ where, order }) => {
+          const params = this.buildQueryWhere(where);
+          GetJykMainShelfHz({
+            page: 1,
+            limit: 999999,
+            where: params,
+            order
+          })
+            .then((res) => {
+              const list = res.result || [];
+              if (!list.length) {
+                this.$message.warning('没有数据可导出');
+                return;
+              }
+              const exportColumns = this.columns.filter(
+                (col) => col.prop && col.show !== false
+              );
+              exportToExcel(list, exportColumns, '库存汇总');
+              this.$message.success('导出成功');
+            })
+            .catch((err) => {
+              this.$message.error(err.message || '导出失败');
+            })
+            .finally(() => {
+              loading.close();
+            });
+        });
+      },
+      buildQueryWhere(where = {}) {
+        const nextWhere = { ...where };
+        let Dept_Two_CodeStr = '';
+        const userDeptList = this.$store.state.user.info.userDept || [];
+        for (let i = 0; i < userDeptList.length; i++) {
+          Dept_Two_CodeStr =
+            Dept_Two_CodeStr + userDeptList[i].Dept_Two_Code + ',';
+        }
+        nextWhere.DeptCode = Dept_Two_CodeStr;
+        nextWhere.TYPE = nextWhere.TYPE == undefined ? '1' : nextWhere.TYPE;
+        nextWhere.COUNT = nextWhere.COUNT == undefined ? '1' : nextWhere.COUNT;
+        this.TYPE = nextWhere.TYPE;
+        return nextWhere;
       },
       onDone(res) {
         // console.log('res:', res);
