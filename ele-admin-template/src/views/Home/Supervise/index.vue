@@ -482,13 +482,13 @@
           const regWrap = this.$refs.regTableWrap;
 
           if (sideWrap && sideWrap.clientHeight > 8) {
-            this.sideTableHeight = Math.max(120, Math.floor(sideWrap.clientHeight));
+            this.sideTableHeight = Math.max(240, Math.floor(sideWrap.clientHeight));
           } else {
             this.sideTableHeight = this.fallbackSideTableHeight();
           }
 
           if (regWrap && regWrap.clientHeight > 8) {
-            this.regTableHeight = Math.max(120, Math.floor(regWrap.clientHeight));
+            this.regTableHeight = Math.max(240, Math.floor(regWrap.clientHeight));
           } else {
             this.regTableHeight = this.fallbackRegTableHeight(this.$refs.regPagerWrap);
           }
@@ -1116,57 +1116,58 @@
 <style scoped lang="scss">
   .supervise-page {
     box-sizing: border-box;
-    /* 整页占满内容区：顶栏+页签约 90px，可按实际改 */
     height: calc(100vh - 96px);
     min-height: 320px;
     display: flex;
     flex-direction: column;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
 
     .supervise-row {
       flex: 1 1 auto;
-      min-height: 0;
-      overflow: hidden;
+      min-height: 360px;
+      overflow: visible;
     }
 
     .supervise-row > .el-col {
       display: flex;
       flex-direction: column;
-      min-height: 0;
+      min-height: 360px;
     }
 
     .supervise-card {
       flex: 1;
       display: flex;
       flex-direction: column;
-      min-height: 0;
+      min-height: 320px;
       margin-bottom: 12px;
 
       ::v-deep .el-card__body {
         flex: 1;
-        min-height: 0;
+        min-height: 280px;
         display: flex;
         flex-direction: column;
-        overflow: hidden;
+        overflow: visible;
       }
     }
 
     .supervise-table-wrap {
       flex: 1 1 auto;
-      min-height: 0;
+      min-height: 240px;
       overflow: hidden;
     }
 
     .supervise-table-wrap--grow {
       flex: 1 1 auto;
-      min-height: 0;
+      min-height: 240px;
     }
 
     .reg-card-main {
       flex: 1 1 auto;
-      min-height: 0;
+      min-height: 240px;
       display: flex;
       flex-direction: column;
-      overflow: hidden;
+      overflow: visible;
     }
 
     .supervise-card--reg {

@@ -138,6 +138,7 @@ export default {
   },
   data() {
     return {
+      // 固定表高，不随剩余视口压缩（小窗口靠页面滚动查看）
       tableHeight: 400,
       storageList: [],
       lastWhere: {},
@@ -165,8 +166,12 @@ export default {
     this.bindPageSizeSync();
   },
   activated() {
-    // tab 切回时重新量高并刷新表格布局
-    this.refreshTableLayout();
+    this.$nextTick(() => {
+      if (typeof this._tableResizeHandler === 'function') {
+        this._tableResizeHandler();
+      }
+      this.$refs.table?.doLayout?.();
+    });
   },
   beforeDestroy() {
     this.unbindTableHeight();
@@ -176,24 +181,6 @@ export default {
     }
   },
   methods: {
-    refreshTableLayout() {
-      this.$nextTick(() => {
-        if (typeof this._tableResizeHandler === 'function') {
-          this._tableResizeHandler();
-        } else {
-          const el = this.$refs.tableWrap;
-          if (el) {
-            const pager = el.querySelector('.el-pagination');
-            const pagerH = pager ? pager.offsetHeight + 12 : 48;
-            const h = Math.floor(el.clientHeight - pagerH);
-            if (h > 120 && h !== this.tableHeight) {
-              this.tableHeight = h;
-            }
-          }
-        }
-        this.$refs.table?.doLayout?.();
-      });
-    },
     bindPageSizeSync() {
       this.$nextTick(() => {
         this._pageSizeUnwatch = this.$watch(
@@ -213,8 +200,8 @@ export default {
         const update = () => {
           const pager = el.querySelector('.el-pagination');
           const pagerH = pager ? pager.offsetHeight + 12 : 48;
-          const h = Math.floor(el.clientHeight - pagerH);
-          if (h > 120 && h !== this.tableHeight) {
+          const h = Math.max(400, Math.floor(el.clientHeight - pagerH));
+          if (h !== this.tableHeight) {
             this.tableHeight = h;
           }
         };
@@ -808,11 +795,11 @@ export default {
 
 <style scoped>
 .goodsshelves-tab-page {
-  height: 100%;
+  min-height: 560px;
+  height: auto;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  min-height: 0;
 }
 
 .goodsshelves-tab-page > *:first-child {
@@ -821,14 +808,15 @@ export default {
 
 .goodsshelves-table-panel {
   flex: 1;
-  min-height: 0;
+  min-height: 400px;
   display: flex;
   flex-direction: column;
+  overflow: visible;
 }
 
 .spd-table-panel__wrap {
   flex: 1;
-  min-height: 0;
+  min-height: 400px;
   overflow: hidden;
 }
 

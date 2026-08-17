@@ -315,14 +315,14 @@
 
           if (!elTable) {
             const top = tableRoot.getBoundingClientRect().top;
-            this.tableHeight = Math.max(window.innerHeight - top - paginationHeight - 12, 300) + 'px';
+            this.tableHeight = Math.max(window.innerHeight - top - paginationHeight - 12, 400) + 'px';
             return;
           }
 
           const tableBodyTop = elTable.getBoundingClientRect().top;
           const wrapBottom = wrap.getBoundingClientRect().bottom;
           const height = wrapBottom - tableBodyTop - paginationHeight;
-          this.tableHeight = Math.max(height, 300) + 'px';
+          this.tableHeight = Math.max(height, 400) + 'px';
         });
       }
     },
@@ -351,7 +351,7 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  min-height: 0;
+  min-height: 400px;
 }
 
 .ks-new-batch-reminder-table-wrap :deep(.ele-pro-table) {

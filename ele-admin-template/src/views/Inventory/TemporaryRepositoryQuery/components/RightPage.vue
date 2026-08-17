@@ -249,22 +249,21 @@ export default {
 
 <style scoped>
 .temporary-page {
-  height: 100%;
-  min-height: 0;
+  min-height: 560px;
+  height: auto;
 }
 
 .card-container {
   display: flex;
   gap: 10px;
-  height: 100%;
-  min-height: 0;
+  min-height: 560px;
+  height: auto;
 }
 
 .left-card {
   width: 25%;
   min-width: 220px;
-  height: 100%;
-  min-height: 0;
+  min-height: 400px;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -272,9 +271,8 @@ export default {
 
 .right-card {
   flex: 1;
-  height: 100%;
   min-width: 0;
-  min-height: 0;
+  min-height: 400px;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -282,6 +280,6 @@ export default {
 
 .temporary-table-panel {
   flex: 1;
-  min-height: 0;
+  min-height: 400px;
 }
 </style>

@@ -38,20 +38,23 @@ export default {
   padding: 8px;
   height: calc(100vh - 88px);
   box-sizing: border-box;
-  overflow: hidden;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
 
   .page-card {
-    height: 100%;
+    min-height: 100%;
+    height: auto;
     border: none;
+    overflow: visible !important;
 
     :deep(.el-card__body) {
-      height: 100%;
+      min-height: calc(100vh - 112px);
+      height: auto;
       padding: 8px 12px 10px;
       box-sizing: border-box;
       display: flex;
       flex-direction: column;
-      min-height: 0;
-      overflow: hidden;
+      overflow: visible;
     }
   }
 
@@ -59,8 +62,7 @@ export default {
     flex: 1;
     display: flex;
     flex-direction: column;
-    min-height: 0;
-    overflow: hidden;
+    min-height: 680px;
 
     :deep(.el-tabs__header) {
       flex: none;
@@ -68,12 +70,13 @@ export default {
     }
     :deep(.el-tabs__content) {
       flex: 1;
-      min-height: 0;
-      overflow: hidden;
+      min-height: 640px;
+      overflow: visible;
     }
     :deep(.el-tab-pane) {
-      height: 100%;
-      overflow: hidden;
+      min-height: 640px;
+      height: auto;
+      overflow: visible;
     }
   }
 }

@@ -180,22 +180,27 @@
   @import '@/styles/common';
 
   .third-stock-query {
-    height: 100%;
+    min-height: calc(100vh - 112px);
+    height: auto;
     display: flex;
     flex-direction: column;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
   .main-card {
     flex: 1;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    min-height: 560px;
+    overflow: visible !important;
 
     :deep(.el-card__body) {
       flex: 1;
       display: flex;
       flex-direction: column;
-      overflow: hidden;
+      min-height: 520px;
+      overflow: visible;
       padding-bottom: 8px;
     }
   }
