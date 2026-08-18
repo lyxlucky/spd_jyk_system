@@ -453,7 +453,7 @@ import {
   previewSpdInStockRecords,
   queryHisChargeSpdDeptRelations,
   querySpdInStockDeptRelations,
-  queryWarehouseAreaOptions,
+  queryAccessibleWarehouseAreaOptions,
   syncHisChargeRecords as syncHisChargeRecordsApi,
   syncSpdInStockRecords as syncSpdInStockRecordsApi
 } from '@/api/Inventory/WarehouseAreaThreeInventory';
@@ -599,7 +599,7 @@ export default {
     // 加载主查询库房/库区下拉选项。
     loadWarehouseOptions(keyword, autoSelect = false) {
       this.warehouseLoading = true;
-      queryWarehouseAreaOptions(keyword || '')
+      queryAccessibleWarehouseAreaOptions(keyword || '')
         .then((res) => {
           this.warehouseOptions = res.result || [];
           if (autoSelect && !this.where.AREA_CODE && this.warehouseOptions.length) {

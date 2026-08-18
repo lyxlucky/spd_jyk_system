@@ -70,9 +70,9 @@ export function buildWarehouseAreaThreeInventoryParams(where = {}, page = 1, siz
   };
 }
 
-// 查询库房/库区下拉选项。
-export async function queryWarehouseAreaOptions(keyword = '') {
-  const res = await postForm('/WarehouseAreaManage/QueryWarehouseAreaOptions', {
+// 查询当前账号可访问的库房/库区下拉选项。
+export async function queryAccessibleWarehouseAreaOptions(keyword = '') {
+  const res = await postForm('/WarehouseAreaThreeInventory/QueryAccessibleWarehouseAreaOptions', {
     Token: token(),
     keyword
   });
