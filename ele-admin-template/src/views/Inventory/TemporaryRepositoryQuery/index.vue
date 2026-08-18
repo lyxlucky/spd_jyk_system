@@ -37,19 +37,26 @@ export default {
 <style scoped>
 .temporary-repository-query-page {
   padding: 8px;
+  height: calc(100vh - 112px);
+  box-sizing: border-box;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .temporary-repository-query-card {
-  height: calc(100vh - 112px);
+  min-height: 100%;
+  height: auto;
+  overflow: visible !important;
 }
 
 .temporary-repository-query-page :deep(.el-card__body) {
-  height: 100%;
+  min-height: calc(100vh - 136px);
+  height: auto;
   padding: 12px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  min-height: 0;
+  overflow: visible;
 }
 
 .temporary-tabs-form {
@@ -82,10 +89,11 @@ export default {
 
 .temporary-content {
   flex: 1;
-  min-height: 0;
+  min-height: 560px;
 }
 
 .temporary-content :deep(> .temporary-page) {
-  height: 100%;
+  min-height: 560px;
+  height: auto;
 }
 </style>

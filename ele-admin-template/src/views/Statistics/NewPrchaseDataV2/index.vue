@@ -123,19 +123,26 @@
 <style lang="scss" scoped>
 .new-prchase-data-v2-page {
   padding: 8px;
+  height: calc(100vh - 112px);
+  box-sizing: border-box;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .new-prchase-data-v2-card {
-  height: calc(100vh - 112px);
+  min-height: 100%;
+  height: auto;
+  overflow: visible !important;
 }
 
 .new-prchase-data-v2-page :deep(.el-card__body) {
-  height: 100%;
+  min-height: calc(100vh - 136px);
+  height: auto;
   padding: 12px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  min-height: 0;
+  overflow: visible;
 }
 
 .form-box {
@@ -145,7 +152,7 @@
 
 .table-wrap {
   flex: 1;
-  min-height: 0;
+  min-height: 400px;
   overflow: hidden;
 }
 
@@ -483,7 +490,7 @@ export default {
         const pagination = wrap.querySelector('.el-pagination');
         const reserved =
           (toolbar?.offsetHeight || 0) + (pagination?.offsetHeight || 46) + 8;
-        this.tableHeight = Math.max(240, wrap.clientHeight - reserved);
+        this.tableHeight = Math.max(400, wrap.clientHeight - reserved);
         this.$refs.table?.doLayout?.();
       });
     },

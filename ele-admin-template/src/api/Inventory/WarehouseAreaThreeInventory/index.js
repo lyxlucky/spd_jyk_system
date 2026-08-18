@@ -70,9 +70,9 @@ export function buildWarehouseAreaThreeInventoryParams(where = {}, page = 1, siz
   };
 }
 
-// 查询库房/库区下拉选项。
-export async function queryWarehouseAreaOptions(keyword = '') {
-  const res = await postForm('/WarehouseAreaManage/QueryWarehouseAreaOptions', {
+// 查询当前账号可访问的库房/库区下拉选项。
+export async function queryAccessibleWarehouseAreaOptions(keyword = '') {
+  const res = await postForm('/WarehouseAreaThreeInventory/QueryAccessibleWarehouseAreaOptions', {
     Token: token(),
     keyword
   });
@@ -157,6 +157,24 @@ function buildWarehouseSyncParams(params = {}) {
     START_TIME: params.START_TIME || '',
     END_TIME: params.END_TIME || ''
   };
+}
+
+// 查询指定库房/库区下可用于HIS计费同步的SPD科室关系。
+export async function queryHisChargeSpdDeptRelations(areaCode) {
+  const res = await postForm('/WarehouseAreaThreeInventory/QueryHisChargeSpdDeptRelations', {
+    Token: token(),
+    AREA_CODE: areaCode || ''
+  });
+  return unwrap(res);
+}
+
+// 查询指定库房/库区下可用于SPD入库同步的SPD科室关系。
+export async function querySpdInStockDeptRelations(areaCode) {
+  const res = await postForm('/WarehouseAreaThreeInventory/QuerySpdInStockDeptRelations', {
+    Token: token(),
+    AREA_CODE: areaCode || ''
+  });
+  return unwrap(res);
 }
 
 // 预览待同步的HIS计费记录。

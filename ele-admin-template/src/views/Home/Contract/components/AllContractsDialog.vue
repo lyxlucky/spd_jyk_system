@@ -49,7 +49,7 @@
         <el-input v-model="where.CONTRACT_END_TIMETimeStart" placeholder="yyyy" style="width: 80px" />
       </el-form-item>
       <el-button type="primary" icon="el-icon-search" @click="reload">查询</el-button>
-      <el-button v-permission="'export-GetContactAllDc'" :loading="exportingAll" @click="onExportAll">导出excel</el-button>
+      <el-button v-if="canExportAll" :loading="exportingAll" @click="onExportAll">导出excel</el-button>
     </el-form>
 
     <ele-pro-table
@@ -75,7 +75,7 @@
 
 <script>
 import { exportContactAllVar, getContactAllList, updateContactLimitPrice } from '@/api/Home/Contract';
-import { buildContactAllColumns, exportContactAllVarExcel } from '../utils';
+import { buildContactAllColumns, exportContactAllVarExcel, hasExportPermission } from '../utils';
 
 export default {
   name: 'AllContractsDialog',
@@ -113,6 +113,9 @@ export default {
       set(v) {
         this.$emit('update:visible', v);
       }
+    },
+    canExportAll() {
+      return hasExportPermission(this.$store, 'export-GetContactAllDc');
     }
   },
   methods: {

@@ -10,7 +10,8 @@ function token() {
 export {
   needSendState,
   PostPrepareCloseOrderData,
-  closeStockOrderLikeOld
+  closeStockOrderLikeOld,
+  BatchYesApprove
 } from '@/api/Task/FollowingGoodsPlanHrp';
 
 /** 库区下拉 */

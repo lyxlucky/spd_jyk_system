@@ -208,10 +208,12 @@
     CheckPlanPriceInfo,
     GetPickingInfo,
     ReceiveSpdStockup,
-    UpdateSendState
+    UpdateSendState,
+    BatchYesApprove
   } from '@/api/Task/FollowingGoodsPlanHrp';
   import { exportToExcel } from '@/utils/excel-util.js';
   import { HOME_HP } from '@/config/setting';
+  import { isBatchApproveOnlyHp } from '@/views/Task/FollowingGoodsPlan/utils';
   export default {
     name: 'StockPlanOrderList',
     components: {
@@ -880,11 +882,14 @@
           });
       },
 
-      // 批量审批并发送
+      // 批量审批并发送（对齐老系统：stzl/lg/szse* 只审批不发送）
       handleBatchApprove() {
-        // 实现批量审批并发送的逻辑
         if (this.selectedRows.length == 0) {
           this.$message.warning('请先勾选备货计划单号');
+          return;
+        }
+        if (isBatchApproveOnlyHp(HOME_HP)) {
+          this.handleBatchApproveOnly();
           return;
         }
         const loading = this.$loading({
@@ -903,9 +908,44 @@
             this.$message.success('批量审批并发送操作成功');
             this.handleSearch();
           })
-          .catch((err) => {
+          .catch(() => {
             loading.close();
             this.$message.error('批量审批并发送操作失败');
+          });
+      },
+      handleBatchApproveOnly() {
+        const loading = this.$loading({
+          lock: true,
+          text: '批量审批中...',
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)'
+        });
+        BatchYesApprove(this.selectedRows.map((row) => row.ID))
+          .then((res) => {
+            if (res.code == 301) {
+              this.$message.error(res.msg || '登录失效，请重新登录');
+              return;
+            }
+            const summary =
+              res.msg ||
+              `批量审批完成，成功${res.successCount || 0}单，失败${res.failCount || 0}单`;
+            const failMsgs = (res.result || [])
+              .filter((item) => String(item.code) !== '200')
+              .map((item) => `ID ${item.ID}：${item.msg || '审批失败'}`);
+            if (failMsgs.length) {
+              this.$alert(`${summary}<br/><br/>${failMsgs.join('<br/>')}`, '批量审批结果', {
+                dangerouslyUseHTMLString: true
+              });
+            } else {
+              this.$message.success(summary);
+            }
+            this.handleSearch();
+          })
+          .catch(() => {
+            this.$message.error('批量审批请求失败');
+          })
+          .finally(() => {
+            loading.close();
           });
       },
 

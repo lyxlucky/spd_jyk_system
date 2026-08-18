@@ -206,6 +206,42 @@
             </el-input>
           </el-descriptions-item>
 
+          <!-- 投标企业 | 投标企业信用代码 -->
+          <el-descriptions-item label="投标企业">
+            <div
+              v-if="!editing.BIDDING_ENT_NAME"
+              @click="enableEdit('BIDDING_ENT_NAME')"
+              >{{ this.where.current.BIDDING_ENT_NAME || '空' }}</div
+            >
+            <el-input
+              v-else
+              size="mini"
+              v-model="where.current.BIDDING_ENT_NAME"
+              @blur="saveEdit('BIDDING_ENT_NAME')"
+              @keydown.enter="saveEdit('BIDDING_ENT_NAME')"
+              @keydown.esc="cancelEdit('BIDDING_ENT_NAME')"
+              :ref="'input-BIDDING_ENT_NAME'"
+            >
+            </el-input>
+          </el-descriptions-item>
+          <el-descriptions-item label="投标企业信用代码">
+            <div
+              v-if="!editing.BIDDING_ENT_CREDIT_CODE"
+              @click="enableEdit('BIDDING_ENT_CREDIT_CODE')"
+              >{{ this.where.current.BIDDING_ENT_CREDIT_CODE || '空' }}</div
+            >
+            <el-input
+              v-else
+              size="mini"
+              v-model="where.current.BIDDING_ENT_CREDIT_CODE"
+              @blur="saveEdit('BIDDING_ENT_CREDIT_CODE')"
+              @keydown.enter="saveEdit('BIDDING_ENT_CREDIT_CODE')"
+              @keydown.esc="cancelEdit('BIDDING_ENT_CREDIT_CODE')"
+              :ref="'input-BIDDING_ENT_CREDIT_CODE'"
+            >
+            </el-input>
+          </el-descriptions-item>
+
           <!-- 第7行：原注册证有效期至(REGISTRATION_VALID_DATE) | 进口或国产 -->
           <el-descriptions-item label="原注册证有效期至">
             <el-date-picker
@@ -789,6 +825,8 @@
           OLD_PROD_REGISTRATION_CODE: false,
           MANUFACTURING_ENT_NAME: false,
           FOREIGN_REGIST_NAME: false,
+          BIDDING_ENT_NAME: false,
+          BIDDING_ENT_CREDIT_CODE: false,
           PRODUCTION_SITE: false,
           MANUFACTURING_LICENSE: false,
           LEGAL_PERSON: false,

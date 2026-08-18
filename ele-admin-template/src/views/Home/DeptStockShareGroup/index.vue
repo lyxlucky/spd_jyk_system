@@ -1120,17 +1120,28 @@
 </script>
 
 <style scoped>
+  .dept-stock-share-group-page {
+    height: calc(100vh - 100px);
+    box-sizing: border-box;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .page-card {
+    overflow: visible !important;
+  }
   .page-card :deep(.el-card__body) {
-    height: calc(100vh - 128px);
+    min-height: calc(100vh - 128px);
+    height: auto;
     box-sizing: border-box;
     padding: 12px;
+    overflow: visible;
   }
   .two-pane-layout {
     display: grid;
     grid-template-columns: 360px minmax(0, 1fr);
     gap: 12px;
-    height: 100%;
     min-height: 520px;
+    height: auto;
   }
   .group-pane,
   .dept-pane {
@@ -1142,13 +1153,15 @@
   .group-pane {
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    min-height: 480px;
+    overflow: visible;
   }
   .dept-pane {
     display: flex;
     flex-direction: column;
     padding: 0 10px 10px;
-    overflow: hidden;
+    min-height: 480px;
+    overflow: visible;
   }
   .pane-header {
     display: flex;
@@ -1181,6 +1194,10 @@
   }
   .group-table {
     flex: 1;
+    min-height: 360px;
+  }
+  .dept-pane :deep(.ele-pro-table) {
+    min-height: 400px;
   }
   .group-name-cell {
     display: flex;

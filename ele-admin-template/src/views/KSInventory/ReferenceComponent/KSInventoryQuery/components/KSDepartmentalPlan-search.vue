@@ -62,7 +62,7 @@
         </el-form-item>
       </el-col>
 
-      <el-col v-bind="styleResponsive ? { lg: 3, md: 12 } : { span: 8 }">
+      <el-col v-bind="styleResponsive ? { lg: 6, md: 12 } : { span: 10 }">
         <el-form-item>
           <div class="ele-form-actions">
             <el-button
@@ -77,6 +77,15 @@
             <el-button size="mini" icon="el-icon-refresh" @click="reset"
               >重置</el-button
             >
+            <el-button
+              size="mini"
+              type="primary"
+              icon="el-icon-download"
+              class="ele-btn-icon"
+              @click="exportDataExcel"
+            >
+              导出
+            </el-button>
 
             <!-- <el-button type="success" size="medium" @click="DeptReceivingScanOrderShow">扫码入库</el-button> -->
           </div>
@@ -193,6 +202,10 @@
       reset() {
         this.where = { ...this.defaultWhere };
         this.search();
+      },
+      /* 导出 */
+      exportDataExcel() {
+        this.$emit('exportDataExcel', this.where);
       },
       /* 创建申领单 */
       CreatApplicationForm() {

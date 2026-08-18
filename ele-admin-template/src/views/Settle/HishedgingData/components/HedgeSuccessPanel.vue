@@ -380,14 +380,14 @@ export default {
 .col-pane {
   display: flex;
   flex-direction: column;
-  min-height: 0;
-  height: calc(100vh - 180px);
+  min-height: 480px;
+  height: auto;
 }
 
 .dept-table-panel,
 .main-table-panel {
   flex: 1;
-  min-height: 0;
+  min-height: 400px;
   display: flex;
   flex-direction: column;
 }
@@ -395,7 +395,7 @@ export default {
 .dept-table-panel .spd-table-panel__wrap,
 .main-table-panel .spd-table-panel__wrap {
   flex: 1;
-  min-height: 0;
+  min-height: 400px;
 }
 
 .detail-table {

@@ -203,6 +203,27 @@
           {{ formatDate(row.AUTH_VALID) }}
         </span>
       </template>
+      <template v-slot:VAR_ENABLE="{ row }">
+        <el-tag
+          v-if="row.VAR_ENABLE == '1' || row.VAR_ENABLE === 1"
+          size="mini"
+          type="success"
+        >
+          启用
+        </el-tag>
+        <el-tag v-else size="mini" type="info">冻结</el-tag>
+      </template>
+      <template v-slot:DET_CONTRACT_END="{ row }">
+        <span v-if="!row.DET_CONTRACT_END">-</span>
+        <span
+          v-else
+          :style="{
+            color: isDateExpired(row.DET_CONTRACT_END) ? 'red' : 'black'
+          }"
+        >
+          {{ formatDate(row.DET_CONTRACT_END) }}
+        </span>
+      </template>
       <template v-slot:BUSINESS_LICENSE_VALID_DATE2="{ row }">
         <span v-if="!row.BUSINESS_LICENSE_VALID_DATE2">-</span>
         <span
@@ -459,6 +480,24 @@
             align: 'center',
             showOverflowTooltip: true,
             width: 180
+          },
+          {
+            columnKey: 'VAR_ENABLE',
+            prop: 'VAR_ENABLE',
+            slot: 'VAR_ENABLE',
+            label: '启用状态',
+            align: 'center',
+            showOverflowTooltip: true,
+            width: 90
+          },
+          {
+            columnKey: 'DET_CONTRACT_END',
+            prop: 'DET_CONTRACT_END',
+            slot: 'DET_CONTRACT_END',
+            label: '合同明细到期',
+            align: 'center',
+            showOverflowTooltip: true,
+            width: 120
           },
           // {
           //   prop: 'TempQty',

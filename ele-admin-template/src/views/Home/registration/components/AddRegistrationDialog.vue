@@ -100,6 +100,14 @@
         />
       </el-form-item>
 
+      <el-form-item label="投标企业">
+        <el-input v-model="form.BIDDING_ENT_NAME" placeholder="可填写投标企业名称" />
+      </el-form-item>
+
+      <el-form-item label="投标企业信用代码">
+        <el-input v-model="form.BIDDING_ENT_CREDIT_CODE" placeholder="可填写投标企业信用代码" />
+      </el-form-item>
+
       <el-form-item label="产地信息">
         <el-select v-model="form.ORIGIN_TYPE" style="width: 100%">
           <el-option label="默认" value="0" />
@@ -230,6 +238,8 @@ function emptyForm() {
     REGISTRATION_VALID_DATE: '',
     TRADE_TYPE: '0',
     FOREIGN_REGIST_NAME: '',
+    BIDDING_ENT_NAME: '',
+    BIDDING_ENT_CREDIT_CODE: '',
     ORIGIN_TYPE: '0',
     LICENCE_FILE_PATH: '',
     PROD_BIG_CLASS_CODE: '',
@@ -419,6 +429,8 @@ export default {
             LICENCE_FILE_PATH: this.form.LICENCE_FILE_PATH || '无',
             TRADE_TYPE: this.form.TRADE_TYPE,
             FOREIGN_REGIST_NAME: this.form.FOREIGN_REGIST_NAME,
+            BIDDING_ENT_NAME: this.form.BIDDING_ENT_NAME,
+            BIDDING_ENT_CREDIT_CODE: this.form.BIDDING_ENT_CREDIT_CODE,
             MANUFACTURING_LICENSE: this.form.MANUFACTURING_LICENSE,
             Brand: this.form.Brand,
             MEDICAL_CODE: this.form.MEDICAL_CODE,

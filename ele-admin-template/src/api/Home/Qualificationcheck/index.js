@@ -300,6 +300,8 @@ export async function UpDateProdInfo(data) {
     formataData.LICENCE_FILE_PATH = data.where.current.LICENCE_FILE_PATH ?? '';
     formataData.TRADE_TYPE = data.where.current.TRADE_TYPE ?? '';
     formataData.FOREIGN_REGIST_NAME = data.where.current.FOREIGN_REGIST_NAME ?? '';
+    formataData.BIDDING_ENT_NAME = data.where.current.BIDDING_ENT_NAME ?? '';
+    formataData.BIDDING_ENT_CREDIT_CODE = data.where.current.BIDDING_ENT_CREDIT_CODE ?? '';
     formataData.MANUFACTURING_LICENSE = data.where.current.MANUFACTURING_LICENSE ?? '';
     formataData.Brand = data.where.current.Brand ?? '';
     formataData.MEDICAL_CODE = data.where.current.MEDICAL_CODE ?? '';

@@ -254,6 +254,7 @@ export function buildCenterMonitorColumns(hp = monitorHpFlags) {
     const cols = [
       selectionCol('left'),
       { label: '品种（材料）编码', prop: 'Varietie_Code_New', minWidth: 120, showOverflowTooltip: true },
+      { label: '阳光产品码', prop: 'YG_CODE', minWidth: 120, showOverflowTooltip: true },
       { label: '计费编码', prop: 'CHARGING_CODE', minWidth: 100, showOverflowTooltip: true },
       { label: '品种全称', prop: 'Varietie_Name', minWidth: 120, showOverflowTooltip: true },
       { label: '型号/规格', prop: 'Specification_Or_Type', minWidth: 110, showOverflowTooltip: true },
@@ -296,6 +297,7 @@ export function buildCenterMonitorColumns(hp = monitorHpFlags) {
   const cols = [
     selectionCol('left'),
     { label: '品种（材料）编码', prop: 'Varietie_Code_New', minWidth: 180, showOverflowTooltip: true },
+    { label: '阳光产品码', prop: 'YG_CODE', minWidth: 120, showOverflowTooltip: true },
     { label: '计费编码', prop: 'CHARGING_CODE', minWidth: 120, showOverflowTooltip: true },
     { label: '品种全称', prop: 'Varietie_Name', minWidth: 120, showOverflowTooltip: true },
     { label: '型号/规格', prop: 'Specification_Or_Type', minWidth: 110, showOverflowTooltip: true },

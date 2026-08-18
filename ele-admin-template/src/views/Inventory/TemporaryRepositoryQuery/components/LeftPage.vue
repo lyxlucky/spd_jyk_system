@@ -269,15 +269,15 @@ export default {
 
 <style scoped>
 .temporary-page {
-  height: 100%;
+  min-height: 560px;
+  height: auto;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  min-height: 0;
 }
 
 .temporary-table-panel {
   flex: 1;
-  min-height: 0;
+  min-height: 400px;
 }
 </style>

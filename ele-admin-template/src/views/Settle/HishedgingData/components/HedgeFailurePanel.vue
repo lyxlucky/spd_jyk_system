@@ -415,8 +415,8 @@ export default {
 
 <style scoped lang="scss">
 .table-shell {
-  height: calc(100vh - 320px);
-  min-height: 360px;
+  min-height: 400px;
+  height: auto;
 }
 
 .pager {

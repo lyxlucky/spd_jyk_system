@@ -1,6 +1,22 @@
 import { utils, writeFile } from 'xlsx';
 import { BACK_BASE_URL, HOME_HP } from '@/config/setting';
 
+/**
+ * 导出权限：市二(szse*)需 export-* 码；其它院默认可见（对齐旧系统 export-permission）
+ */
+export function hasExportPermission(store, key) {
+  if (!key) return true;
+  const isSzse = String(HOME_HP || '').startsWith('szse');
+  if (!isSzse && String(key).startsWith('export-')) return true;
+  if (process.env.NODE_ENV === 'development') return true;
+  const authorities = store?.state?.user?.authorities || [];
+  if (authorities.includes(key)) return true;
+  const pg = store?.state?.user?.info?.permission_group || [];
+  return pg.some((p) =>
+    [p.component, p.path, p.title, p.Permission_Url, p.PERMISSION_URL].some((v) => v === key)
+  );
+}
+
 export const LEGACY_BASE = (BACK_BASE_URL || '').replace(/\/$/, '');
 
 export function htPicUrl(name) {
@@ -179,6 +195,7 @@ export function buildAuthColumns(flags) {
     { prop: 'regulatory_cat_name', label: '监管类别', minWidth: 120, sortable: 'custom', showOverflowTooltip: true },
     { prop: 'TwoSupCode', label: '二级供应商编码', minWidth: 180, sortable: 'custom', showOverflowTooltip: true },
     { prop: 'TwoSupName', label: '二级供应商名称', minWidth: 180, sortable: 'custom', showOverflowTooltip: true },
+    { prop: 'contract_code', label: '合同编码', minWidth: 140, sortable: 'custom', showOverflowTooltip: true },
     {
       slot: 'varType',
       prop: 'VAR_TYPE',
@@ -268,8 +285,8 @@ const EXPORT_HEADERS = [
   '临采限量'
 ];
 
-/** 与旧页 exportContractAuthTable 列顺序一致 */
-export function exportContractAuthExcel(rows, filename = '合同授权品种.xlsx') {
+/** 与旧页 exportContractAuthTable 列顺序一致；合同编码优先取接口字段，缺省时回填当前选中合同 */
+export function exportContractAuthExcel(rows, filename = '合同授权品种.xlsx', contractCode = '') {
   const data = [EXPORT_HEADERS];
   (rows || []).forEach((row) => {
     data.push([
@@ -292,7 +309,7 @@ export function exportContractAuthExcel(rows, filename = '合同授权品种.xls
       row.regulatory_cat_name,
       row.TwoSupCode,
       row.TwoSupName,
-      row.contract_code || '',
+      row.contract_code || row.CONTRACT_CODE || row.Contract_Code || contractCode || '',
       row.DET_CONTRACT_CODE || '',
       formatContractDate(row.DET_CONTRACT_START),
       formatContractDate(row.DET_CONTRACT_END),
@@ -350,6 +367,7 @@ export function downloadContractImportTemplate(type) {
 
 const AUTH_CONTRACT_EXPORT_HEADERS = [
   '合同名称',
+  '合同编码',
   '阳光产品码',
   '阳光规格型号码',
   '合同起始日期',
@@ -416,6 +434,7 @@ export function exportAuthContractInfoExcel(rows, filename = '授权合同信息
   (rows || []).forEach((r) => {
     data.push([
       r.Contract_Name,
+      r.Contract_Code || r.contract_code || r.CONTRACT_CODE || '',
       r.YG_CODE,
       r.YG_SPE_TYPE,
       clipDate(r.CONTRACT_START_TIME),
@@ -511,6 +530,7 @@ export function buildAuthContractColumns() {
   return [
     { type: 'index', columnKey: 'index', label: '序号', width: 55, align: 'center', fixed: 'left' },
     { prop: 'Contract_Name', label: '合同名称', minWidth: 140, showOverflowTooltip: true },
+    { prop: 'Contract_Code', label: '合同编码', minWidth: 140, showOverflowTooltip: true },
     { prop: 'Supplier_Name', label: '供应商名称', minWidth: 140, showOverflowTooltip: true },
     { prop: 'Varietie_Code_New', label: '品种编码', width: 110, showOverflowTooltip: true },
     { prop: 'Varietie_Name', label: '品种名称', minWidth: 120, showOverflowTooltip: true },

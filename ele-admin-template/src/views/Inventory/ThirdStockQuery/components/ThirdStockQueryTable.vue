@@ -8,7 +8,7 @@
       size="mini"
       highlight-current-row
       height="calc(100vh - 280px)"
-      class="style-table"
+      class="style-table third-stock-query-el-table"
     >
       <el-table-column
         prop="DEPT_TWO_NAME"
@@ -150,6 +150,12 @@
 </script>
 
 <style lang="scss" scoped>
+  .third-stock-query-table {
+    min-height: 400px;
+  }
+  .third-stock-query-el-table {
+    min-height: 400px;
+  }
   .table-pager {
     margin-top: 12px;
     text-align: right;

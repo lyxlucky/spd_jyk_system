@@ -116,21 +116,27 @@
   flex-direction: column;
   height: calc(100vh - 120px);
   box-sizing: border-box;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .ks-new-batch-reminder-card {
   flex: 1;
   display: flex;
   flex-direction: column;
-  min-height: 0;
+  min-height: 100%;
+  height: auto;
+  overflow: visible !important;
 }
 
 .ks-new-batch-reminder-card :deep(.el-card__body) {
   flex: 1;
   display: flex;
   flex-direction: column;
-  min-height: 0;
+  min-height: calc(100vh - 144px);
+  height: auto;
   padding: 10px;
   gap: 10px;
+  overflow: visible;
 }
 </style>

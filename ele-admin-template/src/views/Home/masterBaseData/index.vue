@@ -113,19 +113,25 @@
 <style lang="scss" scoped>
 .master-base-data-page {
   padding: 8px;
+  height: calc(100vh - 112px);
+  box-sizing: border-box;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .master-base-data-layout {
-  height: calc(100vh - 112px);
+  min-height: calc(100vh - 136px);
+  height: auto;
   display: flex;
   gap: 10px;
-  min-height: 0;
 }
 
 .master-card {
   min-width: 0;
+  min-height: 480px;
   display: flex;
   flex-direction: column;
+  overflow: visible !important;
 }
 
 .master-card-left {
@@ -143,7 +149,7 @@
 
 .master-card :deep(.el-card__body) {
   flex: 1;
-  min-height: 0;
+  min-height: 400px;
   padding: 12px;
   box-sizing: border-box;
 }
