@@ -177,6 +177,7 @@ module.exports = {
   publicPath: process.env.VUE_APP_BASE_URL || config.publicPath,
   outputDir: config.outputDir,
   productionSourceMap: false,
+  runtimeCompiler: false,
   transpileDependencies: ['element-ui', 'ele-admin', 'vue-i18n'],
   configureWebpack: config => {
     config.performance = {
