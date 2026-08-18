@@ -254,6 +254,19 @@ export async function YesApprove(data) {
   }
 }
 
+/** 批量审批通过，只审批不发送（对齐老系统 BatchYesApprove） */
+export async function BatchYesApprove(ids, appMarks = '') {
+  const res = await request.post(
+    '/ANewStockUp/BatchYesApprove',
+    formdataify({
+      Token: token(),
+      IDs: (ids || []).join(','),
+      APP_MARKS: appMarks || ''
+    })
+  );
+  return res.data;
+}
+
 export async function CheckPlanPriceInfo(data) {
   const params = {
     Stock_Up_Plan_No: data.order,

@@ -32,6 +32,12 @@ export function getB2bHospitalCode(hp = HOME_HP) {
   return B2B_HOSPITAL_MAP[hp] || '';
 }
 
+/** 老系统 FollowingGoodsPlanHrp：stzl/lg/szse* 批量只审批、不发送 */
+export function isBatchApproveOnlyHp(hp = HOME_HP) {
+  const h = String(hp || '');
+  return h === 'stzl' || h === 'lg' || h.startsWith('szse');
+}
+
 /** 部分院区提交 HRP 后禁止保存/增加明细 */
 export function isSaveAddDisabledByHrp(sendHrp) {
   const hp = HOME_HP;
