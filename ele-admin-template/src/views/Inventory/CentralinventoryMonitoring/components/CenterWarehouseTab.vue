@@ -34,7 +34,7 @@
         <el-checkbox v-model="loadPlanByVariety" @change="onLoadPlanByVarietyChange">根据选中行品种加载备货单</el-checkbox>
       </el-form-item>
       <el-form-item>
-        <el-checkbox v-model="filterZeroLimit" @change="onFilterZeroLimitChange">过滤上下线为 0 的品种</el-checkbox>
+        <el-checkbox v-model="filterZeroLimit" @change="onFilterZeroLimitChange">过滤上下限为 0 的品种</el-checkbox>
       </el-form-item>
     </el-form>
 
@@ -477,7 +477,7 @@ export default {
       this.reloadMonitor();
     },
     onFilterZeroLimitChange(val) {
-      // 后端：0=过滤上下线为0，1=不过滤
+      // 后端：0=过滤上下限均为0，1=不过滤
       this.filters.EnableLowUp = val ? '0' : '1';
       this.reloadMonitor();
     },
