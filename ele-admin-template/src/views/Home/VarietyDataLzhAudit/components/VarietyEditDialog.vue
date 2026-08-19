@@ -12,7 +12,7 @@
     @closed="onClosed"
   >
     <div v-loading="loading" element-loading-text="加载中..." class="edit-body">
-      <div v-if="isAddMode" class="add-reg-row">
+      <div class="add-reg-row">
         <span class="add-reg-label">批准文号</span>
         <el-select
           v-model="selectedRegCode"
@@ -20,7 +20,7 @@
           clearable
           remote
           reserve-keyword
-          placeholder="请选择批准文号/注册证"
+          placeholder="请输入或选择一个批准文号（可选）"
           :remote-method="filterApprovalOptions"
           :loading="approvalLoading"
           style="width: 480px"
@@ -37,7 +37,7 @@
       </div>
 
       <el-descriptions v-if="detail" :column="4" size="mini" border class="summary-desc">
-        <el-descriptions-item label="批准文号">{{ detail.Approval_Number }}</el-descriptions-item>
+        <el-descriptions-item label="当前文号">{{ currentApprovalNumber }}</el-descriptions-item>
         <el-descriptions-item label="注册证名称">
           {{ detail.prod_big_class_name || detail.Common_Name }}
         </el-descriptions-item>
@@ -259,6 +259,18 @@ export default {
         )
       }));
     },
+    currentApprovalNumber() {
+      return this.pickApprovalNumber(this.detail) || this.pickApprovalNumber(this.selectedApprovalItem);
+    },
+    selectedApprovalItem() {
+      const code = String(this.selectedRegCode || '');
+      if (!code) return null;
+      return (
+        this.approvalOptions.find((item) => String(item.Prod_Registration_Code) === code) ||
+        this.approvalAll.find((item) => String(item.Prod_Registration_Code) === code) ||
+        null
+      );
+    },
     formRules() {
       const rules = {
         Varietie_Name: [{ required: true, message: '必填', trigger: 'blur' }],
@@ -282,11 +294,26 @@ export default {
       if (!v) return '';
       return String(v).replace('T', ' ').substring(0, 19);
     },
+    pickApprovalNumber(row) {
+      if (!row) return '';
+      return (
+        row.Approval_Number ||
+        row.APPROVAL_NUMBER ||
+        row.approval_number ||
+        ''
+      );
+    },
     approvalOptionLabel(item) {
-      const no = item.Approval_Number || '';
+      const no = this.pickApprovalNumber(item);
       const name = item.Prod_Registration_Name || item.prod_big_class_name || '';
-      const ent = item.Manufacturing_Ent_Name || '';
+      const ent = item.Manufacturing_Ent_Name || item.manufacturing_ent_name || '';
       return [no, name, ent].filter(Boolean).join(' | ');
+    },
+    syncDetailApprovalNumber() {
+      if (!this.detail) return;
+      const no =
+        this.pickApprovalNumber(this.detail) || this.pickApprovalNumber(this.selectedApprovalItem);
+      this.$set(this.detail, 'Approval_Number', no);
     },
     isFieldDisabled(field) {
       if (this.isAddMode && field.key === 'Varietie_Code_New') return false;
@@ -362,21 +389,55 @@ export default {
         if (seq !== this.loadSeq) return;
         this.detail = createEmptyDetail();
         this.form = detailToForm(this.detail);
-        this.approvalLoading = true;
-        const list = await GetApprovalNumberList();
-        if (seq !== this.loadSeq) return;
-        this.approvalAll = Array.isArray(list) ? list : [];
-        this.approvalOptions = this.approvalAll.slice(0, 80);
+        await this.loadApprovalList(seq);
       } catch (e) {
         if (seq !== this.loadSeq) return;
         this.$message.error(e.message || '初始化失败');
         this.innerVisible = false;
       } finally {
         if (seq === this.loadSeq) {
-          this.approvalLoading = false;
           this.loading = false;
         }
       }
+    },
+    async loadApprovalList(seq) {
+      this.approvalLoading = true;
+      try {
+        const list = await GetApprovalNumberList();
+        if (seq !== this.loadSeq) return;
+        this.approvalAll = Array.isArray(list) ? list : [];
+        this.filterApprovalOptions('');
+        this.syncDetailApprovalNumber();
+      } catch (e) {
+        if (seq !== this.loadSeq) return;
+        this.approvalAll = [];
+        this.approvalOptions = [];
+        this.$message.error(e.message || '加载批准文号列表失败');
+      } finally {
+        if (seq === this.loadSeq) {
+          this.approvalLoading = false;
+        }
+      }
+    },
+    ensureSelectedApprovalOption() {
+      const code = String(this.selectedRegCode || '');
+      if (!code) return;
+      const exists = this.approvalOptions.some(
+        (item) => String(item.Prod_Registration_Code) === code
+      );
+      if (exists) return;
+      const fromAll = this.approvalAll.find(
+        (item) => String(item.Prod_Registration_Code) === code
+      );
+      this.approvalOptions.unshift(
+        fromAll || {
+          Prod_Registration_Code: code,
+          Approval_Number: this.detail?.Approval_Number || '',
+          Prod_Registration_Name:
+            this.detail?.prod_big_class_name || this.detail?.Common_Name || '',
+          Manufacturing_Ent_Name: this.detail?.manufacturing_ent_name || ''
+        }
+      );
     },
     filterApprovalOptions(query) {
       const q = String(query || '')
@@ -384,16 +445,18 @@ export default {
         .toLowerCase();
       if (!q) {
         this.approvalOptions = this.approvalAll.slice(0, 80);
-        return;
+      } else {
+        this.approvalOptions = this.approvalAll
+          .filter((item) => {
+            const text = this.approvalOptionLabel(item).toLowerCase();
+            return text.includes(q);
+          })
+          .slice(0, 80);
       }
-      this.approvalOptions = this.approvalAll
-        .filter((item) => {
-          const text = this.approvalOptionLabel(item).toLowerCase();
-          return text.includes(q);
-        })
-        .slice(0, 80);
+      this.ensureSelectedApprovalOption();
     },
     async onApprovalChange(code) {
+      if (!this.detail) return;
       if (!code) {
         this.detail.Prod_Registration_Code = '';
         this.detail.Approval_Number = '';
@@ -407,13 +470,18 @@ export default {
         const info = Array.isArray(list) ? list[0] : null;
         const fallback = this.approvalAll.find(
           (x) => String(x.Prod_Registration_Code) === String(code)
-        );
-        const row = info || fallback || {};
+        ) || {};
+        const row = { ...fallback, ...(info || {}) };
         this.detail.Prod_Registration_Code = String(
           row.Prod_Registration_Code || code
         );
-        this.detail.Approval_Number = row.Approval_Number || '';
-        this.detail.manufacturing_ent_name = row.Manufacturing_Ent_Name || '';
+        this.$set(
+          this.detail,
+          'Approval_Number',
+          this.pickApprovalNumber(info) || this.pickApprovalNumber(fallback)
+        );
+        this.detail.manufacturing_ent_name =
+          row.Manufacturing_Ent_Name || row.manufacturing_ent_name || '';
         this.detail.prod_big_class_name =
           row.prod_big_class_name || row.Prod_Registration_Name || '';
         this.detail.Common_Name = row.Prod_Registration_Name || '';
@@ -436,6 +504,8 @@ export default {
       this.detail = null;
       this.form = null;
       this.activeTab = 'basic';
+      this.selectedRegCode = '';
+      this.approvalOptions = [];
       try {
         await this.loadClassificOptions();
         if (seq !== this.loadSeq) return;
@@ -466,6 +536,10 @@ export default {
         }
         this.detail = list[0];
         this.form = detailToForm(this.detail);
+        this.selectedRegCode = this.detail?.Prod_Registration_Code
+          ? String(this.detail.Prod_Registration_Code)
+          : '';
+        await this.loadApprovalList(seq);
       } catch (e) {
         if (seq !== this.loadSeq) return;
         this.$message.error(e.message || '加载详情失败');
@@ -523,10 +597,6 @@ export default {
       }
     },
     async onSaveAdd() {
-      if (!this.detail?.Prod_Registration_Code) {
-        this.$message.warning('请选择批准文号');
-        return;
-      }
       const code = String(this.form.Varietie_Code_New || '').trim();
       if (!code) {
         this.$message.warning('请填写品种材料编码');
