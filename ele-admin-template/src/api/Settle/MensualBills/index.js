@@ -54,12 +54,25 @@ export function getMonthShow(params) {
   });
 }
 
+/** 后端 ApprovalState / ApprovalStateAll 返回纯字符串 "200"/"400"，非 { code, msg } */
+async function getPlainStatus(url, params = {}) {
+  const res = await request.get(url, { params: { Token: token(), ...params } });
+  const data = res.data;
+  if (data === 200 || data === '200' || data?.code == 200) {
+    return typeof data === 'object' && data != null ? data : { code: 200 };
+  }
+  if (data?.code == 301) {
+    return Promise.reject(new Error(data.msg || '登录失效，请重新登录'));
+  }
+  return Promise.reject(new Error(data?.msg || (data === 400 || data === '400' ? '审批失败' : '请求失败')));
+}
+
 export function approvalState(json) {
-  return getJson('/MonthClearing/ApprovalState', { json });
+  return getPlainStatus('/MonthClearing/ApprovalState', { json });
 }
 
 export function approvalStateAll() {
-  return getJson('/MonthClearing/ApprovalStateAll');
+  return getPlainStatus('/MonthClearing/ApprovalStateAll');
 }
 
 export function sureMonth(action, json, extra = {}) {
