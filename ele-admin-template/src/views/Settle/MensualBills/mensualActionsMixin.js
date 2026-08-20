@@ -185,10 +185,12 @@ export default {
       const loading = this.$loading({ lock: true });
       try {
         await api.approvalState(json);
+        loading.close();
         this.$message.success('已成功审批');
         this.loadDayList && (await this.loadDayList());
       } catch (e) {
-        this.$message.error(e.message);
+        loading.close();
+        this.$message.error(e.message || '审批失败');
       } finally {
         loading.close();
       }
@@ -198,10 +200,12 @@ export default {
       const loading = this.$loading({ lock: true });
       try {
         await api.approvalStateAll();
+        loading.close();
         this.$message.success('已成功审批');
         this.loadDayList && (await this.loadDayList());
       } catch (e) {
-        this.$message.error(e.message);
+        loading.close();
+        this.$message.error(e.message || '审批失败');
       } finally {
         loading.close();
       }
