@@ -210,6 +210,7 @@
           <el-descriptions-item label="投标企业">
             <div
               v-if="!editing.BIDDING_ENT_NAME"
+              style="display: inline"
               @click="enableEdit('BIDDING_ENT_NAME')"
               >{{ this.where.current.BIDDING_ENT_NAME || '空' }}</div
             >
@@ -221,8 +222,17 @@
               @keydown.enter="saveEdit('BIDDING_ENT_NAME')"
               @keydown.esc="cancelEdit('BIDDING_ENT_NAME')"
               :ref="'input-BIDDING_ENT_NAME'"
+              style="width: calc(100% - 130px); display: inline-block"
             >
             </el-input>
+            <el-button
+              type="primary"
+              icon="el-icon-zoom-in"
+              size="mini"
+              style="margin-left: 10px"
+              @click="chooseManufacture('2')"
+              >选择投标企业</el-button
+            >
           </el-descriptions-item>
           <el-descriptions-item label="投标企业信用代码">
             <div
@@ -1036,6 +1046,11 @@
         if (data.type == '0') {
           this.where.current.MANUFACTURING_ENT_NAME =
             data.current.MANUFACTURING_ENT_NAME;
+        } else if (data.type == '2') {
+          this.where.current.BIDDING_ENT_NAME =
+            data.current.MANUFACTURING_ENT_NAME || '';
+          this.where.current.BIDDING_ENT_CREDIT_CODE =
+            data.current.SOCIAL_CREDIT_CODE || '';
         } else {
           this.where.current.ST_MANUFACTURING_ENT_NAME =
             data.current.MANUFACTURING_ENT_NAME;

@@ -2,11 +2,7 @@
   <div class="container">
     <ele-modal
       width="60%"
-      :title="
-        factoryModalType == '0'
-          ? '选择医疗器械注册人或备案人'
-          : '选择受托医疗器械生产企业名称'
-      "
+      :title="factoryTitle"
       :visible="visible"
       @update:visible="updateVisible"
       position="center"
@@ -124,6 +120,12 @@
             showOverflowTooltip: true
           },
           {
+            label: '社会统一信用代码',
+            prop: 'SOCIAL_CREDIT_CODE',
+            minWidth: 180,
+            showOverflowTooltip: true
+          },
+          {
             label: '生产许可证号',
             prop: 'MANUFACTURING_LICENSE',
             minWidth: 200,
@@ -135,7 +137,9 @@
             minWidth: 200,
             showOverflowTooltip: true,
             formatter: (row, column, cellValue) => {
-              return row.MANUFACTURING_LICENSE_TIME.replace('T', ' ');
+              return (row.MANUFACTURING_LICENSE_TIME || '')
+                .toString()
+                .replace('T', ' ');
             }
           },
           {
@@ -150,7 +154,7 @@
             minWidth: 150,
             showOverflowTooltip: true,
             formatter: (row, column, cellValue) => {
-              return row.UPDATE_TIME.replace('T', ' ');
+              return (row.UPDATE_TIME || '').toString().replace('T', ' ');
             }
           }
         ],
@@ -193,6 +197,15 @@
       }
     },
     computed: {
+      factoryTitle() {
+        if (this.factoryModalType == '0') {
+          return '选择医疗器械注册人或备案人';
+        }
+        if (this.factoryModalType == '2') {
+          return '选择投标企业（生产企业）';
+        }
+        return '选择受托医疗器械生产企业名称';
+      },
       // 是否开启响应式布局
       styleResponsive() {
         return this.$store.state.theme.styleResponsive;

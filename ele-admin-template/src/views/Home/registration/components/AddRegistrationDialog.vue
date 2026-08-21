@@ -101,11 +101,23 @@
       </el-form-item>
 
       <el-form-item label="投标企业">
-        <el-input v-model="form.BIDDING_ENT_NAME" placeholder="可填写投标企业名称" />
+        <el-input
+          v-model="form.BIDDING_ENT_NAME"
+          placeholder="可填写或选择生产企业"
+          style="width: calc(100% - 140px)"
+        />
+        <el-button
+          type="primary"
+          size="mini"
+          style="margin-left: 8px"
+          @click="chooseManufacture('2')"
+        >
+          选择投标企业
+        </el-button>
       </el-form-item>
 
       <el-form-item label="投标企业信用代码">
-        <el-input v-model="form.BIDDING_ENT_CREDIT_CODE" placeholder="可填写投标企业信用代码" />
+        <el-input v-model="form.BIDDING_ENT_CREDIT_CODE" placeholder="可填写投标企业信用代码，选择投标企业后自动带出" />
       </el-form-item>
 
       <el-form-item label="产地信息">
@@ -326,6 +338,9 @@ export default {
       if (data.type === '0') {
         this.form.MANUFACTURING_ENT_NAME = data.current.MANUFACTURING_ENT_NAME || '';
         this.form.MANUFACTURING_LICENSE = data.current.MANUFACTURING_LICENSE || '';
+      } else if (data.type === '2') {
+        this.form.BIDDING_ENT_NAME = data.current.MANUFACTURING_ENT_NAME || '';
+        this.form.BIDDING_ENT_CREDIT_CODE = data.current.SOCIAL_CREDIT_CODE || '';
       } else {
         this.form.ST_MANUFACTURING_ENT_NAME = data.current.MANUFACTURING_ENT_NAME || '';
       }
