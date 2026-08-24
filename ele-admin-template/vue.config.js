@@ -167,6 +167,16 @@ const envConfig = {
     target: 'http://172.32.202.17:82/',
     publicPath: '/jyknw/',
     outputDir: 'jyknw'
+  },
+  gzbjww: {
+    target: 'http://192.168.250.192:17501/',
+    publicPath: '/jyk/',
+    outputDir: 'jyk'
+  },
+  gzbjnw: {
+    target: 'http://192.168.250.192:17501/',
+    publicPath: '/jyknw/',
+    outputDir: 'jyknw'
   }
 }
 
