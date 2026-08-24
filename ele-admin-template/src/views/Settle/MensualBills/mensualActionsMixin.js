@@ -60,20 +60,21 @@ export default {
     },
 
     async mensB2bGet(hp, monthId) {
-      const url = getB2bMonthUrl(hp || this.hp, monthId || this.selectedMonth?.ID);
-      if (!url) {
-        this.$message.warning('当前院区未配置 B2B 地址');
+      const mid = monthId || this.selectedMonth?.ID;
+      if (!mid) {
+        this.$message.warning('请先选中月结单');
         return;
       }
-      this.$message.success('发送成功');
-      const loading = this.$loading({ lock: true });
+      // 与 utils.getB2bMonthUrl 院区清单对齐：无映射则不发
+      if (!getB2bMonthUrl(hp || this.hp, mid)) {
+        this.$message.warning('当前院区未配置 B2B 月结发送接口');
+        return;
+      }
+      const loading = this.$loading({ lock: true, text: '正在通过服务端发送至 B2B...' });
       try {
-        const data = await api.fetchB2bGet(url);
-        if (data.code == 200) {
-          this.loadMonthList && (await this.loadMonthList());
-        } else {
-          this.$message.error(data.msg || '发送失败');
-        }
+        await api.sendMonthToB2b(mid, hp || this.hp);
+        this.$message.success('发送成功');
+        this.loadMonthList && (await this.loadMonthList());
       } catch (e) {
         this.$message.error(e.message || '发送失败');
       } finally {
@@ -102,19 +103,13 @@ export default {
         this.$message.warning('当前院区未配置发送接口');
         return;
       }
-      const loading = this.$loading({ lock: true });
+      const loading = this.$loading({ lock: true, text: '正在发送至 B2B...' });
       try {
         const data = await api.sendMonthAction(action, this.selectedMonth.ID);
         if (B2B_FOLLOW_HP.includes(hp) && data.result) {
-          const b2b = await api.postB2bMonthlyInvoic(JSON.stringify(data.result));
-          if (b2b.code == 200) {
-            this.$message.success('发送成功');
-          } else {
-            this.$message.error(b2b.msg || 'B2B发送失败');
-          }
-        } else {
-          this.$message.success('发送成功');
+          await api.postB2bMonthlyInvoic(JSON.stringify(data.result));
         }
+        this.$message.success('发送成功');
         this.loadMonthList && (await this.loadMonthList());
       } catch (e) {
         this.$message.error(e.message);
