@@ -1,6 +1,6 @@
 import request from '@/utils/request';
 import { formdataify, DataToObject, GetGuid } from '@/utils/formdataify';
-import { TOKEN_STORE_NAME, } from '@/config/setting';
+import { TOKEN_STORE_NAME, HOME_HP } from '@/config/setting';
 
 export async function SerachDef2Consume4PDA(data) {
     var data2 = {};
@@ -68,7 +68,7 @@ export async function spdScanConsume(data) {
     data2.user = data.user ? data.user : '';
     data2.password = data.password ? data.password : '';
     data2.AesKey = data.AesKey ? data.AesKey : '';
-    data2.hp = data.hp ? data.hp : 'bd';
+    data2.hp = data.hp || HOME_HP;
     data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
     var rep = formdataify(data2)
     const res = await request.post('/DeptConsume/spdScanConsume', rep);
