@@ -184,7 +184,7 @@ const envConfig = {
     outputDir: 'jyk'
   },
   szssnw: {
-    target: 'http://183.62.142.197:17002/',
+    target: 'http://172.25.172.210:17002/',
     publicPath: '/jyknw/',
     outputDir: 'jyknw'
   }

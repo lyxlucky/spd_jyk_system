@@ -169,7 +169,7 @@ const getBackBaseUrl = () => {
     'gzbjww': 'http://192.168.250.192:17501',
     'gzbjnw': 'http://192.168.250.192:17501',
     'szssww': 'http://47.113.126.25:17002',
-    'szssnw': 'http://183.62.142.197:17002'
+    'szssnw': 'http://172.25.172.210:17002'
   };
   return envMap[env] || 'http://localhost:16416';
 }
