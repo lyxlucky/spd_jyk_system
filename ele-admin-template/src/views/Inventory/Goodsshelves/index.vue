@@ -108,14 +108,16 @@ export default {
 
 .goodsshelves-content {
   flex: 1;
-  min-height: 560px;
+  min-height: 0;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 .goodsshelves-content >>> .goodsshelves-tab-page {
   flex: 1;
-  min-height: 560px;
-  height: auto;
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
 }
 </style>
