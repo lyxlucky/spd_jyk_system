@@ -436,7 +436,8 @@ export async function createStorageExcelCwj(where = {}, options = {}) {
 
 /**
  * 高性能导出（EPPlus）
- * 对齐老系统 PrintStorageEpPlus：同一套 buildVarietyQueryPrams + hp，后端内部分批写入单文件。
+ * 传 page+size 时后端只导出该页（用于按 5 万条拆多个文件，避免网关 504）；
+ * 不传 size 时仍为全量单文件。
  * szhn/lg/bd/zq/szlhfy/szsmyl 后端走 CreateStorageExcelCwj_B 列布局（与普通导出内容一致）。
  */
 export async function createStorageExcelCwjEpPlus(where = {}, extra = {}) {
