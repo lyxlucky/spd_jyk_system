@@ -200,8 +200,12 @@ export default {
         const update = () => {
           const pager = el.querySelector('.el-pagination');
           const pagerH = pager ? pager.offsetHeight + 12 : 48;
-          const h = Math.max(400, Math.floor(el.clientHeight - pagerH));
-          if (h !== this.tableHeight) {
+          // 用视口剩余高度，避免根据 tableWrap.clientHeight 形成「表格变高 → 容器变高 → 再变高」的死循环
+          const top = el.getBoundingClientRect().top;
+          const bottomGap = 12;
+          const available = window.innerHeight - top - bottomGap;
+          const h = Math.max(400, Math.floor(available - pagerH));
+          if (Math.abs(h - this.tableHeight) > 1) {
             this.tableHeight = h;
           }
         };
@@ -211,11 +215,11 @@ export default {
           update();
           setTimeout(update, 80);
         });
-        if (typeof ResizeObserver !== 'undefined') {
+        window.addEventListener('resize', update);
+        const panel = el.parentElement;
+        if (typeof ResizeObserver !== 'undefined' && panel) {
           this._tableRo = new ResizeObserver(update);
-          this._tableRo.observe(el);
-        } else {
-          window.addEventListener('resize', update);
+          this._tableRo.observe(panel);
         }
       });
     },
@@ -223,7 +227,8 @@ export default {
       if (this._tableRo) {
         this._tableRo.disconnect();
         this._tableRo = null;
-      } else if (this._tableResizeHandler) {
+      }
+      if (this._tableResizeHandler) {
         window.removeEventListener('resize', this._tableResizeHandler);
       }
       this._tableResizeHandler = null;
@@ -795,11 +800,12 @@ export default {
 
 <style scoped>
 .goodsshelves-tab-page {
-  min-height: 560px;
-  height: auto;
+  min-height: 0;
+  height: 100%;
   display: flex;
   flex-direction: column;
   gap: 10px;
+  overflow: hidden;
 }
 
 .goodsshelves-tab-page > *:first-child {
@@ -808,15 +814,15 @@ export default {
 
 .goodsshelves-table-panel {
   flex: 1;
-  min-height: 400px;
+  min-height: 0;
   display: flex;
   flex-direction: column;
-  overflow: visible;
+  overflow: hidden;
 }
 
 .spd-table-panel__wrap {
   flex: 1;
-  min-height: 400px;
+  min-height: 0;
   overflow: hidden;
 }
 
@@ -825,6 +831,10 @@ export default {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+  flex: none;
+}
+
+.goodsshelves-table-panel > .pic-preview-bar {
   flex: none;
 }
 

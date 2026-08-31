@@ -348,7 +348,7 @@
               size="mini"
               type="primary"
               plain
-              title="高性能导出：后端分批查询，适合大批量数据"
+              title="高性能导出：未配置 VAR_EPPLUS_BATCH 时全量导出；已配置则按 CONFIG 条数分批导出"
               :loading="exportingHp"
               @click="onExportHp"
             >
@@ -680,10 +680,13 @@ import {
   showVarUpLogButton,
   showVarietyPicColumn
 } from '@/views/Home/VarietyDataLzhAudit/utils';
+import { getConfig } from '@/api/layout';
 import {
   hasExportPermission,
   isVarietyEditDisabled,
-  canEnableVariety
+  canEnableVariety,
+  parseVarEpplusBatchSize,
+  VAR_EPPLUS_BATCH_CONFIG_KEY
 } from '../utils';
 import { utils, writeFile } from 'xlsx';
 
@@ -994,6 +997,18 @@ export default {
         {
           prop: 'ST_MANUFACTURING_ENT_NAME',
           label: '受托生产企业名称',
+          minWidth: 180,
+          showOverflowTooltip: true
+        },
+        {
+          prop: 'BIDDING_ENT_NAME',
+          label: '投标企业',
+          minWidth: 160,
+          showOverflowTooltip: true
+        },
+        {
+          prop: 'BIDDING_ENT_CREDIT_CODE',
+          label: '投标企业信用代码',
           minWidth: 180,
           showOverflowTooltip: true
         },
@@ -1898,6 +1913,86 @@ export default {
     getExportTotal() {
       return Number(this.$refs.table?.tableTotal) || 0;
     },
+    async fetchEpplusBatchSize() {
+      try {
+        const res = await getConfig(VAR_EPPLUS_BATCH_CONFIG_KEY);
+        return parseVarEpplusBatchSize(res?.data?.data);
+      } catch (e) {
+        return 0;
+      }
+    },
+    async onExportHp() {
+      this.exportingHp = true;
+      try {
+        const batchSize = await this.fetchEpplusBatchSize();
+        const where = this.currentWhere || {};
+
+        // 无 CONFIG 或未配置有效条数：原逻辑，单次全量导出
+        if (!batchSize) {
+          const res = await createStorageExcelCwjEpPlus(where);
+          if (res?.msg) {
+            openExcelFile(res.msg);
+            this.$message.success(
+              res.totalCount != null
+                ? `导出成功，共 ${res.totalCount} 条`
+                : '导出成功'
+            );
+          } else {
+            this.$message.warning('导出完成，但未返回文件名');
+          }
+          return;
+        }
+
+        // 有 CONFIG：按 batchSize 分批同步导出
+        const tipTotal = this.getExportTotal();
+        if (tipTotal > batchSize) {
+          const tipPages = Math.ceil(tipTotal / batchSize);
+          try {
+            await this.$confirm(
+              `当前筛选约 ${tipTotal} 条，将分 ${tipPages} 个 Excel 依次下载（每个最多 ${batchSize} 条），请手动合并。是否继续？`,
+              '分批导出提示',
+              { type: 'warning', confirmButtonText: '开始导出', cancelButtonText: '取消' }
+            );
+          } catch (e) {
+            return;
+          }
+        }
+
+        const first = await createStorageExcelCwjEpPlus(where, {
+          page: 1,
+          size: batchSize
+        });
+        const total = Number(first?.totalCount) || 0;
+        if (!total) {
+          this.$message.warning('没有可导出的数据');
+          return;
+        }
+        if (first?.msg) {
+          openExcelFile(first.msg);
+        }
+
+        const pageCount = Math.ceil(total / batchSize) || 1;
+        for (let page = 2; page <= pageCount; page += 1) {
+          const res = await createStorageExcelCwjEpPlus(where, {
+            page,
+            size: batchSize
+          });
+          if (res?.msg) {
+            openExcelFile(res.msg);
+          }
+        }
+
+        this.$message.success(
+          pageCount > 1
+            ? `导出成功，共 ${total} 条，已分 ${pageCount} 个文件下载，请手动合并`
+            : `导出成功，共 ${total} 条`
+        );
+      } catch (e) {
+        this.$message.error(e.message || '导出失败');
+      } finally {
+        this.exportingHp = false;
+      }
+    },
     async onExport() {
       // 普通导出：CreateStorageExcelCwj，旧式整包生成，数据量大易网关 504
       // 超过阈值请改用「导出(高性能)」
@@ -1934,27 +2029,6 @@ export default {
         this.$message.error(e.message || '导出失败');
       } finally {
         this.exporting = false;
-      }
-    },
-    async onExportHp() {
-      this.exportingHp = true;
-      try {
-        // 高性能：CreateStorageExcelCwjEpPlus，后端 EPPlus 分批查询、一次出文件
-        const res = await createStorageExcelCwjEpPlus(this.currentWhere || {});
-        if (res?.msg) {
-          openExcelFile(res.msg);
-          this.$message.success(
-            res.totalCount != null
-              ? `导出成功，共 ${res.totalCount} 条`
-              : '导出成功'
-          );
-        } else {
-          this.$message.warning('导出完成，但未返回文件名');
-        }
-      } catch (e) {
-        this.$message.error(e.message || '导出失败');
-      } finally {
-        this.exportingHp = false;
       }
     },
     async onExportSearch() {

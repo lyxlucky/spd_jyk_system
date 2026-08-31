@@ -348,7 +348,8 @@ export default {
         deptTwoCode: this.$store.state.user.info.DeptNow.Dept_Two_Code,
         user: this.$store.state.user.info.UserName,
         password: this.$store.state.user.info.Password,
-        AesKey: null
+        AesKey: null,
+        hp: HOME_HP
       };
       spdScanConsume(data)
         .then((res) => {

@@ -79,6 +79,12 @@ npm run build:selhww     # 龙华院区外网
 npm run build:stse    # 汕头市二内网
 ```
 
+#### 深圳市深汕人民医院环境
+```bash
+npm run build:szssww  # 深汕外网
+npm run build:szssnw  # 深汕内网
+```
+
 ## 环境配置说明
 
 每个环境都有对应的 `.env.{环境名}` 配置文件，包含：

@@ -41,7 +41,9 @@ const getRequestTimeout = () => {
     'xhnw': 3600000,   // 1小时
     'stse': 3600000,
     'gzbjww': 3600000,
-    'gzbjnw': 3600000
+    'gzbjnw': 3600000,
+    'szssww': 3600000,
+    'szssnw': 3600000
   };
   console.log(env,envTimeoutMap[env]);
   return envTimeoutMap[env] || 3600000;
@@ -59,6 +61,7 @@ export const REQUEST_TIMEOUT = getRequestTimeout();
 // szlhfy 龙华妇幼
 // bdrm 北京人民
 // gzbj 浙江省人民医院毕节医院
+// szss 深圳市深汕人民医院
 
 // 根据环境自动获取医院标识
 const getHomeHp = () => {
@@ -97,7 +100,9 @@ const getHomeHp = () => {
     'xhnw': 'xh',    // 新华内网
     'stse': 'stse',
     'gzbjww': 'gzbj',
-    'gzbjnw': 'gzbj'
+    'gzbjnw': 'gzbj',
+    'szssww': 'szss',
+    'szssnw': 'szss'
   };
   return envHpMap[env] || 'bd';
 }
@@ -162,7 +167,9 @@ const getBackBaseUrl = () => {
     'lglssk': 'http://172.31.71.152:16002',
     'stse': 'http://172.32.202.17:82',
     'gzbjww': 'http://192.168.250.192:17501',
-    'gzbjnw': 'http://192.168.250.192:17501'
+    'gzbjnw': 'http://192.168.250.192:17501',
+    'szssww': 'http://47.113.126.25:17002',
+    'szssnw': 'http://172.25.172.210:17002'
   };
   return envMap[env] || 'http://localhost:16416';
 }
