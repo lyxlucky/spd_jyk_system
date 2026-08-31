@@ -312,14 +312,21 @@
             />
           </template>
         </vxe-column>
-        <vxe-column field="CHARGING_QTY" title="计费数量" width="80" align="right" footer-align="right">
+        <vxe-column field="CHARGING_QTY" width="80" align="right" footer-align="right">
+          <template #header>
+            <span style="color: #f56c6c">计费数量</span>
+          </template>
           <template #default="{ row }">
             <span class="charging-qty-blue">{{ row.CHARGING_QTY }}</span>
           </template>
         </vxe-column>
-        <vxe-column field="PROFIT_LOSS_NUMBER" title="盈亏数" width="80" align="right" footer-align="right">
+        <vxe-column field="PROFIT_LOSS_NUMBER" width="80" align="right" footer-align="right">
+          <template #header>
+            <span style="color: #f56c6c">盈亏数</span>
+          </template>
           <template #default="{ row }">
             <span
+              v-if="!isNonCharge(row)"
               :class="{
                 'profit-loss-positive': Number(row.PROFIT_LOSS_NUMBER) > 0,
                 'profit-loss-negative': Number(row.PROFIT_LOSS_NUMBER) < 0
@@ -335,7 +342,10 @@
             </el-select>
           </template>
         </vxe-column>
-        <vxe-column field="PROFIT_LOSS_REMARK" title="盈亏备注" min-width="150" show-overflow :edit-render="{}">
+        <vxe-column field="PROFIT_LOSS_REMARK" min-width="150" show-overflow :edit-render="{}">
+          <template #header>
+            <span style="color: #f56c6c">盈亏备注</span>
+          </template>
           <template #edit="{ row }">
             <el-input
               v-model="row.PROFIT_LOSS_REMARK"
@@ -820,7 +830,7 @@ export default {
             d.CURRENT_STOCK_QTY, d.ACTUAL_STOCK_QTY, d.CHARGING_QTY
           ];
           if (includeProfitLoss) {
-            rowData.push(d.PROFIT_LOSS_NUMBER);
+            rowData.push(this.isNonCharge(d) ? '' : d.PROFIT_LOSS_NUMBER);
           }
           rowData.push(
             d.VARIETIE_CODE_NEW, d.VARIETIE_NAME,
@@ -1239,6 +1249,9 @@ export default {
     formatterPrice({ cellValue }) {
       if (cellValue == null || cellValue === '') return '';
       return Number(cellValue).toFixed(2);
+    },
+    isNonCharge(row) {
+      return row.IS_CHARGE === 0 || row.IS_CHARGE === '0';
     },
     regionLabel(code) {
       if (code === null || code === undefined || code === 0 || code === '0') return '';
