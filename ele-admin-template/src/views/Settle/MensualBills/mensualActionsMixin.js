@@ -378,6 +378,8 @@ export default {
       const statusRes = await api.getMonthDeptSignStatus(this.selectedMonth.ID);
       const list = statusRes.result || [];
       this.cloudSignStatusRows = list;
+      this.cloudSignDeptKeyword = '';
+      this.cloudSignStatusFilter = '';
       this.cloudSignConfirmVisible = true;
       const confirmed = await new Promise((resolve) => {
         this.cloudSignConfirmResolve = resolve;

@@ -250,7 +250,7 @@
     <el-dialog
       title="科室月结明细表 · 云签状态确认"
       :visible.sync="cloudSignConfirmVisible"
-      width="720px"
+      width="780px"
       append-to-body
       :close-on-click-modal="false"
       @close="resolveCloudSignConfirm(false)"
@@ -259,7 +259,29 @@
         已双签 {{ cloudSignBothCount }} 个，仅签领用 {{ cloudSignOnlyReceiverCount }} 个，仅签审核 {{ cloudSignOnlyAuditorCount }} 个，未签 {{ cloudSignNoneCount }} 个。
         确认后将统一打印全部科室（已签科室带章，未签留空）。
       </p>
-      <el-table :data="cloudSignStatusRows" border stripe size="mini" max-height="360">
+      <div class="cloud-sign-filter">
+        <el-input
+          v-model="cloudSignDeptKeyword"
+          size="mini"
+          clearable
+          placeholder="科室名称"
+          style="width: 180px"
+        />
+        <el-select
+          v-model="cloudSignStatusFilter"
+          size="mini"
+          clearable
+          placeholder="签章状态"
+          style="width: 140px"
+        >
+          <el-option label="已双签" value="both" />
+          <el-option label="仅签领用" value="onlyReceiver" />
+          <el-option label="仅签审核" value="onlyAuditor" />
+          <el-option label="未签" value="none" />
+        </el-select>
+        <span class="cloud-sign-filter-count">当前 {{ filteredCloudSignStatusRows.length }} / {{ cloudSignStatusRows.length }}</span>
+      </div>
+      <el-table :data="filteredCloudSignStatusRows" border stripe size="mini" max-height="360">
         <el-table-column prop="deptTwoName" label="科室" min-width="140" show-overflow-tooltip />
         <el-table-column label="领用" width="150">
           <template slot-scope="{ row }">
@@ -278,6 +300,7 @@
         <el-table-column prop="statusLabel" label="状态" width="90" />
       </el-table>
       <span slot="footer">
+        <el-button size="mini" @click="exportCloudSignStatus">导出</el-button>
         <el-button size="mini" @click="resolveCloudSignConfirm(false)">取消</el-button>
         <el-button size="mini" type="primary" @click="resolveCloudSignConfirm(true)">确认打印</el-button>
       </span>
@@ -286,6 +309,7 @@
 </template>
 
 <script>
+import { utils, writeFile } from 'xlsx';
 import * as api from '@/api/Settle/MensualBills';
 import mensualActionsMixin from '../mensualActionsMixin';
 import {
@@ -328,7 +352,9 @@ export default {
       pendingSureJson: '',
       cloudSignConfirmVisible: false,
       cloudSignStatusRows: [],
-      cloudSignConfirmResolve: null
+      cloudSignConfirmResolve: null,
+      cloudSignDeptKeyword: '',
+      cloudSignStatusFilter: ''
     };
   },
   computed: {
@@ -343,6 +369,18 @@ export default {
     },
     cloudSignNoneCount() {
       return this.cloudSignStatusRows.filter((r) => !r.receiverSigned && !r.auditorSigned).length;
+    },
+    filteredCloudSignStatusRows() {
+      const kw = (this.cloudSignDeptKeyword || '').trim().toLowerCase();
+      const status = this.cloudSignStatusFilter;
+      return this.cloudSignStatusRows.filter((r) => {
+        if (kw && !(r.deptTwoName || '').toLowerCase().includes(kw)) return false;
+        if (status === 'both' && !r.bothSigned) return false;
+        if (status === 'onlyReceiver' && !(r.receiverSigned && !r.auditorSigned)) return false;
+        if (status === 'onlyAuditor' && !(!r.receiverSigned && r.auditorSigned)) return false;
+        if (status === 'none' && !(!r.receiverSigned && !r.auditorSigned)) return false;
+        return true;
+      });
     },
     showHerpCol() {
       return ['nyd', 'bd', 'bdrm', 'stzx', 'stse', 'csyy'].includes(this.hp);
@@ -411,6 +449,23 @@ export default {
     sendStateLabel,
     approvalStateLabel,
     deptStateLabel,
+    exportCloudSignStatus() {
+      const rows = this.filteredCloudSignStatusRows || [];
+      if (!rows.length) {
+        this.$message.warning('当前筛选结果为空，无法导出');
+        return;
+      }
+      const sheetData = rows.map((r) => ({
+        科室: r.deptTwoName || '',
+        领用: r.receiverSigned ? (r.receiverSignTime || '已签') : '未签',
+        审核人: r.auditorSigned ? (r.auditorSignTime || '已签') : '未签',
+        状态: r.statusLabel || ''
+      }));
+      const ws = utils.json_to_sheet(sheetData);
+      const wb = utils.book_new();
+      utils.book_append_sheet(wb, ws, '云签状态');
+      writeFile(wb, `科室月结明细云签状态_${Date.now()}.xlsx`);
+    },
     async handleMonthSearch() {
       await this.loadMonthList();
       if (!this.monthRows.length) {
@@ -676,6 +731,19 @@ export default {
   color: #606266;
   font-size: 13px;
   line-height: 1.5;
+}
+
+.cloud-sign-filter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.cloud-sign-filter-count {
+  color: #909399;
+  font-size: 12px;
 }
 
 :deep(.el-form-item) {
