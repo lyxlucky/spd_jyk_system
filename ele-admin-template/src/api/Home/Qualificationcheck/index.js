@@ -15,9 +15,20 @@ export async function getSupplierList(data) {
     formataData.state = '';
     formataData.field = '';
     formataData.order = '';
-    formataData.enable = data.where.value ? data.where.value : '1';
-    formataData.supZzState = data.where.supplierValue ? data.where.supplierValue : '0';
-    formataData.varZzState = data.where.varietieValue ? data.where.varietieValue : '';
+    formataData.enable =
+      data.where.value === undefined || data.where.value === null
+        ? '1'
+        : data.where.value;
+    formataData.supZzState =
+      data.where.supplierValue === undefined ||
+      data.where.supplierValue === null ||
+      data.where.supplierValue === ''
+        ? '0'
+        : data.where.supplierValue;
+    formataData.varZzState =
+      data.where.varietieValue === undefined || data.where.varietieValue === null
+        ? ''
+        : data.where.varietieValue;
     let req = formdataify(formataData);
     const res = await request.post('/Supplier/GetListZzsh',req);
     const isEncrypt = store.state.user.isEncrypt;
