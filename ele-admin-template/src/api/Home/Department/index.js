@@ -469,7 +469,7 @@ export async function upTwoAudit(deptOneCode, varietieCodes, tag) {
   return res.data;
 }
 
-/** 按近一年消耗批量覆盖授权总量为七天用量（无消耗跳过） */
+/** 按近一年消耗批量覆盖授权总量为七天用量（无消耗跳过；deptOneCode 为空=全部一级科室） */
 export async function batchSetWeekAuthLimitByYearConsume(deptOneCode) {
   const fd = formdataify({ Token: getToken(), deptOneCode: deptOneCode ?? '' });
   const res = await request.post('/DeptOneBulkCargoAuthVar/BatchSetWeekAuthLimitByYearConsume', fd);
