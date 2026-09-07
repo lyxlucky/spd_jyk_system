@@ -40,6 +40,7 @@
         <el-button type="danger" plain :disabled="!selected.length" @click="setShare(0)">取消共有库存</el-button>
         <el-button plain :disabled="!selected.length" @click="setAudit(1)">设置二级审批</el-button>
         <el-button type="danger" plain :disabled="!selected.length" @click="setAudit(0)">取消二级审批</el-button>
+        <el-button v-if="showWeekAuthByYear" type="primary" plain :disabled="!deptOneCode" :loading="weekAuthLoading" @click="setWeekAuthByYear">按近一年消耗设一周用量</el-button>
       </el-form-item>
     </el-form>
     <div class="table-scroll">
@@ -128,7 +129,9 @@ export default {
       selected: [],
       page: { page: 1, size: 15 },
       sort: { field: '', order: '' },
-      showQrOne: ['nyd', 'lg'].includes(HOME_HP)
+      showQrOne: ['nyd', 'lg'].includes(HOME_HP),
+      showWeekAuthByYear: HOME_HP === 'szhn',
+      weekAuthLoading: false
     };
   },
   computed: {
@@ -274,6 +277,27 @@ export default {
         this.load(this.page.page);
       } catch (e) {
         if (e !== 'cancel') Message.error(e.message);
+      }
+    },
+    async setWeekAuthByYear() {
+      if (!this.deptOneCode) {
+        Message.warning('请先选择一级科室');
+        return;
+      }
+      try {
+        await MessageBox.confirm(
+          '将按该一级科室下所有二级近一年消耗（含冲红/退货）计算七天用量，并覆盖已有授权总量；无消耗条目不处理。是否继续？',
+          '提示',
+          { type: 'warning' }
+        );
+        this.weekAuthLoading = true;
+        const d = await api.batchSetWeekAuthLimitByYearConsume(this.deptOneCode);
+        Message.success(d.msg || '操作成功');
+        this.load(this.page.page);
+      } catch (e) {
+        if (e !== 'cancel') Message.error(e.message);
+      } finally {
+        this.weekAuthLoading = false;
       }
     },
     getAuthCount() {

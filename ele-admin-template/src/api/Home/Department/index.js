@@ -469,6 +469,15 @@ export async function upTwoAudit(deptOneCode, varietieCodes, tag) {
   return res.data;
 }
 
+/** 按近一年消耗批量覆盖授权总量为七天用量（无消耗跳过） */
+export async function batchSetWeekAuthLimitByYearConsume(deptOneCode) {
+  const fd = formdataify({ Token: getToken(), deptOneCode: deptOneCode ?? '' });
+  const res = await request.post('/DeptOneBulkCargoAuthVar/BatchSetWeekAuthLimitByYearConsume', fd);
+  if (res.data?.code === 301) throw new Error(res.data.msg);
+  if (okCode(res.data?.code)) return res.data;
+  throw new Error(res.data?.msg || '按近一年消耗设置一周用量失败');
+}
+
 /** 一级科室已授权品种编码列表（注意后端参数名为 deptOndeCode） */
 export async function getDeptOneAuthedVarietieCodes(deptOneCode) {
   const res = await request.get('/DeptOneBulkCargoAuthVar/GetDeptAuthedVarietieCodes', {
