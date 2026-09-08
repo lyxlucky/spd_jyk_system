@@ -131,7 +131,7 @@ export default {
       page: { page: 1, size: 15 },
       sort: { field: '', order: '' },
       showQrOne: ['nyd', 'lg'].includes(HOME_HP),
-      showWeekAuthByYear: HOME_HP === 'szhn',
+      showWeekAuthByYear: HOME_HP === 'szlhfy',
       weekAuthLoading: false
     };
   },
