@@ -21,6 +21,22 @@
                   @click="showUploadDialogVisible"
                   >上传植入单</el-button
                 >
+                <el-button
+                  v-if="homeHp === 'fszxy'"
+                  type="primary"
+                  plain
+                  size="mini"
+                  :disabled="!currentConsumeA1"
+                  :loading="foshanSpdLoading"
+                  @click="onPushFoshanUsage(false)"
+                >上传佛大三院高值使用记录</el-button>
+                <el-button
+                  v-if="homeHp === 'fszxy'"
+                  size="mini"
+                  :disabled="!currentConsumeA1"
+                  :loading="foshanSpdLoading"
+                  @click="onPushFoshanUsage(true)"
+                >补传佛大三院高值使用记录</el-button>
               </div>
               <el-form class="consume-form" :model="consumeForm" size="mini">
                 <el-form-item>
@@ -292,6 +308,7 @@
   import { Loading } from 'element-ui';
   import { utils, writeFile } from 'xlsx';
   import { HOME_HP, BACK_BASE_URL, TOKEN_STORE_NAME } from '@/config/setting';
+  import { pushHighValueUsage, retryHighValueUsage } from '@/api/FoshanSpd';
 
   export default {
     data() {
@@ -320,6 +337,8 @@
         currentConsumeA2: null,
         currentConsumeA3: null,
         currentGtTbTable1gt: null,
+        homeHp: HOME_HP,
+        foshanSpdLoading: false,
 
         //表格数据源
         ReceiptOrderList: [],
@@ -921,6 +940,27 @@
               });
           })
           .finally(() => {});
+      },
+      async onPushFoshanUsage(retry) {
+        if (!this.currentConsumeA1) {
+          this.$message.warning('请选择收货单号');
+          return;
+        }
+        this.foshanSpdLoading = true;
+        try {
+          await this.$confirm(
+            `${retry ? '补传' : '上传'}收货单 [${this.currentConsumeA1.Delivery_Note_Number}] 的高值耗材使用记录吗？`,
+            '佛大三院接口',
+            { type: 'warning' }
+          );
+          const action = retry ? retryHighValueUsage : pushHighValueUsage;
+          const res = await action(this.currentConsumeA1);
+          this.$alert(res?.msg || '高值使用记录接口调用完成', '提示');
+        } catch (e) {
+          if (e !== 'cancel' && e !== 'close') this.$message.error(e.message || '高值使用记录接口调用失败');
+        } finally {
+          this.foshanSpdLoading = false;
+        }
       },
       //点击生成
       onGeneratePackage(e) {

@@ -41,7 +41,8 @@ const getRequestTimeout = () => {
     'xhnw': 3600000,   // 1小时
     'stse': 3600000,
     'gzbjww': 3600000,
-    'gzbjnw': 3600000
+    'gzbjnw': 3600000,
+    'fszxy': 3600000
   };
   console.log(env,envTimeoutMap[env]);
   return envTimeoutMap[env] || 3600000;
@@ -97,7 +98,8 @@ const getHomeHp = () => {
     'xhnw': 'xh',    // 新华内网
     'stse': 'stse',
     'gzbjww': 'gzbj',
-    'gzbjnw': 'gzbj'
+    'gzbjnw': 'gzbj',
+    'fszxy': 'fszxy'
   };
   return envHpMap[env] || 'bd';
 }

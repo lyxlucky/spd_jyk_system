@@ -387,6 +387,7 @@
         <vxe-column field="DeptCode" title="HIS科室编码" width="110" />
         <vxe-column field="AreaCode" title="库房/库区编码" width="130" />
         <vxe-column field="AreaName" title="库房/库区名称" width="150" />
+        <vxe-column field="BarcodeNumber" title="定数码" width="150" />
         <vxe-column field="ChargeCode" title="计费编码" width="110" />
         <vxe-column field="ChargeName" title="品种名称" min-width="220" />
         <vxe-column field="Specification" title="规格" width="160" />
@@ -421,6 +422,7 @@
         <vxe-column field="DeptCode" title="HIS科室编码" width="110" />
         <vxe-column field="AreaCode" title="库房/库区编码" width="130" />
         <vxe-column field="AreaName" title="库房/库区名称" width="150" />
+        <vxe-column field="BarcodeNumber" title="定数码" width="150" />
         <vxe-column field="ChargeCode" title="计费编码" width="110" />
         <vxe-column field="ChargeName" title="品种名称" min-width="220" />
         <vxe-column field="Specification" title="规格" width="160" />

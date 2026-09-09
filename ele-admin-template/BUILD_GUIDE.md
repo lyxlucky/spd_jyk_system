@@ -79,6 +79,12 @@ npm run build:selhww     # 龙华院区外网
 npm run build:stse    # 汕头市二内网
 ```
 
+#### 浙江省人民医院毕节医院环境
+```bash
+npm run build:gzbjww  # 外网，部署路径 /jyk/
+npm run build:gzbjnw  # 内网，部署路径 /jyknw/
+```
+
 ## 环境配置说明
 
 每个环境都有对应的 `.env.{环境名}` 配置文件，包含：

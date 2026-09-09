@@ -96,6 +96,27 @@
               导出
             </el-button>
             <el-button size="mini" @click="onShowLc">临采详情</el-button>
+            <el-button
+              v-if="homeHp === 'fszxy'"
+              size="mini"
+              type="primary"
+              plain
+              :disabled="!monitorSelection.length"
+              :loading="foshanSpdLoading"
+              @click="onPushFoshanInventory(false)"
+            >
+              佛大三院库存上传
+            </el-button>
+            <el-button
+              v-if="homeHp === 'fszxy'"
+              size="mini"
+              plain
+              :disabled="!monitorSelection.length"
+              :loading="foshanSpdLoading"
+              @click="onPushFoshanInventory(true)"
+            >
+              佛大三院库存补传
+            </el-button>
             <el-button size="mini" type="primary" :disabled="!monitorSelection.length" @click="onGenerateStockUp">
               添加至已选备货单
             </el-button>
@@ -299,6 +320,7 @@ import StockUpDialog from '@/views/Task/BhInfo/components/StockUpDialog.vue';
 import LcNumDialog from './LcNumDialog.vue';
 import AllocateCreateDialog from './AllocateCreateDialog.vue';
 import { HOME_HP } from '@/config/setting';
+import { pushCenterInventory, retryCenterInventory } from '@/api/FoshanSpd';
 import {
   addBhXsDetalis,
   deletePickingDetails,
@@ -381,7 +403,8 @@ export default {
       planRemarkSaving: false,
       stockUpVisible: false,
       monitorRows: [],
-      currentMonitorRow: null
+      currentMonitorRow: null,
+      foshanSpdLoading: false
     };
   },
   computed: {
@@ -713,6 +736,27 @@ export default {
     },
     onShowLc() {
       this.lcVisible = true;
+    },
+    async onPushFoshanInventory(retry) {
+      if (!this.monitorSelection.length) {
+        this.$message.warning('请至少选中一条库存记录');
+        return;
+      }
+      this.foshanSpdLoading = true;
+      try {
+        await this.$confirm(
+          `${retry ? '补传' : '上传'}选中的库存记录吗？共${this.monitorSelection.length}条`,
+          '佛大三院接口',
+          { type: 'warning' }
+        );
+        const action = retry ? retryCenterInventory : pushCenterInventory;
+        const res = await action(this.monitorSelection);
+        this.$alert(res?.msg || '库存接口调用完成', '提示');
+      } catch (e) {
+        if (e !== 'cancel' && e !== 'close') this.$message.error(e.message || '库存接口调用失败');
+      } finally {
+        this.foshanSpdLoading = false;
+      }
     },
     toggleMonitorHeight() {
       this.monitorExpanded = !this.monitorExpanded;

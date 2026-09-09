@@ -177,6 +177,26 @@
               审批品种(佛山)
             </el-button>
             <el-button
+              v-if="showFoshanSpdBtn"
+              size="mini"
+              type="primary"
+              plain
+              :disabled="!selection.length"
+              :loading="foshanSpdLoading"
+              @click="onPushFoshanCatalog(false)"
+            >
+              佛大三院目录上传
+            </el-button>
+            <el-button
+              v-if="showFoshanSpdBtn"
+              size="mini"
+              :disabled="!selection.length"
+              :loading="foshanSpdLoading"
+              @click="onPushFoshanCatalog(true)"
+            >
+              佛大三院目录补传
+            </el-button>
+            <el-button
               v-if="showFsSyncBtn"
               size="mini"
               :disabled="!selection.length"
@@ -661,6 +681,7 @@ import {
   importSzsmBidInfo
 } from '@/api/Home/VarietyDataLzhMain';
 import { getVarietyImportTemplateAoa } from '../varietyImportTemplate';
+import { pushMaterialCatalog, retryMaterialCatalog } from '@/api/FoshanSpd';
 import {
   approvalVarietieCommit,
   sendVarToKuBo
@@ -751,6 +772,7 @@ export default {
       stopConLoading: false,
       oesSending: false,
       hpActionLoading: false,
+      foshanSpdLoading: false,
       importing: false,
       ybImporting: false,
       provinceImporting: false,
@@ -778,6 +800,7 @@ export default {
       showDhThreeBtn: HOME_HP === 'fszxy',
       showBdJfBtn: HOME_HP === 'bd',
       showFsApproveBtn: HOME_HP === 'fsdwrmyy' || HOME_HP === 'fszxy',
+      showFoshanSpdBtn: HOME_HP === 'fszxy',
       showFsSyncBtn: HOME_HP === 'fsdwrmyy',
       showFsdlHisBtn: HOME_HP === 'fsdl',
       showLglsHisBtn: HOME_HP === 'lgls',
@@ -1431,6 +1454,25 @@ export default {
     onSendFsApprove() {
       if (!this.ensureSelection()) return;
       this.runHpAction(() => sendFsApproveVar(this.selection, this.nickname, HOME_HP));
+    },
+    async onPushFoshanCatalog(retry) {
+      if (!this.ensureSelection()) return;
+      this.foshanSpdLoading = true;
+      try {
+        await this.$confirm(
+          `${retry ? '补传' : '上传'}选中的品种目录吗？共${this.selection.length}条`,
+          '佛大三院接口',
+          { type: 'warning' }
+        );
+        const action = retry ? retryMaterialCatalog : pushMaterialCatalog;
+        const res = await action(this.selection, 'U');
+        this.$alert(res?.msg || '目录接口调用完成', '提示');
+        this.reloadTable();
+      } catch (e) {
+        if (e !== 'cancel' && e !== 'close') this.$message.error(e.message || '目录接口调用失败');
+      } finally {
+        this.foshanSpdLoading = false;
+      }
     },
     onFsSyncBranch() {
       if (!this.ensureSelection()) return;

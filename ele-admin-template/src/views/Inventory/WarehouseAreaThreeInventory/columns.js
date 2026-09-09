@@ -74,7 +74,7 @@ export function getMaterialLocationDetailColumns() {
     { prop: 'PRE_DEDUCT_QTY', label: '预扣数量', width: 100, align: 'right', formatter: qtyFormatter('PRE_DEDUCT_QTY') },
     { prop: 'LAST_OPERATE_TIME', label: '最近业务时间', width: 170, align: 'center', formatter: timeFormatter('LAST_OPERATE_TIME') },
     { prop: 'DATA_STATUS', label: '数据状态', width: 140, align: 'center', showOverflowTooltip: true },
-    { columnKey: 'locationDetailAction', label: '操作', width: 130, align: 'center', fixed: 'right', slot: 'locationDetailAction', className: 'action-col' }
+    { columnKey: 'locationDetailAction', label: '操作', minWidth: 130, align: 'center', fixed: 'right', slot: 'locationDetailAction', className: 'action-col' }
   ];
 }
 

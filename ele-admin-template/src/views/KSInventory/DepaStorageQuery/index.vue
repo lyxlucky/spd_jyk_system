@@ -50,6 +50,27 @@
           <el-button size="small" type="primary" icon="el-icon-download" class="ele-btn-icon" @click="exportData">
             导出
           </el-button>
+          <el-button
+            v-if="homeHp === 'fszxy'"
+            size="small"
+            type="primary"
+            plain
+            :disabled="!selection.length"
+            :loading="foshanSpdLoading"
+            @click="onPushFoshanInventory(false)"
+          >
+            佛大三院库存上传
+          </el-button>
+          <el-button
+            v-if="homeHp === 'fszxy'"
+            size="small"
+            plain
+            :disabled="!selection.length"
+            :loading="foshanSpdLoading"
+            @click="onPushFoshanInventory(true)"
+          >
+            佛大三院库存补传
+          </el-button>
         </template>
 
         <!-- 操作列 -->
@@ -115,6 +136,11 @@ import {
   updateUserPassword
 } from '@/api/system/user';
 import { GetDeptInStockDetail } from '@/api/KSInventory/DepaStorageQuery';
+import { HOME_HP } from '@/config/setting';
+import {
+  pushDepartmentInventory,
+  retryDepartmentInventory
+} from '@/api/FoshanSpd';
 export default {
   name: 'DepaStorageQuery',
   components: {
@@ -388,7 +414,9 @@ export default {
         allCost: 0,
         allGoodsQty: 0,
         pageGoodsQty: 0
-      }
+      },
+      homeHp: HOME_HP,
+      foshanSpdLoading: false
     };
   },
   methods: {
@@ -612,6 +640,29 @@ export default {
       //     );
       //   }
       // });
+    },
+    async onPushFoshanInventory(retry) {
+      if (!this.selection.length) {
+        this.$message.warning('请至少选中一条库存记录');
+        return;
+      }
+      this.foshanSpdLoading = true;
+      try {
+        await this.$confirm(
+          `${retry ? '补传' : '上传'}选中的科室库存记录吗？共${this.selection.length}条`,
+          '佛大三院接口',
+          { type: 'warning' }
+        );
+        const action = retry
+          ? retryDepartmentInventory
+          : pushDepartmentInventory;
+        const res = await action(this.selection);
+        this.$alert(res?.msg || '库存接口调用完成', '提示');
+      } catch (e) {
+        if (e !== 'cancel' && e !== 'close') this.$message.error(e.message || '库存接口调用失败');
+      } finally {
+        this.foshanSpdLoading = false;
+      }
     },
     /* 打开导入弹窗 */
     openImport() {
