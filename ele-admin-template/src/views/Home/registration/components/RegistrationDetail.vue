@@ -343,6 +343,8 @@
               v-model="where.current.PROD_BIG_CLASS_CODE"
               placeholder="请选择"
               size="mini"
+              filterable
+              @change="onProdTypeChange"
             >
               <el-option
                 v-for="item in productTypeOptions"
@@ -371,6 +373,8 @@
               v-model="where.current.MGMT_CAT_CODE"
               placeholder="请选择"
               size="mini"
+              filterable
+              @change="onMgmtChange"
             >
               <el-option
                 v-for="item in MgmtOptions"
@@ -404,6 +408,7 @@
               v-model="where.current.SUPERVISE_CAT_CODE"
               placeholder="请选择"
               size="mini"
+              filterable
             >
               <el-option
                 v-for="item in RegulatoryOptions"
@@ -939,18 +944,61 @@
         this.factoryModalType = data;
         this.ManufactoryVisible = true;
       },
+      /** 产品类别变更：清空并重载管理类别、监管类别 */
+      async onProdTypeChange(code) {
+        this.where.current.MGMT_CAT_CODE = '';
+        this.where.current.SUPERVISE_CAT_CODE = '';
+        this.MgmtOptions = [];
+        this.RegulatoryOptions = [];
+        if (!code) return;
+        try {
+          await this.initMgmtList();
+          if (this.MgmtOptions.length) {
+            const first = this.MgmtOptions[0].value;
+            this.where.current.MGMT_CAT_CODE =
+              first == null ? '' : String(first);
+            await this.onMgmtChange(this.where.current.MGMT_CAT_CODE);
+          }
+        } catch (e) {
+          this.$message.error(e.message || '加载管理类别失败');
+        }
+      },
+      /** 管理类别变更：清空并重载监管类别 */
+      async onMgmtChange(code) {
+        this.where.current.SUPERVISE_CAT_CODE = '';
+        this.RegulatoryOptions = [];
+        if (!code) return;
+        try {
+          await this.initRegulatoryList();
+          if (this.RegulatoryOptions.length) {
+            const first = this.RegulatoryOptions[0].value;
+            this.where.current.SUPERVISE_CAT_CODE =
+              first == null ? '' : String(first);
+          }
+        } catch (e) {
+          this.$message.error(e.message || '加载监管类别失败');
+        }
+      },
       initRegulatoryList() {
         return new Promise((resolve, reject) => {
-          GetRegulatoryListByMgmnID(this.where.current.MGMT_CAT_CODE)
+          const mgmtCode = this.where.current.MGMT_CAT_CODE;
+          if (!mgmtCode) {
+            this.RegulatoryOptions = [];
+            resolve();
+            return;
+          }
+          GetRegulatoryListByMgmnID(mgmtCode)
             .then((res) => {
               if (res.code == 200) {
-                this.RegulatoryOptions = res.result.map((item) => ({
+                this.RegulatoryOptions = (res.result || []).map((item) => ({
                   value: item.Regulatory_id,
-                  label: item.Regulatory_Cat_Code + item.Regulatory_Cat_Name
+                  label:
+                    (item.Regulatory_Cat_Code || '') +
+                    (item.Regulatory_Cat_Name || '')
                 }));
                 resolve();
               } else {
-                reject(new Error('Failed to fetch product type list'));
+                reject(new Error('Failed to fetch regulatory list'));
               }
             })
             .catch((error) => {
@@ -961,16 +1009,22 @@
       },
       initMgmtList() {
         return new Promise((resolve, reject) => {
-          GetMgmtListByProTypeID(this.where.current.PROD_BIG_CLASS_CODE)
+          const prodCode = this.where.current.PROD_BIG_CLASS_CODE;
+          if (!prodCode) {
+            this.MgmtOptions = [];
+            resolve();
+            return;
+          }
+          GetMgmtListByProTypeID(prodCode)
             .then((res) => {
               if (res.code == 200) {
-                this.MgmtOptions = res.result.map((item) => ({
+                this.MgmtOptions = (res.result || []).map((item) => ({
                   value: item.Mgmt_Cat_Code,
                   label: item.Mgmt_Cat_Name
                 }));
                 resolve();
               } else {
-                reject(new Error('Failed to fetch product type list'));
+                reject(new Error('Failed to fetch mgmt list'));
               }
             })
             .catch((error) => {
@@ -1072,10 +1126,11 @@
             return this.initProdInfoItem(newValue);
           })
           .then(() => {
-            return this.initRegulatoryList();
+            // 先管理类别，再监管类别（监管依赖管理类别）
+            return this.initMgmtList();
           })
           .then(() => {
-            return this.initMgmtList();
+            return this.initRegulatoryList();
           })
           .then(() => {
             return this.getPictureInfo(newValue);

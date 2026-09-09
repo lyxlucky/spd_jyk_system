@@ -1,6 +1,7 @@
 import request from '@/utils/request';
 import { formdataify } from '@/utils/formdataify';
 import { TOKEN_STORE_NAME, HOME_HP, B2B_BASE_URL, BACK_BASE_URL } from '@/config/setting';
+// B2B_BASE_URL 仍用于发票号等少数直连；月结发送已改走 SPD 代理
 
 function token() {
   return sessionStorage.getItem(TOKEN_STORE_NAME);
@@ -231,21 +232,39 @@ export function getTextExport(action, params) {
   return getAction(action, params);
 }
 
-/** B2B GET 月结推送 */
-export async function fetchB2bGet(url) {
-  const res = await fetch(url, { method: 'GET' });
-  return res.json();
+/**
+ * 月结发送 B2B：只调 SPD，由后端按 CONFIG.b2bUrl 代调 B2B
+ * （对齐收货作业 getb2bOrderInfo，避免浏览器直连 B2B）
+ */
+export async function sendMonthToB2b(monthId, hp = HOME_HP) {
+  const res = await request.get('/MonthClearing/SendMonthToB2b', {
+    params: {
+      Token: token(),
+      MonthID: monthId,
+      hp: hp || HOME_HP
+    },
+    timeout: 600000
+  });
+  if (res.data.code == 200) return res.data;
+  return Promise.reject(new Error(res.data.msg || '发送失败'));
 }
 
-/** B2B POST 发票信息 */
+/**
+ * 月结明细推送 B2B：只调 SPD，由后端代发 getMonthlyInvoicInfo
+ */
 export async function postB2bMonthlyInvoic(json) {
-  const base = (B2B_BASE_URL || '').replace(/\/$/, '');
-  const body = new URLSearchParams({ json });
-  const res = await fetch(`${base}/api/MonthlyInvoic/getMonthlyInvoicInfo`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: body.toString()
-  });
+  const res = await request.post(
+    '/MonthClearing/PostMonthToB2b',
+    formdataify({ Token: token(), json }),
+    { timeout: 600000 }
+  );
+  if (res.data.code == 200) return res.data;
+  return Promise.reject(new Error(res.data.msg || 'B2B发送失败'));
+}
+
+/** @deprecated 请使用 sendMonthToB2b；保留以免旧引用直连失败 */
+export async function fetchB2bGet(url) {
+  const res = await fetch(url, { method: 'GET' });
   return res.json();
 }
 

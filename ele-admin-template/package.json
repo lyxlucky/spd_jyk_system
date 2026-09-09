@@ -42,6 +42,8 @@
     "build:stse": "vue-cli-service build --mode stse",
     "build:gzbjww": "vue-cli-service build --mode gzbjww",
     "build:gzbjnw": "vue-cli-service build --mode gzbjnw",
+    "build:szssww": "vue-cli-service build --mode szssww",
+    "build:szssnw": "vue-cli-service build --mode szssnw",
     "lint": "vue-cli-service lint",
     "clean:lib": "rimraf node_modules"
   },

@@ -57,7 +57,8 @@ export function getVarietyImportTemplateAoa() {
     '是否捐赠',
     '型号',
     '规格',
-    '适应症提示'
+    '适应症提示',
+    '投标企业'
   ];
   const tips = [
     '说明：【必填】填写品种(材料)编码；本行导入时自动跳过，无需手动删除',
@@ -113,7 +114,8 @@ export function getVarietyImportTemplateAoa() {
     '选填：0=否；1=是',
     isBdrm ? '【必填】填写型号' : '选填：型号（bdrm必填）',
     isBdrm ? '【必填】填写规格' : '选填：规格（bdrm必填）',
-    '选填：适应症提示'
+    '选填：适应症提示',
+    '选填：须为生产企业维护中已存在的厂家名称，系统将按名称匹配统一社会信用代码'
   ];
   const sample = [
     '示例V000001',
@@ -169,6 +171,7 @@ export function getVarietyImportTemplateAoa() {
     '0',
     'MSL30',
     '穿刺刀',
+    '',
     ''
   ];
   return [headers, tips, sample];

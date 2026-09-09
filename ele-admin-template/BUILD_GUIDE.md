@@ -85,6 +85,12 @@ npm run build:gzbjww  # 外网，部署路径 /jyk/
 npm run build:gzbjnw  # 内网，部署路径 /jyknw/
 ```
 
+#### 深圳市深汕人民医院环境
+```bash
+npm run build:szssww  # 深汕外网
+npm run build:szssnw  # 深汕内网
+```
+
 ## 环境配置说明
 
 每个环境都有对应的 `.env.{环境名}` 配置文件，包含：

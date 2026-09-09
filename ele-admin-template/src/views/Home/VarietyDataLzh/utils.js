@@ -34,6 +34,15 @@ export function isVarietyEditDisabled(store) {
   );
 }
 
+/** CONFIG_TYPE=VAR_EPPLUS_BATCH：存在且 CONFIG_VALUE 为正整数时，高性能导出按该条数分批；无配置则全量单次导出 */
+export const VAR_EPPLUS_BATCH_CONFIG_KEY = 'VAR_EPPLUS_BATCH';
+
+export function parseVarEpplusBatchSize(configValue) {
+  if (configValue == null || configValue === '') return 0;
+  const n = parseInt(String(configValue).trim(), 10);
+  return Number.isFinite(n) && n > 0 ? n : 0;
+}
+
 /** 基础资料-品种启用权限 */
 export function canEnableVariety(store) {
   const pg = store?.state?.user?.info?.permission_group || [];

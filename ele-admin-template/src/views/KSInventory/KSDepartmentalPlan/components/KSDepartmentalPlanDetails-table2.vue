@@ -45,6 +45,7 @@
           :height="tableHeight"
           full-height="calc(100vh - 100px)"
           cache-key="KSDepartmentalPlanDetailTable"
+          :row-class-name="detailRowClassName"
           @selection-change="onSelectionChange"
         >
       <!-- 表头工具栏 -->
@@ -77,8 +78,14 @@
         </label>
       </template> -->
 
+      <template v-slot:DTL_IS_DELETE="{ row }">
+        <el-tag v-if="isDetailDeleted(row)" type="info" size="mini">已剔除</el-tag>
+        <el-tag v-else type="success" size="mini">正常</el-tag>
+      </template>
       <template v-slot:PlanQty="{ row }">
+        <span v-if="isDetailDeleted(row)">{{ row.PlanQty }}</span>
         <el-input
+          v-else
           v-model="row.PlanQty"
           :min="0"
           :max="99999999"
@@ -102,15 +109,20 @@
         </el-tooltip>
       </template>
       <template v-slot:REMARK="{ row }">
-        <el-link
-          v-if="row.REMARK == null"
-          type="info"
-          @click="OpenUpApplyPlanBZBox(row.ID)"
-          >无</el-link
-        >
-        <el-tag v-else type="primary" size="mini" @click="OpenUpApplyPlanBZBox(row.ID)">{{
-          row.REMARK
-        }}</el-tag>
+        <template v-if="isDetailDeleted(row)">
+          <span>{{ row.REMARK || '无' }}</span>
+        </template>
+        <template v-else>
+          <el-link
+            v-if="row.REMARK == null"
+            type="info"
+            @click="OpenUpApplyPlanBZBox(row.ID)"
+            >无</el-link
+          >
+          <el-tag v-else type="primary" size="mini" @click="OpenUpApplyPlanBZBox(row.ID)">{{
+            row.REMARK
+          }}</el-tag>
+        </template>
       </template>
       <template v-slot:State="{ row }">
         <el-tag v-if="row.State == 0" type="success" size="mini">新增</el-tag>
@@ -359,7 +371,8 @@
             type: 'selection',
             width: 45,
             align: 'center',
-            fixed: 'left'
+            fixed: 'left',
+            selectable: (row) => !this.isDetailDeleted(row)
           },
           {
             label: '序',
@@ -368,6 +381,15 @@
             width: 45,
             align: 'center',
             showOverflowTooltip: true,
+            fixed: 'left'
+          },
+          {
+            columnKey: 'DTL_IS_DELETE',
+            prop: 'DTL_IS_DELETE',
+            slot: 'DTL_IS_DELETE',
+            label: '明细状态',
+            align: 'center',
+            width: 90,
             fixed: 'left'
           },
           // {
@@ -885,7 +907,10 @@
               count: displayList.length,
               list: displayList
             };
-            this.datasourceList = processedResult;
+            // 业务操作（暂存/提交等）只用未剔除明细
+            this.datasourceList = processedResult.filter(
+              (item) => !this.isDetailDeleted(item)
+            );
             this.sumNumber = res.sumNumber;
             this.sumAount = Number(res.sumAount).toFixed(2);
 
@@ -893,6 +918,12 @@
           }
         );
         return data;
+      },
+      isDetailDeleted(row) {
+        return row && String(row.DTL_IS_DELETE) === '0';
+      },
+      detailRowClassName({ row }) {
+        return this.isDetailDeleted(row) ? 'is-detail-deleted' : '';
       },
       changeSum() {
         this.form2.sum =
@@ -995,6 +1026,7 @@
               loading.close();
               const array = [
                 [
+                  '明细状态',
                   '品种编码',
                   '品种全称',
                   '型号/规格',
@@ -1007,6 +1039,7 @@
               ];
               res.result.forEach((d) => {
                 array.push([
+                  String(d.DTL_IS_DELETE) === '0' ? '已剔除' : '正常',
                   d.VarCode,
                   d.VarName,
                   d.GG,
@@ -1155,5 +1188,14 @@
 
 .ks-dept-plan-detail >>> .ele-table-tool .ele-table-tool-title {
   margin: 0;
+}
+
+.ks-dept-plan-detail >>> .el-table .is-detail-deleted {
+  color: #909399;
+  background-color: #f5f7fa !important;
+}
+
+.ks-dept-plan-detail >>> .el-table .is-detail-deleted td {
+  background-color: #f5f7fa !important;
 }
 </style>

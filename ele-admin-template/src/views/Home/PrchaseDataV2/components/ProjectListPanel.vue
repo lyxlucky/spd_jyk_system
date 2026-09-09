@@ -12,6 +12,7 @@
         <template v-slot:actions>
           <el-button
             v-permission="'export-PrchaseDataV2-dlcgdc'"
+            size="mini"
             icon="el-icon-download"
             :loading="exporting"
             @click="onExportMain"
@@ -20,22 +21,24 @@
           </el-button>
           <el-button
             v-permission="'export-PrchaseDataV2-cgmxdc'"
+            size="mini"
             icon="el-icon-download"
             :loading="exportingDetail"
             @click="onExportDetail"
           >
             导出明细
           </el-button>
-          <el-button type="primary" plain @click="openAdd">带量采购</el-button>
-          <el-button @click="openImportChoice('purchase')">导入</el-button>
-          <el-button @click="openImportChoice('var')">导入关联品种</el-button>
+          <el-button size="mini" type="primary" plain @click="openAdd">带量采购</el-button>
+          <el-button size="mini" @click="openImportChoice('purchase')">导入</el-button>
+          <el-button size="mini" @click="openImportChoice('var')">导入关联品种</el-button>
           <el-button
             v-permission="'export-PrchaseDataV2-ambdc'"
+            size="mini"
             @click="onExportJc"
           >
             按集采模板导出
           </el-button>
-          <el-button :disabled="!selection.length" @click="onLinkByXmNum">
+          <el-button size="mini" :disabled="!selection.length" @click="onLinkByXmNum">
             按集项目编号关联品种
           </el-button>
         </template>
@@ -60,7 +63,7 @@
           :page-size="30"
           :page-sizes="[30, 50, 100, 150, 200, 300, 99999]"
           :row-class-name="rowClass"
-          cache-key="HomePrchaseDataV2ProjectTable"
+          cache-key="HomePrchaseDataV2ProjectTable_v2"
           @sort-change="onSortChange"
         >
       <template v-slot:source="{ row }">
@@ -77,12 +80,14 @@
       <template v-slot:wcl="{ row }">{{ Number(row.WCL || 0).toFixed(2) }}%</template>
       <template v-slot:shProcess="{ row }">{{ fmtTimeProgress(row) }}</template>
       <template v-slot:action="{ row }">
-        <el-button type="text" size="mini" @click="openDetail(row)">详情</el-button>
-        <el-button type="text" size="mini" @click="openEdit(row)">编辑</el-button>
-        <el-button type="text" size="mini" @click="openDeptLimit(row)">科室监测量</el-button>
-        <el-button type="text" size="mini" @click="openPickVariety(row)">关联品种</el-button>
-        <el-button type="text" size="mini" @click="openVariety(row)">品种</el-button>
-        <el-button type="text" size="mini" class="danger-link" @click="onDelete(row)">删除</el-button>
+        <div class="table-actions">
+          <el-button type="text" size="mini" @click="openDetail(row)">详情</el-button>
+          <el-button type="text" size="mini" @click="openEdit(row)">编辑</el-button>
+          <el-button type="text" size="mini" @click="openDeptLimit(row)">科室监测量</el-button>
+          <el-button type="text" size="mini" @click="openPickVariety(row)">关联品种</el-button>
+          <el-button type="text" size="mini" @click="openVariety(row)">品种</el-button>
+          <el-button type="text" size="mini" class="danger-link" @click="onDelete(row)">删除</el-button>
+        </div>
       </template>
         </ele-pro-table>
       </div>
@@ -238,8 +243,8 @@ export default {
         {
           columnKey: 'action',
           label: '操作',
-          width: 420,
-          align: 'center',
+          width: 380,
+          align: 'left',
           fixed: 'left',
           slot: 'action'
         },
@@ -612,6 +617,20 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 10px;
+}
+
+.table-actions {
+  display: inline-flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  white-space: nowrap;
+  gap: 0;
+}
+
+.table-actions :deep(.el-button--text) {
+  margin: 0;
+  padding: 0 6px;
+  white-space: nowrap;
 }
 
 .danger-link {

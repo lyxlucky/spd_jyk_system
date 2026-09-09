@@ -459,11 +459,14 @@
           <el-input-number
             v-model="editDtlFormData.SINGLE_LC_NUMS"
             :min="1"
-            :max="99"
+            :max="editDtlFormData.LC_ONCE_APPLY_QTY > 0 ? editDtlFormData.LC_ONCE_APPLY_QTY : 99"
             size="mini"
             controls-position="right"
             style="width: 100%"
           />
+          <div v-if="editDtlFormData.LC_ONCE_APPLY_QTY > 0" style="color:#E6A23C;margin-top:4px;">
+            单次申领上限：{{ editDtlFormData.LC_ONCE_APPLY_QTY }}
+          </div>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -835,6 +838,12 @@
             align: 'center'
           },
           {
+            prop: 'LC_ONCE_APPLY_QTY',
+            label: '单次申领上限',
+            width: 120,
+            align: 'center'
+          },
+          {
             prop: 'LC_TIMES',
             label: '已临采次数',
             width: 120,
@@ -858,7 +867,8 @@
           VARIETIE_NAME: '',
           SPECIFICATION_OR_TYPE: '',
           PLAN_LC_TIMES: 10,
-          SINGLE_LC_NUMS: 1
+          SINGLE_LC_NUMS: 1,
+          LC_ONCE_APPLY_QTY: 0
         },
         editDtlFormRules: {
           PLAN_LC_TIMES: [
@@ -1293,7 +1303,8 @@
           VARIETIE_NAME: row.VARIETIE_NAME,
           SPECIFICATION_OR_TYPE: row.SPECIFICATION_OR_TYPE,
           PLAN_LC_TIMES: row.PLAN_LC_TIMES || 10,
-          SINGLE_LC_NUMS: row.SINGLE_LC_NUMS || 1
+          SINGLE_LC_NUMS: row.SINGLE_LC_NUMS || 1,
+          LC_ONCE_APPLY_QTY: row.LC_ONCE_APPLY_QTY || 0
         };
         this.editDtlDialogVisible = true;
       },
@@ -1304,12 +1315,18 @@
           VARIETIE_NAME: '',
           SPECIFICATION_OR_TYPE: '',
           PLAN_LC_TIMES: 10,
-          SINGLE_LC_NUMS: 1
+          SINGLE_LC_NUMS: 1,
+          LC_ONCE_APPLY_QTY: 0
         };
       },
       submitEditDtlForm() {
         this.$refs.editDtlForm.validate(async (valid) => {
           if (!valid) return;
+          const limit = this.editDtlFormData.LC_ONCE_APPLY_QTY;
+          if (limit > 0 && this.editDtlFormData.SINGLE_LC_NUMS > limit) {
+            this.$message.error('该品种单次申领上限为' + limit + '，当前填写' + this.editDtlFormData.SINGLE_LC_NUMS);
+            return;
+          }
           this.editDtlLoading = true;
           try {
             const res = await updateDtl({

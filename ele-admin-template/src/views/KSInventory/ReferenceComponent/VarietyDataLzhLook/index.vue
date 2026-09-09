@@ -37,24 +37,22 @@
           <template v-slot:PIC_URL="{ row }">
             <span v-if="row.PIC_URL">
               <span
-                v-for="(item, index) in row.PIC_URL.split(',').filter(Boolean)"
+                v-for="(item, index) in picUrlList(row.PIC_URL)"
                 :key="index"
               >
                 <span v-if="isImage(item)">
                   <el-image
                     style="width: 30px; height: 30px"
-                    :preview-src-list="
-                      row.PIC_URL.split(',').filter(Boolean).filter(isImage)
-                    "
-                    :src="item"
+                    :preview-src-list="picPreviewList(row.PIC_URL)"
+                    :src="picFullUrl(item)"
                   >
                   </el-image>
                 </span>
-                <span style v-else>
+                <span v-else>
                   <el-link
                     style="text-align: center; align-items: center"
                     :underline="false"
-                    :href="'http://localhost:16416/Upload/ProPic/' + item"
+                    :href="picFullUrl(item)"
                     target="_blank"
                     type="primary"
                     >pdf 文件
@@ -62,21 +60,6 @@
                 </span>
               </span>
             </span>
-
-            <!-- <span v-if="row.PIC_URL">
-              <span v-for="(item, index) in testUrlList.split(',').filter(Boolean)" :key="index">
-                <span v-if="isImage(item)">
-                  <el-image style="width: 30px; height: 30px" :preview-src-list="testUrlList.split(',').filter(Boolean).filter(isImage)"
-                    :src="item">
-                  </el-image>
-                </span>
-                <span style v-else>
-                  <el-link style="text-align:center; align-items: center;" :underline="false" :href="'http://localhost:16416/Upload/ProPic/' + item" target="_blank"
-                    type="primary">pdf 文件
-                  </el-link>
-                </span>
-              </span>
-            </span> -->
           </template>
         </ele-pro-table>
       </el-card>
@@ -104,6 +87,7 @@
     SerachPlanList,
     KeeptListDeta
   } from '@/api/KSInventory/IntroduceUserDefinedTemp';
+  import { BACK_BASE_URL } from '@/config/setting';
   export default {
     name: 'VarietyDataLzhLook',
     props: {
@@ -335,9 +319,27 @@
       onSelectionChange(selection) {
         this.selection = selection;
       },
+      picUrlList(picUrl) {
+        if (!picUrl) return [];
+        return String(picUrl)
+          .split(',')
+          .map((item) => item.trim())
+          .filter(Boolean);
+      },
+      picFullUrl(path) {
+        if (!path) return '';
+        if (/^https?:\/\//i.test(path)) return path;
+        const base = (BACK_BASE_URL || '').replace(/\/$/, '');
+        return `${base}/Upload/ProPic/${path}`;
+      },
+      picPreviewList(picUrl) {
+        return this.picUrlList(picUrl)
+          .filter((item) => this.isImage(item))
+          .map((item) => this.picFullUrl(item));
+      },
       isImage(item) {
-        const imageExtensions = ['jpg', 'jpeg', 'png', 'gif']; // 可以根据实际情况添加更多的图片扩展名
-        const extension = item.split('.').pop().toLowerCase();
+        const imageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+        const extension = String(item).split('.').pop().toLowerCase();
         return imageExtensions.includes(extension);
       }
     },
