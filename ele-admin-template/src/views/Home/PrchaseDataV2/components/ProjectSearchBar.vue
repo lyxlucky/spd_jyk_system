@@ -114,7 +114,7 @@
           </el-select>
         </el-form-item>
       </div>
-      <div class="filter-row filter-row--actions">
+      <div class="filter-row">
         <el-form-item label="消耗开始">
           <el-date-picker
             v-model="form.statrTime3"
@@ -133,6 +133,8 @@
             style="width: 135px"
           />
         </el-form-item>
+      </div>
+      <div class="filter-row filter-row--actions">
         <el-form-item class="ele-form-actions" label-width="0">
           <el-button type="primary" icon="el-icon-search" @click="onSearch">查询</el-button>
           <el-button icon="el-icon-refresh" @click="onReset">重置</el-button>
@@ -204,8 +206,8 @@ export default {
 
 .project-search-form :deep(.el-form-item.ele-form-actions) {
   margin-right: 0;
-  flex: 1;
-  min-width: 280px;
+  margin-bottom: 4px;
+  width: 100%;
 }
 
 .project-search-form :deep(.el-form-item__label) {
@@ -214,7 +216,7 @@ export default {
 
 .ele-form-actions :deep(.el-form-item__content) {
   max-width: none !important;
-  display: inline-flex;
+  display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 6px;
@@ -222,6 +224,8 @@ export default {
 
 .ele-form-actions :deep(.el-button) {
   margin: 0;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .date-range-item :deep(.el-date-editor) {
