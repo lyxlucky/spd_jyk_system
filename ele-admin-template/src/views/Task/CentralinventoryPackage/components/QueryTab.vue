@@ -69,6 +69,7 @@
           <el-select v-model="printType" size="mini" style="width: 180px">
             <el-option v-for="item in labelOptions" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
+          <el-button size="mini" :disabled="!selection.length" @click="handleYtPrint">一体标签打印-1</el-button>
           <el-button size="mini" type="primary" :disabled="!selection.length" @click="handleReprint">补打定数包标签</el-button>
           <el-button size="mini" :disabled="!selection.length" @click="handlePrintOrder">打印制包单号</el-button>
         </div>
@@ -98,14 +99,18 @@
 </template>
 
 <script>
+import { HOME_HP } from '@/config/setting';
 import {
   getStorageList,
   searchBagMakingDefCode,
   exportBagMakingDefCode,
-  noTagBagMakingDef
+  noTagBagMakingDef,
+  sendBagMakingDefBD,
+  sendBagMakingDefHost,
+  sendBagMakingDefHostSE
 } from '@/api/Task/CentralinventoryPackage';
 import {
-  LABEL_OPTIONS,
+  QUERY_LABEL_OPTIONS,
   unwrapData,
   isOkCode,
   formatDate10,
@@ -123,7 +128,7 @@ export default {
     return {
       storageList: [],
       printType: '1',
-      labelOptions: LABEL_OPTIONS,
+      labelOptions: QUERY_LABEL_OPTIONS,
       selection: [],
       filters: {
         bagMakingNumber: '',
@@ -216,6 +221,48 @@ export default {
           } else {
             this.$message.error(data?.msg || '导出失败');
           }
+        })
+        .finally(() => loading.close());
+    },
+    handleYtPrint() {
+      if (!this.selection.length) {
+        this.$message.warning('请至少选中一行数据');
+        return;
+      }
+      const jsonStr = JSON.stringify(this.selection);
+      const loading = this.$loading({ lock: true, text: '正在打印...' });
+      let req;
+      if (HOME_HP === 'szlhfy' || HOME_HP === 'xh') {
+        req = sendBagMakingDefHost(jsonStr);
+      } else if (
+        HOME_HP === 'se2' ||
+        HOME_HP === 'szse' ||
+        HOME_HP === 'szse_dp' ||
+        HOME_HP === 'szse_lh'
+      ) {
+        req = sendBagMakingDefHostSE(jsonStr, 'dyjdz');
+      } else {
+        req = sendBagMakingDefBD(jsonStr);
+      }
+      req
+        .then((res) => {
+          const data = unwrapData(res);
+          if (data?.code === 301 || data?.code === '301') {
+            this.$message.error(data.msg || '登录失效');
+            return;
+          }
+          if (isOkCode(data?.code)) {
+            if (data.data) {
+              window.open(data.data);
+            } else {
+              this.$message.success(data.msg || '成功');
+            }
+          } else {
+            this.$alert(data?.msg || '打印失败', '提示');
+          }
+        })
+        .catch((err) => {
+          this.$message.error(err?.message || '打印失败');
         })
         .finally(() => loading.close());
     },

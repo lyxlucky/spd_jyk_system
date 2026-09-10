@@ -175,4 +175,25 @@ export function noTagBagMakingDef(json) {
   );
 }
 
+export function sendBagMakingDefBD(json) {
+  return request.post(
+    '/Abdzczh/SendBagMakingDefBD',
+    formdataify({ JSON: json, Token: token() })
+  );
+}
+
+export function sendBagMakingDefHost(json) {
+  return request.post(
+    '/Abdzczh/SendBagMakingDefHost',
+    formdataify({ JSON: json, Token: token() })
+  );
+}
+
+export function sendBagMakingDefHostSE(json, type) {
+  return request.post(
+    '/Abdzczh/SendBagMakingDefHost_SE',
+    formdataify({ JSON: json, Token: token(), type })
+  );
+}
+
 export { nickname, token };
