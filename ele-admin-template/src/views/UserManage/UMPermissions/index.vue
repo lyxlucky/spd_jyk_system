@@ -6,6 +6,7 @@
         <el-button size="mini" :loading="exporting" @click="handleExport">导出</el-button>
         <el-button type="success" size="mini" @click="addVisible = true">新增权限</el-button>
         <el-button type="primary" size="mini" plain @click="newAddVisible = true">树型新增权限</el-button>
+        <el-button type="warning" size="mini" @click="newSysAddVisible = true">新系统新增权限</el-button>
       </div>
 
       <ele-pro-table
@@ -32,6 +33,7 @@
 
     <AddPermissionDialog :visible.sync="addVisible" @success="reload" />
     <NewAddPermissionDialog :visible.sync="newAddVisible" @success="reload" />
+    <AddNewSystemPermissionDialog :visible.sync="newSysAddVisible" @success="reload" />
     <RemarkDialog
       :visible.sync="remarkVisible"
       :permission-id="currentRow?.ID"
@@ -44,6 +46,7 @@
 <script>
 import AddPermissionDialog from './components/AddPermissionDialog.vue';
 import NewAddPermissionDialog from './components/NewAddPermissionDialog.vue';
+import AddNewSystemPermissionDialog from './components/AddNewSystemPermissionDialog.vue';
 import RemarkDialog from './components/RemarkDialog.vue';
 import { delPermissionByID, getPermissionList } from '@/api/UserManage/UMPermissions';
 import { exportPermissionExcel, formatRemark, formatPermissionType, isDeleteOk } from './utils';
@@ -53,12 +56,14 @@ export default {
   components: {
     AddPermissionDialog,
     NewAddPermissionDialog,
+    AddNewSystemPermissionDialog,
     RemarkDialog
   },
   data() {
     return {
       addVisible: false,
       newAddVisible: false,
+      newSysAddVisible: false,
       remarkVisible: false,
       exporting: false,
       currentRow: null,

@@ -63,6 +63,36 @@ export async function newAddPermission(data) {
   return res?.data;
 }
 
+/** 新系统一级菜单 PRIMARY_ROUT */
+export async function getPrimaryRoutList() {
+  const res = await request.get('/Commons/GetPrimaryRoutList', {
+    params: { Token: token() }
+  });
+  return unwrap(res);
+}
+
+/** 新系统菜单/按钮权限新增（写入 COMPONENT、PRIMARY_ROUT_*） */
+export async function addNewSystemPermission(data) {
+  const res = await request.post(
+    '/Commons/AddNewSystemPermission',
+    formdataify({
+      Token: token(),
+      Permission_Name: data.Permission_Name,
+      Permission_Url: data.Permission_Url,
+      Remarks: data.Remarks ?? '',
+      COMPONENT: data.COMPONENT ?? '',
+      PRIMARY_ROUT_URL: data.PRIMARY_ROUT_URL || data.Permission_Url || '',
+      PRIMARY_ROUT_ID: data.PRIMARY_ROUT_ID ?? '',
+      ICON: data.ICON ?? '',
+      SORT: data.SORT ?? '',
+      HIDE: data.HIDE ?? 0,
+      TYPE: data.TYPE ?? 0,
+      p_api: data.p_api ?? ''
+    })
+  );
+  return res?.data;
+}
+
 /** 更新权限备注 */
 export async function upPermissionRemark(id, remark) {
   const res = await request.post(
