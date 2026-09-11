@@ -181,6 +181,11 @@ export function getMenuRoutes(menus, homePath) {
       meta: { title: '自助订单' }
     });
     routes.push({
+      path: '/Task/AuthOrderApprove',
+      component: () => import('@/views/Task/AuthOrderApprove/index.vue'),
+      meta: { title: '自助订单审核' }
+    });
+    routes.push({
       path: '/Task/FollowingGoodsPlan',
       component: () => import('@/views/Task/FollowingGoodsPlan/index.vue'),
       meta: { title: '备货计划跟踪' }
