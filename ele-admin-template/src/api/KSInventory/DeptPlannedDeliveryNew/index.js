@@ -60,7 +60,8 @@ function buildPlanSearchBody(where = {}) {
     STORAGE_TYPE: where.STORAGE_TYPE ?? '',
     RELATED_RFID: where.RELATED_RFID ?? '',
     STORAGE_ID: where.STORAGE_ID ?? '',
-    OPERATE_TYPE: where.OPERATE_TYPE ?? ''
+    OPERATE_TYPE: where.OPERATE_TYPE ?? '',
+    High_Or_Low_Class: where.High_Or_Low_Class ?? ''
   };
 }
 

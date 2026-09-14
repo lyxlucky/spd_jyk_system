@@ -74,6 +74,13 @@
             </el-select>
           </el-form-item>
           <el-form-item>
+            <el-select v-model="form.High_Or_Low_Class" placeholder="试剂筛选" clearable>
+              <el-option label="试剂-全部" value="" />
+              <el-option label="试剂" value="2" />
+              <el-option label="非试剂" value="N" />
+            </el-select>
+          </el-form-item>
+          <el-form-item>
             <el-button type="primary" @click="handleSearch">查询</el-button>
           </el-form-item>
           <el-form-item>
@@ -152,7 +159,8 @@
           start_time: '',
           end_time: '',
           order_pc: 'desc', // 排序方式
-          varType: '' // 品种类型（全部/高值/低值）
+          varType: '', // 品种类型（全部/高值/低值）
+          High_Or_Low_Class: ''
         },
         columns: [
           {

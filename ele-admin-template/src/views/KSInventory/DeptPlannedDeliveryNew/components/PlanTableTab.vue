@@ -122,6 +122,15 @@
             </el-form-item>
           </el-col>
           <el-col :span="4">
+            <el-form-item label="试剂筛选" label-width="72px">
+              <el-select v-model="where.High_Or_Low_Class" clearable placeholder="试剂-全部" style="width: 100%">
+                <el-option label="试剂-全部" value="" />
+                <el-option label="试剂" value="2" />
+                <el-option label="非试剂" value="N" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="4">
             <el-form-item label="类型" label-width="72px">
               <el-select v-model="where.OPERATE_TYPE" clearable placeholder="全部" style="width: 100%">
                 <el-option label="全部" value="" />

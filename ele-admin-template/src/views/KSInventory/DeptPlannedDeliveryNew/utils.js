@@ -142,6 +142,7 @@ export function defaultPlanWhere() {
     STORAGE_TYPE: '',
     RELATED_RFID: '',
     OPERATE_TYPE: '',
+    High_Or_Low_Class: '',
     planState: ['6', '3']
   };
 }

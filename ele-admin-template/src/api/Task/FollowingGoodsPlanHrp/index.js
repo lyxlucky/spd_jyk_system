@@ -49,6 +49,7 @@ export function getStockUpVarInfo(data) {
   data2.remark = data.where?.remark || '';
   data2.STORAGE_ID = data.where?.STORAGE_ID || '';
   data2.varType = data.where?.varType || '';
+  data2.High_Or_Low_Class = data.where?.High_Or_Low_Class || '';
   data2.order_pc = data.order?.order || 'desc';
   data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
 

@@ -103,6 +103,19 @@
             </el-select>
           </el-form-item>
           <el-form-item>
+            <el-select
+              v-model="form.High_Or_Low_Class"
+              placeholder="试剂筛选"
+              clearable
+              style="width: 110px"
+              @change="handleSearch"
+            >
+              <el-option label="试剂-全部" value="" />
+              <el-option label="试剂" value="2" />
+              <el-option label="非试剂" value="N" />
+            </el-select>
+          </el-form-item>
+          <el-form-item>
             <el-button type="primary" @click="handleSearch">查询</el-button>
           </el-form-item>
           <el-form-item>
@@ -308,6 +321,7 @@ export default {
         remark: '',
         state: '',
         varType: '',
+        High_Or_Low_Class: '',
         start_time: '',
         end_time: '',
         order_pc: 'desc'
@@ -564,6 +578,7 @@ export default {
         remark: '',
         state: '',
         varType: '',
+        High_Or_Low_Class: '',
         start_time: '',
         end_time: '',
         order_pc: 'desc'
