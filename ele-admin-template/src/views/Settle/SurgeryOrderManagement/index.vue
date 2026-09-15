@@ -2118,7 +2118,7 @@ export default {
       }
       const token = sessionStorage.getItem(TOKEN_STORE_NAME);
       const surgeryNo = this.currentMainRow.SURGERY_NO;
-      const printUrl = `${API_BASE_URL}/PrintPdf/PrintSsDetail?format=pdf&inline=true&SURGERY_NO=${surgeryNo}&Token=${token}`;
+      const printUrl = `${API_BASE_URL}/PrintPdf/PrintSsDetailPdf?format=pdf&inline=true&SURGERY_NO=${surgeryNo}&Token=${token}`;
       window.open(printUrl, '_blank');
     },
     // 预留：上传消耗单
