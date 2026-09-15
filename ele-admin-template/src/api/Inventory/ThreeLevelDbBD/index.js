@@ -196,6 +196,8 @@ export async function dissolveThirdStockMergeGroup(mergeGroupId) {
  * @param {string} [data.UNIT] - 单位
  * @param {string} [data.PRICE] - 价格
  * @param {string} [data.MANUFACTURING_ENT_NAME] - 生产企业名称
+ * @param {string} [data.DEPT_TWO_NAME] - 科室名称
+ * @param {boolean} [data.groupByDept] - 是否按科室+品种汇总
  * @returns {Promise<Object>} 返回查询结果
  * @throws {Error} 当请求失败时抛出错误
  */
@@ -210,6 +212,8 @@ export async function getThreeKcInfo(data) {
     requestData.UNIT = data.UNIT || '';
     requestData.PRICE = data.PRICE || '';
     requestData.MANUFACTURING_ENT_NAME = data.MANUFACTURING_ENT_NAME || '';
+    requestData.DEPT_TWO_NAME = data.DEPT_TWO_NAME || '';
+    requestData.groupByDept = data.groupByDept === true || data.groupByDept === '1' || data.groupByDept === 1;
 
     const res = await request.get(`/PekingApplication/getThreeKcInfo`, {
         params: requestData,

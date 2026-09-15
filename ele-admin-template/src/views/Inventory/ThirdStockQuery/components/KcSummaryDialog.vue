@@ -32,6 +32,14 @@
           style="width: 180px"
         />
       </el-form-item>
+      <el-form-item label="科室名称">
+        <el-input
+          v-model="form.DEPT_TWO_NAME"
+          placeholder="请输入科室名称"
+          clearable
+          style="width: 180px"
+        />
+      </el-form-item>
       <el-form-item label="单位">
         <el-input
           v-model="form.UNIT"
@@ -75,6 +83,13 @@
       height="50vh"
       highlight-current-row
     >
+      <el-table-column
+        prop="DEPT_TWO_NAME"
+        label="科室名称"
+        align="center"
+        min-width="140"
+        show-overflow-tooltip
+      />
       <el-table-column
         prop="VARIETIE_CODE_NEW"
         label="品种编码"
@@ -184,6 +199,7 @@
           VARIETIE_CODE_NEW: '',
           VARIETIE_NAME: '',
           SPECIFICATION_OR_TYPE: '',
+          DEPT_TWO_NAME: '',
           UNIT: '',
           PRICE: '',
           MANUFACTURING_ENT_NAME: ''
@@ -211,6 +227,7 @@
           VARIETIE_CODE_NEW: '',
           VARIETIE_NAME: '',
           SPECIFICATION_OR_TYPE: '',
+          DEPT_TWO_NAME: '',
           UNIT: '',
           PRICE: '',
           MANUFACTURING_ENT_NAME: ''
@@ -235,6 +252,7 @@
           const res = await getThreeKcInfo({
             page: this.page,
             limit: this.pageSize,
+            groupByDept: true,
             ...this.form
           });
           this.tableData = res.data || [];
@@ -254,9 +272,11 @@
           const response = await getThreeKcInfo({
             page: 1,
             limit: 999999,
+            groupByDept: true,
             ...this.form
           });
           const headers = [
+            '科室名称',
             '品种编码',
             '品种名称',
             '规格型号',
@@ -272,6 +292,7 @@
           const dataArray = [headers];
           (response.data || []).forEach((d) => {
             dataArray.push([
+              d.DEPT_TWO_NAME || '',
               d.VARIETIE_CODE_NEW || '',
               d.VARIETIE_NAME || '',
               d.SPECIFICATION_OR_TYPE || '',
