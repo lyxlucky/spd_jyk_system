@@ -65,6 +65,8 @@ export function buildMainSearchParams(where = {}, page = 1, size = 10, sort = {}
     classificName: where.classificName ?? '',
     highOrLowClassTwo: where.highOrLowClassTwo ?? '',
     Position: where.position ?? '',
+    loadAvg7: where.loadAvg7 ?? '0',
+    loadAvg30: where.loadAvg30 ?? '0',
     page,
     size
   };
@@ -388,4 +390,18 @@ export async function applyExportAudit(payload) {
   const body = res.data;
   if (body?.code == 200 || body?.code === '200') return body;
   throw new Error(body?.msg || '提交失败');
+}
+
+/** 库存预警：停用 / 合同明细到期（与页面主查询同一套筛选） */
+export async function searchStockAlerts(where = {}, alertType = 'all') {
+  const params = buildMainSearchParams(where, 1, 1);
+  delete params.page;
+  delete params.size;
+  delete params.field;
+  delete params.order;
+  delete params.loadAvg7;
+  delete params.loadAvg30;
+  params.alertType = alertType || 'all';
+  const res = await request.get('/CentralWarehouseDept/SearchStockAlerts', { params });
+  return unwrap(res);
 }

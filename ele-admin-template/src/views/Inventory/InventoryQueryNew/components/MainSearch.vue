@@ -76,11 +76,15 @@
             <el-button type="primary" icon="el-icon-search" @click="search">查询</el-button>
           </el-form-item>
           <div class="validity-legend">
-            <span class="legend-label">有效期状态：</span>
+            <span class="legend-label">有效期：</span>
             <span class="legend-item"><i class="dot dot-expired" />已过期</span>
             <span class="legend-item"><i class="dot dot-15" />≤15天</span>
             <span class="legend-item"><i class="dot dot-90" />≤90天</span>
             <span class="legend-item"><i class="dot dot-ok" />&gt;90天</span>
+            <span class="legend-sep" />
+            <span class="legend-label">预警：</span>
+            <span class="legend-item"><i class="dot dot-disabled" />停用</span>
+            <span class="legend-item"><i class="dot dot-contract" />合同到期</span>
           </div>
         </div>
 
@@ -88,6 +92,11 @@
         <div class="toolbar-row">
           <el-button size="mini" @click="syncAndEmit('summary')">汇总</el-button>
           <el-button size="mini" @click="syncAndEmit('supplier-summary')">供应商汇总</el-button>
+          <el-badge :value="alertCount || null" :max="99" :hidden="!alertCount" class="alert-badge">
+            <el-button size="mini" type="danger" plain @click="syncAndEmit('stock-alert')">
+              库存预警
+            </el-button>
+          </el-badge>
           <el-button size="mini" @click="toggleAdvanced">
             {{ showAdvanced ? '隐藏' : '显示' }}搜索条件
           </el-button>
@@ -173,6 +182,18 @@
               <el-option label="全部" value="" />
               <el-option label="是" value="1" />
               <el-option label="否" value="0" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="周日均用量">
+            <el-select v-model="localWhere.loadAvg7" style="width: 70px">
+              <el-option label="否" value="0" />
+              <el-option label="是" value="1" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="月日均用量">
+            <el-select v-model="localWhere.loadAvg30" style="width: 70px">
+              <el-option label="否" value="0" />
+              <el-option label="是" value="1" />
             </el-select>
           </el-form-item>
           <el-form-item label="条数">
@@ -348,7 +369,8 @@ export default {
     exportingExcel: { type: Boolean, default: false },
     exportingCenterDefs: { type: Boolean, default: false },
     exportingInventory: { type: Boolean, default: false },
-    generating: { type: Boolean, default: false }
+    generating: { type: Boolean, default: false },
+    alertCount: { type: Number, default: 0 }
   },
   data() {
     return {
@@ -452,9 +474,16 @@ export default {
 .inv-query-search .toolbar-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px;
-  margin: 4px 0 8px;
   align-items: center;
+  gap: 6px;
+  margin: 6px 0;
+}
+.alert-badge {
+  line-height: 1;
+}
+.alert-badge :deep(.el-badge__content) {
+  top: 2px;
+  right: 8px;
 }
 .inv-query-search .toolbar-row--secondary {
   margin-bottom: 4px;
@@ -478,26 +507,42 @@ export default {
   display: inline-flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 8px 12px;
   margin-left: 8px;
   margin-bottom: 8px;
   font-size: 12px;
   color: #666;
 }
+.legend-label {
+  color: #606266;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.legend-sep {
+  display: inline-block;
+  width: 1px;
+  height: 14px;
+  background: #dcdfe6;
+  margin: 0 2px;
+}
 .legend-item {
   display: inline-flex;
   align-items: center;
   gap: 4px;
+  white-space: nowrap;
 }
 .dot {
   display: inline-block;
   width: 12px;
   height: 12px;
   border: 1px solid #ddd;
+  box-sizing: border-box;
+  flex-shrink: 0;
 }
+/* 与主表行底色、有效到期单元格着色一致 */
 .dot-expired {
   background: #ff0000;
-  border-color: #ff0000;
+  border-color: #cc0000;
 }
 .dot-15 {
   background: rgba(255, 165, 0, 0.5);
@@ -505,10 +550,19 @@ export default {
 }
 .dot-90 {
   background: rgba(255, 255, 0, 0.5);
-  border-color: #ffaa00;
+  border-color: #e6c200;
 }
 .dot-ok {
   background: #fff;
+  border-color: #dcdfe6;
+}
+.dot-disabled {
+  background: #f56c6c;
+  border-color: #dd6161;
+}
+.dot-contract {
+  background: #e6a23c;
+  border-color: #cf9236;
 }
 .stat-text {
   font-weight: 600;

@@ -13,10 +13,12 @@
         :exporting-center-defs="exportingCenterDefs"
         :exporting-inventory="exportingInventory"
         :generating="generating"
+        :alert-count="stockAlertList.length"
         @search="reloadMain"
         @advanced-change="onAdvancedChange"
         @summary="summaryVisible = true"
         @supplier-summary="supplierSummaryVisible = true"
+        @stock-alert="openStockAlert"
         @export-center-defs="onExportCenterDefs"
         @export-excel="onExportExcel"
         @export-inventory="onExportInventory"
@@ -161,6 +163,15 @@
       <li @click="onCtxLock('def')">查看定数包锁定</li>
       <li @click="onCtxLock('prelock')">查看定数包预锁</li>
     </ul>
+
+    <StockAlertDialog
+      :visible.sync="stockAlertVisible"
+      :page-where="mainWhere"
+      :storage-list="storageList"
+      :source-from-list="sourceFromList"
+      @loaded="onStockAlertLoaded"
+      @sync-filter="onStockAlertSyncFilter"
+    />
   </div>
 </template>
 
@@ -174,13 +185,14 @@ import SupplierSummaryDialog from './components/SupplierSummaryDialog.vue';
 import MoveQuantityDialog from './components/MoveQuantityDialog.vue';
 import LockViewDialog from './components/LockViewDialog.vue';
 import ExportAuditDialog from './components/ExportAuditDialog.vue';
+import StockAlertDialog from './components/StockAlertDialog.vue';
 import { buildMainColumns, buildDetailColumns } from './columns';
 import {
   fmtDate10,
   fmtMainUpShelfState,
   fmtContractEnd,
   validityPeriodStyle,
-  mainRowClassName,
+  mainRowClassName as validityRowClassName,
   defaultMainWhere,
   rowToDetailCtx,
   buildDefaultExportRows,
@@ -197,6 +209,7 @@ import {
   searchDef,
   exportCenterDefs,
   excelInventoryQueryData,
+  searchStockAlerts,
   exportDeptDefs,
   exportCentralWareDeptDefToExcel,
   updateStorageById,
@@ -236,7 +249,8 @@ export default {
     SupplierSummaryDialog,
     MoveQuantityDialog,
     LockViewDialog,
-    ExportAuditDialog
+    ExportAuditDialog,
+    StockAlertDialog
   },
   data() {
     return {
@@ -266,6 +280,9 @@ export default {
       generating: false,
       summaryVisible: false,
       supplierSummaryVisible: false,
+      stockAlertVisible: false,
+      stockAlertList: [],
+      stockAlertMap: {},
       moveDialogVisible: false,
       moveDialogTitle: '',
       moveMaxQty: 0,
@@ -387,10 +404,46 @@ export default {
     fmtMainUpShelfState,
     fmtContractEnd,
     validityPeriodStyle,
-    mainRowClassName,
+    mainRowClassName({ row }) {
+      const key = `${row.Source_From || ''}_${row.Varietie_Code || ''}`;
+      const warn = this.stockAlertMap[key] || this.stockAlertMap[`code_${row.Varietie_Code_New}`];
+      if (warn === 'Disabled') return 'inv-query-row-disabled';
+      if (warn === 'ContractExpired') return 'inv-query-row-contract-expired';
+      return validityRowClassName({ row });
+    },
     isContractExpired(val) {
       if (!val) return false;
       return new Date(fmtDate10(val)).getTime() <= Date.now();
+    },
+    openStockAlert() {
+      this.stockAlertVisible = true;
+    },
+    onStockAlertLoaded(list) {
+      this.stockAlertList = list || [];
+      const map = {};
+      (this.stockAlertList || []).forEach((item) => {
+        const key = `${item.Source_From || ''}_${item.Varietie_Code || ''}`;
+        map[key] = item.WarningType;
+        if (item.Varietie_Code_New) {
+          map[`code_${item.Varietie_Code_New}`] = item.WarningType;
+        }
+      });
+      this.stockAlertMap = map;
+    },
+    onStockAlertSyncFilter({ sourceFrom, storageId }) {
+      if (sourceFrom !== undefined) this.mainWhere.sourceFrom = sourceFrom;
+      if (storageId !== undefined) this.mainWhere.storageId = storageId;
+    },
+    async loadStockAlerts(autoOpen) {
+      try {
+        const res = await searchStockAlerts(this.mainWhere, 'all');
+        this.onStockAlertLoaded(res.result || []);
+        if (autoOpen && this.stockAlertList.length > 0) {
+          this.stockAlertVisible = true;
+        }
+      } catch {
+        this.onStockAlertLoaded([]);
+      }
     },
     onAdvancedChange(open) {
       this.advancedOpen = !!open;
@@ -434,6 +487,7 @@ export default {
         Message.error(e.message || '初始化失败');
       }
       this.checkAdjustDebitPermission();
+      this.loadStockAlerts(false);
     },
     async checkAdjustDebitPermission() {
       const username = this.$store.state.user?.info?.username || this.$store.state.user?.info?.UserName;
@@ -449,6 +503,7 @@ export default {
     },
     reloadMain() {
       this.$refs.mainTable?.reload({ page: 1, where: this.mainWhere });
+      this.loadStockAlerts(false);
     },
     reloadDetail() {
       if (!this.detailCtx) return;
@@ -850,13 +905,21 @@ export default {
   color: #f56c6c;
 }
 ::v-deep .inv-query-row-expired td {
-  background-color: #ffecec !important;
+  background-color: rgba(255, 0, 0, 0.22) !important;
+}
+::v-deep .inv-query-row-disabled td {
+  background-color: #f56c6c !important;
+  color: #fff !important;
+}
+::v-deep .inv-query-row-contract-expired td {
+  background-color: #e6a23c !important;
+  color: #fff !important;
 }
 ::v-deep .inv-query-row-warning15 td {
-  background-color: rgba(255, 165, 0, 0.15) !important;
+  background-color: rgba(255, 165, 0, 0.5) !important;
 }
 ::v-deep .inv-query-row-warning90 td {
-  background-color: rgba(255, 255, 0, 0.2) !important;
+  background-color: rgba(255, 255, 0, 0.5) !important;
 }
 .inv-ctx-menu {
   position: fixed;

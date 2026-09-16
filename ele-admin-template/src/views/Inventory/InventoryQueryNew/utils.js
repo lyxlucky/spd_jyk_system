@@ -189,6 +189,8 @@ export function defaultMainWhere() {
     upShelfState: '',
     conTime: '',
     isHptx: '',
+    loadAvg7: '0',
+    loadAvg30: '0',
     exportLimit: 15,
     isCharge: '-1',
     highOrLowClass: '-1',
