@@ -1,6 +1,8 @@
 <template>
   <div class="ele-body">
     <PreDeliveredTableSearch
+      ref="searchBar"
+      :alert-count="overdueCount"
       @search="reload"
       @Approve_btn="ApproveFun"
       @Delete_btn="DeleteFun"
@@ -8,6 +10,7 @@
       :rowData="current"
       @exportData="exportData"
       @prePrint="prePrintTable1"
+      @overdue-alert="overdueVisible = true"
     />
     <!-- 数据表格 -->
     <ele-pro-table
@@ -75,12 +78,20 @@
       @reload="reload"
       :visible.sync="updatePatientInfoDialogVisible"
     ></UpdatePatientInfoDialog>
+    <OverdueAlertDialog
+      :visible.sync="overdueVisible"
+      :date-from="overdueQuery.dateFrom"
+      :date-to="overdueQuery.dateTo"
+      @loaded="onOverdueLoaded"
+      @pick="onOverduePick"
+    />
   </div>
 </template>
 
 <script>
   import UpdatePatientInfoDialog from './UpdatePatientInfoDialog';
   import PreDeliveredTableSearch from './PreDeliveredTableSearch';
+  import OverdueAlertDialog from './OverdueAlertDialog';
   import {
     SerachTempletList,
     DeleteTemplet,
@@ -88,6 +99,7 @@
   } from '@/api/KSInventory/ApplyTemp';
   import {
     LoadGoodsDeliveryNumbers,
+    LoadOverdueApprovedDeliveryNumbers,
     Approve,
     SoftDeleteDeliveryNumber,
     Confirm,
@@ -95,11 +107,15 @@
   } from '@/api/HeelBlockConsumables/PreDelivered';
   import { getDayOfDate } from '@/utils/date-util';
   import { utils, writeFile } from 'xlsx';
+
+  const OVERDUE_DAYS = 14;
+
   export default {
     name: 'PreDeliveredTable',
     components: {
       PreDeliveredTableSearch,
-      UpdatePatientInfoDialog
+      UpdatePatientInfoDialog,
+      OverdueAlertDialog
     },
     data() {
       return {
@@ -252,10 +268,75 @@
         showImport: false,
         // datasource: [],
         data: [],
-        updatePatientInfoDialogVisible: false
+        updatePatientInfoDialogVisible: false,
+        overdueVisible: false,
+        overdueCount: 0,
+        overdueIdMap: {},
+        overdueQuery: {
+          dateFrom: '',
+          dateTo: ''
+        }
       };
     },
     methods: {
+      isOverdueApproved(row) {
+        if (!row) return false;
+        if (
+          row.Delivery_Note_Number_Id != null &&
+          this.overdueIdMap[String(row.Delivery_Note_Number_Id)]
+        ) {
+          return true;
+        }
+        if (row.Delivery_Note_Number && this.overdueIdMap[`no_${row.Delivery_Note_Number}`]) {
+          return true;
+        }
+        return false;
+      },
+      rebuildOverdueIdMap(list) {
+        const map = {};
+        (list || []).forEach((item) => {
+          if (item.Delivery_Note_Number_Id != null && item.Delivery_Note_Number_Id !== '') {
+            map[String(item.Delivery_Note_Number_Id)] = true;
+          }
+          if (item.Delivery_Note_Number) {
+            map[`no_${item.Delivery_Note_Number}`] = true;
+          }
+        });
+        this.overdueIdMap = map;
+      },
+      getOverdueQueryFromSearch() {
+        const where = this.$refs.searchBar?.buildWhere?.() || {};
+        return {
+          dateFrom: where.dateStart || where.date?.[0] || '',
+          dateTo: where.dateEnd || where.date?.[1] || ''
+        };
+      },
+      async loadOverdueAlerts() {
+        try {
+          const q = this.getOverdueQueryFromSearch();
+          this.overdueQuery = q;
+          const res = await LoadOverdueApprovedDeliveryNumbers({
+            overdueDays: OVERDUE_DAYS,
+            dateFrom: q.dateFrom,
+            dateTo: q.dateTo,
+            deptName: ''
+          });
+          const list = res.result || [];
+          this.overdueCount = list.length;
+          this.rebuildOverdueIdMap(list);
+        } catch {
+          this.overdueCount = 0;
+          this.rebuildOverdueIdMap([]);
+        }
+      },
+      onOverdueLoaded(list) {
+        this.overdueCount = (list || []).length;
+        this.rebuildOverdueIdMap(list);
+      },
+      onOverduePick(row) {
+        this.$refs.searchBar?.applyOverdueSearch(row);
+        this.$nextTick(() => this.loadOverdueAlerts());
+      },
       /* 表格数据源 */
       datasource({ page, limit, where, order }) {
         var deptTwoList = [];
@@ -289,6 +370,7 @@
       /* 刷新表格 */
       reload(where) {
         this.$refs.table.reload({ page: 1, where: where });
+        this.$nextTick(() => this.loadOverdueAlerts());
       },
       editTempletName(code) {
         this.$prompt('请输入模板名称', '提示', {
@@ -419,6 +501,7 @@
         Approve(data)
           .then((res) => {
             this.reload();
+            this.loadOverdueAlerts();
             this.$message.success(res.msg);
           })
           .catch((err) => {
@@ -524,6 +607,9 @@
         });
       },
       tableRowClassName({ row }) {
+        if (this.isOverdueApproved(row)) {
+          return 'approve-overdue-row';
+        }
         // 审批状态已通过：整行绿色区分（对齐老页 preDeli_green）
         if (row.SBK_APPROVE_STATE == '1' || row.SBK_APPROVE_STATE == 1) {
           return 'approve-passed-row';
@@ -532,6 +618,7 @@
       }
     },
     mounted() {
+      this.loadOverdueAlerts();
       this.$bus.$on('handleCommand', (data) => {
         this.reload();
       });
@@ -558,6 +645,15 @@
 
   .el-table .approve-passed-row td {
     background: #e8f8e0 !important;
+  }
+
+  .el-table .approve-overdue-row {
+    background: #e6a23c;
+  }
+
+  .el-table .approve-overdue-row td {
+    background: #e6a23c !important;
+    color: #fff !important;
   }
 
   .approve-passed {

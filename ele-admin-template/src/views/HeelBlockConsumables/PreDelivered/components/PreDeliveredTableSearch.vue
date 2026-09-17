@@ -66,7 +66,7 @@
         size="mini"
         clearable
         v-model="where.condition"
-        placeholder="品种(材料)编码、品种全称、生产企业名称、型号/规格、供应商名称"
+        placeholder="住院号/病患/供应商/收货单号"
         class="condition-input"
       />
     </div>
@@ -83,6 +83,11 @@
             查询
           </el-button>
           <el-button size="mini" icon="el-icon-refresh" @click="reset">重置</el-button>
+          <el-badge :value="alertCount || null" :max="99" :hidden="!alertCount" class="alert-badge">
+            <el-button size="mini" type="warning" plain @click="$emit('overdue-alert')">
+              未消耗提醒
+            </el-button>
+          </el-badge>
           <el-button
             size="mini"
             type="warning"
@@ -161,7 +166,8 @@
   export default {
     props: {
       // 修改回显的数据
-      rowData: Object
+      rowData: Object,
+      alertCount: { type: Number, default: 0 }
     },
     data() {
       const dateStart = getDayOfDate('yyyy-MM-dd', -7);
@@ -209,6 +215,29 @@
       /* 搜索 */
       search() {
         this.$emit('search', this.buildWhere());
+      },
+      /** 超时提醒定位：填入单号、已审批、放宽订单时间 */
+      applyOverdueSearch(row) {
+        const note = row?.Delivery_Note_Number || '';
+        let dateStart = '2010-01-01';
+        if (row?.Delivery_Time) {
+          const d = new Date(row.Delivery_Time);
+          if (!isNaN(d.getTime())) {
+            const m = `${d.getMonth() + 1}`.padStart(2, '0');
+            const day = `${d.getDate()}`.padStart(2, '0');
+            dateStart = `${d.getFullYear()}-${m}-${day}`;
+          }
+        }
+        const dateEnd = getDayOfDate('yyyy-MM-dd', 1);
+        this.where = {
+          ...this.where,
+          condition: note,
+          strApprove: '1',
+          dateStart,
+          dateEnd,
+          date: [dateStart, dateEnd]
+        };
+        this.search();
       },
       Approve_btn() {
         this.$emit('Approve_btn');
@@ -323,5 +352,9 @@
   align-items: center;
   gap: 8px;
   margin-top: 5px;
+}
+
+.alert-badge {
+  margin-right: 0;
 }
 </style>

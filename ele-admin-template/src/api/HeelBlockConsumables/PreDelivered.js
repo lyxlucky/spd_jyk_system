@@ -79,6 +79,29 @@ export async function SoftDeleteDeliveryNumber(data) {
   }
 }
 
+export async function LoadOverdueApprovedDeliveryNumbers(params = {}) {
+  const overdueDays = typeof params === 'number' ? params : params.overdueDays ?? 14;
+  const dateFrom = typeof params === 'number' ? '' : params.dateFrom ?? '';
+  const dateTo = typeof params === 'number' ? '' : params.dateTo ?? '';
+  const deptName = typeof params === 'number' ? '' : params.deptName ?? '';
+  const res = await request.get(
+    'B2BPreTakeDelivery/LoadOverdueApprovedDeliveryNumbers',
+    {
+      params: {
+        Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+        overdueDays,
+        dateFrom,
+        dateTo,
+        deptName
+      }
+    }
+  );
+  if (res.data.code == 200 || res.data.code === '200') {
+    return res.data;
+  }
+  return Promise.reject(new Error(res.data.msg || '加载未消耗提醒失败'));
+}
+
 export async function Confirm(data) {
   var data2 = {};
   data2.staff = data.staff ? data.staff : '';
