@@ -335,7 +335,6 @@
       },
       onOverduePick(row) {
         this.$refs.searchBar?.applyOverdueSearch(row);
-        this.$nextTick(() => this.loadOverdueAlerts());
       },
       /* 表格数据源 */
       datasource({ page, limit, where, order }) {
@@ -362,6 +361,7 @@
               count: res.total,
               list: res.result
             };
+            this.$nextTick(() => this.loadOverdueAlerts());
             return tData;
           }
         );
@@ -370,7 +370,6 @@
       /* 刷新表格 */
       reload(where) {
         this.$refs.table.reload({ page: 1, where: where });
-        this.$nextTick(() => this.loadOverdueAlerts());
       },
       editTempletName(code) {
         this.$prompt('请输入模板名称', '提示', {
@@ -501,7 +500,6 @@
         Approve(data)
           .then((res) => {
             this.reload();
-            this.loadOverdueAlerts();
             this.$message.success(res.msg);
           })
           .catch((err) => {
@@ -618,7 +616,6 @@
       }
     },
     mounted() {
-      this.loadOverdueAlerts();
       this.$bus.$on('handleCommand', (data) => {
         this.reload();
       });
