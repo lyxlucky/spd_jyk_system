@@ -167,6 +167,7 @@
     <StockAlertDialog
       :visible.sync="stockAlertVisible"
       :page-where="mainWhere"
+      :cached-list="stockAlertList"
       :storage-list="storageList"
       :source-from-list="sourceFromList"
       @loaded="onStockAlertLoaded"

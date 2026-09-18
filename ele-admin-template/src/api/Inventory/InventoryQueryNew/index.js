@@ -392,7 +392,7 @@ export async function applyExportAudit(payload) {
   throw new Error(body?.msg || '提交失败');
 }
 
-/** 库存预警：停用 / 合同明细到期（与页面主查询同一套筛选） */
+/** 库存预警：停用 / 启用合同终止日期到期（与品种资料维护v2 DET_CONTRACT_END 一致） */
 export async function searchStockAlerts(where = {}, alertType = 'all') {
   const params = buildMainSearchParams(where, 1, 1);
   delete params.page;

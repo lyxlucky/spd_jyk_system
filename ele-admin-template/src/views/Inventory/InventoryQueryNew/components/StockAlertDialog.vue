@@ -10,6 +10,7 @@
     <div class="tip">
       按当前页面查询条件统计停用或合同到期且仍有库存的品种
       <span v-if="list.length">（共 {{ list.length }} 条）</span>
+      <span v-if="fromCache" class="tip-cache">（本地筛选，未重查库）</span>
     </div>
     <el-form size="mini" inline class="filter-bar" @submit.native.prevent>
       <el-form-item label="库存位置">
@@ -19,16 +20,24 @@
           clearable
           placeholder="与页面共用"
           style="width: 140px"
+          @select="onFilterChange"
+          @clear="onFilterChange"
         />
       </el-form-item>
       <el-form-item label="院区">
-        <el-select v-model="filter.storageId" clearable placeholder="全部" style="width: 120px">
+        <el-select
+          v-model="filter.storageId"
+          clearable
+          placeholder="全部"
+          style="width: 120px"
+          @change="onFilterChange"
+        >
           <el-option label="全部" value="" />
           <el-option v-for="s in storageList" :key="s.ID" :label="s.NAME" :value="String(s.ID)" />
         </el-select>
       </el-form-item>
       <el-form-item label="预警类型">
-        <el-select v-model="filter.alertType" style="width: 130px">
+        <el-select v-model="filter.alertType" style="width: 130px" @change="onFilterChange">
           <el-option label="全部" value="all" />
           <el-option label="停用" value="disabled" />
           <el-option label="合同到期" value="contractExpired" />
@@ -86,14 +95,28 @@
 import { Message } from 'element-ui';
 import { searchStockAlerts } from '@/api/Inventory/InventoryQueryNew';
 
+function norm(v) {
+  return v == null ? '' : String(v).trim();
+}
+
+/** 服务端拉取范围 key：位置/院区变了才需要重查库 */
+function fetchScopeKey(sourceFrom, storageId) {
+  return `${norm(sourceFrom)}||${norm(storageId)}`;
+}
+
 export default {
   name: 'StockAlertDialog',
   props: {
     visible: Boolean,
-    /** 页面当前筛选：sourceFrom / storageId */
+    /** 页面当前筛选 */
     pageWhere: {
       type: Object,
       default: () => ({})
+    },
+    /** 父页已预加载的全量预警（alertType=all），打开时可复用 */
+    cachedList: {
+      type: Array,
+      default: () => []
     },
     storageList: {
       type: Array,
@@ -107,9 +130,14 @@ export default {
   data() {
     return {
       loading: false,
+      /** 当前服务端拉取的全量（含停用+合同到期） */
+      rawList: [],
+      /** 上次服务端拉取时的位置/院区 */
+      rawScopeKey: '',
       list: [],
       page: 1,
       pageSize: 10,
+      fromCache: false,
       filter: {
         sourceFrom: '',
         storageId: '',
@@ -167,31 +195,112 @@ export default {
       this.filter.sourceFrom = this.pageWhere?.sourceFrom ?? '';
       this.filter.storageId = this.pageWhere?.storageId ?? '';
     },
-    /** 打开时同步页面筛选并加载；也可供父组件静默预加载 */
+    /** 院区/类型/位置变更即生效（能本地则本地，否则自动重查） */
+    onFilterChange() {
+      this.reload();
+    },
+    matchSourceFrom(row, sourceFrom) {
+      const q = norm(sourceFrom).toLowerCase();
+      if (!q) return true;
+      const name = String(row.Source_Name || '').toLowerCase();
+      return name.includes(q);
+    },
+    matchStorageId(row, storageId) {
+      const q = norm(storageId);
+      if (!q) return true;
+      // 预警结果未必带 Storage_Id；无字段时不因院区过滤掉（与仅改位置/类型的本地筛选兼容）
+      if (row.Storage_Id == null && row.STORAGE_ID == null) return true;
+      return String(row.Storage_Id ?? row.STORAGE_ID) === q;
+    },
+    matchAlertType(row, alertType) {
+      const t = (alertType || 'all').toLowerCase();
+      if (t === 'disabled') return row.WarningType === 'Disabled';
+      if (t === 'contractexpired') return row.WarningType === 'ContractExpired';
+      return true;
+    },
+    /** 在已拉全量上做本地筛选（预警类型 / 缩小位置） */
+    applyLocalFilter() {
+      const { sourceFrom, storageId, alertType } = this.filter;
+      const [rawSf, rawSid] = (this.rawScopeKey || '').split('||');
+      let rows = this.rawList || [];
+      // 相对拉取范围又缩小了位置/院区时，再本地滤一层
+      if (norm(sourceFrom) && norm(sourceFrom).toLowerCase() !== norm(rawSf).toLowerCase()) {
+        rows = rows.filter((r) => this.matchSourceFrom(r, sourceFrom));
+      }
+      if (norm(storageId) && norm(storageId) !== norm(rawSid)) {
+        rows = rows.filter((r) => this.matchStorageId(r, storageId));
+      }
+      rows = rows.filter((r) => this.matchAlertType(r, alertType));
+      this.list = rows;
+      this.page = 1;
+      this.fromCache = true;
+    },
+    canUseLocalOnly() {
+      if (!this.rawList || !this.rawList.length || !this.rawScopeKey) return false;
+      const [rawSf, rawSid] = this.rawScopeKey.split('||');
+      const curSf = norm(this.filter.sourceFrom);
+      const curSid = norm(this.filter.storageId);
+      // 不能比已拉取范围更宽（例如缓存有院区，当前改成全部）
+      if (rawSf && !curSf) return false;
+      if (rawSid && !curSid) return false;
+      // 院区必须一致（或缓存为全部院区）
+      if (rawSid && curSid && rawSid !== curSid) return false;
+      // 位置：相同，或当前关键字落在缓存关键字内（可本地再滤）
+      if (rawSf && curSf) {
+        const a = rawSf.toLowerCase();
+        const b = curSf.toLowerCase();
+        if (a !== b && !b.includes(a) && !a.includes(b)) return false;
+      }
+      return true;
+    },
+    /** 打开时优先复用父页缓存，避免再打一遍重查询 */
     async onOpen() {
       this.syncFromPage();
-      await this.reload();
+      const pageSf = norm(this.pageWhere?.sourceFrom);
+      const pageSid = norm(this.pageWhere?.storageId);
+      const scopeKey = fetchScopeKey(pageSf, pageSid);
+      if ((this.cachedList || []).length > 0) {
+        this.rawList = [...this.cachedList];
+        this.rawScopeKey = scopeKey;
+        this.applyLocalFilter();
+        this.fromCache = true;
+        return;
+      }
+      await this.reload({ forceServer: true });
     },
-    async reload() {
-      this.loading = true;
+    async reload(opts = {}) {
+      const forceServer = !!opts.forceServer;
       this.page = 1;
+      this.$emit('sync-filter', {
+        sourceFrom: this.filter.sourceFrom,
+        storageId: this.filter.storageId
+      });
+
+      // 仅改预警类型 / 在已有更宽结果上缩小位置 → 不打库
+      if (!forceServer && this.canUseLocalOnly()) {
+        this.applyLocalFilter();
+        return;
+      }
+
+      this.loading = true;
+      this.fromCache = false;
       try {
-        // 同步回页面筛选，避免重复输入
-        this.$emit('sync-filter', {
-          sourceFrom: this.filter.sourceFrom,
-          storageId: this.filter.storageId
-        });
+        // 始终拉 all，类型在前端切，避免同范围反复扫库
         const res = await searchStockAlerts(
           {
             ...this.pageWhere,
             sourceFrom: this.filter.sourceFrom,
             storageId: this.filter.storageId
           },
-          this.filter.alertType
+          'all'
         );
-        this.list = res.result || [];
-        this.$emit('loaded', this.list);
+        this.rawList = res.result || [];
+        this.rawScopeKey = fetchScopeKey(this.filter.sourceFrom, this.filter.storageId);
+        this.applyLocalFilter();
+        this.fromCache = false;
+        this.$emit('loaded', this.rawList);
       } catch (e) {
+        this.rawList = [];
         this.list = [];
         Message.error(e.message || '加载库存预警失败');
       } finally {
@@ -207,6 +316,11 @@ export default {
   margin-bottom: 10px;
   color: #c45656;
   font-size: 13px;
+}
+.tip-cache {
+  margin-left: 6px;
+  color: #909399;
+  font-size: 12px;
 }
 .filter-bar {
   margin-bottom: 8px;
