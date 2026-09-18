@@ -7,6 +7,7 @@
         :inline="true"
         class="ele-form-search"
         size="mini"
+        @submit.native.prevent
         @keyup.enter.native="search"
       >
         <el-form-item label="手术地点">
@@ -499,7 +500,12 @@
           </div>
 
           <!-- 定数标签登记 -->
-          <el-form :inline="true" size="mini" @keyup.enter.native="handleRegisterConsume">
+          <el-form
+            :inline="true"
+            size="mini"
+            @submit.native.prevent
+            @keyup.enter.native="handleRegisterConsume"
+          >
             <el-form-item label="" style="margin-bottom: 0px">
               <el-input
                 v-model="registerConsumeForm.LABEL"
@@ -513,6 +519,7 @@
                 type="primary"
                 class="ele-btn-icon"
                 icon="el-icon-check"
+                native-type="button"
                 :disabled="!currentMainRow"
                 @click="handleRegisterConsume"
               >
@@ -717,7 +724,7 @@
           >>领用未登记耗材
         </div>
         <!-- 筛选条件 -->
-          <el-form :inline="true" size="mini">
+          <el-form :inline="true" size="mini" @submit.native.prevent>
             <el-form-item label="筛选条件">
               <el-select
                 v-model="unregisteredFilter.FILTER_TYPE"
