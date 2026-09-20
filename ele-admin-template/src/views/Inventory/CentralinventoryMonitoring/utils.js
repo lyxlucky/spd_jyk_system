@@ -738,7 +738,8 @@ export function createCenterMonitorWhere() {
     EnableState: '0',
     SearchName: '',
     EnableLowUp: '1',
-    Supplier: ''
+    Supplier: '',
+    ReagentFilter: ''
   };
 }
 

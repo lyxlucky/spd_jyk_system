@@ -39,6 +39,7 @@ export async function searchCentralMonitor(where, page, size) {
       SearchName: where.SearchName ?? '',
       EnableLowUp: where.EnableLowUp ?? '1',
       Supplier: where.Supplier ?? '',
+      ReagentFilter: where.ReagentFilter ?? '',
       field: where.field ?? '',
       order: where.order ?? '',
       page,
