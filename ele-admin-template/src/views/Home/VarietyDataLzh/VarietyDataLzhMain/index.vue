@@ -147,7 +147,16 @@
               :loading="hpActionLoading"
               @click="onSendChrm"
             >
-              发送品种(CHRM)
+              {{ sendChrmButtonText }}
+            </el-button>
+            <el-button
+              v-if="showGzbjBtn"
+              size="mini"
+              :disabled="!selection.length"
+              :loading="hpActionLoading"
+              @click="onSendGzbj"
+            >
+              发送品种(毕节)
             </el-button>
             <el-button
               v-if="showDhThreeBtn"
@@ -669,6 +678,7 @@ import {
   sendStzyVarHis,
   sendStzlVarHis,
   sendChrmVarHis,
+  sendGzbjVarHis,
   sendDhThreeHis,
   sendBdJfBm,
   sendFsApproveVar,
@@ -800,6 +810,8 @@ export default {
       showStzyBtn: HOME_HP === 'stzyyy' || HOME_HP === 'chrmyy',
       showStzlBtn: HOME_HP === 'stzl',
       showChrmBtn: HOME_HP === 'chrmyy',
+      showGzbjBtn: HOME_HP === 'gzbj',
+      sendChrmButtonText: '发送品种(CHRM)',
       showDhThreeBtn: HOME_HP === 'fszxy',
       showBdJfBtn: HOME_HP === 'bd',
       showFsApproveBtn: HOME_HP === 'fsdwrmyy' || HOME_HP === 'fszxy',
@@ -1456,7 +1468,11 @@ export default {
     },
     onSendChrm() {
       if (!this.ensureSelection()) return;
-      this.runHpAction(() => sendChrmVarHis(this.selection, this.nickname));
+      this.runHpAction(() => sendChrmVarHis(this.selection, this.nickname, HOME_HP));
+    },
+    onSendGzbj() {
+      if (!this.ensureSelection()) return;
+      this.runHpAction(() => sendGzbjVarHis(this.selection, this.nickname));
     },
     onSendDhThree() {
       if (!this.ensureSelection()) return;

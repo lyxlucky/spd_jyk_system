@@ -588,10 +588,21 @@ export async function sendStzlVarHis(rows, men = '') {
 }
 
 /** 发送品种 CHRM（模型绑定 List） */
-export async function sendChrmVarHis(rows, men = '') {
+export async function sendChrmVarHis(rows, men = '', hp = '') {
   const json = (rows || []).map((r) => ({ ID: r.Varietie_Code, men: men || '' }));
   const res = await request.post(
     '/Abdzczh/sendVarTo',
+    { Token: token(), hp, json },
+    LONG_TIMEOUT
+  );
+  return unwrap(res);
+}
+
+/** 发送品种 毕节 */
+export async function sendGzbjVarHis(rows, men = '') {
+  const json = (rows || []).map((r) => ({ ID: r.Varietie_Code, men: men || '' }));
+  const res = await request.post(
+    '/Abdzczh/sendVarToGzbj',
     { Token: token(), json },
     LONG_TIMEOUT
   );
