@@ -7,7 +7,17 @@
       @aggregateExport="aggregateExport"
     />
     <div class="spd-panel spd-table-panel goodsshelves-table-panel">
-      <div class="spd-panel__head">入库列表</div>
+      <div class="spd-panel__head">
+        <span>{{ billMode ? '入库单据' : '入库列表' }}</span>
+        <span class="summary-bar">
+          <template v-if="billMode">
+            按单据号分页，展开查看明细。导出仍为明细行。本页 {{ billPageCount }} 张 / 条件内 {{ lineTotal }} 行。
+          </template>
+          当前页散货金额：{{ pageAmount }} | 品种总金额：{{ totalAmount }}
+          | 当前页净入库数量：{{ inQty }}-{{ backQty }}={{ netQty }} | 品种总数量：{{ totalQty }}
+          | 入库总数：{{ inStockSum }} | 退购总数：{{ outStockSum }} | 净入库总数：{{ netStockSum }}
+        </span>
+      </div>
       <pic-preview-bar
         ref="picPreview"
         :batch-id="previewCtx.batchId"
@@ -28,12 +38,44 @@
           :height="tableHeight"
           :pageSize="pageSize"
           :pageSizes="pageSizes"
-          :columns="columns"
+          :columns="tableColumns"
           :datasource="datasource"
           :selection.sync="selection"
-          cache-key="goodsshelvesInTable_v3"
+          :row-key="billMode ? 'rowKey' : undefined"
+          :cache-key="billMode ? 'goodsshelvesInBill_v1' : 'goodsshelvesInTable_v3'"
           @current-change="onCurrentChange"
         >
+          <template v-if="billMode" v-slot:expand="{ row }">
+            <el-table
+              :data="row.Details || []"
+              size="mini"
+              border
+              max-height="320"
+              @row-click="onDetailClick"
+            >
+              <el-table-column
+                v-for="col in detailViewColumns"
+                :key="col.prop"
+                :prop="col.prop"
+                :label="col.label"
+                :min-width="col.minWidth || col.width || 100"
+                :align="col.align || 'center'"
+                show-overflow-tooltip
+              >
+                <template v-slot="scope">
+                  {{ formatDetailCell(col, scope.row) }}
+                </template>
+              </el-table-column>
+              <el-table-column label="操作" width="200" align="center" fixed="right">
+                <template v-slot="scope">
+                  <el-button type="text" size="mini" @click.stop="openProReport(scope.row)">上传</el-button>
+                  <el-button type="text" size="mini" @click.stop="openUdi(scope.row)">查看UDI</el-button>
+                  <el-button type="text" size="mini" @click.stop="openOrderPic(scope.row, '1')">单号</el-button>
+                  <el-button type="text" size="mini" @click.stop="openOrderPic(scope.row, '2')">批次</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+          </template>
           <template v-slot:reportPic="{ row }">
             <el-button type="text" size="mini" @click="openProReport(row)">
               上传
@@ -95,7 +137,7 @@ import UploadProReportDialog from './UploadProReportDialog.vue';
 import UploadOrderPicDialog from './UploadOrderPicDialog.vue';
 import WatchUdiDialog from './WatchUdiDialog.vue';
 import PicPreviewBar from './PicPreviewBar.vue';
-import { GetPDAList, GetInStockDetailRaw } from '@/api/Inventory/Goodsshelves';
+import { GetPDAList, GetInStockDetailRaw, GetInStockDetailByBill } from '@/api/Inventory/Goodsshelves';
 import {
   getOrderJsTypeText,
   formatHighLowClassTwo,
@@ -119,6 +161,80 @@ export default {
     pageSize: {
       type: Number,
       default: 10
+    },
+    billMode: {
+      type: Boolean,
+      default: false
+    }
+  },
+  computed: {
+    tableColumns() {
+      if (!this.billMode) return this.columns;
+      return [
+        {
+          columnKey: 'expand',
+          type: 'expand',
+          width: 46,
+          align: 'center',
+          slot: 'expand'
+        },
+        {
+          prop: 'BUSINESS_BILL',
+          label: '入库单号',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 150
+        },
+        {
+          prop: 'UP_SHELF_TYPE',
+          label: '入库类型',
+          align: 'center',
+          minWidth: 100
+        },
+        {
+          prop: 'SUPPLIER_NAME',
+          label: '供应商名称',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 180
+        },
+        {
+          prop: 'BILL_TIME',
+          label: '入库时间',
+          align: 'center',
+          minWidth: 160,
+          formatter: (row) =>
+            row.BILL_TIME ? String(row.BILL_TIME).replace('T', ' ') : ''
+        },
+        {
+          prop: 'LINE_COUNT',
+          label: '明细行数',
+          align: 'center',
+          width: 90
+        },
+        {
+          prop: 'QTY_SUM',
+          label: '数量合计',
+          align: 'center',
+          width: 100
+        },
+        {
+          prop: 'AMOUNT_SUM',
+          label: '金额合计',
+          align: 'right',
+          width: 120,
+          formatter: (row) => {
+            const n = parseFloat(row.AMOUNT_SUM);
+            return Number.isNaN(n) ? '' : n.toFixed(2);
+          }
+        }
+      ];
+    },
+    detailViewColumns() {
+      return (this.columns || []).filter((col) => col.prop);
+    },
+    netStockSum() {
+      return this.inStockSum - this.outStockSum;
     }
   },
   data() {
@@ -136,6 +252,16 @@ export default {
       orderPicParams: { orderNum: '0', batchId: '0', batch: '0' },
       udiVisible: false,
       previewCtx: { batchId: '', orderNum: '', batchKey: '' },
+      lineTotal: 0,
+      billPageCount: 0,
+      pageAmount: '0.00',
+      totalAmount: '0.00',
+      inQty: 0,
+      backQty: 0,
+      netQty: 0,
+      totalQty: 0,
+      inStockSum: 0,
+      outStockSum: 0,
       pageSizes: [10, 30, 60, 90, 150, 300],
       selection: [],
       columns: withCustomSort(
@@ -576,15 +702,73 @@ export default {
     },
     datasource({ page, limit, where, order }) {
       this.lastWhere = where || this.lastWhere;
-      return GetPDAList({ page, limit, where, order })
-        .then((res) => ({
-          count: res.total,
-          list: res.result || []
-        }))
+      const request = this.billMode ? GetInStockDetailByBill : GetPDAList;
+      return request({ page, limit, where, order })
+        .then((res) => {
+          const list = res.result || [];
+          if (this.billMode) {
+            list.forEach((row, index) => {
+              row.rowKey = `${row.UP_SHELF_TYPE || ''}|${row.BUSINESS_BILL || ''}|${index}`;
+            });
+            this.lineTotal = res.lineTotal || 0;
+            this.billPageCount = list.length;
+            const details = list.reduce(
+              (acc, row) => acc.concat(row.Details || []),
+              []
+            );
+            this.updateSummary(details, res);
+          } else {
+            this.updateSummary(list, res);
+          }
+          return {
+            count: res.total,
+            list
+          };
+        })
         .catch((err) => {
           this.$message.error(err.message || '入库列表加载失败');
           return { count: 0, list: [] };
         });
+    },
+    updateSummary(list, res) {
+      let backQty = 0;
+      let inQty = 0;
+      let netQty = 0;
+      let pageAmount = 0;
+      (list || []).forEach((row) => {
+        const goodsQty = parseFloat(row.GOODS_QTY) || 0;
+        if (row.UP_SHELF_TYPE === '调拨出库' || row.UP_SHELF_TYPE === '退购出库') {
+          backQty -= goodsQty;
+        } else {
+          inQty += goodsQty;
+        }
+        netQty += parseFloat(row.UP_SHELF_QUANTITY) || 0;
+        pageAmount += goodsQty * (parseFloat(row.SUPPLY_PRICE) || 0);
+      });
+      this.inQty = inQty;
+      this.backQty = backQty;
+      this.netQty = netQty;
+      this.pageAmount = pageAmount.toFixed(2);
+      const first = (list || [])[0] || {};
+      this.totalQty = first.All_QTY ?? first.ALL_QTY ?? 0;
+      const ap = parseFloat(first.ALL_PRICE);
+      this.totalAmount = Number.isFinite(ap) ? ap.toFixed(2) : '0.00';
+      const inSum = parseFloat(res && res.InStockSum);
+      const outSum = parseFloat(res && res.OutStockSum);
+      this.inStockSum = Number.isFinite(inSum) ? inSum : 0;
+      this.outStockSum = Number.isFinite(outSum) ? outSum : 0;
+    },
+    onDetailClick(row) {
+      this.onCurrentChange(row);
+    },
+    formatDetailCell(col, row) {
+      if (typeof col.formatter === 'function') {
+        const text = col.formatter(row, col, row[col.prop]);
+        return text == null ? '' : text;
+      }
+      const value = row[col.prop];
+      if (value == null) return '';
+      return typeof value === 'string' ? value.replace('T', ' ') : value;
     },
     reload(where) {
       if (where) this.lastWhere = where;
@@ -596,6 +780,7 @@ export default {
     },
     /** 对齐老系统：点行后上方展示检验报告 + ORDER_PIC 图 */
     onCurrentChange(row) {
+      if (row && row.Details) return;
       if (!row) {
         this.previewCtx = { batchId: '', orderNum: '', batchKey: '' };
         return;
@@ -861,7 +1046,20 @@ export default {
 }
 
 .spd-panel__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
   flex: none;
+}
+
+.summary-bar {
+  color: #606266;
+  font-size: 12px;
+  font-weight: normal;
+  text-align: right;
+  line-height: 20px;
+  white-space: normal;
 }
 
 .goodsshelves-table-panel > .pic-preview-bar {

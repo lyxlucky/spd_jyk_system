@@ -8,6 +8,14 @@
             <el-radio-button label="out">中心库出库查询</el-radio-button>
           </el-radio-group>
         </el-form-item>
+        <el-button
+          v-if="showSzseBill"
+          type="text"
+          size="mini"
+          @click="$router.push('/Inventory/GoodsshelvesSzse')"
+        >
+          市二按单据号查看
+        </el-button>
       </el-form>
       <div class="goodsshelves-content">
         <!-- keep-alive：切换 tab 保留查询条件、列表数据与 pageSize，避免销毁重建 -->
@@ -26,6 +34,7 @@
 import LeftPage from '../../Inventory/Goodsshelves/components/LeftPage.vue';
 import RightPage from '../../Inventory/Goodsshelves/components/RightPage.vue';
 import { setPageTab, getRouteTabKey } from '@/utils/page-tab-util';
+import { HOME_HP } from '@/config/setting';
 
 export default {
   // keep-alive 按组件 name 缓存；缺 name 时切换菜单会销毁重建，表现为整页刷新
@@ -40,6 +49,12 @@ export default {
       // 两侧 tab 共用，切换后首次进入的另一侧也沿用已选条数
       sharedPageSize: 10
     };
+  },
+  computed: {
+    showSzseBill() {
+      const hp = String(HOME_HP || '').toLowerCase();
+      return hp === 'se2' || hp.startsWith('szse');
+    }
   },
   mounted() {
     const name = this.$options.name;

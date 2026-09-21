@@ -61,6 +61,13 @@ export function getMenuRoutes(menus, homePath) {
       meta: { title: '中七品种对接拦截' }
     });
   }
+  if (!routes.some((route) => route.path === '/Inventory/GoodsshelvesSzse')) {
+    routes.push({
+      path: '/Inventory/GoodsshelvesSzse',
+      component: () => import('@/views/Inventory/GoodsshelvesSzse/index.vue'),
+      meta: { title: '流向查询(按单据)' }
+    });
+  }
   // 仅开发环境：便于未在库里配菜单时联调「暂存库查询(新)」。生产构建 NODE_ENV=production 不会注入。
   // 正式环境仍以 /Commons/login 返回的 permission_group + 后台菜单为准。
   if (process.env.NODE_ENV === 'development') {
