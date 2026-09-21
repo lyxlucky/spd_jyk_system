@@ -26,8 +26,52 @@ export async function getAuthOrderMain(params) {
       Token: token(),
       DELIVERY_NOTE_NUMBER: params.deliveryNoteNumber || '',
       orderState: params.orderState ?? '',
+      homeHp: params.homeHp || HOME_HP || '',
       page: params.page || 1,
       size: params.size || 30
+    })
+  );
+  return unwrap(res);
+}
+
+/** 自助订单审核列表（市二） */
+export async function getAuthOrderApproveMain(params) {
+  const res = await request.post(
+    '/CentralWarehouseBagMakingMgmt/getAuthOrderApproveMain',
+    formdataify({
+      Token: token(),
+      DELIVERY_NOTE_NUMBER: params.deliveryNoteNumber || '',
+      orderState: params.orderState ?? '',
+      approveState: params.approveState ?? '',
+      dateFrom: params.dateFrom || '',
+      dateTo: params.dateTo || '',
+      page: params.page || 1,
+      size: params.size || 20
+    })
+  );
+  return unwrap(res);
+}
+
+/** 自助订单审批通过 */
+export async function authOrderApprove(receiptIds) {
+  const res = await request.post(
+    '/CentralWarehouseBagMakingMgmt/authOrderApprove',
+    formdataify({
+      Token: token(),
+      json: JSON.stringify(receiptIds || [])
+    })
+  );
+  return unwrap(res);
+}
+
+/** 自助订单审批不通过 */
+export async function authOrderNoApprove(receiptIds, approveMark) {
+  const res = await request.post(
+    '/CentralWarehouseBagMakingMgmt/authOrderNoApprove',
+    formdataify({
+      Token: token(),
+      json: JSON.stringify(receiptIds || []),
+      ApproveMark: approveMark || ''
     })
   );
   return unwrap(res);

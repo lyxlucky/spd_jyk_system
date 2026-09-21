@@ -52,9 +52,22 @@ function buildSearchParams(where = {}) {
     APPROVAL_NUMBER: where.approvalNumber ?? '',
     PROD_REGISTRATION_NAME: where.prodRegistrationName ?? '',
     MANUFACTURING_ENT_NAME: where.manufacturingEntName ?? '',
+    HIGH_OR_LOW_CLASS: where.highOrLowClass ?? '',
     CONSUME_TIME: consumeTime,
     CONSUME_TIME2: consumeTime2,
     BL: bl
+  };
+}
+
+/** 高低值分类选项 — GET /VarietieBasicInfo/GetHighLowOptionConfig */
+export async function getHighLowOptionConfig() {
+  const res = await request.get('/VarietieBasicInfo/GetHighLowOptionConfig', {
+    params: { Token: token() }
+  });
+  const data = unwrap(res).result || {};
+  return {
+    HIGH_OR_LOW_CLASS: data.HIGH_OR_LOW_CLASS || [],
+    HIGH_OR_LOW_CLASS_TWO: data.HIGH_OR_LOW_CLASS_TWO || []
   };
 }
 

@@ -141,10 +141,26 @@ export async function GetPDAList(data) {
   return sendRequest('/InStockCheck/GetInStockDetail', buildInStockParams(data));
 }
 
+// 市二：入库按单据号分页（明细仍在 Details，导出走 GetPDAList）
+export async function GetInStockDetailByBill(data) {
+  return sendRequest(
+    '/InStockCheck/GetInStockDetailByBill',
+    buildInStockParams(data)
+  );
+}
+
 // 中心库出库查询
 export async function GetPDAList2(data) {
   return sendRequest(
     '/InStockCheck/GetOutStockDetail',
+    buildOutStockParams(data)
+  );
+}
+
+// 市二：出库按单据号分页
+export async function GetOutStockDetailByBill(data) {
+  return sendRequest(
+    '/InStockCheck/GetOutStockDetailByBill',
     buildOutStockParams(data)
   );
 }

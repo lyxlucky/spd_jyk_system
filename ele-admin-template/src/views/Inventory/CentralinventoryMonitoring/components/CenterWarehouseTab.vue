@@ -27,6 +27,13 @@
           <el-option v-for="item in storageList" :key="item.ID" :label="item.NAME" :value="String(item.ID)" />
         </el-select>
       </el-form-item>
+      <el-form-item label="试剂筛选">
+        <el-select v-model="filters.ReagentFilter" clearable placeholder="试剂-全部" style="width: 110px" @change="reloadMonitor">
+          <el-option label="试剂-全部" value="" />
+          <el-option label="试剂" value="2" />
+          <el-option label="非试剂" value="N" />
+        </el-select>
+      </el-form-item>
       <el-form-item>
         <el-checkbox v-model="filterDisabled" @change="onFilterDisabledChange">过滤已停用品种</el-checkbox>
       </el-form-item>

@@ -16,6 +16,8 @@ export const LABEL_OPTIONS = [
   { value: '-1', label: '标记不打印标签' }
 ];
 
+export const QUERY_LABEL_OPTIONS = LABEL_OPTIONS.filter((item) => item.value !== '7');
+
 export const cipHpFlags = {
   isLhLike: HOME_HP === 'szlh' || HOME_HP === 'szlhfy',
   isStzx: HOME_HP === 'stzx',

@@ -25,6 +25,14 @@
             </el-form-item>
 
             <el-form-item class="cell cell--xs">
+              <el-select v-model="where.REAGENT_FILTER" clearable placeholder="试剂筛选">
+                <el-option label="试剂-全部" value="" />
+                <el-option label="试剂" value="2" />
+                <el-option label="非试剂" value="N" />
+              </el-select>
+            </el-form-item>
+
+            <el-form-item class="cell cell--xs">
               <el-select v-model="where.HIGH_OR_LOW_CLASS_TWO" clearable placeholder="重点分类">
                 <el-option label="重点分类-全部" value="-1" />
                 <el-option label="重点治理" value="1" />
@@ -350,6 +358,7 @@ export default {
         IS_INTERVENED: '-1',
         IS_PROTECT: '-1',
         HIGH_OR_LOW_CLASS: '-1',
+        REAGENT_FILTER: '',
         HIGH_OR_LOW_CLASS_TWO: '-1',
         IS_EQUIPMENT_CHANGE: '-1',
         SENDYB_STATE: '',

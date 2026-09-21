@@ -115,13 +115,13 @@ export function buildMainColumns(opts = {}) {
     { prop: 'CONTRACT_CODE', label: '合同编码', minWidth: 110, showOverflowTooltip: true },
     {
       prop: 'CONTRACT_END_TIME',
-      label: '合同到期',
+      label: '合同有效期',
       minWidth: 120,
       slot: 'contractEnd'
     },
     {
       prop: 'DET_CONTRACT_END',
-      label: '合同明细到期',
+      label: '合同终止日期',
       minWidth: 120,
       slot: 'detContractEnd'
     },

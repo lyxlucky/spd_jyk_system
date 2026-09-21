@@ -32,6 +32,23 @@
                 @keyup.enter.native="reload"
               />
             </el-form-item>
+            <el-form-item label="高低值分类">
+              <el-select
+                v-model="query.highOrLowClass"
+                clearable
+                placeholder="全部"
+                style="width: 120px"
+                @change="reload"
+              >
+                <el-option label="全部" value="" />
+                <el-option
+                  v-for="item in highLowOptions"
+                  :key="String(item.value)"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
+            </el-form-item>
             <el-form-item label="消耗时间">
               <el-date-picker
                 v-model="query.consumeTime"
@@ -105,7 +122,12 @@
 <script>
 import { utils, writeFile } from 'xlsx';
 import DetailDialog from './components/DetailDialog.vue';
-import { getRegistrationWarn, getRegistrationWarnAll, currentMonth } from '@/api/Statistics/RegistrationWarn';
+import {
+  getRegistrationWarn,
+  getRegistrationWarnAll,
+  getHighLowOptionConfig,
+  currentMonth
+} from '@/api/Statistics/RegistrationWarn';
 
 function currentMonthValue() {
   return currentMonth();
@@ -122,6 +144,14 @@ const EXPORT_HEADERS = [
   '筛选周期平均用量增幅比例%'
 ];
 
+const DEFAULT_HIGH_LOW_OPTIONS = [
+  { label: '高值', value: '1' },
+  { label: '低值', value: '0' },
+  { label: '试剂', value: '2' },
+  { label: '消毒', value: '3' },
+  { label: '设备耗材', value: '4' }
+];
+
 export default {
   name: 'RegistrationWarn',
   components: { DetailDialog },
@@ -133,10 +163,12 @@ export default {
         approvalNumber: '',
         prodRegistrationName: '',
         manufacturingEntName: '',
+        highOrLowClass: '',
         consumeTime: month,
         consumeTime2: month,
         bl: 20
       },
+      highLowOptions: DEFAULT_HIGH_LOW_OPTIONS,
       exporting: false,
       detailVisible: false,
       detailRow: null,
@@ -152,7 +184,26 @@ export default {
       ]
     };
   },
+  created() {
+    this.loadHighLowOptions();
+  },
   methods: {
+    async loadHighLowOptions() {
+      try {
+        const cfg = await getHighLowOptionConfig();
+        const list = (cfg.HIGH_OR_LOW_CLASS || [])
+          .map((i) => ({
+            label: i.OPTION_TEXT || i.text || String(i.OPTION_VALUE ?? ''),
+            value: String(i.OPTION_VALUE ?? i.value ?? '')
+          }))
+          .filter((i) => i.value !== '');
+        if (list.length) {
+          this.highLowOptions = list;
+        }
+      } catch {
+        // 配置拉取失败时沿用默认选项
+      }
+    },
     formatBl(val) {
       if (val == null || val === '') return '';
       return `${val}%`;

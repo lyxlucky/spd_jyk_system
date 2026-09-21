@@ -300,9 +300,10 @@ export default {
       try {
         const payload = normalizeRowForPost({ ...this.remarkRow, Remarks: this.remarkText });
         const res = await updateRemarks([payload]);
+        // 仅更新当前行，避免 reload 回到第 1 页
+        this.remarkRow.Remarks = this.remarkText;
         Message.success(res.msg || '保存成功');
         this.remarkVisible = false;
-        this.reload();
       } catch (e) {
         Message.error(e.message || '保存失败');
       } finally {

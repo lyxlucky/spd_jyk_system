@@ -11,8 +11,11 @@
     />
     <div class="spd-panel spd-table-panel goodsshelves-table-panel">
       <div class="spd-panel__head">
-        <span>出库列表</span>
+        <span>{{ billMode ? '出库单据' : '出库列表' }}</span>
         <span class="summary-bar">
+          <template v-if="billMode">
+            按单据号分页，展开查看明细。导出仍为明细行。本页 {{ billPageCount }} 张 / 条件内 {{ lineTotal }} 行。
+          </template>
           当前页出库数量：{{ pageQty }} | 品种出库总数量：{{ totalQty }} | 当前页散货金额：{{
             pageAmount
           }}
@@ -39,13 +42,44 @@
           :height="tableHeight"
           :pageSize="pageSize"
           :pageSizes="pageSizes"
-          :columns="columns"
+          :columns="tableColumns"
           :datasource="datasource"
           :selection.sync="selection"
-          cache-key="goodsshelvesOutTable_v3"
+          :row-key="billMode ? 'rowKey' : undefined"
+          :cache-key="billMode ? 'goodsshelvesOutBill_v1' : 'goodsshelvesOutTable_v3'"
           @done="onTableDone"
           @current-change="onCurrentChange"
         >
+          <template v-if="billMode" v-slot:expand="{ row }">
+            <el-table
+              :data="row.Details || []"
+              size="mini"
+              border
+              max-height="320"
+              @row-click="onDetailClick"
+            >
+              <el-table-column
+                v-for="col in detailViewColumns"
+                :key="col.prop"
+                :prop="col.prop"
+                :label="col.label"
+                :min-width="col.minWidth || col.width || 100"
+                :align="col.align || 'center'"
+                show-overflow-tooltip
+              >
+                <template v-slot="scope">
+                  {{ formatDetailCell(col, scope.row) }}
+                </template>
+              </el-table-column>
+              <el-table-column label="操作" width="180" align="center" fixed="right">
+                <template v-slot="scope">
+                  <el-button type="text" size="mini" @click.stop="openProReport(scope.row)">上传</el-button>
+                  <el-button type="text" size="mini" @click.stop="openOrderPic(scope.row, '1')">单号</el-button>
+                  <el-button type="text" size="mini" @click.stop="openOrderPic(scope.row, '2')">批次</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+          </template>
           <template v-slot:reportPic="{ row }">
             <el-button type="text" size="mini" @click="openProReport(row)">
               上传
@@ -105,6 +139,7 @@ import PicPreviewBar from './PicPreviewBar.vue';
 import {
   GetPDAList2,
   GetOutStockDetailRaw,
+  GetOutStockDetailByBill,
   ExcelGoodsCKByHW
 } from '@/api/Inventory/Goodsshelves';
 import {
@@ -134,6 +169,84 @@ export default {
     pageSize: {
       type: Number,
       default: 10
+    },
+    billMode: {
+      type: Boolean,
+      default: false
+    }
+  },
+  computed: {
+    tableColumns() {
+      if (!this.billMode) return this.columns;
+      return [
+        {
+          columnKey: 'expand',
+          type: 'expand',
+          width: 46,
+          align: 'center',
+          slot: 'expand'
+        },
+        {
+          prop: 'BUSINESS_BILL',
+          label: '出库单号',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 150
+        },
+        {
+          prop: 'UP_SHELF_TYPE',
+          label: '出库类型',
+          align: 'center',
+          minWidth: 100
+        },
+        {
+          prop: 'SUPPLIER_NAME',
+          label: '科室名称',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 160
+        },
+        {
+          prop: 'From_Supplier_Name',
+          label: '供应商名称',
+          align: 'center',
+          showOverflowTooltip: true,
+          minWidth: 160
+        },
+        {
+          prop: 'BILL_TIME',
+          label: '出库时间',
+          align: 'center',
+          minWidth: 160,
+          formatter: (row) =>
+            row.BILL_TIME ? String(row.BILL_TIME).replace('T', ' ') : ''
+        },
+        {
+          prop: 'LINE_COUNT',
+          label: '明细行数',
+          align: 'center',
+          width: 90
+        },
+        {
+          prop: 'QTY_SUM',
+          label: '数量合计',
+          align: 'center',
+          width: 100
+        },
+        {
+          prop: 'AMOUNT_SUM',
+          label: '金额合计',
+          align: 'right',
+          width: 120,
+          formatter: (row) => {
+            const n = parseFloat(row.AMOUNT_SUM);
+            return Number.isNaN(n) ? '' : n.toFixed(2);
+          }
+        }
+      ];
+    },
+    detailViewColumns() {
+      return (this.columns || []).filter((col) => col.prop);
     }
   },
   data() {
@@ -156,6 +269,8 @@ export default {
       orderPicType: '1',
       orderPicParams: { orderNum: '0', batchId: '0', batch: '0' },
       previewCtx: { batchId: '', orderNum: '', batchKey: '' },
+      lineTotal: 0,
+      billPageCount: 0,
       pageSizes: [10, 30, 60, 90, 150, 300],
       selection: [],
       columns: this.buildColumns()
@@ -559,14 +674,45 @@ export default {
     },
     datasource({ page, limit, where, order }) {
       this.lastWhere = where || this.lastWhere;
-      return GetPDAList2({ page, limit, where, order }).then((res) => {
-        const list = res.result || [];
-        this.updateSummary(list);
-        return {
-          count: res.total,
-          list
-        };
-      });
+      const request = this.billMode ? GetOutStockDetailByBill : GetPDAList2;
+      return request({ page, limit, where, order })
+        .then((res) => {
+          const list = res.result || [];
+          if (this.billMode) {
+            list.forEach((row, index) => {
+              row.rowKey = `${row.UP_SHELF_TYPE || ''}|${row.BUSINESS_BILL || ''}|${index}`;
+            });
+            this.lineTotal = res.lineTotal || 0;
+            this.billPageCount = list.length;
+            const details = list.reduce(
+              (acc, row) => acc.concat(row.Details || []),
+              []
+            );
+            this.updateSummary(details);
+          } else {
+            this.updateSummary(list);
+          }
+          return {
+            count: res.total,
+            list
+          };
+        })
+        .catch((err) => {
+          this.$message.error(err.message || '出库列表加载失败');
+          return { count: 0, list: [] };
+        });
+    },
+    onDetailClick(row) {
+      this.onCurrentChange(row);
+    },
+    formatDetailCell(col, row) {
+      if (typeof col.formatter === 'function') {
+        const text = col.formatter(row, col, row[col.prop]);
+        return text == null ? '' : text;
+      }
+      const value = row[col.prop];
+      if (value == null) return '';
+      return typeof value === 'string' ? value.replace('T', ' ') : value;
     },
     updateSummary(list) {
       let pageQty = 0;
@@ -587,6 +733,7 @@ export default {
       // ele-pro-table done hook placeholder
     },
     onCurrentChange(row) {
+      if (row && row.Details) return;
       if (!row) {
         this.previewCtx = { batchId: '', orderNum: '', batchKey: '' };
         return;
@@ -842,7 +989,9 @@ export default {
   font-size: 12px;
   color: #606266;
   font-weight: normal;
-  white-space: nowrap;
+  text-align: right;
+  line-height: 20px;
+  white-space: normal;
 }
 
 .goodsshelves-tab-page >>> .el-table th .cell {

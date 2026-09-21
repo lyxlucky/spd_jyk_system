@@ -55,6 +55,7 @@ export function getStockUpVarInfo(data) {
       state: where.state || '',
       remark: where.remark || '',
       varType: where.varType || '',
+      High_Or_Low_Class: where.High_Or_Low_Class || '',
       STORAGE_ID: where.STORAGE_ID || '',
       order_pc: data.order?.order || 'desc',
       Token: token()
