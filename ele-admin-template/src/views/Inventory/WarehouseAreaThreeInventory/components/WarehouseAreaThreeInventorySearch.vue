@@ -41,6 +41,16 @@
         <el-form-item label="计费编码">
           <el-input v-model="where.CHARGE_CODE" clearable placeholder="计费编码" class="query-input" />
         </el-form-item>
+        <el-form-item label="高低值">
+          <el-select v-model="where.HIGH_OR_LOW_CLASS" class="query-select">
+            <el-option
+              v-for="item in highOrLowClassOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </el-form-item>
         <el-form-item label="定数码">
           <el-input v-model="where.BARCODE_NUMBER" clearable placeholder="定数码" class="query-input" />
         </el-form-item>
@@ -60,6 +70,16 @@
           <el-select v-model="where.STOCK_STATUS" clearable placeholder="全部" class="query-select">
             <el-option
               v-for="item in stockStatusOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="删除状态">
+          <el-select v-model="where.IS_DELETE" class="query-select">
+            <el-option
+              v-for="item in deleteStatusOptions"
               :key="item.value"
               :label="item.label"
               :value="item.value"
@@ -461,8 +481,10 @@ import {
 } from '@/api/Inventory/WarehouseAreaThreeInventory';
 import {
   areaTypeName,
+  DELETE_STATUS_OPTIONS,
   STOCK_DEDUCT_TYPE_OPTIONS,
-  STOCK_STATUS_OPTIONS
+  STOCK_STATUS_OPTIONS,
+  HIGH_OR_LOW_CLASS_OPTIONS
 } from '../utils';
 
 const defaultWhere = () => ({
@@ -474,7 +496,9 @@ const defaultWhere = () => ({
   SPECIFICATION_OR_TYPE: '',
   MANUFACTURING_ENT_NAME: '',
   STOCK_STATUS: '',
+  IS_DELETE: '1',
   STOCK_DEDUCT_TYPE: '',
+  HIGH_OR_LOW_CLASS: '0',
   START_TIME: '',
   END_TIME: ''
 });
@@ -526,7 +550,9 @@ export default {
       spdInStockStats: {},
       syncingSpdInStock: false,
       stockStatusOptions: STOCK_STATUS_OPTIONS,
-      stockDeductTypeOptions: STOCK_DEDUCT_TYPE_OPTIONS
+      deleteStatusOptions: DELETE_STATUS_OPTIONS,
+      stockDeductTypeOptions: STOCK_DEDUCT_TYPE_OPTIONS,
+      highOrLowClassOptions: HIGH_OR_LOW_CLASS_OPTIONS
     };
   },
   computed: {
@@ -565,7 +591,9 @@ export default {
         SPECIFICATION_OR_TYPE: this.where.SPECIFICATION_OR_TYPE || '',
         MANUFACTURING_ENT_NAME: this.where.MANUFACTURING_ENT_NAME || '',
         STOCK_STATUS: this.where.STOCK_STATUS || '',
+        IS_DELETE: this.where.IS_DELETE || '1',
         STOCK_DEDUCT_TYPE: this.where.STOCK_DEDUCT_TYPE || '',
+        HIGH_OR_LOW_CLASS: this.where.HIGH_OR_LOW_CLASS || '0',
         START_TIME: this.where.START_TIME || '',
         END_TIME: this.where.END_TIME || ''
       };

@@ -11,6 +11,17 @@ export const STOCK_DEDUCT_TYPE_OPTIONS = [
   { label: '预扣', value: '2' }
 ];
 
+export const DELETE_STATUS_OPTIONS = [
+  { label: '未删除', value: '1' },
+  { label: '已删除', value: '0' }
+];
+
+export const HIGH_OR_LOW_CLASS_OPTIONS = [
+  { label: '低值', value: '0' },
+  { label: '高值', value: '1' },
+  { label: '全部', value: 'ALL' }
+];
+
 // 格式化数量，保留有效小数位。
 export function fmtQty(value) {
   const n = Number(value);

@@ -64,7 +64,9 @@ export function buildWarehouseAreaThreeInventoryParams(where = {}, page = 1, siz
     SPECIFICATION_OR_TYPE: where.SPECIFICATION_OR_TYPE || '',
     MANUFACTURING_ENT_NAME: where.MANUFACTURING_ENT_NAME || '',
     STOCK_STATUS: where.STOCK_STATUS || '',
+    IS_DELETE: where.IS_DELETE == null ? '1' : String(where.IS_DELETE),
     STOCK_DEDUCT_TYPE: where.STOCK_DEDUCT_TYPE || '',
+    HIGH_OR_LOW_CLASS: where.HIGH_OR_LOW_CLASS || '0',
     START_TIME: where.START_TIME || '',
     END_TIME: where.END_TIME || ''
   };

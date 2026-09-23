@@ -52,10 +52,11 @@ export async function SearchGoodsDeliveryNumbers(data) {
   data2.hp = data.where.hp ? data.where.hp : '';
   data2.depts = data.where.depts ? data.where.depts : '';
   data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
-  // var rep = formdataify(data2);
-  const res = await request.get('/B2BConsumeMgmt/SearchGoodsDeliveryNumbers', {
-    params: data2
-  });
+  var rep = formdataify(data2);
+  const res = await request.post(
+    '/B2BConsumeMgmt/PostSearchGoodsDeliveryNumbers',
+    rep
+  );
   if (res.data.code == 200) {
     return res.data;
   } else {
