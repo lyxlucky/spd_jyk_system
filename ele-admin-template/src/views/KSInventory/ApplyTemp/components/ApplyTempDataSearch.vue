@@ -239,10 +239,16 @@
           .then((res) => {
             loading.close();
             this.dialogTableVisible2 = false;
-            this.$message.success(res.msg);
+            const msg = res.msg || '导入成功';
+            if (msg.indexOf('未导入：') !== -1) {
+              this.$alert(msg, '提示', { type: 'warning' });
+            } else {
+              this.$message.success(msg);
+            }
             this.$emit('search', this.where);
           })
           .catch((err) => {
+            loading.close();
             this.$message.error(err);
           });
       }
