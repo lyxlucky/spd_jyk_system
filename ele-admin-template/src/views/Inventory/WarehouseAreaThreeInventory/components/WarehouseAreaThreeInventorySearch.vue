@@ -86,6 +86,12 @@
             />
           </el-select>
         </el-form-item>
+        <el-form-item label="排除上架品种">
+          <el-select v-model="where.EXCLUDE_UP_SHELF_VARIETY" class="query-select">
+            <el-option label="是" value="1" />
+            <el-option label="否" value="0" />
+          </el-select>
+        </el-form-item>
         <el-form-item label="扣费类型">
           <el-select v-model="where.STOCK_DEDUCT_TYPE" clearable placeholder="全部" class="query-select">
             <el-option
@@ -497,6 +503,7 @@ const defaultWhere = () => ({
   MANUFACTURING_ENT_NAME: '',
   STOCK_STATUS: '',
   IS_DELETE: '1',
+  EXCLUDE_UP_SHELF_VARIETY: '1',
   STOCK_DEDUCT_TYPE: '',
   HIGH_OR_LOW_CLASS: '0',
   START_TIME: '',
@@ -592,6 +599,7 @@ export default {
         MANUFACTURING_ENT_NAME: this.where.MANUFACTURING_ENT_NAME || '',
         STOCK_STATUS: this.where.STOCK_STATUS || '',
         IS_DELETE: this.where.IS_DELETE || '1',
+        EXCLUDE_UP_SHELF_VARIETY: this.where.EXCLUDE_UP_SHELF_VARIETY || '1',
         STOCK_DEDUCT_TYPE: this.where.STOCK_DEDUCT_TYPE || '',
         HIGH_OR_LOW_CLASS: this.where.HIGH_OR_LOW_CLASS || '0',
         START_TIME: this.where.START_TIME || '',
