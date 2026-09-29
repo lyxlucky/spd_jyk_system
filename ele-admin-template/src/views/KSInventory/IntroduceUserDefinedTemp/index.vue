@@ -369,7 +369,9 @@
         APPLY_QTY: 0,
         // 图片对话框相关
         imageDialogVisible: false,
-        currentImageRow: null
+        currentImageRow: null,
+        // 搜索后处理单行默认勾选
+        autoSelectAfterSearch: false
         // datasource: [],
       };
     },
@@ -381,17 +383,34 @@
           ? this.IntroduceUserDefinedTempSearch.PlanDept
           : this.$store.state.user.info.DeptNow.Dept_Two_Code;
         where.PlanNum = this.IntroduceUserDefinedTempSearch.PlanNum;
+        const needAutoSelect = this.autoSelectAfterSearch;
+        this.autoSelectAfterSearch = false;
         let data = SerachPlanList({ page, limit, where, order, routePath: this.$route.path }).then((res) => {
           var tData = {
             count: res.total,
             list: res.result
           };
+          if (needAutoSelect) {
+            this.applySingleResultAutoSelect(res.result, res.total);
+          }
           return tData;
         });
         return data;
       },
+      /* 查询仅命中一行时默认勾选，多行则不勾选 */
+      applySingleResultAutoSelect(list, total) {
+        this.$nextTick(() => {
+          const table = this.$refs.table && this.$refs.table.$refs && this.$refs.table.$refs.table;
+          if (!table) return;
+          table.clearSelection();
+          if (total === 1 && list && list.length === 1) {
+            table.toggleRowSelection(list[0], true);
+          }
+        });
+      },
       /* 刷新表格 */
       reload(where) {
+        this.autoSelectAfterSearch = true;
         this.$refs.table.reload({ page: 1, where: {...where, PlanNum: this.IntroduceUserDefinedTempSearch.PlanNum} });
       },
       /* 打开编辑弹窗 */

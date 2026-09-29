@@ -56,7 +56,7 @@
   import { utils, writeFile } from 'xlsx';
   import UserSearch from './components/user-search.vue';
   import UserEdit from './components/user-edit.vue';
-  import { API_BASE_URL, BACK_BASE_URL } from '@/config/setting';
+  import { API_BASE_URL, BACK_BASE_URL, HOME_HP } from '@/config/setting';
   import {
     getFileNameFromResponseHeaders,
     downloadBlob
@@ -221,6 +221,28 @@
             width: 80,
             showOverflowTooltip: true,
             show: false
+          },
+          {
+            prop: 'PRICE',
+            label: '单价',
+            align: 'center',
+            width: 80,
+            showOverflowTooltip: true,
+            show: HOME_HP == 'bdrm',
+            formatter: (_row, _column, cellValue) => {
+              return Number(cellValue || 0).toFixed(2);
+            }
+          },
+          {
+            prop: 'AMOUNT',
+            label: '总金额',
+            align: 'center',
+            width: 100,
+            showOverflowTooltip: true,
+            show: HOME_HP == 'bdrm',
+            formatter: (row) => {
+              return (Number(row.PRICE || 0) * Number(row.APPLY_QTY || 0)).toFixed(2);
+            }
           }
         ],
         toolbar: false,
@@ -325,6 +347,11 @@
       },
 
       handleNewExportData(data) {
+        // 北京人民：前端导出附带单价/金额；其他医院仍走原服务端导出
+        if (HOME_HP == 'bdrm') {
+          this.handleExportData(data);
+          return;
+        }
         const loading = this.$messageLoading('正在导出数据...');
         var Dept_Two_CodeArray = this.$store.state.user.info.userDept;
         var DEPT_TWO_CODEStr = '';
@@ -387,7 +414,9 @@
                   '未配送',
                   '已收货',
                   '未收货',
-                  '单位'
+                  '单位',
+                  '单价',
+                  '金额'
                 ]
               ];
               res.result.forEach((d) => {
@@ -404,7 +433,9 @@
                   d.APPLY_QTY - d.SEND_QUANITY - d.GET_QUANITY,
                   d.GET_QUANITY,
                   d.APPLY_QTY - d.GET_QUANITY,
-                  d.UNIT
+                  d.UNIT,
+                  Number(d.PRICE || 0).toFixed(4),
+                  (Number(d.PRICE || 0) * Number(d.APPLY_QTY || 0)).toFixed(4)
                 ]);
               });
               writeFile(
