@@ -300,6 +300,7 @@ export default {
         });
     },
     addScanDef() {
+      if (!this.where.bindMachine) return this.$message.error('请先绑定设备');
       const loading = this.$messageLoading('添加中...');
       insertScanDef(this.where)
         .then((res) => {
