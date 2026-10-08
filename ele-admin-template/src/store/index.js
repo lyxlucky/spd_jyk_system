@@ -14,7 +14,6 @@ files.keys().forEach((filePath) => {
   const moduleName = filePath.replace(/^\.\/(.*)\.js$/, '$1');
   modules[moduleName] = files(filePath).default;
 });
-console.log(modules, 'modules')
 Vue.use(Vuex);
 
 export default new Vuex.Store({

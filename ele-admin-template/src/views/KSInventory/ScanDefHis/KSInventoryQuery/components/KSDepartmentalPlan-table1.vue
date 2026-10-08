@@ -177,6 +177,7 @@
 </template>
 
 <script>
+  import { mapState } from 'vuex';
   import { utils, writeFile } from 'xlsx';
   import KSDepartmentalPlanSearch from './KSDepartmentalPlan-search.vue';
   import UserEdit from './user-edit.vue';
@@ -480,6 +481,9 @@
         currentTime: dayjs().format('YYYY-MM-DD')
       };
     },
+    computed: {
+      ...mapState('scanDefHis', ['bindMachine']),
+    },
     methods: {
       getStoragedDays(row) {
         if (!row || !row.RECORD_TIME) return 0;
@@ -649,12 +653,14 @@
           return;
         }
         let data = {
-          DEP_STR: ''
+          DEP_STR: '',
+          bindMachine: ''
         };
         for (let index = 0; index < this.selection.length; index++) {
           data.DEP_STR += this.selection[index].DEF_NO_PKG_CODE + ',';
         }
         data.DEP_STR = data.DEP_STR.substring(0, data.DEP_STR.length - 1);
+        data.bindMachine = this.bindMachine;
         console.log(data);
         BatchInsertScanDef2(data)
           .then((res) => {

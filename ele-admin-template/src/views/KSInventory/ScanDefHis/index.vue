@@ -49,6 +49,7 @@
 </template>
 
 <script>
+  import { mapMutations } from 'vuex';
   import { utils, writeFile } from 'xlsx';
   import UserSearch from './components/user-search.vue';
   import UserEdit from './components/user-edit.vue';
@@ -283,6 +284,9 @@
       };
     },
     methods: {
+      ...mapMutations({
+        setBindMachine: 'scanDefHis/setBindMachine'
+      }),
       /* 表格数据源 */
       datasource({ page, limit, where, order }) {
         where.sourceFrom = this.$store.state.user.info.DeptNow.Dept_Two_Code;
@@ -436,6 +440,7 @@
     mounted() {
       this.$bus.$on('bindMachine', (data) => {
         this.bindMachine = data;
+        this.setBindMachine(data);
       });
     }
   };
