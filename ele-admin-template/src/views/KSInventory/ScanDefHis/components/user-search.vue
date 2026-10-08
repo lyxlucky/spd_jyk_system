@@ -14,7 +14,7 @@
             v-model="where.defNoPkgCode"
             clearable
             placeholder="定数码"
-            style="width: 140px"
+            style="width: 240px"
             @change="addScanDef"
           />
         </el-form-item>
@@ -23,7 +23,7 @@
             v-model="where.varietie"
             clearable
             placeholder="编码/名称"
-            style="width: 130px"
+            style="width: 240px"
           />
         </el-form-item>
         <el-form-item label="规格型号">
@@ -31,7 +31,7 @@
             v-model="where.specType"
             clearable
             placeholder="规格型号"
-            style="width: 120px"
+            style="width: 240px"
           />
         </el-form-item>
         <el-form-item label="二级科室">
@@ -39,7 +39,7 @@
             v-model="where.deptTwoName"
             clearable
             placeholder="科室名称"
-            style="width: 120px"
+            style="width: 240px"
           />
         </el-form-item>
         <br />

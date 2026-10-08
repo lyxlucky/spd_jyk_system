@@ -1,6 +1,17 @@
 <template>
   <div class="ele-body spd-page scan-def-his-page">
     <el-card shadow="never" class="scan-def-his-card">
+      <div class="spd-panel__head spd-panel__head--split">
+        <span class="scan-def-his-meta">
+          <span
+            v-if="['stzl', 'stzx'].includes(HOME_HP) || ENV == 'development'"
+            class="spd-panel__head-meta bind-machine"
+          >
+            当前设备：{{ bindMachine || '暂无' }}
+          </span>
+          <span v-if="msgTip" class="spd-panel__head-meta msg-tip">{{ msgTip }}</span>
+        </span>
+      </div>
       <user-search
         @search="reload"
         @getMsgTip="getMsgTip"
@@ -10,15 +21,6 @@
       <div class="spd-panel spd-table-panel">
         <div class="spd-panel__head spd-panel__head--split">
           <span>定数码消耗列表</span>
-          <span class="scan-def-his-meta">
-            <span
-              v-if="['stzl', 'stzx'].includes(HOME_HP) || ENV == 'development'"
-              class="spd-panel__head-meta"
-            >
-              当前设备：{{ bindMachine || '暂无' }}
-            </span>
-            <span v-if="msgTip" class="spd-panel__head-meta msg-tip">{{ msgTip }}</span>
-          </span>
         </div>
         <div class="spd-table-panel__wrap">
           <ele-pro-table
@@ -262,7 +264,7 @@
           }
         ],
         toolbar: false,
-        tableHeight: 'calc(100vh - 360px)',
+        tableHeight: 'calc(100vh - 400px)',
         pageSize: 20,
         pageSizes: [10, 20, 50, 100, 9999999],
         pagerCount: 5,
@@ -459,5 +461,8 @@
 
 .scan-def-his-page >>> .el-table th .cell {
   white-space: nowrap;
+}
+.bind-machine {
+  font-size: 16px;
 }
 </style>
