@@ -370,12 +370,65 @@
         // 图片对话框相关
         imageDialogVisible: false,
         currentImageRow: null,
-        // 搜索后处理单行默认勾选
-        autoSelectAfterSearch: false
+        // 搜索后单行默认勾选
+        autoSelectAfterSearch: false,
+        // 跨筛选累计勾选（一次确定添加为同一批）
+        accumulatedSelection: {},
+        selectedCodeMap: {},
+        tableReloading: false
         // datasource: [],
       };
     },
     methods: {
+      getRowSelectKey(row) {
+        return row && row.VarID != null ? String(row.VarID) : '';
+      },
+      getRowVarietyCode(row) {
+        if (!row) return '';
+        const code =
+          row.VARIETIE_CODE_NEW ||
+          row.varietie_CODE_NEW ||
+          row.VarCode ||
+          row.varCode ||
+          '';
+        return String(code).trim();
+      },
+      getTableInner() {
+        return this.$refs.table && this.$refs.table.$refs && this.$refs.table.$refs.table;
+      },
+      getVisibleRowKeys() {
+        const table = this.getTableInner();
+        const list = (table && table.data) || [];
+        return list.map((row) => this.getRowSelectKey(row)).filter(Boolean);
+      },
+      rememberSelectedRow(row) {
+        const key = this.getRowSelectKey(row);
+        if (!key) return;
+        this.$set(this.accumulatedSelection, key, row);
+        const code = this.getRowVarietyCode(row);
+        if (code) {
+          this.$set(this.selectedCodeMap, key, code);
+        }
+      },
+      // 同一次确定添加按编码升序展示；明细 ID DESC，故倒序插入
+      sortSelectionForInsert(rows) {
+        const sorted = rows.slice().sort((a, b) => {
+          const keyA = this.getRowSelectKey(a);
+          const keyB = this.getRowSelectKey(b);
+          const codeA = this.selectedCodeMap[keyA] || this.getRowVarietyCode(a);
+          const codeB = this.selectedCodeMap[keyB] || this.getRowVarietyCode(b);
+          const numA = Number(codeA);
+          const numB = Number(codeB);
+          if (codeA !== '' && codeB !== '' && !Number.isNaN(numA) && !Number.isNaN(numB)) {
+            return numA - numB;
+          }
+          return String(codeA).localeCompare(String(codeB), 'zh', {
+            numeric: true,
+            sensitivity: 'base'
+          });
+        });
+        return sorted.reverse();
+      },
       /* 表格数据源 */
       datasource({ page, limit, where, order }) {
         // where.DeptCode = this.$store.state.user.info.DeptNow.Dept_Two_Code;
@@ -392,25 +445,42 @@
           };
           if (needAutoSelect) {
             this.applySingleResultAutoSelect(res.result, res.total);
+          } else if (this.tableReloading) {
+            this.tableReloading = false;
           }
           return tData;
+        }).catch((err) => {
+          this.tableReloading = false;
+          return Promise.reject(err);
         });
         return data;
       },
-      /* 查询仅命中一行时默认勾选，多行则不勾选 */
+      // 恢复累计勾选；仅命中一行时追加勾选
       applySingleResultAutoSelect(list, total) {
         this.$nextTick(() => {
-          const table = this.$refs.table && this.$refs.table.$refs && this.$refs.table.$refs.table;
-          if (!table) return;
-          table.clearSelection();
-          if (total === 1 && list && list.length === 1) {
-            table.toggleRowSelection(list[0], true);
+          try {
+            const table = this.getTableInner();
+            if (!table) return;
+            (list || []).forEach((row) => {
+              const key = this.getRowSelectKey(row);
+              if (key && this.accumulatedSelection[key]) {
+                table.toggleRowSelection(row, true);
+              }
+            });
+            if (total === 1 && list && list.length === 1) {
+              const row = list[0];
+              this.rememberSelectedRow(row);
+              table.toggleRowSelection(row, true);
+            }
+          } finally {
+            this.tableReloading = false;
           }
         });
       },
       /* 刷新表格 */
       reload(where) {
         this.autoSelectAfterSearch = true;
+        this.tableReloading = true;
         this.$refs.table.reload({ page: 1, where: {...where, PlanNum: this.IntroduceUserDefinedTempSearch.PlanNum} });
       },
       /* 打开编辑弹窗 */
@@ -427,15 +497,16 @@
         this.$emit('update:visible', value);
       },
       addKSKSDepartmentalPlanData() {
-        if (!this.selection || this.selection.length == 0) {
+        const selectedRows = this.sortSelectionForInsert(Object.values(this.accumulatedSelection || {}));
+        if (!selectedRows || selectedRows.length == 0) {
           this.$message.warning('请先选择数据');
           return;
         }
         const loading = this.$messageLoading('添加中..');
-        this.selection.forEach((element) => {
+        selectedRows.forEach((element) => {
           element.PLAN_NUMBER = this.IntroduceUserDefinedTempSearch.PlanNum;
         });
-        KeeptListDeta(this.selection)
+        KeeptListDeta(selectedRows)
           .then((res) => {
             this.updateVisible(false);
             this.$message.success(res.msg);
@@ -448,7 +519,24 @@
           });
       },
       onSelectionChange(selection) {
-        this.selection = selection;
+        const selected = selection || [];
+        if (this.tableReloading && selected.length === 0) {
+          return;
+        }
+        this.selection = selected;
+        selected.forEach((row) => {
+          this.rememberSelectedRow(row);
+        });
+        if (this.tableReloading) {
+          return;
+        }
+        const selectedKeys = new Set(selected.map((row) => this.getRowSelectKey(row)).filter(Boolean));
+        this.getVisibleRowKeys().forEach((key) => {
+          if (!selectedKeys.has(key)) {
+            this.$delete(this.accumulatedSelection, key);
+            this.$delete(this.selectedCodeMap, key);
+          }
+        });
       },
       // 打开图片对话框
       openImageDialog(row) {
