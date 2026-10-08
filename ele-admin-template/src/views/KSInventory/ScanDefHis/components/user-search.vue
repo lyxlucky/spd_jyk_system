@@ -256,6 +256,10 @@ export default {
     },
     reset() {
       this.where = defaultWhere();
+      this.$bus.$emit(
+        'bindMachine',
+        ''
+      );
       this.search();
     },
     exportData() {
