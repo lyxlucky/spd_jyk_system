@@ -76,7 +76,7 @@
           </el-upload>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" icon="el-icon-goods" @click="KSInventoryQueryShow = true">从库存中挑选</el-button>
+          <el-button type="primary" icon="el-icon-goods" @click="addFromInventory">从库存中挑选</el-button>
         </el-form-item>
         <el-form-item v-if="['stzl', 'stzx'].includes(HOME_HP) || ENV == 'development'">
           <el-button type="success" icon="el-icon-link" @click="bindMachine">绑定设备</el-button>
@@ -451,6 +451,10 @@ export default {
           loading.close();
           this.$message.error(err.message || '批量消耗失败');
         });
+    },
+    addFromInventory() {
+      if (!this.where.bindMachine) return this.$message.error('请先绑定设备');
+      this.KSInventoryQueryShow = true;
     }
   }
 };
