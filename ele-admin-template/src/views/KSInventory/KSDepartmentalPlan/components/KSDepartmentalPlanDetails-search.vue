@@ -340,6 +340,7 @@
       </div>
     </el-dialog>
     <IntroduceUserDefinedTemp
+      :key="(KSDepartmentalPlanDataSearch && KSDepartmentalPlanDataSearch.PlanNum) || 'IntroduceUserDefinedTemp'"
       :visible.sync="showEdit"
       :IntroduceUserDefinedTempSearch="KSDepartmentalPlanDataSearch"
     />

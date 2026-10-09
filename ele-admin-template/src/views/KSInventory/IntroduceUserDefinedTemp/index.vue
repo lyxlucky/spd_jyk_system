@@ -370,9 +370,7 @@
         // 图片对话框相关
         imageDialogVisible: false,
         currentImageRow: null,
-        // 搜索后单行默认勾选
         autoSelectAfterSearch: false,
-        // 跨筛选累计勾选（一次确定添加为同一批）
         accumulatedSelection: {},
         selectedCodeMap: {},
         tableReloading: false
@@ -410,7 +408,19 @@
           this.$set(this.selectedCodeMap, key, code);
         }
       },
-      // 同一次确定添加按编码升序展示；明细 ID DESC，故倒序插入
+      clearAccumulatedSelection() {
+        this.accumulatedSelection = {};
+        this.selectedCodeMap = {};
+        this.selection = [];
+        this.autoSelectAfterSearch = false;
+        this.tableReloading = false;
+        this.$nextTick(() => {
+          const table = this.getTableInner();
+          if (table && table.clearSelection) {
+            table.clearSelection();
+          }
+        });
+      },
       sortSelectionForInsert(rows) {
         const sorted = rows.slice().sort((a, b) => {
           const keyA = this.getRowSelectKey(a);
@@ -455,7 +465,6 @@
         });
         return data;
       },
-      // 恢复累计勾选；仅命中一行时追加勾选
       applySingleResultAutoSelect(list, total) {
         this.$nextTick(() => {
           try {
@@ -508,6 +517,7 @@
         });
         KeeptListDeta(selectedRows)
           .then((res) => {
+            this.clearAccumulatedSelection();
             this.updateVisible(false);
             this.$message.success(res.msg);
           })
@@ -552,6 +562,7 @@
     watch: {
       visible(visible) {
         if (visible) {
+          this.clearAccumulatedSelection();
           if (this.data) {
             this.$util.assignObject(this.form, this.data);
             this.isUpdate = true;
@@ -559,9 +570,13 @@
             this.isUpdate = false;
           }
         } else {
+          this.clearAccumulatedSelection();
           // this.$refs.form.clearValidate();
           this.form = { ...this.defaultForm };
         }
+      },
+      'IntroduceUserDefinedTempSearch.PlanNum'() {
+        this.clearAccumulatedSelection();
       }
     },
     created() {
