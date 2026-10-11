@@ -46,7 +46,7 @@
       </el-select>
     </el-form-item>
 
-    <el-form-item v-if="HOME_HP == 'se2'" label="">
+    <el-form-item v-if="enableMlType[HOME_HP]" label="">
       <el-select size="mini" v-model="where.mlType">
         <el-option label="科室目录" value="0" />
         <el-option label="在用目录" value="1" />
@@ -162,7 +162,11 @@
         // 表单数据
         where: { ...defaultWhere },
         defaultWhere: defaultWhere,
-        HOME_HP: HOME_HP
+        HOME_HP: HOME_HP,
+        enableMlType: {
+          se2: true,
+          gzbj: true,
+        }
       };
     },
     computed: {

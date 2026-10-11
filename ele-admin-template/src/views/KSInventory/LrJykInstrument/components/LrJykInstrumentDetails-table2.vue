@@ -250,9 +250,9 @@ export default {
       ],
       toolbar: false,
       tableHeight: '42vh',
-      pageSize: 9999999,
+      pageSize: 10,
       pagerCount: 2,
-      pageSizes: [100, 9999999],
+      pageSizes: [10, 20, 50, 100, 200],
       // 表格选中数据
       selection: [],
       // 当前编辑数据

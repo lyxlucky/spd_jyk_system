@@ -257,6 +257,9 @@ export async function BatchInsertScanDef2(data) {
     var data2 = {};
     data2.DEP_STR =  data.DEP_STR;
     data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+    const [code, description] = data.bindMachine.split("/");
+    data2.INSTRUMENT_CODE = code ? code : '';
+    data2.INSTRUMENT_NAME = description ? description : '';
     var data3 = formdataify(data2)
     const res = await request.post('/DeptConsume/BatchInsertScanDef2', data3);
     if (res.data.code == 200) {

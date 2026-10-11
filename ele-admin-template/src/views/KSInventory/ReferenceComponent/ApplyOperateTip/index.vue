@@ -53,7 +53,6 @@
 </template>
 
 <script>
-  import { utils, writeFile } from 'xlsx';
   import UserSearch from './components/user-search.vue';
   import UserEdit from './components/user-edit.vue';
   import { API_BASE_URL, BACK_BASE_URL, HOME_HP } from '@/config/setting';
@@ -70,6 +69,27 @@
     SerachPlanList,
     KeeptListDeta
   } from '@/api/KSInventory/IntroduceUserDefinedTemp';
+
+  /** Excel 列宽单位下估算文本显示宽度（中文约 2，ASCII 约 1） */
+  function excelTextWidth(text) {
+    const s = String(text ?? '');
+    let w = 0;
+    for (let i = 0; i < s.length; i++) {
+      w += s.charCodeAt(i) > 255 ? 2 : 1;
+    }
+    return w;
+  }
+
+  /** 按列宽与换行估算行高（磅） */
+  function estimateRowHeight(values, colWidths, fontSize = 10) {
+    let maxLines = 1;
+    values.forEach((val, i) => {
+      const colW = Math.max(4, colWidths[i] || 10);
+      const lines = Math.max(1, Math.ceil(excelTextWidth(val) / colW));
+      if (lines > maxLines) maxLines = lines;
+    });
+    return Math.min(120, Math.max(18, maxLines * (fontSize + 4) + 6));
+  }
   export default {
     name: 'ApplyOperateTip',
     props: {
@@ -397,56 +417,92 @@
             where: localWhere,
             order: order
           })
-            .then((res) => {
+            .then(async (res) => {
               if (res?.result.length == 0)
                 return this.$message.error('没有数据可导出');
-              const array = [
-                [
-                  '单号',
-                  '时间',
-                  '品种编码',
-                  '品种名称',
-                  '型号/规格',
-                  '生产厂家',
-                  '批准文号',
-                  '申请数量',
-                  '配送中',
-                  '未配送',
-                  '已收货',
-                  '未收货',
-                  '单位',
-                  '单价',
-                  '金额'
-                ]
+
+              const headers = [
+                '单号',
+                '时间',
+                '品种编码',
+                '品种名称',
+                '型号/规格',
+                '生产厂家',
+                '批准文号',
+                '申请数量',
+                '配送中',
+                '未配送',
+                '已收货',
+                '未收货',
+                '单位',
+                '单价',
+                '金额'
               ];
-              res.result.forEach((d) => {
-                array.push([
-                  d.PLAN_NUMBER,
-                  d.PLAN_TIME,
-                  d.VARIETIE_CODE_NEW,
-                  d.VARIETIE_NAME,
-                  d.SPECIFICATION_OR_TYPE,
-                  d.MANUFACTURING_ENT_NAME,
-                  d.APPROVAL_NUMBER,
-                  d.APPLY_QTY,
-                  d.SEND_QUANITY,
-                  d.APPLY_QTY - d.SEND_QUANITY - d.GET_QUANITY,
-                  d.GET_QUANITY,
-                  d.APPLY_QTY - d.GET_QUANITY,
-                  d.UNIT,
-                  Number(d.PRICE || 0).toFixed(4),
-                  (Number(d.PRICE || 0) * Number(d.APPLY_QTY || 0)).toFixed(4)
-                ]);
+              // 固定列宽，长文本靠换行 + 行高自适应完整展示（北京人民样式）
+              const colWidths = [14, 18, 12, 22, 18, 20, 18, 10, 10, 10, 10, 10, 8, 10, 12];
+              const rows = res.result.map((d) => [
+                d.PLAN_NUMBER,
+                d.PLAN_TIME,
+                d.VARIETIE_CODE_NEW,
+                d.VARIETIE_NAME,
+                d.SPECIFICATION_OR_TYPE,
+                d.MANUFACTURING_ENT_NAME,
+                d.APPROVAL_NUMBER,
+                d.APPLY_QTY,
+                d.SEND_QUANITY,
+                d.APPLY_QTY - d.SEND_QUANITY - d.GET_QUANITY,
+                d.GET_QUANITY,
+                d.APPLY_QTY - d.GET_QUANITY,
+                d.UNIT,
+                Number(d.PRICE || 0).toFixed(4),
+                (Number(d.PRICE || 0) * Number(d.APPLY_QTY || 0)).toFixed(4)
+              ]);
+
+              const ExcelJS = (await import('exceljs')).default;
+              const workbook = new ExcelJS.Workbook();
+              const sheet = workbook.addWorksheet('订单详情');
+              sheet.columns = colWidths.map((width) => ({ width }));
+
+              const thinBorder = {
+                top: { style: 'thin' },
+                bottom: { style: 'thin' },
+                left: { style: 'thin' },
+                right: { style: 'thin' }
+              };
+              const centerWrap = {
+                horizontal: 'center',
+                vertical: 'middle',
+                wrapText: true
+              };
+
+              const headerRow = sheet.addRow(headers);
+              headerRow.height = 22;
+              headerRow.eachCell((cell) => {
+                cell.font = { bold: true, name: '宋体', size: 10 };
+                cell.alignment = centerWrap;
+                cell.border = thinBorder;
               });
-              writeFile(
-                {
-                  SheetNames: ['Sheet1'],
-                  Sheets: {
-                    Sheet1: utils.aoa_to_sheet(array)
-                  }
-                },
-                '查看订单详情.xlsx'
-              );
+
+              rows.forEach((rowData) => {
+                const dataRow = sheet.addRow(rowData);
+                dataRow.height = estimateRowHeight(rowData, colWidths, 10);
+                dataRow.eachCell({ includeEmpty: true }, (cell) => {
+                  cell.font = { name: '黑体', size: 9 };
+                  cell.alignment = centerWrap;
+                  cell.border = thinBorder;
+                });
+              });
+
+              const buffer = await workbook.xlsx.writeBuffer();
+              const blob = new Blob([buffer], {
+                type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+              });
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.href = url;
+              a.download = '查看订单详情.xlsx';
+              a.click();
+              URL.revokeObjectURL(url);
               this.$message.success('导出成功');
             })
             .catch((e) => {
