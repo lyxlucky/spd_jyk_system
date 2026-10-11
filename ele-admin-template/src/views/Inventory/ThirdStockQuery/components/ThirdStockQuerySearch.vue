@@ -192,7 +192,10 @@
             { width: 10 },
             { width: 10 },
             { width: 16 },
-            { width: 12 }
+            { width: 12 },
+            { width: 16 },
+            { width: 14 },
+            { width: 14 }
           ];
           const thinBorder = {
             top: { style: 'thin' },
@@ -206,7 +209,10 @@
             '数量',
             '类型',
             '定数包号',
-            '入库类型'
+            '入库类型',
+            '批号',
+            '生产日期',
+            '有效期'
           ]);
           headerRow.height = 22;
           headerRow.eachCell((cell) => {
@@ -225,7 +231,10 @@
             '10',
             '散货',
             '-',
-            '普通入库'
+            '普通入库',
+            'B20261001',
+            '2026-10-01',
+            '2028-09-30'
           ]);
           exampleRow.eachCell((cell) => {
             cell.alignment = { horizontal: 'center', vertical: 'middle' };
