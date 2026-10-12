@@ -146,6 +146,25 @@
           </el-button>
         </el-form-item>
         <el-form-item>
+          <el-badge
+            :value="returnCabinetAlertCount || null"
+            :max="99"
+            :hidden="!returnCabinetAlertCount"
+            class="alert-badge"
+          >
+            <el-button
+              class="ele-btn-icon"
+              type="danger"
+              plain
+              icon="el-icon-warning-outline"
+              :loading="returnCabinetAlertLoading"
+              @click="openReturnCabinetAlert"
+            >
+              还柜提醒
+            </el-button>
+          </el-badge>
+        </el-form-item>
+        <el-form-item>
           <el-button
             class="ele-btn-icon"
             type="warning"
@@ -490,9 +509,38 @@
           <vxe-column
             field="DEF_NO_PKG_CODE"
             title="定数码"
-            min-width="120"
+            min-width="160"
             show-overflow
-          />
+          >
+            <template #default="{ row }">
+              <span>{{ row.DEF_NO_PKG_CODE }}</span>
+              <el-tag
+                v-if="row.RETURN_CABINET_ALERT === '1' || row.RETURN_CABINET_ALERT === 1"
+                type="danger"
+                size="mini"
+                effect="plain"
+                style="margin-left: 6px"
+                :title="row.RETURN_CABINET_TYPE || '已收费后还柜'"
+              >
+                还柜提醒
+              </el-tag>
+            </template>
+          </vxe-column>
+          <vxe-column
+            field="RETURN_CABINET_TYPE"
+            title="还柜提醒"
+            width="160"
+            show-overflow
+          >
+            <template #default="{ row }">
+              <span
+                v-if="row.RETURN_CABINET_ALERT === '1' || row.RETURN_CABINET_ALERT === 1"
+                style="color: #F56C6C"
+              >
+                {{ row.RETURN_CABINET_TYPE || '已收费后还柜' }}
+              </span>
+            </template>
+          </vxe-column>
         </vxe-table>
         <!-- 明细表分页 -->
         <vxe-pager
@@ -514,6 +562,104 @@
         />
       </div>
     </el-card>
+
+    <!-- 还柜提醒弹窗 -->
+    <el-dialog
+      title="已收费后还柜提醒"
+      :visible.sync="returnCabinetAlertVisible"
+      width="90%"
+      top="5vh"
+      append-to-body
+    >
+      <div style="margin-bottom: 10px; color: #909399; font-size: 13px;">
+        以下耗材已收费，计费后智能柜又上报归还（或库存已回上架）。默认包含已确认/未确认全部状态。系统不自动取消登记/退费，请人工核对是否空盒、标签误放或漏退费。
+      </div>
+      <vxe-table
+        :data="returnCabinetAlertList"
+        :loading="returnCabinetAlertLoading"
+        border
+        stripe
+        size="mini"
+        height="480"
+        resizable
+      >
+        <vxe-column type="seq" title="序号" width="50" align="center" />
+        <vxe-column
+          field="RETURN_CABINET_TYPE"
+          title="提醒类型"
+          width="160"
+          show-overflow
+        />
+        <vxe-column
+          field="DEF_NO_PKG_CODE"
+          title="定数码"
+          min-width="130"
+          show-overflow
+        />
+        <vxe-column
+          field="VARIETIE_NAME"
+          title="品种名称"
+          min-width="140"
+          show-overflow
+        />
+        <vxe-column
+          field="PATIENT_NAME"
+          title="患者姓名"
+          width="90"
+          align="center"
+        />
+        <vxe-column
+          field="HOSPITALIZATION_NUMBER"
+          title="住院号"
+          width="120"
+          show-overflow
+        />
+        <vxe-column field="SSBH" title="手术编号" width="150" show-overflow />
+        <vxe-column
+          field="OPEARTION_CHARGING_TIME"
+          title="计费时间"
+          width="150"
+          align="center"
+          :formatter="formatDateTime"
+        />
+        <vxe-column
+          field="RETURN_CABINET_TIME"
+          title="还柜上报时间"
+          width="150"
+          align="center"
+          :formatter="formatDateTime"
+        />
+        <vxe-column
+          field="OPERATE_PERSON"
+          title="操作人"
+          width="90"
+          align="center"
+        />
+        <vxe-column
+          field="GOODS_QTY"
+          title="数量"
+          width="70"
+          align="right"
+        />
+        <vxe-column
+          field="SUPPLY_PRICE"
+          title="单价"
+          width="90"
+          align="right"
+          :formatter="formatPrice"
+        />
+        <vxe-column
+          field="USE_APP_STATE"
+          title="确认状态"
+          width="90"
+          align="center"
+          :formatter="formatUseAppState"
+        />
+      </vxe-table>
+      <div slot="footer">
+        <el-button size="mini" @click="returnCabinetAlertVisible = false">关闭</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -522,6 +668,7 @@ import { TOKEN_STORE_NAME } from '@/config/setting';
 import {
   getSzseSpUseHzInfo,
   getSzseSpUseDelInfo,
+  getSzseReturnCabinetAlert,
   appSzseUseInfo
 } from '@/api/Settle/DepartmentConsumptionConfirmation';
 
@@ -569,7 +716,12 @@ export default {
         size: 2000,
         total: 0
       },
-      detailTableSelection: [] // 明细表选中数据
+      detailTableSelection: [], // 明细表选中数据
+      // 还柜提醒
+      returnCabinetAlertCount: 0,
+      returnCabinetAlertList: [],
+      returnCabinetAlertLoading: false,
+      returnCabinetAlertVisible: false
     };
   },
   methods: {
@@ -598,6 +750,7 @@ export default {
     search() {
       this.mainTablePage.page = 1;
       this.loadMainTableData();
+      this.loadReturnCabinetAlertCount();
     },
     // 重置
     reset() {
@@ -620,6 +773,48 @@ export default {
       };
       this.mainTablePage.page = 1;
       this.search();
+    },
+    // 加载还柜提醒：默认含已确认+未确认，不跟页面「确认状态」筛选
+    async loadReturnCabinetAlertCount() {
+      this.returnCabinetAlertLoading = true;
+      try {
+        const params = {
+          ...this.searchForm,
+          USE_APP_STATE: '', // 固定查全部确认状态（含已确认误还柜）
+          page: 1,
+          size: 2000
+        };
+        const res = await getSzseReturnCabinetAlert(params);
+        if (res.code === 200) {
+          this.returnCabinetAlertList = res.result || [];
+          this.returnCabinetAlertCount = res.total || 0;
+        }
+      } catch (error) {
+        // 提醒接口失败不阻断主流程
+        this.returnCabinetAlertList = [];
+        this.returnCabinetAlertCount = 0;
+      } finally {
+        this.returnCabinetAlertLoading = false;
+      }
+    },
+    openReturnCabinetAlert() {
+      this.returnCabinetAlertVisible = true;
+      this.loadReturnCabinetAlertCount();
+    },
+    // 选中数据是否包含还柜提醒
+    hasReturnCabinetAlertInSelection(selection, byMainId) {
+      if (!selection || !selection.length || !this.returnCabinetAlertList.length) {
+        return 0;
+      }
+      const alertKeys = new Set(
+        this.returnCabinetAlertList.map((item) =>
+          byMainId ? item.MAIN_ID : String(item.ID)
+        )
+      );
+      return selection.filter((row) => {
+        const key = byMainId ? row.ID : String(row.ID);
+        return alertKeys.has(key);
+      }).length;
     },
     // 加载主表数据
     async loadMainTableData() {
@@ -734,7 +929,15 @@ export default {
         this.$message.warning('请选择要确认的数据');
         return;
       }
-      this.$confirm('确定要确认使用选中的数据吗？', '提示', {
+      const alertHit = this.hasReturnCabinetAlertInSelection(
+        this.mainTableSelection,
+        true
+      );
+      const tip =
+        alertHit > 0
+          ? `选中数据中有 ${alertHit} 条汇总关联「已收费后还柜」提醒，请确认无空盒/标签误还后再确认。确定继续确认消耗吗？`
+          : '确定要确认使用选中的数据吗？';
+      this.$confirm(tip, alertHit > 0 ? '还柜提醒' : '提示', {
         type: 'warning'
       })
         .then(async () => {
@@ -760,6 +963,7 @@ export default {
               this.$message.success(res.msg || '确认成功');
               this.mainTableSelection = [];
               this.loadMainTableData();
+              this.loadReturnCabinetAlertCount();
               // 如果当前行被确认，重新加载明细
               if (this.currentMainRow) {
                 this.loadDetailTableData();
@@ -780,7 +984,16 @@ export default {
         this.$message.warning('请选择要确认的数据');
         return;
       }
-      this.$confirm('确定要确认使用明细表中的数据吗？', '提示', {
+      const alertHit =
+        this.detailTableSelection.filter(
+          (row) => row.RETURN_CABINET_ALERT === '1' || row.RETURN_CABINET_ALERT === 1
+        ).length ||
+        this.hasReturnCabinetAlertInSelection(this.detailTableSelection, false);
+      const tip =
+        alertHit > 0
+          ? `选中明细中有 ${alertHit} 条「已收费后还柜」提醒，请确认无空盒/标签误还后再确认。确定继续确认使用吗？`
+          : '确定要确认使用明细表中的数据吗？';
+      this.$confirm(tip, alertHit > 0 ? '还柜提醒' : '提示', {
         type: 'warning'
       })
         .then(async () => {
@@ -807,6 +1020,7 @@ export default {
               this.detailTableSelection = [];
               // 重新加载主表和明细表数据
               this.loadMainTableData();
+              this.loadReturnCabinetAlertCount();
               if (this.currentMainRow) {
                 this.loadDetailTableData();
               }
@@ -933,6 +1147,7 @@ export default {
     this.searchForm.OPEARTION_CHARGING_TIME_START = defaultRange.start;
     this.searchForm.OPEARTION_CHARGING_TIME_END = defaultRange.end;
     this.loadMainTableData();
+    this.loadReturnCabinetAlertCount();
   }
 };
 </script>
@@ -940,6 +1155,12 @@ export default {
 <style scoped>
 .ele-form-search {
   margin-bottom: 15px;
+}
+.alert-badge {
+  vertical-align: middle;
+}
+.alert-badge >>> .el-badge__content {
+  z-index: 1;
 }
 </style>
 
