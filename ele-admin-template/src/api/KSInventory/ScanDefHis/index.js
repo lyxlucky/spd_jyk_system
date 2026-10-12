@@ -31,12 +31,11 @@ export async function insertScanDef(data) {
     var data2 = {};
     data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
     data2.DEF_NO_PKG_CODE = data.defNoPkgCode ? data.defNoPkgCode : '';
-    const [code, description] = data.bindMachine.split("/");
-    data2.INSTRUMENT_CODE = code ? code : '';
-    data2.INSTRUMENT_NAME = description ? description : '';
-    if (data2 != null) {
-        var data3 = formdataify(data2);
-    }
+    const bindMachine = data.bindMachine || '';
+    const [code, description] = bindMachine.split('/');
+    data2.INSTRUMENT_CODE = code || '';
+    data2.INSTRUMENT_NAME = description || '';
+    var data3 = formdataify(data2);
     const res = await request.post('/DeptConsume/insertScanDef', data3);
     if (res.data.code == 200) {
         return res.data;

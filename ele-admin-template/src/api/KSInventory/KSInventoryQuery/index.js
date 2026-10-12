@@ -3,37 +3,44 @@ import { formdataify, DataToObject } from '@/utils/formdataify';
 import { TOKEN_STORE_NAME, } from '@/config/setting';
 import store from '@/store';
 
+/** 后端 GetJykMainShelf 的 order 需为 JSON 字符串，如 {"sort":"BATCH","order":"asc"} */
 function getJykMainShelfOrder(order) {
-    if (!order || order.sort !== 'STORAGED_DAYS_SORT') {
-        return order || '';
+    if (!order || typeof order !== 'object' || !order.sort) {
+        return '';
     }
-    return {
-        sort: 'RECORD_TIME',
-        order: order.order === 'asc' ? 'desc' : 'asc'
-    };
+    let sort = order.sort;
+    let orderDir = order.order || 'asc';
+    if (orderDir === 'ascending') orderDir = 'asc';
+    if (orderDir === 'descending') orderDir = 'desc';
+    if (sort === 'STORAGED_DAYS_SORT') {
+        sort = 'RECORD_TIME';
+        orderDir = orderDir === 'asc' ? 'desc' : 'asc';
+    }
+    return JSON.stringify({ sort, order: orderDir });
 }
 
 export async function GetJykMainShelf(data) {
-    console.log(data)
+    var where = (data && data.where) || {};
     var data2 = {};
     data2.page = data.page;
     data2.size = data.limit;
     data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
-    data2.Name = data.where.Name ? data.where.Name : '';
-    data2.SPEC = data.where.SPEC ? data.where.SPEC : '';
-    data2.MANUFACTURING_ENT_NAME = data.where.MANUFACTURING_ENT_NAME ? data.where.MANUFACTURING_ENT_NAME : '';
-    data2.DEPTNAME = data.where.DEPTNAME ? data.where.DEPTNAME : '';
-    data2.DEF_NO_PKG_CODE = data.where.DEF_NO_PKG_CODE ? data.where.DEF_NO_PKG_CODE : '';
-    data2.TYPE = data.where.TYPE ? data.where.TYPE : '';
-    data2.COUNT = data.where.COUNT ? data.where.COUNT : '';
-    data2.DELIVERY_NUMBER = data.where.DELIVERY_NUMBER ? data.where.DELIVERY_NUMBER : '';
-    // data2.DeptCode = data.where.DeptCode ? data.where.DeptCode : '';
-    data2.DeptCode = store.state.user.info.DeptNow.Dept_Two_Code ? store.state.user.info.DeptNow.Dept_Two_Code :""
-    data2.xqDay = data.where.xqDay ? data.where.xqDay : 0;
+    data2.Name = where.Name ? where.Name : '';
+    data2.SPEC = where.SPEC ? where.SPEC : '';
+    data2.MANUFACTURING_ENT_NAME = where.MANUFACTURING_ENT_NAME ? where.MANUFACTURING_ENT_NAME : '';
+    data2.DEPTNAME = where.DEPTNAME ? where.DEPTNAME : '';
+    data2.DEF_NO_PKG_CODE = where.DEF_NO_PKG_CODE ? where.DEF_NO_PKG_CODE : '';
+    data2.TYPE = where.TYPE !== undefined && where.TYPE !== null ? where.TYPE : '1';
+    data2.COUNT = where.COUNT !== undefined && where.COUNT !== null ? where.COUNT : '1';
+    data2.DELIVERY_NUMBER = where.DELIVERY_NUMBER ? where.DELIVERY_NUMBER : '';
+    data2.DeptCode = store.state.user.info.DeptNow.Dept_Two_Code
+        ? store.state.user.info.DeptNow.Dept_Two_Code
+        : '';
+    data2.xqDay = where.xqDay ? where.xqDay : 0;
     data2.order = getJykMainShelfOrder(data.order);
-    data2.batch = data.where.batch ? data.where.batch : '';
-    data2.CLASSIFIC_PROPERTIES = data.where.CLASSIFIC_PROPERTIES
-        ? data.where.CLASSIFIC_PROPERTIES
+    data2.batch = where.batch ? where.batch : '';
+    data2.CLASSIFIC_PROPERTIES = where.CLASSIFIC_PROPERTIES
+        ? where.CLASSIFIC_PROPERTIES
         : '';
     const res = await request.get('/AJykDept/GetJykMainShelf', {
         params: data2,
@@ -255,17 +262,18 @@ export async function syncStocktakingData(data) {
 
 export async function BatchInsertScanDef2(data) {
     var data2 = {};
-    data2.DEP_STR =  data.DEP_STR;
+    data2.DEP_STR = data.DEP_STR;
     data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
-    const [code, description] = data.bindMachine.split("/");
-    data2.INSTRUMENT_CODE = code ? code : '';
-    data2.INSTRUMENT_NAME = description ? description : '';
-    var data3 = formdataify(data2)
+    const bindMachine = data.bindMachine || '';
+    const [code, description] = bindMachine.split('/');
+    data2.INSTRUMENT_CODE = code || '';
+    data2.INSTRUMENT_NAME = description || '';
+    var data3 = formdataify(data2);
     const res = await request.post('/DeptConsume/BatchInsertScanDef2', data3);
     if (res.data.code == 200) {
         return res.data;
     } else {
-        return Promise.reject(new Error(res.data.msg));
+        return Promise.reject(new Error(res.data.msg || '添加失败'));
     }
 }
 

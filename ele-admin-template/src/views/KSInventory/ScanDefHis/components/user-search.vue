@@ -87,7 +87,7 @@
       </el-form>
     </div>
 
-    <KSInventoryQuery :visible.sync="KSInventoryQueryShow" />
+    <KSInventoryQuery :visible.sync="KSInventoryQueryShow" @added="onInventoryAdded" />
 
     <el-dialog
       title="科室库存汇总"
@@ -453,6 +453,9 @@ export default {
     },
     addFromInventory() {
       this.KSInventoryQueryShow = true;
+    },
+    onInventoryAdded() {
+      this.search();
     }
   }
 };

@@ -21,7 +21,7 @@
       :pageSizes="pageSizes"
       :columns="columns"
       :datasource="datasource"
-      :initLoad="false"
+      :initLoad="true"
       :rowClickCheckedIntelligent="false"
       @selection-change="onSelectionChange"
       :selection.sync="selection"
@@ -500,30 +500,26 @@
       },
       /* 表格数据源 */
       datasource({ page, limit, where, order }) {
-        // var Dept_Two_CodeStr = '';
-        // var userDeptList = this.$store.state.user.info.userDept;
-        // for (let i = 0; i < userDeptList.length; i++) {
-        //   Dept_Two_CodeStr =
-        //     Dept_Two_CodeStr + userDeptList[i].Dept_Two_Code + ',';
-        // }
+        where = where || {};
         where.TYPE = where.TYPE == undefined ? '1' : where.TYPE;
         where.COUNT = where.COUNT == undefined ? '1' : where.COUNT;
 
         this.TYPE = where.TYPE;
-        let data = GetJykMainShelf({ page, limit, where, order }).then(
-          (res) => {
-            var tData = {
-              count: res.total,
+        return GetJykMainShelf({ page, limit, where, order })
+          .then((res) => {
+            this.sumCount = res.sumCount;
+            return {
+              count: res.total || 0,
               list: (res.result || []).map((item) => ({
                 ...item,
                 STORAGED_DAYS_SORT: this.getStoragedDays(item)
               }))
             };
-            this.sumCount = res.sumCount;
-            return tData;
-          }
-        );
-        return data;
+          })
+          .catch((err) => {
+            this.$message.error(err.message || '库存查询失败');
+            return { count: 0, list: [] };
+          });
       },
       exportDataExcel() {
         const loading = this.$messageLoading('正在导出数据...');
@@ -647,32 +643,35 @@
         return `${year}-${month}-${day}`;
       },
       addBatchInsertScanDef() {
-        console.log(this.selection);
-        if (this.selection.length <= 0) {
+        if (!this.selection || this.selection.length <= 0) {
           this.$message.warning('请至少选择一条数据');
           return;
         }
-        let data = {
-          DEP_STR: '',
-          bindMachine: ''
-        };
-        for (let index = 0; index < this.selection.length; index++) {
-          data.DEP_STR += this.selection[index].DEF_NO_PKG_CODE + ',';
+        const defCodes = this.selection
+          .map((item) => item.DEF_NO_PKG_CODE)
+          .filter((code) => code != null && String(code).trim() !== '');
+        if (defCodes.length === 0) {
+          this.$message.warning('所选数据无定数码，散货请切换库存类型后单独处理');
+          return;
         }
-        data.DEP_STR = data.DEP_STR.substring(0, data.DEP_STR.length - 1);
-        data.bindMachine = this.bindMachine;
-        console.log(data);
+        const loading = this.$messageLoading('添加中...');
+        const data = {
+          DEP_STR: defCodes.join(','),
+          bindMachine: this.bindMachine || ''
+        };
         BatchInsertScanDef2(data)
           .then((res) => {
+            loading.close();
             if (res.code == 200) {
-              this.$message.success(res.msg);
-              this.$emit('search');
+              this.$message.success(res.msg || '添加成功');
+              this.$emit('added');
             } else {
-              this.$message.error(res.msg);
+              this.$message.error(res.msg || '添加失败');
             }
           })
           .catch((err) => {
-            this.$message.error(err);
+            loading.close();
+            this.$message.error(err.message || err || '添加失败');
           });
       }
     },
