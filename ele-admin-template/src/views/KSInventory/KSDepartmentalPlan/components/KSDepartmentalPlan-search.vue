@@ -151,6 +151,9 @@
       isSzse() {
         return this.$HOME_HP?.startsWith('se2');
       },
+      isGzbj() {
+        return this.$HOME_HP == 'gzbj';
+      },
       showStzxPrint() {
         return ['stzx', 'stzl'].includes(this.$HOME_HP);
       },
@@ -178,11 +181,11 @@
           this.$message.warning('当月消耗已超过计划限额，无法创建申领单');
           return;
         }
-        if (this.isBDRM || this.isSzse) {
-          // 如果是bdrm环境，显示项目类型选择对话框
+        if (this.isBDRM || this.isSzse || this.isGzbj) {
+          // bdrm、se2、gzbj环境显示项目类型选择对话框
           this.showProjectTypeDialog = true;
         } else {
-          // 非bdrm环境，直接创建
+          // 非上述环境，直接创建
           this.createApplicationDirectly();
         }
       },

@@ -14,7 +14,7 @@
             v-model="where.defNoPkgCode"
             clearable
             placeholder="定数码"
-            style="width: 140px"
+            style="width: 240px"
             @change="addScanDef"
           />
         </el-form-item>
@@ -23,7 +23,7 @@
             v-model="where.varietie"
             clearable
             placeholder="编码/名称"
-            style="width: 130px"
+            style="width: 240px"
           />
         </el-form-item>
         <el-form-item label="规格型号">
@@ -31,7 +31,7 @@
             v-model="where.specType"
             clearable
             placeholder="规格型号"
-            style="width: 120px"
+            style="width: 240px"
           />
         </el-form-item>
         <el-form-item label="二级科室">
@@ -39,7 +39,7 @@
             v-model="where.deptTwoName"
             clearable
             placeholder="科室名称"
-            style="width: 120px"
+            style="width: 240px"
           />
         </el-form-item>
         <br />
@@ -76,7 +76,7 @@
           </el-upload>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" icon="el-icon-goods" @click="KSInventoryQueryShow = true">从库存中挑选</el-button>
+          <el-button type="primary" icon="el-icon-goods" @click="addFromInventory">从库存中挑选</el-button>
         </el-form-item>
         <el-form-item v-if="['stzl', 'stzx'].includes(HOME_HP) || ENV == 'development'">
           <el-button type="success" icon="el-icon-link" @click="bindMachine">绑定设备</el-button>
@@ -87,7 +87,7 @@
       </el-form>
     </div>
 
-    <KSInventoryQuery :visible.sync="KSInventoryQueryShow" />
+    <KSInventoryQuery :visible.sync="KSInventoryQueryShow" @added="onInventoryAdded" />
 
     <el-dialog
       title="科室库存汇总"
@@ -256,6 +256,10 @@ export default {
     },
     reset() {
       this.where = defaultWhere();
+      this.$bus.$emit(
+        'bindMachine',
+        ''
+      );
       this.search();
     },
     exportData() {
@@ -446,6 +450,12 @@ export default {
           loading.close();
           this.$message.error(err.message || '批量消耗失败');
         });
+    },
+    addFromInventory() {
+      this.KSInventoryQueryShow = true;
+    },
+    onInventoryAdded() {
+      this.search();
     }
   }
 };
