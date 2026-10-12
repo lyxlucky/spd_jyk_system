@@ -422,6 +422,10 @@ export default {
               sendDefHNCK(num);
             } else if (data === 301 || data === '301') {
               this.$message.error('登录失效，请重新登录');
+            } else if (data === 401 || data === '401') {
+              this.$message.error('出库单未审核，不允许出库');
+            } else {
+              this.$message.error('发送失败');
             }
           })
           .finally(() => loading.close());
@@ -459,12 +463,12 @@ export default {
       sendDefHNCK(num)
         .then((res) => {
           const data = unwrapData(res);
-          if (data === 200 || data === '200') {
+          if (isOkCode(data) || isOkCode(data?.code)) {
             this.$message.success(typeof data === 'object' ? data.msg || '发送成功' : '发送成功');
-          } else if (data === 301 || data === '301') {
+          } else if (data === 301 || data === '301' || data?.code === 301 || data?.code === '301') {
             this.$message.error('登录失效，请重新登录');
           } else {
-            this.$message.error(typeof data === 'object' ? data?.msg : String(data) || '发送失败');
+            this.$message.error(typeof data === 'object' ? data?.msg || '发送失败' : String(data) || '发送失败');
           }
         })
         .finally(() => loading.close());

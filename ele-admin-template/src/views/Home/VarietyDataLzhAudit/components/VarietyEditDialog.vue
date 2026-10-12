@@ -230,8 +230,13 @@ export default {
         classificProp2: this.classificProp2Options,
         classificProp3: this.classificProp3Options
       };
+      const filterByHp = (fields) =>
+        fields.filter((field) => {
+          if (!field.showHp || !field.showHp.length) return true;
+          return field.showHp.includes(HOME_HP);
+        });
       const injectOptions = (fields) =>
-        fields.map((field) => {
+        filterByHp(fields).map((field) => {
           if (field.optionsKey && optionMap[field.optionsKey]) {
             return { ...field, options: optionMap[field.optionsKey] };
           }

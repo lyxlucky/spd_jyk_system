@@ -218,6 +218,7 @@ export function buildUpdatePayload(detail, meta = {}) {
     IS_BH: str(d.IS_BH),
     IS_DEPT_SEPLY_USE: str(d.IS_DEPT_SEPLY_USE),
     SE_CHARGE_ITEM_CODE: str(d.SE_CHARGE_ITEM_CODE),
+    HOSP_VARIETIE_CODE: str(d.HOSP_VARIETIE_CODE),
     YB_BX: str(d.YB_BX),
     JYZY_CC: str(d.JYZY_CC),
     JLJC: str(d.JLJC),
