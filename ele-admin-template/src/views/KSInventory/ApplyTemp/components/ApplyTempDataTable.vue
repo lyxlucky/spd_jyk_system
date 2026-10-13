@@ -129,20 +129,6 @@
             fixed: 'left',
             minWidth: 140
           },
-          // {
-          //   prop: 'DEPT_ZDY_VARIETIE_CODE',
-          //   label: '自定义编码',
-          //
-          //   align: 'center',
-          //   showOverflowTooltip: true,
-          //   minWidth: 110,
-          //   formatter: (row, column, cellValue) => {
-          //     if (cellValue == null) {
-          //       return '未定义';
-          //     }
-          //     return cellValue;
-          //   }
-          // },
           {
             prop: 'GG',
             label: '型号/规格',
@@ -183,6 +169,20 @@
             align: 'center',
             showOverflowTooltip: true,
             minWidth: 120
+          },
+          {
+            prop: 'DEPT_ZDY_VARIETIE_CODE',
+            label: '自定义编码',
+            sortable: 'custom',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 110,
+            formatter: (row, column, cellValue) => {
+              if (cellValue == null) {
+                return '未定义';
+              }
+              return cellValue;
+            }
           },
           {
             prop: 'VarName',
@@ -348,9 +348,25 @@
         where.PlanNum = this.IntroduceUserDefinedTempSearch?.PlanNum;
         let data = SerachTempletDeta({ page, limit, where, order }).then(
           (res) => {
+            let list = res.result || [];
+            // 后端固定排序，自定义编码在前端按 asc/desc 排序
+            if (order && order.sort === 'DEPT_ZDY_VARIETIE_CODE' && order.order) {
+              const dir =
+                order.order === 'desc' || order.order === 'descending' ? -1 : 1;
+              list = list.slice().sort((a, b) => {
+                const va = a.DEPT_ZDY_VARIETIE_CODE || '';
+                const vb = b.DEPT_ZDY_VARIETIE_CODE || '';
+                return (
+                  String(va).localeCompare(String(vb), 'zh', {
+                    numeric: true,
+                    sensitivity: 'base'
+                  }) * dir
+                );
+              });
+            }
             var tData = {
               count: res.total,
-              list: res.result
+              list
             };
             this.$nextTick(() => {
               this.$refs.table.toggleAllSelection();
@@ -415,6 +431,7 @@
               const array = [
                 [
                   '品种编码',
+                  '自定义编码',
                   '模板申领数量',
                   '排序',
                   '品种全称',
@@ -439,6 +456,9 @@
                 }
                 array.push([
                   d.VARIETIE_CODE_NEW,
+                  d.DEPT_ZDY_VARIETIE_CODE == null
+                    ? '未定义'
+                    : d.DEPT_ZDY_VARIETIE_CODE,
                   d.TempletQty,
                   d.AUTH,
                   d.VarName,
