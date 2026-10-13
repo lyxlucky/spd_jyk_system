@@ -17,21 +17,40 @@
           <el-form-item label="名称">
             <el-input v-model="areaQuery.AREA_NAME" clearable placeholder="库房/库区名称" />
           </el-form-item>
-          <el-form-item label="类型">
+          <el-form-item v-if="areaQueryExpanded" label="类型">
             <el-select v-model="areaQuery.AREA_TYPE" clearable placeholder="全部" class="query-select">
               <el-option label="库房" value="WAREHOUSE" />
               <el-option label="库区" value="AREA" />
             </el-select>
           </el-form-item>
-          <el-form-item label="状态">
+          <el-form-item v-if="areaQueryExpanded" label="状态">
             <el-select v-model="areaQuery.ENABLED_FLAG" clearable placeholder="全部" class="query-select">
               <el-option label="启用" value="1" />
               <el-option label="停用" value="0" />
             </el-select>
           </el-form-item>
+          <el-form-item label="SPD编码">
+            <el-input v-model="areaQuery.SPD_DEPT_CODE" clearable placeholder="SPD科室编码" />
+          </el-form-item>
+          <el-form-item v-if="areaQueryExpanded" label="SPD名称">
+            <el-input v-model="areaQuery.SPD_DEPT_NAME" clearable placeholder="SPD科室名称" />
+          </el-form-item>
+          <el-form-item label="HIS编码">
+            <el-input v-model="areaQuery.HIS_DEPT_CODE" clearable placeholder="HIS科室编码" />
+          </el-form-item>
+          <el-form-item v-if="areaQueryExpanded" label="HIS名称">
+            <el-input v-model="areaQuery.HIS_DEPT_NAME" clearable placeholder="HIS科室名称" />
+          </el-form-item>
           <el-form-item>
             <el-button type="primary" icon="el-icon-search" @click="loadAreas">查询</el-button>
             <el-button icon="el-icon-refresh" @click="resetAreaQuery">重置</el-button>
+            <el-button
+              type="text"
+              :icon="areaQueryExpanded ? 'el-icon-arrow-up' : 'el-icon-arrow-down'"
+              @click="areaQueryExpanded = !areaQueryExpanded"
+            >
+              {{ areaQueryExpanded ? '收起' : '展开' }}
+            </el-button>
           </el-form-item>
         </el-form>
 
@@ -100,7 +119,7 @@
           <div class="panel-header">
             <div>
               <div class="panel-title">SPD科室关系</div>
-              <div class="panel-subtitle">{{ selectedAreaSubtitle }}</div>
+              <div class="panel-subtitle">{{ spdGlobalQuery ? '全局查询：显示所有库房/库区关系' : selectedAreaSubtitle }}</div>
             </div>
             <div class="relation-actions">
               <el-button
@@ -139,7 +158,8 @@
               </el-select>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" icon="el-icon-search" :disabled="!selectedAreaCode" @click="loadSpdRels">查询</el-button>
+              <el-button type="primary" icon="el-icon-search" :disabled="!selectedAreaCode" @click="querySpdRels">查询</el-button>
+              <el-button icon="el-icon-s-grid" @click="queryGlobalSpdRels">查询全局</el-button>
               <el-button icon="el-icon-refresh" :disabled="!selectedAreaCode" @click="resetSpdQuery">重置</el-button>
             </el-form-item>
           </el-form>
@@ -156,7 +176,7 @@
             :row-config="{ isHover: true }"
             :checkbox-config="{ highlight: true }"
             :column-config="{ resizable: true }"
-            :empty-text="selectedAreaCode ? '暂无SPD绑定关系' : '请先选择库房/库区'"
+            :empty-text="spdGlobalQuery || selectedAreaCode ? '暂无SPD绑定关系' : '请先选择库房/库区'"
             @checkbox-change="handleSpdCheckboxChange"
             @checkbox-all="handleSpdCheckboxAll"
           >
@@ -164,6 +184,7 @@
             <vxe-column type="seq" title="序号" width="55" align="center" />
             <vxe-column field="DEPT_TWO_CODE" title="SPD科室编码" width="130" />
             <vxe-column field="DEPT_TWO_NAME" title="SPD科室名称" min-width="160" />
+            <vxe-column field="AREA_CODE" title="库房/库区" width="120" />
             <vxe-column title="默认" width="70" align="center">
               <template #default="{ row }">
                 <el-tag size="mini" :type="row.DEFAULT_FLAG === '1' ? 'warning' : 'info'">
@@ -212,7 +233,7 @@
           <div class="panel-header">
             <div>
               <div class="panel-title">HIS科室关系</div>
-              <div class="panel-subtitle">{{ selectedAreaSubtitle }}</div>
+              <div class="panel-subtitle">{{ hisGlobalQuery ? '全局查询：显示所有库房/库区关系' : selectedAreaSubtitle }}</div>
             </div>
             <el-button type="success" size="mini" icon="el-icon-plus" :disabled="!selectedAreaCode" @click="openHisDialog()">新增关系</el-button>
           </div>
@@ -231,7 +252,8 @@
               </el-select>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" icon="el-icon-search" :disabled="!selectedAreaCode" @click="loadHisRels">查询</el-button>
+              <el-button type="primary" icon="el-icon-search" :disabled="!selectedAreaCode" @click="queryHisRels">查询</el-button>
+              <el-button icon="el-icon-s-grid" @click="queryGlobalHisRels">查询全局</el-button>
               <el-button icon="el-icon-refresh" :disabled="!selectedAreaCode" @click="resetHisQuery">重置</el-button>
             </el-form-item>
           </el-form>
@@ -246,11 +268,12 @@
             show-overflow
             :row-config="{ isHover: true }"
             :column-config="{ resizable: true }"
-            :empty-text="selectedAreaCode ? '暂无HIS绑定关系' : '请先选择库房/库区'"
+            :empty-text="hisGlobalQuery || selectedAreaCode ? '暂无HIS绑定关系' : '请先选择库房/库区'"
           >
             <vxe-column type="seq" title="序号" width="55" align="center" />
             <vxe-column field="DEPT_CODE" title="HIS科室编码" width="130" />
             <vxe-column field="DEPT_NAME" title="HIS科室名称" min-width="160" />
+            <vxe-column field="AREA_CODE" title="库房/库区" width="120" />
             <vxe-column title="默认" width="70" align="center">
               <template #default="{ row }">
                 <el-tag size="mini" :type="row.DEFAULT_FLAG === '1' ? 'warning' : 'info'">
@@ -487,7 +510,11 @@ const defaultAreaQuery = () => ({
   AREA_CODE: '',
   AREA_NAME: '',
   AREA_TYPE: '',
-  ENABLED_FLAG: ''
+  ENABLED_FLAG: '',
+  SPD_DEPT_CODE: '',
+  SPD_DEPT_NAME: '',
+  HIS_DEPT_CODE: '',
+  HIS_DEPT_NAME: ''
 });
 
 const defaultRelQuery = () => ({
@@ -533,6 +560,7 @@ export default {
       pageSizes: [15, 30, 50, 100],
       relPageSizes: [10, 20, 50, 100],
       areaQuery: defaultAreaQuery(),
+      areaQueryExpanded: false,
       hisQuery: defaultRelQuery(),
       spdQuery: defaultRelQuery(),
       areaPage: { page: 1, size: 15, total: 0 },
@@ -545,6 +573,8 @@ export default {
       areaLoading: false,
       hisLoading: false,
       spdLoading: false,
+      hisGlobalQuery: false,
+      spdGlobalQuery: false,
       spdCheckedCount: 0,
       areaCodeLoading: false,
       submitLoading: false,
@@ -634,8 +664,32 @@ export default {
       this.areaPage.page = page;
       this.loadAreas();
     },
+    queryHisRels() {
+      this.hisGlobalQuery = false;
+      this.hisQuery = { ...this.hisQuery, AREA_CODE: this.selectedAreaCode };
+      this.hisPage.page = 1;
+      return this.loadHisRels();
+    },
+    queryGlobalHisRels() {
+      this.hisGlobalQuery = true;
+      this.hisQuery = { ...this.hisQuery, AREA_CODE: '' };
+      this.hisPage.page = 1;
+      return this.loadHisRels();
+    },
+    querySpdRels() {
+      this.spdGlobalQuery = false;
+      this.spdQuery = { ...this.spdQuery, AREA_CODE: this.selectedAreaCode };
+      this.spdPage.page = 1;
+      return this.loadSpdRels();
+    },
+    queryGlobalSpdRels() {
+      this.spdGlobalQuery = true;
+      this.spdQuery = { ...this.spdQuery, AREA_CODE: '' };
+      this.spdPage.page = 1;
+      return this.loadSpdRels();
+    },
     loadHisRels() {
-      if (!this.hisQuery.AREA_CODE) {
+      if (!this.hisGlobalQuery && !this.hisQuery.AREA_CODE) {
         this.hisRows = [];
         this.hisPage.total = 0;
         return Promise.resolve();
@@ -644,7 +698,7 @@ export default {
     },
     loadSpdRels() {
       this.clearSpdCheckbox();
-      if (!this.spdQuery.AREA_CODE) {
+      if (!this.spdGlobalQuery && !this.spdQuery.AREA_CODE) {
         this.spdRows = [];
         this.spdPage.total = 0;
         return Promise.resolve();
@@ -678,6 +732,8 @@ export default {
         return;
       }
       this.selectedArea = row;
+      this.hisGlobalQuery = false;
+      this.spdGlobalQuery = false;
       this.hisQuery = { ...this.hisQuery, AREA_CODE: row.AREA_CODE };
       this.spdQuery = { ...this.spdQuery, AREA_CODE: row.AREA_CODE };
       this.hisPage.page = 1;
@@ -695,6 +751,8 @@ export default {
     },
     clearSelectedArea() {
       this.selectedArea = null;
+      this.hisGlobalQuery = false;
+      this.spdGlobalQuery = false;
       this.hisQuery = { ...this.hisQuery, AREA_CODE: '' };
       this.spdQuery = { ...this.spdQuery, AREA_CODE: '' };
       this.hisRows = [];
@@ -709,11 +767,13 @@ export default {
       this.loadAreas();
     },
     resetHisQuery() {
+      this.hisGlobalQuery = false;
       this.hisQuery = { ...defaultRelQuery(), AREA_CODE: this.selectedAreaCode };
       this.hisPage.page = 1;
       this.loadHisRels();
     },
     resetSpdQuery() {
+      this.spdGlobalQuery = false;
       this.spdQuery = { ...defaultRelQuery(), AREA_CODE: this.selectedAreaCode };
       this.spdPage.page = 1;
       this.loadSpdRels();
