@@ -307,7 +307,7 @@ export default {
       where = where || {};
       where.sourceFrom = this.$store.state.user.info.DeptNow.Dept_Two_Code;
       if (!where.jxqSatte || where.jxqSatte === '-1') {
-        where.jxqSatte = '6';
+        where.jxqSatte = '1';
       }
       let data = SearchDefRemind({ page, limit, where, order }).then((res) => {
         var tData = {

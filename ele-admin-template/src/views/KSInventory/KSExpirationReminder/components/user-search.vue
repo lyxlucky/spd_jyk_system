@@ -57,7 +57,7 @@
   const defaultWhere = () => ({
     condition: '',
     condition1: '',
-    jxqSatte: '6',
+    jxqSatte: '1',
     isHaveTh: '0'
   });
 

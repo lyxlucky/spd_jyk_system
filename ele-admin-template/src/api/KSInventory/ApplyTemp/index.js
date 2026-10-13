@@ -222,3 +222,21 @@ export async function EditTempName(data) {
     return Promise.reject(new Error(res.data.msg));
   }
 }
+
+/* 编辑科室品种自定义编码 */
+export async function addDPET_ZDY_INFO(data) {
+  const data2 = {
+    DEPT_TWO_CODE: data.DEPT_TWO_CODE || '',
+    VARIETIE_CODE: data.VARIETIE_CODE || '',
+    DEPT_ZDY_VARIETIE_CODE: data.DEPT_ZDY_VARIETIE_CODE || '',
+    Token: sessionStorage.getItem(TOKEN_STORE_NAME)
+  };
+  const res = await request.post(
+    '/DeptApplyPlan/addDPET_ZDY_INFO',
+    formdataify(data2)
+  );
+  if (res.data.code == 200) {
+    return res.data;
+  }
+  return Promise.reject(new Error(res.data.msg));
+}

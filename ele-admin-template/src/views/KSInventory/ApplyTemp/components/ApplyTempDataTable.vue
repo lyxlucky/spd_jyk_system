@@ -67,6 +67,11 @@
               size="mini"
             />
           </template>
+          <template v-slot:DEPT_ZDY_VARIETIE_CODE="{ row }">
+            <el-link type="primary" :underline="false" @click="openZdyCodeEdit(row)">
+              {{ row.DEPT_ZDY_VARIETIE_CODE == null ? '未定义' : row.DEPT_ZDY_VARIETIE_CODE }}
+            </el-link>
+          </template>
           <template v-slot:action="{ row }">
             <el-popconfirm
               class="ele-action"
@@ -83,6 +88,32 @@
         </ele-pro-table>
       </div>
     </div>
+
+    <el-dialog
+      :title="(zdyEditRow?.VarName || '') + ' 自定义编码'"
+      :visible.sync="zdyEditVisible"
+      width="520px"
+      append-to-body
+      @closed="onZdyEditClosed"
+    >
+      <el-input
+        v-model="zdyEditValue"
+        type="textarea"
+        :rows="6"
+        placeholder="请输入自定义编码"
+      />
+      <span slot="footer">
+        <el-button size="mini" @click="zdyEditVisible = false">取消</el-button>
+        <el-button
+          type="primary"
+          size="mini"
+          :loading="zdyEditSaving"
+          @click="saveZdyCode"
+        >
+          确定
+        </el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -92,7 +123,8 @@
   import { HOME_HP } from '@/config/setting';
   import {
     SerachTempletDeta,
-    DeleteTempletDeta
+    DeleteTempletDeta,
+    addDPET_ZDY_INFO
   } from '@/api/KSInventory/ApplyTemp';
   export default {
     name: 'ApplyTempDataTable',
@@ -102,6 +134,10 @@
     },
     data() {
       return {
+        zdyEditVisible: false,
+        zdyEditSaving: false,
+        zdyEditRow: null,
+        zdyEditValue: '',
         // 表格列配置
         columns: [
           {
@@ -129,20 +165,6 @@
             fixed: 'left',
             minWidth: 140
           },
-          // {
-          //   prop: 'DEPT_ZDY_VARIETIE_CODE',
-          //   label: '自定义编码',
-          //
-          //   align: 'center',
-          //   showOverflowTooltip: true,
-          //   minWidth: 110,
-          //   formatter: (row, column, cellValue) => {
-          //     if (cellValue == null) {
-          //       return '未定义';
-          //     }
-          //     return cellValue;
-          //   }
-          // },
           {
             prop: 'GG',
             label: '型号/规格',
@@ -183,6 +205,15 @@
             align: 'center',
             showOverflowTooltip: true,
             minWidth: 120
+          },
+          {
+            prop: 'DEPT_ZDY_VARIETIE_CODE',
+            label: '自定义编码',
+            slot: 'DEPT_ZDY_VARIETIE_CODE',
+            sortable: 'custom',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 110
           },
           {
             prop: 'VarName',
@@ -348,9 +379,25 @@
         where.PlanNum = this.IntroduceUserDefinedTempSearch?.PlanNum;
         let data = SerachTempletDeta({ page, limit, where, order }).then(
           (res) => {
+            let list = res.result || [];
+            // 后端固定排序，自定义编码在前端按 asc/desc 排序
+            if (order && order.sort === 'DEPT_ZDY_VARIETIE_CODE' && order.order) {
+              const dir =
+                order.order === 'desc' || order.order === 'descending' ? -1 : 1;
+              list = list.slice().sort((a, b) => {
+                const va = a.DEPT_ZDY_VARIETIE_CODE || '';
+                const vb = b.DEPT_ZDY_VARIETIE_CODE || '';
+                return (
+                  String(va).localeCompare(String(vb), 'zh', {
+                    numeric: true,
+                    sensitivity: 'base'
+                  }) * dir
+                );
+              });
+            }
             var tData = {
               count: res.total,
-              list: res.result
+              list
             };
             this.$nextTick(() => {
               this.$refs.table.toggleAllSelection();
@@ -365,6 +412,44 @@
         // console.log(this.ApplyTempTableData);
         // console.log(this.$store.state.user.info);
         this.$refs.table.reload({ page: 1, where: where });
+      },
+      openZdyCodeEdit(row) {
+        this.zdyEditRow = row;
+        this.zdyEditValue =
+          row.DEPT_ZDY_VARIETIE_CODE == null ? '' : String(row.DEPT_ZDY_VARIETIE_CODE);
+        this.zdyEditVisible = true;
+      },
+      onZdyEditClosed() {
+        this.zdyEditRow = null;
+        this.zdyEditValue = '';
+        this.zdyEditSaving = false;
+      },
+      saveZdyCode() {
+        if (!this.zdyEditRow) return;
+        const deptCode =
+          this.zdyEditRow.DeptCode ||
+          this.$store.state.user.info.DeptNow.Dept_Two_Code;
+        const varietieCode = this.zdyEditRow.VarID || this.zdyEditRow.VARIETIE_CODE;
+        if (!deptCode || !varietieCode) {
+          this.$message.error('缺少科室或品种信息，无法保存');
+          return;
+        }
+        this.zdyEditSaving = true;
+        addDPET_ZDY_INFO({
+          DEPT_TWO_CODE: deptCode,
+          VARIETIE_CODE: varietieCode,
+          DEPT_ZDY_VARIETIE_CODE: this.zdyEditValue
+        })
+          .then((res) => {
+            this.zdyEditSaving = false;
+            this.$message.success(res.msg || '编辑成功');
+            this.zdyEditVisible = false;
+            this.reload();
+          })
+          .catch((err) => {
+            this.zdyEditSaving = false;
+            this.$message.error(err.message || err);
+          });
       },
       remove(row) {
         var data = {
@@ -415,6 +500,7 @@
               const array = [
                 [
                   '品种编码',
+                  '自定义编码',
                   '模板申领数量',
                   '排序',
                   '品种全称',
@@ -439,6 +525,9 @@
                 }
                 array.push([
                   d.VARIETIE_CODE_NEW,
+                  d.DEPT_ZDY_VARIETIE_CODE == null
+                    ? '未定义'
+                    : d.DEPT_ZDY_VARIETIE_CODE,
                   d.TempletQty,
                   d.AUTH,
                   d.VarName,
