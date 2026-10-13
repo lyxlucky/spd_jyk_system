@@ -21,21 +21,29 @@ function getJykMainShelfOrder(order) {
 
 export async function GetJykMainShelf(data) {
     var where = (data && data.where) || {};
+    var deptCode =
+        (store.state.user.info.DeptNow &&
+            store.state.user.info.DeptNow.Dept_Two_Code) ||
+        '';
+    if (!deptCode) {
+        return Promise.reject(new Error('未获取到科室编码，请重新登录或切换科室'));
+    }
     var data2 = {};
     data2.page = data.page;
     data2.size = data.limit;
     data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
     data2.Name = where.Name ? where.Name : '';
     data2.SPEC = where.SPEC ? where.SPEC : '';
-    data2.MANUFACTURING_ENT_NAME = where.MANUFACTURING_ENT_NAME ? where.MANUFACTURING_ENT_NAME : '';
+    data2.MANUFACTURING_ENT_NAME = where.MANUFACTURING_ENT_NAME
+        ? where.MANUFACTURING_ENT_NAME
+        : '';
     data2.DEPTNAME = where.DEPTNAME ? where.DEPTNAME : '';
     data2.DEF_NO_PKG_CODE = where.DEF_NO_PKG_CODE ? where.DEF_NO_PKG_CODE : '';
     data2.TYPE = where.TYPE !== undefined && where.TYPE !== null ? where.TYPE : '1';
-    data2.COUNT = where.COUNT !== undefined && where.COUNT !== null ? where.COUNT : '1';
+    data2.COUNT =
+        where.COUNT !== undefined && where.COUNT !== null ? where.COUNT : '1';
     data2.DELIVERY_NUMBER = where.DELIVERY_NUMBER ? where.DELIVERY_NUMBER : '';
-    data2.DeptCode = store.state.user.info.DeptNow.Dept_Two_Code
-        ? store.state.user.info.DeptNow.Dept_Two_Code
-        : '';
+    data2.DeptCode = String(deptCode);
     data2.xqDay = where.xqDay ? where.xqDay : 0;
     data2.order = getJykMainShelfOrder(data.order);
     data2.batch = where.batch ? where.batch : '';
@@ -43,12 +51,12 @@ export async function GetJykMainShelf(data) {
         ? where.CLASSIFIC_PROPERTIES
         : '';
     const res = await request.get('/AJykDept/GetJykMainShelf', {
-        params: data2,
+        params: data2
     });
     if (res.data.code == 200) {
         return res.data;
     } else {
-        return Promise.reject(new Error(res.data.msg));
+        return Promise.reject(new Error(res.data.msg || '库存查询失败'));
     }
 }
 
