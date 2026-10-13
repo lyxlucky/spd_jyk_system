@@ -36,7 +36,7 @@
       </el-tab-pane>
     </el-tabs> -->
 
-    <KSDepartmentalPlantable @getCurrent="getCurrent"></KSDepartmentalPlantable>
+    <KSDepartmentalPlantable @getCurrent="getCurrent" @added="onAdded"></KSDepartmentalPlantable>
   </ele-modal>
 </template>
 
@@ -71,6 +71,10 @@ export default {
   methods: {
     getCurrent(data) {
       this.KSDepartmentalPlanData = data;
+    },
+    onAdded() {
+      this.$emit('added');
+      this.updateVisible(false);
     },
     reload() {
       this.isActive = false;

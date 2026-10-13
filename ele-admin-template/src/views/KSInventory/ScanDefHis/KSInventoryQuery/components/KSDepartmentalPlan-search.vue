@@ -189,7 +189,17 @@
       },
       /*  重置 */
       reset() {
-        this.where = { ...this.defaultWhere };
+        this.where = {
+          Name: '',
+          SPEC: '',
+          MANUFACTURING_ENT_NAME: '',
+          DEPTNAME: '',
+          DEF_NO_PKG_CODE: '',
+          TYPE: '1',
+          COUNT: '1',
+          DELIVERY_NUMBER: '',
+          xqDay: null
+        };
         this.search();
       },
       /* 创建申领单 */

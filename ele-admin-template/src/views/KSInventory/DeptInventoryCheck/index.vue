@@ -320,7 +320,7 @@
             <span class="charging-qty-blue">{{ row.CHARGING_QTY }}</span>
           </template>
         </vxe-column>
-        <vxe-column field="PROFIT_LOSS_NUMBER" width="80" align="right" footer-align="right">
+        <vxe-column v-if="showProfitLoss" field="PROFIT_LOSS_NUMBER" width="80" align="right" footer-align="right">
           <template #header>
             <span style="color: #f56c6c">盈亏数</span>
           </template>
@@ -619,6 +619,9 @@ export default {
     deptCode() {
       return this.$store.state.user.info?.DeptNow?.Dept_Two_Code || '';
     },
+    showProfitLoss() {
+      return String(this.deptCode) !== '2800';
+    },
     canViewAllChecks() {
       const groupName = this.$store.state.user.info?.Group_Name || '';
       return groupName === '医学装备部' || groupName === '超级管理员';
@@ -783,7 +786,7 @@ export default {
         const workbook = new ExcelJS.Workbook();
         const sheet = workbook.addWorksheet('盘点明细');
 
-        const includeProfitLoss = true;
+        const includeProfitLoss = this.showProfitLoss;
         const headers = ['盘点单明细ID', '上期库存', '入库数', '退还数', '本期库存', '实存数', '计费数量']
           .concat(includeProfitLoss ? ['盈亏数'] : [])
           .concat(['品种编码', '品种名称', '规格型号', '计费编码', '是否收费', 'SPD单位', '计费单位', '厂家', 'SPD单价', '转换比', '是否入柜', '盈亏备注']);

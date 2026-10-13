@@ -289,13 +289,19 @@
       }),
       /* 表格数据源 */
       datasource({ page, limit, where, order }) {
+        where = where || {};
         where.sourceFrom = this.$store.state.user.info.DeptNow.Dept_Two_Code;
-        let data = SerachDef2Consume4PDA({ page, limit, where, order }).then(
-          (res) => {
-            return res.result;
-          }
-        );
-        return data;
+        return SerachDef2Consume4PDA({ page, limit, where, order })
+          .then((res) => {
+            return {
+              count: res.total || 0,
+              list: res.result || []
+            };
+          })
+          .catch((err) => {
+            this.$message.error(err.message || '查询失败');
+            return { count: 0, list: [] };
+          });
       },
       done(res, curr, count) {
         this.$nextTick(() => {

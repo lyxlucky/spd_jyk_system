@@ -234,6 +234,7 @@ export const VARIETY_EDIT_GROUPS = [
       { key: 'PRODUCT_ID', label: '产品ID', type: 'input', span: 8 },
       { key: 'SPECIFICATION_ID', label: '规格ID', type: 'input', span: 8 },
       { key: 'Hosp_Code', label: '原医院系统编码', type: 'input', span: 8 },
+      { key: 'HOSP_VARIETIE_CODE', label: '本院品种编码', type: 'input', span: 8, showHp: ['szse', 'szse_lh', 'szse_dp'] },
       { key: 'Service_Rate', label: '服务费率%', type: 'input', span: 8 },
       { key: 'Sph_Erp_Varietie_Code', label: '上药ERP品种编码', type: 'input', span: 8 },
       { key: 'YSY_GUID', label: 'YSY_GUID', type: 'input', span: 8 },

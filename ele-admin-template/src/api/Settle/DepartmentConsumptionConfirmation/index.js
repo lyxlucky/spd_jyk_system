@@ -80,6 +80,42 @@ export async function getSzseSpUseDelInfo(data) {
 }
 
 /**
+ * 科室消耗确认 - 已收费后智能柜还柜提醒
+ * @param {Object} data - 查询参数 (SpUseInfoInArry)
+ * @returns {Promise}
+ */
+export async function getSzseReturnCabinetAlert(data) {
+  const formatData = {
+    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+    page: data.page || 1,
+    size: data.size || 2000,
+    OPEARTION_CHARGING_TIME_START: data.OPEARTION_CHARGING_TIME_START || '',
+    OPEARTION_CHARGING_TIME_END: data.OPEARTION_CHARGING_TIME_END || '',
+    ZX_DEPT: data.ZX_DEPT || '',
+    DEPT_TWO_NAME: data.DEPT_TWO_NAME || '',
+    DEPT_TWO_CODE: store.state.user.info?.DeptNow?.Dept_Two_Code || '',
+    SPECIFICATION_OR_TYPE: data.SPECIFICATION_OR_TYPE || '',
+    VARIETIE_NAME: data.VARIETIE_NAME || '',
+    VARIETIE_CODE_NEW: data.VARIETIE_CODE_NEW || '',
+    WZ_VAR_CODE: data.WZ_VAR_CODE || '',
+    IS_GT: data.IS_GT || '',
+    MANUFACTURING_ENT_NAME: data.MANUFACTURING_ENT_NAME || '',
+    CHARGING_CODE: data.CHARGING_CODE || '',
+    SUPPLIER_NAME: data.SUPPLIER_NAME || '',
+    USE_APP_STATE: data.USE_APP_STATE || '',
+    CONSUMPTION_TYPE: data.CONSUMPTION_TYPE || ''
+  };
+
+  const res = await request.post('/DeptConsume/getSzseReturnCabinetAlert', formatData);
+
+  if (res.data.code == 200) {
+    return res.data;
+  } else {
+    return Promise.reject(new Error(res.data.msg));
+  }
+}
+
+/**
  * 科室消耗确认 - 确认使用
  * @param {Object} data - 请求参数 { SzseSpUseHzInfoList: Array, state: string, mark: string, searchForm: Object }
  * @returns {Promise} - 返回请求Promise

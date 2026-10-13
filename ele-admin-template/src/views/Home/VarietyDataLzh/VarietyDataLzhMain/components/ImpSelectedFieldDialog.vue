@@ -161,6 +161,9 @@ export default {
       if (HOME_HP === 'csyy') {
         opts.push({ value: '57', label: '潮州医保编码' });
       }
+      if (HOME_HP === 'szse' || HOME_HP === 'szse_lh' || HOME_HP === 'szse_dp') {
+        opts.push({ value: '96', label: '本院品种编码' });
+      }
       return opts.sort((a, b) => Number(a.value) - Number(b.value));
     }
   },
