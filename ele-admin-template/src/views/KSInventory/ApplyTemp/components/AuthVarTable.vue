@@ -103,8 +103,39 @@
             </template>
           </el-popconfirm>
         </template>
+        <template v-slot:DEPT_ZDY_VARIETIE_CODE="{ row }">
+          <el-link type="primary" :underline="false" @click="openZdyCodeEdit(row)">
+            {{ row.DEPT_ZDY_VARIETIE_CODE == null ? '未定义' : row.DEPT_ZDY_VARIETIE_CODE }}
+          </el-link>
+        </template>
       </ele-pro-table>
     </div>
+
+    <el-dialog
+      :title="(zdyEditRow?.VARIETIE_NAME || '') + ' 自定义编码'"
+      :visible.sync="zdyEditVisible"
+      width="520px"
+      append-to-body
+      @closed="onZdyEditClosed"
+    >
+      <el-input
+        v-model="zdyEditValue"
+        type="textarea"
+        :rows="6"
+        placeholder="请输入自定义编码"
+      />
+      <span slot="footer">
+        <el-button size="mini" @click="zdyEditVisible = false">取消</el-button>
+        <el-button
+          type="primary"
+          size="mini"
+          :loading="zdyEditSaving"
+          @click="saveZdyCode"
+        >
+          确定
+        </el-button>
+      </span>
+    </el-dialog>
   </ele-modal>
 </template>
 
@@ -115,7 +146,8 @@
     SerachTempletDeta,
     DeleteTempletDeta,
     SerachAuthVar,
-    CreateTempletDeta
+    CreateTempletDeta,
+    addDPET_ZDY_INFO
   } from '@/api/KSInventory/ApplyTemp';
   export default {
     name: 'AuthVarTable',
@@ -125,6 +157,10 @@
     },
     data() {
       return {
+        zdyEditVisible: false,
+        zdyEditSaving: false,
+        zdyEditRow: null,
+        zdyEditValue: '',
         // 表格列配置
         columns: [
           {
@@ -177,16 +213,11 @@
           {
             prop: 'DEPT_ZDY_VARIETIE_CODE',
             label: '自定义编码',
+            slot: 'DEPT_ZDY_VARIETIE_CODE',
             // sortable: 'custom',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 110,
-            formatter: (row, column, cellValue) => {
-              if (cellValue == null) {
-                return '未定义';
-              }
-              return cellValue;
-            }
+            minWidth: 110
           },
           {
             prop: 'VARIETIE_NAME',
@@ -332,6 +363,46 @@
         // console.log(this.ApplyTempTableData);
         // console.log(this.$store.state.user.info);
         this.$refs.table.reload({ page: 1, where: where });
+      },
+      openZdyCodeEdit(row) {
+        this.zdyEditRow = row;
+        this.zdyEditValue =
+          row.DEPT_ZDY_VARIETIE_CODE == null ? '' : String(row.DEPT_ZDY_VARIETIE_CODE);
+        this.zdyEditVisible = true;
+      },
+      onZdyEditClosed() {
+        this.zdyEditRow = null;
+        this.zdyEditValue = '';
+        this.zdyEditSaving = false;
+      },
+      saveZdyCode() {
+        if (!this.zdyEditRow) return;
+        const deptCode =
+          this.zdyEditRow.DEPT_TWO_CODE ||
+          this.zdyEditRow.DeptCode ||
+          this.$store.state.user.info.DeptNow.Dept_Two_Code;
+        const varietieCode =
+          this.zdyEditRow.VARIETIE_CODE || this.zdyEditRow.VarID;
+        if (!deptCode || !varietieCode) {
+          this.$message.error('缺少科室或品种信息，无法保存');
+          return;
+        }
+        this.zdyEditSaving = true;
+        addDPET_ZDY_INFO({
+          DEPT_TWO_CODE: deptCode,
+          VARIETIE_CODE: varietieCode,
+          DEPT_ZDY_VARIETIE_CODE: this.zdyEditValue
+        })
+          .then((res) => {
+            this.zdyEditSaving = false;
+            this.$message.success(res.msg || '编辑成功');
+            this.zdyEditVisible = false;
+            this.reload();
+          })
+          .catch((err) => {
+            this.zdyEditSaving = false;
+            this.$message.error(err.message || err);
+          });
       },
       remove(row) {
         var data = {
