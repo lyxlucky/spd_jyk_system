@@ -476,6 +476,13 @@
             width: 330
           },
           {
+            prop: 'Used_Name',
+            label: '常用名',
+            align: 'center',
+            showOverflowTooltip: true,
+            width: 180
+          },
+          {
             prop: 'GG',
             label: '型号/规格',
             align: 'center',
@@ -1029,6 +1036,7 @@
                   '明细状态',
                   '品种编码',
                   '品种全称',
+                  '常用名',
                   '型号/规格',
                   '生产企业名称',
                   '申领数量',
@@ -1042,6 +1050,7 @@
                   String(d.DTL_IS_DELETE) === '0' ? '已剔除' : '正常',
                   d.VarCode,
                   d.VarName,
+                  d.Used_Name,
                   d.GG,
                   d.Manufacturing,
                   d.PlanQty,

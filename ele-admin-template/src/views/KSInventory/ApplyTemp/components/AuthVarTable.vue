@@ -228,6 +228,14 @@
             minWidth: 110
           },
           {
+            prop: 'USED_NAME',
+            label: '常用名',
+            // sortable: 'custom',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 110
+          },
+          {
             prop: 'SPECIFICATION_OR_TYPE',
             label: '型号/规格',
             // sortable: 'custom',
