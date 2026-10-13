@@ -203,7 +203,7 @@
           {
             prop: 'VarName',
             label: '品种名称',
-            minWidth: 180,
+            minWidth: 330,
             align: 'center',
             showOverflowTooltip: true
           },
