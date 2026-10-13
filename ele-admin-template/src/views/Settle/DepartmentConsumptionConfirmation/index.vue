@@ -798,8 +798,8 @@ export default {
       }
     },
     openReturnCabinetAlert() {
+      // 仅展示搜索时已加载的缓存清单，点击不再重复请求（接口较慢）
       this.returnCabinetAlertVisible = true;
-      this.loadReturnCabinetAlertCount();
     },
     // 选中数据是否包含还柜提醒
     hasReturnCabinetAlertInSelection(selection, byMainId) {
@@ -867,7 +867,24 @@ export default {
         };
         const res = await getSzseSpUseDelInfo(params);
         if (res.code === 200) {
-          this.detailTableData = res.result || [];
+          const alertMap = {};
+          (this.returnCabinetAlertList || []).forEach((item) => {
+            if (item && item.DEF_NO_PKG_CODE) {
+              alertMap[item.DEF_NO_PKG_CODE] = item;
+            }
+          });
+          this.detailTableData = (res.result || []).map((row) => {
+            const hit = alertMap[row.DEF_NO_PKG_CODE];
+            if (!hit) {
+              return row;
+            }
+            return {
+              ...row,
+              RETURN_CABINET_ALERT: '1',
+              RETURN_CABINET_TIME: hit.RETURN_CABINET_TIME,
+              RETURN_CABINET_TYPE: hit.RETURN_CABINET_TYPE || '柜端已报还柜'
+            };
+          });
           this.detailTablePage.total = res.total || 0;
           this.detailTableSelection = [];
           // 从接口获取明细总数量和总金额
