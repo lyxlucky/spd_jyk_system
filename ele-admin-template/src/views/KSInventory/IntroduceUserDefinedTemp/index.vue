@@ -214,7 +214,7 @@
             sortable: 'custom',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 150
+            minWidth: 330
           },
           {
             prop: 'SPECIFICATION_OR_TYPE',

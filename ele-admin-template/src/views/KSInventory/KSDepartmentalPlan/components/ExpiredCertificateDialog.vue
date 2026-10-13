@@ -13,7 +13,7 @@
         <el-table-column
           prop="VarName"
           label="品种名称"
-          width="200"
+          width="330"
         ></el-table-column>
         <el-table-column
           prop="VarID"

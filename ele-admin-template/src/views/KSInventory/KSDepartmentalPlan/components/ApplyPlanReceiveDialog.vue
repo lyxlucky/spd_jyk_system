@@ -73,7 +73,7 @@ export default {
         },
         { prop: 'OPERATE_NUMBER', label: '收货单号', minWidth: 120 },
         { prop: 'VARIETIE_CODE_NEW', label: '品种编码', minWidth: 120 },
-        { prop: 'VARIETIE_NAME', label: '品种名称', minWidth: 160, showOverflowTooltip: true },
+        { prop: 'VARIETIE_NAME', label: '品种名称', minWidth: 330, showOverflowTooltip: true },
         { prop: 'SPECIFICATION_OR_TYPE', label: '规格型号', minWidth: 140, showOverflowTooltip: true },
         { prop: 'MANUFACTURING_ENT_NAME', label: '生产企业', minWidth: 140, showOverflowTooltip: true },
         { prop: 'QUANITY', label: '数量', width: 70 },

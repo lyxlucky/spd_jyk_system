@@ -141,7 +141,7 @@
             prop: 'VARIETIE_NAME',
             label: '品种名称',
             align: 'center',
-            width: 200,
+            width: 330,
             showOverflowTooltip: true
           },
           {

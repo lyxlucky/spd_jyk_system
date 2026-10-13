@@ -473,7 +473,7 @@
             label: '品种全称',
             align: 'center',
             showOverflowTooltip: true,
-            width: 180
+            width: 330
           },
           {
             prop: 'GG',
