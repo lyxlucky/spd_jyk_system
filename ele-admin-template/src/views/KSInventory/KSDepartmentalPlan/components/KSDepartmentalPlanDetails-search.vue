@@ -37,7 +37,7 @@
         <el-input
           style="width: 200px"
           v-model="where.SerachName"
-          placeholder="品名/编码/型号规格/生产企业搜索"
+          placeholder="品名/常用名/编码/型号规格/生产企业搜索"
           clearable
         />
       </el-form-item>

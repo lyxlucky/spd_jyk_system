@@ -40,7 +40,7 @@
             <el-form-item label="">
               <el-input
                 v-model="SerachName"
-                placeholder="请输入品种名称/品种编码/型号规格/生产企业搜索"
+                placeholder="请输入品种名称/常用名/品种编码/型号规格/生产企业搜索"
                 clearable
                 @change="reload"
               />
