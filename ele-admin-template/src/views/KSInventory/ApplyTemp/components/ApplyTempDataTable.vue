@@ -223,6 +223,13 @@
             minWidth: 180
           },
           {
+            prop: 'Used_Name',
+            label: '常用名',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 150
+          },
+          {
             prop: 'BigBoxCount',
             label: '大包装数量',
 
@@ -504,6 +511,7 @@
                   '模板申领数量',
                   '排序',
                   '品种全称',
+                  '常用名',
                   '规格/型号',
                   '单位',
                   '结算价',
@@ -531,6 +539,7 @@
                   d.TempletQty,
                   d.AUTH,
                   d.VarName,
+                  d.Used_Name,
                   d.GG,
                   d.Unit,
                   d.Price,

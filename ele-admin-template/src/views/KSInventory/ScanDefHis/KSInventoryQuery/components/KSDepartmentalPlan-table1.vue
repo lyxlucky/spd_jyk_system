@@ -662,16 +662,25 @@
         BatchInsertScanDef2(data)
           .then((res) => {
             loading.close();
-            if (res.code == 200) {
-              this.$message.success(res.msg || '添加成功');
-              this.$emit('added');
+            const raw = res.msg || '添加成功';
+            if (String(raw).indexOf('<br') >= 0 || String(raw).indexOf('</br>') >= 0) {
+              this.$alert(raw, '添加结果', {
+                dangerouslyUseHTMLString: true,
+                confirmButtonText: '确定'
+              });
             } else {
-              this.$message.error(res.msg || '添加失败');
+              this.$message.success(raw);
             }
+            this.$emit('added');
           })
           .catch((err) => {
             loading.close();
-            this.$message.error(err.message || err || '添加失败');
+            const raw = (err && err.message) || err || '添加失败';
+            this.$alert(String(raw), '添加结果', {
+              dangerouslyUseHTMLString: true,
+              confirmButtonText: '确定',
+              type: 'warning'
+            });
           });
       }
     },

@@ -44,6 +44,7 @@ import { ImpUpdataField } from '@/api/Home/VarietyDataLzhMain';
 
 const BASE_FIELD_OPTIONS = [
   { value: '1', label: '品种全称' },
+  { value: '98', label: '常用名' },
   { value: '2', label: '批准文号' },
   { value: '3', label: '型号规格' },
   { value: '4', label: '单位' },

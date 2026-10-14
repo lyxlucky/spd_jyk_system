@@ -106,6 +106,7 @@ export const VARIETY_EDIT_GROUPS = [
     fields: [
       { key: 'Varietie_Code_New', label: '品种材料编码', type: 'text', span: 8, disabled: true },
       { key: 'Varietie_Name', label: '品种全称', type: 'input', span: 8, required: true },
+      { key: 'Used_Name', label: '常用名', type: 'input', span: 8 },
       { key: 'Specification_Or_Type', label: '型号/规格', type: 'input', span: 8, required: true },
       { key: 'Unit', label: '单位', type: 'input', span: 6, required: true },
       { key: 'Price', label: '中标价', type: 'number', span: 6, required: true },
