@@ -14,6 +14,11 @@ export const routes = [
     meta: { title: '登录' }
   },
   {
+    path: '/sso/winex',
+    component: () => import('@/views/login/winex-sso.vue'),
+    meta: { title: 'WINEX单点登录' }
+  },
+  {
     path: '/forget',
     component: () => import('@/views/forget/index.vue'),
     meta: { title: '忘记密码' }
