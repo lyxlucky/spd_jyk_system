@@ -21,20 +21,33 @@
             remote
             clearable
             reserve-keyword
-            placeholder="请选择库房/库区"
+            placeholder="请输入库房/库区、SPD/HIS科室编码或名称"
             :remote-method="loadWarehouseOptions"
             :loading="warehouseLoading"
             class="warehouse-select"
+            popper-class="warehouse-area-three-select-popper"
             @change="onWarehouseChange"
           >
             <el-option
               v-for="item in warehouseOptions"
               :key="item.VALUE"
-              :label="item.LABEL"
+              :label="formatWarehouseAreaOptionLabel(item)"
               :value="String(item.VALUE)"
             >
-              <span>{{ item.LABEL }}</span>
-              <span class="option-type">{{ areaTypeName(item.TYPE) }}</span>
+              <div class="warehouse-option">
+                <div class="warehouse-option-head">
+                  <span class="warehouse-option-area">{{ item.LABEL }}</span>
+                  <span class="option-type">{{ areaTypeName(item.TYPE) }}</span>
+                </div>
+                <div v-if="item.SPD_DEPT_LABEL" class="warehouse-option-dept">
+                  <span class="warehouse-option-dept-label">SPD</span>
+                  <span class="warehouse-option-dept-text">{{ item.SPD_DEPT_LABEL }}</span>
+                </div>
+                <div v-if="item.HIS_DEPT_LABEL" class="warehouse-option-dept">
+                  <span class="warehouse-option-dept-label">HIS</span>
+                  <span class="warehouse-option-dept-text">{{ item.HIS_DEPT_LABEL }}</span>
+                </div>
+              </div>
             </el-option>
           </el-select>
         </el-form-item>
@@ -487,6 +500,7 @@ import {
 } from '@/api/Inventory/WarehouseAreaThreeInventory';
 import {
   areaTypeName,
+  formatWarehouseAreaOptionLabel,
   DELETE_STATUS_OPTIONS,
   STOCK_DEDUCT_TYPE_OPTIONS,
   STOCK_STATUS_OPTIONS,
@@ -954,7 +968,45 @@ export default {
 
 <style scoped>
 .warehouse-area-search .warehouse-select {
-  width: 230px;
+  width: 380px;
+}
+
+.warehouse-area-search .warehouse-option {
+  padding: 3px 0;
+  line-height: 18px;
+}
+
+.warehouse-area-search .warehouse-option-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.warehouse-area-search .warehouse-option-area {
+  min-width: 0;
+  color: #303133;
+  font-weight: 500;
+  word-break: break-all;
+}
+
+.warehouse-area-search .warehouse-option-dept {
+  display: flex;
+  gap: 6px;
+  color: #909399;
+  font-size: 12px;
+  line-height: 17px;
+}
+
+.warehouse-area-search .warehouse-option-dept-label {
+  flex: 0 0 auto;
+  color: #606266;
+  font-weight: 600;
+}
+
+.warehouse-area-search .warehouse-option-dept-text {
+  min-width: 0;
+  word-break: break-all;
 }
 
 .warehouse-area-search .query-input {
@@ -1021,5 +1073,15 @@ export default {
 
 .warehouse-area-search :deep(.el-form-item) {
   margin-bottom: 8px;
+}
+</style>
+
+<style>
+.warehouse-area-three-select-popper .el-select-dropdown__item {
+  height: auto;
+  min-height: 34px;
+  padding-top: 6px;
+  padding-bottom: 6px;
+  line-height: 18px;
 }
 </style>
