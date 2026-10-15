@@ -64,6 +64,24 @@
           style="width: 180px"
         />
       </el-form-item>
+      <el-form-item v-if="isBdrm" label="开始时间">
+        <el-date-picker
+          v-model="form.startTime"
+          type="date"
+          placeholder="选择开始时间"
+          value-format="yyyy-MM-dd"
+          style="width: 180px"
+        />
+      </el-form-item>
+      <el-form-item v-if="isBdrm" label="结束时间">
+        <el-date-picker
+          v-model="form.endTime"
+          type="date"
+          placeholder="选择结束时间"
+          value-format="yyyy-MM-dd"
+          style="width: 180px"
+        />
+      </el-form-item>
       <el-form-item>
         <el-button type="primary" size="mini" :loading="loading" @click="reload">
           查询
@@ -179,6 +197,7 @@
 
 <script>
   import { getThreeKcInfo } from '@/api/Inventory/ThreeLevelDbBD';
+  import { HOME_HP } from '@/config/setting';
   import { utils, writeFile } from 'xlsx';
 
   export default {
@@ -202,11 +221,16 @@
           DEPT_TWO_NAME: '',
           UNIT: '',
           PRICE: '',
-          MANUFACTURING_ENT_NAME: ''
+          MANUFACTURING_ENT_NAME: '',
+          startTime: '',
+          endTime: ''
         }
       };
     },
     computed: {
+      isBdrm() {
+        return HOME_HP === 'bdrm';
+      },
       visibleSync: {
         get() {
           return this.visible;
@@ -230,8 +254,18 @@
           DEPT_TWO_NAME: '',
           UNIT: '',
           PRICE: '',
-          MANUFACTURING_ENT_NAME: ''
+          MANUFACTURING_ENT_NAME: '',
+          startTime: '',
+          endTime: ''
         };
+      },
+      getQueryForm() {
+        const query = { ...this.form };
+        if (!this.isBdrm) {
+          delete query.startTime;
+          delete query.endTime;
+        }
+        return query;
       },
       onOpen() {
         this.resetForm();
@@ -253,7 +287,7 @@
             page: this.page,
             limit: this.pageSize,
             groupByDept: true,
-            ...this.form
+            ...this.getQueryForm()
           });
           this.tableData = res.data || [];
           this.total = res.total || 0;
@@ -273,7 +307,7 @@
             page: 1,
             limit: 999999,
             groupByDept: true,
-            ...this.form
+            ...this.getQueryForm()
           });
           const headers = [
             '科室名称',

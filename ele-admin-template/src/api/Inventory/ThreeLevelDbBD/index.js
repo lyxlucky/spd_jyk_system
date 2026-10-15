@@ -214,6 +214,12 @@ export async function getThreeKcInfo(data) {
     requestData.MANUFACTURING_ENT_NAME = data.MANUFACTURING_ENT_NAME || '';
     requestData.DEPT_TWO_NAME = data.DEPT_TWO_NAME || '';
     requestData.groupByDept = data.groupByDept === true || data.groupByDept === '1' || data.groupByDept === 1;
+    if (data.startTime) {
+        requestData.startTime = data.startTime;
+    }
+    if (data.endTime) {
+        requestData.endTime = data.endTime;
+    }
 
     const res = await request.get(`/PekingApplication/getThreeKcInfo`, {
         params: requestData,
