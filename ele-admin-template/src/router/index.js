@@ -34,16 +34,24 @@ router.beforeEach((to, from, next) => {
   if (getToken()) {
     // 还未注册动态路由则先获取
     if (!store.state.user.menus) {
+      console.log('[WinexSso][router] fetchUserInfo begin', { to: to.fullPath, from: from.fullPath });
       store
         .dispatch('user/fetchUserInfo')
         .then(({ menus, homePath }) => {
+          console.log('[WinexSso][router] fetchUserInfo ok', {
+            menuCount: menus ? menus.length : 0,
+            homePath,
+            to: to.fullPath
+          });
           if (menus) {
             router.addRoute(getMenuRoutes(menus, homePath));
+            console.log('[WinexSso][router] addRoute done');
           }
           // 必须调用 next() 重定向，否则导航会挂起
           next({ ...to, replace: true });
         })
-        .catch(() => {
+        .catch((err) => {
+          console.error('[WinexSso][router] fetchUserInfo fail', err);
           // 获取用户信息失败, 则注销并跳转至登录页
           localStorage.removeItem('Token');
           sessionStorage.removeItem('Token');
