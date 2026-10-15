@@ -1,10 +1,10 @@
 <template>
   <div class="ele-body spd-page pkg-source-detail">
-    <el-card shadow="never">
+    <el-card shadow="never" class="pkg-source-card">
       <user-search ref="search" @search="reload" />
       <ele-pro-table
         ref="table"
-        height="calc(100vh - 240px)"
+        height="calc((100vh - 280px) * 0.42)"
         :page-size="pageSize"
         :page-sizes="pageSizes"
         :columns="columns"
@@ -280,11 +280,33 @@ export default {
 </script>
 
 <style scoped>
+.pkg-source-detail {
+  height: calc(100vh - 120px);
+  overflow: hidden;
+}
+
+.pkg-source-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.pkg-source-card ::v-deep .el-card__body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
 .table_content {
-  margin-top: 15px;
+  margin-top: 12px;
+  flex: 1;
+  min-height: 180px;
+  max-height: calc((100vh - 280px) * 0.52);
+  overflow: auto;
   background-color: #fff;
   border: 1px solid #e6e6e6;
-  min-height: 120px;
 }
 
 .ks-source {
