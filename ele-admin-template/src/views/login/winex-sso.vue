@@ -25,7 +25,8 @@
 
 <script>
 import { winexSsoLogin, getSTORAGE } from '@/api/login';
-import { setToken } from '@/utils/token-util';
+import { setToken, getToken } from '@/utils/token-util';
+import { HOME_PATH } from '@/config/setting';
 
 export default {
   name: 'WinexSso',
@@ -34,7 +35,8 @@ export default {
       statusText: '正在通过 WINEX 票据登录，请稍候…',
       failed: false,
       authFailUrl: '',
-      portalUrl: ''
+      portalUrl: '',
+      submitting: false
     };
   },
   created() {
@@ -58,7 +60,21 @@ export default {
       }
       return '';
     },
+    /** 硬跳转首页，避免 replace+/reload 在动态路由未注册时白屏，并清掉 jti 地址 */
+    goHomeHard() {
+      const base = (this.$router?.options?.base || '/').replace(/\/?$/, '/');
+      const from = this.$route?.query?.from;
+      const targetPath =
+        from && typeof from === 'string' && from.startsWith('/')
+          ? from
+          : HOME_PATH || '/';
+      const hashPath = targetPath.startsWith('/') ? targetPath : `/${targetPath}`;
+      window.location.replace(`${base}#${hashPath}`);
+    },
     async handleSso() {
+      if (this.submitting) {
+        return;
+      }
       const jti = this.getQueryParam('jti');
       const portalUrl = this.getQueryParam('portalurl') || this.getQueryParam('portalUrl');
       const authFailUrl =
@@ -66,12 +82,20 @@ export default {
       this.authFailUrl = authFailUrl || '';
       this.portalUrl = portalUrl || '';
 
+      // 已有 Token 又停在 SSO 页（上次跳转异常），直接进系统，避免白屏卡住
+      if (!jti && getToken()) {
+        this.statusText = '已登录，正在进入系统…';
+        this.goHomeHard();
+        return;
+      }
+
       if (!jti) {
         this.failed = true;
         this.statusText = '缺少登录票据 jti，无法完成单点登录';
         return;
       }
 
+      this.submitting = true;
       try {
         const res = await winexSsoLogin({
           jti,
@@ -100,18 +124,11 @@ export default {
         }
         this.statusText = '登录成功，正在进入系统…';
         this.$message.success(res.msg || '单点登录成功');
-        this.$router
-          .replace(this.$route?.query?.from || '/')
-          .then(() => {
-            location.reload();
-          })
-          .catch(() => {
-            location.href = this.$router.options.base
-              ? `${this.$router.options.base}#/`
-              : '/#/';
-          });
+        // 不要 router.replace + reload：动态菜单未注册时会先白屏，且可能停在 /sso/winex
+        this.goHomeHard();
       } catch (e) {
         this.failed = true;
+        this.submitting = false;
         this.statusText = e.message || '单点登录失败';
         this.$message.error(this.statusText);
       }
