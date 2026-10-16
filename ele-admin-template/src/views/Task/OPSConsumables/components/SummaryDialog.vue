@@ -22,13 +22,29 @@
       :needPage="true"
     >
       <template v-slot:toolbar>
-        <el-button
-          size="mini"
-          type="primary"
-          icon="el-icon-download"
-          @click="handleExport"
-          >导出</el-button
-        >
+        <el-form :inline="true" size="mini">
+          <el-form-item label="定数包库存区域">
+            <el-select
+              v-model="upShelfState"
+              placeholder="定数包库存区域"
+              style="width: 120px"
+              @change="reload"
+            >
+              <el-option label="全部" value=""></el-option>
+              <el-option label="合格区" value="1"></el-option>
+              <el-option label="拣配区" value="2"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-button
+              size="mini"
+              type="primary"
+              icon="el-icon-download"
+              @click="handleExport"
+              >导出</el-button
+            >
+          </el-form-item>
+        </el-form>
       </template>
     </ele-pro-table>
     <span slot="footer" class="dialog-footer">
@@ -110,7 +126,9 @@
           }
         ],
         pageSize: 999999,
-        pageSizes: [10, 20, 50, 100, 999999]
+        pageSizes: [10, 20, 50, 100, 999999],
+        // 定数包库存区域：1-合格区，2-拣配区，空-全部，默认合格区
+        upShelfState: '1'
       };
     },
     computed: {
@@ -127,14 +145,23 @@
       handleClose() {
         this.dialogVisible = false;
       },
+      // 汇总查询条件：手术编号 + 定数包库存区域
+      buildWhere() {
+        return {
+          SSBH: this.selectedSSBH.map((item) => `'${item}'`).join(','),
+          DEF_UP_SHELF_STATE: this.upShelfState
+        };
+      },
+      // 切换定数包库存区域后重新加载
+      reload() {
+        this.$refs.table.reload({ page: 1 });
+      },
       handleExport() {
         const loading = this.$messageLoading('导出中...');
         getBdSzYyHisSsHz({
           page: 1,
           limit: 999999,
-          where: {
-            SSBH: this.selectedSSBH.map((item) => `'${item}'`).join(',')
-          }
+          where: this.buildWhere()
         })
           .then((res) => {
             if (res?.data.length == 0)
@@ -188,9 +215,7 @@
         return getBdSzYyHisSsHz({
           page,
           limit,
-          where: {
-            SSBH: this.selectedSSBH.map((item) => `'${item}'`).join(',')
-          }
+          where: this.buildWhere()
         })
           .then((res) => {
             return {
