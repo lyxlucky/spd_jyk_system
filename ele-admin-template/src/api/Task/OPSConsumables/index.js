@@ -199,6 +199,24 @@ export async function addBdszZqsjMainPsDel(data) {
   return Promise.reject(res.data);
 }
 
+//按预约批量添加拣配
+export async function addBdszZqsjMainPsDelByReserve(params) {
+  const formatData = {
+    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+    data: (params?.data || []).map((item) => ({
+      SSBH: item.SSBH || ''
+    }))
+  };
+  let res = await request.post(
+    '/DeptPlanTransfer/addBdszZqsjMainPsDelByReserve',
+    formatData
+  );
+  if (res.data.code == 200) {
+    return res.data;
+  }
+  return Promise.reject(res.data);
+}
+
 //删除配送明细
 export async function deleteBdszPsDetail(data) {
   const formatData = {
