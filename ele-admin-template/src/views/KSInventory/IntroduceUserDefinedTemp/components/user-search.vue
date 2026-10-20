@@ -13,7 +13,7 @@
         style="width: 240px;"
         clearable
         v-model="where.SerachName"
-        placeholder="品种编码/名称/型号规格/生产企业"
+        placeholder="品种编码/名称/常用名/型号规格/生产企业"
       />
     </el-form-item>
     <el-form-item label="">
@@ -86,7 +86,7 @@
           clearable
           size="mini"
           v-model="where.SerachName"
-          placeholder="请输入品种编码/品种名称/型号规格/生产企业搜索"
+          placeholder="请输入品种编码/品种名称/常用名/型号规格/生产企业搜索"
         />
       </el-col>
 

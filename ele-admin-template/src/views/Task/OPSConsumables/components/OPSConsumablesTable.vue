@@ -180,6 +180,13 @@
               style="margin-right: 8px"
               >打印</el-button
             >
+            <el-button
+              type="primary"
+              icon="el-icon-shopping-bag-1"
+              @click="handleAddByReserve"
+              style="margin-right: 8px"
+              >按预约添加拣配</el-button
+            >
             <el-button type="primary" @click="handleExport">导出</el-button>
             <el-button type="primary" @click="handleExportCurrent"
               >打印2</el-button
@@ -224,6 +231,7 @@
     getBdSzYyHisSs,
     GetBdszZgsjMainPsDelExcel,
     GetBdszZgsjMainPsDelExcelDetail,
+    addBdszZqsjMainPsDelByReserve,
     returnJp,
     singFinish
   } from '@/api/Task/OPSConsumables';
@@ -457,6 +465,43 @@
           return '';
         }
       },
+      // 按预约添加拣配：勾选手术单号，按定数包及预约数量批量添加
+      handleAddByReserve() {
+        if (this.selection.length === 0) {
+          this.$message.warning('请至少选择一条数据');
+          return;
+        }
+
+        this.$confirm(
+          `确认对勾选的 ${this.selection.length} 台手术，按定数包类型及预约数量添加拣配吗？`,
+          '提示',
+          { type: 'warning' }
+        )
+          .then(() => {
+            const loading = this.$messageLoading('处理中...');
+            addBdszZqsjMainPsDelByReserve({
+              data: this.selection.map((item) => ({ SSBH: item.SSBH }))
+            })
+              .then((res) => {
+                this.$message.success(res.msg || '添加成功');
+                // 刷新手术列表（添加状态可能变化）
+                this.reload();
+                // 若当前有选中行，同步刷新下方预约明细和配送明细
+                if (this.currentRow?.SSBH) {
+                  this.$bus.$emit('OPSConsumablesTableRowClick', this.currentRow);
+                }
+              })
+              .catch((err) => {
+                this.$message.error(err.msg || '添加失败');
+              })
+              .finally(() => {
+                loading.close();
+              });
+          })
+          .catch(() => {
+            this.$message.info('已取消操作');
+          });
+      },
       handleExportCurrent() {
         // if (!this.currentRow || Object.keys(this.currentRow).length === 0) {
         //   this.$message.error('请先选择一行数据！');
@@ -513,8 +558,9 @@
         ];
       },
       handlePrint() {
-        if (this?.currentRow == undefined)
-          return this.$message.error('请先选择一行数据！');
+        if (this.selection.length === 0) {
+          return this.$message.error('请先选择手术数据！');
+        }
         const loading = this.$loading({
           lock: true,
           text: '正在下载...',
@@ -522,15 +568,22 @@
           background: 'rgba(0, 0, 0, 0.7)'
         });
         const params = {
-          SSBH: this.currentRow.SSBH,
-          SSTH: this.currentRow.SSTH,
-          ZYHM: this.currentRow.ZYHM,
-          BRXM: this.currentRow.BRXM,
-          SSMC: this.currentRow.SSMC,
-          SSRQ: this.currentRow.SSRQ
+          items: this.selection.map((row) => ({
+            SSBH: row.SSBH,
+            SSTH: row.SSTH,
+            ZYHM: row.ZYHM,
+            BRXM: row.BRXM,
+            SSMC: row.SSMC,
+            SSRQ: row.SSRQ
+          }))
         };
         GetBdszZgsjMainPsDelExcel(params)
           .then((res) => {
+            if (res.skipcount > 0) {
+              this.$message.warning(
+                `有 ${res.skipcount} 台手术无配送明细，未生成打印页`
+              );
+            }
             var url = `${BACK_BASE_URL}/Excel/files/${res.msg}`;
             window.open(url.replace('/undefined', ''));
           })

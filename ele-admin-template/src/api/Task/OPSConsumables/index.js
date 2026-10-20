@@ -44,13 +44,15 @@ export async function getBdSzYyHisSs(params) {
 /**
  * 查看汇总
  * @param {Object} params 请求参数
- * @param {string} params.MZZY 门诊住院标识，1-住院，2-门诊
+ * @param {string} params.where.SSBH 手术编号，多个以逗号分隔
+ * @param {string} params.where.DEF_UP_SHELF_STATE 定数包库存区域，1-合格区，2-拣配区，空-全部
  * @returns {Promise} 返回请求结果
  */
 export async function getBdSzYyHisSsHz(params) {
   const formatData = {
     Token: sessionStorage.getItem(TOKEN_STORE_NAME),
     SSBH: params.where?.SSBH || '',
+    DEF_UP_SHELF_STATE: params.where?.DEF_UP_SHELF_STATE || '',
     page: params.page || 1,
     size: params.limit || 10
   };
@@ -116,8 +118,16 @@ export async function getBdszZgsjMainPsDel(params) {
   return Promise.reject(res.data);
 }
 
-//打印
+//打印（支持勾选多个手术批量打印）
 export async function GetBdszZgsjMainPsDelExcel(params) {
+  const items = (params?.items || []).map((item) => ({
+    SSBH: item.SSBH || '',
+    SSTH: item.SSTH || '',
+    ZYHM: item.ZYHM || '',
+    BRXM: item.BRXM || '',
+    SSMC: item.SSMC || '',
+    SSRQ: item.SSRQ || ''
+  }));
   const formatData = {
     Token: sessionStorage.getItem(TOKEN_STORE_NAME),
     SSBH: params?.SSBH || '',
@@ -126,6 +136,7 @@ export async function GetBdszZgsjMainPsDelExcel(params) {
     BRXM: params?.BRXM || '',
     SSMC: params?.SSMC || '',
     SSRQ: params?.SSRQ || '',
+    items,
     page: params.page || 1,
     size: params.limit || 999999
   };
@@ -182,6 +193,24 @@ export async function addBdszZqsjMainPsDel(data) {
     item.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
   });
   let res = await request.post('/DeptPlanTransfer/AddBdszZqsjMainPsDel', data);
+  if (res.data.code == 200) {
+    return res.data;
+  }
+  return Promise.reject(res.data);
+}
+
+//按预约批量添加拣配
+export async function addBdszZqsjMainPsDelByReserve(params) {
+  const formatData = {
+    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+    data: (params?.data || []).map((item) => ({
+      SSBH: item.SSBH || ''
+    }))
+  };
+  let res = await request.post(
+    '/DeptPlanTransfer/addBdszZqsjMainPsDelByReserve',
+    formatData
+  );
   if (res.data.code == 200) {
     return res.data;
   }

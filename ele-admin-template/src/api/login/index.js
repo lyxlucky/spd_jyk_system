@@ -108,3 +108,15 @@ export async function getSTORAGE() {
     return Promise.reject(new Error(res.data.msg));
   }
 }
+
+/**
+ * WINEX 单点登录（jti 验票 + 本系统签发 Token）
+ */
+export async function winexSsoLogin(data) {
+  const res = await request.post('/WinexSso/LoginByJti', data);
+  if (res.data.code == 200 && res.data.token) {
+    setToken(res.data.token, 0);
+    return res.data;
+  }
+  return Promise.reject(new Error(res.data.msg || '单点登录失败'));
+}
