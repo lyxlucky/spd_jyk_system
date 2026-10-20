@@ -34,20 +34,7 @@
               :label="formatWarehouseAreaOptionLabel(item)"
               :value="String(item.VALUE)"
             >
-              <div class="warehouse-option">
-                <div class="warehouse-option-head">
-                  <span class="warehouse-option-area">{{ item.LABEL }}</span>
-                  <span class="option-type">{{ areaTypeName(item.TYPE) }}</span>
-                </div>
-                <div v-if="item.SPD_DEPT_LABEL" class="warehouse-option-dept">
-                  <span class="warehouse-option-dept-label">SPD</span>
-                  <span class="warehouse-option-dept-text">{{ item.SPD_DEPT_LABEL }}</span>
-                </div>
-                <div v-if="item.HIS_DEPT_LABEL" class="warehouse-option-dept">
-                  <span class="warehouse-option-dept-label">HIS</span>
-                  <span class="warehouse-option-dept-text">{{ item.HIS_DEPT_LABEL }}</span>
-                </div>
-              </div>
+              <div class="warehouse-option">{{ formatWarehouseAreaOptionLabel(item) }}</div>
             </el-option>
           </el-select>
         </el-form-item>
@@ -499,7 +486,6 @@ import {
   syncSpdInStockRecords as syncSpdInStockRecordsApi
 } from '@/api/Inventory/WarehouseAreaThreeInventory';
 import {
-  areaTypeName,
   formatWarehouseAreaOptionLabel,
   DELETE_STATUS_OPTIONS,
   STOCK_DEDUCT_TYPE_OPTIONS,
@@ -600,7 +586,7 @@ export default {
     this.loadWarehouseOptions('');
   },
   methods: {
-    areaTypeName,
+    formatWarehouseAreaOptionLabel,
     // 组装主页面表格查询条件。
     getWhere() {
       return {
@@ -973,39 +959,9 @@ export default {
 
 .warehouse-area-search .warehouse-option {
   padding: 3px 0;
-  line-height: 18px;
-}
-
-.warehouse-area-search .warehouse-option-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-}
-
-.warehouse-area-search .warehouse-option-area {
-  min-width: 0;
   color: #303133;
   font-weight: 500;
-  word-break: break-all;
-}
-
-.warehouse-area-search .warehouse-option-dept {
-  display: flex;
-  gap: 6px;
-  color: #909399;
-  font-size: 12px;
-  line-height: 17px;
-}
-
-.warehouse-area-search .warehouse-option-dept-label {
-  flex: 0 0 auto;
-  color: #606266;
-  font-weight: 600;
-}
-
-.warehouse-area-search .warehouse-option-dept-text {
-  min-width: 0;
+  line-height: 18px;
   word-break: break-all;
 }
 
@@ -1019,12 +975,6 @@ export default {
 
 .warehouse-area-search .date-range {
   width: 240px;
-}
-
-.warehouse-area-search .option-type {
-  float: right;
-  color: #909399;
-  font-size: 12px;
 }
 
 .warehouse-area-search .hidden-file {
@@ -1077,11 +1027,21 @@ export default {
 </style>
 
 <style>
+.warehouse-area-three-select-popper {
+  width: 380px !important;
+  max-width: 380px !important;
+}
+
 .warehouse-area-three-select-popper .el-select-dropdown__item {
   height: auto;
   min-height: 34px;
   padding-top: 6px;
   padding-bottom: 6px;
   line-height: 18px;
+  white-space: normal !important;
+}
+
+.warehouse-area-three-select-popper .el-select-dropdown__wrap {
+  max-width: 100%;
 }
 </style>
