@@ -42,15 +42,9 @@ export function areaTypeName(value) {
   return value || '';
 }
 
-// 库房/库区下拉完整显示，拼接关联的SPD/HIS科室信息。
+// 库房/库区下拉显示编码和名称。
 export function formatWarehouseAreaOptionLabel(item = {}) {
-  const areaLabel = item.LABEL || [item.VALUE, item.NAME].filter(Boolean).join(' - ');
-  const spdDeptLabel = String(item.SPD_DEPT_LABEL || '').trim();
-  const hisDeptLabel = String(item.HIS_DEPT_LABEL || '').trim();
-  const parts = [areaLabel];
-  if (spdDeptLabel) parts.push(`SPD: ${spdDeptLabel}`);
-  if (hisDeptLabel) parts.push(`HIS: ${hisDeptLabel}`);
-  return parts.filter(Boolean).join(' | ');
+  return item.LABEL || [item.VALUE, item.NAME].filter(Boolean).join(' - ');
 }
 
 // 默认标记显示名称。

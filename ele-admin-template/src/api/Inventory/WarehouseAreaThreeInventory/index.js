@@ -119,6 +119,22 @@ export async function getMaterialDetail(where, page, size) {
   return unwrap(res);
 }
 
+// 按明细主键软删除三级库库存流水。
+export async function deleteMaterialDetails(ids, where = {}) {
+  const idList = (Array.isArray(ids) ? ids : [ids])
+    .map((id) => String(id == null ? '' : id).trim())
+    .filter((id) => id && id !== '0');
+  if (!idList.length) {
+    throw new Error('请选择需要删除的明细');
+  }
+  const res = await postForm('/WarehouseAreaThreeInventory/DeleteMaterialDetails', {
+    Token: token(),
+    IDS: Array.from(new Set(idList)).join(','),
+    AREA_CODE: where.AREA_CODE || where.WAREHOUSE_AREA_ID || ''
+  });
+  return unwrap(res, '删除失败');
+}
+
 export async function getMaterialLocationSummary(where, page, size) {
   const res = await postForm(
     '/WarehouseAreaThreeInventory/GetMaterialLocationSummary',
