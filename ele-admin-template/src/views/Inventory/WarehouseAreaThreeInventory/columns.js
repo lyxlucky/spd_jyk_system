@@ -119,6 +119,7 @@ export function getDeptMaterialColumns() {
 // 库存流水明细表格列。
 export function getMaterialDetailColumns() {
   return [
+    { columnKey: 'materialDetailSelection', type: 'selection', width: 45, align: 'center', fixed: 'left' },
     { type: 'index', label: '序号', width: 60, align: 'center', fixed: 'left' },
     { prop: 'AREA_NAME', label: '库房/库区', width: 150, align: 'center', showOverflowTooltip: true },
     { prop: 'DEPT_TWO_CODE', label: 'SPD科室编码', width: 130, align: 'center', showOverflowTooltip: true },
@@ -141,9 +142,13 @@ export function getMaterialDetailColumns() {
     { prop: 'PATIENT_NUMBER', label: '病患号', width: 120, align: 'center', showOverflowTooltip: true },
     { prop: 'HOSPITALIZATION_NUMBER', label: '住院号', width: 120, align: 'center', showOverflowTooltip: true },
     { prop: 'MEDICAL_ORDER_ID', label: '医嘱ID', width: 150, align: 'center', showOverflowTooltip: true },
+    { prop: 'JF_ID', label: '计费记录ID', width: 160, align: 'center', showOverflowTooltip: true },
+    { prop: 'BATCH_NO', label: '批号', width: 120, align: 'center', showOverflowTooltip: true },
+    { prop: 'EXPIRY_DATE', label: '有效期', width: 120, align: 'center', showOverflowTooltip: true },
     { prop: 'CONSUMER', label: '操作人', width: 110, align: 'center', showOverflowTooltip: true },
     { prop: 'OPEARTION_CHARGING_TIME', label: '计费时间', width: 170, align: 'center', formatter: timeFormatter('OPEARTION_CHARGING_TIME') },
-    { prop: 'CREATE_TIME', label: '创建时间', width: 170, align: 'center', formatter: timeFormatter('CREATE_TIME') }
+    { prop: 'CREATE_TIME', label: '创建时间', width: 170, align: 'center', formatter: timeFormatter('CREATE_TIME') },
+    { columnKey: 'materialDetailAction', label: '操作', width: 70, align: 'center', fixed: 'right', slot: 'materialDetailAction', className: 'action-col' }
   ];
 }
 
