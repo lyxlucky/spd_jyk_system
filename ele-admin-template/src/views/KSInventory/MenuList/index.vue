@@ -2,18 +2,17 @@
   <div class="ele-body">
     <div class="ele-page-header"> </div>
 
-    <!-- 最近使用 -->
-    <el-card
-      v-if="recentMenuItems.length"
-      class="menu-section-card"
-      shadow="never"
-    >
+    <!-- 最近使用：支持添加 / 移除 -->
+    <el-card class="menu-section-card" shadow="never">
       <div slot="header" class="menu-section-header">
         <span>最近使用</span>
+        <el-button type="text" icon="el-icon-plus" @click="openAddRecentDialog">
+          添加
+        </el-button>
       </div>
-      <div class="menu-icon-grid">
+      <div v-if="recentMenuItems.length" class="menu-icon-grid">
         <div
-          class="block"
+          class="block recent-block"
           v-for="p in recentMenuItems"
           :key="'recent-' + p.path"
         >
@@ -36,9 +35,56 @@
               </div>
             </el-button>
           </div>
+          <i
+            class="el-icon-close recent-remove"
+            title="移除"
+            @click.stop="removeRecentItem(p)"
+          />
         </div>
       </div>
+      <div v-else class="recent-empty">暂无最近使用，可点击右上角「添加」</div>
     </el-card>
+
+    <el-dialog
+      title="添加最近使用"
+      :visible.sync="addRecentVisible"
+      width="90%"
+      top="5vh"
+      append-to-body
+      custom-class="add-recent-dialog"
+    >
+      <div class="menu-icon-grid add-recent-grid">
+        <div
+          class="block"
+          v-for="p in pickMenuList"
+          :key="'pick-' + p.path"
+        >
+          <div
+            class="menu-icon-item"
+            :class="{ 'is-added': isRecentPath(p.path) }"
+            @click="pickAddRecent(p)"
+          >
+            <el-button type="text" class="button">
+              <div class="menu-icon-wrap">
+                <svg-icon
+                  :icon-class="p.icon || ''"
+                  style="width: 40px; height: 40px"
+                />
+              </div>
+              <div class="menu-icon-title">
+                <span>{{ p.title }}</span>
+              </div>
+            </el-button>
+            <i v-if="isRecentPath(p.path)" class="el-icon-check add-check" />
+          </div>
+        </div>
+      </div>
+      <div slot="footer">
+        <el-button type="primary" @click="addRecentVisible = false">
+          完成
+        </el-button>
+      </div>
+    </el-dialog>
 
     <div
       style="display: flex; justify-content: space-between; align-items: center"
@@ -271,7 +317,12 @@
     getCurrentDeptVarTop20,
     getJykUsedQty
   } from '@/api/KSInventory/MenuList/index';
-  import { getRecentMenus } from '@/utils/recent-menu-util';
+  import {
+    getRecentMenus,
+    addRecentMenu,
+    removeRecentMenu,
+    RECENT_MENUS_CHANGED
+  } from '@/utils/recent-menu-util';
   import EleChart from 'ele-admin/packages/ele-chart';
   export default {
     name: 'MenuList',
@@ -287,6 +338,9 @@
     data() {
       return {
         recentMenuItems: [],
+        addRecentVisible: false,
+        // 添加弹窗用的平铺菜单（同原首页图标入口）
+        pickMenuList: [],
         KSExpirationReminderVisible: true,
         NoticeMenuList: null,
         guideDialogVisible: false,
@@ -457,13 +511,86 @@
       changeRoute(data) {
         this.$router.push(this.$route?.query?.from ?? data);
       },
-      refreshRecentMenus() {
-        this.recentMenuItems = getRecentMenus(this.$store.state.user.info);
+      refreshRecentMenus(list) {
+        this.recentMenuItems =
+          list || getRecentMenus(this.$store.state.user.info);
+      },
+      emitRecentChanged(list) {
+        this.$bus.$emit(RECENT_MENUS_CHANGED, list);
+      },
+      openAddRecentDialog() {
+        this.addRecentVisible = true;
+      },
+      isRecentPath(path) {
+        return this.recentMenuItems.some((m) => m.path === path);
+      },
+      pickAddRecent(item) {
+        const userInfo = this.$store.state.user.info;
+        // 已添加则取消，未添加则加入
+        if (this.isRecentPath(item.path)) {
+          const list = removeRecentMenu(item.path, userInfo);
+          this.refreshRecentMenus(list);
+          this.emitRecentChanged(list);
+          return;
+        }
+        const { list, ok, message } = addRecentMenu(item, userInfo);
+        this.refreshRecentMenus(list);
+        this.emitRecentChanged(list);
+        if (!ok && message) {
+          this.$message.warning(message);
+        }
+      },
+      removeRecentItem(item) {
+        const list = removeRecentMenu(item.path, this.$store.state.user.info);
+        this.refreshRecentMenus(list);
+        this.emitRecentChanged(list);
       },
       permission_groupList() {
-        const permission_group =
-          this.$store.state.user.info.permission_group || [];
-        // 首页仅保留右侧提醒入口，平铺菜单已去掉
+        let permission_group = [
+          ...(this.$store.state.user.info.permission_group || [])
+        ];
+
+        // 与原首页平铺一致：过滤按钮/目录等，用于添加弹窗点选
+        const blackList = [
+          '申领计划管理_审核按钮',
+          '申领计划管理_审批按钮',
+          '科室申领',
+          '菜单列表',
+          '入库管理',
+          'UDI条码查询',
+          'UDI主码管理',
+          'HIS使用计费',
+          '库存查询_',
+          '入库管理V2',
+          '医疗耗材验收',
+          'UDI院内流转查询',
+          '产品主码管理',
+          '利用率',
+          '基础数据管理',
+          '出库管理',
+          '库存管理',
+          '调库主单-确认调库',
+          '调库主单-提交调库',
+          '检验科仪器分析',
+          '科室目录',
+          '在用目录',
+          '中标目录',
+          '申领指引',
+          '新资质审核',
+          '科室目录导出',
+          '中标目录导出',
+          '溯源管理',
+          '溯源查询(新)',
+          '价格变动记录(新)',
+          '结算管理',
+          '跟台耗材管理',
+          '作业管理',
+          '手术室耗材预约_搜索权限'
+        ];
+        permission_group = permission_group.filter((res) => {
+          return !blackList.includes(res.title);
+        });
+
         const rightMenuList = [
           '/KSInventory/KSNewBatchReminder',
           '/KSInventory/KSExpirationReminder'
@@ -471,6 +598,15 @@
         this.NoticeMenuList = permission_group.filter((res) => {
           return rightMenuList.includes(res.component);
         });
+
+        this.pickMenuList = permission_group
+          .filter((res) => !rightMenuList.includes(res.component))
+          .map((res) => ({
+            path: res.component || res.path,
+            title: res.title,
+            icon: res.icon || ''
+          }))
+          .filter((res) => res.path && res.title);
       }
     },
     mounted() {
@@ -482,9 +618,11 @@
         this.getLineChartData();
         this.getTop20();
       });
+      this.$bus.$on(RECENT_MENUS_CHANGED, this.refreshRecentMenus);
     },
     beforeDestroy() {
       this.$bus.$off('handleCommand');
+      this.$bus.$off(RECENT_MENUS_CHANGED, this.refreshRecentMenus);
     },
     computed: {
       // 是否开启响应式布局
@@ -875,5 +1013,51 @@
     justify-content: center;
     margin-top: 5px;
     color: #606266;
+  }
+  .recent-block {
+    position: relative;
+  }
+  .recent-remove {
+    position: absolute;
+    top: 0;
+    right: 8px;
+    width: 18px;
+    height: 18px;
+    line-height: 18px;
+    text-align: center;
+    border-radius: 50%;
+    background: #c0c4cc;
+    color: #fff;
+    font-size: 12px;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+  .recent-block:hover .recent-remove {
+    opacity: 1;
+  }
+  .recent-remove:hover {
+    background: #f56c6c;
+  }
+  .recent-empty {
+    color: #909399;
+    font-size: 13px;
+    padding: 8px 0 4px;
+  }
+  .add-recent-grid {
+    max-height: 70vh;
+    overflow-y: auto;
+  }
+  .menu-icon-item.is-added {
+    opacity: 0.55;
+    position: relative;
+  }
+  .add-check {
+    position: absolute;
+    top: 0;
+    right: 8px;
+    color: #67c23a;
+    font-size: 16px;
+    font-weight: bold;
   }
 </style>

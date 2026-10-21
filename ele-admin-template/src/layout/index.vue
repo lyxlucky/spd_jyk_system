@@ -115,7 +115,8 @@
   import {
     getRecentMenus,
     pushRecentMenu,
-    buildRecentMenuGroup
+    buildRecentMenuGroup,
+    RECENT_MENUS_CHANGED
   } from '@/utils/recent-menu-util';
 
   export default {
@@ -163,13 +164,22 @@
       }
     },
     created() {
-      this.recentMenus = getRecentMenus(this.$store.state.user.info);
+      this.syncRecentMenus();
+      this.$bus.$on(RECENT_MENUS_CHANGED, this.syncRecentMenus);
+    },
+    beforeDestroy() {
+      this.$bus.$off(RECENT_MENUS_CHANGED, this.syncRecentMenus);
     },
     methods: {
+      syncRecentMenus(list) {
+        this.recentMenus =
+          list || getRecentMenus(this.$store.state.user.info);
+      },
       recordRecentMenu(route) {
         const userInfo = this.$store.state.user.info;
         const menus = this.$store.state.user.menus || [];
         this.recentMenus = pushRecentMenu(route, userInfo, menus);
+        this.$bus.$emit(RECENT_MENUS_CHANGED, this.recentMenus);
       },
       /* 侧栏折叠切换 */
       updateCollapse(value) {
