@@ -1,42 +1,38 @@
 <template>
   <div class="ele-body">
     <div class="ele-page-header"> </div>
-    <el-card v-for="(item, index) in MenuList" :key="index" shadow="never">
-      <div class="demo-image" style="display: flex; flex-wrap: wrap">
+
+    <!-- 最近使用 -->
+    <el-card
+      v-if="recentMenuItems.length"
+      class="menu-section-card"
+      shadow="never"
+    >
+      <div slot="header" class="menu-section-header">
+        <span>最近使用</span>
+      </div>
+      <div class="menu-icon-grid">
         <div
           class="block"
-          v-for="p in item"
-          :key="p.component"
-          style="margin: 10px"
+          v-for="p in recentMenuItems"
+          :key="'recent-' + p.path"
         >
-          <div
-            style="
-              width: 90px;
-              height: 70px;
-              border-radius: 2px;
-              margin-right: 20px;
-            "
-            @click="changeRoute(p.component)"
-          >
+          <div class="menu-icon-item" @click="changeRoute(p.path)">
             <el-button type="text" class="button">
-              <div style="width: 100px; display: flex; justify-content: center">
+              <div class="menu-icon-wrap">
+                <i
+                  v-if="p.icon && String(p.icon).indexOf('el-icon') === 0"
+                  :class="p.icon"
+                  class="menu-el-icon"
+                />
                 <svg-icon
+                  v-else
                   :icon-class="p.icon || ''"
                   style="width: 40px; height: 40px"
                 />
               </div>
-              <div
-                style="
-                  width: 100px;
-                  display: flex;
-                  justify-content: center;
-                  margin-top: 5px;
-                  color: #606266;
-                "
-              >
-                <div class="bottom clearfix">
-                  <span>{{ p.title }}</span>
-                </div>
+              <div class="menu-icon-title">
+                <span>{{ p.title }}</span>
               </div>
             </el-button>
           </div>
@@ -275,6 +271,7 @@
     getCurrentDeptVarTop20,
     getJykUsedQty
   } from '@/api/KSInventory/MenuList/index';
+  import { getRecentMenus } from '@/utils/recent-menu-util';
   import EleChart from 'ele-admin/packages/ele-chart';
   export default {
     name: 'MenuList',
@@ -289,7 +286,7 @@
     },
     data() {
       return {
-        MenuList: null,
+        recentMenuItems: [],
         KSExpirationReminderVisible: true,
         NoticeMenuList: null,
         guideDialogVisible: false,
@@ -460,52 +457,13 @@
       changeRoute(data) {
         this.$router.push(this.$route?.query?.from ?? data);
       },
+      refreshRecentMenus() {
+        this.recentMenuItems = getRecentMenus(this.$store.state.user.info);
+      },
       permission_groupList() {
-        var permission_group = this.$store.state.user.info.permission_group;
-
-        //控制首页菜单显示
-        //'新资质审核',
-        const blackList = [
-          '申领计划管理_审核按钮',
-          '申领计划管理_审批按钮',
-          '科室申领',
-          '菜单列表',
-          '入库管理',
-          'UDI条码查询',
-          'UDI主码管理',
-          'HIS使用计费',
-          '库存查询_',
-          '入库管理V2',
-          '医疗耗材验收',
-          'UDI院内流转查询',
-          '产品主码管理',
-          '利用率',
-          '基础数据管理',
-          '出库管理',
-          '库存管理',
-          '调库主单-确认调库',
-          '调库主单-提交调库',
-          '检验科仪器分析',
-          '科室目录',
-          '在用目录',
-          '中标目录',
-          '申领指引',
-          '新资质审核',
-          '科室目录导出',
-          '中标目录导出',
-          '溯源管理',
-          '溯源查询(新)',
-          '价格变动记录(新)',
-          '结算管理',
-          '跟台耗材管理',
-          '作业管理',
-          '手术室耗材预约_搜索权限'
-        ];
-        permission_group = permission_group.filter((res) => {
-          return !blackList.includes(res.title);
-        });
-
-        //控制菜单显示区域
+        const permission_group =
+          this.$store.state.user.info.permission_group || [];
+        // 首页仅保留右侧提醒入口，平铺菜单已去掉
         const rightMenuList = [
           '/KSInventory/KSNewBatchReminder',
           '/KSInventory/KSExpirationReminder'
@@ -513,36 +471,6 @@
         this.NoticeMenuList = permission_group.filter((res) => {
           return rightMenuList.includes(res.component);
         });
-
-        permission_group = permission_group.filter((res) => {
-          return !rightMenuList.includes(res.component);
-        });
-
-        var ListCount = 11;
-        var ListCount2 = Math.floor(permission_group.length / ListCount);
-        var ListCount3 = permission_group.length % ListCount;
-        var startCount = 0;
-        var permission_group2 = [];
-
-        // 主循环，用于处理完整的组
-        for (var i = 0; i < ListCount2; i++) {
-          permission_group2[i] = [];
-          for (var j = 0; j < ListCount; j++) {
-            permission_group2[i][j] = permission_group[startCount];
-            startCount++;
-          }
-        }
-
-        // 处理剩余的元素
-        if (ListCount3 > 0) {
-          var lastGroup = [];
-          for (var k = 0; k < ListCount3; k++) {
-            lastGroup[k] = permission_group[startCount];
-            startCount++;
-          }
-          permission_group2.push(lastGroup);
-        }
-        this.MenuList = permission_group2;
       }
     },
     mounted() {
@@ -893,13 +821,59 @@
       this.getJYkDefRemindTotal();
       this.getTableListTotal();
       this.permission_groupList();
+      this.refreshRecentMenus();
       this.getSaleroomData();
       this.getLineChartData();
       this.getTop20();
       // this.NewBatchRemindervisible = true;
-      // this.MenuList = this.$store.state.user.info.permission_group;
       /* 获取数据 */
       localStorage.AesKey = getAesKey();
+    },
+    activated() {
+      this.refreshRecentMenus();
     }
   };
 </script>
+
+<style scoped>
+  .menu-section-card {
+    margin-bottom: 12px;
+  }
+  .menu-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-weight: 600;
+  }
+  .menu-icon-grid {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .menu-icon-grid .block {
+    margin: 10px;
+  }
+  .menu-icon-item {
+    width: 90px;
+    height: 70px;
+    border-radius: 2px;
+    margin-right: 20px;
+    cursor: pointer;
+  }
+  .menu-icon-wrap {
+    width: 100px;
+    display: flex;
+    justify-content: center;
+  }
+  .menu-el-icon {
+    font-size: 36px;
+    color: #409eff;
+    line-height: 40px;
+  }
+  .menu-icon-title {
+    width: 100px;
+    display: flex;
+    justify-content: center;
+    margin-top: 5px;
+    color: #606266;
+  }
+</style>

@@ -112,6 +112,11 @@
     setHomeComponents,
     setPageTabs
   } from '@/utils/page-tab-util';
+  import {
+    getRecentMenus,
+    pushRecentMenu,
+    buildRecentMenuGroup
+  } from '@/utils/recent-menu-util';
 
   export default {
     name: 'EleLayout',
@@ -131,7 +136,8 @@
         LAYOUT_PATH,
         REDIRECT_PATH,
         // 是否全屏
-        fullscreen: false
+        fullscreen: false,
+        recentMenus: []
       };
     },
     computed: {
@@ -139,14 +145,32 @@
       locale() {
         return this.$i18n.locale;
       },
-      // 菜单数据
+      // 菜单数据（顶部插入「最近使用」）
       menus() {
-        return this.$store.state.user.menus;
+        const base = this.$store.state.user.menus || [];
+        const group = buildRecentMenuGroup(this.recentMenus);
+        return group ? [group, ...base] : base;
       },
       // 主题状态
       ...mapGetters(['theme'])
     },
+    watch: {
+      $route: {
+        immediate: true,
+        handler(to) {
+          this.recordRecentMenu(to);
+        }
+      }
+    },
+    created() {
+      this.recentMenus = getRecentMenus(this.$store.state.user.info);
+    },
     methods: {
+      recordRecentMenu(route) {
+        const userInfo = this.$store.state.user.info;
+        const menus = this.$store.state.user.menus || [];
+        this.recentMenus = pushRecentMenu(route, userInfo, menus);
+      },
       /* 侧栏折叠切换 */
       updateCollapse(value) {
         this.$store.dispatch('theme/setCollapse', value);
