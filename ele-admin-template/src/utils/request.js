@@ -3,7 +3,7 @@
  */
 import axios from 'axios';
 import router from '@/router';
-import { MessageBox } from 'element-ui';
+import { MessageBox, Message } from 'element-ui';
 import { API_BASE_URL, TOKEN_HEADER_NAME, LAYOUT_PATH, REQUEST_TIMEOUT } from '@/config/setting';
 import { getToken, setToken } from './token-util';
 import { logout } from './page-tab-util';
@@ -11,7 +11,10 @@ import RequestTimeoutManager from '@/utils/timeOut';
 
 // axios.defaults.headers.post['Content-Type'] = 'application/json;charset=UTF-8';
 const service = axios.create({
-  baseURL: API_BASE_URL
+  baseURL: API_BASE_URL,
+  // 请求超时时间：2 分钟。超时会让 Promise 正常 reject，
+  // 组件里的 finally 才能关掉 loading 遮挡层，避免一直卡住。
+  timeout: 2 * 60 * 1000
 });
 
 /**
@@ -83,6 +86,15 @@ service.interceptors.response.use(
     return res;
   },
   (error) => {
+    // 请求超时：axios 触发 timeout 时 error.code 为 ECONNABORTED
+    const isTimeout =
+      error?.code === 'ECONNABORTED' ||
+      /timeout/i.test(error?.message || '');
+    if (isTimeout) {
+      // 统一成中文提示，避免各页面直接显示 timeout of xxx ms exceeded
+      error.msg = '请求超时，请刷新重试';
+      Message.error(error.msg);
+    }
     return Promise.reject(error);
   }
 );
