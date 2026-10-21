@@ -493,8 +493,11 @@ export default {
         if (!this.form.Varietie_Name && row.Prod_Registration_Name) {
           this.form.Varietie_Name = row.Prod_Registration_Name;
         }
-        if (row.STRUCTURE_COMPOSITION) this.form.FEATURE = row.STRUCTURE_COMPOSITION;
-        if (row.SCOPE_APPLICATION) this.form.PURPOSE = row.SCOPE_APPLICATION;
+        // 结构及组成 / 适用范围仅作注册证展示参考，不覆盖品种的材质(CZ)、特征(TZ)
+        if (row.STRUCTURE_COMPOSITION) this.form.PURPOSE = row.STRUCTURE_COMPOSITION;
+        if (row.SCOPE_APPLICATION && !this.form.PURPOSE) {
+          this.form.PURPOSE = row.SCOPE_APPLICATION;
+        }
         if (row.PRO_MEDICAL_CONSUMABLE_GRADE) {
           this.form.MEDICAL_CONSUMABLE_GRADE = row.PRO_MEDICAL_CONSUMABLE_GRADE;
         }

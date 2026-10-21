@@ -189,6 +189,8 @@ export function buildUpdatePayload(detail, meta = {}) {
     RISK_CATEGORY: str(d.RISK_CATEGORY),
     PURPOSE: str(d.PURPOSE),
     FEATURE: str(d.FEATURE),
+    CZ: str(d.CZ),
+    TZ: str(d.TZ),
     CHARGE_CLASSIFICATION_ID: str(d.CHARGE_CLASSIFICATION_ID),
     DEF_POSITION_TWO: str(d.DEF_POSITION_TWO),
     IS_XJ: str(d.IS_XJ),
