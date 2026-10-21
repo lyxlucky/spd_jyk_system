@@ -137,7 +137,11 @@ import {
   listClassIfic3
 } from '@/api/Home/VarietyDataLzhMain';
 import { updateVarietieBasic, updateVarietieBasicStse } from '@/api/Home/VarietyDataLzhAudit';
-import { isStseLikeHp, cleanupDialogOverlays } from '../utils';
+import {
+  isStseLikeHp,
+  cleanupDialogOverlays,
+  resolveMedicalCodeLabel
+} from '../utils';
 import {
   buildUpdatePayload,
   buildInsertPayload,
@@ -237,10 +241,15 @@ export default {
         });
       const injectOptions = (fields) =>
         filterByHp(fields).map((field) => {
+          let next = field;
           if (field.optionsKey && optionMap[field.optionsKey]) {
-            return { ...field, options: optionMap[field.optionsKey] };
+            next = { ...next, options: optionMap[field.optionsKey] };
           }
-          return field;
+          const label = resolveMedicalCodeLabel(field.key, HOME_HP, field.label);
+          if (label !== field.label) {
+            next = { ...next, label };
+          }
+          return next;
         });
       if (!this.isAddMode) {
         return VARIETY_EDIT_GROUPS.map((group) => ({

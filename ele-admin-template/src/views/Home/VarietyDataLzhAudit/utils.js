@@ -102,6 +102,19 @@ export function isStseLikeHp(hp) {
   return hp === 'stse' || hp === 'se2';
 }
 
+/** 汕头院区（标签等院区差异） */
+export function isShantouHp(hp) {
+  return hp === 'stse' || hp === 'stzyyy' || hp === 'stzl' || hp === 'stzx';
+}
+
+/** 汕头医保编码字段显示名 */
+export function resolveMedicalCodeLabel(key, hp, defaultLabel) {
+  if (!isShantouHp(hp)) return defaultLabel;
+  if (key === 'MEDICAL_CODE') return '广东医保编码';
+  if (key === 'MEDICAL_CODE27') return '国家医保编码';
+  return defaultLabel;
+}
+
 /** 品种资料审批页操作列「图片」（旧页 VarietyDataLzhAudit 各院区表格均含 varbarDemo3） */
 export function showVarietyPicColumn(_hp) {
   return true;
