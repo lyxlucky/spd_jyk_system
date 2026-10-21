@@ -106,7 +106,7 @@
                   <el-button type="primary" :disabled="!canOperate" @click="loadPreview">刷新预览</el-button>
                   <el-button type="warning" :disabled="!canOperate" @click="openSign('RECEIVER')">领用云签</el-button>
                   <el-button type="warning" :disabled="!canOperate" @click="openSign('AUDITOR')">审核人云签</el-button>
-                  <el-button :disabled="!canOperate || !previewPages.length" @click="printPreview">浏览器打印预览</el-button>
+                  <el-button :disabled="!canOperate || !previewSections.length" @click="printPreview">浏览器打印预览</el-button>
                   <el-button type="primary" :disabled="!canOperate" @click="downloadExcel(true)">下载打印单(带章)</el-button>
                 </el-form-item>
               </el-form>
@@ -119,80 +119,82 @@
               <span v-if="selectedDept" class="preview-dept">{{ selectedDept.SPD_COST_DEPT_NAME }}</span>
             </div>
             <div v-loading="previewLoading" class="print-preview-wrap">
-              <div v-if="!previewPages.length" class="preview-empty">请选择月结单和科室后查看医用耗材月结明细表预览</div>
+              <div v-if="!previewSections.length" class="preview-empty">请选择月结单和科室后查看医用耗材月结明细表预览</div>
               <div v-else id="month-dept-print-preview" class="print-preview-sheets">
-                <div
-                  v-for="page in previewPages"
-                  :key="page.pageNo"
-                  class="print-sheet"
-                >
-                  <div class="sheet-title">{{ sheetTitle }}</div>
-                  <table class="sheet-table">
-                    <thead>
-                      <tr>
-                        <th class="col-dept">科室</th>
-                        <th class="col-no">序号</th>
-                        <th class="col-type">结算方式（PDA扫码消耗、his计费消耗、散货申领）</th>
-                        <th class="col-name">品种名称</th>
-                        <th class="col-spec">规格</th>
-                        <th class="col-model">型号</th>
-                        <th class="col-unit">计量单位</th>
-                        <th class="col-qty">数量</th>
-                        <th class="col-price">单价</th>
-                        <th class="col-amount">金额</th>
-                        <th class="col-cert">注册证号</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr v-for="(row, idx) in page.rows" :key="idx">
-                        <td>{{ row.DEPT_TWO_NAME }}</td>
-                        <td>{{ page.startIndex + idx + 1 }}</td>
-                        <td>{{ row.CONSUMPTION_TYPE }}</td>
-                        <td class="text-left">{{ row.VARIETIE_NAME }}</td>
-                        <td>{{ row.SPECIFICATION_OR_TYPE }}</td>
-                        <td />
-                        <td>{{ row.UNIT }}</td>
-                        <td>{{ row.GOODS_QTY }}</td>
-                        <td>{{ formatPrice(row.SUPPLY_PRICE) }}</td>
-                        <td>{{ formatMoney(row.GOODS_QTY, row.SUPPLY_PRICE) }}</td>
-                        <td>{{ row.APPROVAL_NUMBER }}</td>
-                      </tr>
-                      <tr class="sum-row">
-                        <td colspan="2" />
-                        <td>本页小记:</td>
-                        <td colspan="4" class="text-left">{{ page.pageAmountText }}</td>
-                        <td>{{ page.pageQty }}</td>
-                        <td />
-                        <td>{{ page.pageAmount }}</td>
-                        <td />
-                      </tr>
-                      <tr class="sum-row">
-                        <td colspan="2" />
-                        <td>合计金额:</td>
-                        <td colspan="4" class="text-left">{{ totalAmountText }}</td>
-                        <td>{{ totalQty }}</td>
-                        <td />
-                        <td>{{ totalAmount }}</td>
-                        <td />
-                      </tr>
-                    </tbody>
-                  </table>
-                  <div class="sheet-footer">
-                    <div class="footer-item">制单：{{ makerName }}</div>
-                    <div class="footer-item">审核：黄志石</div>
-                    <div class="footer-item stamp-slot">
-                      <span class="footer-label">领用：</span>
-                      <img v-if="receiverStampSrc" :src="receiverStampSrc" alt="领用签章" class="stamp-img" />
-                      <span v-else class="stamp-placeholder">（未签）</span>
+                <template v-for="(section, sIdx) in previewSections">
+                  <div
+                    v-for="page in section.pages"
+                    :key="`${sIdx}-${page.pageNo}`"
+                    class="print-sheet"
+                  >
+                    <div class="sheet-title">{{ section.sheetTitle }}</div>
+                    <table class="sheet-table">
+                      <thead>
+                        <tr>
+                          <th class="col-dept">科室</th>
+                          <th class="col-no">序号</th>
+                          <th class="col-type">结算方式（PDA扫码消耗、his计费消耗、散货申领）</th>
+                          <th class="col-name">品种名称</th>
+                          <th class="col-spec">规格</th>
+                          <th class="col-model">型号</th>
+                          <th class="col-unit">计量单位</th>
+                          <th class="col-qty">数量</th>
+                          <th class="col-price">单价</th>
+                          <th class="col-amount">金额</th>
+                          <th class="col-cert">注册证号</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr v-for="(row, idx) in page.rows" :key="idx">
+                          <td>{{ row.DEPT_TWO_NAME }}</td>
+                          <td>{{ page.startIndex + idx + 1 }}</td>
+                          <td>{{ row.CONSUMPTION_TYPE }}</td>
+                          <td class="text-left">{{ row.VARIETIE_NAME }}</td>
+                          <td>{{ row.SPECIFICATION_OR_TYPE }}</td>
+                          <td />
+                          <td>{{ row.UNIT }}</td>
+                          <td>{{ row.GOODS_QTY }}</td>
+                          <td>{{ formatPrice(row.SUPPLY_PRICE) }}</td>
+                          <td>{{ formatMoney(row.GOODS_QTY, row.SUPPLY_PRICE) }}</td>
+                          <td>{{ row.APPROVAL_NUMBER }}</td>
+                        </tr>
+                        <tr class="sum-row">
+                          <td colspan="2" />
+                          <td>本页小记:</td>
+                          <td colspan="4" class="text-left">{{ page.pageAmountText }}</td>
+                          <td>{{ page.pageQty }}</td>
+                          <td />
+                          <td>{{ page.pageAmount }}</td>
+                          <td />
+                        </tr>
+                        <tr class="sum-row">
+                          <td colspan="2" />
+                          <td>合计金额:</td>
+                          <td colspan="4" class="text-left">{{ section.totalAmountText }}</td>
+                          <td>{{ section.totalQty }}</td>
+                          <td />
+                          <td>{{ section.totalAmount }}</td>
+                          <td />
+                        </tr>
+                      </tbody>
+                    </table>
+                    <div class="sheet-footer">
+                      <div class="footer-item">制单：{{ section.makerName }}</div>
+                      <div class="footer-item">审核：黄志石</div>
+                      <div class="footer-item stamp-slot">
+                        <span class="footer-label">领用：</span>
+                        <img v-if="receiverStampSrc" :src="receiverStampSrc" alt="领用签章" class="stamp-img" />
+                        <span v-else class="stamp-placeholder">（未签）</span>
+                      </div>
+                      <div class="footer-item stamp-slot">
+                        <span class="footer-label">审核人：</span>
+                        <img v-if="auditorStampSrc" :src="auditorStampSrc" alt="审核人签章" class="stamp-img" />
+                        <span v-else class="stamp-placeholder">（未签）</span>
+                      </div>
                     </div>
-                    <div class="footer-item stamp-slot">
-                      <span class="footer-label">审核人：</span>
-                      <img v-if="auditorStampSrc" :src="auditorStampSrc" alt="审核人签章" class="stamp-img" />
-                      <span v-else class="stamp-placeholder">（未签）</span>
-                    </div>
+                    <div class="sheet-page-no">{{ page.pageNo }}/{{ section.pages.length }}</div>
                   </div>
-                  <div class="sheet-page-no">{{ page.pageNo }}/{{ previewPages.length }}</div>
-                </div>
+                </template>
               </div>
             </div>
           </div>
@@ -289,6 +291,7 @@ export default {
       deptRows: [],
       previewRows: [],
       previewPages: [],
+      previewSections: [],
       sheetTitle: '',
       makerName: '胡帆',
       totalQty: 0,
@@ -410,6 +413,7 @@ export default {
     clearPreview() {
       this.previewRows = [];
       this.previewPages = [];
+      this.previewSections = [];
       this.sheetTitle = '';
       this.makerName = '胡帆';
       this.totalQty = 0;
@@ -462,7 +466,7 @@ export default {
         this.$message.error(e.message);
       }
     },
-    buildPreviewPages(rows) {
+    buildSectionPages(rows, titleSuffix) {
       const list = rows || [];
       let totalQty = 0;
       let totalAmount = 0;
@@ -472,49 +476,75 @@ export default {
         totalQty += qty;
         totalAmount += qty * price;
       });
-      this.totalQty = totalQty;
-      this.totalAmount = round2(totalAmount);
-      this.totalAmountText = amountToChinese(totalAmount);
 
       const first = list[0] || {};
       const monthTime = (first.MONTHLY_TIME || '').toString();
       const parts = monthTime.split('-');
       const year = parts[0] || '';
       const month = parts[1] || '';
-      const deptName = this.selectedDept?.SPD_COST_DEPT_NAME || first.DEPT_TWO_NAME || '';
-      this.sheetTitle = `深圳市龙华区妇幼保健院${year}年${month}月医用耗材月结明细表`;
-      // 2026-07 起制单人改为洪霞，历史月份仍显示胡帆
+      const suffix = titleSuffix || '';
+      const sheetTitle = `深圳市龙华区妇幼保健院${year}年${month}月医用耗材月结明细表${suffix}`;
       const ym = monthTime.length >= 7 ? monthTime.substring(0, 7) : '';
-      this.makerName = ym && ym >= '2026-07' ? '洪霞' : '胡帆';
+      const makerName = ym && ym >= '2026-07' ? '洪霞' : '胡帆';
 
-      if (!list.length) {
-        this.previewPages = [];
-        return;
-      }
-
-      const pageCount = Math.ceil(list.length / PAGE_SIZE);
       const pages = [];
-      for (let i = 0; i < pageCount; i += 1) {
-        const start = i * PAGE_SIZE;
-        const pageRows = list.slice(start, start + PAGE_SIZE);
-        let pageQty = 0;
-        let pageAmount = 0;
-        pageRows.forEach((r) => {
-          const qty = Number(r.GOODS_QTY) || 0;
-          const price = Number(r.SUPPLY_PRICE) || 0;
-          pageQty += qty;
-          pageAmount += qty * price;
-        });
-        pages.push({
-          pageNo: i + 1,
-          startIndex: start,
-          rows: pageRows,
-          pageQty,
-          pageAmount: round2(pageAmount),
-          pageAmountText: amountToChinese(pageAmount)
-        });
+      if (list.length) {
+        const pageCount = Math.ceil(list.length / PAGE_SIZE);
+        for (let i = 0; i < pageCount; i += 1) {
+          const start = i * PAGE_SIZE;
+          const pageRows = list.slice(start, start + PAGE_SIZE);
+          let pageQty = 0;
+          let pageAmount = 0;
+          pageRows.forEach((r) => {
+            const qty = Number(r.GOODS_QTY) || 0;
+            const price = Number(r.SUPPLY_PRICE) || 0;
+            pageQty += qty;
+            pageAmount += qty * price;
+          });
+          pages.push({
+            pageNo: i + 1,
+            startIndex: start,
+            rows: pageRows,
+            pageQty,
+            pageAmount: round2(pageAmount),
+            pageAmountText: amountToChinese(pageAmount)
+          });
+        }
       }
-      this.previewPages = pages;
+
+      return {
+        sheetTitle,
+        makerName,
+        titleSuffix: suffix,
+        totalQty,
+        totalAmount: round2(totalAmount),
+        totalAmountText: amountToChinese(totalAmount),
+        pages
+      };
+    },
+    buildPreviewFromDetail(detailRes) {
+      const sectionsRaw = detailRes.sections;
+      let sections = [];
+      if (Array.isArray(sectionsRaw) && sectionsRaw.length) {
+        sections = sectionsRaw
+          .map((s) => this.buildSectionPages(s.rows || [], s.titleSuffix || ''))
+          .filter((s) => s.pages.length);
+      } else {
+        const fallback = this.buildSectionPages(detailRes.result || [], '');
+        if (fallback.pages.length) sections = [fallback];
+      }
+
+      this.previewSections = sections;
+      this.previewRows = sections.length
+        ? sections.reduce((acc, s) => acc.concat(s.pages.reduce((a, p) => a.concat(p.rows), [])), [])
+        : [];
+      this.previewPages = sections.reduce((acc, s) => acc.concat(s.pages), []);
+      this.sheetTitle = sections[0]?.sheetTitle || '';
+      this.makerName = sections[0]?.makerName || '胡帆';
+      this.totalQty = sections.reduce((n, s) => n + (Number(s.totalQty) || 0), 0);
+      const amt = sections.reduce((n, s) => n + (Number(s.totalAmount) || 0), 0);
+      this.totalAmount = round2(amt);
+      this.totalAmountText = amountToChinese(amt);
     },
     async loadPreview() {
       if (!this.selectedMonth || !this.selectedDept) {
@@ -533,12 +563,11 @@ export default {
             this.selectedDept.SPD_COST_DEPT_CODE
           )
         ]);
-        this.previewRows = detailRes.result || [];
         const stamps = stampRes.result || {};
         this.receiverStampSrc = toStampSrc(stamps.receiverStampBase64);
         this.auditorStampSrc = toStampSrc(stamps.auditorStampBase64);
-        this.buildPreviewPages(this.previewRows);
-        if (!this.previewRows.length) {
+        this.buildPreviewFromDetail(detailRes || {});
+        if (!this.previewSections.length) {
           this.$message.info('该科室暂无月结明细数据');
         }
       } catch (e) {
@@ -570,7 +599,7 @@ export default {
       }
     },
     printPreview() {
-      if (!this.previewPages.length) {
+      if (!this.previewSections.length) {
         this.$message.warning('暂无预览内容');
         return;
       }
