@@ -116,7 +116,7 @@ export function buildMainColumns(opts = {}) {
     { prop: 'Goods_Look_Qty', label: '散货锁定', width: 80, align: 'center' },
     { prop: 'Def_Locking_Qty', label: '定数包锁定', width: 90, align: 'center' },
     { prop: 'Pre_Lock_Sum', label: '定数包预锁', width: 90, align: 'center' },
-    { prop: 'APPROVAL_NUMBER2', label: '批准文号', minWidth: 90, formatter: (r) => r.APPROVAL_NUMBER },
+    { prop: 'APPROVAL_NUMBER2', label: '批准文号', minWidth: 90, showOverflowTooltip: true, formatter: (r) => r.APPROVAL_NUMBER },
     { prop: 'MEDICAL_CODE', label: '医保码', minWidth: 120, showOverflowTooltip: true },
     { prop: 'Position', label: '货位号', width: 75, sortable: 'custom', showOverflowTooltip: true },
     { prop: 'CONTRACT_NAME', label: '合同名称', minWidth: 90, showOverflowTooltip: true },
