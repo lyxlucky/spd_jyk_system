@@ -141,6 +141,14 @@ export async function GetPDAList(data) {
   return sendRequest('/InStockCheck/GetInStockDetail', buildInStockParams(data));
 }
 
+/** 维护平台订单编号（GOODS_VAR_RECEIPT_DETAIL.PT_ORDER_NUM） */
+export async function upBatchIdPtOrderNum(batchId, ptOrderNum) {
+  return sendRequest('/InStockCheck/upBatchIdPtOrderNum', {
+    batchId: str(batchId),
+    ptOrderNum: str(ptOrderNum)
+  });
+}
+
 // 市二：入库按单据号分页（明细仍在 Details，导出走 GetPDAList）
 export async function GetInStockDetailByBill(data) {
   return sendRequest(

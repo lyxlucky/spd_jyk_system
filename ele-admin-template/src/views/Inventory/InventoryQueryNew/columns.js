@@ -1,3 +1,4 @@
+import { HOME_HP } from '@/config/setting';
 import {
   fmtDate10,
   fmtMainUpShelfState,
@@ -67,6 +68,13 @@ export function buildMainColumns(opts = {}) {
       minWidth: 100,
       showOverflowTooltip: true,
       hide: !isStHospital()
+    },
+    {
+      prop: 'PT_ORDER_NUM',
+      label: '平台订单编号',
+      minWidth: 120,
+      showOverflowTooltip: true,
+      hide: HOME_HP !== 'stzyyy'
     },
     { prop: 'YG_CODE', label: '阳光产品码', minWidth: 90, showOverflowTooltip: true },
     { prop: 'Manufacturing_Ent_Name', label: '生产企业名称', minWidth: 120, showOverflowTooltip: true },

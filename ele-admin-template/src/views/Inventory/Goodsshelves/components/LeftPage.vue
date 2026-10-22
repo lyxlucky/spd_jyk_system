@@ -42,7 +42,7 @@
           :datasource="datasource"
           :selection.sync="selection"
           :row-key="billMode ? 'rowKey' : undefined"
-          :cache-key="billMode ? 'goodsshelvesInBill_v1' : 'goodsshelvesInTable_v3'"
+          :cache-key="billMode ? 'goodsshelvesInBill_v1' : 'goodsshelvesInTable_v4'"
           @current-change="onCurrentChange"
         >
           <template v-if="billMode" v-slot:expand="{ row }">
@@ -63,7 +63,17 @@
                 show-overflow-tooltip
               >
                 <template v-slot="scope">
-                  {{ formatDetailCell(col, scope.row) }}
+                  <el-button
+                    v-if="col.prop === 'PT_ORDER_NUM'"
+                    type="text"
+                    size="mini"
+                    @click.stop="editPtOrderNum(scope.row)"
+                  >
+                    {{ scope.row.PT_ORDER_NUM || '编辑' }}
+                  </el-button>
+                  <template v-else>
+                    {{ formatDetailCell(col, scope.row) }}
+                  </template>
                 </template>
               </el-table-column>
               <el-table-column label="操作" width="200" align="center" fixed="right">
@@ -75,6 +85,11 @@
                 </template>
               </el-table-column>
             </el-table>
+          </template>
+          <template v-slot:ptOrderNum="{ row }">
+            <el-button type="text" size="mini" @click="editPtOrderNum(row)">
+              {{ row.PT_ORDER_NUM || '编辑' }}
+            </el-button>
           </template>
           <template v-slot:reportPic="{ row }">
             <el-button type="text" size="mini" @click="openProReport(row)">
@@ -137,7 +152,13 @@ import UploadProReportDialog from './UploadProReportDialog.vue';
 import UploadOrderPicDialog from './UploadOrderPicDialog.vue';
 import WatchUdiDialog from './WatchUdiDialog.vue';
 import PicPreviewBar from './PicPreviewBar.vue';
-import { GetPDAList, GetInStockDetailRaw, GetInStockDetailByBill } from '@/api/Inventory/Goodsshelves';
+import { HOME_HP } from '@/config/setting';
+import {
+  GetPDAList,
+  GetInStockDetailRaw,
+  GetInStockDetailByBill,
+  upBatchIdPtOrderNum
+} from '@/api/Inventory/Goodsshelves';
 import {
   getOrderJsTypeText,
   formatHighLowClassTwo,
@@ -527,6 +548,18 @@ export default {
           showOverflowTooltip: true,
           minWidth: 120
         },
+        ...(HOME_HP === 'stzyyy'
+          ? [
+              {
+                prop: 'PT_ORDER_NUM',
+                label: '平台订单编号',
+                align: 'center',
+                showOverflowTooltip: true,
+                minWidth: 140,
+                slot: 'ptOrderNum'
+              }
+            ]
+          : []),
         {
           prop: 'APPROVAL_NUMBER',
           label: '注册证号',
@@ -828,6 +861,32 @@ export default {
       };
       this.orderPicVisible = true;
     },
+    async editPtOrderNum(row) {
+      if (!row?.BATCH_ID) {
+        this.$message.warning('缺少批次标识');
+        return;
+      }
+      try {
+        const { value } = await this.$prompt('平台订单编号', '平台订单编号', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          inputValue: row.PT_ORDER_NUM || '',
+          closeOnClickModal: false
+        });
+        const loading = this.$messageLoading('保存中...');
+        try {
+          await upBatchIdPtOrderNum(row.BATCH_ID, value ?? '');
+          this.$message.success('保存成功');
+          this.reload();
+        } catch (e) {
+          this.$message.error(e.message || '保存失败');
+        } finally {
+          loading.close();
+        }
+      } catch {
+        // 取消
+      }
+    },
     async exportExcel(where) {
       const loading = this.$messageLoading('正在导出数据...');
       try {
@@ -889,6 +948,7 @@ export default {
         '合同名称',
         '合同编码',
         '平台合同编号',
+        ...(HOME_HP === 'stzyyy' ? ['平台订单编号'] : []),
         '注册证号',
         '操作人',
         '备注',
@@ -950,6 +1010,7 @@ export default {
           item.CONTRACT_NAME,
           item.CONTRACT_CODE,
           item.PT_HTNUM || '',
+          ...(HOME_HP === 'stzyyy' ? [item.PT_ORDER_NUM || ''] : []),
           item.APPROVAL_NUMBER,
           item.Operator,
           item.BZ,

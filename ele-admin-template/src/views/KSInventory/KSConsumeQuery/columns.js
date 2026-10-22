@@ -215,6 +215,13 @@ export function getConsumeColumns() {
     { prop: 'Note_Description', label: '收货备注', minWidth: 120, showOverflowTooltip: true },
     { prop: 'CONTRACT_NAME', label: '合同名称', minWidth: 120, showOverflowTooltip: true },
     {
+      prop: 'PT_ORDER_NUM',
+      label: '平台订单编号',
+      minWidth: 140,
+      showOverflowTooltip: true,
+      hidden: hp !== 'stzyyy'
+    },
+    {
       prop: 'Contract_Type',
       label: '合同类型',
       width: 125,

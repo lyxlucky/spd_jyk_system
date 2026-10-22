@@ -379,6 +379,7 @@ function buildStzyExportRows(list) {
     '静态UDI码'
   ];
   if (isStHospital()) headers.push('平台合同编码');
+  if (HOME_HP === 'stzyyy') headers.push('平台订单编号');
   if (HOME_HP === 'chrmyy') headers.push('材料分类');
   const rows = [headers];
   (list || []).forEach((d) => {
@@ -412,6 +413,7 @@ function buildStzyExportRows(list) {
       d.UDI_TOP
     ];
     if (isStHospital()) row.push(d.PT_HTNUM);
+    if (HOME_HP === 'stzyyy') row.push(d.PT_ORDER_NUM);
     if (HOME_HP === 'chrmyy') row.push(d.CLASSIFIC_NAME2);
     rows.push(row);
   });
