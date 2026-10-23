@@ -39,7 +39,12 @@
             </span>
           </template>
         </el-table-column>
-        <el-table-column label="生产许可证到期时间" width="150">
+        <!-- 北京人民(bdrm)：仅展示注册证、品种授权到期；其余证件列隐藏 -->
+        <el-table-column
+          v-if="!isBdrm"
+          label="生产许可证到期时间"
+          width="150"
+        >
           <template slot-scope="scope">
             <span
               :class="{
@@ -61,7 +66,11 @@
             </span>
           </template>
         </el-table-column>
-        <el-table-column label="供应商经营许可证到期时间" width="180">
+        <el-table-column
+          v-if="!isBdrm"
+          label="供应商经营许可证到期时间"
+          width="180"
+        >
           <template slot-scope="scope">
             <span
               :class="{
@@ -74,7 +83,11 @@
             </span>
           </template>
         </el-table-column>
-        <el-table-column label="集配商经营许可证到期时间" width="180">
+        <el-table-column
+          v-if="!isBdrm"
+          label="集配商经营许可证到期时间"
+          width="180"
+        >
           <template slot-scope="scope">
             <span
               :class="{
@@ -97,6 +110,8 @@
 </template>
 
 <script>
+  import { HOME_HP } from '@/config/setting';
+
   export default {
     name: 'ExpiredCertificateDialog',
     props: {
@@ -107,6 +122,12 @@
       expiredList: {
         type: Array,
         default: () => []
+      }
+    },
+    computed: {
+      /** 北京人民：弹窗证件列精简展示 */
+      isBdrm() {
+        return HOME_HP === 'bdrm';
       }
     },
     methods: {

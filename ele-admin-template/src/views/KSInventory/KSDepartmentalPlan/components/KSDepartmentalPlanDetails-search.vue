@@ -950,7 +950,7 @@
         });
       },
 
-      // 检查证件到期的方法
+      // 检查证件到期（北京人民 bdrm：仅判断注册证、品种授权）
       checkExpiredCertificates() {
         const expiredItems = [];
         const currentDate = new Date();
@@ -958,20 +958,11 @@
         this.datasourceList.forEach((element) => {
           const expiredTypes = [];
 
-          // 检查注册证到期R
+          // 检查注册证到期
           if (element.REGISTRATION_VALID_DATE) {
             const expiry = new Date(element.REGISTRATION_VALID_DATE);
-            console.log(expiry);
             if (expiry <= currentDate) {
               expiredTypes.push('注册证');
-            }
-          }
-
-          // 检查生产许可证到期
-          if (element.MAN_XKZ_END) {
-            const expiry = new Date(element.MAN_XKZ_END);
-            if (expiry <= currentDate) {
-              expiredTypes.push('生产许可证');
             }
           }
 
@@ -980,22 +971,6 @@
             const expiry = new Date(element.AUTH_VALID);
             if (expiry <= currentDate) {
               expiredTypes.push('品种授权');
-            }
-          }
-
-          // 检查供应商经营许可证到期
-          if (element.BUSINESS_LICENSE_VALID_DATE2) {
-            const expiry = new Date(element.BUSINESS_LICENSE_VALID_DATE2);
-            if (expiry <= currentDate) {
-              expiredTypes.push('供应商经营许可证');
-            }
-          }
-
-          // 检查集配商经营许可证到期
-          if (element.BUSINESS_LICENSE_VALID_DATE) {
-            const expiry = new Date(element.BUSINESS_LICENSE_VALID_DATE);
-            if (expiry <= currentDate) {
-              expiredTypes.push('集配商经营许可证');
             }
           }
 
@@ -1009,12 +984,7 @@
               expiredType: expiredTypes.join('、'),
               expiredDate: this.getEarliestExpiredDate(element),
               RegistrationCertificateExpiry: element.REGISTRATION_VALID_DATE,
-              ProductionLicenseExpiry: element.MAN_XKZ_END,
-              VarietyAuthorizationExpiry: element.AUTH_VALID,
-              SupplierBusinessLicenseExpiry:
-                element.BUSINESS_LICENSE_VALID_DATE2,
-              DistributorBusinessLicenseExpiry:
-                element.BUSINESS_LICENSE_VALID_DATE
+              VarietyAuthorizationExpiry: element.AUTH_VALID
             });
           }
         });
@@ -1022,17 +992,12 @@
         return expiredItems;
       },
 
-      // 获取最早的到期日期
+      // 获取最早的到期日期（仅注册证、品种授权）
       getEarliestExpiredDate(element) {
         const dates = [];
         if (element.REGISTRATION_VALID_DATE)
           dates.push(new Date(element.REGISTRATION_VALID_DATE));
-        if (element.MAN_XKZ_END) dates.push(new Date(element.MAN_XKZ_END));
         if (element.AUTH_VALID) dates.push(new Date(element.AUTH_VALID));
-        if (element.BUSINESS_LICENSE_VALID_DATE2)
-          dates.push(new Date(element.BUSINESS_LICENSE_VALID_DATE2));
-        if (element.BUSINESS_LICENSE_VALID_DATE)
-          dates.push(new Date(element.BUSINESS_LICENSE_VALID_DATE));
 
         if (dates.length === 0) return '';
 
