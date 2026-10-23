@@ -22,7 +22,18 @@ export async function QueryPageLayUI(data) {
     data2.state = data.where.state ? data.where.state : '';
 
     data2.IS_CHARGE = data.where.IS_CHARGE ? data.where.IS_CHARGE : '-1';
-    data2.HIGH_OR_LOW_CLASS = data.where.HIGH_OR_LOW_CLASS ? data.where.HIGH_OR_LOW_CLASS : '-1';
+    // 「低值」值为 '0'，不能用三元假值判断，否则会回落成「全部」
+    data2.HIGH_OR_LOW_CLASS =
+      data.where.HIGH_OR_LOW_CLASS === undefined ||
+      data.where.HIGH_OR_LOW_CLASS === null ||
+      data.where.HIGH_OR_LOW_CLASS === ''
+        ? '-1'
+        : data.where.HIGH_OR_LOW_CLASS;
+    // 试剂筛选：空=全部，2=试剂，N=非试剂（对齐老系统 vdzhREAGENT_FILTER）
+    data2.REAGENT_FILTER =
+      data.where.REAGENT_FILTER === undefined || data.where.REAGENT_FILTER === null
+        ? ''
+        : data.where.REAGENT_FILTER;
     data2.IS_BIDDING = data.where.IS_BIDDING ? data.where.IS_BIDDING : '-1';
     data2.SPECIAL_PURCHASE = data.where.SPECIAL_PURCHASE ? data.where.SPECIAL_PURCHASE : '-1';
     data2.ONEOFF_STERILIZATION_PACKAGING = data.where.ONEOFF_STERILIZATION_PACKAGING ? data.where.ONEOFF_STERILIZATION_PACKAGING : '-1';
@@ -359,7 +370,17 @@ export function buildVarietyQueryParams(where = {}, extra = {}) {
     IS_SERIAL_NUMBER: w.IS_SERIAL_NUMBER ?? '-1',
     IS_INTERVENED: w.IS_INTERVENED ?? '-1',
     IS_PROTECT: w.IS_PROTECT ?? '-1',
-    HIGH_OR_LOW_CLASS: w.HIGH_OR_LOW_CLASS || '-1',
+    HIGH_OR_LOW_CLASS:
+      w.HIGH_OR_LOW_CLASS === undefined ||
+      w.HIGH_OR_LOW_CLASS === null ||
+      w.HIGH_OR_LOW_CLASS === ''
+        ? '-1'
+        : w.HIGH_OR_LOW_CLASS,
+    // 试剂筛选：空=全部，2=试剂，N=非试剂
+    REAGENT_FILTER:
+      w.REAGENT_FILTER === undefined || w.REAGENT_FILTER === null
+        ? ''
+        : w.REAGENT_FILTER,
     HIGH_OR_LOW_CLASS_TWO: w.HIGH_OR_LOW_CLASS_TWO || '-1',
     IS_EQUIPMENT_CHANGE: w.IS_EQUIPMENT_CHANGE ?? '-1',
     SENDYB_STATE: w.SENDYB_STATE ?? '',
