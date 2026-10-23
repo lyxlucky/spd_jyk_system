@@ -570,11 +570,13 @@
       width="90%"
       top="5vh"
       append-to-body
+      @closed="onReturnCabinetAlertClosed"
     >
       <div style="margin-bottom: 10px; color: #909399; font-size: 13px;">
-        以下耗材已收费，计费后智能柜又上报归还（或库存已回上架）。默认包含已确认/未确认全部状态。系统不自动取消登记/退费，请人工核对是否空盒、标签误放或漏退费。
+        以下耗材已收费，计费后智能柜又上报归还（或库存已回上架）。默认包含已确认/未确认全部状态。系统不自动取消登记/退费，请人工核对是否空盒、标签误放或漏退费。核对无误后可勾选「确认处理」，处理后不再出现在提醒中。
       </div>
       <vxe-table
+        ref="returnCabinetAlertTable"
         :data="returnCabinetAlertList"
         :loading="returnCabinetAlertLoading"
         border
@@ -582,7 +584,11 @@
         size="mini"
         height="480"
         resizable
+        :checkbox-config="{ highlight: true, trigger: 'row' }"
+        @checkbox-change="onReturnCabinetAlertCheckboxChange"
+        @checkbox-all="onReturnCabinetAlertCheckboxAll"
       >
+        <vxe-column type="checkbox" width="50" align="center" />
         <vxe-column type="seq" title="序号" width="50" align="center" />
         <vxe-column
           field="RETURN_CABINET_TYPE"
@@ -657,6 +663,15 @@
         />
       </vxe-table>
       <div slot="footer">
+        <el-button
+          type="primary"
+          size="mini"
+          :loading="returnCabinetIgnoreLoading"
+          :disabled="returnCabinetAlertSelection.length === 0"
+          @click="confirmIgnoreReturnCabinetAlert"
+        >
+          确认处理
+        </el-button>
         <el-button size="mini" @click="returnCabinetAlertVisible = false">关闭</el-button>
       </div>
     </el-dialog>
@@ -669,6 +684,7 @@ import {
   getSzseSpUseHzInfo,
   getSzseSpUseDelInfo,
   getSzseReturnCabinetAlert,
+  ignoreSzseReturnCabinetAlert,
   appSzseUseInfo
 } from '@/api/Settle/DepartmentConsumptionConfirmation';
 
@@ -721,7 +737,9 @@ export default {
       returnCabinetAlertCount: 0,
       returnCabinetAlertList: [],
       returnCabinetAlertLoading: false,
-      returnCabinetAlertVisible: false
+      returnCabinetAlertVisible: false,
+      returnCabinetAlertSelection: [],
+      returnCabinetIgnoreLoading: false
     };
   },
   methods: {
@@ -799,7 +817,59 @@ export default {
     },
     openReturnCabinetAlert() {
       // 仅展示搜索时已加载的缓存清单，点击不再重复请求（接口较慢）
+      this.returnCabinetAlertSelection = [];
       this.returnCabinetAlertVisible = true;
+    },
+    onReturnCabinetAlertClosed() {
+      this.returnCabinetAlertSelection = [];
+    },
+    onReturnCabinetAlertCheckboxChange({ records }) {
+      this.returnCabinetAlertSelection = records || [];
+    },
+    onReturnCabinetAlertCheckboxAll({ records }) {
+      this.returnCabinetAlertSelection = records || [];
+    },
+    // 还柜提醒：确认处理（忽略），处理后不再出现在提醒中
+    async confirmIgnoreReturnCabinetAlert() {
+      if (!this.returnCabinetAlertSelection.length) {
+        this.$message.warning('请先勾选需要确认处理的数据');
+        return;
+      }
+      try {
+        await this.$confirm(
+          `已核对选中的 ${this.returnCabinetAlertSelection.length} 条记录，确认处理后将不再出现在还柜提醒中？`,
+          '确认处理',
+          {
+            type: 'warning',
+            confirmButtonText: '确认处理',
+            cancelButtonText: '取消'
+          }
+        );
+      } catch (e) {
+        return;
+      }
+
+      this.returnCabinetIgnoreLoading = true;
+      try {
+        const Items = this.returnCabinetAlertSelection.map((item) => ({
+          ID: String(item.ID),
+          DEF_NO_PKG_CODE: item.DEF_NO_PKG_CODE || ''
+        }));
+        const res = await ignoreSzseReturnCabinetAlert({ Items });
+        this.$message.success(res.msg || '确认处理成功');
+        await this.loadReturnCabinetAlertCount();
+        this.returnCabinetAlertSelection = [];
+        if (this.$refs.returnCabinetAlertTable) {
+          this.$refs.returnCabinetAlertTable.clearCheckboxRow();
+        }
+        if (this.currentMainRow) {
+          await this.loadDetailTableData();
+        }
+      } catch (error) {
+        this.$message.error(error.message || '确认处理失败');
+      } finally {
+        this.returnCabinetIgnoreLoading = false;
+      }
     },
     // 选中数据是否包含还柜提醒
     hasReturnCabinetAlertInSelection(selection, byMainId) {
