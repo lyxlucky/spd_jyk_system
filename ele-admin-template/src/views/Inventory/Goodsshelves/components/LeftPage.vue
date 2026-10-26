@@ -898,8 +898,6 @@ export default {
       const loading = this.$messageLoading('正在导出数据...');
       try {
         const data = await GetInStockDetailRaw({
-          page: 1,
-          limit: 9999999,
           where: where || this.lastWhere
         });
         loading.close();
@@ -912,11 +910,20 @@ export default {
           this.auditVisible = true;
           return;
         }
+        if (data?.code == 302 || data?.code === '302') {
+          this.$message.warning(data?.msg || '导出审批处理中');
+          return;
+        }
         if (!(data?.code == 200 || data?.code === '200')) {
           throw new Error(data?.msg || '导出失败');
         }
-        this.writeInExcel(data.result || []);
-        this.$message.success('导出成功');
+        const rows = data.result || [];
+        if (!rows.length) {
+          this.$message.warning('没有可导出的数据');
+          return;
+        }
+        this.writeInExcel(rows);
+        this.$message.success(`导出成功，共 ${rows.length} 条`);
       } catch (e) {
         loading.close();
         this.$message.error(e.message || '导出失败');
@@ -1045,11 +1052,25 @@ export default {
     async aggregateExport(where) {
       const loading = this.$messageLoading('正在汇总导出...');
       try {
-        const res = await GetPDAList({
-          page: 1,
-          limit: 9999999,
+        const res = await GetInStockDetailRaw({
           where: where || this.lastWhere
         });
+        if (res?.code == 303 || res?.code === '303') {
+          this.auditMeta = {
+            requestUrl: res.requesturl || '',
+            dataType: res.datatype || '流向查询入库',
+            keyParams: res.keyparams || ''
+          };
+          this.auditVisible = true;
+          return;
+        }
+        if (res?.code == 302 || res?.code === '302') {
+          this.$message.warning(res?.msg || '导出审批处理中');
+          return;
+        }
+        if (!(res?.code == 200 || res?.code === '200')) {
+          throw new Error(res?.msg || '导出失败');
+        }
         const aggregated = {};
         (res.result || []).forEach((item) => {
           const code = item.VARIETIE_CODE_NEW || '';
@@ -1069,6 +1090,10 @@ export default {
             aggregated[code].totalPrice.toFixed(2)
           ]);
         });
+        if (rows.length <= 1) {
+          this.$message.warning('没有可导出的数据');
+          return;
+        }
         writeFile(
           {
             SheetNames: ['Sheet1'],
