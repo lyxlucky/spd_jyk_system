@@ -307,6 +307,17 @@ export function getMenuRoutes(menus, homePath) {
       component: () => import('@/views/Statistics/EffectiveTipWinShow/index.vue'),
       meta: { title: '效期到期弹框' }
     });
+    // 老权限路径 /KSInventory/KSRemind（弹窗入口）；新路径 /KSInventory/KSExpirationReminder（列表页）
+    routes.push({
+      path: '/KSInventory/KSRemind',
+      component: () => import('@/views/KSInventory/KSExpirationReminder/index.vue'),
+      meta: { title: '库存近效期提醒' }
+    });
+    routes.push({
+      path: '/KSInventory/KSExpirationReminder',
+      component: () => import('@/views/KSInventory/KSExpirationReminder/index.vue'),
+      meta: { title: '近效期提醒列表' }
+    });
     routes.push({
       path: '/Inventory/VwHptx',
       component: () => import('@/views/Inventory/VwHptx/index.vue'),

@@ -175,7 +175,10 @@
                 >
                   <div class="bottom clearfix">
                     <span>{{
-                      p.path == '/KSInventory/KSExpirationReminder'
+                      p.path == '/KSInventory/KSExpirationReminder' ||
+                      p.component == '/KSInventory/KSExpirationReminder' ||
+                      p.path == '/KSInventory/KSRemind' ||
+                      p.component == '/KSInventory/KSRemind'
                         ? `${p.title}（${JYkDefRemindTotal}个）`
                         : `${p.title}（${TableListTotal}个）`
                     }}</span>
@@ -341,7 +344,7 @@
         addRecentVisible: false,
         // 添加弹窗用的平铺菜单（同原首页图标入口）
         pickMenuList: [],
-        KSExpirationReminderVisible: true,
+        KSExpirationReminderVisible: false,
         NoticeMenuList: null,
         guideDialogVisible: false,
         JYkDefRemindTotal: 0,
@@ -509,6 +512,14 @@
         });
       },
       changeRoute(data) {
+        const path = data || '';
+        if (
+          path === '/KSInventory/KSExpirationReminder' ||
+          path === '/KSInventory/KSRemind'
+        ) {
+          this.KSExpirationReminderVisible = true;
+          return;
+        }
         this.$router.push(this.$route?.query?.from ?? data);
       },
       refreshRecentMenus(list) {
@@ -593,14 +604,16 @@
 
         const rightMenuList = [
           '/KSInventory/KSNewBatchReminder',
-          '/KSInventory/KSExpirationReminder'
+          '/KSInventory/KSExpirationReminder',
+          '/KSInventory/KSRemind'
         ];
         this.NoticeMenuList = permission_group.filter((res) => {
-          return rightMenuList.includes(res.component);
+          return rightMenuList.includes(res.component) || rightMenuList.includes(res.path);
         });
+        // 登录自动弹窗由 layout/login-tip-dialogs 统一处理（同会话只弹一次）
 
         this.pickMenuList = permission_group
-          .filter((res) => !rightMenuList.includes(res.component))
+          .filter((res) => !rightMenuList.includes(res.component) && !rightMenuList.includes(res.path))
           .map((res) => ({
             path: res.component || res.path,
             title: res.title,

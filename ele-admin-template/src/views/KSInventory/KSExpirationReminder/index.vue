@@ -1,13 +1,15 @@
 <template>
   <div class="ele-body spd-page ks-expiration-reminder-page">
+    <!-- fszxy 系：中心库库存效期在上（对齐老 KSRemind） -->
+    <el-card v-if="isFszxyStockFirst" shadow="never" class="ks-expiration-reminder-card stock-embed-card">
+      <effective-tip-win-show only-stock-expiry embedded enable-stock-filters />
+    </el-card>
+
     <el-card shadow="never" class="ks-expiration-reminder-card">
-      <!-- 搜索表单 -->
-      <!-- <user-search @search="reload" @exportData="exportData" /> -->
-      <!-- 数据表格 -->
       <user-search @search="reload" @exportData="exportData" />
       <div class="spd-panel spd-table-panel">
         <div class="spd-panel__head spd-panel__head--split">
-          <span>近效期提醒列表</span>
+          <span>二级库库存近效期提醒</span>
           <span class="expiry-legend">
             <span class="legend-item">
               <i class="legend-color legend-danger"></i>
@@ -36,49 +38,45 @@
             :row-class-name="getRowClassName"
             cache-key="KSExpirationReminderTable"
           >
-        <!-- 表头工具栏 -->
-        <!-- <template v-slot:toolbar>
-        </template> -->
-
-        <!-- 操作列 -->
-        <template v-slot:action="{ row }">
-          <el-link type="primary" :underline="false" icon="el-icon-edit" @click="openEdit(row)">
-            修改
-          </el-link>
-          <!-- <el-button type="primary" size="mini" @click="openEdit(row)">编辑</el-button> -->
-          <!-- <el-popconfirm class="ele-action" title="确定要删除此用户吗？" @confirm="remove(row)">
-            <template v-slot:reference>
-              <el-link type="danger" :underline="false" icon="el-icon-delete">
-                删除
+            <template v-slot:action="{ row }">
+              <el-link type="primary" :underline="false" icon="el-icon-edit" @click="openEdit(row)">
+                修改
               </el-link>
             </template>
-          </el-popconfirm> -->
-        </template>
           </ele-pro-table>
         </div>
       </div>
     </el-card>
-    <!-- 编辑弹窗 -->
+
+    <!-- 非 fszxy：中心库库存效期嵌在二级库下方（对齐老 KSRemind only=stockExpiry） -->
+    <el-card v-if="!isFszxyStockFirst" shadow="never" class="ks-expiration-reminder-card stock-embed-card">
+      <effective-tip-win-show only-stock-expiry embedded />
+    </el-card>
+
     <user-edit :visible.sync="showEdit" :data="current" @done="reload" />
-    <!-- 导入弹窗 -->
-    <!-- <user-import :visible.sync="showImport" @done="reload" /> -->
   </div>
 </template>
 
 <script>
 import { utils, writeFile } from 'xlsx';
+import { HOME_HP } from '@/config/setting';
 import UserSearch from './components/user-search.vue';
 import UserEdit from './components/user-edit.vue';
+import EffectiveTipWinShow from '@/views/Statistics/EffectiveTipWinShow/index.vue';
 import { SearchDefRemind } from '@/api/KSInventory/KSExpirationReminder';
+
+const FSZXY_STOCK_HPS = ['fszxy', 'ybyy', 'fsdwrmyy', 'fsdl'];
+
 export default {
-  name: 'SystemUser',
+  name: 'KSExpirationReminder',
   components: {
     UserSearch,
-    UserEdit
-    // UserImport
+    UserEdit,
+    EffectiveTipWinShow
   },
   data() {
     return {
+      isFszxyStockFirst: FSZXY_STOCK_HPS.includes(HOME_HP),
       // 表格列配置
       columns: [
         {
@@ -285,7 +283,7 @@ export default {
         // }
       ],
       toolbar: false,
-      tableHeight: 'calc(100vh - 330px)',
+      tableHeight: '360px',
       pageSize: 10,
       pageSizes: [10, 20, 50, 100, 9999999],
       pagerCount: 5,
@@ -507,6 +505,14 @@ exportData(data) {
 
 .legend-warning {
   background-color: #fff9db;
+}
+
+.stock-embed-card {
+  margin-top: 10px;
+}
+
+.stock-embed-card :deep(.el-card__body) {
+  padding: 8px 12px 12px;
 }
 </style>
 

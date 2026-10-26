@@ -49,6 +49,8 @@
   >
     <!-- 路由出口 -->
     <router-layout />
+    <!-- 登录后效期/近效期提醒弹窗（按 permission_group） -->
+    <login-tip-dialogs />
     <!-- logo 图标 -->
     <template v-slot:logo>
       <img src="@/assets/logo.png" alt="logo" />
@@ -90,6 +92,7 @@
   import RouterLayout from '@/components/RouterLayout/index.vue';
   import HeaderTools from './components/header-tools.vue';
   import PageFooter from './components/page-footer.vue';
+  import LoginTipDialogs from './components/login-tip-dialogs.vue';
   import {
     PROJECT_NAME,
     HIDE_SIDEBARS,
@@ -124,7 +127,8 @@
     components: {
       RouterLayout,
       HeaderTools,
-      PageFooter
+      PageFooter,
+      LoginTipDialogs
     },
     data() {
       return {

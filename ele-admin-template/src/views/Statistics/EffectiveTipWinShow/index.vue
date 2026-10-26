@@ -1,9 +1,19 @@
 <template>
-  <div class="ele-body spd-page effective-tip-win-show">
+  <div
+    class="ele-body spd-page effective-tip-win-show"
+    :class="{ 'is-embedded': onlyStockExpiry || embedded }"
+  >
     <contract-maintenance-dialog ref="contractDlg" />
+    <export-audit-dialog
+      :visible.sync="auditVisible"
+      :request-url="auditMeta.requestUrl"
+      :data-type="auditMeta.dataType"
+      :key-params="auditMeta.keyParams"
+    />
 
     <!-- 1 -->
     <win-show-section
+      v-if="!onlyStockExpiry"
       ref="blsj"
       title="近三天不良事件上报提醒"
       cache-key="EffectiveTipWinShowBlsj"
@@ -20,6 +30,7 @@
 
     <!-- 2 -->
     <win-show-section
+      v-if="!onlyStockExpiry"
       ref="bhjh"
       title="备货计划30天内未完全收货合同（近15天）过期"
       cache-key="EffectiveTipWinShowBhjh"
@@ -50,12 +61,83 @@
       cache-key="EffectiveTipWinShowKcxq"
       :columns="invColsExpiry"
       :datasource="dsKcxq"
-      :height="395"
+      :height="stockTableHeight"
       export-permission="export-EffectiveTipWinShow-kcxqdc"
       :exporting="exporting.kcxq"
       @export="exportKcxq"
       @sort-change="() => onSectionSort('kcxq')"
     >
+      <template #toolbar-left>
+        <template v-if="showStorageSelect">
+          <el-select
+            v-model="storageIdKcxq"
+            size="small"
+            clearable
+            placeholder="全部院区"
+            style="width: 160px; margin-right: 8px"
+            @change="reloadRef('kcxq')"
+          >
+            <el-option label="全部院区" value="" />
+            <el-option
+              v-for="item in storageList"
+              :key="'kcxq-' + item.ID"
+              :label="item.NAME"
+              :value="String(item.ID)"
+            />
+          </el-select>
+        </template>
+        <template v-if="showStockFilters">
+          <el-input
+            v-model="stockFilter.sourceFrom"
+            size="small"
+            clearable
+            placeholder="库房位置"
+            style="width: 140px; margin-right: 8px"
+            @keyup.enter.native="reloadRef('kcxq')"
+          />
+          <el-input
+            v-model="stockFilter.varietie"
+            size="small"
+            clearable
+            placeholder="品种名称/规格型号"
+            style="width: 160px; margin-right: 8px"
+            @keyup.enter.native="reloadRef('kcxq')"
+          />
+          <el-select
+            v-model="stockFilter.jxqMonths"
+            size="small"
+            style="width: 110px; margin-right: 8px"
+            @change="reloadRef('kcxq')"
+          >
+            <el-option label="默认设置" value="6" />
+            <el-option label="全部" value="0" />
+            <el-option label="1个月" value="1" />
+            <el-option label="3个月" value="3" />
+            <el-option label="6个月" value="6" />
+          </el-select>
+          <el-select
+            v-model="stockFilter.Up_Shelf_State"
+            size="small"
+            clearable
+            placeholder="所属区域"
+            style="width: 130px; margin-right: 8px"
+            @change="reloadRef('kcxq')"
+          >
+            <el-option label="全部" value="" />
+            <el-option label="合格区" value="1" />
+            <el-option label="普通隔离区" value="6" />
+            <el-option label="防疫物资区" value="11" />
+            <el-option label="不合格区" value="7" />
+            <el-option label="盘损隔离区" value="8" />
+            <el-option label="应急库" value="9" />
+            <el-option label="拣配区" value="2" />
+            <el-option label="待审核上架" value="-1" />
+          </el-select>
+          <el-button size="small" type="primary" icon="el-icon-search" @click="reloadRef('kcxq')">
+            查询
+          </el-button>
+        </template>
+      </template>
       <template #batchValidity="{ row }">
         <span :class="{ 'text-expired': formatDateWithExpiry(row.Batch_Validity_Period).expired }">
           {{ formatDateWithExpiry(row.Batch_Validity_Period).text }}
@@ -70,6 +152,7 @@
 
     <!-- 4 -->
     <win-show-section
+      v-if="!onlyStockExpiry"
       ref="kcht"
       title="库存合同过期（近3天）"
       cache-key="EffectiveTipWinShowKcht"
@@ -81,6 +164,25 @@
       @export="exportKcht"
       @sort-change="() => onSectionSort('kcht')"
     >
+      <template #toolbar-left>
+        <el-select
+          v-if="showStorageSelect"
+          v-model="storageIdKcht"
+          size="small"
+          clearable
+          placeholder="全部院区"
+          style="width: 160px"
+          @change="reloadRef('kcht')"
+        >
+          <el-option label="全部院区" value="" />
+          <el-option
+            v-for="item in storageList"
+            :key="'kcht-' + item.ID"
+            :label="item.NAME"
+            :value="String(item.ID)"
+          />
+        </el-select>
+      </template>
       <template #inventoryAction="{ row }">
         <el-button type="text" size="small" @click="openContractMaintenance(row)">合同</el-button>
       </template>
@@ -103,12 +205,15 @@
 
     <!-- 5 -->
     <win-show-section
+      v-if="!onlyStockExpiry"
       ref="zcz"
       title="注册证过期近1月"
       cache-key="EffectiveTipWinShowZcz"
       :columns="prodAuthColumns"
       :datasource="dsProdAuth"
       :height="300"
+      :page-size="10"
+      :page-sizes="[10, 50, 100, 99999]"
       export-permission="export-EffectiveTipWinShow-zczdc"
       :exporting="exporting.zcz"
       :table-props="prodAuthTableProps"
@@ -127,12 +232,15 @@
 
     <!-- 6 -->
     <win-show-section
+      v-if="!onlyStockExpiry"
       ref="gysht"
       title="供应商合同过期（近1个月）"
       cache-key="EffectiveTipWinShowGysht"
       :columns="contractAuthColumns"
       :datasource="dsContractAuth"
       :height="300"
+      :page-size="10"
+      :page-sizes="[10, 50, 100, 99999]"
       export-permission="export-EffectiveTipWinShow-gysdc"
       :exporting="exporting.gysht"
       @export="exportGysht"
@@ -169,12 +277,15 @@
 
     <!-- 7 -->
     <win-show-section
+      v-if="!onlyStockExpiry"
       ref="gysmx"
       :title="'供应商合同明细过期（' + gysmxDayLabel + '）'"
       cache-key="EffectiveTipWinShowGysmx"
       :columns="contractVarColumns"
       :datasource="dsContractVar"
       :height="265"
+      :page-size="10"
+      :page-sizes="[10, 50, 100, 99999]"
       export-permission="export-EffectiveTipWinShow-gysmxdc"
       :exporting="exporting.gysmx"
       @export="exportGysmx"
@@ -218,6 +329,7 @@
 
     <!-- 8 -->
     <win-show-section
+      v-if="!onlyStockExpiry"
       ref="gyszz"
       title="供应商资质过期（近1个月）"
       cache-key="EffectiveTipWinShowGyszz"
@@ -269,6 +381,7 @@
 
     <!-- 9 -->
     <win-show-section
+      v-if="!onlyStockExpiry"
       ref="pztj"
       title="品种调价信息"
       cache-key="EffectiveTipWinShowPztj"
@@ -319,10 +432,12 @@ import {
   sendVarStzy,
   sendVarCsyy,
   sendVarStse,
-  sendVarStzl
+  sendVarStzl,
+  getSTORAGE
 } from '@/api/Statistics/EffectiveTipWinShow';
 import WinShowSection from './components/WinShowSection.vue';
 import ContractMaintenanceDialog from './components/ContractMaintenanceDialog.vue';
+import ExportAuditDialog from '@/views/Inventory/InventoryQueryNew/components/ExportAuditDialog.vue';
 import { createInventoryColumns } from './utils/inventoryColumns';
 import {
   formatDate10,
@@ -336,13 +451,33 @@ import {
 } from './utils/format';
 
 const SEND_VAR_HPS = ['stzyyy', 'chrmyy', 'csyy', 'stse', 'stzl'];
+const FSZXY_STOCK_HPS = ['fszxy', 'ybyy', 'fsdwrmyy', 'fsdl'];
 
 export default {
   name: 'EffectiveTipWinShow',
-  components: { WinShowSection, ContractMaintenanceDialog },
+  components: { WinShowSection, ContractMaintenanceDialog, ExportAuditDialog },
+  props: {
+    /** 仅显示「库存效期（近6个月）」，对齐 old only=stockExpiry */
+    onlyStockExpiry: { type: Boolean, default: false },
+    /** 弹窗/嵌入场景，压缩表格高度 */
+    embedded: { type: Boolean, default: false },
+    /** 嵌入时启用 fszxy 系检索条 */
+    enableStockFilters: { type: Boolean, default: false }
+  },
   data() {
     const { start, end } = getMonthStartEnd();
     return {
+      storageList: [],
+      storageIdKcxq: '',
+      storageIdKcht: HOME_HP === 'stse' ? '' : '1',
+      stockFilter: {
+        sourceFrom: '',
+        varietie: '',
+        jxqMonths: '6',
+        Up_Shelf_State: ''
+      },
+      auditVisible: false,
+      auditMeta: { requestUrl: '', dataType: '', keyParams: '' },
       blsjColumns: [
         { type: 'index', label: '序号', width: 50, align: 'center' },
         {
@@ -573,11 +708,25 @@ export default {
     ...mapState('user', ['info']),
     hideStorageTwo() {
       const pg = this.info?.permission_group || [];
-      return !pg.some((p) => p.Permission_Url === '仓库-二级仓库');
+      return !pg.some(
+        (p) =>
+          p.Permission_Url === '仓库-二级仓库' ||
+          p.PERMISSION_URL === '仓库-二级仓库' ||
+          p.component === '仓库-二级仓库' ||
+          p.path === '仓库-二级仓库' ||
+          p.title === '仓库-二级仓库'
+      );
     },
     hidePdaCoun() {
       const pg = this.info?.permission_group || [];
-      return !pg.some((p) => p.Permission_Url === '科室结算方式-消耗结算');
+      return !pg.some(
+        (p) =>
+          p.Permission_Url === '科室结算方式-消耗结算' ||
+          p.PERMISSION_URL === '科室结算方式-消耗结算' ||
+          p.component === '科室结算方式-消耗结算' ||
+          p.path === '科室结算方式-消耗结算' ||
+          p.title === '科室结算方式-消耗结算'
+      );
     },
     invColsExpiry() {
       return createInventoryColumns({
@@ -610,22 +759,104 @@ export default {
     },
     showSendVarBtn() {
       return SEND_VAR_HPS.includes(HOME_HP);
+    },
+    showStorageSelect() {
+      return HOME_HP === 'stse';
+    },
+    showStockFilters() {
+      return this.enableStockFilters || (this.onlyStockExpiry && FSZXY_STOCK_HPS.includes(HOME_HP));
+    },
+    stockTableHeight() {
+      return this.onlyStockExpiry || this.embedded ? 360 : 395;
+    },
+    isDeptGroup() {
+      return this.info?.Group_Name === '科室' || this.info?.roles === '科室';
     }
   },
   watch: {
     hideStorageTwo() {
       this.reloadRef('kcxq');
-      this.reloadRef('kcht');
+      if (!this.onlyStockExpiry) this.reloadRef('kcht');
     },
     hidePdaCoun() {
       this.reloadRef('kcxq');
-      this.reloadRef('kcht');
+      if (!this.onlyStockExpiry) this.reloadRef('kcht');
+    }
+  },
+  created() {
+    if (this.showStorageSelect) {
+      this.loadStorageList();
+    }
+    if (this.showStockFilters && HOME_HP === 'fszxy' && this.isDeptGroup) {
+      const dept = this.info?.DeptNow?.Dept_Two_Code;
+      if (dept) this.stockFilter.sourceFrom = String(dept);
     }
   },
   methods: {
     formatDate10,
     formatDateWithExpiry,
     formatContractExpiryDays,
+    async loadStorageList() {
+      try {
+        const res = await getSTORAGE();
+        this.storageList = res.result || res.data || [];
+      } catch (e) {
+        this.storageList = [];
+      }
+    },
+    openAudit(res) {
+      this.auditMeta = {
+        requestUrl: res.requesturl || '',
+        dataType: res.datatype || '',
+        keyParams: res.keyparams || ''
+      };
+      this.auditVisible = true;
+    },
+    buildKcxqWhere({ forExport = false, field = '', order = '' } = {}) {
+      let storageId = this.storageIdKcxq;
+      if (HOME_HP !== 'stse') {
+        storageId = forExport ? '1' : '';
+      }
+      const extra = {
+        validDateTo: inventoryValidDateTo180Days(),
+        conTime: '',
+        STORAGE_ID: storageId == null ? '' : String(storageId),
+        field,
+        order
+      };
+      if (this.showStockFilters) {
+        const months = Number(this.stockFilter.jxqMonths || 0);
+        if (months > 0) {
+          const d = new Date();
+          d.setDate(d.getDate() + months * 30);
+          const y = d.getFullYear();
+          const m = String(d.getMonth() + 1).padStart(2, '0');
+          const day = String(d.getDate()).padStart(2, '0');
+          extra.validDateTo = `${y}-${m}-${day}`;
+        } else {
+          extra.validDateTo = '';
+        }
+        extra.sourceFrom = this.stockFilter.sourceFrom || '';
+        extra.varietie = this.stockFilter.varietie || '';
+        extra.Up_Shelf_State = this.stockFilter.Up_Shelf_State || '';
+      } else if (HOME_HP === 'fszxy' && this.isDeptGroup) {
+        extra.sourceFrom = this.info?.DeptNow?.Dept_Two_Code || '';
+      }
+      return buildInventoryWhere(extra);
+    },
+    buildKchtWhere({ field = '', order = '' } = {}) {
+      let storageId = this.storageIdKcht;
+      if (HOME_HP !== 'stse') {
+        storageId = '1';
+      }
+      return buildInventoryWhere({
+        conTime: '2',
+        validDateTo: '',
+        STORAGE_ID: storageId == null || storageId === '' ? '' : String(storageId),
+        field,
+        order
+      });
+    },
     reloadRef(name) {
       const r = this.$refs[name];
       if (r && r.reload) r.reload({ page: 1 });
@@ -741,13 +972,12 @@ export default {
     async dsKcxq({ page, limit }) {
       try {
         const { field, order } = this.getSectionSort('kcxq');
-        const w = buildInventoryWhere({
-          validDateTo: inventoryValidDateTo180Days(),
-          field,
-          order,
-          STORAGE_ID: ''
-        });
+        const w = this.buildKcxqWhere({ field, order });
         const res = await searchCentralWarehouse({ ...w, page, size: limit });
+        if (res.auditRequired) {
+          this.openAudit(res);
+          return { count: 0, list: [] };
+        }
         return { count: res.total || 0, list: res.result || [] };
       } catch (e) {
         Message.error(e.message || '查询失败');
@@ -757,13 +987,12 @@ export default {
     async dsKcht({ page, limit }) {
       try {
         const { field, order } = this.getSectionSort('kcht');
-        const w = buildInventoryWhere({
-          conTime: '2',
-          STORAGE_ID: '1',
-          field,
-          order
-        });
+        const w = this.buildKchtWhere({ field, order });
         const res = await searchCentralWarehouse({ ...w, page, size: limit });
+        if (res.auditRequired) {
+          this.openAudit(res);
+          return { count: 0, list: [] };
+        }
         return { count: res.total || 0, list: res.result || [] };
       } catch (e) {
         Message.error(e.message || '查询失败');
@@ -1049,8 +1278,12 @@ export default {
     async exportKcxq() {
       this.exporting.kcxq = true;
       try {
-        const w = buildInventoryWhere({ validDateTo: inventoryValidDateTo180Days(), STORAGE_ID: '1' });
+        const w = this.buildKcxqWhere({ forExport: true });
         const res = await searchCentralWarehouse({ ...w, page: 1, size: 999999 });
+        if (res.auditRequired) {
+          this.openAudit(res);
+          return;
+        }
         const headers = [
           '库房位置',
           '仓库',
@@ -1077,7 +1310,12 @@ export default {
           '备注'
         ];
         const rows = (res.result || []).map((r) => this.mapInvRowExport(r));
-        writeFile(this.sheetFromRows(headers, rows), '库存效期（近6个月）.xlsx');
+        let fileName = '库存效期（近6个月）.xlsx';
+        if (HOME_HP === 'stse') {
+          const opt = this.storageList.find((x) => String(x.ID) === String(this.storageIdKcxq));
+          fileName = `库存效期（近6个月）-${opt?.NAME || '全部院区'}.xlsx`;
+        }
+        writeFile(this.sheetFromRows(headers, rows), fileName);
       } catch (e) {
         Message.error(e.message || '导出失败');
       } finally {
@@ -1087,8 +1325,12 @@ export default {
     async exportKcht() {
       this.exporting.kcht = true;
       try {
-        const w = buildInventoryWhere({ conTime: '2', STORAGE_ID: '1' });
+        const w = this.buildKchtWhere();
         const res = await searchCentralWarehouse({ ...w, page: 1, size: 999999 });
+        if (res.auditRequired) {
+          this.openAudit(res);
+          return;
+        }
         const headers = [
           '库房位置',
           '仓库',
@@ -1116,7 +1358,12 @@ export default {
           '备注'
         ];
         const rows = (res.result || []).map((r) => this.mapInvRowExportKcht(r));
-        writeFile(this.sheetFromRows(headers, rows), '导出2.xlsx');
+        let fileName = '导出2.xlsx';
+        if (HOME_HP === 'stse') {
+          const opt = this.storageList.find((x) => String(x.ID) === String(this.storageIdKcht));
+          fileName = `库存合同过期（近3天）-${opt?.NAME || '全部院区'}.xlsx`;
+        }
+        writeFile(this.sheetFromRows(headers, rows), fileName);
       } catch (e) {
         Message.error(e.message || '导出失败');
       } finally {
@@ -1295,5 +1542,9 @@ export default {
 }
 .effective-tip-win-show ::v-deep .el-table td.text-expired {
   color: red;
+}
+.effective-tip-win-show.is-embedded {
+  padding: 0;
+  background: transparent;
 }
 </style>
