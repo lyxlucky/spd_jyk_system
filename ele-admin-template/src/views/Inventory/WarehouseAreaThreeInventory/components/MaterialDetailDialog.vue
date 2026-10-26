@@ -11,6 +11,16 @@
       <span class="material-detail-selection">已选 {{ selection.length }} 条</span>
       <el-button
         size="mini"
+        type="success"
+        plain
+        icon="el-icon-download"
+        :loading="exporting"
+        @click="handleExport"
+      >
+        导出
+      </el-button>
+      <el-button
+        size="mini"
         type="danger"
         plain
         icon="el-icon-delete"
@@ -49,7 +59,12 @@
 
 <script>
 import { Message } from 'element-ui';
+import { utils, writeFile } from 'xlsx';
 import { getMaterialDetailColumns } from '../columns';
+import {
+  MATERIAL_DETAIL_EXPORT_HEADERS,
+  materialDetailRowToExportArray
+} from '../utils';
 import { deleteMaterialDetails, getMaterialDetail } from '@/api/Inventory/WarehouseAreaThreeInventory';
 
 export default {
@@ -67,7 +82,8 @@ export default {
       columns: getMaterialDetailColumns(),
       tableHeight: '470px',
       selection: [],
-      deleting: false
+      deleting: false,
+      exporting: false
     };
   },
   computed: {
@@ -87,6 +103,40 @@ export default {
       this.$nextTick(() => {
         this.$refs.table && this.$refs.table.reload({ page: 1 });
       });
+    },
+    // 按当前筛选条件导出全部明细
+    async handleExport() {
+      if (!this.filters?.AREA_CODE) {
+        Message.warning('缺少库房/库区条件，无法导出');
+        return;
+      }
+      this.exporting = true;
+      try {
+        const res = await getMaterialDetail(this.filters, 1, 999999);
+        const list = res.result || [];
+        if (!list.length) {
+          Message.warning('暂无明细可导出');
+          return;
+        }
+        const rows = list.map((row, index) => materialDetailRowToExportArray(row, index));
+        const sheet = utils.aoa_to_sheet([MATERIAL_DETAIL_EXPORT_HEADERS, ...rows]);
+        const book = utils.book_new();
+        utils.book_append_sheet(book, sheet, '耗材使用明细');
+        writeFile(book, `耗材使用明细-${this.exportDateStamp()}.xlsx`);
+        Message.success('导出成功');
+      } catch (e) {
+        Message.error(e.message || '导出失败');
+      } finally {
+        this.exporting = false;
+      }
+    },
+    // 生成导出文件名中的日期后缀 yyyyMMdd
+    exportDateStamp() {
+      const now = new Date();
+      const y = now.getFullYear();
+      const m = String(now.getMonth() + 1).padStart(2, '0');
+      const d = String(now.getDate()).padStart(2, '0');
+      return `${y}${m}${d}`;
     },
     // 删除单条明细。
     async handleDelete(row) {
