@@ -2,89 +2,135 @@
   <div class="ele-body">
     <div class="ele-page-header"> </div>
 
-    <!-- 最近使用：支持添加 / 移除 -->
-    <el-card class="menu-section-card" shadow="never">
-      <div slot="header" class="menu-section-header">
-        <span>最近使用</span>
-        <el-button type="text" icon="el-icon-plus" @click="openAddRecentDialog">
-          添加
-        </el-button>
-      </div>
-      <div v-if="recentMenuItems.length" class="menu-icon-grid">
-        <div
-          class="block recent-block"
-          v-for="p in recentMenuItems"
-          :key="'recent-' + p.path"
-        >
-          <div class="menu-icon-item" @click="changeRoute(p.path)">
-            <el-button type="text" class="button">
-              <div class="menu-icon-wrap">
-                <i
-                  v-if="p.icon && String(p.icon).indexOf('el-icon') === 0"
-                  :class="p.icon"
-                  class="menu-el-icon"
-                />
-                <svg-icon
-                  v-else
-                  :icon-class="p.icon || ''"
-                  style="width: 40px; height: 40px"
-                />
-              </div>
-              <div class="menu-icon-title">
-                <span>{{ p.title }}</span>
-              </div>
-            </el-button>
-          </div>
-          <i
-            class="el-icon-close recent-remove"
-            title="移除"
-            @click.stop="removeRecentItem(p)"
-          />
-        </div>
-      </div>
-      <div v-else class="recent-empty">暂无最近使用，可点击右上角「添加」</div>
-    </el-card>
-
-    <el-dialog
-      title="添加最近使用"
-      :visible.sync="addRecentVisible"
-      width="90%"
-      top="5vh"
-      append-to-body
-      custom-class="add-recent-dialog"
-    >
-      <div class="menu-icon-grid add-recent-grid">
-        <div
-          class="block"
-          v-for="p in pickMenuList"
-          :key="'pick-' + p.path"
-        >
+    <template v-if="isBdrm">
+      <el-card v-for="(item, index) in MenuList" :key="'bdrm-' + index" shadow="never">
+        <div class="demo-image" style="display: flex; flex-wrap: wrap">
           <div
-            class="menu-icon-item"
-            :class="{ 'is-added': isRecentPath(p.path) }"
-            @click="pickAddRecent(p)"
+            class="block"
+            v-for="p in item"
+            :key="p.component"
+            style="margin: 10px"
           >
-            <el-button type="text" class="button">
-              <div class="menu-icon-wrap">
-                <svg-icon
-                  :icon-class="p.icon || ''"
-                  style="width: 40px; height: 40px"
-                />
-              </div>
-              <div class="menu-icon-title">
-                <span>{{ p.title }}</span>
-              </div>
-            </el-button>
-            <i v-if="isRecentPath(p.path)" class="el-icon-check add-check" />
+            <div
+              style="
+                width: 90px;
+                height: 70px;
+                border-radius: 2px;
+                margin-right: 20px;
+              "
+              @click="changeRoute(p.component)"
+            >
+              <el-button type="text" class="button">
+                <div style="width: 100px; display: flex; justify-content: center">
+                  <svg-icon
+                    :icon-class="p.icon || ''"
+                    style="width: 40px; height: 40px"
+                  />
+                </div>
+                <div
+                  style="
+                    width: 100px;
+                    display: flex;
+                    justify-content: center;
+                    margin-top: 5px;
+                    color: #606266;
+                  "
+                >
+                  <div class="bottom clearfix">
+                    <span>{{ p.title }}</span>
+                  </div>
+                </div>
+              </el-button>
+            </div>
           </div>
         </div>
-      </div>
-      <div slot="footer">
-        <el-button type="primary" @click="addRecentVisible = false">
-          完成
-        </el-button>
-      </div>
-    </el-dialog>
+      </el-card>
+    </template>
+
+    <template v-else>
+      <el-card class="menu-section-card" shadow="never">
+        <div slot="header" class="menu-section-header">
+          <span>最近使用</span>
+          <el-button type="text" icon="el-icon-plus" @click="openAddRecentDialog">
+            添加
+          </el-button>
+        </div>
+        <div v-if="recentMenuItems.length" class="menu-icon-grid">
+          <div
+            class="block recent-block"
+            v-for="p in recentMenuItems"
+            :key="'recent-' + p.path"
+          >
+            <div class="menu-icon-item" @click="changeRoute(p.path)">
+              <el-button type="text" class="button">
+                <div class="menu-icon-wrap">
+                  <i
+                    v-if="p.icon && String(p.icon).indexOf('el-icon') === 0"
+                    :class="p.icon"
+                    class="menu-el-icon"
+                  />
+                  <svg-icon
+                    v-else
+                    :icon-class="p.icon || ''"
+                    style="width: 40px; height: 40px"
+                  />
+                </div>
+                <div class="menu-icon-title">
+                  <span>{{ p.title }}</span>
+                </div>
+              </el-button>
+            </div>
+            <i
+              class="el-icon-close recent-remove"
+              title="移除"
+              @click.stop="removeRecentItem(p)"
+            />
+          </div>
+        </div>
+        <div v-else class="recent-empty">暂无最近使用，可点击右上角「添加」</div>
+      </el-card>
+
+      <el-dialog
+        title="添加最近使用"
+        :visible.sync="addRecentVisible"
+        width="90%"
+        top="5vh"
+        append-to-body
+        custom-class="add-recent-dialog"
+      >
+        <div class="menu-icon-grid add-recent-grid">
+          <div
+            class="block"
+            v-for="p in pickMenuList"
+            :key="'pick-' + p.path"
+          >
+            <div
+              class="menu-icon-item"
+              :class="{ 'is-added': isRecentPath(p.path) }"
+              @click="pickAddRecent(p)"
+            >
+              <el-button type="text" class="button">
+                <div class="menu-icon-wrap">
+                  <svg-icon
+                    :icon-class="p.icon || ''"
+                    style="width: 40px; height: 40px"
+                  />
+                </div>
+                <div class="menu-icon-title">
+                  <span>{{ p.title }}</span>
+                </div>
+              </el-button>
+              <i v-if="isRecentPath(p.path)" class="el-icon-check add-check" />
+            </div>
+          </div>
+        </div>
+        <div slot="footer">
+          <el-button type="primary" @click="addRecentVisible = false">
+            完成
+          </el-button>
+        </div>
+      </el-dialog>
+    </template>
 
     <div
       style="display: flex; justify-content: space-between; align-items: center"
@@ -337,9 +383,9 @@
     },
     data() {
       return {
+        MenuList: null,
         recentMenuItems: [],
         addRecentVisible: false,
-        // 添加弹窗用的平铺菜单（同原首页图标入口）
         pickMenuList: [],
         KSExpirationReminderVisible: true,
         NoticeMenuList: null,
@@ -550,7 +596,6 @@
           ...(this.$store.state.user.info.permission_group || [])
         ];
 
-        // 与原首页平铺一致：过滤按钮/目录等，用于添加弹窗点选
         const blackList = [
           '申领计划管理_审核按钮',
           '申领计划管理_审批按钮',
@@ -599,8 +644,38 @@
           return rightMenuList.includes(res.component);
         });
 
-        this.pickMenuList = permission_group
-          .filter((res) => !rightMenuList.includes(res.component))
+        const tiledMenus = permission_group.filter(
+          (res) => !rightMenuList.includes(res.component)
+        );
+
+        if (this.isBdrm) {
+          const ListCount = 11;
+          const ListCount2 = Math.floor(tiledMenus.length / ListCount);
+          const ListCount3 = tiledMenus.length % ListCount;
+          let startCount = 0;
+          const permission_group2 = [];
+
+          for (let i = 0; i < ListCount2; i++) {
+            permission_group2[i] = [];
+            for (let j = 0; j < ListCount; j++) {
+              permission_group2[i][j] = tiledMenus[startCount];
+              startCount++;
+            }
+          }
+          if (ListCount3 > 0) {
+            const lastGroup = [];
+            for (let k = 0; k < ListCount3; k++) {
+              lastGroup[k] = tiledMenus[startCount];
+              startCount++;
+            }
+            permission_group2.push(lastGroup);
+          }
+          this.MenuList = permission_group2;
+          this.pickMenuList = [];
+          return;
+        }
+
+        this.pickMenuList = tiledMenus
           .map((res) => ({
             path: res.component || res.path,
             title: res.title,
@@ -618,13 +693,20 @@
         this.getLineChartData();
         this.getTop20();
       });
-      this.$bus.$on(RECENT_MENUS_CHANGED, this.refreshRecentMenus);
+      if (!this.isBdrm) {
+        this.$bus.$on(RECENT_MENUS_CHANGED, this.refreshRecentMenus);
+      }
     },
     beforeDestroy() {
       this.$bus.$off('handleCommand');
-      this.$bus.$off(RECENT_MENUS_CHANGED, this.refreshRecentMenus);
+      if (!this.isBdrm) {
+        this.$bus.$off(RECENT_MENUS_CHANGED, this.refreshRecentMenus);
+      }
     },
     computed: {
+      isBdrm() {
+        return HOME_HP === 'bdrm';
+      },
       // 是否开启响应式布局
       styleResponsive() {
         return this.$store.state.theme.styleResponsive;
@@ -959,7 +1041,9 @@
       this.getJYkDefRemindTotal();
       this.getTableListTotal();
       this.permission_groupList();
-      this.refreshRecentMenus();
+      if (!this.isBdrm) {
+        this.refreshRecentMenus();
+      }
       this.getSaleroomData();
       this.getLineChartData();
       this.getTop20();
@@ -968,7 +1052,9 @@
       localStorage.AesKey = getAesKey();
     },
     activated() {
-      this.refreshRecentMenus();
+      if (!this.isBdrm) {
+        this.refreshRecentMenus();
+      }
     }
   };
 </script>
