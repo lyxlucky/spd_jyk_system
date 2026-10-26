@@ -41,6 +41,7 @@
 <script>
 import { HOME_HP } from '@/config/setting';
 import { ImpUpdataField } from '@/api/Home/VarietyDataLzhMain';
+import { resolveMedicalCodeLabel } from '@/views/Home/VarietyDataLzhAudit/utils';
 
 const BASE_FIELD_OPTIONS = [
   { value: '1', label: '品种全称' },
@@ -90,8 +91,8 @@ const BASE_FIELD_OPTIONS = [
   { value: '44', label: '阳光规格码' },
   { value: '45', label: '来源' },
   { value: '46', label: '是否集采' },
-  { value: '47', label: '医保编码' },
-  { value: '48', label: '医保编码27位' },
+  { value: '47', label: '医保编码', medicalKey: 'MEDICAL_CODE' },
+  { value: '48', label: '医保编码27位', medicalKey: 'MEDICAL_CODE27' },
   { value: '49', label: '备注' },
   { value: '50', label: '搜索标记' },
   { value: '51', label: '阳光换算比' },
@@ -133,7 +134,8 @@ const BASE_FIELD_OPTIONS = [
   { value: '92', label: '是否捐赠' },
   { value: '93', label: '医保单件产品名称MEDICAL_DBJ_NAME' },
   { value: '94', label: '医保限制备注YB_BX_BZ' },
-  { value: '95', label: '是否纳入广东省医疗保险医用耗材目录SYZ(否0 是1)' }
+  { value: '95', label: '是否纳入广东省医疗保险医用耗材目录SYZ(否0 是1)' },
+  { value: '99', label: '特征' }
 ];
 
 export default {
@@ -151,7 +153,13 @@ export default {
   },
   computed: {
     fieldOptions() {
-      const opts = [...BASE_FIELD_OPTIONS];
+      const opts = BASE_FIELD_OPTIONS.map((item) => {
+        if (!item.medicalKey) return { ...item };
+        return {
+          ...item,
+          label: resolveMedicalCodeLabel(item.medicalKey, HOME_HP, item.label)
+        };
+      });
       if (HOME_HP === 'bdrm' || HOME_HP === 'chrmyy' || HOME_HP === 'stzl') {
         opts.push(
           { value: '70', label: '规格' },
