@@ -114,6 +114,20 @@
           >
             导出Excel(新)
           </el-button>
+          <template v-if="isStzyyy">
+            <el-upload
+              class="inline-upload"
+              action=""
+              :show-file-list="false"
+              accept=".xlsx,.xls"
+              :http-request="onImportPtOrder"
+            >
+              <el-button type="primary" :loading="importLoading">
+                导入平台订单编号
+              </el-button>
+            </el-upload>
+            <el-button @click="downloadPtOrderTemplate">下载导入模板</el-button>
+          </template>
           <el-button
             v-if="isBdrm"
             type="primary"
@@ -249,13 +263,18 @@
 </template>
 
 <script>
+import { utils, writeFile } from 'xlsx';
+import { HOME_HP } from '@/config/setting';
 import {
   isSzseOrderJs,
   isBdrm,
   canShowInExcelBtn,
   defaultInDateRange
 } from '../utils';
-import { getSTORAGE } from '@/api/Inventory/Goodsshelves';
+import {
+  getSTORAGE,
+  importPtOrderNumExcel
+} from '@/api/Inventory/Goodsshelves';
 
 export default {
   name: 'GoodsshelvesInSearch',
@@ -263,6 +282,8 @@ export default {
     return {
       isSzseOrderJs,
       isBdrm,
+      isStzyyy: HOME_HP === 'stzyyy',
+      importLoading: false,
       showAdvanced: false,
       storageOptions: [],
       defaultWhere: {
@@ -342,6 +363,27 @@ export default {
     },
     aggregateExport() {
       this.$emit('aggregateExport', { ...this.where });
+    },
+    downloadPtOrderTemplate() {
+      const ws = utils.aoa_to_sheet([
+        ['批次ID', '平台订单编号'],
+        ['示例批次ID', '示例平台订单编号']
+      ]);
+      const wb = utils.book_new();
+      utils.book_append_sheet(wb, ws, '模板');
+      writeFile(wb, '平台订单编号导入模板.xlsx');
+    },
+    async onImportPtOrder({ file }) {
+      this.importLoading = true;
+      try {
+        const res = await importPtOrderNumExcel(file);
+        this.$message.success(res.msg || '导入成功');
+        this.search();
+      } catch (e) {
+        this.$message.error(e.message || '导入失败');
+      } finally {
+        this.importLoading = false;
+      }
     }
   }
 };
@@ -357,5 +399,10 @@ export default {
 .date-sep {
   margin: 0 6px;
   color: #606266;
+}
+
+.inline-upload {
+  display: inline-block;
+  margin: 0 8px;
 }
 </style>

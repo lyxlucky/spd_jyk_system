@@ -42,7 +42,7 @@
           :datasource="datasource"
           :selection.sync="selection"
           :row-key="billMode ? 'rowKey' : undefined"
-          :cache-key="billMode ? 'goodsshelvesInBill_v1' : 'goodsshelvesInTable_v4'"
+          :cache-key="billMode ? 'goodsshelvesInBill_v1' : 'goodsshelvesInTable_v8'"
           @current-change="onCurrentChange"
         >
           <template v-if="billMode" v-slot:expand="{ row }">
@@ -287,6 +287,25 @@ export default {
       selection: [],
       columns: withCustomSort(
         [
+        ...(HOME_HP === 'stzyyy'
+          ? [
+              {
+                prop: 'BATCH_ID',
+                label: '批次ID',
+                align: 'center',
+                showOverflowTooltip: true,
+                minWidth: 120
+              },
+              {
+                prop: 'PT_ORDER_NUM',
+                label: '平台订单编号',
+                align: 'center',
+                showOverflowTooltip: true,
+                minWidth: 140,
+                slot: 'ptOrderNum'
+              }
+            ]
+          : []),
         {
           prop: 'UP_SHELF_TYPE',
           label: '入库类型',
@@ -548,18 +567,6 @@ export default {
           showOverflowTooltip: true,
           minWidth: 120
         },
-        ...(HOME_HP === 'stzyyy'
-          ? [
-              {
-                prop: 'PT_ORDER_NUM',
-                label: '平台订单编号',
-                align: 'center',
-                showOverflowTooltip: true,
-                minWidth: 140,
-                slot: 'ptOrderNum'
-              }
-            ]
-          : []),
         {
           prop: 'APPROVAL_NUMBER',
           label: '注册证号',
@@ -917,6 +924,7 @@ export default {
     },
     writeInExcel(result) {
       const headers = [
+        ...(HOME_HP === 'stzyyy' ? ['批次ID', '平台订单编号'] : []),
         '入库类型',
         '订单结算类型',
         '合同类型',
@@ -948,7 +956,6 @@ export default {
         '合同名称',
         '合同编码',
         '平台合同编号',
-        ...(HOME_HP === 'stzyyy' ? ['平台订单编号'] : []),
         '注册证号',
         '操作人',
         '备注',
@@ -971,6 +978,9 @@ export default {
         const price = parseFloat(item.SUPPLY_PRICE);
         const bl = Number(item.price_bl);
         rows.push([
+          ...(HOME_HP === 'stzyyy'
+            ? [item.BATCH_ID || '', item.PT_ORDER_NUM || '']
+            : []),
           item.UP_SHELF_TYPE,
           getOrderJsTypeText(item.ORDER_JS_TYPE),
           formatContractType(item.Contract_Type),
@@ -1010,7 +1020,6 @@ export default {
           item.CONTRACT_NAME,
           item.CONTRACT_CODE,
           item.PT_HTNUM || '',
-          ...(HOME_HP === 'stzyyy' ? [item.PT_ORDER_NUM || ''] : []),
           item.APPROVAL_NUMBER,
           item.Operator,
           item.BZ,

@@ -149,6 +149,22 @@ export async function upBatchIdPtOrderNum(batchId, ptOrderNum) {
   });
 }
 
+/** 批量导入平台订单编号 */
+export async function importPtOrderNumExcel(file) {
+  const fd = new FormData();
+  fd.append('file', file);
+  fd.append('Token', getToken() || '');
+  const res = await request.post('/InStockCheck/ImportPtOrderNumExcel', fd, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+    timeout: 120000
+  });
+  const data = res.data;
+  if (okCode(data?.code)) {
+    return data;
+  }
+  throw new Error(data?.msg || '导入失败');
+}
+
 // 市二：入库按单据号分页（明细仍在 Details，导出走 GetPDAList）
 export async function GetInStockDetailByBill(data) {
   return sendRequest(
