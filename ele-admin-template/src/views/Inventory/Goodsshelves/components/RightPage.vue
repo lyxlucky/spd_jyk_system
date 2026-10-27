@@ -129,6 +129,7 @@
 
 <script>
 import { utils, writeFile } from 'xlsx';
+import { HOME_HP } from '@/config/setting';
 import UserSearch from './rightpage-search.vue';
 import OrderFlowDialog from './OrderFlowDialog.vue';
 import OutCheckRecDialog from './OutCheckRecDialog.vue';
@@ -140,6 +141,7 @@ import {
   GetPDAList2,
   GetOutStockDetailRaw,
   GetOutStockDetailByBill,
+  CreateDeliveryExcelNew,
   ExcelGoodsCKByHW
 } from '@/api/Inventory/Goodsshelves';
 import {
@@ -255,6 +257,7 @@ export default {
       tableHeight: 400,
       storageList: [],
       lastWhere: {},
+      listTotal: 0,
       pageQty: 0,
       totalQty: 0,
       pageAmount: '0.00',
@@ -610,6 +613,17 @@ export default {
           formatter: (row) =>
             row.IS_JC === '1' || row.IS_JC === 1 ? '是' : '否'
         },
+        ...(HOME_HP === 'stzyyy'
+          ? [
+              {
+                prop: 'PROVINCE_PLATFORM_CODE',
+                label: '省平台编码',
+                align: 'center',
+                showOverflowTooltip: true,
+                minWidth: 120
+              }
+            ]
+          : []),
         {
           prop: 'Operator',
           label: '操作人',
@@ -692,6 +706,7 @@ export default {
           } else {
             this.updateSummary(list);
           }
+          this.listTotal = Number(res.total) || 0;
           return {
             count: res.total,
             list
@@ -781,8 +796,9 @@ export default {
     async exportExcel(where) {
       const loading = this.$messageLoading('正在导出数据...');
       try {
-        const data = await GetOutStockDetailRaw({
-          where: where || this.lastWhere
+        const data = await CreateDeliveryExcelNew({
+          where: where || this.lastWhere,
+          total: this.listTotal
         });
         loading.close();
         if (data?.code == 303 || data?.code === '303') {
@@ -801,13 +817,21 @@ export default {
         if (!(data?.code == 200 || data?.code === '200')) {
           throw new Error(data?.msg || '导出失败');
         }
-        const rows = data.result || [];
-        if (!rows.length) {
-          this.$message.warning('没有可导出的数据');
+        if (!data?.msg) {
+          this.$message.warning('未返回文件');
           return;
         }
-        this.writeOutExcel(rows);
-        this.$message.success(`导出成功，共 ${rows.length} 条`);
+        openExcelFile(data.msg);
+        if (data.queryMs != null) {
+          const q = (Number(data.queryMs) / 1000).toFixed(1);
+          const e = (Number(data.excelMs || 0) / 1000).toFixed(1);
+          const all = (Number(data.totalMs || 0) / 1000).toFixed(1);
+          this.$message.success(
+            `导出成功：查库 ${q}s，写Excel ${e}s，合计 ${all}s，共 ${data.rows || 0} 行`
+          );
+        } else {
+          this.$message.success('导出成功');
+        }
       } catch (e) {
         loading.close();
         this.$message.error(e.message || '导出失败');
@@ -848,6 +872,7 @@ export default {
         '是否中标',
         '来源',
         '是否集采',
+        ...(HOME_HP === 'stzyyy' ? ['省平台编码'] : []),
         '操作人',
         '上传状态',
         '采购方式'
@@ -894,6 +919,7 @@ export default {
           item.IS_BIDDING === '1' || item.IS_BIDDING === 1 ? '是' : '否',
           item.SOURCE_FROM,
           item.IS_JC === '1' || item.IS_JC === 1 ? '是' : '否',
+          ...(HOME_HP === 'stzyyy' ? [item.PROVINCE_PLATFORM_CODE || ''] : []),
           item.Operator,
           formatUploadState(item),
           item.ORDER_TYPE == '1' ? '线上采购' : '线下采购'

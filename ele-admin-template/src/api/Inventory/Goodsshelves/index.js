@@ -1,6 +1,6 @@
 import request from '@/utils/request';
 import { getToken } from '@/utils/token-util';
-import { TOKEN_STORE_NAME } from '@/config/setting';
+import { HOME_HP, TOKEN_STORE_NAME } from '@/config/setting';
 
 function okCode(c) {
   return c === 200 || c === '200';
@@ -22,13 +22,20 @@ function normSize(size) {
 }
 
 /**
- * 导出超时（默认 axios 仅 2 分钟）。
- * size>300 时后端会跳过全量 COUNT/SUM，再配合加长超时可撑住约 1 万条导出。
- * 注意：不可前端分多页拉取——ExportAudit 第一页成功后会 MarkAsExecuted，后续页会被拦。
+ * 大导出：查库仍可能很久，前端放宽到 30 分钟。
+ * 明细导出走服务端 Create*ExcelNew；size>300 时后端跳过 COUNT/SUM。
  */
-const EXPORT_TIMEOUT_MS = 10 * 60 * 1000;
-/** 导出 size：触发审计(>9999)且跳过 Count(>300) */
+const EXPORT_TIMEOUT_MS = 30 * 60 * 1000;
+/** 默认导出 size（未知 total 时）：触发审计(>9999)且跳过 Count(>300) */
 const EXPORT_SIZE = 9999999;
+
+/** 按列表 total 收紧 ROWNUM：>300 跳过 Count；<=9999 不触发审计 */
+export function resolveExportSize(knownTotal) {
+  const t = parseInt(knownTotal, 10) || 0;
+  if (t <= 0) return EXPORT_SIZE;
+  if (t <= 9999) return Math.max(t + 100, 301);
+  return EXPORT_SIZE;
+}
 
 /**
  * 与旧 layui $.post 一致：application/x-www-form-urlencoded（非 multipart）
@@ -77,13 +84,14 @@ async function sendRequest(url, params, options = {}) {
 
 /** 流向明细导出：单次拉全量 + 加长超时（含 303 审计响应原样返回） */
 async function fetchExportRaw(url, buildParams, data) {
+  const limit = resolveExportSize(data?.total);
   const res = await postForm(
     url,
     {
       Token: getToken() || '',
       ...buildParams({
         page: 1,
-        limit: EXPORT_SIZE,
+        limit,
         where: data?.where,
         order: data?.order
       })
@@ -224,7 +232,7 @@ export async function GetOutStockDetailByBill(data) {
   );
 }
 
-/** 入库导出拉取（含 303 审计） */
+/** 入库导出拉取（含 303 审计）——列表汇总等仍可能复用 */
 export async function GetInStockDetailRaw(data) {
   return fetchExportRaw(
     '/InStockCheck/GetInStockDetail',
@@ -233,11 +241,29 @@ export async function GetInStockDetailRaw(data) {
   );
 }
 
-/** 出库导出拉取（含 303 审计） */
+/** 出库导出拉取（含 303 审计）——列表汇总等仍可能复用 */
 export async function GetOutStockDetailRaw(data) {
   return fetchExportRaw(
     '/InStockCheck/GetOutStockDetail',
     buildOutStockParams,
+    data
+  );
+}
+
+/** 入库明细服务端导出 Excel（返回文件名 msg，含 303 审计） */
+export async function CreateStorageExcelNew(data) {
+  return fetchExportRaw(
+    '/InStockCheck/CreateStorageExcelNew',
+    (d) => ({ ...buildInStockParams(d), hp: HOME_HP || '' }),
+    data
+  );
+}
+
+/** 出库明细服务端导出 Excel（返回文件名 msg，含 303 审计） */
+export async function CreateDeliveryExcelNew(data) {
+  return fetchExportRaw(
+    '/InStockCheck/CreateDeliveryExcelNew',
+    (d) => ({ ...buildOutStockParams(d), hp: HOME_HP || '' }),
     data
   );
 }

@@ -157,9 +157,11 @@ import {
   GetPDAList,
   GetInStockDetailRaw,
   GetInStockDetailByBill,
+  CreateStorageExcelNew,
   upBatchIdPtOrderNum
 } from '@/api/Inventory/Goodsshelves';
 import {
+  openExcelFile,
   getOrderJsTypeText,
   formatHighLowClassTwo,
   formatUploadState,
@@ -263,6 +265,7 @@ export default {
       // 固定表高，不随剩余视口压缩（小窗口靠页面滚动查看）
       tableHeight: 400,
       lastWhere: {},
+      listTotal: 0,
       inCheckVisible: false,
       auditVisible: false,
       auditMeta: { requestUrl: '', dataType: '', keyParams: '' },
@@ -665,7 +668,18 @@ export default {
           minWidth: 90,
           formatter: (row) =>
             row.IS_JC === '1' || row.IS_JC === 1 ? '是' : '否'
-        }
+        },
+        ...(HOME_HP === 'stzyyy'
+          ? [
+              {
+                prop: 'PROVINCE_PLATFORM_CODE',
+                label: '省平台编码',
+                align: 'center',
+                showOverflowTooltip: true,
+                minWidth: 120
+              }
+            ]
+          : [])
       ])
     };
   },
@@ -760,6 +774,7 @@ export default {
           } else {
             this.updateSummary(list, res);
           }
+          this.listTotal = Number(res.total) || 0;
           return {
             count: res.total,
             list
@@ -874,12 +889,22 @@ export default {
         return;
       }
       try {
-        const { value } = await this.$prompt('平台订单编号', '平台订单编号', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          inputValue: row.PT_ORDER_NUM || '',
-          closeOnClickModal: false
-        });
+        const current = row.PT_ORDER_NUM || '（无）';
+        const { value } = await this.$prompt(
+          `当前编号：${current}\n请输入要追加的平台订单编号（不会覆盖原编号）`,
+          '追加平台订单编号',
+          {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            inputValue: '',
+            inputPlaceholder: '新增平台订单编号',
+            closeOnClickModal: false
+          }
+        );
+        if (!(value || '').trim()) {
+          this.$message.warning('请输入要追加的平台订单编号');
+          return;
+        }
         const loading = this.$messageLoading('保存中...');
         try {
           await upBatchIdPtOrderNum(row.BATCH_ID, value ?? '');
@@ -897,8 +922,9 @@ export default {
     async exportExcel(where) {
       const loading = this.$messageLoading('正在导出数据...');
       try {
-        const data = await GetInStockDetailRaw({
-          where: where || this.lastWhere
+        const data = await CreateStorageExcelNew({
+          where: where || this.lastWhere,
+          total: this.listTotal
         });
         loading.close();
         if (data?.code == 303 || data?.code === '303') {
@@ -917,13 +943,21 @@ export default {
         if (!(data?.code == 200 || data?.code === '200')) {
           throw new Error(data?.msg || '导出失败');
         }
-        const rows = data.result || [];
-        if (!rows.length) {
-          this.$message.warning('没有可导出的数据');
+        if (!data?.msg) {
+          this.$message.warning('未返回文件');
           return;
         }
-        this.writeInExcel(rows);
-        this.$message.success(`导出成功，共 ${rows.length} 条`);
+        openExcelFile(data.msg);
+        if (data.queryMs != null) {
+          const q = (Number(data.queryMs) / 1000).toFixed(1);
+          const e = (Number(data.excelMs || 0) / 1000).toFixed(1);
+          const all = (Number(data.totalMs || 0) / 1000).toFixed(1);
+          this.$message.success(
+            `导出成功：查库 ${q}s，写Excel ${e}s，合计 ${all}s，共 ${data.rows || 0} 行`
+          );
+        } else {
+          this.$message.success('导出成功');
+        }
       } catch (e) {
         loading.close();
         this.$message.error(e.message || '导出失败');
@@ -972,6 +1006,7 @@ export default {
         '计划审批时间',
         '来源',
         '是否集采',
+        ...(HOME_HP === 'stzyyy' ? ['省平台编码'] : []),
         '采购方式'
       ];
       const rows = [headers];
@@ -1038,6 +1073,7 @@ export default {
             : String(item.APPROVE_TIME).replace('T', ' '),
           item.SOURCE_FROM,
           item.IS_JC === '1' || item.IS_JC === 1 ? '是' : '否',
+          ...(HOME_HP === 'stzyyy' ? [item.PROVINCE_PLATFORM_CODE || ''] : []),
           item.ORDER_TYPE == '1' ? '线上采购' : '线下采购'
         ]);
       });
