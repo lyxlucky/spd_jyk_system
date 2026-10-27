@@ -464,6 +464,8 @@ import {
   showDeleteAndSendFilter,
   showPtHtnum,
   readjustPriceIsSpt,
+  showStzyyyReadjustExtra,
+  STZYYY_EXPORT_EXTRA_HEADERS,
   createDefaultWhere,
   formatReadjustState,
   formatSendState,
@@ -547,7 +549,8 @@ export default {
       showSendHis: canSendHisReadjust(),
       showSendFilter: showDeleteAndSendFilter(HOME_HP),
       showPtHtnumField: showPtHtnum(HOME_HP),
-      showSpt: readjustPriceIsSpt(HOME_HP)
+      showSpt: readjustPriceIsSpt(HOME_HP),
+      showStzyyyExtra: showStzyyyReadjustExtra(HOME_HP)
     };
   },
   computed: {
@@ -568,8 +571,31 @@ export default {
           showOverflowTooltip: true
         });
       }
+      cols.push({ prop: 'Varietie_Name', label: '品种名称', minWidth: 160, showOverflowTooltip: true });
+      if (this.showStzyyyExtra) {
+        cols.push(
+          {
+            prop: 'IS_JC',
+            label: '是否集采',
+            width: 80,
+            align: 'center',
+            formatter: (_r, _c, v) => formatYesNo(v)
+          },
+          {
+            prop: 'READJUST_STOCK_QTY',
+            label: '调价库存数量',
+            width: 110,
+            align: 'right'
+          },
+          {
+            prop: 'PT_ORDER_NUM',
+            label: '平台订单编号',
+            minWidth: 160,
+            showOverflowTooltip: true
+          }
+        );
+      }
       cols.push(
-        { prop: 'Varietie_Name', label: '品种名称', minWidth: 160, showOverflowTooltip: true },
         { prop: 'CHARGING_CODE', label: '计费编码', width: 90, showOverflowTooltip: true },
         { prop: 'Curr_Supply_Price', label: '原结算价', width: 90, align: 'right' },
         { prop: 'New_Supply_Price', label: '新结算价', width: 90, align: 'right' },
@@ -1123,8 +1149,20 @@ export default {
         formatYesNo(row.IS_UPDATE_BASE_CONTRACT_PRICE),
         row.New_Contract_Code || ''
       ];
+      // 品种编码后插省平台编码；品种名称后插汕头中医院扩展列
+      let nameIdx = 5;
       if (this.showSpt) {
         base.splice(5, 0, row.PROVINCE_PLATFORM_CODE || '');
+        nameIdx = 6;
+      }
+      if (this.showStzyyyExtra) {
+        base.splice(
+          nameIdx + 1,
+          0,
+          formatYesNo(row.IS_JC),
+          row.READJUST_STOCK_QTY ?? '',
+          row.PT_ORDER_NUM || ''
+        );
       }
       return base;
     },
@@ -1150,8 +1188,13 @@ export default {
         '新合同号',
         '合同文件'
       ];
+      let nameIdx = 5;
       if (this.showSpt) {
         headers.splice(5, 0, '省平台编码');
+        nameIdx = 6;
+      }
+      if (this.showStzyyyExtra) {
+        headers.splice(nameIdx + 1, 0, ...STZYYY_EXPORT_EXTRA_HEADERS);
       }
       return headers;
     },
@@ -1177,8 +1220,19 @@ export default {
         row.New_Contract_Code || '',
         row.Contract_File_Path || ''
       ];
+      let nameIdx = 5;
       if (this.showSpt) {
         base.splice(5, 0, row.PROVINCE_PLATFORM_CODE || '');
+        nameIdx = 6;
+      }
+      if (this.showStzyyyExtra) {
+        base.splice(
+          nameIdx + 1,
+          0,
+          formatYesNo(row.IS_JC),
+          row.READJUST_STOCK_QTY ?? '',
+          row.PT_ORDER_NUM || ''
+        );
       }
       return base;
     },
@@ -1198,8 +1252,13 @@ export default {
           return;
         }
         const headers = [...EXPORT_HEADERS];
+        let nameIdx = 5;
         if (this.showSpt) {
           headers.splice(5, 0, '省平台编码');
+          nameIdx = 6;
+        }
+        if (this.showStzyyyExtra) {
+          headers.splice(nameIdx + 1, 0, ...STZYYY_EXPORT_EXTRA_HEADERS);
         }
         const data = [headers, ...rows.map((r) => this.mapExportRow(r))];
         const ws = utils.aoa_to_sheet(data);
