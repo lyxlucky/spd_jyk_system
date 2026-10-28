@@ -2,54 +2,207 @@
   <el-dialog
     :visible.sync="visibleSync"
     :title="title || '耗材使用明细'"
-    width="1180px"
+    width="92%"
+    top="5vh"
+    custom-class="material-detail-dialog"
     append-to-body
     :close-on-click-modal="true"
     @open="onOpen"
+    @closed="onClosed"
   >
-    <div class="material-detail-toolbar">
-      <span class="material-detail-selection">已选 {{ selection.length }} 条</span>
-      <el-button
+    <div class="material-detail-content">
+      <div class="material-detail-toolbar">
+        <span class="material-detail-selection">已选 {{ selection.length }} 条</span>
+        <el-button
+          size="mini"
+          type="danger"
+          plain
+          icon="el-icon-delete"
+          :loading="deleting"
+          :disabled="!selection.length"
+          @click="handleBatchDelete"
+        >
+          批量删除
+        </el-button>
+      </div>
+
+      <div class="material-detail-table-wrap">
+        <vxe-table
+          ref="table"
+          class="data-table material-detail-table"
+          :data="tableData"
+          :loading="tableLoading"
+          border
+          stripe
+          size="mini"
+          height="100%"
+          show-overflow
+          empty-text="暂无耗材使用明细"
+          :row-config="{ keyField: 'ID', isHover: true }"
+          :column-config="{ resizable: true }"
+          :checkbox-config="{ highlight: true, trigger: 'row' }"
+          @checkbox-change="onCheckboxChange"
+          @checkbox-all="onCheckboxAll"
+        >
+          <vxe-column type="checkbox" width="46" align="center" fixed="left" />
+          <vxe-column type="seq" title="序号" width="60" align="center" fixed="left" />
+          <vxe-column
+            field="AREA_NAME"
+            title="库房/库区"
+            width="150"
+            align="center"
+          />
+          <vxe-column
+            field="DEPT_TWO_CODE"
+            title="SPD科室编码"
+            width="130"
+            align="center"
+          />
+          <vxe-column
+            field="DEPT_TWO_NAME"
+            title="SPD科室名称"
+            width="160"
+            align="center"
+          />
+          <vxe-column
+            field="CHARGE_CODE"
+            title="计费编码"
+            width="130"
+            align="center"
+          />
+          <vxe-column
+            field="BARCODE_NUMBER"
+            title="定数码"
+            width="130"
+            align="center"
+          />
+          <vxe-column
+            field="VARIETIE_NAME"
+            title="品种名称"
+            min-width="220"
+            align="center"
+          />
+          <vxe-column
+            field="SPECIFICATION_OR_TYPE"
+            title="规格型号"
+            width="180"
+            align="center"
+          />
+          <vxe-column
+            field="MANUFACTURING_ENT_NAME"
+            title="生产企业"
+            min-width="220"
+            align="center"
+          />
+          <vxe-column field="UNIT" title="单位" width="80" align="center" />
+          <vxe-column
+            field="PRE_DEDUCT_QTY"
+            title="预扣数量"
+            width="100"
+            align="right"
+            :formatter="formatQty"
+          />
+          <vxe-column
+            field="STOCK_DEDUCT_TYPE_NAME"
+            title="扣费类型"
+            width="100"
+            align="center"
+            :formatter="formatStockDeductType"
+          />
+          <vxe-column
+            field="PATIENT_NUMBER"
+            title="病患号"
+            width="120"
+            align="center"
+          />
+          <vxe-column
+            field="HOSPITALIZATION_NUMBER"
+            title="住院号"
+            width="120"
+            align="center"
+          />
+          <vxe-column field="JF_ID" title="计费记录ID" width="160" align="center" />
+          <vxe-column field="BATCH_NO" title="批号" width="120" align="center" />
+          <vxe-column field="EXPIRY_DATE" title="有效期" width="120" align="center" />
+          <vxe-column field="CONSUMER" title="操作人" width="110" align="center" />
+          <vxe-column
+            field="CREATE_TIME"
+            title="创建时间"
+            width="170"
+            align="center"
+            :formatter="formatDateTime"
+          />
+          <vxe-column
+            field="QTY"
+            title="数量"
+            width="90"
+            align="right"
+            fixed="right"
+            :formatter="formatQty"
+          />
+          <vxe-column
+            field="MEDICAL_ORDER_ID"
+            title="医嘱ID"
+            width="150"
+            align="center"
+            fixed="right"
+          />
+          <vxe-column
+            field="OPEARTION_CHARGING_TIME"
+            title="计费时间"
+            width="170"
+            align="center"
+            fixed="right"
+            :formatter="formatDateTime"
+          />
+          <vxe-column
+            title="操作"
+            width="70"
+            align="center"
+            fixed="right"
+            class-name="action-col"
+          >
+            <template v-slot="{ row }">
+              <el-link
+                type="danger"
+                :underline="false"
+                :disabled="deleting"
+                @click.stop="handleDelete(row)"
+              >
+                删除
+              </el-link>
+            </template>
+          </vxe-column>
+        </vxe-table>
+      </div>
+
+      <vxe-pager
+        class="material-detail-pager"
         size="mini"
-        type="danger"
-        plain
-        icon="el-icon-delete"
-        :loading="deleting"
-        :disabled="!selection.length"
-        @click="handleBatchDelete"
+        :current-page="pagination.currentPage"
+        :page-size="pagination.pageSize"
+        :total="pagination.total"
+        :page-sizes="[10, 50, 100, 150, 200, 300, 999999]"
+        :layouts="[
+          'PrevJump',
+          'PrevPage',
+          'Number',
+          'NextPage',
+          'NextJump',
+          'Sizes',
+          'FullJump',
+          'Total'
+        ]"
+        @page-change="onPageChange"
       >
-        批量删除
-      </el-button>
+      </vxe-pager>
     </div>
-    <ele-pro-table
-      ref="table"
-      class="data-table"
-      size="mini"
-      border
-      stripe
-      row-key="ID"
-      :toolbar="false"
-      :header-overflow-hidden="false"
-      :height="tableHeight"
-      :columns="columns"
-      :datasource="datasource"
-      :selection.sync="selection"
-      :page-size="50"
-      :page-sizes="[10, 50, 100, 150, 200, 300, 999999]"
-      cache-key="WarehouseAreaThreeInventoryDetailTable"
-    >
-      <template v-slot:materialDetailAction="{ row }">
-        <el-link type="danger" :underline="false" :disabled="deleting" @click.stop="handleDelete(row)">
-          删除
-        </el-link>
-      </template>
-    </ele-pro-table>
   </el-dialog>
 </template>
 
 <script>
 import { Message } from 'element-ui';
-import { getMaterialDetailColumns } from '../columns';
+import { fmtDateTime, fmtQty, stockDeductTypeName } from '../utils';
 import { deleteMaterialDetails, getMaterialDetail } from '@/api/Inventory/WarehouseAreaThreeInventory';
 
 export default {
@@ -64,10 +217,15 @@ export default {
   },
   data() {
     return {
-      columns: getMaterialDetailColumns(),
-      tableHeight: '470px',
+      tableData: [],
+      tableLoading: false,
       selection: [],
-      deleting: false
+      deleting: false,
+      pagination: {
+        currentPage: 1,
+        pageSize: 50,
+        total: 0
+      }
     };
   },
   computed: {
@@ -81,12 +239,68 @@ export default {
     }
   },
   methods: {
-    // 弹窗打开后重新加载明细表格。
+    // 数量、时间和扣费类型统一使用与汇总表一致的显示格式。
+    formatQty({ cellValue }) {
+      return fmtQty(cellValue);
+    },
+    formatDateTime({ cellValue }) {
+      return fmtDateTime(cellValue);
+    },
+    formatStockDeductType({ row }) {
+      return row.STOCK_DEDUCT_TYPE_NAME || stockDeductTypeName(row.STOCK_DEDUCT_TYPE);
+    },
+    // 弹窗打开后重置分页并加载明细。
     onOpen() {
       this.selection = [];
+      this.pagination.currentPage = 1;
       this.$nextTick(() => {
-        this.$refs.table && this.$refs.table.reload({ page: 1 });
+        this.loadTableData();
       });
+    },
+    onClosed() {
+      this.tableData = [];
+      this.selection = [];
+      this.pagination.total = 0;
+      this.pagination.currentPage = 1;
+    },
+    async loadTableData() {
+      if (!this.filters?.AREA_CODE) {
+        this.tableData = [];
+        this.pagination.total = 0;
+        return;
+      }
+      this.tableLoading = true;
+      try {
+        const res = await getMaterialDetail(
+          this.filters,
+          this.pagination.currentPage,
+          this.pagination.pageSize
+        );
+        this.tableData = res.result || [];
+        this.pagination.total = res.total || res.count || 0;
+      } catch (e) {
+        this.tableData = [];
+        this.pagination.total = 0;
+        Message.error(e.message || '查询明细失败');
+      } finally {
+        this.tableLoading = false;
+      }
+    },
+    onPageChange({ currentPage, pageSize }) {
+      this.pagination.currentPage = currentPage;
+      this.pagination.pageSize = pageSize;
+      this.clearSelection();
+      this.loadTableData();
+    },
+    onCheckboxChange({ records }) {
+      this.selection = records || [];
+    },
+    onCheckboxAll({ records }) {
+      this.selection = records || [];
+    },
+    clearSelection() {
+      this.selection = [];
+      this.$refs.table?.clearCheckboxRow?.();
     },
     // 删除单条明细。
     async handleDelete(row) {
@@ -121,26 +335,14 @@ export default {
         this.deleting = true;
         const res = await deleteMaterialDetails(uniqueIds, this.filters);
         Message.success(res.msg || `已删除 ${count} 条明细`);
-        this.selection = [];
-        this.$refs.table && this.$refs.table.reload({ page: 1 });
+        this.clearSelection();
+        this.pagination.currentPage = 1;
+        await this.loadTableData();
       } catch (e) {
         if (e === 'cancel' || e === 'close') return;
         Message.error(e.message || '删除失败');
       } finally {
         this.deleting = false;
-      }
-    },
-    // 三级库库存流水明细表格数据源。
-    async datasource({ page, limit }) {
-      if (!this.filters?.AREA_CODE) {
-        return { count: 0, list: [] };
-      }
-      try {
-        const res = await getMaterialDetail(this.filters, page || 1, limit || 50);
-        return { count: res.total || res.count || 0, list: res.result || [] };
-      } catch (e) {
-        Message.error(e.message || '查询明细失败');
-        return { count: 0, list: [] };
       }
     }
   }
@@ -148,8 +350,18 @@ export default {
 </script>
 
 <style scoped>
+.material-detail-content {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  min-width: 0;
+}
+
 .material-detail-toolbar {
   display: flex;
+  flex: none;
   align-items: center;
   justify-content: flex-end;
   gap: 12px;
@@ -161,7 +373,47 @@ export default {
   font-size: 12px;
 }
 
-:deep(.el-table th .cell) {
-  white-space: nowrap;
+.material-detail-table-wrap {
+  flex: 1;
+  width: 100%;
+  min-height: 0;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.material-detail-table {
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+}
+
+.material-detail-pager {
+  display: flex;
+  flex: none;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+</style>
+
+<style>
+.material-detail-dialog {
+  display: flex;
+  flex-direction: column;
+  height: 90%;
+  margin-bottom: 0;
+  overflow: hidden;
+}
+
+.material-detail-dialog .el-dialog__header {
+  flex: none;
+}
+
+.material-detail-dialog .el-dialog__body {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+  padding: 12px 16px 16px;
+  overflow: hidden;
 }
 </style>
