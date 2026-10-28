@@ -616,6 +616,13 @@ export default {
         ...(HOME_HP === 'stzyyy'
           ? [
               {
+                prop: 'CLASSIFIC_NAME',
+                label: '财务分类属性',
+                align: 'center',
+                showOverflowTooltip: true,
+                minWidth: 100
+              },
+              {
                 prop: 'PROVINCE_PLATFORM_CODE',
                 label: '省平台编码',
                 align: 'center',
@@ -872,7 +879,7 @@ export default {
         '是否中标',
         '来源',
         '是否集采',
-        ...(HOME_HP === 'stzyyy' ? ['省平台编码'] : []),
+        ...(HOME_HP === 'stzyyy' ? ['财务分类属性', '省平台编码'] : []),
         '操作人',
         '上传状态',
         '采购方式'
@@ -919,7 +926,9 @@ export default {
           item.IS_BIDDING === '1' || item.IS_BIDDING === 1 ? '是' : '否',
           item.SOURCE_FROM,
           item.IS_JC === '1' || item.IS_JC === 1 ? '是' : '否',
-          ...(HOME_HP === 'stzyyy' ? [item.PROVINCE_PLATFORM_CODE || ''] : []),
+          ...(HOME_HP === 'stzyyy'
+            ? [item.CLASSIFIC_NAME || '', item.PROVINCE_PLATFORM_CODE || '']
+            : []),
           item.Operator,
           formatUploadState(item),
           item.ORDER_TYPE == '1' ? '线上采购' : '线下采购'

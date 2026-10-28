@@ -1,4 +1,4 @@
-import { HOME_HP } from '@/config/setting';
+﻿import { HOME_HP } from '@/config/setting';
 import {
   fmtDate10,
   fmtMainUpShelfState,
@@ -152,7 +152,7 @@ export function buildMainColumns(opts = {}) {
     },
     { prop: 'AVG7', label: '周日均用量', width: 85, align: 'center', sortable: 'custom' },
     { prop: 'AVG30', label: '月日均用量', width: 85, align: 'center', sortable: 'custom' },
-    { prop: 'Batch_Id', label: '批次号ID', width: 75, showOverflowTooltip: true },
+    { prop: 'Batch_Id', label: '批次ID', width: 75, showOverflowTooltip: true },
     { prop: 'MGMT_CAT_NAME', label: '管理类别', width: 80, showOverflowTooltip: true },
     { prop: 'DELIVERY_NOTE_NUMBER', label: 'SPD入库单号', minWidth: 100, showOverflowTooltip: true },
     {

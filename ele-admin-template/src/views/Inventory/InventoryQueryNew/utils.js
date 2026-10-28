@@ -1,4 +1,4 @@
-import store from '@/store';
+﻿import store from '@/store';
 import { BACK_BASE_URL, HOME_HP } from '@/config/setting';
 
 export function openExcelFile(fileName) {
@@ -288,7 +288,7 @@ function buildStzxExportRows(list) {
     '散货锁定',
     '定数包锁定',
     '定数包预锁',
-    '批次号ID',
+    '批次ID',
     '品牌',
     '货位号',
     '合同名称',
@@ -358,7 +358,7 @@ function buildStzyExportRows(list) {
     '散货锁定',
     '定数包锁定',
     '定数包预锁',
-    '批次号ID',
+    '批次ID',
     '品牌',
     '货位号',
     '合同名称',
@@ -446,7 +446,7 @@ function buildNormalExportRows(list) {
     '散货锁定',
     '定数包锁定',
     '定数包预锁',
-    '批次号ID',
+    '批次ID',
     '品牌',
     '货位号',
     '合同名称',
