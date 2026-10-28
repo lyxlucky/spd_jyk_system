@@ -114,6 +114,31 @@ export const DEPT_MATERIAL_EXPORT_HEADERS = [
   '最近使用时间'
 ];
 
+export const MATERIAL_DETAIL_EXPORT_HEADERS = [
+  '序号',
+  '库房/库区',
+  'SPD科室编码',
+  'SPD科室名称',
+  '计费编码',
+  '定数码',
+  '品种名称',
+  '规格型号',
+  '生产企业',
+  '单位',
+  '数量',
+  '预扣数量',
+  '扣费类型',
+  '病患号',
+  '住院号',
+  '医嘱ID',
+  '计费记录ID',
+  '批号',
+  '有效期',
+  '操作人',
+  '计费时间',
+  '创建时间'
+];
+
 // 库房/库区汇总导出行转换。
 export function warehouseRowToExportArray(row, index) {
   return [
@@ -170,5 +195,33 @@ export function deptMaterialRowToExportArray(row, index) {
     row.REAL_DEDUCT_QTY,
     row.PRE_DEDUCT_QTY,
     fmtDateTime(row.LAST_OPERATE_TIME)
+  ];
+}
+
+// 耗材使用明细导出行转换
+export function materialDetailRowToExportArray(row, index) {
+  return [
+    index + 1,
+    row.AREA_NAME,
+    row.DEPT_TWO_CODE,
+    row.DEPT_TWO_NAME,
+    row.CHARGE_CODE,
+    row.BARCODE_NUMBER,
+    row.VARIETIE_NAME,
+    row.SPECIFICATION_OR_TYPE,
+    row.MANUFACTURING_ENT_NAME,
+    row.UNIT,
+    fmtQty(row.QTY),
+    fmtQty(row.PRE_DEDUCT_QTY),
+    row.STOCK_DEDUCT_TYPE_NAME || stockDeductTypeName(row.STOCK_DEDUCT_TYPE),
+    row.PATIENT_NUMBER,
+    row.HOSPITALIZATION_NUMBER,
+    row.MEDICAL_ORDER_ID,
+    row.JF_ID,
+    row.BATCH_NO,
+    row.EXPIRY_DATE,
+    row.CONSUMER,
+    fmtDateTime(row.OPEARTION_CHARGING_TIME),
+    fmtDateTime(row.CREATE_TIME)
   ];
 }

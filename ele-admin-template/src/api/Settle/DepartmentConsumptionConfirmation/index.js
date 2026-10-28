@@ -116,6 +116,31 @@ export async function getSzseReturnCabinetAlert(data) {
 }
 
 /**
+ * 科室消耗确认 - 还柜提醒确认处理（忽略）
+ * @param {Object} data - { Items: Array<{ID, DEF_NO_PKG_CODE}>, IGNORE_MARK?: string }
+ * @returns {Promise}
+ */
+export async function ignoreSzseReturnCabinetAlert(data) {
+  const formatData = {
+    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+    Items: data.Items || [],
+    IGNORE_MARK: data.IGNORE_MARK || '',
+    DEPT_TWO_CODE: store.state.user.info?.DeptNow?.Dept_Two_Code || ''
+  };
+
+  const res = await request.post(
+    '/DeptConsume/ignoreSzseReturnCabinetAlert',
+    formatData
+  );
+
+  if (res.data.code == 200) {
+    return res.data;
+  } else {
+    return Promise.reject(new Error(res.data.msg));
+  }
+}
+
+/**
  * 科室消耗确认 - 确认使用
  * @param {Object} data - 请求参数 { SzseSpUseHzInfoList: Array, state: string, mark: string, searchForm: Object }
  * @returns {Promise} - 返回请求Promise

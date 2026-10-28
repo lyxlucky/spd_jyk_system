@@ -1,48 +1,136 @@
 <template>
   <div class="ele-body">
     <div class="ele-page-header"> </div>
-    <el-card v-for="(item, index) in MenuList" :key="index" shadow="never">
-      <div class="demo-image" style="display: flex; flex-wrap: wrap">
-        <div
-          class="block"
-          v-for="p in item"
-          :key="p.component"
-          style="margin: 10px"
-        >
+
+    <template v-if="isBdrm">
+      <el-card v-for="(item, index) in MenuList" :key="'bdrm-' + index" shadow="never">
+        <div class="demo-image" style="display: flex; flex-wrap: wrap">
           <div
-            style="
-              width: 90px;
-              height: 70px;
-              border-radius: 2px;
-              margin-right: 20px;
-            "
-            @click="changeRoute(p.component)"
+            class="block"
+            v-for="p in item"
+            :key="p.component"
+            style="margin: 10px"
           >
-            <el-button type="text" class="button">
-              <div style="width: 100px; display: flex; justify-content: center">
-                <svg-icon
-                  :icon-class="p.icon || ''"
-                  style="width: 40px; height: 40px"
-                />
-              </div>
-              <div
-                style="
-                  width: 100px;
-                  display: flex;
-                  justify-content: center;
-                  margin-top: 5px;
-                  color: #606266;
-                "
-              >
-                <div class="bottom clearfix">
-                  <span>{{ p.title }}</span>
+            <div
+              style="
+                width: 90px;
+                height: 70px;
+                border-radius: 2px;
+                margin-right: 20px;
+              "
+              @click="changeRoute(p.component)"
+            >
+              <el-button type="text" class="button">
+                <div style="width: 100px; display: flex; justify-content: center">
+                  <svg-icon
+                    :icon-class="p.icon || ''"
+                    style="width: 40px; height: 40px"
+                  />
                 </div>
-              </div>
-            </el-button>
+                <div
+                  style="
+                    width: 100px;
+                    display: flex;
+                    justify-content: center;
+                    margin-top: 5px;
+                    color: #606266;
+                  "
+                >
+                  <div class="bottom clearfix">
+                    <span>{{ p.title }}</span>
+                  </div>
+                </div>
+              </el-button>
+            </div>
           </div>
         </div>
-      </div>
-    </el-card>
+      </el-card>
+    </template>
+
+    <template v-else>
+      <el-card class="menu-section-card" shadow="never">
+        <div slot="header" class="menu-section-header">
+          <span>最近使用</span>
+          <el-button type="text" icon="el-icon-plus" @click="openAddRecentDialog">
+            添加
+          </el-button>
+        </div>
+        <div v-if="recentMenuItems.length" class="menu-icon-grid">
+          <div
+            class="block recent-block"
+            v-for="p in recentMenuItems"
+            :key="'recent-' + p.path"
+          >
+            <div class="menu-icon-item" @click="changeRoute(p.path)">
+              <el-button type="text" class="button">
+                <div class="menu-icon-wrap">
+                  <i
+                    v-if="p.icon && String(p.icon).indexOf('el-icon') === 0"
+                    :class="p.icon"
+                    class="menu-el-icon"
+                  />
+                  <svg-icon
+                    v-else
+                    :icon-class="p.icon || ''"
+                    style="width: 40px; height: 40px"
+                  />
+                </div>
+                <div class="menu-icon-title">
+                  <span>{{ p.title }}</span>
+                </div>
+              </el-button>
+            </div>
+            <i
+              class="el-icon-close recent-remove"
+              title="移除"
+              @click.stop="removeRecentItem(p)"
+            />
+          </div>
+        </div>
+        <div v-else class="recent-empty">暂无最近使用，可点击右上角「添加」</div>
+      </el-card>
+
+      <el-dialog
+        title="添加最近使用"
+        :visible.sync="addRecentVisible"
+        width="90%"
+        top="5vh"
+        append-to-body
+        custom-class="add-recent-dialog"
+      >
+        <div class="menu-icon-grid add-recent-grid">
+          <div
+            class="block"
+            v-for="p in pickMenuList"
+            :key="'pick-' + p.path"
+          >
+            <div
+              class="menu-icon-item"
+              :class="{ 'is-added': isRecentPath(p.path) }"
+              @click="pickAddRecent(p)"
+            >
+              <el-button type="text" class="button">
+                <div class="menu-icon-wrap">
+                  <svg-icon
+                    :icon-class="p.icon || ''"
+                    style="width: 40px; height: 40px"
+                  />
+                </div>
+                <div class="menu-icon-title">
+                  <span>{{ p.title }}</span>
+                </div>
+              </el-button>
+              <i v-if="isRecentPath(p.path)" class="el-icon-check add-check" />
+            </div>
+          </div>
+        </div>
+        <div slot="footer">
+          <el-button type="primary" @click="addRecentVisible = false">
+            完成
+          </el-button>
+        </div>
+      </el-dialog>
+    </template>
 
     <div
       style="display: flex; justify-content: space-between; align-items: center"
@@ -133,7 +221,10 @@
                 >
                   <div class="bottom clearfix">
                     <span>{{
-                      p.path == '/KSInventory/KSExpirationReminder'
+                      p.path == '/KSInventory/KSExpirationReminder' ||
+                      p.component == '/KSInventory/KSExpirationReminder' ||
+                      p.path == '/KSInventory/KSRemind' ||
+                      p.component == '/KSInventory/KSRemind'
                         ? `${p.title}（${JYkDefRemindTotal}个）`
                         : `${p.title}（${TableListTotal}个）`
                     }}</span>
@@ -275,6 +366,12 @@
     getCurrentDeptVarTop20,
     getJykUsedQty
   } from '@/api/KSInventory/MenuList/index';
+  import {
+    getRecentMenus,
+    addRecentMenu,
+    removeRecentMenu,
+    RECENT_MENUS_CHANGED
+  } from '@/utils/recent-menu-util';
   import EleChart from 'ele-admin/packages/ele-chart';
   export default {
     name: 'MenuList',
@@ -290,7 +387,10 @@
     data() {
       return {
         MenuList: null,
-        KSExpirationReminderVisible: true,
+        recentMenuItems: [],
+        addRecentVisible: false,
+        pickMenuList: [],
+        KSExpirationReminderVisible: false,
         NoticeMenuList: null,
         guideDialogVisible: false,
         JYkDefRemindTotal: 0,
@@ -458,13 +558,55 @@
         });
       },
       changeRoute(data) {
+        const path = data || '';
+        if (
+          path === '/KSInventory/KSExpirationReminder' ||
+          path === '/KSInventory/KSRemind'
+        ) {
+          this.KSExpirationReminderVisible = true;
+          return;
+        }
         this.$router.push(this.$route?.query?.from ?? data);
       },
+      refreshRecentMenus(list) {
+        this.recentMenuItems =
+          list || getRecentMenus(this.$store.state.user.info);
+      },
+      emitRecentChanged(list) {
+        this.$bus.$emit(RECENT_MENUS_CHANGED, list);
+      },
+      openAddRecentDialog() {
+        this.addRecentVisible = true;
+      },
+      isRecentPath(path) {
+        return this.recentMenuItems.some((m) => m.path === path);
+      },
+      pickAddRecent(item) {
+        const userInfo = this.$store.state.user.info;
+        // 已添加则取消，未添加则加入
+        if (this.isRecentPath(item.path)) {
+          const list = removeRecentMenu(item.path, userInfo);
+          this.refreshRecentMenus(list);
+          this.emitRecentChanged(list);
+          return;
+        }
+        const { list, ok, message } = addRecentMenu(item, userInfo);
+        this.refreshRecentMenus(list);
+        this.emitRecentChanged(list);
+        if (!ok && message) {
+          this.$message.warning(message);
+        }
+      },
+      removeRecentItem(item) {
+        const list = removeRecentMenu(item.path, this.$store.state.user.info);
+        this.refreshRecentMenus(list);
+        this.emitRecentChanged(list);
+      },
       permission_groupList() {
-        var permission_group = this.$store.state.user.info.permission_group;
+        let permission_group = [
+          ...(this.$store.state.user.info.permission_group || [])
+        ];
 
-        //控制首页菜单显示
-        //'新资质审核',
         const blackList = [
           '申领计划管理_审核按钮',
           '申领计划管理_审批按钮',
@@ -505,44 +647,56 @@
           return !blackList.includes(res.title);
         });
 
-        //控制菜单显示区域
         const rightMenuList = [
           '/KSInventory/KSNewBatchReminder',
-          '/KSInventory/KSExpirationReminder'
+          '/KSInventory/KSExpirationReminder',
+          '/KSInventory/KSRemind'
         ];
         this.NoticeMenuList = permission_group.filter((res) => {
-          return rightMenuList.includes(res.component);
+          return rightMenuList.includes(res.component) || rightMenuList.includes(res.path);
         });
+        // 登录自动弹窗由 layout/login-tip-dialogs 统一处理（同会话只弹一次）
 
-        permission_group = permission_group.filter((res) => {
-          return !rightMenuList.includes(res.component);
-        });
+        const tiledMenus = permission_group.filter(
+          (res) =>
+            !rightMenuList.includes(res.component) &&
+            !rightMenuList.includes(res.path)
+        );
 
-        var ListCount = 11;
-        var ListCount2 = Math.floor(permission_group.length / ListCount);
-        var ListCount3 = permission_group.length % ListCount;
-        var startCount = 0;
-        var permission_group2 = [];
+        if (this.isBdrm) {
+          const ListCount = 11;
+          const ListCount2 = Math.floor(tiledMenus.length / ListCount);
+          const ListCount3 = tiledMenus.length % ListCount;
+          let startCount = 0;
+          const permission_group2 = [];
 
-        // 主循环，用于处理完整的组
-        for (var i = 0; i < ListCount2; i++) {
-          permission_group2[i] = [];
-          for (var j = 0; j < ListCount; j++) {
-            permission_group2[i][j] = permission_group[startCount];
-            startCount++;
+          for (let i = 0; i < ListCount2; i++) {
+            permission_group2[i] = [];
+            for (let j = 0; j < ListCount; j++) {
+              permission_group2[i][j] = tiledMenus[startCount];
+              startCount++;
+            }
           }
+          if (ListCount3 > 0) {
+            const lastGroup = [];
+            for (let k = 0; k < ListCount3; k++) {
+              lastGroup[k] = tiledMenus[startCount];
+              startCount++;
+            }
+            permission_group2.push(lastGroup);
+          }
+          this.MenuList = permission_group2;
+          this.pickMenuList = [];
+          return;
         }
 
-        // 处理剩余的元素
-        if (ListCount3 > 0) {
-          var lastGroup = [];
-          for (var k = 0; k < ListCount3; k++) {
-            lastGroup[k] = permission_group[startCount];
-            startCount++;
-          }
-          permission_group2.push(lastGroup);
-        }
-        this.MenuList = permission_group2;
+        this.pickMenuList = tiledMenus
+          .map((res) => ({
+            path: res.component || res.path,
+            title: res.title,
+            icon: res.icon || ''
+          }))
+          .filter((res) => res.path && res.title);
       }
     },
     mounted() {
@@ -554,11 +708,20 @@
         this.getLineChartData();
         this.getTop20();
       });
+      if (!this.isBdrm) {
+        this.$bus.$on(RECENT_MENUS_CHANGED, this.refreshRecentMenus);
+      }
     },
     beforeDestroy() {
       this.$bus.$off('handleCommand');
+      if (!this.isBdrm) {
+        this.$bus.$off(RECENT_MENUS_CHANGED, this.refreshRecentMenus);
+      }
     },
     computed: {
+      isBdrm() {
+        return HOME_HP === 'bdrm';
+      },
       // 是否开启响应式布局
       styleResponsive() {
         return this.$store.state.theme.styleResponsive;
@@ -893,13 +1056,109 @@
       this.getJYkDefRemindTotal();
       this.getTableListTotal();
       this.permission_groupList();
+      if (!this.isBdrm) {
+        this.refreshRecentMenus();
+      }
       this.getSaleroomData();
       this.getLineChartData();
       this.getTop20();
       // this.NewBatchRemindervisible = true;
-      // this.MenuList = this.$store.state.user.info.permission_group;
       /* 获取数据 */
       localStorage.AesKey = getAesKey();
+    },
+    activated() {
+      if (!this.isBdrm) {
+        this.refreshRecentMenus();
+      }
     }
   };
 </script>
+
+<style scoped>
+  .menu-section-card {
+    margin-bottom: 12px;
+  }
+  .menu-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-weight: 600;
+  }
+  .menu-icon-grid {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .menu-icon-grid .block {
+    margin: 10px;
+  }
+  .menu-icon-item {
+    width: 90px;
+    height: 70px;
+    border-radius: 2px;
+    margin-right: 20px;
+    cursor: pointer;
+  }
+  .menu-icon-wrap {
+    width: 100px;
+    display: flex;
+    justify-content: center;
+  }
+  .menu-el-icon {
+    font-size: 36px;
+    color: #409eff;
+    line-height: 40px;
+  }
+  .menu-icon-title {
+    width: 100px;
+    display: flex;
+    justify-content: center;
+    margin-top: 5px;
+    color: #606266;
+  }
+  .recent-block {
+    position: relative;
+  }
+  .recent-remove {
+    position: absolute;
+    top: 0;
+    right: 8px;
+    width: 18px;
+    height: 18px;
+    line-height: 18px;
+    text-align: center;
+    border-radius: 50%;
+    background: #c0c4cc;
+    color: #fff;
+    font-size: 12px;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+  .recent-block:hover .recent-remove {
+    opacity: 1;
+  }
+  .recent-remove:hover {
+    background: #f56c6c;
+  }
+  .recent-empty {
+    color: #909399;
+    font-size: 13px;
+    padding: 8px 0 4px;
+  }
+  .add-recent-grid {
+    max-height: 70vh;
+    overflow-y: auto;
+  }
+  .menu-icon-item.is-added {
+    opacity: 0.55;
+    position: relative;
+  }
+  .add-check {
+    position: absolute;
+    top: 0;
+    right: 8px;
+    color: #67c23a;
+    font-size: 16px;
+    font-weight: bold;
+  }
+</style>

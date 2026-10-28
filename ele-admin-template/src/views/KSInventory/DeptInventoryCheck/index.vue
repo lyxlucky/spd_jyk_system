@@ -92,6 +92,15 @@
           >重置</el-button>
         </el-form-item>
         <el-form-item>
+          <el-button
+            type="primary"
+            plain
+            icon="el-icon-tickets"
+            class="ele-btn-icon"
+            @click="openApplyRecordDialog"
+          >库房申领记录查询</el-button>
+        </el-form-item>
+        <el-form-item>
            <el-button
             type="success"
             icon="el-icon-plus"
@@ -527,6 +536,101 @@
         >保 存</el-button>
       </span>
     </el-dialog>
+
+    <el-dialog
+      title="库房申领记录查询"
+      :visible.sync="applyRecordVisible"
+      width="92%"
+      top="4vh"
+      append-to-body
+      @opened="searchApplyRecord"
+    >
+      <el-form :model="applyRecordQuery" :inline="true" size="mini" @keyup.enter.native="searchApplyRecord">
+        <el-form-item label="申领时间">
+          <el-date-picker
+            v-model="applyRecordQuery.dateRange"
+            type="daterange"
+            value-format="yyyy-MM-dd"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            style="width: 240px"
+          />
+        </el-form-item>
+        <el-form-item label="科室" v-if="canViewAllChecks">
+          <el-select
+            v-model="applyRecordQuery.DEPT_TWO_CODE"
+            filterable
+            clearable
+            placeholder="全部科室"
+            style="width: 170px"
+          >
+            <el-option
+              v-for="item in deptOptions"
+              :key="item.Dept_Two_Code"
+              :label="item.Dept_Two_Name"
+              :value="item.Dept_Two_Code"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="申领单号">
+          <el-input v-model="applyRecordQuery.PLAN_NUM" clearable placeholder="申领单号" style="width: 150px" />
+        </el-form-item>
+        <el-form-item label="申领人">
+          <el-input v-model="applyRecordQuery.APPLY_MAN" clearable placeholder="账号或姓名" style="width: 140px" />
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" icon="el-icon-search" @click="searchApplyRecord">查询</el-button>
+          <el-button icon="el-icon-refresh" @click="resetApplyRecord">重置</el-button>
+        </el-form-item>
+      </el-form>
+
+      <vxe-table
+        :data="applyRecordData"
+        :loading="applyRecordLoading"
+        border
+        resizable
+        size="mini"
+        height="460"
+        show-overflow
+      >
+        <vxe-column type="seq" title="序号" width="55" align="center" />
+        <vxe-column field="SCIENTIFIC_ID" title="类型" width="90" align="center">
+          <template #default="{ row }">
+            {{ row.SCIENTIFIC_ID && row.SCIENTIFIC_ID !== 'null' ? '科研计划' : '普通计划' }}
+          </template>
+        </vxe-column>
+        <vxe-column field="PLAN_NUM" title="申领单号" width="120" align="center" />
+        <vxe-column field="STATE" title="状态" width="90" align="center">
+          <template #default="{ row }">
+            <el-tag size="mini" :type="applyRecordStateType(row)">{{ applyRecordStateText(row) }}</el-tag>
+          </template>
+        </vxe-column>
+        <vxe-column field="DEPT_TWO_CODE" title="SPD二级科室编码" width="140" align="center" />
+        <vxe-column field="YG_DEPT_CODE" title="远光系统编码" width="130" align="center" />
+        <vxe-column field="DEPT_TWO_NAME" title="科室名称" min-width="140" align="center" />
+        <vxe-column field="STORAGE_NAME" title="库房名称" min-width="120" align="center" />
+        <vxe-column field="REGION_NAME" title="库区" width="100" align="center" />
+        <vxe-column field="OPERATER" title="申领人" width="90" align="center" />
+        <vxe-column field="APPLY_ACCOUNT" title="申领人账号" width="110" align="center" />
+        <vxe-column field="APPLY_NAME" title="申领人姓名" width="100" align="center" />
+        <vxe-column field="PLAN_TIME" title="申领时间" width="155" align="center" :formatter="formatterDateTime" />
+        <vxe-column field="APPROVALMAN" title="审批人" width="90" align="center" />
+        <vxe-column field="APPROVAL_TIME" title="审批时间" width="155" align="center" :formatter="formatterDateTime" />
+        <vxe-column field="BZ" title="备注" min-width="120" />
+        <vxe-column field="SUM_APPLY_QTY" title="申请总数" width="90" align="center" />
+        <vxe-column field="QUANITY" title="已收货总数" width="100" align="center" />
+      </vxe-table>
+      <vxe-pager
+        :current-page="applyRecordPage.page"
+        :page-size="applyRecordPage.size"
+        :total="applyRecordPage.total"
+        :page-sizes="[20, 50, 100, 200]"
+        size="mini"
+        @page-change="onApplyRecordPageChange"
+        style="margin-top: 8px"
+      />
+    </el-dialog>
   </div>
 </template>
 
@@ -542,7 +646,8 @@ import {
   updateDeptInventoryCheckDetail,
   batchUpdateDeptInventoryCheckDetail,
   importLastStockQty,
-  getDeptTwoOptions
+  getDeptTwoOptions,
+  getDeptApplyRecordList
 } from '@/api/KSInventory/DeptInventoryCheck';
 import { getDeptTwoRegion2 } from '@/api/KSInventory/KSDepartmentalPlan';
 import { reloadPageTab } from '@/utils/page-tab-util';
@@ -609,6 +714,16 @@ export default {
         PROFIT_LOSS_NUMBER: null,
         IS_IN_CABINET: 0,
         PROFIT_LOSS_REMARK: ''
+      },
+      applyRecordVisible: false,
+      applyRecordLoading: false,
+      applyRecordData: [],
+      applyRecordPage: { page: 1, size: 20, total: 0 },
+      applyRecordQuery: {
+        dateRange: [],
+        DEPT_TWO_CODE: '',
+        PLAN_NUM: '',
+        APPLY_MAN: ''
       }
     };
   },
@@ -633,6 +748,83 @@ export default {
       this.mainTablePage.page = 1;
       this.clearDetailTable();
       this.loadMainTableData();
+    },
+    defaultApplyRecordQuery() {
+      const now = new Date();
+      const start = new Date(now.getFullYear(), now.getMonth(), 1);
+      const pad = (n) => (n < 10 ? '0' + n : '' + n);
+      const fmt = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+      return {
+        dateRange: [fmt(start), fmt(now)],
+        DEPT_TWO_CODE: this.canViewAllChecks ? '' : this.deptCode,
+        PLAN_NUM: '',
+        APPLY_MAN: ''
+      };
+    },
+    openApplyRecordDialog() {
+      this.applyRecordQuery = this.defaultApplyRecordQuery();
+      this.applyRecordPage.page = 1;
+      this.applyRecordData = [];
+      this.applyRecordPage.total = 0;
+      this.applyRecordVisible = true;
+    },
+    searchApplyRecord() {
+      this.applyRecordPage.page = 1;
+      this.loadApplyRecord();
+    },
+    resetApplyRecord() {
+      this.applyRecordQuery = this.defaultApplyRecordQuery();
+      this.searchApplyRecord();
+    },
+    onApplyRecordPageChange({ currentPage, pageSize }) {
+      this.applyRecordPage.page = currentPage;
+      this.applyRecordPage.size = pageSize;
+      this.loadApplyRecord();
+    },
+    async loadApplyRecord() {
+      this.applyRecordLoading = true;
+      try {
+        const range = this.applyRecordQuery.dateRange || [];
+        const res = await getDeptApplyRecordList({
+          page: this.applyRecordPage.page,
+          size: this.applyRecordPage.size,
+          DEPT_TWO_CODE: this.canViewAllChecks
+            ? (this.applyRecordQuery.DEPT_TWO_CODE || '')
+            : this.deptCode,
+          PLAN_NUM: this.applyRecordQuery.PLAN_NUM,
+          APPLY_MAN: this.applyRecordQuery.APPLY_MAN,
+          START_TIME: range[0] || '',
+          END_TIME: range[1] || ''
+        });
+        this.applyRecordData = res.result || [];
+        this.applyRecordPage.total = res.total || 0;
+      } catch (error) {
+        this.$message.error(error.message || '查询申领记录失败');
+      } finally {
+        this.applyRecordLoading = false;
+      }
+    },
+    applyRecordStateText(row) {
+      const left = Number(row.SUM_LEFT_APPLY_QTY);
+      const apply = Number(row.SUM_APPLY_QTY);
+      const state = String(row.STATE);
+      if (state === '0') return '新增';
+      if (state === '1') return '已提交';
+      if (state === '2') return '配送中';
+      if (state === '5') return '已审核';
+      if (state === '-6') return '未审批';
+      if (state === '10') return '强制结束';
+      if ((state === '6' || state === '4') && left === apply) return '已审批';
+      if (left > 0 && left !== apply) return '未收全';
+      if (left === 0) return '已收全';
+      return state;
+    },
+    applyRecordStateType(row) {
+      const text = this.applyRecordStateText(row);
+      if (text === '已收全' || text === '已审批') return 'success';
+      if (text === '未收全' || text === '未审批' || text === '强制结束') return 'danger';
+      if (text === '已提交') return 'warning';
+      return 'info';
     },
     reset() {
       this.searchForm = {

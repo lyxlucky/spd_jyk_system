@@ -371,7 +371,8 @@
             type: 'selection',
             width: 45,
             align: 'center',
-            fixed: 'left',
+            // 汕头中医医院不需要列固定
+            ...(HOME_HP !== 'stzyyy' ? { fixed: 'left' } : {}),
             selectable: (row) => !this.isDetailDeleted(row)
           },
           {
@@ -381,7 +382,7 @@
             width: 45,
             align: 'center',
             showOverflowTooltip: true,
-            fixed: 'left'
+            ...(HOME_HP !== 'stzyyy' ? { fixed: 'left' } : {})
           },
           {
             columnKey: 'DTL_IS_DELETE',
@@ -390,7 +391,7 @@
             label: '明细状态',
             align: 'center',
             width: 90,
-            fixed: 'left'
+            ...(HOME_HP !== 'stzyyy' ? { fixed: 'left' } : {})
           },
           // {
           //   columnKey: 'action',
@@ -567,7 +568,7 @@
             align: 'center',
             showOverflowTooltip: true,
             width: 160,
-            fixed: 'left'
+            ...(HOME_HP !== 'stzyyy' ? { fixed: 'left' } : {})
           },
           {
             prop: 'Unit',

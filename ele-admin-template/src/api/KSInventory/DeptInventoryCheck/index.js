@@ -200,6 +200,27 @@ export async function importLastStockQty(checkId, items) {
 /**
  * 科室盘点 - 获取二级科室选项列表（用于管理员筛选）
  */
+/**
+ * 科室盘点 - 库房申领记录查询
+ */
+export async function getDeptApplyRecordList(data) {
+  const formatData = {
+    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+    page: data.page || 1,
+    size: data.size || 20,
+    DEPT_TWO_CODE: data.DEPT_TWO_CODE || '',
+    PLAN_NUM: data.PLAN_NUM || '',
+    APPLY_MAN: data.APPLY_MAN || '',
+    START_TIME: data.START_TIME || '',
+    END_TIME: data.END_TIME || ''
+  };
+  const res = await request.post('/DeptInventoryCheck/GetDeptApplyRecordList', formatData);
+  if (res.data.code == 200) {
+    return res.data;
+  }
+  return Promise.reject(new Error(res.data.msg));
+}
+
 export async function getDeptTwoOptions() {
   const formatData = {
     Token: sessionStorage.getItem(TOKEN_STORE_NAME),

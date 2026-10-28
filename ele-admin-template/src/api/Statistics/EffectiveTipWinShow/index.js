@@ -40,12 +40,34 @@ function unwrapPaged(res) {
   return { total: data.total || 0, result: data.result || [] };
 }
 
-/** 库存查询 GET /CentralWarehouseDept/Search */
+/** 库存查询 GET /CentralWarehouseDept/Search（导出可能返回 303 审计） */
 export async function searchCentralWarehouse(params) {
   const res = await request.get('/CentralWarehouseDept/Search', {
     params: { Token: token(), ...params }
   });
+  const data = res.data;
+  if (data?.code == 303 || data?.code === '303') {
+    return {
+      auditRequired: true,
+      requesturl: data.requesturl || '',
+      datatype: data.datatype || '',
+      keyparams: data.keyparams || '',
+      total: 0,
+      result: []
+    };
+  }
   return unwrapPaged(res);
+}
+
+/** 院区列表（stse） */
+export async function getSTORAGE() {
+  const res = await request.get('/Commons/getSTORAGE', {
+    params: { Token: token() }
+  });
+  if (res.data?.code == 200 || res.data?.code === '200') {
+    return res.data;
+  }
+  throw new Error(res.data?.msg || '获取院区失败');
 }
 
 export function buildInventoryWhere(extra = {}) {
@@ -138,12 +160,15 @@ export async function searchContractVarietieAuthExpired(params) {
 }
 
 export async function searchSupplierAuthExpired(params) {
+  // 老页排序参数为 field_2 / order_2
   const res = await postUrlEncoded('/AuthExpired/SearchSupplierAuthExpired', {
     Token: token(),
     page: params.page || 1,
     size: params.size || 9999,
     supplierEnum: params.supplierEnum ?? '0',
     monty: params.monty ?? '0',
+    field_2: params.field || params.field_2 || '',
+    order_2: params.order || params.order_2 || '',
     field: params.field || '',
     order: params.order || ''
   });

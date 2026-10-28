@@ -42,7 +42,7 @@
           :datasource="datasource"
           :selection.sync="selection"
           :row-key="billMode ? 'rowKey' : undefined"
-          :cache-key="billMode ? 'goodsshelvesInBill_v1' : 'goodsshelvesInTable_v3'"
+          :cache-key="billMode ? 'goodsshelvesInBill_v1' : 'goodsshelvesInTable_v8'"
           @current-change="onCurrentChange"
         >
           <template v-if="billMode" v-slot:expand="{ row }">
@@ -63,7 +63,17 @@
                 show-overflow-tooltip
               >
                 <template v-slot="scope">
-                  {{ formatDetailCell(col, scope.row) }}
+                  <el-button
+                    v-if="col.prop === 'PT_ORDER_NUM'"
+                    type="text"
+                    size="mini"
+                    @click.stop="editPtOrderNum(scope.row)"
+                  >
+                    {{ scope.row.PT_ORDER_NUM || '编辑' }}
+                  </el-button>
+                  <template v-else>
+                    {{ formatDetailCell(col, scope.row) }}
+                  </template>
                 </template>
               </el-table-column>
               <el-table-column label="操作" width="200" align="center" fixed="right">
@@ -75,6 +85,11 @@
                 </template>
               </el-table-column>
             </el-table>
+          </template>
+          <template v-slot:ptOrderNum="{ row }">
+            <el-button type="text" size="mini" @click="editPtOrderNum(row)">
+              {{ row.PT_ORDER_NUM || '编辑' }}
+            </el-button>
           </template>
           <template v-slot:reportPic="{ row }">
             <el-button type="text" size="mini" @click="openProReport(row)">
@@ -137,8 +152,16 @@ import UploadProReportDialog from './UploadProReportDialog.vue';
 import UploadOrderPicDialog from './UploadOrderPicDialog.vue';
 import WatchUdiDialog from './WatchUdiDialog.vue';
 import PicPreviewBar from './PicPreviewBar.vue';
-import { GetPDAList, GetInStockDetailRaw, GetInStockDetailByBill } from '@/api/Inventory/Goodsshelves';
+import { HOME_HP } from '@/config/setting';
 import {
+  GetPDAList,
+  GetInStockDetailRaw,
+  GetInStockDetailByBill,
+  CreateStorageExcelNew,
+  upBatchIdPtOrderNum
+} from '@/api/Inventory/Goodsshelves';
+import {
+  openExcelFile,
   getOrderJsTypeText,
   formatHighLowClassTwo,
   formatUploadState,
@@ -242,6 +265,7 @@ export default {
       // 固定表高，不随剩余视口压缩（小窗口靠页面滚动查看）
       tableHeight: 400,
       lastWhere: {},
+      listTotal: 0,
       inCheckVisible: false,
       auditVisible: false,
       auditMeta: { requestUrl: '', dataType: '', keyParams: '' },
@@ -266,6 +290,25 @@ export default {
       selection: [],
       columns: withCustomSort(
         [
+        ...(HOME_HP === 'stzyyy'
+          ? [
+              {
+                prop: 'BATCH_ID',
+                label: '批次ID',
+                align: 'center',
+                showOverflowTooltip: true,
+                minWidth: 120
+              },
+              {
+                prop: 'PT_ORDER_NUM',
+                label: '平台订单编号',
+                align: 'center',
+                showOverflowTooltip: true,
+                minWidth: 140,
+                slot: 'ptOrderNum'
+              }
+            ]
+          : []),
         {
           prop: 'UP_SHELF_TYPE',
           label: '入库类型',
@@ -625,7 +668,18 @@ export default {
           minWidth: 90,
           formatter: (row) =>
             row.IS_JC === '1' || row.IS_JC === 1 ? '是' : '否'
-        }
+        },
+        ...(HOME_HP === 'stzyyy'
+          ? [
+              {
+                prop: 'PROVINCE_PLATFORM_CODE',
+                label: '省平台编码',
+                align: 'center',
+                showOverflowTooltip: true,
+                minWidth: 120
+              }
+            ]
+          : [])
       ])
     };
   },
@@ -720,6 +774,7 @@ export default {
           } else {
             this.updateSummary(list, res);
           }
+          this.listTotal = Number(res.total) || 0;
           return {
             count: res.total,
             list
@@ -828,13 +883,48 @@ export default {
       };
       this.orderPicVisible = true;
     },
+    async editPtOrderNum(row) {
+      if (!row?.BATCH_ID) {
+        this.$message.warning('缺少批次标识');
+        return;
+      }
+      try {
+        const current = row.PT_ORDER_NUM || '（无）';
+        const { value } = await this.$prompt(
+          `当前编号：${current}\n请输入要追加的平台订单编号（不会覆盖原编号）`,
+          '追加平台订单编号',
+          {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            inputValue: '',
+            inputPlaceholder: '新增平台订单编号',
+            closeOnClickModal: false
+          }
+        );
+        if (!(value || '').trim()) {
+          this.$message.warning('请输入要追加的平台订单编号');
+          return;
+        }
+        const loading = this.$messageLoading('保存中...');
+        try {
+          await upBatchIdPtOrderNum(row.BATCH_ID, value ?? '');
+          this.$message.success('保存成功');
+          this.reload();
+        } catch (e) {
+          this.$message.error(e.message || '保存失败');
+        } finally {
+          loading.close();
+        }
+      } catch {
+        // 取消
+      }
+    },
     async exportExcel(where) {
       const loading = this.$messageLoading('正在导出数据...');
       try {
-        const data = await GetInStockDetailRaw({
-          page: 1,
-          limit: 9999999,
-          where: where || this.lastWhere
+        const data = await CreateStorageExcelNew({
+          where: where || this.lastWhere,
+          total: this.listTotal
         });
         loading.close();
         if (data?.code == 303 || data?.code === '303') {
@@ -846,11 +936,28 @@ export default {
           this.auditVisible = true;
           return;
         }
+        if (data?.code == 302 || data?.code === '302') {
+          this.$message.warning(data?.msg || '导出审批处理中');
+          return;
+        }
         if (!(data?.code == 200 || data?.code === '200')) {
           throw new Error(data?.msg || '导出失败');
         }
-        this.writeInExcel(data.result || []);
-        this.$message.success('导出成功');
+        if (!data?.msg) {
+          this.$message.warning('未返回文件');
+          return;
+        }
+        openExcelFile(data.msg);
+        if (data.queryMs != null) {
+          const q = (Number(data.queryMs) / 1000).toFixed(1);
+          const e = (Number(data.excelMs || 0) / 1000).toFixed(1);
+          const all = (Number(data.totalMs || 0) / 1000).toFixed(1);
+          this.$message.success(
+            `导出成功：查库 ${q}s，写Excel ${e}s，合计 ${all}s，共 ${data.rows || 0} 行`
+          );
+        } else {
+          this.$message.success('导出成功');
+        }
       } catch (e) {
         loading.close();
         this.$message.error(e.message || '导出失败');
@@ -858,6 +965,7 @@ export default {
     },
     writeInExcel(result) {
       const headers = [
+        ...(HOME_HP === 'stzyyy' ? ['批次ID', '平台订单编号'] : []),
         '入库类型',
         '订单结算类型',
         '合同类型',
@@ -898,6 +1006,7 @@ export default {
         '计划审批时间',
         '来源',
         '是否集采',
+        ...(HOME_HP === 'stzyyy' ? ['省平台编码'] : []),
         '采购方式'
       ];
       const rows = [headers];
@@ -911,6 +1020,9 @@ export default {
         const price = parseFloat(item.SUPPLY_PRICE);
         const bl = Number(item.price_bl);
         rows.push([
+          ...(HOME_HP === 'stzyyy'
+            ? [item.BATCH_ID || '', item.PT_ORDER_NUM || '']
+            : []),
           item.UP_SHELF_TYPE,
           getOrderJsTypeText(item.ORDER_JS_TYPE),
           formatContractType(item.Contract_Type),
@@ -961,6 +1073,7 @@ export default {
             : String(item.APPROVE_TIME).replace('T', ' '),
           item.SOURCE_FROM,
           item.IS_JC === '1' || item.IS_JC === 1 ? '是' : '否',
+          ...(HOME_HP === 'stzyyy' ? [item.PROVINCE_PLATFORM_CODE || ''] : []),
           item.ORDER_TYPE == '1' ? '线上采购' : '线下采购'
         ]);
       });
@@ -975,11 +1088,25 @@ export default {
     async aggregateExport(where) {
       const loading = this.$messageLoading('正在汇总导出...');
       try {
-        const res = await GetPDAList({
-          page: 1,
-          limit: 9999999,
+        const res = await GetInStockDetailRaw({
           where: where || this.lastWhere
         });
+        if (res?.code == 303 || res?.code === '303') {
+          this.auditMeta = {
+            requestUrl: res.requesturl || '',
+            dataType: res.datatype || '流向查询入库',
+            keyParams: res.keyparams || ''
+          };
+          this.auditVisible = true;
+          return;
+        }
+        if (res?.code == 302 || res?.code === '302') {
+          this.$message.warning(res?.msg || '导出审批处理中');
+          return;
+        }
+        if (!(res?.code == 200 || res?.code === '200')) {
+          throw new Error(res?.msg || '导出失败');
+        }
         const aggregated = {};
         (res.result || []).forEach((item) => {
           const code = item.VARIETIE_CODE_NEW || '';
@@ -999,6 +1126,10 @@ export default {
             aggregated[code].totalPrice.toFixed(2)
           ]);
         });
+        if (rows.length <= 1) {
+          this.$message.warning('没有可导出的数据');
+          return;
+        }
         writeFile(
           {
             SheetNames: ['Sheet1'],

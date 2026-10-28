@@ -476,7 +476,7 @@
             }
           })
           .catch((err) => {
-            this.$message.error(err.msg);
+            this.$message.error(err?.msg || err?.message || '审批失败');
             if (this.approvalReject) {
               this.approvalReject();
             }
@@ -584,7 +584,7 @@
             this.scanDialogVisible = false;
           })
           .catch((err) => {
-            this.$message.error(err);
+            this.$message.error(err?.msg || err || '交接失败');
           })
           .finally(() => {
             // 无论成功失败都关闭加载状态

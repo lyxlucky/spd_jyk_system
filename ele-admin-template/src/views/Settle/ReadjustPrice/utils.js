@@ -87,6 +87,11 @@ export function showPtHtnum(hp = HOME_HP) {
   return ['stse', 'stzl', 'stzx', 'csyy', 'stzyyy', 'chrmyy', 'se2'].includes(hp);
 }
 
+/** 汕头中医院：调价库存数量 / 平台订单编号 / 是否集采 */
+export function showStzyyyReadjustExtra(hp = HOME_HP) {
+  return String(hp || '').toLowerCase() === 'stzyyy';
+}
+
 export function createDefaultWhere() {
   return {
     readjustNumber: '',
@@ -137,3 +142,6 @@ export const EXPORT_HEADERS = [
   '同步调整基础资料和合同价格',
   '新合同号'
 ];
+
+/** 汕头中医院导出追加列（插在品种名称后） */
+export const STZYYY_EXPORT_EXTRA_HEADERS = ['是否集采', '调价库存数量', '平台订单编号'];

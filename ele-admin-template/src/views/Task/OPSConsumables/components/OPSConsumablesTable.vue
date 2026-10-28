@@ -187,6 +187,13 @@
               style="margin-right: 8px"
               >按预约添加拣配</el-button
             >
+            <el-button
+              :type="nonNextDayOnly ? 'success' : 'primary'"
+              icon="el-icon-date"
+              @click="handleNonNextDay"
+              style="margin-right: 8px"
+              >非次日订单 {{ nonNextDayCount }}</el-button
+            >
             <el-button type="primary" @click="handleExport">导出</el-button>
             <el-button type="primary" @click="handleExportCurrent"
               >打印2</el-button
@@ -310,6 +317,9 @@
           SSTH: '',
           SSFJ: ''
         },
+        // 非次日订单筛选与数量
+        nonNextDayOnly: false,
+        nonNextDayCount: 0,
         // 术间选项
         MZZYOptions: [
           { value: '', label: '全部' },
@@ -599,10 +609,31 @@
         this.$bus.$emit('OPSConsumablesTableRowClick', row);
         this.$emit('TableRow1', row);
       },
+      // 点击非次日订单：切换筛选，只显示手术日期不是次日的订单
+      handleNonNextDay() {
+        this.nonNextDayOnly = !this.nonNextDayOnly;
+        this.where.IS_NOT_NEXT_DAY = this.nonNextDayOnly ? '1' : '';
+        this.reload();
+      },
+      // 加载非次日订单数量，供按钮显示；与列表使用同一套筛选条件
+      loadNonNextDayCount() {
+        return getBdSzYyHisSs({
+          page: 1,
+          limit: 1,
+          where: { ...this.where, IS_NOT_NEXT_DAY: '1' }
+        })
+          .then((data) => {
+            this.nonNextDayCount = data.total || 0;
+          })
+          .catch(() => {
+            this.nonNextDayCount = 0;
+          });
+      },
       // 表格数据源
       datasource({ page, limit, where, order }) {
         where.MZZY = this.where.MZZY;
         where.KSMC = this.where.KSMC;
+        where.IS_NOT_NEXT_DAY = this.nonNextDayOnly ? '1' : '';
         console.log(where);
 
         return getBdSzYyHisSs({ page, limit, where, order })
@@ -638,6 +669,7 @@
       // 查询按钮点击事件
       reload() {
         this.$refs.table.reload({ page: 1, where: this.where });
+        this.loadNonNextDayCount();
       },
       handleSelectionChange(selection) {
         this.selection = selection;

@@ -1,6 +1,6 @@
 import request from '@/utils/request';
 import { getToken } from '@/utils/token-util';
-import { TOKEN_STORE_NAME } from '@/config/setting';
+import { HOME_HP, TOKEN_STORE_NAME } from '@/config/setting';
 
 function okCode(c) {
   return c === 200 || c === '200';
@@ -22,22 +22,46 @@ function normSize(size) {
 }
 
 /**
+ * 大导出：查库仍可能很久，前端放宽到 30 分钟。
+ * 明细导出走服务端 Create*ExcelNew；size>300 时后端跳过 COUNT/SUM。
+ */
+const EXPORT_TIMEOUT_MS = 30 * 60 * 1000;
+/** 默认导出 size（未知 total 时）：触发审计(>9999)且跳过 Count(>300) */
+const EXPORT_SIZE = 9999999;
+
+/** 按列表 total 收紧 ROWNUM：>300 跳过 Count；<=9999 不触发审计 */
+export function resolveExportSize(knownTotal) {
+  const t = parseInt(knownTotal, 10) || 0;
+  if (t <= 0) return EXPORT_SIZE;
+  if (t <= 9999) return Math.max(t + 100, 301);
+  return EXPORT_SIZE;
+}
+
+/**
  * 与旧 layui $.post 一致：application/x-www-form-urlencoded（非 multipart）
  */
-function postForm(url, params) {
+function postForm(url, params, options = {}) {
   const body = new URLSearchParams();
   Object.keys(params).forEach((key) => {
     const val = params[key];
     body.append(key, val == null || val === undefined ? '' : String(val));
   });
-  return request.post(url, body, {
+  const config = {
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-  });
+  };
+  if (options.timeout != null) {
+    config.timeout = options.timeout;
+  }
+  return request.post(url, body, config);
 }
 
-async function sendRequest(url, params) {
+async function sendRequest(url, params, options = {}) {
   try {
-    const res = await postForm(url, { Token: getToken() || '', ...params });
+    const res = await postForm(
+      url,
+      { Token: getToken() || '', ...params },
+      options
+    );
     if (okCode(res.data?.code)) {
       return res.data;
     }
@@ -56,6 +80,25 @@ async function sendRequest(url, params) {
       '请求失败';
     return Promise.reject(new Error(msg));
   }
+}
+
+/** 流向明细导出：单次拉全量 + 加长超时（含 303 审计响应原样返回） */
+async function fetchExportRaw(url, buildParams, data) {
+  const limit = resolveExportSize(data?.total);
+  const res = await postForm(
+    url,
+    {
+      Token: getToken() || '',
+      ...buildParams({
+        page: 1,
+        limit,
+        where: data?.where,
+        order: data?.order
+      })
+    },
+    { timeout: EXPORT_TIMEOUT_MS }
+  );
+  return res.data;
 }
 
 function buildInStockParams(data) {
@@ -141,6 +184,30 @@ export async function GetPDAList(data) {
   return sendRequest('/InStockCheck/GetInStockDetail', buildInStockParams(data));
 }
 
+/** 维护平台订单编号（GOODS_VAR_RECEIPT_DETAIL.PT_ORDER_NUM） */
+export async function upBatchIdPtOrderNum(batchId, ptOrderNum) {
+  return sendRequest('/InStockCheck/upBatchIdPtOrderNum', {
+    batchId: str(batchId),
+    ptOrderNum: str(ptOrderNum)
+  });
+}
+
+/** 批量导入平台订单编号 */
+export async function importPtOrderNumExcel(file) {
+  const fd = new FormData();
+  fd.append('file', file);
+  fd.append('Token', getToken() || '');
+  const res = await request.post('/InStockCheck/ImportPtOrderNumExcel', fd, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+    timeout: 120000
+  });
+  const data = res.data;
+  if (okCode(data?.code)) {
+    return data;
+  }
+  throw new Error(data?.msg || '导入失败');
+}
+
 // 市二：入库按单据号分页（明细仍在 Details，导出走 GetPDAList）
 export async function GetInStockDetailByBill(data) {
   return sendRequest(
@@ -165,22 +232,40 @@ export async function GetOutStockDetailByBill(data) {
   );
 }
 
-/** 入库查询（含 303 审计） */
+/** 入库导出拉取（含 303 审计）——列表汇总等仍可能复用 */
 export async function GetInStockDetailRaw(data) {
-  const res = await postForm('/InStockCheck/GetInStockDetail', {
-    Token: getToken() || '',
-    ...buildInStockParams(data)
-  });
-  return res.data;
+  return fetchExportRaw(
+    '/InStockCheck/GetInStockDetail',
+    buildInStockParams,
+    data
+  );
 }
 
-/** 出库查询（含 303 审计） */
+/** 出库导出拉取（含 303 审计）——列表汇总等仍可能复用 */
 export async function GetOutStockDetailRaw(data) {
-  const res = await postForm('/InStockCheck/GetOutStockDetail', {
-    Token: getToken() || '',
-    ...buildOutStockParams(data)
-  });
-  return res.data;
+  return fetchExportRaw(
+    '/InStockCheck/GetOutStockDetail',
+    buildOutStockParams,
+    data
+  );
+}
+
+/** 入库明细服务端导出 Excel（返回文件名 msg，含 303 审计） */
+export async function CreateStorageExcelNew(data) {
+  return fetchExportRaw(
+    '/InStockCheck/CreateStorageExcelNew',
+    (d) => ({ ...buildInStockParams(d), hp: HOME_HP || '' }),
+    data
+  );
+}
+
+/** 出库明细服务端导出 Excel（返回文件名 msg，含 303 审计） */
+export async function CreateDeliveryExcelNew(data) {
+  return fetchExportRaw(
+    '/InStockCheck/CreateDeliveryExcelNew',
+    (d) => ({ ...buildOutStockParams(d), hp: HOME_HP || '' }),
+    data
+  );
 }
 
 /** bdrm 进货查验记录 */
@@ -198,19 +283,21 @@ export async function GetGoodsVarReceiptDetailList(params) {
   throw new Error(res.data?.msg || '查询失败');
 }
 
-/** 导出（货位）- 时间参数为 data1/data2 */
+/** 导出（货位）- 时间参数为 data1/data2；后端生成文件，加长超时并跳过 Count */
 export async function ExcelGoodsCKByHW(data) {
-  const base = buildOutStockParams({ ...data, page: 1, limit: 9999999 });
+  const base = buildOutStockParams({ ...data, page: 1, limit: EXPORT_SIZE });
   const params = {
     ...base,
     data1: base.StartTime,
     data2: base.EndTime,
     page: '1',
-    size: '9999999'
+    size: String(EXPORT_SIZE)
   };
   delete params.StartTime;
   delete params.EndTime;
-  return sendRequest('/InStockCheck/ExcelGoodsCKByHW', params);
+  return sendRequest('/InStockCheck/ExcelGoodsCKByHW', params, {
+    timeout: EXPORT_TIMEOUT_MS
+  });
 }
 
 /** 订单流水查询 */

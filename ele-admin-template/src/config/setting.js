@@ -234,7 +234,10 @@ export const BLACK_LIST_ROUTERS = [
   'zhongbiaomulu',
   'shenlinzhiyin',
   'keshi-export',
-  'zhongbiao-export'
+  'zhongbiao-export',
+
+  //术式套包模板：仅北京人民可见
+  ...(HOME_HP !== 'bdrm' ? ['/KSInventory/SurgicalKitTemp'] : [])
 ]
 
 // 页签同路由不同参数可重复打开的路由

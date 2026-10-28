@@ -3,8 +3,7 @@
     <div class="section-head">
       <slot name="toolbar-left" />
       <el-button
-        v-if="exportPermission"
-        v-permission="exportPermission"
+        v-if="showExportBtn"
         size="small"
         type="primary"
         plain
@@ -37,6 +36,8 @@
 </template>
 
 <script>
+import { hasExportPermission } from '@/views/Inventory/InventoryQueryNew/utils';
+
 export default {
   name: 'WinShowSection',
   props: {
@@ -59,6 +60,10 @@ export default {
     };
   },
   computed: {
+    showExportBtn() {
+      if (!this.exportPermission) return false;
+      return hasExportPermission(this.exportPermission);
+    },
     innerSelection: {
       get() {
         return this.selection;

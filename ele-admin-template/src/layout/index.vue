@@ -49,6 +49,8 @@
   >
     <!-- 路由出口 -->
     <router-layout />
+    <!-- 登录后效期/近效期提醒弹窗（按 permission_group） -->
+    <login-tip-dialogs />
     <!-- logo 图标 -->
     <template v-slot:logo>
       <img src="@/assets/logo.png" alt="logo" />
@@ -90,6 +92,7 @@
   import RouterLayout from '@/components/RouterLayout/index.vue';
   import HeaderTools from './components/header-tools.vue';
   import PageFooter from './components/page-footer.vue';
+  import LoginTipDialogs from './components/login-tip-dialogs.vue';
   import {
     PROJECT_NAME,
     HIDE_SIDEBARS,
@@ -112,13 +115,20 @@
     setHomeComponents,
     setPageTabs
   } from '@/utils/page-tab-util';
+  import {
+    getRecentMenus,
+    pushRecentMenu,
+    buildRecentMenuGroup,
+    RECENT_MENUS_CHANGED
+  } from '@/utils/recent-menu-util';
 
   export default {
     name: 'EleLayout',
     components: {
       RouterLayout,
       HeaderTools,
-      PageFooter
+      PageFooter,
+      LoginTipDialogs
     },
     data() {
       return {
@@ -131,7 +141,8 @@
         LAYOUT_PATH,
         REDIRECT_PATH,
         // 是否全屏
-        fullscreen: false
+        fullscreen: false,
+        recentMenus: []
       };
     },
     computed: {
@@ -139,14 +150,41 @@
       locale() {
         return this.$i18n.locale;
       },
-      // 菜单数据
+      // 菜单数据（顶部插入「最近使用」）
       menus() {
-        return this.$store.state.user.menus;
+        const base = this.$store.state.user.menus || [];
+        const group = buildRecentMenuGroup(this.recentMenus);
+        return group ? [group, ...base] : base;
       },
       // 主题状态
       ...mapGetters(['theme'])
     },
+    watch: {
+      $route: {
+        immediate: true,
+        handler(to) {
+          this.recordRecentMenu(to);
+        }
+      }
+    },
+    created() {
+      this.syncRecentMenus();
+      this.$bus.$on(RECENT_MENUS_CHANGED, this.syncRecentMenus);
+    },
+    beforeDestroy() {
+      this.$bus.$off(RECENT_MENUS_CHANGED, this.syncRecentMenus);
+    },
     methods: {
+      syncRecentMenus(list) {
+        this.recentMenus =
+          list || getRecentMenus(this.$store.state.user.info);
+      },
+      recordRecentMenu(route) {
+        const userInfo = this.$store.state.user.info;
+        const menus = this.$store.state.user.menus || [];
+        this.recentMenus = pushRecentMenu(route, userInfo, menus);
+        this.$bus.$emit(RECENT_MENUS_CHANGED, this.recentMenus);
+      },
       /* 侧栏折叠切换 */
       updateCollapse(value) {
         this.$store.dispatch('theme/setCollapse', value);
