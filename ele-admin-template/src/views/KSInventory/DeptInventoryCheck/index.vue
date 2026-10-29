@@ -582,6 +582,7 @@
         <el-form-item>
           <el-button type="primary" icon="el-icon-search" @click="searchApplyRecord">查询</el-button>
           <el-button icon="el-icon-refresh" @click="resetApplyRecord">重置</el-button>
+          <el-button type="success" icon="el-icon-download" :loading="applyRecordExporting" @click="exportApplyRecord">后端导出</el-button>
         </el-form-item>
       </el-form>
 
@@ -647,7 +648,8 @@ import {
   batchUpdateDeptInventoryCheckDetail,
   importLastStockQty,
   getDeptTwoOptions,
-  getDeptApplyRecordList
+  getDeptApplyRecordList,
+  exportDeptApplyRecordList
 } from '@/api/KSInventory/DeptInventoryCheck';
 import { getDeptTwoRegion2 } from '@/api/KSInventory/KSDepartmentalPlan';
 import { reloadPageTab } from '@/utils/page-tab-util';
@@ -717,6 +719,7 @@ export default {
       },
       applyRecordVisible: false,
       applyRecordLoading: false,
+      applyRecordExporting: false,
       applyRecordData: [],
       applyRecordPage: { page: 1, size: 20, total: 0 },
       applyRecordQuery: {
@@ -780,6 +783,32 @@ export default {
       this.applyRecordPage.page = currentPage;
       this.applyRecordPage.size = pageSize;
       this.loadApplyRecord();
+    },
+    async exportApplyRecord() {
+      if (this.applyRecordExporting) return;
+      this.applyRecordExporting = true;
+      try {
+        const range = this.applyRecordQuery.dateRange || [];
+        const blob = await exportDeptApplyRecordList({
+          DEPT_TWO_CODE: this.canViewAllChecks ? (this.applyRecordQuery.DEPT_TWO_CODE || '') : this.deptCode,
+          PLAN_NUM: this.applyRecordQuery.PLAN_NUM,
+          APPLY_MAN: this.applyRecordQuery.APPLY_MAN,
+          START_TIME: range[0] || '', END_TIME: range[1] || ''
+        });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = '库房申领记录.xlsx';
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+        this.$message.success('导出成功');
+      } catch (error) {
+        this.$message.error(error.message || '导出失败');
+      } finally {
+        this.applyRecordExporting = false;
+      }
     },
     async loadApplyRecord() {
       this.applyRecordLoading = true;
