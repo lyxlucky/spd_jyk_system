@@ -232,3 +232,15 @@ export async function getDeptTwoOptions() {
     return Promise.reject(new Error(res.data.msg));
   }
 }
+
+/** 按当前条件下载后端生成的申领记录 Excel。 */
+export async function exportDeptApplyRecordList(data) {
+  const res = await request.post('/DeptInventoryCheck/ExportDeptApplyRecordList', {
+    ...data, Token: sessionStorage.getItem(TOKEN_STORE_NAME)
+  }, { responseType: 'blob' });
+  if (res.data.type && res.data.type.includes('json')) {
+    const error = JSON.parse(await res.data.text());
+    throw new Error(error.msg || '导出失败');
+  }
+  return res.data;
+}

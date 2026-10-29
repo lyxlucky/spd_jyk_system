@@ -145,3 +145,6 @@ export const EXPORT_HEADERS = [
 
 /** 汕头中医院导出追加列（插在品种名称后） */
 export const STZYYY_EXPORT_EXTRA_HEADERS = ['是否集采', '调价库存数量', '平台订单编号'];
+
+/** 汕头中医院导出追加列（插在新结算价后） */
+export const STZYYY_AFTER_NEW_PRICE_HEADERS = ['来源', '财务分类属性'];

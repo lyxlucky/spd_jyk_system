@@ -466,6 +466,7 @@ import {
   readjustPriceIsSpt,
   showStzyyyReadjustExtra,
   STZYYY_EXPORT_EXTRA_HEADERS,
+  STZYYY_AFTER_NEW_PRICE_HEADERS,
   createDefaultWhere,
   formatReadjustState,
   formatSendState,
@@ -598,7 +599,20 @@ export default {
       cols.push(
         { prop: 'CHARGING_CODE', label: '计费编码', width: 90, showOverflowTooltip: true },
         { prop: 'Curr_Supply_Price', label: '原结算价', width: 90, align: 'right' },
-        { prop: 'New_Supply_Price', label: '新结算价', width: 90, align: 'right' },
+        { prop: 'New_Supply_Price', label: '新结算价', width: 90, align: 'right' }
+      );
+      if (this.showStzyyyExtra) {
+        cols.push(
+          { prop: 'SOURCE_FROM', label: '来源', width: 100, showOverflowTooltip: true },
+          {
+            prop: 'CLASSIFIC_NAME',
+            label: '财务分类属性',
+            width: 120,
+            showOverflowTooltip: true
+          }
+        );
+      }
+      cols.push(
         {
           prop: 'IS_CHARGE',
           label: '是否收费',
@@ -1035,7 +1049,7 @@ export default {
       this.executeNowLoading = true;
       try {
         const res = await ExecuteReadjustPlanNow(this.currentMainNumber);
-        this.$message.success(res.msg || '执行成功');
+        this.showExecuteResult(res.msg || '执行成功');
         this.reloadList();
       } catch (e) {
         this.$message.error(e.message || '执行失败');
@@ -1052,13 +1066,22 @@ export default {
       this.executeAllLoading = true;
       try {
         const res = await ExecuteDueReadjustPlans();
-        this.$message.success(res.msg || '执行成功');
+        this.showExecuteResult(res.msg || '执行成功');
         this.reloadList();
       } catch (e) {
         this.$message.error(e.message || '执行失败');
       } finally {
         this.executeAllLoading = false;
       }
+    },
+    /** 执行结果含告警/未调价时用弹窗，避免自动消失被忽略 */
+    showExecuteResult(msg) {
+      const text = msg || '执行成功';
+      if (/告警|不一致|未调价|执行失败|未找到/.test(text)) {
+        this.$alert(text, '执行结果', { type: 'warning', confirmButtonText: '知道了' });
+        return;
+      }
+      this.$message.success(text);
     },
     async onCreateSnapshot() {
       try {
@@ -1137,6 +1160,7 @@ export default {
         row.CHARGING_CODE || '',
         row.Curr_Supply_Price ?? '',
         row.New_Supply_Price ?? '',
+        ...(this.showStzyyyExtra ? [row.SOURCE_FROM || '', row.CLASSIFIC_NAME || ''] : []),
         formatYesNo(row.IS_CHARGE),
         formatDateTime(row.Effect_Time),
         row.Creater,
@@ -1195,6 +1219,10 @@ export default {
       }
       if (this.showStzyyyExtra) {
         headers.splice(nameIdx + 1, 0, ...STZYYY_EXPORT_EXTRA_HEADERS);
+        const priceIdx = headers.indexOf('新结算价');
+        if (priceIdx >= 0) {
+          headers.splice(priceIdx + 1, 0, ...STZYYY_AFTER_NEW_PRICE_HEADERS);
+        }
       }
       return headers;
     },
@@ -1208,6 +1236,7 @@ export default {
         row.Varietie_Name,
         row.Curr_Supply_Price ?? '',
         row.New_Supply_Price ?? '',
+        ...(this.showStzyyyExtra ? [row.SOURCE_FROM || '', row.CLASSIFIC_NAME || ''] : []),
         formatDateTime(row.Effect_Time),
         row.Creater,
         formatDateTime(row.Create_Time),
@@ -1259,6 +1288,10 @@ export default {
         }
         if (this.showStzyyyExtra) {
           headers.splice(nameIdx + 1, 0, ...STZYYY_EXPORT_EXTRA_HEADERS);
+          const priceIdx = headers.indexOf('新结算价');
+          if (priceIdx >= 0) {
+            headers.splice(priceIdx + 1, 0, ...STZYYY_AFTER_NEW_PRICE_HEADERS);
+          }
         }
         const data = [headers, ...rows.map((r) => this.mapExportRow(r))];
         const ws = utils.aoa_to_sheet(data);

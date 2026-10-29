@@ -288,27 +288,469 @@ export default {
       outStockSum: 0,
       pageSizes: [10, 30, 60, 90, 150, 300],
       selection: [],
-      columns: withCustomSort(
-        [
-        ...(HOME_HP === 'stzyyy'
-          ? [
-              {
-                prop: 'BATCH_ID',
-                label: '批次ID',
-                align: 'center',
-                showOverflowTooltip: true,
-                minWidth: 120
-              },
-              {
-                prop: 'PT_ORDER_NUM',
-                label: '平台订单编号',
-                align: 'center',
-                showOverflowTooltip: true,
-                minWidth: 140,
-                slot: 'ptOrderNum'
+      columns: withCustomSort(this.buildInColumns())
+    };
+  },
+  mounted() {
+    this.bindTableHeight();
+    this.bindPageSizeSync();
+  },
+  activated() {
+    this.$nextTick(() => {
+      if (typeof this._tableResizeHandler === 'function') {
+        this._tableResizeHandler();
+      }
+      this.$refs.table?.doLayout?.();
+    });
+  },
+  beforeDestroy() {
+    this.unbindTableHeight();
+    if (this._pageSizeUnwatch) {
+      this._pageSizeUnwatch();
+      this._pageSizeUnwatch = null;
+    }
+  },
+  methods: {
+    buildInColumns() {
+      const fundsSourceCol = {
+        prop: 'FUNDS_SOURCE',
+        label: '资金来源',
+        align: 'center',
+        showOverflowTooltip: true,
+        minWidth: 100,
+        formatter: (row) => {
+          const map = {
+            1: '自筹资金',
+            2: '政府补助',
+            3: '科教项目',
+            4: '财政+自筹',
+            5: '财政转款(发改委)',
+            6: '财政转款(开办费用)'
+          };
+          return map[row.FUNDS_SOURCE] || '未设置';
+        }
+      };
+      const storageIdCol = {
+        prop: 'Storage_ID',
+        label: '业务发起库区',
+        align: 'center',
+        showOverflowTooltip: true,
+        minWidth: 120,
+        formatter: (row) => {
+          if (row.Storage_ID === 1 || row.Storage_ID === '1') return '院内库区';
+          if (row.Storage_ID === 2 || row.Storage_ID === '2') return '院外库区';
+          return '-';
+        }
+      };
+      const supplyPriceCol = {
+        prop: 'SUPPLY_PRICE',
+        label: '入库价格',
+        align: 'right',
+        showOverflowTooltip: true,
+        minWidth: 90,
+        formatter: (row) => {
+          const n = parseFloat(row.SUPPLY_PRICE);
+          if (Number.isNaN(n)) return '';
+          const bl = Number(row.price_bl);
+          return n.toFixed(Number.isFinite(bl) ? bl : 4);
+        }
+      };
+      const approveTimeCol = {
+        prop: 'APPROVE_TIME',
+        label: '计划审批时间',
+        align: 'center',
+        showOverflowTooltip: true,
+        minWidth: 150,
+        formatter: (row) => {
+          if (
+            row.APPROVE_TIME === '0001-01-01T00:00:00' ||
+            row.APPROVE_TIME == null
+          ) {
+            return '';
+          }
+          return String(row.APPROVE_TIME).replace('T', ' ');
+        }
+      };
+      const actionCols = [
+        {
+          columnKey: 'reportPic',
+          label: '检验报告图片',
+          align: 'center',
+          width: 100,
+          slot: 'reportPic',
+          fixed: 'right'
+        },
+        {
+          columnKey: 'watchUdi',
+          label: '查看UDI',
+          align: 'center',
+          width: 100,
+          slot: 'watchUdi',
+          fixed: 'right'
+        },
+        {
+          columnKey: 'uploadPic',
+          label: '上传图片',
+          align: 'center',
+          width: 170,
+          slot: 'uploadPic',
+          fixed: 'right'
+        }
+      ];
+
+      // 汕头中医：按 Excel 目标列序重组，并增加财务分类属性
+      if (HOME_HP === 'stzyyy') {
+        return [
+          {
+            prop: 'BATCH_ID',
+            label: '批次ID',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 120
+          },
+          {
+            prop: 'UP_SHELF_TYPE',
+            label: '入库类型',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 90
+          },
+          {
+            prop: 'UP_SHELF_TIME',
+            label: '入库时间',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 150,
+            formatter: (row) =>
+              row.UP_SHELF_TIME
+                ? String(row.UP_SHELF_TIME).replace('T', ' ')
+                : ''
+          },
+          {
+            prop: 'PT_ORDER_NUM',
+            label: '平台订单编号',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 140,
+            slot: 'ptOrderNum'
+          },
+          {
+            prop: 'PROVINCE_PLATFORM_CODE',
+            label: '省平台编码',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 120
+          },
+          {
+            prop: 'VARIETIE_CODE_NEW',
+            label: '品种(材料)编码',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 140
+          },
+          {
+            prop: 'APPROVAL_NUMBER',
+            label: '注册证号',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 120
+          },
+          {
+            prop: 'VARIETIE_NAME',
+            label: '品种全称',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 180
+          },
+          {
+            prop: 'MANUFACTURING_ENT_NAME',
+            label: '生产企业名称',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 140
+          },
+          {
+            prop: 'SUPPLIER_NAME',
+            label: '科室/供应商名称',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 160
+          },
+          {
+            prop: 'SPECIFICATION_OR_TYPE',
+            label: '型号/规格',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 160
+          },
+          {
+            prop: 'UNIT',
+            label: '单位',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 70
+          },
+          {
+            prop: 'BATCH',
+            label: '生产批号',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 100
+          },
+          {
+            prop: 'BATCH_PRODUCTION_DATE',
+            label: '生产时间',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 110
+          },
+          {
+            prop: 'BATCH_VALIDITY_PERIOD',
+            label: '有效到期',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 110
+          },
+          {
+            prop: 'DISINFECTION_BATCH',
+            label: '灭菌批号',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 100
+          },
+          {
+            prop: 'UP_SHELF_QUANTITY',
+            label: '入库数量',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 90
+          },
+          supplyPriceCol,
+          {
+            prop: 'SOURCE_FROM',
+            label: '来源',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 90
+          },
+          {
+            prop: 'IS_JC',
+            label: '是否集采',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 90,
+            formatter: (row) =>
+              row.IS_JC === '1' || row.IS_JC === 1 ? '是' : '否'
+          },
+          {
+            prop: 'CLASSIFIC_NAME',
+            label: '财务分类属性',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 100
+          },
+          {
+            prop: 'ORDER_JS_TYPE',
+            label: '订单结算类型',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 130,
+            formatter: (row) => getOrderJsTypeText(row.ORDER_JS_TYPE)
+          },
+          {
+            prop: 'Contract_Type',
+            label: '合同类型',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 90,
+            formatter: (row) => formatContractType(row.Contract_Type)
+          },
+          {
+            prop: 'Receive_Property',
+            label: '收货类型',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 90,
+            formatter: (row) => {
+              if (row.Receive_Property == 0 || row.Receive_Property === '0') {
+                return '普通收货';
               }
-            ]
-          : []),
+              if (row.Receive_Property == 1 || row.Receive_Property === '1') {
+                return '盘溢收货';
+              }
+              return '未知类型';
+            }
+          },
+          {
+            prop: 'CHARGING_CODE',
+            label: '计费编码',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 110
+          },
+          {
+            prop: 'YG_CODE',
+            label: '阳光编码',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 110
+          },
+          {
+            prop: 'SPH_ERP_VARIETIE_CODE',
+            label: '上药HERP编码',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 130
+          },
+          {
+            prop: 'MEDICAL_CODE',
+            label: '医保码',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 90
+          },
+          {
+            prop: 'Brand',
+            label: '品牌',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 80
+          },
+          {
+            prop: 'COEFFICIENT',
+            label: '系数',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 70
+          },
+          {
+            prop: 'GOODS_QTY',
+            label: '散货数量',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 90
+          },
+          {
+            prop: 'DEF_NO_PKG_CODE',
+            label: '定数码',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 100
+          },
+          {
+            prop: 'BUSINESS_BILL',
+            label: '入库单号',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 120
+          },
+          {
+            prop: 'UDI_CODES',
+            label: 'UDI',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 120
+          },
+          {
+            prop: 'OLD_DELIVERY_NOTE_NUMBER',
+            label: '预验收单号',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 120
+          },
+          {
+            prop: 'HIGH_OR_LOW_CLASS_TWO',
+            label: '高低值分类下级属性',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 140,
+            formatter: (row) => formatHighLowClassTwo(row.HIGH_OR_LOW_CLASS_TWO)
+          },
+          {
+            prop: 'IS_BIDDING',
+            label: '是否中标',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 90,
+            formatter: (row) =>
+              row.IS_BIDDING === '1' || row.IS_BIDDING === 1 ? '是' : '否'
+          },
+          {
+            prop: 'CONTRACT_NAME',
+            label: '合同名称',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 120
+          },
+          {
+            prop: 'CONTRACT_CODE',
+            label: '合同编码',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 110
+          },
+          {
+            prop: 'PT_HTNUM',
+            label: '平台合同编号',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 120
+          },
+          {
+            prop: 'Operator',
+            label: '操作人',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 90
+          },
+          {
+            prop: 'BZ',
+            label: '备注',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 100
+          },
+          {
+            prop: 'ORDER_NUM',
+            label: '上传状态',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 90,
+            formatter: (row) => formatUploadState(row)
+          },
+          {
+            prop: 'PREPARE_GOODS_PLAN_NUMBER',
+            label: '计划单号',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 120
+          },
+          {
+            prop: 'STOCK_UP_PLAN_GOODS_QUANTITY',
+            label: '计划数量',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 90
+          },
+          approveTimeCol,
+          {
+            prop: 'ORDER_TYPE',
+            label: '采购方式',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 90,
+            formatter: (row) =>
+              row.ORDER_TYPE == '1' ? '线上采购' : '线下采购'
+          },
+          // 辅助列放主数据之后
+          fundsSourceCol,
+          storageIdCol,
+          ...actionCols
+        ];
+      }
+
+      // 其他医院：保持原列序
+      return [
         {
           prop: 'UP_SHELF_TYPE',
           label: '入库类型',
@@ -324,24 +766,7 @@ export default {
           minWidth: 90,
           formatter: (row) => formatContractType(row.Contract_Type)
         },
-        {
-          prop: 'FUNDS_SOURCE',
-          label: '资金来源',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 100,
-          formatter: (row) => {
-            const map = {
-              1: '自筹资金',
-              2: '政府补助',
-              3: '科教项目',
-              4: '财政+自筹',
-              5: '财政转款(发改委)',
-              6: '财政转款(开办费用)'
-            };
-            return map[row.FUNDS_SOURCE] || '未设置';
-          }
-        },
+        fundsSourceCol,
         {
           prop: 'Receive_Property',
           label: '收货类型',
@@ -358,18 +783,7 @@ export default {
             return '未知类型';
           }
         },
-        {
-          prop: 'Storage_ID',
-          label: '业务发起库区',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 120,
-          formatter: (row) => {
-            if (row.Storage_ID === 1 || row.Storage_ID === '1') return '院内库区';
-            if (row.Storage_ID === 2 || row.Storage_ID === '2') return '院外库区';
-            return '-';
-          }
-        },
+        storageIdCol,
         {
           prop: 'SUPPLIER_NAME',
           label: '科室/供应商名称',
@@ -505,19 +919,7 @@ export default {
           showOverflowTooltip: true,
           minWidth: 90
         },
-        {
-          prop: 'SUPPLY_PRICE',
-          label: '入库价格',
-          align: 'right',
-          showOverflowTooltip: true,
-          minWidth: 90,
-          formatter: (row) => {
-            const n = parseFloat(row.SUPPLY_PRICE);
-            if (Number.isNaN(n)) return '';
-            const bl = Number(row.price_bl);
-            return n.toFixed(Number.isFinite(bl) ? bl : 4);
-          }
-        },
+        supplyPriceCol,
         {
           prop: 'BUSINESS_BILL',
           label: '入库单号',
@@ -599,30 +1001,7 @@ export default {
           minWidth: 90,
           formatter: (row) => formatUploadState(row)
         },
-        {
-          columnKey: 'reportPic',
-          label: '检验报告图片',
-          align: 'center',
-          width: 100,
-          slot: 'reportPic',
-          fixed: 'right'
-        },
-        {
-          columnKey: 'watchUdi',
-          label: '查看UDI',
-          align: 'center',
-          width: 100,
-          slot: 'watchUdi',
-          fixed: 'right'
-        },
-        {
-          columnKey: 'uploadPic',
-          label: '上传图片',
-          align: 'center',
-          width: 170,
-          slot: 'uploadPic',
-          fixed: 'right'
-        },
+        ...actionCols,
         {
           prop: 'PREPARE_GOODS_PLAN_NUMBER',
           label: '计划单号',
@@ -637,22 +1016,7 @@ export default {
           showOverflowTooltip: true,
           minWidth: 90
         },
-        {
-          prop: 'APPROVE_TIME',
-          label: '计划审批时间',
-          align: 'center',
-          showOverflowTooltip: true,
-          minWidth: 150,
-          formatter: (row) => {
-            if (
-              row.APPROVE_TIME === '0001-01-01T00:00:00' ||
-              row.APPROVE_TIME == null
-            ) {
-              return '';
-            }
-            return String(row.APPROVE_TIME).replace('T', ' ');
-          }
-        },
+        approveTimeCol,
         {
           prop: 'SOURCE_FROM',
           label: '来源',
@@ -668,41 +1032,9 @@ export default {
           minWidth: 90,
           formatter: (row) =>
             row.IS_JC === '1' || row.IS_JC === 1 ? '是' : '否'
-        },
-        ...(HOME_HP === 'stzyyy'
-          ? [
-              {
-                prop: 'PROVINCE_PLATFORM_CODE',
-                label: '省平台编码',
-                align: 'center',
-                showOverflowTooltip: true,
-                minWidth: 120
-              }
-            ]
-          : [])
-      ])
-    };
-  },
-  mounted() {
-    this.bindTableHeight();
-    this.bindPageSizeSync();
-  },
-  activated() {
-    this.$nextTick(() => {
-      if (typeof this._tableResizeHandler === 'function') {
-        this._tableResizeHandler();
-      }
-      this.$refs.table?.doLayout?.();
-    });
-  },
-  beforeDestroy() {
-    this.unbindTableHeight();
-    if (this._pageSizeUnwatch) {
-      this._pageSizeUnwatch();
-      this._pageSizeUnwatch = null;
-    }
-  },
-  methods: {
+        }
+      ];
+    },
     bindPageSizeSync() {
       this.$nextTick(() => {
         this._pageSizeUnwatch = this.$watch(
@@ -964,51 +1296,100 @@ export default {
       }
     },
     writeInExcel(result) {
-      const headers = [
-        ...(HOME_HP === 'stzyyy' ? ['批次ID', '平台订单编号'] : []),
-        '入库类型',
-        '订单结算类型',
-        '合同类型',
-        '收货类型',
-        '科室/供应商名称',
-        '入库时间',
-        '品种(材料)编码',
-        '阳光编码',
-        '上药HERP编码',
-        '品种全称',
-        '型号/规格',
-        '单位',
-        '生产企业名称',
-        '医保码',
-        '品牌',
-        '生产批号',
-        '生产时间',
-        '有效到期',
-        '灭菌批号',
-        '系数',
-        '散货数量',
-        '定数码',
-        '入库数量',
-        '入库价格',
-        '入库单号',
-        '预验收单号',
-        '高低值分类下级属性',
-        '是否中标',
-        '合同名称',
-        '合同编码',
-        '平台合同编号',
-        '注册证号',
-        '操作人',
-        '备注',
-        '上传状态',
-        '计划单号',
-        '计划数量',
-        '计划审批时间',
-        '来源',
-        '是否集采',
-        ...(HOME_HP === 'stzyyy' ? ['省平台编码'] : []),
-        '采购方式'
-      ];
+      const isStzyyy = HOME_HP === 'stzyyy';
+      const headers = isStzyyy
+        ? [
+            '批次ID',
+            '入库类型',
+            '入库时间',
+            '平台订单编号',
+            '省平台编码',
+            '品种(材料)编码',
+            '注册证号',
+            '品种全称',
+            '生产企业名称',
+            '科室/供应商名称',
+            '型号/规格',
+            '单位',
+            '生产批号',
+            '生产时间',
+            '有效到期',
+            '灭菌批号',
+            '入库数量',
+            '入库价格',
+            '来源',
+            '是否集采',
+            '财务分类属性',
+            '订单结算类型',
+            '合同类型',
+            '收货类型',
+            '计费编码',
+            '阳光编码',
+            '上药HERP编码',
+            '医保码',
+            '品牌',
+            '系数',
+            '散货数量',
+            '定数码',
+            '入库单号',
+            'UDI',
+            '预验收单号',
+            '高低值分类下级属性',
+            '是否中标',
+            '合同名称',
+            '合同编码',
+            '平台合同编号',
+            '操作人',
+            '备注',
+            '上传状态',
+            '计划单号',
+            '计划数量',
+            '计划审批时间',
+            '采购方式'
+          ]
+        : [
+            '入库类型',
+            '订单结算类型',
+            '合同类型',
+            '收货类型',
+            '科室/供应商名称',
+            '入库时间',
+            '品种(材料)编码',
+            '阳光编码',
+            '上药HERP编码',
+            '品种全称',
+            '型号/规格',
+            '单位',
+            '生产企业名称',
+            '医保码',
+            '品牌',
+            '生产批号',
+            '生产时间',
+            '有效到期',
+            '灭菌批号',
+            '系数',
+            '散货数量',
+            '定数码',
+            '入库数量',
+            '入库价格',
+            '入库单号',
+            '预验收单号',
+            '高低值分类下级属性',
+            '是否中标',
+            '合同名称',
+            '合同编码',
+            '平台合同编号',
+            '注册证号',
+            '操作人',
+            '备注',
+            '上传状态',
+            '计划单号',
+            '计划数量',
+            '计划审批时间',
+            '来源',
+            '是否集采',
+            '采购方式'
+          ];
       const rows = [headers];
       result.forEach((item) => {
         const receive =
@@ -1019,63 +1400,121 @@ export default {
             : '未知类型';
         const price = parseFloat(item.SUPPLY_PRICE);
         const bl = Number(item.price_bl);
-        rows.push([
-          ...(HOME_HP === 'stzyyy'
-            ? [item.BATCH_ID || '', item.PT_ORDER_NUM || '']
-            : []),
-          item.UP_SHELF_TYPE,
-          getOrderJsTypeText(item.ORDER_JS_TYPE),
-          formatContractType(item.Contract_Type),
-          receive,
-          item.SUPPLIER_NAME,
-          item.UP_SHELF_TIME
-            ? String(item.UP_SHELF_TIME).replace('T', ' ')
-            : '',
-          item.VARIETIE_CODE_NEW,
-          item.YG_CODE,
-          item.SPH_ERP_VARIETIE_CODE,
-          item.VARIETIE_NAME,
-          item.SPECIFICATION_OR_TYPE,
-          item.UNIT,
-          item.MANUFACTURING_ENT_NAME,
-          item.MEDICAL_CODE,
-          item.Brand,
-          item.BATCH,
-          item.BATCH_PRODUCTION_DATE
-            ? String(item.BATCH_PRODUCTION_DATE).replace('T', ' ')
-            : '',
-          item.BATCH_VALIDITY_PERIOD
-            ? String(item.BATCH_VALIDITY_PERIOD).replace('T', ' ')
-            : '',
-          item.DISINFECTION_BATCH,
-          item.COEFFICIENT,
-          item.GOODS_QTY,
-          item.DEF_NO_PKG_CODE,
-          item.UP_SHELF_QUANTITY,
-          Number.isNaN(price)
+        const priceText = Number.isNaN(price)
+          ? ''
+          : price.toFixed(Number.isFinite(bl) ? bl : 4);
+        const approveTime =
+          item.APPROVE_TIME === '0001-01-01T00:00:00' ||
+          item.APPROVE_TIME == null
             ? ''
-            : price.toFixed(Number.isFinite(bl) ? bl : 4),
-          item.BUSINESS_BILL,
-          item.OLD_DELIVERY_NOTE_NUMBER,
-          formatHighLowClassTwo(item.HIGH_OR_LOW_CLASS_TWO),
-          item.IS_BIDDING === '1' || item.IS_BIDDING === 1 ? '是' : '否',
-          item.CONTRACT_NAME,
-          item.CONTRACT_CODE,
-          item.PT_HTNUM || '',
-          item.APPROVAL_NUMBER,
-          item.Operator,
-          item.BZ,
-          formatUploadState(item),
-          item.PREPARE_GOODS_PLAN_NUMBER,
-          item.STOCK_UP_PLAN_GOODS_QUANTITY,
-          item.APPROVE_TIME === '0001-01-01T00:00:00' || item.APPROVE_TIME == null
-            ? ''
-            : String(item.APPROVE_TIME).replace('T', ' '),
-          item.SOURCE_FROM,
-          item.IS_JC === '1' || item.IS_JC === 1 ? '是' : '否',
-          ...(HOME_HP === 'stzyyy' ? [item.PROVINCE_PLATFORM_CODE || ''] : []),
-          item.ORDER_TYPE == '1' ? '线上采购' : '线下采购'
-        ]);
+            : String(item.APPROVE_TIME).replace('T', ' ');
+        if (isStzyyy) {
+          rows.push([
+            item.BATCH_ID || '',
+            item.UP_SHELF_TYPE,
+            item.UP_SHELF_TIME
+              ? String(item.UP_SHELF_TIME).replace('T', ' ')
+              : '',
+            item.PT_ORDER_NUM || '',
+            item.PROVINCE_PLATFORM_CODE || '',
+            item.VARIETIE_CODE_NEW,
+            item.APPROVAL_NUMBER,
+            item.VARIETIE_NAME,
+            item.MANUFACTURING_ENT_NAME,
+            item.SUPPLIER_NAME,
+            item.SPECIFICATION_OR_TYPE,
+            item.UNIT,
+            item.BATCH,
+            item.BATCH_PRODUCTION_DATE
+              ? String(item.BATCH_PRODUCTION_DATE).replace('T', ' ')
+              : '',
+            item.BATCH_VALIDITY_PERIOD
+              ? String(item.BATCH_VALIDITY_PERIOD).replace('T', ' ')
+              : '',
+            item.DISINFECTION_BATCH,
+            item.UP_SHELF_QUANTITY,
+            priceText,
+            item.SOURCE_FROM,
+            item.IS_JC === '1' || item.IS_JC === 1 ? '是' : '否',
+            item.CLASSIFIC_NAME || '',
+            getOrderJsTypeText(item.ORDER_JS_TYPE),
+            formatContractType(item.Contract_Type),
+            receive,
+            item.CHARGING_CODE || '',
+            item.YG_CODE,
+            item.SPH_ERP_VARIETIE_CODE,
+            item.MEDICAL_CODE,
+            item.Brand,
+            item.COEFFICIENT,
+            item.GOODS_QTY,
+            item.DEF_NO_PKG_CODE,
+            item.BUSINESS_BILL,
+            item.UDI_CODES || '',
+            item.OLD_DELIVERY_NOTE_NUMBER,
+            formatHighLowClassTwo(item.HIGH_OR_LOW_CLASS_TWO),
+            item.IS_BIDDING === '1' || item.IS_BIDDING === 1 ? '是' : '否',
+            item.CONTRACT_NAME,
+            item.CONTRACT_CODE,
+            item.PT_HTNUM || '',
+            item.Operator,
+            item.BZ,
+            formatUploadState(item),
+            item.PREPARE_GOODS_PLAN_NUMBER,
+            item.STOCK_UP_PLAN_GOODS_QUANTITY,
+            approveTime,
+            item.ORDER_TYPE == '1' ? '线上采购' : '线下采购'
+          ]);
+        } else {
+          rows.push([
+            item.UP_SHELF_TYPE,
+            getOrderJsTypeText(item.ORDER_JS_TYPE),
+            formatContractType(item.Contract_Type),
+            receive,
+            item.SUPPLIER_NAME,
+            item.UP_SHELF_TIME
+              ? String(item.UP_SHELF_TIME).replace('T', ' ')
+              : '',
+            item.VARIETIE_CODE_NEW,
+            item.YG_CODE,
+            item.SPH_ERP_VARIETIE_CODE,
+            item.VARIETIE_NAME,
+            item.SPECIFICATION_OR_TYPE,
+            item.UNIT,
+            item.MANUFACTURING_ENT_NAME,
+            item.MEDICAL_CODE,
+            item.Brand,
+            item.BATCH,
+            item.BATCH_PRODUCTION_DATE
+              ? String(item.BATCH_PRODUCTION_DATE).replace('T', ' ')
+              : '',
+            item.BATCH_VALIDITY_PERIOD
+              ? String(item.BATCH_VALIDITY_PERIOD).replace('T', ' ')
+              : '',
+            item.DISINFECTION_BATCH,
+            item.COEFFICIENT,
+            item.GOODS_QTY,
+            item.DEF_NO_PKG_CODE,
+            item.UP_SHELF_QUANTITY,
+            priceText,
+            item.BUSINESS_BILL,
+            item.OLD_DELIVERY_NOTE_NUMBER,
+            formatHighLowClassTwo(item.HIGH_OR_LOW_CLASS_TWO),
+            item.IS_BIDDING === '1' || item.IS_BIDDING === 1 ? '是' : '否',
+            item.CONTRACT_NAME,
+            item.CONTRACT_CODE,
+            item.PT_HTNUM || '',
+            item.APPROVAL_NUMBER,
+            item.Operator,
+            item.BZ,
+            formatUploadState(item),
+            item.PREPARE_GOODS_PLAN_NUMBER,
+            item.STOCK_UP_PLAN_GOODS_QUANTITY,
+            approveTime,
+            item.SOURCE_FROM,
+            item.IS_JC === '1' || item.IS_JC === 1 ? '是' : '否',
+            item.ORDER_TYPE == '1' ? '线上采购' : '线下采购'
+          ]);
+        }
       });
       writeFile(
         {

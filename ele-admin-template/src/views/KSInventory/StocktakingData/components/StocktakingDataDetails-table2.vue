@@ -322,9 +322,16 @@ export default {
     };
   },
   methods: {
+    /* 规范化生成日期，供明细查询/扫码等接口使用 */
+    formatGenerateDate(value) {
+      if (!value) return '';
+      return this.$util.toDateString(value, 'yyyy-MM-dd HH:mm:ss');
+    },
     /* 表格数据源 */
     datasource({ page, limit, where, order }) {
-      where.GENERATE_DATE = this.KSDepartmentalPlanData.GENERATE_DATE;
+      where.GENERATE_DATE = this.formatGenerateDate(
+        this.KSDepartmentalPlanData.GENERATE_DATE
+      );
       where.DEPT_TWO_CODE = this.KSDepartmentalPlanData.DEPT_TWO_CODE;
       let data = GetStockDataDel({ page, limit, where, order }).then((res) => {
         var tData = {
@@ -354,7 +361,9 @@ export default {
     showEditReoad(data) {
       if (data == false) {
         var where = {
-          GENERATE_DATE: this.KSDepartmentalPlanData.GENERATE_DATE
+          GENERATE_DATE: this.formatGenerateDate(
+            this.KSDepartmentalPlanData.GENERATE_DATE
+          )
         };
         this.$refs.table.reload({ page: 1, where: where });
       }
@@ -400,7 +409,9 @@ export default {
       const loading = this.$messageLoading('正在导出数据...');
       this.$refs.table.doRequest(({ where, order }) => {
         where = data;
-        where.GENERATE_DATE = this.KSDepartmentalPlanData.GENERATE_DATE;
+        where.GENERATE_DATE = this.formatGenerateDate(
+          this.KSDepartmentalPlanData.GENERATE_DATE
+        );
         where.DEPT_TWO_CODE = this.KSDepartmentalPlanData.DEPT_TWO_CODE;
         GetStockDataDel({
           page: 1,
@@ -497,9 +508,12 @@ export default {
   mounted() {
     this.$bus.$on(`${this.$route.path}/TopTable/current`, (item) => {
       this.KSDepartmentalPlanData = item;
+      var where = {};
       if (this.KSDepartmentalPlanData) {
-        var where = {
-          GENERATE_DATE: this.KSDepartmentalPlanData.GENERATE_DATE,
+        where = {
+          GENERATE_DATE: this.formatGenerateDate(
+            this.KSDepartmentalPlanData.GENERATE_DATE
+          ),
           DEPT_TWO_CODE: this.KSDepartmentalPlanData.DEPT_TWO_CODE
         };
       }
