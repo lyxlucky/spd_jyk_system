@@ -70,7 +70,24 @@ export function buildWarehouseAreaThreeInventoryParams(where = {}, page = 1, siz
     STOCK_DEDUCT_TYPE: where.STOCK_DEDUCT_TYPE || '',
     HIGH_OR_LOW_CLASS: where.HIGH_OR_LOW_CLASS || '0',
     START_TIME: where.START_TIME || '',
-    END_TIME: where.END_TIME || ''
+    END_TIME: where.END_TIME || '',
+    TYPE: where.TYPE || '',
+    BUSINESS_TYPES: Array.isArray(where.BUSINESS_TYPES) ? where.BUSINESS_TYPES.join(',') : where.BUSINESS_TYPES || '',
+    BATCH_NOS: Array.isArray(where.BATCH_NOS) ? JSON.stringify(where.BATCH_NOS) : where.BATCH_NOS || '',
+    BATCH_EMPTY: where.BATCH_EMPTY === true || where.BATCH_EMPTY === '1' ? '1' : '',
+    DEPT_CODE: where.DEPT_CODE || '',
+    PATIENT_NUMBER: where.PATIENT_NUMBER || '',
+    HOSPITALIZATION_NUMBER: where.HOSPITALIZATION_NUMBER || '',
+    MEDICAL_ORDER_ID: where.MEDICAL_ORDER_ID || '',
+    JF_ID: where.JF_ID || '',
+    ORIGING_CODE: where.ORIGING_CODE || '',
+    CREATE_START_TIME: where.CREATE_START_TIME || '',
+    CREATE_END_TIME: where.CREATE_END_TIME || '',
+    EXPIRY_START: where.EXPIRY_START || '',
+    EXPIRY_END: where.EXPIRY_END || '',
+    QTY_SIGN: where.QTY_SIGN || '',
+    TRANSFER_STATUS: where.TRANSFER_STATUS || '',
+    TRANSFER_REMARK: where.TRANSFER_REMARK || ''
   };
 }
 
@@ -112,11 +129,52 @@ export async function getDeptMaterialSummary(where, page, size) {
 
 // 查询三级库库存明细流水。
 export async function getMaterialDetail(where, page, size) {
+  const params = {
+    Token: token(),
+    page: normPage(page),
+    size: normSize(size),
+    AREA_CODE: where?.AREA_CODE || '',
+    CHARGE_CODE: where?.CHARGE_CODE || ''
+  };
+  if (Array.isArray(where?.BATCH_NOS) && where.BATCH_NOS.length) {
+    params.BATCH_NOS = JSON.stringify(where.BATCH_NOS);
+  }
+  if (where?.QTY_SIGN) params.QTY_SIGN = where.QTY_SIGN;
   const res = await postForm(
     '/WarehouseAreaThreeInventory/GetMaterialDetail',
-    buildWarehouseAreaThreeInventoryParams(where, page, size)
+    params
   );
   return unwrap(res);
+}
+
+// 返回同一实际库区下的完整候选；后端超过 5000 条会要求缩小条件。
+export async function getTransferCandidates(where) {
+  const res = await postForm('/WarehouseAreaThreeInventory/GetTransferCandidates', {
+    ...buildWarehouseAreaThreeInventoryParams(where, 1, 5000),
+    EXACT_AREA: '1'
+  });
+  return unwrap(res, '查询移库候选失败');
+}
+
+export async function previewTransfer(params) {
+  const res = await postForm('/WarehouseAreaThreeInventory/PreviewTransfer', {
+    Token: token(),
+    IDS: params.IDS,
+    SOURCE_AREA_CODE: params.SOURCE_AREA_CODE,
+    TARGET_AREA_CODE: params.TARGET_AREA_CODE,
+    TRANSFER_REMARK: params.TRANSFER_REMARK
+  });
+  return unwrap(res, '移库预览失败');
+}
+
+// 确认只提交服务器签发的预览令牌，不能在此更换流水或目标库区。
+export async function submitTransfer(params) {
+  const res = await postForm('/WarehouseAreaThreeInventory/SubmitTransfer', {
+    Token: token(),
+    PREVIEW_TOKEN: params.PREVIEW_TOKEN,
+    REQUEST_ID: params.REQUEST_ID
+  });
+  return unwrap(res, '移库失败');
 }
 
 // 按明细主键软删除三级库库存流水。

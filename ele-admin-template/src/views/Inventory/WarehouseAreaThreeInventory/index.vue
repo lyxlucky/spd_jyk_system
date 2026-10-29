@@ -125,6 +125,7 @@
       :visible.sync="detailVisible"
       :title="detailTitle"
       :filters="detailFilters"
+      @changed="onDetailChanged"
     />
   </div>
 </template>
@@ -189,6 +190,15 @@ export default {
     }
   },
   methods: {
+    onDetailChanged() {
+      if (this.queryMode === 'material') {
+        this.$refs.materialLocation?.refreshAfterDetailChange();
+        return;
+      }
+      // 明细可能由库房或科室入口打开，两个维度同时刷新。
+      this.reloadWarehouse();
+      this.reloadDeptList();
+    },
     enabledName,
     flagName,
     // 获取当前查询条件，并缓存为表格数据源的默认条件。
@@ -334,7 +344,10 @@ export default {
       this.warehouseJumpLoading = false;
     },
     openLocationDetail(filters) {
-      this.detailFilters = filters || {};
+      this.detailFilters = {
+        AREA_CODE: filters?.AREA_CODE || '',
+        CHARGE_CODE: filters?.CHARGE_CODE || ''
+      };
       this.detailTitle = '耗材使用明细';
       this.detailVisible = true;
     },
@@ -374,7 +387,7 @@ export default {
       this.selectedDept = row;
       this.reloadDeptMaterial();
     },
-    // 打开库存流水明细弹窗，并把当前筛选条件传入明细查询。
+    // 明细只定位计费编码和库房/库区，不继承主页面的科室及其他筛选条件。
     openDetail(row, scope) {
       if (!row?.CHARGE_CODE) {
         Message.warning('缺少计费编码');
@@ -382,9 +395,7 @@ export default {
       }
       const baseWhere = this.currentWhere();
       this.detailFilters = {
-        ...baseWhere,
         AREA_CODE: row.AREA_CODE || baseWhere.AREA_CODE || '',
-        DEPT_TWO_CODE: scope === 'dept' ? row.DEPT_TWO_CODE || this.selectedDept?.DEPT_TWO_CODE || '' : '',
         CHARGE_CODE: row.CHARGE_CODE || ''
       };
       this.detailTitle =

@@ -91,6 +91,11 @@ export default {
     }
   },
   methods: {
+    refreshAfterDetailChange() {
+      // 保留当前品种，刷新它的分布以及上方耗材汇总。
+      this.$refs.summaryTable?.reload({ page: 1 });
+      this.$refs.detailTable?.reload({ page: 1 });
+    },
     reload(where) {
       this.currentWhere = { ...(where || {}) };
       this.selectedMaterial = null;
@@ -140,9 +145,7 @@ export default {
         return;
       }
       this.$emit('detail', {
-        ...this.currentWhere,
         AREA_CODE: row.AREA_CODE,
-        DEPT_TWO_CODE: row.DEPT_TWO_CODE || '',
         CHARGE_CODE: this.selectedMaterial?.CHARGE_CODE || row.CHARGE_CODE || ''
       });
     }
