@@ -62,6 +62,12 @@ export default {
       this.search();
     },
     syncData() {
+      const deptCode =
+        this.$store.state.user.info?.DeptNow?.Dept_Two_Code || '';
+      if (!deptCode) {
+        this.$message.warning('未获取到当前科室，请重新登录或切换科室后再试');
+        return;
+      }
       syncStocktakingData()
         .then((res) => {
           if (res.code != 200) return this.$message.error(res.msg);
@@ -69,14 +75,20 @@ export default {
           this.search();
         })
         .catch((err) => {
-          this.$message.error(err);
+          this.$message.error(err?.message || err);
         });
     },
     //生成盘点数据
     generateData() {
+      const deptCode =
+        this.$store.state.user.info?.DeptNow?.Dept_Two_Code || '';
+      if (!deptCode) {
+        this.$message.warning('未获取到当前科室，请重新登录或切换科室后再试');
+        return;
+      }
       this.where.TYPE = 1;
       this.where.COUNT = 1;
-      this.where.DeptCode = this.$store.state.user.info.DeptNow.Dept_Two_Code;
+      this.where.DeptCode = deptCode;
       let data = {
         where: this.where,
         limit: 999999,
@@ -99,12 +111,10 @@ export default {
             })
             .catch((err) => {
               loading.close();
-              this.$message.error(err);
+              this.$message.error(err?.message || err);
             });
         })
-        .catch((err) => {
-          this.$message.info(err);
-        });
+        .catch(() => {});
     }
   },
 
