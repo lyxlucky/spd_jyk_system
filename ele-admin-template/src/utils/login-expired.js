@@ -2,6 +2,7 @@ import { MessageBox } from 'element-ui';
 import router from '@/router';
 import { logout } from '@/utils/page-tab-util';
 import { LAYOUT_PATH } from '@/config/setting';
+import { resolveLoginExpireMsg } from '@/utils/login-expire-msg';
 
 let loginExpiredShown = false;
 
@@ -14,10 +15,10 @@ export function isLoginExpired(data) {
   if (code == 301 || code === '301') {
     return true;
   }
-  return /登录失效|重新登录|登录超时|登录过期|请重新登录/.test(msg);
+  return /登录失效|登录被顶号|登录过期|空闲超时|重新登录|登录超时|请重新登录/.test(msg);
 }
 
-export function showLoginExpiredDialog() {
+export function showLoginExpiredDialog(data) {
   if (loginExpiredShown) {
     return;
   }
@@ -28,7 +29,8 @@ export function showLoginExpiredDialog() {
     loginExpiredShown = false;
     return;
   }
-  MessageBox.alert('登录状态已过期，请重新登录！', '系统提示', {
+  const tip = resolveLoginExpireMsg(data);
+  MessageBox.alert(tip, '登录提示', {
     confirmButtonText: '重新登录',
     showClose: false,
     callback: (action) => {
@@ -46,7 +48,7 @@ export function showLoginExpiredDialog() {
 export function unwrapResponse(res) {
   const data = res.data;
   if (isLoginExpired(data)) {
-    showLoginExpiredDialog();
+    showLoginExpiredDialog(data);
     return Promise.reject(data);
   }
   if (data?.code == 200 || data?.code === '200') {

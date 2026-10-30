@@ -8,6 +8,7 @@ import { API_BASE_URL, TOKEN_HEADER_NAME, LAYOUT_PATH, REQUEST_TIMEOUT } from '@
 import { getToken, setToken } from './token-util';
 import { logout } from './page-tab-util';
 import RequestTimeoutManager from '@/utils/timeOut';
+import { resolveLoginExpireMsg } from '@/utils/login-expire-msg';
 
 // axios.defaults.headers.post['Content-Type'] = 'application/json;charset=UTF-8';
 const service = axios.create({
@@ -52,13 +53,14 @@ service.interceptors.request.use(
  */
 service.interceptors.response.use(
   (res) => {
-    // 登录过期处理
-    if (res.data?.code === 301) {
+    // 登录失效：优先展示后端诊断文案（顶号/过期/无凭证）
+    if (res.data?.code === 301 || res.data?.code === '301') {
       const currentPath = router.currentRoute.path;
+      const tip = resolveLoginExpireMsg(res.data);
       if (currentPath === LAYOUT_PATH) {
         logout(true);
       } else {
-        MessageBox.alert('登录状态已过期, 请退出重新登录!', '系统提示', {
+        MessageBox.alert(tip, '登录提示', {
           confirmButtonText: '重新登录',
           showClose: false,
           callback: (action) => {
@@ -71,7 +73,7 @@ service.interceptors.response.use(
           }
         });
       }
-      return Promise.reject(new Error(res.data.message));
+      return Promise.reject(new Error(tip));
     }
 
     const isHaveToken = getToken();
