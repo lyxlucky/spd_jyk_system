@@ -64,6 +64,22 @@ export function stockDeductTypeName(value) {
   return value || '';
 }
 
+export const MATERIAL_EXPORT_HEADERS = [
+  '序号',
+  '品种编码',
+  '计费编码',
+  '品种名称',
+  '规格型号',
+  '生产企业',
+  '单位',
+  '当前总库存',
+  '库房/库区数',
+  'SPD科室数',
+  'HIS科室数',
+  '异常记录数',
+  '最近业务时间'
+];
+
 export const WAREHOUSE_EXPORT_HEADERS = [
   '序号',
   '库房/库区编码',
@@ -141,6 +157,25 @@ export const MATERIAL_DETAIL_EXPORT_HEADERS = [
   '删除来源',
   '删除备注'
 ];
+
+// 耗材汇总导出行转换。
+export function materialRowToExportArray(row, index) {
+  return [
+    index + 1,
+    row.VARIETIE_CODE_NEW,
+    row.CHARGE_CODE,
+    row.VARIETIE_NAME,
+    row.SPECIFICATION_OR_TYPE,
+    row.MANUFACTURING_ENT_NAME,
+    row.UNIT,
+    row.STOCK_QTY,
+    row.WAREHOUSE_COUNT,
+    row.SPD_DEPT_COUNT,
+    row.HIS_DEPT_COUNT,
+    row.ABNORMAL_COUNT,
+    fmtDateTime(row.LAST_OPERATE_TIME)
+  ];
+}
 
 // 库房/库区汇总导出行转换。
 export function warehouseRowToExportArray(row, index) {

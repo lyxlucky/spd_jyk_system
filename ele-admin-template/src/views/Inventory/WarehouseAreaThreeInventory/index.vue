@@ -146,13 +146,16 @@ import {
 import {
   DEPT_EXPORT_HEADERS,
   DEPT_MATERIAL_EXPORT_HEADERS,
+  MATERIAL_EXPORT_HEADERS,
   WAREHOUSE_EXPORT_HEADERS,
   deptMaterialRowToExportArray,
   deptRowToExportArray,
+  materialRowToExportArray,
   warehouseRowToExportArray
 } from './utils';
 import {
   getDeptMaterialSummary,
+  getInventoryExportSummary,
   getWarehouseDeptList,
   getWarehouseMaterialSummary
 } from '@/api/Inventory/WarehouseAreaThreeInventory';
@@ -406,13 +409,17 @@ export default {
           : `耗材使用明细 - ${row.AREA_NAME || ''}`;
       this.detailVisible = true;
     },
-    // 按当前页签导出对应维度的数据。
-    async onExport() {
-      const where = this.currentWhere();
-      if (!this.requireWarehouse(where)) return;
+    // 下拉菜单始终导出全量；库房模式主按钮保留当前页签的导出。
+    async onExport(dimension) {
+      if (this.exporting) return;
+      const exportDimension = dimension || (this.queryMode === 'material' ? 'material' : '');
+      const where = exportDimension ? null : this.currentWhere();
+      if (!exportDimension && !this.requireWarehouse(where)) return;
       this.exporting = true;
       try {
-        if (this.activeTab === 'warehouse') {
+        if (exportDimension) {
+          await this.exportAll(exportDimension);
+        } else if (this.activeTab === 'warehouse') {
           await this.exportWarehouse(where);
         } else if (this.selectedDept?.DEPT_TWO_CODE) {
           await this.exportDeptMaterial(where);
@@ -432,6 +439,20 @@ export default {
       const book = utils.book_new();
       utils.book_append_sheet(book, sheet, sheetName);
       writeFile(book, filename);
+    },
+    // 不继承页面筛选条件，由服务端返回当前账号可见的全部有效库存。
+    async exportAll(dimension) {
+      const res = await getInventoryExportSummary(dimension);
+      const isMaterial = dimension === 'material';
+      const sheetName = isMaterial ? '耗材维度' : '库房维度';
+      const rowToArray = isMaterial ? materialRowToExportArray : warehouseRowToExportArray;
+      const rows = (res.result || []).map((row, index) => rowToArray(row, index));
+      this.writeSheet(
+        isMaterial ? MATERIAL_EXPORT_HEADERS : WAREHOUSE_EXPORT_HEADERS,
+        rows,
+        `库房库区三级库库存-${sheetName}-全部.xlsx`,
+        sheetName
+      );
     },
     // 导出库房/库区耗材汇总。
     async exportWarehouse(where) {

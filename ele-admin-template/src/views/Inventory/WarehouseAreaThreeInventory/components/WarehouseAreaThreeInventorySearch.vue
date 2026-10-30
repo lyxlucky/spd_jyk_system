@@ -128,9 +128,21 @@
         <el-form-item>
           <el-button type="primary" icon="el-icon-search" @click="emitSearch">查询</el-button>
           <el-button icon="el-icon-refresh" @click="reset">重置</el-button>
-          <el-button v-if="mode === 'warehouse'" type="success" icon="el-icon-download" :loading="exporting" @click="$emit('export')">
-            导出
-          </el-button>
+          <el-dropdown
+            class="inventory-export-dropdown"
+            trigger="hover"
+            size="mini"
+            :disabled="exporting"
+            @command="$emit('export', $event)"
+          >
+            <el-button type="success" icon="el-icon-download" :loading="exporting" @click="$emit('export')">
+              导出<i class="el-icon-arrow-down el-icon--right" />
+            </el-button>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item command="material" :disabled="exporting">耗材维度</el-dropdown-item>
+              <el-dropdown-item command="warehouse" :disabled="exporting">库房维度</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
           <el-button
             v-if="mode === 'warehouse'"
             type="warning"
@@ -965,6 +977,10 @@ export default {
 <style scoped>
 .warehouse-search-head { display: flex; align-items: center; justify-content: space-between; }
 .warehouse-filter-button { color: #409eff; }
+.inventory-export-dropdown {
+  margin: 0 10px;
+  vertical-align: top;
+}
 .warehouse-area-search .warehouse-select {
   width: 380px;
 }

@@ -129,6 +129,18 @@ export async function queryAccessibleWarehouseAreaOptions(keyword = '') {
   return unwrap(res);
 }
 
+// 全量导出只提交维度，查询范围由服务端按当前账号权限确定。
+export async function getInventoryExportSummary(dimension) {
+  if (dimension !== 'material' && dimension !== 'warehouse') {
+    throw new Error('请选择有效的导出维度');
+  }
+  const res = await postForm('/WarehouseAreaThreeInventory/GetInventoryExportSummary', {
+    Token: token(),
+    DIMENSION: dimension
+  });
+  return unwrap(res, '查询导出数据失败');
+}
+
 // 查询库房/库区维度的耗材库存汇总。
 export async function getWarehouseMaterialSummary(where, page, size) {
   const res = await postForm(
