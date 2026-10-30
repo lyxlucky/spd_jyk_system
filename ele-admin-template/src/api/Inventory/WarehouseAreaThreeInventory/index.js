@@ -91,6 +91,35 @@ export function buildWarehouseAreaThreeInventoryParams(where = {}, page = 1, siz
   };
 }
 
+// 全局计费编码过滤配置，不随页面选择的库房/库区变化。
+export async function queryThreeKcFilterConfigs(where = {}, page = 1, size = 20) {
+  const res = await postForm('/WarehouseAreaThreeInventory/QueryFilterConfigs', {
+    Token: token(), keyword: where.keyword || '', IS_ENABLED: where.IS_ENABLED || '',
+    page: normPage(page), size: normSize(size)
+  });
+  return unwrap(res, '查询过滤配置失败');
+}
+
+export async function saveThreeKcFilterConfig(row) {
+  const res = await postForm('/WarehouseAreaThreeInventory/SaveFilterConfig', {
+    Token: token(), ID: row.ID || '', CHARGE_CODE: row.CHARGE_CODE,
+    IS_ENABLED: row.IS_ENABLED, REMARK: row.REMARK || ''
+  });
+  return unwrap(res, '保存过滤配置失败');
+}
+
+export async function deleteThreeKcFilterConfig(id) {
+  const res = await postForm('/WarehouseAreaThreeInventory/DeleteFilterConfig', { Token: token(), ID: id });
+  return unwrap(res, '删除过滤配置失败');
+}
+
+export async function setThreeKcFilterConfigEnabled(id, enabled) {
+  const res = await postForm('/WarehouseAreaThreeInventory/SetFilterConfigEnabled', {
+    Token: token(), ID: id, IS_ENABLED: enabled
+  });
+  return unwrap(res, '开关保存失败');
+}
+
 // 查询当前账号可访问的库房/库区下拉选项。
 export async function queryAccessibleWarehouseAreaOptions(keyword = '') {
   const res = await postForm('/WarehouseAreaThreeInventory/QueryAccessibleWarehouseAreaOptions', {
@@ -134,7 +163,8 @@ export async function getMaterialDetail(where, page, size) {
     page: normPage(page),
     size: normSize(size),
     AREA_CODE: where?.AREA_CODE || '',
-    CHARGE_CODE: where?.CHARGE_CODE || ''
+    CHARGE_CODE: where?.CHARGE_CODE || '',
+    IS_DELETE: where?.IS_DELETE === '0' ? '0' : '1'
   };
   if (Array.isArray(where?.BATCH_NOS) && where.BATCH_NOS.length) {
     params.BATCH_NOS = JSON.stringify(where.BATCH_NOS);

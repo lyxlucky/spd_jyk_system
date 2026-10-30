@@ -44,6 +44,12 @@
           <el-option label="零数量" value="zero" />
         </el-select>
       </el-form-item>
+      <el-form-item v-if="showDeleteStatus" label="删除状态">
+        <el-select :value="value.IS_DELETE || '1'" @change="update('IS_DELETE', $event)">
+          <el-option label="未删除" value="1" />
+          <el-option label="已删除" value="0" />
+        </el-select>
+      </el-form-item>
     </div>
     <div class="filter-actions">
       <el-button type="primary" :loading="loading" @click="$emit('search')">{{
@@ -67,6 +73,7 @@
       rows: { type: Array, default: () => [] },
       loading: Boolean,
       local: Boolean,
+      showDeleteStatus: Boolean,
       searchLabel: { type: String, default: '查询' }
     },
     computed: {

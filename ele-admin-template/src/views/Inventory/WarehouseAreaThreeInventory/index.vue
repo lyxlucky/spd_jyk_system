@@ -346,7 +346,8 @@ export default {
     openLocationDetail(filters) {
       this.detailFilters = {
         AREA_CODE: filters?.AREA_CODE || '',
-        CHARGE_CODE: filters?.CHARGE_CODE || ''
+        CHARGE_CODE: filters?.CHARGE_CODE || '',
+        IS_DELETE: this.currentWhere().IS_DELETE || '1'
       };
       this.detailTitle = '耗材使用明细';
       this.detailVisible = true;
@@ -396,7 +397,8 @@ export default {
       const baseWhere = this.currentWhere();
       this.detailFilters = {
         AREA_CODE: row.AREA_CODE || baseWhere.AREA_CODE || '',
-        CHARGE_CODE: row.CHARGE_CODE || ''
+        CHARGE_CODE: row.CHARGE_CODE || '',
+        IS_DELETE: baseWhere.IS_DELETE || '1'
       };
       this.detailTitle =
         scope === 'dept'

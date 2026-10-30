@@ -15,6 +15,7 @@
         <div class="material-detail-filter-wrap">
           <MaterialDetailFilters
             v-model="localWhere"
+            show-delete-status
             :rows="tableData"
             :loading="tableLoading"
             @search="searchDetails"
@@ -216,6 +217,16 @@
               width="200"
               align="center"
             />
+            <vxe-column field="IS_DELETE" title="删除状态" width="100" align="center">
+              <template #default="{ row }">{{ row.IS_DELETE === '0' ? '已删除' : '未删除' }}</template>
+            </vxe-column>
+            <vxe-column field="DELETE_SOURCE" title="删除来源" width="125" align="center">
+              <template #default="{ row }">
+                <el-tag v-if="row.DELETE_SOURCE === 'FILTER_CONFIG'" size="mini" type="warning">计费编码过滤</el-tag>
+                <span v-else>{{ row.IS_DELETE === '0' ? '其他删除' : '-' }}</span>
+              </template>
+            </vxe-column>
+            <vxe-column field="DELETE_REMARK" title="删除备注" min-width="200" />
             <vxe-column
               field="TRANSFER_BLOCK_REASON"
               title="移库限制说明"
@@ -394,7 +405,8 @@
       clearFilters() {
         this.localWhere = createDetailWhere({
           AREA_CODE: this.filters.AREA_CODE,
-          CHARGE_CODE: ''
+          CHARGE_CODE: '',
+          IS_DELETE: '1'
         });
         this.searchDetails();
       },
@@ -442,7 +454,8 @@
       onOpen() {
         this.localWhere = createDetailWhere({
           AREA_CODE: this.filters.AREA_CODE || '',
-          CHARGE_CODE: this.filters.CHARGE_CODE || ''
+          CHARGE_CODE: this.filters.CHARGE_CODE || '',
+          IS_DELETE: this.filters.IS_DELETE === '0' ? '0' : '1'
         });
         this.selection = [];
         this.pagination.currentPage = 1;

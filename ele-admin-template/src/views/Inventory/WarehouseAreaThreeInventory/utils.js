@@ -136,7 +136,10 @@ export const MATERIAL_DETAIL_EXPORT_HEADERS = [
   '有效期',
   '操作人',
   '计费时间',
-  '创建时间'
+  '创建时间',
+  '删除状态',
+  '删除来源',
+  '删除备注'
 ];
 
 // 库房/库区汇总导出行转换。
@@ -222,6 +225,9 @@ export function materialDetailRowToExportArray(row, index) {
     row.EXPIRY_DATE,
     row.CONSUMER,
     fmtDateTime(row.OPEARTION_CHARGING_TIME),
-    fmtDateTime(row.CREATE_TIME)
+    fmtDateTime(row.CREATE_TIME),
+    row.IS_DELETE === '0' ? '已删除' : '未删除',
+    row.DELETE_SOURCE === 'FILTER_CONFIG' ? '计费编码过滤' : row.IS_DELETE === '0' ? '其他删除' : '',
+    row.DELETE_REMARK || ''
   ];
 }

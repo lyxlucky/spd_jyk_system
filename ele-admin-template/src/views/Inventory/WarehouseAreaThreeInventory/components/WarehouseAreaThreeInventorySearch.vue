@@ -1,6 +1,11 @@
 <template>
   <div class="spd-panel spd-panel--search warehouse-area-search">
-    <div class="spd-panel__head">查询条件</div>
+    <div class="spd-panel__head warehouse-search-head">
+      <span>查询条件</span>
+      <el-tooltip content="三级库计费编码过滤配置" placement="top">
+        <el-button class="warehouse-filter-button" size="mini" icon="el-icon-s-operation" circle aria-label="打开三级库计费编码过滤配置" @click="filterConfigVisible = true" />
+      </el-tooltip>
+    </div>
     <div class="spd-panel__body">
       <el-form
         size="mini"
@@ -164,6 +169,8 @@
         
       </el-form>
     </div>
+
+    <ThreeKcFilterDrawer :visible.sync="filterConfigVisible" />
 
     <el-dialog
       :visible.sync="hisPreviewVisible"
@@ -475,6 +482,7 @@
 </template>
 
 <script>
+import ThreeKcFilterDrawer from './ThreeKcFilterDrawer.vue';
 import {
   importInitialInventory,
   previewHisChargeRecords,
@@ -526,12 +534,14 @@ const defaultSpdInStockQuery = () => ({
 
 export default {
   name: 'WarehouseAreaThreeInventorySearch',
+  components: { ThreeKcFilterDrawer },
   props: {
     exporting: Boolean,
     mode: { type: String, default: 'material' }
   },
   data() {
     return {
+      filterConfigVisible: false,
       where: defaultWhere(),
       warehouseOptions: [],
       warehouseLoading: false,
@@ -953,6 +963,8 @@ export default {
 </script>
 
 <style scoped>
+.warehouse-search-head { display: flex; align-items: center; justify-content: space-between; }
+.warehouse-filter-button { color: #409eff; }
 .warehouse-area-search .warehouse-select {
   width: 380px;
 }
