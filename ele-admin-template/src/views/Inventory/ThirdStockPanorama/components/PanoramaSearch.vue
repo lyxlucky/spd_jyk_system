@@ -70,6 +70,13 @@
             @keyup.enter.native="$emit('search')"
           />
         </el-form-item>
+        <el-form-item label="启用状态">
+          <el-select v-model="form.enable" placeholder="全部" clearable style="width: 110px">
+            <el-option label="全部" value="" />
+            <el-option label="启用" value="1" />
+            <el-option label="停用" value="0" />
+          </el-select>
+        </el-form-item>
         <el-form-item label="统计开始时间">
           <el-date-picker
             v-model="form.statStartTime"
@@ -122,6 +129,7 @@
       spec: '',
       manufacter: '',
       prodRegistrationCode: '',
+      enable: '',
       statStartTime: '2024-03-01',
       operationChargingStartTime: '',
       operationChargingEndTime: ''
@@ -172,6 +180,7 @@
                 '单价',
                 '转换比',
                 '批准文号',
+                '启用状态',
                 '散货计费数量',
                 '定数包计费数量',
                 '入库数量',
@@ -194,6 +203,7 @@
                   d.PRICE ?? '',
                   d.HIS_ZHB ?? '',
                   d.APPROVAL_NUMBER ?? '',
+                  d.IS_ENABLE === '1' ? '启用' : '停用',
                   d.JF_QTY ?? '',
                   d.JF_DEF_QTY ?? '',
                   d.KS_QTY ?? '',

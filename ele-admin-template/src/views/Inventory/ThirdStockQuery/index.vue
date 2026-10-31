@@ -138,6 +138,7 @@
             '单位',
             '单价',
             '批准文号',
+            '启用状态',
             '入库类型',
             '库存数量'
           ];
@@ -153,6 +154,7 @@
               d.UNIT || '',
               d.PRICE || '',
               d.APPROVAL_NUMBER || '',
+              d.IS_ENABLE === '1' ? '启用' : '停用',
               this.formatStorageType(d.STORAGE_TYPE),
               this.calcStockQty(d)
             ]);

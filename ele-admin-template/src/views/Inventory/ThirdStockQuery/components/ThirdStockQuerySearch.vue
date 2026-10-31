@@ -70,6 +70,13 @@
         <el-option label="库存数量不为零" value="2" />
       </el-select>
     </el-form-item>
+    <el-form-item prop="enable" label="启用状态">
+      <el-select v-model="form.enable" placeholder="全部" clearable>
+        <el-option label="全部" value="" />
+        <el-option label="启用" value="1" />
+        <el-option label="停用" value="0" />
+      </el-select>
+    </el-form-item>
     <el-form-item>
       <el-checkbox v-model="form.mergeByGroup">按汇总组合并</el-checkbox>
     </el-form-item>
@@ -142,6 +149,7 @@
           spec: '',
           manufacter: '',
           prodRegistrationCode: '',
+          enable: '',
           stockZero: '',
           mergeByGroup: false
         },
