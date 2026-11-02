@@ -85,6 +85,11 @@
         min-width="150"
         show-overflow-tooltip
       />
+      <el-table-column label="启用状态" align="center" width="90">
+        <template slot-scope="{ row }">
+          {{ row.IS_ENABLE === '1' ? '启用' : '停用' }}
+        </template>
+      </el-table-column>
       <el-table-column label="入库类型" align="center" min-width="100" show-overflow-tooltip>
         <template slot-scope="{ row }">
           {{ formatStorageType(row.STORAGE_TYPE) }}

@@ -68,6 +68,18 @@
                 style="width: 120px"
               />
             </el-form-item>
+            <el-form-item label="启用状态" prop="enable">
+              <el-select
+                v-model="form.enable"
+                placeholder="全部"
+                clearable
+                style="width: 110px"
+              >
+                <el-option label="全部" value="" />
+                <el-option label="启用" value="1" />
+                <el-option label="停用" value="0" />
+              </el-select>
+            </el-form-item>
             <el-form-item label="库存数量" prop="stockZero">
               <el-select
                 v-model="form.stockZero"
@@ -85,6 +97,13 @@
               <el-button type="primary" icon="el-icon-search" @click="reload()">查询</el-button>
               <el-button type="success" icon="el-icon-download" @click="exportData()">导出</el-button>
               <el-button type="info" @click="showKcDialog()">库存汇总</el-button>
+              <el-button
+                type="warning"
+                plain
+                icon="el-icon-download"
+                style="margin-left: 10px"
+                @click="downloadTemplate"
+              >下载模板</el-button>
               <el-upload
                 ref="upload"
                 :action="uploadUrl"
@@ -94,7 +113,7 @@
                 :on-success="handleUploadSuccess"
                 :on-error="handleUploadError"
                 :before-upload="beforeUpload"
-                accept=".xlsx,.xls,.csv"
+                accept=".xlsx,.xls"
                 style="display: inline-block; margin-left: 10px"
               >
                 <el-button type="warning">上传初始化库存</el-button>
@@ -307,6 +326,7 @@
           spec: '', // 规格型号
           manufacter: '', // 生产企业
           prodRegistrationCode: '', // 批准文号
+          enable: '', // 品种启用状态：空=全部，1=启用，0=停用
           stockZero: '' // 库存筛选：1-库存为0，2-库存不为0
         },
         flowPageSize: 10,
@@ -385,6 +405,13 @@
             align: 'center',
             showOverflowTooltip: true,
             minWidth: 150
+          },
+          {
+            prop: 'IS_ENABLE',
+            label: '启用状态',
+            align: 'center',
+            width: 90,
+            formatter: (row) => (row.IS_ENABLE === '1' ? '启用' : '停用')
           },
           {
             prop: 'JF_QTY',
@@ -743,6 +770,10 @@
             };
           });
       },
+      downloadTemplate() {
+        window.location.href =
+          process.env.BASE_URL + 'ZL/' + encodeURIComponent('三级库初始化库存模板.xlsx');
+      },
       beforeUpload(file) {
         const isExcel =
           file.type ===
@@ -791,6 +822,7 @@
                 '单价',
                 '转换比',
                 '批准文号',
+                '启用状态',
                 '散货计费数量',
                 '定数包计费数量',
                 '入库数量',
@@ -814,6 +846,7 @@
                   d.PRICE ?? '',
                   d.HIS_ZHB ?? '',
                   d.APPROVAL_NUMBER ?? '',
+                  d.IS_ENABLE === '1' ? '启用' : '停用',
                   d.JF_QTY ?? '',
                   d.JF_DEF_QTY ?? '',
                   d.KS_QTY ?? '',
