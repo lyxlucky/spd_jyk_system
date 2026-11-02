@@ -35,6 +35,7 @@
             type="primary"
             icon="el-icon-search"
             :loading="loading"
+            :disabled="busy"
             @click="search"
             >查询</el-button
           >
@@ -45,6 +46,33 @@
             @click="editConfig()"
             >新增配置</el-button
           >
+          
+          <input
+            ref="importFile"
+            type="file"
+            accept=".xls,.xlsx"
+            style="display: none"
+            @change="importConfigs"
+          />
+          <span v-if="importStatus" class="filter-import-status" aria-live="polite">
+            {{ importStatus }}
+          </span>
+        </el-form-item>
+        <el-form-item>
+          <el-popover placement="bottom" trigger="hover" width="180">
+            <el-button type="text" icon="el-icon-download" @click="downloadTemplate">
+              下载导入模板
+            </el-button>
+            <el-button
+              slot="reference"
+              type="primary"
+              icon="el-icon-upload2"
+              :loading="importing"
+              :disabled="loading || busy"
+              @click="$refs.importFile.click()"
+              >导入</el-button
+            >
+          </el-popover>
         </el-form-item>
       </el-form>
       <div class="filter-config-table-wrap">
@@ -71,7 +99,7 @@
                 :value="row.IS_ENABLED"
                 active-value="1"
                 inactive-value="0"
-                :disabled="busy || loading"
+                :disabled="saving || importing || loading || savingIds.includes(row.ID)"
                 :aria-label="`${row.CHARGE_CODE}的过滤开关`"
                 @change="toggleEnabled(row, $event)"
               />
@@ -197,11 +225,15 @@
 </template>
 
 <script>
+  import * as XLSX from 'xlsx';
+  import { parseFilterImportRows } from './filterImport';
   import {
     queryThreeKcFilterConfigs,
     saveThreeKcFilterConfig,
     setThreeKcFilterConfigEnabled,
-    deleteThreeKcFilterConfig
+    deleteThreeKcFilterConfig,
+    importThreeKcFilterConfigs,
+    downloadThreeKcFilterTemplate
   } from '@/api/Inventory/WarehouseAreaThreeInventory';
 
   const emptyForm = () => ({
@@ -227,6 +259,8 @@
         loadVersion: 0,
         savingIds: [],
         saving: false,
+        importing: false,
+        importStatus: '',
         formVisible: false,
         form: emptyForm(),
         rules: {
@@ -267,10 +301,70 @@
         }
       },
       busy() {
-        return this.saving || this.savingIds.length > 0;
+        return this.saving || this.importing || this.savingIds.length > 0;
       }
     },
     methods: {
+      async downloadTemplate() {
+        try {
+          const response = await downloadThreeKcFilterTemplate();
+          const binary = atob(response.result);
+          const bytes = Uint8Array.from(binary, (character) => character.charCodeAt(0));
+          const url = URL.createObjectURL(new Blob([bytes], {
+            type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+          }));
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = '三级库计费编码过滤配置导入模板.xlsx';
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          setTimeout(() => URL.revokeObjectURL(url), 1000);
+        } catch (error) {
+          this.$message.error(error.message || '下载模板失败');
+        }
+      },
+      async importConfigs(event) {
+        const file = event.target.files && event.target.files[0];
+        event.target.value = '';
+        if (!file || this.busy) return;
+        this.importing = true;
+        let imported = 0;
+        let skipped = 0;
+        let total = 0;
+        this.importStatus = '正在读取文件';
+        try {
+          if (!/\.xlsx?$/i.test(file.name)) throw new Error('请选择Excel文件');
+          const buffer = await new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = () => reject(new Error('读取文件失败'));
+            reader.readAsArrayBuffer(file);
+          });
+          const workbook = XLSX.read(buffer, { type: 'array' });
+          if (!workbook.SheetNames.length) throw new Error('Excel没有工作表');
+          const sheetRows = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]], {
+            header: 1, raw: false, defval: '', blankrows: true
+          });
+          const rows = parseFilterImportRows(sheetRows);
+          total = rows.length;
+          for (let index = 0; index < rows.length; index += 100) {
+            const response = await importThreeKcFilterConfigs(rows.slice(index, index + 100));
+            imported += response.result.ImportedCount;
+            skipped += response.result.SkippedCount;
+            this.importStatus = `已处理 ${imported + skipped}/${total}，导入 ${imported}，跳过重复 ${skipped}`;
+          }
+          this.$message.success(`导入完成：新增${imported}条，跳过重复${skipped}条`);
+        } catch (error) {
+          this.importStatus = total
+            ? `导入中断：已处理 ${imported + skipped}/${total}，导入 ${imported}，跳过重复 ${skipped}`
+            : '';
+          this.$message.error(error.message || '导入失败');
+        } finally {
+          if (imported) await this.loadConfigs();
+          this.importing = false;
+        }
+      },
       onOpen() {
         this.page = 1;
         this.loadConfigs();
@@ -341,7 +435,7 @@
         }
       },
       async toggleEnabled(row, value) {
-        if (this.savingIds.length || this.saving) return;
+        if (this.saving || this.importing || this.savingIds.includes(row.ID)) return;
         this.savingIds.push(row.ID);
         try {
           await setThreeKcFilterConfigEnabled(row.ID, value);
@@ -397,6 +491,11 @@
   }
   .filter-enabled-select {
     width: 100px;
+  }
+  .filter-import-status {
+    margin-left: 8px;
+    font-size: 12px;
+    color: #606266;
   }
   .filter-config-table-wrap {
     flex: 1;

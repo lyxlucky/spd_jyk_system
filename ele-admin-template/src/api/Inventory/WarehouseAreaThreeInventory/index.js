@@ -108,6 +108,20 @@ export async function saveThreeKcFilterConfig(row) {
   return unwrap(res, '保存过滤配置失败');
 }
 
+export async function importThreeKcFilterConfigs(rows) {
+  const res = await postForm('/WarehouseAreaThreeInventory/ImportFilterConfigs', {
+    Token: token(), ROWS: JSON.stringify(rows)
+  });
+  return unwrap(res, '导入过滤配置失败');
+}
+
+export async function downloadThreeKcFilterTemplate() {
+  const res = await postForm('/WarehouseAreaThreeInventory/DownloadFilterConfigTemplate', {
+    Token: token()
+  });
+  return unwrap(res, '下载模板失败');
+}
+
 export async function deleteThreeKcFilterConfig(id) {
   const res = await postForm('/WarehouseAreaThreeInventory/DeleteFilterConfig', { Token: token(), ID: id });
   return unwrap(res, '删除过滤配置失败');
