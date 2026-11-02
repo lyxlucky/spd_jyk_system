@@ -250,20 +250,50 @@ export async function GetOutStockDetailRaw(data) {
   );
 }
 
-/** 入库明细服务端导出 Excel（返回文件名 msg，含 303 审计） */
+/** 汕头中医走 *ExcelNew（含独有列且其环境正常）；其它院走旧接口（部分环境 New 被网关拦截） */
+function isStzyyyHp() {
+  return String(HOME_HP || '').toLowerCase() === 'stzyyy';
+}
+
+/** 入库明细服务端导出 */
 export async function CreateStorageExcelNew(data) {
+  const useNew = isStzyyyHp();
   return fetchExportRaw(
-    '/InStockCheck/CreateStorageExcelNew',
-    (d) => ({ ...buildInStockParams(d), hp: HOME_HP || '' }),
+    useNew
+      ? '/InStockCheck/CreateStorageExcelNew'
+      : '/InStockCheck/CreateStorageExcel',
+    (d) => {
+      const p = buildInStockParams(d);
+      return {
+        ...p,
+        data1: p.StartTime,
+        data2: p.EndTime,
+        OutType: p.InType, // 旧接口入库类型读 OutType
+        STORAGE: p.REPOSITORY_FROM,
+        hp: HOME_HP || ''
+      };
+    },
     data
   );
 }
 
-/** 出库明细服务端导出 Excel（返回文件名 msg，含 303 审计） */
+/** 出库明细服务端导出 */
 export async function CreateDeliveryExcelNew(data) {
+  const useNew = isStzyyyHp();
   return fetchExportRaw(
-    '/InStockCheck/CreateDeliveryExcelNew',
-    (d) => ({ ...buildOutStockParams(d), hp: HOME_HP || '' }),
+    useNew
+      ? '/InStockCheck/CreateDeliveryExcelNew'
+      : '/InStockCheck/CreateDeliveryExcel',
+    (d) => {
+      const p = buildOutStockParams(d);
+      return {
+        ...p,
+        data1: p.StartTime,
+        data2: p.EndTime,
+        STORAGE: p.REPOSITORY_FROM,
+        hp: HOME_HP || ''
+      };
+    },
     data
   );
 }
