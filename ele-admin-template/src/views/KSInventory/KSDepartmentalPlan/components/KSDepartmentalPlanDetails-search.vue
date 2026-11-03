@@ -396,6 +396,14 @@
       @cancel="handleExpiredCertificateCancel"
     />
 
+    <!-- 毕节：合同明细到期提醒 -->
+    <ContractExpireDialog
+      :visible="contractExpireDialogVisible"
+      :expiredList="contractExpireList"
+      @confirm="confirmSubmitWithContractExpire"
+      @cancel="handleContractExpireCancel"
+    />
+
     <MergeApplyPlanOrderDialog
       :visible.sync="mergeOrderVisible"
       :main-order="KSDepartmentalPlanDataSearch?.PlanNum || ''"
@@ -521,6 +529,7 @@
   import ApplyTemp from '@/views/KSInventory/ApplyTemp/index.vue';
   import IntroduceDefinedTemp from './aaaaccc.vue';
   import ExpiredCertificateDialog from './ExpiredCertificateDialog.vue';
+  import ContractExpireDialog from './ContractExpireDialog.vue';
   import HistoryCycleConsumeDialog from './HistoryCycleConsumeDialog.vue';
   import MergeApplyPlanOrderDialog from './MergeApplyPlanOrderDialog.vue';
   import { TOKEN_STORE_NAME } from '@/config/setting';
@@ -545,6 +554,7 @@
       VarietyDataLzhLook,
       DpetOneAuthWithDept,
       ExpiredCertificateDialog,
+      ContractExpireDialog,
       HistoryCycleConsumeDialog,
       MergeApplyPlanOrderDialog
     },
@@ -568,6 +578,8 @@
         Token: sessionStorage.getItem(TOKEN_STORE_NAME),
         expiredCertificateDialogVisible: false,
         expiredCertificateList: [],
+        contractExpireDialogVisible: false,
+        contractExpireList: [],
         bindBudgetDialogVisible: false,
         mergeOrderVisible: false,
         budgetItemList: [],
@@ -901,6 +913,53 @@
       },
 
       addPutInListDeta2() {
+        if (HOME_HP == 'gzbj') {
+          const expiredItems = this.collectGzbjContractWarnLines();
+          if (expiredItems.length > 0) {
+            this.contractExpireList = expiredItems;
+            this.contractExpireDialogVisible = true;
+            return;
+          }
+        }
+        this.continuePutInListDeta2();
+      },
+
+      collectGzbjContractWarnLines() {
+        const expiredItems = [];
+        const today = this.$moment().startOf('day');
+        (this.datasourceList || []).forEach((element) => {
+          if (element.DTL_IS_DELETE == '0' || element.DTL_IS_DELETE == 0) return;
+          const qty = parseFloat(element.PlanQty);
+          if (!(qty > 0)) return;
+          if (!element.DET_CONTRACT_END) return;
+          const end = this.$moment(element.DET_CONTRACT_END).startOf('day');
+          if (!end.isValid()) return;
+          const diff = end.diff(today, 'days');
+          if (diff > 30) return;
+          expiredItems.push({
+            VarName: element.VarName,
+            VarID: element.VarCode,
+            GG: element.GG,
+            Manufacturing: element.Manufacturing,
+            DET_CONTRACT_END: element.DET_CONTRACT_END,
+            expired: diff < 0,
+            remainText: diff < 0 ? '已过期' : '快到期(剩' + diff + '天)'
+          });
+        });
+        return expiredItems;
+      },
+
+      confirmSubmitWithContractExpire() {
+        this.contractExpireDialogVisible = false;
+        this.continuePutInListDeta2();
+      },
+
+      handleContractExpireCancel() {
+        this.contractExpireDialogVisible = false;
+        this.$message.info('已取消提交');
+      },
+
+      continuePutInListDeta2() {
         // 检查是否为bdrm环境
         if (HOME_HP == 'bdrm') {
           // 检查是否为科研订单，如果是则验证费用项目绑定
