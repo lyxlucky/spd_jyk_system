@@ -158,6 +158,7 @@ export default {
     return {
       where: defaultWhere(),
       msgTip: '',
+      latestScan: 0,
       uploadUrl: `${BACK_BASE_URL}${API_BASE_URL}/DeptConsume/BatchInsertScanDef`,
       Updata: {
         Token: sessionStorage['Token']
@@ -300,14 +301,17 @@ export default {
         });
     },
     addScanDef() {
+      const scan = ++this.latestScan;
       const loading = this.$messageLoading('添加中...');
       insertScanDef(this.where)
         .then((res) => {
           this.where.defNoPkgCode = '';
           document.getElementById('idDefNoPkgCode').focus();
           loading.close();
-          this.msgTip = 'Tip:' + res.msgTip;
-          this.$emit('getMsgTip', this.msgTip);
+          if (scan === this.latestScan) {
+            this.msgTip = (res.msgTip || '').trim();
+            this.$emit('getMsgTip', this.msgTip);
+          }
           this.search();
           this.$message.success(res.msg);
         })
@@ -315,6 +319,10 @@ export default {
           this.where.defNoPkgCode = '';
           document.getElementById('idDefNoPkgCode').focus();
           loading.close();
+          if (scan === this.latestScan) {
+            this.msgTip = '';
+            this.$emit('getMsgTip', '');
+          }
           this.$message.error(err);
         });
     },

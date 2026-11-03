@@ -52,7 +52,7 @@ export default {
       glDeptPlanJp(this.detailId, this.planId)
         .then((res) => {
           const data = unwrapData(res);
-          if (isOkCode(data?.code) || data?.msg) {
+          if (isOkCode(data?.code)) {
             this.$message.success(data.msg || '操作成功');
             this.updateVisible(false);
             this.$emit('success');

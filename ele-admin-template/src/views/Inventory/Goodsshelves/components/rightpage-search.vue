@@ -102,7 +102,7 @@
             icon="el-icon-document"
             @click="exportExcel"
           >
-            导出Excel(新)
+            导出Excel
           </el-button>
           <el-button
             v-if="isBdrm"

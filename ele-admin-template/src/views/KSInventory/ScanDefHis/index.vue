@@ -1,6 +1,15 @@
 <template>
   <div class="ele-body spd-page scan-def-his-page">
     <el-card shadow="never" class="scan-def-his-card">
+      <el-alert
+        v-if="msgTip"
+        class="scan-advice"
+        :title="msgTip"
+        type="warning"
+        show-icon
+        :closable="false"
+        aria-live="polite"
+      />
       <div class="spd-panel__head spd-panel__head--split">
         <span class="scan-def-his-meta">
           <span
@@ -9,7 +18,6 @@
           >
             当前设备：{{ bindMachine || '暂无' }}
           </span>
-          <span v-if="msgTip" class="spd-panel__head-meta msg-tip">{{ msgTip }}</span>
         </span>
       </div>
       <user-search
@@ -466,8 +474,17 @@
   font-weight: normal;
 }
 
-.scan-def-his-meta .msg-tip {
-  color: #409eff;
+.scan-advice {
+  border: 1px solid #e6a23c;
+}
+
+.scan-advice >>> .el-alert__title {
+  color: #854900;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.5;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
 }
 
 .scan-def-his-page >>> .el-table th .cell {

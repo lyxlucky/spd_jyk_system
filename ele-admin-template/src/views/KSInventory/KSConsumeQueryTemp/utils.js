@@ -128,7 +128,12 @@ export const EXPORT_HEADERS = [
   '阳光订单号',
   'HIS计费价格',
   '备注',
-  '消耗备注'
+  '消耗备注',
+  ...(HOME_HP === 'stzyyy' || HOME_HP === 'chrmyy' ? ['入库单号(B2B)'] : []),
+  ...(HOME_HP === 'chrmyy' || HOME_HP === 'stzyyy' || HOME_HP === 'csyy' || HOME_HP === 'stzl' || HOME_HP === 'ztzx' || HOME_HP === 'stse'
+    ? ['平台合同编码', '设备号', '设备名称']
+    : []),
+  ...(HOME_HP === 'stzyyy' ? ['平台订单编号', '批次ID'] : [])
 ];
 
 export function rowToExportArray(r) {
@@ -136,7 +141,7 @@ export function rowToExportArray(r) {
   let dayClear = r.Day_Clearing_Id == 0 ? '未日清' : r.Day_Clearing_Id > 0 ? '已日清' : '未知';
   let month = r.Month_Id == 0 ? '未月结' : r.Month_Id > 0 ? `已月结(${r.MONTHLY_BALANCE_NUMBER || ''})` : '未知';
   let reverse = r.Reverse_State == 1 ? '允许逆向消耗' : '禁止逆向消耗';
-  return [
+  const row = [
     r.Dept_One_Name,
     r.Dept_Two_Name,
     r.Dept_Name,
@@ -177,4 +182,14 @@ export function rowToExportArray(r) {
     r.BZ,
     r.HISBZ
   ];
+  if (HOME_HP === 'stzyyy' || HOME_HP === 'chrmyy') {
+    row.push(r.FPRK_NUM);
+  }
+  if (HOME_HP === 'chrmyy' || HOME_HP === 'stzyyy' || HOME_HP === 'csyy' || HOME_HP === 'stzl' || HOME_HP === 'ztzx' || HOME_HP === 'stse') {
+    row.push(r.PT_HTNUM, r.INSTRUMENT_CODE, r.INSTRUMENT_NAME);
+  }
+  if (HOME_HP === 'stzyyy') {
+    row.push(r.PT_ORDER_NUM, r.BATCH_ID);
+  }
+  return row;
 }
