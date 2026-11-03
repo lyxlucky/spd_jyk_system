@@ -1,9 +1,7 @@
 <template>
   <el-dialog
     :visible.sync="visibleSync"
-    :title="
-      step === 'select' ? '整条流水移库 · 选择流水' : '整条流水移库 · 预览确认'
-    "
+    :title="step === 'select' ? '流水移库 · 选择流水' : '流水移库 · 预览确认'"
     width="94%"
     top="3vh"
     append-to-body
@@ -146,6 +144,25 @@
         >
         <vxe-column field="QTY" title="数量" width="90" align="right" />
         <vxe-column
+          field="TRANSFERABLE_QTY"
+          title="剩余可移数量"
+          width="115"
+          align="right"
+        />
+        <vxe-column title="移库数量" width="150" align="right">
+          <template v-slot="{ row }">
+            <el-input-number
+              v-model="row.TRANSFER_QTY"
+              size="mini"
+              :min="0"
+              :max="Number(row.TRANSFERABLE_QTY)"
+              :controls="false"
+              :disabled="!checkSelectable({ row })"
+              :aria-label="`流水 ${row.ID} 的移库数量`"
+            />
+          </template>
+        </vxe-column>
+        <vxe-column
           field="SPECIFICATION_OR_TYPE"
           title="规格型号"
           width="160"
@@ -179,7 +196,10 @@
         <vxe-column title="移库状态 / 不可选原因" width="190" fixed="right"
           ><template v-slot="{ row }"
             ><span :class="{ 'invalid-text': !checkSelectable({ row }) }">{{
-              row.TRANSFER_BLOCK_REASON || transferStateName(row.TRANSFER_STATE)
+              row.TRANSFER_BLOCK_REASON ||
+              (Number(row.QTY) <= 0
+                ? '仅正数流水可移库'
+                : transferStateName(row.TRANSFER_STATE))
             }}</span></template
           ></vxe-column
         >
@@ -370,7 +390,10 @@
         });
         this.selectedRows = changeSelection(
           [],
-          this.initialRows,
+          this.initialRows.map((row) => ({
+            ...row,
+            TRANSFER_QTY: Number(row.TRANSFERABLE_QTY)
+          })),
           'add',
           this.sourceArea
         );
@@ -419,9 +442,22 @@
           const rows = res.result || [];
           if (rows.length > 5000 || Number(res.total || 0) > 5000)
             throw new Error('候选超过 5000 条，请缩小筛选条件后重新查询');
-          this.candidates = rows;
+          const previous = new Map(
+            this.selectedRows.map((row) => [rowId(row), row])
+          );
+          this.candidates = rows.map((row) => {
+            const selected = previous.get(rowId(row));
+            return {
+              ...row,
+              TRANSFER_QTY: selected
+                ? selected.TRANSFER_QTY
+                : Number(row.TRANSFERABLE_QTY)
+            };
+          });
           // 刷新集合内的选中记录状态；集合外选择继续保留，最终由预览复核。
-          const latest = new Map(rows.map((row) => [rowId(row), row]));
+          const latest = new Map(
+            this.candidates.map((row) => [rowId(row), row])
+          );
           this.selectedRows = this.selectedRows.map(
             (row) => latest.get(rowId(row)) || row
           );
@@ -506,6 +542,11 @@
         try {
           const res = await previewTransfer({
             IDS: this.selectedRows.map(rowId).join(','),
+            QUANTITIES: JSON.stringify(
+              Object.fromEntries(
+                this.selectedRows.map((row) => [rowId(row), row.TRANSFER_QTY])
+              )
+            ),
             SOURCE_AREA_CODE: this.sourceArea,
             TARGET_AREA_CODE: this.targetArea,
             TRANSFER_REMARK: this.remark.trim()
@@ -597,6 +638,9 @@
   }
   .candidate-alert {
     margin-bottom: 10px;
+  }
+  .transfer-select :deep(.el-input-number) {
+    width: 100%;
   }
   .invalid-text {
     color: #c0392b;

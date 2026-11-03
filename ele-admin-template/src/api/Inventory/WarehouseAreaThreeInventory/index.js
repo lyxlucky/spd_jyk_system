@@ -216,6 +216,7 @@ export async function previewTransfer(params) {
   const res = await postForm('/WarehouseAreaThreeInventory/PreviewTransfer', {
     Token: token(),
     IDS: params.IDS,
+    QUANTITIES: params.QUANTITIES,
     SOURCE_AREA_CODE: params.SOURCE_AREA_CODE,
     TARGET_AREA_CODE: params.TARGET_AREA_CODE,
     TRANSFER_REMARK: params.TRANSFER_REMARK

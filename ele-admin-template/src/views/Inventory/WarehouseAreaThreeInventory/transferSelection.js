@@ -32,7 +32,8 @@ export function canTransferRow(row, sourceArea) {
   if (!rowId(row) || rowId(row) === '0') return false;
   if (!truthyFlag(row.CAN_TRANSFER)) return false;
   if (row.TRANSFER_STATE && row.TRANSFER_STATE !== 'AVAILABLE') return false;
-  if (!Number.isFinite(Number(row.QTY)) || Number(row.QTY) === 0) return false;
+  if (!Number.isFinite(Number(row.QTY)) || Number(row.QTY) <= 0) return false;
+  if (!(Number(row.TRANSFERABLE_QTY) > 0)) return false;
   return !sourceArea || String(row.AREA_CODE) === String(sourceArea);
 }
 
@@ -173,6 +174,15 @@ export function validateTransfer(rows, sourceArea, targetArea, remark) {
     return '单次移库必须来自同一实际来源库区';
   if (rows.some((row) => !canTransferRow(row, sourceArea)))
     return '所选流水包含不可移库记录，请重新查询';
+  if (
+    rows.some(
+      (row) =>
+        !Number.isFinite(Number(row.TRANSFER_QTY)) ||
+        Number(row.TRANSFER_QTY) <= 0 ||
+        Number(row.TRANSFER_QTY) > Number(row.TRANSFERABLE_QTY)
+    )
+  )
+    return '移库数量须大于0且不能超过剩余可移数量';
   if (!targetArea) return '请选择目标库房/库区';
   if (String(sourceArea) === String(targetArea))
     return '目标必须与来源库房/库区不同';

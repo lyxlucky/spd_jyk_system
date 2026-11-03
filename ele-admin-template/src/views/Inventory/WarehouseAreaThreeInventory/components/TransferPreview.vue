@@ -6,7 +6,7 @@
       show-icon
       :title="`${preview.SOURCE_AREA_NAME || preview.SOURCE_AREA_CODE} → ${
         preview.TARGET_AREA_NAME || preview.TARGET_AREA_CODE
-      }，确认后执行整条流水移库。`"
+      }，确认后按所填数量执行移库。`"
     />
     <div class="preview-summary">
       <span
