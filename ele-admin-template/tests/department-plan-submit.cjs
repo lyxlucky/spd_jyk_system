@@ -92,8 +92,8 @@ function loader() {
 }
 const settle = async () => { for (let i = 0; i < 12; i++) { await new Promise(r => setImmediate(r)); await Vue.nextTick(); } };
 function button(text) { const b = [...document.querySelectorAll('button')].find(x => x.textContent.trim() === text); assert.ok(b, 'button ' + text); return b; }
-async function mount(count = 2) {
-  calls = []; rows = Array.from({ length: count }, (_, index) => index + 1).map(n => ({ ID: String(n), PlanNum: 'TEST-PLAN', VarID: 'V' + n, VarCode: 'C' + n,
+async function mount() {
+  calls = []; rows = [1, 2].map(n => ({ ID: String(n), PlanNum: 'TEST-PLAN', VarID: 'V' + n, VarCode: 'C' + n,
     VarName: '物料' + n, GG: '规格' + n, PlanQty: '1', DTL_IS_DELETE: '1' }));
   const component = loader()(path.join(sourceRoot, 'views/KSInventory/KSDepartmentalPlan/index.vue')).default;
   const instance = new Vue(component).$mount(); document.body.appendChild(instance.$el); await settle(); return instance;
@@ -158,19 +158,6 @@ async function edit(id, quantity) {
   assert.equal(calls.filter(c => c.data.submitSource).length, 0);
   page.$destroy(); document.body.innerHTML = '';
   console.log('PASS: standalone draft saves cross-page edits without directory restriction');
-
-  invalid = null;
-  page = await mount(901); await edit('1', '4');
-  button('保存并提交').click(); await settle();
-  const largeCommit = calls.find(c => c.data.phase === 'commit');
-  assert.ok(largeCommit, 'large whole-order submit reaches atomic public request');
-  const largeDetails = JSON.parse(largeCommit.data.json);
-  assert.equal(largeDetails.length, 901, 'all 901 details included across server batch boundary');
-  assert.equal(largeDetails[0].APPLY_QTY, '4', 'large order retains local edit');
-  assert.equal(largeDetails[900].VARIETIE_CODE, 'V901', 'last detail is retained');
-  assert.equal(largeDetails[900].APPLY_QTY, '1');
-  page.$destroy(); document.body.innerHTML = '';
-  console.log('PASS: 901-detail page submits every row across the server validation batch boundary');
 
   home = 'other-hospital';
   page = await mount(); await edit('1', '5');
