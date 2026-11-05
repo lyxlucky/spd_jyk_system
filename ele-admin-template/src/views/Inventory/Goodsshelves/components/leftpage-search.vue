@@ -165,6 +165,22 @@
               <el-option label="高值" value="1" />
             </el-select>
           </el-form-item>
+          <el-form-item label="分类属性">
+            <el-select
+              v-model="where.classificProperties"
+              clearable
+              filterable
+              style="width: 130px"
+            >
+              <el-option label="全部" value="-1" />
+              <el-option
+                v-for="item in classificOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
           <el-form-item label="是否中标">
             <el-select v-model="where.isBidding" style="width: 90px">
               <el-option label="全部" value="-1" />
@@ -273,6 +289,7 @@ import {
 } from '../utils';
 import {
   getSTORAGE,
+  GetClassificProp,
   importPtOrderNumExcel
 } from '@/api/Inventory/Goodsshelves';
 
@@ -286,9 +303,11 @@ export default {
       importLoading: false,
       showAdvanced: false,
       storageOptions: [],
+      classificOptions: [],
       defaultWhere: {
         isCharge: '-1',
         highOrLowClass: '-1',
+        classificProperties: '-1',
         isBidding: '-1',
         specialPurchase: '-1',
         oneoffSterilizationPackaging: '-1',
@@ -323,6 +342,7 @@ export default {
   created() {
     this.initDefaultDate();
     this.loadStorage();
+    this.loadClassificOptions();
   },
   mounted() {
     this.search();
@@ -344,6 +364,24 @@ export default {
           name: x.NAME
         }));
         this.$emit('storageLoaded', this.storageOptions);
+      } catch (e) {
+        // ignore
+      }
+    },
+    async loadClassificOptions() {
+      try {
+        const res = await GetClassificProp();
+        const list = Array.isArray(res.result) ? res.result : [];
+        this.classificOptions = list
+          .map((item) => {
+            const value =
+              item.CLASSIFIC_PROPERTIES ?? item.Classific_Properties;
+            const label =
+              item.CLASSIFIC_NAME ?? item.Classific_Name ?? value;
+            if (value == null || value === '') return null;
+            return { value: String(value), label: String(label || value) };
+          })
+          .filter(Boolean);
       } catch (e) {
         // ignore
       }

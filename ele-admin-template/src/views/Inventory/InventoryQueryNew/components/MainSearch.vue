@@ -30,13 +30,29 @@
               @keyup.enter.native="search"
             />
           </el-form-item>
-          <el-form-item label="分类属性">
+          <el-form-item label="分类属性名称">
             <el-input
               v-model="localWhere.classificName"
               clearable
               style="width: 100px"
               @keyup.enter.native="search"
             />
+          </el-form-item>
+          <el-form-item label="分类属性">
+            <el-select
+              v-model="localWhere.classificProperties"
+              clearable
+              filterable
+              style="width: 130px"
+            >
+              <el-option label="全部" value="" />
+              <el-option
+                v-for="o in classificOptions"
+                :key="o.value"
+                :label="o.label"
+                :value="o.value"
+              />
+            </el-select>
           </el-form-item>
           <el-form-item label="生产企业">
             <el-input
@@ -355,6 +371,7 @@
 
 <script>
 import { hasExportPermission } from '../utils';
+import { getClassificPropOptions } from '@/api/Inventory/InventoryQueryNew';
 
 export default {
   name: 'InvQueryMainSearch',
@@ -375,11 +392,13 @@ export default {
   data() {
     return {
       showAdvanced: false,
-      localWhere: {}
+      localWhere: {},
+      classificOptions: []
     };
   },
   created() {
     this.localWhere = { ...this.where };
+    this.loadClassificOptions();
   },
   computed: {
     sumText() {
@@ -419,6 +438,21 @@ export default {
     }
   },
   methods: {
+    async loadClassificOptions() {
+      try {
+        const list = await getClassificPropOptions();
+        this.classificOptions = (list || [])
+          .map((item) => {
+            const value = item.CLASSIFIC_PROPERTIES ?? item.Classific_Properties;
+            const label = item.CLASSIFIC_NAME ?? item.Classific_Name ?? value;
+            if (value == null || value === '') return null;
+            return { value: String(value), label: String(label || value) };
+          })
+          .filter(Boolean);
+      } catch (e) {
+        // ignore
+      }
+    },
     syncWhere() {
       this.$emit('update:where', { ...this.localWhere });
     },
