@@ -1,6 +1,16 @@
 <!-- 搜索表单 -->
 <template>
   <div class="spd-panel__body">
+    <el-dialog title="二级科室目录校验未通过" :visible.sync="catalogDialogVisible"
+      width="80%" append-to-body :close-on-click-modal="false">
+      <p role="alert">以下物料不在领用科室二级目录内，请处理后重新提交。本次修改尚未保存。</p>
+      <el-table :data="catalogErrors" max-height="400" border>
+        <el-table-column prop="VarCode" label="物料编码" min-width="140" />
+        <el-table-column prop="VarName" label="物料名称" min-width="200" />
+        <el-table-column prop="GG" label="规格" min-width="180" />
+      </el-table>
+      <span slot="footer"><el-button @click="catalogDialogVisible = false">关闭</el-button></span>
+    </el-dialog>
     <el-form
       size="mini"
       :inline="true"
@@ -544,7 +554,7 @@
   });
 
   export default {
-    props: ['KSDepartmentalPlanDataSearch', 'selection', 'datasourceList'],
+    props: ['KSDepartmentalPlanDataSearch', 'selection', 'datasourceList', 'getPlanDetails'],
     components: {
       IntroduceUserDefinedTemp,
       IntroduceDefinedTemp,
@@ -562,6 +572,9 @@
       return {
         // 表单数据
         where: defaultWhere(),
+        atomicSubmitting: false,
+        catalogDialogVisible: false,
+        catalogErrors: [],
         showEdit: false,
         showEdit2: false,
         ApplyTempPage: false,
@@ -640,7 +653,7 @@
       },
       /** 对齐老系统：保存并提交仅「新增」可点，「已提交」禁用 */
       canSaveAndSubmit() {
-        return this.planState === '0';
+        return this.planState === '0' && !this.atomicSubmitting && !this.centerDialogVisible;
       },
       /* 兼容旧命名 */
       IsDisabled() {
@@ -1066,6 +1079,9 @@
 
       // 执行提交逻辑
       executeSubmitLogic() {
+        if (HOME_HP === 'se2') {
+          return this.submitDepartmentPlan();
+        }
         const loading = this.$messageLoading('提交中..');
         var list = [];
         this.datasourceList.forEach((element) => {
@@ -1120,6 +1136,58 @@
               this.$message.error(errMsg);
             }
           });
+      },
+
+      async submitDepartmentPlan(removeZero = false) {
+        if (this.atomicSubmitting) return;
+        this.atomicSubmitting = true;
+        const planNum = this.KSDepartmentalPlanDataSearch.PlanNum;
+        const loading = this.$messageLoading('提交中..');
+        try {
+          const rows = await this.getPlanDetails();
+          if (this.KSDepartmentalPlanDataSearch.PlanNum !== planNum) {
+            throw new Error('申领单已切换，请重新提交');
+          }
+          const data = {
+            PlanNum: planNum,
+            submitSource: 'KSDepartmentalPlan',
+            details: rows.map((row) => ({
+              ID: row.ID,
+              PLAN_NUMBER: row.PlanNum,
+              VARIETIE_CODE: row.VarID,
+              APPLY_QTY: row.PlanQty
+            })),
+            removeZero
+          };
+          const checked = await PutInListDeta({ ...data, phase: 'check' });
+          if (checked.hasZero && !removeZero) {
+            this.centerDialogVisible = true;
+            return;
+          }
+          const pending = await checkHasPendingOrder({ PlanNum: planNum });
+          if (pending.code == '202') {
+            await this.$confirm(pending.msg, '提示', {
+              confirmButtonText: '仍然提交', cancelButtonText: '取消', type: 'warning'
+            });
+          }
+          if (this.KSDepartmentalPlanDataSearch.PlanNum !== planNum) {
+            throw new Error('申领单已切换，请重新提交');
+          }
+          const result = await PutInListDeta({ ...data, phase: 'commit' });
+          this.$emit('detailsSaved', planNum);
+          this.$message.success(result.msg);
+          this.$emit('ClickReload', true);
+        } catch (error) {
+          if (Array.isArray(error.catalogErrors) && error.catalogErrors.length) {
+            this.catalogErrors = error.catalogErrors;
+            this.catalogDialogVisible = true;
+          } else if (error !== 'cancel' && error !== 'close') {
+            this.$message.error(error.message || '提交失败，请重试');
+          }
+        } finally {
+          loading.close();
+          this.atomicSubmitting = false;
+        }
       },
 
       // 低值医材提醒填写联系方式
@@ -1194,6 +1262,10 @@
       },
 
       deleteZeroDelAndCommit() {
+        if (HOME_HP === 'se2') {
+          this.centerDialogVisible = false;
+          return this.submitDepartmentPlan(true);
+        }
         var data = {
           PlanNum: this.KSDepartmentalPlanDataSearch.PlanNum
         };
@@ -1251,10 +1323,19 @@
         this.$emit('search', where);
       },
       /* 暂存申领单 */
-      KeeptApplyDate() {
+      async KeeptApplyDate() {
         const loading = this.$messageLoading('暂存中..');
+        const planNum = this.KSDepartmentalPlanDataSearch.PlanNum;
         var list = [];
-        this.datasourceList.forEach((element) => {
+        let rows;
+        try {
+          rows = HOME_HP === 'se2' ? await this.getPlanDetails() : this.datasourceList;
+        } catch (error) {
+          loading.close();
+          this.$message.error(error.message || '读取申领明细失败');
+          return;
+        }
+        rows.forEach((element) => {
           var data = {
             ID: element.ID,
             ENABLE: element.ENABLE,
@@ -1271,6 +1352,7 @@
         KeeptListDeta(list)
           .then((res) => {
             loading.close();
+            this.$emit('detailsSaved', planNum);
             this.$message.success(res.msg);
             var where = {
               PlanNum: this.KSDepartmentalPlanDataSearch.PlanNum

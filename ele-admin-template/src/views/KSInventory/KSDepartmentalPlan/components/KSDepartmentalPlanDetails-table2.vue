@@ -18,6 +18,8 @@
         @showEditReoad="showEditReoad"
         @BindBudget="handleBindBudget"
         :datasourceList="datasourceList"
+        :getPlanDetails="loadWholePlanDetails"
+        @detailsSaved="clearPlanEdits"
       />
     </div>
 
@@ -87,6 +89,7 @@
         <el-input
           v-else
           v-model="row.PlanQty"
+          @input="cachePlanQty(row)"
           :min="0"
           :max="99999999"
           :step="1"
@@ -745,6 +748,7 @@
         // 是否显示导入弹窗
         showImport: false,
         datasourceList: [],
+        planQtyEdits: {},
         sumNumber: 0,
         sumAount: 0,
         dialogVisible: false,
@@ -763,6 +767,32 @@
       };
     },
     methods: {
+      cachePlanQty(row) {
+        if (HOME_HP === 'se2') {
+          this.$set(this.planQtyEdits, row.PlanNum + ':' + row.ID, row.PlanQty);
+        }
+      },
+      clearPlanEdits(planNum) {
+        const prefix = (planNum || this.KSDepartmentalPlanData.PlanNum) + ':';
+        Object.keys(this.planQtyEdits).forEach((key) => {
+          if (key.startsWith(prefix)) this.$delete(this.planQtyEdits, key);
+        });
+      },
+      applyPlanEdits(row) {
+        const key = row.PlanNum + ':' + row.ID;
+        return Object.prototype.hasOwnProperty.call(this.planQtyEdits, key)
+          ? { ...row, PlanQty: this.planQtyEdits[key] }
+          : row;
+      },
+      async loadWholePlanDetails() {
+        const res = await SerachPlanListDeta({
+          page: 1,
+          limit: 9999999,
+          where: { PlanNum: this.KSDepartmentalPlanData.PlanNum }
+        });
+        return res.result.filter((row) => !this.isDetailDeleted(row))
+          .map((row) => this.applyPlanEdits(row));
+      },
       formatDate(date) {
         if (!date) return '-';
         return this.$moment(date).format('YYYY-MM-DD');
@@ -816,6 +846,10 @@
         }
       },
       async handlePlanQtyChange(row) {
+        if (HOME_HP === 'se2') {
+          this.cachePlanQty(row);
+          return;
+        }
         if (!row.ID || row.PlanQty === undefined || row.PlanQty === '') {
           return;
         }
@@ -901,7 +935,7 @@
         let data = SerachPlanListDeta({ page, limit, where, order }).then(
           (res) => {
             const processedResult = res.result.map((item) => ({
-              ...item,
+              ...(HOME_HP === 'se2' ? this.applyPlanEdits(item) : item),
               SELECTED_SKU_NAME: '',
               SELECTED_SKU_ID: '',
               _originalPlanQty: item.PlanQty
