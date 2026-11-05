@@ -145,13 +145,21 @@ export async function PutInListDeta(data) {
   var data2 = {};
   data2.PlanNum = data.PlanNum ? data.PlanNum : '';
   data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+  if (data.submitSource === 'KSDepartmentalPlan') {
+    data2.submitSource = data.submitSource;
+    data2.phase = data.phase;
+    data2.json = JSON.stringify(data.details);
+    data2.removeZero = data.removeZero === true ? 'true' : 'false';
+  }
 
   var rep = formdataify(data2);
   const res = await request.post('/DeptApplyPlan/PutInListDeta', rep);
   if (res.data.code == 200) {
     return res.data;
   } else {
-    return Promise.reject(new Error(res.data.msg));
+    const error = new Error(res.data.msg);
+    error.catalogErrors = res.data.catalogErrors;
+    return Promise.reject(error);
   }
 }
 
