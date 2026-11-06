@@ -200,7 +200,11 @@ export function buildUpdatePayload(detail, meta = {}) {
     CLINICAL_USE_SAFETY_LEVEL: str(d.CLINICAL_USE_SAFETY_LEVEL),
     IS_COMPLIANCE: str(d.IS_COMPLIANCE),
     IS_HANG_UP: str(d.IS_HANG_UP),
-    IS_COMPARE_HIS_PRICE: str(d.IS_COMPARE_HIS_PRICE),
+    // 约定 1=是/2=否；曾被 0/1 归一误写成 0 的按否回显
+    IS_COMPARE_HIS_PRICE: (() => {
+      const v = str(d.IS_COMPARE_HIS_PRICE);
+      return v === '0' ? '2' : v;
+    })(),
     PLANNED_LIMIT: str(d.PLANNED_LIMIT),
     IS_DB: str(d.IS_DB),
     IS_UDI: str(d.IS_UDI),
