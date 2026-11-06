@@ -487,7 +487,8 @@ export function buildStockUpItems(selection, storageId, hpFlags = dpdHpFlags) {
     PLAN_DEPT_TWO_NAME: row.Dept_Two_Name,
     Dtl_Id: row.Dtl_Id,
     SPECIFICATION_OR_TYPE: row.SPECIFICATION_OR_TYPE,
-    PAG_TYPE: row.PAG_TYPE
+    PAG_TYPE: row.PAG_TYPE,
+    OVER_USE_QTY: row.OVER_USE_QTY ?? 0
   }));
 }
 
