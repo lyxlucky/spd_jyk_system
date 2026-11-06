@@ -5,6 +5,12 @@ const yesNo = [
   { label: '是', value: '1' }
 ];
 
+/** 对比HIS价格：历史约定 1=是 / 2=否（不是 0/1） */
+const compareHisPriceOpts = [
+  { label: '是', value: '1' },
+  { label: '否', value: '2' }
+];
+
 const enableOpts = [
   { label: '启用', value: '1' },
   { label: '冻结', value: '0' }
@@ -269,7 +275,7 @@ export const VARIETY_EDIT_GROUPS = [
       { key: 'IS_GUOLIAO', label: '是否国疗', type: 'select', span: 8, options: yesNo },
       { key: 'IS_XIANJIA', label: '是否限价', type: 'select', span: 8, options: yesNo },
       { key: 'IS_JUANZENG', label: '是否捐赠', type: 'select', span: 8, options: yesNo },
-      { key: 'IS_COMPARE_HIS_PRICE', label: '是否对比HIS价', type: 'select', span: 8, options: yesNo },
+      { key: 'IS_COMPARE_HIS_PRICE', label: '是否对比HIS价', type: 'select', span: 8, options: compareHisPriceOpts },
       { key: 'PLANNED_LIMIT', label: '计划限额', type: 'input', span: 8 },
       { key: 'IS_DB', label: '是否带量', type: 'select', span: 8, options: yesNo },
       { key: 'IS_GT', label: '是否跟台', type: 'select', span: 8, options: yesNo },

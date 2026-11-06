@@ -122,6 +122,7 @@ function buildInStockParams(data) {
     order: sortOrder,
     IS_CHARGE: str(where.isCharge || '-1'),
     HIGH_OR_LOW_CLASS: str(where.highOrLowClass || '-1'),
+    CLASSIFIC_PROPERTIES: str(where.classificProperties || '-1'),
     IS_BIDDING: str(where.isBidding || '-1'),
     SPECIAL_PURCHASE: str(where.specialPurchase || '-1'),
     ONEOFF_STERILIZATION_PACKAGING: str(
@@ -352,6 +353,18 @@ export async function getSTORAGE() {
     return res.data;
   }
   throw new Error(res.data?.msg || '获取院区失败');
+}
+
+/** 分类属性下拉（CLASSIFIC_PROPERTIES / CLASSIFIC_NAME） */
+export async function GetClassificProp() {
+  const token = getToken() || '';
+  const res = await request.get('/VarietieBasicInfo/GetClassificProp', {
+    params: { Token: token }
+  });
+  if (okCode(res.data?.code)) {
+    return res.data;
+  }
+  throw new Error(res.data?.msg || '获取分类属性失败');
 }
 
 /** bdrm 出库复核记录 */

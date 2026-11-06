@@ -26,6 +26,11 @@ export async function SerachPlanList(data) {
     params: data2
   });
   if (res.data.code == 200) {
+    // 按行保留查询来源，跨页或切换目录后批量添加仍只同步来自在用目录的品种。
+    res.data.result = (res.data.result || []).map((row) => ({
+      ...row,
+      SYNC_DEPT_CATALOG: data2.mlType === '1'
+    }));
     return res.data;
   } else {
     return Promise.reject(new Error(res.data.msg));

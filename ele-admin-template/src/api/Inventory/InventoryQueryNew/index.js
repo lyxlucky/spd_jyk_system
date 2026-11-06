@@ -63,6 +63,7 @@ export function buildMainSearchParams(where = {}, page = 1, size = 10, sort = {}
     isProtect: where.isProtect ?? '-1',
     isIntervened: where.isIntervened ?? '-1',
     classificName: where.classificName ?? '',
+    CLASSIFIC_PROPERTIES: where.classificProperties ?? '',
     highOrLowClassTwo: where.highOrLowClassTwo ?? '',
     Position: where.position ?? '',
     loadAvg7: where.loadAvg7 ?? '0',
@@ -119,6 +120,13 @@ export async function getHighLowOptionConfig() {
     HIGH_OR_LOW_CLASS: data.HIGH_OR_LOW_CLASS || [],
     HIGH_OR_LOW_CLASS_TWO: data.HIGH_OR_LOW_CLASS_TWO || []
   };
+}
+
+export async function getClassificPropOptions() {
+  const res = await request.get('/VarietieBasicInfo/GetClassificProp', {
+    params: { Token: token() }
+  });
+  return unwrap(res).result || [];
 }
 
 export async function searchMain(where, page, size, sort) {

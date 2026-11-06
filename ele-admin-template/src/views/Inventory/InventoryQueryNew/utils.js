@@ -179,6 +179,7 @@ export function defaultMainWhere() {
     supplier: '',
     batch: '',
     classificName: '',
+    classificProperties: '',
     manuEntName: '',
     approvalNumber: '',
     validDateFrom: '',
