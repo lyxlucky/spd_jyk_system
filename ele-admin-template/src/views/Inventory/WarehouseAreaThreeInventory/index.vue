@@ -210,23 +210,10 @@ export default {
       this.lastWhere = where || {};
       return this.lastWhere;
     },
-    // 库存查询必须先选择库房/库区。
-    requireWarehouse(where, silent = false) {
-      if (!where?.AREA_CODE) {
-        if (!silent) {
-          Message.warning('请选择库房/库区');
-        }
-        return false;
-      }
-      return true;
-    },
     // 库房维度表格数据源。
     async warehouseDatasource({ page, limit, where }) {
       const query = where || this.lastWhere;
       this.lastWhere = query || {};
-      if (!this.requireWarehouse(this.lastWhere, true)) {
-        return { count: 0, list: [] };
-      }
       try {
         const res = await getWarehouseMaterialSummary(this.lastWhere, page || 1, limit || 30);
         return { count: res.total || res.count || 0, list: res.result || [] };
@@ -239,10 +226,6 @@ export default {
     async deptDatasource({ page, limit, where }) {
       const query = where || this.lastWhere;
       this.lastWhere = query || {};
-      if (!this.requireWarehouse(this.lastWhere, true)) {
-        this.clearSelectedDept();
-        return { count: 0, list: [] };
-      }
       try {
         const res = await getWarehouseDeptList(this.lastWhere, page || 1, limit || 20);
         const rows = res.result || [];
@@ -258,12 +241,12 @@ export default {
     async deptMaterialDatasource({ page, limit, where }) {
       const query = where || this.lastWhere;
       this.lastWhere = query || {};
-      if (!this.requireWarehouse(this.lastWhere, true) || !this.selectedDept?.DEPT_TWO_CODE) {
+      if (!this.selectedDept?.DEPT_TWO_CODE) {
         return { count: 0, list: [] };
       }
       try {
         const res = await getDeptMaterialSummary(
-          { ...this.lastWhere, DEPT_TWO_CODE: this.selectedDept.DEPT_TWO_CODE },
+          { ...this.lastWhere, AREA_CODES: [this.selectedDept.AREA_CODE], EXACT_AREA: true, DEPT_TWO_CODE: this.selectedDept.DEPT_TWO_CODE },
           page || 1,
           limit || 30
         );
@@ -280,7 +263,6 @@ export default {
         this.$nextTick(() => this.$refs.materialLocation && this.$refs.materialLocation.reload(this.lastWhere));
         return;
       }
-      if (!this.requireWarehouse(this.lastWhere)) return;
       if (this.activeTab === 'warehouse') {
         this.reloadWarehouse();
       } else {
@@ -300,23 +282,21 @@ export default {
       this.selectedDept = null;
       this.lastWhere = this.currentWhere();
       // 库房表格关闭了 init-load，切换模式后需要主动刷新。
-      if (this.queryMode === 'warehouse' && this.lastWhere?.AREA_CODE) {
+      if (this.queryMode === 'warehouse') {
         this.$nextTick(() => this.reload(this.lastWhere));
       }
     },
     // 导入或同步成功后按当前条件刷新页面数据。
     onImportSuccess(where) {
       this.lastWhere = where || this.currentWhere();
-      if (this.lastWhere?.AREA_CODE) {
-        this.reload(this.lastWhere);
-      }
+      this.reload(this.lastWhere);
     },
     openWarehouseLocation(row) {
       if (!row?.AREA_CODE) return;
       const currentWhere = this.currentWhere();
       const targetWhere = {
         ...currentWhere,
-        AREA_CODE: row.AREA_CODE,
+        AREA_CODES: [row.AREA_CODE],
         CHARGE_CODE: row.CHARGE_CODE || currentWhere.CHARGE_CODE || ''
       };
       // 先写好查询条件，再切换到库房视图，避免表格空条件初始化把加载动画提前关掉。
@@ -326,7 +306,7 @@ export default {
       this.queryMode = 'warehouse';
       this.$nextTick(() => {
         if (this.$refs.search) {
-          this.$refs.search.setAreaCode(targetWhere.AREA_CODE);
+          this.$refs.search.setAreaCode(row.AREA_CODE);
           if (targetWhere.CHARGE_CODE !== undefined && this.$refs.search.where) {
             this.$refs.search.where.CHARGE_CODE = targetWhere.CHARGE_CODE || '';
           }
@@ -377,7 +357,7 @@ export default {
         return;
       }
       const current = this.selectedDept?.DEPT_TWO_CODE
-        ? rows.find((row) => row.DEPT_TWO_CODE === this.selectedDept.DEPT_TWO_CODE)
+        ? rows.find((row) => row.DEPT_TWO_CODE === this.selectedDept.DEPT_TWO_CODE && row.AREA_CODE === this.selectedDept.AREA_CODE)
         : null;
       this.selectedDept = current || rows[0];
       this.$nextTick(() => this.reloadDeptMaterial());
@@ -399,7 +379,7 @@ export default {
       }
       const baseWhere = this.currentWhere();
       this.detailFilters = {
-        AREA_CODE: row.AREA_CODE || baseWhere.AREA_CODE || '',
+        AREA_CODE: row.AREA_CODE || (baseWhere.AREA_CODES || [])[0] || '',
         CHARGE_CODE: row.CHARGE_CODE || '',
         IS_DELETE: baseWhere.IS_DELETE || '1'
       };
@@ -414,7 +394,6 @@ export default {
       if (this.exporting) return;
       const exportDimension = dimension || (this.queryMode === 'material' ? 'material' : '');
       const where = exportDimension ? null : this.currentWhere();
-      if (!exportDimension && !this.requireWarehouse(where)) return;
       this.exporting = true;
       try {
         if (exportDimension) {
@@ -474,7 +453,7 @@ export default {
     // 导出选中SPD科室的耗材汇总。
     async exportDeptMaterial(where) {
       const res = await getDeptMaterialSummary(
-        { ...where, DEPT_TWO_CODE: this.selectedDept.DEPT_TWO_CODE },
+        { ...where, AREA_CODES: [this.selectedDept.AREA_CODE], EXACT_AREA: true, DEPT_TWO_CODE: this.selectedDept.DEPT_TWO_CODE },
         1,
         999999
       );

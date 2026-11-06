@@ -56,6 +56,8 @@ export function buildWarehouseAreaThreeInventoryParams(where = {}, page = 1, siz
     size: normSize(size),
     WAREHOUSE_AREA_ID: where.WAREHOUSE_AREA_ID || '',
     AREA_CODE: where.AREA_CODE || where.WAREHOUSE_AREA_ID || '',
+    AREA_CODES: Array.isArray(where.AREA_CODES) ? JSON.stringify(where.AREA_CODES) : '',
+    EXACT_AREA: where.EXACT_AREA ? '1' : '',
     DEPT_TWO_CODE: where.DEPT_TWO_CODE || '',
     CHARGE_CODE: where.CHARGE_CODE || '',
     BARCODE_NUMBER: where.BARCODE_NUMBER || '',
