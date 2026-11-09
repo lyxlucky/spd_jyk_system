@@ -208,7 +208,8 @@ export function buildStockUpSuppliers(monitorRows, creator) {
         LC_NUM: item.LC_NUM,
         PLAN_DEPT_TWO_CODE: item.PLAN_DEPT_TWO_CODE,
         PLAN_DEPT_TWO_NAME: item.PLAN_DEPT_TWO_NAME,
-        Dtl_Id: item.Dtl_Id
+        Dtl_Id: item.Dtl_Id,
+        OVER_USE_QTY: item.OVER_USE_QTY
       });
     });
   });

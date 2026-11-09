@@ -125,7 +125,7 @@ import {
   isContractNearExpiry,
   parsePlanNoOptions
 } from '../utils';
-
+import { HOME_HP } from '@/config/setting';
 export default {
   name: 'StockUpDialog',
   props: {
@@ -219,11 +219,12 @@ export default {
       this.supPage = 1;
       this.varPage = 1;
     },
-    async handleSubmit() {
+    handleSubmit() {
       if (!this.checkedSuppliers.length) {
         this.$message.warning('请至少勾选一个供应商');
         return;
       }
+      let overUseList = [];
       for (const checked of this.checkedSuppliers) {
         const source = this.suppliers.find(
           (s) =>
@@ -231,13 +232,49 @@ export default {
             String(s.StorageID) === String(checked.StorageID)
         );
         const bad = (source?.listVarietie || []).find((v) => !v.Goods_Qty || Number(v.Goods_Qty) < 1);
+        overUseList = (source?.listVarietie || []).filter((v) => Number(v.Goods_Qty) > Number(v.OVER_USE_QTY));
         if (bad) {
           this.$message.warning(
             `${bad.varietie_Code_New}/${bad.Varietie_Name}/备货数量异常,备货数量需大于等于1且不能为空`
           );
           return;
         }
+        if (HOME_HP === 'szhn' && overUseList.length) {
+          // 超常用量二次确认
+          const h = this.$createElement;
+          const message = h('div', null, [
+            h('p', null, '以下品种备货数量超过超常用量，是否继续提交？'),
+            h('el-table', {
+              props: { data: overUseList, size: 'mini', border: true, maxHeight: 300 }
+            }, [
+              h('el-table-column', {
+                props: { prop: 'varietie_Code_New', label: '品种编码', minWidth: 100 }
+              }),
+              h('el-table-column', {
+                props: { prop: 'Varietie_Name', label: '品种名称', minWidth: 140, showOverflowTooltip: true }
+              }),
+              h('el-table-column', {
+                props: { prop: 'Goods_Qty', label: '备货数量', width: 90, align: 'center' }
+              }),
+              h('el-table-column', {
+                props: { prop: 'OVER_USE_QTY', label: '超常用量', width: 90, align: 'center' }
+              })
+            ])
+          ]);
+          this.$confirm(message, '超常用量提示', {
+            confirmButtonText: '继续提交',
+            cancelButtonText: '取消',
+            customClass: 'force-password-confirm',
+            type: 'warning'
+          }).then(()=>{
+            this.onSubmitAction();
+          })
+        } else {
+          this.onSubmitAction();
+        }
       }
+    },
+    async onSubmitAction() {
       this.submitting = true;
       try {
         const payload = buildInsertNewInfoPayload(this.checkedSuppliers, this.suppliers);
@@ -263,5 +300,10 @@ export default {
 .stock-up-pager {
   margin-top: 8px;
   text-align: right;
+}
+</style>
+<style>
+.force-password-confirm {
+  width: 520px;
 }
 </style>
