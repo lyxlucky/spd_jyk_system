@@ -2,9 +2,25 @@
  * 最近使用菜单（按用户隔离，存 localStorage）
  */
 import { HOME_PATH, LAYOUT_PATH, REDIRECT_PATH, WHITE_LIST } from '@/config/setting';
+import { resolveMenuIcon } from '@/utils/menu-icon';
+import {
+  MENU_ICON_MAP,
+  MENU_ICON_RULES,
+  ICON_POOLS,
+  DEFAULT_SUB_MENU_ICON
+} from '@/config/menu-icons';
 
 export const RECENT_MENU_STORE_NAME = 'spd-recent-menus';
 export const RECENT_MENU_MAX = 12;
+
+/** 最近使用记录与侧栏/主页共用同一套图标解析规则 */
+const RECENT_ICON_CONFIG = {
+  map: MENU_ICON_MAP,
+  rules: MENU_ICON_RULES,
+  pools: ICON_POOLS,
+  topIcon: DEFAULT_SUB_MENU_ICON,
+  subIcon: DEFAULT_SUB_MENU_ICON
+};
 /** 与 layout / 首页同步用的事件名 */
 export const RECENT_MENUS_CHANGED = 'recent-menus-changed';
 
@@ -107,7 +123,19 @@ export function flattenLeafMenus(menus, result = []) {
 export function getRecentMenus(userInfo) {
   const all = readAll();
   const list = all[getUserKey(userInfo)];
-  return Array.isArray(list) ? list : [];
+  if (!Array.isArray(list)) {
+    return [];
+  }
+  // localStorage 里可能存着补齐图标之前的历史记录，读出时统一兜底
+  return list.map((item) => ({
+    ...item,
+    icon: resolveMenuIcon(item.icon, {
+      title: item.title || '',
+      path: item.path || '',
+      level: 1,
+      config: RECENT_ICON_CONFIG
+    }).icon
+  }));
 }
 
 /**

@@ -5,6 +5,14 @@ import { formatMenus, toTreeData, formatTreeData, deepClone } from 'ele-admin';
 import { USER_MENUS, BLACK_LIST_ROUTERS } from '@/config/setting';
 import { getUserInfo, getConfig } from '@/api/layout';
 import { isMenuRoutePermission } from '@/utils/permissionType';
+import { ensureMenuIcons, normalizePermissionIcons } from '@/utils/menu-icon';
+import {
+  MENU_ICON_MAP,
+  MENU_ICON_RULES,
+  ICON_POOLS,
+  DEFAULT_TOP_MENU_ICON,
+  DEFAULT_SUB_MENU_ICON
+} from '@/config/menu-icons';
 
 /**
  * 将 PRIMARY_ROUT / PERMISSION 扁平菜单转为可建树结构（menuKey / parentKey 全局唯一）
@@ -121,6 +129,25 @@ export default {
       if (result.userDept?.length) {
         result.DeptNow = result.userDept[0];
       }
+      // 数据入口统一补齐图标：主页读 state.info.permission_group、侧栏读格式化后的
+      // menus、最近使用读路由，三者同源，此处规范化一次即可全端生效
+      const iconConfig = {
+        map: MENU_ICON_MAP,
+        rules: MENU_ICON_RULES,
+        pools: ICON_POOLS,
+        topIcon: DEFAULT_TOP_MENU_ICON,
+        subIcon: DEFAULT_SUB_MENU_ICON
+      };
+      const filledIcons = normalizePermissionIcons(
+        result.permission_group,
+        iconConfig
+      );
+      if (process.env.NODE_ENV !== 'production' && filledIcons.length) {
+        console.warn(
+          '[menu-icon] ' + filledIcons.length + ' 个菜单图标由前端补齐，示例：',
+          filledIcons.slice(0, 10)
+        );
+      }
       // 用户信息
       commit('setUserInfo', result);
       // 用户权限（component + path 等，兼容旧系统 Permission_Url 类按钮权限）
@@ -165,6 +192,8 @@ export default {
           parentIdField: 'parentKey'
         })
       );
+      // 二级防御：覆盖 USER_MENUS 静态菜单等不经过 permission_group 的入口
+      ensureMenuIcons(menus, iconConfig);
       commit('setMenus', menus);
       return { menus, homePath };
     },

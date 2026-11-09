@@ -22,10 +22,7 @@
             >
               <el-button type="text" class="button">
                 <div style="width: 100px; display: flex; justify-content: center">
-                  <svg-icon
-                    :icon-class="p.icon || ''"
-                    style="width: 40px; height: 40px"
-                  />
+                  <menu-icon :icon="p.icon" :size="40" />
                 </div>
                 <div
                   style="
@@ -64,16 +61,7 @@
             <div class="menu-icon-item" @click="changeRoute(p.path)">
               <el-button type="text" class="button">
                 <div class="menu-icon-wrap">
-                  <i
-                    v-if="p.icon && String(p.icon).indexOf('el-icon') === 0"
-                    :class="p.icon"
-                    class="menu-el-icon"
-                  />
-                  <svg-icon
-                    v-else
-                    :icon-class="p.icon || ''"
-                    style="width: 40px; height: 40px"
-                  />
+                  <menu-icon :icon="p.icon" :size="40" />
                 </div>
                 <div class="menu-icon-title">
                   <span>{{ p.title }}</span>
@@ -111,10 +99,7 @@
             >
               <el-button type="text" class="button">
                 <div class="menu-icon-wrap">
-                  <svg-icon
-                    :icon-class="p.icon || ''"
-                    style="width: 40px; height: 40px"
-                  />
+                  <menu-icon :icon="p.icon" :size="40" />
                 </div>
                 <div class="menu-icon-title">
                   <span>{{ p.title }}</span>
@@ -373,11 +358,13 @@
     RECENT_MENUS_CHANGED
   } from '@/utils/recent-menu-util';
   import EleChart from 'ele-admin/packages/ele-chart';
+  import MenuIcon from '@/components/MenuIcon';
   export default {
     name: 'MenuList',
     components: {
       // UserImport
       EleChart,
+      MenuIcon,
       BidVarInfoDept,
       VarietyDataLzhLook,
       DpetOneAuthWithDept,
@@ -1103,10 +1090,9 @@
     display: flex;
     justify-content: center;
   }
-  .menu-el-icon {
-    font-size: 36px;
+  /* 最近使用、添加弹窗里的字体图标沿用主题色；北京院区网格无此容器，与 svg 同色 */
+  .menu-icon-wrap .menu-font-icon {
     color: #409eff;
-    line-height: 40px;
   }
   .menu-icon-title {
     width: 100px;

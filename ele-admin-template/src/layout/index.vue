@@ -51,6 +51,15 @@
     <router-layout />
     <!-- 登录后效期/近效期提醒弹窗（按 permission_group） -->
     <login-tip-dialogs />
+    <!-- 菜单图标：el-icon-* 走字体图标，本地 svg 名走雪碧图 -->
+    <template v-slot:icon="{ icon }">
+      <svg-icon
+        v-if="isSvgIcon(icon)"
+        :icon-class="icon"
+        class-name="menu-svg-icon"
+      />
+      <i v-else :class="icon"></i>
+    </template>
     <!-- logo 图标 -->
     <template v-slot:logo>
       <img src="@/assets/logo.png" alt="logo" />
@@ -121,6 +130,7 @@
     buildRecentMenuGroup,
     RECENT_MENUS_CHANGED
   } from '@/utils/recent-menu-util';
+  import { isSvgIcon } from '@/utils/menu-icon';
 
   export default {
     name: 'EleLayout',
@@ -249,6 +259,8 @@
             break;
         }
       },
+      /* 菜单图标是否为本地 svg 名 */
+      isSvgIcon,
       /* 菜单标题国际化 */
       i18n(_path, key) {
         if (!I18N_ENABLE || !key) {
@@ -275,6 +287,18 @@
 </script>
 
 <style lang="scss">
+  // 菜单 svg 图标对齐 el-icon-* 字体图标的尺寸与间距
+  .ele-admin-sidebar-menus .menu-svg-icon.svg-icon,
+  .ele-admin-sidebar-nav-menu .menu-svg-icon.svg-icon,
+  .el-menu--popup .menu-svg-icon.svg-icon {
+    width: 24px;
+    height: 18px;
+    margin-right: 5px;
+    font-size: 18px;
+    vertical-align: middle;
+    text-align: center;
+  }
+
   // 侧栏菜单徽章样式，定位在右侧垂直居中并调小尺寸
   .ele-menu-badge {
     position: absolute;
