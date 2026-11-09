@@ -190,7 +190,8 @@ export function buildMonitorPopupItems(rows, storageId) {
     Def_No_Pkg_Coefficient: row.Def_No_Pkg_Coefficient,
     Arg_Plan: row.Pkg_plan,
     Goods_Qty: row.Goods_plan,
-    StorageID: storageId ?? row.StorageID ?? '1'
+    StorageID: storageId ?? row.StorageID ?? '1',
+    OVER_USE_QTY: row.OVER_USE_QTY ?? 0
   }));
 }
 
