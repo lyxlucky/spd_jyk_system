@@ -36,8 +36,7 @@
             size="mini"
             border
             stripe
-            :toolbar="false"
-            :toolkit="['columns', 'fullscreen']"
+            :toolkit="['columns']"
             :header-overflow-hidden="false"
             :height="tableHeight"
             :columns="columns"
@@ -94,7 +93,7 @@ export default {
   data() {
     return {
       columns: getConsumeByDeptColumns(this.hidePdaCounInfo()),
-      tableHeight: 'calc(100vh - 480px)',
+      tableHeight: 'calc(100vh - 520px)',
       deptTwoJson: '',
       deptReady: false,
       summary: {
