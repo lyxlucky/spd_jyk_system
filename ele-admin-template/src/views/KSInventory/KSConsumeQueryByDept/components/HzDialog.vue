@@ -26,7 +26,7 @@ import { utils, writeFile } from 'xlsx';
 import { searchDeptHz } from '@/api/KSInventory/KSConsumeQueryByDept';
 import { getHzColumns } from '../columns';
 import { isHideDeptSup } from '../utils';
-
+import { HOME_HP } from '@/config/setting';
 export default {
   name: 'KSConsumeQueryByDeptHzDialog',
   props: {
@@ -82,6 +82,7 @@ export default {
           '消耗数量'
         ];
         if (showSup) headers.splice(6, 0, '供应商');
+        if (HOME_HP === 'szsmyl') headers.push('单价');
         const rows = [headers];
         (res.result || []).forEach((r) => {
           const row = [
@@ -96,6 +97,7 @@ export default {
             r.Goods_Qty
           ];
           if (showSup) row.splice(6, 0, r.Supplier_Name);
+          if (HOME_HP === 'szsmyl') row.push(r.Supply_Price);
           rows.push(row);
         });
         const sheet = utils.aoa_to_sheet(rows);

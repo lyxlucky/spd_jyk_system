@@ -177,12 +177,13 @@ export function getHzColumns(showSupplierCol = showSupplier) {
   ];
   if(isSzsmyl) {
     columns.push({ prop: 'Supply_Price', label: '单价', width: 100, align: 'right' });
+    columns = columns.filter(item => item.prop !== 'Supplier_Name');
   }
   return columns;
 }
 
 export function getKsHzColumns(showSupplierCol = showSupplier) {
-  return [
+  let columns = [
     { prop: 'SPD_COST_DEPT_NAME', label: '成本科室名称', width: 120, sortable: 'custom', showOverflowTooltip: true },
     { prop: 'Varietie_Code_New', label: '品种编码', width: 100, sortable: 'custom' },
     { prop: 'Varietie_Name', label: '品种全称', minWidth: 200, showOverflowTooltip: true },
@@ -196,10 +197,14 @@ export function getKsHzColumns(showSupplierCol = showSupplier) {
     { prop: 'Supply_Price', label: '单价', width: 100, align: 'right' },
     { prop: 'Cost', label: '金额', width: 100, align: 'right' }
   ];
+  if(isSzsmyl) {
+    columns = columns.filter(item => item.prop !== 'Supplier_Name');
+  }
+  return columns;
 }
 
 export function getFzHzColumns(showSupplierCol = showSupplier) {
-  return [
+  let columns = [
     { prop: 'GROUP_NAME', label: '分组名称', width: 120, sortable: 'custom', showOverflowTooltip: true },
     { prop: 'Varietie_Code_New', label: '品种编码', width: 100, sortable: 'custom' },
     { prop: 'Varietie_Name', label: '品种全称', minWidth: 200, showOverflowTooltip: true },
@@ -213,4 +218,8 @@ export function getFzHzColumns(showSupplierCol = showSupplier) {
     { prop: 'Supply_Price', label: '单价', width: 100, align: 'right' },
     { prop: 'Cost', label: '金额', width: 100, align: 'right' }
   ];
+  if(isSzsmyl) {
+    columns = columns.filter(item => item.prop !== 'Supplier_Name');
+  }
+  return columns;
 }
