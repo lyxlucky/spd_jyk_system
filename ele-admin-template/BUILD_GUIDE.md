@@ -77,6 +77,7 @@ npm run build:selhww     # 龙华院区外网
 #### 汕头市二环境
 ```bash
 npm run build:stse    # 汕头市二内网
+npm run build:stseww    # 汕头市二外网
 ```
 
 #### 浙江省人民医院毕节医院环境

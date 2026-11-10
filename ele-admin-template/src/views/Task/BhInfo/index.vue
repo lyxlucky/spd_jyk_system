@@ -530,7 +530,8 @@ export default {
           Def_No_Pkg_Coefficient: '1',
           Arg_Plan: qty,
           Goods_Qty: qty,
-          StorageID: this.filters.STORAGE_ID
+          StorageID: this.filters.STORAGE_ID,
+          OVER_USE_QTY: row.OVER_USE_QTY ?? 0
         });
       }
       try {

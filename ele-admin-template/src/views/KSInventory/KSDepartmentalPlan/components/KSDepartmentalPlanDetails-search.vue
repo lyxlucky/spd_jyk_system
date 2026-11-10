@@ -347,7 +347,7 @@
     <IntroduceDefinedTemp :visible.sync="showEdit2" />
     <BidVarInfoDept :visible.sync="BidListShowEdit" />
     <ApplyOperateTip :visible.sync="ApplyOperateTipShow" />
-    <VarietyDataLzhLook :visible.sync="VarietyDataLzhLookShow" />
+    <VarietyDataLzhLook :visible.sync="VarietyDataLzhLookShow" :plan-number="KSDepartmentalPlanDataSearch?.PlanNum || ''" :catalog-pending="true" />
     <DpetOneAuthWithDept :visible.sync="DpetOneAuthWithDeptShow" />
     <HistoryCycleConsumeDialog
       :visible.sync="HistoryCycleConsumeShow"

@@ -61,7 +61,7 @@
         type="primary"
         class="ele-btn-icon"
         icon="el-icon-download"
-        @click="ApplyToBidVarInfoDept()"
+        @click="pendingCatalogEnabled ? applyPendingCatalog() : ApplyToBidVarInfoDept()"
       >
         申请至科室目录
       </el-button>
@@ -70,9 +70,11 @@
 </template>
 
 <script>
+  import { applyCatalogTransfer } from '@/api/Home/DepartmentCatalogPending';
+  import { HOME_HP } from '@/config/setting';
   import { addOneDeptAuthCommit } from '@/api/KSInventory/VarietyDataLzhLook';
   export default {
-    props: ['selection'],
+    props: ['selection', 'planNumber', 'catalogPending'],
     data() {
       // 默认表单数据
       const defaultWhere = {
@@ -88,12 +90,30 @@
       };
     },
     computed: {
+      pendingCatalogEnabled() { return this.catalogPending && HOME_HP === 'se2'; },
       // 是否开启响应式布局
       styleResponsive() {
         return this.$store.state.theme.styleResponsive;
       }
     },
     methods: {
+      async applyPendingCatalog() {
+        if (!this.selection.length) {
+          this.$message.warning('请选择数据');
+          return;
+        }
+        const loading = this.$messageLoading('正在提交申请，请稍后...');
+        try {
+          const data = [...this.selection];
+          data.planNumber = this.planNumber;
+          data.dept_two_code = this.$store.state.user.info.DeptNow.Dept_Two_Code;
+          const result = await applyCatalogTransfer(data);
+          this.$message.success(result.msg);
+          this.search();
+        } catch (e) {
+          this.$message.error(e.message || '申请失败');
+        } finally { loading.close(); }
+      },
       /* 搜索 */
       search() {
         this.$emit('search', { ...this.where });

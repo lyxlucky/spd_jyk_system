@@ -13,7 +13,7 @@
       <el-card shadow="never">
         <!-- 搜索表单 -->
         <!-- 数据表格 -->
-        <user-search @search="reload" :selection="selection" />
+        <user-search @search="reload" :selection="selection" :plan-number="planNumber" :catalog-pending="catalogPending" />
         <ele-pro-table
           ref="table"
           height="600px"
@@ -93,6 +93,8 @@
     props: {
       // 弹窗是否打开
       visible: Boolean,
+      planNumber: String,
+      catalogPending: Boolean,
       // 修改回显的数据
       data: Object,
       IntroduceUserDefinedTempSearch: Object

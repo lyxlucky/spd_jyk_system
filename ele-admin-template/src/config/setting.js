@@ -40,6 +40,7 @@ const getRequestTimeout = () => {
     'xhww': 3600000,  // 1小时
     'xhnw': 3600000,   // 1小时
     'stse': 3600000,
+    'stseww': 3600000,
     'gzbjww': 3600000,
     'gzbjnw': 3600000,
     'fszxy': 3600000,
@@ -100,6 +101,7 @@ const getHomeHp = () => {
     'xhww': 'xh',   // 新华外网
     'xhnw': 'xh',    // 新华内网
     'stse': 'stse',
+    'stseww': 'stse',
     'gzbjww': 'gzbj',
     'gzbjnw': 'gzbj',
     'fszxy': 'fszxy',
@@ -168,6 +170,7 @@ const getBackBaseUrl = () => {
     'lglsnw': 'http://192.168.2.113:16002',
     'lglssk': 'http://172.31.71.152:16002',
     'stse': 'http://172.32.202.17:82',
+    'stseww': 'http://120.197.247.20:45192',
     'gzbjww': 'http://47.113.126.25:17501',
     'gzbjnw': 'http://192.168.250.192:17501',
     'szssww': 'http://47.113.126.25:17002',

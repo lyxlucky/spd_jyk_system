@@ -40,6 +40,7 @@
     "build:lglsww": "vue-cli-service build --mode lglsww",
     "build:lglssk": "vue-cli-service build --mode lglssk",
     "build:stse": "vue-cli-service build --mode stse",
+    "build:stseww": "vue-cli-service build --mode stseww",
     "build:gzbjww": "vue-cli-service build --mode gzbjww",
     "build:gzbjnw": "vue-cli-service build --mode gzbjnw",
     "build:szssww": "vue-cli-service build --mode szssww",
