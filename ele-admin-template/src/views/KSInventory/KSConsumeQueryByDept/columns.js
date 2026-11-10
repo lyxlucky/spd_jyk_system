@@ -12,9 +12,9 @@ import {
 
 const isStzx = HOME_HP === 'stzx';
 const showSupplier = isHideDeptSup();
-
+const isSzsmyl = HOME_HP === 'szsmyl';
 export function getConsumeByDeptColumns(hidePdaCounInfo = true) {
-  return [
+  let columns = [
     { prop: 'Dept_One_Name', label: '一级科室', width: 90, showOverflowTooltip: true },
     {
       prop: 'Dept_Two_Name',
@@ -156,6 +156,10 @@ export function getConsumeByDeptColumns(hidePdaCounInfo = true) {
     { prop: 'BIND_USE_DEPT_NAME', label: '绑定科室', width: 90, showOverflowTooltip: true },
     { prop: 'JYK_YQM', label: '检验仪器名', width: 120, showOverflowTooltip: true }
   ];
+  if(isSzsmyl) {
+    columns = columns.filter(item => item.prop !== 'SERIAL_NUMBER2');
+  }
+  return columns;
 }
 
 export function getHzColumns(showSupplierCol = showSupplier) {
