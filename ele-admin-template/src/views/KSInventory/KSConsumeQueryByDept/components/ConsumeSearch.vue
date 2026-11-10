@@ -94,6 +94,7 @@
         </el-col>
       </el-row>
       <div class="filter-row selects">
+        <span class="time-label">消耗类型</span>
         <el-form-item>
           <el-select v-model="where.consumeType" clearable placeholder="消耗类型" style="width:140px">
             <el-option label="全部" value="" />
@@ -105,6 +106,7 @@
             <el-option label="超时默认消耗" value="5" />
           </el-select>
         </el-form-item>
+        <span class="time-label">是否防控物资</span>
         <el-form-item>
           <el-select v-model="where.isProtect" clearable placeholder="是否防控物资" style="width:140px">
             <el-option label="全部" value="" />
@@ -112,6 +114,7 @@
             <el-option label="否" value="0" />
           </el-select>
         </el-form-item>
+        <span class="time-label">高低值分类下级分类</span>
         <el-form-item>
           <el-select v-model="where.highOrLowClassTwo" clearable placeholder="高低值分类下级分类" style="width:140px">
             <el-option label="全部" value="" />
@@ -119,6 +122,7 @@
             <el-option label="非重点治理" value="2" />
           </el-select>
         </el-form-item>
+        <span class="time-label">第一批重点治理</span>
         <el-form-item>
           <el-select
             v-model="where.THE_FIRST_BATCH_OF_KEY_CONSUMA"
@@ -131,18 +135,21 @@
             <el-option label="否" value="0" />
           </el-select>
         </el-form-item>
+        <span v-if="showStzx" class="time-label">是否包含中心医院库存</span>
         <el-form-item v-if="showStzx">
           <el-select v-model="where.stzx_state" placeholder="是否包含中心医院库存" style="width:140px">
             <el-option label="包含" value="1" />
             <el-option label="不包含" value="0" />
           </el-select>
         </el-form-item>
+        <span v-if="showStzx" class="time-label">是否包含中心医院高值库存</span>
         <el-form-item v-if="showStzx">
           <el-select v-model="where.stzx_state_gz" placeholder="是否包含中心医院高值库存" style="width:160px">
             <el-option label="包含" value="1" />
             <el-option label="不包含" value="0" />
           </el-select>
         </el-form-item>
+        <span v-if="showPdaScan" class="time-label">二级库</span>
         <el-form-item v-if="showPdaScan">
           <el-select v-model="where.isPdaScan" clearable placeholder="二级库" style="width:120px">
             <el-option label="全部" value="" />
@@ -358,7 +365,7 @@ export default {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 8px;
+  gap: 8px 12px;
 }
 
 .selects :deep(.el-form-item) {
