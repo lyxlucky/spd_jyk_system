@@ -12,7 +12,7 @@ import { HOME_HP } from '@/config/setting';
 
 export function isHideDeptSup() {
   const hp = HOME_HP;
-  if (hp === 'csyy' || hp === 'stzx' || hp === 'stse' || hp === 'stzl' || hp === 'stzyyy' || hp === 'fsdwrmyy') {
+  if (hp === 'csyy' || hp === 'stzx' || hp === 'stse' || hp === 'stzl' || hp === 'stzyyy' || hp === 'fsdwrmyy' || hp === 'szsmyl') {
     return false;
   }
   return true;

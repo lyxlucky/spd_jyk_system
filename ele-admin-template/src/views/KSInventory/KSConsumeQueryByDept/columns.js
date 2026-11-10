@@ -163,7 +163,7 @@ export function getConsumeByDeptColumns(hidePdaCounInfo = true) {
 }
 
 export function getHzColumns(showSupplierCol = showSupplier) {
-  return [
+  let columns = [
     { prop: 'Varietie_Code_New', label: '品种编码', width: 100, sortable: 'custom' },
     { prop: 'CHARGING_CODE', label: '计费编码', width: 100, sortable: 'custom' },
     { prop: 'Varietie_Name', label: '品种全称', minWidth: 200, showOverflowTooltip: true },
@@ -175,6 +175,10 @@ export function getHzColumns(showSupplierCol = showSupplier) {
     { prop: 'PROVINCE_PLATFORM_CODE', label: '药交ID', width: 120 },
     { prop: 'Goods_Qty', label: '消耗数量', width: 100, align: 'right' }
   ];
+  if(isSzsmyl) {
+    columns.push({ prop: 'Supply_Price', label: '单价', width: 100, align: 'right' });
+  }
+  return columns;
 }
 
 export function getKsHzColumns(showSupplierCol = showSupplier) {
