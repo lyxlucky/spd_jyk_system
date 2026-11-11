@@ -164,7 +164,7 @@ const envConfig = {
     outputDir: 'jyksk'
   },
   stse: {
-    target: 'http://172.32.202.17:82/',
+    target: 'http://172.30.254.9:82/',
     publicPath: '/jyknw/',
     outputDir: 'jyknw'
   },
