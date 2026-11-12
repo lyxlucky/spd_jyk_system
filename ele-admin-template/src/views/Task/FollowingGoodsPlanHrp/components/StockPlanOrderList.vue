@@ -123,7 +123,7 @@
             >
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="handleBatchApprove"
+            <el-button type="primary" @click="beforeHandleBatchApprove"
               >批量审批并发送</el-button
             >
           </el-form-item>
@@ -736,7 +736,13 @@
                   props: { prop: 'VARIETIE_NAME', label: '品种名称', minWidth: 140, showOverflowTooltip: true }
                 }),
                 h('el-table-column', {
-                  props: { prop: 'PLAN_DEPT_TWO_NAME', label: '备货科室', minWidth: 100, showOverflowTooltip: true }
+                  props: {
+                    prop: 'PLAN_DEPT_TWO_NAME',
+                    label: '备货科室',
+                    minWidth: 100,
+                    showOverflowTooltip: true,
+                    formatter: (row) => row.PLAN_DEPT_TWO_NAME || '无'
+                  }
                 }),
                 h('el-table-column', {
                   props: { prop: 'STOCK_UP_PLAN_GOODS_QUANTITY', label: '备货数量', width: 90, align: 'center' }
@@ -926,13 +932,21 @@
             // }).then(() => {});
           });
       },
-
-      // 批量审批并发送（对齐老系统：stzl/lg/szse* 只审批不发送）
-      handleBatchApprove() {
+      async beforeHandleBatchApprove() {
         if (this.selectedRows.length == 0) {
           this.$message.warning('请先勾选备货计划单号');
           return;
         }
+        if (HOME_HP === 'szhn') {
+          const IDs = this.selectedRows.map(item=>item.ID);
+          const overVarlist = await getStockUpOverVarList({IDList: IDs.join(',')});
+          this.confirmOverUseDialog({overUseList: overVarlist.result, callback: this.handleBatchApprove});
+        } else {
+          this.handleBatchApprove();
+        }
+      },
+      // 批量审批并发送（对齐老系统：stzl/lg/szse* 只审批不发送）
+      handleBatchApprove() {
         if (isBatchApproveOnlyHp(HOME_HP)) {
           this.handleBatchApproveOnly();
           return;
