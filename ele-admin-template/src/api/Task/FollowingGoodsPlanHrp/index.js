@@ -255,6 +255,17 @@ export async function YesApprove(data) {
   }
 }
 
+export async function getStockUpOverVarList({IDList}) {
+  const params = {
+    IDList,
+    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+  };
+  let formdata = formdataify(params);
+  const res = await request.post('/ANewStockUp/StockUpVarInfoByIdList', formdata);
+  // 不需要判断http状态码，这个接口仅提示，不应该阻塞业务
+  return res.data
+}
+
 /** 批量审批通过，只审批不发送（对齐老系统 BatchYesApprove） */
 export async function BatchYesApprove(ids, appMarks = '') {
   const res = await request.post(

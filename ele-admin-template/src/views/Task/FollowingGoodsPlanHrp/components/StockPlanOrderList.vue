@@ -110,7 +110,7 @@
             <el-button
               type="primary"
               :disabled="ApproveAndSendDisabled"
-              @click="handleApproveAndSend"
+              @click="beforeHandleApproveAndSend"
               >审批并发送备货单</el-button
             >
           </el-form-item>
@@ -209,7 +209,8 @@
     GetPickingInfo,
     ReceiveSpdStockup,
     UpdateSendState,
-    BatchYesApprove
+    BatchYesApprove,
+    getStockUpOverVarList
   } from '@/api/Task/FollowingGoodsPlanHrp';
   import { exportToExcel } from '@/utils/excel-util.js';
   import { HOME_HP } from '@/config/setting';
@@ -719,13 +720,57 @@
             });
         });
       },
-
-      // 审批并发送备货单
-      handleApproveAndSend() {
+      confirmOverUseDialog({overUseList, callback}){
+        if (overUseList.length > 0) {
+            // 超常用量二次确认
+            const h = this.$createElement;
+            const message = h('div', null, [
+              h('p', null, '以下品种备货数量超过超常用量，是否继续提交？'),
+              h('el-table', {
+                props: { data: overUseList, size: 'mini', border: true, maxHeight: 300 }
+              }, [
+                h('el-table-column', {
+                  props: { prop: 'VARIETIE_CODE_NEW', label: '品种编码', minWidth: 100 }
+                }),
+                h('el-table-column', {
+                  props: { prop: 'VARIETIE_NAME', label: '品种名称', minWidth: 140, showOverflowTooltip: true }
+                }),
+                h('el-table-column', {
+                  props: { prop: 'PLAN_DEPT_TWO_NAME', label: '备货科室', minWidth: 100, showOverflowTooltip: true }
+                }),
+                h('el-table-column', {
+                  props: { prop: 'STOCK_UP_PLAN_GOODS_QUANTITY', label: '备货数量', width: 90, align: 'center' }
+                }),
+                h('el-table-column', {
+                  props: { prop: 'OVER_USE_QTY', label: '超常用量', width: 90, align: 'center' }
+                })
+              ])
+            ]);
+            this.$confirm(message, '超常用量提示', {
+              confirmButtonText: '继续提交',
+              cancelButtonText: '取消',
+              customClass: 'force-stock-confirm',
+              type: 'warning'
+            }).then(()=>{
+              callback();
+            })
+          } else {
+            callback();
+          }
+      },
+      async beforeHandleApproveAndSend() {
         if (!this.currentTableData) {
           return this.$message.warning('请先选择要操作的数据');
         }
-
+        if (HOME_HP === 'szhn') {
+          const overVarlist = await getStockUpOverVarList({IDList: this.currentTableData.ID});
+          this.confirmOverUseDialog({overUseList: overVarlist.result, callback: this.handleApproveAndSend});
+        } else {
+          this.handleApproveAndSend();
+        }
+      },
+      // 审批并发送备货单
+      handleApproveAndSend() {
         const loading = this.$messageLoading('处理中...');
         // 实现审批（暂时支持北京）并发送备货单的逻辑
         this.handleYesApprove(this.currentTableData.ID)
@@ -1011,3 +1056,8 @@
 </script>
 
 <style lang="scss" scoped></style>
+<style>
+.force-stock-confirm {
+  width: 620px;
+}
+</style>
