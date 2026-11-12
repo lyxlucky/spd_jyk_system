@@ -110,6 +110,7 @@
             <el-button
               type="primary"
               :disabled="ApproveAndSendDisabled"
+              :loading="approveSending"
               @click="beforeHandleApproveAndSend"
               >审批并发送备货单</el-button
             >
@@ -123,7 +124,10 @@
             >
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="beforeHandleBatchApprove"
+            <el-button
+              type="primary"
+              :loading="batchApproving"
+              @click="beforeHandleBatchApprove"
               >批量审批并发送</el-button
             >
           </el-form-item>
@@ -257,6 +261,8 @@
         totalMoney: 0, // 选中行总金额
         varCount: 0, // 计划品种数量
         updateFundsDialogVisible: false,
+        approveSending: false, // 审批并发送备货单按钮loading
+        batchApproving: false, // 批量审批并发送按钮loading
         columns: [
           {
             type: 'selection',
@@ -769,7 +775,9 @@
           return this.$message.warning('请先选择要操作的数据');
         }
         if (HOME_HP === 'szhn') {
+          this.approveSending = true;
           const overVarlist = await getStockUpOverVarList({IDList: this.currentTableData.ID});
+          this.approveSending = false;
           this.confirmOverUseDialog({overUseList: overVarlist.result, callback: this.handleApproveAndSend});
         } else {
           this.handleApproveAndSend();
@@ -939,7 +947,9 @@
         }
         if (HOME_HP === 'szhn') {
           const IDs = this.selectedRows.map(item=>item.ID);
+          this.batchApproving = true;
           const overVarlist = await getStockUpOverVarList({IDList: IDs.join(',')});
+          this.batchApproving = false;
           this.confirmOverUseDialog({overUseList: overVarlist.result, callback: this.handleBatchApprove});
         } else {
           this.handleBatchApprove();
