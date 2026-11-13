@@ -924,8 +924,8 @@ export default {
       if (!pending.length) return;
       this.sendingApproval = true;
       try {
-        const res = await approvalVarietieCommit(pending);
-        this.$message.success(res?.msg || `已对${pending.length}个申领品种发送审批`);
+        await approvalVarietieCommit(pending);
+        this.$message.success(`已对${pending.length}个申领品种发送审批`);
       } catch (e) {
         // 申领已成功，发送审批失败不回滚，仅提示
         this.$message.error(e.message || '申领品种发送审批失败');
