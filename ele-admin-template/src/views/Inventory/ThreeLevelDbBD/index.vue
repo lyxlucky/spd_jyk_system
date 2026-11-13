@@ -110,6 +110,7 @@
                 :headers="uploadHeaders"
                 :data="uploadData"
                 :show-file-list="false"
+                :disabled="uploading"
                 :on-success="handleUploadSuccess"
                 :on-error="handleUploadError"
                 :before-upload="beforeUpload"
@@ -306,9 +307,11 @@
   import {
     getThirdStockInfo,
     getThirdStockInfoFlow,
-    getThreeKcInfo
+    getThreeKcInfo,
+    THIRD_STOCK_UPLOAD_URL
   } from '@/api/Inventory/ThreeLevelDbBD';
   import { TOKEN_STORE_NAME, API_BASE_URL } from '@/config/setting';
+  import { downloadThreeStockTemplate } from '@/utils/three-stock-template';
   import { utils, writeFile } from 'xlsx';
   export default {
     name: 'ThreeLevelDbBD',
@@ -514,7 +517,8 @@
           PRICE: '',
           MANUFACTURING_ENT_NAME: ''
         },
-        uploadUrl: API_BASE_URL + '/lhfy/uploadThirdInventory',
+        uploadUrl: API_BASE_URL + THIRD_STOCK_UPLOAD_URL,
+        uploading: false,
         uploadHeaders: {
           // 上传请求头，请根据实际情况修改
           Authorization: 'Bearer ' + localStorage.getItem('token') || ''
@@ -770,11 +774,18 @@
             };
           });
       },
-      downloadTemplate() {
-        window.location.href =
-          process.env.BASE_URL + 'ZL/' + encodeURIComponent('三级库初始化库存模板.xlsx');
+      async downloadTemplate() {
+        try {
+          await downloadThreeStockTemplate();
+        } catch (e) {
+          this.$message.error('下载模板失败，请稍后重试');
+        }
       },
       beforeUpload(file) {
+        if (this.uploading) {
+          this.$message.warning('正在上传中，请勿重复提交');
+          return false;
+        }
         const isExcel =
           file.type ===
             'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
@@ -783,19 +794,36 @@
           this.$message.error('只能上传Excel文件!');
           return false;
         }
+        this.uploading = true;
         this.$message.info(`开始上传文件: ${file.name}`);
         return true;
       },
       handleUploadSuccess(response, file, fileList) {
+        this.uploading = false;
+        if (this.$refs.upload) {
+          this.$refs.upload.clearFiles();
+        }
         if (response.code === 200) {
-          this.$message.success('文件上传成功!');
+          const msg = response.msg || '文件上传成功!';
+          const warnings = (response.data && response.data.Warnings) || [];
+          if (warnings.length > 0) {
+            this.$message.warning({ message: msg, duration: 10000, showClose: true });
+          } else {
+            this.$message.success(msg);
+          }
           this.reload();
         } else {
           this.$message.error(`文件上传失败: ${response.msg}`);
         }
       },
       handleUploadError(err, file, fileList) {
-        this.$message.error(`文件上传失败: ${err.msg}`);
+        this.uploading = false;
+        if (this.$refs.upload) {
+          this.$refs.upload.clearFiles();
+        }
+        this.$message.error(
+          `文件上传失败: ${(err && (err.msg || err.message)) || '未知错误'}`
+        );
       },
       reload() {
         this.$refs.table.reload({ page: 1, where: this.form });
@@ -1100,7 +1128,11 @@
                   d.TOTAL_PRICE || '',
                   d.JF_QTY || '',
                   d.JF_DEF_QTY || '',
-                  d.STORAGE_TYPE == 0 ? '普通入库' : d.STORAGE_TYPE == 2 ? '盘盈入库' : '未知'
+                  d.STORAGE_TYPE == 0 || d.STORAGE_TYPE === '0'
+                    ? '普通入库'
+                    : d.STORAGE_TYPE == 1 || d.STORAGE_TYPE === '1'
+                      ? '盘盈入库'
+                      : '未知'
                 ]);
               });
               writeFile(

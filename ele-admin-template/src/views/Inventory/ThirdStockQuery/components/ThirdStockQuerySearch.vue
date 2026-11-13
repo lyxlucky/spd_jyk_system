@@ -119,6 +119,7 @@
         :headers="uploadHeaders"
         :data="uploadData"
         :show-file-list="false"
+        :disabled="uploading"
         :on-success="handleUploadSuccess"
         :on-error="handleUploadError"
         :before-upload="beforeUpload"
@@ -130,7 +131,8 @@
 
 <script>
   import { TOKEN_STORE_NAME, API_BASE_URL } from '@/config/setting';
-  import { getThirdStockMergeDepts } from '@/api/Inventory/ThreeLevelDbBD';
+  import { getThirdStockMergeDepts, THIRD_STOCK_UPLOAD_URL } from '@/api/Inventory/ThreeLevelDbBD';
+  import { downloadThreeStockTemplate } from '@/utils/three-stock-template';
 
   export default {
     name: 'ThirdStockQuerySearch',
@@ -153,7 +155,8 @@
           stockZero: '',
           mergeByGroup: false
         },
-        uploadUrl: API_BASE_URL + '/lhfy/uploadThirdInventory',
+        uploadUrl: API_BASE_URL + THIRD_STOCK_UPLOAD_URL,
+        uploading: false,
         uploadHeaders: {
           Authorization: 'Bearer ' + localStorage.getItem('token') || ''
         },
@@ -179,6 +182,10 @@
         return { ...this.form };
       },
       triggerUpload() {
+        if (this.uploading) {
+          this.$message.warning('正在上传中，请勿重复提交');
+          return;
+        }
         const uploadInner = this.$refs.upload?.$refs['upload-inner'];
         if (uploadInner) {
           uploadInner.handleClick();
@@ -191,78 +198,16 @@
       },
       async downloadTemplate() {
         try {
-          const ExcelJS = (await import('exceljs')).default;
-          const workbook = new ExcelJS.Workbook();
-          const sheet = workbook.addWorksheet('三级库初始化库存');
-          sheet.columns = [
-            { width: 14 },
-            { width: 14 },
-            { width: 10 },
-            { width: 10 },
-            { width: 16 },
-            { width: 12 },
-            { width: 16 },
-            { width: 14 },
-            { width: 14 }
-          ];
-          const thinBorder = {
-            top: { style: 'thin' },
-            bottom: { style: 'thin' },
-            left: { style: 'thin' },
-            right: { style: 'thin' }
-          };
-          const headerRow = sheet.addRow([
-            '科室编码',
-            '计费编码',
-            '数量',
-            '类型',
-            '定数包号',
-            '入库类型',
-            '批号',
-            '生产日期',
-            '有效期'
-          ]);
-          headerRow.height = 22;
-          headerRow.eachCell((cell) => {
-            cell.font = { bold: true, size: 10 };
-            cell.alignment = { horizontal: 'center', vertical: 'middle' };
-            cell.fill = {
-              type: 'pattern',
-              pattern: 'solid',
-              fgColor: { argb: 'FFD9E1F2' }
-            };
-            cell.border = thinBorder;
-          });
-          const exampleRow = sheet.addRow([
-            'D001',
-            'JF001',
-            '10',
-            '散货',
-            '-',
-            '普通入库',
-            'B20261001',
-            '2026-10-01',
-            '2028-09-30'
-          ]);
-          exampleRow.eachCell((cell) => {
-            cell.alignment = { horizontal: 'center', vertical: 'middle' };
-            cell.border = thinBorder;
-          });
-          const buffer = await workbook.xlsx.writeBuffer();
-          const blob = new Blob([buffer], {
-            type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-          });
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = '三级库初始化库存模板.xlsx';
-          a.click();
-          URL.revokeObjectURL(url);
+          await downloadThreeStockTemplate();
         } catch (e) {
           this.$message.error('下载模板失败，请稍后重试');
         }
       },
       beforeUpload(file) {
+        if (this.uploading) {
+          this.$message.warning('正在上传中，请勿重复提交');
+          return false;
+        }
         const isExcel =
           file.type ===
             'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
@@ -271,18 +216,33 @@
           this.$message.error('只能上传Excel文件!');
           return false;
         }
+        this.uploading = true;
         this.$message.info(`开始上传文件: ${file.name}`);
         return true;
       },
       handleUploadSuccess(response) {
+        this.uploading = false;
+        if (this.$refs.upload) {
+          this.$refs.upload.clearFiles();
+        }
         if (response.code === 200) {
-          this.$message.success('文件上传成功!');
+          const msg = response.msg || '文件上传成功!';
+          const warnings = (response.data && response.data.Warnings) || [];
+          if (warnings.length > 0) {
+            this.$message.warning({ message: msg, duration: 10000, showClose: true });
+          } else {
+            this.$message.success(msg);
+          }
           this.$emit('upload-success');
         } else {
           this.$message.error(`文件上传失败: ${response.msg}`);
         }
       },
       handleUploadError(err) {
+        this.uploading = false;
+        if (this.$refs.upload) {
+          this.$refs.upload.clearFiles();
+        }
         this.$message.error(`文件上传失败: ${err.msg || '未知错误'}`);
       }
     }
