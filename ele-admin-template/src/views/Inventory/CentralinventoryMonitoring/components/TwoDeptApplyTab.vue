@@ -918,7 +918,8 @@ export default {
         // 同一申领单里相同品种可能有多个批次，审批只按品种发一次
         if (!code || seenCodes.has(String(code))) return;
         seenCodes.add(String(code));
-        pending.push(row);
+        // 审批接口要求 ID 为品种编码（int 型）；用浅拷贝赋值，避免改动原明细行数据
+        pending.push({ ...row, ID: parseInt(row.Varietie_Code, 10) });
       });
       if (!pending.length) return;
       this.sendingApproval = true;
