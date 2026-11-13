@@ -899,6 +899,7 @@ export default {
      * - APPROVAL_STATE 非空：该品种发送过（'0'=在途，'1'/其他=已审批），剔除
      * - APPROVAL_TIME 非空：该品种至少完整走过一次审批（无论通过与否），剔除
      * 只有 STATE 为空值/空字符串且 TIME 为空（即"从未发送"）才发送
+     * - CHARGING_CODE 有值的品种也不发送
      */
     async sendApprovalAfterConfirm(rows) {
       // 只有深圳华南(szhn)确认申领后才需要发送审批
@@ -911,6 +912,8 @@ export default {
         const approvedBefore =
           row.APPROVAL_TIME != null && String(row.APPROVAL_TIME).trim() !== '';
         if (hasState || approvedBefore) return;
+        // CHARGING_CODE 有值的品种不发送审批
+        if (row.CHARGING_CODE != null && String(row.CHARGING_CODE).trim() !== '') return;
         const code = row.Varietie_Code;
         // 同一申领单里相同品种可能有多个批次，审批只按品种发一次
         if (!code || seenCodes.has(String(code))) return;
