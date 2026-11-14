@@ -14,6 +14,7 @@ export async function getDeptInventoryCheckList(data) {
     DEPT_TWO_CODE: data.DEPT_TWO_CODE || '',
     DEPT_TWO_NAME: data.DEPT_TWO_NAME || '',
     STATUS: data.STATUS !== undefined && data.STATUS !== '' ? data.STATUS : '',
+    CLASSIFIC_PROPERTIES: data.CLASSIFIC_PROPERTIES || null,
     CHECK_START_TIME_BEGIN: data.CHECK_START_TIME_BEGIN || '',
     CHECK_START_TIME_END: data.CHECK_START_TIME_END || ''
   };
@@ -45,6 +46,7 @@ export async function getDeptInventoryCheckPeriodList() {
  */
 export async function addDeptInventoryCheck(data) {
   const formatData = {
+    CLASSIFIC_PROPERTIES: data.CLASSIFIC_PROPERTIES,
     Token: sessionStorage.getItem(TOKEN_STORE_NAME),
     PERIOD_YM: data.PERIOD_YM || '',
     DEPT_TWO_CODE: store.state.user.info?.DeptNow?.Dept_Two_Code || '',
@@ -68,6 +70,7 @@ export async function addDeptInventoryCheck(data) {
  */
 export async function updateDeptInventoryCheck(data) {
   const formatData = {
+    CLASSIFIC_PROPERTIES: data.CLASSIFIC_PROPERTIES,
     Token: sessionStorage.getItem(TOKEN_STORE_NAME),
     ID: data.ID,
     PERIOD_YM: data.PERIOD_YM || '',
@@ -129,6 +132,7 @@ export async function getDeptInventoryCheckDetailList(data) {
     page: data.page || 1,
     size: data.size || 100,
     CHECK_ID: data.CHECK_ID || '',
+    CLASSIFIC_PROPERTIES: data.CLASSIFIC_PROPERTIES || null,
     VARIETIE_NAME: data.VARIETIE_NAME || '',
     VARIETIE_CODE_NEW: data.VARIETIE_CODE_NEW || '',
     SPECIFICATION_OR_TYPE: data.SPECIFICATION_OR_TYPE || ''
