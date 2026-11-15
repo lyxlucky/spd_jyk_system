@@ -118,6 +118,7 @@
           KEYWORD: ''
         },
         changeTypeOptions: [
+          { value: 'SSJ', label: '换术间' },
           { value: 'HT', label: '换台' },
           { value: 'SJ', label: '改时间' },
           { value: 'MZZY', label: '门诊转住院' },
@@ -169,6 +170,13 @@
             label: '变更内容',
             align: 'left',
             minWidth: 280,
+            showOverflowTooltip: true
+          },
+          {
+            prop: 'REMARK',
+            label: '备注',
+            align: 'left',
+            minWidth: 160,
             showOverflowTooltip: true
           },
           {
@@ -253,6 +261,7 @@
       },
       formatChangeTypes(value) {
         const typeMap = {
+          SSJ: '换术间',
           HT: '换台',
           SJ: '改时间',
           MZZY: '门诊转住院',

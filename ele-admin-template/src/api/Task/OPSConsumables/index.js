@@ -331,7 +331,7 @@ export async function singFinish(data) {
 }
 
 /**
- * 手术变更通知历史（换台/改时间/门诊转住院）
+ * 手术变更通知历史（换术间/换台/改时间/门诊转住院）
  * @param {Object} params 请求参数
  * @param {number} params.page 页码
  * @param {number} params.limit 每页数量
