@@ -329,3 +329,34 @@ export async function singFinish(data) {
   }
   return Promise.reject(res.data);
 }
+
+/**
+ * 手术变更通知历史（换台/改时间/门诊转住院）
+ * @param {Object} params 请求参数
+ * @param {number} params.page 页码
+ * @param {number} params.limit 每页数量
+ * @param {Object} params.where 查询条件
+ * @returns {Promise} 返回请求结果，todaycount 为今天的通知数量
+ */
+export async function getSurgeryChangeNotifyList(params) {
+  const where = params.where || {};
+  const formatData = {
+    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+    SSBH: where.SSBH || '',
+    KEYWORD: where.KEYWORD || '',
+    CHANGE_TYPE: where.CHANGE_TYPE || '',
+    NOTIFY_STATE: where.NOTIFY_STATE || '',
+    START_TIME: where.START_TIME || '',
+    END_TIME: where.END_TIME || '',
+    page: params.page || 1,
+    size: params.limit || 20
+  };
+
+  let res = await request.post('/SurgeryChange/GetNotifyList', formatData);
+
+  if (res.data.code == 200) {
+    return res.data;
+  }
+  return Promise.reject(res.data);
+}
+

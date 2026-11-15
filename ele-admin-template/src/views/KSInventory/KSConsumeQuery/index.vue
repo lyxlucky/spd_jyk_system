@@ -179,7 +179,7 @@ export default {
       const where = this.$refs.search.getWhere();
       this.exporting = true;
       try {
-        const res = await searchConsume(where, 1, 9999999, this.lastSort);
+        const res = await searchConsume(where, 1, 9999999, this.lastSort, 10 * 60 * 1000);
         const data = [EXPORT_HEADERS];
         (res.result || []).forEach((r) => data.push(rowToExportArray(r)));
         const sheet = utils.aoa_to_sheet(data);

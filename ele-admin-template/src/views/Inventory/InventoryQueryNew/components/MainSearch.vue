@@ -30,30 +30,6 @@
               @keyup.enter.native="search"
             />
           </el-form-item>
-          <el-form-item label="分类属性名称">
-            <el-input
-              v-model="localWhere.classificName"
-              clearable
-              style="width: 100px"
-              @keyup.enter.native="search"
-            />
-          </el-form-item>
-          <el-form-item label="分类属性">
-            <el-select
-              v-model="localWhere.classificProperties"
-              clearable
-              filterable
-              style="width: 130px"
-            >
-              <el-option label="全部" value="" />
-              <el-option
-                v-for="o in classificOptions"
-                :key="o.value"
-                :label="o.label"
-                :value="o.value"
-              />
-            </el-select>
-          </el-form-item>
           <el-form-item label="生产企业">
             <el-input
               v-model="localWhere.manuEntName"
@@ -200,6 +176,33 @@
               <el-option label="否" value="0" />
             </el-select>
           </el-form-item>
+          <el-form-item label="分类属性">
+            <el-select
+              v-model="localWhere.classificProperties"
+              clearable
+              filterable
+              style="width: 130px"
+            >
+              <el-option label="全部" value="" />
+              <el-option
+                v-for="o in classificOptions"
+                :key="o.value"
+                :label="o.label"
+                :value="o.value"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="高低值">
+            <el-select v-model="localWhere.highOrLowClass" clearable style="width: 90px">
+              <el-option label="全部" value="-1" />
+              <el-option
+                v-for="o in highLowOptions"
+                :key="o.value"
+                :label="o.label"
+                :value="o.value"
+              />
+            </el-select>
+          </el-form-item>
           <el-form-item label="周日均用量">
             <el-select v-model="localWhere.loadAvg7" style="width: 70px">
               <el-option label="否" value="0" />
@@ -276,17 +279,6 @@
               <el-option label="全部" value="-1" />
               <el-option label="否" value="0" />
               <el-option label="是" value="1" />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="高低值">
-            <el-select v-model="localWhere.highOrLowClass" style="width: 90px">
-              <el-option label="全部" value="-1" />
-              <el-option
-                v-for="o in highLowOptions"
-                :key="o.value"
-                :label="o.label"
-                :value="o.value"
-              />
             </el-select>
           </el-form-item>
           <el-form-item label="是否中标">

@@ -1,7 +1,7 @@
 <template>
   <div class="ele-body">
     <div class="ele-page-header">
-      <div class="ele-page-desc">说明:如果填写了环期时间系统只会显示环期有使用的品种,因为如果环期没有使用,金额为0是无法计算增幅的,排序增幅排序只有填写了环期时间才生效</div>
+      <div class="ele-page-desc">说明:填写环期时间后，环期无消耗的品种也会显示，因环期金额为0无法计算环比增降幅，环比增幅显示为“/”；按增幅排序只有填写了环期时间才生效</div>
     </div>
     <el-card shadow="never">
       <!-- 搜索表单 -->
@@ -141,6 +141,10 @@ export default {
           width: 100,
           showOverflowTooltip: true,
           formatter(row, column, cellValue, index) {
+            // 环期无消耗（金额为0）时无法计算环比增降幅，显示"/"
+            if (row.HB_ZZ_NULL == 1 || Number(row.HQ_PRICE) === 0) {
+              return '/';
+            }
             return row.HB_ZZ + '%';
           }
         },

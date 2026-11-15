@@ -113,10 +113,13 @@ export function buildSearchParams(where = {}, page = 1, size = 20, sort = {}) {
   };
 }
 
-/** 科室消耗分页查询 DeptConsume/Search */
-export async function searchConsume(where, page, size, sort) {
+/** 科室消耗分页查询 DeptConsume/Search（timeoutMs 用于导出等长请求） */
+export async function searchConsume(where, page, size, sort, timeoutMs) {
   const params = { Token: token(), ...buildSearchParams(where, page, size, sort) };
-  const res = await request.get('/DeptConsume/Search', { params });
+  const res = await request.get('/DeptConsume/Search', {
+    params,
+    ...(timeoutMs ? { timeout: timeoutMs } : {})
+  });
   check301(res.data);
   if (okCode(res.data?.code)) return res.data;
   throw new Error(res.data?.msg || '查询失败');
@@ -133,7 +136,9 @@ export async function exportKSConsumeQueryFast(where, sort = {}) {
       ...rest,
       useMonth: useMonth ? 'true' : 'false',
       isJp: '0'
-    })
+    }),
+    // 全量导出可能持续数分钟，沿用老页面 10 分钟超时
+    { timeout: 10 * 60 * 1000 }
   );
   check301(res.data);
   if (okCode(res.data?.code)) return res.data;

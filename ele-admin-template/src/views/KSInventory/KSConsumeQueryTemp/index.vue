@@ -65,6 +65,7 @@ import { getConsumeColumns } from './columns';
 import {
   searchConsumeTemp,
   exportConsumeEpPlus,
+  getConsumeExportStatus,
   refreshConsumeTemp,
   reverseConsume
 } from '@/api/KSInventory/KSConsumeQueryTemp';
@@ -134,7 +135,7 @@ export default {
       const where = this.$refs.search.getWhere();
       this.exporting = true;
       try {
-        const res = await searchConsumeTemp(where, 1, 9999999, this.lastSort);
+        const res = await searchConsumeTemp(where, 1, 9999999, this.lastSort, 10 * 60 * 1000);
         const data = [EXPORT_HEADERS];
         (res.result || []).forEach((r) => data.push(rowToExportArray(r)));
         const sheet = utils.aoa_to_sheet(data);
@@ -148,11 +149,45 @@ export default {
         this.exporting = false;
       }
     },
+    // 后端导出为异步生成：轮询到 ready 再下载，避免拿到尚未写完/不存在的文件
+    waitExportReady(fileBase) {
+      return new Promise((resolve, reject) => {
+        let tries = 0;
+        const maxTries = 600;
+        const timer = setInterval(async () => {
+          tries += 1;
+          if (tries > maxTries) {
+            clearInterval(timer);
+            reject(new Error('导出超时，请稍后重试或缩小条件'));
+            return;
+          }
+          try {
+            const st = await getConsumeExportStatus(fileBase);
+            if (st.status === 'ready') {
+              clearInterval(timer);
+              resolve(st);
+            } else if (st.status === 'error' || String(st.code) === '400') {
+              clearInterval(timer);
+              reject(new Error(st.msg || '导出失败'));
+            }
+          } catch (e) {
+            // 单次轮询失败忽略，等待下一次
+          }
+        }, 2000);
+      });
+    },
     async exportEp() {
       const where = this.$refs.search.getWhere();
       this.exportingEp = true;
       try {
         const res = await exportConsumeEpPlus(where, this.lastSort);
+        if (res.async === true || res.async === 'true') {
+          const fileBase = res.fileBase || String(res.msg || '').replace(/\.zip$/i, '');
+          const st = await this.waitExportReady(fileBase);
+          openExcelFile(st.msg || res.msg);
+          Message.success(st.totalCount != null ? `导出成功，共 ${st.totalCount} 条` : '导出成功');
+          return;
+        }
         openExcelFile(res.msg);
         Message.success(res.totalCount != null ? `导出成功，共 ${res.totalCount} 条` : '导出成功');
       } catch (e) {
