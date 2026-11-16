@@ -17,7 +17,7 @@ jobs:
       tag_name: ${{ steps.version.outputs.tag_name }}
       prerelease: ${{ steps.version.outputs.prerelease }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v5
 
       - name: Resolve version
         id: version
@@ -56,12 +56,12 @@ jobs:
         working-directory: ele-admin-template
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v5
         with:
           ref: ${{ needs.prepare.outputs.tag_name }}
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v5
         with:
           node-version: '18'
           cache: 'npm'
