@@ -737,6 +737,14 @@ export default {
   gap: 8px;
   align-items: flex-start;
 }
+/* 需求 18：三栏标题栏统一高度与内边距，消除顶部基线错位 */
+.compare-layout > .panel-card >>> .el-card__header {
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  box-sizing: border-box;
+}
 .time-panel {
   flex: 0 0 12%;
   min-width: 140px;

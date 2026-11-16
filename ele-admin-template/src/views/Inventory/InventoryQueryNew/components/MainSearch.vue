@@ -112,6 +112,9 @@
           <el-button size="mini" @click="syncAndEmit('move-goods', 'unqualified')">
             移至不合格区
           </el-button>
+          <el-button size="mini" type="primary" plain @click="showMoreActions = !showMoreActions">
+            {{ showMoreActions ? '收起' : '更多' }}操作
+          </el-button>
         </div>
 
         <!-- 第二行：仓库/区域检索 -->
@@ -232,8 +235,8 @@
           </el-form-item>
         </div>
 
-        <!-- 第二行工具栏 -->
-        <div class="toolbar-row toolbar-row--secondary">
+        <!-- 第二行工具栏：低频操作默认收起（需求 17） -->
+        <div v-show="showMoreActions" class="toolbar-row toolbar-row--secondary">
           <el-button size="mini" @click="syncAndEmit('update-storage')">修改库区</el-button>
           <el-button size="mini" :loading="generating" @click="syncAndEmit('generate-stock')">
             生成盘点数据
@@ -384,6 +387,8 @@ export default {
   data() {
     return {
       showAdvanced: false,
+      // 需求 17：低频操作按钮默认收起，需要时再展开
+      showMoreActions: false,
       localWhere: {},
       classificOptions: []
     };
@@ -496,13 +501,15 @@ export default {
   flex-wrap: wrap;
   align-items: center;
   gap: 0 4px;
+  margin-bottom: 4px;
 }
+/* 需求 17：压缩工具栏纵向占用 */
 .inv-query-search .toolbar-row {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 6px;
-  margin: 6px 0;
+  gap: 4px;
+  margin: 4px 0;
 }
 .alert-badge {
   line-height: 1;

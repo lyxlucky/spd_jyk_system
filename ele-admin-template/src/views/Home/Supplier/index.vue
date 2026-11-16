@@ -401,4 +401,20 @@ export default {
   cursor: pointer;
   vertical-align: middle;
 }
+
+/* 需求 11：统一工具栏 / 表头 / 表格正文 / 操作列 / 标签字号，消除大小不一 */
+.supplier-page {
+  font-size: 13px;
+}
+.supplier-page .el-button,
+.supplier-page .el-input,
+.supplier-page .el-select {
+  font-size: 13px;
+}
+.supplier-page ::v-deep .el-table,
+.supplier-page ::v-deep .el-table th > .cell,
+.supplier-page ::v-deep .el-table .el-button--text,
+.supplier-page ::v-deep .el-table .el-tag {
+  font-size: 13px;
+}
 </style>

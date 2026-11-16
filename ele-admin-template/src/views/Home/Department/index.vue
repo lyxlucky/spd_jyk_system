@@ -58,8 +58,6 @@
               <div class="btn-row-line">
                 <el-button type="primary" size="mini" plain :disabled="!currentTwo" @click="openTwoDialog(true)">编辑科室</el-button>
                 <el-button type="danger" size="mini" plain :disabled="!currentTwo" @click="onTwoToggleEnable">启用/停用</el-button>
-              </div>
-              <div class="btn-row-line btn-row-line-full">
                 <el-button
                   type="primary"
                   size="mini"
@@ -701,14 +699,24 @@ export default {
   align-items: stretch;
   gap: 6px;
 }
+/* 需求 8：按钮按 2 行分布，行内等宽对齐，不再折成 3 行 */
 .btn-row-line {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 4px;
-  justify-content: space-between;
+  justify-content: flex-start;
 }
-.btn-row-line-full {
-  justify-content: flex-end;
+.btn-row-line > .el-button {
+  flex: 1 1 0;
+  min-width: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.btn-row-line > .el-button + .el-button {
+  margin-left: 0;
 }
 .mt8 {
   margin-top: 8px;
