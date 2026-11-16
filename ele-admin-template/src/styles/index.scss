@@ -1,4 +1,7 @@
 /** 全局样式 */
+// 顶栏加高，让白底横幅院徽按老系统方式「宽度铺满、高度自适应」完整显示
+// 必须在 import 前定义，default.scss 里该变量是 !default
+$--header-height: 72px;
 $--ele-font-path: '~ele-admin/es/style/fonts';
 @import '~ele-admin/es/style/themes/dynamic.scss';
 @import '~ele-admin/es/style/index.scss';
@@ -16,5 +19,27 @@ body.ele-body-limit-width {
 .ele-admin-fixed-body .ele-admin-content {
   overflow-x: auto;
   overflow-y: auto;
+}
+
+/* 顶部主导航：字体加粗加大、tab 间距收紧、悬停/选中蓝底白字 */
+.ele-admin-header-nav {
+  .el-menu--horizontal {
+    > .el-menu-item,
+    > .el-submenu > .el-submenu__title {
+      padding: 0 10px;
+      font-size: 15px;
+      font-weight: 600;
+    }
+    > .el-menu-item:not(.is-disabled):hover,
+    > .el-submenu:not(.is-disabled) > .el-submenu__title:hover,
+    > .el-menu-item.is-active,
+    > .el-submenu.is-active > .el-submenu__title {
+      background-color: #409eff !important;
+      color: #fff !important;
+    }
+    > .el-submenu > .el-submenu__title .el-submenu__icon-arrow {
+      color: inherit;
+    }
+  }
 }
 

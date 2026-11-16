@@ -3,44 +3,33 @@
     <div class="ele-page-header"> </div>
 
     <template v-if="isBdrm">
-      <el-card v-for="(item, index) in MenuList" :key="'bdrm-' + index" shadow="never">
-        <div class="demo-image" style="display: flex; flex-wrap: wrap">
-          <div
-            class="block"
-            v-for="p in item"
-            :key="p.component"
-            style="margin: 10px"
-          >
-            <div
-              style="
-                width: 90px;
-                height: 70px;
-                border-radius: 2px;
-                margin-right: 20px;
-              "
-              @click="changeRoute(p.component)"
-            >
-              <el-button type="text" class="button">
-                <div style="width: 100px; display: flex; justify-content: center">
-                  <menu-icon :icon="p.icon" :size="40" />
-                </div>
-                <div
-                  style="
-                    width: 100px;
-                    display: flex;
-                    justify-content: center;
-                    margin-top: 5px;
-                    color: #606266;
-                  "
-                >
-                  <div class="bottom clearfix">
-                    <span>{{ p.title }}</span>
-                  </div>
-                </div>
-              </el-button>
-            </div>
+      <el-card class="menu-workbench" shadow="never" :body-style="{ padding: '0' }">
+        <!-- 目录导航统一由系统顶部一级 / 左侧目录树承担，此处只展示该目录下的图标按钮 -->
+        <section class="menu-group-main">
+          <div class="menu-group-main-head">
+            <span class="menu-group-main-title">
+              {{ activeGroup ? activeGroup.title : '全部菜单' }}
+            </span>
+            <span class="menu-group-main-meta">
+              共 {{ activeGroup ? activeGroup.items.length : 0 }} 项
+            </span>
           </div>
-        </div>
+          <div v-if="activeGroup && activeGroup.items.length" class="menu-tile-grid">
+            <button
+              v-for="p in activeGroup.items"
+              :key="'tile-' + p.path"
+              type="button"
+              class="menu-tile"
+              @click="changeRoute(p.path)"
+            >
+              <span class="menu-tile-icon">
+                <menu-icon :icon="p.icon" :size="34" />
+              </span>
+              <span class="menu-tile-title">{{ p.title }}</span>
+            </button>
+          </div>
+          <div v-else class="menu-tile-empty">该目录下暂无菜单</div>
+        </section>
       </el-card>
     </template>
 
@@ -117,6 +106,19 @@
       </el-dialog>
     </template>
 
+    <!-- 统计看板默认收起：展开时才请求相关接口，避免每次进首页都产生无谓开销 -->
+    <div class="dashboard-toggle">
+      <el-button
+        type="text"
+        :icon="showDashboard ? 'el-icon-arrow-up' : 'el-icon-arrow-down'"
+        @click="toggleDashboard"
+      >
+        {{ showDashboard ? '收起统计看板' : '展开统计看板' }}
+      </el-button>
+      <span>含提醒、快捷入口与消耗图表，展开时才会请求数据</span>
+    </div>
+
+    <template v-if="showDashboard">
     <div
       style="display: flex; justify-content: space-between; align-items: center"
     >
@@ -326,6 +328,7 @@
         </el-button>
       </div>
     </el-dialog>
+    </template>
   </div>
 </template>
 
@@ -374,6 +377,12 @@
     data() {
       return {
         MenuList: null,
+        // 菜单分组与当前选中目录（由系统侧栏 / 顶部一级驱动）
+        menuGroups: [],
+        activeGroupId: '',
+        // 统计看板默认收起，展开时才加载数据
+        showDashboard: false,
+        dashboardLoaded: false,
         recentMenuItems: [],
         addRecentVisible: false,
         pickMenuList: [],
@@ -589,10 +598,141 @@
         this.refreshRecentMenus(list);
         this.emitRecentChanged(list);
       },
-      permission_groupList() {
-        let permission_group = [
-          ...(this.$store.state.user.info.permission_group || [])
-        ];
+    selectMenuGroup(group) {
+      this.activeGroupId = group.id;
+      try {
+        sessionStorage.setItem('SPD_ACTIVE_MENU_GROUP', group.title);
+      } catch (e) {
+        // 隐私模式下 sessionStorage 不可用时忽略，不影响菜单切换
+      }
+    },
+    // 由 layout/index.vue 在顶部/侧栏目录点击时广播，统一驱动工作台选中态
+    onMenuGroupChange(title) {
+      const key = String(title || '').trim();
+      const hit = this.menuGroups.find(
+        (g) => g.title === key || (g.title && key.indexOf(g.title) === 0)
+      );
+      if (hit) {
+        this.selectMenuGroup(hit);
+      }
+    },
+    // 最近使用记录变化时重建分组，保持首页与侧栏同步
+    refreshRecentGroup() {
+      if (!this.isBdrm) {
+        return;
+      }
+      this.permission_groupList();
+    },
+    // 看板按需加载：只在首次展开时请求，后续由年份/切换控件自行刷新
+    toggleDashboard() {
+      this.showDashboard = !this.showDashboard;
+      if (this.showDashboard && !this.dashboardLoaded) {
+        this.dashboardLoaded = true;
+        this.loadDashboardData();
+      }
+    },
+    loadDashboardData() {
+      this.getJYkDefRemindTotal();
+      this.getTableListTotal();
+      this.getSaleroomData();
+      this.getLineChartData();
+      this.getTop20();
+    },
+    // 按 permission_group 的 PID 把叶子菜单归到一级目录，供 tab / 侧栏 / 主区共用
+    buildMenuGroups(allMenus, tiledMenus) {
+      const byId = {};
+      allMenus.forEach((m) => {
+        byId[String(m.ID)] = m;
+      });
+      const isTop = (m) => m.PID == null || m.PID === '' || m.PID === '0';
+      const groups = allMenus.filter(isTop).map((t) => ({
+        id: String(t.ID),
+        title: t.title,
+        icon: t.icon || '',
+        items: []
+      }));
+      const groupById = {};
+      groups.forEach((g) => {
+        groupById[g.id] = g;
+      });
+      const other = {
+        id: '__other__',
+        title: '其他',
+        icon: 'el-icon-menu',
+        items: []
+      };
+      tiledMenus.forEach((item) => {
+        let pid = item.PID;
+        let guard = 0;
+        while (
+          pid != null &&
+          pid !== '' &&
+          !groupById[String(pid)] &&
+          guard < 6
+        ) {
+          const parent = byId[String(pid)];
+          if (!parent || isTop(parent)) {
+            break;
+          }
+          pid = parent.PID;
+          guard += 1;
+        }
+        const group = groupById[String(pid)] || other;
+        const path = item.component || item.path;
+        if (!path || !item.title) {
+          return;
+        }
+        group.items.push({
+          path,
+          title: item.title,
+          icon: item.icon || ''
+        });
+      });
+      const result = groups.filter((g) => g.items.length);
+      if (other.items.length) {
+        result.push(other);
+      }
+      // 「最近使用」虚拟目录：有记录才显示，与侧栏同源（最多 10 条）
+      let recentItems = [];
+      try {
+        recentItems = getRecentMenus(this.$store.state.user.info).map((m) => ({
+          path: m.path,
+          title: m.title,
+          icon: m.icon || ''
+        }));
+      } catch (e) {
+        recentItems = [];
+      }
+      if (recentItems.length) {
+        result.unshift({
+          id: '__recent__',
+          title: '最近使用',
+          icon: 'el-icon-time',
+          items: recentItems
+        });
+      }
+      this.menuGroups = result;
+      let rememberedTitle = '';
+      try {
+        rememberedTitle = sessionStorage.getItem('SPD_ACTIVE_MENU_GROUP') || '';
+      } catch (e) {
+        rememberedTitle = '';
+      }
+      const remembered = result.find((g) => g.title === rememberedTitle);
+      if (remembered) {
+        // 回到主菜单时恢复上次点击的目录
+        this.activeGroupId = remembered.id;
+      } else if (!result.some((g) => g.id === this.activeGroupId)) {
+        // 默认仍落在第一个真实目录，不因「最近使用」插入而改变
+        const fallback = result.find((g) => g.id !== '__recent__') || result[0];
+        this.activeGroupId = fallback ? fallback.id : '';
+      }
+    },
+    permission_groupList() {
+      const allMenus = [
+        ...(this.$store.state.user.info.permission_group || [])
+      ];
+      let permission_group = [...allMenus];
 
         const blackList = [
           '申领计划管理_审核按钮',
@@ -651,28 +791,8 @@
         );
 
         if (this.isBdrm) {
-          const ListCount = 11;
-          const ListCount2 = Math.floor(tiledMenus.length / ListCount);
-          const ListCount3 = tiledMenus.length % ListCount;
-          let startCount = 0;
-          const permission_group2 = [];
-
-          for (let i = 0; i < ListCount2; i++) {
-            permission_group2[i] = [];
-            for (let j = 0; j < ListCount; j++) {
-              permission_group2[i][j] = tiledMenus[startCount];
-              startCount++;
-            }
-          }
-          if (ListCount3 > 0) {
-            const lastGroup = [];
-            for (let k = 0; k < ListCount3; k++) {
-              lastGroup[k] = tiledMenus[startCount];
-              startCount++;
-            }
-            permission_group2.push(lastGroup);
-          }
-          this.MenuList = permission_group2;
+          this.buildMenuGroups(allMenus, tiledMenus);
+          this.MenuList = null;
           this.pickMenuList = [];
           return;
         }
@@ -689,25 +809,35 @@
     mounted() {
       //this.getSaleroomData();
       this.$bus.$on('handleCommand', () => {
-        this.getJYkDefRemindTotal();
-        this.getTableListTotal();
-        this.getSaleroomData();
-        this.getLineChartData();
-        this.getTop20();
+        // 仅看板展开时才刷新，避免无谓请求
+        if (this.showDashboard) {
+          this.loadDashboardData();
+        }
       });
       if (!this.isBdrm) {
         this.$bus.$on(RECENT_MENUS_CHANGED, this.refreshRecentMenus);
+      } else {
+        this.$bus.$on(RECENT_MENUS_CHANGED, this.refreshRecentGroup);
       }
+      this.$bus.$on('SPD_MENU_GROUP_CHANGE', this.onMenuGroupChange);
     },
     beforeDestroy() {
       this.$bus.$off('handleCommand');
       if (!this.isBdrm) {
         this.$bus.$off(RECENT_MENUS_CHANGED, this.refreshRecentMenus);
+      } else {
+        this.$bus.$off(RECENT_MENUS_CHANGED, this.refreshRecentGroup);
       }
+      this.$bus.$off('SPD_MENU_GROUP_CHANGE', this.onMenuGroupChange);
     },
     computed: {
       isBdrm() {
         return HOME_HP === 'bdrm';
+      },
+      activeGroup() {
+        return (
+          this.menuGroups.find((g) => g.id === this.activeGroupId) || null
+        );
       },
       // 是否开启响应式布局
       styleResponsive() {
@@ -1039,16 +1169,11 @@
       }
     },
     created() {
-      // this.getdatasource();
-      this.getJYkDefRemindTotal();
-      this.getTableListTotal();
+      // 统计看板默认收起，5 个统计接口改由 toggleDashboard 首次展开时按需加载
       this.permission_groupList();
       if (!this.isBdrm) {
         this.refreshRecentMenus();
       }
-      this.getSaleroomData();
-      this.getLineChartData();
-      this.getTop20();
       // this.NewBatchRemindervisible = true;
       /* 获取数据 */
       localStorage.AesKey = getAesKey();
@@ -1056,6 +1181,16 @@
     activated() {
       if (!this.isBdrm) {
         this.refreshRecentMenus();
+      }
+      // 从其它页签回到主页时，恢复侧栏最后一次选中的目录
+      try {
+        const title = sessionStorage.getItem('SPD_ACTIVE_MENU_GROUP') || '';
+        const hit = this.menuGroups.find((g) => g.title === title);
+        if (hit) {
+          this.activeGroupId = hit.id;
+        }
+      } catch (e) {
+        // sessionStorage 不可用时忽略
       }
     }
   };
@@ -1146,5 +1281,88 @@
     color: #67c23a;
     font-size: 16px;
     font-weight: bold;
+  }
+
+  /* 菜单首页：只展示当前目录下的图标按钮，目录导航由系统侧栏/顶部一级承担 */
+  .menu-workbench {
+    margin-bottom: 12px;
+  }
+  .dashboard-toggle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 4px 2px;
+    color: #909399;
+    font-size: 12px;
+  }
+  .menu-group-main {
+    min-height: 300px;
+    padding: 12px 14px 16px;
+  }
+  .menu-group-main-head {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .menu-group-main-title {
+    color: #303133;
+    font-size: 15px;
+    font-weight: 600;
+  }
+  .menu-group-main-meta {
+    color: #909399;
+    font-size: 12px;
+  }
+  .menu-tile-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(112px, 1fr));
+    gap: 8px;
+  }
+  .menu-tile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: 92px;
+    padding: 8px 6px;
+    border: 1px solid #ebeef5;
+    border-radius: 6px;
+    background: #fff;
+    cursor: pointer;
+    transition: background-color 0.15s, border-color 0.15s;
+  }
+  .menu-tile:hover {
+    border-color: #409eff;
+    background: #ecf5ff;
+  }
+  .menu-tile-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 36px;
+    color: #409eff;
+  }
+  .menu-tile-title {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    word-break: break-word;
+    text-align: center;
+    color: #303133;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.35;
+  }
+  .menu-tile:hover .menu-tile-title {
+    color: #409eff;
+  }
+  .menu-tile-empty {
+    padding: 40px 0;
+    color: #909399;
+    font-size: 13px;
+    text-align: center;
   }
 </style>

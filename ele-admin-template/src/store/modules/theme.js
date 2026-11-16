@@ -34,12 +34,16 @@ const DEFAULT_STATE = Object.freeze({
   // 是否开启页脚
   showFooter: false,
   // 顶栏风格: light(亮色), dark(暗色), primary(主色)
-  headStyle: 'light',
+  // 顶栏用灰色：dark 主题自动把文字转白，背景再由全局样式指定为中灰
+  headStyle: 'dark',
   // 侧栏风格: light(亮色), dark(暗色)
-  sideStyle: 'dark',
+  // 目录树用亮色底，配合蓝色悬停/选中更清晰（对齐参考图）
+  sideStyle: 'light',
   // 布局风格: side(默认), top(顶栏导航), mix(混合导航)
+  // mix: 顶部一级目录 + 左侧该目录下的菜单树，实现上侧/左侧联动
   // layoutStyle: 'side',
-  layoutStyle: 'top',
+  // layoutStyle: 'top',
+  layoutStyle: 'mix',
   // 侧栏菜单风格: default(默认), mix(双排侧栏)
   sideMenuStyle: 'default',
   // 页签风格: default(默认), dot(圆点), card(卡片)

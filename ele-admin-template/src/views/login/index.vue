@@ -78,7 +78,7 @@ import CryptoJS from 'crypto-js';
 import I18nIcon from '@/layout/components/i18n-icon.vue';
 import { getToken } from '@/utils/token-util';
 import { login, getCaptcha, getSTORAGE } from '@/api/login';
-import { HOME_HP } from '@/config/setting';
+import { getHospitalLogo } from '@/config/setting';
 
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
@@ -131,56 +131,9 @@ export default {
         ]
       };
     },
-    // logo
+    // logo：与顶栏共用 setting.js 里同一份医院图标映射
     logo() {
-      let logoPath;
-      switch (HOME_HP) {
-      case 'bd':
-        logoPath = require('@/assets/logoBD.jpg');
-        break;
-      case 'fy':
-        logoPath = require('@/assets/logoFY.jpg');
-        break;
-      case 'szsmyl':
-        logoPath = require('@/assets/logoSM.jpg');
-        break;
-      case 'stzl':
-        logoPath = require('@/assets/logoZL.jpg');
-        break;
-      case 'szhn':
-        logoPath = require('@/assets/logoHN.jpg');
-        break;
-      case 'lg':
-        logoPath = require('@/assets/logoLG.png');
-        break;
-      case 'lgls':
-        logoPath = require('@/assets/logoLS.png');
-        break;
-      case 'stzx':
-        logoPath = require('@/assets/logoSTZX.jpg');
-        break;
-      case 'stse':
-        logoPath = require('@/assets/logoSTSE.png');
-        break;
-      case 'gzbj':
-        logoPath = require('@/assets/logoGZBJ.jpg');
-        break;
-      case 'szlhfy':
-        logoPath = require('@/assets/logoFY.jpg');
-        break;
-      case 'bdrm':
-        logoPath = require('@/assets/logoBJ.jpg');
-        break;
-      case 'se2':
-        logoPath = require('@/assets/szse.png'); // 待定：市二本部、大鹏院区、龙华院区使用同一个LOGO
-        break;
-      case 'xh':
-        logoPath = require('@/assets/xh.png');
-        break;
-      default:
-        logoPath = require('@/assets/logo.png');
-      }
-      return `${logoPath}?_t=${new Date().getTime()}`;
+      return getHospitalLogo();
     }
 
   },

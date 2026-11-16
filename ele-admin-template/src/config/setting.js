@@ -113,6 +113,30 @@ const getHomeHp = () => {
 
 export const HOME_HP = getHomeHp();
 
+// 按医院标识返回院徽，登录页与顶栏共用同一份映射，避免两处各维护一份
+export function getHospitalLogo() {
+  const logoMap = {
+    bd: require('@/assets/logoBD.jpg'),
+    fy: require('@/assets/logoFY.jpg'),
+    szsmyl: require('@/assets/logoSM.jpg'),
+    stzl: require('@/assets/logoZL.jpg'),
+    szhn: require('@/assets/logoHN.jpg'),
+    lg: require('@/assets/logoLG.png'),
+    lgls: require('@/assets/logoLS.png'),
+    stzx: require('@/assets/logoSTZX.jpg'),
+    stse: require('@/assets/logoSTSE.png'),
+    gzbj: require('@/assets/logoGZBJ.jpg'),
+    szlhfy: require('@/assets/logoFY.jpg'),
+    bdrm: require('@/assets/logoBJ.jpg'),
+    se2: require('@/assets/szse.png'),
+    xh: require('@/assets/xh.png')
+  };
+  const asset = logoMap[HOME_HP] || require('@/assets/logo.png');
+  // webpack5 asset 模块可能返回 { default: url }，兼容两种形态，避免拼出 [object Module]
+  const path = asset && asset.default ? asset.default : asset;
+  return `${String(path)}?_t=${new Date().getTime()}`;
+}
+
 // 计算b2b的的医院ID
 const caculateB2bCode = () => {
   switch (HOME_HP) {
