@@ -29,6 +29,12 @@
             </el-option>
           </el-select>
         </el-form-item>
+        <el-form-item label="耗材/试剂">
+          <el-select v-model="searchForm.CLASSIFIC_PROPERTIES" placeholder="全部" clearable style="width: 130px">
+            <el-option label="耗材" :value="1" />
+            <el-option label="试剂" :value="2" />
+          </el-select>
+        </el-form-item>
         <el-form-item label="状态">
           <el-select
             v-model="searchForm.STATUS"
@@ -134,6 +140,7 @@
       >
         <vxe-column type="seq" title="序号" width="55" align="center" />
         <vxe-column field="PERIOD_YM" title="期数" width="160" align="center" />
+        <vxe-column field="CLASSIFIC_PROPERTIES" title="耗材/试剂" width="110" align="center" :formatter="formatterClassificProperties" />
         <vxe-column field="DEPT_TWO_NAME" title="盘点科室" min-width="120" align="center" />
         <vxe-column field="REGION_NAME" title="库区" min-width="120" align="center" />
         <vxe-column field="CHECK_START_TIME" title="盘点开始时间" width="155" align="center" :formatter="formatterDateTime" />
@@ -279,6 +286,7 @@
       >
         <vxe-column type="seq" title="序号" width="55" align="center" />
         <vxe-column field="VARIETIE_CODE_NEW" title="品种编码" width="120" />
+        <vxe-column field="CLASSIFIC_PROPERTIES" title="耗材/试剂" width="110" align="center" :formatter="formatterClassificProperties" />
         <vxe-column field="CHARGING_CODE" title="计费编码" width="120" />
         <vxe-column field="IS_CHARGE" title="是否收费" width="80" align="center" :formatter="({ cellValue }) => cellValue === 1 ? '是' : cellValue === 0 ? '否' : ''" />
         <vxe-column field="VARIETIE_NAME" title="品种名称" min-width="150" show-overflow />
@@ -413,6 +421,13 @@
         </el-form-item>
         <el-form-item label="盘点科室">
           <el-input :value="isEditMode ? checkFormData.DEPT_TWO_NAME : deptName" disabled />
+        </el-form-item>
+        <el-form-item label="盘点类型" prop="CLASSIFIC_PROPERTIES">
+          <el-input v-if="isEditMode" :value="formatterClassificProperties({ cellValue: checkFormData.CLASSIFIC_PROPERTIES })" disabled />
+          <el-radio-group v-else v-model="checkFormData.CLASSIFIC_PROPERTIES">
+            <el-radio :label="1">耗材盘点单</el-radio>
+            <el-radio :label="2">试剂盘点单</el-radio>
+          </el-radio-group>
         </el-form-item>
         <el-form-item label="库区">
           <el-input
@@ -665,6 +680,7 @@ export default {
         DEPT_TWO_CODE: '',
         DEPT_TWO_NAME: '',
         STATUS: '',
+        CLASSIFIC_PROPERTIES: null,
         CHECK_START_TIME_BEGIN: '',
         CHECK_START_TIME_END: ''
       },
@@ -697,9 +713,21 @@ export default {
         CHECK_START_TIME: '',
         CHECK_END_TIME: '',
         REGION_CODE: '',
+        CLASSIFIC_PROPERTIES: null,
         REMARK: ''
       },
-      checkFormRules: {},
+      checkFormRules: {
+        CLASSIFIC_PROPERTIES: [{
+          validator: (rule, value, callback) => {
+            if (!this.isEditMode && value !== 1 && value !== 2) {
+              callback(new Error('请选择创建耗材盘点单或试剂盘点单'));
+            } else {
+              callback();
+            }
+          },
+          trigger: 'change'
+        }]
+      },
       // 明细填写对话框
       detailDialogVisible: false,
       detailDialogLoading: false,
@@ -861,6 +889,7 @@ export default {
         DEPT_TWO_CODE: '',
         DEPT_TWO_NAME: '',
         STATUS: '',
+        CLASSIFIC_PROPERTIES: null,
         CHECK_START_TIME_BEGIN: '',
         CHECK_START_TIME_END: ''
       };
@@ -1002,6 +1031,7 @@ export default {
         const res = await getDeptInventoryCheckDetailList(params);
         const allData = res.result || [];
         const r = this.currentMainRow;
+        const checkTypeName = this.formatterClassificProperties({ cellValue: r.CLASSIFIC_PROPERTIES });
 
         const ExcelJS = (await import('exceljs')).default;
         const workbook = new ExcelJS.Workbook();
@@ -1020,7 +1050,7 @@ export default {
         const thinBorder = { top: { style: 'thin' }, bottom: { style: 'thin' }, left: { style: 'thin' }, right: { style: 'thin' } };
 
         // 第1行：标题
-        const titleRow = sheet.addRow([`${r.DEPT_TWO_NAME}盘点单 - ${r.PERIOD_YM}期`]);
+        const titleRow = sheet.addRow([`${r.DEPT_TWO_NAME}${checkTypeName}盘点单 - ${r.PERIOD_YM}期`]);
         sheet.mergeCells(1, 1, 1, colCount);
         titleRow.height = 30;
         const titleCell = titleRow.getCell(1);
@@ -1078,7 +1108,7 @@ export default {
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `盘点明细_${r.DEPT_TWO_NAME}_${r.PERIOD_YM}.xlsx`;
+        a.download = `${checkTypeName}盘点明细_${r.DEPT_TWO_NAME}_${r.PERIOD_YM}.xlsx`;
         a.click();
         URL.revokeObjectURL(url);
       } catch (error) {
@@ -1276,7 +1306,7 @@ export default {
     openCreateDialog() {
       this.isEditMode = false;
       const periodYm = this.$moment().format('YYYY-MM-DD HH:mm:ss');
-      this.checkFormData = { ID: null, PERIOD_YM: periodYm, DEPT_TWO_CODE: this.deptCode, DEPT_TWO_NAME: this.deptName, CHECK_START_TIME: '', CHECK_END_TIME: '', REGION_CODE: null, REMARK: '' };
+      this.checkFormData = { ID: null, PERIOD_YM: periodYm, DEPT_TWO_CODE: this.deptCode, DEPT_TWO_NAME: this.deptName, CHECK_START_TIME: '', CHECK_END_TIME: '', REGION_CODE: null, CLASSIFIC_PROPERTIES: null, REMARK: '' };
       this.$nextTick(() => { this.$refs.checkForm && this.$refs.checkForm.clearValidate(); });
       this.checkDialogVisible = true;
     },
@@ -1285,6 +1315,7 @@ export default {
       this.checkFormData = {
         ID: row.ID,
         DEPT_TWO_CODE: row.DEPT_TWO_CODE || '',
+        CLASSIFIC_PROPERTIES: row.CLASSIFIC_PROPERTIES != null ? Number(row.CLASSIFIC_PROPERTIES) : null,
         DEPT_TWO_NAME: row.DEPT_TWO_NAME || '',
         PERIOD_YM: row.PERIOD_YM || '',
         CHECK_START_TIME: row.CHECK_START_TIME || '',
@@ -1460,6 +1491,11 @@ export default {
     formatterInCabinet({ cellValue }) {
       if (cellValue === 1) return '是';
       if (cellValue === 0) return '否';
+      return '';
+    },
+    formatterClassificProperties({ cellValue }) {
+      if (Number(cellValue) === 1) return '耗材';
+      if (Number(cellValue) === 2) return '试剂';
       return '';
     },
     formatterDate({ cellValue }) {

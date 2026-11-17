@@ -1,5 +1,6 @@
 <template>
   <ele-pro-layout
+    ref="proLayout"
     :menus="menus"
     :tabs="theme.tabs"
     :collapse="theme.collapse"
@@ -20,7 +21,7 @@
     :colorful-icon="theme.colorfulIcon"
     :side-unique-open="theme.sideUniqueOpen"
     :style-responsive="theme.styleResponsive"
-    :project-name="PROJECT_NAME"
+    :project-name="''"
     :hide-footers="HIDE_FOOTERS"
     :hide-sidebars="HIDE_SIDEBARS"
     :repeatable-tabs="REPEATABLE_TABS"
@@ -62,7 +63,13 @@
     </template>
     <!-- logo 图标 -->
     <template v-slot:logo>
-      <img src="@/assets/logo.png" alt="logo" />
+      <!-- 用背景图而非 <img>，避免替换元素在 flex / width:auto 容器里被压缩 -->
+      <div
+        class="spd-hospital-logo"
+        role="img"
+        aria-label="医院院徽"
+        :style="{ backgroundImage: 'url(' + hospitalLogo + ')' }"
+      ></div>
     </template>
     <!-- 顶栏右侧区域 -->
     <template v-slot:right>
@@ -103,7 +110,6 @@
   import PageFooter from './components/page-footer.vue';
   import LoginTipDialogs from './components/login-tip-dialogs.vue';
   import {
-    PROJECT_NAME,
     HIDE_SIDEBARS,
     HIDE_FOOTERS,
     REPEATABLE_TABS,
@@ -111,7 +117,8 @@
     HOME_PATH,
     LAYOUT_PATH,
     REDIRECT_PATH,
-    I18N_ENABLE
+    I18N_ENABLE,
+    getHospitalLogo
   } from '@/config/setting';
   import {
     addPageTab,
@@ -142,7 +149,6 @@
     },
     data() {
       return {
-        PROJECT_NAME,
         HIDE_SIDEBARS,
         HIDE_FOOTERS,
         REPEATABLE_TABS,
@@ -156,6 +162,10 @@
       };
     },
     computed: {
+      // 左上角院徽：与登录页同源，按 HOME_HP 对应到具体医院
+      hospitalLogo() {
+        return getHospitalLogo();
+      },
       // 当前语言
       locale() {
         return this.$i18n.locale;
@@ -181,10 +191,123 @@
       this.syncRecentMenus();
       this.$bus.$on(RECENT_MENUS_CHANGED, this.syncRecentMenus);
     },
+    mounted() {
+      this.bindTopNavLinkage();
+      this.bindSideNavLinkage();
+    },
     beforeDestroy() {
       this.$bus.$off(RECENT_MENUS_CHANGED, this.syncRecentMenus);
+      this.unbindTopNavLinkage();
+      this.unbindSideNavLinkage();
     },
     methods: {
+      // 顶部一级目录点击：同步左侧目录树，并通知菜单首页工作台
+      bindTopNavLinkage() {
+        const nav = document.querySelector('.ele-admin-header-nav');
+        if (!nav) {
+          return;
+        }
+        this._navEl = nav;
+        this._onNavClick = (e) => {
+          const item = e.target.closest
+            ? e.target.closest('.el-menu--horizontal > .el-menu-item')
+            : null;
+          if (!item || !nav.contains(item)) {
+            return;
+          }
+          // mix 模式顶部一级是 router-link，阻止跳到没有组件的一级路由
+          e.preventDefault();
+          // capture 阶段同时阻断冒泡，避免该一级 path 被推给路由后
+          // 命中 routes.js 的 '*' → redirect HOME_PATH 而跳回主菜单
+          e.stopPropagation();
+          const title = (item.textContent || '').trim();
+          const hit = (this.menus || []).find(
+            (m) => m.meta && m.meta.title && title.indexOf(m.meta.title) === 0
+          );
+          if (!hit) {
+            return;
+          }
+          const layout = this.$refs.proLayout;
+          if (layout && typeof layout.splitMenuData === 'function') {
+            layout.headMenuActive = hit.path;
+            layout.splitMenuData();
+          }
+          this.$bus.$emit('SPD_MENU_GROUP_CHANGE', hit.meta.title);
+          // 点目录时回到菜单首页，立即展示该目录下的图标按钮
+          if (this.$route.path !== HOME_PATH) {
+            this.$router.push(HOME_PATH);
+          }
+        };
+        nav.addEventListener('click', this._onNavClick, true);
+        // 首页若无「最近使用」记录，侧栏数据可能为空，兜底选中第一个有子菜单的目录
+        this.$nextTick(() => {
+          const layout = this.$refs.proLayout;
+          if (!layout || typeof layout.splitMenuData !== 'function') {
+            return;
+          }
+          if ((layout.sideMenuData || []).length) {
+            return;
+          }
+          const first = (this.menus || []).find(
+            (m) => m.children && m.children.length
+          );
+          if (first) {
+            layout.headMenuActive = first.path;
+            layout.splitMenuData();
+          }
+        });
+      },
+      unbindTopNavLinkage() {
+        if (this._navEl && this._onNavClick) {
+          this._navEl.removeEventListener('click', this._onNavClick, true);
+        }
+        this._navEl = null;
+        this._onNavClick = null;
+      },
+      // 侧边栏「目录」点击：同步菜单首页工作台。
+      // 只处理 el-submenu 标题（目录），el-menu-item（业务菜单）仍按原逻辑跳转
+      bindSideNavLinkage() {
+        const side = document.querySelector('.ele-admin-sidebar');
+        if (!side) {
+          return;
+        }
+        this._sideEl = side;
+        this._onSideClick = (e) => {
+          const titleNode = e.target.closest
+            ? e.target.closest('.el-submenu > .el-submenu__title')
+            : null;
+          if (!titleNode || !side.contains(titleNode)) {
+            return;
+          }
+          const text = (titleNode.textContent || '').trim();
+          const hit = (this.menus || []).find(
+            (m) => m.meta && m.meta.title && text.indexOf(m.meta.title) === 0
+          );
+          if (!hit) {
+            return;
+          }
+          // 先持久化：不在首页时点击、之后回到首页也能恢复该目录
+          try {
+            sessionStorage.setItem('SPD_ACTIVE_MENU_GROUP', hit.meta.title);
+          } catch (err) {
+            // 隐私模式下 sessionStorage 不可用时忽略
+          }
+          this.$bus.$emit('SPD_MENU_GROUP_CHANGE', hit.meta.title);
+          // 点目录时回到菜单首页，立即展示该目录下的菜单图标；
+          // 业务菜单项(el-menu-item)不匹配上面的选择器，仍按原逻辑跳转，不受影响
+          if (this.$route.path !== HOME_PATH) {
+            this.$router.push(HOME_PATH);
+          }
+        };
+        side.addEventListener('click', this._onSideClick, true);
+      },
+      unbindSideNavLinkage() {
+        if (this._sideEl && this._onSideClick) {
+          this._sideEl.removeEventListener('click', this._onSideClick, true);
+        }
+        this._sideEl = null;
+        this._onSideClick = null;
+      },
       syncRecentMenus(list) {
         this.recentMenus =
           list || getRecentMenus(this.$store.state.user.info);
@@ -387,5 +510,63 @@
         }
       }
     }
+  }
+
+  /* 侧栏目录：字体加粗加大、间距收紧、长名称分行、悬停/选中蓝色 */
+  .ele-admin-sidebar-menus .el-menu {
+    .el-menu-item,
+    .el-submenu__title {
+      height: auto;
+      min-height: 38px;
+      padding-top: 7px;
+      padding-bottom: 7px;
+      line-height: 1.35;
+      font-size: 14px;
+      font-weight: 600;
+      white-space: normal;
+      word-break: break-word;
+    }
+    > .el-submenu,
+    > .el-menu-item {
+      margin-top: 0;
+    }
+    .el-menu-item:hover,
+    .el-submenu__title:hover {
+      background-color: #409eff !important;
+      color: #fff !important;
+    }
+    .el-menu-item.is-active {
+      background-color: #ecf5ff !important;
+      color: #409eff !important;
+    }
+  }
+
+  /* 顶栏灰色：与白色侧栏形成层次，文字沿用 dark 主题的白色 */
+  .ele-admin-head-dark .ele-admin-header,
+  .ele-admin-head-dark .ele-admin-logo {
+    background-color: #5b6472 !important;
+  }
+
+  /* 左上角院徽：固定尺寸的白色铭牌 + 背景图 contain，
+     不再用 <img> 替换元素，彻底避开 logo-auto 的 width:auto 塌缩 */
+  .ele-admin-logo,
+  .ele-admin-logo-auto .ele-admin-logo {
+    width: 240px !important;
+    height: 72px !important;
+  }
+  .ele-admin-logo > .spd-hospital-logo {
+    width: 228px !important;
+    height: 60px !important;
+    flex: 0 0 auto;
+    background-color: #fff;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    border-radius: 2px;
+  }
+  /* 侧栏折叠时 logo 区收窄，铭牌等比缩小 */
+  .ele-admin-collapse .ele-admin-logo > .spd-hospital-logo {
+    width: 44px !important;
+    height: 44px !important;
   }
 </style>

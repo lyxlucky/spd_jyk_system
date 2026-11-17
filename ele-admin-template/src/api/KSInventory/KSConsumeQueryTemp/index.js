@@ -95,10 +95,13 @@ export function buildSearchParams(where = {}, page = 1, size = 20, sort = {}) {
   };
 }
 
-/** 分页查询（V2 临时表） */
-export async function searchConsumeTemp(where, page, size, sort) {
+/** 分页查询（V2 临时表，timeoutMs 用于导出等长请求） */
+export async function searchConsumeTemp(where, page, size, sort, timeoutMs) {
   const params = { Token: token(), ...buildSearchParams(where, page, size, sort) };
-  const res = await request.get('/DeptConsume/SearchDEPT_HIS_DEF_PKG_CONSUME_TEMP', { params });
+  const res = await request.get('/DeptConsume/SearchDEPT_HIS_DEF_PKG_CONSUME_TEMP', {
+    params,
+    ...(timeoutMs ? { timeout: timeoutMs } : {})
+  });
   check301(res.data);
   if (okCode(res.data?.code)) {
     return res.data;
@@ -125,6 +128,15 @@ export async function exportConsumeEpPlus(where, sort = {}) {
   check301(res.data);
   if (okCode(res.data?.code)) return res.data;
   throw new Error(res.data?.msg || '导出失败');
+}
+
+/** 后端 EPPlus 导出状态（异步导出：pending / ready / error） */
+export async function getConsumeExportStatus(fileBase) {
+  const res = await request.get('/DeptConsume/ExportConsumeEpPlusStatus', {
+    params: { fileBase, Token: token(), _: Date.now() }
+  });
+  check301(res.data);
+  return res.data || {};
 }
 
 /** 逆向消耗 */

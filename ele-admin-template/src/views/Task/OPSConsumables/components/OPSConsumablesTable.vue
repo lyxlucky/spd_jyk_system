@@ -194,6 +194,13 @@
               style="margin-right: 8px"
               >非次日订单 {{ nonNextDayCount }}</el-button
             >
+            <el-button
+              type="primary"
+              icon="el-icon-bell"
+              @click="openNotifyDialog"
+              style="margin-right: 8px"
+              >变更通知 {{ todayNotifyCount }}</el-button
+            >
             <el-button type="primary" @click="handleExport">导出</el-button>
             <el-button type="primary" @click="handleExportCurrent"
               >打印2</el-button
@@ -226,16 +233,22 @@
       :visible.sync="summaryDialogVisible"
       :selectedSSBH="selection.map((item) => item.SSBH)"
     ></SummaryDialog>
+    <SurgeryChangeNotifyDialog
+      :visible.sync="notifyDialogVisible"
+      @close="loadTodayNotifyCount"
+    ></SurgeryChangeNotifyDialog>
   </div>
 </template>
 
 <script>
   import UpdateUserInfoDialog from './UpdateUserInfoDialog';
   import SummaryDialog from './SummaryDialog';
+  import SurgeryChangeNotifyDialog from './SurgeryChangeNotifyDialog';
   import { BACK_BASE_URL } from '@/config/setting';
   import { exportToExcel } from '@/utils/excel-util.js';
   import {
     getBdSzYyHisSs,
+    getSurgeryChangeNotifyList,
     GetBdszZgsjMainPsDelExcel,
     GetBdszZgsjMainPsDelExcelDetail,
     addBdszZqsjMainPsDelByReserve,
@@ -246,7 +259,8 @@
     name: 'OPSConsumablesTable',
     components: {
       UpdateUserInfoDialog,
-      SummaryDialog
+      SummaryDialog,
+      SurgeryChangeNotifyDialog
     },
     data() {
       const today = new Date();
@@ -320,6 +334,9 @@
         // 非次日订单筛选与数量
         nonNextDayOnly: false,
         nonNextDayCount: 0,
+        // 变更通知历史与今日数量
+        notifyDialogVisible: false,
+        todayNotifyCount: 0,
         // 术间选项
         MZZYOptions: [
           { value: '', label: '全部' },
@@ -629,6 +646,25 @@
             this.nonNextDayCount = 0;
           });
       },
+      // 加载今天的变更通知数量，供按钮显示
+      loadTodayNotifyCount() {
+        return getSurgeryChangeNotifyList({
+          page: 1,
+          limit: 1,
+          where: {}
+        })
+          .then((data) => {
+            this.todayNotifyCount = data.todaycount || 0;
+          })
+          .catch(() => {
+            this.todayNotifyCount = 0;
+          });
+      },
+      // 打开通知历史前刷新一次今天的数量
+      openNotifyDialog() {
+        this.loadTodayNotifyCount();
+        this.notifyDialogVisible = true;
+      },
       // 表格数据源
       datasource({ page, limit, where, order }) {
         where.MZZY = this.where.MZZY;
@@ -670,6 +706,7 @@
       reload() {
         this.$refs.table.reload({ page: 1, where: this.where });
         this.loadNonNextDayCount();
+        this.loadTodayNotifyCount();
       },
       handleSelectionChange(selection) {
         this.selection = selection;

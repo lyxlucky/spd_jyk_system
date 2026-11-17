@@ -34,8 +34,12 @@ export function calcIncreaseAmount(row) {
 }
 
 export function formatHbZz(row) {
+  // 环期无消耗（金额为0）时无法计算环比增降幅，显示"/"
+  if (row.HB_ZZ_NULL == 1 || Number(row.HQ_PRICE) === 0) {
+    return '/';
+  }
   const v = row.HB_ZZ;
-  if (v == null || v === '') return '';
+  if (v == null || v === '') return '/';
   return `${v}%`;
 }
 

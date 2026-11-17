@@ -2,121 +2,82 @@
   <div class="ele-body">
     <div class="ele-page-header"> </div>
 
-    <template v-if="isBdrm">
-      <el-card v-for="(item, index) in MenuList" :key="'bdrm-' + index" shadow="never">
-        <div class="demo-image" style="display: flex; flex-wrap: wrap">
-          <div
-            class="block"
-            v-for="p in item"
-            :key="p.component"
-            style="margin: 10px"
-          >
-            <div
-              style="
-                width: 90px;
-                height: 70px;
-                border-radius: 2px;
-                margin-right: 20px;
-              "
-              @click="changeRoute(p.component)"
+    <!-- 「最近使用」仅侧栏；bj 主页展示完整业务目录，其它医院只展示当前选中目录 -->
+    <el-card class="menu-workbench" shadow="never" :body-style="{ padding: '0' }">
+      <!-- bj：完整目录平铺 -->
+      <template v-if="isBdrm">
+        <section
+          v-for="group in catalogGroups"
+          :id="'menu-group-' + group.id"
+          :key="group.id"
+          class="menu-group-section"
+          :class="{ 'is-active': group.id === activeGroupId }"
+        >
+          <div class="menu-group-main-head">
+            <span class="menu-group-main-title">{{ group.title }}</span>
+            <span class="menu-group-main-meta">共 {{ group.items.length }} 项</span>
+          </div>
+          <div v-if="group.items.length" class="menu-tile-grid">
+            <button
+              v-for="p in group.items"
+              :key="'tile-' + group.id + '-' + p.path"
+              type="button"
+              class="menu-tile"
+              @click="changeRoute(p.path)"
             >
-              <el-button type="text" class="button">
-                <div style="width: 100px; display: flex; justify-content: center">
-                  <menu-icon :icon="p.icon" :size="40" />
-                </div>
-                <div
-                  style="
-                    width: 100px;
-                    display: flex;
-                    justify-content: center;
-                    margin-top: 5px;
-                    color: #606266;
-                  "
-                >
-                  <div class="bottom clearfix">
-                    <span>{{ p.title }}</span>
-                  </div>
-                </div>
-              </el-button>
-            </div>
+              <span class="menu-tile-icon">
+                <menu-icon :icon="p.icon" :size="34" />
+              </span>
+              <span class="menu-tile-title">{{ p.title }}</span>
+            </button>
           </div>
-        </div>
-      </el-card>
-    </template>
-
-    <template v-else>
-      <el-card class="menu-section-card" shadow="never">
-        <div slot="header" class="menu-section-header">
-          <span>最近使用</span>
-          <el-button type="text" icon="el-icon-plus" @click="openAddRecentDialog">
-            添加
-          </el-button>
-        </div>
-        <div v-if="recentMenuItems.length" class="menu-icon-grid">
-          <div
-            class="block recent-block"
-            v-for="p in recentMenuItems"
-            :key="'recent-' + p.path"
-          >
-            <div class="menu-icon-item" @click="changeRoute(p.path)">
-              <el-button type="text" class="button">
-                <div class="menu-icon-wrap">
-                  <menu-icon :icon="p.icon" :size="40" />
-                </div>
-                <div class="menu-icon-title">
-                  <span>{{ p.title }}</span>
-                </div>
-              </el-button>
-            </div>
-            <i
-              class="el-icon-close recent-remove"
-              title="移除"
-              @click.stop="removeRecentItem(p)"
-            />
+          <div v-else class="menu-tile-empty">该目录下暂无菜单</div>
+        </section>
+        <div v-if="!catalogGroups.length" class="menu-tile-empty">暂无菜单</div>
+      </template>
+      <!-- 其它医院：仅当前目录图标区，跟顶栏/侧栏联动 -->
+      <template v-else>
+        <section class="menu-group-main">
+          <div class="menu-group-main-head">
+            <span class="menu-group-main-title">
+              {{ activeGroup ? activeGroup.title : '全部菜单' }}
+            </span>
+            <span class="menu-group-main-meta">
+              共 {{ activeGroup ? activeGroup.items.length : 0 }} 项
+            </span>
           </div>
-        </div>
-        <div v-else class="recent-empty">暂无最近使用，可点击右上角「添加」</div>
-      </el-card>
+          <div v-if="activeGroup && activeGroup.items.length" class="menu-tile-grid">
+            <button
+              v-for="p in activeGroup.items"
+              :key="'tile-' + p.path"
+              type="button"
+              class="menu-tile"
+              @click="changeRoute(p.path)"
+            >
+              <span class="menu-tile-icon">
+                <menu-icon :icon="p.icon" :size="34" />
+              </span>
+              <span class="menu-tile-title">{{ p.title }}</span>
+            </button>
+          </div>
+          <div v-else class="menu-tile-empty">该目录下暂无菜单</div>
+        </section>
+      </template>
+    </el-card>
 
-      <el-dialog
-        title="添加最近使用"
-        :visible.sync="addRecentVisible"
-        width="90%"
-        top="5vh"
-        append-to-body
-        custom-class="add-recent-dialog"
+    <!-- 统计看板默认收起：展开时才请求相关接口，避免每次进首页都产生无谓开销 -->
+    <div class="dashboard-toggle">
+      <el-button
+        type="text"
+        :icon="showDashboard ? 'el-icon-arrow-up' : 'el-icon-arrow-down'"
+        @click="toggleDashboard"
       >
-        <div class="menu-icon-grid add-recent-grid">
-          <div
-            class="block"
-            v-for="p in pickMenuList"
-            :key="'pick-' + p.path"
-          >
-            <div
-              class="menu-icon-item"
-              :class="{ 'is-added': isRecentPath(p.path) }"
-              @click="pickAddRecent(p)"
-            >
-              <el-button type="text" class="button">
-                <div class="menu-icon-wrap">
-                  <menu-icon :icon="p.icon" :size="40" />
-                </div>
-                <div class="menu-icon-title">
-                  <span>{{ p.title }}</span>
-                </div>
-              </el-button>
-              <i v-if="isRecentPath(p.path)" class="el-icon-check add-check" />
-            </div>
-          </div>
-        </div>
-        <div slot="footer">
-          <el-button type="primary" @click="addRecentVisible = false">
-            完成
-          </el-button>
-        </div>
-      </el-dialog>
-    </template>
+        {{ showDashboard ? '收起统计看板' : '展开统计看板' }}
+      </el-button>
+      <span>含提醒、快捷入口与消耗图表，展开时才会请求数据</span>
+    </div>
 
+    <template v-if="showDashboard">
     <div
       style="display: flex; justify-content: space-between; align-items: center"
     >
@@ -326,6 +287,7 @@
         </el-button>
       </div>
     </el-dialog>
+    </template>
   </div>
 </template>
 
@@ -334,12 +296,7 @@
   import VarietyDataLzhLook from '@/views/KSInventory/ReferenceComponent/VarietyDataLzhLook/index';
   import DpetOneAuthWithDept from '@/views/KSInventory/ReferenceComponent/DpetOneAuthWithDept/index';
   import KSExpirationReminder from '@/views/KSInventory/KSExpirationReminder/index';
-  import {
-    API_BASE_URL,
-    BACK_BASE_URL,
-    BLACK_ROUTER,
-    HOME_HP
-  } from '@/config/setting';
+  import { BACK_BASE_URL, HOME_HP } from '@/config/setting';
   import { getAesKey } from '@/utils/aes-util';
   import { getTableList } from '@/api/KSInventory/KSNewBatchReminder/index';
   import { SearchDefRemind } from '@/api/KSInventory/KSExpirationReminder';
@@ -351,12 +308,6 @@
     getCurrentDeptVarTop20,
     getJykUsedQty
   } from '@/api/KSInventory/MenuList/index';
-  import {
-    getRecentMenus,
-    addRecentMenu,
-    removeRecentMenu,
-    RECENT_MENUS_CHANGED
-  } from '@/utils/recent-menu-util';
   import EleChart from 'ele-admin/packages/ele-chart';
   import MenuIcon from '@/components/MenuIcon';
   export default {
@@ -374,9 +325,12 @@
     data() {
       return {
         MenuList: null,
-        recentMenuItems: [],
-        addRecentVisible: false,
-        pickMenuList: [],
+        // 菜单分组与当前选中目录（由系统侧栏 / 顶部一级驱动）
+        menuGroups: [],
+        activeGroupId: '',
+        // 统计看板默认收起，展开时才加载数据
+        showDashboard: false,
+        dashboardLoaded: false,
         KSExpirationReminderVisible: false,
         NoticeMenuList: null,
         guideDialogVisible: false,
@@ -555,159 +509,218 @@
         }
         this.$router.push(this.$route?.query?.from ?? data);
       },
-      refreshRecentMenus(list) {
-        this.recentMenuItems =
-          list || getRecentMenus(this.$store.state.user.info);
-      },
-      emitRecentChanged(list) {
-        this.$bus.$emit(RECENT_MENUS_CHANGED, list);
-      },
-      openAddRecentDialog() {
-        this.addRecentVisible = true;
-      },
-      isRecentPath(path) {
-        return this.recentMenuItems.some((m) => m.path === path);
-      },
-      pickAddRecent(item) {
-        const userInfo = this.$store.state.user.info;
-        // 已添加则取消，未添加则加入
-        if (this.isRecentPath(item.path)) {
-          const list = removeRecentMenu(item.path, userInfo);
-          this.refreshRecentMenus(list);
-          this.emitRecentChanged(list);
-          return;
-        }
-        const { list, ok, message } = addRecentMenu(item, userInfo);
-        this.refreshRecentMenus(list);
-        this.emitRecentChanged(list);
-        if (!ok && message) {
-          this.$message.warning(message);
-        }
-      },
-      removeRecentItem(item) {
-        const list = removeRecentMenu(item.path, this.$store.state.user.info);
-        this.refreshRecentMenus(list);
-        this.emitRecentChanged(list);
-      },
-      permission_groupList() {
-        let permission_group = [
-          ...(this.$store.state.user.info.permission_group || [])
-        ];
-
-        const blackList = [
-          '申领计划管理_审核按钮',
-          '申领计划管理_审批按钮',
-          '科室申领',
-          '菜单列表',
-          '入库管理',
-          'UDI条码查询',
-          'UDI主码管理',
-          'HIS使用计费',
-          '库存查询_',
-          '入库管理V2',
-          '医疗耗材验收',
-          'UDI院内流转查询',
-          '产品主码管理',
-          '利用率',
-          '基础数据管理',
-          '出库管理',
-          '库存管理',
-          '调库主单-确认调库',
-          '调库主单-提交调库',
-          '检验科仪器分析',
-          '科室目录',
-          '在用目录',
-          '中标目录',
-          '申领指引',
-          '新资质审核',
-          '科室目录导出',
-          '中标目录导出',
-          '溯源管理',
-          '溯源查询(新)',
-          '价格变动记录(新)',
-          '结算管理',
-          '跟台耗材管理',
-          '作业管理',
-          '手术室耗材预约_搜索权限'
-        ];
-        permission_group = permission_group.filter((res) => {
-          return !blackList.includes(res.title);
-        });
-
-        const rightMenuList = [
-          '/KSInventory/KSNewBatchReminder',
-          '/KSInventory/KSExpirationReminder',
-          '/KSInventory/KSRemind'
-        ];
-        this.NoticeMenuList = permission_group.filter((res) => {
-          return rightMenuList.includes(res.component) || rightMenuList.includes(res.path);
-        });
-        // 登录自动弹窗由 layout/login-tip-dialogs 统一处理（同会话只弹一次）
-
-        const tiledMenus = permission_group.filter(
-          (res) =>
-            !rightMenuList.includes(res.component) &&
-            !rightMenuList.includes(res.path)
-        );
-
-        if (this.isBdrm) {
-          const ListCount = 11;
-          const ListCount2 = Math.floor(tiledMenus.length / ListCount);
-          const ListCount3 = tiledMenus.length % ListCount;
-          let startCount = 0;
-          const permission_group2 = [];
-
-          for (let i = 0; i < ListCount2; i++) {
-            permission_group2[i] = [];
-            for (let j = 0; j < ListCount; j++) {
-              permission_group2[i][j] = tiledMenus[startCount];
-              startCount++;
-            }
-          }
-          if (ListCount3 > 0) {
-            const lastGroup = [];
-            for (let k = 0; k < ListCount3; k++) {
-              lastGroup[k] = tiledMenus[startCount];
-              startCount++;
-            }
-            permission_group2.push(lastGroup);
-          }
-          this.MenuList = permission_group2;
-          this.pickMenuList = [];
-          return;
-        }
-
-        this.pickMenuList = tiledMenus
-          .map((res) => ({
-            path: res.component || res.path,
-            title: res.title,
-            icon: res.icon || ''
-          }))
-          .filter((res) => res.path && res.title);
+    selectMenuGroup(group) {
+      this.activeGroupId = group.id;
+      try {
+        sessionStorage.setItem('SPD_ACTIVE_MENU_GROUP', group.title);
+      } catch (e) {
+        // 隐私模式下 sessionStorage 不可用时忽略，不影响菜单切换
       }
+      // 仅 bj 完整目录需要滚到对应区块；其它医院是单目录切换，无需滚动
+      if (!this.isBdrm) {
+        return;
+      }
+      this.$nextTick(() => {
+        const el = document.getElementById('menu-group-' + group.id);
+        if (el && typeof el.scrollIntoView === 'function') {
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    },
+    // 由 layout/index.vue 在顶部/侧栏目录点击时广播
+    onMenuGroupChange(title) {
+      const key = String(title || '').trim();
+      // 「最近使用」只在侧栏，主页无对应区块，忽略
+      if (!key || key === '最近使用') {
+        return;
+      }
+      const hit = this.catalogGroups.find(
+        (g) => g.title === key || (g.title && key.indexOf(g.title) === 0)
+      );
+      if (hit) {
+        this.selectMenuGroup(hit);
+      }
+    },
+    // 看板按需加载：只在首次展开时请求，后续由年份/切换控件自行刷新
+    toggleDashboard() {
+      this.showDashboard = !this.showDashboard;
+      if (this.showDashboard && !this.dashboardLoaded) {
+        this.dashboardLoaded = true;
+        this.loadDashboardData();
+      }
+    },
+    loadDashboardData() {
+      this.getJYkDefRemindTotal();
+      this.getTableListTotal();
+      this.getSaleroomData();
+      this.getLineChartData();
+      this.getTop20();
+    },
+    // 按 permission_group 的 PID 把叶子菜单归到一级目录，供 tab / 侧栏 / 主区共用
+    buildMenuGroups(allMenus, tiledMenus) {
+      const byId = {};
+      allMenus.forEach((m) => {
+        byId[String(m.ID)] = m;
+      });
+      const isTop = (m) => m.PID == null || m.PID === '' || m.PID === '0';
+      const groups = allMenus.filter(isTop).map((t) => ({
+        id: String(t.ID),
+        title: t.title,
+        icon: t.icon || '',
+        items: []
+      }));
+      const groupById = {};
+      groups.forEach((g) => {
+        groupById[g.id] = g;
+      });
+      const other = {
+        id: '__other__',
+        title: '其他',
+        icon: 'el-icon-menu',
+        items: []
+      };
+      tiledMenus.forEach((item) => {
+        let pid = item.PID;
+        let guard = 0;
+        while (
+          pid != null &&
+          pid !== '' &&
+          !groupById[String(pid)] &&
+          guard < 6
+        ) {
+          const parent = byId[String(pid)];
+          if (!parent || isTop(parent)) {
+            break;
+          }
+          pid = parent.PID;
+          guard += 1;
+        }
+        const group = groupById[String(pid)] || other;
+        const path = item.component || item.path;
+        if (!path || !item.title) {
+          return;
+        }
+        group.items.push({
+          path,
+          title: item.title,
+          icon: item.icon || ''
+        });
+      });
+      const result = groups.filter((g) => g.items.length);
+      if (other.items.length) {
+        result.push(other);
+      }
+      // 「最近使用」只在侧栏（layout 注入），不进主页分组
+      this.menuGroups = result;
+      let rememberedTitle = '';
+      try {
+        rememberedTitle = sessionStorage.getItem('SPD_ACTIVE_MENU_GROUP') || '';
+      } catch (e) {
+        rememberedTitle = '';
+      }
+      const remembered = result.find((g) => g.title === rememberedTitle);
+      if (remembered) {
+        this.activeGroupId = remembered.id;
+      } else if (!result.some((g) => g.id === this.activeGroupId)) {
+        this.activeGroupId = result[0] ? result[0].id : '';
+      }
+    },
+    permission_groupList() {
+      const allMenus = [
+        ...(this.$store.state.user.info.permission_group || [])
+      ];
+      let permission_group = [...allMenus];
+
+      const blackList = [
+        '申领计划管理_审核按钮',
+        '申领计划管理_审批按钮',
+        '科室申领',
+        '菜单列表',
+        '入库管理',
+        'UDI条码查询',
+        'UDI主码管理',
+        'HIS使用计费',
+        '库存查询_',
+        '入库管理V2',
+        '医疗耗材验收',
+        'UDI院内流转查询',
+        '产品主码管理',
+        '利用率',
+        '基础数据管理',
+        '出库管理',
+        '库存管理',
+        '调库主单-确认调库',
+        '调库主单-提交调库',
+        '检验科仪器分析',
+        '科室目录',
+        '在用目录',
+        '中标目录',
+        '申领指引',
+        '新资质审核',
+        '科室目录导出',
+        '中标目录导出',
+        '溯源管理',
+        '溯源查询(新)',
+        '价格变动记录(新)',
+        '结算管理',
+        '跟台耗材管理',
+        '作业管理',
+        '手术室耗材预约_搜索权限'
+      ];
+      permission_group = permission_group.filter((res) => {
+        return !blackList.includes(res.title);
+      });
+
+      const rightMenuList = [
+        '/KSInventory/KSNewBatchReminder',
+        '/KSInventory/KSExpirationReminder',
+        '/KSInventory/KSRemind'
+      ];
+      this.NoticeMenuList = permission_group.filter((res) => {
+        return (
+          rightMenuList.includes(res.component) ||
+          rightMenuList.includes(res.path)
+        );
+      });
+      // 登录自动弹窗由 layout/login-tip-dialogs 统一处理（同会话只弹一次）
+
+      const tiledMenus = permission_group.filter(
+        (res) =>
+          !rightMenuList.includes(res.component) &&
+          !rightMenuList.includes(res.path)
+      );
+
+      this.buildMenuGroups(allMenus, tiledMenus);
+      this.MenuList = null;
+    }
     },
     mounted() {
       //this.getSaleroomData();
       this.$bus.$on('handleCommand', () => {
-        this.getJYkDefRemindTotal();
-        this.getTableListTotal();
-        this.getSaleroomData();
-        this.getLineChartData();
-        this.getTop20();
+        // 仅看板展开时才刷新，避免无谓请求
+        if (this.showDashboard) {
+          this.loadDashboardData();
+        }
       });
-      if (!this.isBdrm) {
-        this.$bus.$on(RECENT_MENUS_CHANGED, this.refreshRecentMenus);
-      }
+      this.$bus.$on('SPD_MENU_GROUP_CHANGE', this.onMenuGroupChange);
     },
     beforeDestroy() {
       this.$bus.$off('handleCommand');
-      if (!this.isBdrm) {
-        this.$bus.$off(RECENT_MENUS_CHANGED, this.refreshRecentMenus);
-      }
+      this.$bus.$off('SPD_MENU_GROUP_CHANGE', this.onMenuGroupChange);
     },
     computed: {
+      // bj 环境：主页展示完整业务目录
       isBdrm() {
         return HOME_HP === 'bdrm';
+      },
+      // 主页业务目录（不含侧栏「最近使用」）
+      catalogGroups() {
+        return this.menuGroups.filter((g) => g.id !== '__recent__');
+      },
+      activeGroup() {
+        return (
+          this.menuGroups.find((g) => g.id === this.activeGroupId) || null
+        );
       },
       // 是否开启响应式布局
       styleResponsive() {
@@ -1039,112 +1052,122 @@
       }
     },
     created() {
-      // this.getdatasource();
-      this.getJYkDefRemindTotal();
-      this.getTableListTotal();
+      // 统计看板默认收起，5 个统计接口改由 toggleDashboard 首次展开时按需加载
       this.permission_groupList();
-      if (!this.isBdrm) {
-        this.refreshRecentMenus();
-      }
-      this.getSaleroomData();
-      this.getLineChartData();
-      this.getTop20();
       // this.NewBatchRemindervisible = true;
       /* 获取数据 */
       localStorage.AesKey = getAesKey();
     },
     activated() {
-      if (!this.isBdrm) {
-        this.refreshRecentMenus();
+      // 从其它页签回到主页时，只恢复高亮，不强制滚动
+      try {
+        const title = sessionStorage.getItem('SPD_ACTIVE_MENU_GROUP') || '';
+        const hit = this.catalogGroups.find((g) => g.title === title);
+        if (hit) {
+          this.activeGroupId = hit.id;
+        }
+      } catch (e) {
+        // sessionStorage 不可用时忽略
       }
     }
   };
 </script>
 
 <style scoped>
-  .menu-section-card {
+  /* 菜单首页：完整业务目录分组平铺；「最近使用」仅侧栏 */
+  .menu-workbench {
     margin-bottom: 12px;
   }
-  .menu-section-header {
+  .dashboard-toggle {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    font-weight: 600;
+    gap: 10px;
+    padding: 0 4px 2px;
+    color: #909399;
+    font-size: 12px;
   }
-  .menu-icon-grid {
-    display: flex;
-    flex-wrap: wrap;
+  .menu-group-section {
+    padding: 12px 14px 16px;
+    border-bottom: 1px solid #ebeef5;
+    scroll-margin-top: 12px;
   }
-  .menu-icon-grid .block {
-    margin: 10px;
+  .menu-group-section:last-child {
+    border-bottom: none;
   }
-  .menu-icon-item {
-    width: 90px;
-    height: 70px;
-    border-radius: 2px;
-    margin-right: 20px;
-    cursor: pointer;
+  .menu-group-section.is-active {
+    background: #f5f9ff;
   }
-  .menu-icon-wrap {
-    width: 100px;
-    display: flex;
-    justify-content: center;
-  }
-  /* 最近使用、添加弹窗里的字体图标沿用主题色；北京院区网格无此容器，与 svg 同色 */
-  .menu-icon-wrap .menu-font-icon {
+  .menu-group-section.is-active .menu-group-main-title {
     color: #409eff;
   }
-  .menu-icon-title {
-    width: 100px;
+  .menu-group-main {
+    min-height: 300px;
+    padding: 12px 14px 16px;
+  }
+  .menu-group-main-head {
     display: flex;
-    justify-content: center;
-    margin-top: 5px;
-    color: #606266;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 10px;
   }
-  .recent-block {
-    position: relative;
+  .menu-group-main-title {
+    color: #303133;
+    font-size: 15px;
+    font-weight: 600;
   }
-  .recent-remove {
-    position: absolute;
-    top: 0;
-    right: 8px;
-    width: 18px;
-    height: 18px;
-    line-height: 18px;
-    text-align: center;
-    border-radius: 50%;
-    background: #c0c4cc;
-    color: #fff;
+  .menu-group-main-meta {
+    color: #909399;
     font-size: 12px;
+  }
+  .menu-tile-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(112px, 1fr));
+    gap: 8px;
+  }
+  .menu-tile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: 92px;
+    padding: 8px 6px;
+    border: 1px solid #ebeef5;
+    border-radius: 6px;
+    background: #fff;
     cursor: pointer;
-    opacity: 0;
-    transition: opacity 0.15s;
+    transition: background-color 0.15s, border-color 0.15s;
   }
-  .recent-block:hover .recent-remove {
-    opacity: 1;
+  .menu-tile:hover {
+    border-color: #409eff;
+    background: #ecf5ff;
   }
-  .recent-remove:hover {
-    background: #f56c6c;
+  .menu-tile-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 36px;
+    color: #409eff;
   }
-  .recent-empty {
+  .menu-tile-title {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    word-break: break-word;
+    text-align: center;
+    color: #303133;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.35;
+  }
+  .menu-tile:hover .menu-tile-title {
+    color: #409eff;
+  }
+  .menu-tile-empty {
+    padding: 40px 0;
     color: #909399;
     font-size: 13px;
-    padding: 8px 0 4px;
-  }
-  .add-recent-grid {
-    max-height: 70vh;
-    overflow-y: auto;
-  }
-  .menu-icon-item.is-added {
-    opacity: 0.55;
-    position: relative;
-  }
-  .add-check {
-    position: absolute;
-    top: 0;
-    right: 8px;
-    color: #67c23a;
-    font-size: 16px;
-    font-weight: bold;
+    text-align: center;
   }
 </style>

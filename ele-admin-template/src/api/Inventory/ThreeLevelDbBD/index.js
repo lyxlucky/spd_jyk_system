@@ -1,5 +1,16 @@
 import request from '@/utils/request';
-import { TOKEN_STORE_NAME } from '@/config/setting';
+import { TOKEN_STORE_NAME, HOME_HP } from '@/config/setting';
+
+// 该 api 被 ThreeLevelDbBD / ThirdStockQuery / ThirdStockPanorama 共用，按院区切换入口
+const IS_STZL = HOME_HP === 'stzl';
+export const THIRD_STOCK_UPLOAD_URL = IS_STZL
+    ? '/StzlThreeStock/initImport'
+    : '/lhfy/uploadThirdInventory';
+const THIRD_STOCK_API = {
+    query: IS_STZL ? '/StzlThreeStock/query' : '/PekingApplication/getThirdStockInfo',
+    flow: IS_STZL ? '/StzlThreeStock/flow' : '/PekingApplication/getThirdStockInfoFlow',
+    summary: IS_STZL ? '/StzlThreeStock/summary' : '/PekingApplication/getThreeKcInfo'
+};
 
 /**
  * 获取北大三级库存信息
@@ -51,7 +62,7 @@ export async function getThirdStockInfo(data) {
         sessionStorage.getItem(TOKEN_STORE_NAME)
     );
 
-    const res = await request.post(`/PekingApplication/getThirdStockInfo`, requestData);
+    const res = await request.post(THIRD_STOCK_API.query, requestData);
 
     if (res.data.code === 200) {
         return res.data;
@@ -122,7 +133,7 @@ export async function getThirdStockInfoFlow(data) {
     requestData.page = parseInt(data.page) || 1;
     requestData.size = parseInt(data.limit) || 10;
 
-    const res = await request.post(`/PekingApplication/getThirdStockInfoFlow`, requestData);
+    const res = await request.post(THIRD_STOCK_API.flow, requestData);
 
     if (res.data.code === 200) {
         return res.data;
@@ -224,7 +235,7 @@ export async function getThreeKcInfo(data) {
         requestData.endTime = data.endTime;
     }
 
-    const res = await request.get(`/PekingApplication/getThreeKcInfo`, {
+    const res = await request.get(THIRD_STOCK_API.summary, {
         params: requestData,
     });
 

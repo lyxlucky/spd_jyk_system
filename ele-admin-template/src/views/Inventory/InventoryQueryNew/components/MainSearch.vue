@@ -30,30 +30,6 @@
               @keyup.enter.native="search"
             />
           </el-form-item>
-          <el-form-item label="分类属性名称">
-            <el-input
-              v-model="localWhere.classificName"
-              clearable
-              style="width: 100px"
-              @keyup.enter.native="search"
-            />
-          </el-form-item>
-          <el-form-item label="分类属性">
-            <el-select
-              v-model="localWhere.classificProperties"
-              clearable
-              filterable
-              style="width: 130px"
-            >
-              <el-option label="全部" value="" />
-              <el-option
-                v-for="o in classificOptions"
-                :key="o.value"
-                :label="o.label"
-                :value="o.value"
-              />
-            </el-select>
-          </el-form-item>
           <el-form-item label="生产企业">
             <el-input
               v-model="localWhere.manuEntName"
@@ -136,6 +112,9 @@
           <el-button size="mini" @click="syncAndEmit('move-goods', 'unqualified')">
             移至不合格区
           </el-button>
+          <el-button size="mini" type="primary" plain @click="showMoreActions = !showMoreActions">
+            {{ showMoreActions ? '收起' : '更多' }}操作
+          </el-button>
         </div>
 
         <!-- 第二行：仓库/区域检索 -->
@@ -200,6 +179,33 @@
               <el-option label="否" value="0" />
             </el-select>
           </el-form-item>
+          <el-form-item label="分类属性">
+            <el-select
+              v-model="localWhere.classificProperties"
+              clearable
+              filterable
+              style="width: 130px"
+            >
+              <el-option label="全部" value="" />
+              <el-option
+                v-for="o in classificOptions"
+                :key="o.value"
+                :label="o.label"
+                :value="o.value"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="高低值">
+            <el-select v-model="localWhere.highOrLowClass" clearable style="width: 90px">
+              <el-option label="全部" value="-1" />
+              <el-option
+                v-for="o in highLowOptions"
+                :key="o.value"
+                :label="o.label"
+                :value="o.value"
+              />
+            </el-select>
+          </el-form-item>
           <el-form-item label="周日均用量">
             <el-select v-model="localWhere.loadAvg7" style="width: 70px">
               <el-option label="否" value="0" />
@@ -229,8 +235,8 @@
           </el-form-item>
         </div>
 
-        <!-- 第二行工具栏 -->
-        <div class="toolbar-row toolbar-row--secondary">
+        <!-- 第二行工具栏：低频操作默认收起（需求 17） -->
+        <div v-show="showMoreActions" class="toolbar-row toolbar-row--secondary">
           <el-button size="mini" @click="syncAndEmit('update-storage')">修改库区</el-button>
           <el-button size="mini" :loading="generating" @click="syncAndEmit('generate-stock')">
             生成盘点数据
@@ -276,17 +282,6 @@
               <el-option label="全部" value="-1" />
               <el-option label="否" value="0" />
               <el-option label="是" value="1" />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="高低值">
-            <el-select v-model="localWhere.highOrLowClass" style="width: 90px">
-              <el-option label="全部" value="-1" />
-              <el-option
-                v-for="o in highLowOptions"
-                :key="o.value"
-                :label="o.label"
-                :value="o.value"
-              />
             </el-select>
           </el-form-item>
           <el-form-item label="是否中标">
@@ -392,6 +387,8 @@ export default {
   data() {
     return {
       showAdvanced: false,
+      // 需求 17：低频操作按钮默认收起，需要时再展开
+      showMoreActions: false,
       localWhere: {},
       classificOptions: []
     };
@@ -504,13 +501,15 @@ export default {
   flex-wrap: wrap;
   align-items: center;
   gap: 0 4px;
+  margin-bottom: 4px;
 }
+/* 需求 17：压缩工具栏纵向占用 */
 .inv-query-search .toolbar-row {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 6px;
-  margin: 6px 0;
+  gap: 4px;
+  margin: 4px 0;
 }
 .alert-badge {
   line-height: 1;

@@ -419,6 +419,7 @@ import {
   slGlJh,
   glDeptPlanSl
 } from '@/api/Inventory/CentralinventoryMonitoring';
+import { approvalVarietieCommit } from '@/api/Home/VarietyDataLzhAudit';
 import {
   monitorHpFlags,
   getClaimExcelApiPath,
@@ -483,6 +484,7 @@ export default {
       creatingApply: false,
       inserting: false,
       confirming: false,
+      sendingApproval: false,
       printing: false,
       deletingApply: false,
       exporting: false,
@@ -862,6 +864,7 @@ export default {
               : await pdaConfirmApply(this.deptTwoCode, this.operateNumber, this.staffName);
           if (data?.code == 200 || data?.code === '200') {
             this.$message.success('已成功申领');
+            await this.sendApprovalAfterConfirm(this.detailRows);
             this.afterConfirmSuccess();
           } else {
             this.$message.error(data?.msg || data?.message || '确认申领失败');
@@ -874,6 +877,7 @@ export default {
           if (this.homeHp === 'csyy') {
             csyyManHoo7Ss().catch(() => {});
           }
+          await this.sendApprovalAfterConfirm(this.detailRows);
           this.afterConfirmSuccess();
         } else {
           this.$message.error(data?.msg || '确认申领失败');
@@ -888,6 +892,46 @@ export default {
       this.clearApplySelection();
       this.reloadApplyList();
       this.reloadVariety();
+    },
+    /**
+     * 确认申领成功后，对申领品种发送审批（对应品种资料页"发送审批"按钮 approvalVarietieCommit）
+     * 防重复发送判断：
+     * - APPROVAL_STATE 非空：该品种发送过（'0'=在途，'1'/其他=已审批），剔除
+     * - APPROVAL_TIME 非空：该品种至少完整走过一次审批（无论通过与否），剔除
+     * 只有 STATE 为空值/空字符串且 TIME 为空（即"从未发送"）才发送
+     * - CHARGING_CODE 有值的品种也不发送
+     */
+    async sendApprovalAfterConfirm(rows) {
+      // 只有深圳华南(szhn)确认申领后才需要发送审批
+      if (this.homeHp !== 'szhn') return;
+      const pending = [];
+      const seenCodes = new Set();
+      (rows || []).forEach((row) => {
+        const hasState =
+          row.APPROVAL_STATE != null && String(row.APPROVAL_STATE).trim() !== '';
+        const approvedBefore =
+          row.APPROVAL_TIME != null && String(row.APPROVAL_TIME).trim() !== '';
+        if (hasState || approvedBefore) return;
+        // CHARGING_CODE 有值的品种不发送审批
+        if (row.CHARGING_CODE != null && String(row.CHARGING_CODE).trim() !== '') return;
+        const code = row.Varietie_Code;
+        // 同一申领单里相同品种可能有多个批次，审批只按品种发一次
+        if (!code || seenCodes.has(String(code))) return;
+        seenCodes.add(String(code));
+        // 审批接口要求 ID 为品种编码（int 型）；用浅拷贝赋值，避免改动原明细行数据
+        pending.push({ ...row, ID: parseInt(row.Varietie_Code, 10) });
+      });
+      if (!pending.length) return;
+      this.sendingApproval = true;
+      try {
+        await approvalVarietieCommit(pending);
+        this.$message.success(`已对${pending.length}个申领品种发送审批`);
+      } catch (e) {
+        // 申领已成功，发送审批失败不回滚，仅提示
+        this.$message.error(e.message || '申领品种发送审批失败');
+      } finally {
+        this.sendingApproval = false;
+      }
     },
     async onEditMark(row) {
       try {

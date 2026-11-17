@@ -11,7 +11,7 @@ import {
 } from '@/config/menu-icons';
 
 export const RECENT_MENU_STORE_NAME = 'spd-recent-menus';
-export const RECENT_MENU_MAX = 12;
+export const RECENT_MENU_MAX = 10;
 
 /** 最近使用记录与侧栏/主页共用同一套图标解析规则 */
 const RECENT_ICON_CONFIG = {
@@ -126,8 +126,9 @@ export function getRecentMenus(userInfo) {
   if (!Array.isArray(list)) {
     return [];
   }
-  // localStorage 里可能存着补齐图标之前的历史记录，读出时统一兜底
-  return list.map((item) => ({
+  // localStorage 里可能存着补齐图标之前的历史记录，读出时统一兜底；
+  // 历史上限调整后旧数据可能超量，读取时也截断，保证「最多 10 个」立即生效
+  return list.slice(0, RECENT_MENU_MAX).map((item) => ({
     ...item,
     icon: resolveMenuIcon(item.icon, {
       title: item.title || '',
