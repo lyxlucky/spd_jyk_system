@@ -73,6 +73,16 @@ export function getMenuRoutes(menus, homePath) {
       meta: { title: '流向查询(按单据)' }
     });
   }
+  // 肿瘤三级库切库区版：旧科室汇总页会 redirect 到这里，
+  // 菜单尚未配置时也要能落地，否则跳转直接 404。
+  if (!routes.some((route) => route.path === '/Inventory/WarehouseAreaThreeInventory')) {
+    routes.push({
+      path: '/Inventory/WarehouseAreaThreeInventory',
+      component: () =>
+        import('@/views/Inventory/WarehouseAreaThreeInventory/index.vue'),
+      meta: { title: '库房库区三级库库存' }
+    });
+  }
   // 仅开发环境：便于未在库里配菜单时联调「暂存库查询(新)」。生产构建 NODE_ENV=production 不会注入。
   // 正式环境仍以 /Commons/login 返回的 permission_group + 后台菜单为准。
   if (process.env.NODE_ENV === 'development') {

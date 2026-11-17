@@ -69,7 +69,7 @@ export const REQUEST_TIMEOUT = getRequestTimeout();
 const getHomeHp = () => {
   const env = process.env.VUE_APP_ENV;
   const envHpMap = {
-    'local': 'bdrm',
+    'local': 'stzl',  // 本地测试指向汕头肿瘤（stzl），验证三级库库区版链路；改回其他院区只需换这里
     'test': 'bdrm',
     'bjww': 'bdrm',
     'bjwwnew': 'bdrm',

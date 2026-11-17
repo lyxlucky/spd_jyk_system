@@ -2,9 +2,27 @@
   <div class="spd-panel spd-panel--search warehouse-area-search">
     <div class="spd-panel__head warehouse-search-head">
       <span>查询条件</span>
-      <el-tooltip content="三级库计费编码过滤配置" placement="top">
-        <el-button class="warehouse-filter-button" size="mini" icon="el-icon-s-operation" circle aria-label="打开三级库计费编码过滤配置" @click="filterConfigVisible = true" />
-      </el-tooltip>
+      <div class="warehouse-search-head__actions">
+        <el-button
+          size="mini"
+          type="warning"
+          plain
+          icon="el-icon-warning-outline"
+          @click="alignIssueVisible = true"
+        >
+          计费编码对齐检查
+        </el-button>
+        <el-tooltip content="三级库计费编码过滤配置" placement="top">
+          <el-button
+            class="warehouse-filter-button"
+            size="mini"
+            icon="el-icon-s-operation"
+            circle
+            aria-label="打开三级库计费编码过滤配置"
+            @click="filterConfigVisible = true"
+          />
+        </el-tooltip>
+      </div>
     </div>
     <div class="spd-panel__body">
       <el-form
@@ -130,6 +148,14 @@
           </el-dropdown>
           <el-button
             v-if="mode === 'warehouse'"
+            icon="el-icon-download"
+            :loading="downloadingTemplate"
+            @click="downloadInitTemplate"
+          >
+            下载初始化模板
+          </el-button>
+          <el-button
+            v-if="mode === 'warehouse'"
             type="warning"
             icon="el-icon-upload2"
             :loading="importing"
@@ -168,6 +194,7 @@
     </div>
 
     <ThreeKcFilterDrawer :visible.sync="filterConfigVisible" />
+    <ChargeCodeAlignDrawer :visible.sync="alignIssueVisible" />
 
     <el-dialog
       :visible.sync="hisPreviewVisible"
@@ -480,6 +507,7 @@
 
 <script>
 import ThreeKcFilterDrawer from './ThreeKcFilterDrawer.vue';
+import ChargeCodeAlignDrawer from './ChargeCodeAlignDrawer.vue';
 import WarehouseAreaMultiSelect from './WarehouseAreaMultiSelect.vue';
 import {
   importInitialInventory,
@@ -497,6 +525,7 @@ import {
   STOCK_STATUS_OPTIONS,
   HIGH_OR_LOW_CLASS_OPTIONS
 } from '../utils';
+import { downloadWarehouseAreaThreeStockTemplate } from '@/utils/three-stock-template';
 
 const defaultWhere = () => ({
   AREA_CODE: [],
@@ -531,7 +560,7 @@ const defaultSpdInStockQuery = () => ({
 
 export default {
   name: 'WarehouseAreaThreeInventorySearch',
-  components: { ThreeKcFilterDrawer, WarehouseAreaMultiSelect },
+  components: { ThreeKcFilterDrawer, ChargeCodeAlignDrawer, WarehouseAreaMultiSelect },
   props: {
     exporting: Boolean,
     mode: { type: String, default: 'material' }
@@ -539,6 +568,7 @@ export default {
   data() {
     return {
       filterConfigVisible: false,
+      alignIssueVisible: false,
       where: defaultWhere(),
       warehouseOptions: [],
       warehouseLoading: false,
@@ -547,6 +577,7 @@ export default {
       spdInStockDeptRelations: [],
       spdInStockDeptRelationLoading: false,
       importing: false,
+      downloadingTemplate: false,
       hisPreviewVisible: false,
       hisPreviewLoading: false,
       hisPreviewQuery: defaultHisPreviewQuery(),
@@ -741,6 +772,17 @@ export default {
         RepeatType: duplicateLabel
       }));
       return existingRows.concat(duplicateRows);
+    },
+    async downloadInitTemplate() {
+      if (this.downloadingTemplate) return;
+      this.downloadingTemplate = true;
+      try {
+        await downloadWarehouseAreaThreeStockTemplate();
+      } catch (e) {
+        this.$message.error((e && e.message) || '下载模板失败');
+      } finally {
+        this.downloadingTemplate = false;
+      }
     },
     // 打开初始化库存Excel文件选择框。
     chooseImportFile() {
@@ -955,6 +997,7 @@ export default {
 
 <style scoped>
 .warehouse-search-head { display: flex; align-items: center; justify-content: space-between; }
+.warehouse-search-head__actions { display: flex; align-items: center; gap: 8px; }
 .warehouse-filter-button { color: #409eff; }
 .inventory-export-dropdown {
   margin: 0 10px;

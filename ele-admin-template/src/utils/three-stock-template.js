@@ -125,3 +125,132 @@ export async function downloadThreeStockTemplate() {
 }
 
 export const THREE_STOCK_TEMPLATE_FILE_NAME = '三级库初始化库存模板.xlsx';
+
+/** 库房库区页 ImportInitialInventory 表头（与后端 FindHeaderColumn 对齐） */
+const WH_HEADERS = [
+  '二级科室编码',
+  '计费编码',
+  '数量',
+  '类型（定数包/散货）',
+  '定数码',
+  '入库类型（普通入库/盘盈入库）',
+  '品种编码',
+  '批号',
+  '生产日期',
+  '有效期'
+];
+
+const WH_COLUMN_WIDTHS = [16, 18, 10, 20, 16, 28, 16, 14, 14, 14];
+
+const WH_EXAMPLE_ROW = [
+  '2776',
+  '1010111100576B',
+  '100',
+  '散货',
+  '',
+  '普通入库',
+  '1010111100576B',
+  '',
+  '',
+  ''
+];
+
+const buildWarehouseNotes = () => [
+  ['库房库区三级库初始化库存模板 · 填写说明'],
+  [],
+  ['列序', '表头', '填写要求'],
+  [1, WH_HEADERS[0], '必填。SPD 二级科室编码；须已维护启用且唯一默认的库房/库区关系'],
+  [
+    2,
+    WH_HEADERS[1],
+    IS_STZL
+      ? '必填表头。肿瘤品种编码与计费编码应一致，填同一码即可；勿填 0/空/无/FF'
+      : '必填表头。填品种资料计费编码（双码院区勿填品种编码当计费码）'
+  ],
+  [3, WH_HEADERS[2], '必填。盘点数量，数字'],
+  [4, WH_HEADERS[3], '必填。定数包 或 散货'],
+  [5, WH_HEADERS[4], '定数包必填；散货可空'],
+  [6, WH_HEADERS[5], '必填。普通入库 或 盘盈入库'],
+  [7, WH_HEADERS[6], '建议填写。品种编码（VARIETIE_CODE_NEW）'],
+  [8, WH_HEADERS[7], '可选。批号'],
+  [9, WH_HEADERS[8], '可选。生产日期'],
+  [10, WH_HEADERS[9], '可选。有效期'],
+  [],
+  ['导入入口'],
+  ['库存管理 → 库房库区三级库库存 → 库房维度 → 初始化库存'],
+  ['第 2 行是示例，导入前请删除。']
+];
+
+/**
+ * 库房库区三级库初始化模板（含品种编码/批号等，对接 ImportInitialInventory）。
+ */
+export async function downloadWarehouseAreaThreeStockTemplate() {
+  const ExcelJS = (await import('exceljs')).default;
+  const workbook = new ExcelJS.Workbook();
+  const sheet = workbook.addWorksheet('库区三级库初始化');
+  sheet.columns = WH_COLUMN_WIDTHS.map((width) => ({ width }));
+
+  const thinBorder = {
+    top: { style: 'thin' },
+    bottom: { style: 'thin' },
+    left: { style: 'thin' },
+    right: { style: 'thin' }
+  };
+
+  const headerRow = sheet.addRow(WH_HEADERS);
+  headerRow.height = 24;
+  headerRow.eachCell((cell) => {
+    cell.font = { bold: true, size: 10 };
+    cell.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true };
+    cell.fill = {
+      type: 'pattern',
+      pattern: 'solid',
+      fgColor: { argb: 'FFD9E1F2' }
+    };
+    cell.border = thinBorder;
+  });
+
+  const exampleRow = sheet.addRow(WH_EXAMPLE_ROW);
+  exampleRow.eachCell((cell) => {
+    cell.alignment = { horizontal: 'center', vertical: 'middle' };
+    cell.border = thinBorder;
+  });
+
+  for (let r = 2; r <= VALIDATION_ROWS; r += 1) {
+    sheet.getCell(`D${r}`).dataValidation = {
+      type: 'list',
+      allowBlank: true,
+      formulae: ['"定数包,散货"']
+    };
+    sheet.getCell(`F${r}`).dataValidation = {
+      type: 'list',
+      allowBlank: true,
+      formulae: ['"普通入库,盘盈入库"']
+    };
+  }
+
+  const noteSheet = workbook.addWorksheet('填写说明');
+  noteSheet.columns = [{ width: 8 }, { width: 34 }, { width: 88 }];
+  buildWarehouseNotes().forEach((values) => {
+    const row = noteSheet.addRow(values);
+    row.getCell(3).alignment = { vertical: 'top', wrapText: true };
+  });
+  noteSheet.getCell('A1').font = { bold: true, size: 12 };
+  noteSheet.getRow(3).eachCell((cell) => {
+    cell.font = { bold: true };
+  });
+
+  const buffer = await workbook.xlsx.writeBuffer();
+  const blob = new Blob([buffer], {
+    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+  });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = '库房库区三级库初始化库存模板.xlsx';
+  a.style.display = 'none';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}

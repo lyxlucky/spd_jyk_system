@@ -252,6 +252,17 @@ export async function deleteMaterialDetails(ids, where = {}) {
   return unwrap(res, '删除失败');
 }
 
+/** 三级库流水 CHARGE_CODE 与品种计费编码未对齐清单 */
+export async function queryChargeCodeAlignIssues(keyword = '', page = 1, size = 20) {
+  const res = await postForm('/WarehouseAreaThreeInventory/QueryChargeCodeAlignIssues', {
+    Token: token(),
+    keyword: keyword || '',
+    page,
+    size
+  });
+  return unwrap(res);
+}
+
 export async function getMaterialLocationSummary(where, page, size) {
   const res = await postForm(
     '/WarehouseAreaThreeInventory/GetMaterialLocationSummary',
