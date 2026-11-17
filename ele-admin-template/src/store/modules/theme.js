@@ -18,6 +18,17 @@ import {
 } from '@/config/setting';
 
 /**
+ * SPD 界面风格预设对应的固定值（只管顶栏/侧栏这对视觉规范）
+ * 顶栏取 dark（文字转白，背景由全局样式涂成中灰）
+ * 侧栏取 light（白底，配合蓝色悬停/选中）
+ * 导航布局不放进预设：布局是独立选项，换布局不应连带改变配色
+ */
+export const SPD_PRESET = Object.freeze({
+  headStyle: 'dark',
+  sideStyle: 'light'
+});
+
+/**
  * state 默认值
  */
 const DEFAULT_STATE = Object.freeze({
@@ -33,17 +44,18 @@ const DEFAULT_STATE = Object.freeze({
   showTabs: true,
   // 是否开启页脚
   showFooter: false,
+  // 界面风格预设: spd(灰顶白侧+左侧菜单，默认锁定), custom(自由搭配下面的顶栏/侧栏/导航)
+  // SPD 预设把项目视觉规范打包成一个档位，选它时自动锁定 headStyle/sideStyle/layoutStyle
+  preset: 'spd',
   // 顶栏风格: light(亮色), dark(暗色), primary(主色)
   // 顶栏用灰色：dark 主题自动把文字转白，背景再由全局样式指定为中灰
-  headStyle: 'dark',
+  headStyle: SPD_PRESET.headStyle,
   // 侧栏风格: light(亮色), dark(暗色)
   // 目录树用亮色底，配合蓝色悬停/选中更清晰（对齐参考图）
-  sideStyle: 'light',
-  // 布局风格: side(默认), top(顶栏导航), mix(混合导航)
-  // mix: 顶部一级目录 + 左侧该目录下的菜单树，实现上侧/左侧联动
-  // layoutStyle: 'side',
-  // layoutStyle: 'top',
-  layoutStyle: 'mix',
+  sideStyle: SPD_PRESET.sideStyle,
+  // 布局风格: side(默认，左侧菜单树), top(顶栏导航), mix(混合导航：顶部一级 + 左侧子菜单)
+  // 独立于界面预设：换布局不影响顶栏/侧栏配色
+  layoutStyle: 'side',
   // 侧栏菜单风格: default(默认), mix(双排侧栏)
   sideMenuStyle: 'default',
   // 页签风格: default(默认), dot(圆点), card(卡片)
@@ -94,6 +106,9 @@ let disableTransitionTimer, updateContentSizeTimer;
 
 /** 一次性迁移：历史缓存里 styleResponsive=true 的用户统一切到关闭 */
 const STYLE_RESPONSIVE_MIGRATE_KEY = 'spdStyleResponsiveFixedV1';
+
+/** 一次性迁移：布局默认由 mix 改回 side，历史缓存的 preset/布局统一回到 SPD 预设 */
+const PRESET_SIDE_MIGRATE_KEY = 'spdPresetSideV1';
 
 /**
  * 读取缓存配置
@@ -187,6 +202,20 @@ export default {
       cacheSetting(STYLE_RESPONSIVE_MIGRATE_KEY, true);
       cacheSetting('styleResponsive', false);
     }
+    // 一次性迁移：布局默认从 mix 改为 side；同时把此前因点布局选项而降级的预设拉回 SPD
+    // （降级后顶栏会回落成 ele-admin 原生的深黑，表现为「灰顶变黑」）
+    if (!cache[PRESET_SIDE_MIGRATE_KEY]) {
+      state.preset = 'spd';
+      state.layoutStyle = 'side';
+      cacheSetting(PRESET_SIDE_MIGRATE_KEY, true);
+      cacheSetting('preset', 'spd');
+      cacheSetting('layoutStyle', 'side');
+    }
+    // SPD 预设只锁顶栏/侧栏这对配色，布局保持用户自己的选择
+    if (state.preset === 'spd') {
+      state.headStyle = SPD_PRESET.headStyle;
+      state.sideStyle = SPD_PRESET.sideStyle;
+    }
     return state;
   })(),
   getters: {
@@ -255,6 +284,20 @@ export default {
     setHeadStyle({ commit }, value) {
       commit('SET', { key: 'headStyle', value });
       cacheSetting('headStyle', value);
+    },
+    /**
+     * 切换界面风格预设
+     * spd: 灰顶 + 白侧（项目视觉规范，选中即锁定顶栏/侧栏）
+     * custom: 放开顶栏/侧栏选项，自由搭配
+     * 导航布局不参与预设，任何布局下配色都保持
+     */
+    setPreset({ commit, dispatch }, value) {
+      commit('SET', { key: 'preset', value });
+      cacheSetting('preset', value);
+      if (value === 'spd') {
+        dispatch('setHeadStyle', SPD_PRESET.headStyle);
+        dispatch('setSideStyle', SPD_PRESET.sideStyle);
+      }
     },
     setSideStyle({ commit }, value) {
       commit('SET', { key: 'sideStyle', value });
@@ -412,6 +455,7 @@ export default {
         [
           'showTabs',
           'showFooter',
+          'preset',
           'headStyle',
           'sideStyle',
           'layoutStyle',

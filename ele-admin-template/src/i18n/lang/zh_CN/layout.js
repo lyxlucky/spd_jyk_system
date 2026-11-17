@@ -18,6 +18,11 @@ export default {
   },
   setting: {
     title: '整体风格设置',
+    preset: '界面风格',
+    presets: {
+      spd: 'SPD 标准（灰顶白侧）',
+      custom: '自定义（自由搭配）'
+    },
     sideStyles: {
       dark: '暗色侧边栏',
       light: '亮色侧边栏'
