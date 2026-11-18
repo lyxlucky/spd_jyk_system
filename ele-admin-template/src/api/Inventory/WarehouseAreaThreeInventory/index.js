@@ -184,6 +184,22 @@ export async function getDeptMaterialSummary(where, page, size) {
   return unwrap(res);
 }
 
+// 按实际库区、计费编码和批号分页汇总有效库存流水。
+export async function getMaterialBatchSummary(where, keyword, page, size) {
+  const res = await postForm(
+    '/WarehouseAreaThreeInventory/GetMaterialBatchSummary',
+    {
+      Token: token(),
+      page: normPage(page),
+      size: normSize(size),
+      AREA_CODE: where?.AREA_CODE || '',
+      CHARGE_CODE: where?.CHARGE_CODE || '',
+      BATCH_KEYWORD: keyword
+    }
+  );
+  return unwrap(res, '查询批号汇总失败');
+}
+
 // 查询三级库库存明细流水。
 export async function getMaterialDetail(where, page, size) {
   const params = {
@@ -197,6 +213,9 @@ export async function getMaterialDetail(where, page, size) {
   if (Array.isArray(where?.BATCH_NOS) && where.BATCH_NOS.length) {
     params.BATCH_NOS = JSON.stringify(where.BATCH_NOS);
   }
+  if (where?.EXACT_AREA) params.EXACT_AREA = '1';
+  if (where?.EXACT_CHARGE_CODE) params.EXACT_CHARGE_CODE = '1';
+  if (where?.BATCH_EMPTY) params.BATCH_EMPTY = '1';
   if (where?.QTY_SIGN) params.QTY_SIGN = where.QTY_SIGN;
   const res = await postForm(
     '/WarehouseAreaThreeInventory/GetMaterialDetail',
