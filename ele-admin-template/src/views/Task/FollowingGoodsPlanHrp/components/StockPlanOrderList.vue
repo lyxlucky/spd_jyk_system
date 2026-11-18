@@ -717,16 +717,18 @@
         return new Promise((resolve, reject) => {
           UpdateSendState({ ID: data })
             .then((res) => {
-              if ('200' == res) {
+              const code = res?.data ?? res;
+              if (String(code) === '200') {
                 this.$message.success('更新成功');
+                resolve(code);
               } else {
                 this.$message.error('更新失败');
+                reject(code);
               }
-              resolve(res);
             })
             .catch((err) => {
-              this.$message.error(err);
-              reject();
+              this.$message.error(err?.message || err);
+              reject(err);
             });
         });
       },
