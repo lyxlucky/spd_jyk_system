@@ -18,6 +18,17 @@ import {
 } from '@/config/setting';
 
 /**
+ * SPD 界面风格预设对应的固定值（只管顶栏/侧栏这对视觉规范）
+ * 顶栏取 dark（文字转白，背景由全局样式涂成中灰）
+ * 侧栏取 light（白底，配合蓝色悬停/选中）
+ * 导航布局不放进预设：布局是独立选项，换布局不应连带改变配色
+ */
+export const SPD_PRESET = Object.freeze({
+  headStyle: 'dark',
+  sideStyle: 'light'
+});
+
+/**
  * state 默认值
  */
 const DEFAULT_STATE = Object.freeze({
@@ -33,16 +44,17 @@ const DEFAULT_STATE = Object.freeze({
   showTabs: true,
   // 是否开启页脚
   showFooter: false,
+  // 界面风格预设: spd(灰顶白侧，默认锁定顶栏/侧栏), custom(自由搭配)
+  // SPD 预设只锁 headStyle/sideStyle；导航布局独立，不随预设改写
+  preset: 'spd',
   // 顶栏风格: light(亮色), dark(暗色), primary(主色)
   // 顶栏用灰色：dark 主题自动把文字转白，背景再由全局样式指定为中灰
-  headStyle: 'dark',
+  headStyle: SPD_PRESET.headStyle,
   // 侧栏风格: light(亮色), dark(暗色)
   // 目录树用亮色底，配合蓝色悬停/选中更清晰（对齐参考图）
-  sideStyle: 'light',
-  // 布局风格: side(默认), top(顶栏导航), mix(混合导航)
-  // mix: 顶部一级目录 + 左侧该目录下的菜单树，实现上侧/左侧联动
-  // layoutStyle: 'side',
-  // layoutStyle: 'top',
+  sideStyle: SPD_PRESET.sideStyle,
+  // 布局风格: side(左侧菜单树), top(顶栏导航), mix(混合导航：顶部一级 + 左侧子菜单)
+  // 默认混合菜单；已有 localStorage 缓存的用户保持原值，不被覆盖
   layoutStyle: 'mix',
   // 侧栏菜单风格: default(默认), mix(双排侧栏)
   sideMenuStyle: 'default',
@@ -94,6 +106,9 @@ let disableTransitionTimer, updateContentSizeTimer;
 
 /** 一次性迁移：历史缓存里 styleResponsive=true 的用户统一切到关闭 */
 const STYLE_RESPONSIVE_MIGRATE_KEY = 'spdStyleResponsiveFixedV1';
+
+/** 一次性迁移标记：仅把 preset 拉回 SPD；不再改写 layoutStyle，避免覆盖用户已选布局 */
+const PRESET_SIDE_MIGRATE_KEY = 'spdPresetSideV1';
 
 /**
  * 读取缓存配置
@@ -187,6 +202,18 @@ export default {
       cacheSetting(STYLE_RESPONSIVE_MIGRATE_KEY, true);
       cacheSetting('styleResponsive', false);
     }
+    // 一次性迁移：只把此前因点布局选项而降级的预设拉回 SPD（灰顶白侧）
+    // 不再强制改 layoutStyle：已有缓存保持用户选择，无缓存走 DEFAULT 的 mix
+    if (!cache[PRESET_SIDE_MIGRATE_KEY]) {
+      state.preset = 'spd';
+      cacheSetting(PRESET_SIDE_MIGRATE_KEY, true);
+      cacheSetting('preset', 'spd');
+    }
+    // SPD 预设只锁顶栏/侧栏这对配色，布局保持用户自己的选择
+    if (state.preset === 'spd') {
+      state.headStyle = SPD_PRESET.headStyle;
+      state.sideStyle = SPD_PRESET.sideStyle;
+    }
     return state;
   })(),
   getters: {
@@ -255,6 +282,20 @@ export default {
     setHeadStyle({ commit }, value) {
       commit('SET', { key: 'headStyle', value });
       cacheSetting('headStyle', value);
+    },
+    /**
+     * 切换界面风格预设
+     * spd: 灰顶 + 白侧（项目视觉规范，选中即锁定顶栏/侧栏）
+     * custom: 放开顶栏/侧栏选项，自由搭配
+     * 导航布局不参与预设，任何布局下配色都保持
+     */
+    setPreset({ commit, dispatch }, value) {
+      commit('SET', { key: 'preset', value });
+      cacheSetting('preset', value);
+      if (value === 'spd') {
+        dispatch('setHeadStyle', SPD_PRESET.headStyle);
+        dispatch('setSideStyle', SPD_PRESET.sideStyle);
+      }
     },
     setSideStyle({ commit }, value) {
       commit('SET', { key: 'sideStyle', value });
@@ -412,6 +453,7 @@ export default {
         [
           'showTabs',
           'showFooter',
+          'preset',
           'headStyle',
           'sideStyle',
           'layoutStyle',

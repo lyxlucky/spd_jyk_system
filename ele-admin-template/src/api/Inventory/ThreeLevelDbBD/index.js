@@ -1,7 +1,10 @@
 import request from '@/utils/request';
 import { TOKEN_STORE_NAME, HOME_HP } from '@/config/setting';
 
-// 该 api 被 ThreeLevelDbBD / ThirdStockQuery / ThirdStockPanorama 共用，按院区切换入口
+// 该 api 被 ThreeLevelDbBD / ThirdStockQuery / ThirdStockPanorama 共用，按院区切换入口。
+// 肿瘤：页面层会引导到 WarehouseAreaThreeInventory；StzlThreeStock 的 query/flow/summary
+// 与 initImport 已整体停用（initImport 只返回引导提示），初始化导入统一走
+// WarehouseAreaThreeInventory/ImportInitialInventory（库区页面「初始化导入」）。
 const IS_STZL = HOME_HP === 'stzl';
 export const THIRD_STOCK_UPLOAD_URL = IS_STZL
     ? '/StzlThreeStock/initImport'

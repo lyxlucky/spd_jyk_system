@@ -218,7 +218,10 @@
   } from '@/api/Task/FollowingGoodsPlanHrp';
   import { exportToExcel } from '@/utils/excel-util.js';
   import { HOME_HP } from '@/config/setting';
-  import { isBatchApproveOnlyHp } from '@/views/Task/FollowingGoodsPlan/utils';
+  import {
+    isBatchApproveOnlyHp,
+    getB2bHospitalCode
+  } from '@/views/Task/FollowingGoodsPlan/utils';
   export default {
     name: 'StockPlanOrderList',
     components: {
@@ -694,15 +697,16 @@
         return new Promise((resolve, reject) => {
           ReceiveSpdStockup({ json: data })
             .then((res) => {
-              if ('true' == res) {
+              if (res === 'success' || res === true || res === 'true') {
                 this.$message.success('备货单发送成功');
+                resolve(res);
               } else {
                 this.$message.error('备货单发送失败');
+                reject(res);
               }
-              resolve(res);
             })
             .catch((err) => {
-              this.$message.error(err);
+              this.$message.error(err?.message || err);
               reject();
             });
         });
@@ -823,7 +827,7 @@
                 const requsetData = JSON.stringify([
                   {
                     STOCK_UP_PLAN_NO: this.currentTableData.STOCK_UP_PLAN_NO,
-                    HOSPITALCODE: 'BH00261',
+                    HOSPITALCODE: getB2bHospitalCode(),
                     ADDRESS: this.currentTableData.ADDRESS,
                     CONTACT_PHONE: firstItem?.CONTACT_PHONE || '',
                     CONTACT_PERSON: firstItem?.CONTACT_PERSON || '',
@@ -880,7 +884,7 @@
                 const requsetData = JSON.stringify([
                   {
                     STOCK_UP_PLAN_NO: TableData.STOCK_UP_PLAN_NO,
-                    HOSPITALCODE: 'BH00261',
+                    HOSPITALCODE: getB2bHospitalCode(),
                     ADDRESS: TableData.ADDRESS,
                     CONTACT_PHONE: firstItem?.CONTACT_PHONE || '',
                     CONTACT_PERSON: firstItem?.CONTACT_PERSON || '',

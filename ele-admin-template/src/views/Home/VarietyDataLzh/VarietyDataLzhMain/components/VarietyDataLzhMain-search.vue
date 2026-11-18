@@ -13,31 +13,15 @@
               </el-select>
             </el-form-item>
 
-            <el-form-item label="高低值分类" class="cell cell--sm">
-              <el-select v-model="where.HIGH_OR_LOW_CLASS" clearable placeholder="请选择">
-                <el-option label="全部" value="-1" />
-                <el-option label="高值" value="1" />
-                <el-option label="低值" value="0" />
-                <el-option label="试剂" value="2" />
-                <el-option label="消毒" value="3" />
-                <el-option label="设备耗材" value="4" />
-              </el-select>
-            </el-form-item>
-
-            <el-form-item class="cell cell--xs">
-              <el-select v-model="where.REAGENT_FILTER" clearable placeholder="试剂筛选">
-                <el-option label="试剂-全部" value="" />
-                <el-option label="试剂" value="2" />
-                <el-option label="非试剂" value="N" />
-              </el-select>
-            </el-form-item>
-
-            <el-form-item class="cell cell--xs">
-              <el-select v-model="where.HIGH_OR_LOW_CLASS_TWO" clearable placeholder="重点分类">
-                <el-option label="重点分类-全部" value="-1" />
-                <el-option label="重点治理" value="1" />
-                <el-option label="非重点治理" value="2" />
-              </el-select>
+            <el-form-item class="cell cell--class">
+              <cascade-menu
+                tone="field"
+                :groups="classGroups"
+                :selected="classSelected"
+                :button-text="classButtonText"
+                :active="classFilterActive"
+                @select="onClassSelect"
+              />
             </el-form-item>
 
             <el-form-item class="cell cell--xs">
@@ -322,12 +306,50 @@
 
 <script>
 import { HOME_HP } from '@/config/setting';
+import CascadeMenu from './CascadeMenu.vue';
 
 const STSE_FLOW = ['stse', 'stzl', 'csyy', 'stzyyy', 'chrmyy'];
 const STSE_BZ = ['stse', 'csyy', 'stzyyy', 'chrmyy'];
 
+const CLASS_GROUPS = [
+  {
+    key: 'HIGH_OR_LOW_CLASS',
+    label: '高低值分类',
+    defaultValue: '-1',
+    items: [
+      { label: '全部', value: '-1' },
+      { label: '高值', value: '1' },
+      { label: '低值', value: '0' },
+      { label: '试剂', value: '2' },
+      { label: '消毒', value: '3' },
+      { label: '设备耗材', value: '4' }
+    ]
+  },
+  {
+    key: 'REAGENT_FILTER',
+    label: '试剂分类',
+    defaultValue: '',
+    items: [
+      { label: '全部', value: '' },
+      { label: '试剂', value: '2' },
+      { label: '非试剂', value: 'N' }
+    ]
+  },
+  {
+    key: 'HIGH_OR_LOW_CLASS_TWO',
+    label: '重点分类',
+    defaultValue: '-1',
+    items: [
+      { label: '全部', value: '-1' },
+      { label: '重点治理', value: '1' },
+      { label: '非重点治理', value: '2' }
+    ]
+  }
+];
+
 export default {
   name: 'VarietyDataLzhMainSearch',
+  components: { CascadeMenu },
   data() {
     return {
       checked: false,
@@ -398,7 +420,36 @@ export default {
       }
     };
   },
+  computed: {
+    classGroups() {
+      return CLASS_GROUPS;
+    },
+    classSelected() {
+      return {
+        HIGH_OR_LOW_CLASS: this.where.HIGH_OR_LOW_CLASS,
+        REAGENT_FILTER: this.where.REAGENT_FILTER,
+        HIGH_OR_LOW_CLASS_TWO: this.where.HIGH_OR_LOW_CLASS_TWO
+      };
+    },
+    classFilterActive() {
+      return CLASS_GROUPS.some((group) => this.classLabel(group));
+    },
+    classButtonText() {
+      const parts = CLASS_GROUPS.map((group) => this.classLabel(group)).filter(Boolean);
+      return parts.length ? `分类：${parts.join(' / ')}` : '分类';
+    }
+  },
   methods: {
+    classLabel(group) {
+      const raw = this.where[group.key];
+      const current = raw == null || raw === '' ? String(group.defaultValue) : String(raw);
+      if (current === String(group.defaultValue)) return '';
+      const item = group.items.find((opt) => String(opt.value) === current);
+      return item ? item.label : '';
+    },
+    onClassSelect({ group, item }) {
+      this.where[group.key] = item.value;
+    },
     reload() {
       this.where.varietieName = this.where.varietieCode;
       this.where.state = this.isBdOnly && this.checked ? '1' : '0';
@@ -446,8 +497,12 @@ export default {
 .cell--date {
   width: 260px;
 }
-.cell--auto {
+.cell--auto,
+.cell--class {
   width: auto;
+}
+.cell--class ::v-deep .el-form-item__content {
+  margin-left: 0 !important;
 }
 
 .search-form ::v-deep .el-form-item__label {

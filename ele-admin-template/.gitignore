@@ -27,3 +27,6 @@ yarn-error.log*
 
 # Local test artifacts
 /tests/
+
+# dev server 日志
+/.serve.log

@@ -170,11 +170,13 @@
       locale() {
         return this.$i18n.locale;
       },
-      // 菜单数据（顶部插入「最近使用」）
+      // 菜单数据：「最近使用」放最后。
+      // ele-admin 按菜单树从前到后匹配路由，插在最前会导致打开业务页时
+      // 顶栏/侧栏跳到「最近使用」；放最后则优先命中真实业务目录
       menus() {
         const base = this.$store.state.user.menus || [];
         const group = buildRecentMenuGroup(this.recentMenus);
-        return group ? [group, ...base] : base;
+        return group ? [...base, group] : base;
       },
       // 主题状态
       ...mapGetters(['theme'])
@@ -185,6 +187,19 @@
         handler(to) {
           this.recordRecentMenu(to);
         }
+      },
+      // 联动监听只对 mix 布局成立；切到 side/top 布局必须解绑，
+      // 否则 capture 阶段的 preventDefault 会让人点不动真实菜单
+      'theme.layoutStyle'(value) {
+        this.rebindNavLinkage(value);
+      },
+      // 界面风格预设：SPD 预设的样式覆盖统一挂在 body.spd-preset 上，
+      // 避免顶栏/侧栏不在 layout 根元素内时选择器匹配不到
+      'theme.preset': {
+        immediate: true,
+        handler(value) {
+          this.applyPresetClass(value);
+        }
       }
     },
     created() {
@@ -192,16 +207,35 @@
       this.$bus.$on(RECENT_MENUS_CHANGED, this.syncRecentMenus);
     },
     mounted() {
-      this.bindTopNavLinkage();
-      this.bindSideNavLinkage();
+      this.rebindNavLinkage(this.theme.layoutStyle);
     },
     beforeDestroy() {
       this.$bus.$off(RECENT_MENUS_CHANGED, this.syncRecentMenus);
       this.unbindTopNavLinkage();
       this.unbindSideNavLinkage();
+      document.body.classList.remove('spd-preset');
     },
     methods: {
-      // 顶部一级目录点击：同步左侧目录树，并通知菜单首页工作台
+      // 切换 body 上的预设标识类
+      applyPresetClass(preset) {
+        document.body.classList.toggle('spd-preset', preset === 'spd');
+      },
+      // 按当前布局模式重新装配上侧/左侧联动监听
+      rebindNavLinkage(layoutStyle) {
+        this.unbindTopNavLinkage();
+        this.unbindSideNavLinkage();
+        this.$nextTick(() => {
+          // 顶部一级目录联动只在 mix 布局成立：side/top 布局的顶栏是真实导航，
+          // 拦下点击会让人点不动菜单
+          if (layoutStyle === 'mix') {
+            this.bindTopNavLinkage();
+          }
+          // 侧栏目录联动与布局无关：side/mix 都有侧栏目录树；
+          // top 布局没有侧栏，bindSideNavLinkage 内部找不到元素会直接返回
+          this.bindSideNavLinkage();
+        });
+      },
+      // 顶部一级目录点击：同步左侧目录树（不跳转菜单首页）
       bindTopNavLinkage() {
         const nav = document.querySelector('.ele-admin-header-nav');
         if (!nav) {
@@ -232,14 +266,11 @@
             layout.headMenuActive = hit.path;
             layout.splitMenuData();
           }
+          // 混合菜单模式下只同步左侧目录树即可，不再跳回菜单首页
           this.$bus.$emit('SPD_MENU_GROUP_CHANGE', hit.meta.title);
-          // 点目录时回到菜单首页，立即展示该目录下的图标按钮
-          if (this.$route.path !== HOME_PATH) {
-            this.$router.push(HOME_PATH);
-          }
         };
         nav.addEventListener('click', this._onNavClick, true);
-        // 首页若无「最近使用」记录，侧栏数据可能为空，兜底选中第一个有子菜单的目录
+        // 侧栏为空时兜底选中第一个真实业务目录（跳过「最近使用」）
         this.$nextTick(() => {
           const layout = this.$refs.proLayout;
           if (!layout || typeof layout.splitMenuData !== 'function') {
@@ -249,7 +280,10 @@
             return;
           }
           const first = (this.menus || []).find(
-            (m) => m.children && m.children.length
+            (m) =>
+              m.path !== '/__recent_menus__' &&
+              m.children &&
+              m.children.length
           );
           if (first) {
             layout.headMenuActive = first.path;
@@ -264,7 +298,7 @@
         this._navEl = null;
         this._onNavClick = null;
       },
-      // 侧边栏「目录」点击：同步菜单首页工作台。
+      // 侧边栏「目录」点击：只同步目录选中态，不跳转菜单首页。
       // 只处理 el-submenu 标题（目录），el-menu-item（业务菜单）仍按原逻辑跳转
       bindSideNavLinkage() {
         const side = document.querySelector('.ele-admin-sidebar');
@@ -292,12 +326,8 @@
           } catch (err) {
             // 隐私模式下 sessionStorage 不可用时忽略
           }
+          // 混合菜单模式下只同步目录选中态；业务菜单项仍按原逻辑跳转
           this.$bus.$emit('SPD_MENU_GROUP_CHANGE', hit.meta.title);
-          // 点目录时回到菜单首页，立即展示该目录下的菜单图标；
-          // 业务菜单项(el-menu-item)不匹配上面的选择器，仍按原逻辑跳转，不受影响
-          if (this.$route.path !== HOME_PATH) {
-            this.$router.push(HOME_PATH);
-          }
         };
         side.addEventListener('click', this._onSideClick, true);
       },
@@ -512,39 +542,125 @@
     }
   }
 
-  /* 侧栏目录：字体加粗加大、间距收紧、长名称分行、悬停/选中蓝色 */
-  .ele-admin-sidebar-menus .el-menu {
-    .el-menu-item,
-    .el-submenu__title {
-      height: auto;
-      min-height: 38px;
-      padding-top: 7px;
-      padding-bottom: 7px;
-      line-height: 1.35;
-      font-size: 14px;
-      font-weight: 600;
-      white-space: normal;
-      word-break: break-word;
-    }
-    > .el-submenu,
-    > .el-menu-item {
-      margin-top: 0;
-    }
-    .el-menu-item:hover,
-    .el-submenu__title:hover {
-      background-color: #409eff !important;
-      color: #fff !important;
-    }
-    .el-menu-item.is-active {
-      background-color: #ecf5ff !important;
-      color: #409eff !important;
+  /* ===== SPD 界面风格预设（theme.preset === 'spd'）=====
+     挂成 body.spd-preset，这些覆盖只在 SPD 预设下生效；
+     切到「自定义」后完全交给 ele-admin 原生风格，硬编码不再和设置项打架。 */
+  body.spd-preset {
+    /* 侧栏目录：字体加粗加大、间距收紧、长名称分行、悬停/选中蓝色。
+       排除 .el-menu--collapse：折叠态由 ele-admin 自己控制图标居中，不能被这里干扰 */
+    .ele-admin-sidebar-menus .el-menu:not(.el-menu--collapse) {
+      .el-menu-item,
+      .el-submenu__title {
+        /* ele-admin 用 `> .el-menu-item` 设了固定 height/line-height，
+           特异性与这里相同且加载更晚，必须用 !important 才能让长名称真正撑开 */
+        height: auto !important;
+        line-height: 1.4 !important;
+        min-height: 38px;
+        padding-top: 7px !important;
+        padding-bottom: 7px !important;
+        font-size: 14px;
+        font-weight: 600;
+        white-space: normal !important;
+        word-break: break-word;
+        overflow: visible;
+      }
+      /* 文本容器（span/a）：flex item 默认 min-width:auto 不会收缩，
+         长名称会撑破而不是换行，这里显式放开 */
+      .el-menu-item > span,
+      .el-submenu__title > span,
+      .el-menu-item > a,
+      .el-submenu__title > a {
+        min-width: 0;
+        line-height: inherit;
+        white-space: normal !important;
+        word-break: break-word;
+      }
+      > .el-submenu,
+      > .el-menu-item {
+        margin-top: 0;
+      }
+      .el-menu-item:hover,
+      .el-submenu__title:hover {
+        background-color: #409eff !important;
+        color: #fff !important;
+      }
+      .el-menu-item.is-active {
+        background-color: #ecf5ff !important;
+        color: #409eff !important;
+      }
     }
   }
 
-  /* 顶栏灰色：与白色侧栏形成层次，文字沿用 dark 主题的白色 */
-  .ele-admin-head-dark .ele-admin-header,
-  .ele-admin-head-dark .ele-admin-logo {
-    background-color: #5b6472 !important;
+  /* 顶栏「白下划线」根因（50%/80%/33% 等非 100% 缩放都会出现）：
+     灰顶栏(#5b6472) 与白页签是上下两块独立盒子。浏览器缩放时色边界
+     往往落在半个设备像素上，抗锯齿会在深色底上混出一条发白的细线——
+     这不是边框，是光栅化问题；缩得越偏 100%，越容易看见。
+     处理：
+     1) 导航区 overflow:hidden，避免空 nav 冒出滚动条轨道；
+     2) 面包屑跟顶栏同高并裁切，避免 72px item 溢出；
+     3) 页签顶边用顶栏同色实心投影向上盖住接缝（比伪元素更稳，
+        色边界被推到页签内侧，白晕不再压在灰顶上）。 */
+  .ele-admin-header-nav {
+    overflow: hidden;
+  }
+
+  .ele-admin-header .ele-admin-breadcrumb {
+    align-self: stretch;
+    overflow: hidden;
+
+    > .el-breadcrumb {
+      height: 100%;
+    }
+
+    .el-breadcrumb__item {
+      height: 100%;
+      line-height: normal;
+      display: inline-flex;
+      align-items: center;
+    }
+  }
+
+  /* 顶栏灰色：只跟 headStyle=dark 走，与界面预设、导航布局解耦。
+     这样切到混合/顶部菜单布局时，顶栏不会突然变回 ele-admin 原生的深黑 #001529。
+     暗黑模式下交给 ele-admin 自己的暗色顶栏，避免灰顶压在深色内容区上。
+     注意：ele-admin 在 headStyle=primary 时也会挂 ele-admin-head-dark，
+     必须排除 .ele-admin-header-primary，否则灰色 !important 会盖掉主色顶栏 */
+  body:not(.ele-admin-theme-dark) .ele-admin-head-dark {
+    .ele-admin-header:not(.ele-admin-header-primary) {
+      background-color: #5b6472 !important;
+      /* 实心投影向下延伸，盖住与页签之间的亚像素缝 */
+      box-shadow: 0 1px 0 0 #5b6472, 0 2px 0 0 #5b6472,
+        0 1px 4px rgba(0, 0, 0, 0.1) !important;
+
+      .ele-admin-logo {
+        background-color: #5b6472 !important;
+      }
+
+      .ele-admin-breadcrumb {
+        background-color: #5b6472;
+      }
+    }
+
+    /* 页签顶边再向上盖同色，把灰|白色边界推进页签内侧 */
+    &.ele-admin-show-tabs
+      .ele-admin-header:not(.ele-admin-header-primary)
+      ~ .ele-admin-main
+      .ele-admin-tabs {
+      box-shadow: 0 -2px 0 0 #5b6472, 0 1px 4px rgba(0, 21, 41, 0.08);
+    }
+
+    .ele-admin-header-primary {
+      box-shadow: 0 1px 0 0 var(--color-primary), 0 2px 0 0 var(--color-primary),
+        0 1px 4px rgba(0, 0, 0, 0.1) !important;
+    }
+
+    &.ele-admin-show-tabs
+      .ele-admin-header-primary
+      ~ .ele-admin-main
+      .ele-admin-tabs {
+      box-shadow: 0 -2px 0 0 var(--color-primary),
+        0 1px 4px rgba(0, 21, 41, 0.08);
+    }
   }
 
   /* 左上角院徽：固定尺寸的白色铭牌 + 背景图 contain，
@@ -564,8 +680,16 @@
     background-size: contain;
     border-radius: 2px;
   }
-  /* 侧栏折叠时 logo 区收窄，铭牌等比缩小 */
-  .ele-admin-collapse .ele-admin-logo > .spd-hospital-logo {
+  /* 侧栏折叠：logo 区宽度必须跟着侧栏一起收到 56px（ele-admin 的 $--sidebar-collapse-width），
+     否则铭牌会在 240px 的容器里居中，看起来悬在右半侧 */
+  .ele-admin-collapse .ele-admin-logo,
+  .ele-admin-collapse.ele-admin-logo-auto .ele-admin-logo,
+  .ele-admin-nav-collapse .ele-admin-logo {
+    width: 56px !important;
+  }
+  /* 折叠态铭牌等比缩小 */
+  .ele-admin-collapse .ele-admin-logo > .spd-hospital-logo,
+  .ele-admin-nav-collapse .ele-admin-logo > .spd-hospital-logo {
     width: 44px !important;
     height: 44px !important;
   }

@@ -310,18 +310,18 @@ export async function GetPickingInfo(data) {
   }
 }
 
+/** 备货推送 B2B：走 SPD 代调，避免 HTTPS 页直连 B2B 导致 Failed to fetch */
 export async function ReceiveSpdStockup(data) {
-  const formatdata = {
-    json: data.json
-  };
-  const res = await fetch(
-    `http://39.107.78.98:18011/api/SpdBtb/ReceiveSpdStockup`,
-    {
-      method: 'POST',
-      body: formdataify(formatdata)
-    }
-  ).then((response) => response.json());
-  return res;
+  const json = typeof data === 'string' ? data : data?.json;
+  const res = await request.post(
+    '/CentralWarehouseMonitor/ReceiveSpdStockupToB2b',
+    formdataify({ Token: token(), json }),
+    { timeout: 600000 }
+  );
+  if (res.data?.code == 200) {
+    return res.data.result || 'success';
+  }
+  return Promise.reject(new Error(res.data?.msg || 'B2B发送失败'));
 }
 
 export async function UpdateSendState(data) {

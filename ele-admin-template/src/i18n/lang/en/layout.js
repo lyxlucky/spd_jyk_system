@@ -18,6 +18,11 @@ export default {
   },
   setting: {
     title: 'Theme Setting',
+    preset: 'Interface Style',
+    presets: {
+      spd: 'SPD Standard (Grey Head)',
+      custom: 'Custom'
+    },
     sideStyles: {
       dark: 'Dark Sidebar',
       light: 'Light Sidebar'

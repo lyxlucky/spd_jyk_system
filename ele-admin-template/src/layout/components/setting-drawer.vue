@@ -10,6 +10,27 @@
     <div
       :class="['ele-setting-wrapper', { 'ele-setting-dark': theme.darkMode }]"
     >
+      <!-- 界面风格预设：默认 SPD 标准（灰顶白侧 + 混合导航），也可切自定义自由搭配 -->
+      <div class="ele-setting-item">
+        <div class="setting-item-title">{{ $t('layout.setting.preset') }}</div>
+        <div class="setting-item-control" style="width: 150px">
+          <el-select
+            size="mini"
+            :value="theme.preset"
+            @change="updatePreset"
+          >
+            <el-option
+              :label="$t('layout.setting.presets.spd')"
+              value="spd"
+            />
+            <el-option
+              :label="$t('layout.setting.presets.custom')"
+              value="custom"
+            />
+          </el-select>
+        </div>
+      </div>
+      <el-divider />
       <!-- 侧栏风格 -->
       <div
         v-if="theme.layoutStyle !== 'top'"
@@ -407,6 +428,7 @@
 
 <script>
   import { mapGetters } from 'vuex';
+  import { SPD_PRESET } from '@/store/modules/theme';
 
   export default {
     props: {
@@ -473,6 +495,16 @@
       updateVisible(value) {
         this.$emit('update:visible', value);
       },
+      updatePreset(value) {
+        this.$store.dispatch('theme/setPreset', value);
+      },
+      // SPD 预设本身决定了顶栏/侧栏/导航三项；一旦手动改这三项，
+      // 自动降级为「自定义」，避免出现「选了 SPD 却配了亮色顶栏」的矛盾状态
+      leavePreset() {
+        if (this.theme.preset === 'spd') {
+          this.$store.dispatch('theme/setPreset', 'custom');
+        }
+      },
       updateShowTabs(value) {
         this.$store.dispatch('theme/setShowTabs', value);
       },
@@ -480,12 +512,20 @@
         this.$store.dispatch('theme/setShowFooter', value);
       },
       updateHeadStyle(value) {
+        // 点中的值本来就是 SPD 预设值时不降级，避免「点了同一个选项就掉出预设」
+        if (value !== SPD_PRESET.headStyle) {
+          this.leavePreset();
+        }
         this.$store.dispatch('theme/setHeadStyle', value);
       },
       updateSideStyle(value) {
+        if (value !== SPD_PRESET.sideStyle) {
+          this.leavePreset();
+        }
         this.$store.dispatch('theme/setSideStyle', value);
       },
       updateLayoutStyle(value) {
+        // 导航布局与界面预设无关：换布局不会改变顶栏/侧栏配色，因此不降级
         this.$store.dispatch('theme/setLayoutStyle', value);
       },
       updateSideMenuStyle(value) {
