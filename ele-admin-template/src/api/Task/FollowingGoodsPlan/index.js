@@ -1,6 +1,6 @@
 import request from '@/utils/request';
 import { formdataify, toUrlEncodedBody } from '@/utils/formdataify';
-import { TOKEN_STORE_NAME, HOME_HP, B2B_BASE_URL } from '@/config/setting';
+import { TOKEN_STORE_NAME, HOME_HP } from '@/config/setting';
 import store from '@/store';
 
 function token() {
@@ -147,13 +147,18 @@ export async function UpdateSendState(data) {
   );
 }
 
-export async function ReceiveSpdStockup(json) {
-  const base = (B2B_BASE_URL || '').replace(/\/$/, '');
-  const res = await fetch(`${base}/api/SpdBtb/ReceiveSpdStockup`, {
-    method: 'POST',
-    body: formdataify({ json })
-  });
-  return res.json();
+/** 备货推送 B2B：走 SPD 代调，避免 HTTPS 页直连 B2B 导致 Failed to fetch */
+export async function ReceiveSpdStockup(data) {
+  const json = typeof data === 'string' ? data : data?.json;
+  const res = await request.post(
+    '/CentralWarehouseMonitor/ReceiveSpdStockupToB2b',
+    formdataify({ Token: token(), json }),
+    { timeout: 600000 }
+  );
+  if (res.data?.code == 200) {
+    return res.data.result || 'success';
+  }
+  return Promise.reject(new Error(res.data?.msg || 'B2B发送失败'));
 }
 
 /** 保存备货计划(包)修改 */
