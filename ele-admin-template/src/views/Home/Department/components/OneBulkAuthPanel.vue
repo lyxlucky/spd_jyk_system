@@ -347,12 +347,28 @@ export default {
   margin-left: 2px;
 }
 .section-title h5 {
-  margin: 12px 0 8px;
+  margin: 4px 0 6px;
   font-size: 14px;
   font-weight: 600;
 }
 .toolbar {
-  margin-bottom: 8px;
+  margin-bottom: 2px;
+}
+.toolbar ::v-deep .el-form-item {
+  margin-bottom: 4px;
+  margin-right: 8px;
+}
+.toolbar ::v-deep .el-form-item__content {
+  line-height: 28px;
+}
+.toolbar-row2 ::v-deep .el-form-item__content {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+.toolbar-row2 ::v-deep .el-button {
+  margin-left: 0;
 }
 .table-scroll {
   width: 100%;

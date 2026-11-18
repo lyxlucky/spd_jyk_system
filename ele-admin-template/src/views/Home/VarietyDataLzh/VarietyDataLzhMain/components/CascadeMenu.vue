@@ -36,6 +36,7 @@
           <i v-if="item.loading" class="el-icon-loading spd-cascade__mark" />
           <i v-else-if="isSelected(item)" class="el-icon-check spd-cascade__mark" />
           <span>{{ item.label }}</span>
+          <span v-if="item.sideLabel" class="spd-cascade__side" @click.stop="onSide(item)">{{ item.sideLabel }}</span>
         </div>
       </div>
     </div>
@@ -109,6 +110,11 @@ export default {
       if (item.disabled || item.loading || !this.activeGroup) return;
       this.$emit('select', { group: this.activeGroup, item });
       if (this.closeOnSelect) this.visible = false;
+    },
+    onSide(item) {
+      if (item.disabled || item.loading || !this.activeGroup) return;
+      this.$emit('select', { group: this.activeGroup, item, side: true });
+      if (this.closeOnSelect) this.visible = false;
     }
   }
 };
@@ -180,6 +186,11 @@ export default {
   position: absolute;
   left: 10px;
   font-size: 12px;
+}
+.spd-cascade__side {
+  margin-left: auto;
+  color: #409eff;
+  font-weight: 400;
 }
 .spd-cascade-btn__text {
   display: inline-block;
