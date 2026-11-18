@@ -42,13 +42,13 @@ jobs:
     needs: prepare
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: read
 
     strategy:
       matrix:
         env: [
           bjww, bjwwnew, bjnw, bjnwhttps, bdww, bdnw, lhfyww, lhfynw, hnww, hnnw, smww, smnw, stzlww, stzlnw, zxww,
-          zxnw, lgww, sebb, sebbww, sedp, sedpww, selh, selhww, xhww, xhnw, lglsww, lglsnw, lglssk
+          zxnw, lgww, sebb, sebbww, sedp, sedpww, selh, selhww, xhww, xhnw, lglsww, lglsnw, lglssk, gzbjww, gzbjnw
         ]
 
     defaults:
@@ -93,16 +93,43 @@ jobs:
 
           zip -r dist-${{ matrix.env }}-$VERSION.zip "$TARGET_DIR"
 
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-${{ matrix.env }}
+          path: ele-admin-template/dist-${{ matrix.env }}-${{ needs.prepare.outputs.tag_name }}.zip
+          if-no-files-found: error
+          compression-level: 0
+          overwrite: true
+
+  # Publish once after every environment has finished building.
+  release:
+    needs: [prepare, build]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    concurrency:
+      group: release-${{ github.repository }}-${{ needs.prepare.outputs.tag_name }}
+      cancel-in-progress: false
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: dist-*
+          path: release-assets
+          merge-multiple: true
+
       - name: Upload to Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ needs.prepare.outputs.tag_name }}
           prerelease: ${{ needs.prepare.outputs.prerelease }}
-          files: ele-admin-template/dist-${{ matrix.env }}-${{ needs.prepare.outputs.tag_name }}.zip
+          files: release-assets/*.zip
+          fail_on_unmatched_files: true
 
   # Keep only the latest 5 alpha releases
   cleanup:
-    needs: [prepare, build]
+    needs: [prepare, release]
     if: needs.prepare.outputs.prerelease == 'true'
     runs-on: ubuntu-latest
     permissions:
@@ -111,6 +138,7 @@ jobs:
       - name: Delete old alpha releases
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
         run: |
           KEEP=5
           # List all dev pre-releases, newest first

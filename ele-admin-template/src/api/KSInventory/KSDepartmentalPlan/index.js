@@ -437,6 +437,23 @@ export async function QueryPageLayUIByJYK(data) {
   }
 }
 
+export async function getDeptContractExpiryReminders(deptTwoCode, page = 1, size = 50) {
+  const rep = formdataify({
+    Dept_Two_Code: deptTwoCode,
+    page,
+    size,
+    Token: sessionStorage.getItem(TOKEN_STORE_NAME)
+  });
+  const res = await request.post(
+    '/DeptOneBulkCargoAuthVar/GetDeptContractExpiryReminders',
+    rep
+  );
+  if (res.data.code == 200) {
+    return res.data;
+  }
+  return Promise.reject(new Error(res.data.msg || '获取合同到期提醒失败'));
+}
+
 export async function getOneAuthVarWithDept(data) {
   var data2 = {};
   data2.Dept_Two_Code = data.where.Dept_Two_Code
