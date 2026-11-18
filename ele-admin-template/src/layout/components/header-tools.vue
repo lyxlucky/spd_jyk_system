@@ -39,7 +39,7 @@
     </div>
     <!-- 用户名称 -->
     <div class="ele-admin-header-tool-item">
-      <h5>{{ UserName }}</h5>
+      <span class="el-dropdown-link">{{ UserName }}</span>
     </div>
     <!-- 科室名称 -->
     <div class="ele-admin-header-tool-item">

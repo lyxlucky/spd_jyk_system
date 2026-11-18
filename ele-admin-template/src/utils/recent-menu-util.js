@@ -230,7 +230,7 @@ export function pushRecentMenu(route, userInfo, menus) {
 }
 
 /**
- * 组装侧栏顶部「最近使用」虚拟菜单组
+ * 组装「最近使用」虚拟菜单组（挂在菜单树末尾，匹配优先级最低）
  */
 export function buildRecentMenuGroup(recentList) {
   if (!recentList?.length) {
