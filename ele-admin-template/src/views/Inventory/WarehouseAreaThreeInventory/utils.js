@@ -1,6 +1,6 @@
 export const STOCK_STATUS_OPTIONS = [
   { label: '全部', value: '' },
-  { label: '不为0', value: 'HAS' },
+  { label: '大于等于0', value: 'HAS' },
   { label: '为0', value: 'ZERO' },
   { label: '负库存', value: 'NEGATIVE' }
 ];
