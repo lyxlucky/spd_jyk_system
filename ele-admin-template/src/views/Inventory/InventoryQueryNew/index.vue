@@ -87,7 +87,23 @@
         @export-dept-defs="onExportDeptDefs"
         @export-detail="onExportDetail"
         @move-defs="onMoveDefs"
-      />
+      >
+        <template v-slot:tools>
+          <table-tools
+            :key="detailToolFullscreen ? 'full' : 'normal'"
+            :size="detailToolSize"
+            :columns="detailColumns"
+            :fullscreen="detailToolFullscreen"
+            :tools="['reload', 'size', 'columns', 'fullscreen']"
+            :columns-sort="true"
+            cache-key="InventoryQueryNewDetail"
+            @reload="onDetailToolReload"
+            @update:size="onDetailToolSize"
+            @update:columns="onDetailToolColumns"
+            @update:fullscreen="onDetailToolFullscreen"
+          />
+        </template>
+      </DetailToolbar>
 
       <div class="spd-panel spd-table-panel spd-table-panel--detail">
         <div class="spd-table-panel__wrap">
@@ -98,6 +114,7 @@
             border
             stripe
             title=""
+            :toolbar="detailToolFullscreen"
             :toolkit="['reload', 'size', 'columns', 'fullscreen']"
             :columns-sort="true"
             :height="detailTableHeight"
@@ -109,6 +126,8 @@
             cache-key="InventoryQueryNewDetail"
             @done="onTableLayoutDone"
             @sort-change="onDetailSortChange"
+            @size-change="detailToolSize = $event"
+            @fullscreen-change="detailToolFullscreen = $event"
           >
             <template v-slot:batchValidity="{ row }">
               <span class="validity-tag" :style="validityPeriodStyle(row)">
@@ -181,6 +200,7 @@ import { Message, MessageBox } from 'element-ui';
 import { utils, writeFile } from 'xlsx';
 import MainSearch from './components/MainSearch.vue';
 import DetailToolbar from './components/DetailToolbar.vue';
+import TableTools from 'ele-admin/es/ele-pro-table/components/table-tools';
 import SummaryDialog from './components/SummaryDialog.vue';
 import SupplierSummaryDialog from './components/SupplierSummaryDialog.vue';
 import MoveQuantityDialog from './components/MoveQuantityDialog.vue';
@@ -246,6 +266,7 @@ export default {
   components: {
     MainSearch,
     DetailToolbar,
+    TableTools,
     SummaryDialog,
     SupplierSummaryDialog,
     MoveQuantityDialog,
@@ -258,6 +279,8 @@ export default {
       // 对齐老系统 invNew_box / invNew2_box 固定 height:395，不随窗口重算
       mainTableHeight: 395,
       detailTableHeight: 395,
+      detailToolSize: 'mini',
+      detailToolFullscreen: false,
       advancedOpen: false,
       mainWhere: defaultMainWhere(),
       mainSort: { field: '', order: '' },
@@ -339,6 +362,10 @@ export default {
     if (name) {
       setPageTab({ key: getRouteTabKey(), components: [name] });
     }
+    this.$nextTick(() => {
+      const table = this.$refs.detailTable;
+      if (table && table.tableSize) this.detailToolSize = table.tableSize;
+    });
     document.addEventListener('click', this.hideCtxMenu);
     // 表格内部滚动吞掉滚轮时，允许把滚动交给页面，从而滑到下方明细表
     this.$el.addEventListener('wheel', this.onPageWheel, { passive: false });
@@ -552,6 +579,24 @@ export default {
       this.detailCondition = '';
       this.$refs.detailToolbar?.setCondition('');
       this.reloadDetail();
+    },
+    onDetailToolReload() {
+      const table = this.$refs.detailTable;
+      if (table) table.onRefresh();
+    },
+    onDetailToolSize(value) {
+      this.detailToolSize = value;
+      const table = this.$refs.detailTable;
+      if (table) table.onSizeChange(value);
+    },
+    onDetailToolColumns(columns) {
+      const table = this.$refs.detailTable;
+      if (table) table.onColumnsChange(columns);
+    },
+    onDetailToolFullscreen(value) {
+      this.detailToolFullscreen = value;
+      const table = this.$refs.detailTable;
+      if (table) table.onFullscreenChange(value);
     },
     onDetailSearch(condition) {
       this.detailCondition = condition || '';
@@ -862,15 +907,17 @@ export default {
   height: calc(100vh - 88px);
   min-height: 0;
   min-width: 1280px;
-  /* 窗口变小：内容尺寸不变，靠滚动查看（含横向） */
   overflow: auto;
 }
 .inv-query-page .page-card {
-  min-width: 1280px;
+  flex: 1 0 auto;
+  width: 100%;
+  min-width: 0;
   min-height: 100%;
   height: auto;
   display: block;
   overflow: visible;
+  box-sizing: border-box;
 }
 .inv-query-page .page-card >>> .el-card__body {
   display: block;
@@ -878,19 +925,31 @@ export default {
   padding: 8px 12px;
   box-sizing: border-box;
 }
+.inv-query-page .inv-query-search,
+.inv-query-page .inv-query-detail-bar,
+.inv-query-page .spd-table-panel {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
 .inv-query-page .inv-query-search {
   position: relative;
   z-index: 5;
   background: #fff;
 }
+.spd-page.inv-query-page >>> .ele-pro-table .el-table {
+  width: 100% !important;
+  min-width: 100%;
+  max-width: 100%;
+}
 .inv-query-page .spd-table-panel {
   display: block;
   margin-top: 6px;
-  overflow: visible;
+  overflow: hidden;
 }
 .inv-query-page .spd-table-panel__wrap {
   display: block;
-  overflow: visible;
+  overflow: hidden;
 }
 .inv-query-page .spd-table-panel__wrap >>> .el-pagination {
   padding: 4px 0 8px;
@@ -898,9 +957,17 @@ export default {
 }
 .inv-query-page .inv-query-detail-bar {
   position: relative;
-  z-index: 3;
   background: #fff;
-  margin-top: 4px;
+  margin-top: 6px;
+}
+.inv-query-page .spd-table-panel--detail {
+  margin-top: 6px;
+}
+.inv-query-page .spd-table-panel--detail >>> .ele-pro-table-fullscreen .ele-table-tool {
+  position: static;
+  left: auto;
+  width: auto;
+  max-width: none;
 }
 .text-danger {
   color: #f56c6c;
