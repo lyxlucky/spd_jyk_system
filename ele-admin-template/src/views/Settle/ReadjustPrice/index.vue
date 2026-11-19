@@ -87,17 +87,7 @@
           placeholder="结束时间"
           style="width: 140px"
         />
-      </div>
-    </div>
-
-    <!-- 工具栏 -->
-    <div class="spd-panel spd-panel--actions">
-      <div class="spd-panel__head spd-panel__head--split">
-        <span>操作</span>
-        <span v-if="selection.length" class="spd-panel__head-meta">已选 {{ selection.length }} 条</span>
-      </div>
-      <div class="action-bar">
-        <el-button type="primary" size="mini" plain @click="reloadList">查询</el-button>
+        <el-button type="primary" size="mini" icon="el-icon-search" @click="reloadList">查询</el-button>
         <el-button type="primary" size="mini" plain :loading="createLoading" @click="onCreatePlan">
           创建计划
         </el-button>
@@ -167,13 +157,14 @@
         >
           删除计划
         </el-button>
+        <span v-if="selection.length" class="action-bar__meta">已选 {{ selection.length }} 条</span>
         <el-button
+          class="search-pin"
           type="danger"
           size="mini"
           plain
           :disabled="!canCancelCurrent"
           :loading="cancelLoading"
-          class="action-bar__right"
           @click="onCancelPlan"
         >
           撤销计划
@@ -340,14 +331,14 @@
               :disabled="detailDisabled"
             />
           </template>
-        </div>
-        <div class="detail-actions">
-          <el-button size="mini" plain :disabled="!canEdit" :loading="modifyLoading" @click="onModify">
-            修改计划
-          </el-button>
-          <el-button size="mini" type="primary" plain :disabled="!canSubmit" :loading="submitLoading" @click="onSubmit">
-            确认提交
-          </el-button>
+          <span class="detail-actions">
+            <el-button size="mini" plain :disabled="!canEdit" :loading="modifyLoading" @click="onModify">
+              修改计划
+            </el-button>
+            <el-button size="mini" type="primary" plain :disabled="!canSubmit" :loading="submitLoading" @click="onSubmit">
+              确认提交
+            </el-button>
+          </span>
         </div>
       </div>
     </div>
@@ -1360,16 +1351,19 @@ export default {
 }
 
 .search-form,
-.detail-row,
-.action-bar {
+.detail-row {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 8px;
 }
 
-.search-form {
-  padding: 10px 12px;
+.search-form ::v-deep .el-button + .el-button {
+  margin-left: 0;
+}
+
+.search-form ::v-deep .el-button.search-pin {
+  margin-left: auto;
 }
 
 .date-sep {
@@ -1377,20 +1371,15 @@ export default {
   color: #909399;
 }
 
-.spd-panel--actions .spd-panel__head--split {
-  gap: 12px;
-}
-
-.action-bar {
-  padding: 10px 12px;
-  background: #fafbfc;
-}
-
-.action-bar__right {
-  margin-left: auto;
+.action-bar__meta {
+  font-size: 12px;
+  color: var(--color-primary, #409eff);
 }
 
 .detail-panel .detail-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
   padding: 10px 12px 12px;
 }
 
@@ -1407,10 +1396,14 @@ export default {
 }
 
 .detail-actions {
-  display: flex;
-  justify-content: flex-end;
+  display: inline-flex;
+  align-items: center;
   gap: 8px;
-  margin-top: 8px;
+  margin-left: auto;
+}
+
+.detail-actions ::v-deep .el-button + .el-button {
+  margin-left: 0;
 }
 
 .detail-table-panel :deep(.el-card__body),
@@ -1426,11 +1419,13 @@ export default {
 }
 
 .snapshot-block__title {
-  background: #009688;
-  color: #fff;
+  background: var(--color-primary-1, #ecf5ff);
+  color: var(--color-primary, #409eff);
+  border-bottom: 1px solid var(--color-primary-3, #d9ecff);
   text-align: center;
-  padding: 4px 0;
+  padding: 6px 0;
   font-size: 12px;
+  font-weight: 600;
   margin-bottom: 0;
 }
 

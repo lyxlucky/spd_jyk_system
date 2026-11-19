@@ -283,19 +283,13 @@
             </el-button>
             <el-button size="mini" @click="onUpdateField">更新选定字段</el-button>
             <el-button v-if="showWxtBtn" size="mini" @click="onWxtAudit">微讯通品种审核</el-button>
-            <el-button size="mini" @click="onExportFzShow">导出物资分类品种</el-button>
-            <el-button
-              v-if="canEdit"
-              size="mini"
-              icon="el-icon-upload2"
-              :loading="importing"
-              @click="onImportClick"
-            >
-              导入
-            </el-button>
-            <el-button v-if="canEdit" size="mini" plain @click="onDownloadImportTemplate">
-              导出模板
-            </el-button>
+            <cascade-menu
+              button-text="导入/导出"
+              close-on-select
+              :groups="ioGroups"
+              :loading="ioLoading"
+              @select="onIoSelect"
+            />
             <el-button
               size="mini"
               icon="el-icon-upload2"
@@ -356,40 +350,6 @@
             </el-button>
             <el-button v-if="showVarUpLogBtn" size="mini" icon="el-icon-document" @click="varUpLogVisible = true">
               修改日志
-            </el-button>
-          </div>
-        </div>
-        <div v-if="showExportToolbar" class="spd-toolbar__divider" />
-        <div v-if="showExportToolbar" class="spd-toolbar__group">
-          <div class="spd-toolbar__btns">
-            <el-button
-              v-if="canExport('export-VarietyDataLzhDc')"
-              size="mini"
-              icon="el-icon-download"
-              title="普通导出：数据量过大易超时，建议不超过 1 万条"
-              :loading="exporting"
-              @click="onExport"
-            >
-              导出
-            </el-button>
-            <el-button
-              v-if="canExport('export-VarietyDataLzhDc') && showExportHp"
-              size="mini"
-              type="primary"
-              plain
-              title="高性能导出：未配置 VAR_EPPLUS_BATCH 时全量导出；已配置则按 CONFIG 条数分批导出"
-              :loading="exportingHp"
-              @click="onExportHp"
-            >
-              导出(高性能)
-            </el-button>
-            <el-button
-              v-if="canExport('export-VarietyDataLzhDcjs')"
-              size="mini"
-              :loading="exportingSearch"
-              @click="onExportSearch"
-            >
-              导出检索
             </el-button>
           </div>
         </div>
@@ -639,6 +599,7 @@
 <script>
 import { HOME_HP } from '@/config/setting';
 import VarietyDataLzhMainSearch from './components/VarietyDataLzhMain-search.vue';
+import CascadeMenu from './components/CascadeMenu.vue';
 import BatchTextDialog from './components/BatchTextDialog.vue';
 import ChangePriceDialog from './components/ChangePriceDialog.vue';
 import RestDeptDialog from './components/RestDeptDialog.vue';
@@ -725,6 +686,7 @@ export default {
   name: 'VarietyDataLzhMain',
   components: {
     VarietyDataLzhMainSearch,
+    CascadeMenu,
     BatchTextDialog,
     ChangePriceDialog,
     RestDeptDialog,
@@ -849,11 +811,46 @@ export default {
     nickname() {
       return this.$store.state.user?.info?.Nickname || '';
     },
-    showExportToolbar() {
-      return (
-        this.canExport('export-VarietyDataLzhDc') ||
-        this.canExport('export-VarietyDataLzhDcjs')
-      );
+    ioLoading() {
+      return this.importing || this.exporting || this.exportingHp || this.exportingSearch;
+    },
+    ioGroups() {
+      const imports = [];
+      if (this.canEdit) {
+        imports.push(
+          { label: '导入品种列表', command: 'import', loading: this.importing },
+          { label: '下载导入模板', command: 'template' }
+        );
+      }
+      const exports = [];
+      if (this.canExport('export-VarietyDataLzhDc')) {
+        exports.push({
+          label: '导出当前列表',
+          command: 'export',
+          loading: this.exporting,
+          title: '普通导出：数据量过大易超时，建议不超过 1 万条'
+        });
+        if (this.showExportHp) {
+          exports.push({
+            label: '导出（高性能）',
+            command: 'exportHp',
+            loading: this.exportingHp,
+            title: '高性能导出：未配置 VAR_EPPLUS_BATCH 时全量导出；已配置则按 CONFIG 条数分批导出'
+          });
+        }
+      }
+      if (this.canExport('export-VarietyDataLzhDcjs')) {
+        exports.push({
+          label: '导出检索',
+          command: 'exportSearch',
+          loading: this.exportingSearch
+        });
+      }
+      exports.push({ label: '导出物资分类品种', command: 'exportFz' });
+      return [
+        imports.length ? { key: 'import', label: '导入', items: imports } : null,
+        { key: 'export', label: '导出', items: exports }
+      ].filter(Boolean);
     },
     actionColWidth() {
       let w = 280;
@@ -1123,6 +1120,18 @@ export default {
     openSzsmBid(row) {
       this.szsmBidRow = row;
       this.szsmBidVisible = true;
+    },
+    onIoSelect({ item }) {
+      const actions = {
+        import: 'onImportClick',
+        template: 'onDownloadImportTemplate',
+        export: 'onExport',
+        exportHp: 'onExportHp',
+        exportSearch: 'onExportSearch',
+        exportFz: 'onExportFzShow'
+      };
+      const name = actions[item.command];
+      if (name) this[name]();
     },
     onExportFzShow() {
       this.exportFzClass = '';

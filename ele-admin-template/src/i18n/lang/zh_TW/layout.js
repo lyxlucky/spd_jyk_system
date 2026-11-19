@@ -22,6 +22,7 @@ export default {
       dark: '暗色側邊欄',
       light: '亮色側邊欄'
     },
+    headStyle: '頂欄風格',
     headStyles: {
       light: '亮色頂欄',
       dark: '暗色頂欄',

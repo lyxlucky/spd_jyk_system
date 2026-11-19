@@ -220,33 +220,44 @@ export default {
       this.varPage = 1;
     },
     handleSubmit() {
+      if (this.submitting) return;
       if (!this.checkedSuppliers.length) {
         this.$message.warning('请至少勾选一个供应商');
         return;
       }
-      let overUseList = [];
+      // 先校验全部供应商，并汇总超常用量；禁止在循环里多次提交
+      const overUseList = [];
       for (const checked of this.checkedSuppliers) {
         const source = this.suppliers.find(
           (s) =>
             s.Supplier_Code === checked.Supplier_Code &&
             String(s.StorageID) === String(checked.StorageID)
         );
-        const bad = (source?.listVarietie || []).find((v) => !v.Goods_Qty || Number(v.Goods_Qty) < 1);
-        overUseList = (source?.listVarietie || []).filter((v) => Number(v.Goods_Qty) > Number(v.OVER_USE_QTY));
+        const list = source?.listVarietie || [];
+        const bad = list.find((v) => !v.Goods_Qty || Number(v.Goods_Qty) < 1);
         if (bad) {
           this.$message.warning(
             `${bad.varietie_Code_New}/${bad.Varietie_Name}/备货数量异常,备货数量需大于等于1且不能为空`
           );
           return;
         }
-        if (HOME_HP === 'szhn' && overUseList.length) {
-          // 超常用量二次确认
-          const h = this.$createElement;
-          const message = h('div', null, [
-            h('p', null, '以下品种备货数量超过超常用量，是否继续提交？'),
-            h('el-table', {
+        overUseList.push(
+          ...list.filter((v) => {
+            const overQty = Number(v.OVER_USE_QTY);
+            return overQty > 0 && Number(v.Goods_Qty) > overQty;
+          })
+        );
+      }
+      if (HOME_HP === 'szhn' && overUseList.length) {
+        const h = this.$createElement;
+        const message = h('div', null, [
+          h('p', null, '以下品种备货数量超过超常用量，是否继续提交？'),
+          h(
+            'el-table',
+            {
               props: { data: overUseList, size: 'mini', border: true, maxHeight: 300 }
-            }, [
+            },
+            [
               h('el-table-column', {
                 props: { prop: 'varietie_Code_New', label: '品种编码', minWidth: 100 }
               }),
@@ -259,22 +270,25 @@ export default {
               h('el-table-column', {
                 props: { prop: 'OVER_USE_QTY', label: '超常用量', width: 90, align: 'center' }
               })
-            ])
-          ]);
-          this.$confirm(message, '超常用量提示', {
-            confirmButtonText: '继续提交',
-            cancelButtonText: '取消',
-            customClass: 'force-password-confirm',
-            type: 'warning'
-          }).then(()=>{
+            ]
+          )
+        ]);
+        this.$confirm(message, '超常用量提示', {
+          confirmButtonText: '继续提交',
+          cancelButtonText: '取消',
+          customClass: 'force-password-confirm',
+          type: 'warning'
+        })
+          .then(() => {
             this.onSubmitAction();
           })
-        } else {
-          this.onSubmitAction();
-        }
+          .catch(() => {});
+        return;
       }
+      this.onSubmitAction();
     },
     async onSubmitAction() {
+      if (this.submitting) return;
       this.submitting = true;
       try {
         const payload = buildInsertNewInfoPayload(this.checkedSuppliers, this.suppliers);

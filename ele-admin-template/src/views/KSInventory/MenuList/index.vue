@@ -1,7 +1,5 @@
 <template>
-  <div class="ele-body">
-    <div class="ele-page-header"> </div>
-
+  <div class="ele-body menu-home">
     <!-- 「最近使用」仅侧栏；bj 主页展示完整业务目录，其它医院只展示当前选中目录 -->
     <el-card class="menu-workbench" shadow="never" :body-style="{ padding: '0' }">
       <!-- bj：完整目录平铺 -->
@@ -1074,9 +1072,13 @@
 </script>
 
 <style scoped>
-  /* 菜单首页：完整业务目录分组平铺；「最近使用」仅侧栏 */
+  /* 菜单首页：去掉空白页头后，标题和磁贴跟页签同一左缘 */
+  .menu-home.ele-body {
+    padding: 12px 16px 16px;
+  }
   .menu-workbench {
     margin-bottom: 12px;
+    border-radius: 4px;
   }
   .dashboard-toggle {
     display: flex;
@@ -1087,7 +1089,7 @@
     font-size: 12px;
   }
   .menu-group-section {
-    padding: 12px 14px 16px;
+    padding: 14px 16px 18px;
     border-bottom: 1px solid #ebeef5;
     scroll-margin-top: 12px;
   }
@@ -1102,13 +1104,13 @@
   }
   .menu-group-main {
     min-height: 300px;
-    padding: 12px 14px 16px;
+    padding: 14px 16px 18px;
   }
   .menu-group-main-head {
     display: flex;
     align-items: baseline;
     gap: 10px;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
   }
   .menu-group-main-title {
     color: #303133;
@@ -1121,21 +1123,24 @@
   }
   .menu-tile-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(112px, 1fr));
-    gap: 8px;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 10px;
+    align-items: stretch;
   }
   .menu-tile {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    gap: 6px;
-    min-height: 92px;
-    padding: 8px 6px;
+    justify-content: flex-start;
+    gap: 8px;
+    height: 100%;
+    min-height: 96px;
+    padding: 12px 8px;
     border: 1px solid #ebeef5;
     border-radius: 6px;
     background: #fff;
     cursor: pointer;
+    box-sizing: border-box;
     transition: background-color 0.15s, border-color 0.15s;
   }
   .menu-tile:hover {
@@ -1150,10 +1155,8 @@
     color: #409eff;
   }
   .menu-tile-title {
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
-    overflow: hidden;
+    display: block;
+    overflow: visible;
     word-break: break-word;
     text-align: center;
     color: #303133;

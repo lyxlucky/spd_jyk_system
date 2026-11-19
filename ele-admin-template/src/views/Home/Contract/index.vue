@@ -173,25 +173,19 @@
         <el-button type="primary" size="mini" icon="el-icon-search" :disabled="!currentContract" @click="reloadAuth">
           查询
         </el-button>
-        <el-button
-          v-if="canExport('export-ContractDc')"
-          size="mini"
-          icon="el-icon-download"
+        <cascade-menu
+          button-text="导入/导出"
+          close-on-select
+          :groups="authIoGroups"
           :loading="exporting"
-          :disabled="!currentContract"
-          @click="onExportAuth"
-        >
-          导出
-        </el-button>
+          @select="onAuthIoSelect"
+        />
         <el-button size="mini" :disabled="!currentAuthRow" @click="editPriceVisible = true">修改价格</el-button>
         <el-button size="mini" :disabled="!currentContract" @click="addAuthVisible = true">品种授权</el-button>
         <el-button size="mini" :disabled="!authSelection.length" @click="onEnableAuth">启用授权品种</el-button>
         <el-button size="mini" :disabled="!authSelection.length" @click="onDisableAuth">停用授权品种</el-button>
         <el-button size="mini" :disabled="!authSelection.length" @click="openBatch('extend')">修改原结束/延期</el-button>
         <el-button size="mini" :disabled="!authSelection.length" @click="openBatch('auditMark')">修改合同明细备注</el-button>
-        <el-button size="mini" @click="authContractInfoVisible = true">
-          导出所有合同
-        </el-button>
         <el-button size="mini" type="danger" :disabled="!authSelection.length" @click="onDeleteAuth">删除品种</el-button>
         <el-button v-if="hpFlags.isZq" size="mini" @click="onCheckReceiveContract">查看合同对接</el-button>
         <el-button
@@ -217,19 +211,17 @@
         <el-button size="mini" :disabled="!currentAuthRow" @click="openBatch('lcNum')">修改临采数量</el-button>
         <el-button size="mini" :disabled="!authSelection.length" @click="openBatch('varType')">修改品种类型</el-button>
         <el-button size="mini" @click="onStopConWithNoVar">停用无启用明细合同</el-button>
-        <ContractImportButton label="导入" template-type="contractDetail" @done="onImportDone('contractDetail')" />
+      </div>
+      <div class="contract-io-hosts">
+        <ContractImportButton ref="ioContractDetail" template-type="contractDetail" @done="onImportDone('contractDetail')" />
         <ContractImportButton
-          label="导入(无授权到期)"
+          ref="ioContractDetailWithoutAuth"
           template-type="contractDetailWithoutAuth"
           @done="onImportDone('contractDetailWithoutAuth')"
         />
+        <ContractImportButton ref="ioContractExtend" template-type="contractExtend" @done="onImportDone('contractExtend')" />
         <ContractImportButton
-          label="导入原结束/延期"
-          template-type="contractExtend"
-          @done="onImportDone('contractExtend')"
-        />
-        <ContractImportButton
-          label="导入合同明细备注"
+          ref="ioContractAuditMark"
           template-type="contractAuditMark"
           @done="onImportDone('contractAuditMark')"
         />
@@ -334,6 +326,7 @@ import BatchFieldDialog from './components/BatchFieldDialog.vue';
 import CopyAuthDialog from './components/CopyAuthDialog.vue';
 import TwoSupDialog from './components/TwoSupDialog.vue';
 import ContractImportButton from './components/ContractImportButton.vue';
+import CascadeMenu from '@/views/Home/VarietyDataLzh/VarietyDataLzhMain/components/CascadeMenu.vue';
 import AllContractsDialog from './components/AllContractsDialog.vue';
 import AuthContractInfoDialog from './components/AuthContractInfoDialog.vue';
 import {
@@ -382,6 +375,7 @@ export default {
     CopyAuthDialog,
     TwoSupDialog,
     ContractImportButton,
+    CascadeMenu,
     AllContractsDialog,
     AuthContractInfoDialog
   },
@@ -428,6 +422,33 @@ export default {
   },
   mounted() {
     this.loadSuppliers();
+  },
+  computed: {
+    authIoGroups() {
+      const exports = [];
+      if (this.canExport('export-ContractDc')) {
+        exports.push({
+          label: '导出当前列表',
+          command: 'exportAuth',
+          loading: this.exporting,
+          disabled: !this.currentContract
+        });
+      }
+      exports.push({ label: '导出所有合同', command: 'exportAll' });
+      return [
+        {
+          key: 'import',
+          label: '导入',
+          items: [
+            { label: '导入合同授权品种', command: 'contractDetail', sideLabel: '模板' },
+            { label: '导入（无授权到期）', command: 'contractDetailWithoutAuth', sideLabel: '模板' },
+            { label: '导入原结束/延期', command: 'contractExtend', sideLabel: '模板' },
+            { label: '导入合同明细备注', command: 'contractAuditMark', sideLabel: '模板' }
+          ]
+        },
+        { key: 'export', label: '导出', items: exports }
+      ];
+    }
   },
   methods: {
     formatContractType,
@@ -683,6 +704,26 @@ export default {
         if (e !== 'cancel') this.$message.error(e.message || '删除失败');
       }
     },
+    onAuthIoSelect({ item, side }) {
+      if (item.command === 'exportAuth') {
+        this.onExportAuth();
+        return;
+      }
+      if (item.command === 'exportAll') {
+        this.authContractInfoVisible = true;
+        return;
+      }
+      const refs = {
+        contractDetail: 'ioContractDetail',
+        contractDetailWithoutAuth: 'ioContractDetailWithoutAuth',
+        contractExtend: 'ioContractExtend',
+        contractAuditMark: 'ioContractAuditMark'
+      };
+      const btn = this.$refs[refs[item.command]];
+      if (!btn) return;
+      if (side) btn.onCommand('download');
+      else btn.triggerImport();
+    },
     async onExportAuth() {
       if (!this.currentContract) return;
       this.exporting = true;
@@ -785,6 +826,12 @@ export default {
   flex-wrap: wrap;
   gap: 6px;
   margin-bottom: 8px;
+}
+.contract-io-hosts {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
 }
 .auth-table ::v-deep .el-table {
   width: max-content;

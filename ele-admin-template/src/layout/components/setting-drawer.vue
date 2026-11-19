@@ -10,53 +10,10 @@
     <div
       :class="['ele-setting-wrapper', { 'ele-setting-dark': theme.darkMode }]"
     >
-      <!-- 界面风格预设：默认 SPD 标准（灰顶白侧 + 混合导航），也可切自定义自由搭配 -->
-      <div class="ele-setting-item">
-        <div class="setting-item-title">{{ $t('layout.setting.preset') }}</div>
-        <div class="setting-item-control" style="width: 150px">
-          <el-select
-            size="mini"
-            :value="theme.preset"
-            @change="updatePreset"
-          >
-            <el-option
-              :label="$t('layout.setting.presets.spd')"
-              value="spd"
-            />
-            <el-option
-              :label="$t('layout.setting.presets.custom')"
-              value="custom"
-            />
-          </el-select>
-        </div>
+      <!-- 顶栏风格：亮色 / 暗色 / 主色 -->
+      <div class="ele-setting-title ele-text-secondary">
+        {{ $t('layout.setting.headStyle') }}
       </div>
-      <el-divider />
-      <!-- 侧栏风格 -->
-      <div
-        v-if="theme.layoutStyle !== 'top'"
-        class="ele-setting-theme ele-text-primary"
-      >
-        <el-tooltip
-          :content="$t('layout.setting.sideStyles.dark')"
-          placement="top"
-        >
-          <div
-            class="ele-bg-base ele-side-dark"
-            @click="updateSideStyle('dark')"
-          >
-            <i class="el-icon-check" v-if="theme.sideStyle === 'dark'"></i>
-          </div>
-        </el-tooltip>
-        <el-tooltip
-          :content="$t('layout.setting.sideStyles.light')"
-          placement="top"
-        >
-          <div class="ele-bg-base" @click="updateSideStyle('light')">
-            <i class="el-icon-check" v-if="theme.sideStyle === 'light'"></i>
-          </div>
-        </el-tooltip>
-      </div>
-      <!-- 顶栏风格 -->
       <div class="ele-setting-theme ele-text-primary">
         <el-tooltip
           :content="$t('layout.setting.headStyles.light')"
@@ -92,43 +49,6 @@
             <i class="el-icon-check" v-if="theme.headStyle === 'primary'"></i>
           </div>
         </el-tooltip>
-      </div>
-      <!-- 主题色 -->
-      <div class="ele-setting-colors">
-        <el-tooltip
-          v-for="item in themes"
-          :key="item.name"
-          :content="$t('layout.setting.colors.' + item.name)"
-          placement="top"
-        >
-          <div
-            class="ele-setting-color-item"
-            :style="{ 'background-color': item.color || item.value }"
-            @click="updateColor(item.value)"
-          >
-            <i
-              class="el-icon-check"
-              v-if="item.value ? item.value === theme.color : !theme.color"
-            >
-            </i>
-          </div>
-        </el-tooltip>
-        <!-- 颜色选择器 -->
-        <el-color-picker
-          v-model="colorValue"
-          :predefine="predefineColors"
-          class="ele-setting-color-picker"
-          @change="updateColor"
-        />
-      </div>
-      <!-- 暗黑模式 -->
-      <div class="ele-setting-item">
-        <div class="setting-item-title">
-          {{ $t('layout.setting.darkMode') }}
-        </div>
-        <div class="setting-item-control">
-          <el-switch :value="theme.darkMode" @change="updateDarkMode" />
-        </div>
       </div>
       <el-divider />
       <!-- 导航布局 -->
@@ -428,82 +348,18 @@
 
 <script>
   import { mapGetters } from 'vuex';
-  import { SPD_PRESET } from '@/store/modules/theme';
 
   export default {
     props: {
       // 是否显示, 支持 .sync 修饰
       visible: Boolean
     },
-    data() {
-      return {
-        // 主题列表
-        themes: [
-          {
-            name: 'default',
-            color: '#1890ff'
-          },
-          {
-            name: 'dust',
-            value: '#5f80c7'
-          },
-          {
-            name: 'sunset',
-            value: '#faad14'
-          },
-          {
-            name: 'volcano',
-            value: '#f5686f'
-          },
-          {
-            name: 'purple',
-            value: '#9266f9'
-          },
-          {
-            name: 'green',
-            value: '#33cc99'
-          },
-          {
-            name: 'geekblue',
-            value: '#32a2d4'
-          }
-        ],
-        // 颜色选择器预设颜色
-        predefineColors: [
-          '#f5222d',
-          '#fa541c',
-          '#fa8c16',
-          '#faad14',
-          '#a0d911',
-          '#52c41a',
-          '#13c2c2',
-          '#2f54eb',
-          '#722ed1',
-          '#eb2f96'
-        ],
-        // 颜色选择器选中颜色
-        colorValue: void 0
-      };
-    },
     computed: {
       ...mapGetters(['theme'])
-    },
-    created() {
-      this.initColorValue();
     },
     methods: {
       updateVisible(value) {
         this.$emit('update:visible', value);
-      },
-      updatePreset(value) {
-        this.$store.dispatch('theme/setPreset', value);
-      },
-      // SPD 预设本身决定了顶栏/侧栏/导航三项；一旦手动改这三项，
-      // 自动降级为「自定义」，避免出现「选了 SPD 却配了亮色顶栏」的矛盾状态
-      leavePreset() {
-        if (this.theme.preset === 'spd') {
-          this.$store.dispatch('theme/setPreset', 'custom');
-        }
       },
       updateShowTabs(value) {
         this.$store.dispatch('theme/setShowTabs', value);
@@ -512,20 +368,10 @@
         this.$store.dispatch('theme/setShowFooter', value);
       },
       updateHeadStyle(value) {
-        // 点中的值本来就是 SPD 预设值时不降级，避免「点了同一个选项就掉出预设」
-        if (value !== SPD_PRESET.headStyle) {
-          this.leavePreset();
-        }
         this.$store.dispatch('theme/setHeadStyle', value);
       },
-      updateSideStyle(value) {
-        if (value !== SPD_PRESET.sideStyle) {
-          this.leavePreset();
-        }
-        this.$store.dispatch('theme/setSideStyle', value);
-      },
       updateLayoutStyle(value) {
-        // 导航布局与界面预设无关：换布局不会改变顶栏/侧栏配色，因此不降级
+        // 换布局不改顶栏配色
         this.$store.dispatch('theme/setLayoutStyle', value);
       },
       updateSideMenuStyle(value) {
@@ -567,14 +413,6 @@
       updateWeakMode(value) {
         this.$store.dispatch('theme/setWeakMode', value);
       },
-      updateDarkMode(value) {
-        this.doWithLoading(() =>
-          this.$store.dispatch('theme/setDarkMode', value)
-        );
-      },
-      updateColor(value) {
-        this.doWithLoading(() => this.$store.dispatch('theme/setColor', value));
-      },
       updateFontSize(value) {
         console.log('Font size changed:', value);
         this.$store.dispatch('theme/setFontSize', value).then(() => {
@@ -595,7 +433,6 @@
           func()
             .then(() => {
               loading.close();
-              this.initColorValue();
             })
             .catch((e) => {
               loading.close();
@@ -603,14 +440,6 @@
               this.$message.error('主题加载失败');
             });
         }, 0);
-      },
-      initColorValue() {
-        const color = this.theme.color;
-        if (color && !this.themes.some((t) => t.value === color)) {
-          this.colorValue = color;
-        } else {
-          this.colorValue = void 0;
-        }
       }
     }
   };

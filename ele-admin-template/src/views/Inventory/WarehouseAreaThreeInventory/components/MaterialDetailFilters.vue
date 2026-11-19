@@ -32,6 +32,12 @@
             :label="batch"
           />
         </el-select>
+        <el-checkbox
+          v-if="showEmptyBatch"
+          :value="value.BATCH_EMPTY"
+          @change="update('BATCH_EMPTY', $event)"
+          >包含无批号</el-checkbox
+        >
       </el-form-item>
       <el-form-item label="数量正负">
         <el-select
@@ -74,6 +80,7 @@
       loading: Boolean,
       local: Boolean,
       showDeleteStatus: Boolean,
+      showEmptyBatch: Boolean,
       searchLabel: { type: String, default: '查询' }
     },
     computed: {
@@ -90,7 +97,9 @@
     },
     methods: {
       update(key, value) {
-        this.$emit('input', { ...this.value, [key]: value });
+        const filters = { ...this.value, [key]: value };
+        if (key === 'CHARGE_CODE') filters.EXACT_CHARGE_CODE = false;
+        this.$emit('input', filters);
       }
     }
   };
