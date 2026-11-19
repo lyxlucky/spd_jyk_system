@@ -12,6 +12,8 @@ import {
 
 export const RECENT_MENU_STORE_NAME = 'spd-recent-menus';
 export const RECENT_MENU_MAX = 10;
+/** 最近使用子项的跳转前缀：避免与真实菜单 path 重复导致激活态落在「最近使用」 */
+export const RECENT_MENU_GO_PREFIX = '/__recent_go__';
 
 /** 最近使用记录与侧栏/主页共用同一套图标解析规则 */
 const RECENT_ICON_CONFIG = {
@@ -32,8 +34,36 @@ const EXCLUDE_PATHS = new Set([
   '/forget',
   '/404',
   '/403',
-  '/__recent_menus__'
+  '/__recent_menus__',
+  RECENT_MENU_GO_PREFIX
 ]);
+
+/**
+ * 真实菜单树中，按 path 找所属一级目录（不含「最近使用」）
+ */
+export function findRootMenuByPath(path, menus) {
+  if (!path || !menus?.length) {
+    return null;
+  }
+  for (const item of menus) {
+    if (item.path === path) {
+      return item;
+    }
+    if (item.children?.length && findMenuByPath(path, item.children)) {
+      return item;
+    }
+  }
+  return null;
+}
+
+/** 最近使用菜单项的唯一跳转 path（再由路由 redirect 到真实页面） */
+export function toRecentGoPath(realPath) {
+  if (!realPath) {
+    return '';
+  }
+  const normalized = realPath.startsWith('/') ? realPath : `/${realPath}`;
+  return `${RECENT_MENU_GO_PREFIX}${normalized}`;
+}
 
 function getUserKey(userInfo) {
   const id =
@@ -202,7 +232,8 @@ export function pushRecentMenu(route, userInfo, menus) {
   if (
     EXCLUDE_PATHS.has(path) ||
     WHITE_LIST.includes(path) ||
-    path.includes(REDIRECT_PATH)
+    path.includes(REDIRECT_PATH) ||
+    path.startsWith(RECENT_MENU_GO_PREFIX)
   ) {
     return getRecentMenus(userInfo);
   }
@@ -230,7 +261,9 @@ export function pushRecentMenu(route, userInfo, menus) {
 }
 
 /**
- * 组装「最近使用」虚拟菜单组（挂在菜单树末尾，匹配优先级最低）
+ * 组装「最近使用」虚拟菜单组（挂在菜单树末尾）。
+ * 子项 path 使用 RECENT_MENU_GO_PREFIX，避免与真实业务 path 重复；
+ * 否则 ele-admin / el-menu 激活匹配会落到「最近使用」目录下。
  */
 export function buildRecentMenuGroup(recentList) {
   if (!recentList?.length) {
@@ -244,10 +277,12 @@ export function buildRecentMenuGroup(recentList) {
       hide: false
     },
     children: recentList.map((m) => ({
-      path: m.path,
+      path: toRecentGoPath(m.path),
       meta: {
         title: m.title,
-        icon: m.icon || 'el-icon-document'
+        icon: m.icon || 'el-icon-document',
+        // 真实业务 path，仅作标记；路由跳转靠 /__recent_go__ 前缀 redirect
+        realPath: m.path
       }
     }))
   };
