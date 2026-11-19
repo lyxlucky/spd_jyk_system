@@ -149,7 +149,8 @@
         } catch (e) {
           this.rows = [];
           this.total = 0;
-          this.$message.error((e && e.message) || e || '查询失败');
+          // 接口失败时原先只剩空表，容易误以为「没有未维护」；错误信息必须可见
+          this.$message.error((e && e.message) || e || '计费编码对齐检查查询失败');
         } finally {
           this.loading = false;
         }
