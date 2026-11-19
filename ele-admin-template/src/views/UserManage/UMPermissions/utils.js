@@ -9,7 +9,7 @@ export function isDeleteOk(data) {
   return data === 1 || data === '1';
 }
 
-const EXPORT_HEADERS = ['权限名称', '链接', '类型', '备注'];
+const EXPORT_HEADERS = ['权限名称', '链接', '父级菜单', '排序', '类型', '备注'];
 
 export function formatPermissionType(type) {
   return isButtonPermission({ TYPE: type }) ? '按钮' : '菜单';
@@ -21,6 +21,8 @@ export function exportPermissionExcel(rows) {
     data.push([
       row.Permission_Name,
       row.Permission_Url || '',
+      row.Parent_Name || '',
+      row.SORT == null ? '' : row.SORT,
       formatPermissionType(row.TYPE),
       row.Remarks || '无'
     ]);

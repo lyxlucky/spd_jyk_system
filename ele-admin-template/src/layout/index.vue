@@ -50,9 +50,9 @@
   >
     <!-- 路由出口 -->
     <router-layout />
-    <!-- 登录后效期/近效期提醒弹窗（按 permission_group） -->
+    <!-- 登录后效期提醒 -->
     <login-tip-dialogs />
-    <!-- 菜单图标：el-icon-* 走字体图标，本地 svg 名走雪碧图 -->
+    <!-- 菜单图标 -->
     <template v-slot:icon="{ icon }">
       <svg-icon
         v-if="isSvgIcon(icon)"
@@ -63,7 +63,7 @@
     </template>
     <!-- logo 图标 -->
     <template v-slot:logo>
-      <!-- 用背景图而非 <img>，避免替换元素在 flex / width:auto 容器里被压缩 -->
+      <!-- 用背景图，避免图片被压扁 -->
       <div
         class="spd-hospital-logo"
         role="img"
@@ -163,7 +163,7 @@
       };
     },
     computed: {
-      // 左上角院徽：与登录页同源，按 HOME_HP 对应到具体医院
+      // 院徽，与登录页同一来源
       hospitalLogo() {
         return getHospitalLogo();
       },
@@ -171,9 +171,7 @@
       locale() {
         return this.$i18n.locale;
       },
-      // 菜单数据：「最近使用」放最后。
-      // ele-admin 按菜单树从前到后匹配路由，插在最前会导致打开业务页时
-      // 顶栏/侧栏跳到「最近使用」；放最后则优先命中真实业务目录
+      // 「最近使用」放最后，避免抢业务菜单的路由匹配
       menus() {
         const base = this.stripHomeShortcut(this.$store.state.user.menus || []);
         const group = buildRecentMenuGroup(this.recentMenus);
@@ -190,12 +188,11 @@
         immediate: true,
         handler(to, from) {
           this.recordRecentMenu(to);
-          // 从「最近使用」点进页面时保持停在该目录，方便连续操作
+          // 最近使用：停在该目录
           this.keepRecentMenuGroupIfNeeded(to, from);
         }
       },
-      // 联动监听只对 mix 布局成立；切到 side/top 布局必须解绑，
-      // 否则 capture 阶段的 preventDefault 会让人点不动真实菜单
+      // 切布局时重绑菜单联动
       'theme.layoutStyle': {
         immediate: true,
         handler(value) {
@@ -203,8 +200,7 @@
           this.rebindNavLinkage(value);
         }
       },
-      // 界面风格预设：SPD 预设的样式覆盖统一挂在 body.spd-preset 上，
-      // 避免顶栏/侧栏不在 layout 根元素内时选择器匹配不到
+      // SPD 预设挂在 body
       'theme.preset': {
         immediate: true,
         handler(value) {
@@ -242,16 +238,15 @@
       document.body.classList.remove('spd-side-collapsed');
     },
     methods: {
-      // 切换 body 上的预设标识类
+      // 切换预设标识
       applyPresetClass(preset) {
         document.body.classList.toggle('spd-preset', preset === 'spd');
       },
-      // 顶部菜单布局需要把页签整体让到院徽宽度的右边
+      // 顶部菜单：页签右移
       applyLayoutModeClass(layoutStyle) {
         document.body.classList.toggle('spd-layout-top', layoutStyle === 'top');
       },
-      /* 首页标签不能放在院徽节点里：顶栏层级低于侧栏，左侧和混合布局会被侧栏盖住。
-         挂到 body 上，层级才能压过侧栏。 */
+      // 首页标签挂到 body
       mountHomeTabs() {
         const bar = document.createElement('div');
         bar.className = 'spd-side-home-tabs';
@@ -286,22 +281,20 @@
         }
         this._homeTabs = null;
       },
-      // 按当前布局模式重新装配上侧/左侧联动监听
+      // 按布局重绑菜单联动
       rebindNavLinkage(layoutStyle) {
         this.unbindTopNavLinkage();
         this.unbindSideNavLinkage();
         this.$nextTick(() => {
-          // 顶部一级目录联动只在 mix 布局成立：side/top 布局的顶栏是真实导航，
-          // 拦下点击会让人点不动菜单
+          // 仅混合布局拦截顶部点击
           if (layoutStyle === 'mix') {
             this.bindTopNavLinkage();
           }
-          // 侧栏目录联动与布局无关：side/mix 都有侧栏目录树；
-          // top 布局没有侧栏，bindSideNavLinkage 内部找不到元素会直接返回
+          // 侧栏目录联动
           this.bindSideNavLinkage();
         });
       },
-      // 顶部一级目录点击：同步左侧目录树（不跳转菜单首页）
+      // 顶部一级点击只同步左侧目录
       bindTopNavLinkage() {
         const nav = document.querySelector('.ele-admin-header-nav');
         if (!nav) {
@@ -315,10 +308,8 @@
           if (!item || !nav.contains(item)) {
             return;
           }
-          // mix 模式顶部一级是 router-link，阻止跳到没有组件的一级路由
+          // 不跳空的一级路由
           e.preventDefault();
-          // capture 阶段同时阻断冒泡，避免该一级 path 被推给路由后
-          // 命中 routes.js 的 '*' → redirect HOME_PATH 而跳回主菜单
           e.stopPropagation();
           const title = (item.textContent || '').trim();
           const hit = (this.menus || []).find(
@@ -332,11 +323,11 @@
             layout.headMenuActive = hit.path;
             layout.splitMenuData();
           }
-          // 混合菜单模式下只同步左侧目录树即可，不再跳回菜单首页
+          // 只同步左侧目录
           this.$bus.$emit('SPD_MENU_GROUP_CHANGE', hit.meta.title);
         };
         nav.addEventListener('click', this._onNavClick, true);
-        // 侧栏为空时兜底选中第一个真实业务目录（跳过「最近使用」）
+        // 侧栏为空时选中第一个业务目录
         this.$nextTick(() => {
           const layout = this.$refs.proLayout;
           if (!layout || typeof layout.splitMenuData !== 'function') {
@@ -364,8 +355,7 @@
         this._navEl = null;
         this._onNavClick = null;
       },
-      // 侧边栏「目录」点击：只同步目录选中态，不跳转菜单首页。
-      // 只处理 el-submenu 标题（目录），el-menu-item（业务菜单）仍按原逻辑跳转
+      // 点侧栏目录只同步选中，业务菜单仍跳转
       bindSideNavLinkage() {
         const side = document.querySelector('.ele-admin-sidebar');
         if (!side) {
@@ -386,13 +376,13 @@
           if (!hit) {
             return;
           }
-          // 先持久化：不在首页时点击、之后回到首页也能恢复该目录
+          // 记下当前目录，回首页后可恢复
           try {
             sessionStorage.setItem('SPD_ACTIVE_MENU_GROUP', hit.meta.title);
           } catch (err) {
-            // 隐私模式下 sessionStorage 不可用时忽略
+            // 存不下就忽略
           }
-          // 混合菜单模式下只同步目录选中态；业务菜单项仍按原逻辑跳转
+          // 只同步目录选中态
           this.$bus.$emit('SPD_MENU_GROUP_CHANGE', hit.meta.title);
         };
         side.addEventListener('click', this._onSideClick, true);
@@ -414,7 +404,7 @@
         this.recentMenus = pushRecentMenu(route, userInfo, menus);
         this.$bus.$emit(RECENT_MENUS_CHANGED, this.recentMenus);
       },
-      // 仅当从「最近使用」入口（/__recent_go__）进来时，保持一级目录停在「最近使用」
+      // 从「最近使用」进入时，一级目录停在该项
       keepRecentMenuGroupIfNeeded(_to, from) {
         if (!from?.path?.startsWith(RECENT_MENU_GO_PREFIX)) {
           return;
@@ -446,7 +436,7 @@
       onLogoClick(isHome) {
         isHome || this.$router.push(LAYOUT_PATH);
       },
-      /* 首页、菜单列表都进入同一个主页。标签在院徽节点内部，阻止冒泡以免点到院徽跳转 */
+      // 回主页，不触发院徽点击
       goHome(event) {
         if (event && event.stopPropagation) {
           event.stopPropagation();
@@ -455,7 +445,7 @@
           this.$router.push(HOME_PATH);
         }
       },
-      /* 菜单列表已挪到侧栏顶部，不再挂在科室申领下面 */
+      // 菜单树去掉首页
       stripHomeShortcut(list) {
         return (list || []).reduce((acc, item) => {
           const title = (item.meta && item.meta.title) || item.title || '';
@@ -652,18 +642,13 @@
     }
   }
 
-  /* ===== SPD 界面风格预设（theme.preset === 'spd'）=====
-     挂成 body.spd-preset，这些覆盖只在 SPD 预设下生效；
-     切到「自定义」后完全交给 ele-admin 原生风格，硬编码不再和设置项打架。 */
+  /* SPD 预设 */
   body.spd-preset {
-    /* 侧栏目录：字体加粗加大、间距收紧、长名称分行、悬停/选中蓝色。
-       排除 .el-menu--collapse：折叠态由 ele-admin 自己控制图标居中，不能被这里干扰 */
+    /* 侧栏目录可换行 */
     .ele-admin-sidebar-menus .el-menu:not(.el-menu--collapse) {
       .el-menu-item,
       .el-submenu__title {
-        /* ele-admin 用 `> .el-menu-item` 设了固定 height/line-height，
-           特异性与这里相同且加载更晚，必须用 !important 才能让长名称真正撑开。
-           右侧留出箭头空位，避免文字叠到箭头上。 */
+        /* 长名称换行 */
         display: flex !important;
         align-items: center;
         height: auto !important;
@@ -679,7 +664,7 @@
         word-break: break-word;
         overflow: visible;
       }
-      /* 叶子菜单的图标和标题包在 router-link 里 */
+      /* 叶子菜单 */
       .el-menu-item > a {
         display: flex;
         align-items: center;
@@ -702,7 +687,7 @@
         right: 12px;
         margin-top: 0;
       }
-      /* 文本不裁切；flex item 默认 min-width:auto 不会收缩，长名称要显式放开才能换行 */
+      /* 长名称换行 */
       .el-menu-item > a > span,
       .el-submenu__title > span,
       .el-submenu__title > a {
@@ -728,25 +713,17 @@
     }
   }
 
-  /* 顶栏「白下划线」根因（50%/80%/33% 等非 100% 缩放都会出现）：
-     灰顶栏(#5b6472) 与白页签是上下两块独立盒子。浏览器缩放时色边界
-     往往落在半个设备像素上，抗锯齿会在深色底上混出一条发白的细线——
-     这不是边框，是光栅化问题；缩得越偏 100%，越容易看见。
-     处理：
-     1) 导航区 overflow:hidden，避免空 nav 冒出滚动条轨道；
-     2) 面包屑跟顶栏同高并裁切，避免 72px item 溢出；
-     3) 接缝用顶栏内侧同色描边收住，不再用投影压到页签或侧栏上。 */
+  /* 顶栏接缝不发白 */
   .ele-admin-header-nav {
     overflow: hidden;
   }
 
-  /* 页签栏不再放小房子。没打开其他页面时，这一栏是空的 */
+  /* 去掉页签栏小房子 */
   .ele-admin-tabs > .ele-tab-tool.is-tab {
     display: none;
   }
 
-  /* 首页 / 菜单列表固定在院徽正下方，和页签同一行，宽度跟院徽一致。
-     节点挂在 body 上：侧栏层级高于顶栏，留在院徽里会被左侧、混合布局盖住。 */
+  /* 首页标签：院徽正下方 */
   .spd-side-home-tabs {
     position: fixed;
     top: 72px;
@@ -783,7 +760,7 @@
     background: #ecf5ff;
     box-shadow: inset 0 -2px 0 #409eff;
   }
-  /* 侧栏从页签行下面开始，避免目录盖住这两个标签 */
+  /* 侧栏避开首页标签 */
   .ele-admin-sidebar,
   .ele-admin-sidebar-nav {
     overflow: hidden;
@@ -793,7 +770,7 @@
     margin-top: 40px;
     min-height: 0;
   }
-  /* 顶部菜单没有侧栏，页签整行右移出院徽的宽度，新页签在两个标签右边打开 */
+  /* 顶部菜单页签右移 */
   body.spd-layout-top .ele-admin-tabs {
     padding-left: 240px;
     box-sizing: border-box;
@@ -817,7 +794,7 @@
     min-width: 0;
     overflow: hidden;
 
-    /* 与顶部菜单布局的一级目录同一套字体：15px、加粗、微软雅黑 */
+    /* 与顶部菜单同一字体 */
     > .el-breadcrumb {
       height: 100%;
       font-size: 15px;
@@ -842,15 +819,11 @@
     }
   }
 
-  /* 顶栏灰色：只跟 headStyle=dark 走，与界面预设、导航布局解耦。
-     这样切到混合/顶部菜单布局时，顶栏不会突然变回 ele-admin 原生的深黑 #001529。
-     暗黑模式下交给 ele-admin 自己的暗色顶栏，避免灰顶压在深色内容区上。
-     注意：ele-admin 在 headStyle=primary 时也会挂 ele-admin-head-dark，
-     必须排除 .ele-admin-header-primary，否则灰色 !important 会盖掉主色顶栏 */
+  /* 暗色顶栏固定灰 */
   body:not(.ele-admin-theme-dark) .ele-admin-head-dark {
     .ele-admin-header:not(.ele-admin-header-primary) {
       background-color: #5b6472 !important;
-      /* 接缝用顶栏内侧的同色边收住，不再用投影压到页签上 */
+      /* 接缝同色边 */
       box-shadow: inset 0 -1px 0 #5b6472 !important;
 
       .ele-admin-logo {
@@ -863,7 +836,7 @@
       }
     }
 
-    /* 页签只保留自身轻阴影，不再向上盖住顶栏 */
+    /* 页签阴影不盖顶栏 */
     &.ele-admin-show-tabs
       .ele-admin-header:not(.ele-admin-header-primary)
       ~ .ele-admin-main
@@ -883,14 +856,14 @@
     }
   }
 
-  /* 左上角院徽列与侧栏同宽，白底连成一列，不再在灰顶栏里另放一块铭牌 */
+  /* 院徽列与侧栏同宽 */
   .ele-admin-logo,
   .ele-admin-logo-auto .ele-admin-logo {
     width: 240px !important;
     height: 72px !important;
     box-sizing: border-box;
     border-right: 1px solid #e4e7ed;
-    /* 首页标签用 fixed 挂在院徽节点里，不能被院徽裁掉 */
+    /* 不裁切下方内容 */
     overflow: visible !important;
   }
   .ele-admin-logo > .spd-hospital-logo {
@@ -903,14 +876,13 @@
     background-size: contain;
     border-radius: 2px;
   }
-  /* 侧栏折叠：logo 区宽度必须跟着侧栏一起收到 56px（ele-admin 的 $--sidebar-collapse-width），
-     否则铭牌会在 240px 的容器里居中，看起来悬在右半侧 */
+  /* 折叠时院徽列收到 56px */
   .ele-admin-collapse .ele-admin-logo,
   .ele-admin-collapse.ele-admin-logo-auto .ele-admin-logo,
   .ele-admin-nav-collapse .ele-admin-logo {
     width: 56px !important;
   }
-  /* 折叠态铭牌等比缩小 */
+  /* 折叠时院徽缩小 */
   .ele-admin-collapse .ele-admin-logo > .spd-hospital-logo,
   .ele-admin-nav-collapse .ele-admin-logo > .spd-hospital-logo {
     width: 44px !important;

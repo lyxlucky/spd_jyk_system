@@ -10,7 +10,7 @@
     <div
       :class="['ele-setting-wrapper', { 'ele-setting-dark': theme.darkMode }]"
     >
-      <!-- 顶栏风格：亮色 / 暗色 / 主色。主色固定为默认蓝，侧栏固定白底 -->
+      <!-- 顶栏风格：亮色 / 暗色 / 主色 -->
       <div class="ele-setting-title ele-text-secondary">
         {{ $t('layout.setting.headStyle') }}
       </div>
@@ -371,7 +371,7 @@
         this.$store.dispatch('theme/setHeadStyle', value);
       },
       updateLayoutStyle(value) {
-        // 导航布局与界面预设无关：换布局不会改变顶栏/侧栏配色，因此不降级
+        // 换布局不改顶栏配色
         this.$store.dispatch('theme/setLayoutStyle', value);
       },
       updateSideMenuStyle(value) {
