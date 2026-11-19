@@ -1,5 +1,6 @@
 import { menuToRoutes, eachTreeData } from 'ele-admin';
 import { HOME_PATH, LAYOUT_PATH, REDIRECT_PATH } from '@/config/setting';
+import { RECENT_MENU_GO_PREFIX } from '@/utils/recent-menu-util';
 import EleLayout from '@/layout/index.vue';
 import RedirectLayout from '@/components/RedirectLayout';
 import { iframeMixins } from '@/utils/iframe-mixin';
@@ -12,6 +13,14 @@ export const routes = [
     path: '/login',
     component: () => import('@/views/login/index.vue'),
     meta: { title: '登录' }
+  },
+  // 「最近使用」子菜单专用跳转：避免与真实菜单 path 重复导致目录激活错位
+  {
+    path: RECENT_MENU_GO_PREFIX + '/:path(.*)',
+    redirect: (to) => {
+      const rest = to.params.path || '';
+      return rest.startsWith('/') ? rest : `/${rest}`;
+    }
   },
   {
     path: '/sso/winex',

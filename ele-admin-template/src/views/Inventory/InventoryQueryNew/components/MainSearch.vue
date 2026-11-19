@@ -1,6 +1,12 @@
 <template>
   <div class="spd-panel spd-panel--search inv-query-search">
-    <div class="spd-panel__head">查询条件</div>
+    <div class="spd-panel__head">
+      <span>查询条件</span>
+      <span class="search-head-stats">
+        <span>散货总数 <em>{{ sumText }}</em></span>
+        <span>合计金额 <em>{{ amountSumText }}</em></span>
+      </span>
+    </div>
     <div class="spd-panel__body">
       <el-form size="mini" inline @submit.native.prevent>
         <!-- 第一行：基础检索 -->
@@ -64,6 +70,23 @@
               style="width: 140px"
             />
           </el-form-item>
+          <el-form-item label="库存位置">
+            <el-autocomplete
+              v-model="localWhere.sourceFrom"
+              :fetch-suggestions="querySourceFrom"
+              clearable
+              placeholder="库存位置"
+              style="width: 120px"
+            />
+          </el-form-item>
+          <el-form-item label="货位号">
+            <el-input
+              v-model="localWhere.position"
+              clearable
+              style="width: 90px"
+              @keyup.enter.native="search"
+            />
+          </el-form-item>
           <el-form-item>
             <el-button type="primary" icon="el-icon-search" @click="search">查询</el-button>
           </el-form-item>
@@ -112,30 +135,15 @@
           <el-button size="mini" @click="syncAndEmit('move-goods', 'unqualified')">
             移至不合格区
           </el-button>
+          <el-button size="mini" type="primary" plain @click="showMoreQuery = !showMoreQuery">
+            {{ showMoreQuery ? '收起' : '更多' }}查询
+          </el-button>
           <el-button size="mini" type="primary" plain @click="showMoreActions = !showMoreActions">
             {{ showMoreActions ? '收起' : '更多' }}操作
           </el-button>
         </div>
 
-        <!-- 第二行：仓库/区域检索 -->
-        <div class="filter-row">
-          <el-form-item label="库存位置">
-            <el-autocomplete
-              v-model="localWhere.sourceFrom"
-              :fetch-suggestions="querySourceFrom"
-              clearable
-              placeholder="库存位置"
-              style="width: 120px"
-            />
-          </el-form-item>
-          <el-form-item label="货位号">
-            <el-input
-              v-model="localWhere.position"
-              clearable
-              style="width: 90px"
-              @keyup.enter.native="search"
-            />
-          </el-form-item>
+        <div v-show="showMoreQuery" class="advanced-filters">
           <el-form-item label="院区">
             <el-select v-model="localWhere.storageId" clearable placeholder="全部" style="width: 110px">
               <el-option label="全部" value="" />
@@ -226,12 +234,6 @@
               :controls="false"
               style="width: 70px"
             />
-          </el-form-item>
-          <el-form-item label="散货总数">
-            <span class="stat-text">{{ sumText }}</span>
-          </el-form-item>
-          <el-form-item label="合计金额">
-            <span class="stat-text">{{ amountSumText }}</span>
           </el-form-item>
         </div>
 
@@ -387,7 +389,7 @@ export default {
   data() {
     return {
       showAdvanced: false,
-      // 需求 17：低频操作按钮默认收起，需要时再展开
+      showMoreQuery: false,
       showMoreActions: false,
       localWhere: {},
       classificOptions: []
@@ -503,13 +505,16 @@ export default {
   gap: 0 4px;
   margin-bottom: 4px;
 }
-/* 需求 17：压缩工具栏纵向占用 */
-.inv-query-search .toolbar-row {
+.inv-query-search.spd-panel .toolbar-row {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 4px;
   margin: 4px 0;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
 }
 .alert-badge {
   line-height: 1;
@@ -597,7 +602,16 @@ export default {
   background: #e6a23c;
   border-color: #cf9236;
 }
-.stat-text {
+.search-head-stats {
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 12px;
+  font-weight: 400;
+  color: #606266;
+}
+.search-head-stats em {
+  font-style: normal;
   font-weight: 600;
   color: #009688;
 }

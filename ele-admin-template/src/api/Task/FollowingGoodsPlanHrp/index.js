@@ -334,7 +334,12 @@ export async function UpdateSendState(data) {
     '/CentralWarehouseMonitor/UpdateSendState',
     formdata
   );
-  return res;
+  // 后端返回纯文本 "200"/"301"/"400"，须取 res.data，否则前端永远判失败
+  const code = res?.data;
+  if (code == 301 || code === '301') {
+    return Promise.reject(new Error('登录超时，请重新登录'));
+  }
+  return code;
 }
 
 

@@ -135,6 +135,7 @@
     getRecentMenus,
     pushRecentMenu,
     buildRecentMenuGroup,
+    RECENT_MENU_GO_PREFIX,
     RECENT_MENUS_CHANGED
   } from '@/utils/recent-menu-util';
   import { isSvgIcon } from '@/utils/menu-icon';
@@ -184,8 +185,10 @@
     watch: {
       $route: {
         immediate: true,
-        handler(to) {
+        handler(to, from) {
           this.recordRecentMenu(to);
+          // 从「最近使用」点进页面时保持停在该目录，方便连续操作
+          this.keepRecentMenuGroupIfNeeded(to, from);
         }
       },
       // 联动监听只对 mix 布局成立；切到 side/top 布局必须解绑，
@@ -347,6 +350,22 @@
         const menus = this.$store.state.user.menus || [];
         this.recentMenus = pushRecentMenu(route, userInfo, menus);
         this.$bus.$emit(RECENT_MENUS_CHANGED, this.recentMenus);
+      },
+      // 仅当从「最近使用」入口（/__recent_go__）进来时，保持一级目录停在「最近使用」
+      keepRecentMenuGroupIfNeeded(_to, from) {
+        if (!from?.path?.startsWith(RECENT_MENU_GO_PREFIX)) {
+          return;
+        }
+        this.$nextTick(() => {
+          const layout = this.$refs.proLayout;
+          if (!layout || this.theme.layoutStyle !== 'mix') {
+            return;
+          }
+          layout.headMenuActive = '/__recent_menus__';
+          if (typeof layout.splitMenuData === 'function') {
+            layout.splitMenuData();
+          }
+        });
       },
       /* 侧栏折叠切换 */
       updateCollapse(value) {
