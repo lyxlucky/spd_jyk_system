@@ -92,6 +92,11 @@ npm run build:szssww  # 深汕外网
 npm run build:szssnw  # 深汕内网
 ```
 
+#### 永州市第三人民医院环境
+```bash
+npm run build:yzrmnw  # 永州市第三人民医院内网
+```
+
 ## 环境配置说明
 
 每个环境都有对应的 `.env.{环境名}` 配置文件，包含：

@@ -26,110 +26,44 @@ jobs:
             echo "tag_name=${GITHUB_REF_NAME}" >> $GITHUB_OUTPUT
             echo "prerelease=false" >> $GITHUB_OUTPUT
           else
+            # Keep the tag stable if this commit is rebuilt on another day.
             SHORT_SHA=$(git rev-parse --short HEAD)
-            DEV_TAG="dev-$(date +%Y%m%d)-${SHORT_SHA}"
+            COMMIT_DATE=$(TZ=UTC git show -s --format=%cd --date=format-local:%Y%m%d HEAD)
+            DEV_TAG="dev-${COMMIT_DATE}-${SHORT_SHA}"
             echo "tag_name=$DEV_TAG" >> $GITHUB_OUTPUT
             echo "prerelease=true" >> $GITHUB_OUTPUT
           fi
 
       - name: Create alpha tag (dev only)
         if: github.ref_type == 'branch'
+        env:
+          TAG_NAME: ${{ steps.version.outputs.tag_name }}
         run: |
-          git tag "${{ steps.version.outputs.tag_name }}"
-          git push origin "${{ steps.version.outputs.tag_name }}"
+          git push origin "HEAD:refs/tags/$TAG_NAME"
 
   build:
     needs: prepare
-    runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
 
     strategy:
+      fail-fast: false
       matrix:
         env: [
           bjww, bjwwnew, bjnw, bjnwhttps, bdww, bdnw, lhfyww, lhfynw, hnww, hnnw, smww, smnw, stzlww, stzlnw, zxww,
-          zxnw, lgww, sebb, sebbww, sedp, sedpww, selh, selhww, xhww, xhnw, lglsww, lglsnw, lglssk, gzbjww, gzbjnw
+          zxnw, lgww, sebb, sebbww, sedp, sedpww, selh, selhww, xhww, xhnw, lglsww, lglsnw, lglssk, gzbjww, gzbjnw,
+          yzrmnw
         ]
 
-    defaults:
-      run:
-        working-directory: ele-admin-template
-
-    steps:
-      - uses: actions/checkout@v5
-        with:
-          ref: ${{ needs.prepare.outputs.tag_name }}
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v5
-        with:
-          node-version: '18'
-          cache: 'npm'
-          cache-dependency-path: ele-admin-template/package-lock.json
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build ${{ matrix.env }}
-        run: npm run build:${{ matrix.env }}
-
-      - name: Package dist
-        run: |
-          VERSION=${{ needs.prepare.outputs.tag_name }}
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
-
-          TARGET_DIR=""
-
-          for dir in jyk jyknw jykww jyksk ; do
-            if [ -d "$dir" ]; then
-              TARGET_DIR="$dir"
-              break
-            fi
-          done
-
-          if [ -z "$TARGET_DIR" ]; then
-            TARGET_DIR="dist"
-          fi
-
-          zip -r dist-${{ matrix.env }}-$VERSION.zip "$TARGET_DIR"
-
-      - name: Upload build artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: dist-${{ matrix.env }}
-          path: ele-admin-template/dist-${{ matrix.env }}-${{ needs.prepare.outputs.tag_name }}.zip
-          if-no-files-found: error
-          compression-level: 0
-          overwrite: true
-
-  # Publish once after every environment has finished building.
-  release:
-    needs: [prepare, build]
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    concurrency:
-      group: release-${{ github.repository }}-${{ needs.prepare.outputs.tag_name }}
-      cancel-in-progress: false
-    steps:
-      - name: Download build artifacts
-        uses: actions/download-artifact@v4
-        with:
-          pattern: dist-*
-          path: release-assets
-          merge-multiple: true
-
-      - name: Upload to Release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: ${{ needs.prepare.outputs.tag_name }}
-          prerelease: ${{ needs.prepare.outputs.prerelease }}
-          files: release-assets/*.zip
-          fail_on_unmatched_files: true
+    uses: ./.github/workflows/build-and-publish-env.yml
+    with:
+      environment_name: ${{ matrix.env }}
+      tag_name: ${{ needs.prepare.outputs.tag_name }}
+      prerelease: ${{ needs.prepare.outputs.prerelease == 'true' }}
 
   # Keep only the latest 5 alpha releases
   cleanup:
-    needs: [prepare, release]
+    needs: [prepare, build]
     if: needs.prepare.outputs.prerelease == 'true'
     runs-on: ubuntu-latest
     permissions:
@@ -142,7 +76,7 @@ jobs:
         run: |
           KEEP=5
           # List all dev pre-releases, newest first
-          DEV_RELEASES=$(gh release list --limit 100 --json tagName,isPrerelease \
+          DEV_RELEASES=$(gh release list --limit 100 --exclude-drafts --json tagName,isPrerelease \
             | jq -r '[.[] | select(.isPrerelease and (.tagName | startswith("dev-")))] | sort_by(.tagName) | reverse | .[].tagName')
 
           COUNT=0

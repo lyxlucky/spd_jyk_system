@@ -1,0 +1,166 @@
+name: Build and Publish Environment
+
+on:
+  workflow_call:
+    inputs:
+      environment_name:
+        required: true
+        type: string
+      tag_name:
+        required: true
+        type: string
+      prerelease:
+        required: true
+        type: boolean
+
+env:
+  ZIP_NAME: dist-${{ inputs.environment_name }}-${{ inputs.tag_name }}.zip
+
+jobs:
+  package:
+    name: Package ${{ inputs.environment_name }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    defaults:
+      run:
+        working-directory: ele-admin-template
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: refs/tags/${{ inputs.tag_name }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: ele-admin-template/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build ${{ inputs.environment_name }}
+        env:
+          BUILD_ENV: ${{ inputs.environment_name }}
+        run: npm run "build:$BUILD_ENV"
+
+      - name: Package dist
+        run: |
+          TARGET_DIR=dist
+          for dir in jyk jyknw jykww jyksk; do
+            if [ -d "$dir" ]; then
+              TARGET_DIR="$dir"
+              break
+            fi
+          done
+          zip -r "$ZIP_NAME" "$TARGET_DIR"
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-${{ inputs.environment_name }}
+          path: ele-admin-template/${{ env.ZIP_NAME }}
+          if-no-files-found: error
+          compression-level: 0
+          overwrite: true
+
+  publish:
+    name: Publish ${{ inputs.environment_name }}
+    needs: package
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    concurrency:
+      group: release-${{ github.repository }}-${{ inputs.tag_name }}
+      queue: max
+    steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dist-${{ inputs.environment_name }}
+          path: release-assets
+
+      - name: Publish ZIP
+        uses: actions/github-script@v8
+        env:
+          TAG_NAME: ${{ inputs.tag_name }}
+          PRERELEASE: ${{ inputs.prerelease }}
+        with:
+          script: |
+            const fs = require('node:fs');
+            const path = require('node:path');
+            const repo = context.repo;
+            const tag = process.env.TAG_NAME;
+            const name = process.env.ZIP_NAME;
+            const prerelease = process.env.PRERELEASE === 'true';
+            const zip = fs.readFileSync(path.join('release-assets', name));
+            if (zip.length === 0) {
+              throw new Error(`Empty build artifact: ${name}`);
+            }
+
+            // Looking up a release by tag only returns published releases.
+            const matches = await github.paginate(
+              github.rest.repos.listReleases,
+              { ...repo, per_page: 100 },
+              ({ data }) => data.filter((release) => release.tag_name === tag)
+            );
+            if (matches.length > 1) {
+              throw new Error(`Multiple releases already exist for ${tag}`);
+            }
+
+            let release = matches[0];
+            if (!release) {
+              await github.rest.git.getRef({ ...repo, ref: `tags/${tag}` });
+              ({ data: release } = await github.rest.repos.createRelease({
+                ...repo,
+                tag_name: tag,
+                name: tag,
+                draft: true,
+                prerelease
+              }));
+              core.info(`Created draft for ${tag}`);
+            }
+
+            const releaseParams = { ...repo, release_id: release.id };
+            const assets = await github.paginate(
+              github.rest.repos.listReleaseAssets,
+              { ...releaseParams, per_page: 100 }
+            );
+            const existing = assets.find((asset) => asset.name === name);
+            if (existing?.state === 'uploaded' && existing.size > 0) {
+              core.info(`Already uploaded: ${name}`);
+            } else {
+              if (existing) {
+                if (existing.state !== 'starter' || existing.size !== 0) {
+                  throw new Error(`Unexpected state for ${name}: ${existing.state}`);
+                }
+                // A failed upload can leave an empty starter asset behind.
+                await github.rest.repos.deleteReleaseAsset({
+                  ...repo,
+                  asset_id: existing.id
+                });
+              }
+
+              const { data: uploaded } = await github.rest.repos.uploadReleaseAsset({
+                ...releaseParams,
+                name,
+                data: zip,
+                headers: {
+                  'content-type': 'application/zip',
+                  'content-length': zip.length
+                }
+              });
+              if (uploaded.state !== 'uploaded' || uploaded.size !== zip.length) {
+                throw new Error(`Upload did not complete: ${name}`);
+              }
+              core.info(`Uploaded ${name}`);
+            }
+
+            if (release.draft) {
+              ({ data: release } = await github.rest.repos.updateRelease({
+                ...releaseParams,
+                draft: false
+              }));
+            }
+            core.info(`Release: ${release.html_url}`);
