@@ -27,6 +27,7 @@ export default {
       dark: 'Dark Sidebar',
       light: 'Light Sidebar'
     },
+    headStyle: 'Header Style',
     headStyles: {
       light: 'Light Header',
       dark: 'Dark Header',

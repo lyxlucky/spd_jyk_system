@@ -27,6 +27,7 @@ export default {
       dark: '暗色侧边栏',
       light: '亮色侧边栏'
     },
+    headStyle: '顶栏风格',
     headStyles: {
       light: '亮色顶栏',
       dark: '暗色顶栏',

@@ -175,9 +175,12 @@
       // ele-admin 按菜单树从前到后匹配路由，插在最前会导致打开业务页时
       // 顶栏/侧栏跳到「最近使用」；放最后则优先命中真实业务目录
       menus() {
-        const base = this.$store.state.user.menus || [];
+        const base = this.stripHomeShortcut(this.$store.state.user.menus || []);
         const group = buildRecentMenuGroup(this.recentMenus);
         return group ? [...base, group] : base;
+      },
+      isHomePage() {
+        return this.$route.path === HOME_PATH;
       },
       // 主题状态
       ...mapGetters(['theme'])
@@ -193,8 +196,12 @@
       },
       // 联动监听只对 mix 布局成立；切到 side/top 布局必须解绑，
       // 否则 capture 阶段的 preventDefault 会让人点不动真实菜单
-      'theme.layoutStyle'(value) {
-        this.rebindNavLinkage(value);
+      'theme.layoutStyle': {
+        immediate: true,
+        handler(value) {
+          this.applyLayoutModeClass(value);
+          this.rebindNavLinkage(value);
+        }
       },
       // 界面风格预设：SPD 预设的样式覆盖统一挂在 body.spd-preset 上，
       // 避免顶栏/侧栏不在 layout 根元素内时选择器匹配不到
@@ -203,6 +210,18 @@
         handler(value) {
           this.applyPresetClass(value);
         }
+      },
+      isHomePage() {
+        this.syncHomeTabs();
+      },
+      'theme.collapse'() {
+        this.syncHomeTabs();
+      },
+      'theme.sideNavCollapse'() {
+        this.syncHomeTabs();
+      },
+      'theme.bodyFullscreen'() {
+        this.syncHomeTabs();
       }
     },
     created() {
@@ -211,17 +230,61 @@
     },
     mounted() {
       this.rebindNavLinkage(this.theme.layoutStyle);
+      this.mountHomeTabs();
     },
     beforeDestroy() {
       this.$bus.$off(RECENT_MENUS_CHANGED, this.syncRecentMenus);
       this.unbindTopNavLinkage();
       this.unbindSideNavLinkage();
+      this.destroyHomeTabs();
       document.body.classList.remove('spd-preset');
+      document.body.classList.remove('spd-layout-top');
+      document.body.classList.remove('spd-side-collapsed');
     },
     methods: {
       // 切换 body 上的预设标识类
       applyPresetClass(preset) {
         document.body.classList.toggle('spd-preset', preset === 'spd');
+      },
+      // 顶部菜单布局需要把页签整体让到院徽宽度的右边
+      applyLayoutModeClass(layoutStyle) {
+        document.body.classList.toggle('spd-layout-top', layoutStyle === 'top');
+      },
+      /* 首页标签不能放在院徽节点里：顶栏层级低于侧栏，左侧和混合布局会被侧栏盖住。
+         挂到 body 上，层级才能压过侧栏。 */
+      mountHomeTabs() {
+        const bar = document.createElement('div');
+        bar.className = 'spd-side-home-tabs';
+        ['首页', '菜单列表'].forEach((label) => {
+          const button = document.createElement('button');
+          button.type = 'button';
+          button.className = 'spd-side-home-tab';
+          button.textContent = label;
+          button.addEventListener('click', (event) => this.goHome(event));
+          bar.appendChild(button);
+        });
+        document.body.appendChild(bar);
+        this._homeTabs = bar;
+        this.syncHomeTabs();
+      },
+      syncHomeTabs() {
+        const bar = this._homeTabs;
+        if (!bar) {
+          return;
+        }
+        const narrow = !!(this.theme.collapse || this.theme.sideNavCollapse);
+        document.body.classList.toggle('spd-side-collapsed', narrow);
+        bar.classList.toggle('is-narrow', narrow);
+        bar.classList.toggle('is-hidden', !!this.theme.bodyFullscreen);
+        Array.prototype.forEach.call(bar.children, (button) => {
+          button.classList.toggle('is-active', this.isHomePage);
+        });
+      },
+      destroyHomeTabs() {
+        if (this._homeTabs && this._homeTabs.parentNode) {
+          this._homeTabs.parentNode.removeChild(this._homeTabs);
+        }
+        this._homeTabs = null;
       },
       // 按当前布局模式重新装配上侧/左侧联动监听
       rebindNavLinkage(layoutStyle) {
@@ -383,6 +446,33 @@
       onLogoClick(isHome) {
         isHome || this.$router.push(LAYOUT_PATH);
       },
+      /* 首页、菜单列表都进入同一个主页。标签在院徽节点内部，阻止冒泡以免点到院徽跳转 */
+      goHome(event) {
+        if (event && event.stopPropagation) {
+          event.stopPropagation();
+        }
+        if (this.$route.path !== HOME_PATH) {
+          this.$router.push(HOME_PATH);
+        }
+      },
+      /* 菜单列表已挪到侧栏顶部，不再挂在科室申领下面 */
+      stripHomeShortcut(list) {
+        return (list || []).reduce((acc, item) => {
+          const title = (item.meta && item.meta.title) || item.title || '';
+          if (item.path === HOME_PATH || title === '菜单列表') {
+            return acc;
+          }
+          if (item.children && item.children.length) {
+            acc.push({
+              ...item,
+              children: this.stripHomeShortcut(item.children)
+            });
+          } else {
+            acc.push(item);
+          }
+          return acc;
+        }, []);
+      },
       /* 监听屏幕尺寸改变 */
       screenSizeChange() {
         this.$store.dispatch('theme/updateScreenSize');
@@ -459,14 +549,15 @@
 </script>
 
 <style lang="scss">
-  // 菜单 svg 图标对齐 el-icon-* 字体图标的尺寸与间距
+  // 菜单 svg 图标与字体图标同一尺寸，避免和文字挤在一起
   .ele-admin-sidebar-menus .menu-svg-icon.svg-icon,
   .ele-admin-sidebar-nav-menu .menu-svg-icon.svg-icon,
   .el-menu--popup .menu-svg-icon.svg-icon {
-    width: 24px;
+    width: 18px;
     height: 18px;
-    margin-right: 5px;
+    margin-right: 8px;
     font-size: 18px;
+    flex: 0 0 auto;
     vertical-align: middle;
     text-align: center;
   }
@@ -571,24 +662,51 @@
       .el-menu-item,
       .el-submenu__title {
         /* ele-admin 用 `> .el-menu-item` 设了固定 height/line-height，
-           特异性与这里相同且加载更晚，必须用 !important 才能让长名称真正撑开 */
+           特异性与这里相同且加载更晚，必须用 !important 才能让长名称真正撑开。
+           右侧留出箭头空位，避免文字叠到箭头上。 */
+        display: flex !important;
+        align-items: center;
         height: auto !important;
         line-height: 1.4 !important;
-        min-height: 38px;
-        padding-top: 7px !important;
-        padding-bottom: 7px !important;
+        min-height: 40px;
+        padding-top: 8px !important;
+        padding-bottom: 8px !important;
+        padding-right: 32px !important;
+        box-sizing: border-box;
         font-size: 14px;
         font-weight: 600;
         white-space: normal !important;
         word-break: break-word;
         overflow: visible;
       }
-      /* 文本容器（span/a）：flex item 默认 min-width:auto 不会收缩，
-         长名称会撑破而不是换行，这里显式放开 */
-      .el-menu-item > span,
+      /* 叶子菜单的图标和标题包在 router-link 里 */
+      .el-menu-item > a {
+        display: flex;
+        align-items: center;
+        flex: 1;
+        min-width: 0;
+        color: inherit;
+        line-height: inherit;
+      }
+      .el-menu-item > a > i,
+      .el-menu-item > a > .menu-svg-icon,
+      .el-submenu__title > i:not(.el-submenu__icon-arrow),
+      .el-submenu__title > .menu-svg-icon {
+        flex: 0 0 18px;
+        width: 18px;
+        margin-right: 8px;
+        text-align: center;
+        line-height: 1;
+      }
+      .el-submenu__title > .el-submenu__icon-arrow {
+        right: 12px;
+        margin-top: 0;
+      }
+      /* 文本不裁切；flex item 默认 min-width:auto 不会收缩，长名称要显式放开才能换行 */
+      .el-menu-item > a > span,
       .el-submenu__title > span,
-      .el-menu-item > a,
       .el-submenu__title > a {
+        flex: 1;
         min-width: 0;
         line-height: inherit;
         white-space: normal !important;
@@ -617,18 +735,95 @@
      处理：
      1) 导航区 overflow:hidden，避免空 nav 冒出滚动条轨道；
      2) 面包屑跟顶栏同高并裁切，避免 72px item 溢出；
-     3) 页签顶边用顶栏同色实心投影向上盖住接缝（比伪元素更稳，
-        色边界被推到页签内侧，白晕不再压在灰顶上）。 */
+     3) 接缝用顶栏内侧同色描边收住，不再用投影压到页签或侧栏上。 */
   .ele-admin-header-nav {
     overflow: hidden;
   }
 
+  /* 页签栏不再放小房子。没打开其他页面时，这一栏是空的 */
+  .ele-admin-tabs > .ele-tab-tool.is-tab {
+    display: none;
+  }
+
+  /* 首页 / 菜单列表固定在院徽正下方，和页签同一行，宽度跟院徽一致。
+     节点挂在 body 上：侧栏层级高于顶栏，留在院徽里会被左侧、混合布局盖住。 */
+  .spd-side-home-tabs {
+    position: fixed;
+    top: 72px;
+    left: 0;
+    z-index: 200;
+    display: flex;
+    width: 240px;
+    height: 40px;
+    box-sizing: border-box;
+    background: #fff;
+    border-right: 1px solid #e4e7ed;
+    border-bottom: 1px solid #ebeef5;
+  }
+  .spd-side-home-tab {
+    flex: 1;
+    min-width: 0;
+    height: 40px;
+    margin: 0;
+    padding: 0 4px;
+    border: none;
+    border-right: 1px solid #ebeef5;
+    background: #fff;
+    color: #606266;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 40px;
+    cursor: pointer;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .spd-side-home-tab.is-active {
+    color: #409eff;
+    background: #ecf5ff;
+    box-shadow: inset 0 -2px 0 #409eff;
+  }
+  /* 侧栏从页签行下面开始，避免目录盖住这两个标签 */
+  .ele-admin-sidebar,
+  .ele-admin-sidebar-nav {
+    overflow: hidden;
+  }
+  .ele-admin-sidebar-menus,
+  .ele-admin-sidebar-nav-menu {
+    margin-top: 40px;
+    min-height: 0;
+  }
+  /* 顶部菜单没有侧栏，页签整行右移出院徽的宽度，新页签在两个标签右边打开 */
+  body.spd-layout-top .ele-admin-tabs {
+    padding-left: 240px;
+    box-sizing: border-box;
+  }
+  body.spd-layout-top.spd-side-collapsed .ele-admin-tabs {
+    padding-left: 56px;
+  }
+  .spd-side-home-tabs.is-narrow {
+    width: 56px;
+  }
+  .spd-side-home-tabs.is-narrow .spd-side-home-tab {
+    padding: 0;
+    font-size: 12px;
+  }
+  .spd-side-home-tabs.is-hidden {
+    display: none;
+  }
+
   .ele-admin-header .ele-admin-breadcrumb {
     align-self: stretch;
+    min-width: 0;
     overflow: hidden;
 
+    /* 与顶部菜单布局的一级目录同一套字体：15px、加粗、微软雅黑 */
     > .el-breadcrumb {
       height: 100%;
+      font-size: 15px;
+      font-weight: 600;
+      font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB',
+        'Microsoft YaHei', '微软雅黑', Arial, sans-serif;
     }
 
     .el-breadcrumb__item {
@@ -636,6 +831,14 @@
       line-height: normal;
       display: inline-flex;
       align-items: center;
+    }
+
+    .el-breadcrumb__inner,
+    .el-breadcrumb__inner a,
+    .el-breadcrumb__separator {
+      font-size: 15px;
+      font-weight: 600;
+      font-family: inherit;
     }
   }
 
@@ -647,12 +850,12 @@
   body:not(.ele-admin-theme-dark) .ele-admin-head-dark {
     .ele-admin-header:not(.ele-admin-header-primary) {
       background-color: #5b6472 !important;
-      /* 实心投影向下延伸，盖住与页签之间的亚像素缝 */
-      box-shadow: 0 1px 0 0 #5b6472, 0 2px 0 0 #5b6472,
-        0 1px 4px rgba(0, 0, 0, 0.1) !important;
+      /* 接缝用顶栏内侧的同色边收住，不再用投影压到页签上 */
+      box-shadow: inset 0 -1px 0 #5b6472 !important;
 
       .ele-admin-logo {
-        background-color: #5b6472 !important;
+        background-color: #fff !important;
+        box-shadow: none !important;
       }
 
       .ele-admin-breadcrumb {
@@ -660,40 +863,41 @@
       }
     }
 
-    /* 页签顶边再向上盖同色，把灰|白色边界推进页签内侧 */
+    /* 页签只保留自身轻阴影，不再向上盖住顶栏 */
     &.ele-admin-show-tabs
       .ele-admin-header:not(.ele-admin-header-primary)
       ~ .ele-admin-main
       .ele-admin-tabs {
-      box-shadow: 0 -2px 0 0 #5b6472, 0 1px 4px rgba(0, 21, 41, 0.08);
+      box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
     }
 
     .ele-admin-header-primary {
-      box-shadow: 0 1px 0 0 var(--color-primary), 0 2px 0 0 var(--color-primary),
-        0 1px 4px rgba(0, 0, 0, 0.1) !important;
+      box-shadow: inset 0 -1px 0 var(--color-primary) !important;
     }
 
     &.ele-admin-show-tabs
       .ele-admin-header-primary
       ~ .ele-admin-main
       .ele-admin-tabs {
-      box-shadow: 0 -2px 0 0 var(--color-primary),
-        0 1px 4px rgba(0, 21, 41, 0.08);
+      box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
     }
   }
 
-  /* 左上角院徽：固定尺寸的白色铭牌 + 背景图 contain，
-     不再用 <img> 替换元素，彻底避开 logo-auto 的 width:auto 塌缩 */
+  /* 左上角院徽列与侧栏同宽，白底连成一列，不再在灰顶栏里另放一块铭牌 */
   .ele-admin-logo,
   .ele-admin-logo-auto .ele-admin-logo {
     width: 240px !important;
     height: 72px !important;
+    box-sizing: border-box;
+    border-right: 1px solid #e4e7ed;
+    /* 首页标签用 fixed 挂在院徽节点里，不能被院徽裁掉 */
+    overflow: visible !important;
   }
   .ele-admin-logo > .spd-hospital-logo {
-    width: 228px !important;
-    height: 60px !important;
+    width: calc(100% - 16px) !important;
+    height: calc(100% - 12px) !important;
     flex: 0 0 auto;
-    background-color: #fff;
+    background-color: transparent;
     background-repeat: no-repeat;
     background-position: center;
     background-size: contain;

@@ -209,11 +209,14 @@ export default {
       cacheSetting(PRESET_SIDE_MIGRATE_KEY, true);
       cacheSetting('preset', 'spd');
     }
-    // SPD 预设只锁顶栏/侧栏这对配色，布局保持用户自己的选择
-    if (state.preset === 'spd') {
-      state.headStyle = SPD_PRESET.headStyle;
-      state.sideStyle = SPD_PRESET.sideStyle;
-    }
+    // 侧栏固定白底，主题色固定默认蓝，暗黑模式关闭。
+    // 顶栏仍可在亮色 / 暗色 / 主色之间切换，主色即默认蓝。
+    state.sideStyle = 'light';
+    state.darkMode = false;
+    state.color = null;
+    cacheSetting('sideStyle', 'light');
+    cacheSetting('darkMode', false);
+    cacheSetting('color', null);
     return state;
   })(),
   getters: {
