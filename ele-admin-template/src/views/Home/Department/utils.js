@@ -55,5 +55,13 @@ export function fmtPrice(x) {
 
 export function operatorName(vm) {
   const info = vm?.$store?.state?.user?.info;
-  return info?.nickname || info?.NickName || info?.username || '';
+  // 后端 Users 返回 Nickname / UserName（PascalCase），勿只读 nickname
+  return (
+    info?.Nickname ||
+    info?.nickname ||
+    info?.NickName ||
+    info?.UserName ||
+    info?.username ||
+    ''
+  );
 }
