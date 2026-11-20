@@ -16,7 +16,7 @@
         :columns="columns"
         :datasource="datasource"
         :need-page="false"
-        cache-key="umPermissionsTableV3"
+        cache-key="umPermissionsTableV4"
       >
         <template v-slot:sort="{ row }">
           <el-input
@@ -35,6 +35,7 @@
           </el-button>
         </template>
         <template v-slot:action="{ row }">
+          <el-button type="text" size="mini" class="action-edit" @click="openEdit(row)">编辑</el-button>
           <el-popconfirm title="确定删除此权限吗？" @confirm="handleDelete(row)">
             <el-button slot="reference" type="text" size="mini" class="text-danger">删除</el-button>
           </el-popconfirm>
@@ -45,6 +46,11 @@
     <AddPermissionDialog :visible.sync="addVisible" @success="reload" />
     <NewAddPermissionDialog :visible.sync="newAddVisible" @success="reload" />
     <AddNewSystemPermissionDialog :visible.sync="newSysAddVisible" @success="reload" />
+    <AddNewSystemPermissionDialog
+      :visible.sync="editVisible"
+      :record="editRow"
+      @success="reload"
+    />
     <RemarkDialog
       :visible.sync="remarkVisible"
       :permission-id="currentRow && currentRow.ID"
@@ -80,6 +86,8 @@ export default {
       addVisible: false,
       newAddVisible: false,
       newSysAddVisible: false,
+      editVisible: false,
+      editRow: null,
       remarkVisible: false,
       exporting: false,
       currentRow: null,
@@ -116,7 +124,7 @@ export default {
           formatter: (row) => formatPermissionType(row.TYPE)
         },
         { label: '备注', minWidth: 160, slot: 'remarks' },
-        { label: '操作', width: 90, fixed: 'right', slot: 'action' }
+        { label: '操作', width: 120, fixed: 'right', slot: 'action' }
       ]
     };
   },
@@ -195,6 +203,10 @@ export default {
       this.currentRow = row;
       this.remarkVisible = true;
     },
+    openEdit(row) {
+      this.editRow = { ...row };
+      this.editVisible = true;
+    },
     async handleDelete(row) {
       try {
         const res = await delPermissionByID(row.ID);
@@ -245,6 +257,9 @@ export default {
 }
 .text-danger {
   color: #f56c6c;
+}
+.action-edit {
+  margin-right: 8px;
 }
 .sort-input {
   width: 108px;
