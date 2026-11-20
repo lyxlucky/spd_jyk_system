@@ -76,22 +76,17 @@
           placeholder="品名/型号规格/生产企业"
         />
       </el-form-item>
-      <el-form-item class="ele-form-actions">
+      <el-form-item>
         <el-button type="primary" icon="el-icon-search" @click="search">查询</el-button>
+      </el-form-item>
+      <el-form-item>
         <el-button icon="el-icon-refresh" @click="reset">重置</el-button>
-        <el-button type="primary" icon="el-icon-printer" @click="$emit('printPlan')">打印申领单</el-button>
-        <el-button v-if="showStzxPrint" type="primary" icon="el-icon-printer" @click="$emit('printPlanJhd')">
-          计划单打印
-        </el-button>
+      </el-form-item>
+      <el-form-item v-if="canExport">
+        <el-button type="success" icon="el-icon-download" @click="exportData">导出</el-button>
+      </el-form-item>
+      <el-form-item>
         <el-button type="primary" @click="$emit('showReceive')">订单收货</el-button>
-        <el-button
-          v-if="canExport"
-          type="success"
-          icon="el-icon-download"
-          @click="exportData"
-        >
-          导出
-        </el-button>
       </el-form-item>
     </el-form>
 
@@ -153,9 +148,6 @@
       },
       isGzbj() {
         return this.$HOME_HP == 'gzbj';
-      },
-      showStzxPrint() {
-        return ['stzx', 'stzl'].includes(this.$HOME_HP);
       },
       canExport() {
         return hasExportPermission('export-ApplyPlan-slddc');
@@ -276,24 +268,7 @@
   flex-shrink: 0;
 }
 
-/* 操作按钮占满可用宽度，超出换多行 */
-.ele-form-actions.el-form-item {
-  display: block !important;
-  width: 100% !important;
-  max-width: 100% !important;
-  margin-right: 0 !important;
-}
-
-.ele-form-actions :deep(.el-form-item__content) {
-  max-width: 100% !important;
-  display: flex !important;
-  flex-wrap: wrap !important;
-  align-items: center;
-  gap: 6px;
-  width: 100% !important;
-}
-
-.ele-form-actions :deep(.el-button) {
+.ele-form-search :deep(.el-button) {
   margin: 0;
 }
 </style>
