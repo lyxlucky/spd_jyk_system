@@ -31,6 +31,11 @@ export function fmtDelete(v) {
   return v === '1' || v === 1 ? '正常' : '已删';
 }
 
+export function fmtDateTime(v) {
+  if (!v) return '—';
+  return String(v).replace('T', ' ').substring(0, 19);
+}
+
 export function fmtDate(v) {
   if (!v) return '—';
   return String(v).substring(0, 10);

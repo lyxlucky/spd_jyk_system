@@ -99,6 +99,9 @@
                 <el-table-column label="启用状态" width="100">
                   <template slot-scope="{ row }">{{ fmtEnable(row.Enable) }}</template>
                 </el-table-column>
+                <el-table-column label="计划审核审批" width="110">
+                  <template slot-scope="{ row }">{{ row.IS_APPLY_PLAN_REVIEW == '1' ? '开启' : '关闭' }}</template>
+                </el-table-column>
                 <el-table-column prop="Herp_Dept_Two_Code" label="HERP二级科室编码" min-width="100" show-overflow-tooltip />
                 <el-table-column label="编辑财务属性" width="150" fixed="right" align="center">
                   <template slot-scope="{ row }">
@@ -221,6 +224,20 @@
               <el-option label="收货结算" value="1" />
             </el-select>
           </el-form-item>
+          <el-form-item label="科室计划审核审批" prop="IS_APPLY_PLAN_REVIEW" for="dept-plan-review-switch">
+            <el-switch
+              id="dept-plan-review-switch"
+              v-model="twoForm.IS_APPLY_PLAN_REVIEW"
+              active-value="1"
+              inactive-value="0"
+              active-text="开启"
+              inactive-text="关闭"
+              aria-label="科室计划审核审批"
+            />
+          </el-form-item>
+          <el-form-item v-if="twoDialogEdit" label="审核审批开关操作时间">
+            <span>{{ fmtDateTime(twoForm.APPLY_PLAN_REVIEW_TIME) }}</span>
+          </el-form-item>
           <el-form-item label="月计划">
             <el-select v-model="twoForm.IS_MAKE_PLAN" style="width:100%">
               <el-option label="不需要" value="0" />
@@ -272,7 +289,7 @@
 <script>
 import { Message, MessageBox } from 'element-ui';
 import * as api from '@/api/Home/Department';
-import { fmtEnable, openExcelFile } from './utils';
+import { fmtEnable, fmtDateTime, openExcelFile } from './utils';
 import OneBulkAuthPanel from './components/OneBulkAuthPanel.vue';
 import TwoPkgAuthPanel from './components/TwoPkgAuthPanel.vue';
 import FinanceCwDialog from './components/FinanceCwDialog.vue';
@@ -317,6 +334,8 @@ export default {
         receiveB2bPreEnable: '0',
         receivePlace: '0',
         balanceType: '0',
+        IS_APPLY_PLAN_REVIEW: '0',
+        APPLY_PLAN_REVIEW_TIME: null,
         IS_MAKE_PLAN: '0',
         VALIDITY_PERIOD: 0,
         wareBaseId: '',
@@ -331,6 +350,7 @@ export default {
   },
   methods: {
     fmtEnable,
+    fmtDateTime,
     deptTypeLabel(v) {
       if (v === 1 || v === '1') return '住院';
       if (v === 2 || v === '2') return '门诊';
@@ -563,6 +583,8 @@ export default {
             receiveB2bPreEnable: String(d.Receive_B2b_Pre_Enable ?? '0'),
             receivePlace: String(d.Receive_Place ?? '0'),
             balanceType: String(d.Balance_Type ?? '0'),
+            IS_APPLY_PLAN_REVIEW: String(d.IS_APPLY_PLAN_REVIEW ?? '0'),
+            APPLY_PLAN_REVIEW_TIME: d.APPLY_PLAN_REVIEW_TIME || null,
             IS_MAKE_PLAN: String(d.IS_MAKE_PLAN ?? '0'),
             VALIDITY_PERIOD: Number(d.VALIDITY_PERIOD) || 0,
             wareBaseId: String(d.STORAGE_ID ?? ''),
@@ -591,6 +613,8 @@ export default {
         receiveB2bPreEnable: '0',
         receivePlace: '0',
         balanceType: '0',
+        IS_APPLY_PLAN_REVIEW: '0',
+        APPLY_PLAN_REVIEW_TIME: null,
         IS_MAKE_PLAN: '0',
         VALIDITY_PERIOD: 0,
         wareBaseId: '',
