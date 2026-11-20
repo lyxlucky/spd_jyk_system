@@ -93,6 +93,19 @@ export async function addNewSystemPermission(data) {
   return res?.data;
 }
 
+/** 更新权限排序 */
+export async function upPermissionSort(id, sort) {
+  const res = await request.post(
+    '/Commons/UpPermissionSort',
+    formdataify({
+      Token: token(),
+      id,
+      SORT: sort ?? ''
+    })
+  );
+  return unwrap(res);
+}
+
 /** 更新权限备注 */
 export async function upPermissionRemark(id, remark) {
   const res = await request.post(

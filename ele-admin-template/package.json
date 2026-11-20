@@ -45,6 +45,7 @@
     "build:gzbjnw": "vue-cli-service build --mode gzbjnw",
     "build:szssww": "vue-cli-service build --mode szssww",
     "build:szssnw": "vue-cli-service build --mode szssnw",
+    "build:yzrmnw": "vue-cli-service build --mode yzrmnw",
     "lint": "vue-cli-service lint",
     "clean:lib": "rimraf node_modules"
   },
@@ -66,7 +67,6 @@
     "echarts": "^5.3.3",
     "echarts-wordcloud": "^2.0.0",
     "ele-admin": "^1.11.3",
-    "ele-admin-template": "file:",
     "element-ui": "2.15.7",
     "exceljs": "^4.4.0",
     "file-saver": "^2.0.5",

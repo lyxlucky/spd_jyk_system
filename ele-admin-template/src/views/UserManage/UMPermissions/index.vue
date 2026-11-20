@@ -16,8 +16,19 @@
         :columns="columns"
         :datasource="datasource"
         :need-page="false"
-        cache-key="umPermissionsTable"
+        cache-key="umPermissionsTableV3"
       >
+        <template v-slot:sort="{ row }">
+          <el-input
+            v-model="row.SORT"
+            size="mini"
+            maxlength="6"
+            class="sort-input"
+            placeholder="越小越靠前"
+            @focus="rememberSort(row)"
+            @change="saveSort(row)"
+          />
+        </template>
         <template v-slot:remarks="{ row }">
           <el-button type="text" size="mini" @click="openRemark(row)">
             {{ formatRemark(row.Remarks) }}
@@ -36,8 +47,8 @@
     <AddNewSystemPermissionDialog :visible.sync="newSysAddVisible" @success="reload" />
     <RemarkDialog
       :visible.sync="remarkVisible"
-      :permission-id="currentRow?.ID"
-      :default-remark="currentRow?.Remarks"
+      :permission-id="currentRow && currentRow.ID"
+      :default-remark="currentRow && currentRow.Remarks"
       @success="reload"
     />
   </div>
@@ -48,7 +59,12 @@ import AddPermissionDialog from './components/AddPermissionDialog.vue';
 import NewAddPermissionDialog from './components/NewAddPermissionDialog.vue';
 import AddNewSystemPermissionDialog from './components/AddNewSystemPermissionDialog.vue';
 import RemarkDialog from './components/RemarkDialog.vue';
-import { delPermissionByID, getPermissionList } from '@/api/UserManage/UMPermissions';
+import {
+  delPermissionByID,
+  getPermissionList,
+  getPrimaryRoutList,
+  upPermissionSort
+} from '@/api/UserManage/UMPermissions';
 import { exportPermissionExcel, formatRemark, formatPermissionType, isDeleteOk } from './utils';
 
 export default {
@@ -67,9 +83,33 @@ export default {
       remarkVisible: false,
       exporting: false,
       currentRow: null,
+      sortDraft: {},
       columns: [
         { label: '权限名称', prop: 'Permission_Name', minWidth: 200, sortable: true },
-        { label: '链接', prop: 'Permission_Url', minWidth: 240, showOverflowTooltip: true },
+        { label: '链接', prop: 'Permission_Url', minWidth: 220, showOverflowTooltip: true },
+        {
+          label: '父级菜单',
+          prop: 'Parent_Name',
+          minWidth: 140,
+          sortable: true,
+          showOverflowTooltip: true,
+          formatter: (row) => row.Parent_Name || ''
+        },
+        {
+          label: '排序',
+          prop: 'SORT',
+          width: 130,
+          slot: 'sort',
+          sortable: true,
+          sortMethod: (a, b) => {
+            const toNum = (value) => {
+              if (value == null || value === '') return Number.MAX_SAFE_INTEGER;
+              const n = Number(value);
+              return Number.isFinite(n) ? n : Number.MAX_SAFE_INTEGER;
+            };
+            return toNum(a.SORT) - toNum(b.SORT);
+          }
+        },
         {
           label: '类型',
           width: 80,
@@ -84,13 +124,72 @@ export default {
     formatRemark,
     formatPermissionType,
     datasource() {
-      return getPermissionList().then((res) => ({
-        list: res.result || [],
-        count: res.total || (res.result || []).length
-      }));
+      return Promise.all([
+        getPermissionList(),
+        getPrimaryRoutList().catch(() => ({ result: [] }))
+      ]).then(([res, routRes]) => {
+        const list = this.fillParentName(res.result || [], routRes.result || []);
+        return {
+          list,
+          count: res.total || list.length
+        };
+      });
+    },
+    fillParentName(list, routes) {
+      const routeTitle = {};
+      (routes || []).forEach((item) => {
+        if (item && item.ID != null) {
+          routeTitle[String(item.ID)] = item.TITLE || '';
+        }
+      });
+      const permissionName = {};
+      (list || []).forEach((item) => {
+        if (item && item.ID != null) {
+          permissionName[String(item.ID)] = item.Permission_Name || '';
+        }
+      });
+      return (list || []).map((item) => {
+        const routId = item.PRIMARY_ROUT_ID == null ? '' : String(item.PRIMARY_ROUT_ID).trim();
+        const pid = item.PID == null ? '' : String(item.PID).trim();
+        const parent =
+          item.Parent_Name ||
+          routeTitle[routId] ||
+          routeTitle[pid] ||
+          permissionName[pid] ||
+          '';
+        return {
+          ...item,
+          Parent_Name: parent,
+          SORT: item.SORT == null ? '' : String(item.SORT)
+        };
+      });
     },
     reload() {
       this.$refs.table?.reload();
+    },
+    rememberSort(row) {
+      this.$set(this.sortDraft, row.ID, row.SORT == null ? '' : String(row.SORT));
+    },
+    async saveSort(row) {
+      const next = row.SORT == null ? '' : String(row.SORT).trim();
+      const prev = this.sortDraft[row.ID] == null ? '' : String(this.sortDraft[row.ID]);
+      if (next === prev.trim()) {
+        return;
+      }
+      if (next !== '' && !/^\d+$/.test(next)) {
+        this.$message.warning('排序只能填数字，数字越小越靠前');
+        row.SORT = prev;
+        return;
+      }
+      try {
+        const res = await upPermissionSort(row.ID, next);
+        this.$set(this.sortDraft, row.ID, next);
+        row.SORT = next;
+        this.$message.success((res.msg || '排序已更新') + '，重新登录后侧栏生效');
+      } catch (e) {
+        row.SORT = prev;
+        this.$message.error(e.message || '更新失败');
+      }
     },
     openRemark(row) {
       this.currentRow = row;
@@ -136,13 +235,18 @@ export default {
   margin-bottom: 12px;
 }
 .toolbar-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
   margin-bottom: 8px;
-  text-align: right;
 }
 .toolbar-row .el-button + .el-button {
   margin-left: 8px;
 }
 .text-danger {
   color: #f56c6c;
+}
+.sort-input {
+  width: 108px;
 }
 </style>
