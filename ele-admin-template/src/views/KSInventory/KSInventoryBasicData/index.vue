@@ -26,7 +26,7 @@
             :columns="columns"
             :datasource="datasource"
             :selection.sync="selection"
-            cache-key="KSInventoryBasicDataTable"
+            cache-key="KSInventoryBasicDataTableV2"
           >
         <!-- 表头工具栏 -->
         <!-- <template v-slot:toolbar>
@@ -144,15 +144,11 @@
             fixed: 'left'
           },
           {
-            columnKey: 'action',
-            label: '操作',
-            width: 100,
+            prop: 'Varietie_Pic',
+            slot: 'Varietie_Pic',
+            label: '品种图片',
             align: 'center',
-            resizable: false,
-            slot: 'action',
-            showOverflowTooltip: true,
-            className: 'action-col',
-            fixed: 'left'
+            minWidth: 120
           },
           // {
           //   label: '上限 / 下限',
@@ -190,14 +186,6 @@
           //   show: false
           // },
           {
-            prop: 'Varietie_Pic',
-            slot: 'Varietie_Pic',
-            label: '品种图片',
-            sortable: 'custom',
-            align: 'center',
-            minWidth: 120
-          },
-          {
             prop: 'Varietie_Name',
             label: '品种名称',
             sortable: 'custom',
@@ -220,6 +208,47 @@
             align: 'center',
             showOverflowTooltip: true,
             minWidth: 200
+          },
+          {
+            prop: 'MIDDLE_PACKAGE_COUNT',
+            label: '中包装数量',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 110
+          },
+          {
+            prop: 'PAG_TYPE',
+            label: '包装规格',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 120
+          },
+          {
+            prop: 'SCOPE_APPLICATION',
+            label: '适用范围',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 160
+          },
+          {
+            prop: 'PRO_MEDICAL_CONSUMABLE_GRADE',
+            label: '级别',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 100
+          },
+          {
+            prop: 'HIGH_OR_LOW_CLASS',
+            label: '属性',
+            align: 'center',
+            showOverflowTooltip: true,
+            minWidth: 80,
+            formatter: (_row, _column, cellValue) => {
+              if (cellValue == '0') return '低值';
+              if (cellValue == '1') return '高值';
+              if (cellValue == '2') return '试剂';
+              return cellValue || '';
+            }
           },
           {
             prop: 'Manufacturing_Ent_Name',
@@ -315,6 +344,17 @@
             width: 100,
             align: 'center',
             showOverflowTooltip: true
+          },
+          {
+            columnKey: 'action',
+            label: '操作',
+            width: 100,
+            align: 'center',
+            resizable: false,
+            slot: 'action',
+            showOverflowTooltip: true,
+            className: 'action-col',
+            fixed: 'right'
           }
         ],
         toolbar: false,
@@ -486,6 +526,11 @@
                   '品种名称',
                   '常用名',
                   '规格/型号',
+                  '中包装数量',
+                  '包装规格',
+                  '适用范围',
+                  '级别',
+                  '属性',
                   '生产企业名称',
                   '注册证号',
                   '单位',
@@ -502,6 +547,17 @@
                   d.Varietie_Name,
                   d.COMMON_NAME,
                   d.Specification_Or_Type,
+                  d.MIDDLE_PACKAGE_COUNT,
+                  d.PAG_TYPE,
+                  d.SCOPE_APPLICATION,
+                  d.PRO_MEDICAL_CONSUMABLE_GRADE,
+                  d.HIGH_OR_LOW_CLASS == '0'
+                    ? '低值'
+                    : d.HIGH_OR_LOW_CLASS == '1'
+                      ? '高值'
+                      : d.HIGH_OR_LOW_CLASS == '2'
+                        ? '试剂'
+                        : d.HIGH_OR_LOW_CLASS || '',
                   d.Manufacturing_Ent_Name,
                   d.APPROVAL_NUMBER,
                   d.UNIT,
