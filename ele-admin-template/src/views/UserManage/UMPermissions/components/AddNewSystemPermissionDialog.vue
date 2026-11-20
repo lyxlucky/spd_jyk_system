@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-    title="新系统新增权限"
+    :title="dialogTitle"
     :visible.sync="dialogVisible"
     width="560px"
     append-to-body
@@ -60,7 +60,10 @@
           <el-input v-model="form.Remarks" placeholder="如：新系统-用量预警" />
         </el-form-item>
         <el-form-item label="API">
-          <el-input v-model="form.p_api" placeholder="可选，写入 PERMISSION_API" />
+          <el-input
+            v-model="form.p_api"
+            :placeholder="isEdit ? '可选。只新增这一条，不修改已有 API' : '可选，写入 PERMISSION_API'"
+          />
         </el-form-item>
       </el-form>
     </div>
@@ -74,7 +77,11 @@
 </template>
 
 <script>
-import { addNewSystemPermission, getPrimaryRoutList } from '@/api/UserManage/UMPermissions';
+import {
+  addNewSystemPermission,
+  getPrimaryRoutList,
+  updateNewSystemPermission
+} from '@/api/UserManage/UMPermissions';
 import { isOkCode } from '../utils';
 
 function emptyForm() {
@@ -95,7 +102,19 @@ function emptyForm() {
 export default {
   name: 'AddNewSystemPermissionDialog',
   props: {
-    visible: Boolean
+    visible: Boolean,
+    record: {
+      type: Object,
+      default: null
+    }
+  },
+  computed: {
+    isEdit() {
+      return !!(this.record && this.record.ID);
+    },
+    dialogTitle() {
+      return this.isEdit ? '编辑权限' : '新系统新增权限';
+    }
   },
   data() {
     return {
@@ -145,6 +164,9 @@ export default {
       try {
         const res = await getPrimaryRoutList();
         this.parentList = res.result || [];
+        if (this.isEdit) {
+          this.fillFromRecord();
+        }
       } catch (e) {
         this.$message.error(e.message || '加载父级菜单失败');
         this.dialogVisible = false;
@@ -157,21 +179,62 @@ export default {
       this.parentList = [];
       this.$refs.form?.clearValidate();
     },
+    fillFromRecord() {
+      const row = this.record || {};
+      const type = Number(row.TYPE) === 1 ? 1 : 0;
+      let parentId = row.PRIMARY_ROUT_ID == null ? '' : String(row.PRIMARY_ROUT_ID).trim();
+      if (!parentId && row.PID != null) {
+        const pid = String(row.PID).trim();
+        if (this.parentList.some((item) => String(item.ID) === pid)) {
+          parentId = pid;
+        }
+      }
+      if (parentId && !this.parentList.some((item) => String(item.ID) === parentId)) {
+        this.parentList = this.parentList.concat([
+          {
+            ID: parentId,
+            TITLE: row.Parent_Name || parentId,
+            PATH: ''
+          }
+        ]);
+      }
+      this.form = {
+        TYPE: type,
+        PRIMARY_ROUT_ID: type === 0 ? parentId : '',
+        Permission_Name: row.Permission_Name || '',
+        Permission_Url: row.Permission_Url || '',
+        COMPONENT: row.COMPONENT || '',
+        ICON: row.ICON || '',
+        SORT: row.SORT == null ? '' : String(row.SORT),
+        HIDE: Number(row.HIDE) === 1 ? 1 : 0,
+        Remarks: row.Remarks || '',
+        p_api: row.permissionApi || ''
+      };
+      this.$nextTick(() => this.$refs.form?.clearValidate());
+    },
     handleSubmit() {
       this.$refs.form.validate(async (valid) => {
         if (!valid) return;
+        if (this.form.TYPE === 0 && this.form.SORT && !/^\d+$/.test(String(this.form.SORT).trim())) {
+          this.$message.warning('排序只能填数字，数字越小越靠前');
+          return;
+        }
         this.submitting = true;
+        const editing = this.isEdit;
         try {
-          const res = await addNewSystemPermission(this.form);
+          const payload = editing ? { ...this.form, ID: this.record.ID } : this.form;
+          const res = editing
+            ? await updateNewSystemPermission(payload)
+            : await addNewSystemPermission(payload);
           if (isOkCode(res?.code)) {
-            this.$message.success(res.msg || '添加成功');
+            this.$message.success(res.msg || (editing ? '修改成功' : '添加成功'));
             this.dialogVisible = false;
             this.$emit('success');
           } else {
-            this.$message.error(res?.msg || '添加失败');
+            this.$message.error(res?.msg || (editing ? '修改失败' : '添加失败'));
           }
         } catch (e) {
-          this.$message.error(e.message || '添加失败');
+          this.$message.error(e.message || (editing ? '修改失败' : '添加失败'));
         } finally {
           this.submitting = false;
         }

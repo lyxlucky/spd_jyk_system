@@ -93,6 +93,29 @@ export async function addNewSystemPermission(data) {
   return res?.data;
 }
 
+/** 修改权限 */
+export async function updateNewSystemPermission(data) {
+  const res = await request.post(
+    '/Commons/UpdateNewSystemPermission',
+    formdataify({
+      Token: token(),
+      ID: data.ID,
+      Permission_Name: data.Permission_Name,
+      Permission_Url: data.Permission_Url,
+      Remarks: data.Remarks ?? '',
+      COMPONENT: data.COMPONENT ?? '',
+      PRIMARY_ROUT_URL: data.PRIMARY_ROUT_URL || data.Permission_Url || '',
+      PRIMARY_ROUT_ID: data.PRIMARY_ROUT_ID ?? '',
+      ICON: data.ICON ?? '',
+      SORT: data.SORT ?? '',
+      HIDE: data.HIDE ?? 0,
+      TYPE: data.TYPE ?? 0,
+      p_api: data.p_api ?? ''
+    })
+  );
+  return res?.data;
+}
+
 /** 更新权限排序 */
 export async function upPermissionSort(id, sort) {
   const res = await request.post(

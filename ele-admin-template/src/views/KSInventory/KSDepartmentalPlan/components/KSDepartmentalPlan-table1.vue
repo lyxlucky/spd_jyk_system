@@ -12,8 +12,6 @@
       <KSDepartmentalPlan-search
         @search="reload"
         @exportData="exportData"
-        @printPlan="printPlan"
-        @printPlanJhd="printPlanJhd"
         @showReceive="showReceiveVisible = true"
         ref="search"
       />
@@ -120,32 +118,51 @@
       </template>
       <!-- 操作列 -->
       <template v-slot:action="{ row }">
-        <el-popconfirm
-          class="ele-action"
-          title="确定删除？"
-          @confirm="remove(row)"
-        >
-          <template v-slot:reference>
-            <el-link
-              type="danger"
-              size="mini"
-              :underline="false"
-              v-if="row.State == 0"
-              icon="el-icon-delete"
-            >
-              删除
-            </el-link>
-          </template>
-        </el-popconfirm>
-        <el-link
-          v-if="row.State == 1"
-          type="primary"
-          :underline="false"
-          icon="el-icon-edit"
-          @click="ReturnStateBtn(row)"
-        >
-          取消提交
-        </el-link>
+        <span class="plan-row-actions">
+          <el-popconfirm
+            class="ele-action"
+            title="确定删除？"
+            @confirm="remove(row)"
+          >
+            <template v-slot:reference>
+              <el-link
+                type="danger"
+                size="mini"
+                :underline="false"
+                v-if="row.State == 0"
+                icon="el-icon-delete"
+              >
+                删除
+              </el-link>
+            </template>
+          </el-popconfirm>
+          <el-link
+            v-if="row.State == 1"
+            type="primary"
+            :underline="false"
+            icon="el-icon-edit"
+            @click="ReturnStateBtn(row)"
+          >
+            取消提交
+          </el-link>
+          <el-link
+            type="primary"
+            :underline="false"
+            icon="el-icon-printer"
+            @click="printPlan(row)"
+          >
+            打印申领单
+          </el-link>
+          <el-link
+            v-if="showStzxPrint"
+            type="primary"
+            :underline="false"
+            icon="el-icon-printer"
+            @click="printPlanJhd(row)"
+          >
+            计划单打印
+          </el-link>
+        </span>
       </template>
         </ele-pro-table>
       </div>
@@ -179,6 +196,11 @@
       KSDepartmentalPlanSearch,
       ApplyPlanReceiveDialog
     },
+    computed: {
+      showStzxPrint() {
+        return ['stzx', 'stzl'].includes(this.$HOME_HP);
+      }
+    },
     data() {
       return {
         // 表格列配置
@@ -201,11 +223,11 @@
           {
             columnKey: 'action',
             label: '操作',
-            width: 120,
+            width: 240,
             align: 'center',
             resizable: false,
             slot: 'action',
-            showOverflowTooltip: true,
+            showOverflowTooltip: false,
             className: 'action-col'
           },
           {
@@ -576,13 +598,13 @@
             console.log(err);
           });
       },
-      printPlan() {
-        if (!this.current?.PlanNum) {
+      printPlan(row) {
+        if (!row?.PlanNum) {
           this.$message.warning('请先选择申领单');
           return;
         }
         const loading = this.$loading({ lock: true, text: '生成中...' });
-        createApplyDateExcel(this.current.PlanNum, this.current.DEPT_TWO_NAME)
+        createApplyDateExcel(row.PlanNum, row.DEPT_TWO_NAME)
           .then((res) => {
             openExcelFile(res.msg);
           })
@@ -591,13 +613,13 @@
           })
           .finally(() => loading.close());
       },
-      printPlanJhd() {
-        if (!this.current?.PlanNum) {
+      printPlanJhd(row) {
+        if (!row?.PlanNum) {
           this.$message.warning('请先选择申领单');
           return;
         }
         const loading = this.$loading({ lock: true, text: '生成中...' });
-        stzxMonthPlanJYPrint(this.current.PlanNum)
+        stzxMonthPlanJYPrint(row.PlanNum)
           .then((res) => {
             if (res.code == 301) {
               this.$alert(res.msg || '打印失败', '提示');
@@ -674,6 +696,10 @@
     },
     created() {
       localStorage.setItem('KSDepartmentalPlanMainTableSize', JSON.stringify('mini'));
+      if (this.showStzxPrint) {
+        const actionCol = this.columns.find((col) => col.columnKey === 'action');
+        if (actionCol) actionCol.width = 360;
+      }
       // this.getdatasource();
       this.GetConsume();
     },
@@ -748,5 +774,13 @@
   line-height: 23px;
   padding-top: 0;
   padding-bottom: 0;
+  white-space: nowrap;
+}
+
+.plan-row-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
 }
 </style>

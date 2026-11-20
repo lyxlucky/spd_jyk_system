@@ -31,6 +31,11 @@ export function fmtDelete(v) {
   return v === '1' || v === 1 ? '正常' : '已删';
 }
 
+export function fmtDateTime(v) {
+  if (!v) return '—';
+  return String(v).replace('T', ' ').substring(0, 19);
+}
+
 export function fmtDate(v) {
   if (!v) return '—';
   return String(v).substring(0, 10);
@@ -55,5 +60,13 @@ export function fmtPrice(x) {
 
 export function operatorName(vm) {
   const info = vm?.$store?.state?.user?.info;
-  return info?.nickname || info?.NickName || info?.username || '';
+  // 后端 Users 返回 Nickname / UserName（PascalCase），勿只读 nickname
+  return (
+    info?.Nickname ||
+    info?.nickname ||
+    info?.NickName ||
+    info?.UserName ||
+    info?.username ||
+    ''
+  );
 }

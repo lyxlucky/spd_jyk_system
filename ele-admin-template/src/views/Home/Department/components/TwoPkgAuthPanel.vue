@@ -5,6 +5,8 @@
         <li><span class="detail-label">二级科室编码:</span><span class="detail-value">{{ twoDetail.Dept_Two_Code }}</span></li>
         <li><span class="detail-label">二级科室名称:</span><span class="detail-value">{{ twoDetail.Dept_Two_Name }}</span></li>
         <li><span class="detail-label">所属一级科室：</span><span class="detail-value">{{ twoDetail.Dept_One_Name }}</span></li>
+        <li><span class="detail-label">科室计划审核审批：</span><span class="detail-value">{{ twoDetail.IS_APPLY_PLAN_REVIEW == '1' ? '开启' : '关闭' }}</span></li>
+        <li><span class="detail-label">审核审批开关操作时间：</span><span class="detail-value">{{ fmtDateTime(twoDetail.APPLY_PLAN_REVIEW_TIME) }}</span></li>
         <li><span class="detail-label">最近更新时间：</span><span class="detail-value">{{ fmtDate(twoDetail.Last_Update_Time) }}</span></li>
         <li><span class="detail-label">是否接收B2B骨科预送货单：</span><span class="detail-value">{{ b2bPreLabel(twoDetail.Receive_B2b_Pre_Enable) }}</span></li>
         <li><span class="detail-label">PDA定数码收货位置：</span><span class="detail-value">{{ receivePlaceLabel(twoDetail.Receive_Place) }}</span></li>
@@ -119,7 +121,7 @@
 import { Message, MessageBox } from 'element-ui';
 import { HOME_HP } from '@/config/setting';
 import * as api from '@/api/Home/Department';
-import { fmtDate, openExcelFile, openApiPdf } from '../utils';
+import { fmtDateTime, fmtDate, openExcelFile, openApiPdf } from '../utils';
 import PkgAuthGrantDialog from './PkgAuthGrantDialog.vue';
 import EditPkgAuthDialog from './EditPkgAuthDialog.vue';
 
@@ -168,6 +170,7 @@ export default {
     }
   },
   methods: {
+    fmtDateTime,
     fmtDate,
     b2bPreLabel(v) {
       if (v === '0' || v === 0) return '不接收(默认)';

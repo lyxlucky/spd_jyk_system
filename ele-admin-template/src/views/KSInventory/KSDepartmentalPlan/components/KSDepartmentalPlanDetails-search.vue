@@ -49,7 +49,7 @@
         <el-tooltip :content="tipEditPlanDetail" placement="top" :open-delay="300">
           <span class="btn-tip-wrap">
             <el-dropdown :disabled="!canEditPlanDetail">
-              <el-button type="primary" icon="el-icon-plus" :disabled="!canEditPlanDetail">
+              <el-button type="success" icon="el-icon-plus" :disabled="!canEditPlanDetail">
                 新增<i class="el-icon-arrow-down el-icon--right"></i>
               </el-button>
               <el-dropdown-menu slot="dropdown">
@@ -100,7 +100,7 @@
         <el-tooltip :content="tipKeepDraft" placement="top" :open-delay="300">
           <span class="btn-tip-wrap">
             <el-button
-              type="primary"
+              type="success"
               icon="el-icon-s-check"
               @click="KeeptApplyDate"
               :disabled="!canEditPlanDetail"
@@ -146,31 +146,13 @@
         >
           <span class="btn-tip-wrap">
             <el-button
-              type="primary"
+              type="success"
               icon="el-icon-s-cooperation"
               @click="Approval"
               :disabled="!IsToExamine"
             >
               审批申领单
             </el-button>
-          </span>
-        </el-tooltip>
-        <el-tooltip :content="tipDeleteDetail" placement="top" :open-delay="300">
-          <span class="btn-tip-wrap">
-            <el-popconfirm
-              class="ele-action"
-              title="确定删除所选明细？"
-              @confirm="removeBatch()"
-            >
-              <el-button
-                slot="reference"
-                type="danger"
-                icon="el-icon-delete"
-                :disabled="!canEditPlanDetail"
-              >
-                删除
-              </el-button>
-            </el-popconfirm>
           </span>
         </el-tooltip>
         <el-tooltip content="查看当前申领单的操作与流转详情" placement="top" :open-delay="300">
@@ -266,6 +248,24 @@
             >
               绑定费用项
             </el-button>
+          </span>
+        </el-tooltip>
+        <el-tooltip :content="tipDeleteDetail" placement="top" :open-delay="300">
+          <span class="btn-tip-wrap">
+            <el-popconfirm
+              class="ele-action"
+              title="确定删除所选明细？"
+              @confirm="removeBatch()"
+            >
+              <el-button
+                slot="reference"
+                type="danger"
+                icon="el-icon-delete"
+                :disabled="!canEditPlanDetail"
+              >
+                删除
+              </el-button>
+            </el-popconfirm>
           </span>
         </el-tooltip>
       </el-form-item>

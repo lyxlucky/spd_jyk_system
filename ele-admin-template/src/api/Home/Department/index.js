@@ -158,6 +158,7 @@ export async function insertDeptTwo(payload) {
     receiveB2bPreEnable: String(payload.receiveB2bPreEnable ?? '0'),
     receivePlace: String(payload.receivePlace ?? '0'),
     balanceType: String(payload.balanceType ?? '0'),
+    IS_APPLY_PLAN_REVIEW: String(payload.IS_APPLY_PLAN_REVIEW ?? '0'),
     IS_MAKE_PLAN: String(payload.IS_MAKE_PLAN ?? '0'),
     VALIDITY_PERIOD: String(payload.VALIDITY_PERIOD ?? '0'),
     wareBaseId: String(payload.wareBaseId ?? ''),
@@ -179,6 +180,9 @@ export async function updateDeptTwo(payload) {
     receiveB2bPreEnable: String(payload.receiveB2bPreEnable ?? '0'),
     receivePlace: String(payload.receivePlace ?? '0'),
     balanceType: String(payload.balanceType ?? '0'),
+    ...(payload.IS_APPLY_PLAN_REVIEW == null
+      ? {}
+      : { IS_APPLY_PLAN_REVIEW: String(payload.IS_APPLY_PLAN_REVIEW) }),
     IS_MAKE_PLAN: String(payload.IS_MAKE_PLAN ?? '0'),
     VALIDITY_PERIOD: String(payload.VALIDITY_PERIOD ?? '0'),
     wareBaseId: String(payload.wareBaseId ?? ''),
