@@ -335,6 +335,22 @@
               ]"
               @page-change="onPageChange"
             >
+              <template #sizes="{ options }">
+                <el-select
+                  class="material-detail-page-size"
+                  size="mini"
+                  :value="pagination.pageSize"
+                  :popper-append-to-body="true"
+                  @change="onPageSizeChange"
+                >
+                  <el-option
+                    v-for="option in options"
+                    :key="option.value"
+                    :label="option.label"
+                    :value="option.value"
+                  />
+                </el-select>
+              </template>
             </vxe-pager>
           </div>
         </el-tab-pane>
@@ -559,6 +575,9 @@
           if (requestId === this.detailRequestId) this.tableLoading = false;
         }
       },
+      onPageSizeChange(pageSize) {
+        this.onPageChange({ currentPage: 1, pageSize });
+      },
       onPageChange({ currentPage, pageSize }) {
         this.pagination.currentPage = currentPage;
         this.pagination.pageSize = pageSize;
@@ -721,6 +740,10 @@
     flex: none;
     margin-top: 8px;
     overflow-x: auto;
+  }
+
+  .material-detail-page-size {
+    width: 110px;
   }
 </style>
 
