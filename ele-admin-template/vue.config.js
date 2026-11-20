@@ -204,10 +204,14 @@ const currentEnv = process.env.VUE_APP_ENV || 'local';
 const config = envConfig[currentEnv] || envConfig.local;
 
 module.exports = {
+  // 开发不跑 ESLint，生产构建仍检查
+  lintOnSave: process.env.NODE_ENV === 'production',
   publicPath: process.env.VUE_APP_BASE_URL || config.publicPath,
   outputDir: config.outputDir,
   productionSourceMap: false,
   runtimeCompiler: false,
+  // Node 22 下 thread-loader 易 spawn/崩溃，关闭并行编译保证打包稳定
+  parallel: false,
   transpileDependencies: ['element-ui', 'ele-admin', 'vue-i18n'],
   configureWebpack: config => {
     config.performance = {
@@ -216,9 +220,28 @@ module.exports = {
     }
 
     if (process.env.NODE_ENV === 'development') {
-      // 仅开发环境：如遇到缓存问题，可设置为 false 关闭缓存
+      // 减轻 source map 内存
+      config.devtool = 'eval'
+      // 只用磁盘缓存
       config.cache = {
         type: 'filesystem',
+        maxMemoryGenerations: 0,
+        memoryCacheUnaffected: false
+      }
+      // 页面首次打开时再编译
+      config.experiments = {
+        ...(config.experiments || {}),
+        lazyCompilation: {
+          entries: false,
+          imports: true,
+          test: /[\\/]src[\\/]views[\\/]/,
+          backend: {
+            listen: {
+              host: '127.0.0.1',
+              port: 0
+            }
+          }
+        }
       }
     } else {
       config.cache = false
