@@ -396,10 +396,11 @@
       @cancel="handleExpiredCertificateCancel"
     />
 
-    <!-- 毕节：合同明细到期提醒 -->
+    <!-- 合同近效期提醒 -->
     <ContractExpireDialog
       :visible="contractExpireDialogVisible"
       :expiredList="contractExpireList"
+      :warnDays="contractExpireWarnDays"
       @confirm="confirmSubmitWithContractExpire"
       @cancel="handleContractExpireCancel"
     />
@@ -519,7 +520,13 @@
     ApplyPlanUpdateRemarks,
     serachCommonDeta
   } from '@/api/KSInventory/KSDepartmentalPlan';
-  import { hasExportPermission } from '../utils';
+  import {
+    hasExportPermission,
+    CONTRACT_EXPIRE_DAYS_CONFIG_KEY,
+    parseContractExpireDays,
+    collectContractExpireWarnLines
+  } from '../utils';
+  import { getConfig } from '@/api/layout';
   import { getBudgets, bindBudget } from '@/api/pekingApplication';
   import IntroduceUserDefinedTemp from '@/views/KSInventory/IntroduceUserDefinedTemp/index.vue';
   import BidVarInfoDept from '@/views/KSInventory/ReferenceComponent/BidVarInfoDept/index.vue';
@@ -580,6 +587,9 @@
         expiredCertificateList: [],
         contractExpireDialogVisible: false,
         contractExpireList: [],
+        contractExpireWarnDays: 0,
+        contractExpireConfigLoaded: false,
+        checkingContractExpire: false,
         bindBudgetDialogVisible: false,
         mergeOrderVisible: false,
         budgetItemList: [],
@@ -912,41 +922,40 @@
           });
       },
 
-      addPutInListDeta2() {
-        if (HOME_HP == 'gzbj') {
-          const expiredItems = this.collectGzbjContractWarnLines();
-          if (expiredItems.length > 0) {
-            this.contractExpireList = expiredItems;
-            this.contractExpireDialogVisible = true;
-            return;
-          }
-        }
-        this.continuePutInListDeta2();
+      async loadContractExpireWarnDays() {
+        const res = await getConfig(CONTRACT_EXPIRE_DAYS_CONFIG_KEY);
+        this.contractExpireWarnDays = parseContractExpireDays(res?.data?.data);
+        this.contractExpireConfigLoaded = true;
+        return this.contractExpireWarnDays;
       },
 
-      collectGzbjContractWarnLines() {
-        const expiredItems = [];
-        const today = this.$moment().startOf('day');
-        (this.datasourceList || []).forEach((element) => {
-          if (element.DTL_IS_DELETE == '0' || element.DTL_IS_DELETE == 0) return;
-          const qty = parseFloat(element.PlanQty);
-          if (!(qty > 0)) return;
-          if (!element.DET_CONTRACT_END) return;
-          const end = this.$moment(element.DET_CONTRACT_END).startOf('day');
-          if (!end.isValid()) return;
-          const diff = end.diff(today, 'days');
-          if (diff > 30) return;
-          expiredItems.push({
-            VarName: element.VarName,
-            VarID: element.VarCode,
-            GG: element.GG,
-            Manufacturing: element.Manufacturing,
-            DET_CONTRACT_END: element.DET_CONTRACT_END,
-            expired: diff < 0,
-            remainText: diff < 0 ? '已过期' : '快到期(剩' + diff + '天)'
-          });
-        });
-        return expiredItems;
+      async addPutInListDeta2() {
+        if (this.checkingContractExpire) return;
+        this.checkingContractExpire = true;
+        try {
+          const warnDays = this.contractExpireConfigLoaded
+            ? this.contractExpireWarnDays
+            : await this.loadContractExpireWarnDays();
+          if (warnDays > 0) {
+            const expiredItems = collectContractExpireWarnLines(
+              this.datasourceList,
+              warnDays
+            );
+            if (expiredItems.length > 0) {
+              this.contractExpireList = expiredItems;
+              this.contractExpireDialogVisible = true;
+              return;
+            }
+          }
+        } catch (err) {
+          this.$message.error(
+            (err && err.message) || '获取合同近效期配置失败，请重试'
+          );
+          return;
+        } finally {
+          this.checkingContractExpire = false;
+        }
+        this.continuePutInListDeta2();
       },
 
       confirmSubmitWithContractExpire() {
@@ -1457,6 +1466,7 @@
         }
       }
       this.IsHide();
+      this.loadContractExpireWarnDays().catch(() => {});
     }
   };
 </script>
