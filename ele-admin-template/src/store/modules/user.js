@@ -14,6 +14,66 @@ import {
   DEFAULT_SUB_MENU_ICON
 } from '@/config/menu-icons';
 
+function menuSortNumber(item) {
+  const raw = item && item.SORT != null ? String(item.SORT).trim() : '';
+  if (!/^\d+$/.test(raw)) {
+    return Number.MAX_SAFE_INTEGER;
+  }
+  return parseInt(raw, 10);
+}
+
+function sortPermissionMenus(list) {
+  const source = Array.isArray(list) ? list : [];
+  const menus = [];
+  const rest = [];
+  source.forEach((item, index) => {
+    if (isMenuRoutePermission(item)) {
+      menus.push({ item, index });
+    } else {
+      rest.push(item);
+    }
+  });
+  const isTop = (item) =>
+    item.PID == null || item.PID === '' || item.PID === '0';
+  const parents = menus.filter(({ item }) => isTop(item));
+  const childrenByPid = {};
+  menus.forEach((entry) => {
+    if (isTop(entry.item)) {
+      return;
+    }
+    const key = String(entry.item.PID);
+    if (!childrenByPid[key]) {
+      childrenByPid[key] = [];
+    }
+    childrenByPid[key].push(entry);
+  });
+  const bySort = (a, b) => {
+    const diff = menuSortNumber(a.item) - menuSortNumber(b.item);
+    if (diff !== 0) {
+      return diff;
+    }
+    return a.index - b.index;
+  };
+  Object.keys(childrenByPid).forEach((key) => {
+    childrenByPid[key].sort(bySort);
+  });
+  const used = new Set();
+  const sorted = [];
+  parents.forEach(({ item }) => {
+    sorted.push(item);
+    const kids = childrenByPid[String(item.ID)] || [];
+    kids.forEach((entry) => sorted.push(entry.item));
+    used.add(String(item.ID));
+  });
+  Object.keys(childrenByPid).forEach((key) => {
+    if (used.has(key)) {
+      return;
+    }
+    childrenByPid[key].forEach((entry) => sorted.push(entry.item));
+  });
+  return sorted.concat(rest);
+}
+
 /**
  * 将 PRIMARY_ROUT / PERMISSION 扁平菜单转为可建树结构（menuKey / parentKey 全局唯一）
  */
@@ -126,6 +186,7 @@ export default {
       if (!result) {
         return {};
       }
+      result.permission_group = sortPermissionMenus(result.permission_group);
       if (result.userDept?.length) {
         result.DeptNow = result.userDept[0];
       }
