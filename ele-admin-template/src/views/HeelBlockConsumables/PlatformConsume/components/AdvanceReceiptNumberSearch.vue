@@ -1,34 +1,17 @@
 <!-- 搜索表单 -->
 <template>
-  <el-form label-width="0px" class="ele-form-search" @keyup.enter.native="search" @submit.native.prevent>
-    <el-row :gutter="5" style="margin-top:5px;">
-      <el-col v-bind="styleResponsive ? { lg: 16, md: 12 } : { span: 12 }">
-        <el-input size="mini" clearable v-model="where.condition" placeholder="请扫描或输入单号" />
-      </el-col>
-      <el-col v-bind="styleResponsive ? { lg: 8, md: 12 } : { span: 12 }">
-        <div class="ele-form-actions">
-          <el-button size="mini" type="primary" icon="el-icon-search" class="ele-btn-icon" @click="search">
-            查询
-          </el-button>
-          <!-- <el-button size="mini" icon="el-icon-refresh" @click="reset">重置</el-button> -->
-        </div>
-      </el-col>
-    </el-row>
-    <el-row :gutter="5">
-      <el-col v-bind="styleResponsive ? { lg: 24, md: 12 } : { span: 12 }">
-        <div class="ele-form-actions">
-          <el-button size="mini" type="primary" class="ele-btn-icon" @click="platformConsumeEditShow">编辑</el-button>
-          <el-col v-bind="styleResponsive ? { lg: 12, md: 12 } : { span: 16 }">
-            <el-select @change="search" v-model="where.state" size="mini" placeholder="">
-              <el-option label="全部" value=""></el-option>
-              <el-option label="待确认" value="0"></el-option>
-              <el-option label="待提交" value="1"></el-option>
-              <el-option label="已提交" value="2"></el-option>
-            </el-select>
-          </el-col>
-        </div>
-      </el-col>
-    </el-row>
+  <el-form class="order-search" @keyup.enter.native="search" @submit.native.prevent>
+    <el-input size="mini" clearable v-model="where.condition" placeholder="请扫描或输入单号" />
+    <el-button size="mini" type="primary" icon="el-icon-search" class="ele-btn-icon" @click="search">
+      查询
+    </el-button>
+    <el-select @change="search" v-model="where.state" size="mini">
+      <el-option label="全部" value=""></el-option>
+      <el-option label="待确认" value="0"></el-option>
+      <el-option label="待提交" value="1"></el-option>
+      <el-option label="已提交" value="2"></el-option>
+    </el-select>
+    <el-button size="mini" type="primary" @click="platformConsumeEditShow">编辑</el-button>
   </el-form>
 </template>
 
@@ -68,12 +51,6 @@ export default {
         ]
       }
     };
-  },
-  computed: {
-    // 是否开启响应式布局
-    styleResponsive() {
-      return this.$store.state.theme.styleResponsive;
-    }
   },
   methods: {
     /* 搜索 */
@@ -153,3 +130,32 @@ export default {
   created() {}
 };
 </script>
+
+<style scoped>
+  .order-search {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    width: 100%;
+    min-width: 0;
+    margin: 0;
+  }
+
+  .order-search ::v-deep > .el-input {
+    flex: 1 1 0;
+    width: auto;
+    min-width: 0;
+  }
+
+  .order-search ::v-deep .el-select {
+    flex: none;
+    width: 84px;
+    margin-left: 4px;
+  }
+
+  .order-search ::v-deep .el-button {
+    flex: none;
+    margin-left: 4px;
+    padding: 5px 8px;
+  }
+</style>

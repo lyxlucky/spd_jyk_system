@@ -1,6 +1,6 @@
 <template>
-  <div class="audit-search">
-    <el-form size="mini" inline @submit.native.prevent="doSearch">
+  <div class="audit-search" @keyup.enter="onFormEnter">
+    <el-form size="mini" inline @submit.native.prevent>
       <el-form-item label="品种">
         <el-input
           v-model="where.VarietieCode"
@@ -68,7 +68,7 @@
         </el-select>
       </el-form-item>
     </el-form>
-    <el-form size="mini" inline @submit.native.prevent="doSearch">
+    <el-form size="mini" inline @submit.native.prevent>
       <el-form-item label="阳光订单">
         <el-select v-model="where.isYG" style="width: 90px">
           <el-option label="全部" value="" />
@@ -110,7 +110,7 @@
         <el-date-picker v-model="where.spEndDate" type="date" value-format="yyyy-MM-dd" style="width: 130px" />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" icon="el-icon-search" native-type="submit">查询</el-button>
+        <el-button type="primary" icon="el-icon-search" @click="doSearch">查询</el-button>
         <el-button @click="reset">重置</el-button>
       </el-form-item>
     </el-form>
@@ -174,6 +174,12 @@ export default {
   methods: {
     getWhere() {
       return { ...this.where };
+    },
+    onFormEnter(e) {
+      if (e.isComposing || e.keyCode === 229) return;
+      const el = e.target;
+      if (el && el.closest && el.closest('button, .el-button')) return;
+      this.doSearch();
     },
     doSearch() {
       this.$emit('search', this.getWhere());

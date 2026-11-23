@@ -4,20 +4,13 @@
     <!-- 自定义指令实现当pageSizes改变时触发 -->
     <!-- :pageSize="pageSize" :pageSizes="pageSizes" -->
     <!-- :paginationStyle="paginationStyle" -->
-    <AdvanceReceiptNumberDelSearch
-      @search="reload"
-      @exportData="exportData"
-      @handleUdiScanAdd="handleUdiScanAdd"
-      @handleAddConsumeItem="handleAddConsumeItem"
-      :ApplyTempTableDataSearch="ApplyTempTableDataSearch"
-      :selection="selection"
-      :VarietyConsumeptionDataList="VarietyConsumeptionDataList"
-      @showEditReoad="showEditReoad"
-    />
     <!-- :rowClickChecked="true" -->
     <ele-pro-table
       ref="table"
-      height="310"
+      size="mini"
+      title="预送货品种明细"
+      :height="paneTableHeight"
+      full-height="calc(100vh - 90px)"
       highlight-current-row
       :stripe="true"
       :pageSize="pageSize"
@@ -31,10 +24,16 @@
     >
       <!-- 左表头 -->
       <template v-slot:toolbar>
-        <!-- 搜索表单 -->
-        <!-- <el-button size="small" type="danger" icon="el-icon-delete" class="ele-btn-icon" @click="removebatch">
-          删除
-        </el-button> -->
+        <AdvanceReceiptNumberDelSearch
+          @search="reload"
+          @exportData="exportData"
+          @handleUdiScanAdd="handleUdiScanAdd"
+          @handleAddConsumeItem="handleAddConsumeItem"
+          :ApplyTempTableDataSearch="ApplyTempTableDataSearch"
+          :selection="selection"
+          :VarietyConsumeptionDataList="VarietyConsumeptionDataList"
+          @showEditReoad="showEditReoad"
+        />
       </template>
 
       <!-- 消耗数量 -->
@@ -126,6 +125,7 @@
 
 <script>
   import UDIScanAddDialog from './UDIScanAddDialog.vue';
+  import paneTableHeight from '../paneTableHeight';
   import AdvanceReceiptNumberDelSearch from './AdvanceReceiptNumberDelSearch.vue';
   import { utils, writeFile } from 'xlsx';
   import {
@@ -138,6 +138,7 @@
   } from '@/api/HeelBlockConsumables/PlatformConsume';
   export default {
     name: 'ApplyTempDataTable',
+    mixins: [paneTableHeight],
     props: ['ApplyTempTableData'],
     components: {
       AdvanceReceiptNumberDelSearch,

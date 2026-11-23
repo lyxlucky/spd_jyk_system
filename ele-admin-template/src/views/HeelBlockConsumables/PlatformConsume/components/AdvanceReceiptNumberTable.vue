@@ -1,11 +1,5 @@
 <template>
   <div class="ele-body">
-    <AdvanceReceiptNumberSearch
-      @search="reload"
-      @platformConsumeEditShow="platformConsumeEditShow"
-      :rowData="current"
-    />
-
     <AdvanceReceiptNumberEdit
       @search="reload"
       :visible.sync="showEdit"
@@ -13,7 +7,10 @@
     />
     <!-- 数据表格 -->
     <ele-pro-table
-      height="260"
+      size="mini"
+      title="预收货单号列表"
+      :height="paneTableHeight"
+      full-height="calc(100vh - 90px)"
       highlight-current-row
       @current-change="onCurrentChange"
       :row-class-name="tableRowClassName"
@@ -30,7 +27,11 @@
     >
       <!-- 表头工具栏 -->
       <template v-slot:toolbar>
-        <!-- 搜索表单 -->
+        <AdvanceReceiptNumberSearch
+          @search="reload"
+          @platformConsumeEditShow="platformConsumeEditShow"
+          :rowData="current"
+        />
       </template>
 
       <template v-slot:State="{ row }">
@@ -121,6 +122,7 @@
 </style>
 
 <script>
+  import paneTableHeight from '../paneTableHeight';
   import AdvanceReceiptNumberSearch from './AdvanceReceiptNumberSearch.vue';
   import AdvanceReceiptNumberEdit from './AdvanceReceiptNumberEdit.vue';
   import {
@@ -136,6 +138,7 @@
   } from '@/api/HeelBlockConsumables/PlatformConsume';
   export default {
     name: 'ApplyTempTable',
+    mixins: [paneTableHeight],
     components: {
       AdvanceReceiptNumberSearch,
       AdvanceReceiptNumberEdit

@@ -46,7 +46,7 @@
           :datasource="datasource"
           :selection.sync="selection"
           :row-key="billMode ? 'rowKey' : undefined"
-          :cache-key="billMode ? 'goodsshelvesOutBill_v1' : 'goodsshelvesOutTable_v3'"
+          :cache-key="billMode ? 'goodsshelvesOutBill_v2' : 'goodsshelvesOutTable_v4'"
           @done="onTableDone"
           @current-change="onCurrentChange"
         >
@@ -71,7 +71,7 @@
                   {{ formatDetailCell(col, scope.row) }}
                 </template>
               </el-table-column>
-              <el-table-column label="操作" width="180" align="center" fixed="right">
+              <el-table-column label="操作" width="180" align="center">
                 <template v-slot="scope">
                   <el-button type="text" size="mini" @click.stop="openProReport(scope.row)">上传</el-button>
                   <el-button type="text" size="mini" @click.stop="openOrderPic(scope.row, '1')">单号</el-button>
@@ -651,16 +651,14 @@ export default {
           label: '检验报告图片',
           align: 'center',
           width: 100,
-          slot: 'reportPic',
-          fixed: 'right'
+          slot: 'reportPic'
         },
         {
           columnKey: 'uploadPic',
           label: '上传图片',
           align: 'center',
           width: 170,
-          slot: 'uploadPic',
-          fixed: 'right'
+          slot: 'uploadPic'
         }
       ];
       // 所有有 prop 的列开启 custom 排序

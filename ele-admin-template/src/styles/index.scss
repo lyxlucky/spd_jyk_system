@@ -1,7 +1,9 @@
 /** 全局样式 */
-// 顶栏加高，让白底横幅院徽按老系统方式「宽度铺满、高度自适应」完整显示
+// 顶栏 42px、页签 30px：100% 下原来都偏高，压到接近浏览器 75% 的观感
+// 院徽用 background-size: contain，高度变了仍完整显示
 // 必须在 import 前定义，default.scss 里该变量是 !default
-$--header-height: 72px;
+$--header-height: 42px;
+$--tabs-height: 30px;
 $--ele-font-path: '~ele-admin/es/style/fonts';
 @import '~ele-admin/es/style/themes/dynamic.scss';
 @import '~ele-admin/es/style/index.scss';
@@ -21,13 +23,19 @@ body.ele-body-limit-width {
   overflow-y: auto;
 }
 
+/* 内容区给子页面一个确定高度，页面用 height:100% 才不会撑出屏幕底部 */
+.ele-admin-fixed-body .ele-admin-content-view {
+  height: 100%;
+  min-height: 0;
+}
+
 /* 顶部主导航：字体加粗加大、tab 间距收紧、悬停/选中蓝底白字 */
 .ele-admin-header-nav {
   .el-menu--horizontal {
     > .el-menu-item,
     > .el-submenu > .el-submenu__title {
-      padding: 0 10px;
-      font-size: 15px;
+      padding: 0 8px;
+      font-size: 13px;
       font-weight: 600;
     }
     > .el-menu-item:not(.is-disabled):hover,
@@ -40,6 +48,14 @@ body.ele-body-limit-width {
     > .el-submenu > .el-submenu__title .el-submenu__icon-arrow {
       color: inherit;
     }
+  }
+}
+
+/* 中间页签栏与顶栏一起收矮 */
+.ele-admin-tabs {
+  .el-tabs__item {
+    font-size: 13px;
+    padding: 0 10px !important;
   }
 }
 

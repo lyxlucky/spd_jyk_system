@@ -3,7 +3,10 @@
     <!-- <AdvanceReceiptNumberSearch @search="reload" :rowData="current" /> -->
     <!-- 数据表格 -->
     <ele-pro-table
-      height="calc(100vh - 240px)"
+      size="mini"
+      title="品种消耗确认表"
+      :height="paneTableHeight"
+      full-height="calc(100vh - 90px)"
       highlight-current-row
       :rowClickCheckedIntelligent="false"
       @current-change="onCurrentChange"
@@ -59,6 +62,7 @@
 </style>
 
 <script>
+  import paneTableHeight from '../paneTableHeight';
   import AdvanceReceiptNumberSearch from './AdvanceReceiptNumberSearch.vue';
   import { HOME_HP } from '@/config/setting';
   import {
@@ -68,6 +72,7 @@
   } from '@/api/HeelBlockConsumables/PlatformConsume';
   export default {
     name: 'ApplyTempTable',
+    mixins: [paneTableHeight],
     props: ['ApplyTempTableData'],
     components: {
       AdvanceReceiptNumberSearch

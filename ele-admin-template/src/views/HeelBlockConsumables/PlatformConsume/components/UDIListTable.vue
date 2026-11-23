@@ -3,7 +3,10 @@
     <!-- <AdvanceReceiptNumberSearch @search="reload" :rowData="current" /> -->
     <!-- 数据表格 -->
     <ele-pro-table
-      height="calc(100vh - 240px)"
+      size="mini"
+      title="UDI码列表"
+      :height="paneTableHeight"
+      full-height="calc(100vh - 90px)"
       highlight-current-row
       @current-change="onCurrentChange"
       :row-class-name="tableRowClassName"
@@ -45,12 +48,14 @@
 </style>
 
 <script>
+  import paneTableHeight from '../paneTableHeight';
   import UdiLinkDetail from './UdiLinkDetail.vue';
   import AdvanceReceiptNumberSearch from './AdvanceReceiptNumberSearch.vue';
   import { HOME_HP } from '@/config/setting';
   import { LoadVarietieGS1 } from '@/api/HeelBlockConsumables/PlatformConsume';
   export default {
     name: 'ApplyTempTable',
+    mixins: [paneTableHeight],
     props: ['ApplyTempTableData', 'mainTableData'],
     components: {
       AdvanceReceiptNumberSearch,

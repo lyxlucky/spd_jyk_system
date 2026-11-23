@@ -42,7 +42,7 @@
           :datasource="datasource"
           :selection.sync="selection"
           :row-key="billMode ? 'rowKey' : undefined"
-          :cache-key="billMode ? 'goodsshelvesInBill_v1' : 'goodsshelvesInTable_v8'"
+          :cache-key="billMode ? 'goodsshelvesInBill_v2' : 'goodsshelvesInTable_v9'"
           @current-change="onCurrentChange"
         >
           <template v-if="billMode" v-slot:expand="{ row }">
@@ -76,7 +76,7 @@
                   </template>
                 </template>
               </el-table-column>
-              <el-table-column label="操作" width="200" align="center" fixed="right">
+              <el-table-column label="操作" width="200" align="center">
                 <template v-slot="scope">
                   <el-button type="text" size="mini" @click.stop="openProReport(scope.row)">上传</el-button>
                   <el-button type="text" size="mini" @click.stop="openUdi(scope.row)">查看UDI</el-button>
@@ -377,24 +377,21 @@ export default {
           label: '检验报告图片',
           align: 'center',
           width: 100,
-          slot: 'reportPic',
-          fixed: 'right'
+          slot: 'reportPic'
         },
         {
           columnKey: 'watchUdi',
           label: '查看UDI',
           align: 'center',
           width: 100,
-          slot: 'watchUdi',
-          fixed: 'right'
+          slot: 'watchUdi'
         },
         {
           columnKey: 'uploadPic',
           label: '上传图片',
           align: 'center',
           width: 170,
-          slot: 'uploadPic',
-          fixed: 'right'
+          slot: 'uploadPic'
         }
       ];
 
@@ -1001,7 +998,6 @@ export default {
           minWidth: 90,
           formatter: (row) => formatUploadState(row)
         },
-        ...actionCols,
         {
           prop: 'PREPARE_GOODS_PLAN_NUMBER',
           label: '计划单号',
@@ -1032,7 +1028,9 @@ export default {
           minWidth: 90,
           formatter: (row) =>
             row.IS_JC === '1' || row.IS_JC === 1 ? '是' : '否'
-        }
+        },
+        // 操作列放在最后：此前靠 fixed:'right' 置右，取消固定后由列序保证仍在最右
+        ...actionCols
       ];
     },
     bindPageSizeSync() {
