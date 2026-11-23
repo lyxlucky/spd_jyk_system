@@ -1,5 +1,5 @@
 <template>
-  <div v-if="deptTwoCode" class="auth-panel">
+  <div v-if="deptTwoCode" ref="pane" class="auth-panel">
     <div v-if="twoDetail" class="detail-strip">
       <ul class="detail-strip-list">
         <li><span class="detail-label">二级科室编码:</span><span class="detail-value">{{ twoDetail.Dept_Two_Code }}</span></li>
@@ -43,15 +43,16 @@
         <el-button type="primary" plain @click="savePurchaseSource">确定</el-button>
       </el-form-item>
     </el-form>
-    <div class="table-scroll">
-      <el-table
-        v-loading="loading"
-        :data="rows"
-        :fit="false"
-        border
-        stripe
-        height="400"
-        highlight-current-row
+    <el-table
+      ref="table"
+      v-loading="loading"
+      :data="rows"
+      :fit="false"
+      border
+      stripe
+      size="mini"
+      :height="tableHeight"
+      highlight-current-row
         @current-change="(r) => (current = r)"
         @selection-change="(s) => (selected = s)"
         @sort-change="onSort"
@@ -100,9 +101,9 @@
         </el-table-column>
         <el-table-column prop="REGION_NAME" label="默认库区" width="90" align="center" />
       </el-table>
-    </div>
     <el-pagination
       class="pager"
+      small
       background
       layout="total, sizes, prev, pager, next"
       :total="total"
@@ -124,6 +125,7 @@ import * as api from '@/api/Home/Department';
 import { fmtDateTime, fmtDate, openExcelFile, openApiPdf } from '../utils';
 import PkgAuthGrantDialog from './PkgAuthGrantDialog.vue';
 import EditPkgAuthDialog from './EditPkgAuthDialog.vue';
+import { measureTableHeight } from '@/views/HeelBlockConsumables/PlatformConsume/paneTableHeight';
 
 export default {
   name: 'TwoPkgAuthPanel',
@@ -149,7 +151,8 @@ export default {
         { label: '一级科室授权范围', value: '1' },
         { label: '二级科室授权范围', value: '2' }
       ],
-      showQrTwo: HOME_HP === 'stzl'
+      showQrTwo: HOME_HP === 'stzl',
+      tableHeight: 160
     };
   },
   computed: {
@@ -167,9 +170,40 @@ export default {
         this.rows = [];
         this.current = null;
       }
+      this.$nextTick(() => this.bindPane());
     }
   },
+  mounted() {
+    this.bindPane();
+  },
+  beforeDestroy() {
+    if (this._paneRo) this._paneRo.disconnect();
+    window.removeEventListener('resize', this.schedulePaneHeight);
+    if (this._paneTimer) cancelAnimationFrame(this._paneTimer);
+  },
   methods: {
+    bindPane() {
+      if (!this.$refs.pane) return;
+      if (!this._paneRo && typeof ResizeObserver !== 'undefined') {
+        this._paneRo = new ResizeObserver(() => this.schedulePaneHeight());
+        window.addEventListener('resize', this.schedulePaneHeight);
+      }
+      if (this._paneRo) this._paneRo.observe(this.$refs.pane);
+      this.schedulePaneHeight();
+    },
+    schedulePaneHeight() {
+      if (this._paneTimer) cancelAnimationFrame(this._paneTimer);
+      this._paneTimer = requestAnimationFrame(() => this.updatePaneHeight(false));
+    },
+    updatePaneHeight(followUp) {
+      const next = measureTableHeight(this.$refs.pane);
+      if (next == null || next === this.tableHeight) return;
+      this.tableHeight = next;
+      this.$nextTick(() => {
+        if (this.$refs.table && this.$refs.table.doLayout) this.$refs.table.doLayout();
+        if (!followUp) this.updatePaneHeight(true);
+      });
+    },
     fmtDateTime,
     fmtDate,
     b2bPreLabel(v) {
@@ -368,18 +402,16 @@ export default {
 /* 与旧系统 Department_right_middle_jbzl1 一致：横向排列；背景与下方表格区区分 */
 .detail-strip {
   background: linear-gradient(180deg, #eef2f7 0%, #e4e9f0 100%);
-  border: 1px solid #c5cdd8;
-  border-radius: 4px;
-  padding: 10px 16px;
-  margin-bottom: 12px;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.75);
+  border-bottom: 1px solid #ebeef5;
+  padding: 2px 8px;
+  margin: 0;
 }
 .detail-strip-list {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  column-gap: 32px;
-  row-gap: 6px;
+  column-gap: 16px;
+  row-gap: 0;
   list-style: none;
   margin: 0;
   padding: 0;
@@ -400,15 +432,16 @@ export default {
   word-break: break-all;
 }
 .section-title h5 {
-  margin: 12px 0 8px;
-  font-size: 14px;
+  margin: 0;
+  padding: 0 8px;
+  font-size: 13px;
   font-weight: 600;
+  line-height: 22px;
 }
-.toolbar {
-  margin-bottom: 8px;
-}
+.toolbar,
 .purchase-row {
-  margin-bottom: 8px;
+  margin: 0;
+  padding: 0 8px;
 }
 .purchase-label {
   border: 1px solid green;
@@ -417,13 +450,10 @@ export default {
   font-size: 13px;
   color: #606266;
 }
-.table-scroll {
-  width: 100%;
-  max-width: 100%;
-  overflow-x: auto;
-}
 .pager {
-  margin-top: 8px;
+  flex: none;
+  margin: 0;
+  padding: 2px 8px 0 0;
   text-align: right;
 }
 </style>

@@ -1,52 +1,52 @@
 <template>
-  <div class="ele-body spd-page inventory-query-jyk">
-    <el-card shadow="never" class="inventory-query-jyk-card">
-      <user-search :sum="mainSum" :amount-sum="mainAmountSum" @search="reload" @exportData="exportData" />
-      <div class="spd-panel spd-table-panel">
-        <div class="spd-panel__head">库存列表</div>
-        <div class="spd-table-panel__wrap">
-          <ele-pro-table
-            ref="table"
-            class="data-table"
-            size="mini"
-            border
-            stripe
-            :toolbar="false"
-            :header-overflow-hidden="false"
-            height="calc((100vh - 480px) / 2)"
-            :pageSize="pageSize"
-            :pageSizes="pageSizes"
-            :columns="columns"
-            :datasource="datasource"
-            :selection.sync="selection"
-            cache-key="inventoryQueryJykMainTable"
-            @row-click="handleRowClick"
-          />
-        </div>
-      </div>
-      <UserSearch2 @search="onDetailSearch" />
-      <div class="spd-panel spd-table-panel">
-        <div class="spd-panel__head">定数码明细</div>
-        <div class="spd-table-panel__wrap">
-          <ele-pro-table
-            ref="table2"
-            class="data-table"
-            size="mini"
-            border
-            stripe
-            :toolbar="false"
-            :header-overflow-hidden="false"
-            height="calc((100vh - 480px) / 2)"
-            :pageSize="pageSize"
-            :pageSizes="pageSizes"
-            :columns="columns2"
-            :datasource="datasource2"
-            :selection.sync="selection"
-            cache-key="inventoryQueryJykDetailTable"
-          />
-        </div>
-      </div>
-    </el-card>
+  <div class="inventory-query-jyk">
+    <div ref="mainPane" class="inventory-query-jyk__pane">
+      <ele-pro-table
+        ref="table"
+        class="data-table"
+        size="mini"
+        border
+        stripe
+        title="库存列表"
+        :height="mainTableHeight"
+        full-height="calc(100vh - 90px)"
+        :header-overflow-hidden="false"
+        :pageSize="pageSize"
+        :pageSizes="pageSizes"
+        :columns="columns"
+        :datasource="datasource"
+        :selection.sync="selection"
+        cache-key="inventoryQueryJykMainTable"
+        @row-click="handleRowClick"
+      >
+        <template v-slot:toolbar>
+          <user-search :sum="mainSum" :amount-sum="mainAmountSum" @search="reload" @exportData="exportData" />
+        </template>
+      </ele-pro-table>
+    </div>
+    <div ref="detailPane" class="inventory-query-jyk__pane">
+      <ele-pro-table
+        ref="table2"
+        class="data-table"
+        size="mini"
+        border
+        stripe
+        title="定数码明细"
+        :height="detailTableHeight"
+        full-height="calc(100vh - 90px)"
+        :header-overflow-hidden="false"
+        :pageSize="pageSize"
+        :pageSizes="pageSizes"
+        :columns="columns2"
+        :datasource="datasource2"
+        :selection.sync="selection"
+        cache-key="inventoryQueryJykDetailTable"
+      >
+        <template v-slot:toolbar>
+          <user-search2 @search="onDetailSearch" />
+        </template>
+      </ele-pro-table>
+    </div>
   </div>
 </template>
 
@@ -56,6 +56,7 @@ import UserSearch from './components/user-search.vue';
 import UserSearch2 from './components/user-search2.vue';
 import { GetPDAList, GetPDAList2, GetPDAListAll } from '@/api/Inventory/InventoryQueryNewJyk';
 import { buildDefaultExportRows } from '@/views/Inventory/InventoryQueryNew/utils';
+import { measureTableHeight } from '@/views/HeelBlockConsumables/PlatformConsume/paneTableHeight';
 
 export default {
   name: 'InventoryQueryNewJyk',
@@ -65,6 +66,8 @@ export default {
   },
   data() {
     return {
+      mainTableHeight: 160,
+      detailTableHeight: 160,
       sourceFrom: '',
       batchId: '',
       varietieCode: '',
@@ -823,6 +826,25 @@ export default {
     openImport() {
       this.showImport = true;
     },
+    schedulePaneHeight() {
+      if (this._paneTimer) cancelAnimationFrame(this._paneTimer);
+      this._paneTimer = requestAnimationFrame(() => this.updatePaneHeights(false));
+    },
+    updatePaneHeights(followUp) {
+      const main = measureTableHeight(this.$refs.mainPane);
+      const detail = measureTableHeight(this.$refs.detailPane);
+      const changed = (main != null && main !== this.mainTableHeight) || (detail != null && detail !== this.detailTableHeight);
+      if (main != null) this.mainTableHeight = main;
+      if (detail != null) this.detailTableHeight = detail;
+      if (!changed) return;
+      this.$nextTick(() => {
+        ['table', 'table2'].forEach((name) => {
+          const vm = this.$refs[name];
+          if (vm && typeof vm.doLayout === 'function') vm.doLayout();
+        });
+        if (!followUp) this.updatePaneHeights(true);
+      });
+    },
     async exportData(data) {
       const loading = this.$loading({ lock: true, text: '正在导出数据...' });
       try {
@@ -846,18 +868,220 @@ export default {
   },
   created() {
     
+  },
+  mounted() {
+    this.schedulePaneHeight();
+    if (typeof ResizeObserver !== 'undefined') {
+      this._paneRo = new ResizeObserver(() => this.schedulePaneHeight());
+      if (this.$refs.mainPane) this._paneRo.observe(this.$refs.mainPane);
+      if (this.$refs.detailPane) this._paneRo.observe(this.$refs.detailPane);
+    }
+    window.addEventListener('resize', this.schedulePaneHeight);
+    this._fullscreenObserver = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        const el = mutation.target;
+        if (!el || !el.classList || !el.classList.contains('ele-pro-table')) {
+          return;
+        }
+        if (!this.$el.contains(el) && el.parentNode !== document.body) {
+          return;
+        }
+        if (el.parentNode === document.body && !(el._spdMarker && this.$el.contains(el._spdMarker))) {
+          return;
+        }
+        const opened = el.classList.contains('ele-pro-table-fullscreen');
+        if (opened && el.parentNode !== document.body) {
+          const marker = document.createComment('spd-table-fullscreen');
+          el.parentNode.insertBefore(marker, el);
+          el._spdMarker = marker;
+          document.body.appendChild(el);
+          this.$nextTick(() => {
+            if (el.__vue__ && typeof el.__vue__.doLayout === 'function') {
+              el.__vue__.doLayout();
+            }
+          });
+        } else if (!opened && el._spdMarker && el._spdMarker.parentNode) {
+          el._spdMarker.parentNode.insertBefore(el, el._spdMarker);
+          el._spdMarker.parentNode.removeChild(el._spdMarker);
+          el._spdMarker = null;
+          this.$nextTick(() => {
+            if (el.__vue__ && typeof el.__vue__.doLayout === 'function') {
+              el.__vue__.doLayout();
+            }
+            this.schedulePaneHeight();
+          });
+        }
+      });
+    });
+    this._fullscreenObserver.observe(document.body, {
+      attributes: true,
+      subtree: true,
+      attributeFilter: ['class']
+    });
+  },
+  beforeDestroy() {
+    if (this._paneRo) this._paneRo.disconnect();
+    window.removeEventListener('resize', this.schedulePaneHeight);
+    if (this._paneTimer) cancelAnimationFrame(this._paneTimer);
+    if (this._fullscreenObserver) this._fullscreenObserver.disconnect();
+    document.querySelectorAll('body > .ele-pro-table').forEach((el) => {
+      if (el._spdMarker && this.$el.contains(el._spdMarker)) {
+        el._spdMarker.parentNode.insertBefore(el, el._spdMarker);
+        el._spdMarker.parentNode.removeChild(el._spdMarker);
+        el._spdMarker = null;
+      }
+    });
   }
 };
 </script>
 
-<style scoped>
-.inventory-query-jyk-card :deep(.el-card__body) {
+<style scoped lang="scss">
+.inventory-query-jyk {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  width: 100%;
+  max-width: 100%;
+  height: 100%;
+  max-height: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+  background: #fff;
 }
 
-.inventory-query-jyk >>> .el-table th .cell {
+.inventory-query-jyk__pane {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  width: 100%;
+  height: 50%;
+  max-height: 50%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.inventory-query-jyk__pane + .inventory-query-jyk__pane {
+  border-top: 1px solid #ebeef5;
+}
+
+:deep(.ele-pro-table) {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+
+:deep(.ele-table-tool) {
+  flex-wrap: nowrap;
+  align-items: flex-start;
+  max-width: 100%;
+  margin-bottom: 0;
+}
+
+:deep(.ele-table-tool-title),
+:deep(.ele-table-tool-title-content) {
+  flex: 1 1 auto;
+  align-items: flex-start;
+  min-width: 0;
+  margin: 0;
+}
+
+:deep(.ele-table-tool-title-label) {
+  flex: none;
+  margin-right: 8px;
+}
+
+:deep(.ele-table-tool-title-label h6) {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 28px;
+  color: #303133;
+}
+
+:deep(.ele-tool) {
+  flex: none;
+  margin: 2px 0 0 6px;
+}
+
+:deep(.inventory-jyk-search) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  width: 100%;
+}
+
+:deep(.inventory-jyk-search .el-form-item) {
+  display: inline-flex;
+  flex: none;
+  width: auto;
+  margin: 0 8px 2px 0;
+}
+
+:deep(.inventory-jyk-search .el-form-item__label),
+:deep(.inventory-jyk-search .el-form-item__content) {
+  line-height: 28px;
+}
+
+:deep(.el-table th.el-table__cell),
+:deep(.el-table td.el-table__cell) {
+  padding: 1px 0;
+}
+
+:deep(.el-table .cell) {
+  line-height: 18px;
+  padding-left: 6px;
+  padding-right: 6px;
+}
+
+:deep(.ele-pro-table .el-pagination) {
+  margin: 0;
+  padding: 2px 0 0;
+  font-size: 12px;
+  font-weight: normal;
+  line-height: 22px;
   white-space: nowrap;
+}
+
+:deep(.ele-pro-table .el-pagination > *) {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+:deep(.el-pagination button),
+:deep(.el-pagination span:not([class*='suffix'])),
+:deep(.el-pagination .el-pager li) {
+  height: 22px;
+  min-width: 22px;
+  line-height: 22px;
+  font-size: 12px;
+}
+
+:deep(.el-pagination .el-input__inner) {
+  height: 22px;
+  line-height: 22px;
+}
+
+:deep(.el-pagination .el-select .el-input) {
+  width: 88px;
+  margin: 0 4px;
+}
+</style>
+
+<style lang="scss">
+body > .ele-pro-table.ele-pro-table-fullscreen {
+  position: fixed !important;
+  z-index: 4000 !important;
+  top: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 12px 12px 8px !important;
+  overflow: hidden !important;
+  background: #fff !important;
+  box-sizing: border-box !important;
 }
 </style>

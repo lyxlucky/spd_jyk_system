@@ -1,124 +1,123 @@
 <template>
-  <div class="ele-body spd-page contract-page">
-    <el-card shadow="never" class="top-card">
-      <el-row :gutter="10">
-        <!-- 供应商列表 -->
-        <el-col :span="7">
-          <div class="panel-title">供应商列表</div>
-          <el-form size="mini" inline class="panel-toolbar" @submit.native.prevent>
-            <el-input
-              v-model="supplierSearch"
-              clearable
-              placeholder="供应商编码或名称"
-              style="width: 46%"
-              @keyup.enter.native="loadSuppliers"
-            />
-            <el-select v-model="supplierEnable" style="width: 28%; margin: 0 4px">
-              <el-option label="启用" value="1" />
-              <el-option label="全部" value="" />
-              <el-option label="停用" value="0" />
-            </el-select>
-            <el-button type="primary" icon="el-icon-search" @click="loadSuppliers">查询</el-button>
-          </el-form>
-          <el-table
-            v-loading="supplierLoading"
-            :data="supplierList"
+  <div class="contract-page">
+    <div class="contract-row">
+      <div ref="supplierPane" class="contract-pane contract-pane--side">
+        <div class="contract-tool">
+          <span class="contract-title">供应商列表</span>
+          <el-input
+            v-model="supplierSearch"
             size="mini"
-            stripe
-            highlight-current-row
-            height="260"
-            style="width: 100%"
-            @current-change="onSupplierChange"
-          >
-            <el-table-column prop="Supplier_Name" label="供应商名称" min-width="160" show-overflow-tooltip />
-            <el-table-column label="启用状态" min-width="80" align="center">
-              <template slot-scope="{ row }">{{ row.Enable == 1 ? '启用' : '停用' }}</template>
-            </el-table-column>
-          </el-table>
-        </el-col>
+            clearable
+            placeholder="供应商编码或名称"
+            class="tool-input"
+            @keyup.enter.native="loadSuppliers"
+          />
+          <el-select v-model="supplierEnable" size="mini" class="tool-select">
+            <el-option label="启用" value="1" />
+            <el-option label="全部" value="" />
+            <el-option label="停用" value="0" />
+          </el-select>
+          <el-button type="primary" size="mini" icon="el-icon-search" @click="loadSuppliers">查询</el-button>
+        </div>
+        <el-table
+          ref="supplierTable"
+          v-loading="supplierLoading"
+          :data="supplierList"
+          size="mini"
+          stripe
+          highlight-current-row
+          :height="supplierTableHeight"
+          @current-change="onSupplierChange"
+        >
+          <el-table-column prop="Supplier_Name" label="供应商名称" min-width="160" show-overflow-tooltip />
+          <el-table-column label="启用状态" min-width="80" align="center">
+            <template slot-scope="{ row }">{{ row.Enable == 1 ? '启用' : '停用' }}</template>
+          </el-table-column>
+        </el-table>
+      </div>
 
-        <!-- 合同列表 -->
-        <el-col :span="7">
-          <div class="panel-title">合同列表</div>
-          <el-form size="mini" inline class="panel-toolbar" @submit.native.prevent>
-            <el-input
-              v-model="contractSearch"
-              clearable
-              placeholder="合同编码或名称"
-              style="width: 55%"
-              @keyup.enter.native="loadContracts"
-            />
-            <el-button type="primary" icon="el-icon-search" :disabled="!currentSupplier" @click="loadContracts">
-              查询
-            </el-button>
-            <el-button :disabled="!currentContract" @click="uploadHtVisible = true">上传</el-button>
-          </el-form>
-          <el-table
-            v-loading="contractLoading"
-            :data="contractList"
+      <div ref="contractPane" class="contract-pane contract-pane--side">
+        <div class="contract-tool">
+          <span class="contract-title">合同列表</span>
+          <el-input
+            v-model="contractSearch"
             size="mini"
-            stripe
-            highlight-current-row
-            height="260"
-            style="width: 100%"
-            @current-change="onContractChange"
-          >
-            <el-table-column prop="Contract_Code" label="合同编码" min-width="120" show-overflow-tooltip />
-            <el-table-column prop="Contract_Name" label="合同名称" min-width="140" show-overflow-tooltip />
-            <el-table-column label="合同类型" min-width="88">
-              <template slot-scope="{ row }">{{ formatContractType(row.contract_Type) }}</template>
-            </el-table-column>
-            <el-table-column label="图片" min-width="72" align="center">
-              <template slot-scope="{ row }">
-                <el-button
-                  v-if="row.HT_PIC && isPdf(row.HT_PIC)"
-                  type="text"
-                  size="mini"
-                  @click.stop="openHtFile(row.HT_PIC)"
-                >
-                  pdf
-                </el-button>
-                <img
-                  v-else-if="row.HT_PIC && isImage(row.HT_PIC)"
-                  v-viewer
-                  class="ht-thumb"
-                  :src="htPicUrl(row.HT_PIC)"
-                  alt="合同"
-                  @click.stop
-                />
-              </template>
-            </el-table-column>
-            <el-table-column label="历史" min-width="64" align="center">
-              <template slot-scope="{ row }">
-                <el-button type="text" size="mini" @click.stop="openFileHistory(row)">查看</el-button>
-              </template>
-            </el-table-column>
-          </el-table>
-        </el-col>
+            clearable
+            placeholder="合同编码或名称"
+            class="tool-input"
+            @keyup.enter.native="loadContracts"
+          />
+          <el-button type="primary" size="mini" icon="el-icon-search" :disabled="!currentSupplier" @click="loadContracts">
+            查询
+          </el-button>
+          <el-button size="mini" :disabled="!currentContract" @click="uploadHtVisible = true">上传</el-button>
+        </div>
+        <el-table
+          ref="contractTable"
+          v-loading="contractLoading"
+          :data="contractList"
+          size="mini"
+          stripe
+          highlight-current-row
+          :height="contractTableHeight"
+          @current-change="onContractChange"
+        >
+          <el-table-column prop="Contract_Code" label="合同编码" min-width="120" show-overflow-tooltip />
+          <el-table-column prop="Contract_Name" label="合同名称" min-width="140" show-overflow-tooltip />
+          <el-table-column label="合同类型" min-width="88">
+            <template slot-scope="{ row }">{{ formatContractType(row.contract_Type) }}</template>
+          </el-table-column>
+          <el-table-column label="图片" width="56" align="center">
+            <template slot-scope="{ row }">
+              <el-button
+                v-if="row.HT_PIC && isPdf(row.HT_PIC)"
+                type="text"
+                size="mini"
+                @click.stop="openHtFile(row.HT_PIC)"
+              >
+                pdf
+              </el-button>
+              <img
+                v-else-if="row.HT_PIC && isImage(row.HT_PIC)"
+                v-viewer
+                class="ht-thumb"
+                :src="htPicUrl(row.HT_PIC)"
+                alt="合同"
+                @click.stop
+              />
+            </template>
+          </el-table-column>
+          <el-table-column label="历史" width="52" align="center">
+            <template slot-scope="{ row }">
+              <el-button type="text" size="mini" @click.stop="openFileHistory(row)">查看</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
 
-        <!-- 合同详情 -->
-        <el-col :span="10">
-          <div class="panel-title">合同详情</div>
-          <div class="detail-toolbar">
-            <el-button size="mini" icon="el-icon-plus" :disabled="!currentSupplier" @click="openContractForm('add')">
-              添加合同
-            </el-button>
-            <el-button size="mini" icon="el-icon-edit" :disabled="!currentContract" @click="openContractForm('edit')">
-              编辑
-            </el-button>
-            <el-button
-              v-if="hpFlags.showContactAll"
-              size="mini"
-              :disabled="!currentSupplier"
-              @click="allContractsVisible = true"
-            >
-              查看所有合同
-            </el-button>
-            <ContractImportButton label="导入合同" template-type="contractMain" @done="onImportDone('contractMain')" />
-            <el-button size="mini" type="danger" :disabled="!currentContract" @click="onDeleteContract">
-              删除
-            </el-button>
-          </div>
+      <div class="contract-pane contract-pane--detail">
+        <div class="contract-tool">
+          <span class="contract-title">合同详情</span>
+          <el-button size="mini" icon="el-icon-plus" :disabled="!currentSupplier" @click="openContractForm('add')">
+            添加合同
+          </el-button>
+          <el-button size="mini" icon="el-icon-edit" :disabled="!currentContract" @click="openContractForm('edit')">
+            编辑
+          </el-button>
+          <el-button
+            v-if="hpFlags.showContactAll"
+            size="mini"
+            :disabled="!currentSupplier"
+            @click="allContractsVisible = true"
+          >
+            查看所有合同
+          </el-button>
+          <ContractImportButton label="导入合同" template-type="contractMain" @done="onImportDone('contractMain')" />
+          <el-button size="mini" type="danger" :disabled="!currentContract" @click="onDeleteContract">
+            删除
+          </el-button>
+        </div>
+        <div class="detail-scroll">
           <el-descriptions v-loading="detailLoading" :column="2" size="mini" border class="detail-box">
             <el-descriptions-item label="合同编码">{{ detail.contract_code || '—' }}</el-descriptions-item>
             <el-descriptions-item label="经营许可证有效期">
@@ -144,94 +143,18 @@
             <el-descriptions-item label="启用状态">{{ detail.contract_state_text || '—' }}</el-descriptions-item>
             <el-descriptions-item label="委托人身份证">{{ detail.consigner_id || '—' }}</el-descriptions-item>
           </el-descriptions>
-        </el-col>
-      </el-row>
-    </el-card>
-
-    <el-card shadow="never" class="auth-card">
-      <div class="panel-title">供应商合同授权品种列表</div>
-      <el-form size="mini" class="auth-filters" @submit.native.prevent>
-        <el-input v-model="authWhere.varietie_code" clearable placeholder="品种编码" @keyup.enter.native="reloadAuth" />
-        <el-input v-model="authWhere.varietie_name" clearable placeholder="品种名称" @keyup.enter.native="reloadAuth" />
-        <el-input
-          v-model="authWhere.specification_or_type"
-          clearable
-          placeholder="规格型号"
-          @keyup.enter.native="reloadAuth"
-        />
-        <el-input v-model="authWhere.unit" clearable placeholder="单位" @keyup.enter.native="reloadAuth" />
-        <el-input
-          v-model="authWhere.manufacturing_ent_name"
-          clearable
-          placeholder="生产企业"
-          @keyup.enter.native="reloadAuth"
-        />
-        <el-input v-model="authWhere.approval_number" clearable placeholder="注册证号" @keyup.enter.native="reloadAuth" />
-        <el-input v-model="authWhere.TwoSupName" clearable placeholder="二级供应商名称" @keyup.enter.native="reloadAuth" />
-      </el-form>
-      <div class="auth-toolbar">
-        <el-button type="primary" size="mini" icon="el-icon-search" :disabled="!currentContract" @click="reloadAuth">
-          查询
-        </el-button>
-        <cascade-menu
-          button-text="导入/导出"
-          close-on-select
-          :groups="authIoGroups"
-          :loading="exporting"
-          @select="onAuthIoSelect"
-        />
-        <el-button size="mini" :disabled="!currentAuthRow" @click="editPriceVisible = true">修改价格</el-button>
-        <el-button size="mini" :disabled="!currentContract" @click="addAuthVisible = true">品种授权</el-button>
-        <el-button size="mini" :disabled="!authSelection.length" @click="onEnableAuth">启用授权品种</el-button>
-        <el-button size="mini" :disabled="!authSelection.length" @click="onDisableAuth">停用授权品种</el-button>
-        <el-button size="mini" :disabled="!authSelection.length" @click="openBatch('extend')">修改原结束/延期</el-button>
-        <el-button size="mini" :disabled="!authSelection.length" @click="openBatch('auditMark')">修改合同明细备注</el-button>
-        <el-button size="mini" type="danger" :disabled="!authSelection.length" @click="onDeleteAuth">删除品种</el-button>
-        <el-button v-if="hpFlags.isZq" size="mini" @click="onCheckReceiveContract">查看合同对接</el-button>
-        <el-button
-          size="mini"
-          :disabled="!authSelection.length && !currentAuthRow"
-          @click="openModifyDate('auth')"
-        >
-          修改授权到期
-        </el-button>
-        <el-button
-          size="mini"
-          :disabled="!authSelection.length && !currentAuthRow"
-          @click="openModifyDate('detailTime')"
-        >
-          修改合同明细起始结束日期
-        </el-button>
-        <el-button size="mini" :disabled="!authSelection.length" @click="copyAuthVisible = true">复制合同授权</el-button>
-        <el-button v-if="hpFlags.isZq" size="mini" :disabled="!currentContract" @click="onZqContractUpDel">
-          中七更新合同明细
-        </el-button>
-        <el-button size="mini" :disabled="!authSelection.length" @click="twoSupVisible = true">选择授权二级供应商</el-button>
-        <ContractImportButton label="导入授权二级供应商" template-type="twoSupplier" @done="onImportDone('twoSupplier')" />
-        <el-button size="mini" :disabled="!currentAuthRow" @click="openBatch('lcNum')">修改临采数量</el-button>
-        <el-button size="mini" :disabled="!authSelection.length" @click="openBatch('varType')">修改品种类型</el-button>
-        <el-button size="mini" @click="onStopConWithNoVar">停用无启用明细合同</el-button>
+        </div>
       </div>
-      <div class="contract-io-hosts">
-        <ContractImportButton ref="ioContractDetail" template-type="contractDetail" @done="onImportDone('contractDetail')" />
-        <ContractImportButton
-          ref="ioContractDetailWithoutAuth"
-          template-type="contractDetailWithoutAuth"
-          @done="onImportDone('contractDetailWithoutAuth')"
-        />
-        <ContractImportButton ref="ioContractExtend" template-type="contractExtend" @done="onImportDone('contractExtend')" />
-        <ContractImportButton
-          ref="ioContractAuditMark"
-          template-type="contractAuditMark"
-          @done="onImportDone('contractAuditMark')"
-        />
-      </div>
+    </div>
 
+    <div ref="authPane" class="contract-row contract-row--auth">
       <ele-pro-table
         ref="authTable"
         class="auth-table"
+        title="供应商合同授权品种列表"
         size="mini"
-        height="calc(100vh - 520px)"
+        :height="authTableHeight"
+        full-height="calc(100vh - 90px)"
         :stripe="true"
         :page-size="authPageSize"
         :page-sizes="[10, 30, 60, 90, 150, 300, 1000]"
@@ -242,6 +165,70 @@
         cache-key="contractAuthTable"
         @current-change="onAuthRowChange"
       >
+        <template v-slot:toolbar>
+          <div class="auth-tool">
+            <el-input v-model="authWhere.varietie_code" size="mini" clearable placeholder="品种编码" @keyup.enter.native="reloadAuth" />
+            <el-input v-model="authWhere.varietie_name" size="mini" clearable placeholder="品种名称" @keyup.enter.native="reloadAuth" />
+            <el-input
+              v-model="authWhere.specification_or_type"
+              size="mini"
+              clearable
+              placeholder="规格型号"
+              @keyup.enter.native="reloadAuth"
+            />
+            <el-input v-model="authWhere.unit" size="mini" clearable placeholder="单位" @keyup.enter.native="reloadAuth" />
+            <el-input
+              v-model="authWhere.manufacturing_ent_name"
+              size="mini"
+              clearable
+              placeholder="生产企业"
+              @keyup.enter.native="reloadAuth"
+            />
+            <el-input v-model="authWhere.approval_number" size="mini" clearable placeholder="注册证号" @keyup.enter.native="reloadAuth" />
+            <el-input v-model="authWhere.TwoSupName" size="mini" clearable placeholder="二级供应商名称" @keyup.enter.native="reloadAuth" />
+            <el-button type="primary" size="mini" icon="el-icon-search" :disabled="!currentContract" @click="reloadAuth">
+              查询
+            </el-button>
+            <cascade-menu
+              button-text="导入/导出"
+              close-on-select
+              :groups="authIoGroups"
+              :loading="exporting"
+              @select="onAuthIoSelect"
+            />
+            <el-button size="mini" :disabled="!currentAuthRow" @click="editPriceVisible = true">修改价格</el-button>
+            <el-button size="mini" :disabled="!currentContract" @click="addAuthVisible = true">品种授权</el-button>
+            <el-button size="mini" :disabled="!authSelection.length" @click="onEnableAuth">启用授权品种</el-button>
+            <el-button size="mini" :disabled="!authSelection.length" @click="onDisableAuth">停用授权品种</el-button>
+            <el-button size="mini" :disabled="!authSelection.length" @click="openBatch('extend')">修改原结束/延期</el-button>
+            <el-button size="mini" :disabled="!authSelection.length" @click="openBatch('auditMark')">修改合同明细备注</el-button>
+            <el-button size="mini" type="danger" :disabled="!authSelection.length" @click="onDeleteAuth">删除品种</el-button>
+            <el-button v-if="hpFlags.isZq" size="mini" @click="onCheckReceiveContract">查看合同对接</el-button>
+            <el-button
+              size="mini"
+              :disabled="!authSelection.length && !currentAuthRow"
+              @click="openModifyDate('auth')"
+            >
+              修改授权到期
+            </el-button>
+            <el-button
+              size="mini"
+              :disabled="!authSelection.length && !currentAuthRow"
+              @click="openModifyDate('detailTime')"
+            >
+              修改合同明细起始结束日期
+            </el-button>
+            <el-button size="mini" :disabled="!authSelection.length" @click="copyAuthVisible = true">复制合同授权</el-button>
+            <el-button v-if="hpFlags.isZq" size="mini" :disabled="!currentContract" @click="onZqContractUpDel">
+              中七更新合同明细
+            </el-button>
+            <el-button size="mini" :disabled="!authSelection.length" @click="twoSupVisible = true">选择授权二级供应商</el-button>
+            <ContractImportButton label="导入授权二级供应商" template-type="twoSupplier" @done="onImportDone('twoSupplier')" />
+            <el-button size="mini" :disabled="!currentAuthRow" @click="openBatch('lcNum')">修改临采数量</el-button>
+            <el-button size="mini" :disabled="!authSelection.length" @click="openBatch('varType')">修改品种类型</el-button>
+            <el-button size="mini" @click="onStopConWithNoVar">停用无启用明细合同</el-button>
+          </div>
+        </template>
         <template v-slot:supplyPrice="{ row }">{{ formatSupplyPrice(row) }}</template>
         <template v-slot:enable="{ row }">{{ formatEnableState(row.is_enable) }}</template>
         <template v-slot:varType="{ row }">{{ formatVarType(row.VAR_TYPE) }}</template>
@@ -263,7 +250,21 @@
           </el-button>
         </template>
       </ele-pro-table>
-    </el-card>
+      <div class="contract-io-hosts">
+        <ContractImportButton ref="ioContractDetail" template-type="contractDetail" @done="onImportDone('contractDetail')" />
+        <ContractImportButton
+          ref="ioContractDetailWithoutAuth"
+          template-type="contractDetailWithoutAuth"
+          @done="onImportDone('contractDetailWithoutAuth')"
+        />
+        <ContractImportButton ref="ioContractExtend" template-type="contractExtend" @done="onImportDone('contractExtend')" />
+        <ContractImportButton
+          ref="ioContractAuditMark"
+          template-type="contractAuditMark"
+          @done="onImportDone('contractAuditMark')"
+        />
+      </div>
+    </div>
 
     <UploadHtDialog
       :visible.sync="uploadHtVisible"
@@ -329,6 +330,7 @@ import ContractImportButton from './components/ContractImportButton.vue';
 import CascadeMenu from '@/views/Home/VarietyDataLzh/VarietyDataLzhMain/components/CascadeMenu.vue';
 import AllContractsDialog from './components/AllContractsDialog.vue';
 import AuthContractInfoDialog from './components/AuthContractInfoDialog.vue';
+import { measureTableHeight } from '@/views/HeelBlockConsumables/PlatformConsume/paneTableHeight';
 import {
   checkGrantContractVar,
   checkVarietieBasic,
@@ -417,11 +419,66 @@ export default {
       copyAuthVisible: false,
       twoSupVisible: false,
       allContractsVisible: false,
-      authContractInfoVisible: false
+      authContractInfoVisible: false,
+      supplierTableHeight: 160,
+      contractTableHeight: 160,
+      authTableHeight: 160
     };
   },
   mounted() {
     this.loadSuppliers();
+    this.schedulePaneHeight();
+    if (typeof ResizeObserver !== 'undefined') {
+      this._paneRo = new ResizeObserver(() => this.schedulePaneHeight());
+      ['supplierPane', 'contractPane', 'authPane'].forEach((name) => {
+        if (this.$refs[name]) this._paneRo.observe(this.$refs[name]);
+      });
+    }
+    window.addEventListener('resize', this.schedulePaneHeight);
+    this._fullscreenObserver = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        const el = mutation.target;
+        if (!el || !el.classList || !el.classList.contains('ele-pro-table')) return;
+        if (!this.$el.contains(el) && el.parentNode !== document.body) return;
+        if (el.parentNode === document.body && !(el._spdMarker && this.$el.contains(el._spdMarker))) return;
+        const opened = el.classList.contains('ele-pro-table-fullscreen');
+        if (opened && el.parentNode !== document.body) {
+          const marker = document.createComment('spd-table-fullscreen');
+          el.parentNode.insertBefore(marker, el);
+          el._spdMarker = marker;
+          document.body.appendChild(el);
+          this.$nextTick(() => {
+            if (el.__vue__ && typeof el.__vue__.doLayout === 'function') el.__vue__.doLayout();
+          });
+        } else if (!opened && el._spdMarker && el._spdMarker.parentNode) {
+          el._spdMarker.parentNode.insertBefore(el, el._spdMarker);
+          el._spdMarker.parentNode.removeChild(el._spdMarker);
+          el._spdMarker = null;
+          this.$nextTick(() => {
+            if (el.__vue__ && typeof el.__vue__.doLayout === 'function') el.__vue__.doLayout();
+            this.schedulePaneHeight();
+          });
+        }
+      });
+    });
+    this._fullscreenObserver.observe(document.body, {
+      attributes: true,
+      subtree: true,
+      attributeFilter: ['class']
+    });
+  },
+  beforeDestroy() {
+    if (this._paneRo) this._paneRo.disconnect();
+    window.removeEventListener('resize', this.schedulePaneHeight);
+    if (this._paneTimer) cancelAnimationFrame(this._paneTimer);
+    if (this._fullscreenObserver) this._fullscreenObserver.disconnect();
+    document.querySelectorAll('body > .ele-pro-table').forEach((el) => {
+      if (el._spdMarker && this.$el.contains(el._spdMarker)) {
+        el._spdMarker.parentNode.insertBefore(el, el._spdMarker);
+        el._spdMarker.parentNode.removeChild(el._spdMarker);
+        el._spdMarker = null;
+      }
+    });
   },
   computed: {
     authIoGroups() {
@@ -451,6 +508,43 @@ export default {
     }
   },
   methods: {
+    schedulePaneHeight() {
+      if (this._paneTimer) cancelAnimationFrame(this._paneTimer);
+      this._paneTimer = requestAnimationFrame(() => this.updatePaneHeights(false));
+    },
+    updatePaneHeights(followUp) {
+      const supplier = measureTableHeight(this.$refs.supplierPane);
+      const contract = measureTableHeight(this.$refs.contractPane);
+      const authPane = this.$refs.authPane;
+      if (authPane) {
+        const tool = authPane.querySelector('.ele-table-tool');
+        const pager = authPane.querySelector('.el-pagination');
+        const pagerH = pager ? pager.offsetHeight : 24;
+        const natural = tool ? tool.scrollHeight : 0;
+        const roomForTable = authPane.clientHeight - natural - pagerH - 2;
+        if (roomForTable < 36) {
+          authPane.style.setProperty('--auth-tool-max', Math.max(64, authPane.clientHeight - 36 - pagerH - 4) + 'px');
+        } else {
+          authPane.style.removeProperty('--auth-tool-max');
+        }
+      }
+      const auth = measureTableHeight(authPane);
+      const changed =
+        (supplier != null && supplier !== this.supplierTableHeight) ||
+        (contract != null && contract !== this.contractTableHeight) ||
+        (auth != null && auth !== this.authTableHeight);
+      if (supplier != null) this.supplierTableHeight = supplier;
+      if (contract != null) this.contractTableHeight = contract;
+      if (auth != null) this.authTableHeight = auth;
+      if (!changed && followUp) return;
+      this.$nextTick(() => {
+        ['supplierTable', 'contractTable', 'authTable'].forEach((name) => {
+          const vm = this.$refs[name];
+          if (vm && typeof vm.doLayout === 'function') vm.doLayout();
+        });
+        if (!followUp) this.updatePaneHeights(true);
+      });
+    },
     formatContractType,
     formatContractDate,
     formatSupplyPrice,
@@ -778,65 +872,199 @@ export default {
 </script>
 
 <style scoped>
-.top-card {
-  margin-bottom: 10px;
-}
-.panel-title {
-  font-weight: 600;
-  margin-bottom: 8px;
-  font-size: 14px;
-}
-.panel-toolbar {
-  margin-bottom: 6px;
+.contract-page {
   display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 100%;
+  height: 100%;
+  max-height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  background: #fff;
+  box-sizing: border-box;
+}
+
+.contract-row {
+  display: flex;
+  flex: 1 1 0;
+  height: 50%;
+  max-height: 50%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.contract-row--auth {
+  flex-direction: column;
+  border-top: 1px solid #ebeef5;
+}
+
+.contract-pane {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+.contract-pane--side {
+  flex: 0 0 29%;
+  width: 29%;
+}
+
+.contract-pane--side + .contract-pane {
+  border-left: 1px solid #ebeef5;
+}
+
+.contract-pane--detail {
+  flex: 1 1 auto;
+}
+
+.contract-tool {
+  display: flex;
+  flex: none;
   flex-wrap: wrap;
-  gap: 4px;
   align-items: center;
+  gap: 4px;
+  max-width: 100%;
+  padding: 2px 8px 0;
+  box-sizing: border-box;
 }
-.detail-toolbar {
-  margin-bottom: 8px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
+
+.contract-title {
+  flex: none;
+  margin-right: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 28px;
+  color: #303133;
 }
-.detail-box {
-  min-height: 220px;
+
+.tool-input {
+  flex: 1 1 80px;
+  width: auto;
+  min-width: 0;
 }
+
+.tool-select {
+  flex: none;
+  width: 72px;
+}
+
+.detail-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  padding: 2px 8px 4px;
+}
+
+.detail-box ::v-deep .el-descriptions-item__cell {
+  padding: 2px 6px;
+  font-size: 12px;
+}
+
 .ht-thumb {
-  width: 36px;
-  height: 36px;
+  width: 20px;
+  height: 20px;
   object-fit: cover;
   cursor: pointer;
+  vertical-align: middle;
 }
-.auth-card {
-  margin-top: 0;
+
+.contract-row--auth ::v-deep .ele-pro-table {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
 }
-.auth-filters {
+
+.contract-row--auth ::v-deep .ele-table-tool {
+  flex-wrap: nowrap;
+  align-items: flex-start;
+  max-width: 100%;
+  max-height: var(--auth-tool-max, none);
+  margin-bottom: 0;
+  overflow: auto;
+}
+
+.contract-row--auth ::v-deep .ele-table-tool-title,
+.contract-row--auth ::v-deep .ele-table-tool-title-content {
+  flex: 1 1 auto;
+  align-items: flex-start;
+  min-width: 0;
+  margin: 0;
+}
+
+.contract-row--auth ::v-deep .ele-table-tool-title-label {
+  flex: none;
+  margin-right: 8px;
+}
+
+.contract-row--auth ::v-deep .ele-table-tool-title-label h6 {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 28px;
+  color: #303133;
+}
+
+.contract-row--auth ::v-deep .ele-tool {
+  flex: none;
+  margin: 2px 0 0 6px;
+}
+
+.auth-tool {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 8px;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  min-width: 0;
 }
-.auth-filters .el-input {
-  width: calc(14.285% - 8px);
-  min-width: 140px;
+
+.auth-tool ::v-deep .el-input {
+  flex: none;
+  width: 120px;
 }
-.auth-toolbar {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-bottom: 8px;
-}
+
 .contract-io-hosts {
   position: absolute;
   width: 0;
   height: 0;
   overflow: hidden;
 }
-.auth-table ::v-deep .el-table {
-  width: max-content;
-  min-width: 100%;
+
+.contract-page ::v-deep .el-table .cell {
+  line-height: 18px;
 }
+
+.contract-page ::v-deep .el-table td,
+.contract-page ::v-deep .el-table th {
+  padding: 1px 0;
+}
+
+.contract-page ::v-deep .el-pagination {
+  margin: 0;
+  padding: 2px 0 0;
+}
+
+.contract-page ::v-deep .el-pagination > * {
+  margin-top: 0 !important;
+}
+
+.contract-page ::v-deep .el-pagination .el-input__inner,
+.contract-page ::v-deep .el-pagination button,
+.contract-page ::v-deep .el-pager li {
+  height: 22px;
+  line-height: 22px;
+  min-width: 22px;
+}
+
+.contract-page ::v-deep .el-pagination__sizes .el-input {
+  width: 88px;
+}
+
 .auth-table ::v-deep .cell-link-btn {
   padding: 0;
   max-width: 100%;
@@ -844,9 +1072,22 @@ export default {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-@media screen and (max-width: 1280px) {
-  .auth-filters .el-input {
-    width: calc(25% - 8px);
-  }
+</style>
+
+<style lang="scss">
+body > .ele-pro-table.ele-pro-table-fullscreen {
+  z-index: 4000 !important;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  background: #fff;
+  overflow: hidden;
+  padding: 12px 12px 8px;
+  box-sizing: border-box;
 }
 </style>

@@ -1,15 +1,28 @@
 <template>
-  <div class="variety-data-lzh-main">
-    <VarietyDataLzhMainSearch ref="searchRef" @search="reload" />
-
-    <div class="spd-panel">
-      <div class="spd-panel__head spd-panel__head--split">
-        <span>操作</span>
-        <span v-if="selection.length" class="spd-panel__head-meta">已选 {{ selection.length }} 条</span>
-      </div>
-      <div class="local-toolbar spd-toolbar">
-        <div class="spd-toolbar__group">
-          <div class="spd-toolbar__btns">
+  <div ref="pane" class="variety-data-lzh-main">
+    <ele-pro-table
+      ref="table"
+      title="散货品种列表"
+      highlight-current-row
+      :height="tableHeight"
+      full-height="calc(100vh - 90px)"
+      size="mini"
+      :stripe="true"
+      :page-size="pageSize"
+      :page-sizes="pageSizes"
+      :columns="tableColumns"
+      :datasource="datasource"
+      :selection.sync="selection"
+      cache-key="varietyDataLzhMainTableV3"
+      @current-change="onCurrentChange"
+    >
+      <template v-slot:toolbar>
+        <div class="main-tool">
+          <VarietyDataLzhMainSearch ref="searchRef" @search="reload" />
+          <span v-if="selection.length" class="main-meta">已选 {{ selection.length }} 条</span>
+          <div class="local-toolbar spd-toolbar">
+            <div class="spd-toolbar__group">
+              <div class="spd-toolbar__btns">
             <el-button v-if="canEdit" size="mini" type="primary" icon="el-icon-plus" @click="onAdd">
               添加
             </el-button>
@@ -354,25 +367,8 @@
           </div>
         </div>
       </div>
-    </div>
-
-    <div class="spd-panel spd-table-panel">
-      <div class="spd-panel__head">散货品种列表</div>
-      <div class="spd-panel__body spd-table-panel__wrap">
-        <ele-pro-table
-          ref="table"
-          highlight-current-row
-          height="60vh"
-          size="mini"
-          :stripe="true"
-          :page-size="pageSize"
-          :page-sizes="pageSizes"
-          :columns="tableColumns"
-          :datasource="datasource"
-          :selection.sync="selection"
-          cache-key="varietyDataLzhMainTableV3"
-          @current-change="onCurrentChange"
-        >
+        </div>
+      </template>
           <template v-slot:action="{ row }">
             <el-button type="text" size="mini" @click="openDetail(row)">编辑/详情</el-button>
             <el-button
@@ -429,8 +425,6 @@
             }}
           </template>
         </ele-pro-table>
-      </div>
-    </div>
 
     <RemarkDialog :visible.sync="remarkVisible" :row="currentRow" @done="reloadTable" />
     <PriceChangeDialog
@@ -681,6 +675,7 @@ import {
   VAR_EPPLUS_BATCH_CONFIG_KEY
 } from '../utils';
 import { utils, writeFile } from 'xlsx';
+import { measureTableHeight } from '@/views/HeelBlockConsumables/PlatformConsume/paneTableHeight';
 
 export default {
   name: 'VarietyDataLzhMain',
@@ -707,6 +702,7 @@ export default {
     return {
       pageSize: 30,
       pageSizes: [15, 30, 50, 100, 200, 999999],
+      tableHeight: 160,
       selection: [],
       currentWhere: null,
       currentRow: null,
@@ -1058,7 +1054,99 @@ export default {
       );
     }
   },
+  mounted() {
+    this.schedulePaneHeight();
+    if (typeof ResizeObserver !== 'undefined') {
+      this._paneRo = new ResizeObserver(() => this.schedulePaneHeight());
+      if (this.$refs.pane) this._paneRo.observe(this.$refs.pane);
+    }
+    window.addEventListener('resize', this.schedulePaneHeight);
+    this._fullscreenObserver = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        const el = mutation.target;
+        if (!el || !el.classList || !el.classList.contains('ele-pro-table')) {
+          return;
+        }
+        if (!this.$el.contains(el) && el.parentNode !== document.body) {
+          return;
+        }
+        if (el.parentNode === document.body && !(el._spdMarker && this.$el.contains(el._spdMarker))) {
+          return;
+        }
+        const opened = el.classList.contains('ele-pro-table-fullscreen');
+        if (opened && el.parentNode !== document.body) {
+          const marker = document.createComment('spd-table-fullscreen');
+          el.parentNode.insertBefore(marker, el);
+          el._spdMarker = marker;
+          document.body.appendChild(el);
+          this.$nextTick(() => {
+            if (el.__vue__ && typeof el.__vue__.doLayout === 'function') {
+              el.__vue__.doLayout();
+            }
+          });
+        } else if (!opened && el._spdMarker && el._spdMarker.parentNode) {
+          el._spdMarker.parentNode.insertBefore(el, el._spdMarker);
+          el._spdMarker.parentNode.removeChild(el._spdMarker);
+          el._spdMarker = null;
+          this.$nextTick(() => {
+            if (el.__vue__ && typeof el.__vue__.doLayout === 'function') {
+              el.__vue__.doLayout();
+            }
+            this.schedulePaneHeight();
+          });
+        }
+      });
+    });
+    this._fullscreenObserver.observe(document.body, {
+      attributes: true,
+      subtree: true,
+      attributeFilter: ['class']
+    });
+  },
+  beforeDestroy() {
+    if (this._paneRo) this._paneRo.disconnect();
+    window.removeEventListener('resize', this.schedulePaneHeight);
+    if (this._paneTimer) cancelAnimationFrame(this._paneTimer);
+    if (this._fullscreenObserver) this._fullscreenObserver.disconnect();
+    document.querySelectorAll('body > .ele-pro-table').forEach((el) => {
+      if (el._spdMarker && this.$el.contains(el._spdMarker)) {
+        el._spdMarker.parentNode.insertBefore(el, el._spdMarker);
+        el._spdMarker.parentNode.removeChild(el._spdMarker);
+        el._spdMarker = null;
+      }
+    });
+  },
   methods: {
+    schedulePaneHeight() {
+      if (this._paneTimer) cancelAnimationFrame(this._paneTimer);
+      this._paneTimer = requestAnimationFrame(() => this.updatePaneHeight(false));
+    },
+    updatePaneHeight(followUp) {
+      const root = this.$refs.pane;
+      if (!root) return;
+      const tool = root.querySelector('.ele-table-tool');
+      const pager = root.querySelector('.el-pagination');
+      const pagerH = pager ? pager.offsetHeight : 24;
+      const natural = tool ? tool.scrollHeight : 0;
+      const roomForTable = root.clientHeight - natural - pagerH - 2;
+      if (roomForTable < 36) {
+        const cap = Math.max(64, root.clientHeight - 36 - pagerH - 4);
+        root.style.setProperty('--main-tool-max', cap + 'px');
+      } else {
+        root.style.removeProperty('--main-tool-max');
+      }
+      const next = measureTableHeight(root);
+      if (next == null || next === this.tableHeight) {
+        if (!followUp) this.$nextTick(() => this.updatePaneHeight(true));
+        return;
+      }
+      this.tableHeight = next;
+      this.$nextTick(() => {
+        const vm = this.$refs.table;
+        if (vm && typeof vm.doLayout === 'function') vm.doLayout();
+        if (!followUp) this.updatePaneHeight(true);
+      });
+    },
     formatEnable,
     formatApprovalState,
     formatYesNo,
@@ -2136,32 +2224,141 @@ export default {
 </script>
 
 <style scoped>
-.spd-panel__head--split {
+.variety-data-lzh-main {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  background: #fff;
 }
-.spd-panel__head-meta {
+
+.variety-data-lzh-main :deep(.ele-pro-table) {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.variety-data-lzh-main :deep(.ele-table-tool) {
+  flex-wrap: nowrap;
+  align-items: flex-start;
+  max-width: 100%;
+  max-height: var(--main-tool-max, none);
+  margin-bottom: 0;
+  overflow: auto;
+}
+
+.variety-data-lzh-main :deep(.ele-table-tool-title),
+.variety-data-lzh-main :deep(.ele-table-tool-title-content) {
+  flex: 1 1 auto;
+  align-items: flex-start;
+  min-width: 0;
+  margin: 0;
+}
+
+.variety-data-lzh-main :deep(.ele-table-tool-title-label) {
+  flex: none;
+  margin-right: 8px;
+}
+
+.variety-data-lzh-main :deep(.ele-table-tool-title-label h6) {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 28px;
+  color: #303133;
+}
+
+.variety-data-lzh-main :deep(.ele-tool) {
+  flex: none;
+  margin: 2px 0 0 6px;
+}
+
+.main-tool {
+  width: 100%;
+  min-width: 0;
+}
+
+.main-meta {
+  display: inline-block;
+  margin: 0 0 2px 8px;
   font-size: 12px;
+  line-height: 22px;
   color: #909399;
-  font-weight: normal;
 }
+
 .local-toolbar {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
+  width: 100%;
+  max-width: 100%;
+  margin-top: 2px;
+  padding: 4px 0 0;
+  border-top: 1px dashed #dcdfe6;
+  box-sizing: border-box;
 }
+
 .spd-toolbar__btns {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 4px;
 }
+
 .spd-toolbar__divider {
   width: 1px;
   align-self: stretch;
   background: #ebeef5;
   margin: 0 4px;
+}
+
+.variety-data-lzh-main :deep(.el-table .cell) {
+  line-height: 18px;
+}
+
+.variety-data-lzh-main :deep(.el-table td),
+.variety-data-lzh-main :deep(.el-table th) {
+  padding: 1px 0;
+}
+
+.variety-data-lzh-main :deep(.el-pagination) {
+  margin: 0;
+  padding: 2px 0 0;
+}
+
+.variety-data-lzh-main :deep(.el-pagination > *) {
+  margin-top: 0 !important;
+}
+
+.variety-data-lzh-main :deep(.el-pagination .el-input__inner),
+.variety-data-lzh-main :deep(.el-pagination button),
+.variety-data-lzh-main :deep(.el-pager li) {
+  height: 22px;
+  line-height: 22px;
+  min-width: 22px;
+}
+
+.variety-data-lzh-main :deep(.el-pagination__sizes .el-input) {
+  width: 88px;
+}
+</style>
+
+<style lang="scss">
+body > .ele-pro-table.ele-pro-table-fullscreen {
+  z-index: 4000 !important;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  background: #fff;
+  overflow: hidden;
+  padding: 12px 12px 8px;
+  box-sizing: border-box;
 }
 </style>
