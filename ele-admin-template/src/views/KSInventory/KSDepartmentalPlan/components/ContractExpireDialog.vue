@@ -8,7 +8,13 @@
     @close="handleClose"
   >
     <div class="expired-certificate-content">
-      <p class="warning-text">以下品种合同快到期或已到期，请确认是否继续提交：</p>
+      <p class="warning-text">
+        {{
+          warnDays > 0
+            ? `以下品种合同已过期或将在 ${warnDays} 天内到期，请确认是否继续提交：`
+            : '以下品种合同快到期或已到期，请确认是否继续提交：'
+        }}
+      </p>
       <el-table :data="expiredList" border style="width: 100%" max-height="400">
         <el-table-column
           prop="VarName"
@@ -54,6 +60,10 @@
       expiredList: {
         type: Array,
         default: () => []
+      },
+      warnDays: {
+        type: Number,
+        default: 0
       }
     },
     methods: {
