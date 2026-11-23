@@ -1,11 +1,9 @@
 <template>
-  <div class="snapshot-supplier">
-    <el-row :gutter="12">
-      <el-col :span="8">
-        <div class="spd-panel snapshot-panel">
-          <div class="spd-panel__head">快照批次</div>
-          <div class="spd-panel__body">
-            <el-form size="mini" :inline="true" @submit.native.prevent>
+  <div class="snapshot-supplier snap-board">
+    <div ref="batchPane" class="snap-pane snap-pane--side">
+      <div class="snap-tool">
+        <span class="snap-title">供应商库存快照</span>
+        <el-form class="snap-search" size="mini" :inline="true" @submit.native.prevent>
               <el-form-item label="状态">
                 <el-select v-model="batchQuery.approveState" style="width: 90px" @change="reloadBatch">
                   <el-option label="全部" value="" />
@@ -35,6 +33,7 @@
                 <el-button type="success" @click="openCreate">创建</el-button>
               </el-form-item>
             </el-form>
+      </div>
             <el-table
               ref="batchTable"
               v-loading="batchLoading"
@@ -42,7 +41,7 @@
               border
               stripe
               highlight-current-row
-              height="450"
+              :height="batchTableHeight"
               size="mini"
               @current-change="onBatchSelect"
             >
@@ -61,7 +60,7 @@
               </el-table-column>
             </el-table>
             <el-pagination
-              class="pager"
+              class="snap-pager"
               small
               background
               layout="total, sizes, prev, pager, next"
@@ -72,20 +71,14 @@
               @size-change="onBatchSize"
               @current-change="loadBatch"
             />
-          </div>
-        </div>
-      </el-col>
-
-      <el-col :span="16">
-        <div class="spd-panel snapshot-panel">
-          <div class="spd-panel__head spd-panel__head--split">
-            <span>快照明细</span>
-            <span v-if="detailSummary.total2 || detailSummary.amounSum" class="spd-panel__head-meta">
-              合计 {{ detailSummary.total2 }} / 金额 {{ detailSummary.amounSum }}
-            </span>
-          </div>
-          <div class="spd-panel__body">
-            <el-form size="mini" :inline="true" @submit.native.prevent>
+    </div>
+    <div ref="detailPane" class="snap-pane snap-pane--main">
+      <div class="snap-tool">
+        <span class="snap-title">快照明细</span>
+        <span v-if="detailSummary.total2 || detailSummary.amounSum" class="snap-meta">
+          合计 {{ detailSummary.total2 }} / 金额 {{ detailSummary.amounSum }}
+        </span>
+        <el-form class="snap-search" size="mini" :inline="true" @submit.native.prevent>
               <el-form-item label="对账含">
                 <el-select v-model="detailQuery.isGet" style="width: 80px" @change="reloadDetail">
                   <el-option label="所有" value="" />
@@ -140,13 +133,14 @@
                 </el-button>
               </el-form-item>
             </el-form>
+      </div>
             <el-table
               ref="detailTable"
               v-loading="detailLoading"
               :data="detailRows"
               border
               stripe
-              height="500"
+              :height="detailTableHeight"
               size="mini"
               @selection-change="(s) => (detailSelection = s)"
             >
@@ -173,7 +167,7 @@
               </el-table-column>
             </el-table>
             <el-pagination
-              class="pager"
+              class="snap-pager"
               small
               background
               layout="total, sizes, prev, pager, next"
@@ -184,10 +178,7 @@
               @size-change="onDetailSize"
               @current-change="loadDetail"
             />
-          </div>
-        </div>
-      </el-col>
-    </el-row>
+    </div>
 
     <el-dialog title="创建快照" :visible.sync="createVisible" width="450px" append-to-body>
       <el-form size="mini" label-width="60px">
@@ -220,6 +211,7 @@ import {
   SUPPLIER_EXPORT_HEADERS,
   supplierRowToExport
 } from '../utils';
+import { measureTableHeight } from '@/views/HeelBlockConsumables/PlatformConsume/paneTableHeight';
 
 export default {
   data() {
@@ -246,13 +238,50 @@ export default {
       exporting: false,
       createVisible: false,
       createMark: '',
-      creating: false
+      creating: false,
+      batchTableHeight: 120,
+      detailTableHeight: 120
     };
   },
   created() {
     this.loadBatch(1);
   },
+  mounted() {
+    this.schedulePaneHeight();
+    if (typeof ResizeObserver !== 'undefined') {
+      this._paneRo = new ResizeObserver(() => this.schedulePaneHeight());
+      if (this.$refs.batchPane) this._paneRo.observe(this.$refs.batchPane);
+      if (this.$refs.detailPane) this._paneRo.observe(this.$refs.detailPane);
+    }
+    window.addEventListener('resize', this.schedulePaneHeight);
+  },
+  beforeDestroy() {
+    if (this._paneRo) this._paneRo.disconnect();
+    window.removeEventListener('resize', this.schedulePaneHeight);
+    if (this._paneTimer) cancelAnimationFrame(this._paneTimer);
+  },
   methods: {
+    schedulePaneHeight() {
+      if (this._paneTimer) cancelAnimationFrame(this._paneTimer);
+      this._paneTimer = requestAnimationFrame(() => this.updatePaneHeights(false));
+    },
+    updatePaneHeights(followUp) {
+      const batch = measureTableHeight(this.$refs.batchPane);
+      const detail = measureTableHeight(this.$refs.detailPane);
+      const changed =
+        (batch != null && batch !== this.batchTableHeight) ||
+        (detail != null && detail !== this.detailTableHeight);
+      if (batch != null) this.batchTableHeight = batch;
+      if (detail != null) this.detailTableHeight = detail;
+      if (!changed) return;
+      this.$nextTick(() => {
+        ['batchTable', 'detailTable'].forEach((name) => {
+          const vm = this.$refs[name];
+          if (vm && typeof vm.doLayout === 'function') vm.doLayout();
+        });
+        if (!followUp) this.updatePaneHeights(true);
+      });
+    },
     calcAllGoodsQty,
     fmtApproveStateDtl,
     fmtIsGet,

@@ -1,37 +1,29 @@
 ﻿<template>
-  <div class="ele-body dsb-container">
-    <div class="dsb-panels">
-      <!-- 左侧：定数包品种列表 -->
-      <div class="dsb-left-panel dsb-card">
-        <div class="panel-header">
-          <div class="panel-title">
-            <span class="title-bar" />
-            <h5>定数包品种列表</h5>
-            <el-tag size="mini" type="info" effect="plain" class="count-tag">共 {{ pkgTotal }} 条</el-tag>
-          </div>
-        </div>
-        <div class="panel-toolbar">
+  <div class="dsb-container">
+      <div ref="leftPane" class="dsb-pane">
+        <div class="dsb-tool">
+          <span class="dsb-title">定数包品种列表</span>
+          <el-tag size="mini" type="info" effect="plain" class="count-tag">共 {{ pkgTotal }} 条</el-tag>
           <el-input
             v-model="searchKeyword"
-            placeholder="请输入品种编码 / 名称关键字"
-            size="small"
+            placeholder="品种编码 / 名称"
+            size="mini"
             clearable
             prefix-icon="el-icon-search"
-            style="width: 240px"
+            class="dsb-keyword"
             @keyup.enter.native="searchPkg"
             @clear="searchPkg"
           />
-          <el-button type="primary" size="small" icon="el-icon-search" @click="searchPkg">查询</el-button>
-          <span class="toolbar-spacer" />
+          <el-button type="primary" size="mini" icon="el-icon-search" @click="searchPkg">查询</el-button>
           <el-button
             v-if="showImportBtn"
-            size="small"
+            size="mini"
             icon="el-icon-upload2"
             @click="handleImportClick"
           >导入</el-button>
           <el-button
             v-if="showDownloadBtn"
-            size="small"
+            size="mini"
             icon="el-icon-download"
             @click="downloadTemplate"
           >模板下载</el-button>
@@ -39,7 +31,7 @@
             v-if="showCreateBtn"
             type="primary"
             plain
-            size="small"
+            size="mini"
             icon="el-icon-plus"
             @click="openCreateDialog"
           >创建定数包系数</el-button>
@@ -47,8 +39,8 @@
         <el-table
           ref="leftTable"
           :data="pkgList"
-          height="320"
-          size="small"
+          :height="leftTableHeight"
+          size="mini"
           border
           stripe
           highlight-current-row
@@ -106,32 +98,23 @@
         </div>
       </div>
 
-      <!-- 中间分隔 -->
-      <div class="dsb-divider" />
-
-      <!-- 右侧：定数包系数方案详情 -->
-      <div class="dsb-right-panel dsb-card">
-        <div class="panel-header">
-          <div class="panel-title">
-            <span class="title-bar title-bar--accent" />
-            <h5>定数包系数方案详情</h5>
-            <el-tag size="mini" type="info" effect="plain" class="count-tag">共 {{ detailList.length }} 条</el-tag>
-          </div>
-          <div class="panel-subtitle" v-if="selectedPkg">
+      <div ref="rightPane" class="dsb-pane dsb-pane--main">
+        <div class="dsb-tool">
+          <span class="dsb-title">定数包系数方案详情</span>
+          <el-tag size="mini" type="info" effect="plain" class="count-tag">共 {{ detailList.length }} 条</el-tag>
+          <span class="dsb-sub" v-if="selectedPkg">
             当前品种：
             <span class="mono">{{ selectedPkg.Varietie_Code_New }}</span>
             <span class="dot-sep">·</span>
             <span>{{ selectedPkg.varietie_name }}</span>
-          </div>
-          <div class="panel-subtitle panel-subtitle--muted" v-else>
-            请在下方散货品种列表选中品种后创建系数；已有系数的可在左侧点选查看
-          </div>
+          </span>
+          <span class="dsb-sub" v-else>请在下方散货品种列表选中品种后创建系数；已有系数的可在左侧点选查看</span>
         </div>
         <el-table
           ref="rightTable"
           :data="detailList"
-          height="362"
-          size="small"
+          :height="rightTableHeight"
+          size="mini"
           border
           stripe
           highlight-current-row
@@ -179,7 +162,6 @@
           </el-table-column>
         </el-table>
       </div>
-    </div>
 
     <!-- 创建/编辑定数包系数弹窗 -->
     <el-dialog
@@ -262,6 +244,7 @@ import {
 } from '@/api/Home/VarietyDataLzhMain';
 import { HOME_HP } from '@/config/setting';
 import { isVarietyEditDisabled } from '../utils';
+import { measureTableHeight } from '@/views/HeelBlockConsumables/PlatformConsume/paneTableHeight';
 
 export default {
   name: 'VarietyDataLzhDsb',
@@ -273,6 +256,8 @@ export default {
     return {
       // 左侧表格
       pkgList: [],
+      leftTableHeight: 120,
+      rightTableHeight: 120,
       pkgTotal: 0,
       pkgPage: 1,
       pkgPageSize: 5,
@@ -335,7 +320,42 @@ export default {
   created() {
     this.loadPkgList();
   },
+  mounted() {
+    this.schedulePaneHeight();
+    if (typeof ResizeObserver !== 'undefined') {
+      this._paneRo = new ResizeObserver(() => this.schedulePaneHeight());
+      if (this.$refs.leftPane) this._paneRo.observe(this.$refs.leftPane);
+      if (this.$refs.rightPane) this._paneRo.observe(this.$refs.rightPane);
+    }
+    window.addEventListener('resize', this.schedulePaneHeight);
+  },
+  beforeDestroy() {
+    if (this._paneRo) this._paneRo.disconnect();
+    window.removeEventListener('resize', this.schedulePaneHeight);
+    if (this._paneTimer) cancelAnimationFrame(this._paneTimer);
+  },
   methods: {
+    schedulePaneHeight() {
+      if (this._paneTimer) cancelAnimationFrame(this._paneTimer);
+      this._paneTimer = requestAnimationFrame(() => this.updatePaneHeights(false));
+    },
+    updatePaneHeights(followUp) {
+      const left = measureTableHeight(this.$refs.leftPane);
+      const right = measureTableHeight(this.$refs.rightPane);
+      const changed =
+        (left != null && left !== this.leftTableHeight) ||
+        (right != null && right !== this.rightTableHeight);
+      if (left != null) this.leftTableHeight = left;
+      if (right != null) this.rightTableHeight = right;
+      if (!changed) return;
+      this.$nextTick(() => {
+        ['leftTable', 'rightTable'].forEach((name) => {
+          const vm = this.$refs[name];
+          if (vm && typeof vm.doLayout === 'function') vm.doLayout();
+        });
+        if (!followUp) this.updatePaneHeights(true);
+      });
+    },
     /* 加载定数包品种列表 */
     async loadPkgList() {
       this.leftLoading = true;
@@ -709,9 +729,94 @@ export default {
 
 <style scoped>
 .dsb-container {
-  padding: 12px;
-  background: #F2F3F5;
-  min-height: 100%;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  background: #fff;
+  box-sizing: border-box;
+}
+
+.dsb-pane {
+  display: flex;
+  flex: 1 1 50%;
+  flex-direction: column;
+  width: 50%;
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+.dsb-pane--main {
+  border-left: 1px solid #ebeef5;
+}
+
+.dsb-tool {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  max-width: 100%;
+  padding: 2px 8px 0;
+  box-sizing: border-box;
+}
+
+.dsb-title {
+  flex: none;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 28px;
+  color: #303133;
+}
+
+.dsb-keyword {
+  width: 160px;
+}
+
+.dsb-sub {
+  min-width: 0;
+  font-size: 12px;
+  line-height: 22px;
+  color: #909399;
+}
+
+.panel-footer {
+  flex: none;
+  margin: 0;
+  padding: 2px 8px 0 0;
+}
+
+.dsb-container ::v-deep .el-table .cell {
+  line-height: 18px;
+}
+
+.dsb-container ::v-deep .el-table td,
+.dsb-container ::v-deep .el-table th {
+  padding: 1px 0;
+}
+
+.dsb-container ::v-deep .el-pagination {
+  margin: 0;
+  padding: 0;
+}
+
+.dsb-container ::v-deep .el-pagination > * {
+  margin-top: 0 !important;
+}
+
+.dsb-container ::v-deep .el-pagination .el-input__inner,
+.dsb-container ::v-deep .el-pagination button,
+.dsb-container ::v-deep .el-pager li {
+  height: 22px;
+  line-height: 22px;
+  min-width: 22px;
+}
+
+.dsb-container ::v-deep .el-pagination__sizes .el-input {
+  width: 88px;
 }
 .dsb-panels {
   display: flex;

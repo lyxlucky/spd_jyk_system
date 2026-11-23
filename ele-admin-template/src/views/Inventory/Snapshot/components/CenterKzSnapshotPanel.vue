@@ -1,11 +1,9 @@
 <template>
-  <div class="snapshot-center-kz">
-    <el-row :gutter="12">
-      <el-col :span="8">
-        <div class="spd-panel snapshot-panel">
-          <div class="spd-panel__head">库存日志批次</div>
-          <div class="spd-panel__body">
-            <el-form size="mini" :inline="true" @submit.native.prevent>
+  <div class="snapshot-center-kz snap-board">
+    <div ref="kzPane" class="snap-pane snap-pane--side">
+      <div class="snap-tool">
+        <span class="snap-title">中心库库存快照</span>
+        <el-form class="snap-search" size="mini" :inline="true" @submit.native.prevent>
               <el-form-item label="日期">
                 <el-date-picker
                   v-model="kzQuery.startDate"
@@ -27,13 +25,14 @@
                 <el-button type="primary" icon="el-icon-search" @click="reloadKzList">查询</el-button>
               </el-form-item>
             </el-form>
+      </div>
             <el-table
               v-loading="kzLoading"
               :data="kzRows"
               border
               stripe
               highlight-current-row
-              height="450"
+              :height="kzTableHeight"
               size="mini"
               @current-change="onKzSelect"
             >
@@ -43,7 +42,7 @@
               <el-table-column prop="REMARK" label="备注" width="130" show-overflow-tooltip />
             </el-table>
             <el-pagination
-              class="pager"
+              class="snap-pager"
               small
               background
               layout="total, sizes, prev, pager, next"
@@ -54,15 +53,11 @@
               @size-change="onKzSize"
               @current-change="loadKzList"
             />
-          </div>
-        </div>
-      </el-col>
-
-      <el-col :span="16">
-        <div class="spd-panel snapshot-panel">
-          <div class="spd-panel__head">快照明细</div>
-          <div class="spd-panel__body">
-            <el-form size="mini" :inline="true" @submit.native.prevent>
+    </div>
+    <div ref="detailPane" class="snap-pane snap-pane--main">
+      <div class="snap-tool">
+        <span class="snap-title">快照明细</span>
+        <el-form class="snap-search" size="mini" :inline="true" @submit.native.prevent>
               <el-form-item label="品种">
                 <el-input
                   v-model="detailQuery.ortVar"
@@ -99,7 +94,6 @@
                   @keyup.enter.native="reloadDetail"
                 />
               </el-form-item>
-              <br />
               <el-form-item label="库房位置">
                 <el-input
                   v-model="detailQuery.ortKfwz"
@@ -149,12 +143,13 @@
                 </el-button>
               </el-form-item>
             </el-form>
+      </div>
             <el-table
               v-loading="detailLoading"
               :data="detailRows"
               border
               stripe
-              height="400"
+              :height="detailTableHeight"
               size="mini"
               :row-class-name="detailRowClass"
             >
@@ -227,7 +222,7 @@
               </el-table-column>
             </el-table>
             <el-pagination
-              class="pager"
+              class="snap-pager"
               small
               background
               layout="total, sizes, prev, pager, next"
@@ -238,10 +233,7 @@
               @size-change="onDetailSize"
               @current-change="loadDetail"
             />
-          </div>
-        </div>
-      </el-col>
-    </el-row>
+    </div>
   </div>
 </template>
 
@@ -259,6 +251,7 @@ import {
   CENTER_EXPORT_HEADERS,
   centerRowToExport
 } from '../utils';
+import { measureTableHeight } from '@/views/HeelBlockConsumables/PlatformConsume/paneTableHeight';
 
 export default {
   props: {
@@ -289,13 +282,46 @@ export default {
       detailRows: [],
       detailTotal: 0,
       detailLoading: false,
-      exporting: false
+      exporting: false,
+      kzTableHeight: 120,
+      detailTableHeight: 120
     };
   },
   created() {
     this.loadKzList(1);
   },
+  mounted() {
+    this.schedulePaneHeight();
+    if (typeof ResizeObserver !== 'undefined') {
+      this._paneRo = new ResizeObserver(() => this.schedulePaneHeight());
+      if (this.$refs.kzPane) this._paneRo.observe(this.$refs.kzPane);
+      if (this.$refs.detailPane) this._paneRo.observe(this.$refs.detailPane);
+    }
+    window.addEventListener('resize', this.schedulePaneHeight);
+  },
+  beforeDestroy() {
+    if (this._paneRo) this._paneRo.disconnect();
+    window.removeEventListener('resize', this.schedulePaneHeight);
+    if (this._paneTimer) cancelAnimationFrame(this._paneTimer);
+  },
   methods: {
+    schedulePaneHeight() {
+      if (this._paneTimer) cancelAnimationFrame(this._paneTimer);
+      this._paneTimer = requestAnimationFrame(() => this.updatePaneHeights(false));
+    },
+    updatePaneHeights(followUp) {
+      const kz = measureTableHeight(this.$refs.kzPane);
+      const detail = measureTableHeight(this.$refs.detailPane);
+      const changed =
+        (kz != null && kz !== this.kzTableHeight) ||
+        (detail != null && detail !== this.detailTableHeight);
+      if (kz != null) this.kzTableHeight = kz;
+      if (detail != null) this.detailTableHeight = detail;
+      if (!changed) return;
+      this.$nextTick(() => {
+        if (!followUp) this.updatePaneHeights(true);
+      });
+    },
     fmtDate10,
     fmtPrice,
     fmtUpShelfStateKz,

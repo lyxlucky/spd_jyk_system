@@ -3,11 +3,32 @@ export function measureTableHeight(root) {
   if (!root || root.clientHeight < 80) {
     return null;
   }
-  const table = root.querySelector('.ele-pro-table');
-  if (!table || table.classList.contains('ele-pro-table-fullscreen')) {
-    return null;
-  }
   const style = window.getComputedStyle(root);
+  const pro = root.querySelector('.ele-pro-table');
+  if (!pro || pro.classList.contains('ele-pro-table-fullscreen')) {
+    if (pro && pro.classList.contains('ele-pro-table-fullscreen')) {
+      return null;
+    }
+    let plainUsed =
+      (parseFloat(style.paddingTop) || 0) +
+      (parseFloat(style.paddingBottom) || 0);
+    let sawTable = false;
+    Array.from(root.children).forEach((child) => {
+      if (child.classList.contains('el-table')) {
+        sawTable = true;
+        return;
+      }
+      const childStyle = window.getComputedStyle(child);
+      plainUsed +=
+        child.offsetHeight +
+        (parseFloat(childStyle.marginTop) || 0) +
+        (parseFloat(childStyle.marginBottom) || 0);
+    });
+    if (!sawTable) {
+      return null;
+    }
+    return Math.max(36, Math.floor(root.clientHeight - plainUsed - 2));
+  }
   let used =
     (parseFloat(style.paddingTop) || 0) +
     (parseFloat(style.paddingBottom) || 0);

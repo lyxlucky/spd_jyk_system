@@ -1,7 +1,6 @@
 <template>
   <div class="variety-search">
     <div class="spd-panel spd-panel--search">
-      <div class="spd-panel__head">查询条件</div>
       <div class="spd-panel__body">
         <el-form size="mini" class="search-form" label-position="left" label-width="auto" @submit.native.prevent>
           <div class="search-row">
@@ -463,7 +462,24 @@ export default {
 
 <style scoped>
 .variety-search {
-  margin-bottom: 8px;
+  margin: 0;
+  width: 100%;
+  min-width: 0;
+}
+
+.variety-search ::v-deep .spd-panel,
+.variety-search ::v-deep .spd-panel--search {
+  border: none;
+  box-shadow: none;
+  background: transparent;
+}
+
+.variety-search ::v-deep .spd-panel__body {
+  padding: 0;
+}
+
+.variety-search ::v-deep .el-form-item {
+  margin-bottom: 2px;
 }
 
 .search-row {
@@ -549,9 +565,7 @@ export default {
   flex-wrap: wrap;
   gap: 6px 8px;
   align-items: center;
-  margin-top: 6px;
-  padding-top: 6px;
-  border-top: 1px dashed #ebeef5;
+  margin-top: 2px;
 }
 .kw--xs {
   width: 72px;
