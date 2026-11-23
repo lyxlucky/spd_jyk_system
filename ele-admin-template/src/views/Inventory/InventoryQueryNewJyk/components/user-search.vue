@@ -1,8 +1,5 @@
 <template>
-  <div class="spd-panel spd-panel--search">
-    <div class="spd-panel__head">查询条件</div>
-    <div class="spd-panel__body">
-      <el-form size="mini" :inline="true" @keyup.enter.native="search" @submit.native.prevent>
+  <el-form class="inventory-jyk-search" size="mini" :inline="true" @keyup.enter.native="search" @submit.native.prevent>
         <el-form-item label="品种">
           <el-input v-model="where.inventoryNew_search1" clearable placeholder="编码/全称" style="width: 130px" />
         </el-form-item>
@@ -39,7 +36,6 @@
             style="width: 140px"
           />
         </el-form-item>
-        <br />
         <el-form-item label="库存位置">
           <el-input v-model="where.inventoryNew_search4" clearable placeholder="库存位置" style="width: 100px" />
         </el-form-item>
@@ -85,7 +81,6 @@
             <el-option label="是" value="1" />
           </el-select>
         </el-form-item>
-        <br />
         <el-form-item label="高低值">
           <el-select v-model="where.highOrLowClass" style="width: 90px">
             <el-option label="全部" value="-1" />
@@ -130,7 +125,6 @@
             <el-option label="植入" value="1" />
           </el-select>
         </el-form-item>
-        <br />
         <el-form-item label="SN码">
           <el-select v-model="where.isSerialNumber" style="width: 80px">
             <el-option label="全部" value="-1" />
@@ -170,8 +164,6 @@
           <el-button type="success" icon="el-icon-download" @click="exportData">导出</el-button>
         </el-form-item>
       </el-form>
-    </div>
-  </div>
 </template>
 
 <script>

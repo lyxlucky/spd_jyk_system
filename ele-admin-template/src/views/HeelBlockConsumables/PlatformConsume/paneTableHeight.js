@@ -1,4 +1,41 @@
 /** 按所在卡片的剩余高度计算表格高度，分页留在卡片内部 */
+export function measureTableHeight(root) {
+  if (!root || root.clientHeight < 80) {
+    return null;
+  }
+  const table = root.querySelector('.ele-pro-table');
+  if (!table || table.classList.contains('ele-pro-table-fullscreen')) {
+    return null;
+  }
+  const style = window.getComputedStyle(root);
+  let used =
+    (parseFloat(style.paddingTop) || 0) +
+    (parseFloat(style.paddingBottom) || 0);
+  Array.from(root.children).forEach((child) => {
+    if (child.classList.contains('ele-pro-table')) {
+      const tool = child.querySelector('.ele-table-tool');
+      const pager = child.querySelector('.el-pagination');
+      [tool, pager].forEach((node) => {
+        if (!node) {
+          return;
+        }
+        const nodeStyle = window.getComputedStyle(node);
+        used +=
+          node.offsetHeight +
+          (parseFloat(nodeStyle.marginTop) || 0) +
+          (parseFloat(nodeStyle.marginBottom) || 0);
+      });
+    } else {
+      const childStyle = window.getComputedStyle(child);
+      used +=
+        child.offsetHeight +
+        (parseFloat(childStyle.marginTop) || 0) +
+        (parseFloat(childStyle.marginBottom) || 0);
+    }
+  });
+  return Math.max(36, Math.floor(root.clientHeight - used - 2));
+}
+
 export default {
   data() {
     return {
@@ -30,41 +67,10 @@ export default {
       this._paneTimer = requestAnimationFrame(() => this.updatePaneTableHeight(false));
     },
     updatePaneTableHeight(followUp) {
-      const root = this.$el;
-      if (!root || root.clientHeight < 80) {
+      const next = measureTableHeight(this.$el);
+      if (next == null) {
         return;
       }
-      const table = root.querySelector('.ele-pro-table');
-      if (!table || table.classList.contains('ele-pro-table-fullscreen')) {
-        return;
-      }
-      const style = window.getComputedStyle(root);
-      let used =
-        (parseFloat(style.paddingTop) || 0) +
-        (parseFloat(style.paddingBottom) || 0);
-      Array.from(root.children).forEach((child) => {
-        if (child.classList.contains('ele-pro-table')) {
-          const tool = child.querySelector('.ele-table-tool');
-          const pager = child.querySelector('.el-pagination');
-          [tool, pager].forEach((node) => {
-            if (!node) {
-              return;
-            }
-            const nodeStyle = window.getComputedStyle(node);
-            used +=
-              node.offsetHeight +
-              (parseFloat(nodeStyle.marginTop) || 0) +
-              (parseFloat(nodeStyle.marginBottom) || 0);
-          });
-        } else {
-          const childStyle = window.getComputedStyle(child);
-          used +=
-            child.offsetHeight +
-            (parseFloat(childStyle.marginTop) || 0) +
-            (parseFloat(childStyle.marginBottom) || 0);
-        }
-      });
-      const next = Math.max(80, Math.floor(root.clientHeight - used - 2));
       if (next !== this.paneTableHeight) {
         this.paneTableHeight = next;
         this.$nextTick(() => {
