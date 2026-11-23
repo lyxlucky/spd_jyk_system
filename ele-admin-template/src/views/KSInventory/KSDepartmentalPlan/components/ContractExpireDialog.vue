@@ -2,7 +2,9 @@
   <el-dialog
     title="合同到期提醒"
     :visible="visible"
-    width="80%"
+    width="90%"
+    top="6vh"
+    custom-class="contract-expire-dialog"
     :close-on-click-modal="false"
     append-to-body
     @close="handleClose"
@@ -15,24 +17,44 @@
             : '以下品种合同快到期或已到期，请确认是否继续提交：'
         }}
       </p>
-      <el-table :data="expiredList" border style="width: 100%" max-height="400">
+      <el-table
+        :data="expiredList"
+        border
+        stripe
+        style="width: 100%"
+        max-height="520"
+      >
+        <el-table-column
+          type="index"
+          label="序号"
+          width="60"
+          align="center"
+        ></el-table-column>
         <el-table-column
           prop="VarName"
           label="品种名称"
-          width="330"
+          min-width="260"
+          show-overflow-tooltip
         ></el-table-column>
         <el-table-column
           prop="VarID"
           label="品种编码"
-          width="150"
+          min-width="140"
+          show-overflow-tooltip
         ></el-table-column>
-        <el-table-column prop="GG" label="规格" width="120"></el-table-column>
+        <el-table-column
+          prop="GG"
+          label="规格"
+          min-width="140"
+          show-overflow-tooltip
+        ></el-table-column>
         <el-table-column
           prop="Manufacturing"
           label="生产企业"
-          width="200"
+          min-width="220"
+          show-overflow-tooltip
         ></el-table-column>
-        <el-table-column label="合同明细到期" width="180">
+        <el-table-column label="合同明细到期" min-width="200">
           <template slot-scope="scope">
             <span :class="dateClass(scope.row)">
               {{ formatDate(scope.row.DET_CONTRACT_END) }}
@@ -66,14 +88,32 @@
         default: 0
       }
     },
+    data() {
+      return {
+        closingByAction: false
+      };
+    },
+    watch: {
+      visible(val) {
+        if (val) {
+          this.closingByAction = false;
+        }
+      }
+    },
     methods: {
       handleConfirm() {
+        this.closingByAction = true;
         this.$emit('confirm');
       },
       handleCancel() {
+        this.closingByAction = true;
         this.$emit('cancel');
       },
       handleClose() {
+        if (this.closingByAction) {
+          this.closingByAction = false;
+          return;
+        }
         this.$emit('cancel');
       },
       dateClass(row) {

@@ -588,6 +588,7 @@
         contractExpireDialogVisible: false,
         contractExpireList: [],
         contractExpireWarnDays: 0,
+        contractExpireConfigLoaded: false,
         checkingContractExpire: false,
         bindBudgetDialogVisible: false,
         mergeOrderVisible: false,
@@ -921,19 +922,26 @@
           });
       },
 
+      async loadContractExpireWarnDays() {
+        const res = await getConfig(CONTRACT_EXPIRE_DAYS_CONFIG_KEY);
+        this.contractExpireWarnDays = parseContractExpireDays(res?.data?.data);
+        this.contractExpireConfigLoaded = true;
+        return this.contractExpireWarnDays;
+      },
+
       async addPutInListDeta2() {
         if (this.checkingContractExpire) return;
         this.checkingContractExpire = true;
         try {
-          const res = await getConfig(CONTRACT_EXPIRE_DAYS_CONFIG_KEY);
-          const warnDays = parseContractExpireDays(res?.data?.data);
+          const warnDays = this.contractExpireConfigLoaded
+            ? this.contractExpireWarnDays
+            : await this.loadContractExpireWarnDays();
           if (warnDays > 0) {
             const expiredItems = collectContractExpireWarnLines(
               this.datasourceList,
               warnDays
             );
             if (expiredItems.length > 0) {
-              this.contractExpireWarnDays = warnDays;
               this.contractExpireList = expiredItems;
               this.contractExpireDialogVisible = true;
               return;
@@ -1458,6 +1466,7 @@
         }
       }
       this.IsHide();
+      this.loadContractExpireWarnDays().catch(() => {});
     }
   };
 </script>
