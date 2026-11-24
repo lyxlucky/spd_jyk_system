@@ -44,7 +44,7 @@
           :selection.sync="selection"
           :height="tableHeight"
           full-height="calc(100vh - 100px)"
-          cache-key="KSDepartmentalPlanDetailTable_v5"
+          cache-key="KSDepartmentalPlanDetailTable_v7"
           :row-class-name="detailRowClassName"
           @selection-change="onSelectionChange"
         >
@@ -83,9 +83,10 @@
         <el-tag v-else type="success" size="mini">正常</el-tag>
       </template>
       <template v-slot:PlanQty="{ row }">
-        <span v-if="isDetailDeleted(row)">{{ row.PlanQty }}</span>
+        <span v-if="isDetailDeleted(row)" class="plan-qty-text">{{ row.PlanQty }}</span>
         <el-input
           v-else
+          class="plan-qty-input"
           v-model="row.PlanQty"
           :min="0"
           :max="99999999"
@@ -102,10 +103,10 @@
           :content="row.VarCode + '中心库剩余库存 :' + row.StockQty"
           placement="top"
         >
-          <el-tag v-if="row.StockQty == 0" type="danger" size="mini">{{
-            row.VarCode
-          }}</el-tag>
-          <el-tag v-else type="success" size="mini">{{ row.VarCode }}</el-tag>
+          <span
+            class="var-code-text"
+            :class="row.StockQty == 0 ? 'is-empty-stock' : 'has-stock'"
+          >{{ row.VarCode }}</span>
         </el-tooltip>
       </template>
       <template v-slot:REMARK="{ row }">
@@ -450,28 +451,28 @@
           {
             prop: 'VarName',
             label: '品种全称',
-            align: 'center',
+            align: 'left',
             showOverflowTooltip: true,
             width: 330
           },
           {
             prop: 'Used_Name',
             label: '常用名',
-            align: 'center',
+            align: 'left',
             showOverflowTooltip: true,
             width: 180
           },
           {
             prop: 'GG',
             label: '型号/规格',
-            align: 'center',
+            align: 'left',
             showOverflowTooltip: true,
             width: 180
           },
           {
             prop: 'Manufacturing',
             label: '生产企业名称',
-            align: 'center',
+            align: 'left',
             showOverflowTooltip: true,
             width: 180
           },
@@ -503,8 +504,7 @@
             label: '注册证到期',
             align: 'center',
             showOverflowTooltip: true,
-            width: 120,
-            show: HOME_HP == 'bdrm'
+            width: 120
           },
           {
             columnKey: 'DET_CONTRACT_END',
@@ -535,14 +535,14 @@
           {
             prop: 'Brand',
             label: '品牌',
-            align: 'center',
+            align: 'left',
             showOverflowTooltip: true,
             width: 180
           },
           {
             prop: 'SUPPLIER_NAME',
             label: '启用供应商',
-            align: 'center',
+            align: 'left',
             showOverflowTooltip: true,
             width: 180
           },
@@ -558,7 +558,7 @@
           {
             prop: 'Price',
             label: '结算价',
-            align: 'center',
+            align: 'right',
             showOverflowTooltip: true,
             width: 80,
             formatter: (row, column, cellValue) => {
@@ -577,7 +577,7 @@
           {
             prop: 'TOTAL_DOLLAR',
             label: '总金额',
-            align: 'center',
+            align: 'right',
             showOverflowTooltip: true,
             width: 80,
             formatter: (row, column, cellValue) => {
@@ -1142,5 +1142,27 @@
 
 .ks-dept-plan-detail >>> .el-table .is-detail-deleted td {
   background-color: #f5f7fa !important;
+}
+
+.plan-qty-text {
+  display: inline-block;
+  width: 100%;
+  text-align: center;
+}
+
+.plan-qty-input >>> .el-input__inner {
+  text-align: center;
+}
+
+.var-code-text {
+  cursor: default;
+}
+
+.var-code-text.is-empty-stock {
+  color: #f56c6c;
+}
+
+.var-code-text.has-stock {
+  color: #67c23a;
 }
 </style>
