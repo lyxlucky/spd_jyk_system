@@ -99,6 +99,7 @@ export function collectContractExpireWarnLines(list, warnDays, now) {
       GG: element.GG,
       Manufacturing: element.Manufacturing,
       DET_CONTRACT_END: contractEnd,
+      diffDays: diff,
       expired: diff < 0,
       remainText:
         diff < 0
@@ -108,5 +109,7 @@ export function collectContractExpireWarnLines(list, warnDays, now) {
             : '快到期(剩' + diff + '天)'
     });
   });
+  // 已过期排在最前面，其余按剩余天数升序展示
+  expiredItems.sort((a, b) => a.diffDays - b.diffDays);
   return expiredItems;
 }
