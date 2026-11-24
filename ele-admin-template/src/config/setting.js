@@ -140,6 +140,19 @@ export function getHospitalLogo() {
   return `${String(path)}?_t=${new Date().getTime()}`;
 }
 
+// 登录卡顶部用圆形院徽。只有单独切出院徽的医院才返回，其余医院继续用横版院标
+export function getHospitalSeal() {
+  const sealMap = {
+    bd: require('@/assets/sealBD.png')
+  };
+  const asset = sealMap[HOME_HP];
+  if (!asset) {
+    return '';
+  }
+  const path = asset && asset.default ? asset.default : asset;
+  return `${String(path)}?_t=${new Date().getTime()}`;
+}
+
 // 计算b2b的的医院ID
 const caculateB2bCode = () => {
   switch (HOME_HP) {

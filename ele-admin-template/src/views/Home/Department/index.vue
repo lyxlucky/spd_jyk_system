@@ -1,96 +1,96 @@
 <template>
-  <div class="dept-maint ele-body-small">
-    <el-row :gutter="8" class="main-row">
-      <!-- 一级科室 -->
-      <el-col :span="5">
-        <el-card shadow="never" class="side-card">
-          <div slot="header" class="card-head"><span>一级科室目录</span></div>
-          <div class="btn-row btn-row-two">
-            <div class="btn-row-line">
-              <el-button type="primary" size="mini" plain icon="el-icon-plus" @click="openOneDialog(false)">添加科室</el-button>
-              <el-button type="danger" size="mini" plain @click="onOneToggleEnable">启用/停用</el-button>
-            </div>
-            <div class="btn-row-line">
-              <el-button type="primary" size="mini" plain icon="el-icon-edit" @click="openOneDialog(true)">编辑科室</el-button>
-              <el-button size="mini" @click="onExportExcel">导出所有科室</el-button>
-            </div>
+  <div class="dept-maint">
+    <div ref="onePane" class="dept-pane dept-pane--side">
+      <div class="dept-tool">
+        <span class="dept-title">一级科室目录</span>
+        <div class="btn-row btn-row-two">
+          <div class="btn-row-line">
+            <el-button type="primary" size="mini" plain icon="el-icon-plus" @click="openOneDialog(false)">添加科室</el-button>
+            <el-button type="danger" size="mini" plain @click="onOneToggleEnable">启用/停用</el-button>
           </div>
-          <el-form size="small" @submit.native.prevent>
-            <el-input v-model="oneSearchName" placeholder="请输入名称搜索" clearable @keyup.enter.native="loadOneList">
-              <el-button slot="append" icon="el-icon-search" @click="loadOneList" />
-            </el-input>
-          </el-form>
-          <div class="table-scroll">
-            <el-table
-              ref="oneTable"
-              v-loading="oneLoading"
-              :data="oneRows"
-              :fit="false"
-              border
-              stripe
-              size="small"
-              highlight-current-row
-              height="calc(100vh - 280px)"
-              @current-change="onOneCurrentChange"
-            >
+          <div class="btn-row-line">
+            <el-button type="primary" size="mini" plain icon="el-icon-edit" @click="openOneDialog(true)">编辑科室</el-button>
+            <el-button size="mini" @click="onExportExcel">导出所有科室</el-button>
+          </div>
+        </div>
+        <el-form size="mini" class="dept-search" @submit.native.prevent>
+          <el-input v-model="oneSearchName" placeholder="请输入名称搜索" clearable @keyup.enter.native="loadOneList">
+            <el-button slot="append" icon="el-icon-search" @click="loadOneList" />
+          </el-input>
+        </el-form>
+      </div>
+      <el-table
+        ref="oneTable"
+        v-loading="oneLoading"
+        :data="oneRows"
+        :fit="false"
+        border
+        stripe
+        size="mini"
+        highlight-current-row
+        :height="oneTableHeight"
+        @current-change="onOneCurrentChange"
+      >
               <el-table-column prop="Dept_One_Name" label="科室名称" min-width="100" show-overflow-tooltip />
               <el-table-column label="启用状态" width="100">
                 <template slot-scope="{ row }">{{ fmtEnable(row.Enable) }}</template>
               </el-table-column>
               <el-table-column prop="Herp_Dept_One_Code" label="HERP科室编码" min-width="100" show-overflow-tooltip />
             </el-table>
-          </div>
-        </el-card>
-      </el-col>
+    </div>
 
-      <!-- 二级 / HIS 计费 -->
-      <el-col :span="5">
-        <el-card shadow="never" class="side-card">
-          <div slot="header" class="card-head">
-            <span>{{ middleMode === 'two' ? '二级科室目录' : 'HIS计费科室' }}</span>
-          </div>
-          <template v-if="middleMode === 'two'">
-            <div class="btn-row btn-row-two">
-              <div class="btn-row-line">
-                <el-button size="mini" icon="el-icon-sort" @click="toggleMiddle">切换</el-button>
-                <el-button type="primary" size="mini" plain :disabled="!currentOne" @click="openTwoDialog(false)">添加科室</el-button>
-              </div>
-              <div class="btn-row-line">
-                <el-button type="primary" size="mini" plain :disabled="!currentTwo" @click="openTwoDialog(true)">编辑科室</el-button>
-                <el-button type="danger" size="mini" plain :disabled="!currentTwo" @click="onTwoToggleEnable">启用/停用</el-button>
-                <el-button
-                  type="primary"
-                  size="mini"
-                  plain
-                  :disabled="!currentTwo"
-                  @click="onTwoThreeInventory"
-                >{{ threeInvOpen ? '关闭三级库' : '开通三级库' }}</el-button>
-              </div>
+    <div ref="twoPane" class="dept-pane dept-pane--side">
+      <div class="dept-tool">
+        <span class="dept-title">{{ middleMode === 'two' ? '二级科室目录' : 'HIS计费科室' }}</span>
+        <template v-if="middleMode === 'two'">
+          <div class="btn-row btn-row-two">
+            <div class="btn-row-line">
+              <el-button size="mini" icon="el-icon-sort" @click="toggleMiddle">切换</el-button>
+              <el-button type="primary" size="mini" plain :disabled="!currentOne" @click="openTwoDialog(false)">添加科室</el-button>
             </div>
-            <el-form size="small" class="mt8" @submit.native.prevent>
-              <el-input
-                v-model="twoSearchName"
-                :disabled="!currentOne"
-                placeholder="请输入名称搜索"
-                clearable
-                @keyup.enter.native="loadTwoList"
-              >
-                <el-button slot="append" icon="el-icon-search" :disabled="!currentOne" @click="loadTwoList" />
-              </el-input>
-            </el-form>
-            <div class="table-scroll">
-              <el-table
-                ref="twoTable"
-                v-loading="twoLoading"
-                :data="twoRows"
-                :fit="false"
-                border
-                stripe
-                size="small"
-                highlight-current-row
-                height="calc(100vh - 320px)"
-                @current-change="onTwoCurrentChange"
-              >
+            <div class="btn-row-line">
+              <el-button type="primary" size="mini" plain :disabled="!currentTwo" @click="openTwoDialog(true)">编辑科室</el-button>
+              <el-button type="danger" size="mini" plain :disabled="!currentTwo" @click="onTwoToggleEnable">启用/停用</el-button>
+              <el-button
+                type="primary"
+                size="mini"
+                plain
+                :disabled="!currentTwo"
+                @click="onTwoThreeInventory"
+              >{{ threeInvOpen ? '关闭三级库' : '开通三级库' }}</el-button>
+            </div>
+          </div>
+          <el-form size="mini" class="dept-search" @submit.native.prevent>
+            <el-input
+              v-model="twoSearchName"
+              :disabled="!currentOne"
+              placeholder="请输入名称搜索"
+              clearable
+              @keyup.enter.native="loadTwoList"
+            >
+              <el-button slot="append" icon="el-icon-search" :disabled="!currentOne" @click="loadTwoList" />
+            </el-input>
+          </el-form>
+        </template>
+        <div v-else class="btn-row">
+          <el-button size="mini" icon="el-icon-sort" @click="toggleMiddle">切换</el-button>
+          <el-button type="primary" size="mini" plain :disabled="!currentOne" @click="openHisBind">添加科室</el-button>
+          <el-button type="primary" size="mini" plain @click="onHisEditNotSupported">编辑科室</el-button>
+        </div>
+      </div>
+      <el-table
+        v-if="middleMode === 'two'"
+        ref="twoTable"
+        v-loading="twoLoading"
+        :data="twoRows"
+        :fit="false"
+        border
+        stripe
+        size="mini"
+        highlight-current-row
+        :height="twoTableHeight"
+        @current-change="onTwoCurrentChange"
+      >
                 <el-table-column prop="Dept_Two_Name" label="科室名称" min-width="100" show-overflow-tooltip />
                 <el-table-column label="科室类型" width="100">
                   <template slot-scope="{ row }">{{ deptTypeLabel(row.DEPT_TYPE) }}</template>
@@ -109,58 +109,43 @@
                   </template>
                 </el-table-column>
               </el-table>
-            </div>
-          </template>
-          <template v-else>
-            <div class="btn-row mt8">
-              <el-button size="mini" icon="el-icon-sort" @click="toggleMiddle">切换</el-button>
-              <el-button type="primary" size="mini" plain :disabled="!currentOne" @click="openHisBind">添加科室</el-button>
-              <el-button type="primary" size="mini" plain @click="onHisEditNotSupported">编辑科室</el-button>
-            </div>
-            <div class="table-scroll">
-              <el-table
-                v-loading="hisLoading"
-                :data="hisRows"
-                :fit="false"
-                border
-                stripe
-                size="small"
-                highlight-current-row
-                height="calc(100vh - 280px)"
-                @current-change="(r) => (currentHis = r)"
-              >
-                <el-table-column prop="Charging_Dept_Name" label="科室名称" min-width="140" show-overflow-tooltip />
-              </el-table>
-            </div>
-          </template>
-        </el-card>
-      </el-col>
+      <el-table
+        v-else
+        v-loading="hisLoading"
+        :data="hisRows"
+        :fit="false"
+        border
+        stripe
+        size="mini"
+        highlight-current-row
+        :height="twoTableHeight"
+        @current-change="(r) => (currentHis = r)"
+      >
+        <el-table-column prop="Charging_Dept_Name" label="科室名称" min-width="140" show-overflow-tooltip />
+      </el-table>
+    </div>
 
-      <!-- 详情 + 授权 -->
-      <el-col :span="14">
-        <el-card shadow="never" class="detail-card">
-          <el-tabs v-model="detailTab" @tab-click="onTabClick">
-            <el-tab-pane label="一级科室详情" name="one">
-              <one-bulk-auth-panel
-                ref="bulkPanel"
-                :dept-one-code="currentOne ? currentOne.Dept_One_Code : ''"
-                :dept-one-name="currentOne ? currentOne.Dept_One_Name : ''"
-                :one-detail="oneDetail"
-              />
-            </el-tab-pane>
-            <el-tab-pane label="二级科室详情" name="two" :disabled="!currentTwo">
-              <two-pkg-auth-panel
-                ref="pkgPanel"
-                :dept-one-code="currentOne ? currentOne.Dept_One_Code : ''"
-                :dept-two-code="currentTwo ? currentTwo.Dept_Two_Code : ''"
-                :dept-two-name="currentTwo ? currentTwo.Dept_Two_Name : ''"
-                :two-detail="twoDetail"
-              />
-            </el-tab-pane>
-          </el-tabs>
-        </el-card>
-      </el-col>
-    </el-row>
+    <div class="dept-pane dept-pane--main">
+      <el-tabs v-model="detailTab" @tab-click="onTabClick">
+        <el-tab-pane label="一级科室详情" name="one">
+          <one-bulk-auth-panel
+            ref="bulkPanel"
+            :dept-one-code="currentOne ? currentOne.Dept_One_Code : ''"
+            :dept-one-name="currentOne ? currentOne.Dept_One_Name : ''"
+            :one-detail="oneDetail"
+          />
+        </el-tab-pane>
+        <el-tab-pane label="二级科室详情" name="two" :disabled="!currentTwo">
+          <two-pkg-auth-panel
+            ref="pkgPanel"
+            :dept-one-code="currentOne ? currentOne.Dept_One_Code : ''"
+            :dept-two-code="currentTwo ? currentTwo.Dept_Two_Code : ''"
+            :dept-two-name="currentTwo ? currentTwo.Dept_Two_Name : ''"
+            :two-detail="twoDetail"
+          />
+        </el-tab-pane>
+      </el-tabs>
+    </div>
 
     <!-- 一级科室 弹窗（与 Frame/AddDepartmentyjks：先弹出再 ajax 填表） -->
     <el-dialog :title="oneDialogEdit ? '编辑一级科室' : '添加一级科室'" :visible.sync="oneDialog" width="520px" append-to-body @closed="onOneDialogClosed">
@@ -294,6 +279,7 @@ import OneBulkAuthPanel from './components/OneBulkAuthPanel.vue';
 import TwoPkgAuthPanel from './components/TwoPkgAuthPanel.vue';
 import FinanceCwDialog from './components/FinanceCwDialog.vue';
 import HisChargingBindDialog from './components/HisChargingBindDialog.vue';
+import { measureTableHeight } from '@/views/HeelBlockConsumables/PlatformConsume/paneTableHeight';
 
 export default {
   name: 'HomeDepartment',
@@ -301,6 +287,8 @@ export default {
   data() {
     return {
       detailTab: 'one',
+      oneTableHeight: 160,
+      twoTableHeight: 160,
       middleMode: 'two',
       oneSearchName: '',
       oneRows: [],
@@ -347,8 +335,41 @@ export default {
   },
   mounted() {
     this.loadOneList();
+    this.schedulePaneHeight();
+    if (typeof ResizeObserver !== 'undefined') {
+      this._paneRo = new ResizeObserver(() => this.schedulePaneHeight());
+      if (this.$refs.onePane) this._paneRo.observe(this.$refs.onePane);
+      if (this.$refs.twoPane) this._paneRo.observe(this.$refs.twoPane);
+    }
+    window.addEventListener('resize', this.schedulePaneHeight);
+  },
+  beforeDestroy() {
+    if (this._paneRo) this._paneRo.disconnect();
+    window.removeEventListener('resize', this.schedulePaneHeight);
+    if (this._paneTimer) cancelAnimationFrame(this._paneTimer);
   },
   methods: {
+    schedulePaneHeight() {
+      if (this._paneTimer) cancelAnimationFrame(this._paneTimer);
+      this._paneTimer = requestAnimationFrame(() => this.updatePaneHeights(false));
+    },
+    updatePaneHeights(followUp) {
+      const one = measureTableHeight(this.$refs.onePane);
+      const two = measureTableHeight(this.$refs.twoPane);
+      const changed =
+        (one != null && one !== this.oneTableHeight) ||
+        (two != null && two !== this.twoTableHeight);
+      if (one != null) this.oneTableHeight = one;
+      if (two != null) this.twoTableHeight = two;
+      if (!changed) return;
+      this.$nextTick(() => {
+        ['oneTable', 'twoTable'].forEach((name) => {
+          const vm = this.$refs[name];
+          if (vm && typeof vm.doLayout === 'function') vm.doLayout();
+        });
+        if (!followUp) this.updatePaneHeights(true);
+      });
+    },
     fmtEnable,
     fmtDateTime,
     deptTypeLabel(v) {
@@ -360,6 +381,7 @@ export default {
       this.middleMode = this.middleMode === 'two' ? 'his' : 'two';
       if (this.middleMode === 'his') this.loadHisList();
       else if (this.currentOne) this.loadTwoList();
+      this.$nextTick(() => this.schedulePaneHeight());
     },
     onTabClick() {
       /* tab 切换由 v-model 处理 */
@@ -700,36 +722,81 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .dept-maint {
-  padding: 8px;
+  display: flex;
+  width: 100%;
+  max-width: 100%;
+  height: 100%;
+  max-height: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+  background: #fff;
 }
-.side-card,
-.detail-card {
-  height: calc(100vh - 120px);
-  overflow: auto;
+
+.dept-pane {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
 }
-.card-head {
+
+.dept-pane--side {
+  flex: 0 0 22%;
+  width: 22%;
+  max-width: 22%;
+}
+
+.dept-pane--side + .dept-pane--side,
+.dept-pane--main {
+  border-left: 1px solid #ebeef5;
+}
+
+.dept-pane--main {
+  flex: 1 1 0;
+}
+
+.dept-tool {
+  flex: none;
+  max-width: 100%;
+  padding: 2px 6px 0;
+  box-sizing: border-box;
+}
+
+.dept-title {
+  display: block;
+  font-size: 13px;
   font-weight: 600;
+  line-height: 22px;
+  color: #303133;
 }
+
+.dept-search {
+  margin: 0 0 2px;
+}
+
 .btn-row {
-  margin: 8px 0;
+  margin: 0 0 2px;
   display: flex;
   flex-wrap: wrap;
   gap: 4px;
 }
+
 .btn-row-two {
   flex-direction: column;
   align-items: stretch;
-  gap: 6px;
+  gap: 4px;
 }
-/* 需求 8：按钮按 2 行分布，行内等宽对齐，不再折成 3 行 */
+
 .btn-row-line {
   display: flex;
   flex-wrap: nowrap;
   gap: 4px;
   justify-content: flex-start;
 }
+
 .btn-row-line > .el-button {
   flex: 1 1 0;
   min-width: 0;
@@ -739,21 +806,64 @@ export default {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
 .btn-row-line > .el-button + .el-button {
   margin-left: 0;
 }
-.mt8 {
-  margin-top: 8px;
+
+:deep(.el-table th.el-table__cell),
+:deep(.el-table td.el-table__cell) {
+  padding: 1px 0;
 }
-.table-scroll {
-  width: 100%;
-  max-width: 100%;
-  overflow-x: auto;
+
+:deep(.el-table .cell) {
+  line-height: 18px;
+  padding-left: 6px;
+  padding-right: 6px;
 }
+
+:deep(.el-tabs) {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+:deep(.el-tabs__header) {
+  flex: none;
+  margin: 0;
+}
+
+:deep(.el-tabs__content) {
+  flex: 1 1 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+:deep(.el-tabs__content > .el-tab-pane) {
+  height: 100%;
+  overflow: hidden;
+}
+
+:deep(.el-tabs__item) {
+  height: 28px;
+  line-height: 28px;
+  font-size: 13px;
+}
+
+:deep(.auth-panel) {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
 .req-star {
   color: #f56c6c;
   margin-right: 2px;
 }
+
 .dialog-form-wrap {
   min-height: 100px;
 }

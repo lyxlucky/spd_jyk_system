@@ -19,6 +19,9 @@
             :show-procure-approve="showProcureApprove"
             :approve-pass-label="approvePassLabel"
             :approve-deny-label="approveDenyLabel"
+            :state-filter-label="stateFilterLabel"
+            :spd-filter-label="spdFilterLabel"
+            :show-return-state="showReturnState"
             @search="onSearch"
             @export="onExport"
             @aiReviewSubmit="aiReviewSubmit"
@@ -71,6 +74,7 @@
           <el-tag v-if="row.STATE == '0' || row.STATE == 0" type="primary" size="mini">新增</el-tag>
           <el-tag v-else-if="row.STATE == '1' || row.STATE == 1" type="success" size="mini">已审批</el-tag>
           <el-tag v-else-if="row.STATE == '2' || row.STATE == 2" type="danger" size="mini">审批未通过</el-tag>
+          <el-tag v-else-if="row.STATE == '9' || row.STATE == 9" type="warning" size="mini">打回</el-tag>
           <span v-else class="text-muted">{{ procureStateLabel(row.STATE) }}</span>
         </template>
 
@@ -78,6 +82,7 @@
           <el-tag v-if="row.SPD_SP_STATE == '1' || row.SPD_SP_STATE == 1" type="success" size="mini">已审核</el-tag>
           <el-tag v-else-if="row.SPD_SP_STATE == '2' || row.SPD_SP_STATE == 2" type="danger" size="mini">审核未通过</el-tag>
           <el-tag v-else-if="row.SPD_SP_STATE == '0' || row.SPD_SP_STATE == 0" type="info" size="mini">待审核</el-tag>
+          <el-tag v-else-if="row.SPD_SP_STATE == '9' || row.SPD_SP_STATE == 9" type="warning" size="mini">打回</el-tag>
           <span v-else class="text-muted">{{ spdSpStateLabel(row.SPD_SP_STATE) }}</span>
         </template>
 
@@ -185,7 +190,9 @@
   import {
     getVarPicList,
     ApproveVarPic,
+    ApproveVarPicBdrm,
     ApproveVarPicSpd,
+    ApproveVarPicSpdBdrm,
     PicVarDiscardUse,
     deleteVarPic,
     submitVarPicAiReview,
@@ -259,8 +266,8 @@
             formatter: (row) => this.fmtDate(row.END_TIME, row.TYPE)
           },
           { slot: 'TB_STATE', label: '同注册证', width: 80, align: 'center' },
-          { slot: 'STATE', label: '状态', width: 96, align: 'center' },
-          { slot: 'SPD_SP_STATE', label: '审核状态', width: 96, align: 'center' },
+          { slot: 'STATE', label: HOME_HP === 'bdrm' ? '招采审批状态' : '状态', width: HOME_HP === 'bdrm' ? 120 : 96, align: 'center' },
+          { slot: 'SPD_SP_STATE', label: HOME_HP === 'bdrm' ? 'SPD审核状态' : '审核状态', width: HOME_HP === 'bdrm' ? 120 : 96, align: 'center' },
           { slot: 'AI_STATUS', label: 'AI 状态', width: 96, align: 'center' },
           { slot: 'AI_OUTCOME', label: 'AI 建议', width: 108, align: 'center' },
           { slot: 'AI_SUMMARY', label: 'AI 审查意见', minWidth: 160 },
@@ -301,6 +308,15 @@
       },
       approveDenyLabel() {
         return HOME_HP === 'bdrm' ? '招采审批不通过' : '审批不通过';
+      },
+      stateFilterLabel() {
+        return HOME_HP === 'bdrm' ? '招采审批状态' : '图片状态';
+      },
+      spdFilterLabel() {
+        return HOME_HP === 'bdrm' ? 'SPD审核状态' : '审核状态';
+      },
+      showReturnState() {
+        return HOME_HP === 'bdrm';
       }
     },
       methods: {
@@ -421,13 +437,19 @@
           return;
         }
         const isPass = String(state) === '1';
-        const tip = isPass
-          ? '招采审批仅更新列「状态」（已审批），不会修改列「审核状态」。若只做过 SPD 审核，仍需点此完成招采审批。'
-          : '招采审批不通过仅更新列「状态」，不会修改列「审核状态」。';
+        const isBdrm = HOME_HP === 'bdrm';
+        const tip = isBdrm
+          ? isPass
+            ? '招采审批通过会把招采改为已审批。SPD 还是待审核的会一并改为已审核。SPD 已经审核不通过的不会通过。'
+            : '招采审批不通过将把招采审批状态改为审批不通过。SPD 仍为待审核的会一并改为审核未通过；已经 SPD 审核通过的不会改回。'
+          : isPass
+            ? '招采审批仅更新列「状态」（已审批），不会修改列「审核状态」。若只做过 SPD 审核，仍需点此完成招采审批。'
+            : '招采审批不通过仅更新列「状态」，不会修改列「审核状态」。';
+        const approveApi = isBdrm ? ApproveVarPicBdrm : ApproveVarPic;
         this.$confirm(tip, '招采审批', { type: isPass ? 'info' : 'warning' })
           .then(() => {
             const loading = this.$messageLoading('处理中…');
-            ApproveVarPic({ json: this.selectedIds(), appstate: state })
+            approveApi({ json: this.selectedIds(), appstate: state })
               .then((res) => {
                 loading.close();
                 this.$message.success(res.msg);
@@ -446,13 +468,19 @@
           return;
         }
         const isPass = String(state) === '1';
-        const tip = isPass
-          ? 'SPD 审核仅更新列「审核状态」（已审核），不会修改列「状态」（招采审批）。'
-          : 'SPD 审核不通过仅更新列「审核状态」，不会修改列「状态」。';
+        const isBdrm = HOME_HP === 'bdrm';
+        const tip = isBdrm
+          ? isPass
+            ? 'SPD 审核通过只更新 SPD 审核状态，招采审批状态保持待审批。'
+            : 'SPD 审核不通过会同时把招采审批状态改为审批不通过，并把该资质打回集配商重新填写。'
+          : isPass
+            ? 'SPD 审核仅更新列「审核状态」（已审核），不会修改列「状态」（招采审批）。'
+            : 'SPD 审核不通过仅更新列「审核状态」，不会修改列「状态」。';
+        const spdApi = isBdrm ? ApproveVarPicSpdBdrm : ApproveVarPicSpd;
         this.$confirm(tip, 'SPD 审核', { type: isPass ? 'info' : 'warning' })
           .then(() => {
             const loading = this.$messageLoading('处理中…');
-            ApproveVarPicSpd({ json: this.selectedIds(), appstate: state })
+            spdApi({ json: this.selectedIds(), appstate: state })
               .then((res) => {
                 loading.close();
                 this.$message.success(res.msg);
@@ -467,7 +495,8 @@
       },
       onDenyConfirm(data) {
         const loading = this.$messageLoading('处理中…');
-        ApproveVarPic({
+        const approveApi = HOME_HP === 'bdrm' ? ApproveVarPicBdrm : ApproveVarPic;
+        approveApi({
           json: this.selectedIds(),
           appstate: 2,
           PASS_REASON: data.reason
@@ -485,7 +514,8 @@
       },
       onSpdDenyConfirm(data) {
         const loading = this.$messageLoading('处理中…');
-        ApproveVarPicSpd({
+        const spdApi = HOME_HP === 'bdrm' ? ApproveVarPicSpdBdrm : ApproveVarPicSpd;
+        spdApi({
           json: this.selectedIds(),
           appstate: 2,
           PASS_REASON: data.reason
@@ -565,8 +595,8 @@
               '起始时间',
               '有效期',
               '同注册证',
-              '状态',
-              '审核状态',
+              HOME_HP === 'bdrm' ? '招采审批状态' : '状态',
+              HOME_HP === 'bdrm' ? 'SPD审核状态' : '审核状态',
               'AI状态',
               'AI审查意见',
               '备注/说明',
@@ -588,7 +618,7 @@
               this.fmtDate(r.END_TIME, r.TYPE),
               r.TB_STATE == '1' ? '同步' : r.TB_STATE == '0' ? '不同步' : r.TB_STATE,
               this.stateExportLabel(r.STATE),
-              r.SPD_SP_STATE == '1' ? '已审核' : r.SPD_SP_STATE == '2' ? '审核未通过' : '',
+              r.SPD_SP_STATE == '1' ? '已审核' : r.SPD_SP_STATE == '2' ? '审核未通过' : r.SPD_SP_STATE == '9' ? '打回' : '',
               aiStatusLabel(r.AI_STATUS),
               r.AI_SUMMARY || '',
               r.REMARK,
@@ -609,6 +639,7 @@
         if (state == 0 || state == '0') return '新增';
         if (state == 1 || state == '1') return '已审批';
         if (state == 2 || state == '2') return '审批未通过';
+        if (state == 9 || state == '9') return '打回';
         return state;
       }
     }

@@ -726,12 +726,12 @@
   /* 首页标签：院徽正下方 */
   .spd-side-home-tabs {
     position: fixed;
-    top: 72px;
+    top: 42px;
     left: 0;
     z-index: 200;
     display: flex;
     width: 240px;
-    height: 40px;
+    height: 30px;
     box-sizing: border-box;
     background: #fff;
     border-right: 1px solid #e4e7ed;
@@ -740,16 +740,16 @@
   .spd-side-home-tab {
     flex: 1;
     min-width: 0;
-    height: 40px;
+    height: 30px;
     margin: 0;
     padding: 0 4px;
     border: none;
     border-right: 1px solid #ebeef5;
     background: #fff;
     color: #606266;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 600;
-    line-height: 40px;
+    line-height: 30px;
     cursor: pointer;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -767,7 +767,7 @@
   }
   .ele-admin-sidebar-menus,
   .ele-admin-sidebar-nav-menu {
-    margin-top: 40px;
+    margin-top: 30px;
     min-height: 0;
   }
   /* 顶部菜单页签右移 */
@@ -860,15 +860,15 @@
   .ele-admin-logo,
   .ele-admin-logo-auto .ele-admin-logo {
     width: 240px !important;
-    height: 72px !important;
+    height: 42px !important;
     box-sizing: border-box;
     border-right: 1px solid #e4e7ed;
     /* 不裁切下方内容 */
     overflow: visible !important;
   }
   .ele-admin-logo > .spd-hospital-logo {
-    width: calc(100% - 16px) !important;
-    height: calc(100% - 12px) !important;
+    width: calc(100% - 12px) !important;
+    height: calc(100% - 6px) !important;
     flex: 0 0 auto;
     background-color: transparent;
     background-repeat: no-repeat;
@@ -885,7 +885,7 @@
   /* 折叠时院徽缩小 */
   .ele-admin-collapse .ele-admin-logo > .spd-hospital-logo,
   .ele-admin-nav-collapse .ele-admin-logo > .spd-hospital-logo {
-    width: 44px !important;
-    height: 44px !important;
+    width: 28px !important;
+    height: 28px !important;
   }
 </style>

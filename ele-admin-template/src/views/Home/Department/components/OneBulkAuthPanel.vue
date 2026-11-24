@@ -1,5 +1,5 @@
 <template>
-  <div v-if="deptOneCode" class="auth-panel">
+  <div v-if="deptOneCode" ref="pane" class="auth-panel">
     <div v-if="oneDetail" class="detail-strip">
       <ul class="detail-strip-list">
         <li><span class="detail-label">一级科室编码:</span><span class="detail-value">{{ oneDetail.Dept_One_Code }}</span></li>
@@ -44,16 +44,16 @@
         <el-button v-if="showWeekAuthByYear" type="warning" plain :loading="weekAuthAllLoading" @click="setWeekAuthByYear(true)">全部科室设一周用量</el-button>
       </el-form-item>
     </el-form>
-    <div class="table-scroll">
-      <el-table
-        ref="table"
-        v-loading="loading"
-        :data="rows"
-        :fit="false"
-        border
-        stripe
-        height="420"
-        highlight-current-row
+    <el-table
+      ref="table"
+      v-loading="loading"
+      :data="rows"
+      :fit="false"
+      border
+      stripe
+      size="mini"
+      :height="tableHeight"
+      highlight-current-row
         @current-change="(r) => (current = r)"
         @selection-change="(s) => (selected = s)"
         @sort-change="onSort"
@@ -86,9 +86,9 @@
           <template slot-scope="{ row }">{{ row.IS_NEED_TWO_APP == 1 || row.IS_NEED_TWO_APP === '1' ? '是' : '否' }}</template>
         </el-table-column>
       </el-table>
-    </div>
     <el-pagination
       class="pager"
+      small
       background
       layout="total, sizes, prev, pager, next"
       :total="total"
@@ -110,6 +110,7 @@ import * as api from '@/api/Home/Department';
 import { fmtDate, fmtPrice, openExcelFile, openApiPdf } from '../utils';
 import BulkAuthGrantDialog from './BulkAuthGrantDialog.vue';
 import EditBulkAuthDialog from './EditBulkAuthDialog.vue';
+import { measureTableHeight } from '@/views/HeelBlockConsumables/PlatformConsume/paneTableHeight';
 
 export default {
   name: 'OneBulkAuthPanel',
@@ -132,7 +133,8 @@ export default {
       sort: { field: '', order: '' },
       showQrOne: ['nyd', 'lg'].includes(HOME_HP),
       showWeekAuthByYear: HOME_HP === 'szlhfy',
-      weekAuthLoading: false
+      weekAuthLoading: false,
+      tableHeight: 160
     };
   },
   computed: {
@@ -148,9 +150,40 @@ export default {
         this.rows = [];
         this.current = null;
       }
+      this.$nextTick(() => this.bindPane());
     }
   },
+  mounted() {
+    this.bindPane();
+  },
+  beforeDestroy() {
+    if (this._paneRo) this._paneRo.disconnect();
+    window.removeEventListener('resize', this.schedulePaneHeight);
+    if (this._paneTimer) cancelAnimationFrame(this._paneTimer);
+  },
   methods: {
+    bindPane() {
+      if (!this.$refs.pane) return;
+      if (!this._paneRo && typeof ResizeObserver !== 'undefined') {
+        this._paneRo = new ResizeObserver(() => this.schedulePaneHeight());
+        window.addEventListener('resize', this.schedulePaneHeight);
+      }
+      if (this._paneRo) this._paneRo.observe(this.$refs.pane);
+      this.schedulePaneHeight();
+    },
+    schedulePaneHeight() {
+      if (this._paneTimer) cancelAnimationFrame(this._paneTimer);
+      this._paneTimer = requestAnimationFrame(() => this.updatePaneHeight(false));
+    },
+    updatePaneHeight(followUp) {
+      const next = measureTableHeight(this.$refs.pane);
+      if (next == null || next === this.tableHeight) return;
+      this.tableHeight = next;
+      this.$nextTick(() => {
+        if (this.$refs.table && this.$refs.table.doLayout) this.$refs.table.doLayout();
+        if (!followUp) this.updatePaneHeight(true);
+      });
+    },
     fmtDate,
     fmtPrice,
     enableDetailYesNo(en) {
@@ -316,18 +349,16 @@ export default {
 /* 与旧系统 Department_right_middle_jbzl 一致：横向排列；背景与下方 layui/表格白底区分 */
 .detail-strip {
   background: linear-gradient(180deg, #eef2f7 0%, #e4e9f0 100%);
-  border: 1px solid #c5cdd8;
-  border-radius: 4px;
-  padding: 10px 16px;
-  margin-bottom: 12px;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.75);
+  border-bottom: 1px solid #ebeef5;
+  padding: 2px 8px;
+  margin: 0;
 }
 .detail-strip-list {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  column-gap: 40px;
-  row-gap: 4px;
+  column-gap: 16px;
+  row-gap: 0;
   list-style: none;
   margin: 0;
   padding: 0;
@@ -347,12 +378,15 @@ export default {
   margin-left: 2px;
 }
 .section-title h5 {
-  margin: 4px 0 6px;
-  font-size: 14px;
+  margin: 0;
+  padding: 0 8px;
+  font-size: 13px;
   font-weight: 600;
+  line-height: 22px;
 }
 .toolbar {
-  margin-bottom: 2px;
+  margin: 0;
+  padding: 0 8px;
 }
 .toolbar ::v-deep .el-form-item {
   margin-bottom: 4px;
@@ -370,13 +404,10 @@ export default {
 .toolbar-row2 ::v-deep .el-button {
   margin-left: 0;
 }
-.table-scroll {
-  width: 100%;
-  max-width: 100%;
-  overflow-x: auto;
-}
 .pager {
-  margin-top: 8px;
+  flex: none;
+  margin: 0;
+  padding: 2px 8px 0 0;
   text-align: right;
 }
 </style>

@@ -238,14 +238,14 @@ export function goHomeRoute(from) {
  * @param from 登录后跳转的地址
  */
 export function logout(route, from) {
+  void route;
   removeToken();
-  if (route) {
-    router.push({
-      path: '/login',
-      query: from ? { from } : void 0
-    });
-  } else {
-    // 这样跳转避免再次登录重复注册动态路由
-    location.replace(BASE_URL + '#/' +'login' + (from ? '?from=' + from : ''));
-  }
+  // 统一走文档级加载回登录页（保留原 route 参数避免改动调用方）：
+  // 1. hash 指纹资源只在浏览器重新加载 index.html 时才会更新，SPA 内跳转拿不到新版本；
+  //    退出/登录过期时强制真实刷新，重新登录即可获得最新前端资源
+  // 2. 整页重载会重建应用实例，避免 SPA 内跳转导致再次登录重复注册动态路由
+  // 注意：hash 路由下 replace 仅变化 fragment，不会自行触发刷新，需紧跟 reload()
+  const loginUrl = BASE_URL + '#/login' + (from ? '?from=' + from : '');
+  location.replace(loginUrl);
+  location.reload();
 }

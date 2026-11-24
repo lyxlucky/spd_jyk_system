@@ -17,6 +17,11 @@
           style="width: 360px"
         />
       </el-form-item>
+      <el-form-item class="search-form-actions">
+        <el-button type="primary" icon="el-icon-search" class="ele-btn-icon" @click="search">
+          查询
+        </el-button>
+      </el-form-item>
       <el-form-item label="病患号" class="field-bh-item">
         <el-input
           v-model="where.bhOrYs"
@@ -73,11 +78,6 @@
           <el-option label="集采" value="集采" />
           <el-option label="临购" value="临购" />
         </el-select>
-      </el-form-item>
-      <el-form-item class="search-form-actions">
-        <el-button type="primary" icon="el-icon-search" class="ele-btn-icon" @click="search">
-          查询
-        </el-button>
       </el-form-item>
     </el-form>
   </div>

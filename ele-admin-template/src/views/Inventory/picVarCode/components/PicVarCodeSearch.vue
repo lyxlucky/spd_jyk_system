@@ -12,19 +12,21 @@
     <el-form-item label="生产企业">
       <el-input v-model="where.manufacturingEntName" clearable placeholder="生产企业" style="width: 130px" />
     </el-form-item>
-    <el-form-item label="图片状态">
+    <el-form-item :label="stateFilterLabel">
       <el-select v-model="where.state" clearable placeholder="全部" style="width: 100px">
         <el-option label="新增" value="0" />
         <el-option label="全部" value="" />
         <el-option label="已审批" value="1" />
         <el-option label="审批未通过" value="2" />
+        <el-option v-if="showReturnState" label="打回" value="9" />
       </el-select>
     </el-form-item>
-    <el-form-item label="审核状态">
+    <el-form-item :label="spdFilterLabel">
       <el-select v-model="where.spdSpState" clearable placeholder="全部" style="width: 110px">
         <el-option label="全部" value="" />
         <el-option label="已审核" value="1" />
         <el-option label="审核未通过" value="2" />
+        <el-option v-if="showReturnState" label="打回" value="9" />
       </el-select>
     </el-form-item>
     <el-form-item label="AI 状态">
@@ -97,7 +99,10 @@
       showSpdApprove: { type: Boolean, default: false },
       showProcureApprove: { type: Boolean, default: false },
       approvePassLabel: { type: String, default: '审批通过' },
-      approveDenyLabel: { type: String, default: '审批不通过' }
+      approveDenyLabel: { type: String, default: '审批不通过' },
+      stateFilterLabel: { type: String, default: '图片状态' },
+      spdFilterLabel: { type: String, default: '审核状态' },
+      showReturnState: { type: Boolean, default: false }
     },
     data() {
       return {

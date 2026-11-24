@@ -1,14 +1,10 @@
 <template>
-  <div ref="pageRoot" class="ele-body supervise-page">
-    <el-row ref="superviseRow" type="flex" align="stretch" :gutter="6" class="supervise-row">
-      <!-- 产品类别 -->
-      <el-col :xs="24" :sm="24" :md="4">
-        <el-card ref="sideCard" shadow="never" class="supervise-card">
-          <div slot="header" class="card-header">
-            <span>产品类别</span>
-            <el-button type="primary" size="mini" @click="openProdDialog">创建</el-button>
-          </div>
-          <div ref="sideTableWrap" class="supervise-table-wrap">
+  <div ref="pageRoot" class="supervise-page">
+    <div ref="prodPane" class="supervise-pane supervise-pane--prod">
+      <div class="supervise-tool">
+        <span class="supervise-title">产品类别</span>
+        <el-button type="primary" size="mini" @click="openProdDialog">创建</el-button>
+      </div>
           <vxe-table
             ref="prodTable"
             :data="proTypeList"
@@ -16,7 +12,7 @@
             border
             stripe
             size="mini"
-            :height="sideTableHeight"
+            :height="prodTableHeight"
             :row-config="{ isHover: true, isCurrent: true, keyField: 'Prod_Big_Class_Code' }"
             :column-config="{ resizable: true }"
             show-overflow
@@ -34,18 +30,13 @@
               </template>
             </vxe-column>
           </vxe-table>
-          </div>
-        </el-card>
-      </el-col>
+    </div>
 
-      <!-- 管理类别 -->
-      <el-col :xs="24" :sm="24" :md="10">
-        <el-card shadow="never" class="supervise-card">
-          <div slot="header" class="card-header">
-            <span>管理类别</span>
-            <el-button type="primary" size="mini" :disabled="!prodCode" @click="openMgmtDialog">创建</el-button>
-          </div>
-          <div class="supervise-table-wrap">
+    <div ref="mgmtPane" class="supervise-pane supervise-pane--mgmt">
+      <div class="supervise-tool">
+        <span class="supervise-title">管理类别</span>
+        <el-button type="primary" size="mini" :disabled="!prodCode" @click="openMgmtDialog">创建</el-button>
+      </div>
           <vxe-table
             ref="mgmtTable"
             :data="mgmtList"
@@ -53,7 +44,7 @@
             border
             stripe
             size="mini"
-            :height="sideTableHeight"
+            :height="mgmtTableHeight"
             :row-config="{ isHover: true, isCurrent: true, keyField: 'Mgmt_Cat_Code' }"
             :column-config="{ resizable: true }"
             :checkbox-config="{ highlight: true }"
@@ -83,31 +74,23 @@
               </template>
             </vxe-column>
           </vxe-table>
-          </div>
-        </el-card>
-      </el-col>
+    </div>
 
-      <!-- 监管类别 -->
-      <el-col :xs="24" :sm="24" :md="10">
-        <el-card ref="regCard" shadow="never" class="supervise-card supervise-card--reg">
-          <div slot="header" class="card-header card-header--toolbar">
-            <span>监管类别</span>
-            <div class="toolbar-right">
-              <el-input
-                v-model="keyword"
-                size="mini"
-                clearable
-                placeholder="搜索关键词"
-                class="search-input"
-                @keyup.enter.native="onSearch"
-              />
-              <el-button type="primary" size="mini" @click="onSearch">搜索</el-button>
-              <el-button type="primary" size="mini" plain :disabled="!prodCode" @click="openRegDialog">创建</el-button>
-              <el-button size="mini" @click="onExport">导出三大类别</el-button>
-            </div>
-          </div>
-          <div class="reg-card-main">
-          <div ref="regTableWrap" class="supervise-table-wrap supervise-table-wrap--grow">
+    <div ref="regPane" class="supervise-pane supervise-pane--reg">
+      <div class="supervise-tool">
+        <span class="supervise-title">监管类别</span>
+        <el-input
+          v-model="keyword"
+          size="mini"
+          clearable
+          placeholder="搜索关键词"
+          class="search-input"
+          @keyup.enter.native="onSearch"
+        />
+        <el-button type="primary" size="mini" @click="onSearch">搜索</el-button>
+        <el-button type="primary" size="mini" plain :disabled="!prodCode" @click="openRegDialog">创建</el-button>
+        <el-button size="mini" @click="onExport">导出三大类别</el-button>
+      </div>
           <vxe-table
             ref="regTable"
             :data="regulatoryList"
@@ -135,7 +118,6 @@
               </template>
             </vxe-column>
           </vxe-table>
-          </div>
           <div ref="regPagerWrap" class="pagination-wrap">
             <el-pagination
               small
@@ -147,10 +129,7 @@
               @current-change="onPageChange"
             />
           </div>
-          </div>
-        </el-card>
-      </el-col>
-    </el-row>
+    </div>
 
     <!-- 创建产品类别 -->
     <el-dialog title="创建产品类别" :visible.sync="prodDialog" width="480px" append-to-body @closed="prodForm.name = ''">
@@ -392,8 +371,9 @@
         regMgmtOptions: [],
         regMgmtLoading: false,
         regSubmitting: false,
-        sideTableHeight: 360,
-        regTableHeight: 400,
+        prodTableHeight: 160,
+        mgmtTableHeight: 160,
+        regTableHeight: 160,
         layoutTimer: null,
         /** 供应/品种证件必填 Drawer */
         docRuleDrawerVisible: false,
@@ -427,11 +407,9 @@
         if (this.$refs.pageRoot) {
           ro.observe(this.$refs.pageRoot);
         }
-        const rowRef = this.$refs.superviseRow;
-        const rowEl = rowRef && (rowRef.$el || rowRef);
-        if (rowEl) {
-          ro.observe(rowEl);
-        }
+        ['prodPane', 'mgmtPane', 'regPane'].forEach((name) => {
+          if (this.$refs[name]) ro.observe(this.$refs[name]);
+        });
       });
       if (this.$bus) {
         this._onBusOpenVarietyDocRule = () => {
@@ -474,24 +452,16 @@
         }, 72);
       },
       /**
-       * 优先用卡片 body 实际高度；未铺开时用视口回退。
+       * 按各栏剩余高度计算表格，分页留在监管类别栏内部。
        */
       updateTableHeights() {
         const measure = () => {
-          const sideWrap = this.$refs.sideTableWrap;
-          const regWrap = this.$refs.regTableWrap;
-
-          if (sideWrap && sideWrap.clientHeight > 8) {
-            this.sideTableHeight = Math.max(240, Math.floor(sideWrap.clientHeight));
-          } else {
-            this.sideTableHeight = this.fallbackSideTableHeight();
-          }
-
-          if (regWrap && regWrap.clientHeight > 8) {
-            this.regTableHeight = Math.max(240, Math.floor(regWrap.clientHeight));
-          } else {
-            this.regTableHeight = this.fallbackRegTableHeight(this.$refs.regPagerWrap);
-          }
+          const prod = this.measurePaneHeight(this.$refs.prodPane);
+          const mgmt = this.measurePaneHeight(this.$refs.mgmtPane);
+          const reg = this.measurePaneHeight(this.$refs.regPane);
+          if (prod != null) this.prodTableHeight = prod;
+          if (mgmt != null) this.mgmtTableHeight = mgmt;
+          if (reg != null) this.regTableHeight = reg;
 
           ['prodTable', 'mgmtTable', 'regTable'].forEach((k) => {
             const t = this.$refs[k];
@@ -507,27 +477,25 @@
           });
         });
       },
-      /** 卡片尚未铺开时的视口估算（与样式里 --supervise-vh-offset 一致思路） */
-      fallbackSideTableHeight() {
-        const root = this.$refs.pageRoot;
-        if (!root || !root.getBoundingClientRect) {
-          return 360;
-        }
-        const top = root.getBoundingClientRect().top;
-        const avail = Math.max(0, window.innerHeight - top - 16);
-        const estHeader = 48;
-        return Math.max(200, Math.floor(avail - estHeader));
-      },
-      fallbackRegTableHeight(pagerEl) {
-        const root = this.$refs.pageRoot;
-        if (!root || !root.getBoundingClientRect) {
-          return 400;
-        }
-        const top = root.getBoundingClientRect().top;
-        const avail = Math.max(0, window.innerHeight - top - 16);
-        const estHeader = 88;
-        const ph = pagerEl && pagerEl.offsetHeight ? pagerEl.offsetHeight : 42;
-        return Math.max(200, Math.floor(avail - estHeader - ph - 6));
+      measurePaneHeight(pane) {
+        if (!pane || pane.clientHeight < 80) return null;
+        const style = window.getComputedStyle(pane);
+        let used =
+          (parseFloat(style.paddingTop) || 0) + (parseFloat(style.paddingBottom) || 0);
+        let sawTable = false;
+        Array.from(pane.children).forEach((child) => {
+          if (child.classList && child.classList.contains('vxe-table')) {
+            sawTable = true;
+            return;
+          }
+          const childStyle = window.getComputedStyle(child);
+          used +=
+            child.offsetHeight +
+            (parseFloat(childStyle.marginTop) || 0) +
+            (parseFloat(childStyle.marginBottom) || 0);
+        });
+        if (!sawTable) return null;
+        return Math.max(36, Math.floor(pane.clientHeight - used - 2));
       },
       regulatoryId(row) {
         return row.Regulatory_id != null ? row.Regulatory_id : row.Regulatory_Id;
@@ -1115,105 +1083,120 @@
 
 <style scoped lang="scss">
   .supervise-page {
-    box-sizing: border-box;
-    height: calc(100vh - 96px);
-    min-height: 320px;
     display: flex;
-    flex-direction: column;
-    overflow: auto;
-    -webkit-overflow-scrolling: touch;
-
-    .supervise-row {
-      flex: 1 1 auto;
-      min-height: 360px;
-      overflow: visible;
-    }
-
-    .supervise-row > .el-col {
-      display: flex;
-      flex-direction: column;
-      min-height: 360px;
-    }
-
-    .supervise-card {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      min-height: 320px;
-      margin-bottom: 12px;
-
-      ::v-deep .el-card__body {
-        flex: 1;
-        min-height: 280px;
-        display: flex;
-        flex-direction: column;
-        overflow: visible;
-      }
-    }
-
-    .supervise-table-wrap {
-      flex: 1 1 auto;
-      min-height: 240px;
-      overflow: hidden;
-    }
-
-    .supervise-table-wrap--grow {
-      flex: 1 1 auto;
-      min-height: 240px;
-    }
-
-    .reg-card-main {
-      flex: 1 1 auto;
-      min-height: 240px;
-      display: flex;
-      flex-direction: column;
-      overflow: visible;
-    }
-
-    .supervise-card--reg {
-      ::v-deep .el-card__body {
-        padding-bottom: 8px;
-      }
-    }
-
-    .card-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-weight: 500;
-    }
-
-    .card-header--toolbar {
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .toolbar-right {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 8px;
-      justify-content: flex-end;
-    }
-
-    .search-input {
-      width: 140px;
-    }
-
-    .pagination-wrap {
-      flex-shrink: 0;
-      margin-top: 8px;
-      padding-top: 4px;
-      display: flex;
-      justify-content: flex-end;
-    }
-
-    .danger-btn {
-      color: #f56c6c;
-    }
+    flex-direction: row;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    height: 100%;
+    max-height: 100%;
+    min-height: 0;
+    overflow: hidden;
+    background: #fff;
+    --vxe-ui-table-row-height-mini: 22px;
+    --vxe-ui-table-cell-padding-mini: 1px 6px;
   }
 
-  /* Drawer 根节点在 body 上，用非 scoped 或 deep */
+  .supervise-pane {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 0;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .supervise-pane--prod {
+    flex: 0 0 17%;
+    width: 17%;
+  }
+
+  .supervise-pane--mgmt {
+    flex: 0 0 41%;
+    width: 41%;
+    border-left: 1px solid #ebeef5;
+  }
+
+  .supervise-pane--reg {
+    flex: 1 1 auto;
+    border-left: 1px solid #ebeef5;
+  }
+
+  .supervise-tool {
+    display: flex;
+    flex: none;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px;
+    max-width: 100%;
+    padding: 2px 8px 0;
+    box-sizing: border-box;
+  }
+
+  .supervise-title {
+    flex: none;
+    margin-right: 4px;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 28px;
+    color: #303133;
+  }
+
+  .search-input {
+    width: 140px;
+  }
+
+  .pagination-wrap {
+    flex: none;
+    display: flex;
+    justify-content: flex-end;
+    margin: 0;
+    padding: 2px 8px 0 0;
+  }
+
+  .supervise-page ::v-deep .vxe-table--render-default.size--mini .vxe-header--column,
+  .supervise-page ::v-deep .vxe-table--render-default.size--mini .vxe-body--column {
+    padding: 1px 0;
+  }
+
+  .supervise-page ::v-deep .vxe-body--row,
+  .supervise-page ::v-deep .vxe-header--row {
+    height: 22px !important;
+  }
+
+  .supervise-page ::v-deep .vxe-cell {
+    line-height: 18px;
+    padding-top: 1px !important;
+    padding-bottom: 1px !important;
+  }
+
+  .supervise-page ::v-deep .el-pagination {
+    margin: 0;
+    padding: 0;
+  }
+
+  .supervise-page ::v-deep .el-pagination > * {
+    margin-top: 0 !important;
+  }
+
+  .supervise-page ::v-deep .el-pagination .el-input__inner,
+  .supervise-page ::v-deep .el-pagination button,
+  .supervise-page ::v-deep .el-pager li {
+    height: 22px;
+    line-height: 22px;
+    min-width: 22px;
+  }
+
+  .supervise-page ::v-deep .vxe-cell .el-button {
+    height: 18px;
+    padding: 0 2px;
+    font-size: 13px;
+    line-height: 18px;
+  }
+
+  .danger-btn {
+    color: #f56c6c;
+  }
 </style>
 
 <style lang="scss">
