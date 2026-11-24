@@ -62,6 +62,17 @@ export async function getCaptcha() {
   return Promise.reject(new Error(res.data.message));
 }
 
+/**
+ * 登录页底栏：服务电话、地址（读 CONFIG 表，无需登录）
+ */
+export async function getLoginPageContact() {
+  const res = await request.get('/ConfigManage/GetLoginPageContact');
+  if (res.data.code == 200 || res.data.code === '200') {
+    return res.data.result || {};
+  }
+  return Promise.reject(new Error(res.data.msg || '获取登录页联系方式失败'));
+}
+
 // 加密
 export function Encrypt(str) {
   var KEY = store.state.user.encrypted.KEY; //32位

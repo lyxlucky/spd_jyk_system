@@ -38,6 +38,10 @@
     <user-edit :visible.sync="showEdit" :data="current" @done="reload" />
     <!-- 导入弹窗 -->
     <!-- <user-import :visible.sync="showImport" @done="reload" /> -->
+    <KeeptListErrorDialog
+      :visible.sync="errorDialogVisible"
+      :message="errorDialogMessage"
+    />
   </div>
 </template>
 
@@ -50,6 +54,7 @@
     getApplyOperateTipExcel
   } from '@/api/KSInventory/KSDepartmentalPlan';
   import { KeeptListDeta } from '@/api/KSInventory/IntroduceUserDefinedTemp';
+  import KeeptListErrorDialog from '@/views/KSInventory/KSDepartmentalPlan/components/KeeptListErrorDialog.vue';
   import { BACK_BASE_URL } from '@/config/setting';
   import { utils, writeFile } from 'xlsx';
 
@@ -63,7 +68,8 @@
     },
     components: {
       UserSearch,
-      UserEdit
+      UserEdit,
+      KeeptListErrorDialog
       // UserImport
     },
     data() {
@@ -220,7 +226,9 @@
         isUpdate: false,
 
         // 添加品种数量
-        APPLY_QTY: 0
+        APPLY_QTY: 0,
+        errorDialogVisible: false,
+        errorDialogMessage: ''
         // datasource: [],
       };
     },
@@ -267,11 +275,20 @@
         this.selection.forEach((element) => {
           element.PLAN_NUMBER = this.IntroduceUserDefinedTempSearch.PlanNum;
         });
-        KeeptListDeta(this.selection).then((res) => {
-          loading.close();
-          this.updateVisible(false);
-          this.$message.success(res.msg);
-        });
+        KeeptListDeta(this.selection)
+          .then((res) => {
+            this.updateVisible(false);
+            this.$message.success(res.msg);
+          })
+          .catch((err) => {
+            this.errorDialogMessage =
+              (err && typeof err === 'object' ? err.message : err) ||
+              '添加失败，请重试';
+            this.errorDialogVisible = true;
+          })
+          .finally(() => {
+            loading.close();
+          });
       },
       onSelectionChange(selection) {
         this.selection = selection;

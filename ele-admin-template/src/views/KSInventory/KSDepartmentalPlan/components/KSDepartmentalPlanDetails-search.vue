@@ -959,13 +959,22 @@
       },
 
       confirmSubmitWithContractExpire() {
+        if ((this.contractExpireList || []).some((item) => item && item.expired)) {
+          this.$message.error('存在合同已过期品种，不能提交');
+          return;
+        }
         this.contractExpireDialogVisible = false;
         this.continuePutInListDeta2();
       },
 
       handleContractExpireCancel() {
+        const hasExpired = (this.contractExpireList || []).some(
+          (item) => item && item.expired
+        );
         this.contractExpireDialogVisible = false;
-        this.$message.info('已取消提交');
+        this.$message.info(
+          hasExpired ? '存在合同已过期品种，请先处理后再提交' : '已取消提交'
+        );
       },
 
       continuePutInListDeta2() {

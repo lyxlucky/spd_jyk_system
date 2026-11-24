@@ -71,6 +71,37 @@ export async function getPrimaryRoutList() {
   return unwrap(res);
 }
 
+/** 新增一级菜单 PRIMARY_ROUT */
+export async function addPrimaryRout(data) {
+  const res = await request.post(
+    '/Commons/AddPrimaryRout',
+    formdataify({
+      Token: token(),
+      TITLE: data.TITLE || '',
+      PATH: data.PATH || '',
+      ICON: data.ICON || '',
+      HIDE: data.HIDE ?? 0
+    })
+  );
+  return res?.data;
+}
+
+/** 修改一级菜单 PRIMARY_ROUT */
+export async function updatePrimaryRout(data) {
+  const res = await request.post(
+    '/Commons/UpdatePrimaryRout',
+    formdataify({
+      Token: token(),
+      ID: data.ID,
+      TITLE: data.TITLE || '',
+      PATH: data.PATH || '',
+      ICON: data.ICON || '',
+      HIDE: data.HIDE ?? 0
+    })
+  );
+  return res?.data;
+}
+
 /** 新系统菜单/按钮权限新增（写入 COMPONENT、PRIMARY_ROUT_*） */
 export async function addNewSystemPermission(data) {
   const res = await request.post(
@@ -83,6 +114,7 @@ export async function addNewSystemPermission(data) {
       COMPONENT: data.COMPONENT ?? '',
       PRIMARY_ROUT_URL: data.PRIMARY_ROUT_URL || data.Permission_Url || '',
       PRIMARY_ROUT_ID: data.PRIMARY_ROUT_ID ?? '',
+      PID: data.PID ?? '',
       ICON: data.ICON ?? '',
       SORT: data.SORT ?? '',
       HIDE: data.HIDE ?? 0,
@@ -106,6 +138,7 @@ export async function updateNewSystemPermission(data) {
       COMPONENT: data.COMPONENT ?? '',
       PRIMARY_ROUT_URL: data.PRIMARY_ROUT_URL || data.Permission_Url || '',
       PRIMARY_ROUT_ID: data.PRIMARY_ROUT_ID ?? '',
+      PID: data.PID ?? '',
       ICON: data.ICON ?? '',
       SORT: data.SORT ?? '',
       HIDE: data.HIDE ?? 0,
