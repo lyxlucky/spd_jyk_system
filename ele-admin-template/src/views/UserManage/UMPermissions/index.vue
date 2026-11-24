@@ -6,7 +6,7 @@
         <el-button size="mini" :loading="exporting" @click="handleExport">导出</el-button>
         <el-button type="success" size="mini" @click="addVisible = true">新增权限</el-button>
         <el-button type="primary" size="mini" plain @click="newAddVisible = true">树型新增权限</el-button>
-        <el-button type="warning" size="mini" @click="newSysAddVisible = true">新系统新增权限</el-button>
+        <el-button type="warning" size="mini" @click="openNewSysAdd">新系统新增权限</el-button>
       </div>
 
       <ele-pro-table
@@ -147,6 +147,26 @@ export default {
           width: 80,
           formatter: (row) => formatPermissionType(row.TYPE)
         },
+        {
+          label: 'Component',
+          prop: 'COMPONENT',
+          minWidth: 160,
+          showOverflowTooltip: true,
+          formatter: (row) => row.COMPONENT || ''
+        },
+        {
+          label: '路由PATH',
+          prop: 'PRIMARY_ROUT_URL',
+          minWidth: 160,
+          showOverflowTooltip: true,
+          formatter: (row) => row.PRIMARY_ROUT_URL || ''
+        },
+        {
+          label: '隐藏',
+          width: 70,
+          align: 'center',
+          formatter: (row) => (Number(row.HIDE) === 1 ? '是' : '否')
+        },
         { label: '备注', minWidth: 160, slot: 'remarks' },
         { label: '操作', width: 120, fixed: 'right', slot: 'action' }
       ]
@@ -168,7 +188,7 @@ export default {
       });
     },
     fillParentName(list, routes) {
-      const routeTitle = {};
+    const routeTitle = {};
       (routes || []).forEach((item) => {
         if (item && item.ID != null) {
           routeTitle[String(item.ID)] = item.TITLE || '';
@@ -192,7 +212,10 @@ export default {
         return {
           ...item,
           Parent_Name: parent,
-          SORT: item.SORT == null ? '' : String(item.SORT)
+          SORT: item.SORT == null ? '' : String(item.SORT),
+          COMPONENT: item.COMPONENT || '',
+          PRIMARY_ROUT_URL: item.PRIMARY_ROUT_URL || '',
+          HIDE: item.HIDE == null ? 0 : Number(item.HIDE)
         };
       });
     },
@@ -298,6 +321,10 @@ export default {
     openRemark(row) {
       this.currentRow = row;
       this.remarkVisible = true;
+    },
+    openNewSysAdd() {
+      this.editRow = null;
+      this.newSysAddVisible = true;
     },
     openEdit(row) {
       this.editRow = { ...row };

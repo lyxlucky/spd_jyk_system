@@ -78,43 +78,7 @@
     <footer class="login-footer">
       <span class="login-footer-phone" :title="phoneText">{{ phoneText }}</span>
       <span class="login-footer-address" :title="addressText">{{ addressText }}</span>
-      <el-button type="text" class="login-footer-edit" @click="openContactEdit">编辑</el-button>
     </footer>
-
-    <el-dialog
-      title="服务电话和地址"
-      :visible.sync="contactEditing"
-      width="480px"
-      append-to-body
-      :close-on-click-modal="false"
-    >
-      <p class="login-contact-tip">保存在当前浏览器。需要所有电脑显示同一内容时，请修改系统配置后重新发布。</p>
-      <el-form label-width="72px" @submit.native.prevent>
-        <el-form-item label="服务电话">
-          <el-input
-            v-model="contactDraft.phone"
-            maxlength="40"
-            clearable
-            placeholder="例如 5032"
-          />
-        </el-form-item>
-        <el-form-item label="服务地址">
-          <el-input
-            v-model="contactDraft.address"
-            type="textarea"
-            :rows="3"
-            maxlength="120"
-            show-word-limit
-            placeholder="例如 外科楼负一楼C区汽车出入口"
-          />
-        </el-form-item>
-      </el-form>
-      <div slot="footer">
-        <el-button @click="resetContact">恢复配置</el-button>
-        <el-button @click="contactEditing = false">取消</el-button>
-        <el-button type="primary" @click="saveContact">保存</el-button>
-      </div>
-    </el-dialog>
   </div>
 </template>
 
@@ -122,14 +86,10 @@
 import CryptoJS from 'crypto-js';
 import I18nIcon from '@/layout/components/i18n-icon.vue';
 import { getToken } from '@/utils/token-util';
-import { login, getCaptcha, getSTORAGE } from '@/api/login';
+import { login, getCaptcha, getSTORAGE, getLoginPageContact } from '@/api/login';
 import { getHospitalLogo, getHospitalSeal } from '@/config/setting';
 import sphLogo from '@/assets/logoSph.png';
-import {
-  loadLoginContact,
-  saveLoginContact,
-  resetLoginContact
-} from '@/config/login-page';
+import { getLoginPageConfig } from '@/config/login-page';
 
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
@@ -145,12 +105,7 @@ export default {
         code: ''
       },
       captcha: '',
-      contact: loadLoginContact(),
-      contactEditing: false,
-      contactDraft: {
-        phone: '',
-        address: ''
-      }
+      contact: getLoginPageConfig()
     };
   },
   computed: {
@@ -197,7 +152,10 @@ export default {
         return {};
       }
       return {
-        backgroundImage: `url(${background})`
+        backgroundImage: `url(${background})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center center',
+        backgroundRepeat: 'no-repeat'
       };
     },
     phoneText() {
@@ -209,6 +167,7 @@ export default {
   },
   created() {
     document.body.classList.add('spd-login-body');
+    this.loadContactFromConfig();
     this.form.username =
       localStorage.username != undefined
         ? this.Decrypt(localStorage.username)
@@ -228,40 +187,28 @@ export default {
     document.body.classList.remove('spd-login-body');
   },
   methods: {
+    loadContactFromConfig() {
+      getLoginPageContact()
+        .then((res) => {
+          const phone =
+            res && res.phone != null ? String(res.phone).trim() : '';
+          const address =
+            res && res.address != null ? String(res.address).trim() : '';
+          // CONFIG 有值优先；未配置时保留 login-page.js 兜底
+          this.contact = {
+            ...this.contact,
+            phone: phone || this.contact.phone || '',
+            address: address || this.contact.address || ''
+          };
+        })
+        .catch(() => {});
+    },
     onForget() {
       const phone = (this.contact.phone || '').trim();
       const tip = phone
         ? `请联系SPD运营服务中心重置密码，服务电话：${phone}`
         : '请联系SPD运营服务中心重置密码';
       this.$message.info(tip);
-    },
-    openContactEdit() {
-      this.contactDraft = {
-        phone: this.contact.phone || '',
-        address: this.contact.address || ''
-      };
-      this.contactEditing = true;
-    },
-    saveContact() {
-      const phone = (this.contactDraft.phone || '').trim();
-      const address = (this.contactDraft.address || '').trim();
-      saveLoginContact({ phone, address });
-      this.contact = {
-        ...this.contact,
-        phone,
-        address
-      };
-      this.contactEditing = false;
-      this.$message.success('服务电话和地址已保存');
-    },
-    resetContact() {
-      const base = resetLoginContact();
-      this.contact = base;
-      this.contactDraft = {
-        phone: base.phone || '',
-        address: base.address || ''
-      };
-      this.$message.success('已恢复为配置中的内容');
     },
     submit() {
       this.$refs.form.validate((valid) => {
@@ -363,7 +310,7 @@ export default {
   height: 100vh;
   overflow: hidden;
   box-sizing: border-box;
-  padding-top: 84px;
+  padding-top: 16px;
   background: #1a6fb5 url('@/assets/bg-login3.jpg') center / cover no-repeat;
 }
 
@@ -373,35 +320,40 @@ export default {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  padding: 8px 8% 12px 24px;
+  padding: 16px 6vw 20px 24px;
 }
 
 .login-card {
   position: relative;
   z-index: 2;
-  width: 420px;
+  width: clamp(460px, 34vw, 680px);
   max-width: 100%;
   max-height: 100%;
   margin: 0;
-  padding: 26px 36px 16px;
+  padding: 36px 44px 22px;
   box-sizing: border-box;
-  overflow: auto;
-  background: rgba(255, 255, 255, 0.92);
-  border: 1px solid rgba(198, 216, 236, 0.95);
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid rgba(186, 208, 230, 0.95);
   border-radius: 8px;
-  box-shadow: 0 10px 28px rgba(16, 42, 84, 0.14);
+  box-shadow: 0 12px 32px rgba(16, 42, 84, 0.16);
   backdrop-filter: blur(6px);
 
   :deep(.el-form-item) {
-    margin-bottom: 16px;
+    margin-bottom: 20px;
   }
 
   :deep(.el-input__inner) {
-    height: 42px;
-    line-height: 42px;
+    height: 50px;
+    line-height: 50px;
     border-radius: 6px;
-    border-color: #e5e8ee;
-    background: rgba(255, 255, 255, 0.96);
+    border-color: #e4e7ed;
+    background: #fff;
+    font-size: 16px;
+  }
+
+  :deep(.el-input__inner::placeholder) {
+    color: #c0c4cc;
   }
 }
 
@@ -433,18 +385,18 @@ export default {
 .login-mark {
   display: block;
   width: auto;
-  max-width: 220px;
+  max-width: 78%;
   height: auto;
-  max-height: 72px;
-  margin: 0 auto 10px;
+  max-height: 96px;
+  margin: 0 auto 14px;
   object-fit: contain;
 
   &.is-seal {
-    width: 118px;
-    height: 118px;
+    width: 156px;
+    height: 156px;
     max-width: none;
     max-height: none;
-    margin-bottom: 8px;
+    margin-bottom: 12px;
   }
 }
 
@@ -457,12 +409,12 @@ export default {
 }
 
 .login-heading {
-  font-size: 18px;
+  font-size: 22px;
 }
 
 .login-heading-sub {
-  margin: 2px 0 18px;
-  font-size: 16px;
+  margin: 4px 0 26px;
+  font-size: 20px;
 }
 
 .login-input-group {
@@ -475,8 +427,8 @@ export default {
 }
 
 .login-captcha {
-  height: 42px;
-  width: 108px;
+  height: 50px;
+  width: 128px;
   margin-left: 10px;
   border-radius: 6px;
   border: 1px solid #e5e8ee;
@@ -492,7 +444,8 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 16px;
+  margin-bottom: 22px;
+  font-size: 15px;
 
   :deep(.el-checkbox__label) {
     color: #606266;
@@ -502,10 +455,12 @@ export default {
 .login-btn {
   display: block;
   width: 100%;
-  height: 44px;
+  height: 52px;
+  padding: 0;
+  line-height: 52px;
   border-radius: 6px;
-  font-size: 16px;
-  letter-spacing: 2px;
+  font-size: 18px;
+  letter-spacing: 4px;
   background: #2f7cf6;
   border-color: #2f7cf6;
 
@@ -520,16 +475,16 @@ export default {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  gap: 8px;
-  margin-top: 16px;
+  gap: 10px;
+  margin-top: 18px;
   color: #909399;
-  font-size: 12px;
+  font-size: 13px;
   line-height: 1.4;
 }
 
 .login-meta-logo {
   flex: none;
-  height: 22px;
+  height: 28px;
   width: auto;
 }
 
@@ -537,10 +492,6 @@ export default {
   position: relative;
   flex: none;
   z-index: 3;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr) auto;
-  align-items: center;
-  column-gap: 16px;
   height: 48px;
   padding: 0 28px;
   box-sizing: border-box;
@@ -559,24 +510,67 @@ export default {
 }
 
 .login-footer-phone {
-  justify-self: start;
+  display: inline-block;
+  max-width: 42%;
+  vertical-align: top;
 }
 
 .login-footer-address {
-  justify-self: center;
+  position: absolute;
+  left: 50%;
+  top: 0;
+  max-width: 54%;
+  transform: translateX(-50%);
   text-align: center;
 }
 
-.login-footer-edit {
-  flex: none;
-  padding: 0;
-}
+@media screen and (max-height: 820px) {
+  .login-card {
+    padding: 22px 36px 14px;
+  }
 
-.login-contact-tip {
-  margin: 0 0 16px;
-  color: #909399;
-  font-size: 13px;
-  line-height: 1.6;
+  .login-mark {
+    max-height: 64px;
+    margin-bottom: 8px;
+
+    &.is-seal {
+      width: 108px;
+      height: 108px;
+    }
+  }
+
+  .login-heading {
+    font-size: 18px;
+  }
+
+  .login-heading-sub {
+    margin-bottom: 14px;
+    font-size: 16px;
+  }
+
+  .login-card :deep(.el-form-item) {
+    margin-bottom: 12px;
+  }
+
+  .login-card :deep(.el-input__inner),
+  .login-captcha {
+    height: 42px;
+    line-height: 42px;
+  }
+
+  .login-assist {
+    margin-bottom: 12px;
+  }
+
+  .login-btn {
+    height: 44px;
+    line-height: 44px;
+    font-size: 16px;
+  }
+
+  .login-meta {
+    margin-top: 10px;
+  }
 }
 
 @media screen and (max-width: 560px) {
@@ -586,7 +580,12 @@ export default {
 
   .login-stage {
     justify-content: center;
-    padding: 8px 16px 12px;
+    padding: 12px 16px 16px;
+  }
+
+  .login-card {
+    width: 100%;
+    padding: 28px 22px 16px;
   }
 
   .login-brand {
@@ -596,10 +595,6 @@ export default {
     img {
       height: 40px;
     }
-  }
-
-  .login-card {
-    width: 100%;
   }
 
   .login-footer {
@@ -613,7 +608,11 @@ export default {
 
   .login-footer-phone,
   .login-footer-address {
+    position: static;
+    display: block;
     flex: 1 1 100%;
+    max-width: none;
+    transform: none;
     text-align: left;
     white-space: normal;
     line-height: 1.5;
