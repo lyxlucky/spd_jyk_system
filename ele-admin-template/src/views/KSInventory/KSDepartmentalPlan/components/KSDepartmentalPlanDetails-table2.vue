@@ -1123,8 +1123,13 @@
   overflow-x: auto;
 }
 
+.ks-dept-plan-detail >>> .el-table th.el-table__cell {
+  text-align: center !important;
+}
+
 .ks-dept-plan-detail >>> .el-table th .cell {
   white-space: nowrap;
+  text-align: center !important;
 }
 
 .ks-dept-plan-detail >>> .ele-table-tool-default {
