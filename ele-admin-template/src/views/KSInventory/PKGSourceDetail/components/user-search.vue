@@ -129,10 +129,10 @@ export default {
 .pkg-source-search {
   display: flex;
   align-items: center;
-  flex-wrap: nowrap;
-  gap: 12px;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+  gap: 8px 12px;
   margin-bottom: 8px;
-  overflow-x: auto;
 }
 
 .page-title {
@@ -145,9 +145,10 @@ export default {
 
 .pkg-source-search-form {
   display: flex;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   align-items: center;
-  flex: 1;
+  row-gap: 8px;
+  flex: 1 1 480px;
   min-width: 0;
 }
 

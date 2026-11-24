@@ -282,11 +282,13 @@ export default {
 <style scoped>
 .pkg-source-detail {
   height: calc(100vh - 120px);
-  overflow: hidden;
+  min-width: 0;
+  overflow: auto;
 }
 
 .pkg-source-card {
-  height: 100%;
+  min-height: 100%;
+  min-width: 0;
   display: flex;
   flex-direction: column;
 }
@@ -297,6 +299,10 @@ export default {
   flex-direction: column;
   min-height: 0;
   overflow: hidden;
+}
+
+.pkg-source-card ::v-deep .ele-pro-table .el-table {
+  width: 100%;
 }
 
 .table_content {

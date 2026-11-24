@@ -44,6 +44,7 @@
             :toolkit="['reload', 'size', 'columns', 'fullscreen']"
             :columns-sort="true"
             :height="mainTableHeight"
+            full-height="calc(100vh - 90px)"
             :columns="mainColumns"
             :datasource="mainDatasource"
             :selection.sync="mainSelection"

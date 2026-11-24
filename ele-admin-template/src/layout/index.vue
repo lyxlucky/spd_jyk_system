@@ -71,6 +71,26 @@
         :style="{ backgroundImage: 'url(' + hospitalLogo + ')' }"
       ></div>
     </template>
+    <template v-for="slotName in ['top', 'tab-title']" v-slot:[slotName]="{ item, title }">
+      <span v-if="item">{{ title }}</span>
+      <div
+        v-else-if="!theme.bodyFullscreen && (slotName === 'top' || theme.layoutStyle === 'top')"
+        class="spd-side-home-tabs"
+        :class="{ 'is-narrow': theme.collapse || theme.sideNavCollapse }"
+      >
+        <button
+          v-for="label in ['首页', '菜单列表']"
+          :key="label"
+          type="button"
+          class="spd-side-home-tab"
+          :class="{ 'is-active': isHomePage }"
+          :title="label"
+          @click.stop="goHome"
+        >
+          {{ label }}
+        </button>
+      </div>
+    </template>
     <!-- 顶栏右侧区域 -->
     <template v-slot:right>
       <!-- <p>版本号：V11.2.04</p>  -->
@@ -206,18 +226,6 @@
         handler(value) {
           this.applyPresetClass(value);
         }
-      },
-      isHomePage() {
-        this.syncHomeTabs();
-      },
-      'theme.collapse'() {
-        this.syncHomeTabs();
-      },
-      'theme.sideNavCollapse'() {
-        this.syncHomeTabs();
-      },
-      'theme.bodyFullscreen'() {
-        this.syncHomeTabs();
       }
     },
     created() {
@@ -226,16 +234,13 @@
     },
     mounted() {
       this.rebindNavLinkage(this.theme.layoutStyle);
-      this.mountHomeTabs();
     },
     beforeDestroy() {
       this.$bus.$off(RECENT_MENUS_CHANGED, this.syncRecentMenus);
       this.unbindTopNavLinkage();
       this.unbindSideNavLinkage();
-      this.destroyHomeTabs();
       document.body.classList.remove('spd-preset');
       document.body.classList.remove('spd-layout-top');
-      document.body.classList.remove('spd-side-collapsed');
     },
     methods: {
       // 切换预设标识
@@ -245,41 +250,6 @@
       // 顶部菜单：页签右移
       applyLayoutModeClass(layoutStyle) {
         document.body.classList.toggle('spd-layout-top', layoutStyle === 'top');
-      },
-      // 首页标签挂到 body
-      mountHomeTabs() {
-        const bar = document.createElement('div');
-        bar.className = 'spd-side-home-tabs';
-        ['首页', '菜单列表'].forEach((label) => {
-          const button = document.createElement('button');
-          button.type = 'button';
-          button.className = 'spd-side-home-tab';
-          button.textContent = label;
-          button.addEventListener('click', (event) => this.goHome(event));
-          bar.appendChild(button);
-        });
-        document.body.appendChild(bar);
-        this._homeTabs = bar;
-        this.syncHomeTabs();
-      },
-      syncHomeTabs() {
-        const bar = this._homeTabs;
-        if (!bar) {
-          return;
-        }
-        const narrow = !!(this.theme.collapse || this.theme.sideNavCollapse);
-        document.body.classList.toggle('spd-side-collapsed', narrow);
-        bar.classList.toggle('is-narrow', narrow);
-        bar.classList.toggle('is-hidden', !!this.theme.bodyFullscreen);
-        Array.prototype.forEach.call(bar.children, (button) => {
-          button.classList.toggle('is-active', this.isHomePage);
-        });
-      },
-      destroyHomeTabs() {
-        if (this._homeTabs && this._homeTabs.parentNode) {
-          this._homeTabs.parentNode.removeChild(this._homeTabs);
-        }
-        this._homeTabs = null;
       },
       // 按布局重绑菜单联动
       rebindNavLinkage(layoutStyle) {
@@ -437,10 +407,7 @@
         isHome || this.$router.push(LAYOUT_PATH);
       },
       // 回主页，不触发院徽点击
-      goHome(event) {
-        if (event && event.stopPropagation) {
-          event.stopPropagation();
-        }
+      goHome() {
         if (this.$route.path !== HOME_PATH) {
           this.$router.push(HOME_PATH);
         }
@@ -725,12 +692,9 @@
 
   /* 首页标签：院徽正下方 */
   .spd-side-home-tabs {
-    position: fixed;
-    top: 42px;
-    left: 0;
-    z-index: 200;
     display: flex;
-    width: 240px;
+    flex: 0 0 auto;
+    width: 100%;
     height: 30px;
     box-sizing: border-box;
     background: #fff;
@@ -767,26 +731,27 @@
   }
   .ele-admin-sidebar-menus,
   .ele-admin-sidebar-nav-menu {
-    margin-top: 30px;
     min-height: 0;
   }
-  /* 顶部菜单页签右移 */
-  body.spd-layout-top .ele-admin-tabs {
-    padding-left: 240px;
-    box-sizing: border-box;
+  /* 顶部导航用页签栏的首页插槽，和业务页签一起排列。 */
+  body.spd-layout-top .ele-admin-body:first-child > .ele-admin-tabs {
+    padding-left: 0;
   }
-  body.spd-layout-top.spd-side-collapsed .ele-admin-tabs {
-    padding-left: 56px;
+  body.spd-layout-top .ele-admin-body:first-child > .ele-admin-tabs > .ele-tab-tool.is-tab:has(.spd-side-home-tabs) {
+    display: flex;
+    width: 240px;
+    padding: 0;
   }
-  .spd-side-home-tabs.is-narrow {
+  body.spd-layout-top .ele-admin-collapse .ele-admin-body:first-child > .ele-admin-tabs > .ele-tab-tool.is-tab {
     width: 56px;
+  }
+  .ele-tab-tool > .spd-side-home-tabs {
+    position: relative;
+    z-index: 2;
   }
   .spd-side-home-tabs.is-narrow .spd-side-home-tab {
     padding: 0;
     font-size: 12px;
-  }
-  .spd-side-home-tabs.is-hidden {
-    display: none;
   }
 
   .ele-admin-header .ele-admin-breadcrumb {
