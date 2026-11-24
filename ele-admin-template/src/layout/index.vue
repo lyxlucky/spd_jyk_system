@@ -506,15 +506,15 @@
 </script>
 
 <style lang="scss">
-  // 菜单 svg 图标与字体图标同一尺寸，避免和文字挤在一起
+  // 菜单 svg 图标与字体图标同一尺寸（间距交给下方 gap，这里不再加 margin）
   .ele-admin-sidebar-menus .menu-svg-icon.svg-icon,
   .ele-admin-sidebar-nav-menu .menu-svg-icon.svg-icon,
   .el-menu--popup .menu-svg-icon.svg-icon {
-    width: 18px;
-    height: 18px;
-    margin-right: 8px;
-    font-size: 18px;
-    flex: 0 0 auto;
+    width: 16px;
+    height: 16px;
+    margin-right: 0;
+    font-size: 16px;
+    flex: 0 0 16px;
     vertical-align: middle;
     text-align: center;
   }
@@ -615,7 +615,6 @@
     .ele-admin-sidebar-menus .el-menu:not(.el-menu--collapse) {
       .el-menu-item,
       .el-submenu__title {
-        /* 长名称换行 */
         display: flex !important;
         align-items: center;
         height: auto !important;
@@ -631,52 +630,74 @@
         word-break: break-word;
         overflow: visible;
       }
-      /* 叶子菜单 */
-      .el-menu-item > a {
-        display: flex;
+
+      /*
+       * 叶子菜单外包了 el-tooltip，原先 `.el-menu-item > a` 选不中，
+       * 图标/文字没在同一 flex 里，有的项就会空出一截。
+       * display:contents 让 tooltip 外壳不参与布局。
+       */
+      .el-menu-item > .el-tooltip {
+        display: contents;
+      }
+
+      .el-menu-item a {
+        display: flex !important;
         align-items: center;
-        flex: 1;
+        flex: 1 1 auto;
         min-width: 0;
+        gap: 8px;
         color: inherit;
         line-height: inherit;
       }
-      /*
-       * Element 默认 el-icon 宽 24px，SVG 被我们压成 18px，
-       * 同级菜单会看起来「有的图标和文字空一截」。统一成同一槽位。
-       */
+
+      .el-submenu__title {
+        gap: 8px;
+      }
+
+      .el-menu-item a > i,
+      .el-menu-item a > .svg-icon,
+      .el-menu-item a > .menu-svg-icon,
       .el-menu-item > i:not(.el-submenu__icon-arrow),
-      .el-menu-item > a > i,
+      .el-menu-item > .svg-icon,
+      .el-menu-item > .menu-svg-icon,
       .el-menu-item [class^='el-icon-'],
       .el-menu-item [class*=' el-icon-'],
-      .el-menu-item .menu-svg-icon,
       .el-submenu__title > i:not(.el-submenu__icon-arrow),
+      .el-submenu__title > .svg-icon,
+      .el-submenu__title > .menu-svg-icon,
       .el-submenu__title [class^='el-icon-'],
-      .el-submenu__title [class*=' el-icon-'],
-      .el-submenu__title .menu-svg-icon {
-        flex: 0 0 18px !important;
-        width: 18px !important;
-        min-width: 18px !important;
-        height: 18px;
-        margin-right: 8px !important;
+      .el-submenu__title [class*=' el-icon-'] {
+        flex: 0 0 16px !important;
+        width: 16px !important;
+        min-width: 16px !important;
+        max-width: 16px !important;
+        height: 16px !important;
+        margin: 0 !important;
+        padding: 0 !important;
         font-size: 16px !important;
+        line-height: 16px !important;
         text-align: center;
-        line-height: 1 !important;
         vertical-align: middle;
+        overflow: hidden;
       }
+
       .el-submenu__title > .el-submenu__icon-arrow {
         right: 12px;
         margin-top: 0;
       }
-      /* 长名称换行 */
-      .el-menu-item > a > span,
+
+      .el-menu-item a > span,
       .el-submenu__title > span,
       .el-submenu__title > a {
-        flex: 1;
+        flex: 1 1 auto;
         min-width: 0;
+        margin: 0 !important;
+        padding: 0 !important;
         line-height: inherit;
         white-space: normal !important;
         word-break: break-word;
       }
+
       > .el-submenu,
       > .el-menu-item {
         margin-top: 0;
