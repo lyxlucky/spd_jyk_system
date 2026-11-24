@@ -18,9 +18,9 @@
               <el-table-column
                 prop="CREATE_TIME"
                 label="创建时间"
-                min-width="160"
+                width="160"
                 sortable
-                :sort-method="(a, b) => sortDate(a, b, 'CREATE_TIME')"
+                :sort-method="(a, b) => sortDate(a, b, 'CREATE_TIME')" show-overflow-tooltip
               >
                 <template slot-scope="{ row }">{{ fmtDate(row.CREATE_TIME) }}</template>
               </el-table-column>
@@ -42,7 +42,7 @@
               <el-table-column
                 prop="DEPT_TWO_NAME"
                 label="科室名称"
-                min-width="100"
+                min-width="192"
                 sortable
                 :sort-method="(a, b) => sortStr(a, b, 'DEPT_TWO_NAME')"
                 show-overflow-tooltip
@@ -74,10 +74,10 @@
               <el-table-column
                 prop="DEPT_SP_STATE"
                 label="审批状态"
-                min-width="96"
+                width="88"
                 align="center"
                 sortable
-                :sort-method="(a, b) => sortStr(a, b, 'DEPT_SP_STATE')"
+                :sort-method="(a, b) => sortStr(a, b, 'DEPT_SP_STATE')" show-overflow-tooltip
               >
                 <template slot-scope="{ row }">{{ fmtDeptSpState(row.DEPT_SP_STATE) }}</template>
               </el-table-column>
@@ -157,7 +157,7 @@
               <el-table-column
                 prop="VARIETIE_NAME"
                 label="品种全称"
-                min-width="220"
+                min-width="192"
                 sortable
                 :sort-method="(a, b) => sortStr(a, b, 'VARIETIE_NAME')"
                 show-overflow-tooltip
@@ -337,11 +337,11 @@
             show-overflow-tooltip
           />
           <el-table-column prop="VARIETIE_CODE_NEW" label="品种(材料)编码" width="110" show-overflow-tooltip />
-          <el-table-column prop="VARIETIE_NAME" label="品种全称" min-width="320" show-overflow-tooltip />
+          <el-table-column prop="VARIETIE_NAME" label="品种全称" min-width="192" show-overflow-tooltip />
           <el-table-column prop="SPECIFICATION_OR_TYPE" label="型号/规格" min-width="210" show-overflow-tooltip />
           <el-table-column prop="UNIT" label="单位" width="60" align="center" />
           <el-table-column prop="MANUFACTURING_ENT_NAME" label="生产企业名称" min-width="160" show-overflow-tooltip />
-          <el-table-column prop="SUPPLIER_NAME" label="供应商" min-width="160" show-overflow-tooltip />
+          <el-table-column prop="SUPPLIER_NAME" label="供应商" min-width="208" show-overflow-tooltip />
           <el-table-column prop="BATCH" label="生产批号" width="100" />
           <el-table-column prop="COEFFICIENT" label="系数" width="60" align="center" />
           <el-table-column prop="DEF_NO_PKG_CODE" label="定数码" width="140" show-overflow-tooltip />

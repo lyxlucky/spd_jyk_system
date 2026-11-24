@@ -232,7 +232,7 @@ export default {
                 {
                     prop: 'varietie_name',
                     label: '品种全称',
-                    minWidth: 300,
+                    minWidth: 192,
                     sortable: 'custom',
                     align: 'center',
                     showOverflowTooltip: true

@@ -221,7 +221,7 @@
             sortable: 'custom',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 330
+            minWidth: 192
           },
           {
             prop: 'USED_NAME',
@@ -244,7 +244,7 @@
             align: 'center',
             sortable: 'custom',
             showOverflowTooltip: true,
-            minWidth: 80
+            width: 76
           },
           {
             prop: 'BIG_BOX_COUNT',

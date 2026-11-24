@@ -96,13 +96,13 @@ export default {
         {
           prop: 'VARIETIE_NAME',
           label: '品种名称',
-          minWidth: 160,
+          minWidth: 192,
           showOverflowTooltip: true
         },
         {
           prop: 'SPECIFICATION_OR_TYPE',
           label: '规格型号',
-          minWidth: 140,
+          minWidth: 160,
           showOverflowTooltip: true
         },
         {

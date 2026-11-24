@@ -116,7 +116,7 @@ export default {
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 150
+          minWidth: 192
         },
         {
           prop: 'SPECIFICATION_OR_TYPE',
@@ -132,7 +132,7 @@ export default {
           align: 'center',
           sortable: 'custom',
           showOverflowTooltip: true,
-          minWidth: 80
+          width: 76
         },
         // {
         //   prop: 'BIG_BOX_COUNT',

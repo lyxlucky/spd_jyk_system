@@ -63,21 +63,21 @@
         prop="VARIETIE_NAME"
         label="品种名称"
         align="center"
-        min-width="150"
+        min-width="192"
         show-overflow-tooltip
       />
       <el-table-column
         prop="SPECIFICATION_OR_TYPE"
         label="规格型号"
         align="center"
-        min-width="120"
+        min-width="160"
         show-overflow-tooltip
       />
       <el-table-column
         prop="UNIT"
         label="单位"
         align="center"
-        min-width="80"
+        width="76"
         show-overflow-tooltip
       />
       <el-table-column
@@ -91,7 +91,7 @@
         prop="MANUFACTURING_ENT_NAME"
         label="生产企业"
         align="center"
-        min-width="150"
+        min-width="208"
         show-overflow-tooltip
       />
       <el-table-column
@@ -128,7 +128,7 @@
         min-width="140"
         show-overflow-tooltip
       />
-      <el-table-column label="类型" align="center" min-width="140">
+      <el-table-column label="类型" align="center" width="76" show-overflow-tooltip>
         <template slot-scope="{ row }">
           {{ formatPackType(row) }}
         </template>
@@ -147,7 +147,7 @@
         prop="QTY"
         label="数量"
         align="center"
-        min-width="100"
+        width="88"
         show-overflow-tooltip
       />
     </el-table>

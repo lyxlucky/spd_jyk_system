@@ -29,7 +29,7 @@
           :height="supplierTableHeight"
           @current-change="onSupplierChange"
         >
-          <el-table-column prop="Supplier_Name" label="供应商名称" min-width="160" show-overflow-tooltip />
+          <el-table-column prop="Supplier_Name" label="供应商名称" min-width="208" show-overflow-tooltip />
           <el-table-column label="启用状态" min-width="80" align="center">
             <template slot-scope="{ row }">{{ row.Enable == 1 ? '启用' : '停用' }}</template>
           </el-table-column>

@@ -161,7 +161,7 @@ export default {
           // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 120
+          width: 88
         },
         // {
         //   prop: 'dept_two_name',

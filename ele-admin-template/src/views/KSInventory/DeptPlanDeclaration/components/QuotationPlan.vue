@@ -194,7 +194,7 @@ export default {
         {
           prop: 'VarName',
           label: '品种全称',
-          minWidth: 140,
+          minWidth: 192,
           fixed: 'left',
           showOverflowTooltip: true
         },

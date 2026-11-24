@@ -49,7 +49,7 @@
         <vxe-column
           field="VARIETIE_CODE_NEW"
           title="品种编码"
-          width="140"
+          width="132"
           align="center"
           show-overflow
         />
@@ -63,14 +63,14 @@
         <vxe-column
           field="VARIETIE_NAME"
           title="品种名称"
-          min-width="180"
+          min-width="192"
           align="center"
           show-overflow
         />
         <vxe-column
           field="SPECIFICATION_OR_TYPE"
           title="规格型号"
-          width="160"
+          min-width="160"
           align="center"
           show-overflow
         />

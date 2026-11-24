@@ -13,7 +13,7 @@
         <div class="section-title">已选品种（单击行可移除）</div>
         <el-table :data="selectedRows" size="mini" stripe max-height="160" @row-click="onSelectedRowClick">
           <el-table-column prop="varietie_code_new" label="品种编码" width="120" show-overflow-tooltip />
-          <el-table-column prop="varietie_name" label="品种全称" min-width="160" show-overflow-tooltip />
+          <el-table-column prop="varietie_name" label="品种全称" min-width="192" show-overflow-tooltip />
           <el-table-column prop="approval_number" label="批准文号" width="140" show-overflow-tooltip />
         </el-table>
       </div>
@@ -44,11 +44,11 @@
           >
             <el-table-column type="selection" width="42" :selectable="leftSelectable" />
             <el-table-column prop="varietie_code_new" label="品种编码" width="110" show-overflow-tooltip />
-            <el-table-column prop="varietie_name" label="品种全称" min-width="130" show-overflow-tooltip />
-            <el-table-column prop="specification_or_type" label="规格" width="90" show-overflow-tooltip />
+            <el-table-column prop="varietie_name" label="品种全称" min-width="192" show-overflow-tooltip />
+            <el-table-column prop="specification_or_type" label="规格" min-width="160" show-overflow-tooltip />
             <el-table-column prop="unit" label="单位" width="50" />
             <el-table-column prop="price" label="中标价" width="70" />
-            <el-table-column prop="manufacturing_ent_name" label="生产企业" min-width="100" show-overflow-tooltip />
+            <el-table-column prop="manufacturing_ent_name" label="生产企业" min-width="208" show-overflow-tooltip />
           </el-table>
         </el-col>
         <el-col :span="2" class="arrow-col">
@@ -67,7 +67,7 @@
           >
             <el-table-column type="selection" width="42" />
             <el-table-column prop="varietie_code_new" label="品种编码" width="100" show-overflow-tooltip />
-            <el-table-column prop="varietie_name" label="品种全称" min-width="110" show-overflow-tooltip />
+            <el-table-column prop="varietie_name" label="品种全称" min-width="192" show-overflow-tooltip />
             <el-table-column label="采购价" width="90">
               <template slot-scope="{ row }">
                 <el-input v-model="row.purchase_price" size="mini" />

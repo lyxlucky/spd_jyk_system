@@ -335,11 +335,11 @@ export default {
           label: '品种名称',
           prop: 'VARIETIE_NAME',
           columnKey: 'VARIETIE_NAME',
-          minWidth: 180,
+          minWidth: 192,
           showOverflowTooltip: true
         },
         { label: '规格型号', prop: 'SPECIFICATION_OR_TYPE', columnKey: 'SPECIFICATION_OR_TYPE', minWidth: 160, showOverflowTooltip: true },
-        { label: '生产厂家', prop: 'MANUFACTURING_ENT_NAME', columnKey: 'MANUFACTURING_ENT_NAME', minWidth: 160, showOverflowTooltip: true },
+        { label: '生产厂家', prop: 'MANUFACTURING_ENT_NAME', columnKey: 'MANUFACTURING_ENT_NAME', minWidth: 208, showOverflowTooltip: true },
         { label: '注册证号', prop: 'APPROVAL_NUMBER', columnKey: 'APPROVAL_NUMBER', width: 120 },
         { label: '启用合同供应商', prop: 'SUPPLIER_NAME', columnKey: 'SUPPLIER_NAME', minWidth: 160, showOverflowTooltip: true },
         { label: '合同结束日期', prop: 'CONTRACT_END_TIME', columnKey: 'CONTRACT_END_TIME', width: 140 },
@@ -371,7 +371,7 @@ export default {
       pickingColumns: [
         { label: '备货计划单号', prop: 'Stock_Up_Plan_No', width: 140 },
         { label: '创建人', prop: 'Creator', width: 100 },
-        { label: '供应商名称', prop: 'supplier_name', minWidth: 120 },
+        { label: '供应商名称', prop: 'supplier_name', minWidth: 208, showOverflowTooltip: true },
         { label: '收货院区', prop: 'NAME', width: 120 },
         { label: '创建时间', width: 150, slot: 'createTime' },
         { label: '备注', width: 70, align: 'center', slot: 'planRemark' },
@@ -380,19 +380,19 @@ export default {
       ],
       detailColumns: [
         { type: 'selection', width: 45 },
-        { label: '备注', prop: 'REMARKS', width: 120, showOverflowTooltip: true },
+        { label: '备注', prop: 'REMARKS', minWidth: 110, showOverflowTooltip: true },
         { label: '品种编码', prop: 'Varietie_Code_New', width: 120, showOverflowTooltip: true },
-        { label: '品种全称', prop: 'Varietie_Name', minWidth: 140, showOverflowTooltip: true },
+        { label: '品种全称', prop: 'Varietie_Name', minWidth: 192, showOverflowTooltip: true },
         { label: '型号/规格', prop: 'Specification_Or_Type', minWidth: 120, showOverflowTooltip: true },
         { label: '单位', prop: 'Unit', width: 55, align: 'center' },
-        { label: '生产企业', prop: 'Manufacturing_Ent_Name', width: 120, showOverflowTooltip: true },
+        { label: '生产企业', prop: 'Manufacturing_Ent_Name', minWidth: 208, showOverflowTooltip: true },
         { label: '价格', width: 70, align: 'right', slot: 'price' },
         { label: '系数', prop: 'Coefficient', width: 55, align: 'center' },
         { label: '备货/包', prop: 'Stock_Up_Plan_Def_Quantity', width: 100, align: 'center' },
         { label: '备货/散', prop: 'Stock_Up_Plan_Goods_Quantity', width: 100, align: 'center' },
         { label: '实收数量', prop: 'ReceiptQty', width: 120, align: 'center' },
         { label: '备货时间', prop: 'Plan_Time', width: 100, showOverflowTooltip: true },
-        { label: '供应商名称', prop: 'supplier_name', width: 140, showOverflowTooltip: true }
+        { label: '供应商名称', prop: 'supplier_name', minWidth: 208, showOverflowTooltip: true }
       ]
     };
   },

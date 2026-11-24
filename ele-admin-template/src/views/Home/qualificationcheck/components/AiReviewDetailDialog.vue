@@ -297,7 +297,7 @@
 
                   </el-table-column>
 
-                  <el-table-column prop="message" label="说明" min-width="200" show-overflow-tooltip />
+                  <el-table-column prop="message" label="说明" min-width="110" show-overflow-tooltip />
 
                 </el-table>
 
@@ -349,7 +349,7 @@
 
                   <el-table-column prop="stepName" label="步骤" width="110" show-overflow-tooltip />
 
-                  <el-table-column label="状态" width="88" align="center">
+                  <el-table-column label="状态" width="76" align="center" show-overflow-tooltip>
 
                     <template slot-scope="{ row }">
 

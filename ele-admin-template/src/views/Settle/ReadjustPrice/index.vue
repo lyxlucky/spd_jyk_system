@@ -356,7 +356,7 @@
             width="120"
             show-overflow-tooltip
           />
-          <el-table-column prop="Varietie_Name" label="品种名称" min-width="160" show-overflow-tooltip />
+          <el-table-column prop="Varietie_Name" label="品种名称" min-width="192" show-overflow-tooltip />
           <el-table-column prop="Specification_Or_Type" label="型号/规格" min-width="160" show-overflow-tooltip />
           <el-table-column prop="Unit" label="单位" width="60" align="center" />
           <el-table-column prop="Manufacturing_Ent_Name" label="生产企业名称" min-width="150" show-overflow-tooltip />

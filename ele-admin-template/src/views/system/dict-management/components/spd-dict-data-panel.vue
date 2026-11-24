@@ -159,7 +159,7 @@
           {
             prop: 'Status',
             label: '状态',
-            width: 80,
+            width: 76, showOverflowTooltip: true,
             formatter: (_row, _column, cellValue) =>
               cellValue === '1' || cellValue === 1 ? '正常' : '停用'
           },
@@ -172,7 +172,7 @@
           {
             prop: 'CreateTime',
             label: '创建时间',
-            minWidth: 160,
+            width: 160, showOverflowTooltip: true,
             formatter: (_row, _column, cellValue) =>
               cellValue ? this.$util.toDateString(cellValue) : ''
           },

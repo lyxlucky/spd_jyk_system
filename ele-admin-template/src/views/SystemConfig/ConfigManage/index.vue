@@ -171,7 +171,7 @@ export default {
         {
           prop: 'CREATE_TIME',
           label: '创建时间',
-          width: 170,
+          width: 160, showOverflowTooltip: true,
           align: 'center',
           formatter: (_row, _col, cell) => this.formatTime(cell)
         },

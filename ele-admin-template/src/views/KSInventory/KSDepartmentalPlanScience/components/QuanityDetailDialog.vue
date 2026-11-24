@@ -52,7 +52,7 @@
             label: '收货数量',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 110
+            width: 88
           },
           {
             prop: 'ORDER_TIME',

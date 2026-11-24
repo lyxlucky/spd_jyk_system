@@ -47,28 +47,28 @@
         prop="VARIETIE_NAME"
         label="品种名称"
         align="center"
-        min-width="150"
+        min-width="192"
         show-overflow-tooltip
       />
       <el-table-column
         prop="SPECIFICATION_OR_TYPE"
         label="规格型号"
         align="center"
-        min-width="120"
+        min-width="160"
         show-overflow-tooltip
       />
       <el-table-column
         prop="MANUFACTURING_ENT_NAME"
         label="生产企业"
         align="center"
-        min-width="150"
+        min-width="208"
         show-overflow-tooltip
       />
       <el-table-column
         prop="UNIT"
         label="单位"
         align="center"
-        min-width="80"
+        width="76"
         show-overflow-tooltip
       />
       <el-table-column
@@ -95,7 +95,7 @@
           {{ formatStorageType(row.STORAGE_TYPE) }}
         </template>
       </el-table-column>
-      <el-table-column label="库存数量" align="center" min-width="100" show-overflow-tooltip>
+      <el-table-column label="库存数量" align="center" width="88" show-overflow-tooltip>
         <template slot-scope="{ row }">
           {{ calcStockQty(row) }}
         </template>

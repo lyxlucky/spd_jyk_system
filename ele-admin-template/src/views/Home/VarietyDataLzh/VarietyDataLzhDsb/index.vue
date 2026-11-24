@@ -78,10 +78,10 @@
               <span class="mono">{{ row.Varietie_Code_New }}</span>
             </template>
           </el-table-column>
-          <el-table-column prop="varietie_name" label="品种全称" min-width="170" sortable="custom" show-overflow-tooltip />
+          <el-table-column prop="varietie_name" label="品种全称" min-width="192" sortable="custom" show-overflow-tooltip />
           <el-table-column prop="specification_or_type" label="型号/规格" width="120" sortable="custom" show-overflow-tooltip />
           <el-table-column prop="Unit" label="单位" width="70" align="center" sortable="custom" />
-          <el-table-column prop="Manufacturing_Ent_Name" label="生产企业" min-width="150" sortable="custom" show-overflow-tooltip />
+          <el-table-column prop="Manufacturing_Ent_Name" label="生产企业" min-width="208" sortable="custom" show-overflow-tooltip />
         </el-table>
         <div class="panel-footer">
           <el-pagination

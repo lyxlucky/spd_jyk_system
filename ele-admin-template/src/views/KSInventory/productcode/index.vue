@@ -177,7 +177,7 @@ export default {
                     label: '状态',
                     align: 'center',
                     showOverflowTooltip: true,
-                    minWidth: 110,
+                    width: 76,
                 },
                 {
                     prop: 'CODE',
@@ -205,7 +205,7 @@ export default {
                     label: '规格型号',
                     align: 'center',
                     showOverflowTooltip: true,
-                    minWidth: 60
+                    minWidth: 160
                 },
                 {
                     prop: 'OPERATION-TYPE',

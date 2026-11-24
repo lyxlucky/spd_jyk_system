@@ -93,10 +93,10 @@
 
       <el-table v-if="extendRow" :data="[extendRow]" border size="mini" class="detail-table">
         <el-table-column prop="Varietie_Code" label="品种编码" min-width="100" show-overflow-tooltip />
-        <el-table-column prop="Varietie_Name" label="品种全称" min-width="120" show-overflow-tooltip />
+        <el-table-column prop="Varietie_Name" label="品种全称" min-width="192" show-overflow-tooltip />
         <el-table-column prop="Specification_Or_Type" label="型号/规格" min-width="90" show-overflow-tooltip />
         <el-table-column prop="Unit" label="单位" width="55" />
-        <el-table-column prop="Manufacturing_Ent_Name" label="生产企业" min-width="120" show-overflow-tooltip />
+        <el-table-column prop="Manufacturing_Ent_Name" label="生产企业" min-width="208" show-overflow-tooltip />
         <el-table-column prop="Batch" label="生产批号" width="90" show-overflow-tooltip />
       </el-table>
       <el-table v-if="extendRow" :data="[extendRow]" border size="mini" class="detail-table mt6">

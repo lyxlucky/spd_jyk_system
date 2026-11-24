@@ -4,7 +4,7 @@
     <el-form
       size="mini"
       :inline="true"
-      class="ele-form-search"
+      class="ele-form-search ks-dept-plan-search"
       @keyup.enter.native="search"
       @submit.native.prevent
     >
@@ -33,7 +33,7 @@
         <el-date-picker
           v-model="where.Start"
           type="date"
-          style="width: 140px"
+          class="plan-date-filter"
           value-format="yyyy-MM-dd"
           placeholder="申领开始"
         />
@@ -42,13 +42,13 @@
         <el-date-picker
           v-model="where.End"
           type="date"
-          style="width: 140px"
+          class="plan-date-filter"
           value-format="yyyy-MM-dd"
           placeholder="申领结束"
         />
       </el-form-item>
       <el-form-item label="状态">
-        <el-select style="width: 120px" v-model="where.State" @change="search()">
+        <el-select class="plan-state-filter" v-model="where.State" @change="search()">
           <el-option label="全部" value="-1" />
           <el-option label="新增" value="0" />
           <el-option label="已提交" value="1" />
@@ -112,11 +112,12 @@
   import { hasExportPermission } from '../utils';
   import ProjectTypeDialog from './ProjectTypeDialog.vue';
 
-  const defaultWhere = () => ({
+  const defaultWhere = (today) => ({
     SerachName: '',
     PlanNum: '',
-    Start: '',
-    End: '',
+    Start: today.clone().subtract(1, 'month').format('YYYY-MM-DD'),
+    // 查询结束边界保留到次日，以覆盖今天的记录。
+    End: today.clone().add(1, 'day').format('YYYY-MM-DD'),
     State: '-1',
     props: '',
     isTwoApp: ''
@@ -129,7 +130,7 @@
     data() {
       return {
         // 表单数据
-        where: defaultWhere(),
+        where: defaultWhere(this.$moment()),
         BZ: '',
         showProjectTypeDialog: false,
         applyPlanBlocked: false
@@ -164,7 +165,7 @@
       },
       /*  重置 */
       reset() {
-        this.where = defaultWhere();
+        this.where = defaultWhere(this.$moment());
         this.search();
       },
       /* 创建申领单 */
@@ -234,24 +235,39 @@
           this.$alert(e.message || '不可创建申领单', '提示');
         }
       }
-    },
-
-    created() {},
-    mounted() {
-      // 页面加载时，计算近三个月的日期范围
-      //请使用moment.js处理日期 update by liao
-      // zou 结束时间多加一天
-      const currentDate = this.$moment().add(1, 'days').format('YYYY-MM-DD');
-      const threeMonthsAgo = this.$moment()
-        .subtract(1, 'months')
-        .format('YYYY-MM-DD');
-      this.where.Start = threeMonthsAgo;
-      this.where.End = currentDate;
     }
   };
 </script>
 
 <style scoped lang="scss">
+.plan-date-filter.el-date-editor {
+  width: 110px;
+}
+
+.plan-date-filter ::v-deep .el-input__inner {
+  padding-left: 20px;
+  padding-right: 12px;
+}
+
+.plan-date-filter ::v-deep .el-input__icon,
+.plan-state-filter ::v-deep .el-input__icon {
+  width: 16px;
+}
+
+.plan-date-filter ::v-deep .el-input__suffix,
+.plan-state-filter ::v-deep .el-input__suffix {
+  right: 3px;
+}
+
+.plan-state-filter.el-select {
+  width: 80px;
+}
+
+.plan-state-filter ::v-deep .el-input__inner {
+  padding-left: 10px;
+  padding-right: 12px;
+}
+
 :deep(.el-form-item) {
   margin-bottom: 0;
 }

@@ -352,14 +352,14 @@ export default {
         {
           prop: 'CREATE_TIME',
           label: '创建时间',
-          width: 160,
+          width: 160, showOverflowTooltip: true,
           align: 'center',
           formatter: (row) => formatDateTime(row.CREATE_TIME)
         },
         {
           prop: 'MARK',
           label: '备注',
-          minWidth: 140,
+          minWidth: 110,
           showOverflowTooltip: true
         }
       ]

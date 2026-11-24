@@ -262,7 +262,7 @@
             <template slot-scope="{ row }">{{ formatQsState(row.QSSTATE) }}</template>
           </el-table-column>
           <el-table-column prop="MONTHBILLNUM" label="发票号" width="150" sortable="custom" show-overflow-tooltip />
-          <el-table-column prop="SUPPLIER_NAME" label="供应商名称" min-width="180" sortable="custom" show-overflow-tooltip />
+          <el-table-column prop="SUPPLIER_NAME" label="供应商名称" min-width="208" sortable="custom" show-overflow-tooltip />
           <el-table-column prop="CONSUMPTION_TYPE" label="消耗类型" width="90" sortable="custom">
             <template slot-scope="{ row }">{{ formatConsumptionType(row.CONSUMPTION_TYPE) }}</template>
           </el-table-column>
@@ -272,7 +272,7 @@
           <el-table-column prop="ORDER_JS_TYPE" label="入库类型" width="180" sortable="custom" show-overflow-tooltip>
             <template slot-scope="{ row }">{{ formatOrderJsType(row.ORDER_JS_TYPE) }}</template>
           </el-table-column>
-          <el-table-column prop="TYPE" label="类型" width="80" sortable="custom">
+          <el-table-column prop="TYPE" label="类型" width="76" sortable="custom" show-overflow-tooltip>
             <template slot-scope="{ row }">{{ formatType(row.TYPE) }}</template>
           </el-table-column>
           <el-table-column prop="ORDER_TYPE" label="订单类型" width="130" sortable="custom">
@@ -293,8 +293,8 @@
           <el-table-column prop="CHARGING_DEPT" label="执行科室编码" width="120" sortable="custom" show-overflow-tooltip />
           <el-table-column prop="DEPT_NAME" label="执行科室名称" width="140" sortable="custom" show-overflow-tooltip />
           <el-table-column prop="VARIETIE_CODE_NEW" label="品种编码" width="120" sortable="custom" show-overflow-tooltip />
-          <el-table-column prop="VARIETIE_NAME" label="品种名称" min-width="160" sortable="custom" show-overflow-tooltip />
-          <el-table-column prop="SPECIFICATION_OR_TYPE" label="规格型号" width="150" sortable="custom" show-overflow-tooltip />
+          <el-table-column prop="VARIETIE_NAME" label="品种名称" min-width="192" sortable="custom" show-overflow-tooltip />
+          <el-table-column prop="SPECIFICATION_OR_TYPE" label="规格型号" min-width="160" sortable="custom" show-overflow-tooltip />
           <el-table-column prop="BATCH" label="批号" width="100" sortable="custom" show-overflow-tooltip />
           <el-table-column prop="UNIT" label="单位" width="70" sortable="custom" />
           <el-table-column prop="CLASS_ONE" label="一级目录" min-width="150" sortable="custom" show-overflow-tooltip />
@@ -303,10 +303,10 @@
           <el-table-column prop="SUPPLY_PRICE" label="价格" width="90" align="right" sortable="custom">
             <template slot-scope="{ row }">{{ formatDecimal(row.SUPPLY_PRICE) }}</template>
           </el-table-column>
-          <el-table-column prop="GOODS_QTY" label="数量" width="90" align="right" sortable="custom">
+          <el-table-column prop="GOODS_QTY" label="数量" width="88" align="right" sortable="custom" show-overflow-tooltip>
             <template slot-scope="{ row }">{{ formatDecimal(row.GOODS_QTY) }}</template>
           </el-table-column>
-          <el-table-column prop="JE" label="金额" width="90" align="right" sortable="custom">
+          <el-table-column prop="JE" label="金额" width="88" align="right" sortable="custom" show-overflow-tooltip>
             <template slot-scope="{ row }">{{ formatDecimal(row.JE) }}</template>
           </el-table-column>
           <el-table-column prop="IS_JC" label="是否集采" width="90" sortable="custom">

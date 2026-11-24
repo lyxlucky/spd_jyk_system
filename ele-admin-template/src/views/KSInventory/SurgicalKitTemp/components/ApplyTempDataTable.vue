@@ -98,7 +98,7 @@ export default {
           label: '品种名称',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 150
+          minWidth: 192
         },
         {
           prop: 'SPECIFICATION_OR_TYPE',
@@ -106,7 +106,7 @@ export default {
           // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 150
+          minWidth: 160
         },
         {
           prop: 'UNIT',
@@ -114,7 +114,7 @@ export default {
           // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 80
+          width: 76
         },
         {
           prop: 'IS_JC',
@@ -130,7 +130,7 @@ export default {
           // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 200
+          minWidth: 208
         },
         {
           slot: 'APPLY_QTY',
@@ -147,7 +147,7 @@ export default {
           // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 150
+          minWidth: 110
         },
         {
           prop: 'CREATE_TIME',

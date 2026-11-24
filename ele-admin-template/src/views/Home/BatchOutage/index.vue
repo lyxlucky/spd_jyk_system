@@ -49,15 +49,15 @@
       >
         <el-table-column type="selection" width="45" align="center"/>
         <el-table-column prop="Dept_One_Code" label="科室编码" width="120" sortable="custom" show-overflow-tooltip />
-        <el-table-column prop="Dept_One_Name" label="科室名称" min-width="150" sortable="custom" show-overflow-tooltip />
+        <el-table-column prop="Dept_One_Name" label="科室名称" min-width="192" sortable="custom" show-overflow-tooltip />
         <el-table-column label="启用状态" width="100" sortable="custom" prop="Enable" show-overflow-tooltip>
           <template slot-scope="{ row }">{{ row.Enable == 1 ? '启用' : row.Enable == 0 ? '停用' : '—' }}</template>
         </el-table-column>
         <el-table-column prop="Varietie_Code_New" label="品种（材料）编码" width="160" sortable="custom" show-overflow-tooltip />
-        <el-table-column prop="Varietie_Name" label="品种全称" min-width="240" sortable="custom" show-overflow-tooltip />
+        <el-table-column prop="Varietie_Name" label="品种全称" min-width="192" sortable="custom" show-overflow-tooltip />
         <el-table-column prop="Specification_Or_Type" label="型号/规格" min-width="170" sortable="custom" show-overflow-tooltip />
         <el-table-column prop="Manufacturing_Ent_Name" label="生产企业名称" min-width="220" sortable="custom" show-overflow-tooltip />
-        <el-table-column prop="Unit" label="单位" width="80" sortable="custom" show-overflow-tooltip />
+        <el-table-column prop="Unit" label="单位" width="76" sortable="custom" show-overflow-tooltip />
         <el-table-column label="中标价" width="100" align="right" sortable="custom" prop="Price" show-overflow-tooltip>
           <template slot-scope="{ row }">{{ fmtPrice(row.Price) }}</template>
         </el-table-column>
@@ -135,9 +135,9 @@
           <template slot-scope="{ row }">{{ row.Enable == 1 ? '启用' : row.Enable == 0 ? '停用' : '—' }}</template>
         </el-table-column>
         <el-table-column prop="Varietie_Code_New" label="品种（材料）编码" width="160" sortable="custom" show-overflow-tooltip />
-        <el-table-column prop="Varietie_Name" label="品种全称" min-width="240" sortable="custom" show-overflow-tooltip />
+        <el-table-column prop="Varietie_Name" label="品种全称" min-width="192" sortable="custom" show-overflow-tooltip />
         <el-table-column prop="Specification_Or_Type" label="型号/规格" min-width="170" sortable="custom" show-overflow-tooltip />
-        <el-table-column prop="Unit" label="单位" width="80" sortable="custom" show-overflow-tooltip />
+        <el-table-column prop="Unit" label="单位" width="76" sortable="custom" show-overflow-tooltip />
         <el-table-column prop="Def_No_Pkg_Coefficient" label="定数包系数" width="120" sortable="custom" show-overflow-tooltip />
         <el-table-column prop="Manufacturing_Ent_Name" label="生产企业名称" min-width="220" sortable="custom" show-overflow-tooltip />
         <el-table-column prop="Middle_Package_Count" label="中包装数量" width="120" sortable="custom" show-overflow-tooltip />

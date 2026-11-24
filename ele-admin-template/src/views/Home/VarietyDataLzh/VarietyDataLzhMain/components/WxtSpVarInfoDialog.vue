@@ -42,8 +42,8 @@
     <el-table v-loading="loading" :data="list" size="mini" border height="560">
       <el-table-column prop="id" label="唯一标识" min-width="90" show-overflow-tooltip />
       <el-table-column prop="wpbm" label="品种编码" min-width="110" show-overflow-tooltip />
-      <el-table-column prop="wpmc" label="品种名称" min-width="140" show-overflow-tooltip />
-      <el-table-column prop="gexh" label="规格型号" min-width="120" show-overflow-tooltip />
+      <el-table-column prop="wpmc" label="品种名称" min-width="192" show-overflow-tooltip />
+      <el-table-column prop="gexh" label="规格型号" min-width="160" show-overflow-tooltip />
       <el-table-column prop="dw" label="单位" width="60" align="center" />
       <el-table-column prop="zbj" label="中标价" width="80" align="right">
         <template v-slot="{ row }">
@@ -56,7 +56,7 @@
       <el-table-column prop="cpzch" label="注册证号" min-width="130" show-overflow-tooltip />
       <el-table-column prop="zczYxq" label="注册证有效期" min-width="110" show-overflow-tooltip />
       <el-table-column prop="zcName" label="注册证名称" min-width="140" show-overflow-tooltip />
-      <el-table-column prop="gysmc" label="供应商名称" min-width="140" show-overflow-tooltip />
+      <el-table-column prop="gysmc" label="供应商名称" min-width="208" show-overflow-tooltip />
       <el-table-column prop="sycDate" label="审批时间" min-width="140" show-overflow-tooltip />
       <el-table-column prop="sycStatus" label="微讯通状态" width="90" align="center">
         <template v-slot="{ row }">
@@ -72,7 +72,7 @@
       <el-table-column prop="ygptdm" label="阳光产品码" min-width="110" show-overflow-tooltip />
       <el-table-column prop="ygptggbm" label="阳光规格型号码" min-width="120" show-overflow-tooltip />
       <el-table-column prop="ygptjg" label="阳光价格" width="90" align="right" />
-      <el-table-column prop="bz" label="备注" min-width="120" show-overflow-tooltip />
+      <el-table-column prop="bz" label="备注" min-width="110" show-overflow-tooltip />
     </el-table>
     <div class="pager">
       <el-pagination

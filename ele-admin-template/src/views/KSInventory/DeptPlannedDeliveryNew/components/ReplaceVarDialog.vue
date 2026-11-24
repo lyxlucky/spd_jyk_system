@@ -48,10 +48,10 @@ export default {
       current: null,
       columns: [
         { prop: 'Varietie_Code_New', label: '品种编码', minWidth: 120 },
-        { prop: 'Varietie_Name', label: '品种名称', minWidth: 180, showOverflowTooltip: true },
-        { prop: 'Specification_Or_Type', label: '规格型号', minWidth: 180, showOverflowTooltip: true },
+        { prop: 'Varietie_Name', label: '品种名称', minWidth: 192, showOverflowTooltip: true },
+        { prop: 'Specification_Or_Type', label: '规格型号', minWidth: 160, showOverflowTooltip: true },
         { prop: 'APPROVAL_NUMBER', label: '注册证', minWidth: 140, showOverflowTooltip: true },
-        { prop: 'Manufacturing_Ent_Name', label: '生产企业', minWidth: 180, showOverflowTooltip: true },
+        { prop: 'Manufacturing_Ent_Name', label: '生产企业', minWidth: 208, showOverflowTooltip: true },
         { prop: 'Price', label: '中标价', minWidth: 90, align: 'right' },
         { prop: 'Unit', label: '单位', minWidth: 60 },
         { prop: 'Center_Inside_Goods_Qty', label: '院内散货数量', minWidth: 100, align: 'right' },

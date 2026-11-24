@@ -133,7 +133,7 @@
       >
         <vxe-column type="checkbox" width="46" fixed="left" />
         <vxe-column field="ID" title="流水ID" width="185" />
-        <vxe-column field="VARIETIE_NAME" title="品种名称" min-width="180" />
+        <vxe-column field="VARIETIE_NAME" title="品种名称" min-width="192" show-overflow="tooltip" />
         <vxe-column field="CHARGE_CODE" title="计费编码" width="120" />
         <vxe-column field="BUSINESS_TYPE_NAME" title="业务类别" width="100" />
         <vxe-column field="TYPE" title="流水类型" width="85" />
@@ -142,7 +142,7 @@
             row.BATCH_NO || '空批号'
           }}</template></vxe-column
         >
-        <vxe-column field="QTY" title="数量" width="90" align="right" />
+        <vxe-column field="QTY" title="数量" width="88" align="right" show-overflow="tooltip" />
         <vxe-column
           field="TRANSFERABLE_QTY"
           title="剩余可移数量"
@@ -165,12 +165,12 @@
         <vxe-column
           field="SPECIFICATION_OR_TYPE"
           title="规格型号"
-          width="160"
+          min-width="160" show-overflow="tooltip"
         />
         <vxe-column
           field="MANUFACTURING_ENT_NAME"
           title="生产企业"
-          width="190"
+          min-width="208" show-overflow="tooltip"
         />
         <vxe-column field="DEPT_TWO_NAME" title="SPD科室" width="150" />
         <vxe-column field="DEPT_CODE" title="HIS科室编码" width="120" />
@@ -185,7 +185,7 @@
           title="业务时间"
           width="170"
         />
-        <vxe-column field="CREATE_TIME" title="创建时间" width="170" />
+        <vxe-column field="CREATE_TIME" title="创建时间" width="160" show-overflow="tooltip" />
         <vxe-column field="PRODUCTION_DATE" title="生产日期" width="120" />
         <vxe-column field="EXPIRY_DATE" title="有效期" width="120" />
         <vxe-column

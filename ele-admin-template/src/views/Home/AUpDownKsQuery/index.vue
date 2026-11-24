@@ -75,8 +75,8 @@
         <el-table-column type="selection" width="50" align="center" fixed="left" />
         <el-table-column type="index" label="#" width="50" align="center" />
         <el-table-column prop="DEPT_TWO_NAME" label="二级科室" min-width="140" show-overflow-tooltip />
-        <el-table-column prop="VARIETIE_NAME" label="品种名称" min-width="150" show-overflow-tooltip />
-        <el-table-column prop="VARIETIE_CODE_NEW" label="品种编码" min-width="140" show-overflow-tooltip />
+        <el-table-column prop="VARIETIE_NAME" label="品种名称" min-width="192" show-overflow-tooltip />
+        <el-table-column prop="VARIETIE_CODE_NEW" label="品种编码" width="132" show-overflow-tooltip />
         <el-table-column prop="COEFFICIENT" label="系数" width="90" align="center">
           <template slot-scope="{ row }">
             <span class="cell-number">{{ row.COEFFICIENT }}</span>
@@ -92,18 +92,18 @@
             <span class="cell-number cell-down">{{ row.DOWN }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="申请时间" width="160" align="center">
+        <el-table-column label="申请时间" width="160" align="center" show-overflow-tooltip>
           <template slot-scope="{ row }">
             <span class="cell-time">{{ fmtDateTime(row.CREATE_TIME) }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="审批时间" width="160" align="center">
+        <el-table-column label="审批时间" width="160" align="center" show-overflow-tooltip>
           <template slot-scope="{ row }">
             <span class="cell-time">{{ fmtDateTime(row.APPROVAL_TIME) }}</span>
           </template>
         </el-table-column>
         <el-table-column prop="NICKNAME" label="操作人" width="100" show-overflow-tooltip />
-        <el-table-column label="审批状态" width="100" align="center" fixed="right">
+        <el-table-column label="审批状态" width="88" align="center" fixed="right" show-overflow-tooltip>
           <template slot-scope="{ row }">
             <el-tag v-if="String(row.APPROVAL_STATE) === '1'" type="success" size="small" effect="light">已审批</el-tag>
             <el-tag v-else-if="String(row.APPROVAL_STATE) === '0'" type="warning" size="small" effect="light">未审批</el-tag>

@@ -65,7 +65,7 @@
               <template slot-scope="{ row }">{{ sendStateLabel(row.Send_Herp_State) }}</template>
             </el-table-column>
             <el-table-column v-if="showExtraDateCol" prop="sDate" label="日期" width="85" />
-            <el-table-column v-if="showExtraDateCol" prop="Remarks" label="备注" min-width="60" show-overflow-tooltip />
+            <el-table-column v-if="showExtraDateCol" prop="Remarks" label="备注" min-width="110" show-overflow-tooltip />
           </el-table>
             </div>
           </div>
@@ -193,9 +193,9 @@
           <el-table v-loading="varietyLoading" :data="varietyRows" border stripe size="mini" height="calc(100vh - 100px)">
             <el-table-column prop="dept_two_code" label="计费科室编码" width="98" show-overflow-tooltip />
             <el-table-column prop="Varietie_code" label="品种材料编码" width="98" show-overflow-tooltip />
-            <el-table-column prop="Varietie_name" label="品种全称" min-width="98" show-overflow-tooltip />
+            <el-table-column prop="Varietie_name" label="品种全称" min-width="192" show-overflow-tooltip />
             <el-table-column prop="Specification_or_Type" label="型号/规格" width="88" show-overflow-tooltip />
-            <el-table-column prop="Manufacturing_Ent_Name" label="生产企业" width="88" show-overflow-tooltip />
+            <el-table-column prop="Manufacturing_Ent_Name" label="生产企业" min-width="208" show-overflow-tooltip />
             <el-table-column prop="Charging_Code" label="计费编码" width="78" />
             <el-table-column prop="Batch" label="生产批号" width="78" />
             <el-table-column label="生产日期" width="92">
@@ -214,7 +214,7 @@
             <el-table-column label="金额" width="76" align="center">
               <template slot-scope="{ row }">{{ fmtMoney(row.Money) }}</template>
             </el-table-column>
-            <el-table-column prop="supplier_name" label="供应商" min-width="90" show-overflow-tooltip />
+            <el-table-column prop="supplier_name" label="供应商" min-width="208" show-overflow-tooltip />
           </el-table>
           <el-pagination v-if="varietyTotal > varietyPage.size" small layout="total, prev, pager, next" :total="varietyTotal" :page-size="varietyPage.size" :current-page.sync="varietyPage.page" class="variety-pager" @current-change="loadVarietyList" />
             </div>
@@ -297,7 +297,7 @@
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="statusLabel" label="状态" width="90" />
+        <el-table-column prop="statusLabel" label="状态" width="76" show-overflow-tooltip />
       </el-table>
       <span slot="footer">
         <el-button size="mini" @click="exportCloudSignStatus">导出</el-button>

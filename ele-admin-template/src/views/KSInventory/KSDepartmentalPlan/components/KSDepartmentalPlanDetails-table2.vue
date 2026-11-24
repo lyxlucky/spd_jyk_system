@@ -1,28 +1,6 @@
 <template>
   <div class="ks-dept-plan-detail">
-    <div class="spd-panel spd-panel--search">
-      <div class="spd-panel__head spd-panel__head--split">
-        <span>明细操作</span>
-        <span class="spd-panel__head-meta">
-          实际申领数量合计: <b>{{ sumNumber }}</b>
-          实际申领金额合计: <b>{{ sumAount }}</b>
-        </span>
-      </div>
-      <KSDepartmentalPlanDetails-search
-        @Approval="Approval"
-        @exportData="exportData"
-        @search="reload"
-        @ClickReload="ClickReload"
-        :KSDepartmentalPlanDataSearch="KSDepartmentalPlanDataSearch"
-        :selection="selection"
-        @showEditReoad="showEditReoad"
-        @BindBudget="handleBindBudget"
-        :datasourceList="datasourceList"
-      />
-    </div>
-
     <div class="spd-panel spd-table-panel">
-      <div class="spd-panel__head">申领单详情列表</div>
       <div class="spd-table-panel__wrap">
         <!-- <el-button type="danger" size="small" @click="aaa">aaa</el-button> -->
         <!-- 数据表格 -->
@@ -34,6 +12,8 @@
           size="mini"
           border
           stripe
+          title="申领单详情列表"
+          tool-class="spd-panel__head ks-dept-plan-detail-toolbar"
           :toolkit="['columns', 'fullscreen']"
           :header-overflow-hidden="false"
           highlight-current-row
@@ -48,13 +28,27 @@
           :row-class-name="detailRowClassName"
           @selection-change="onSelectionChange"
         >
-      <!-- 表头工具栏 -->
-      <!-- 右表头 -->
-      <!-- <template v-slot:toolkit>
-        <el-button size="small" type="danger" icon="el-icon-delete" class="ele-btn-icon" @click="removebatch">
-          删除
-        </el-button>
-      </template> -->
+      <template v-slot:toolkit>
+        <span class="spd-panel__head-meta ks-dept-plan-detail-totals">
+          实际申领数量合计: <b>{{ sumNumber }}</b>
+          实际申领金额合计: <b>{{ sumAount }}</b>
+        </span>
+      </template>
+      <template v-slot:default>
+        <div class="ks-dept-plan-detail-filters">
+          <KSDepartmentalPlanDetails-search
+            @Approval="Approval"
+            @exportData="exportData"
+            @search="reload"
+            @ClickReload="ClickReload"
+            :KSDepartmentalPlanDataSearch="KSDepartmentalPlanDataSearch"
+            :selection="selection"
+            @showEditReoad="showEditReoad"
+            @BindBudget="handleBindBudget"
+            :datasourceList="datasourceList"
+          />
+        </div>
+      </template>
       <template v-slot:PAG_TYPE="{ row }">
         <div
           :id="'PAG_TYPE' + row.ID"
@@ -69,14 +63,6 @@
           row.QUANITY
         }}</el-link>
       </template>
-
-      <!-- 左表头 -->
-      <!-- <template v-slot:toolbar>
-        <label
-          >实际申领数量合计: <b>{{ sumNumber }}</b>&nbsp;&nbsp;实际申领金额合计:
-          <b>{{ sumAount }}</b>
-        </label>
-      </template> -->
 
       <template v-slot:DTL_IS_DELETE="{ row }">
         <el-tag v-if="isDetailDeleted(row)" type="info" size="mini">已剔除</el-tag>
@@ -398,7 +384,7 @@
             slot: 'DTL_IS_DELETE',
             label: '明细状态',
             align: 'center',
-            width: 90,
+            width: 80,
             ...(HOME_HP !== 'stzyyy' ? { fixed: 'left' } : {})
           },
           {
@@ -407,7 +393,7 @@
             label: '申领数量',
             align: 'center',
             showOverflowTooltip: true,
-            width: 160,
+            width: 96,
             ...(HOME_HP !== 'stzyyy' ? { fixed: 'left' } : {})
           },
           {
@@ -423,7 +409,7 @@
             label: '收货数量',
             align: 'center',
             showOverflowTooltip: true,
-            width: 150
+            width: 96
           },
           {
             columnKey: 'VarCode',
@@ -432,42 +418,42 @@
             label: '品种编码',
             align: 'center',
             showOverflowTooltip: true,
-            width: 150
+            width: 124
           },
           // {
           //   prop: 'TJ_QTY',
           //   label: '提交数量',
           //   align: 'center',
           //   showOverflowTooltip: true,
-          //   width: 120
+          //   width: 96
           // },
           {
             prop: 'CHARGING_CODE',
             label: '收费编码',
             align: 'center',
             showOverflowTooltip: true,
-            width: 120
+            width: 112
           },
           {
             prop: 'VarName',
             label: '品种全称',
             align: 'left',
             showOverflowTooltip: true,
-            width: 330
+            minWidth: 192
           },
           {
             prop: 'Used_Name',
             label: '常用名',
             align: 'left',
             showOverflowTooltip: true,
-            width: 180
+            width: 120
           },
           {
             prop: 'GG',
             label: '型号/规格',
             align: 'left',
             showOverflowTooltip: true,
-            width: 180
+            width: 160
           },
           {
             prop: 'Manufacturing',
@@ -489,7 +475,7 @@
             label: '月均用量',
             align: 'center',
             showOverflowTooltip: true,
-            width: 150
+            width: 96
           },
           {
             prop: 'StockQty',
@@ -537,7 +523,7 @@
             label: '品牌',
             align: 'left',
             showOverflowTooltip: true,
-            width: 180
+            width: 96
           },
           {
             prop: 'SUPPLIER_NAME',
@@ -1083,7 +1069,6 @@
   min-width: 0;
 }
 
-.ks-dept-plan-detail >>> .spd-panel--search,
 .ks-dept-plan-detail >>> .spd-panel__body {
   overflow: visible;
   max-width: 100%;
@@ -1132,12 +1117,24 @@
   text-align: center !important;
 }
 
-.ks-dept-plan-detail >>> .ele-table-tool-default {
-  padding: 2px 0 0 4px;
+.ks-dept-plan-detail >>> .ks-dept-plan-detail-toolbar.ele-table-tool {
+  margin: 0;
+  padding: 0 12px;
+  min-height: 34px;
 }
 
-.ks-dept-plan-detail >>> .ele-table-tool .ele-table-tool-title {
+.ks-dept-plan-detail >>> .ks-dept-plan-detail-toolbar h6 {
   margin: 0;
+  font: inherit;
+}
+
+.ks-dept-plan-detail-totals {
+  margin-right: 8px;
+  font-weight: 700;
+}
+
+.ks-dept-plan-detail >>> .ele-pro-table-fullscreen .ks-dept-plan-detail-filters {
+  display: none;
 }
 
 .ks-dept-plan-detail >>> .el-table .is-detail-deleted {

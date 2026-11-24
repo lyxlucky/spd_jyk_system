@@ -214,7 +214,7 @@
             label: '备注',
             prop: 'REMARKS',
             align: 'center',
-            width: 90
+            minWidth: 110, showOverflowTooltip: true
           },
           {
             label: '省平台编码',
@@ -262,7 +262,7 @@
             label: '供应商名称',
             prop: 'supplier_name',
             align: 'center',
-            minWidth: 210
+            minWidth: 208, showOverflowTooltip: true
           },
           {
             label: '生产企业名称',

@@ -157,7 +157,7 @@ export default {
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 180
+          minWidth: 192
         },
         {
           prop: 'Specification_Or_Type',
@@ -176,7 +176,7 @@ export default {
         {
           prop: 'Unit',
           label: '单位',
-          width: 80,
+          width: 76,
           align: 'center',
           showOverflowTooltip: true
         },
@@ -200,7 +200,7 @@ export default {
         {
           prop: 'Dept_One_Name',
           label: '科室名称',
-          width: 120,
+          minWidth: 192,
           align: 'center',
           showOverflowTooltip: true
         }

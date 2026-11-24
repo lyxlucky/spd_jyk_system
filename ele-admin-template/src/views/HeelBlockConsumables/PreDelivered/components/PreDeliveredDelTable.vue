@@ -155,7 +155,7 @@
             label: '品种全称',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 200
+            minWidth: 192
           },
           {
             prop: 'APPROVAL_NUMBER',
@@ -191,7 +191,7 @@
             label: '供应商名称',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 180
+            minWidth: 208
           },
           {
             slot: 'Batch',

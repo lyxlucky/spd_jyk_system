@@ -96,9 +96,9 @@ const DEFAULT_STATE = Object.freeze({
   // 是否开启响应式（默认关闭：窗口缩小不重排，靠滚动查看，对齐老系统）
   styleResponsive: false,
   // 字体大小
-  fontSize: '16px',
+  fontSize: '14px',
   // 表格密度
-  density: 'default'
+  density: 'compact'
 });
 // 延时操作定时器
 let disableTransitionTimer, updateContentSizeTimer;

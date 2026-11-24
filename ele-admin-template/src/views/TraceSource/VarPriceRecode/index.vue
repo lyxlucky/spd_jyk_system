@@ -74,7 +74,7 @@ export default {
           label: '品种编码',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 150,
+          width: 132,
           show: false
         },
         {
@@ -89,21 +89,21 @@ export default {
           label: '品种名称',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 220
+          minWidth: 192
         },
         {
           prop: 'SPECIFICATION_OR_TYPE',
           label: '规格型号',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 220
+          minWidth: 160
         },
         {
           prop: 'MANUFACTURING_ENT_NAME',
           label: '生产企业',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 220
+          minWidth: 208
         },
         {
           prop: 'APPROVAL_NUMBER',

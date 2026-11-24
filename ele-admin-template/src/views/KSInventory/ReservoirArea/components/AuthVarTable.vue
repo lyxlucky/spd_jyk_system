@@ -124,7 +124,7 @@ export default {
           // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 110
+          minWidth: 192
         },
         {
           prop: 'SPECIFICATION_OR_TYPE',
@@ -140,7 +140,7 @@ export default {
           // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 110
+          width: 76
         },
         {
           prop: 'Price',

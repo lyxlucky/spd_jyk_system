@@ -145,7 +145,7 @@ export default {
           label: '科室名称',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 110
+          minWidth: 192
         },
         {
           prop: 'VARIETIE_CODE_NEW',
@@ -159,7 +159,7 @@ export default {
           label: '品种名称',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 150
+          minWidth: 192
         },
         {
           prop: 'SPECIFICATION_OR_TYPE',
@@ -167,7 +167,7 @@ export default {
 
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 180
+          minWidth: 160
         },
         {
           prop: 'COUNT',
@@ -181,7 +181,7 @@ export default {
           label: '单位',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 80
+          width: 76
         },
         {
           prop: 'PRICE',
@@ -230,7 +230,7 @@ export default {
           label: '生产企业',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 180
+          minWidth: 208
         },
         {
           prop: 'RECORD_TIME',
@@ -287,7 +287,7 @@ export default {
 
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 180,
+          minWidth: 208,
           show: false
         },
         // {

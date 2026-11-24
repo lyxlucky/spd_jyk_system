@@ -129,7 +129,7 @@
       </el-form>
       <el-table v-loading="feedLoading" :data="feedRows" border stripe style="width: 100%">
         <el-table-column type="index" width="50" label="序号" />
-        <el-table-column prop="SUPPLIER_NAME" label="供应商名称" min-width="120" show-overflow-tooltip />
+        <el-table-column prop="SUPPLIER_NAME" label="供应商名称" min-width="208" show-overflow-tooltip />
         <el-table-column prop="FEEDBACK_CONTENT" label="反馈内容" min-width="160" show-overflow-tooltip />
         <el-table-column prop="CREATE_TIME" label="反馈时间" width="160" />
         <el-table-column prop="REPLY" label="回复内容" min-width="140" show-overflow-tooltip />
@@ -176,7 +176,7 @@
         <el-table-column type="selection" width="45" align="center"/>
         <el-table-column type="index" width="50" label="序号" />
         <el-table-column prop="FILENAME" label="文件名" min-width="200" show-overflow-tooltip />
-        <el-table-column prop="CREATE_TIME" label="创建时间" width="180" />
+        <el-table-column prop="CREATE_TIME" label="创建时间" width="160" show-overflow-tooltip />
       </el-table>
       <el-pagination
         class="pager"

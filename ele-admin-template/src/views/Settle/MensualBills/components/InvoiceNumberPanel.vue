@@ -47,7 +47,7 @@
                 <el-table-column label="月结总额" width="120" align="right">
                   <template slot-scope="{ row }">{{ fmtMoney(row.Money) }}</template>
                 </el-table-column>
-                <el-table-column prop="Remarks" label="备注" min-width="120" show-overflow-tooltip />
+                <el-table-column prop="Remarks" label="备注" min-width="110" show-overflow-tooltip />
                 <el-table-column prop="sDate" label="日期" width="120" />
               </el-table>
               <el-pagination small layout="total, prev, pager, next" :total="billTotal" :page-size="billPage.size" :current-page.sync="billPage.page" class="section-pager" @current-change="loadBillList" />
@@ -101,7 +101,7 @@
                 <el-table-column type="selection" width="40" align="center"/>
                 <template v-if="hp === 'stzl'">
                   <el-table-column prop="Supplier_Code" label="供应商编码" width="90" show-overflow-tooltip />
-                  <el-table-column prop="Supplier_Name" label="供应商名称" min-width="110" show-overflow-tooltip />
+                  <el-table-column prop="Supplier_Name" label="供应商名称" min-width="208" show-overflow-tooltip />
                   <el-table-column label="化验材料" width="80" align="right"><template slot-scope="{ row }">{{ fmtMoney(row.HY_Material) }}</template></el-table-column>
                   <el-table-column label="维修材料" width="80" align="right"><template slot-scope="{ row }">{{ fmtMoney(row.WX_Material) }}</template></el-table-column>
                   <el-table-column label="医疗设备" width="80" align="right"><template slot-scope="{ row }">{{ fmtMoney(row.YL_Material) }}</template></el-table-column>
@@ -115,7 +115,7 @@
                   <el-table-column prop="Supplier_Code_Charging" label="医院系统编码" width="100" show-overflow-tooltip />
                   <el-table-column prop="PRINT_COUNT" label="打印次数" width="70" />
                   <el-table-column prop="Supplier_Code" label="供应商编码" width="90" show-overflow-tooltip />
-                  <el-table-column prop="Supplier_Name" label="供应商名称" min-width="110" show-overflow-tooltip />
+                  <el-table-column prop="Supplier_Name" label="供应商名称" min-width="208" show-overflow-tooltip />
                   <el-table-column label="化验材料" width="78" align="right"><template slot-scope="{ row }">{{ fmtMoney(row.HY_Material) }}</template></el-table-column>
                   <el-table-column label="X光照材料" width="85" align="right"><template slot-scope="{ row }">{{ fmtMoney(row.X_Material) }}</template></el-table-column>
                   <el-table-column label="医疗材料" width="78" align="right"><template slot-scope="{ row }">{{ fmtMoney(row.YL_Material) }}</template></el-table-column>
@@ -158,7 +158,7 @@
                 <el-table-column type="index" label="序号" width="50" />
                 <el-table-column prop="BillNum" label="发票号码" min-width="120" align="center" show-overflow-tooltip />
                 <el-table-column label="发票金额" width="100" align="center"><template slot-scope="{ row }">{{ fmtMoney(row.Price) }}</template></el-table-column>
-                <el-table-column label="状态" width="80"><template slot-scope="{ row }">{{ row.State == 0 ? '未审批' : '已审批' }}</template></el-table-column>
+                <el-table-column label="状态" width="76" show-overflow-tooltip><template slot-scope="{ row }">{{ row.State == 0 ? '未审批' : '已审批' }}</template></el-table-column>
               </el-table>
             </div>
           </div>

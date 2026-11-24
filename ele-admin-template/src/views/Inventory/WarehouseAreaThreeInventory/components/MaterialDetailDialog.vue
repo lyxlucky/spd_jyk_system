@@ -156,22 +156,22 @@
                 <vxe-column
                   field="VARIETIE_NAME"
                   title="品种名称"
-                  min-width="220"
-                  align="center"
+                  min-width="192"
+                  align="center" show-overflow="tooltip"
                 />
                 <vxe-column
                   field="SPECIFICATION_OR_TYPE"
                   title="规格型号"
-                  width="180"
-                  align="center"
+                  min-width="160"
+                  align="center" show-overflow="tooltip"
                 />
                 <vxe-column
                   field="MANUFACTURING_ENT_NAME"
                   title="生产企业"
-                  min-width="220"
-                  align="center"
+                  min-width="208"
+                  align="center" show-overflow="tooltip"
                 />
-                <vxe-column field="UNIT" title="单位" width="80" align="center" />
+                <vxe-column field="UNIT" title="单位" width="76" align="center" show-overflow="tooltip" />
                 <vxe-column
                   field="PRE_DEDUCT_QTY"
                   title="预扣数量"
@@ -259,17 +259,17 @@
                 <vxe-column
                   field="CREATE_TIME"
                   title="创建时间"
-                  width="170"
+                  width="160"
                   align="center"
-                  :formatter="formatDateTime"
+                  :formatter="formatDateTime" show-overflow="tooltip"
                 />
                 <vxe-column
                   field="QTY"
                   title="数量"
-                  width="90"
+                  width="88"
                   align="right"
                   fixed="right"
-                  :formatter="formatQty"
+                  :formatter="formatQty" show-overflow="tooltip"
                 />
                 <vxe-column
                   field="MEDICAL_ORDER_ID"

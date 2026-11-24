@@ -39,10 +39,10 @@
           <el-table-column label="品种编码" min-width="120" show-overflow-tooltip>
             <template slot-scope="{ row }">{{ row.varietie_code_new || row.Varietie_Code_New }}</template>
           </el-table-column>
-          <el-table-column label="品种名称" min-width="160" show-overflow-tooltip>
+          <el-table-column label="品种名称" min-width="192" show-overflow-tooltip>
             <template slot-scope="{ row }">{{ row.varietie_name || row.Varietie_Name }}</template>
           </el-table-column>
-          <el-table-column label="规格型号" min-width="120" show-overflow-tooltip>
+          <el-table-column label="规格型号" min-width="160" show-overflow-tooltip>
             <template slot-scope="{ row }">{{ row.specification_or_type || row.Specification_Or_Type }}</template>
           </el-table-column>
           <el-table-column label="单位" width="60" align="center">
@@ -91,7 +91,7 @@
             @selection-change="(s) => (deptSelected = s)"
           >
           <el-table-column type="selection" width="45" :reserve-selection="true" align="center"/>
-          <el-table-column prop="Dept_One_Name" label="科室名称" min-width="120" align="center" show-overflow-tooltip />
+          <el-table-column prop="Dept_One_Name" label="科室名称" min-width="192" align="center" show-overflow-tooltip />
           <el-table-column prop="Herp_Dept_One_Code" label="herp科室编码" min-width="110" align="center" show-overflow-tooltip />
           </el-table>
         </div>

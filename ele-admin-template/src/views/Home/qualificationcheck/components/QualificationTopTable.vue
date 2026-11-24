@@ -256,7 +256,7 @@
           {
             prop: 'Supplier_Name',
             label: '供应商',
-            minWidth: 200,
+            minWidth: 208,
             align: 'center',
             showOverflowTooltip: true
           },

@@ -184,7 +184,7 @@
             label: '类型',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 110,
+            width: 76,
             formatter: (row, column, cellValue) => {
               if (row?.SCIENTIFIC_ID && row.SCIENTIFIC_ID !== 'null') {
                 return '科研计划';
@@ -254,7 +254,7 @@
 
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 110
+            minWidth: 192
           },
           {
             prop: 'REGION_NAME',
@@ -269,7 +269,7 @@
             label: '申领时间',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 180,
+            width: 160,
             formatter: (row, column, cellValue) => {
               return this.$moment(cellValue).format('YYYY-MM-DD HH:mm:ss');
             }
@@ -279,7 +279,7 @@
             label: '审批时间',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 180,
+            width: 160,
             formatter: (row, column, cellValue) => {
               return this.$moment(cellValue).format('YYYY-MM-DD HH:mm:ss');
             }
@@ -297,14 +297,14 @@
             label: '申请总数',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 110
+            width: 88
           },
           {
             prop: 'QUANITY',
             label: '已收货总数',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 110
+            width: 110
           }
         ],
         toolbar: false,

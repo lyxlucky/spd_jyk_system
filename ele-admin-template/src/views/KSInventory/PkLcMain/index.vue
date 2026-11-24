@@ -502,8 +502,8 @@
         max-height="400px"
       >
         <el-table-column type="index" label="序号" width="60" align="center" />
-        <el-table-column prop="ORDER_NUM" label="订单号" min-width="150" align="center" show-overflow-tooltip />
-        <el-table-column prop="QTY" label="数量" width="100" align="center" />
+        <el-table-column prop="ORDER_NUM" label="订单号" width="132" align="center" show-overflow-tooltip />
+        <el-table-column prop="QTY" label="数量" width="88" align="center" show-overflow-tooltip />
         <el-table-column prop="ORDER_TYPE" label="订单类型" width="120" align="center">
           <template slot-scope="{ row }">
             <el-tag :type="getOrderTypeTagType(row.ORDER_TYPE)" size="mini">
@@ -674,7 +674,7 @@
           {
             prop: 'APP_TIME',
             label: '审批时间',
-            minWidth: 160,
+            width: 160, showOverflowTooltip: true,
             align: 'center',
             formatter: (row) => this.formatDateTime(row.APP_TIME)
           },
@@ -808,14 +808,14 @@
           {
             prop: 'MANUFACTURING_ENT_NAME',
             label: '生产企业',
-            minWidth: 150,
+            minWidth: 208,
             align: 'center',
             showOverflowTooltip: true
           },
           {
             prop: 'SPECIFICATION_OR_TYPE',
             label: '规格型号',
-            minWidth: 120,
+            minWidth: 160,
             align: 'center',
             showOverflowTooltip: true
           },
@@ -931,7 +931,7 @@
           {
             prop: 'MANUFACTURING_ENT_NAME',
             label: '生产企业',
-            minWidth: 150,
+            minWidth: 208,
             align: 'center',
             showOverflowTooltip: true
           },

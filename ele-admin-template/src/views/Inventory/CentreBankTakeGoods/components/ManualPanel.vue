@@ -35,7 +35,7 @@
             </div>
             <div class="take-table-box">
           <el-table v-loading="receiptLoading" :data="receiptList" border stripe size="mini" height="100%" highlight-current-row @current-change="onReceiptSelect">
-            <el-table-column prop="Name" label="库区" width="80" show-overflow-tooltip />
+            <el-table-column prop="Name" label="库区" width="76" show-overflow-tooltip />
             <el-table-column prop="Delivery_Note_Number" label="收货单号" min-width="110" show-overflow-tooltip />
             <el-table-column prop="Prepare_Goods_Plan_Number" label="备货单号" min-width="100" show-overflow-tooltip />
             <el-table-column label="收货状态" width="72">
@@ -47,7 +47,7 @@
             <el-table-column label="创建时间" width="100">
               <template slot-scope="{ row }">{{ fmtDate10(row.Supplier_Delivery_Time) }}</template>
             </el-table-column>
-            <el-table-column prop="Note_Description" label="备注" min-width="80" show-overflow-tooltip />
+            <el-table-column prop="Note_Description" label="备注" min-width="110" show-overflow-tooltip />
           </el-table>
             </div>
           </div>
@@ -69,18 +69,18 @@
           <el-table v-loading="searchLoading" :data="searchVarieties" border stripe size="mini" height="100%" @selection-change="(s) => (searchSelection = s)">
             <el-table-column type="selection" width="48" align="center" class-name="spd-checkbox-col" />
             <el-table-column prop="Varietie_Code_New" label="品种编码" width="100" />
-            <el-table-column prop="Varietie_Name" label="品种全称" min-width="140" show-overflow-tooltip />
+            <el-table-column prop="Varietie_Name" label="品种全称" min-width="192" show-overflow-tooltip />
             <el-table-column prop="Approval_Number" label="批准文号" width="110" show-overflow-tooltip />
-            <el-table-column prop="Specification_Or_Type" label="规格" width="90" />
+            <el-table-column prop="Specification_Or_Type" label="规格" min-width="160" show-overflow-tooltip />
             <el-table-column prop="Unit" label="单位" width="50" align="center" />
-            <el-table-column prop="Manufacturing_Ent_Name" label="生产企业" min-width="110" show-overflow-tooltip />
+            <el-table-column prop="Manufacturing_Ent_Name" label="生产企业" min-width="208" show-overflow-tooltip />
             <el-table-column v-if="flags.isCg" label="采购价" width="80" align="right">
               <template slot-scope="{ row }">{{ fmtPrice(row.Purchase_Price) }}</template>
             </el-table-column>
             <el-table-column label="结算价" width="80" align="right">
               <template slot-scope="{ row }">{{ fmtPrice(row.Supply_Price, row.price_bl) }}</template>
             </el-table-column>
-            <el-table-column prop="Supplier_Name" label="供应商" min-width="100" show-overflow-tooltip />
+            <el-table-column prop="Supplier_Name" label="供应商" min-width="208" show-overflow-tooltip />
             <el-table-column label="启用状态" width="72">
               <template slot-scope="{ row }">{{ fmtEnable(row.Enable) }}</template>
             </el-table-column>
@@ -124,7 +124,7 @@
                 <el-input-number v-model="row._edit.netreceipts" size="mini" :min="0" :controls="false" style="width: 72px" />
               </template>
             </el-table-column>
-            <el-table-column label="备注" width="90">
+            <el-table-column label="备注" min-width="110" show-overflow-tooltip>
               <template slot-scope="{ row }">
                 <el-input v-model="row._edit.note" size="mini" />
               </template>
@@ -169,7 +169,7 @@
             <el-table-column prop="Name" label="院区库房" width="90" align="center" />
             <el-table-column v-if="flags.isStHospital" prop="PT_HTNUM" label="平台单号" width="100" />
             <el-table-column prop="Varietie_Code" label="品种编码" width="95" />
-            <el-table-column prop="Varietie_Name" label="品种全称" min-width="130" show-overflow-tooltip />
+            <el-table-column prop="Varietie_Name" label="品种全称" min-width="192" show-overflow-tooltip />
             <el-table-column prop="Approval_Number" label="批准文号" width="110" show-overflow-tooltip />
             <el-table-column v-if="flags.isCg" label="采购价" width="80" align="right">
               <template slot-scope="{ row }">{{ fmtPrice(row.Purchase_Price) }}</template>
@@ -177,10 +177,10 @@
             <el-table-column label="价格" width="80" align="right">
               <template slot-scope="{ row }">{{ fmtPrice(row.Supply_Price) }}</template>
             </el-table-column>
-            <el-table-column prop="Specification_Or_Type" label="规格" width="90" />
+            <el-table-column prop="Specification_Or_Type" label="规格" min-width="160" show-overflow-tooltip />
             <el-table-column prop="Unit" label="单位" width="50" align="center" />
-            <el-table-column prop="Manufacturing_Ent_Name" label="生产企业" min-width="110" show-overflow-tooltip />
-            <el-table-column prop="Supplier_Name" label="供应商" min-width="100" show-overflow-tooltip />
+            <el-table-column prop="Manufacturing_Ent_Name" label="生产企业" min-width="208" show-overflow-tooltip />
+            <el-table-column prop="Supplier_Name" label="供应商" min-width="208" show-overflow-tooltip />
             <el-table-column label="生产批号" width="100">
               <template slot-scope="{ row }">
                 <el-input v-model="row.Batch" size="mini" :disabled="isReceived" />
@@ -219,7 +219,7 @@
             <el-table-column label="添加日期" width="100">
               <template slot-scope="{ row }">{{ fmtDate10(row.Add_Time) }}</template>
             </el-table-column>
-            <el-table-column prop="Note_Description" label="备注" width="90" show-overflow-tooltip />
+            <el-table-column prop="Note_Description" label="备注" min-width="110" show-overflow-tooltip />
             <el-table-column prop="BILLFPNUM" label="发票" width="90" show-overflow-tooltip />
             <el-table-column v-if="flags.showStorageTwo" prop="STORAGE_TWO_NAME" label="仓库名称" width="90" />
             <el-table-column v-if="flags.showFundsSource" label="资金来源" width="100">

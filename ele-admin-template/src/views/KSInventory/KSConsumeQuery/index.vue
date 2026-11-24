@@ -121,7 +121,7 @@ export default {
       defStatVisible: false,
       defStatColumns: [
         { prop: 'DEF_NO_PKG_CODE', label: '定数包编码', minWidth: 150 },
-        { prop: 'VARIETIE_NAME', label: '品种名称', minWidth: 180, showOverflowTooltip: true },
+        { prop: 'VARIETIE_NAME', label: '品种名称', minWidth: 192, showOverflowTooltip: true },
         { prop: 'CONSUME_COUNT', label: '消耗数量', width: 100, align: 'right' },
         { prop: 'REFUND_COUNT', label: '退费数量', width: 100, align: 'right' }
       ]

@@ -163,14 +163,14 @@ export default {
           label: '品种编码',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 150
+          width: 132
         },
         {
           prop: 'VARIETIE_NAME',
           label: '品种名称',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 150
+          minWidth: 192
         },
         {
           prop: 'HIGH_CLASS_XH',

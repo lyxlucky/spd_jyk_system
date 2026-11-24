@@ -220,7 +220,7 @@
             label: '品种全称',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 180
+            minWidth: 192
           },
           {
             prop: 'Used_Name',
@@ -252,7 +252,7 @@
             label: '供应商',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 150
+            minWidth: 208
           },
           {
             prop: 'DeptQty',

@@ -162,7 +162,7 @@ export default {
 
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 110
+          width: 88
         }
       ],
       toolbar: false,

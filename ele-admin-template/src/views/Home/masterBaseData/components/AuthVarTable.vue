@@ -101,7 +101,7 @@ export default {
           label: '状态',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 110,
+          width: 76,
           formatter: (row, column, cellValue) => {
             if (cellValue == 'N') {
               return '已传入中间表';

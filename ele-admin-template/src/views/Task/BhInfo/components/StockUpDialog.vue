@@ -21,7 +21,7 @@
           @selection-change="(rows) => (checkedSuppliers = rows)"
         >
           <el-table-column type="selection" width="40" align="center" />
-          <el-table-column prop="Supplier_Name" label="供应商名称" min-width="120" show-overflow-tooltip />
+          <el-table-column prop="Supplier_Name" label="供应商名称" min-width="208" show-overflow-tooltip />
           <el-table-column prop="Supplier_Code" label="编码" width="60" />
           <el-table-column prop="Name" label="收货院区" width="80" show-overflow-tooltip />
         </el-table>
@@ -52,11 +52,11 @@
             </template>
           </el-table-column>
           <el-table-column prop="varietie_Code_New" label="品种编码" width="100" />
-          <el-table-column prop="Varietie_Name" label="品种名称" min-width="140" show-overflow-tooltip />
+          <el-table-column prop="Varietie_Name" label="品种名称" min-width="192" show-overflow-tooltip />
           <el-table-column prop="Specification_Or_Type" label="规格/型号" min-width="120" show-overflow-tooltip />
           <el-table-column prop="PAG_TYPE" label="包装规格" width="80" show-overflow-tooltip />
           <el-table-column prop="Unit" label="单位" width="50" align="center" />
-          <el-table-column prop="Manufacturing_Ent_Name" label="生产企业" width="120" show-overflow-tooltip />
+          <el-table-column prop="Manufacturing_Ent_Name" label="生产企业" min-width="208" show-overflow-tooltip />
           <el-table-column prop="Def_No_Pkg_Coefficient" label="系数" width="50" align="center" />
           <el-table-column label="备货数（散）" width="100" align="center">
             <template slot-scope="{ row }">

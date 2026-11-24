@@ -249,7 +249,7 @@ export default {
         { prop: 'VARIETIE_CODE', label: '品种ID', width: 120, showOverflowTooltip: true },
         { prop: 'MONTHLY_TIME', label: '月结月份', width: 130, showOverflowTooltip: true },
         { prop: 'VARIETIE_CODE_NEW', label: '品种编码', width: 110, showOverflowTooltip: true },
-        { prop: 'VARIETIE_NAME', label: '品种名称', minWidth: 140, showOverflowTooltip: true },
+        { prop: 'VARIETIE_NAME', label: '品种名称', minWidth: 192, showOverflowTooltip: true },
         { prop: 'SPECIFICATION_OR_TYPE', label: '规格类型', minWidth: 120, showOverflowTooltip: true },
         { prop: 'UNIT', label: '单位', width: 60, align: 'center' },
         { prop: 'APPROVAL_NUMBER', label: '批准编号', minWidth: 120, showOverflowTooltip: true },

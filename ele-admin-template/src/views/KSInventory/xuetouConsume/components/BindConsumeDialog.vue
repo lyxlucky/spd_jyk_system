@@ -36,7 +36,7 @@ export default {
         { prop: 'ID_CARD_NO', label: '身份证号', width: 160, align: 'center' },
         { prop: 'CHARGE_CODE', label: '计费编码', width: 120, align: 'center' },
         { prop: 'QTY', label: '数量', width: 80, align: 'center' },
-        { prop: 'ORDER_NO', label: '订单号', width: 140, align: 'center' },
+        { prop: 'ORDER_NO', label: '订单号', width: 132, showOverflowTooltip: true, align: 'center' },
         { prop: 'MATERIAL_NAME', label: '物料名称', width: 140 },
         { prop: 'HIS_MATERIAL_NAME', label: 'HIS物料名称', width: 140 }
       ]

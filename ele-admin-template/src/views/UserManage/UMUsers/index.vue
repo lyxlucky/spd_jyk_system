@@ -165,7 +165,7 @@ export default {
         { label: '权限组', prop: 'Group_Name', width: 120, showOverflowTooltip: true },
         { label: '所属科室', minWidth: 160, slot: 'deptNames', showOverflowTooltip: true },
         { label: '职位', prop: 'POSITION', width: 100, showOverflowTooltip: true },
-        { label: '备注', prop: 'MARK', width: 100, showOverflowTooltip: true },
+        { label: '备注', prop: 'MARK', minWidth: 110, showOverflowTooltip: true },
         { label: '最近登录时间', prop: 'UPDATE_TIME', width: 150 },
         { label: '最近登录IP', prop: 'CREATE_IP', width: 120 },
         { label: '操作', width: 520, fixed: 'right', slot: 'action' }

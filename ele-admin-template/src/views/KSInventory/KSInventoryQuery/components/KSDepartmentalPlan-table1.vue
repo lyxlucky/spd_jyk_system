@@ -194,7 +194,7 @@ export default {
           // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 180 ,
+          minWidth: 192 ,
           sortable: true
         },
         {
@@ -212,7 +212,7 @@ export default {
           // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 180
+          minWidth: 160
         },
         {
           prop: 'MANUFACTURING_ENT_NAME',
@@ -220,7 +220,7 @@ export default {
           // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 180
+          minWidth: 208
         },
         {
           prop: 'SUPPLIER_NAME',
@@ -228,7 +228,7 @@ export default {
           // // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 180
+          minWidth: 208
         },
         {
           prop: 'STORAGED_DAYS_SORT',
@@ -261,7 +261,7 @@ export default {
           // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 120,
+          width: 88,
           sortable: true
         },
         {
@@ -279,7 +279,7 @@ export default {
           // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 80
+          width: 76
         },
         {
           prop: 'PRICE',
@@ -336,7 +336,7 @@ export default {
           label: '库区',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 100
+          width: 76
         },
         // {
         //   prop: 'OPERATOR',

@@ -55,9 +55,9 @@
         >
           <el-table-column type="selection" width="45" :selectable="sourceSelectable" />
           <el-table-column prop="Dept_Two_Name" label="二级科室" width="100" show-overflow-tooltip />
-          <el-table-column prop="Varietie_Name" label="品种全称" min-width="140" show-overflow-tooltip />
+          <el-table-column prop="Varietie_Name" label="品种全称" min-width="192" show-overflow-tooltip />
           <el-table-column prop="Def_No_Pkg_Code" label="定数码" width="130" />
-          <el-table-column prop="Specification_Or_Type" label="规格" width="90" show-overflow-tooltip />
+          <el-table-column prop="Specification_Or_Type" label="规格" min-width="160" show-overflow-tooltip />
           <el-table-column label="库存状态" width="85">
             <template slot-scope="{ row }">{{ fmtStockState(row.Stock_State) }}</template>
           </el-table-column>

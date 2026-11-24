@@ -129,7 +129,7 @@ export default {
         {
           prop: 'SUPPLIER_NAME',
           label: '供应商名称',
-          minWidth: 200,
+          minWidth: 208,
           showOverflowTooltip: true,
           fixed: 'left'
         },
@@ -193,7 +193,7 @@ export default {
         { type: 'index', label: '序号', width: 55, align: 'center' },
         { slot: 'scoreType', label: '分值类型', minWidth: 180, showOverflowTooltip: true },
         { prop: 'SCORE', label: '分数', width: 80, align: 'center' },
-        { prop: 'REMARK', label: '说明', minWidth: 160, showOverflowTooltip: true },
+        { prop: 'REMARK', label: '说明', minWidth: 110, showOverflowTooltip: true },
         { prop: 'OPERATOR', label: '操作人', width: 100, showOverflowTooltip: true },
         { prop: 'CREATE_TIME', label: '创建时间', width: 160, showOverflowTooltip: true },
         { slot: 'recordAction', label: '操作', width: 90, align: 'center', fixed: 'right' }

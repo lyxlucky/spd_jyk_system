@@ -63,15 +63,15 @@
       </el-table-column>
       <el-table-column prop="Source_Name" label="库存位置" min-width="110" show-overflow-tooltip />
       <el-table-column prop="Varietie_Code_New" label="品种编码" min-width="120" show-overflow-tooltip />
-      <el-table-column prop="Varietie_Name" label="品种全称" min-width="160" show-overflow-tooltip />
-      <el-table-column prop="Specification_Or_Type" label="规格型号" min-width="120" show-overflow-tooltip />
-      <el-table-column prop="Goods_Qty" label="库存数量" width="90" align="center" />
+      <el-table-column prop="Varietie_Name" label="品种全称" min-width="192" show-overflow-tooltip />
+      <el-table-column prop="Specification_Or_Type" label="规格型号" min-width="160" show-overflow-tooltip />
+      <el-table-column prop="Goods_Qty" label="库存数量" width="88" align="center" show-overflow-tooltip />
       <el-table-column prop="Unit" label="单位" width="60" align="center" />
       <el-table-column prop="CONTRACT_NAME" label="合同" min-width="120" show-overflow-tooltip />
       <el-table-column label="合同终止日期" width="110" align="center">
         <template v-slot="{ row }">{{ fmtDate(row.DET_CONTRACT_END) }}</template>
       </el-table-column>
-      <el-table-column prop="Supplier_Name" label="供应商" min-width="120" show-overflow-tooltip />
+      <el-table-column prop="Supplier_Name" label="供应商" min-width="208" show-overflow-tooltip />
     </el-table>
     <div class="pager-wrap">
       <el-pagination

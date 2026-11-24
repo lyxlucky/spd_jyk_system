@@ -78,7 +78,7 @@
             {{ row.AUTO_SUBMIT === '1' ? '提交' : '不提交' }}/{{ row.AUTO_AUDIT === '1' ? '审核' : '不审核' }}
           </template>
         </el-table-column>
-        <el-table-column label="状态" width="80">
+        <el-table-column label="状态" width="76" show-overflow-tooltip>
           <template slot-scope="{ row }">
             <el-tag :type="row.IS_ENABLE === '1' ? 'success' : 'info'" size="mini">
               {{ row.IS_ENABLE === '1' ? '启用' : '停用' }}
@@ -314,19 +314,19 @@
     <el-dialog title="任务耗材预览" :visible.sync="detailVisible" width="900px" append-to-body>
       <el-table :data="detailRows" border stripe height="480">
         <el-table-column prop="VARIETIE_CODE_NEW" label="品种编码" width="130" />
-        <el-table-column prop="VARIETIE_NAME" label="品种名称" min-width="180" />
-        <el-table-column prop="SPECIFICATION_OR_TYPE" label="规格型号" min-width="160" />
+        <el-table-column prop="VARIETIE_NAME" label="品种名称" min-width="192" show-overflow-tooltip />
+        <el-table-column prop="SPECIFICATION_OR_TYPE" label="规格型号" min-width="160" show-overflow-tooltip />
         <el-table-column prop="UNIT" label="单位" width="70" />
-        <el-table-column prop="MANUFACTURING_ENT_NAME" label="生产企业" min-width="180" />
-        <el-table-column prop="APPLY_QTY" label="申领数量" width="100" />
+        <el-table-column prop="MANUFACTURING_ENT_NAME" label="生产企业" min-width="208" show-overflow-tooltip />
+        <el-table-column prop="APPLY_QTY" label="申领数量" width="88" show-overflow-tooltip />
       </el-table>
     </el-dialog>
 
     <el-dialog :title="logTaskName + ' 执行日志'" :visible.sync="logVisible" width="980px" append-to-body>
       <el-table :data="logRows" border stripe height="360">
         <el-table-column prop="RUN_TIME" label="执行时间" width="150" />
-        <el-table-column prop="PLAN_NUMBER" label="申领单号" width="160" />
-        <el-table-column label="状态" width="80">
+        <el-table-column prop="PLAN_NUMBER" label="申领单号" width="132" show-overflow-tooltip />
+        <el-table-column label="状态" width="76" show-overflow-tooltip>
           <template slot-scope="{ row }">
             <el-tag :type="row.RUN_STATUS === '1' ? 'success' : 'danger'" size="mini">
               {{ row.RUN_STATUS === '1' ? '成功' : '失败' }}

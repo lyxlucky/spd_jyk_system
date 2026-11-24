@@ -169,7 +169,7 @@
             // sortable: 'custom',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 150
+            minWidth: 192
           },
           {
             prop: 'SPECIFICATION_OR_TYPE',
@@ -182,7 +182,7 @@
           {
             prop: 'MANUFACTURING_ENT_NAME',
             label: '生产厂家',
-            width: 150,
+            minWidth: 208,
             align: 'center',
             showOverflowTooltip: true
           },
@@ -238,7 +238,7 @@
             prop: 'UNIT',
             label: '单位',
             align: 'center',
-            width: 80,
+            width: 76,
             showOverflowTooltip: true,
             show: false
           },

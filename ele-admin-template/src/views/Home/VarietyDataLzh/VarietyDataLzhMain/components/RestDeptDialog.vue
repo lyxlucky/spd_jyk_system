@@ -36,7 +36,7 @@
           @selection-change="(rows) => (leftSel = rows)"
         >
           <el-table-column type="selection" width="45" align="center" />
-          <el-table-column prop="DEPT_TWO_NAME" label="科室名称" min-width="140" show-overflow-tooltip />
+          <el-table-column prop="DEPT_TWO_NAME" label="科室名称" min-width="192" show-overflow-tooltip />
         </el-table>
       </el-col>
       <el-col :span="15">
@@ -65,7 +65,7 @@
           @selection-change="(rows) => (rightSel = rows)"
         >
           <el-table-column type="selection" width="45" align="center" />
-          <el-table-column prop="DEPT_TWO_NAME" label="科室名称" min-width="160" show-overflow-tooltip />
+          <el-table-column prop="DEPT_TWO_NAME" label="科室名称" min-width="192" show-overflow-tooltip />
           <el-table-column prop="DEPT_TWO_CODE" label="科室编码" min-width="120" show-overflow-tooltip />
         </el-table>
       </el-col>

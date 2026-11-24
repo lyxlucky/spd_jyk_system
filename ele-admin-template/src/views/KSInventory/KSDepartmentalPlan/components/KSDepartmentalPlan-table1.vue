@@ -3,7 +3,7 @@
     <div class="spd-panel spd-panel--search">
       <div class="spd-panel__head spd-panel__head--split">
         <span>查询条件</span>
-        <span class="spd-panel__head-meta">
+        <span class="spd-panel__head-meta plan-month-totals">
           当月-申报总金额:{{ applyPlanSbz }}
           消耗总金额:{{ applyPlanXhz }}
           消耗/计划:{{ applyPlanBl }}
@@ -151,7 +151,7 @@
             icon="el-icon-printer"
             @click="printPlan(row)"
           >
-            打印申领单
+            打印
           </el-link>
           <el-link
             v-if="showStzxPrint"
@@ -224,7 +224,7 @@
           {
             columnKey: 'action',
             label: '操作',
-            width: 240,
+            width: 188,
             align: 'center',
             resizable: false,
             slot: 'action',
@@ -258,7 +258,7 @@
 
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 110,
+            width: 80,
             slot: 'State'
             // formatter: (row, column, cellValue) => {
             //   if (cellValue === '0') {
@@ -284,7 +284,7 @@
 
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 110
+            minWidth: 190
           },
           {
             prop: 'REGION_NAME',
@@ -293,6 +293,20 @@
             align: 'center',
             showOverflowTooltip: true,
             minWidth: 75
+          },
+          {
+            prop: 'SUM_Apply_Qty',
+            label: '申请总数',
+            align: 'center',
+            showOverflowTooltip: true,
+            width: 84
+          },
+          {
+            prop: 'QUANITY',
+            label: '已收货总数',
+            align: 'center',
+            showOverflowTooltip: true,
+            width: 96
           },
           {
             prop: 'Operater',
@@ -306,7 +320,7 @@
             label: '申领时间',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 180,
+            width: 160,
             formatter: (row, column, cellValue) => {
               return this.$moment(cellValue).format('YYYY-MM-DD HH:mm:ss');
             }
@@ -323,7 +337,7 @@
             label: '审批时间',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 180,
+            width: 160,
             formatter: (row, column, cellValue) => {
               return this.$moment(cellValue).format('YYYY-MM-DD HH:mm:ss');
             }
@@ -334,25 +348,11 @@
             label: '备注',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 110
-          },
-          {
-            prop: 'SUM_Apply_Qty',
-            label: '申请总数',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 110
-          },
-          {
-            prop: 'QUANITY',
-            label: '已收货总数',
-            align: 'center',
-            showOverflowTooltip: true,
-            minWidth: 110
+            width: 84
           }
         ],
         // 固定高度，不随窗口缩小重算（对齐「缩窗靠滚动、布局不变」）
-        tableHeight: 280,
+        tableHeight: 190,
         pageSize: 9999999,
         pagerCount: 2,
         pageSizes: [2, 10, 20, 50, 100, 9999999],
@@ -753,6 +753,10 @@
   max-width: 100% !important;
 }
 
+.ks-dept-plan-main > .spd-table-panel {
+  min-height: 0;
+}
+
 .ks-dept-plan-main >>> .spd-table-panel__wrap {
   width: 100%;
   max-width: 100%;
@@ -776,6 +780,10 @@
   padding-top: 0;
   padding-bottom: 0;
   white-space: nowrap;
+}
+
+.plan-month-totals {
+  font-weight: 700;
 }
 
 .plan-row-actions {

@@ -86,7 +86,7 @@ export default {
       inputTimer: null,
       columns: [
         { prop: 'Varietie_Code', label: '品种材料编码', minWidth: 120 },
-        { prop: 'Varietie_Name', label: '品种全称', sortable: true, minWidth: 140 },
+        { prop: 'Varietie_Name', label: '品种全称', sortable: true, minWidth: 192, showOverflowTooltip: true },
         { prop: 'Specification_Or_Type', label: '型号/规格', minWidth: 120 },
         { prop: 'Unit', label: '单位', align: 'center', width: 70 },
         { prop: 'Manufacturing_Ent_Name', label: '生产企业名称', minWidth: 140 },

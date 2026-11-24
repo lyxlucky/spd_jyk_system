@@ -52,7 +52,7 @@
           </template>
         </el-table-column>
         <el-table-column prop="Varietie_Code_New" label="品种编码" min-width="120" />
-        <el-table-column prop="Varietie_Name" label="品种名称" min-width="180" show-overflow-tooltip />
+        <el-table-column prop="Varietie_Name" label="品种名称" min-width="192" show-overflow-tooltip />
         <el-table-column prop="Specification_Or_Type" label="规格型号" min-width="160" show-overflow-tooltip />
         <el-table-column label="合同编号" min-width="140" show-overflow-tooltip>
           <template slot-scope="{ row }">
@@ -60,7 +60,7 @@
           </template>
         </el-table-column>
         <el-table-column prop="Contract_Name" label="合同名称" min-width="160" show-overflow-tooltip />
-        <el-table-column prop="Supplier_Name" label="供应商" min-width="180" show-overflow-tooltip />
+        <el-table-column prop="Supplier_Name" label="供应商" min-width="208" show-overflow-tooltip />
         <el-table-column prop="Contract_End_Time" label="主合同到期日期" width="140" />
       </el-table>
       <el-pagination
@@ -246,6 +246,13 @@ export default {
   }
 };
 </script>
+
+<style>
+.ks-dept-plan-page .el-button--text {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+</style>
 
 <style lang="scss" scoped>
 .ks-dept-plan-page {

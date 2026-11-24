@@ -760,7 +760,7 @@
           { prop: 'EVAL_YEAR', label: '评分年份', minWidth: 120, align: 'center' },
           { prop: 'EVAL_TIME', label: '评分时间', minWidth: 160, align: 'center', formatter: (row) => this.formatDateTime(row.EVAL_TIME) },
           { prop: 'TOTAL_SCORE', label: '得分', minWidth: 100, align: 'center', formatter: (row) => this.calculateTotalScore(row) },
-          { prop: 'REMARK', label: '备注', minWidth: 200, align: 'center', showOverflowTooltip: true },
+          { prop: 'REMARK', label: '备注', minWidth: 110, align: 'center', showOverflowTooltip: true },
           {
             columnKey: 'action',
             label: '操作',

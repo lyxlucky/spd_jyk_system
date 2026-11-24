@@ -57,7 +57,7 @@ export default {
         {
           prop: 'DEPT_TWO_NAME',
           label: '科室名称',
-          minWidth: 120,
+          minWidth: 192,
           align: 'center',
           showOverflowTooltip: true
         },
@@ -111,7 +111,7 @@ export default {
           label: '备注',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 70
+          minWidth: 110
         },
         {
           prop: 'ID',

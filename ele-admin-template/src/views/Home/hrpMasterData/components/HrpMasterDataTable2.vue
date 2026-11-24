@@ -59,7 +59,7 @@
           {
             prop: 'ITEM_SPEC',
             label: '型号', // 修改为"型号"
-            width: 150,
+            minWidth: 160,
             align: 'center',
             showOverflowTooltip: true
           },
@@ -72,7 +72,7 @@
           {
             prop: 'UOM',
             label: '单位', // 保持不变
-            width: 80,
+            width: 76, showOverflowTooltip: true,
             align: 'center'
           },
           {
@@ -99,7 +99,7 @@
           {
             prop: 'PROCESS_STATUS',
             label: '状态', // 更新
-            width: 100,
+            width: 76, showOverflowTooltip: true,
             align: 'center'
           },
           {
@@ -147,7 +147,7 @@
           {
             prop: 'ORGANIZATION_NAME',
             label: '科室名称', // 更新
-            width: 150,
+            minWidth: 192,
             align: 'center',
             showOverflowTooltip: true
           },
@@ -279,7 +279,7 @@
           {
             prop: 'SUPPLY_NAME',
             label: '供应商名称', // 保持不变
-            width: 150,
+            minWidth: 208,
             align: 'center',
             showOverflowTooltip: true
           },

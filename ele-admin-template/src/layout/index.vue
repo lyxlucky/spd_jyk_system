@@ -744,7 +744,7 @@
     border: none;
     border-right: 1px solid #ebeef5;
     background: #fff;
-    color: #606266;
+    color: var(--color-text-primary);
     font-size: 13px;
     font-weight: 600;
     line-height: 30px;

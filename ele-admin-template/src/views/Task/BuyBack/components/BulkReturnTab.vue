@@ -327,11 +327,11 @@ export default {
         { type: 'selection', width: 45, align: 'center', fixed: 'left' },
         { prop: 'STORAGE_NAME', label: '所属库房', width: 100 },
         { prop: 'VARIETIE_CODE', label: '品种编码', width: 120, sortable: 'custom' },
-        { prop: 'VARIETIE_NAME', label: '品种全称', minWidth: 160 },
+        { prop: 'VARIETIE_NAME', label: '品种全称', minWidth: 192, showOverflowTooltip: true },
         { prop: 'SPECIFICATION_OR_TYPE', label: '型号/规格', minWidth: 120 },
         { prop: 'UNIT', label: '单位', width: 60, align: 'center' },
         { prop: 'MANUFACTURING_ENT_NAME', label: '生产企业名称', minWidth: 130 },
-        { prop: 'SUPPLIER_NAME', label: '供应商', minWidth: 120 },
+        { prop: 'SUPPLIER_NAME', label: '供应商', minWidth: 208, showOverflowTooltip: true },
         { prop: 'SUPPLY_PRICE', label: '结算价', width: 80, align: 'right' },
         { prop: 'BATCH', label: '生产批号', width: 90, sortable: 'custom' },
         {
@@ -364,7 +364,7 @@ export default {
       orderColumns: [
         { prop: 'RETURN_NUMBER', label: '散货退购单号', minWidth: 150, sortable: 'custom' },
         { prop: 'STORAGE_NAME', label: '院区库房', width: 100 },
-        { prop: 'SUPPLIER_NAME', label: '供应商', minWidth: 100 },
+        { prop: 'SUPPLIER_NAME', label: '供应商', minWidth: 208, showOverflowTooltip: true },
         { prop: 'OPERATOR', label: '退购人', width: 80 },
         {
           prop: 'REGION',
@@ -391,17 +391,17 @@ export default {
           align: 'center',
           slot: 'remarkBtn'
         },
-        { prop: 'BZ', label: '备注', minWidth: 100 },
+        { prop: 'BZ', label: '备注', minWidth: 110, showOverflowTooltip: true },
         { prop: 'RETURN_TIME', label: '退购时间', width: 140 }
       ],
       detailColumns: [
         { prop: 'STORAGE_NAME', label: '所属库房', width: 100 },
         { prop: 'VARIETIE_CODE', label: '品种编码', width: 90 },
-        { prop: 'VARIETIE_NAME', label: '品种名称', minWidth: 140 },
+        { prop: 'VARIETIE_NAME', label: '品种名称', minWidth: 192, showOverflowTooltip: true },
         { prop: 'SPECIFICATION_OR_TYPE', label: '型号/规格', minWidth: 120 },
         { prop: 'UNIT', label: '单位', width: 70, align: 'center' },
         { prop: 'MANUFACTURING_ENT_NAME', label: '生产企业名称', width: 150 },
-        { prop: 'SUPPLIER_NAME', label: '供应商名称', width: 150 },
+        { prop: 'SUPPLIER_NAME', label: '供应商名称', minWidth: 208, showOverflowTooltip: true },
         { prop: 'SUPPLY_PRICE', label: '结算价', width: 70, align: 'right' },
         { prop: 'BATCH', label: '生产批号', width: 100 },
         { prop: 'RETURN_QTY', label: '退购数量', width: 100, align: 'center' },

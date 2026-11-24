@@ -130,14 +130,14 @@ export default {
           label: '科室名称',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 100
+          minWidth: 192
         },
         {
           prop: 'CREATE_TIME',
           label: '创建时间',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 160,
+          width: 160,
         },
         {
           prop: 'CREATE_MAN',
@@ -151,7 +151,7 @@ export default {
           label: '备注',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 100
+          minWidth: 110
         }
       ],
       tableHeight: 'calc((100vh - 420px) / 2)',

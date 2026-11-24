@@ -73,13 +73,13 @@
       <el-table-column
         prop="VARIETIE_NAME"
         label="品种名称"
-        min-width="180"
+        min-width="192"
         show-overflow-tooltip
       />
       <el-table-column
         prop="SPECIFICATION_OR_TYPE"
         label="规格型号"
-        width="150"
+        min-width="160"
         show-overflow-tooltip
       />
       <el-table-column
@@ -173,13 +173,13 @@
       <el-table-column
         prop="VARIETIE_NAME"
         label="品种名称"
-        min-width="180"
+        min-width="192"
         show-overflow-tooltip
       />
       <el-table-column
         prop="SPECIFICATION_OR_TYPE"
         label="规格型号"
-        width="150"
+        min-width="160"
         show-overflow-tooltip
       />
       <el-table-column prop="BUSINESS_TYPE_NAME" label="业务类别" width="100" />

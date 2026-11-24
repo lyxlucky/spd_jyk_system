@@ -211,7 +211,7 @@
 
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 180
+            minWidth: 208
           },
           {
             prop: 'SUPPLIER_CODE',
@@ -259,7 +259,7 @@
             label: '品种编码',
             align: 'center',
 
-            width: 150,
+            width: 132,
             showOverflowTooltip: true
           },
           {
@@ -267,7 +267,7 @@
             label: '品种名称',
             align: 'center',
 
-            width: 150,
+            minWidth: 192,
             showOverflowTooltip: true
           },
           {
@@ -275,7 +275,7 @@
             label: '规格型号',
             align: 'center',
 
-            width: 180,
+            minWidth: 160,
             showOverflowTooltip: true
           },
           {
@@ -290,7 +290,7 @@
             prop: 'UNIT',
             label: '单位',
             align: 'center',
-            width: 80,
+            width: 76,
             showOverflowTooltip: true
           },
           {
@@ -312,7 +312,7 @@
             label: '生产企业',
             align: 'center',
 
-            width: 180,
+            minWidth: 208,
             showOverflowTooltip: true
           },
           {
@@ -380,7 +380,7 @@
             label: '备注',
             align: 'center',
 
-            width: 80,
+            minWidth: 110,
             showOverflowTooltip: true
           },
           {
@@ -451,7 +451,7 @@
             label: '审批状态',
             align: 'center',
 
-            width: 120,
+            width: 88,
             showOverflowTooltip: true,
             formatter: (row, column, cellValue) => {
               if (cellValue == 0) {
@@ -468,7 +468,7 @@
             label: '审批时间',
             align: 'center',
 
-            width: 180,
+            width: 160,
             showOverflowTooltip: true
           },
 

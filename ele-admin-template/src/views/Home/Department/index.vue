@@ -31,7 +31,7 @@
         :height="oneTableHeight"
         @current-change="onOneCurrentChange"
       >
-              <el-table-column prop="Dept_One_Name" label="科室名称" min-width="100" show-overflow-tooltip />
+              <el-table-column prop="Dept_One_Name" label="科室名称" min-width="192" show-overflow-tooltip />
               <el-table-column label="启用状态" width="100">
                 <template slot-scope="{ row }">{{ fmtEnable(row.Enable) }}</template>
               </el-table-column>
@@ -91,7 +91,7 @@
         :height="twoTableHeight"
         @current-change="onTwoCurrentChange"
       >
-                <el-table-column prop="Dept_Two_Name" label="科室名称" min-width="100" show-overflow-tooltip />
+                <el-table-column prop="Dept_Two_Name" label="科室名称" min-width="192" show-overflow-tooltip />
                 <el-table-column label="科室类型" width="100">
                   <template slot-scope="{ row }">{{ deptTypeLabel(row.DEPT_TYPE) }}</template>
                 </el-table-column>
@@ -121,7 +121,7 @@
         :height="twoTableHeight"
         @current-change="(r) => (currentHis = r)"
       >
-        <el-table-column prop="Charging_Dept_Name" label="科室名称" min-width="140" show-overflow-tooltip />
+        <el-table-column prop="Charging_Dept_Name" label="科室名称" min-width="192" show-overflow-tooltip />
       </el-table>
     </div>
 

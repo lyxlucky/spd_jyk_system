@@ -100,14 +100,14 @@ export default {
           prop: 'Varietie_Name',
           label: '品种全称',
           align: 'left',
-          minWidth: 200,
+          minWidth: 192,
           showOverflowTooltip: true
         },
         {
           prop: 'Specification_Or_Type',
           label: '型号规格',
           align: 'left',
-          minWidth: 190,
+          minWidth: 160,
           showOverflowTooltip: true
         },
         { prop: 'IS_JC',
@@ -141,7 +141,7 @@ export default {
           prop: 'Supplier_Name',
           label: '供应商名称',
           align: 'left',
-          minWidth: 165,
+          minWidth: 208,
           showOverflowTooltip: true
         },
         {

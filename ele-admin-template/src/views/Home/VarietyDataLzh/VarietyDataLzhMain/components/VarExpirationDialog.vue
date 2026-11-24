@@ -29,7 +29,7 @@
     <el-table v-loading="loading" :data="list" size="mini" border height="520">
       <el-table-column type="index" label="序号" width="55" align="center" />
       <el-table-column prop="VARIETIE_CODE_NEW" label="品种(材料)编码" min-width="120" show-overflow-tooltip />
-      <el-table-column prop="VARIETIE_NAME" label="品种全称" min-width="160" show-overflow-tooltip />
+      <el-table-column prop="VARIETIE_NAME" label="品种全称" min-width="192" show-overflow-tooltip />
       <el-table-column prop="SPECIFICATION_OR_TYPE" label="型号/规格" min-width="120" show-overflow-tooltip />
       <el-table-column prop="UNIT" label="单位" width="60" align="center" />
       <el-table-column prop="MANUFACTURING_ENT_NAME" label="生产企业名称" min-width="140" show-overflow-tooltip />

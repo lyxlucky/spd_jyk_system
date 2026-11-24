@@ -89,7 +89,7 @@ export default {
           label: '品种名称',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 200
+          minWidth: 192
         },
         {
           prop: 'Specification_Or_Type',
@@ -103,7 +103,7 @@ export default {
           label: '单位',
           align: 'center',
           showOverflowTooltip: true,
-          width: 80
+          width: 76
         },
         {
           prop: 'Manufacturing_Ent_Name',

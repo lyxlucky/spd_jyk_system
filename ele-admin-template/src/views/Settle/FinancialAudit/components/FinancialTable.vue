@@ -116,7 +116,7 @@
             label: '供应商名称',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 140
+            minWidth: 208
           },
           {
             prop: 'CLASSIFIC_PROPERTIES',
@@ -201,7 +201,7 @@
             label: '品种全称',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 100
+            minWidth: 192
           },
           {
             prop: 'SPECIFICATION_OR_TYPE',
@@ -229,14 +229,14 @@
             label: '数量',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 100
+            width: 88
           },
           {
             prop: 'Money',
             label: '金额',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 100
+            width: 88
           },
           {
             prop: 'MANUFACTURING_ENT_NAME',
@@ -292,7 +292,7 @@
             label: '审批状态',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 120,
+            width: 88,
             formatter: (row, column, cellValue) => {
               if (cellValue == 1 || cellValue == '1') {
                 return '已审批';

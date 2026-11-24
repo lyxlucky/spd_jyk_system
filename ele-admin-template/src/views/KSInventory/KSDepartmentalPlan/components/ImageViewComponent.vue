@@ -141,14 +141,14 @@
             prop: 'VARIETIE_NAME',
             label: '品种名称',
             align: 'center',
-            width: 330,
+            minWidth: 192,
             showOverflowTooltip: true
           },
           {
             prop: 'SPECIFICATION_OR_TYPE',
             label: '规格型号',
             align: 'center',
-            width: 150,
+            minWidth: 160,
             showOverflowTooltip: true
           },
           {
@@ -162,14 +162,14 @@
             prop: 'MANUFACTURING_ENT_NAME',
             label: '生产企业',
             align: 'center',
-            width: 200,
+            minWidth: 208,
             showOverflowTooltip: true
           },
           {
             prop: 'SUPPLIER_NAME',
             label: '供应商名称',
             align: 'center',
-            width: 200,
+            minWidth: 208,
             showOverflowTooltip: true
           },
           {
@@ -182,7 +182,7 @@
             prop: 'REMARK',
             label: '备注/说明',
             align: 'center',
-            width: 150,
+            minWidth: 110,
             showOverflowTooltip: true
           },
           {

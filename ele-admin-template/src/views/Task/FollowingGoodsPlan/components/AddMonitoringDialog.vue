@@ -102,10 +102,10 @@ export default {
       topColumns: [
         { type: 'selection', width: 45, fixed: 'left' },
         { label: '品种编码', prop: 'Varietie_Code_New', width: 100, align: 'center' },
-        { label: '品种全称', prop: 'Varietie_Name', minWidth: 240 },
+        { label: '品种全称', prop: 'Varietie_Name', minWidth: 192, showOverflowTooltip: true },
         { label: '型号/规格', prop: 'Specification_Or_Type', minWidth: 180 },
         { label: '单位', prop: 'Unit', width: 60, align: 'center' },
-        { label: '生产企业', prop: 'Manufacturing_Ent_Name', width: 180 },
+        { label: '生产企业', prop: 'Manufacturing_Ent_Name', minWidth: 208, showOverflowTooltip: true },
         { label: '系数', prop: 'Def_No_Pkg_Coefficient', width: 60, align: 'center' },
         {
           label: '中标',
@@ -131,12 +131,12 @@ export default {
             row.PLAN_TIME ? String(row.PLAN_TIME).substr(0, 10) : ''
         },
         { label: '品种编码', prop: 'Varietie_Code_New', width: 90, align: 'center' },
-        { label: '品种名称', prop: 'Varietie_Name', minWidth: 140 },
+        { label: '品种名称', prop: 'Varietie_Name', minWidth: 192, showOverflowTooltip: true },
         { label: '备货计划单号', prop: 'Stock_Up_Plan_No', width: 110, align: 'center' },
-        { label: '供应商', prop: 'supplier_name', minWidth: 120 },
+        { label: '供应商', prop: 'supplier_name', minWidth: 208, showOverflowTooltip: true },
         { label: '型号/规格', prop: 'Specification_Or_Type', width: 140 },
         { label: '单位', prop: 'Unit', width: 50, align: 'center' },
-        { label: '生产企业', prop: 'Manufacturing_Ent_Name', minWidth: 120 },
+        { label: '生产企业', prop: 'Manufacturing_Ent_Name', minWidth: 208, showOverflowTooltip: true },
         { label: '系数', prop: 'Coefficient', width: 50, align: 'center' },
         { label: '备货计划(包)', prop: 'Stock_Up_Plan_Def_Quantity', width: 90, align: 'center' },
         { label: '折算散货', prop: 'Stock_Up_Plan_Goods_Quantity', width: 80, align: 'center' },

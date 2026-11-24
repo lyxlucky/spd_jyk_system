@@ -199,7 +199,7 @@ export default {
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 150
+          minWidth: 192
         },
         {
           prop: 'From_Supplier_Name',
@@ -207,7 +207,7 @@ export default {
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 150
+          minWidth: 208
         },
         {
           prop: 'RECEIVING_TIME',
@@ -215,7 +215,7 @@ export default {
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 180
+          width: 160
         },
         {
           prop: 'VARIETIE_CODE_NEW',
@@ -250,7 +250,7 @@ export default {
         {
           prop: 'VARIETIE_NAME',
           label: '品种全称',
-          width: 220,
+          minWidth: 192,
           align: 'center',
           showOverflowTooltip: true
         },
@@ -264,7 +264,7 @@ export default {
         {
           prop: 'UNIT',
           label: '单位',
-          width: 220,
+          width: 76,
           align: 'center',
           showOverflowTooltip: true
         },

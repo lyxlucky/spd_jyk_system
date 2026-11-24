@@ -62,7 +62,7 @@ export default {
       columns: [
         { columnKey: 'selection', type: 'selection', width: 45, align: 'center' },
         { prop: 'PlanNum', label: '申领单号', minWidth: 120 },
-        { prop: 'DEPT_TWO_NAME', label: '科室名称', minWidth: 120 },
+        { prop: 'DEPT_TWO_NAME', label: '科室名称', minWidth: 192, showOverflowTooltip: true },
         {
           prop: 'PlanTime',
           label: '申领时间',
@@ -76,7 +76,7 @@ export default {
           width: 90,
           slot: 'planState'
         },
-        { prop: 'BZ', label: '备注', minWidth: 200, showOverflowTooltip: true }
+        { prop: 'BZ', label: '备注', minWidth: 110, showOverflowTooltip: true }
       ]
     };
   },

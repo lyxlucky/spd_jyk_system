@@ -67,7 +67,7 @@
             highlight-current-row
             @current-change="onDeptSelect"
           >
-            <el-table-column prop="Dept_Two_Name" label="科室名称" min-width="120" show-overflow-tooltip />
+            <el-table-column prop="Dept_Two_Name" label="科室名称" min-width="192" show-overflow-tooltip />
           </el-table>
         </el-card>
       </div>
@@ -100,7 +100,7 @@
           >
             <el-table-column prop="DateShow" label="日期" width="100" show-overflow-tooltip />
             <el-table-column prop="Varietie_code" label="品种编码" width="95" show-overflow-tooltip />
-            <el-table-column prop="Varietie_name" label="品种全称" min-width="140" show-overflow-tooltip />
+            <el-table-column prop="Varietie_name" label="品种全称" min-width="192" show-overflow-tooltip />
             <el-table-column
               prop="Specification_or_Type"
               label="型号/规格"

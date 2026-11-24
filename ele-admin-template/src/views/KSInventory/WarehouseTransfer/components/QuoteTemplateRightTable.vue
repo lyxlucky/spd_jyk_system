@@ -158,7 +158,7 @@
 
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 180
+            minWidth: 192
           },
           {
             prop: 'GG',
@@ -174,7 +174,7 @@
 
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 80
+            width: 76
           },
           {
             prop: 'Price',
@@ -264,7 +264,7 @@
 
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 150
+            minWidth: 208
           }
         ],
         toolbar: false,

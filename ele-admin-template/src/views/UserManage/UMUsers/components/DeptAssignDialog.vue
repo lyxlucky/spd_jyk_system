@@ -17,7 +17,7 @@
           @selection-change="onAllSelectionChange"
         >
           <el-table-column type="selection" width="45" align="center" class-name="um-checkbox-col" :selectable="isAllRowSelectable" />
-          <el-table-column prop="Dept_Two_Name" label="科室名称" min-width="140" />
+          <el-table-column prop="Dept_Two_Name" label="科室名称" min-width="192" show-overflow-tooltip />
           <el-table-column label="启用状态" width="90" align="center">
             <template slot-scope="{ row }">{{ formatDeptEnable(row.Enable) }}</template>
           </el-table-column>
@@ -44,7 +44,7 @@
               <el-input-number v-model="row.Priority" :min="1" :controls="false" size="mini" style="width: 70px" />
             </template>
           </el-table-column>
-          <el-table-column prop="Dept_Two_Name" label="科室名称" min-width="140" />
+          <el-table-column prop="Dept_Two_Name" label="科室名称" min-width="192" show-overflow-tooltip />
           <el-table-column label="启用状态" width="90" align="center">
             <template slot-scope="{ row }">{{ formatDeptEnable(row.Enable) }}</template>
           </el-table-column>

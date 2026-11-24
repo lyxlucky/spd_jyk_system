@@ -184,21 +184,21 @@ export default {
         {
           label: '品种名称',
           prop: 'VARIETIE_NAME',
-          minWidth: 150,
+          minWidth: 192,
           align: 'center',
           showOverflowTooltip: true
         },
         {
           label: '规格型号',
           prop: 'SPECIFICATION_OR_TYPE',
-          width: 120,
+          minWidth: 160,
           align: 'center',
           showOverflowTooltip: true
         },
         {
           label: '供应商',
           prop: 'SUPPLIER_NAME',
-          minWidth: 150,
+          minWidth: 208,
           align: 'center',
           showOverflowTooltip: true
         },
@@ -234,7 +234,7 @@ export default {
         {
           label: '数量',
           prop: 'QTY',
-          width: 100,
+          width: 88, showOverflowTooltip: true,
           align: 'center',
           formatter: (row) => {
             return row.QTY ? Number(row.QTY) : '0';

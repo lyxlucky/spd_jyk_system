@@ -137,7 +137,7 @@
     <el-dialog title="定数包库存" :visible.sync="defStockVisible" width="560px" append-to-body>
       <el-table :data="defStockList" size="mini" border>
         <el-table-column prop="Coefficient" label="系数" width="80" align="center" />
-        <el-table-column prop="StockQty" label="库存数量" width="100" align="center" />
+        <el-table-column prop="StockQty" label="库存数量" width="88" align="center" show-overflow-tooltip />
         <el-table-column prop="LimitQty" label="上限数量" width="100" align="center" />
         <el-table-column label="状态" align="center">
           <template slot-scope="{ row }">
@@ -199,14 +199,14 @@ export default {
         { type: 'selection', width: 45, align: 'center' },
         { prop: 'Name', label: '仓库名称', width: 100 },
         { prop: 'Varietie_Code', label: '品种(材料)编码', width: 160, sortable: true },
-        { prop: 'Varietie_Name', label: '品种全称', minWidth: 100 },
+        { prop: 'Varietie_Name', label: '品种全称', minWidth: 192, showOverflowTooltip: true },
         { prop: 'Specification_Or_Type', label: '型号/规格', minWidth: 120 },
         { prop: 'Unit', label: '单位', width: 60, align: 'center' },
         { prop: 'Supply_Price', label: '价格', width: 70, align: 'center' },
         { prop: 'Manufacturing_Ent_Name', label: '生产企业名称', minWidth: 140 },
         { prop: 'Batch', label: '生产批号', width: 120, sortable: true },
         { columnKey: 'validDate', label: '失效日期', width: 100, slot: 'validDate' },
-        { prop: 'Supplier_Name', label: '供应商', minWidth: 100 },
+        { prop: 'Supplier_Name', label: '供应商', minWidth: 208, showOverflowTooltip: true },
         { columnKey: 'coefficient', label: '系数', width: 90, slot: 'coefficient' },
         { prop: 'Up_Quantity', label: '可用散货数量', width: 140, align: 'center' },
         { columnKey: 'defStock', label: '定数包库存', width: 140, slot: 'defStock' },
@@ -218,14 +218,14 @@ export default {
         { prop: 'Name', label: '仓库名称', width: 120 },
         { prop: 'Bag_Maker', label: '制包人', width: 100 },
         { prop: 'Varietie_Code', label: '品种(材料)编码', width: 140 },
-        { prop: 'Varietie_Name', label: '品种全称', minWidth: 100 },
+        { prop: 'Varietie_Name', label: '品种全称', minWidth: 192, showOverflowTooltip: true },
         { prop: 'Specification_Or_Type', label: '型号/规格', minWidth: 120 },
-        { prop: 'Unit', label: '单位', width: 80, align: 'center' },
+        { prop: 'Unit', label: '单位', width: 76, showOverflowTooltip: true, align: 'center' },
         { prop: 'Manufacturing_Ent_Name', label: '生产企业名称', minWidth: 140 },
         { prop: 'Batch', label: '生产批号', width: 120 },
         { columnKey: 'prodDate', label: '生产日期', width: 120, slot: 'prodDate' },
         { columnKey: 'validDateLocked', label: '失效日期', width: 100, slot: 'validDateLocked' },
-        { prop: 'Supplier_Name', label: '供应商', minWidth: 100 },
+        { prop: 'Supplier_Name', label: '供应商', minWidth: 208, showOverflowTooltip: true },
         { prop: 'Coefficient', label: '系数', width: 80, align: 'center' },
         { prop: 'Bag_Making_Number', label: '制包单号', width: 120 },
         { prop: 'Pack_Plan_Quantity', label: '制包数量', width: 120, align: 'center' },

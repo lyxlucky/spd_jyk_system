@@ -26,7 +26,7 @@
           width="60"
           align="center"
         ></el-table-column>
-        <el-table-column label="状态" width="110" align="center">
+        <el-table-column label="状态" width="76" align="center" show-overflow-tooltip>
           <template slot-scope="scope">
             <el-tag
               size="mini"
@@ -39,25 +39,25 @@
         <el-table-column
           prop="VarName"
           label="品种名称"
-          min-width="260"
+          min-width="192"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
           prop="VarID"
           label="品种编码"
-          min-width="140"
+          width="132"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
           prop="GG"
           label="规格"
-          min-width="140"
+          min-width="160"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column
           prop="Manufacturing"
           label="生产企业"
-          min-width="220"
+          min-width="208"
           show-overflow-tooltip
         ></el-table-column>
         <el-table-column label="合同明细到期" min-width="200">

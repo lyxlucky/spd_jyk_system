@@ -146,14 +146,14 @@ export default {
         {
           prop: 'VARIETIE_CODE_NEW',
           label: '品种编码',
-          width: 150,
+          width: 132,
           sortable: 'custom',
           showOverflowTooltip: true
         },
         {
           prop: 'VARIETIE_NAME',
           label: '品种全称',
-          minWidth: 150,
+          minWidth: 192,
           sortable: 'custom',
           showOverflowTooltip: true
         },
@@ -167,7 +167,7 @@ export default {
         {
           prop: 'UNIT',
           label: '单位',
-          width: 100,
+          width: 76, showOverflowTooltip: true,
           align: 'center',
           sortable: 'custom'
         },
@@ -181,7 +181,7 @@ export default {
         {
           prop: 'SUPPLIER_NAME',
           label: '供应商名称',
-          minWidth: 150,
+          minWidth: 208,
           sortable: 'custom',
           showOverflowTooltip: true
         },

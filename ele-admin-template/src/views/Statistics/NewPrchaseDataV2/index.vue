@@ -271,7 +271,7 @@ export default {
         {
           prop: 'MANUFACTURING_ENT_NAME',
           label: '生产企业',
-          minWidth: 120,
+          minWidth: 208,
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
@@ -307,7 +307,7 @@ export default {
         {
           prop: 'PRICE',
           label: '单价',
-          minWidth: 120,
+          width: 88,
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true
@@ -460,7 +460,7 @@ export default {
         {
           prop: 'BZ',
           label: '备注',
-          minWidth: 120,
+          minWidth: 110,
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true

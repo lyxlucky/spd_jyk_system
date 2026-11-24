@@ -95,7 +95,7 @@ export default {
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 250
+          minWidth: 110
         }
       ],
       pageSizes: [99999],

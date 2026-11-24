@@ -46,8 +46,8 @@
               @current-change="onBatchSelect"
             >
               <el-table-column prop="Snapshot_Batch" label="快照批次" min-width="120" show-overflow-tooltip />
-              <el-table-column prop="Mark" label="备注" width="80" show-overflow-tooltip />
-              <el-table-column label="状态" width="80">
+              <el-table-column prop="Mark" label="备注" min-width="110" show-overflow-tooltip />
+              <el-table-column label="状态" width="76" show-overflow-tooltip>
                 <template slot-scope="{ row }">
                   {{ row.Approve_State == 1 || row.Approve_State === '1' ? '已审批' : '未审批' }}
                 </template>
@@ -145,11 +145,11 @@
               @selection-change="(s) => (detailSelection = s)"
             >
               <el-table-column type="selection" width="42" align="center" />
-              <el-table-column prop="Supplier_Name" label="供应商名称" min-width="140" show-overflow-tooltip />
+              <el-table-column prop="Supplier_Name" label="供应商名称" min-width="208" show-overflow-tooltip />
               <el-table-column prop="Varietie_Code_New" label="品种编码" width="100" show-overflow-tooltip />
-              <el-table-column prop="Varietie_Name" label="品种名称" min-width="140" show-overflow-tooltip />
-              <el-table-column prop="Specification_Or_Type" label="规格型号" width="120" show-overflow-tooltip />
-              <el-table-column prop="MANUFACTURING_ENT_NAME" label="生产企业" width="120" show-overflow-tooltip />
+              <el-table-column prop="Varietie_Name" label="品种名称" min-width="192" show-overflow-tooltip />
+              <el-table-column prop="Specification_Or_Type" label="规格型号" min-width="160" show-overflow-tooltip />
+              <el-table-column prop="MANUFACTURING_ENT_NAME" label="生产企业" min-width="208" show-overflow-tooltip />
               <el-table-column prop="UNIT" label="单位" width="50" align="center" />
               <el-table-column label="合计库存" width="80" align="center">
                 <template slot-scope="{ row }">{{ calcAllGoodsQty(row) }}</template>

@@ -176,7 +176,7 @@
             label: '品种全称',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 120
+            minWidth: 192
           },
           {
             prop: 'UDI_TOP',

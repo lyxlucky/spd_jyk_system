@@ -155,7 +155,7 @@ export default {
           label: '生产企业',
           align: 'center',
           // sortable: 'custom',
-          width: 100,
+          minWidth: 208,
           showOverflowTooltip: true
         },
         {
@@ -182,7 +182,7 @@ export default {
         {
           prop: 'PRICE',
           label: '单价',
-          width: 100,
+          width: 88,
           align: 'center',
           showOverflowTooltip: true
         },

@@ -59,7 +59,7 @@
       >
         <el-table-column type="selection" width="50" align="center" />
         <el-table-column prop="Varietie_Code_New" label="品种（材料）编码" width="80" sortable="custom" show-overflow-tooltip />
-        <el-table-column prop="Varietie_Name" label="品种全称" min-width="200" sortable="custom" show-overflow-tooltip />
+        <el-table-column prop="Varietie_Name" label="品种全称" min-width="192" sortable="custom" show-overflow-tooltip />
         <el-table-column prop="Specification_Or_Type" label="型号/规格" min-width="100" sortable="custom" show-overflow-tooltip />
         <el-table-column prop="Unit" label="单位" width="70" sortable="custom" />
         <el-table-column prop="Manufacturing_Ent_Name" label="生产企业名称" min-width="140" sortable="custom" show-overflow-tooltip />

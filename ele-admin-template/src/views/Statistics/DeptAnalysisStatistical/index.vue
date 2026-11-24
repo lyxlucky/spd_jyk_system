@@ -133,7 +133,7 @@ export default {
           label: '科室名称',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 160
+          minWidth: 192
         },
         {
           prop: 'MAIN_PRICE',

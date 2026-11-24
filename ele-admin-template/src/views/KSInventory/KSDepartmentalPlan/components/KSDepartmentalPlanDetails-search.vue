@@ -33,19 +33,21 @@
           style="width: 140px"
         />
       </el-form-item>
-      <el-form-item label="品种">
-        <el-input
-          style="width: 200px"
-          v-model="where.SerachName"
-          placeholder="品名/常用名/编码/型号规格/生产企业搜索"
-          clearable
-        />
+      <el-form-item label="品种" class="ks-dept-plan-product-filter">
+        <div class="ks-dept-plan-product-controls">
+          <el-input
+            style="width: 200px"
+            v-model="where.SerachName"
+            placeholder="品名/常用名/编码/型号规格/生产企业搜索"
+            clearable
+          />
+          <el-button type="primary" icon="el-icon-search" @click="search" title="按条件查询明细">
+            查询
+          </el-button>
+          <el-button icon="el-icon-refresh" @click="reset" title="清空筛选条件">重置</el-button>
+        </div>
       </el-form-item>
       <el-form-item class="ele-form-actions ks-dept-plan-detail-actions">
-        <el-button type="primary" icon="el-icon-search" @click="search" title="按条件查询明细">
-          查询
-        </el-button>
-        <el-button icon="el-icon-refresh" @click="reset" title="清空筛选条件">重置</el-button>
         <el-tooltip :content="tipEditPlanDetail" placement="top" :open-delay="300">
           <span class="btn-tip-wrap">
             <el-dropdown :disabled="!canEditPlanDetail">
@@ -224,20 +226,19 @@
             </el-button>
           </span>
         </el-tooltip>
-        <el-tooltip content="通过 Excel 模板批量导入明细" placement="top" :open-delay="300">
-          <span class="btn-tip-wrap">
-            <el-button type="primary" icon="el-icon-upload" @click="dialogTableVisible2 = true">
+        <el-dropdown trigger="click">
+          <el-button type="primary">
+            导入/导出<i class="el-icon-arrow-down el-icon--right"></i>
+          </el-button>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item icon="el-icon-upload" @click.native="dialogTableVisible2 = true">
               导入模板
-            </el-button>
-          </span>
-        </el-tooltip>
-        <el-tooltip v-if="canExportDetail" content="导出当前明细数据" placement="top" :open-delay="300">
-          <span class="btn-tip-wrap">
-            <el-button type="primary" icon="el-icon-download" @click="exportData">
+            </el-dropdown-item>
+            <el-dropdown-item v-if="canExportDetail" icon="el-icon-download" @click.native="exportData">
               导出
-            </el-button>
-          </span>
-        </el-tooltip>
+            </el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
         <el-tooltip :content="tipBindBudget" placement="top" :open-delay="300">
           <span class="btn-tip-wrap">
             <el-button
@@ -470,12 +471,29 @@
   flex-shrink: 0;
 }
 
+.ele-form-search .ks-dept-plan-product-filter ::v-deep .el-form-item__content {
+  max-width: none;
+}
+
+.ks-dept-plan-product-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  vertical-align: middle;
+}
+
+.ks-dept-plan-product-controls .el-button {
+  margin: 0;
+}
+
 /* 操作按钮占满可用宽度，超出换多行 */
 .ele-form-actions.el-form-item {
   display: block !important;
   width: 100% !important;
   max-width: 100% !important;
   margin-right: 0 !important;
+  padding-left: 0;
+  text-align: left;
 }
 
 .ele-form-actions :deep(.el-form-item__content) {

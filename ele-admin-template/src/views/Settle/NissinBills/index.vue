@@ -86,7 +86,7 @@
             @current-change="onDeptSelect"
           >
             <el-table-column type="selection" width="38" align="center" />
-            <el-table-column prop="SPD_COST_DEPT_NAME" label="科室名称" min-width="120" show-overflow-tooltip />
+            <el-table-column prop="SPD_COST_DEPT_NAME" label="科室名称" min-width="192" show-overflow-tooltip />
             <el-table-column prop="print_count" label="打印次数" width="78" align="center" />
             <el-table-column v-if="showDayApprovalCol" label="审核状态" width="78" align="center">
               <template slot-scope="{ row }">{{ dayApprovalStateLabel(row.Day_Approval_State) }}</template>
@@ -172,7 +172,7 @@
           >
             <el-table-column prop="DateShow" label="手术计费日期" width="180" sortable="custom" />
             <el-table-column prop="Varietie_code" label="品种编码" width="120" sortable="custom" show-overflow-tooltip />
-            <el-table-column prop="Varietie_name" label="品种全称" min-width="140" sortable="custom" show-overflow-tooltip />
+            <el-table-column prop="Varietie_name" label="品种全称" min-width="192" sortable="custom" show-overflow-tooltip />
             <el-table-column prop="Specification_or_Type" label="型号/规格" width="100" sortable="custom" show-overflow-tooltip />
             <el-table-column prop="Unit" label="单位" width="70" align="center" sortable="custom" />
             <el-table-column prop="Manufacturing_Ent_Name" label="生产企业名称" width="160" sortable="custom" show-overflow-tooltip />

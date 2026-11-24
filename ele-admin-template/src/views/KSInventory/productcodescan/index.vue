@@ -115,7 +115,7 @@ export default {
                     label: '单位',
                     align: 'center',
                     showOverflowTooltip: true,
-                    minWidth: 110,
+                    width: 76,
                 },
                 {
                     prop: 'BATCH',
@@ -143,7 +143,7 @@ export default {
                     label: '规格',
                     align: 'center',
                     showOverflowTooltip: true,
-                    minWidth: 110,
+                    minWidth: 160,
                 },
             ],
         };

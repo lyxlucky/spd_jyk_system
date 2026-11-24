@@ -43,14 +43,14 @@
       highlight-current-row
       @current-change="(r) => (picked = r)"
     >
-      <el-table-column prop="Dept_Two_Name" label="科室名称" width="100" show-overflow-tooltip />
+      <el-table-column prop="Dept_Two_Name" label="科室名称" min-width="192" show-overflow-tooltip />
       <el-table-column prop="Dept_Two_Code" label="科室编码" width="90" />
       <el-table-column prop="VARIETIE_CODE_NEW" label="品种编码" width="90" />
       <el-table-column prop="Charging_Code" label="计费编码" width="90" />
-      <el-table-column prop="Varietie_Name" label="品种全称" min-width="160" show-overflow-tooltip />
+      <el-table-column prop="Varietie_Name" label="品种全称" min-width="192" show-overflow-tooltip />
       <el-table-column prop="Specification_Or_Type" label="型号/规格" width="90" show-overflow-tooltip />
       <el-table-column prop="Unit" label="单位" width="55" />
-      <el-table-column prop="Manufacturing_Ent_Name" label="生产企业" min-width="120" show-overflow-tooltip />
+      <el-table-column prop="Manufacturing_Ent_Name" label="生产企业" min-width="208" show-overflow-tooltip />
       <el-table-column prop="Batch" label="生产批号" width="90" />
       <el-table-column prop="Coefficient" label="系数" width="55" />
       <el-table-column prop="Def_No_Pkg_Code" label="定数码" width="130" class-name="col-pkg" />

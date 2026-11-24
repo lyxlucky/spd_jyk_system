@@ -39,7 +39,7 @@
               <el-table-column prop="ORDER_NUM" label="快照单号" min-width="80" show-overflow-tooltip />
               <el-table-column prop="CREATE_MAN" label="快照人" width="100" show-overflow-tooltip />
               <el-table-column prop="CREATE_TIME" label="创建时间" width="150" />
-              <el-table-column prop="REMARK" label="备注" width="130" show-overflow-tooltip />
+              <el-table-column prop="REMARK" label="备注" min-width="110" show-overflow-tooltip />
             </el-table>
             <el-pagination
               class="snap-pager"
@@ -175,12 +175,12 @@
               </el-table-column>
               <el-table-column prop="VARIETIE_CODE_NEW" label="品种编码" width="90" show-overflow-tooltip />
               <el-table-column prop="CHARGING_CODE" label="计费编码" width="90" show-overflow-tooltip />
-              <el-table-column prop="VARIETIE_NAME" label="品种全称" min-width="160" show-overflow-tooltip />
+              <el-table-column prop="VARIETIE_NAME" label="品种全称" min-width="192" show-overflow-tooltip />
               <el-table-column prop="SPECIFICATION_OR_TYPE" label="型号/规格" width="110" show-overflow-tooltip />
               <el-table-column prop="UNIT" label="单位" width="45" align="center" />
               <el-table-column prop="GOODS_QTY" label="库存散货" width="75" align="center" />
               <el-table-column prop="MANUFACTURING_ENT_NAME" label="生产企业名称" width="130" show-overflow-tooltip />
-              <el-table-column prop="SUPPLIER_NAME" label="供应商" width="130" show-overflow-tooltip />
+              <el-table-column prop="SUPPLIER_NAME" label="供应商" min-width="208" show-overflow-tooltip />
               <el-table-column prop="BATCH" label="生产批号" width="90" show-overflow-tooltip />
               <el-table-column label="生产日期" width="95">
                 <template slot-scope="{ row }">{{ fmtDate10(row.BATCH_PRODUCTION_DATE) }}</template>
@@ -211,7 +211,7 @@
                   </span>
                 </template>
               </el-table-column>
-              <el-table-column prop="NOTE_DESCRIPTION" label="备注" width="55" show-overflow-tooltip />
+              <el-table-column prop="NOTE_DESCRIPTION" label="备注" min-width="110" show-overflow-tooltip />
               <el-table-column
                 v-if="flags.showPdaConsume"
                 label="科室未结算"

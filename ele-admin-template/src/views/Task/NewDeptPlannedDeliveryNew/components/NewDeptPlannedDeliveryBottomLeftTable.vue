@@ -66,7 +66,7 @@
             label: '供应商名称',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 130
+            minWidth: 208
           },
           {
             prop: 'Address',
@@ -92,14 +92,14 @@
             label: '备注',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 90
+            minWidth: 110
           },
           {
             prop: 'Approve_State',
             label: '审批状态',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 120,
+            width: 88,
             formatter: (_row, _column, cellValue) => {
               if (_row.Approve_State == 0) {
                 return '未审批';

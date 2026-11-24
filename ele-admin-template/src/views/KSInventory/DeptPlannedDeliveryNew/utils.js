@@ -148,10 +148,10 @@ export function defaultPlanWhere() {
   };
 }
 
-/** 科室计划列表列（vxe-grid）；列宽对齐老系统，缩屏靠横向滚动 */
+/** 科室计划列表列（vxe-grid） */
 export function buildPlanColumns() {
   const f = dpdHpFlags;
-  const overflow = true;
+  const overflow = 'tooltip';
   const cols = [
     {
       type: 'checkbox',
@@ -186,7 +186,7 @@ export function buildPlanColumns() {
     {
       field: 'Dept_Two_Name',
       title: '二级科室名称/审核科室',
-      width: 100,
+      minWidth: 192,
       align: 'center',
       showOverflow: overflow,
       slots: { default: 'deptTwoName' }
@@ -194,7 +194,7 @@ export function buildPlanColumns() {
     {
       field: 'BZ',
       title: '备注',
-      width: 80,
+      minWidth: 110,
       align: 'center',
       showOverflow: overflow,
       formatter: ({ row }) => formatRemark(row)
@@ -234,11 +234,11 @@ export function buildPlanColumns() {
   }
   cols.push(
     { field: 'PROVINCE_PLATFORM_CODE', title: '药交ID', width: 100, align: 'center', showOverflow: overflow },
-    { field: 'Varietie_Name', title: '品种名称', width: 150, align: 'center', showOverflow: overflow },
-    { field: 'Specification_Or_Type', title: '规格型号', width: 150, align: 'center', showOverflow: overflow },
-    { field: 'Unit', title: '单位', width: 80, align: 'center' },
+    { field: 'Varietie_Name', title: '品种名称', minWidth: 192, align: 'center', showOverflow: overflow },
+    { field: 'Specification_Or_Type', title: '规格型号', minWidth: 160, align: 'center', showOverflow: overflow },
+    { field: 'Unit', title: '单位', width: 76, align: 'center' },
     { field: 'Price', title: '中标价', width: 90, align: 'center' },
-    { field: 'Apply_Qty', title: '申请数量', width: 105, align: 'center' },
+    { field: 'Apply_Qty', title: '申请数量', width: 88, align: 'center' },
     { field: 'Left_Apply_Qty', title: '剩余申请数量', width: 100, align: 'center' }
   );
   if (f.isJp) {
@@ -252,7 +252,7 @@ export function buildPlanColumns() {
     { field: 'Dept_Def_Qty', title: '科室定数包', width: 100, align: 'center', hide: !f.isYzrm },
     { field: 'Dept_Goods_Qty', title: '科室散货', width: 100, align: 'center', hide: !f.isYzrm },
     { field: 'BH_NUM', title: '备货数（散）', width: 100, align: 'center', slots: { default: 'planQty' } },
-    { field: 'SUPPLIER_NAME', title: '供应商', width: 120, align: 'center', showOverflow: overflow },
+    { field: 'SUPPLIER_NAME', title: '供应商', minWidth: 208, align: 'center', showOverflow: overflow },
     { field: 'CONTRACT_CODE', title: '合同编码', width: 120, align: 'center', showOverflow: overflow },
     {
       field: 'CONTRACT_TYPE',
@@ -261,7 +261,7 @@ export function buildPlanColumns() {
       align: 'center',
       formatter: ({ row }) => formatContractType(row.CONTRACT_TYPE)
     },
-    { field: 'Manufacturing_Ent_Name', title: '生产企业名称', width: 120, align: 'center', showOverflow: overflow },
+    { field: 'Manufacturing_Ent_Name', title: '生产企业名称', minWidth: 208, align: 'center', showOverflow: overflow },
     { field: 'USE_GOODS_QTY', title: '近30天用量（对应科室）', width: 160, align: 'center' },
     { field: 'STOREHOUSE_UPPPER', title: '中心库上限', width: 140, align: 'center' },
     { field: 'STOREHOUSE_LOWER', title: '中心库下限', width: 140, align: 'center' }

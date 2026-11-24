@@ -118,7 +118,7 @@ export default {
           // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 150
+          width: 132
         },
         {
           prop: 'Varietie_Name',
@@ -126,7 +126,7 @@ export default {
           // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 180
+          minWidth: 192
         },
         {
           prop: 'Specification_Or_Type',
@@ -142,7 +142,7 @@ export default {
           // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 180
+          minWidth: 208
         },
         {
           prop: 'Manufacturing_Ent_Name',
@@ -150,7 +150,7 @@ export default {
           // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 180
+          minWidth: 208
         },
         {
           prop: 'INVENTORY_NUM',
@@ -191,7 +191,7 @@ export default {
           align: 'center',
           // sortable: 'custom',
           showOverflowTooltip: true,
-          minWidth: 80
+          width: 76
         },
         {
           prop: 'Batch',

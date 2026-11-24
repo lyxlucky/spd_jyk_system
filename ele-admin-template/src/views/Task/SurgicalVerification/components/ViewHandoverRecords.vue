@@ -129,7 +129,7 @@
             prop: 'VARIETIE_NAME',
             label: '品种名称',
             align: 'center',
-            width: 120
+            minWidth: 192, showOverflowTooltip: true
           },
           {
             prop: 'CHARGING_CODE',
@@ -141,13 +141,13 @@
             prop: 'SPECIFICATION_OR_TYPE',
             label: '规格型号',
             align: 'center',
-            width: 120
+            minWidth: 160, showOverflowTooltip: true
           },
           {
             prop: 'MANUFACTURING_ENT_NAME',
             label: '生产企业',
             align: 'center',
-            width: 120
+            minWidth: 208, showOverflowTooltip: true
           },
           //   {
           //     prop: 'BATCH',

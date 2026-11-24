@@ -111,7 +111,7 @@
           {
             prop: 'VARIETIE_NAME',
             label: '品种名称',
-            minWidth: 110,
+            minWidth: 192,
             align: 'center',
             showOverflowTooltip: true
           },
@@ -139,7 +139,7 @@
           {
             prop: 'MANUFACTURING_ENT_NAME',
             label: '生产企业',
-            minWidth: 120,
+            minWidth: 208,
             align: 'center',
             showOverflowTooltip: true
           }

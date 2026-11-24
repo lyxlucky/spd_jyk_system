@@ -177,7 +177,7 @@
           {
             prop: 'COMPANY',
             label: '供应商名称',
-            width: 200,
+            minWidth: 208,
             showOverflowTooltip: true
           },
           {

@@ -94,7 +94,7 @@
             prop: 'Varietie_Name',
             label: '品种全称',
             sort: true,
-            minWidth: 120
+            minWidth: 192, showOverflowTooltip: true
           },
           { prop: 'Specification_Or_Type', label: '型号/规格', minWidth: 120 },
           { prop: 'Unit', align: 'center', label: '单位', minWidth: 60 },

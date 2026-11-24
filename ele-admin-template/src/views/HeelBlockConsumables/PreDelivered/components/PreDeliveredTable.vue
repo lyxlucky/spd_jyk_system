@@ -150,7 +150,7 @@
             label: '供应商',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 120
+            minWidth: 208
           },
           {
             prop: 'Hospitalization_Number',
@@ -174,7 +174,7 @@
             label: '收货时间',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 160,
+            width: 160,
             formatter: (row, column, cellValue) => {
               return this.$util.toDateString(cellValue, 'yyyy-MM-dd HH:mm:ss');
             }
@@ -192,7 +192,7 @@
             label: '库区',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 100
+            width: 76
           },
           {
             prop: 'Receive_Receipt_State',
@@ -240,7 +240,7 @@
             // sortable: 'custom',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 180,
+            width: 160,
             formatter: (row, column, cellValue) => {
               return this.$util.toDateString(cellValue, 'yyyy-MM-dd HH:mm:ss');
             }

@@ -137,7 +137,7 @@
           {
             prop: 'VARIETIE_NAME',
             label: '品种名称',
-            minWidth: 200,
+            minWidth: 192,
             align: 'center',
             showOverflowTooltip: true,
             fixed: 'left'
@@ -145,7 +145,7 @@
           {
             prop: 'SPECIFICATION_OR_TYPE',
             label: '规格型号',
-            minWidth: 120,
+            minWidth: 160,
             align: 'center',
             showOverflowTooltip: true,
             fixed: 'left'
@@ -188,7 +188,7 @@
           {
             prop: 'MANUFACTURING_ENT_NAME',
             label: '生产企业',
-            minWidth: 160,
+            minWidth: 208,
             align: 'center',
             showOverflowTooltip: true,
             fixed: 'left'
@@ -196,7 +196,7 @@
           {
             prop: 'REMARK',
             label: '备注',
-            minWidth: 100,
+            minWidth: 110,
             align: 'center',
             showOverflowTooltip: true,
             fixed: 'left'

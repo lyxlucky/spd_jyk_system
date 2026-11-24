@@ -60,7 +60,7 @@
             label: '性别',
             sortable: 'custom',
             showOverflowTooltip: true,
-            minWidth: 80,
+            width: 76,
             filterMultiple: false,
             filters: [
               {

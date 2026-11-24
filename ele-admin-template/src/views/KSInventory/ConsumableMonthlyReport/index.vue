@@ -99,7 +99,7 @@
               <div class="table-title">消耗金额排名前五</div>
               <el-table :data="report.DeptAmountTop" border size="mini" stripe>
               <el-table-column type="index" label="序号" width="55" />
-              <el-table-column prop="DeptName" label="科室名称" min-width="150" />
+              <el-table-column prop="DeptName" label="科室名称" min-width="192" show-overflow-tooltip />
               <el-table-column label="消耗金额/万元" width="120">
                 <template slot-scope="{ row }">{{ formatWan(row.Amount) }}</template>
               </el-table-column>
@@ -117,7 +117,7 @@
               <div class="table-title">增幅排名前五（≥10万）</div>
               <el-table :data="report.DeptGrowthTop" border size="mini" stripe>
               <el-table-column type="index" label="序号" width="55" />
-              <el-table-column prop="DeptName" label="科室名称" min-width="150" />
+              <el-table-column prop="DeptName" label="科室名称" min-width="192" show-overflow-tooltip />
               <el-table-column label="消耗金额/万元" width="120">
                 <template slot-scope="{ row }">{{ formatWan(row.Amount) }}</template>
               </el-table-column>
@@ -138,8 +138,8 @@
               <div class="table-title">消耗金额排名前十</div>
               <el-table :data="report.VarietyAmountTop" border size="mini" height="360" stripe>
               <el-table-column type="index" label="序号" width="55" />
-              <el-table-column prop="VarietyName" label="品种名称" min-width="160" show-overflow-tooltip />
-              <el-table-column prop="ManufacturingEntName" label="生产企业" min-width="150" show-overflow-tooltip />
+              <el-table-column prop="VarietyName" label="品种名称" min-width="192" show-overflow-tooltip />
+              <el-table-column prop="ManufacturingEntName" label="生产企业" min-width="208" show-overflow-tooltip />
               <el-table-column label="金额/万元" width="100">
                 <template slot-scope="{ row }">{{ formatWan(row.Amount) }}</template>
               </el-table-column>
@@ -157,8 +157,8 @@
               <div class="table-title">增幅排名前十（≥5万）</div>
               <el-table :data="report.VarietyGrowthTop" border size="mini" height="360" stripe>
               <el-table-column type="index" label="序号" width="55" />
-              <el-table-column prop="VarietyName" label="品种名称" min-width="160" show-overflow-tooltip />
-              <el-table-column prop="ManufacturingEntName" label="生产企业" min-width="150" show-overflow-tooltip />
+              <el-table-column prop="VarietyName" label="品种名称" min-width="192" show-overflow-tooltip />
+              <el-table-column prop="ManufacturingEntName" label="生产企业" min-width="208" show-overflow-tooltip />
               <el-table-column label="金额/万元" width="100">
                 <template slot-scope="{ row }">{{ formatWan(row.Amount) }}</template>
               </el-table-column>
@@ -179,7 +179,7 @@
         <div class="table-panel">
           <el-table :data="report.SupplierTop" border size="mini" height="460" stripe>
             <el-table-column type="index" label="序号" width="55" />
-            <el-table-column prop="SupplierName" label="供应商名称" min-width="220" show-overflow-tooltip />
+            <el-table-column prop="SupplierName" label="供应商名称" min-width="208" show-overflow-tooltip />
             <el-table-column label="配送金额/万元" width="140">
               <template slot-scope="{ row }">{{ formatWan(row.Amount) }}</template>
             </el-table-column>

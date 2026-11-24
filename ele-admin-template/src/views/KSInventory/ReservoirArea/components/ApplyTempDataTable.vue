@@ -98,7 +98,7 @@ export default {
           label: '品种名称',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 150
+          minWidth: 192
         },
         {
           prop: 'SPECIFICATION_OR_TYPE',
@@ -106,7 +106,7 @@ export default {
           // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 150,
+          minWidth: 160,
           formatter: (row) => {
             const a = row.SPECIFICATION_OR_TYPE2 || '';
             const b = row.SPECIFICATION_OR_TYPE3 || '';
@@ -119,7 +119,7 @@ export default {
           // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 80
+          width: 76
         },
         {
           prop: 'MANUFACTURING_ENT_NAME',
@@ -127,7 +127,7 @@ export default {
           // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 200
+          minWidth: 208
         },
         {
           prop: 'CREATE_TIME',

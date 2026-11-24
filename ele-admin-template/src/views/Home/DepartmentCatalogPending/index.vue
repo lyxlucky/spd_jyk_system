@@ -22,8 +22,8 @@
         <el-table-column prop="Dept_Two_Name" label="领用科室" min-width="130" show-overflow-tooltip />
         <el-table-column prop="Varietie_Code_New" label="物料编码" min-width="130" />
         <el-table-column prop="Varietie_Name" label="物料名称" min-width="180" show-overflow-tooltip />
-        <el-table-column prop="Specification_Or_Type" label="规格型号" min-width="150" show-overflow-tooltip />
-        <el-table-column label="状态" width="90"><template slot-scope="{ row }"><el-tag size="small" :type="row.State === '1' ? 'success' : 'warning'">{{ row.State === '1' ? '已完成' : '待维护' }}</el-tag></template></el-table-column>
+        <el-table-column prop="Specification_Or_Type" label="规格型号" min-width="160" show-overflow-tooltip />
+        <el-table-column label="状态" width="76" show-overflow-tooltip><template slot-scope="{ row }"><el-tag size="small" :type="row.State === '1' ? 'success' : 'warning'">{{ row.State === '1' ? '已完成' : '待维护' }}</el-tag></template></el-table-column>
         <el-table-column label="首次申请时间" min-width="160"><template slot-scope="{ row }">{{ time(row.First_Apply_Time) }}</template></el-table-column>
         <el-table-column prop="First_Applicant" label="首次申请人" min-width="110" />
         <el-table-column label="最近申请时间" min-width="160"><template slot-scope="{ row }">{{ time(row.Last_Apply_Time) }}</template></el-table-column>

@@ -226,7 +226,7 @@ export default {
       markDialogVisible: false,
       columns: [
         { columnKey: 'selection', type: 'selection', width: 45, align: 'center', fixed: 'left' },
-        { prop: 'MARK', label: '备注', width: 100, showOverflowTooltip: true },
+        { prop: 'MARK', label: '备注', minWidth: 110, showOverflowTooltip: true },
         { prop: 'YG_IS_CAN_SEND', label: '是否发送', width: 120, align: 'center', slot: 'YG_IS_CAN_SEND' },
         { prop: 'CONTRACTSTATUS', label: '阳光合同', width: 120, showOverflowTooltip: true },
         { prop: 'source', label: '来源', width: 120, showOverflowTooltip: true },

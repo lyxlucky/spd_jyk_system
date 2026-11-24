@@ -196,14 +196,14 @@
           {
             prop: 'VarCode',
             label: '品种编码',
-            width: 140,
+            width: 132,
             align: 'center',
             showOverflowTooltip: true
           },
           {
             prop: 'VarName',
             label: '品种名称',
-            minWidth: 330,
+            minWidth: 192,
             align: 'center',
             showOverflowTooltip: true
           },
@@ -217,14 +217,14 @@
           {
             prop: 'Unit',
             label: '单位',
-            width: 80,
+            width: 76,
             align: 'center',
             showOverflowTooltip: true
           },
           {
             prop: 'Manufacturing',
             label: '生产企业',
-            minWidth: 180,
+            minWidth: 208,
             align: 'center',
             showOverflowTooltip: true
           },

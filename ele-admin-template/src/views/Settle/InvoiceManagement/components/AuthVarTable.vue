@@ -87,7 +87,7 @@ export default {
           label: '品种全称',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 110
+          minWidth: 192
         },
         {
           prop: 'QTY',
@@ -101,7 +101,7 @@ export default {
           label: '单价',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 110
+          width: 88
         },
         {
           prop: 'TotalMoney',

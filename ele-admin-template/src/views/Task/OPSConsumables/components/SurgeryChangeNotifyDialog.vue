@@ -176,7 +176,7 @@
             prop: 'REMARK',
             label: '备注',
             align: 'left',
-            minWidth: 160,
+            minWidth: 110,
             showOverflowTooltip: true
           },
           {

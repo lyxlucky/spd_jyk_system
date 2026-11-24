@@ -96,7 +96,7 @@ export default {
       columns: [
         { type: 'index', label: '序号', width: 55, align: 'center' },
         { prop: 'Varietie_Code_New', label: '品种编码', width: 90, showOverflowTooltip: true },
-        { prop: 'Varietie_Name', label: '品种名称', minWidth: 180, showOverflowTooltip: true },
+        { prop: 'Varietie_Name', label: '品种名称', minWidth: 192, showOverflowTooltip: true },
         { prop: 'Specification_Or_Type', label: '型号/规格', minWidth: 160, showOverflowTooltip: true },
         { prop: 'Unit', label: '单位', width: 60, align: 'center' },
         { prop: 'Manufacturing_Ent_Name', label: '生产企业名称', minWidth: 150, showOverflowTooltip: true },

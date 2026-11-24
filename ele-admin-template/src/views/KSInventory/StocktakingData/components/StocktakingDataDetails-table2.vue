@@ -181,7 +181,7 @@ export default {
           // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 200
+          width: 132
         },
         {
           prop: 'DEF_NO_PKG_CODE',
@@ -197,7 +197,7 @@ export default {
           // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 500
+          minWidth: 192
         },
         {
           prop: 'SPECIFICATION_OR_TYPE',
@@ -205,7 +205,7 @@ export default {
           // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 200
+          minWidth: 160
         },
         {
           prop: 'MANUFACTURING_ENT_NAME',
@@ -213,7 +213,7 @@ export default {
           // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 200
+          minWidth: 208
         },
         {
           prop: 'COUNT',
@@ -221,7 +221,7 @@ export default {
           // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 110,
+          width: 88,
           sortable: true
         },
         {
@@ -230,7 +230,7 @@ export default {
           // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 80
+          width: 76
         },
         {
           prop: 'PRICE',
@@ -281,7 +281,7 @@ export default {
           // // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 200
+          minWidth: 208
         },
         {
           prop: 'APPROVAL_NUMBER',

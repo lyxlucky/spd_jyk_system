@@ -365,8 +365,8 @@
             width="120"
             align="center"
           />
-          <vxe-column field="GENDER" title="性别" width="80" align="center" />
-          <vxe-column field="AGE_STR" title="年龄" width="120" align="center" />
+          <vxe-column field="GENDER" title="性别" width="76" align="center" show-overflow="tooltip" />
+          <vxe-column field="AGE_STR" title="年龄" width="76" align="center" show-overflow="tooltip" />
           <vxe-column
             field="DIAGNOSIS"
             title="诊断结果"
@@ -621,7 +621,7 @@
           <vxe-column
             field="VARIETIE_NAME"
             title="品种名称"
-            min-width="150"
+            min-width="192"
             show-overflow
           />
           <vxe-column
@@ -633,7 +633,7 @@
           <vxe-column
             field="SPECIFICATION_OR_TYPE"
             title="规格型号"
-            min-width="150"
+            min-width="160"
             show-overflow
           />
           <vxe-column
@@ -646,7 +646,7 @@
           <vxe-column
             field="VARIETIE_CODE_NEW"
             title="品种编码"
-            min-width="150"
+            width="132"
             show-overflow
           />
           <vxe-column
@@ -765,7 +765,7 @@
           <vxe-column
             field="VARIETIE_NAME"
             title="品种名称"
-            min-width="150"
+            min-width="192"
             show-overflow
           />
           <vxe-column
@@ -777,7 +777,7 @@
           <vxe-column
             field="SPECIFICATION_OR_TYPE"
             title="规格型号"
-            min-width="150"
+            min-width="160"
             show-overflow
           />
           <vxe-column
@@ -790,10 +790,10 @@
           <vxe-column
             field="QUANTITY"
             title="数量"
-            width="100"
-            align="right"
+            width="88"
+            align="right" show-overflow="tooltip"
           />
-          <vxe-column field="UNIT" title="单位" width="80" align="center" />
+          <vxe-column field="UNIT" title="单位" width="76" align="center" show-overflow="tooltip" />
           <vxe-column
             field="UNIT_PRICE_WITH_TAX"
             title="含税单价"

@@ -132,7 +132,7 @@
             label: '品种全称',
             align: 'left',
             showOverflowTooltip: true,
-            minWidth: 250
+            minWidth: 192
           },
           {
             label: '临购/中标',
@@ -183,7 +183,7 @@
             label: '供应商',
             align: 'left',
             showOverflowTooltip: true,
-            minWidth: 160
+            minWidth: 208
           },
           {
             prop: 'PROD_REGISTRATION_NAME',
@@ -282,7 +282,7 @@
             label: '金额',
             align: 'right',
             showOverflowTooltip: true,
-            minWidth: 90,
+            width: 88,
             sortable: true,
             formatter: function (d) {
               return Number(d.Cost).toFixed(d.price_bl);
@@ -833,7 +833,7 @@
             label: '备注',
             align: 'left',
             showOverflowTooltip: true,
-            minWidth: 70,
+            minWidth: 110,
             formatter: function (d) {
               return '<button lay-event="table1_KSConsume_bz" style="height:25px;background-color: #009688;color:#fff;padding:0px;border:0px;width:55px;">备注</button>';
             }

@@ -217,14 +217,14 @@
             label: '型号',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 120
+            minWidth: 160
           },
           {
             prop: 'HIS_STAND_VALUE',
             label: '规格',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 120
+            minWidth: 160
           },
           {
             prop: 'HIS_GHFY_BQ',

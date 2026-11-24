@@ -94,7 +94,7 @@
           {
             prop: 'TYPE',
             label: '类型',
-            minWidth: 100,
+            width: 76,
             align: 'center',
             formatter: (row, column, cellValue) => {
               if (row.TYPE == 1) {

@@ -96,13 +96,13 @@
             @current-change="onDelSelect"
           >
             <el-table-column prop="VARIETIE_CODE_NEW" label="品种编码" width="100" show-overflow-tooltip />
-            <el-table-column prop="VARIETIE_NAME" label="品种名称" width="100" show-overflow-tooltip />
-            <el-table-column prop="SPECIFICATION_OR_TYPE" label="规格型号" width="140" show-overflow-tooltip />
+            <el-table-column prop="VARIETIE_NAME" label="品种名称" min-width="192" show-overflow-tooltip />
+            <el-table-column prop="SPECIFICATION_OR_TYPE" label="规格型号" min-width="160" show-overflow-tooltip />
             <el-table-column prop="SUPPLY_PRICE" label="收货价" width="68" />
             <el-table-column prop="PURCHASE_PRICE" label="采购价" width="68" />
             <el-table-column prop="UNIT" label="单位" width="52" />
             <el-table-column prop="APPROVAL_NUMBER" label="注册证" width="100" show-overflow-tooltip />
-            <el-table-column prop="MANUFACTURING_ENT_NAME" label="生产企业" width="120" show-overflow-tooltip />
+            <el-table-column prop="MANUFACTURING_ENT_NAME" label="生产企业" min-width="208" show-overflow-tooltip />
             <el-table-column prop="COEFFICIENT" label="系数" width="52" />
             <el-table-column label="收货包数/散" width="88">
               <template slot-scope="{ row }">{{ fmtDefPkg(row) }}</template>
@@ -118,7 +118,7 @@
               <template slot-scope="{ row }">{{ fmtDate10(row.BATCH_VALIDITY_PERIOD) }}</template>
             </el-table-column>
             <el-table-column prop="DISINFECTION_BATCH" label="灭菌批号" width="90" show-overflow-tooltip />
-            <el-table-column prop="SUPPLIER_NAME" label="供应商" width="100" show-overflow-tooltip />
+            <el-table-column prop="SUPPLIER_NAME" label="供应商" min-width="208" show-overflow-tooltip />
             <el-table-column label="操作" width="120" fixed="right">
               <template slot-scope="{ row }">
                 <el-button type="text" size="mini" @click.stop="openEdit(row)">编辑</el-button>

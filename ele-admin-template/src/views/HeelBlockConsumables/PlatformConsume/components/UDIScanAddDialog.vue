@@ -153,7 +153,7 @@
             label: '品种全称',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 150
+            minWidth: 192
           },
           {
             prop: 'APPROVAL_NUMBER',
@@ -226,7 +226,7 @@
             label: '数量',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 100,
+            width: 88,
             formatter: (row, column, cellValue) => {
               if (row.Netreceipts == null || row.Netreceipts == '') {
                 return '1';
@@ -239,7 +239,7 @@
             label: '单位',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 100
+            width: 76
           },
           {
             prop: 'udi',

@@ -381,7 +381,7 @@
             label: '品种全称',
             align: 'center',
             showOverflowTooltip: true,
-            width: 180
+            minWidth: 192
           },
           {
             prop: 'GG',
@@ -458,7 +458,7 @@
 
             align: 'center',
             showOverflowTooltip: true,
-            width: 80
+            width: 76
           },
           {
             prop: 'Price',

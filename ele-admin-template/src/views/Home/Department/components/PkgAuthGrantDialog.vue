@@ -12,7 +12,7 @@
     <div v-loading="bootLoading" class="pkg-auth-wrap">
       <el-table :data="detailRows" border size="small" height="120" empty-text="点击品种行查看中标价与注册信息">
         <el-table-column prop="Varietie_Code" label="品种（材料）编码" width="120" show-overflow-tooltip />
-        <el-table-column prop="Varietie_Name" label="品种全称" min-width="120" show-overflow-tooltip />
+        <el-table-column prop="Varietie_Name" label="品种全称" min-width="192" show-overflow-tooltip />
         <el-table-column prop="Price" label="中标价" width="80" align="right" />
         <el-table-column prop="Approval_Number" label="批准文号" width="110" show-overflow-tooltip />
         <el-table-column label="发证日期" width="100">
@@ -50,10 +50,10 @@
           >
             <el-table-column type="selection" width="42" :selectable="srcRowSelectable" align="center" />
             <el-table-column prop="Varietie_Code_New" label="品种编码" width="100" show-overflow-tooltip />
-            <el-table-column prop="Varietie_Name" label="品种全称" min-width="110" show-overflow-tooltip />
-            <el-table-column prop="Specification_Or_Type" label="规格" width="80" show-overflow-tooltip />
+            <el-table-column prop="Varietie_Name" label="品种全称" min-width="192" show-overflow-tooltip />
+            <el-table-column prop="Specification_Or_Type" label="规格" min-width="160" show-overflow-tooltip />
             <el-table-column prop="Unit" label="单位" width="50" />
-            <el-table-column prop="Manufacturing_Ent_Name" label="生产企业" min-width="100" show-overflow-tooltip />
+            <el-table-column prop="Manufacturing_Ent_Name" label="生产企业" min-width="208" show-overflow-tooltip />
             <el-table-column prop="Def_No_Pkg_Coefficient" label="系数" width="60" />
             <el-table-column prop="Middle_Package_Count" label="中包装数量" width="90" />
             <el-table-column prop="Big_Box_Count" label="整箱数量" width="80" />
@@ -91,9 +91,9 @@
             <el-table-column type="selection" width="42" align="center" />
             <el-table-column prop="Varietie_Code_New" label="编码" width="90" show-overflow-tooltip />
             <el-table-column prop="Varietie_Name" label="名称" min-width="100" show-overflow-tooltip />
-            <el-table-column prop="Specification_Or_Type" label="规格" width="70" show-overflow-tooltip />
+            <el-table-column prop="Specification_Or_Type" label="规格" min-width="160" show-overflow-tooltip />
             <el-table-column prop="Unit" label="单位" width="45" />
-            <el-table-column prop="Manufacturing_Ent_Name" label="生产企业" min-width="90" show-overflow-tooltip />
+            <el-table-column prop="Manufacturing_Ent_Name" label="生产企业" min-width="208" show-overflow-tooltip />
             <el-table-column prop="Def_No_Pkg_Coefficient" label="系数" width="55" />
             <el-table-column prop="Middle_Package_Count" label="中包装" width="70" />
             <el-table-column prop="Big_Box_Count" label="整箱" width="60" />

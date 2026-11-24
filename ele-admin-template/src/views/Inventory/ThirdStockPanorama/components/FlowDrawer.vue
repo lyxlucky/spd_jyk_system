@@ -103,7 +103,7 @@
         <el-table-column label="业务类型" width="104" align="center">
           <template slot-scope="{ row: flowRow }">{{ formatFlowType(flowRow.TYPE) }}</template>
         </el-table-column>
-        <el-table-column prop="QTY" label="数量" width="88" align="right" />
+        <el-table-column prop="QTY" label="数量" width="88" align="right" show-overflow-tooltip />
         <el-table-column prop="ORIGING_CODE" label="来源单号" min-width="130" align="center" show-overflow-tooltip />
         <el-table-column prop="BARCODE_NUMBER" label="条码/定数包号" min-width="142" align="center" show-overflow-tooltip />
         <el-table-column prop="CONSUMER" label="操作人" width="100" align="center" show-overflow-tooltip />

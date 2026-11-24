@@ -227,7 +227,7 @@ export default {
         {
           prop: 'DEPT_TWO_NAME',
           label: '科室名称',
-          minWidth: 100,
+          minWidth: 192,
           align: 'center',
           showOverflowTooltip: true
         },

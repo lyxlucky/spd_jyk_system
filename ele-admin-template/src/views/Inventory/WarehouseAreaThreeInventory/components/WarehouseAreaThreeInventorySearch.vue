@@ -296,8 +296,8 @@
         <vxe-column field="ChargeCode" title="计费编码" width="110" />
         <vxe-column field="ChargeName" title="费用名称" min-width="220" />
         <vxe-column field="PaymentChannel" title="缴费渠道" width="120" />
-        <vxe-column field="Specification" title="规格" width="160" />
-        <vxe-column field="Price" title="单价" width="90" align="right" />
+        <vxe-column field="Specification" title="规格" min-width="160" show-overflow="tooltip" />
+        <vxe-column field="Price" title="单价" width="88" align="right" show-overflow="tooltip" />
         <vxe-column field="Qty" title="HIS数量" width="90" align="right" />
         <vxe-column field="InsertQty" title="插入数量" width="90" align="right" />
         <vxe-column field="ChargeTimeText" title="HIS时间" width="140" />
@@ -327,8 +327,8 @@
         <vxe-column field="AreaName" title="库房/库区名称" width="150" />
         <vxe-column field="ChargeCode" title="计费编码" width="110" />
         <vxe-column field="ChargeName" title="费用名称" min-width="220" />
-        <vxe-column field="Specification" title="规格" width="160" />
-        <vxe-column field="Price" title="单价" width="90" align="right" />
+        <vxe-column field="Specification" title="规格" min-width="160" show-overflow="tooltip" />
+        <vxe-column field="Price" title="单价" width="88" align="right" show-overflow="tooltip" />
         <vxe-column field="Qty" title="HIS数量" width="90" align="right" />
         <vxe-column field="InsertQty" title="插入数量" width="90" align="right" />
         <vxe-column field="ChargeTimeText" title="HIS时间" width="140" />
@@ -446,8 +446,8 @@
         <vxe-column field="AreaName" title="库房/库区名称" width="150" />
         <vxe-column field="BarcodeNumber" title="定数码" width="150" />
         <vxe-column field="ChargeCode" title="计费编码" width="110" />
-        <vxe-column field="ChargeName" title="品种名称" min-width="220" />
-        <vxe-column field="Specification" title="规格" width="160" />
+        <vxe-column field="ChargeName" title="品种名称" min-width="192" show-overflow="tooltip" />
+        <vxe-column field="Specification" title="规格" min-width="160" show-overflow="tooltip" />
         <vxe-column field="Qty" title="入库数量" width="90" align="right" />
         <vxe-column field="InsertQty" title="插入数量" width="90" align="right" />
         <vxe-column field="OperateTimeText" title="入库时间" width="140" />
@@ -481,8 +481,8 @@
         <vxe-column field="AreaName" title="库房/库区名称" width="150" />
         <vxe-column field="BarcodeNumber" title="定数码" width="150" />
         <vxe-column field="ChargeCode" title="计费编码" width="110" />
-        <vxe-column field="ChargeName" title="品种名称" min-width="220" />
-        <vxe-column field="Specification" title="规格" width="160" />
+        <vxe-column field="ChargeName" title="品种名称" min-width="192" show-overflow="tooltip" />
+        <vxe-column field="Specification" title="规格" min-width="160" show-overflow="tooltip" />
         <vxe-column field="Qty" title="入库数量" width="90" align="right" />
         <vxe-column field="InsertQty" title="插入数量" width="90" align="right" />
         <vxe-column field="OperateTimeText" title="入库时间" width="140" />

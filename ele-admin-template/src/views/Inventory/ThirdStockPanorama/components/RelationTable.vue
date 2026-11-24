@@ -27,7 +27,7 @@
         <el-table-column
           prop="VARIETIE_NAME"
           label="品种名称"
-          min-width="180"
+          min-width="192"
           align="left"
           show-overflow-tooltip
         />
@@ -41,9 +41,9 @@
         />
         <el-table-column prop="VARIETIE_CODE_NEW" label="品种编码" width="132" align="center" show-overflow-tooltip />
         <el-table-column prop="CHARGE_CODE" label="计费编码" width="132" align="center" show-overflow-tooltip />
-        <el-table-column prop="SPECIFICATION_OR_TYPE" label="规格型号" min-width="150" align="left" show-overflow-tooltip />
-        <el-table-column prop="MANUFACTURING_ENT_NAME" label="生产企业" min-width="180" align="left" show-overflow-tooltip />
-        <el-table-column prop="UNIT" label="单位" width="76" align="center" />
+        <el-table-column prop="SPECIFICATION_OR_TYPE" label="规格型号" min-width="160" align="left" show-overflow-tooltip />
+        <el-table-column prop="MANUFACTURING_ENT_NAME" label="生产企业" min-width="208" align="left" show-overflow-tooltip />
+        <el-table-column prop="UNIT" label="单位" width="76" align="center" show-overflow-tooltip />
         <el-table-column label="库存状态" width="94" align="center">
           <template slot-scope="{ row }">
             <el-tag size="mini" :type="stockTagType(row)">{{ stockStatusText(row) }}</el-tag>

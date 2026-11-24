@@ -174,14 +174,14 @@
             label: '品种名称',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 230
+            minWidth: 192
           },
           {
             prop: 'SPECIFICATION_OR_TYPE',
             label: '规格',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 180
+            minWidth: 160
           },
           {
             prop: 'COEFFICIENT',
@@ -195,7 +195,7 @@
             label: '单位',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 100
+            width: 76
           },
           {
             prop: 'APPROVAL_NUMBER',
@@ -209,7 +209,7 @@
             label: '生产企业',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 140
+            minWidth: 208
           },
           {
             prop: 'DEF_NO_PKG_CODE',

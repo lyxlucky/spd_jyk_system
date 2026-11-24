@@ -139,11 +139,11 @@
       <el-table :data="selectedRowsPreview" size="mini" border max-height="120">
         <el-table-column prop="DIY_STORAGE" label="库房名称" width="90" />
         <el-table-column prop="Varietie_Code_New" label="品种编码" width="100" />
-        <el-table-column prop="Varietie_Name" label="品种全称" min-width="160" show-overflow-tooltip />
+        <el-table-column prop="Varietie_Name" label="品种全称" min-width="192" show-overflow-tooltip />
         <el-table-column prop="Approval_Number" label="批准文号" width="120" show-overflow-tooltip />
         <el-table-column prop="Registration_Issuing_Date" label="发证日期" width="110" />
         <el-table-column prop="Registration_Valid_Date" label="有效到期" width="110" />
-        <el-table-column prop="Supplier_Name" label="供应商" min-width="120" show-overflow-tooltip />
+        <el-table-column prop="Supplier_Name" label="供应商" min-width="208" show-overflow-tooltip />
         <el-table-column prop="Prod_Big_Class_Name" label="产品类型" width="100" show-overflow-tooltip />
         <el-table-column prop="Mgmt_cat_Name" label="管理类别" width="100" show-overflow-tooltip />
         <el-table-column prop="Regulatory_Cat_Name" label="监管类别" width="100" show-overflow-tooltip />

@@ -175,7 +175,7 @@ export default {
       columns: [
         { prop: 'APPROVAL_NUMBER', label: '注册证号', minWidth: 160, showOverflowTooltip: true },
         { prop: 'PROD_REGISTRATION_NAME', label: '注册证名称', minWidth: 180, showOverflowTooltip: true },
-        { prop: 'MANUFACTURING_ENT_NAME', label: '生产企业', minWidth: 180, showOverflowTooltip: true },
+        { prop: 'MANUFACTURING_ENT_NAME', label: '生产企业', minWidth: 208, showOverflowTooltip: true },
         { prop: 'GOODS_QTY', label: '筛选周期用量', minWidth: 120, align: 'center', slot: 'goodsQty' },
         { prop: 'AA_AVG_GOODS_QTY', label: '筛选周期月平均用量', minWidth: 150, align: 'center' },
         { prop: 'SUM_GOODS_QTY', label: '近一年用量', minWidth: 120, align: 'center' },

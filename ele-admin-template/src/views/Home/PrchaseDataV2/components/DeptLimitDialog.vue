@@ -42,7 +42,7 @@
       </el-table-column>
       <el-table-column prop="GOODS_QTY" label="科室已用量" width="110" align="right" sortable />
       <el-table-column prop="WCL" label="科室完成率%" width="110" align="right" sortable />
-      <el-table-column prop="PRICE" label="单价" width="90" sortable />
+      <el-table-column prop="PRICE" label="单价" width="88" sortable show-overflow-tooltip />
       <el-table-column label="起始日期" width="105">
         <template slot-scope="{ row }">{{ fmtDate10(row.BUY_TIME) }}</template>
       </el-table-column>
@@ -54,7 +54,7 @@
       <el-table-column prop="XM_TYPE" label="项目类型" min-width="110" show-overflow-tooltip />
       <el-table-column prop="APPROVAL_NUMBER" label="注册证号" min-width="130" show-overflow-tooltip />
       <el-table-column prop="PROD_REGISTRATION_NAME" label="注册证名称" min-width="150" show-overflow-tooltip />
-      <el-table-column prop="MANUFACTURING_ENT_NAME" label="生产企业" min-width="150" show-overflow-tooltip />
+      <el-table-column prop="MANUFACTURING_ENT_NAME" label="生产企业" min-width="208" show-overflow-tooltip />
       <el-table-column label="操作" width="90" fixed="right">
         <template slot-scope="{ row }">
           <el-button type="danger" size="mini" plain @click="removeRow(row)">删除</el-button>

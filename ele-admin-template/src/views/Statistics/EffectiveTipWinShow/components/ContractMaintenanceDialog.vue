@@ -17,11 +17,11 @@
     <el-button size="small" type="primary" icon="el-icon-search" @click="load">查询</el-button>
     <el-table v-loading="loading" :data="rows" border stripe height="480" size="small">
       <el-table-column type="index" label="序号" width="50" />
-      <el-table-column prop="Supplier_Name" label="供应商名称" min-width="140" />
+      <el-table-column prop="Supplier_Name" label="供应商名称" min-width="208" show-overflow-tooltip />
       <el-table-column prop="Contract_Code" label="合同编码" min-width="120" />
       <el-table-column prop="Contract_Name" label="合同名称" min-width="120" />
       <el-table-column prop="Varietie_Code_New" label="品种(材料)编码" min-width="160" />
-      <el-table-column prop="Varietie_Name" label="品种全称" min-width="140" />
+      <el-table-column prop="Varietie_Name" label="品种全称" min-width="192" show-overflow-tooltip />
       <el-table-column prop="Specification_Or_Type" label="型号/规格" min-width="140" />
       <el-table-column prop="Unit" label="单位" width="60" />
       <el-table-column prop="Manufacturing_Ent_Name" label="生产企业名称" min-width="140" />

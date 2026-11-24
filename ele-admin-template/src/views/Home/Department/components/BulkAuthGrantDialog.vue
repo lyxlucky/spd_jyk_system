@@ -18,7 +18,7 @@
         empty-text="点击下方品种行查看注册/证照信息"
       >
         <el-table-column prop="Varietie_Code" label="品种（材料）编码" width="150" show-overflow-tooltip />
-        <el-table-column prop="Varietie_Name" label="品种全称" min-width="140" show-overflow-tooltip />
+        <el-table-column prop="Varietie_Name" label="品种全称" min-width="192" show-overflow-tooltip />
         <el-table-column prop="Approval_Number" label="批准文号" width="120" show-overflow-tooltip />
         <el-table-column label="发证日期" width="110">
           <template slot-scope="{ row }">{{ fmtShortDate(row.Registration_Issuing_Date) }}</template>
@@ -60,7 +60,7 @@
         >
           <el-table-column type="selection" width="45" :selectable="leftRowSelectable" align="center" />
           <el-table-column prop="Varietie_Code_New" label="品种（材料）编码" width="140" show-overflow-tooltip />
-          <el-table-column prop="Varietie_Name" label="品种全称" min-width="160" show-overflow-tooltip />
+          <el-table-column prop="Varietie_Name" label="品种全称" min-width="192" show-overflow-tooltip />
           <el-table-column prop="Specification_Or_Type" label="型号/规格" width="110" show-overflow-tooltip />
           <el-table-column prop="Unit" label="单位" width="60" />
           <el-table-column prop="Price" label="中标价" width="80" align="right" />
@@ -103,7 +103,7 @@
         >
           <el-table-column type="selection" width="45" align="center" />
           <el-table-column prop="Varietie_Code_New" label="品种（材料）编码" width="140" show-overflow-tooltip />
-          <el-table-column prop="Varietie_Name" label="品种全称" min-width="140" show-overflow-tooltip />
+          <el-table-column prop="Varietie_Name" label="品种全称" min-width="192" show-overflow-tooltip />
           <el-table-column prop="Specification_Or_Type" label="型号/规格" width="100" show-overflow-tooltip />
           <el-table-column prop="Unit" label="单位" width="60" />
           <el-table-column prop="Price" label="中标价" width="80" align="right" />
