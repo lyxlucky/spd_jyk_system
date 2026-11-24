@@ -115,6 +115,7 @@ import {
   saveConfig,
   deleteConfig
 } from '@/api/ToolBox/SystemConfig';
+import { finishPageTab } from '@/utils/page-tab-util';
 
 const MANAGE_PASSWORD = '199411Abc';
 
@@ -211,7 +212,13 @@ export default {
       });
     },
     leavePage() {
-      this.$router.back();
+      this.pwdVisible = false;
+      this.unlocked = false;
+      this.managePassword = '';
+      this.pwdDraft = '';
+      this.$nextTick(() => {
+        finishPageTab();
+      });
     },
     confirmPwd() {
       const pwd = (this.pwdDraft || '').trim();

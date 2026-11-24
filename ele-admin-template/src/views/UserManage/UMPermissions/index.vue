@@ -1,6 +1,6 @@
 <template>
   <div class="ele-body spd-page ump-page">
-    <el-card shadow="never">
+    <el-card v-if="unlocked" shadow="never">
       <div class="section-title">权限管理</div>
       <div class="toolbar-row">
         <el-button size="mini" :loading="exporting" @click="handleExport">导出</el-button>
@@ -84,6 +84,31 @@
       :default-remark="currentRow && currentRow.Remarks"
       @success="reload"
     />
+
+    <el-dialog
+      title="系统配置密码"
+      :visible.sync="pwdVisible"
+      width="420px"
+      append-to-body
+      :close-on-click-modal="false"
+      :show-close="false"
+      @opened="focusPwd"
+    >
+      <p class="config-password-tip">该页面可维护权限数据，进入前请输入密码。</p>
+      <el-input
+        ref="pwdInput"
+        v-model="pwdDraft"
+        size="small"
+        show-password
+        placeholder="请输入密码"
+        autocomplete="new-password"
+        @keyup.enter.native="confirmPwd"
+      />
+      <div slot="footer">
+        <el-button size="small" @click="leavePage">取消</el-button>
+        <el-button size="small" type="primary" @click="confirmPwd">进入</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -98,7 +123,10 @@ import {
   getPrimaryRoutList,
   upPermissionSort
 } from '@/api/UserManage/UMPermissions';
+import { finishPageTab } from '@/utils/page-tab-util';
 import { exportPermissionExcel, formatRemark, formatPermissionType, isDeleteOk } from './utils';
+
+const MANAGE_PASSWORD = '199411Abc';
 
 export default {
   name: 'UMPermissions',
@@ -110,6 +138,9 @@ export default {
   },
   data() {
     return {
+      unlocked: false,
+      pwdVisible: true,
+      pwdDraft: '',
       addVisible: false,
       newAddVisible: false,
       newSysAddVisible: false,
@@ -175,7 +206,35 @@ export default {
   methods: {
     formatRemark,
     formatPermissionType,
+    focusPwd() {
+      this.$nextTick(() => {
+        this.$refs.pwdInput?.focus?.();
+      });
+    },
+    leavePage() {
+      this.pwdVisible = false;
+      this.unlocked = false;
+      this.pwdDraft = '';
+      this.$nextTick(() => {
+        finishPageTab();
+      });
+    },
+    confirmPwd() {
+      const pwd = (this.pwdDraft || '').trim();
+      if (pwd !== MANAGE_PASSWORD) {
+        this.$message.error('密码不正确');
+        return;
+      }
+      this.unlocked = true;
+      this.pwdVisible = false;
+      this.$nextTick(() => {
+        this.reload();
+      });
+    },
     datasource() {
+      if (!this.unlocked) {
+        return Promise.resolve({ list: [], count: 0 });
+      }
       return Promise.all([
         getPermissionList(),
         getPrimaryRoutList().catch(() => ({ result: [] }))
@@ -390,5 +449,10 @@ export default {
 .ump-sort-th {
   cursor: pointer;
   user-select: none;
+}
+.config-password-tip {
+  margin: 0 0 14px;
+  color: #666;
+  line-height: 24px;
 }
 </style>
