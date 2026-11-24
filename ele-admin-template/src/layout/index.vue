@@ -640,15 +640,28 @@
         color: inherit;
         line-height: inherit;
       }
+      /*
+       * Element 默认 el-icon 宽 24px，SVG 被我们压成 18px，
+       * 同级菜单会看起来「有的图标和文字空一截」。统一成同一槽位。
+       */
+      .el-menu-item > i:not(.el-submenu__icon-arrow),
       .el-menu-item > a > i,
-      .el-menu-item > a > .menu-svg-icon,
+      .el-menu-item [class^='el-icon-'],
+      .el-menu-item [class*=' el-icon-'],
+      .el-menu-item .menu-svg-icon,
       .el-submenu__title > i:not(.el-submenu__icon-arrow),
-      .el-submenu__title > .menu-svg-icon {
-        flex: 0 0 18px;
-        width: 18px;
-        margin-right: 8px;
+      .el-submenu__title [class^='el-icon-'],
+      .el-submenu__title [class*=' el-icon-'],
+      .el-submenu__title .menu-svg-icon {
+        flex: 0 0 18px !important;
+        width: 18px !important;
+        min-width: 18px !important;
+        height: 18px;
+        margin-right: 8px !important;
+        font-size: 16px !important;
         text-align: center;
-        line-height: 1;
+        line-height: 1 !important;
+        vertical-align: middle;
       }
       .el-submenu__title > .el-submenu__icon-arrow {
         right: 12px;

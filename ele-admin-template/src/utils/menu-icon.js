@@ -86,6 +86,16 @@ export function normalizePermissionIcons(list, config = {}) {
     if (!item) {
       return;
     }
+    // 库里标题偶有前后空格，侧栏会看起来像图标和文字中间空一截
+    if (typeof item.title === 'string') {
+      item.title = item.title.trim();
+    }
+    if (typeof item.PERMISSION_NAME === 'string') {
+      item.PERMISSION_NAME = item.PERMISSION_NAME.trim();
+    }
+    if (typeof item.Permission_Name === 'string') {
+      item.Permission_Name = item.Permission_Name.trim();
+    }
     const title = item.title || item.PERMISSION_NAME || '';
     const path = item.component || item.path || item.PRIMARY_ROUT_URL || '';
     const level = item.PID == null || item.PID === '' ? 0 : 1;
@@ -110,6 +120,9 @@ export function ensureMenuIcons(list, config = {}) {
         return;
       }
       item.meta = item.meta || {};
+      if (typeof item.meta.title === 'string') {
+        item.meta.title = item.meta.title.trim();
+      }
       const title = item.meta.title || '';
       const path = item.path || '';
       const result = resolveMenuIcon(item.meta.icon, { title, path, level, config });
