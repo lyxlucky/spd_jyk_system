@@ -10,7 +10,8 @@ export const dpdHpFlags = {
   isCg: HOME_HP === 'szlh',
   isLg: HOME_HP === 'lg',
   isHideYw: HOME_HP === 'szse' || HOME_HP === 'se2',
-  useRowStorage: ['szse', 'se2', 'szse_dp', 'szse_lh'].includes(HOME_HP)
+  useRowStorage: ['szse', 'se2', 'szse_dp', 'szse_lh'].includes(HOME_HP),
+  isYzrm: HOME_HP === 'yzrm'
 };
 
 export function selectionCol() {
@@ -248,6 +249,8 @@ export function buildPlanColumns() {
     { field: 'Center_Outside_Goods_Qty', title: '院外散货数量', width: 100, align: 'center', hide: f.isHideYw },
     { field: 'Center_Inside_Def_Qty', title: '院内定数包', width: 100, align: 'center' },
     { field: 'Center_Outside_Def_Qty', title: '院外定数包', width: 100, align: 'center', hide: f.isHideYw },
+    { field: 'Dept_Def_Qty', title: '科室定数包', width: 100, align: 'center', hide: !f.isYzrm },
+    { field: 'Dept_Goods_Qty', title: '科室散货', width: 100, align: 'center', hide: !f.isYzrm },
     { field: 'BH_NUM', title: '备货数（散）', width: 100, align: 'center', slots: { default: 'planQty' } },
     { field: 'SUPPLIER_NAME', title: '供应商', width: 120, align: 'center', showOverflow: overflow },
     { field: 'CONTRACT_CODE', title: '合同编码', width: 120, align: 'center', showOverflow: overflow },
@@ -420,6 +423,9 @@ export function exportPlanTable(rows) {
     '唯一ID',
     '合同编码'
   ];
+  if (f.isYzrm) {
+    headers.push('科室定数包', '科室散货');
+  }
   if (f.isJp) {
     headers.push('耗材分类', '科室收货数量', 'HRP订单号');
   }
@@ -463,6 +469,9 @@ export function exportPlanTable(rows) {
       row.Dtl_Id,
       row.CONTRACT_CODE
     ];
+    if (f.isYzrm) {
+      line.push(row.Dept_Def_Qty, row.Dept_Goods_Qty);
+    }
     if (f.isJp) {
       line.push(row.CLASSIFIC_NAME, row.GET_QTY, row.HRP_ORDER_NO);
     }
