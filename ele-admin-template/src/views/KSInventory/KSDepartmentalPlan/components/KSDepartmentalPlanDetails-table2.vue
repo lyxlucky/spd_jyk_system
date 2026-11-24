@@ -44,7 +44,7 @@
           :selection.sync="selection"
           :height="tableHeight"
           full-height="calc(100vh - 100px)"
-          cache-key="KSDepartmentalPlanDetailTable"
+          cache-key="KSDepartmentalPlanDetailTable_v5"
           :row-class-name="detailRowClassName"
           @selection-change="onSelectionChange"
         >
@@ -364,7 +364,7 @@
     },
     data() {
       return {
-        // 表格列配置
+        // 表格列配置（默认顺序对齐列展示配置）
         columns: [
           {
             columnKey: 'selection',
@@ -385,6 +385,13 @@
             ...(HOME_HP !== 'stzyyy' ? { fixed: 'left' } : {})
           },
           {
+            columnKey: 'IMAGE_BUTTON',
+            slot: 'IMAGE_BUTTON',
+            label: '图片',
+            align: 'center',
+            width: 80
+          },
+          {
             columnKey: 'DTL_IS_DELETE',
             prop: 'DTL_IS_DELETE',
             slot: 'DTL_IS_DELETE',
@@ -393,16 +400,30 @@
             width: 90,
             ...(HOME_HP !== 'stzyyy' ? { fixed: 'left' } : {})
           },
-          // {
-          //   columnKey: 'action',
-          //   label: '操作',
-          //   width: 80,
-          //   align: 'center',
-          //   resizable: false,
-          //   slot: 'action',
-          //   showOverflowTooltip: true,
-          //   fixed: 'right'
-          // },
+          {
+            columnKey: 'PlanQty',
+            slot: 'PlanQty',
+            label: '申领数量',
+            align: 'center',
+            showOverflowTooltip: true,
+            width: 160,
+            ...(HOME_HP !== 'stzyyy' ? { fixed: 'left' } : {})
+          },
+          {
+            prop: 'Unit',
+            label: '单位',
+            align: 'center',
+            showOverflowTooltip: true,
+            width: 80
+          },
+          {
+            slot: 'QUANITY',
+            prop: 'QUANITY',
+            label: '收货数量',
+            align: 'center',
+            showOverflowTooltip: true,
+            width: 150
+          },
           {
             columnKey: 'VarCode',
             prop: 'VarCode',
@@ -412,62 +433,19 @@
             showOverflowTooltip: true,
             width: 150
           },
+          // {
+          //   prop: 'TJ_QTY',
+          //   label: '提交数量',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   width: 120
+          // },
           {
             prop: 'CHARGING_CODE',
             label: '收费编码',
             align: 'center',
             showOverflowTooltip: true,
             width: 120
-          },
-
-          {
-            prop: 'ITEM_NAME',
-            label: '科研费用名称',
-            align: 'center',
-            showOverflowTooltip: true,
-            width: 150
-          },
-          {
-            // prop: 'VarCode',
-            slot: 'QUANITY',
-            prop: 'QUANITY',
-            label: '收货数量',
-            align: 'center',
-            showOverflowTooltip: true,
-            width: 150
-          },
-          // {
-          //   prop: 'DEPT_ZDY_VARIETIE_CODE',
-          //   label: '自定义编码',
-
-          //   align: 'center',
-          //   showOverflowTooltip: true,
-          //   width: 120,
-          //   show: false,
-          //   formatter: (row, column, cellValue) => {
-          //     if (cellValue == null) {
-          //       return '未定义';
-          //     }
-          //     return cellValue;
-          //   }
-          // },
-          {
-            prop: 'CONTRACT_TYPE',
-            label: '合同类型',
-
-            align: 'center',
-            showOverflowTooltip: true,
-            width: 110,
-            show: false,
-            formatter: (row, column, cellValue) => {
-              if (cellValue == 2) {
-                return '临采';
-              } else if (cellValue == 1) {
-                return '中标';
-              } else {
-                return '-';
-              }
-            }
           },
           {
             prop: 'VarName',
@@ -498,6 +476,63 @@
             width: 180
           },
           {
+            prop: 'PKG_SPEC',
+            label: '包装规格',
+            align: 'center',
+            showOverflowTooltip: true,
+            width: 200,
+            formatter: (row) => this.formatPkgSpec(row)
+          },
+          {
+            prop: 'Day_Consume_Qty',
+            label: '月均用量',
+            align: 'center',
+            showOverflowTooltip: true,
+            width: 150
+          },
+          {
+            prop: 'StockQty',
+            label: '中心库库存',
+            align: 'center',
+            showOverflowTooltip: true,
+            width: 120
+          },
+          {
+            columnKey: 'REGISTRATION_VALID_DATE',
+            slot: 'REGISTRATION_VALID_DATE',
+            label: '注册证到期',
+            align: 'center',
+            showOverflowTooltip: true,
+            width: 120,
+            show: HOME_HP == 'bdrm'
+          },
+          {
+            columnKey: 'DET_CONTRACT_END',
+            prop: 'DET_CONTRACT_END',
+            slot: 'DET_CONTRACT_END',
+            label: '合同明细到期',
+            align: 'center',
+            showOverflowTooltip: true,
+            width: 120
+          },
+          {
+            prop: 'CONTRACT_TYPE',
+            label: '合同类型',
+            align: 'center',
+            showOverflowTooltip: true,
+            width: 110,
+            show: false,
+            formatter: (row, column, cellValue) => {
+              if (cellValue == 2) {
+                return '临采';
+              } else if (cellValue == 1) {
+                return '中标';
+              } else {
+                return '-';
+              }
+            }
+          },
+          {
             prop: 'Brand',
             label: '品牌',
             align: 'center',
@@ -521,67 +556,8 @@
             width: 90
           },
           {
-            columnKey: 'DET_CONTRACT_END',
-            prop: 'DET_CONTRACT_END',
-            slot: 'DET_CONTRACT_END',
-            label: '合同明细到期',
-            align: 'center',
-            showOverflowTooltip: true,
-            width: 120
-          },
-          // {
-          //   prop: 'TempQty',
-          //   label: '中心库库存',
-
-          //   align: 'center',
-          //   showOverflowTooltip: true,
-          //   width: 110
-          // },
-          {
-            prop: 'Day_Consume_Qty',
-            label: '平均用量(默认近30天)  ',
-
-            align: 'center',
-            showOverflowTooltip: true,
-            width: 150
-          },
-          {
-            prop: 'StockQty',
-            label: '中心库库存',
-
-            align: 'center',
-            showOverflowTooltip: true,
-            width: 120
-          },
-          {
-            prop: 'TJ_QTY',
-            label: '提交数量',
-
-            align: 'center',
-            showOverflowTooltip: true,
-            width: 80
-          },
-          {
-            columnKey: 'PlanQty',
-            slot: 'PlanQty',
-            label: '实际申领数量',
-            align: 'center',
-            showOverflowTooltip: true,
-            width: 160,
-            ...(HOME_HP !== 'stzyyy' ? { fixed: 'left' } : {})
-          },
-          {
-            prop: 'Unit',
-            label: '单位',
-
-            align: 'center',
-            showOverflowTooltip: true,
-            width: 80
-          },
-          {
             prop: 'Price',
             label: '结算价',
-
             align: 'center',
             showOverflowTooltip: true,
             width: 80,
@@ -594,22 +570,6 @@
             prop: 'PAG_TYPE',
             slot: 'PAG_TYPE',
             label: '包装规格',
-            align: 'center',
-            showOverflowTooltip: true,
-            width: 110
-          },
-          {
-            prop:"BigBoxCount",
-            // prop: 'PAG_TYPE',
-            label: '大包装数量',
-            align: 'center',
-            showOverflowTooltip: true,
-            width: 110
-          },
-          {
-            prop:"MinBoxCount",
-            // prop: 'PAG_TYPE',
-            label: '中包装数量',
             align: 'center',
             showOverflowTooltip: true,
             width: 110
@@ -629,7 +589,6 @@
           {
             prop: 'IS_NEED_TWO_APP',
             label: '二级审批',
-
             align: 'center',
             showOverflowTooltip: true,
             width: 110,
@@ -652,17 +611,24 @@
             }
           },
           {
-            columnKey: 'IMAGE_BUTTON',
-            slot: 'IMAGE_BUTTON',
-            label: '图片',
+            prop: 'ITEM_NAME',
+            label: '科研费用名称',
             align: 'center',
-            width: 80
+            showOverflowTooltip: true,
+            width: 150
           },
           {
             columnKey: 'REMARK',
             prop: 'REMARK',
             slot: 'REMARK',
             label: '备注',
+            align: 'center',
+            showOverflowTooltip: true,
+            width: 110
+          },
+          {
+            prop: 'SPDBZ',
+            label: 'SPD备注',
             align: 'center',
             showOverflowTooltip: true,
             width: 110
@@ -675,56 +641,7 @@
             showOverflowTooltip: true,
             width: 110,
             show: HOME_HP == 'bdrm'
-          },
-          {
-            prop: 'SPDBZ',
-            label: 'SPD备注',
-
-            align: 'center',
-            showOverflowTooltip: true,
-            width: 110
-          },
-          {
-            columnKey: 'REGISTRATION_VALID_DATE',
-            slot: 'REGISTRATION_VALID_DATE',
-            label: '注册证到期',
-            align: 'center',
-            showOverflowTooltip: true,
-            width: 120,
-            show: HOME_HP == 'bdrm'
-          },
-          // {
-          //   slot: 'MAN_XKZ_END',
-          //   label: '生产许可证到期',
-          //   align: 'center',
-          //   showOverflowTooltip: true,
-          //   width: 140,
-          //   show: HOME_HP == 'bdrm'
-          // },
-          // {
-          //   slot: 'AUTH_VALID',
-          //   label: '品种授权到期',
-          //   align: 'center',
-          //   showOverflowTooltip: true,
-          //   width: 120,
-          //   show: HOME_HP == 'bdrm'
-          // },
-          // {
-          //   slot: 'BUSINESS_LICENSE_VALID_DATE2',
-          //   label: '供应商经营许可证',
-          //   align: 'center',
-          //   showOverflowTooltip: true,
-          //   width: 150,
-          //   show: HOME_HP == 'bdrm'
-          // },
-          // {
-          //   slot: 'BUSINESS_LICENSE_VALID_DATE',
-          //   label: '集配商经营许可证',
-          //   align: 'center',
-          //   showOverflowTooltip: true,
-          //   width: 150,
-          //   show: HOME_HP == 'bdrm'
-          // }
+          }
         ],
         // 固定高度，不随窗口缩小重算（对齐「缩窗靠滚动、布局不变」）
         tableHeight: 320,
@@ -766,6 +683,24 @@
       formatDate(date) {
         if (!date) return '-';
         return this.$moment(date).format('YYYY-MM-DD');
+      },
+      /** 单档包装：始终 数量/单位 */
+      formatPkgQtyUnit(qty, unit) {
+        const q =
+          qty == null || qty === '' ? '' : String(qty).trim();
+        const u =
+          unit == null || unit === '' ? '' : String(unit).trim();
+        if (!q && !u) return '';
+        return `${q || '0'}/${u || '-'}`;
+      },
+      /** 大、中、小：数量/单位，数量/单位，数量/单位 */
+      formatPkgSpec(row) {
+        const parts = [
+          this.formatPkgQtyUnit(row.BigBoxCount, row.BIG_BOX_UNIT),
+          this.formatPkgQtyUnit(row.MinBoxCount, row.MIDDLE_PACKAGE_UNIT),
+          this.formatPkgQtyUnit(row.MIN_PKG_NUM, row.MIN_PKG_UNIT)
+        ].filter(Boolean);
+        return parts.length ? parts.join('，') : '-';
       },
       isDateExpired(date) {
         if (!date) return false;
