@@ -404,7 +404,7 @@ import {
   validateGoodsApplySelection,
   validatePickListSelection
 } from '../utils';
-
+import { HOME_HP } from '@/config/setting';
 export default {
   name: 'PlanTableTab',
   components: {
@@ -468,7 +468,8 @@ export default {
       limit: 99999,
       pageSizes: [20, 50, 100, 300, 99999],
       // 切换菜单 keep-alive 时还原表格滚动位置
-      savedScroll: { top: 0, left: 0 }
+      savedScroll: { top: 0, left: 0 },
+      isYzrm: HOME_HP === 'yzrm'
     };
   },
   computed: {
@@ -550,6 +551,7 @@ export default {
         const res = await searchDeptPlanMsg({
           ...this.where,
           STORAGE_ID: this.localStorageId,
+          isQueryDeptStock: this.isYzrm,
           page: this.page || 1,
           // 对齐老系统 limits/limit：默认尽量一页拉全，也可切 20/50/100/300
           size: this.limit || 99999
@@ -746,6 +748,7 @@ export default {
         const res = await searchDeptPlanMsg({
           ...this.where,
           STORAGE_ID: this.localStorageId,
+          isQueryDeptStock: this.isYzrm,
           size: 999999
         });
         exportPlanTable(res.result || []);
