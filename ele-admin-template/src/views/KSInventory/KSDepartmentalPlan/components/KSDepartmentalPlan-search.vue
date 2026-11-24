@@ -243,7 +243,7 @@
       // zou 结束时间多加一天
       const currentDate = this.$moment().add(1, 'days').format('YYYY-MM-DD');
       const threeMonthsAgo = this.$moment()
-        .subtract(3, 'months')
+        .subtract(1, 'months')
         .format('YYYY-MM-DD');
       this.where.Start = threeMonthsAgo;
       this.where.End = currentDate;

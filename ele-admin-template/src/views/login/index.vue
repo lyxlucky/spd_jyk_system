@@ -394,7 +394,8 @@ export default {
   margin: 0;
   padding: 32px 30px 18px;
   box-sizing: border-box;
-  overflow: hidden;
+  /* 勿 hidden：校验文案是 absolute，会被裁掉，100% 缩放时更明显 */
+  overflow: visible;
   background: rgba(247, 250, 253, 0.92);
   border: 1px solid rgba(154, 188, 224, 0.85);
   border-radius: 1px;
@@ -403,8 +404,14 @@ export default {
     inset 0 0 0 1px rgba(255, 255, 255, 0.55);
   backdrop-filter: blur(8px);
 
+  /* Element 错误提示为 absolute，需预留下方空间，否则压住下一行输入框 */
   :deep(.el-form-item) {
-    margin-bottom: 18px;
+    margin-bottom: 28px;
+  }
+
+  :deep(.el-form-item__error) {
+    padding-top: 2px;
+    z-index: 2;
   }
 
   :deep(.el-input__inner) {
@@ -433,6 +440,8 @@ export default {
   flex-direction: column;
   justify-content: center;
   min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 .login-mark {
@@ -607,7 +616,7 @@ export default {
   }
 
   .login-card :deep(.el-form-item) {
-    margin-bottom: 10px;
+    margin-bottom: 24px;
   }
 
   .login-card :deep(.el-input__inner),

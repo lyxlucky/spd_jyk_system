@@ -165,7 +165,8 @@
           {
             columnKey: 'index',
             type: 'index',
-            width: 45,
+            label: '序',
+            width: 55,
             align: 'center',
             showOverflowTooltip: true
           },

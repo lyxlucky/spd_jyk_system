@@ -215,6 +215,7 @@
           {
             columnKey: 'index',
             type: 'index',
+            label: '序',
             width: 45,
             align: 'center',
             showOverflowTooltip: true,
