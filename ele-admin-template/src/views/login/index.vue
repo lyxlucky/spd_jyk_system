@@ -1,78 +1,84 @@
 <template>
-  <div class="login-page" :style="pageStyle">
-    <div class="login-brand">
-      <img :src="logo" alt="医院标识" />
-    </div>
-    <div class="login-lang">
-      <i18n-icon :icon-style="{ fontSize: '20px', color: '#fff', cursor: 'pointer' }" />
-    </div>
-
-    <div class="login-stage">
-    <el-form
-      ref="form"
-      size="large"
-      :model="form"
-      :rules="rules"
-      class="login-card"
-      @keyup.enter.native="submit"
-    >
-      <img
-        class="login-mark"
-        :class="{ 'is-seal': !!seal }"
-        :src="seal || logo"
-        alt="医院标识"
-      />
-      <div class="login-heading">医疗机构医疗器械供应链管理系统</div>
-      <div class="login-heading-sub">(SPD)</div>
-
-      <el-form-item prop="username">
-        <el-input
-          clearable
-          autocomplete="username"
-          v-model="form.username"
-          placeholder="账号"
-        />
-      </el-form-item>
-      <el-form-item prop="password">
-        <el-input
-          show-password
-          autocomplete="new-password"
-          v-model="form.password"
-          placeholder="密码"
-        />
-      </el-form-item>
-      <el-form-item prop="code">
-        <div class="login-input-group">
-          <el-input clearable v-model="form.code" placeholder="验证码" />
-          <img
-            alt="验证码"
-            v-if="captcha"
-            :src="captcha"
-            class="login-captcha"
-            @click="changeCaptcha"
-          />
-        </div>
-      </el-form-item>
-      <div class="login-assist">
-        <el-checkbox v-model="form.remember">记住密码</el-checkbox>
-        <el-link type="primary" :underline="false" @click="onForget">
-          忘记密码
-        </el-link>
+  <div class="login-page">
+    <header class="login-topbar">
+      <div class="login-brand">
+        <img :src="logo" alt="医院标识" />
       </div>
-      <el-button
-        size="large"
-        type="primary"
-        class="login-btn"
-        :loading="loading"
-        @click="submit"
-      >
-        {{ loading ? $t('login.loading') : '登录' }}
-      </el-button>
-      <div class="login-meta">
-        <img class="login-meta-logo" :src="sphLogo" alt="上海医药" />
-        <span>软件版权：{{ contact.copyright }}　版本：{{ contact.version }}</span>
+    </header>
+
+    <div class="login-stage" :style="stageStyle">
+      <div class="login-card-shell">
+        <el-form
+          ref="form"
+          size="large"
+          :model="form"
+          :rules="rules"
+          class="login-card"
+          @keyup.enter.native="submit"
+        >
+          <div class="login-card-head">
+            <img
+              class="login-mark"
+              :class="{ 'is-seal': !!seal }"
+              :src="seal || logo"
+              alt="医院标识"
+            />
+            <div class="login-heading">医疗机构医疗器械供应链管理系统</div>
+            <div class="login-heading-sub">(SPD)</div>
+          </div>
+
+          <div class="login-card-body">
+            <el-form-item prop="username">
+              <el-input
+                clearable
+                autocomplete="username"
+                v-model="form.username"
+                placeholder="账号"
+              />
+            </el-form-item>
+            <el-form-item prop="password">
+              <el-input
+                show-password
+                autocomplete="new-password"
+                v-model="form.password"
+                placeholder="密码"
+              />
+            </el-form-item>
+            <el-form-item prop="code">
+              <div class="login-input-group">
+                <el-input clearable v-model="form.code" placeholder="验证码" />
+                <img
+                  alt="验证码"
+                  v-if="captcha"
+                  :src="captcha"
+                  class="login-captcha"
+                  @click="changeCaptcha"
+                />
+              </div>
+            </el-form-item>
+            <div class="login-assist">
+              <el-checkbox v-model="form.remember">记住密码</el-checkbox>
+              <el-link type="primary" :underline="false" @click="onForget">
+                忘记密码
+              </el-link>
+            </div>
+            <el-button
+              size="large"
+              type="primary"
+              class="login-btn"
+              :loading="loading"
+              @click="submit"
+            >
+              {{ loading ? $t('login.loading') : '登录' }}
+            </el-button>
+          </div>
+
+          <div class="login-meta">
+            <img class="login-meta-logo" :src="sphLogo" alt="上海医药" />
+            <span>软件版权：{{ contact.copyright }}　版本：{{ contact.version }}</span>
+          </div>
+        </el-form>
       </div>
-    </el-form>
     </div>
 
     <footer class="login-footer">
@@ -84,17 +90,15 @@
 
 <script>
 import CryptoJS from 'crypto-js';
-import I18nIcon from '@/layout/components/i18n-icon.vue';
 import { getToken } from '@/utils/token-util';
 import { login, getCaptcha, getSTORAGE, getLoginPageContact } from '@/api/login';
 import { getHospitalLogo, getHospitalSeal } from '@/config/setting';
-import sphLogo from '@/assets/logoSph.png';
+import sphLogoImg from '@/assets/logoSph.jpg';
 import { getLoginPageConfig } from '@/config/login-page';
 
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: 'Login',
-  components: { I18nIcon },
   data() {
     return {
       loading: false,
@@ -105,7 +109,8 @@ export default {
         code: ''
       },
       captcha: '',
-      contact: getLoginPageConfig()
+      contact: getLoginPageConfig(),
+      sphLogo: sphLogoImg
     };
   },
   computed: {
@@ -143,17 +148,15 @@ export default {
     seal() {
       return getHospitalSeal();
     },
-    sphLogo() {
-      return sphLogo;
-    },
-    pageStyle() {
+    stageStyle() {
       const background = this.contact && this.contact.background;
       if (!background) {
         return {};
       }
+      // 仅中间区域展示背景，按中间区域宽高比例完整缩放（不裁切）
       return {
         backgroundImage: `url(${background})`,
-        backgroundSize: 'cover',
+        backgroundSize: '100% 100%',
         backgroundPosition: 'center center',
         backgroundRepeat: 'no-repeat'
       };
@@ -310,46 +313,107 @@ export default {
   height: 100vh;
   overflow: hidden;
   box-sizing: border-box;
-  padding-top: 16px;
-  background: #1a6fb5 url('@/assets/bg-login3.jpg') center / cover no-repeat;
+  padding-top: 0;
+  background: #e8eef5;
+}
+
+/* 顶部整条白栏 */
+.login-topbar {
+  position: relative;
+  z-index: 3;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: auto;
+  padding: 4px 16px;
+  box-sizing: border-box;
+  background: #fff;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
+}
+
+.login-brand {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+
+  img {
+    display: block;
+    height: 36px;
+    width: auto;
+    max-width: 280px;
+    object-fit: contain;
+  }
 }
 
 .login-stage {
+  position: relative;
   flex: 1;
   min-height: 0;
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  padding: 16px 6vw 20px 24px;
+  padding: 18px 14vw 18px 24px;
+  background-color: #5b9fd4;
+  background-size: 100% 100%;
+  background-position: center center;
+  background-repeat: no-repeat;
+}
+
+/* 外粗框 + 内外间距 + 中间阴影光晕 */
+.login-card-shell {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  width: clamp(360px, 28vw, 440px);
+  max-width: 100%;
+  height: 86%;
+  max-height: 720px;
+  margin: 0;
+  padding: 5px;
+  box-sizing: border-box;
+  border: 3px solid #2a5f9e;
+  border-radius: 2px;
+  background: rgba(170, 205, 235, 0.28);
+  box-shadow:
+    0 0 18px rgba(30, 90, 160, 0.55),
+    0 0 42px rgba(30, 90, 160, 0.32),
+    inset 0 0 22px rgba(80, 140, 200, 0.35);
 }
 
 .login-card {
   position: relative;
-  z-index: 2;
-  width: clamp(460px, 34vw, 680px);
-  max-width: 100%;
-  max-height: 100%;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  height: 100%;
   margin: 0;
-  padding: 36px 44px 22px;
+  padding: 32px 30px 18px;
   box-sizing: border-box;
   overflow: hidden;
-  background: rgba(255, 255, 255, 0.94);
-  border: 1px solid rgba(186, 208, 230, 0.95);
-  border-radius: 8px;
-  box-shadow: 0 12px 32px rgba(16, 42, 84, 0.16);
-  backdrop-filter: blur(6px);
+  background: rgba(247, 250, 253, 0.92);
+  border: 1px solid rgba(154, 188, 224, 0.85);
+  border-radius: 1px;
+  box-shadow:
+    0 0 14px rgba(40, 100, 170, 0.22),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(8px);
 
   :deep(.el-form-item) {
-    margin-bottom: 20px;
+    margin-bottom: 18px;
   }
 
   :deep(.el-input__inner) {
-    height: 50px;
-    line-height: 50px;
-    border-radius: 6px;
-    border-color: #e4e7ed;
+    height: 46px;
+    line-height: 46px;
+    border-radius: 4px;
+    border-color: #d8dee8;
     background: #fff;
-    font-size: 16px;
+    font-size: 15px;
   }
 
   :deep(.el-input__inner::placeholder) {
@@ -357,29 +421,18 @@ export default {
   }
 }
 
-.login-brand {
-  position: absolute;
-  top: 18px;
-  left: 28px;
-  z-index: 3;
-  padding: 6px 12px;
-  background: rgba(255, 255, 255, 0.92);
-  border-radius: 8px;
-
-  img {
-    display: block;
-    height: 52px;
-    width: auto;
-    max-width: 280px;
-    object-fit: contain;
-  }
+/* 登录块内容顺序：上院徽标题 → 中表单 → 下版权 */
+.login-card-head {
+  flex: none;
+  text-align: center;
 }
 
-.login-lang {
-  position: absolute;
-  top: 22px;
-  right: 28px;
-  z-index: 3;
+.login-card-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 0;
 }
 
 .login-mark {
@@ -387,34 +440,34 @@ export default {
   width: auto;
   max-width: 78%;
   height: auto;
-  max-height: 96px;
-  margin: 0 auto 14px;
+  max-height: 88px;
+  margin: 0 auto 12px;
   object-fit: contain;
 
   &.is-seal {
-    width: 156px;
-    height: 156px;
+    width: 132px;
+    height: 132px;
     max-width: none;
     max-height: none;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
   }
 }
 
 .login-heading,
 .login-heading-sub {
   text-align: center;
-  color: #303133;
-  font-weight: 600;
-  line-height: 1.45;
+  color: #2b2f36;
+  font-weight: 700;
+  line-height: 1.4;
 }
 
 .login-heading {
-  font-size: 22px;
+  font-size: 20px;
 }
 
 .login-heading-sub {
-  margin: 4px 0 26px;
-  font-size: 20px;
+  margin: 4px 0 0;
+  font-size: 18px;
 }
 
 .login-input-group {
@@ -427,11 +480,11 @@ export default {
 }
 
 .login-captcha {
-  height: 50px;
-  width: 128px;
+  height: 46px;
+  width: 118px;
   margin-left: 10px;
-  border-radius: 6px;
-  border: 1px solid #e5e8ee;
+  border-radius: 4px;
+  border: 1px solid #d8dee8;
   background: #fff;
   cursor: pointer;
 
@@ -444,8 +497,8 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 22px;
-  font-size: 15px;
+  margin-bottom: 20px;
+  font-size: 14px;
 
   :deep(.el-checkbox__label) {
     color: #606266;
@@ -455,11 +508,12 @@ export default {
 .login-btn {
   display: block;
   width: 100%;
-  height: 52px;
+  height: 48px;
   padding: 0;
-  line-height: 52px;
-  border-radius: 6px;
-  font-size: 18px;
+  line-height: 48px;
+  border-radius: 4px;
+  font-size: 17px;
+  font-weight: 700;
   letter-spacing: 4px;
   background: #2f7cf6;
   border-color: #2f7cf6;
@@ -472,20 +526,23 @@ export default {
 }
 
 .login-meta {
+  flex: none;
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  gap: 10px;
-  margin-top: 18px;
-  color: #909399;
-  font-size: 13px;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 20px;
+  color: #7a8494;
+  font-size: 11px;
   line-height: 1.4;
 }
 
 .login-meta-logo {
   flex: none;
-  height: 28px;
+  height: 22px;
   width: auto;
+  object-fit: contain;
 }
 
 .login-footer {
@@ -498,6 +555,7 @@ export default {
   background: #fff;
   color: #303133;
   font-size: 14px;
+  font-weight: 700;
   line-height: 48px;
 }
 
@@ -524,38 +582,38 @@ export default {
   text-align: center;
 }
 
-@media screen and (max-height: 820px) {
+@media screen and (max-height: 760px) {
   .login-card {
-    padding: 22px 36px 14px;
+    padding: 20px 28px 14px;
   }
 
   .login-mark {
-    max-height: 64px;
-    margin-bottom: 8px;
+    max-height: 56px;
+    margin: 0 auto 8px;
 
     &.is-seal {
-      width: 108px;
-      height: 108px;
+      width: 96px;
+      height: 96px;
     }
   }
 
   .login-heading {
-    font-size: 18px;
+    font-size: 17px;
   }
 
   .login-heading-sub {
     margin-bottom: 14px;
-    font-size: 16px;
+    font-size: 15px;
   }
 
   .login-card :deep(.el-form-item) {
-    margin-bottom: 12px;
+    margin-bottom: 10px;
   }
 
   .login-card :deep(.el-input__inner),
   .login-captcha {
-    height: 42px;
-    line-height: 42px;
+    height: 40px;
+    line-height: 40px;
   }
 
   .login-assist {
@@ -563,19 +621,24 @@ export default {
   }
 
   .login-btn {
-    height: 44px;
-    line-height: 44px;
-    font-size: 16px;
+    height: 42px;
+    line-height: 42px;
+    font-size: 15px;
   }
 
   .login-meta {
-    margin-top: 10px;
+    padding-top: 12px;
   }
 }
 
 @media screen and (max-width: 560px) {
-  .login-page {
-    padding-top: 72px;
+  .login-topbar {
+    height: auto;
+    padding: 3px 12px;
+  }
+
+  .login-brand img {
+    height: 32px;
   }
 
   .login-stage {
@@ -583,18 +646,20 @@ export default {
     padding: 12px 16px 16px;
   }
 
-  .login-card {
+  .login-card-shell {
     width: 100%;
+    height: auto;
+    max-height: 100%;
+    padding: 5px;
+  }
+
+  .login-card {
     padding: 28px 22px 16px;
   }
 
-  .login-brand {
-    left: 12px;
-    top: 12px;
-
-    img {
-      height: 40px;
-    }
+  .login-card-body {
+    justify-content: flex-start;
+    margin-top: 18px;
   }
 
   .login-footer {

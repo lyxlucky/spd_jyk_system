@@ -54,8 +54,7 @@ const DEFAULT_STATE = Object.freeze({
   // 目录树用亮色底，配合蓝色悬停/选中更清晰（对齐参考图）
   sideStyle: SPD_PRESET.sideStyle,
   // 布局风格: side(左侧菜单树), top(顶栏导航), mix(混合导航：顶部一级 + 左侧子菜单)
-  // 默认混合菜单；已有 localStorage 缓存的用户保持原值，不被覆盖
-  layoutStyle: 'mix',
+  layoutStyle: 'side',
   // 侧栏菜单风格: default(默认), mix(双排侧栏)
   sideMenuStyle: 'default',
   // 页签风格: default(默认), dot(圆点), card(卡片)
@@ -107,8 +106,11 @@ let disableTransitionTimer, updateContentSizeTimer;
 /** 一次性迁移：历史缓存里 styleResponsive=true 的用户统一切到关闭 */
 const STYLE_RESPONSIVE_MIGRATE_KEY = 'spdStyleResponsiveFixedV1';
 
-/** 一次性迁移标记：仅把 preset 拉回 SPD；不再改写 layoutStyle，避免覆盖用户已选布局 */
+/** 一次性迁移标记：仅把 preset 拉回 SPD */
 const PRESET_SIDE_MIGRATE_KEY = 'spdPresetSideV1';
+
+/** 一次性迁移：默认改为左侧菜单布局 */
+const LAYOUT_SIDE_MIGRATE_KEY = 'spdLayoutSideV1';
 
 /**
  * 读取缓存配置
@@ -203,11 +205,16 @@ export default {
       cacheSetting('styleResponsive', false);
     }
     // 一次性迁移：只把此前因点布局选项而降级的预设拉回 SPD（灰顶白侧）
-    // 不再强制改 layoutStyle：已有缓存保持用户选择，无缓存走 DEFAULT 的 mix
     if (!cache[PRESET_SIDE_MIGRATE_KEY]) {
       state.preset = 'spd';
       cacheSetting(PRESET_SIDE_MIGRATE_KEY, true);
       cacheSetting('preset', 'spd');
+    }
+    // 一次性迁移：默认左侧菜单布局（覆盖历史 mix 缓存）
+    if (!cache[LAYOUT_SIDE_MIGRATE_KEY]) {
+      state.layoutStyle = 'side';
+      cacheSetting(LAYOUT_SIDE_MIGRATE_KEY, true);
+      cacheSetting('layoutStyle', 'side');
     }
     // 侧栏固定白底，主题色固定默认蓝，暗黑模式关闭。
     // 顶栏仍可在亮色 / 暗色 / 主色之间切换，主色即默认蓝。

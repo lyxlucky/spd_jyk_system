@@ -29,25 +29,27 @@ body.ele-body-limit-width {
   min-height: 0;
 }
 
-/* 顶部主导航：字体加粗加大、tab 间距收紧、悬停/选中蓝底白字 */
-.ele-admin-header-nav {
-  .el-menu--horizontal {
-    > .el-menu-item,
-    > .el-submenu > .el-submenu__title {
-      padding: 0 8px;
-      font-size: 13px;
-      font-weight: 600;
-    }
-    > .el-menu-item:not(.is-disabled):hover,
-    > .el-submenu:not(.is-disabled) > .el-submenu__title:hover,
-    > .el-menu-item.is-active,
-    > .el-submenu.is-active > .el-submenu__title {
-      background-color: #409eff !important;
-      color: #fff !important;
-    }
-    > .el-submenu > .el-submenu__title .el-submenu__icon-arrow {
-      color: inherit;
-    }
+/*
+ * SPD 主导航在左侧；顶栏横向菜单常为空，但 header-nav 本身是 flex:1 占位，
+ * 用来隔开左侧院徽和右侧工具。不能 display:none，否则中间没间隔。
+ * 只掏空内部滚动条内容，去掉横线，保留中间空白。
+ */
+.ele-admin-header .ele-admin-header-nav {
+  flex: 1 1 auto !important;
+  min-width: 0;
+  overflow: hidden;
+  align-self: stretch;
+
+  > .el-scrollbar {
+    height: 0 !important;
+    max-height: 0 !important;
+    overflow: hidden !important;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  > .el-scrollbar > .el-scrollbar__bar {
+    display: none !important;
   }
 }
 
