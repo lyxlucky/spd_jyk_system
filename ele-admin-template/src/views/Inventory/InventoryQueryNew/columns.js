@@ -15,7 +15,7 @@ import {
   isSkuHospital,
   isSptHospital
 } from './utils';
-
+const isYzrm = HOME_HP === 'yzrm';
 export function buildMainColumns(opts = {}) {
   const { hideStorageTwo = false, hidePdaCount = false } = opts;
   const cols = [
@@ -183,6 +183,35 @@ export function buildDetailColumns(opts = {}) {
     { prop: 'Specification_Or_Type', label: '型号/规格', minWidth: 100, showOverflowTooltip: true },
     { prop: 'Unit', label: '单位', width: 55, align: 'center' },
     { prop: 'Manufacturing_Ent_Name', label: '生产企业名称', minWidth: 120, showOverflowTooltip: true },
+    // yzrm（永州市第三人民医院）追加展示字段
+    {
+      prop: 'Approval_Number',
+      label: '注册证号',
+      minWidth: 110,
+      showOverflowTooltip: true,
+      hide: !isYzrm
+    },
+    {
+      prop: 'Classific_Name',
+      label: '耗材分类',
+      minWidth: 90,
+      showOverflowTooltip: true,
+      hide: !isYzrm
+    },
+    {
+      prop: 'Province_Platform_Code',
+      label: '招采子编码',
+      minWidth: 110,
+      showOverflowTooltip: true,
+      hide: !isYzrm
+    },
+    {
+      prop: 'Medical_Code27',
+      label: '医保27位码',
+      minWidth: 150,
+      showOverflowTooltip: true,
+      hide: !isYzrm
+    },
     { prop: 'Supplier_Name', label: '供应商', minWidth: 100, showOverflowTooltip: true },
     { prop: 'Batch', label: '生产批号', minWidth: 90, showOverflowTooltip: true },
     {

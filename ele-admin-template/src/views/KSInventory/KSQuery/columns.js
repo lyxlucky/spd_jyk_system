@@ -1,3 +1,5 @@
+import { HOME_HP } from '@/config/setting';
+const isYzrm = HOME_HP === 'yzrm';
 /** 主表列 — 科室库存汇总 */
 export function getMainColumns() {
   return [
@@ -166,6 +168,39 @@ export function getDetailColumns(showSettle = true) {
       minWidth: 150,
       showOverflowTooltip: true
     },
+    // yzrm（永州市第三人民医院）追加展示字段
+    ...(isYzrm
+      ? [
+          {
+            prop: 'Approval_Number',
+            label: '注册证号',
+            align: 'center',
+            minWidth: 110,
+            showOverflowTooltip: true
+          },
+          {
+            prop: 'CLASSIFIC_NAME',
+            label: '耗材分类',
+            align: 'center',
+            minWidth: 90,
+            showOverflowTooltip: true
+          },
+          {
+            prop: 'Province_Platform_Code',
+            label: '招采子编码',
+            align: 'center',
+            minWidth: 110,
+            showOverflowTooltip: true
+          },
+          {
+            prop: 'Medical_Code27',
+            label: '医保27位码',
+            align: 'center',
+            minWidth: 150,
+            showOverflowTooltip: true
+          }
+        ]
+      : []),
     {
       prop: 'Supplier_Name',
       label: '供应商',
