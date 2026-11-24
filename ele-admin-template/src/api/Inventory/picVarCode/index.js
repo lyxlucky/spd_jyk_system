@@ -49,6 +49,42 @@ export async function ApproveVarPic(data) {
   return Promise.reject(new Error(res.data.msg));
 }
 
+/** 北京人民 SPD 审核 */
+export async function ApproveVarPicSpdBdrm(data) {
+  const formataData = {
+    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+    json: typeof data.json === 'string' ? data.json : JSON.stringify(data.json || []),
+    appman: store.state.user.info.Nickname,
+    appstate: String(data.appstate)
+  };
+  if (data.appstate == 2) {
+    formataData.PASS_REASON = data.PASS_REASON || '';
+  }
+  const res = await request.post('/BtbGetVarietie/ApproveVarPicSpdBdrm', formdataify(formataData));
+  if (res.data.code == 200) {
+    return res.data;
+  }
+  return Promise.reject(new Error(res.data.msg));
+}
+
+/** 北京人民招采审批 */
+export async function ApproveVarPicBdrm(data) {
+  const formataData = {
+    Token: sessionStorage.getItem(TOKEN_STORE_NAME),
+    json: typeof data.json === 'string' ? data.json : JSON.stringify(data.json || []),
+    appman: store.state.user.info.Nickname,
+    appstate: String(data.appstate)
+  };
+  if (data.appstate == 2) {
+    formataData.PASS_REASON = data.PASS_REASON || '';
+  }
+  const res = await request.post('/BtbGetVarietie/ApproveVarPicBdrm', formdataify(formataData));
+  if (res.data.code == 200) {
+    return res.data;
+  }
+  return Promise.reject(new Error(res.data.msg));
+}
+
 export async function ApproveVarPicSpd(data) {
   const formataData = {
     Token: sessionStorage.getItem(TOKEN_STORE_NAME),

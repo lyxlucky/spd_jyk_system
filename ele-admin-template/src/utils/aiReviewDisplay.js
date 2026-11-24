@@ -201,6 +201,7 @@ export function procureStateLabel(state) {
   if (s === '0') return '新增';
   if (s === '1') return '已审批';
   if (s === '2') return '审批未通过';
+  if (s === '9') return '打回';
   return state || '—';
 }
 
@@ -211,6 +212,7 @@ export function spdSpStateLabel(spdState) {
   if (s === '0') return '待审核';
   if (s === '1') return '已审核';
   if (s === '2') return '审核未通过';
+  if (s === '9') return '打回';
   return s;
 }
 
