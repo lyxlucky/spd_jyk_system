@@ -131,6 +131,7 @@ export const EXPORT_HEADERS = [
   '备注',
   '消耗备注',
   ...(HOME_HP === 'stzyyy' || HOME_HP === 'chrmyy' ? ['入库单号(B2B)'] : []),
+  ...(HOME_HP === 'stzl' ? ['入库时间'] : []),
   ...(HOME_HP === 'chrmyy' || HOME_HP === 'stzyyy' || HOME_HP === 'csyy' || HOME_HP === 'stzl' || HOME_HP === 'ztzx' || HOME_HP === 'stse'
     ? ['平台合同编码', '设备号', '设备名称']
     : []),
@@ -186,6 +187,9 @@ export function rowToExportArray(r) {
   ];
   if (HOME_HP === 'stzyyy' || HOME_HP === 'chrmyy') {
     row.push(r.FPRK_NUM);
+  }
+  if (HOME_HP === 'stzl') {
+    row.push(r.RECEIVE_TIME || '');
   }
   if (HOME_HP === 'chrmyy' || HOME_HP === 'stzyyy' || HOME_HP === 'csyy' || HOME_HP === 'stzl' || HOME_HP === 'ztzx' || HOME_HP === 'stse') {
     row.push(r.PT_HTNUM, r.INSTRUMENT_CODE, r.INSTRUMENT_NAME);
