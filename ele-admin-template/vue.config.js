@@ -1,9 +1,22 @@
 const CompressionWebpackPlugin = require('compression-webpack-plugin');
 const { transformElementScss } = require('ele-admin/lib/utils/dynamic-theme');
-const path = require('path')
+const path = require('path');
+const { resolveHospitalAssetFiles } = require('./src/config/hospital-assets.js');
 
 function resolve(dir) {
-  return path.join(__dirname, dir)
+  return path.join(__dirname, dir);
+}
+
+function resolveHospitalAssetPaths(env) {
+  const files = resolveHospitalAssetFiles(env);
+  const empty = resolve('src/config/hospital-asset-empty.js');
+  return {
+    logoPath: resolve(`src/assets/${files.logoFile}`),
+    sealPath: files.sealFile ? resolve(`src/assets/${files.sealFile}`) : empty,
+    loginBgPath: files.loginBgFile
+      ? resolve(`src/assets/${files.loginBgFile}`)
+      : empty
+  };
 }
 
 // 环境配置映射
@@ -85,6 +98,16 @@ const envConfig = {
   },
   stzlnw: {
     target: 'http://199.199.197.110:8001/',
+    publicPath: '/jyknw/',
+    outputDir: 'jyknw'
+  },
+  chrmyyww: {
+    target: 'http://121.11.24.194:18011/',
+    publicPath: '/jyk/',
+    outputDir: 'jyk'
+  },
+  chrmyynw: {
+    target: 'http://192.168.199.48:18011/',
     publicPath: '/jyknw/',
     outputDir: 'jyknw'
   },
@@ -202,6 +225,7 @@ const envConfig = {
 
 const currentEnv = process.env.VUE_APP_ENV || 'local';
 const config = envConfig[currentEnv] || envConfig.local;
+const hospitalAssetPaths = resolveHospitalAssetPaths(currentEnv);
 
 module.exports = {
   // 开发不跑 ESLint，生产构建仍检查
@@ -248,6 +272,12 @@ module.exports = {
     }
   },
   chainWebpack(config) {
+    // 按当前 VUE_APP_ENV 只打包该医院 logo / 院徽 / 登录背景
+    config.resolve.alias
+      .set('hospital-logo', hospitalAssetPaths.logoPath)
+      .set('hospital-seal', hospitalAssetPaths.sealPath)
+      .set('hospital-login-bg', hospitalAssetPaths.loginBgPath);
+
     // set svg-sprite-loader
     config.module.rule('svg').exclude.add(resolve('src/assets')).end();
     config.module
@@ -333,7 +363,15 @@ module.exports = {
       }
     }
   },  // 白名单，跨域问题
+  // host: '0.0.0.0' 允许局域网用本机 IP 访问；本机仍可用 http://127.0.0.1:8060
   devServer: {
+    host: '0.0.0.0',
+    port: 8060,
+    allowedHosts: 'all',
+    client: {
+      // 局域网打开时 HMR websocket 连到访问者用的主机名/IP
+      webSocketURL: 'auto://0.0.0.0:0/ws'
+    },
     proxy: {
       '/api': {
         target: config.target,
@@ -354,6 +392,5 @@ module.exports = {
         secure: false
       }
     }
-    // port: 8060
   }
 };
