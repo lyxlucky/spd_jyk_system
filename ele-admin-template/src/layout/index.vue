@@ -53,11 +53,12 @@
     <!-- 登录后效期提醒 -->
     <login-tip-dialogs />
     <!-- 菜单图标 -->
-    <template v-slot:icon="{ icon }">
+    <template v-slot:icon="{ icon, item }">
       <svg-icon
         v-if="isSvgIcon(icon)"
         :icon-class="icon"
         class-name="menu-svg-icon"
+        :class="{ 'ks-inventory-menu-icon': item?.path?.startsWith('/KSInventory/') }"
       />
       <i v-else :class="icon"></i>
     </template>
@@ -517,6 +518,10 @@
     flex: 0 0 16px;
     vertical-align: middle;
     text-align: center;
+  }
+
+  .ele-admin-sidebar-menus .el-menu-item .ks-inventory-menu-icon {
+    margin-right: 10px;
   }
 
   // 侧栏菜单徽章样式，定位在右侧垂直居中并调小尺寸
