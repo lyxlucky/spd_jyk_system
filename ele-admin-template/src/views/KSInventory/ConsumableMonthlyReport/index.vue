@@ -98,15 +98,15 @@
             <div class="table-panel">
               <div class="table-title">消耗金额排名前五</div>
               <el-table :data="report.DeptAmountTop" border size="mini" stripe>
-              <el-table-column type="index" label="序号" width="55" />
+              <el-table-column type="index" label="序号" width="55" align="center" />
               <el-table-column prop="DeptName" label="科室名称" min-width="192" show-overflow-tooltip />
-              <el-table-column label="消耗金额/万元" width="120">
+              <el-table-column label="消耗金额/万元" width="120" align="right">
                 <template slot-scope="{ row }">{{ formatWan(row.Amount) }}</template>
               </el-table-column>
-              <el-table-column label="占比" width="90">
+              <el-table-column label="占比" width="90" align="center">
                 <template slot-scope="{ row }">{{ formatPercent(row.Percent) }}</template>
               </el-table-column>
-              <el-table-column label="环比" width="90">
+              <el-table-column label="环比" width="90" align="center">
                 <template slot-scope="{ row }">{{ formatPercent(row.MomPercent) }}</template>
               </el-table-column>
               </el-table>
@@ -116,12 +116,12 @@
             <div class="table-panel">
               <div class="table-title">增幅排名前五（≥10万）</div>
               <el-table :data="report.DeptGrowthTop" border size="mini" stripe>
-              <el-table-column type="index" label="序号" width="55" />
+              <el-table-column type="index" label="序号" width="55" align="center" />
               <el-table-column prop="DeptName" label="科室名称" min-width="192" show-overflow-tooltip />
-              <el-table-column label="消耗金额/万元" width="120">
+              <el-table-column label="消耗金额/万元" width="120" align="right">
                 <template slot-scope="{ row }">{{ formatWan(row.Amount) }}</template>
               </el-table-column>
-              <el-table-column label="环比" width="100">
+              <el-table-column label="环比" width="100" align="center">
                 <template slot-scope="{ row }">{{ formatPercent(row.MomPercent) }}</template>
               </el-table-column>
               </el-table>
@@ -137,16 +137,16 @@
             <div class="table-panel">
               <div class="table-title">消耗金额排名前十</div>
               <el-table :data="report.VarietyAmountTop" border size="mini" height="360" stripe>
-              <el-table-column type="index" label="序号" width="55" />
+              <el-table-column type="index" label="序号" width="55" align="center" />
               <el-table-column prop="VarietyName" label="品种名称" min-width="192" show-overflow-tooltip />
               <el-table-column prop="ManufacturingEntName" label="生产企业" min-width="208" show-overflow-tooltip />
-              <el-table-column label="金额/万元" width="100">
+              <el-table-column label="金额/万元" width="100" align="right">
                 <template slot-scope="{ row }">{{ formatWan(row.Amount) }}</template>
               </el-table-column>
-              <el-table-column label="环比" width="90">
+              <el-table-column label="环比" width="90" align="center">
                 <template slot-scope="{ row }">{{ formatPercent(row.MomPercent) }}</template>
               </el-table-column>
-              <el-table-column label="同比" width="90">
+              <el-table-column label="同比" width="90" align="center">
                 <template slot-scope="{ row }">{{ formatPercent(row.YoyPercent) }}</template>
               </el-table-column>
               </el-table>
@@ -156,16 +156,16 @@
             <div class="table-panel">
               <div class="table-title">增幅排名前十（≥5万）</div>
               <el-table :data="report.VarietyGrowthTop" border size="mini" height="360" stripe>
-              <el-table-column type="index" label="序号" width="55" />
+              <el-table-column type="index" label="序号" width="55" align="center" />
               <el-table-column prop="VarietyName" label="品种名称" min-width="192" show-overflow-tooltip />
               <el-table-column prop="ManufacturingEntName" label="生产企业" min-width="208" show-overflow-tooltip />
-              <el-table-column label="金额/万元" width="100">
+              <el-table-column label="金额/万元" width="100" align="right">
                 <template slot-scope="{ row }">{{ formatWan(row.Amount) }}</template>
               </el-table-column>
-              <el-table-column label="环比" width="90">
+              <el-table-column label="环比" width="90" align="center">
                 <template slot-scope="{ row }">{{ formatPercent(row.MomPercent) }}</template>
               </el-table-column>
-              <el-table-column label="同比" width="90">
+              <el-table-column label="同比" width="90" align="center">
                 <template slot-scope="{ row }">{{ formatPercent(row.YoyPercent) }}</template>
               </el-table-column>
               </el-table>
@@ -178,9 +178,9 @@
         </div>
         <div class="table-panel">
           <el-table :data="report.SupplierTop" border size="mini" height="460" stripe>
-            <el-table-column type="index" label="序号" width="55" />
+            <el-table-column type="index" label="序号" width="55" align="center" />
             <el-table-column prop="SupplierName" label="供应商名称" min-width="208" show-overflow-tooltip />
-            <el-table-column label="配送金额/万元" width="140">
+            <el-table-column label="配送金额/万元" width="140" align="right">
               <template slot-scope="{ row }">{{ formatWan(row.Amount) }}</template>
             </el-table-column>
             <el-table-column prop="MainDeptNames" label="主要供应科室（前三）" min-width="260" show-overflow-tooltip />

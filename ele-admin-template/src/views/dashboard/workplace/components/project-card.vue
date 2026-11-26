@@ -9,7 +9,7 @@
       <more-icon @remove="onRemove" @edit="onEdit" />
     </template>
     <el-table :data="projectList" :height="316">
-      <el-table-column type="index" width="35" min-width="35" align="right" />
+      <el-table-column type="index" width="35" min-width="35" align="center" />
       <el-table-column label="项目名称" min-width="110" show-overflow-tooltip>
         <template v-slot="{ row }">
           <el-link type="primary" :underline="false">
@@ -55,7 +55,7 @@
           </span>
         </template>
       </el-table-column>
-      <el-table-column label="进度" width="160" min-width="100" align="center">
+      <el-table-column label="进度" width="160" min-width="100" align="left">
         <template v-slot="{ row }">
           <el-progress :percentage="row.progress" class="ele-text-small" />
         </template>

@@ -13,7 +13,7 @@
     </el-form>
     <el-table :data="list" size="mini" border height="420" v-loading="loading">
       <el-table-column prop="CODE" label="工号" width="120" />
-      <el-table-column prop="NAME" label="姓名" width="120" />
+      <el-table-column prop="NAME" label="姓名" width="120" align="center" />
       <el-table-column prop="NATIONALIDSUFFIX" label="身份证后六位" width="120" />
       <el-table-column prop="PHONENUMBER" label="手机号" min-width="120" />
     </el-table>

@@ -110,7 +110,7 @@
                   align="center"
                   fixed="left"
                 />
-                <vxe-column field="ID" title="流水ID" width="185" align="center" />
+                <vxe-column field="ID" title="流水ID" width="185" align="left" />
                 <vxe-column
                   field="BUSINESS_TYPE_NAME"
                   title="业务类别"
@@ -127,49 +127,49 @@
                   field="AREA_NAME"
                   title="库房/库区"
                   width="150"
-                  align="center"
+                  align="left"
                 />
                 <vxe-column
                   field="DEPT_TWO_CODE"
                   title="SPD科室编码"
                   width="130"
-                  align="center"
+                  align="left"
                 />
                 <vxe-column
                   field="DEPT_TWO_NAME"
                   title="SPD科室名称"
                   width="160"
-                  align="center"
+                  align="left"
                 />
                 <vxe-column
                   field="CHARGE_CODE"
                   title="计费编码"
                   width="130"
-                  align="center"
+                  align="left"
                 />
                 <vxe-column
                   field="BARCODE_NUMBER"
                   title="定数码"
                   width="130"
-                  align="center"
+                  align="left"
                 />
                 <vxe-column
                   field="VARIETIE_NAME"
                   title="品种名称"
                   min-width="192"
-                  align="center" show-overflow="tooltip"
+                  align="left" show-overflow="tooltip"
                 />
                 <vxe-column
                   field="SPECIFICATION_OR_TYPE"
                   title="规格型号"
                   min-width="160"
-                  align="center" show-overflow="tooltip"
+                  align="left" show-overflow="tooltip"
                 />
                 <vxe-column
                   field="MANUFACTURING_ENT_NAME"
                   title="生产企业"
                   min-width="208"
-                  align="center" show-overflow="tooltip"
+                  align="left" show-overflow="tooltip"
                 />
                 <vxe-column field="UNIT" title="单位" width="76" align="center" show-overflow="tooltip" />
                 <vxe-column
@@ -190,25 +190,25 @@
                   field="PATIENT_NUMBER"
                   title="病患号"
                   width="120"
-                  align="center"
+                  align="left"
                 />
                 <vxe-column
                   field="HOSPITALIZATION_NUMBER"
                   title="住院号"
                   width="120"
-                  align="center"
+                  align="left"
                 />
                 <vxe-column
                   field="JF_ID"
                   title="计费记录ID"
                   width="160"
-                  align="center"
+                  align="left"
                 />
                 <vxe-column
                   field="BATCH_NO"
                   title="批号"
                   width="120"
-                  align="center"
+                  align="left"
                 />
                 <vxe-column
                   field="EXPIRY_DATE"
@@ -226,18 +226,18 @@
                   field="ORIGING_CODE"
                   title="来源单号"
                   width="150"
-                  align="center"
+                  align="left"
                 />
                 <vxe-column
                   field="TRANSFER_REMARK"
                   title="移库备注 / 批次"
                   width="200"
-                  align="center"
+                  align="left"
                 />
                 <vxe-column field="IS_DELETE" title="删除状态" width="100" align="center">
                   <template #default="{ row }">{{ row.IS_DELETE === '0' ? '已删除' : '未删除' }}</template>
                 </vxe-column>
-                <vxe-column field="DELETE_SOURCE" title="删除来源" width="125" align="center">
+                <vxe-column field="DELETE_SOURCE" title="删除来源" width="125" align="left">
                   <template #default="{ row }">
                     <el-tag v-if="row.DELETE_SOURCE === 'FILTER_CONFIG'" size="mini" type="warning">计费编码过滤</el-tag>
                     <span v-else>{{ row.IS_DELETE === '0' ? '其他删除' : '-' }}</span>
@@ -248,7 +248,7 @@
                   field="TRANSFER_BLOCK_REASON"
                   title="移库限制说明"
                   width="180"
-                  align="center"
+                  align="left"
                 />
                 <vxe-column
                   field="CONSUMER"
@@ -275,7 +275,7 @@
                   field="MEDICAL_ORDER_ID"
                   title="医嘱ID"
                   width="150"
-                  align="center"
+                  align="left"
                   fixed="right"
                 />
                 <vxe-column

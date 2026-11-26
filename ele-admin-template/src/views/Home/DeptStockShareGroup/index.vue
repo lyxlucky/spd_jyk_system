@@ -59,7 +59,7 @@
                 </div>
               </template>
             </el-table-column>
-            <el-table-column prop="count" label="科室数" width="70" align="center" />
+            <el-table-column prop="count" label="科室数" width="70" align="right" />
           </el-table>
 
           <div class="group-footer">

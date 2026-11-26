@@ -135,8 +135,8 @@
         <vxe-column field="ID" title="流水ID" width="185" />
         <vxe-column field="VARIETIE_NAME" title="品种名称" min-width="192" show-overflow="tooltip" />
         <vxe-column field="CHARGE_CODE" title="计费编码" width="120" />
-        <vxe-column field="BUSINESS_TYPE_NAME" title="业务类别" width="100" />
-        <vxe-column field="TYPE" title="流水类型" width="85" />
+        <vxe-column field="BUSINESS_TYPE_NAME" title="业务类别" width="100" align="center" />
+        <vxe-column field="TYPE" title="流水类型" width="85" align="center" />
         <vxe-column field="BATCH_NO" title="批号" width="120"
           ><template v-slot="{ row }">{{
             row.BATCH_NO || '空批号'
@@ -184,16 +184,17 @@
           field="OPEARTION_CHARGING_TIME"
           title="业务时间"
           width="170"
+          align="center"
         />
-        <vxe-column field="CREATE_TIME" title="创建时间" width="160" show-overflow="tooltip" />
-        <vxe-column field="PRODUCTION_DATE" title="生产日期" width="120" />
-        <vxe-column field="EXPIRY_DATE" title="有效期" width="120" />
+        <vxe-column field="CREATE_TIME" title="创建时间" width="160" show-overflow="tooltip" align="center" />
+        <vxe-column field="PRODUCTION_DATE" title="生产日期" width="120" align="center" />
+        <vxe-column field="EXPIRY_DATE" title="有效期" width="120" align="center" />
         <vxe-column
           field="TRANSFER_REMARK"
           title="移库备注 / 批次"
           width="200"
         />
-        <vxe-column title="移库状态 / 不可选原因" width="190" fixed="right"
+        <vxe-column title="移库状态 / 不可选原因" width="190" fixed="right" align="center"
           ><template v-slot="{ row }"
             ><span :class="{ 'invalid-text': !checkSelectable({ row }) }">{{
               row.TRANSFER_BLOCK_REASON ||

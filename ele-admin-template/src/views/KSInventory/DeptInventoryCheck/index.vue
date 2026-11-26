@@ -139,10 +139,10 @@
         style="margin-bottom: 8px"
       >
         <vxe-column type="seq" title="序号" width="55" align="center" />
-        <vxe-column field="PERIOD_YM" title="期数" width="160" align="center" />
-        <vxe-column field="CLASSIFIC_PROPERTIES" title="耗材/试剂" width="110" align="center" :formatter="formatterClassificProperties" />
-        <vxe-column field="DEPT_TWO_NAME" title="盘点科室" min-width="120" align="center" />
-        <vxe-column field="REGION_NAME" title="库区" width="76" align="center" show-overflow="tooltip" />
+        <vxe-column field="PERIOD_YM" title="期数" width="160" align="right" />
+        <vxe-column field="CLASSIFIC_PROPERTIES" title="耗材/试剂" width="110" align="left" :formatter="formatterClassificProperties" />
+        <vxe-column field="DEPT_TWO_NAME" title="盘点科室" min-width="120" align="left" />
+        <vxe-column field="REGION_NAME" title="库区" width="76" align="left" show-overflow="tooltip" />
         <vxe-column field="CHECK_START_TIME" title="盘点开始时间" width="155" align="center" :formatter="formatterDateTime" />
         <vxe-column field="CHECK_END_TIME" title="盘点结束时间" width="155" align="center" :formatter="formatterDateTime" />
         <vxe-column field="STATUS" title="状态" width="76" align="center" show-overflow="tooltip">
@@ -286,7 +286,7 @@
       >
         <vxe-column type="seq" title="序号" width="55" align="center" />
         <vxe-column field="VARIETIE_CODE_NEW" title="品种编码" width="120" />
-        <vxe-column field="CLASSIFIC_PROPERTIES" title="耗材/试剂" width="110" align="center" :formatter="formatterClassificProperties" />
+        <vxe-column field="CLASSIFIC_PROPERTIES" title="耗材/试剂" width="110" align="left" :formatter="formatterClassificProperties" />
         <vxe-column field="CHARGING_CODE" title="计费编码" width="120" />
         <vxe-column field="IS_CHARGE" title="是否收费" width="80" align="center" :formatter="({ cellValue }) => cellValue === 1 ? '是' : cellValue === 0 ? '否' : ''" />
         <vxe-column field="VARIETIE_NAME" title="品种名称" min-width="192" show-overflow />
@@ -295,7 +295,7 @@
         <vxe-column field="PRICE" title="SPD单价" width="80" align="right" :formatter="formatterPrice" />
         <vxe-column field="UNIT" title="SPD单位" width="80" align="center" />
         <vxe-column field="HIS_UNIT" title="计费单位" width="80" align="center" />
-        <vxe-column field="HIS_ZHB" title="转换比" width="80" align="right" />
+        <vxe-column field="HIS_ZHB" title="转换比" width="80" align="center" />
         <vxe-column field="LAST_STOCK_QTY" title="上期库存" width="80" align="right" footer-align="right" />
         <vxe-column field="IN_QTY" title="入库数" width="80" align="right" footer-align="right" />
         <vxe-column v-if="false" field="ISSUE_QTY" title="领用数" width="100" align="right" footer-align="right" :edit-render="{}">
@@ -616,26 +616,26 @@
             {{ row.SCIENTIFIC_ID && row.SCIENTIFIC_ID !== 'null' ? '科研计划' : '普通计划' }}
           </template>
         </vxe-column>
-        <vxe-column field="PLAN_NUM" title="申领单号" width="120" align="center" />
+        <vxe-column field="PLAN_NUM" title="申领单号" width="120" align="left" />
         <vxe-column field="STATE" title="状态" width="76" align="center" show-overflow="tooltip">
           <template #default="{ row }">
             <el-tag size="mini" :type="applyRecordStateType(row)">{{ applyRecordStateText(row) }}</el-tag>
           </template>
         </vxe-column>
-        <vxe-column field="DEPT_TWO_CODE" title="SPD二级科室编码" width="140" align="center" />
-        <vxe-column field="YG_DEPT_CODE" title="远光系统编码" width="130" align="center" />
-        <vxe-column field="DEPT_TWO_NAME" title="科室名称" min-width="192" align="center" show-overflow="tooltip" />
-        <vxe-column field="STORAGE_NAME" title="库房名称" min-width="120" align="center" />
-        <vxe-column field="REGION_NAME" title="库区" width="76" align="center" show-overflow="tooltip" />
+        <vxe-column field="DEPT_TWO_CODE" title="SPD二级科室编码" width="140" align="left" />
+        <vxe-column field="YG_DEPT_CODE" title="远光系统编码" width="130" align="left" />
+        <vxe-column field="DEPT_TWO_NAME" title="科室名称" min-width="192" align="left" show-overflow="tooltip" />
+        <vxe-column field="STORAGE_NAME" title="库房名称" min-width="120" align="left" />
+        <vxe-column field="REGION_NAME" title="库区" width="76" align="left" show-overflow="tooltip" />
         <vxe-column field="OPERATER" title="申领人" width="90" align="center" />
-        <vxe-column field="APPLY_ACCOUNT" title="申领人账号" width="110" align="center" />
+        <vxe-column field="APPLY_ACCOUNT" title="申领人账号" width="110" align="left" />
         <vxe-column field="APPLY_NAME" title="申领人姓名" width="100" align="center" />
         <vxe-column field="PLAN_TIME" title="申领时间" width="155" align="center" :formatter="formatterDateTime" />
         <vxe-column field="APPROVALMAN" title="审批人" width="90" align="center" />
         <vxe-column field="APPROVAL_TIME" title="审批时间" width="155" align="center" :formatter="formatterDateTime" />
         <vxe-column field="BZ" title="备注" min-width="110" show-overflow="tooltip" />
-        <vxe-column field="SUM_APPLY_QTY" title="申请总数" width="88" align="center" show-overflow="tooltip" />
-        <vxe-column field="QUANITY" title="已收货总数" width="100" align="center" />
+        <vxe-column field="SUM_APPLY_QTY" title="申请总数" width="88" align="right" show-overflow="tooltip" />
+        <vxe-column field="QUANITY" title="已收货总数" width="100" align="right" />
       </vxe-table>
       <vxe-pager
         :current-page="applyRecordPage.page"

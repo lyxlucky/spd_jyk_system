@@ -77,17 +77,17 @@
         <el-table-column prop="DEPT_TWO_NAME" label="二级科室" min-width="140" show-overflow-tooltip />
         <el-table-column prop="VARIETIE_NAME" label="品种名称" min-width="192" show-overflow-tooltip />
         <el-table-column prop="VARIETIE_CODE_NEW" label="品种编码" width="132" show-overflow-tooltip />
-        <el-table-column prop="COEFFICIENT" label="系数" width="90" align="center">
+        <el-table-column prop="COEFFICIENT" label="系数" width="90" align="right">
           <template slot-scope="{ row }">
             <span class="cell-number">{{ row.COEFFICIENT }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="UP" label="上限值" width="100" align="center">
+        <el-table-column prop="UP" label="上限值" width="100" align="right">
           <template slot-scope="{ row }">
             <span class="cell-number cell-up">{{ row.UP }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="DOWN" label="下限值" width="100" align="center">
+        <el-table-column prop="DOWN" label="下限值" width="100" align="right">
           <template slot-scope="{ row }">
             <span class="cell-number cell-down">{{ row.DOWN }}</span>
           </template>
@@ -102,7 +102,7 @@
             <span class="cell-time">{{ fmtDateTime(row.APPROVAL_TIME) }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="NICKNAME" label="操作人" width="100" show-overflow-tooltip />
+        <el-table-column prop="NICKNAME" label="操作人" width="100" show-overflow-tooltip align="center" />
         <el-table-column label="审批状态" width="88" align="center" fixed="right" show-overflow-tooltip>
           <template slot-scope="{ row }">
             <el-tag v-if="String(row.APPROVAL_STATE) === '1'" type="success" size="small" effect="light">已审批</el-tag>

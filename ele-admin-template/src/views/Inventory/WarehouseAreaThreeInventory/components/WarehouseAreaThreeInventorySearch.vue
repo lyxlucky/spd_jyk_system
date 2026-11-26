@@ -300,7 +300,7 @@
         <vxe-column field="Price" title="单价" width="88" align="right" show-overflow="tooltip" />
         <vxe-column field="Qty" title="HIS数量" width="90" align="right" />
         <vxe-column field="InsertQty" title="插入数量" width="90" align="right" />
-        <vxe-column field="ChargeTimeText" title="HIS时间" width="140" />
+        <vxe-column field="ChargeTimeText" title="HIS时间" width="140" align="center" />
       </vxe-table>
       <div class="his-preview-table-title his-preview-table-title--repeat">
         <span>已重复数据</span>
@@ -318,7 +318,7 @@
         empty-text="暂无已重复数据"
       >
         <vxe-column type="seq" title="序号" width="55" align="center" fixed="left" />
-        <vxe-column field="RepeatType" title="重复类型" width="95" fixed="left" />
+        <vxe-column field="RepeatType" title="重复类型" width="95" fixed="left" align="center" />
         <vxe-column field="UniqueId" title="医嘱ID" width="130" />
         <vxe-column field="DeptCode" title="HIS科室编码" width="110" />
         <vxe-column field="DeptName" title="HIS科室名称" width="150" />
@@ -331,7 +331,7 @@
         <vxe-column field="Price" title="单价" width="88" align="right" show-overflow="tooltip" />
         <vxe-column field="Qty" title="HIS数量" width="90" align="right" />
         <vxe-column field="InsertQty" title="插入数量" width="90" align="right" />
-        <vxe-column field="ChargeTimeText" title="HIS时间" width="140" />
+        <vxe-column field="ChargeTimeText" title="HIS时间" width="140" align="center" />
       </vxe-table>
       <div slot="footer" class="dialog-footer">
         <el-button size="mini" @click="hisPreviewVisible = false">取消</el-button>
@@ -438,7 +438,7 @@
         <vxe-column type="seq" title="序号" width="55" align="center" fixed="left" />
         <vxe-column field="UniqueId" title="SPD_ID" width="130" />
         <vxe-column field="OperateNumber" title="入库单号" width="130" />
-        <vxe-column field="OperateTypeName" title="入库类型" width="130" />
+        <vxe-column field="OperateTypeName" title="入库类型" width="130" align="center" />
         <vxe-column field="DeptTwoCode" title="SPD科室编码" width="120" />
         <vxe-column field="DeptTwoName" title="SPD科室名称" width="150" />
         <vxe-column field="DeptCode" title="HIS科室编码" width="110" />
@@ -450,8 +450,8 @@
         <vxe-column field="Specification" title="规格" min-width="160" show-overflow="tooltip" />
         <vxe-column field="Qty" title="入库数量" width="90" align="right" />
         <vxe-column field="InsertQty" title="插入数量" width="90" align="right" />
-        <vxe-column field="OperateTimeText" title="入库时间" width="140" />
-        <vxe-column field="OperatorName" title="操作人" width="100" />
+        <vxe-column field="OperateTimeText" title="入库时间" width="140" align="center" />
+        <vxe-column field="OperatorName" title="操作人" width="100" align="center" />
         <vxe-column field="Batch" title="批号" width="120" />
       </vxe-table>
       <div class="his-preview-table-title his-preview-table-title--repeat">
@@ -470,10 +470,10 @@
         empty-text="暂无已重复数据"
       >
         <vxe-column type="seq" title="序号" width="55" align="center" fixed="left" />
-        <vxe-column field="RepeatType" title="重复类型" width="95" fixed="left" />
+        <vxe-column field="RepeatType" title="重复类型" width="95" fixed="left" align="center" />
         <vxe-column field="UniqueId" title="SPD_ID" width="130" />
         <vxe-column field="OperateNumber" title="入库单号" width="130" />
-        <vxe-column field="OperateTypeName" title="入库类型" width="130" />
+        <vxe-column field="OperateTypeName" title="入库类型" width="130" align="center" />
         <vxe-column field="DeptTwoCode" title="SPD科室编码" width="120" />
         <vxe-column field="DeptTwoName" title="SPD科室名称" width="150" />
         <vxe-column field="DeptCode" title="HIS科室编码" width="110" />
@@ -485,8 +485,8 @@
         <vxe-column field="Specification" title="规格" min-width="160" show-overflow="tooltip" />
         <vxe-column field="Qty" title="入库数量" width="90" align="right" />
         <vxe-column field="InsertQty" title="插入数量" width="90" align="right" />
-        <vxe-column field="OperateTimeText" title="入库时间" width="140" />
-        <vxe-column field="OperatorName" title="操作人" width="100" />
+        <vxe-column field="OperateTimeText" title="入库时间" width="140" align="center" />
+        <vxe-column field="OperatorName" title="操作人" width="100" align="center" />
         <vxe-column field="Batch" title="批号" width="120" />
       </vxe-table>
       <div slot="footer" class="dialog-footer">

@@ -22,6 +22,36 @@
   word-break: break-word;
 }
 
+/**
+ * 表格文字/数字对齐规范（列表页统一）
+ * - 表头：一律居中（不随列 align 走，排序图标、插槽表头一起居中）
+ * - 表体：纯数字/金额/数量 right；百分比比率、日期效期、时间时长、单位、状态、类型、人名 center；
+ *         其余文本默认 left（Element / vxe 的默认值，不需要显式写 align="left"）
+ * - 数字列统一使用等宽数字，保证个位、小数点纵向对齐
+ * 表头用 !important 覆盖组件库与页面级样式，表体仍由各列 align 控制。
+ */
+.el-table th.el-table__cell,
+.el-table th.el-table__cell > .cell {
+  text-align: center !important;
+}
+
+.vxe-table th.vxe-header--column,
+.vxe-table th.vxe-header--column.col--left,
+.vxe-table th.vxe-header--column.col--center,
+.vxe-table th.vxe-header--column.col--right {
+  text-align: center !important;
+}
+
+.vxe-table th.vxe-header--column > .vxe-cell {
+  text-align: center !important;
+  justify-content: center !important;
+}
+
+.el-table .cell,
+.vxe-table--render-default .vxe-cell {
+  font-variant-numeric: tabular-nums;
+}
+
 .spd-page {
   display: flex;
   flex-direction: column;

@@ -83,7 +83,7 @@
             @current-change="onVarSelect"
             @sort-change="onVarSort"
           >
-            <el-table-column type="index" label="序号" width="55" />
+            <el-table-column type="index" label="序号" width="55" align="center" />
             <el-table-column prop="VARIETIE_CODE_NEW" label="品种编码" min-width="100" sortable="custom" />
             <el-table-column prop="VARIETIE_NAME" label="品种名称" min-width="192" show-overflow-tooltip />
             <el-table-column prop="SPECIFICATION_OR_TYPE" label="规格型号" min-width="160" show-overflow-tooltip />
@@ -91,7 +91,7 @@
             <el-table-column prop="sumPrice" label="金额" width="88" align="right" sortable="custom" show-overflow-tooltip>
               <template slot-scope="{ row }">{{ fmtPrice2(row.sumPrice) }}</template>
             </el-table-column>
-            <el-table-column label="环比上月" width="95" align="right">
+            <el-table-column label="环比上月" width="95" align="center">
               <template slot-scope="{ row }">{{ fmtHbPrc(row.HB_PRC) }}</template>
             </el-table-column>
           </el-table>
@@ -123,12 +123,12 @@
                 height="360"
                 size="small"
               >
-                <el-table-column prop="CONSUME_TIME" label="月份" width="80" />
+                <el-table-column prop="CONSUME_TIME" label="月份" width="80" align="center" />
                 <el-table-column prop="sumNum" label="用量" width="80" align="right" />
                 <el-table-column label="金额" width="88" align="right" show-overflow-tooltip>
                   <template slot-scope="{ row }">{{ fmtPrice2(row.sumPrice) }}</template>
                 </el-table-column>
-                <el-table-column label="环比上月" width="90" align="right">
+                <el-table-column label="环比上月" width="90" align="center">
                   <template slot-scope="{ row }">{{ fmtHbPrc(row.HB_PRC) }}</template>
                 </el-table-column>
                 <el-table-column prop="VARIETIE_CODE_NEW" label="品种编码" width="90" show-overflow-tooltip />
@@ -162,12 +162,12 @@
                 <el-table-column label="一级科室名称" min-width="100">
                   <template>{{ selectedDeptName }}</template>
                 </el-table-column>
-                <el-table-column prop="CONSUME_TIME" label="月份" width="80" />
+                <el-table-column prop="CONSUME_TIME" label="月份" width="80" align="center" />
                 <el-table-column prop="sumNum" label="用量" width="80" align="right" />
                 <el-table-column label="金额" width="88" align="right" show-overflow-tooltip>
                   <template slot-scope="{ row }">{{ fmtPrice2(row.sumPrice) }}</template>
                 </el-table-column>
-                <el-table-column label="环比上月" width="90" align="right">
+                <el-table-column label="环比上月" width="90" align="center">
                   <template slot-scope="{ row }">{{ fmtHbPrc(row.HB_PRC) }}</template>
                 </el-table-column>
               </el-table>

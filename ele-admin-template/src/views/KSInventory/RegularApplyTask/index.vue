@@ -38,7 +38,7 @@
         height="calc(100vh - 230px)"
       >
         <el-table-column prop="TASK_NAME" label="任务名称" min-width="150" />
-        <el-table-column label="任务类型" width="120">
+        <el-table-column label="任务类型" width="120" align="center">
           <template slot-scope="{ row }">{{ taskTypeText(row.TASK_TYPE) }}</template>
         </el-table-column>
         <el-table-column prop="DEPT_TWO_NAME" label="科室" min-width="150" />
@@ -58,8 +58,8 @@
         <el-table-column label="周期" min-width="150">
           <template slot-scope="{ row }">{{ cycleText(row) }}</template>
         </el-table-column>
-        <el-table-column prop="LAST_RUN_TIME" label="上次执行" min-width="150" />
-        <el-table-column prop="NEXT_RUN_TIME" label="下次执行" min-width="150" />
+        <el-table-column prop="LAST_RUN_TIME" label="上次执行" min-width="150" align="center" />
+        <el-table-column prop="NEXT_RUN_TIME" label="下次执行" min-width="150" align="center" />
         <el-table-column label="最近结果" width="90">
           <template slot-scope="{ row }">
             <el-tag
@@ -78,14 +78,14 @@
             {{ row.AUTO_SUBMIT === '1' ? '提交' : '不提交' }}/{{ row.AUTO_AUDIT === '1' ? '审核' : '不审核' }}
           </template>
         </el-table-column>
-        <el-table-column label="状态" width="76" show-overflow-tooltip>
+        <el-table-column label="状态" width="76" show-overflow-tooltip align="center">
           <template slot-scope="{ row }">
             <el-tag :type="row.IS_ENABLE === '1' ? 'success' : 'info'" size="mini">
               {{ row.IS_ENABLE === '1' ? '启用' : '停用' }}
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="360" fixed="right">
+        <el-table-column label="操作" width="360" fixed="right" align="center">
           <template slot-scope="{ row }">
             <el-button type="text" size="mini" @click="openEdit(row)">编辑</el-button>
             <el-button type="text" size="mini" @click="preview(row)">耗材</el-button>
@@ -316,26 +316,26 @@
         <el-table-column prop="VARIETIE_CODE_NEW" label="品种编码" width="130" />
         <el-table-column prop="VARIETIE_NAME" label="品种名称" min-width="192" show-overflow-tooltip />
         <el-table-column prop="SPECIFICATION_OR_TYPE" label="规格型号" min-width="160" show-overflow-tooltip />
-        <el-table-column prop="UNIT" label="单位" width="70" />
+        <el-table-column prop="UNIT" label="单位" width="70" align="center" />
         <el-table-column prop="MANUFACTURING_ENT_NAME" label="生产企业" min-width="208" show-overflow-tooltip />
-        <el-table-column prop="APPLY_QTY" label="申领数量" width="88" show-overflow-tooltip />
+        <el-table-column prop="APPLY_QTY" label="申领数量" width="88" show-overflow-tooltip align="right" />
       </el-table>
     </el-dialog>
 
     <el-dialog :title="logTaskName + ' 执行日志'" :visible.sync="logVisible" width="980px" append-to-body>
       <el-table :data="logRows" border stripe height="360">
-        <el-table-column prop="RUN_TIME" label="执行时间" width="150" />
+        <el-table-column prop="RUN_TIME" label="执行时间" width="150" align="center" />
         <el-table-column prop="PLAN_NUMBER" label="申领单号" width="132" show-overflow-tooltip />
-        <el-table-column label="状态" width="76" show-overflow-tooltip>
+        <el-table-column label="状态" width="76" show-overflow-tooltip align="center">
           <template slot-scope="{ row }">
             <el-tag :type="row.RUN_STATUS === '1' ? 'success' : 'danger'" size="mini">
               {{ row.RUN_STATUS === '1' ? '成功' : '失败' }}
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="DETAIL_COUNT" label="明细数" width="80" />
+        <el-table-column prop="DETAIL_COUNT" label="明细数" width="80" align="right" />
         <el-table-column prop="RUN_MSG" label="结果说明" min-width="220" show-overflow-tooltip />
-        <el-table-column label="操作" width="80">
+        <el-table-column label="操作" width="80" align="center">
           <template slot-scope="{ row }">
             <el-button type="text" size="mini" @click="openLogDetails(row)">明细</el-button>
           </template>

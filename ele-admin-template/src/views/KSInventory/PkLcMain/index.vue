@@ -502,8 +502,8 @@
         max-height="400px"
       >
         <el-table-column type="index" label="序号" width="60" align="center" />
-        <el-table-column prop="ORDER_NUM" label="订单号" width="132" align="center" show-overflow-tooltip />
-        <el-table-column prop="QTY" label="数量" width="88" align="center" show-overflow-tooltip />
+        <el-table-column prop="ORDER_NUM" label="订单号" width="132" align="left" show-overflow-tooltip />
+        <el-table-column prop="QTY" label="数量" width="88" align="right" show-overflow-tooltip />
         <el-table-column prop="ORDER_TYPE" label="订单类型" width="120" align="center">
           <template slot-scope="{ row }">
             <el-tag :type="getOrderTypeTagType(row.ORDER_TYPE)" size="mini">

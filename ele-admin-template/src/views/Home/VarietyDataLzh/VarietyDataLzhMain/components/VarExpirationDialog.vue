@@ -36,45 +36,45 @@
       <el-table-column prop="PRICE" label="中标价" width="80" align="right" />
       <el-table-column prop="SUPPLY_PRICE" label="结算价" width="80" align="right" />
       <el-table-column prop="APPROVAL_NUMBER" label="批准文号" min-width="140" show-overflow-tooltip />
-      <el-table-column label="启用供应商/合同" min-width="160" show-overflow-tooltip>
+      <el-table-column label="启用供应商/合同" min-width="160" show-overflow-tooltip align="center">
         <template v-slot="{ row }">
           {{ formatSupplierContract(row) }}
         </template>
       </el-table-column>
-      <el-table-column label="合同起始日期" min-width="110" show-overflow-tooltip>
+      <el-table-column label="合同起始日期" min-width="110" show-overflow-tooltip align="center">
         <template v-slot="{ row }">{{ formatDate(row.CONTRACT_START_TIME) }}</template>
       </el-table-column>
-      <el-table-column label="合同终止日期" min-width="110" show-overflow-tooltip>
+      <el-table-column label="合同终止日期" min-width="110" show-overflow-tooltip align="center">
         <template v-slot="{ row }">{{ formatDate(row.CONTRACT_END_TIME) }}</template>
       </el-table-column>
-      <el-table-column label="授权终止日期" min-width="110" show-overflow-tooltip>
+      <el-table-column label="授权终止日期" min-width="110" show-overflow-tooltip align="center">
         <template v-slot="{ row }">{{ formatDate(row.AUTH_VALID) }}</template>
       </el-table-column>
-      <el-table-column label="合同明细起始" min-width="110" show-overflow-tooltip>
+      <el-table-column label="合同明细起始" min-width="110" show-overflow-tooltip align="center">
         <template v-slot="{ row }">{{ formatDate(row.DET_CONTRACT_START) }}</template>
       </el-table-column>
-      <el-table-column label="合同明细结束" min-width="110" show-overflow-tooltip>
+      <el-table-column label="合同明细结束" min-width="110" show-overflow-tooltip align="center">
         <template v-slot="{ row }">{{ formatDate(row.DET_CONTRACT_END) }}</template>
       </el-table-column>
-      <el-table-column label="注册证起始日期" min-width="120" show-overflow-tooltip>
+      <el-table-column label="注册证起始日期" min-width="120" show-overflow-tooltip align="center">
         <template v-slot="{ row }">{{ formatDate(row.REGISTRATION_ISSUING_DATE) }}</template>
       </el-table-column>
-      <el-table-column label="注册证有效到期" min-width="120" show-overflow-tooltip>
+      <el-table-column label="注册证有效到期" min-width="120" show-overflow-tooltip align="center">
         <template v-slot="{ row }">{{ formatDate(row.REGISTRATION_VALID_DATE) }}</template>
       </el-table-column>
-      <el-table-column label="营业执照有效期" min-width="120" show-overflow-tooltip>
+      <el-table-column label="营业执照有效期" min-width="120" show-overflow-tooltip align="center">
         <template v-slot="{ row }">{{ formatDate(row.BUSINESS_LICENSE_VALID_DATE) }}</template>
       </el-table-column>
-      <el-table-column label="一类许可证有效期" min-width="130" show-overflow-tooltip>
+      <el-table-column label="一类许可证有效期" min-width="130" show-overflow-tooltip align="center">
         <template v-slot="{ row }">{{ formatDate(row.RODUCTION_CLASS_1_VALID_DATE) }}</template>
       </el-table-column>
-      <el-table-column label="二类许可证有效期" min-width="130" show-overflow-tooltip>
+      <el-table-column label="二类许可证有效期" min-width="130" show-overflow-tooltip align="center">
         <template v-slot="{ row }">{{ formatDate(row.RODUCTION_CLASS_2_VALID_DATE) }}</template>
       </el-table-column>
-      <el-table-column label="三类许可证有效期" min-width="130" show-overflow-tooltip>
+      <el-table-column label="三类许可证有效期" min-width="130" show-overflow-tooltip align="center">
         <template v-slot="{ row }">{{ formatDate(row.RODUCTION_CLASS_3_VALID_DATE) }}</template>
       </el-table-column>
-      <el-table-column label="业务员委托书有效期" min-width="140" show-overflow-tooltip>
+      <el-table-column label="业务员委托书有效期" min-width="140" show-overflow-tooltip align="center">
         <template v-slot="{ row }">{{ formatDate(row.WTS_VALID_DATE) }}</template>
       </el-table-column>
     </el-table>

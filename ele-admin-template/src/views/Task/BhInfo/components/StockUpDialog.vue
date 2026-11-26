@@ -37,14 +37,14 @@
       </el-col>
       <el-col :span="18">
         <el-table :data="pagedVarieties" size="mini" border height="460">
-          <el-table-column label="合同到期" width="100">
+          <el-table-column label="合同到期" width="100" align="center">
             <template slot-scope="{ row }">
               <span :class="{ 'text-danger': isContractNearExpiry(row.CONTRACT_END_TIME) }">
                 {{ formatDate10(row.CONTRACT_END_TIME) }}
               </span>
             </template>
           </el-table-column>
-          <el-table-column label="合同明细到期" width="100">
+          <el-table-column label="合同明细到期" width="100" align="center">
             <template slot-scope="{ row }">
               <span :class="{ 'text-danger': isContractNearExpiry(row.DET_CONTRACT_END) }">
                 {{ formatDate10(row.DET_CONTRACT_END) }}
@@ -57,8 +57,8 @@
           <el-table-column prop="PAG_TYPE" label="包装规格" width="80" show-overflow-tooltip />
           <el-table-column prop="Unit" label="单位" width="50" align="center" />
           <el-table-column prop="Manufacturing_Ent_Name" label="生产企业" min-width="208" show-overflow-tooltip />
-          <el-table-column prop="Def_No_Pkg_Coefficient" label="系数" width="50" align="center" />
-          <el-table-column label="备货数（散）" width="100" align="center">
+          <el-table-column prop="Def_No_Pkg_Coefficient" label="系数" width="50" align="right" />
+          <el-table-column label="备货数（散）" width="100" align="right">
             <template slot-scope="{ row }">
               <el-input
                 v-model.number="row.Goods_Qty"
@@ -265,10 +265,21 @@ export default {
                 props: { prop: 'Varietie_Name', label: '品种名称', minWidth: 140, showOverflowTooltip: true }
               }),
               h('el-table-column', {
-                props: { prop: 'Goods_Qty', label: '备货数量', width: 90, align: 'center' }
+                props: { prop: 'Goods_Qty', label: '备货数量', width: 90, align: 'right' }
               }),
               h('el-table-column', {
-                props: { prop: 'OVER_USE_QTY', label: '超常用量', width: 90, align: 'center' }
+                props: {
+                  label: '三月平均量',
+                  width: 100,
+                  align: 'right',
+                  formatter: (row) => {
+                    const n = Number(row.OVER_USE_QTY);
+                    return Number.isFinite(n) ? Math.round((n / 1.2) * 100) / 100 : 0;
+                  }
+                }
+              }),
+              h('el-table-column', {
+                props: { prop: 'OVER_USE_QTY', label: '超常用量', width: 90, align: 'right' }
               })
             ]
           )

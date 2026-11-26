@@ -472,12 +472,12 @@
             show-overflow
             sortable
           />
-          <vxe-column field="SSBH" title="手术编号" width="150" align="center" />
+          <vxe-column field="SSBH" title="手术编号" width="150" align="left" />
           <vxe-column
             field="ZDMC"
             title="主刀名称"
             width="100"
-            align="center"
+            align="left"
           />
           <vxe-column
             field="IS_GT"
@@ -531,6 +531,7 @@
             title="还柜提醒"
             width="160"
             show-overflow
+            align="center"
           >
             <template #default="{ row }">
               <span
@@ -595,6 +596,7 @@
           title="提醒类型"
           width="160"
           show-overflow
+          align="center"
         />
         <vxe-column
           field="DEF_NO_PKG_CODE"

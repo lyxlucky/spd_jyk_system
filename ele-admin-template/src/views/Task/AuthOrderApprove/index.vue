@@ -75,12 +75,12 @@
             </span>
           </template>
         </el-table-column>
-        <el-table-column prop="AUTH_APPROVE_MAN" label="审核人" width="90" show-overflow-tooltip />
-        <el-table-column label="审核时间" min-width="140">
+        <el-table-column prop="AUTH_APPROVE_MAN" label="审核人" width="90" show-overflow-tooltip align="center" />
+        <el-table-column label="审核时间" min-width="140" align="center">
           <template slot-scope="{ row }">{{ fmtDateTime(row.AUTH_APPROVE_TIME) }}</template>
         </el-table-column>
         <el-table-column prop="AUTH_APPROVE_MARK" label="审核备注" min-width="140" show-overflow-tooltip />
-        <el-table-column label="订单时间" min-width="140">
+        <el-table-column label="订单时间" min-width="140" align="center">
           <template slot-scope="{ row }">{{ fmtDateTime(row.DELIVERY_TIME) }}</template>
         </el-table-column>
         <el-table-column prop="REMARKS" label="备货备注" min-width="120" show-overflow-tooltip />
@@ -114,13 +114,13 @@
         <el-table-column prop="VARIETIE_CODE_NEW" label="品种编码" min-width="110" show-overflow-tooltip />
         <el-table-column prop="VARIETIE_NAME" label="品种名称" min-width="192" show-overflow-tooltip />
         <el-table-column prop="SPECIFICATION_OR_TYPE" label="规格型号" min-width="160" show-overflow-tooltip />
-        <el-table-column prop="UNIT" label="单位" width="60" />
+        <el-table-column prop="UNIT" label="单位" width="60" align="center" />
         <el-table-column prop="BATCH" label="批号" min-width="100" show-overflow-tooltip />
-        <el-table-column prop="RECEIVABLE" label="数量" width="70" />
-        <el-table-column prop="DEF_NUM" label="定数码数" width="80" />
-        <el-table-column prop="COEFFICIENT" label="系数" width="60" />
+        <el-table-column prop="RECEIVABLE" label="数量" width="70" align="right" />
+        <el-table-column prop="DEF_NUM" label="定数码数" width="80" align="right" />
+        <el-table-column prop="COEFFICIENT" label="系数" width="60" align="right" />
         <el-table-column prop="SUPPLIER_NAME" label="供应商" min-width="208" show-overflow-tooltip />
-        <el-table-column prop="SUPPLY_PRICE" label="供应价" width="80" />
+        <el-table-column prop="SUPPLY_PRICE" label="供应价" width="80" align="right" />
       </el-table>
     </el-card>
   </div>

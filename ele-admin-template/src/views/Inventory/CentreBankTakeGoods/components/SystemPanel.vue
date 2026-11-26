@@ -58,16 +58,16 @@
             @current-change="onReceiptSelect"
           >
             <el-table-column prop="Delivery_Note_Number" label="收货单号" min-width="110" show-overflow-tooltip />
-            <el-table-column label="收货状态" width="72">
+            <el-table-column label="收货状态" width="72" align="center">
               <template slot-scope="{ row }">{{ fmtReceiveState(row.RECEIVE_RECEIPT_STATE) }}</template>
             </el-table-column>
             <el-table-column prop="name" label="库区" width="76" show-overflow-tooltip />
             <el-table-column prop="Prepare_Goods_Plan_Number" label="对应备货单号" min-width="100" show-overflow-tooltip />
             <el-table-column prop="PLAN_DEPT_TWO_NAME" label="来源科室" min-width="90" show-overflow-tooltip />
-            <el-table-column label="打印次数" width="80">
+            <el-table-column label="打印次数" width="80" align="right">
               <template slot-scope="{ row }">{{ fmtPrintCount(row.Print_Count) }}</template>
             </el-table-column>
-            <el-table-column label="操作" width="220" fixed="right">
+            <el-table-column label="操作" width="220" fixed="right" align="center">
               <template slot-scope="{ row }">
                 <el-button type="text" size="mini" @click.stop="onReback(row)">打回</el-button>
                 <el-button type="text" size="mini" @click.stop="onConfirmAndSend(row, 0)">收货并出库</el-button>
@@ -127,7 +127,7 @@
             @selection-change="onDetailSelectionChange"
           >
             <el-table-column type="selection" width="48" align="center" class-name="spd-checkbox-col" />
-            <el-table-column label="包装图片" width="100" align="center">
+            <el-table-column label="包装图片" width="100" align="left">
               <template slot-scope="{ row }">
                 <div v-if="!row.PIC_URL" class="pic-cell">—</div>
                 <div v-else class="pic-cell">
@@ -179,7 +179,7 @@
                 </el-select>
               </template>
             </el-table-column>
-            <el-table-column label="是否合格" width="100">
+            <el-table-column label="是否合格" width="100" align="center">
               <template slot-scope="{ row }">
                 <el-select v-model="row._qualified" size="mini" :disabled="isReceived" style="width: 88px" @change="onQualifiedChange(row)">
                   <el-option label="合格" value="1" />
@@ -211,22 +211,22 @@
                 <el-input v-model="row.DISINFECTION_BATCH" size="mini" :disabled="isReceived" @change="markDirty" />
               </template>
             </el-table-column>
-            <el-table-column label="生产日期" width="110">
+            <el-table-column label="生产日期" width="110" align="center">
               <template slot-scope="{ row }">
                 <el-input v-model="row._prodDate" size="mini" placeholder="yyyy-MM-dd" :disabled="isReceived" @change="markDirty" />
               </template>
             </el-table-column>
-            <el-table-column label="有效日期" width="110">
+            <el-table-column label="有效日期" width="110" align="center">
               <template slot-scope="{ row }">
                 <el-input v-model="row._validDate" size="mini" placeholder="yyyy-MM-dd" :disabled="isReceived" @change="markDirty" />
               </template>
             </el-table-column>
-            <el-table-column label="收货温度" width="80" align="center">
+            <el-table-column label="收货温度" width="80" align="right">
               <template slot-scope="{ row }">{{ fmtTemperature(row.TEMPERATURE) }}</template>
             </el-table-column>
-            <el-table-column prop="Coefficient" label="系数" width="52" align="center" />
-            <el-table-column prop="Receivable" label="应收" width="72" align="center" />
-            <el-table-column label="实收" width="88">
+            <el-table-column prop="Coefficient" label="系数" width="52" align="right" />
+            <el-table-column prop="Receivable" label="应收" width="72" align="right" />
+            <el-table-column label="实收" width="88" align="right">
               <template slot-scope="{ row }">
                 <el-input-number
                   v-model="row.Netreceipts"
@@ -239,34 +239,34 @@
                 />
               </template>
             </el-table-column>
-            <el-table-column label="检验报告图片" width="100" align="center">
+            <el-table-column label="检验报告图片" width="100" align="left">
               <template slot-scope="{ row }">
                 <el-button type="text" size="mini" @click="openProPicUpload(row)">上传</el-button>
               </template>
             </el-table-column>
-            <el-table-column label="UDI操作" width="200" fixed="right">
+            <el-table-column label="UDI操作" width="200" fixed="right" align="center">
               <template slot-scope="{ row }">
                 <el-button type="text" size="mini" @click="openUdiScan(row)">添加UDI</el-button>
                 <el-button type="text" size="mini" @click="openWatchUdi(row)">查看UDI</el-button>
                 <el-button type="text" size="mini" :disabled="isReceived" @click="onNewAddRow(row)">新增收货</el-button>
               </template>
             </el-table-column>
-            <el-table-column prop="UDI_QTY" label="UDI数量" width="72" align="center" />
+            <el-table-column prop="UDI_QTY" label="UDI数量" width="72" align="right" />
             <el-table-column prop="MEDICAL_CODE" label="医保编码" width="110" show-overflow-tooltip />
-            <el-table-column label="上传状态" width="88">
+            <el-table-column label="上传状态" width="88" align="center">
               <template slot-scope="{ row }">{{ fmtUploadState(row.Batch_Pic_Full_Name) }}</template>
             </el-table-column>
-            <el-table-column label="启用状态" width="80">
+            <el-table-column label="启用状态" width="80" align="center">
               <template slot-scope="{ row }">{{ fmtEnable(row.Enable) }}</template>
             </el-table-column>
             <el-table-column v-if="flags.showStorageTwo" prop="STORAGE_TWO_NAME" label="仓库" width="90" show-overflow-tooltip />
             <el-table-column v-if="flags.showFundsSource" label="资金来源" width="100">
               <template slot-scope="{ row }">{{ fmtFundsSource(row.FUNDS_SOURCE) }}</template>
             </el-table-column>
-            <el-table-column label="物资类型" width="88">
+            <el-table-column label="物资类型" width="88" align="center">
               <template slot-scope="{ row }">{{ fmtVarType(row.VAR_TYPE) }}</template>
             </el-table-column>
-            <el-table-column label="采购方式" width="90">
+            <el-table-column label="采购方式" width="90" align="center">
               <template slot-scope="{ row }">{{ fmtOrderType(row.ORDER_TYPE) }}</template>
             </el-table-column>
             <el-table-column prop="DEF_POSITION" label="货位" width="100" show-overflow-tooltip />

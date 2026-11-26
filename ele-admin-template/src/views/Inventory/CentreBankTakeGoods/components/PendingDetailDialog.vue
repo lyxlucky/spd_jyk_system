@@ -18,13 +18,13 @@
       <el-table-column prop="Specification_Or_Type" label="规格型号" min-width="160" show-overflow-tooltip />
       <el-table-column prop="Unit" label="单位" width="70" align="center" />
       <el-table-column prop="Batch" label="生产批号" width="100" />
-      <el-table-column label="生产日期" width="110">
+      <el-table-column label="生产日期" width="110" align="center">
         <template slot-scope="{ row }">{{ fmtDate10(row.Batch_Production_Date) }}</template>
       </el-table-column>
-      <el-table-column label="有效期" width="110">
+      <el-table-column label="有效期" width="110" align="center">
         <template slot-scope="{ row }">{{ fmtDate10(row.Batch_Validity_Period) }}</template>
       </el-table-column>
-      <el-table-column prop="Receivable" label="应收数量" width="90" align="center" />
+      <el-table-column prop="Receivable" label="应收数量" width="90" align="right" />
       <el-table-column label="结算价" width="90" align="right">
         <template slot-scope="{ row }">{{ fmtPrice(row.Supply_Price) }}</template>
       </el-table-column>

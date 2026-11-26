@@ -134,12 +134,12 @@
             <el-table-column prop="Varietie_Code_New" label="品种编码" width="100" show-overflow-tooltip />
             <el-table-column prop="Varietie_Name" label="品种全称" min-width="192" show-overflow-tooltip />
             <el-table-column prop="Approval_Number" label="批准文号" width="120" show-overflow-tooltip />
-            <el-table-column prop="Registration_Issuing_Date" label="发证日期" width="110" />
-            <el-table-column prop="Registration_Valid_Date" label="有效到期" width="110" />
+            <el-table-column prop="Registration_Issuing_Date" label="发证日期" width="110" align="center" />
+            <el-table-column prop="Registration_Valid_Date" label="有效到期" width="110" align="center" />
             <el-table-column prop="supplier_name" label="供应商" min-width="208" show-overflow-tooltip />
-            <el-table-column prop="Prod_Big_Class_Name" label="产品类型" width="100" show-overflow-tooltip />
-            <el-table-column prop="Mgmt_Cat_Name" label="管理类别" width="100" show-overflow-tooltip />
-            <el-table-column prop="Regulatory_Cat_Name" label="监管类别" width="100" show-overflow-tooltip />
+            <el-table-column prop="Prod_Big_Class_Name" label="产品类型" width="100" show-overflow-tooltip align="center" />
+            <el-table-column prop="Mgmt_Cat_Name" label="管理类别" width="100" show-overflow-tooltip align="center" />
+            <el-table-column prop="Regulatory_Cat_Name" label="监管类别" width="100" show-overflow-tooltip align="center" />
           </el-table>
         </div>
         <ele-pro-table

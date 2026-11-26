@@ -39,8 +39,8 @@
           align="left"
           show-overflow-tooltip
         />
-        <el-table-column prop="VARIETIE_CODE_NEW" label="品种编码" width="132" align="center" show-overflow-tooltip />
-        <el-table-column prop="CHARGE_CODE" label="计费编码" width="132" align="center" show-overflow-tooltip />
+        <el-table-column prop="VARIETIE_CODE_NEW" label="品种编码" width="132" align="left" show-overflow-tooltip />
+        <el-table-column prop="CHARGE_CODE" label="计费编码" width="132" align="left" show-overflow-tooltip />
         <el-table-column prop="SPECIFICATION_OR_TYPE" label="规格型号" min-width="160" align="left" show-overflow-tooltip />
         <el-table-column prop="MANUFACTURING_ENT_NAME" label="生产企业" min-width="208" align="left" show-overflow-tooltip />
         <el-table-column prop="UNIT" label="单位" width="76" align="center" show-overflow-tooltip />

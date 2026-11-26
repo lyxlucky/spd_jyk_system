@@ -21,6 +21,7 @@
                 width="160"
                 sortable
                 :sort-method="(a, b) => sortDate(a, b, 'CREATE_TIME')" show-overflow-tooltip
+                align="center"
               >
                 <template slot-scope="{ row }">{{ fmtDate(row.CREATE_TIME) }}</template>
               </el-table-column>
@@ -51,7 +52,7 @@
                 prop="CYCOUNT"
                 label="差异数"
                 min-width="88"
-                align="center"
+                align="right"
                 sortable
                 :sort-method="(a, b) => sortNum(a, b, 'CYCOUNT')"
               />
@@ -59,7 +60,7 @@
                 prop="QSCOUNT"
                 label="缺少数"
                 min-width="88"
-                align="center"
+                align="right"
                 sortable
                 :sort-method="(a, b) => sortNum(a, b, 'QSCOUNT')"
               />
@@ -67,7 +68,7 @@
                 prop="YCCOUNT"
                 label="溢出数"
                 min-width="88"
-                align="center"
+                align="right"
                 sortable
                 :sort-method="(a, b) => sortNum(a, b, 'YCCOUNT')"
               />
@@ -88,6 +89,7 @@
                 sortable
                 :sort-method="(a, b) => sortStr(a, b, 'DEPT_SP_MAN')"
                 show-overflow-tooltip
+                align="center"
               />
               <el-table-column
                 prop="DEPT_SP_TIME"
@@ -95,6 +97,7 @@
                 min-width="100"
                 sortable
                 :sort-method="(a, b) => sortDate(a, b, 'DEPT_SP_TIME')"
+                align="center"
               >
                 <template slot-scope="{ row }">{{ fmtDateTime(row.DEPT_SP_TIME) }}</template>
               </el-table-column>
@@ -185,7 +188,7 @@
                 sortable
                 :sort-method="(a, b) => sortStr(a, b, 'BATCH')"
               />
-              <el-table-column prop="COEFFICIENT" label="系数" min-width="60" align="center" />
+              <el-table-column prop="COEFFICIENT" label="系数" min-width="60" align="right" />
               <el-table-column
                 prop="DEF_NO_PKG_CODE"
                 label="定数码"
@@ -210,6 +213,7 @@
                 sortable
                 :sort-method="(a, b) => sortNum(a, b, 'CONSUMPTION_TYPE')"
                 show-overflow-tooltip
+                align="center"
               >
                 <template slot-scope="{ row }">{{ fmtConsumptionType(row.CONSUMPTION_TYPE) }}</template>
               </el-table-column>
@@ -343,7 +347,7 @@
           <el-table-column prop="MANUFACTURING_ENT_NAME" label="生产企业名称" min-width="160" show-overflow-tooltip />
           <el-table-column prop="SUPPLIER_NAME" label="供应商" min-width="208" show-overflow-tooltip />
           <el-table-column prop="BATCH" label="生产批号" width="100" />
-          <el-table-column prop="COEFFICIENT" label="系数" width="60" align="center" />
+          <el-table-column prop="COEFFICIENT" label="系数" width="60" align="right" />
           <el-table-column prop="DEF_NO_PKG_CODE" label="定数码" width="140" show-overflow-tooltip />
           <el-table-column prop="SERIAL_NUMBER" label="UDI码" width="140" show-overflow-tooltip />
           <el-table-column prop="RFID_CODE" label="RFID码" width="140" show-overflow-tooltip />

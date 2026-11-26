@@ -60,7 +60,7 @@
           min-width="208"
           show-overflow-tooltip
         ></el-table-column>
-        <el-table-column label="合同明细到期" min-width="200">
+        <el-table-column label="合同明细到期" min-width="200" align="center">
           <template slot-scope="scope">
             <span :class="dateClass(scope.row)">
               {{ formatDate(scope.row.DET_CONTRACT_END) }}

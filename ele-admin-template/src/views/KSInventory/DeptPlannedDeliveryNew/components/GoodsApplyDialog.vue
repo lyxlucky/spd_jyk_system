@@ -14,14 +14,14 @@
       <el-table-column label="订单优先级" width="90">
         <template slot-scope="{ row }">{{ formatPriority(row.Priority) }}</template>
       </el-table-column>
-      <el-table-column prop="Plan_Time" label="计划时间" width="100" />
+      <el-table-column prop="Plan_Time" label="计划时间" width="100" align="center" />
       <el-table-column prop="Dept_Two_Name" label="二级科室名称" width="110" show-overflow-tooltip />
       <el-table-column prop="Varietie_Code_New" label="品种编码" width="100" />
       <el-table-column prop="Varietie_Name" label="品种名称" min-width="192" show-overflow-tooltip />
       <el-table-column prop="Specification_Or_Type" label="规格型号" min-width="160" show-overflow-tooltip />
       <el-table-column prop="Unit" label="单位" width="55" align="center" />
       <el-table-column prop="Manufacturing_Ent_Name" label="生产企业" min-width="208" show-overflow-tooltip />
-      <el-table-column label="申请数量" width="88" align="center" show-overflow-tooltip>
+      <el-table-column label="申请数量" width="88" align="right" show-overflow-tooltip>
         <template slot-scope="{ row }">
           <el-input-number
             v-model="row._applyQty"
@@ -33,7 +33,7 @@
           />
         </template>
       </el-table-column>
-      <el-table-column prop="Left_Apply_Qty" label="剩余申请数量" width="100" align="center" />
+      <el-table-column prop="Left_Apply_Qty" label="剩余申请数量" width="100" align="right" />
       <el-table-column
         v-if="isInside"
         prop="Center_Inside_Goods_Qty"
