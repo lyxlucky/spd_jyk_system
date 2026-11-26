@@ -1,10 +1,10 @@
 <template>
   <div class="bulk-return-tab">
     <el-row :gutter="10">
-      <el-col :span="3">
+      <el-col :span="4">
         <div class="section-title">选择退货科室</div>
-        <el-form :inline="true" size="mini" class="filter-row">
-          <el-form-item style="width: 100%; margin-right: 0">
+        <el-form size="mini" class="filter-row dept-filter">
+          <el-form-item>
             <el-input
               v-model="deptFilters.SearchName"
               placeholder="二级科室"
@@ -32,7 +32,7 @@
           </template>
         </ele-pro-table>
       </el-col>
-      <el-col :span="21">
+      <el-col :span="20">
         <div class="section-title">选配退货品种</div>
         <el-form :inline="true" size="mini" class="filter-row" @submit.native.prevent>
           <el-form-item>
@@ -752,6 +752,19 @@ export default {
   align-items: center;
   margin-bottom: 8px;
   gap: 4px;
+}
+.dept-filter {
+  :deep(.el-form-item) {
+    margin-right: 0;
+    margin-bottom: 6px;
+  }
+  :deep(.el-form-item:first-child) {
+    width: 100%;
+  }
+  :deep(.el-form-item__content),
+  :deep(.el-input) {
+    width: 100%;
+  }
 }
 .local-toolbar {
   margin-bottom: 8px;

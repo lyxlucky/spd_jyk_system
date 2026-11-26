@@ -76,7 +76,8 @@
               :fetch-suggestions="querySourceFrom"
               clearable
               placeholder="库存位置"
-              style="width: 120px"
+              style="width: 160px"
+              popper-class="inv-source-from-suggest"
             />
           </el-form-item>
           <el-form-item label="货位号">
@@ -614,5 +615,16 @@ export default {
   font-style: normal;
   font-weight: 600;
   color: #009688;
+}
+</style>
+
+<!-- autocomplete 挂到 body，需非 scoped 才能撑开下拉宽度 -->
+<style>
+.inv-source-from-suggest.el-autocomplete-suggestion {
+  width: auto !important;
+  min-width: 160px;
+}
+.inv-source-from-suggest .el-autocomplete-suggestion__list li {
+  white-space: nowrap;
 }
 </style>
