@@ -61,22 +61,22 @@
         <el-table-column prop="Varietie_Code_New" label="品种（材料）编码" width="80" sortable="custom" show-overflow-tooltip />
         <el-table-column prop="Varietie_Name" label="品种全称" min-width="192" sortable="custom" show-overflow-tooltip />
         <el-table-column prop="Specification_Or_Type" label="型号/规格" min-width="100" sortable="custom" show-overflow-tooltip />
-        <el-table-column prop="Unit" label="单位" width="70" sortable="custom" />
+        <el-table-column prop="Unit" label="单位" width="70" sortable="custom" align="center" />
         <el-table-column prop="Manufacturing_Ent_Name" label="生产企业名称" min-width="140" sortable="custom" show-overflow-tooltip />
         <el-table-column prop="APPROVAL_NUMBER" label="注册证号" min-width="140" sortable="custom" show-overflow-tooltip />
-        <el-table-column label="临床使用安全级别" min-width="140" sortable="custom" prop="CLINICAL_USE_SAFETY_LEVEL">
+        <el-table-column label="临床使用安全级别" min-width="140" sortable="custom" prop="CLINICAL_USE_SAFETY_LEVEL" align="center">
           <template slot-scope="{ row }">{{ clinicalLevel(row.CLINICAL_USE_SAFETY_LEVEL) }}</template>
         </el-table-column>
-        <el-table-column prop="Def_No_Pkg_Coefficient" label="定数包系数" width="80" align="center" sortable="custom" />
-        <el-table-column prop="Middle_Package_Count" label="中包装数量" width="80" align="center" sortable="custom" />
-        <el-table-column prop="Big_Box_Count" label="整箱数量" width="80" align="center" sortable="custom" />
-        <el-table-column label="消耗类型" width="100" sortable="custom" prop="Consumption_Type">
+        <el-table-column prop="Def_No_Pkg_Coefficient" label="定数包系数" width="80" align="right" sortable="custom" />
+        <el-table-column prop="Middle_Package_Count" label="中包装数量" width="80" align="right" sortable="custom" />
+        <el-table-column prop="Big_Box_Count" label="整箱数量" width="80" align="right" sortable="custom" />
+        <el-table-column label="消耗类型" width="100" sortable="custom" prop="Consumption_Type" align="center">
           <template slot-scope="{ row }">{{ consumptionLabel(row.Consumption_Type) }}</template>
         </el-table-column>
-        <el-table-column label="HIS对冲是否需要暂借记录" width="80" sortable="custom" prop="His_Need_Temp_Record">
+        <el-table-column label="HIS对冲是否需要暂借记录" width="80" sortable="custom" prop="His_Need_Temp_Record" align="center">
           <template slot-scope="{ row }">{{ hisNeedLabel(row.His_Need_Temp_Record ?? row.HisNeedTempRecord) }}</template>
         </el-table-column>
-        <el-table-column label="启用状态" width="80" sortable="custom" prop="Enable">
+        <el-table-column label="启用状态" width="80" sortable="custom" prop="Enable" align="center">
           <template slot-scope="{ row }">{{ row.Enable == 0 || row.Enable === '0' ? '停用' : row.Enable == 1 || row.Enable === '1' ? '启用' : '' }}</template>
         </el-table-column>
         <el-table-column label="关联RFID" width="80" sortable="custom" prop="Related_Rfid">
@@ -91,15 +91,15 @@
         <el-table-column label="是否主动配送" width="80" prop="IS_AUTH_SEND" align="center">
           <template slot-scope="{ row }">{{ yn(row.IS_AUTH_SEND) }}</template>
         </el-table-column>
-        <el-table-column prop="Def_No_Pkg_Upper" label="库存上限" width="90" align="center" />
-        <el-table-column prop="Def_No_Pkg_Lower" label="库存下限" width="90" align="center" />
+        <el-table-column prop="Def_No_Pkg_Upper" label="库存上限" width="90" align="right" />
+        <el-table-column prop="Def_No_Pkg_Lower" label="库存下限" width="90" align="right" />
         <el-table-column label="空定数码对冲" width="80" prop="IS_HIS_CAN_NULL" align="center">
           <template slot-scope="{ row }">{{ yn(row.IS_HIS_CAN_NULL) }}</template>
         </el-table-column>
         <el-table-column label="空定数码对冲开始时间" width="80" prop="HIS_CAN_NULL_STATR_TIME" align="center">
           <template slot-scope="{ row }">{{ fmtDate(row.HIS_CAN_NULL_STATR_TIME) }}</template>
         </el-table-column>
-        <el-table-column prop="REGION_NAME" label="默认库区" width="90" align="center" />
+        <el-table-column prop="REGION_NAME" label="默认库区" width="90" align="left" />
       </el-table>
     <el-pagination
       class="pager"

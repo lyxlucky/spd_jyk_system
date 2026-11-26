@@ -7,10 +7,10 @@
     @open="loadFiles"
   >
     <el-table v-loading="loading" :data="files" size="mini" border stripe max-height="400">
-      <el-table-column prop="CREATE_TIME" label="上传时间" width="170" show-overflow-tooltip>
+      <el-table-column prop="CREATE_TIME" label="上传时间" width="170" show-overflow-tooltip align="center">
         <template slot-scope="{ row }">{{ fmtTime(row.CREATE_TIME) }}</template>
       </el-table-column>
-      <el-table-column prop="CREATE_MAN" label="上传人" width="100" show-overflow-tooltip />
+      <el-table-column prop="CREATE_MAN" label="上传人" width="100" show-overflow-tooltip align="center" />
       <el-table-column prop="FILE_URL" label="文件" min-width="200" show-overflow-tooltip />
       <el-table-column label="操作" width="120" align="center">
         <template slot-scope="{ row }">

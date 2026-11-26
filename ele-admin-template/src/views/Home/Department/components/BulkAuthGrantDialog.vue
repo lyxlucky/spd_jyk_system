@@ -20,15 +20,15 @@
         <el-table-column prop="Varietie_Code" label="品种（材料）编码" width="150" show-overflow-tooltip />
         <el-table-column prop="Varietie_Name" label="品种全称" min-width="192" show-overflow-tooltip />
         <el-table-column prop="Approval_Number" label="批准文号" width="120" show-overflow-tooltip />
-        <el-table-column label="发证日期" width="110">
+        <el-table-column label="发证日期" width="110" align="center">
           <template slot-scope="{ row }">{{ fmtShortDate(row.Registration_Issuing_Date) }}</template>
         </el-table-column>
-        <el-table-column label="有效到期" width="110">
+        <el-table-column label="有效到期" width="110" align="center">
           <template slot-scope="{ row }">{{ fmtShortDate(row.Registration_Valid_Date) }}</template>
         </el-table-column>
-        <el-table-column prop="Prod_Big_Class_Name" label="产品类型" width="100" show-overflow-tooltip />
-        <el-table-column prop="Mgmt_Cat_Name" label="管理类别" width="100" show-overflow-tooltip />
-        <el-table-column prop="Regulatory_Cat_Name" label="监管类别" width="100" show-overflow-tooltip />
+        <el-table-column prop="Prod_Big_Class_Name" label="产品类型" width="100" show-overflow-tooltip align="center" />
+        <el-table-column prop="Mgmt_Cat_Name" label="管理类别" width="100" show-overflow-tooltip align="center" />
+        <el-table-column prop="Regulatory_Cat_Name" label="监管类别" width="100" show-overflow-tooltip align="center" />
       </el-table>
 
       <div class="mt8 panel-block">
@@ -62,10 +62,10 @@
           <el-table-column prop="Varietie_Code_New" label="品种（材料）编码" width="140" show-overflow-tooltip />
           <el-table-column prop="Varietie_Name" label="品种全称" min-width="192" show-overflow-tooltip />
           <el-table-column prop="Specification_Or_Type" label="型号/规格" width="110" show-overflow-tooltip />
-          <el-table-column prop="Unit" label="单位" width="60" />
+          <el-table-column prop="Unit" label="单位" width="60" align="center" />
           <el-table-column prop="Price" label="中标价" width="80" align="right" />
           <el-table-column prop="Manufacturing_Ent_Name" label="生产企业名称" min-width="140" show-overflow-tooltip />
-          <el-table-column label="启用状态" width="80">
+          <el-table-column label="启用状态" width="80" align="center">
             <template slot-scope="{ row }">{{ row.Enable == 1 ? '启用' : row.Enable == 0 ? '冻结' : '—' }}</template>
           </el-table-column>
         </el-table>
@@ -105,7 +105,7 @@
           <el-table-column prop="Varietie_Code_New" label="品种（材料）编码" width="140" show-overflow-tooltip />
           <el-table-column prop="Varietie_Name" label="品种全称" min-width="192" show-overflow-tooltip />
           <el-table-column prop="Specification_Or_Type" label="型号/规格" width="100" show-overflow-tooltip />
-          <el-table-column prop="Unit" label="单位" width="60" />
+          <el-table-column prop="Unit" label="单位" width="60" align="center" />
           <el-table-column prop="Price" label="中标价" width="80" align="right" />
           <el-table-column prop="Manufacturing_Ent_Name" label="生产企业名称" min-width="120" show-overflow-tooltip />
           <el-table-column label="授权模式" width="120">
@@ -119,7 +119,7 @@
               </el-select>
             </template>
           </el-table-column>
-          <el-table-column label="授权到期" width="140">
+          <el-table-column label="授权到期" width="140" align="center">
             <template slot-scope="{ row }">
               <el-date-picker
                 v-model="row.mandateExpire"
@@ -130,7 +130,7 @@
               />
             </template>
           </el-table-column>
-          <el-table-column label="授权散货总数" width="110">
+          <el-table-column label="授权散货总数" width="110" align="right">
             <template slot-scope="{ row }">
               <el-input-number
                 v-model="row.authorizedAmount"
@@ -141,7 +141,7 @@
               />
             </template>
           </el-table-column>
-          <el-table-column label="PDA自动申领基数" width="120">
+          <el-table-column label="PDA自动申领基数" width="120" align="right">
             <template slot-scope="{ row }">
               <el-input-number
                 v-model="row.autoApplyRadix"

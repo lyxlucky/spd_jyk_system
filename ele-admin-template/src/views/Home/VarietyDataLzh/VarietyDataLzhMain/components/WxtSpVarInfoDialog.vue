@@ -54,10 +54,10 @@
       <el-table-column prop="pp" label="品牌" min-width="90" show-overflow-tooltip />
       <el-table-column prop="isSfWp" label="是否收费" width="80" align="center" />
       <el-table-column prop="cpzch" label="注册证号" min-width="130" show-overflow-tooltip />
-      <el-table-column prop="zczYxq" label="注册证有效期" min-width="110" show-overflow-tooltip />
+      <el-table-column prop="zczYxq" label="注册证有效期" min-width="110" show-overflow-tooltip align="center" />
       <el-table-column prop="zcName" label="注册证名称" min-width="140" show-overflow-tooltip />
       <el-table-column prop="gysmc" label="供应商名称" min-width="208" show-overflow-tooltip />
-      <el-table-column prop="sycDate" label="审批时间" min-width="140" show-overflow-tooltip />
+      <el-table-column prop="sycDate" label="审批时间" min-width="140" show-overflow-tooltip align="center" />
       <el-table-column prop="sycStatus" label="微讯通状态" width="90" align="center">
         <template v-slot="{ row }">
           {{ formatSycStatus(row.sycStatus) }}

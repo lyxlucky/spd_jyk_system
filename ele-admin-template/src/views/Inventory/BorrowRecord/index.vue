@@ -345,7 +345,7 @@
               field="PatientNumber"
               title="住院号"
               width="120"
-              align="center"
+              align="left"
               show-overflow
             />
             <vxe-column

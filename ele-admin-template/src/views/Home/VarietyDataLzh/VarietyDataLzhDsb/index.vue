@@ -51,7 +51,7 @@
           v-loading="leftLoading"
           class="dsb-table"
         >
-          <el-table-column prop="STORAGE_ID" label="主控库区" width="96" align="center">
+          <el-table-column prop="STORAGE_ID" label="主控库区" width="96" align="left">
             <template slot-scope="{ row }">
               <el-tag
                 size="mini"
@@ -62,7 +62,7 @@
               </el-tag>
             </template>
           </el-table-column>
-          <el-table-column prop="STORAGE_TWO_ID" label="仓库" width="86" align="center" v-if="showStorageTwoCol">
+          <el-table-column prop="STORAGE_TWO_ID" label="仓库" width="86" align="left" v-if="showStorageTwoCol">
             <template slot-scope="{ row }">
               <el-tag
                 size="mini"

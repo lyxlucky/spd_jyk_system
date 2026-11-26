@@ -45,8 +45,8 @@
         border
         max-height="420"
       >
-        <el-table-column type="index" :index="contractExpiryIndex" label="序号" width="60" />
-        <el-table-column label="到期状态" width="100">
+        <el-table-column type="index" :index="contractExpiryIndex" label="序号" width="60" align="center" />
+        <el-table-column label="到期状态" width="100" align="center">
           <template slot-scope="{ row }">
             {{ row.Expiry_Status === 'expired' ? '已过期' : '即将到期' }}
           </template>
@@ -61,7 +61,7 @@
         </el-table-column>
         <el-table-column prop="Contract_Name" label="合同名称" min-width="160" show-overflow-tooltip />
         <el-table-column prop="Supplier_Name" label="供应商" min-width="208" show-overflow-tooltip />
-        <el-table-column prop="Contract_End_Time" label="主合同到期日期" width="140" />
+        <el-table-column prop="Contract_End_Time" label="主合同到期日期" width="140" align="center" />
       </el-table>
       <el-pagination
         class="ele-pagination-circle"

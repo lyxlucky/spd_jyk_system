@@ -26,7 +26,7 @@
           label="生产企业"
           min-width="208" show-overflow-tooltip
         ></el-table-column>
-        <el-table-column label="注册证到期时间" width="150">
+        <el-table-column label="注册证到期时间" width="150" align="center">
           <template slot-scope="scope">
             <span
               :class="{
@@ -44,6 +44,7 @@
           v-if="!isBdrm"
           label="生产许可证到期时间"
           width="150"
+          align="center"
         >
           <template slot-scope="scope">
             <span
@@ -55,7 +56,7 @@
             </span>
           </template>
         </el-table-column>
-        <el-table-column label="品种授权到期时间" width="150">
+        <el-table-column label="品种授权到期时间" width="150" align="center">
           <template slot-scope="scope">
             <span
               :class="{
@@ -70,6 +71,7 @@
           v-if="!isBdrm"
           label="供应商经营许可证到期时间"
           width="180"
+          align="center"
         >
           <template slot-scope="scope">
             <span
@@ -87,6 +89,7 @@
           v-if="!isBdrm"
           label="集配商经营许可证到期时间"
           width="180"
+          align="center"
         >
           <template slot-scope="scope">
             <span

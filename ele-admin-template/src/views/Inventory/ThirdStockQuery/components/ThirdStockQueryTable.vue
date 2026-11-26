@@ -13,7 +13,7 @@
       <el-table-column
         prop="DEPT_TWO_NAME"
         label="二级科室名称"
-        align="center"
+        align="left"
         min-width="140"
         show-overflow-tooltip
       >
@@ -32,35 +32,35 @@
       <el-table-column
         prop="VARIETIE_CODE_NEW"
         label="品种编码"
-        align="center"
+        align="left"
         min-width="120"
         show-overflow-tooltip
       />
       <el-table-column
         prop="CHARGE_CODE"
         label="计费编码"
-        align="center"
+        align="left"
         min-width="120"
         show-overflow-tooltip
       />
       <el-table-column
         prop="VARIETIE_NAME"
         label="品种名称"
-        align="center"
+        align="left"
         min-width="192"
         show-overflow-tooltip
       />
       <el-table-column
         prop="SPECIFICATION_OR_TYPE"
         label="规格型号"
-        align="center"
+        align="left"
         min-width="160"
         show-overflow-tooltip
       />
       <el-table-column
         prop="MANUFACTURING_ENT_NAME"
         label="生产企业"
-        align="center"
+        align="left"
         min-width="208"
         show-overflow-tooltip
       />
@@ -74,14 +74,14 @@
       <el-table-column
         prop="PRICE"
         label="单价"
-        align="center"
+        align="right"
         min-width="80"
         show-overflow-tooltip
       />
       <el-table-column
         prop="APPROVAL_NUMBER"
         label="批准文号"
-        align="center"
+        align="left"
         min-width="150"
         show-overflow-tooltip
       />
@@ -95,7 +95,7 @@
           {{ formatStorageType(row.STORAGE_TYPE) }}
         </template>
       </el-table-column>
-      <el-table-column label="库存数量" align="center" width="88" show-overflow-tooltip>
+      <el-table-column label="库存数量" align="right" width="88" show-overflow-tooltip>
         <template slot-scope="{ row }">
           {{ calcStockQty(row) }}
         </template>

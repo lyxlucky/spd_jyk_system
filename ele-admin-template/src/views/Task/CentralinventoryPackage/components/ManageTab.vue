@@ -136,9 +136,9 @@
 
     <el-dialog title="定数包库存" :visible.sync="defStockVisible" width="560px" append-to-body>
       <el-table :data="defStockList" size="mini" border>
-        <el-table-column prop="Coefficient" label="系数" width="80" align="center" />
-        <el-table-column prop="StockQty" label="库存数量" width="88" align="center" show-overflow-tooltip />
-        <el-table-column prop="LimitQty" label="上限数量" width="100" align="center" />
+        <el-table-column prop="Coefficient" label="系数" width="80" align="right" />
+        <el-table-column prop="StockQty" label="库存数量" width="88" align="right" show-overflow-tooltip />
+        <el-table-column prop="LimitQty" label="上限数量" width="100" align="right" />
         <el-table-column label="状态" align="center">
           <template slot-scope="{ row }">
             <span :class="Number(row.StockQty) >= Number(row.LimitQty) ? 'stock-warning' : 'stock-normal'">

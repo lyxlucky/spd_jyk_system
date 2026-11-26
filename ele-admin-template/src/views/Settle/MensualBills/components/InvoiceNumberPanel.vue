@@ -31,14 +31,14 @@
             <div class="spd-table-panel__wrap">
               <el-table v-loading="billLoading" :data="billRows" border stripe size="mini" height="calc(100vh - 100px)" highlight-current-row @current-change="onBillSelect">
                 <el-table-column prop="MonthNumber" label="月结单号" min-width="100" show-overflow-tooltip />
-                <el-table-column prop="sDate" label="月结月份" width="90" />
-                <el-table-column prop="StartDate" label="月结首日" width="95">
+                <el-table-column prop="sDate" label="月结月份" width="90" align="center" />
+                <el-table-column prop="StartDate" label="月结首日" width="95" align="center">
                   <template slot-scope="{ row }">
                     <el-input v-if="editingId === row.ID" v-model="editBuf.StartDate" size="mini" @blur="saveEdit(row, 'STARTDATE')" />
                     <span v-else @dblclick="startEdit(row)">{{ row.StartDate }}</span>
                   </template>
                 </el-table-column>
-                <el-table-column prop="EndDate" label="月结末日" width="95">
+                <el-table-column prop="EndDate" label="月结末日" width="95" align="center">
                   <template slot-scope="{ row }">
                     <el-input v-if="editingId === row.ID" v-model="editBuf.EndDate" size="mini" @blur="saveEdit(row, 'ENDDATE')" />
                     <span v-else @dblclick="startEdit(row)">{{ row.EndDate }}</span>
@@ -48,7 +48,7 @@
                   <template slot-scope="{ row }">{{ fmtMoney(row.Money) }}</template>
                 </el-table-column>
                 <el-table-column prop="Remarks" label="备注" min-width="110" show-overflow-tooltip />
-                <el-table-column prop="sDate" label="日期" width="120" />
+                <el-table-column prop="sDate" label="日期" width="120" align="center" />
               </el-table>
               <el-pagination small layout="total, prev, pager, next" :total="billTotal" :page-size="billPage.size" :current-page.sync="billPage.page" class="section-pager" @current-change="loadBillList" />
             </div>
@@ -113,7 +113,7 @@
                 </template>
                 <template v-else>
                   <el-table-column prop="Supplier_Code_Charging" label="医院系统编码" width="100" show-overflow-tooltip />
-                  <el-table-column prop="PRINT_COUNT" label="打印次数" width="70" />
+                  <el-table-column prop="PRINT_COUNT" label="打印次数" width="70" align="right" />
                   <el-table-column prop="Supplier_Code" label="供应商编码" width="90" show-overflow-tooltip />
                   <el-table-column prop="Supplier_Name" label="供应商名称" min-width="208" show-overflow-tooltip />
                   <el-table-column label="化验材料" width="78" align="right"><template slot-scope="{ row }">{{ fmtMoney(row.HY_Material) }}</template></el-table-column>
@@ -122,9 +122,9 @@
                   <el-table-column label="医疗用品" width="78" align="right"><template slot-scope="{ row }">{{ fmtMoney(row.YL_Use) }}</template></el-table-column>
                   <el-table-column label="一次性耗材" width="90" align="right"><template slot-scope="{ row }">{{ fmtMoney(row.YCX_Material) }}</template></el-table-column>
                   <el-table-column label="应急物质" width="78" align="right"><template slot-scope="{ row }">{{ fmtMoney(row.YJWZ_Material) }}</template></el-table-column>
-                  <el-table-column label="其他" width="68" align="center"><template slot-scope="{ row }">{{ fmtMoney(row.QTWZ_Material) }}</template></el-table-column>
+                  <el-table-column label="其他" width="68" align="right"><template slot-scope="{ row }">{{ fmtMoney(row.QTWZ_Material) }}</template></el-table-column>
                 </template>
-                <el-table-column label="合计" width="120" align="center" fixed="right"><template slot-scope="{ row }">{{ fmtMoney(row.Money) }}</template></el-table-column>
+                <el-table-column label="合计" width="120" align="right" fixed="right"><template slot-scope="{ row }">{{ fmtMoney(row.Money) }}</template></el-table-column>
               </el-table>
               <el-pagination small layout="total, prev, pager, next" :total="supplierTotal" :page-size="supplierPage.size" :current-page.sync="supplierPage.page" class="section-pager" @current-change="loadSupplierList" />
             </div>
@@ -155,10 +155,10 @@
             <div class="spd-panel__head">发票列表</div>
             <div class="spd-table-panel__wrap">
               <el-table v-loading="invoiceLoading" :data="invoiceRows" border stripe size="mini" height="calc(100vh - 100px)">
-                <el-table-column type="index" label="序号" width="50" />
-                <el-table-column prop="BillNum" label="发票号码" min-width="120" align="center" show-overflow-tooltip />
-                <el-table-column label="发票金额" width="100" align="center"><template slot-scope="{ row }">{{ fmtMoney(row.Price) }}</template></el-table-column>
-                <el-table-column label="状态" width="76" show-overflow-tooltip><template slot-scope="{ row }">{{ row.State == 0 ? '未审批' : '已审批' }}</template></el-table-column>
+                <el-table-column type="index" label="序号" width="50" align="center" />
+                <el-table-column prop="BillNum" label="发票号码" min-width="120" align="left" show-overflow-tooltip />
+                <el-table-column label="发票金额" width="100" align="right"><template slot-scope="{ row }">{{ fmtMoney(row.Price) }}</template></el-table-column>
+                <el-table-column label="状态" width="76" show-overflow-tooltip align="center"><template slot-scope="{ row }">{{ row.State == 0 ? '未审批' : '已审批' }}</template></el-table-column>
               </el-table>
             </div>
           </div>

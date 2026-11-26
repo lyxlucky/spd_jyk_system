@@ -49,10 +49,10 @@
         <el-table-column prop="Specification_Or_Type" label="规格/型号" sortable="custom" />
         <el-table-column prop="Manufacturing_Ent_Name" label="生产企业名称" sortable="custom" />
         <el-table-column prop="APPROVAL_NUMBER" label="注册证号" sortable="custom" />
-        <el-table-column prop="Unit" label="单位" sortable="custom" />
-        <el-table-column prop="Price" label="中标价" sortable="custom" />
-        <el-table-column prop="VAR_CATEGORY" label="品种类别" sortable="custom" />
-        <el-table-column prop="REAGENT_CONVERSION_RATIO" label="换算比(试剂)" sortable="custom" />
+        <el-table-column prop="Unit" label="单位" sortable="custom" align="center" />
+        <el-table-column prop="Price" label="中标价" sortable="custom" align="right" />
+        <el-table-column prop="VAR_CATEGORY" label="品种类别" sortable="custom" align="center" />
+        <el-table-column prop="REAGENT_CONVERSION_RATIO" label="换算比(试剂)" sortable="custom" align="center" />
         <el-table-column prop="INSTRUMENT_REMARK" label="仪器备注" sortable="custom" />
         <el-table-column label="操作" align="center">
           <template v-slot:default="{ row }">

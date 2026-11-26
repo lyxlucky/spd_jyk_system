@@ -47,13 +47,13 @@
             >
               <el-table-column prop="Snapshot_Batch" label="快照批次" min-width="120" show-overflow-tooltip />
               <el-table-column prop="Mark" label="备注" min-width="110" show-overflow-tooltip />
-              <el-table-column label="状态" width="76" show-overflow-tooltip>
+              <el-table-column label="状态" width="76" show-overflow-tooltip align="center">
                 <template slot-scope="{ row }">
                   {{ row.Approve_State == 1 || row.Approve_State === '1' ? '已审批' : '未审批' }}
                 </template>
               </el-table-column>
-              <el-table-column prop="Create_Time" label="创建时间" width="110" />
-              <el-table-column label="审批" width="70" align="center" class-name="batch-action-col">
+              <el-table-column prop="Create_Time" label="创建时间" width="110" align="center" />
+              <el-table-column label="审批" width="70" align="left" class-name="batch-action-col">
                 <template slot-scope="{ row }">
                   <el-link type="primary" :underline="false" @click.stop="onApproveBatch(row)">审批</el-link>
                 </template>
@@ -151,14 +151,14 @@
               <el-table-column prop="Specification_Or_Type" label="规格型号" min-width="160" show-overflow-tooltip />
               <el-table-column prop="MANUFACTURING_ENT_NAME" label="生产企业" min-width="208" show-overflow-tooltip />
               <el-table-column prop="UNIT" label="单位" width="50" align="center" />
-              <el-table-column label="合计库存" width="80" align="center">
+              <el-table-column label="合计库存" width="80" align="right">
                 <template slot-scope="{ row }">{{ calcAllGoodsQty(row) }}</template>
               </el-table-column>
-              <el-table-column prop="Center_Goods_Qty" label="中心库散货" width="90" align="center" />
-              <el-table-column prop="Center_Def_Qty" label="中心库定数包" width="95" align="center" />
-              <el-table-column prop="Receive_His_Qty" label="收货结算" width="80" align="center" />
-              <el-table-column prop="Consumed_Dept_Qty" label="用后结算-科室库存" width="160" align="center" />
-              <el-table-column prop="Consumed_His_Qty" label="用后结算数量" width="100" align="center" />
+              <el-table-column prop="Center_Goods_Qty" label="中心库散货" width="90" align="right" />
+              <el-table-column prop="Center_Def_Qty" label="中心库定数包" width="95" align="right" />
+              <el-table-column prop="Receive_His_Qty" label="收货结算" width="80" align="right" />
+              <el-table-column prop="Consumed_Dept_Qty" label="用后结算-科室库存" width="160" align="right" />
+              <el-table-column prop="Consumed_His_Qty" label="用后结算数量" width="100" align="right" />
               <el-table-column label="供应商核对" width="90">
                 <template slot-scope="{ row }">{{ fmtApproveStateDtl(row.Approve_State) }}</template>
               </el-table-column>

@@ -23,15 +23,15 @@
         <el-table-column prop="Varietie_Code_New" label="物料编码" min-width="130" />
         <el-table-column prop="Varietie_Name" label="物料名称" min-width="180" show-overflow-tooltip />
         <el-table-column prop="Specification_Or_Type" label="规格型号" min-width="160" show-overflow-tooltip />
-        <el-table-column label="状态" width="76" show-overflow-tooltip><template slot-scope="{ row }"><el-tag size="small" :type="row.State === '1' ? 'success' : 'warning'">{{ row.State === '1' ? '已完成' : '待维护' }}</el-tag></template></el-table-column>
-        <el-table-column label="首次申请时间" min-width="160"><template slot-scope="{ row }">{{ time(row.First_Apply_Time) }}</template></el-table-column>
-        <el-table-column prop="First_Applicant" label="首次申请人" min-width="110" />
-        <el-table-column label="最近申请时间" min-width="160"><template slot-scope="{ row }">{{ time(row.Last_Apply_Time) }}</template></el-table-column>
-        <el-table-column prop="Last_Applicant" label="最近申请人" min-width="110" />
-        <el-table-column prop="Completed_By" label="处理人" min-width="150" show-overflow-tooltip />
-        <el-table-column label="完成／核实时间" min-width="160"><template slot-scope="{ row }">{{ time(row.Completed_Time) }}</template></el-table-column>
+        <el-table-column label="状态" width="76" show-overflow-tooltip align="center"><template slot-scope="{ row }"><el-tag size="small" :type="row.State === '1' ? 'success' : 'warning'">{{ row.State === '1' ? '已完成' : '待维护' }}</el-tag></template></el-table-column>
+        <el-table-column label="首次申请时间" min-width="160" align="center"><template slot-scope="{ row }">{{ time(row.First_Apply_Time) }}</template></el-table-column>
+        <el-table-column prop="First_Applicant" label="首次申请人" min-width="110" align="center" />
+        <el-table-column label="最近申请时间" min-width="160" align="center"><template slot-scope="{ row }">{{ time(row.Last_Apply_Time) }}</template></el-table-column>
+        <el-table-column prop="Last_Applicant" label="最近申请人" min-width="110" align="center" />
+        <el-table-column prop="Completed_By" label="处理人" min-width="150" show-overflow-tooltip align="center" />
+        <el-table-column label="完成／核实时间" min-width="160" align="center"><template slot-scope="{ row }">{{ time(row.Completed_Time) }}</template></el-table-column>
         <el-table-column prop="Package_Codes" label="授权定数包编码" min-width="140" show-overflow-tooltip />
-        <el-table-column label="操作" width="110" fixed="right"><template slot-scope="{ row }"><el-button v-if="row.State === '0'" type="text" :disabled="loading || packageLoading" @click="open(row)">维护属性</el-button><span v-else>已完成</span></template></el-table-column>
+        <el-table-column label="操作" width="110" fixed="right" align="center"><template slot-scope="{ row }"><el-button v-if="row.State === '0'" type="text" :disabled="loading || packageLoading" @click="open(row)">维护属性</el-button><span v-else>已完成</span></template></el-table-column>
       </el-table>
       <el-pagination class="pagination" :current-page.sync="page" :page-size.sync="size" :page-sizes="[15, 30, 50, 100]" :total="total" layout="total, sizes, prev, pager, next" @current-change="load" @size-change="search" />
     </el-card>
@@ -40,9 +40,9 @@
       <el-table ref="packages" :data="packages" border size="small" max-height="400" @selection-change="selected = $event">
         <el-table-column type="selection" width="50" :selectable="canSelect" />
         <el-table-column prop="Def_No_Pkg_Code" label="定数包编码" min-width="130" />
-        <el-table-column prop="Def_No_Pkg_Coefficient" label="包装系数" min-width="100" />
-        <el-table-column label="定数包状态" min-width="130"><template slot-scope="{ row }">{{ row.Is_Delete !== '1' ? '已删除（不可选）' : row.Enable !== '1' ? '已停用（不可选）' : '有效' }}</template></el-table-column>
-        <el-table-column label="已有科室授权" min-width="130"><template slot-scope="{ row }">{{ authState(row) }}</template></el-table-column>
+        <el-table-column prop="Def_No_Pkg_Coefficient" label="包装系数" min-width="100" align="right" />
+        <el-table-column label="定数包状态" min-width="130" align="center"><template slot-scope="{ row }">{{ row.Is_Delete !== '1' ? '已删除（不可选）' : row.Enable !== '1' ? '已停用（不可选）' : '有效' }}</template></el-table-column>
+        <el-table-column label="已有科室授权" min-width="130" align="center"><template slot-scope="{ row }">{{ authState(row) }}</template></el-table-column>
       </el-table>
       <p v-if="!packages.length">该物料暂无定数包，请先在定数包品种目录中维护，再刷新。</p>
       <div slot="footer"><el-button @click="packageVisible = false">取消</el-button><el-button type="primary" :disabled="!selected.length" @click="defineAttributes">定义属性</el-button></div>

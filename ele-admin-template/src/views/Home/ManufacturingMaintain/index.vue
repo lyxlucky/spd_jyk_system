@@ -56,14 +56,14 @@
         <el-table-column prop="FIRST_AGENT_NAME" label="一级代理商名称" min-width="160" show-overflow-tooltip />
         <el-table-column prop="FIRST_AGENT_CREDIT_CODE" label="一级代理商社会统一信用代码" min-width="200" show-overflow-tooltip />
         <el-table-column prop="MANUFACTURING_LICENSE" label="生产许可证号" min-width="140" show-overflow-tooltip />
-        <el-table-column prop="LICENSE_VALID" label="营业执照效期" width="120" show-overflow-tooltip />
+        <el-table-column prop="LICENSE_VALID" label="营业执照效期" width="120" show-overflow-tooltip align="center" />
         <el-table-column prop="MANUFACTURING_NUMBER" label="生产商号" width="120" show-overflow-tooltip />
-        <el-table-column label="许可证有效期" width="120">
+        <el-table-column label="许可证有效期" width="120" align="center">
           <template slot-scope="{ row }">{{ fmtDate(row.MANUFACTURING_LICENSE_TIME) }}</template>
         </el-table-column>
         <el-table-column prop="MANUFACTURING_ADDRES" label="生产企业地址" min-width="160" show-overflow-tooltip />
-        <el-table-column prop="CREATE_MAN" label="创建人" width="100" show-overflow-tooltip />
-        <el-table-column label="更新时间" width="160">
+        <el-table-column prop="CREATE_MAN" label="创建人" width="100" show-overflow-tooltip align="center" />
+        <el-table-column label="更新时间" width="160" align="center">
           <template slot-scope="{ row }">{{ fmtDateTime(row.UPDATE_TIME) }}</template>
         </el-table-column>
       </el-table>

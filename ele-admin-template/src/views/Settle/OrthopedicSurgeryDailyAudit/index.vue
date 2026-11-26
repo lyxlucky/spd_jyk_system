@@ -327,7 +327,7 @@
             field="AGE_STR"
             title="年龄"
             width="76"
-            align="center" show-overflow="tooltip"
+            align="right" show-overflow="tooltip"
           />
           <vxe-column
             field="DIAGNOSIS"
@@ -366,19 +366,19 @@
             field="CHARGE_AMOUNT"
             title="收费金额"
             width="100"
-            align="center"
+            align="right"
           />
           <vxe-column
             field="FOLLOW_CHARGE_AMOUNT"
             title="跟台收费金额"
             width="100"
-            align="center"
+            align="right"
           />
           <vxe-column
             field="FOLLOW_CHARGE_QTY"
             title="跟台消耗数量"
             width="100"
-            align="center"
+            align="right"
           />
           <vxe-column
             field="SURGERY_STATUS"
@@ -564,7 +564,7 @@
             field="SUPPLY_PRICE"
             title="收费金额"
             width="120"
-            align="center"
+            align="right"
           />
           <vxe-column
             field="BARCODE"
@@ -576,7 +576,7 @@
             field="NUM"
             title="数量"
             width="80"
-            align="center"
+            align="right"
           />
           <vxe-column
             field="MANUFACTURER"

@@ -91,20 +91,20 @@
           <el-table-column prop="Operation_Number" label="手术编号" width="120" sortable="custom" />
           <el-table-column prop="Hospitalization_Number" label="住院号" width="100" sortable="custom" />
           <el-table-column prop="Patient_Number" label="病患号" width="100" sortable="custom" />
-          <el-table-column prop="Opeartion_Charging_Time" label="手术计费时间" width="180" sortable="custom" />
-          <el-table-column prop="Used_Qty" label="使用数量" width="100" align="center" sortable="custom" />
+          <el-table-column prop="Opeartion_Charging_Time" label="手术计费时间" width="180" sortable="custom" align="center" />
+          <el-table-column prop="Used_Qty" label="使用数量" width="100" align="right" sortable="custom" />
           <el-table-column prop="Patient_Dept" label="病人科室" width="100" sortable="custom" />
           <el-table-column prop="Charging_Dept_Name" label="计费科室名称" width="160" sortable="custom" show-overflow-tooltip />
           <el-table-column prop="DEF_DEPT" label="定数码所在科室" width="180" sortable="custom" show-overflow-tooltip />
-          <el-table-column prop="Integrate_Time" label="系统对接时间" width="180" sortable="custom" />
-          <el-table-column label="是否对冲" width="120" sortable="custom" prop="Is_Hedge">
+          <el-table-column prop="Integrate_Time" label="系统对接时间" width="180" sortable="custom" align="center" />
+          <el-table-column label="是否对冲" width="120" sortable="custom" prop="Is_Hedge" align="center">
             <template slot-scope="{ row }">{{ fmtIsHedge(row.Is_Hedge) }}</template>
           </el-table-column>
-          <el-table-column label="剔除状态" width="120" sortable="custom" prop="IS_DELETE">
+          <el-table-column label="剔除状态" width="120" sortable="custom" prop="IS_DELETE" align="center">
             <template slot-scope="{ row }">{{ fmtIsDelete(row.IS_DELETE) }}</template>
           </el-table-column>
           <el-table-column prop="Reason" label="原因" min-width="120" sortable="custom" show-overflow-tooltip />
-          <el-table-column label="完成标志" width="120" sortable="custom" prop="Is_Complete">
+          <el-table-column label="完成标志" width="120" sortable="custom" prop="Is_Complete" align="center">
             <template slot-scope="{ row }">{{ fmtIsComplete(row.Is_Complete) }}</template>
           </el-table-column>
           <el-table-column prop="Id" label="唯一标识" min-width="120" sortable="custom" show-overflow-tooltip />

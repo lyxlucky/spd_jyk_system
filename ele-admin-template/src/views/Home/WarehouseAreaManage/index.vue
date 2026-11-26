@@ -185,7 +185,7 @@
             <vxe-column field="DEPT_TWO_CODE" title="SPD科室编码" width="130" />
             <vxe-column field="DEPT_TWO_NAME" title="SPD科室名称" min-width="160" />
             <vxe-column field="AREA_CODE" title="库房/库区" width="120" />
-            <vxe-column title="默认" width="70" align="center">
+            <vxe-column title="默认" width="70" align="left">
               <template #default="{ row }">
                 <el-tag size="mini" :type="row.DEFAULT_FLAG === '1' ? 'warning' : 'info'">
                   {{ row.DEFAULT_FLAG === '1' ? '是' : '否' }}
@@ -199,7 +199,7 @@
                 </el-tag>
               </template>
             </vxe-column>
-            <vxe-column title="自动入库" width="85" align="center">
+            <vxe-column title="自动入库" width="85" align="left">
               <template #default="{ row }">
                 <el-tag size="mini" :type="row.IS_AUTO_STOCK === '1' ? 'success' : 'info'">
                   {{ row.IS_AUTO_STOCK === '1' ? '开启' : '关闭' }}
@@ -274,7 +274,7 @@
             <vxe-column field="DEPT_CODE" title="HIS科室编码" width="130" />
             <vxe-column field="DEPT_NAME" title="HIS科室名称" min-width="160" />
             <vxe-column field="AREA_CODE" title="库房/库区" width="120" />
-            <vxe-column title="默认" width="70" align="center">
+            <vxe-column title="默认" width="70" align="left">
               <template #default="{ row }">
                 <el-tag size="mini" :type="row.DEFAULT_FLAG === '1' ? 'warning' : 'info'">
                   {{ row.DEFAULT_FLAG === '1' ? '是' : '否' }}

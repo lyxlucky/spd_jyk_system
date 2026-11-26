@@ -64,7 +64,7 @@
           <el-table-column :label="mode === 'sh' ? '库存数量' : '库存数量'" width="80" align="center">
             <template slot-scope="{ row }">{{ mode === 'sh' ? row.UP_SHELF_QUANTITY : row.XS_NUM }}</template>
           </el-table-column>
-          <el-table-column label="调拨数量" width="100" align="center">
+          <el-table-column label="调拨数量" width="100" align="right">
             <template slot-scope="{ row }">
               <el-input-number
                 v-model="row[qtyField]"

@@ -365,8 +365,8 @@
             width="120"
             align="center"
           />
-          <vxe-column field="GENDER" title="性别" width="76" align="center" show-overflow="tooltip" />
-          <vxe-column field="AGE_STR" title="年龄" width="76" align="center" show-overflow="tooltip" />
+          <vxe-column field="GENDER" title="性别" width="76" align="left" show-overflow="tooltip" />
+          <vxe-column field="AGE_STR" title="年龄" width="76" align="right" show-overflow="tooltip" />
           <vxe-column
             field="DIAGNOSIS"
             title="诊断结果"
@@ -403,28 +403,28 @@
             title="主刀科室"
             min-width="120"
             show-overflow
-            align="center"
+            align="left"
           />
           <vxe-column
             v-if="false"
             field="SMART_CABINET1"
             title="智能柜"
             width="120"
-            align="center"
+            align="left"
           />
           <vxe-column
             field="APPLY_DEPT"
             title="申请科室"
             min-width="120"
             show-overflow
-            align="center"
+            align="left"
           />
           <vxe-column
             field="PATIENT_DEPT"
             title="病人所在科室"
             min-width="120"
             show-overflow
-            align="center"
+            align="left"
           />
           <vxe-column
             field="PLAN_SURGERY_DATE"
@@ -672,6 +672,7 @@
             title="销毁人"
             min-width="100"
             show-overflow
+            align="center"
           />
           <vxe-column
             field="DESTROY_TIME"
@@ -754,7 +755,7 @@
             field="SOURCE"
             title="来源"
             width="120"
-            align="center"
+            align="left"
           />
           <vxe-column
             field="LABEL_BARCODE"

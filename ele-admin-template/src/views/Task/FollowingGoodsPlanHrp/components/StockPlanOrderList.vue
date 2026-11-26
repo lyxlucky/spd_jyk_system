@@ -757,10 +757,21 @@
                   }
                 }),
                 h('el-table-column', {
-                  props: { prop: 'STOCK_UP_PLAN_GOODS_QUANTITY', label: '备货数量', width: 90, align: 'center' }
+                  props: { prop: 'STOCK_UP_PLAN_GOODS_QUANTITY', label: '备货数量', width: 90, align: 'right' }
                 }),
                 h('el-table-column', {
-                  props: { prop: 'OVER_USE_QTY', label: '超常用量', width: 90, align: 'center' }
+                  props: {
+                    label: '三月平均量',
+                    width: 100,
+                    align: 'right',
+                    formatter: (row) => {
+                      const n = Number(row.OVER_USE_QTY);
+                      return Number.isFinite(n) ? Math.round((n / 1.2) * 100) / 100 : 0;
+                    }
+                  }
+                }),
+                h('el-table-column', {
+                  props: { prop: 'OVER_USE_QTY', label: '超常用量', width: 90, align: 'right' }
                 })
               ])
             ]);

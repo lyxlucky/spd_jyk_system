@@ -95,7 +95,7 @@
         class="style-table"
       >
         <el-table-column prop="OPEARTION_CHARGING_TIME" label="发生时间" width="164" align="center" show-overflow-tooltip />
-        <el-table-column label="方向" width="76" align="center">
+        <el-table-column label="方向" width="76" align="left">
           <template slot-scope="{ row: flowRow }">
             <el-tag size="mini" :type="flowTagType(flowRow)">{{ formatFlowDirection(flowRow) }}</el-tag>
           </template>
@@ -104,11 +104,11 @@
           <template slot-scope="{ row: flowRow }">{{ formatFlowType(flowRow.TYPE) }}</template>
         </el-table-column>
         <el-table-column prop="QTY" label="数量" width="88" align="right" show-overflow-tooltip />
-        <el-table-column prop="ORIGING_CODE" label="来源单号" min-width="130" align="center" show-overflow-tooltip />
-        <el-table-column prop="BARCODE_NUMBER" label="条码/定数包号" min-width="142" align="center" show-overflow-tooltip />
+        <el-table-column prop="ORIGING_CODE" label="来源单号" min-width="130" align="left" show-overflow-tooltip />
+        <el-table-column prop="BARCODE_NUMBER" label="条码/定数包号" min-width="142" align="left" show-overflow-tooltip />
         <el-table-column prop="CONSUMER" label="操作人" width="100" align="center" show-overflow-tooltip />
-        <el-table-column prop="PATIENT_NUMBER" label="病患号" width="110" align="center" show-overflow-tooltip />
-        <el-table-column prop="HOSPITALIZATION_NUMBER" label="住院号" width="110" align="center" show-overflow-tooltip />
+        <el-table-column prop="PATIENT_NUMBER" label="病患号" width="110" align="left" show-overflow-tooltip />
+        <el-table-column prop="HOSPITALIZATION_NUMBER" label="住院号" width="110" align="left" show-overflow-tooltip />
         <el-table-column label="就诊类型" width="94" align="center">
           <template slot-scope="{ row: flowRow }">{{ formatHospitalType(flowRow.HOSPITAL_TYPE) }}</template>
         </el-table-column>

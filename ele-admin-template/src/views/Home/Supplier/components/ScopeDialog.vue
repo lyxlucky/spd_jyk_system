@@ -22,9 +22,9 @@
           @selection-change="(rows) => (leftSelection = rows)"
         >
           <el-table-column type="selection" width="40" :selectable="leftSelectable" />
-          <el-table-column prop="Prod_Big_Class_Name" label="产品类别" min-width="100" show-overflow-tooltip />
-          <el-table-column prop="Mgmt_Cat_Name" label="管理类别" min-width="90" show-overflow-tooltip />
-          <el-table-column label="监管类别" min-width="140" show-overflow-tooltip>
+          <el-table-column prop="Prod_Big_Class_Name" label="产品类别" min-width="100" show-overflow-tooltip align="center" />
+          <el-table-column prop="Mgmt_Cat_Name" label="管理类别" min-width="90" show-overflow-tooltip align="center" />
+          <el-table-column label="监管类别" min-width="140" show-overflow-tooltip align="center">
             <template v-slot="{ row }">{{ formatRegCat(row) }}</template>
           </el-table-column>
         </el-table>
@@ -47,9 +47,9 @@
           @selection-change="(rows) => (rightSelection = rows)"
         >
           <el-table-column type="selection" width="40" />
-          <el-table-column prop="Prod_Big_Class_Name" label="产品类别" min-width="100" show-overflow-tooltip />
-          <el-table-column prop="Mgmt_Cat_Name" label="管理类别" min-width="90" show-overflow-tooltip />
-          <el-table-column label="监管类别" min-width="140" show-overflow-tooltip>
+          <el-table-column prop="Prod_Big_Class_Name" label="产品类别" min-width="100" show-overflow-tooltip align="center" />
+          <el-table-column prop="Mgmt_Cat_Name" label="管理类别" min-width="90" show-overflow-tooltip align="center" />
+          <el-table-column label="监管类别" min-width="140" show-overflow-tooltip align="center">
             <template v-slot="{ row }">{{ formatRegCat(row) }}</template>
           </el-table-column>
         </el-table>

@@ -10,7 +10,7 @@
       <div v-if="varietyCode" class="sub-title">品种：{{ varietyCode }}</div>
       <el-table :data="rows" border stripe size="mini" max-height="420">
         <el-table-column prop="NEW_PRICE" label="价格" min-width="120" align="right" />
-        <el-table-column prop="UPDATE_TIME" label="时间" min-width="160" show-overflow-tooltip />
+        <el-table-column prop="UPDATE_TIME" label="时间" min-width="160" show-overflow-tooltip align="center" />
       </el-table>
     </div>
   </el-dialog>

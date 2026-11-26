@@ -21,7 +21,7 @@
     <el-table ref="table" height="500" :data="tableData" tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55">
       </el-table-column>
-      <el-table-column type="index" width="50">
+      <el-table-column type="index" width="50" align="center">
       </el-table-column>
       <el-table-column prop="Permission_Name" label="权限名称" maxwidth="120">
       </el-table-column>

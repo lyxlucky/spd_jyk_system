@@ -68,8 +68,8 @@
         min-width="200"
         show-overflow-tooltip
       />
-      <el-table-column prop="QTY" label="数量" width="72" align="center" />
-      <el-table-column label="创建时间" width="160" show-overflow-tooltip>
+      <el-table-column prop="QTY" label="数量" width="72" align="right" />
+      <el-table-column label="创建时间" width="160" show-overflow-tooltip align="center">
         <template slot-scope="{ row }">{{ fmtDateTime(row.CREATE_TIME) }}</template>
       </el-table-column>
       <el-table-column
@@ -77,6 +77,7 @@
         label="创建人"
         width="100"
         show-overflow-tooltip
+        align="center"
       />
       <el-table-column label="是否制包" width="88" align="center">
         <template slot-scope="{ row }">{{ fmtMakeDef(row.IS_MAKE_DEF) }}</template>
