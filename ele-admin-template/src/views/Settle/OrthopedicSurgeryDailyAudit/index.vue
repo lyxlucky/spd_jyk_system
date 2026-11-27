@@ -326,8 +326,8 @@
           <vxe-column
             field="AGE_STR"
             title="年龄"
-            width="80"
-            align="center"
+            width="76"
+            align="right" show-overflow="tooltip"
           />
           <vxe-column
             field="DIAGNOSIS"
@@ -366,19 +366,19 @@
             field="CHARGE_AMOUNT"
             title="收费金额"
             width="100"
-            align="center"
+            align="right"
           />
           <vxe-column
             field="FOLLOW_CHARGE_AMOUNT"
             title="跟台收费金额"
             width="100"
-            align="center"
+            align="right"
           />
           <vxe-column
             field="FOLLOW_CHARGE_QTY"
             title="跟台消耗数量"
             width="100"
-            align="center"
+            align="right"
           />
           <vxe-column
             field="SURGERY_STATUS"
@@ -435,9 +435,9 @@
           <vxe-column
             field="AUDIT_STATE"
             title="审核状态"
-            width="120"
+            width="88"
             align="center"
-            :formatter="formatAuditState"
+            :formatter="formatAuditState" show-overflow="tooltip"
           />
           <vxe-column
             v-if="false"
@@ -526,7 +526,7 @@
           <vxe-column
             field="VARIETIE_NAME"
             title="品种名称"
-            min-width="150"
+            min-width="192"
             show-overflow
           />
           <vxe-column
@@ -538,7 +538,7 @@
           <vxe-column
             field="SPECIFICATION_OR_TYPE"
             title="规格型号"
-            min-width="120"
+            min-width="160"
             show-overflow
           />
           <vxe-column
@@ -564,7 +564,7 @@
             field="SUPPLY_PRICE"
             title="收费金额"
             width="120"
-            align="center"
+            align="right"
           />
           <vxe-column
             field="BARCODE"
@@ -576,12 +576,12 @@
             field="NUM"
             title="数量"
             width="80"
-            align="center"
+            align="right"
           />
           <vxe-column
             field="MANUFACTURER"
             title="生产厂家"
-            min-width="150"
+            min-width="208"
             show-overflow
           />
           <vxe-column

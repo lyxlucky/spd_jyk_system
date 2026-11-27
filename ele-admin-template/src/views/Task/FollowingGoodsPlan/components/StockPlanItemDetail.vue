@@ -342,7 +342,7 @@ export default {
           label: '备注',
           prop: 'REMARKS',
           align: 'center',
-          width: 100,
+          minWidth: 110,
           showOverflowTooltip: true,
           formatter: (row) =>
             row.REMARKS == null || row.REMARKS === 'null' ? '' : row.REMARKS
@@ -360,7 +360,7 @@ export default {
           label: '品种名称',
           prop: 'Varietie_Name',
           align: 'center',
-          minWidth: 200,
+          minWidth: 192,
           showOverflowTooltip: true
         },
         {
@@ -377,7 +377,7 @@ export default {
           align: 'center',
           formatter: (row) => row.supply_price.toFixed(row.price_bl)
         },
-        { label: '供应商名称', prop: 'supplier_name', align: 'center', minWidth: 210 },
+        { label: '供应商名称', prop: 'supplier_name', align: 'center', minWidth: 208, showOverflowTooltip: true },
         {
           label: '生产企业名称',
           prop: 'Manufacturing_Ent_Name',
@@ -395,7 +395,7 @@ export default {
         {
           label: '收货数量',
           prop: 'ReceiptQty',
-          width: 120,
+          width: 88, showOverflowTooltip: true,
           align: 'center',
           formatter: (row) => row.ReceiptQty + row.SANME_VARCODE_NUM
         },

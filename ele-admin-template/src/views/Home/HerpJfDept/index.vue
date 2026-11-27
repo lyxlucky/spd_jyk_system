@@ -46,7 +46,7 @@
         <vxe-column title="SPD二级科室名称" min-width="160" show-overflow>
           <template #default="{ row }">{{ fmtMapName(row) }}</template>
         </vxe-column>
-        <vxe-column field="ADD_TIME" title="创建时间" width="220" show-overflow>
+        <vxe-column field="ADD_TIME" title="创建时间" width="160" show-overflow align="center">
           <template #default="{ row }">{{ formatDateTime(row.ADD_TIME) }}</template>
         </vxe-column>
       </vxe-table>
@@ -98,7 +98,7 @@
         <vxe-column title="SPD一级科室名称" min-width="160" show-overflow>
           <template #default="{ row }">{{ fmtMap(row.DEPT_ONE_NAME) }}</template>
         </vxe-column>
-        <vxe-column field="CREATE_TIME" title="创建时间" width="220" show-overflow>
+        <vxe-column field="CREATE_TIME" title="创建时间" width="160" show-overflow align="center">
           <template #default="{ row }">{{ formatDateTime(row.CREATE_TIME) }}</template>
         </vxe-column>
       </vxe-table>

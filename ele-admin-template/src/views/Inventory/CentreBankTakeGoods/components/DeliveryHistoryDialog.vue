@@ -128,8 +128,8 @@ export default {
           formatter: (row) => fmtDateTime(row.Delivery_Time)
         },
         { prop: 'Varietie_Code_New', label: '品种编码', width: 110, showOverflowTooltip: true },
-        { prop: 'Varietie_Name', label: '品种全称', minWidth: 160, showOverflowTooltip: true },
-        { prop: 'Specification_Or_Type', label: '规格型号', width: 100, showOverflowTooltip: true },
+        { prop: 'Varietie_Name', label: '品种全称', minWidth: 192, showOverflowTooltip: true },
+        { prop: 'Specification_Or_Type', label: '规格型号', minWidth: 160, showOverflowTooltip: true },
         { prop: 'Unit', label: '单位', width: 70, align: 'center', show: false },
         { prop: 'Batch', label: '批号', width: 90, showOverflowTooltip: true },
         {
@@ -155,11 +155,11 @@ export default {
           align: 'right',
           show: hpFlags.isCg
         },
-        { prop: 'Supplier_Name', label: '供应商', minWidth: 120, showOverflowTooltip: true },
+        { prop: 'Supplier_Name', label: '供应商', minWidth: 208, showOverflowTooltip: true },
         {
           prop: 'Manufacturing_Ent_Name',
           label: '生产企业',
-          minWidth: 120,
+          minWidth: 208,
           showOverflowTooltip: true,
           show: false
         },

@@ -55,16 +55,16 @@
         <div class="section-title">调拨明细</div>
         <el-table :data="detailList" size="mini" border height="320">
           <el-table-column prop="VARIETIE_CODE_NEW" label="品种编码" width="100" show-overflow-tooltip />
-          <el-table-column prop="VARIETIE_NAME" label="品种名称" min-width="140" show-overflow-tooltip />
+          <el-table-column prop="VARIETIE_NAME" label="品种名称" min-width="192" show-overflow-tooltip />
           <el-table-column v-if="mode === 'sh'" prop="BATCH" label="批号" width="90" />
-          <el-table-column prop="SPECIFICATION_OR_TYPE" label="规格型号" min-width="100" show-overflow-tooltip />
+          <el-table-column prop="SPECIFICATION_OR_TYPE" label="规格型号" min-width="160" show-overflow-tooltip />
           <el-table-column label="库存位置" width="100">
             <template slot-scope="{ row }">{{ storageAreaText(row.STORAGE_ID) }}</template>
           </el-table-column>
           <el-table-column :label="mode === 'sh' ? '库存数量' : '库存数量'" width="80" align="center">
             <template slot-scope="{ row }">{{ mode === 'sh' ? row.UP_SHELF_QUANTITY : row.XS_NUM }}</template>
           </el-table-column>
-          <el-table-column label="调拨数量" width="100" align="center">
+          <el-table-column label="调拨数量" width="100" align="right">
             <template slot-scope="{ row }">
               <el-input-number
                 v-model="row[qtyField]"

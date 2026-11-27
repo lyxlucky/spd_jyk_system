@@ -61,7 +61,8 @@ function buildPlanSearchBody(where = {}) {
     RELATED_RFID: where.RELATED_RFID ?? '',
     STORAGE_ID: where.STORAGE_ID ?? '',
     OPERATE_TYPE: where.OPERATE_TYPE ?? '',
-    High_Or_Low_Class: where.High_Or_Low_Class ?? ''
+    High_Or_Low_Class: where.High_Or_Low_Class ?? '',
+    isQueryDeptStock: where.isQueryDeptStock ?? undefined
   };
 }
 

@@ -84,6 +84,10 @@
           <el-button type="primary" @click="addTempVar" :style="{ display: IsDisabled==true?'none':'' }">确定</el-button>
         </el-footer>
     </el-container> -->
+    <KeeptListErrorDialog
+      :visible.sync="errorDialogVisible"
+      :message="errorDialogMessage"
+    />
   </div>
 </template>
 
@@ -91,19 +95,23 @@
 import ApplyTempTable from './components/ApplyTempTable.vue';
 import ApplyTempDataTable from './components/ApplyTempDataTable';
 import { KeeptListDeta } from '@/api/KSInventory/ApplyTemp';
+import KeeptListErrorDialog from '@/views/KSInventory/KSDepartmentalPlan/components/KeeptListErrorDialog.vue';
 export default {
   name: 'ApplyTemp',
   props: ['IntroduceUserDefinedTempSearch'],
   components: {
     ApplyTempTable,
-    ApplyTempDataTable
+    ApplyTempDataTable,
+    KeeptListErrorDialog
   },
   data() {
     return {
       // 主表数据
       ApplyTempTableData: {},
       // 详情表选择数据
-      ApplyTempDataSelData: []
+      ApplyTempDataSelData: [],
+      errorDialogVisible: false,
+      errorDialogMessage: ''
     };
   },
   methods: {
@@ -138,8 +146,11 @@ export default {
         })
         .catch((err) => {
           console.log(err);
-          this.$message.error(err);
           loading.close();
+          this.errorDialogMessage =
+            (err && typeof err === 'object' ? err.message : err) ||
+            '添加失败，请重试';
+          this.errorDialogVisible = true;
         });
       console.log(json);
     },

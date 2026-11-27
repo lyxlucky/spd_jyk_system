@@ -81,7 +81,7 @@
             label: '科室名称',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 100
+            minWidth: 192
           },
           {
             prop: 'BILL_WARD_SN',
@@ -109,7 +109,7 @@
             label: '金额',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 100
+            width: 88
           },
           {
             prop: 'DESCRIPTION',

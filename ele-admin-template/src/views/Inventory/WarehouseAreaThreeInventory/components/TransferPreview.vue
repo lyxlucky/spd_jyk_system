@@ -73,13 +73,13 @@
       <el-table-column
         prop="VARIETIE_NAME"
         label="品种名称"
-        min-width="180"
+        min-width="192"
         show-overflow-tooltip
       />
       <el-table-column
         prop="SPECIFICATION_OR_TYPE"
         label="规格型号"
-        width="150"
+        min-width="160"
         show-overflow-tooltip
       />
       <el-table-column
@@ -96,15 +96,17 @@
         prop="PRODUCTION_DATE"
         label="生产日期"
         width="110"
+        align="center"
       />
       <el-table-column
         v-if="activeTab === 'batches'"
         prop="EXPIRY_DATE"
         label="有效期"
         width="110"
+        align="center"
       />
-      <el-table-column prop="UNIT" label="单位" width="65" />
-      <el-table-column label="来源库区" align="center">
+      <el-table-column prop="UNIT" label="单位" width="65" align="center" />
+      <el-table-column label="来源库区" align="left">
         <el-table-column
           prop="SOURCE_BEFORE"
           label="移库前"
@@ -130,7 +132,7 @@
           ></el-table-column
         >
       </el-table-column>
-      <el-table-column label="目标库区" align="center">
+      <el-table-column label="目标库区" align="left">
         <el-table-column
           prop="TARGET_BEFORE"
           label="移库前"
@@ -173,23 +175,23 @@
       <el-table-column
         prop="VARIETIE_NAME"
         label="品种名称"
-        min-width="180"
+        min-width="192"
         show-overflow-tooltip
       />
       <el-table-column
         prop="SPECIFICATION_OR_TYPE"
         label="规格型号"
-        width="150"
+        min-width="160"
         show-overflow-tooltip
       />
-      <el-table-column prop="BUSINESS_TYPE_NAME" label="业务类别" width="100" />
+      <el-table-column prop="BUSINESS_TYPE_NAME" label="业务类别" width="100" align="center" />
       <el-table-column prop="BATCH_NO" label="批号" width="120"
         ><template slot-scope="scope">{{
           scope.row.BATCH_NO || '空批号'
         }}</template></el-table-column
       >
-      <el-table-column prop="PRODUCTION_DATE" label="生产日期" width="110" />
-      <el-table-column prop="EXPIRY_DATE" label="有效期" width="110" />
+      <el-table-column prop="PRODUCTION_DATE" label="生产日期" width="110" align="center" />
+      <el-table-column prop="EXPIRY_DATE" label="有效期" width="110" align="center" />
       <el-table-column
         prop="SOURCE_QTY"
         label="原流水数量"

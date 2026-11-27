@@ -53,6 +53,12 @@ npm run build:stzlww   # 汕头肿瘤外网
 npm run build:stzlnw   # 汕头肿瘤内网
 ```
 
+#### 汕头澄海环境
+```bash
+npm run build:chrmyyww   # 澄海外网
+npm run build:chrmyynw   # 澄海内网
+```
+
 #### 中心医院环境
 ```bash
 npm run build:zxww     # 中心医院外网

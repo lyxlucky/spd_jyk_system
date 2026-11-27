@@ -93,19 +93,19 @@
 
       <el-table v-if="extendRow" :data="[extendRow]" border size="mini" class="detail-table">
         <el-table-column prop="Varietie_Code" label="品种编码" min-width="100" show-overflow-tooltip />
-        <el-table-column prop="Varietie_Name" label="品种全称" min-width="120" show-overflow-tooltip />
+        <el-table-column prop="Varietie_Name" label="品种全称" min-width="192" show-overflow-tooltip />
         <el-table-column prop="Specification_Or_Type" label="型号/规格" min-width="90" show-overflow-tooltip />
-        <el-table-column prop="Unit" label="单位" width="55" />
-        <el-table-column prop="Manufacturing_Ent_Name" label="生产企业" min-width="120" show-overflow-tooltip />
+        <el-table-column prop="Unit" label="单位" width="55" align="center" />
+        <el-table-column prop="Manufacturing_Ent_Name" label="生产企业" min-width="208" show-overflow-tooltip />
         <el-table-column prop="Batch" label="生产批号" width="90" show-overflow-tooltip />
       </el-table>
       <el-table v-if="extendRow" :data="[extendRow]" border size="mini" class="detail-table mt6">
-        <el-table-column prop="Batch_Validity_Period" label="有效到期" width="100" />
+        <el-table-column prop="Batch_Validity_Period" label="有效到期" width="100" align="center" />
         <el-table-column prop="Serial_Number" label="UDI" min-width="120" show-overflow-tooltip />
         <el-table-column prop="Rfid_Code" label="RFID码" width="100" show-overflow-tooltip />
-        <el-table-column prop="Log_Date" label="暂借时间" width="140" />
-        <el-table-column prop="Operatation_Staff" label="领用人" width="80" />
-        <el-table-column prop="Coefficient" label="系数" width="60" />
+        <el-table-column prop="Log_Date" label="暂借时间" width="140" align="center" />
+        <el-table-column prop="Operatation_Staff" label="领用人" width="80" align="center" />
+        <el-table-column prop="Coefficient" label="系数" width="60" align="right" />
       </el-table>
 
       <div class="spd-panel spd-table-panel main-table-panel mt8">
@@ -124,24 +124,24 @@
             <el-table-column prop="His_Varietie_Name" label="HIS品种全称" min-width="160" sortable="custom" show-overflow-tooltip />
             <el-table-column prop="Def_No_Pkg_Code" label="定数码" width="110" sortable="custom" show-overflow-tooltip />
             <el-table-column prop="Serial_Number" label="UDI" width="120" sortable="custom" show-overflow-tooltip />
-            <el-table-column prop="Operate_Person" label="消耗人" width="90" sortable="custom" show-overflow-tooltip />
-            <el-table-column prop="Nurse_Operator" label="暂借人" width="90" sortable="custom" show-overflow-tooltip />
+            <el-table-column prop="Operate_Person" label="消耗人" width="90" sortable="custom" show-overflow-tooltip align="center" />
+            <el-table-column prop="Nurse_Operator" label="暂借人" width="90" sortable="custom" show-overflow-tooltip align="center" />
             <el-table-column prop="Charging_Code" label="计费编码" width="125" sortable="custom" />
             <el-table-column prop="Operation_Number" label="手术编号" width="125" sortable="custom" />
             <el-table-column prop="Hospitalization_Number" label="住院号" width="100" sortable="custom" />
             <el-table-column prop="Patient_Number" label="病患号" width="100" sortable="custom" />
-            <el-table-column prop="HIS_CHARGING_PRICE" label="his计费价格" width="120" sortable="custom" />
-            <el-table-column prop="Opeartion_Charging_Time" label="手术计费时间" width="145" sortable="custom" />
-            <el-table-column prop="Used_Qty" label="使用数量" width="105" align="center" sortable="custom" />
+            <el-table-column prop="HIS_CHARGING_PRICE" label="his计费价格" width="120" sortable="custom" align="right" />
+            <el-table-column prop="Opeartion_Charging_Time" label="手术计费时间" width="145" sortable="custom" align="center" />
+            <el-table-column prop="Used_Qty" label="使用数量" width="105" align="right" sortable="custom" />
             <el-table-column prop="Patient_Dept" label="病人科室" width="125" />
             <el-table-column prop="Charging_Dept" label="计费科室" width="125" />
             <el-table-column prop="Dept_Name" label="计费科室名称" width="140" sortable="custom" show-overflow-tooltip />
             <el-table-column prop="SPD_COST_DEPT_NAME" label="成本科室" width="120" show-overflow-tooltip />
-            <el-table-column label="完成标志" width="125" sortable="custom" prop="Is_Complete">
+            <el-table-column label="完成标志" width="125" sortable="custom" prop="Is_Complete" align="center">
               <template slot-scope="{ row }">{{ fmtIsComplete(row.Is_Complete) }}</template>
             </el-table-column>
-            <el-table-column prop="Integrate_Time" label="系统对接时间" width="150" sortable="custom" />
-            <el-table-column label="是否对冲" width="125" sortable="custom" prop="Is_Hedge">
+            <el-table-column prop="Integrate_Time" label="系统对接时间" width="150" sortable="custom" align="center" />
+            <el-table-column label="是否对冲" width="125" sortable="custom" prop="Is_Hedge" align="center">
               <template slot-scope="{ row }">{{ fmtIsHedge(row.Is_Hedge) }}</template>
             </el-table-column>
           </el-table>

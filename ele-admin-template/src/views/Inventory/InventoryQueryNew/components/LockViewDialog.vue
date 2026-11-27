@@ -26,7 +26,7 @@ const TYPE_META = {
     title: '散货锁定',
     columns: [
       { prop: 'Varietie_Code_New', label: '品种编码', minWidth: 90 },
-      { prop: 'Varietie_Name', label: '品种全称', minWidth: 200 },
+      { prop: 'Varietie_Name', label: '品种全称', minWidth: 192, showOverflowTooltip: true },
       {
         prop: 'Lock_Type',
         label: '锁定类型',
@@ -45,7 +45,7 @@ const TYPE_META = {
     title: '定数包锁定',
     columns: [
       { prop: 'Varietie_Code_New', label: '品种编码', width: 90 },
-      { prop: 'Varietie_Name', label: '品种全称', minWidth: 160 },
+      { prop: 'Varietie_Name', label: '品种全称', minWidth: 192, showOverflowTooltip: true },
       {
         prop: 'Curr_Pos',
         label: '锁定状态',
@@ -80,7 +80,7 @@ const TYPE_META = {
     title: '定数包预锁',
     columns: [
       { prop: 'Varietie_Code_New', label: '品种编码', width: 90 },
-      { prop: 'Varietie_Name', label: '品种全称', minWidth: 200 },
+      { prop: 'Varietie_Name', label: '品种全称', minWidth: 192, showOverflowTooltip: true },
       {
         prop: 'Pre_Lock_Type',
         label: '预锁类型',

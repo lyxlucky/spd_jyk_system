@@ -72,7 +72,7 @@
           <vxe-column type="seq" title="序号" width="55" align="center" />
           <vxe-column field="AREA_CODE" title="编码" min-width="120" />
           <vxe-column field="AREA_NAME" title="名称" min-width="150" />
-          <vxe-column title="类型" width="85" align="center">
+          <vxe-column title="类型" width="76" align="center" show-overflow="tooltip">
             <template #default="{ row }">
               <el-tag size="mini" :type="row.AREA_TYPE === 'WAREHOUSE' ? 'primary' : 'success'">
                 {{ row.AREA_TYPE === 'WAREHOUSE' ? '库房' : '库区' }}
@@ -80,7 +80,7 @@
             </template>
           </vxe-column>
           <vxe-column field="PARENT_NAME" title="所属库房" min-width="130" />
-          <vxe-column title="状态" width="80" align="center">
+          <vxe-column title="状态" width="76" align="center" show-overflow="tooltip">
             <template #default="{ row }">
               <el-tag size="mini" :type="row.ENABLED_FLAG === '1' ? 'success' : 'info'">
                 {{ row.ENABLED_FLAG === '1' ? '启用' : '停用' }}
@@ -185,7 +185,7 @@
             <vxe-column field="DEPT_TWO_CODE" title="SPD科室编码" width="130" />
             <vxe-column field="DEPT_TWO_NAME" title="SPD科室名称" min-width="160" />
             <vxe-column field="AREA_CODE" title="库房/库区" width="120" />
-            <vxe-column title="默认" width="70" align="center">
+            <vxe-column title="默认" width="70" align="left">
               <template #default="{ row }">
                 <el-tag size="mini" :type="row.DEFAULT_FLAG === '1' ? 'warning' : 'info'">
                   {{ row.DEFAULT_FLAG === '1' ? '是' : '否' }}
@@ -199,7 +199,7 @@
                 </el-tag>
               </template>
             </vxe-column>
-            <vxe-column title="自动入库" width="85" align="center">
+            <vxe-column title="自动入库" width="85" align="left">
               <template #default="{ row }">
                 <el-tag size="mini" :type="row.IS_AUTO_STOCK === '1' ? 'success' : 'info'">
                   {{ row.IS_AUTO_STOCK === '1' ? '开启' : '关闭' }}
@@ -207,7 +207,7 @@
               </template>
             </vxe-column>
             <vxe-column field="AUTO_STOCK_START_TIME" title="开始时间" width="155" align="center" />
-            <vxe-column field="REMARK" title="备注" min-width="120" />
+            <vxe-column field="REMARK" title="备注" min-width="110" show-overflow="tooltip" />
             <vxe-column title="操作" width="130" align="center" fixed="right">
               <template #default="{ row }">
                 <el-button size="mini" type="primary" @click="openSpdDialog(row)">编辑</el-button>
@@ -274,7 +274,7 @@
             <vxe-column field="DEPT_CODE" title="HIS科室编码" width="130" />
             <vxe-column field="DEPT_NAME" title="HIS科室名称" min-width="160" />
             <vxe-column field="AREA_CODE" title="库房/库区" width="120" />
-            <vxe-column title="默认" width="70" align="center">
+            <vxe-column title="默认" width="70" align="left">
               <template #default="{ row }">
                 <el-tag size="mini" :type="row.DEFAULT_FLAG === '1' ? 'warning' : 'info'">
                   {{ row.DEFAULT_FLAG === '1' ? '是' : '否' }}
@@ -288,7 +288,7 @@
                 </el-tag>
               </template>
             </vxe-column>
-            <vxe-column field="REMARK" title="备注" min-width="120" />
+            <vxe-column field="REMARK" title="备注" min-width="110" show-overflow="tooltip" />
             <vxe-column title="操作" width="130" align="center" fixed="right">
               <template #default="{ row }">
                 <el-button size="mini" type="primary" @click="openHisDialog(row)">编辑</el-button>

@@ -130,7 +130,8 @@ import {
   delScanDef,
   spdScanConsume,
   getDeptStockSummary,
-  batchConsumeByVarietieCode
+  batchConsumeByVarietieCode,
+  UpdateScanDefInstrument
 } from '@/api/KSInventory/ScanDefHis';
 import KSInventoryQuery from '@/views/KSInventory/ScanDefHis/KSInventoryQuery/index.vue';
 
@@ -184,21 +185,21 @@ export default {
         {
           label: '品种名称',
           prop: 'VARIETIE_NAME',
-          minWidth: 150,
+          minWidth: 192,
           align: 'center',
           showOverflowTooltip: true
         },
         {
           label: '规格型号',
           prop: 'SPECIFICATION_OR_TYPE',
-          width: 120,
+          minWidth: 160,
           align: 'center',
           showOverflowTooltip: true
         },
         {
           label: '供应商',
           prop: 'SUPPLIER_NAME',
-          minWidth: 150,
+          minWidth: 208,
           align: 'center',
           showOverflowTooltip: true
         },
@@ -234,7 +235,7 @@ export default {
         {
           label: '数量',
           prop: 'QTY',
-          width: 100,
+          width: 88, showOverflowTooltip: true,
           align: 'center',
           formatter: (row) => {
             return row.QTY ? Number(row.QTY) : '0';
@@ -348,12 +349,21 @@ export default {
           this.$message.error(err);
         });
     },
-    consumption() {
+    async consumption() {
       const loading = this.$messageLoading('操作中...');
       const idJosn = [];
       this.selection.forEach((element) => {
         idJosn.push(element.Dept_Two_Up_Shelf_Id);
       });
+      const defArray = this.selection.map(ele=>ele.Def_No_Pkg_Code); // 消耗前再检查一次有没有绑定设备，没有绑定的就回补，允许设备为空
+      if(defArray.length) {
+        try {
+          await UpdateScanDefInstrument({defArray, bindMachine: this.where.bindMachine});
+        } catch (err) {
+          // 回补失败不终止本次消耗，仅提示后继续
+          this.$message.warning(typeof err === 'string' ? err : err.message || '绑定设备回补失败，已继续消耗');
+        }
+      }
       const data = {
         idJosn: idJosn,
         staff: this.$store.state.user.info.Nickname,

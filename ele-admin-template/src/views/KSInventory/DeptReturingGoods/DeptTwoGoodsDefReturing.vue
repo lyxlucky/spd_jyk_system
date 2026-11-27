@@ -270,7 +270,7 @@
           {
             prop: 'Dept_Two_Name',
             label: '科室名称',
-            width: 120,
+            minWidth: 192,
             showOverflowTooltip: true
           },
           {
@@ -282,7 +282,7 @@
           {
             prop: 'Varietie_Name',
             label: '品种全称',
-            width: 240,
+            minWidth: 192, showOverflowTooltip: true,
             align: 'center'
           },
           {
@@ -294,7 +294,7 @@
           {
             prop: 'Unit',
             label: '单位',
-            width: 100,
+            width: 76, showOverflowTooltip: true,
             align: 'right',
             sortable: true
           },
@@ -361,7 +361,7 @@
           {
             prop: 'Dept_Two_Name',
             label: '科室名称',
-            width: 120,
+            minWidth: 192,
             showOverflowTooltip: true
           },
           {
@@ -373,7 +373,7 @@
           {
             prop: 'Varietie_Name',
             label: '品种全称',
-            width: 280,
+            minWidth: 192,
             align: 'center',
             showOverflowTooltip: true
           },
@@ -386,7 +386,7 @@
           {
             prop: 'Unit',
             label: '单位',
-            width: 80,
+            width: 76,
             sortable: true,
             showOverflowTooltip: true
           },

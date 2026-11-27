@@ -15,14 +15,14 @@
       size="small"
       max-height="calc(80vh - 120px)"
     >
-      <el-table-column prop="VARIETIE_NAME" label="品种名称" min-width="160" show-overflow-tooltip />
+      <el-table-column prop="VARIETIE_NAME" label="品种名称" min-width="192" show-overflow-tooltip />
       <el-table-column prop="VARIETIE_CODE_NEW" label="品种编码" width="130" show-overflow-tooltip />
-      <el-table-column prop="UNIT" label="单位" width="72" />
-      <el-table-column prop="PRICE" label="价格" width="90" />
+      <el-table-column prop="UNIT" label="单位" width="72" align="center" />
+      <el-table-column prop="PRICE" label="价格" width="90" align="right" />
       <el-table-column prop="MEDICAL_CODE" label="医保编码" min-width="150" show-overflow-tooltip />
       <el-table-column prop="MEDICAL_CODE27" label="医保编码27" width="130" show-overflow-tooltip />
-      <el-table-column prop="SPECIFICATION_OR_TYPE2" label="规格" width="120" show-overflow-tooltip />
-      <el-table-column prop="SPECIFICATION_OR_TYPE3" label="型号" width="120" show-overflow-tooltip />
+      <el-table-column prop="SPECIFICATION_OR_TYPE2" label="规格" min-width="160" show-overflow-tooltip />
+      <el-table-column prop="SPECIFICATION_OR_TYPE3" label="型号" min-width="160" show-overflow-tooltip />
     </el-table>
     <p v-if="!loading && rows.length === 0" class="empty-tip">暂无关联品种数据</p>
   </ele-modal>

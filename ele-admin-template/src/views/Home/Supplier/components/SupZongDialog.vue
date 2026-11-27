@@ -39,7 +39,7 @@ export default {
         { type: 'selection', width: 45, align: 'center' },
         { prop: 'HOSPITALNAME', label: '业务医院', minWidth: 140, showOverflowTooltip: true },
         { prop: 'SUPPLIER_CODE_SPD', label: '院内编码', width: 90, showOverflowTooltip: true },
-        { prop: 'COMPANY', label: '供应商名称', minWidth: 180, showOverflowTooltip: true },
+        { prop: 'COMPANY', label: '供应商名称', minWidth: 208, showOverflowTooltip: true },
         { prop: 'PEOPLE_ID', label: '社会统一信用代码', minWidth: 160, showOverflowTooltip: true },
         { prop: 'ADDRESS', label: '企业地址', minWidth: 160, showOverflowTooltip: true },
         { prop: 'PHONE', label: '企业电话', width: 110, showOverflowTooltip: true },

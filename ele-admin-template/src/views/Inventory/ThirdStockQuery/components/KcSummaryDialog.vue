@@ -104,77 +104,77 @@
       <el-table-column
         prop="DEPT_TWO_NAME"
         label="科室名称"
-        align="center"
-        min-width="140"
+        align="left"
+        min-width="192"
         show-overflow-tooltip
       />
       <el-table-column
         prop="VARIETIE_CODE_NEW"
         label="品种编码"
-        align="center"
+        align="left"
         min-width="120"
         show-overflow-tooltip
       />
       <el-table-column
         prop="VARIETIE_NAME"
         label="品种名称"
-        align="center"
-        min-width="150"
+        align="left"
+        min-width="192"
         show-overflow-tooltip
       />
       <el-table-column
         prop="SPECIFICATION_OR_TYPE"
         label="规格型号"
-        align="center"
-        min-width="120"
+        align="left"
+        min-width="160"
         show-overflow-tooltip
       />
       <el-table-column
         prop="UNIT"
         label="单位"
         align="center"
-        min-width="80"
+        width="76"
         show-overflow-tooltip
       />
       <el-table-column
         prop="PRICE"
         label="单价"
-        align="center"
+        align="right"
         min-width="80"
         show-overflow-tooltip
       />
       <el-table-column
         prop="MANUFACTURING_ENT_NAME"
         label="生产企业"
-        align="center"
-        min-width="150"
+        align="left"
+        min-width="208"
         show-overflow-tooltip
       />
       <el-table-column
         prop="QTY"
         label="数量"
-        align="center"
-        min-width="100"
+        align="right"
+        width="88"
         show-overflow-tooltip
       />
       <el-table-column
         prop="TOTAL_PRICE"
         label="总价"
-        align="center"
+        align="right"
         min-width="100"
         show-overflow-tooltip
       />
       <el-table-column
         prop="JF_QTY"
         label="散货计费数量"
-        align="center"
+        align="right"
         min-width="120"
         show-overflow-tooltip
       />
       <el-table-column
         prop="JF_DEF_QTY"
         label="定数包计费数量"
-        align="center"
+        align="right"
         min-width="140"
         show-overflow-tooltip
       />

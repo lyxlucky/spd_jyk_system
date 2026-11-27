@@ -29,7 +29,7 @@
           :height="supplierTableHeight"
           @current-change="onSupplierChange"
         >
-          <el-table-column prop="Supplier_Name" label="供应商名称" min-width="160" show-overflow-tooltip />
+          <el-table-column prop="Supplier_Name" label="供应商名称" min-width="208" show-overflow-tooltip />
           <el-table-column label="启用状态" min-width="80" align="center">
             <template slot-scope="{ row }">{{ row.Enable == 1 ? '启用' : '停用' }}</template>
           </el-table-column>
@@ -64,10 +64,10 @@
         >
           <el-table-column prop="Contract_Code" label="合同编码" min-width="120" show-overflow-tooltip />
           <el-table-column prop="Contract_Name" label="合同名称" min-width="140" show-overflow-tooltip />
-          <el-table-column label="合同类型" min-width="88">
+          <el-table-column label="合同类型" min-width="88" align="center">
             <template slot-scope="{ row }">{{ formatContractType(row.contract_Type) }}</template>
           </el-table-column>
-          <el-table-column label="图片" width="56" align="center">
+          <el-table-column label="图片" width="56" align="left">
             <template slot-scope="{ row }">
               <el-button
                 v-if="row.HT_PIC && isPdf(row.HT_PIC)"
@@ -87,7 +87,7 @@
               />
             </template>
           </el-table-column>
-          <el-table-column label="历史" width="52" align="center">
+          <el-table-column label="历史" width="52" align="left">
             <template slot-scope="{ row }">
               <el-button type="text" size="mini" @click.stop="openFileHistory(row)">查看</el-button>
             </template>

@@ -27,7 +27,7 @@ export default {
     return {
       columns: [
         { prop: 'Varietie_Code', label: '品种材料编码', width: 110 },
-        { prop: 'Varietie_Name', label: '品种全称', minWidth: 200 },
+        { prop: 'Varietie_Name', label: '品种全称', minWidth: 192, showOverflowTooltip: true },
         { prop: 'Specification_Or_Type', label: '型号/规格', width: 90 },
         { prop: 'Unit', label: '单位', width: 60, align: 'center' },
         { prop: 'Manufacturing_Ent_Name', label: '生产企业名称', width: 140 },

@@ -60,14 +60,14 @@
             label: '规格',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 120
+            minWidth: 160
           },
           {
             prop: 'MODEL',
             label: '型号',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 120
+            minWidth: 160
           },
           {
             prop: 'MEDICAL_MATERIAL_CODE',
@@ -81,7 +81,7 @@
             label: '单位',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 80
+            width: 76
           },
           {
             prop: 'PURCHASE_PRICE',

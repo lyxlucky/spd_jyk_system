@@ -54,8 +54,8 @@
             @checkbox-all="onMgmtCheckboxAll"
           >
             <vxe-column type="checkbox" width="44" align="center" />
-            <vxe-column field="Prod_Big_Class_Name" title="产品类别" min-width="90" show-overflow />
-            <vxe-column field="Mgmt_Cat_Name" title="管理类别" min-width="90" show-overflow />
+            <vxe-column field="Prod_Big_Class_Name" title="产品类别" min-width="90" show-overflow align="center" />
+            <vxe-column field="Mgmt_Cat_Name" title="管理类别" min-width="90" show-overflow align="center" />
             <vxe-column title="" width="132" align="center">
               <template #default="{ row }">
                 <el-button
@@ -103,8 +103,8 @@
             :column-config="{ resizable: true }"
             show-overflow
           >
-            <vxe-column field="Prod_Big_Class_Name" title="产品类别" min-width="100" show-overflow />
-            <vxe-column field="Mgmt_Cat_Name" title="管理类别" min-width="90" show-overflow />
+            <vxe-column field="Prod_Big_Class_Name" title="产品类别" min-width="100" show-overflow align="center" />
+            <vxe-column field="Mgmt_Cat_Name" title="管理类别" min-width="90" show-overflow align="center" />
             <vxe-column field="Regulatory_Cat_Code" title="监管类别编码" width="110" />
             <vxe-column field="Regulatory_Cat_Name" title="监管类别名称" min-width="120" show-overflow />
             <vxe-column title="" width="52" align="center" fixed="right">

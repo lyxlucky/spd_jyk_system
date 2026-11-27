@@ -62,27 +62,27 @@
             prop: 'Varietie_Name',
             label: '品种名称',
             align: 'center',
-            minWidth: 150,
+            minWidth: 192,
             showOverflowTooltip: true
           },
           {
             prop: 'SPECIFICATION_OR_TYPE',
             label: '规格型号',
             align: 'center',
-            minWidth: 150,
+            minWidth: 160,
             showOverflowTooltip: true
           },
           {
             prop: 'UNIT',
             label: '单位',
             align: 'center',
-            width: 100
+            width: 76, showOverflowTooltip: true
           },
           {
             prop: 'Supply_Price',
             label: '单价',
             align: 'center',
-            width: 100
+            width: 88, showOverflowTooltip: true
           },
           {
             prop: 'Batch',
@@ -116,7 +116,7 @@
             prop: 'Supplier_Name',
             label: '供应商',
             align: 'center',
-            minWidth: 150,
+            minWidth: 208,
             showOverflowTooltip: true
           },
           {

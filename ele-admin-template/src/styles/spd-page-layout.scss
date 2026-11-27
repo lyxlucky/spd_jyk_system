@@ -22,6 +22,36 @@
   word-break: break-word;
 }
 
+/**
+ * 表格文字/数字对齐规范（列表页统一）
+ * - 表头：一律居中（不随列 align 走，排序图标、插槽表头一起居中）
+ * - 表体：纯数字/金额/数量 right；百分比比率、日期效期、时间时长、单位、状态、类型、人名 center；
+ *         其余文本默认 left（Element / vxe 的默认值，不需要显式写 align="left"）
+ * - 数字列统一使用等宽数字，保证个位、小数点纵向对齐
+ * 表头用 !important 覆盖组件库与页面级样式，表体仍由各列 align 控制。
+ */
+.el-table th.el-table__cell,
+.el-table th.el-table__cell > .cell {
+  text-align: center !important;
+}
+
+.vxe-table th.vxe-header--column,
+.vxe-table th.vxe-header--column.col--left,
+.vxe-table th.vxe-header--column.col--center,
+.vxe-table th.vxe-header--column.col--right {
+  text-align: center !important;
+}
+
+.vxe-table th.vxe-header--column > .vxe-cell {
+  text-align: center !important;
+  justify-content: center !important;
+}
+
+.el-table .cell,
+.vxe-table--render-default .vxe-cell {
+  font-variant-numeric: tabular-nums;
+}
+
 .spd-page {
   display: flex;
   flex-direction: column;
@@ -313,4 +343,107 @@
  */
 .spd-table-min {
   min-height: 400px !important;
+}
+
+/**
+ * 左侧空白的表格工具栏不单独占一行，也不盖住列名。
+ * 表名（.spd-panel__head）紧挨在表格上方：图标放到表名右侧。
+ * 查询表单或操作按钮条紧挨在表格上方：图标并到该行右侧。
+ * 都不是时保持原工具栏。工具栏里已有按钮的页面不改。
+ * :has() 不能嵌套。
+ */
+$spd-lone-tool: ' > .ele-table-tool:not(:has(.ele-table-tool-title-label)):not(:has(.ele-table-tool-title-content *)):has(.ele-tool > *)';
+
+@mixin spd-float-tool {
+  position: absolute;
+  z-index: 8;
+  left: auto;
+  width: max-content;
+  max-width: calc(100% - 16px);
+  margin: 0;
+  padding: 0;
+  pointer-events: none;
+  background: transparent;
+
+  .ele-table-tool-title {
+    display: none;
+  }
+
+  .ele-tool {
+    pointer-events: auto;
+    margin: 0;
+    flex-wrap: nowrap;
+    padding: 0;
+    background: transparent;
+  }
+}
+
+.ele-pro-table:not(.ele-pro-table-fullscreen):has(> .ele-table-tool) {
+  position: relative;
+}
+
+.ele-pro-table > .ele-table-tool:not(:has(.ele-table-tool-title-label)):not(:has(.ele-table-tool-title-content *)):not(:has(.ele-tool > *)) {
+  display: none;
+  margin: 0;
+}
+
+/* 表名行右侧留出图标位。上移后的图标不能被面板或表格外层裁掉。 */
+.spd-panel__head:has(+ .spd-table-panel__wrap > .ele-pro-table > .ele-table-tool .ele-table-tool-title-content:empty) {
+  padding-right: 88px;
+}
+
+.spd-table-panel:has(> .spd-panel__head + .spd-table-panel__wrap > .ele-pro-table > .ele-table-tool .ele-table-tool-title-content:empty) {
+  overflow: visible;
+}
+
+.spd-panel__head + .spd-table-panel__wrap:has(> .ele-pro-table > .ele-table-tool .ele-table-tool-title-content:empty) {
+  overflow: visible;
+  position: relative;
+  z-index: 2;
+}
+
+.spd-panel__head + .spd-table-panel__wrap > .ele-pro-table:not(.ele-pro-table-fullscreen)#{$spd-lone-tool} {
+  @include spd-float-tool;
+  top: -32px;
+  right: 11px;
+  bottom: auto;
+}
+
+$spd-merge-hit: ':has(+ .ele-pro-table > .ele-table-tool .ele-tool-item):has(+ .ele-pro-table > .ele-table-tool .ele-table-tool-title-content:empty):not(:has(+ .ele-pro-table > .ele-table-tool .ele-table-tool-title-label))';
+
+.el-form#{$spd-merge-hit},
+*:has(> .el-form):not(:has(> :not(.el-form)))#{$spd-merge-hit} {
+  box-sizing: border-box;
+  padding-right: 168px;
+  margin-bottom: 0;
+
+  .el-form-item {
+    margin-bottom: 6px;
+  }
+}
+
+.el-form + .ele-pro-table:not(.ele-pro-table-fullscreen)#{$spd-lone-tool},
+*:has(> .el-form):not(:has(> :not(.el-form))) + .ele-pro-table:not(.ele-pro-table-fullscreen)#{$spd-lone-tool} {
+  @include spd-float-tool;
+  top: auto;
+  right: 0;
+  bottom: calc(100% + 6px);
+}
+
+/* 按钮条紧挨表格（如合同授权品种的操作按钮行）：图标并到该行右侧 */
+.auth-toolbar:has(+ .ele-pro-table > .ele-table-tool .ele-table-tool-title-content:empty),
+.detail-toolbar:has(+ .ele-pro-table > .ele-table-tool .ele-table-tool-title-content:empty),
+.action-bar:has(+ .ele-pro-table > .ele-table-tool .ele-table-tool-title-content:empty) {
+  box-sizing: border-box;
+  padding-right: 168px;
+  margin-bottom: 0;
+}
+
+.auth-toolbar + .ele-pro-table:not(.ele-pro-table-fullscreen)#{$spd-lone-tool},
+.detail-toolbar + .ele-pro-table:not(.ele-pro-table-fullscreen)#{$spd-lone-tool},
+.action-bar + .ele-pro-table:not(.ele-pro-table-fullscreen)#{$spd-lone-tool} {
+  @include spd-float-tool;
+  top: auto;
+  right: 10px;
+  bottom: calc(100% + 8px);
 }

@@ -217,6 +217,7 @@ export async function getMaterialDetail(where, page, size) {
   if (where?.EXACT_CHARGE_CODE) params.EXACT_CHARGE_CODE = '1';
   if (where?.BATCH_EMPTY) params.BATCH_EMPTY = '1';
   if (where?.QTY_SIGN) params.QTY_SIGN = where.QTY_SIGN;
+  if (where?.MEDICAL_ORDER_ID) params.MEDICAL_ORDER_ID = where.MEDICAL_ORDER_ID;
   const res = await postForm(
     '/WarehouseAreaThreeInventory/GetMaterialDetail',
     params

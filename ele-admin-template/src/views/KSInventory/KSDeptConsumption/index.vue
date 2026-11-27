@@ -262,14 +262,14 @@
           {
             prop: 'Varietie_Code_New',
             label: '品种编码',
-            width: 150,
+            width: 132,
             align: 'center',
             showOverflowTooltip: true
           },
           {
             prop: 'Varietie_Name',
             label: '品种全称',
-            width: 500,
+            minWidth: 192,
             align: 'center',
             showOverflowTooltip: true
           },
@@ -283,7 +283,7 @@
           {
             prop: 'Unit',
             label: '单位',
-            width: 80,
+            width: 76,
             align: 'center',
             showOverflowTooltip: true
           },
@@ -297,7 +297,7 @@
           {
             prop: 'Supplier_Name',
             label: '供应商',
-            width: 220,
+            minWidth: 208,
             align: 'center',
             showOverflowTooltip: true
           },

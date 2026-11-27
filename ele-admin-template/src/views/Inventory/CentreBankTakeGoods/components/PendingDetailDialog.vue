@@ -14,17 +14,17 @@
     <el-table v-loading="loading" :data="rows" border stripe size="small" height="520">
       <el-table-column prop="Delivery_Note_Number" label="收货单号" min-width="140" show-overflow-tooltip />
       <el-table-column prop="Varietie_Code_New" label="品种编码" width="120" />
-      <el-table-column prop="Varietie_Name" label="品种名称" min-width="160" show-overflow-tooltip />
-      <el-table-column prop="Specification_Or_Type" label="规格型号" width="110" />
+      <el-table-column prop="Varietie_Name" label="品种名称" min-width="192" show-overflow-tooltip />
+      <el-table-column prop="Specification_Or_Type" label="规格型号" min-width="160" show-overflow-tooltip />
       <el-table-column prop="Unit" label="单位" width="70" align="center" />
       <el-table-column prop="Batch" label="生产批号" width="100" />
-      <el-table-column label="生产日期" width="110">
+      <el-table-column label="生产日期" width="110" align="center">
         <template slot-scope="{ row }">{{ fmtDate10(row.Batch_Production_Date) }}</template>
       </el-table-column>
-      <el-table-column label="有效期" width="110">
+      <el-table-column label="有效期" width="110" align="center">
         <template slot-scope="{ row }">{{ fmtDate10(row.Batch_Validity_Period) }}</template>
       </el-table-column>
-      <el-table-column prop="Receivable" label="应收数量" width="90" align="center" />
+      <el-table-column prop="Receivable" label="应收数量" width="90" align="right" />
       <el-table-column label="结算价" width="90" align="right">
         <template slot-scope="{ row }">{{ fmtPrice(row.Supply_Price) }}</template>
       </el-table-column>
@@ -34,7 +34,7 @@
       <el-table-column label="总金额" width="90" align="right">
         <template slot-scope="{ row }">{{ fmtPrice((Number(row.Supply_Price) || 0) * (Number(row.Receivable) || 0)) }}</template>
       </el-table-column>
-      <el-table-column prop="Supplier_Name" label="供应商名称" min-width="120" show-overflow-tooltip />
+      <el-table-column prop="Supplier_Name" label="供应商名称" min-width="208" show-overflow-tooltip />
       <el-table-column prop="Manufacturing_Ent_Name" label="生产企业名称" min-width="120" show-overflow-tooltip />
     </el-table>
     <el-pagination

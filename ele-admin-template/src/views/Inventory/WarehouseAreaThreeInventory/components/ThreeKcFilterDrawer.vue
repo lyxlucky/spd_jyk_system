@@ -114,14 +114,16 @@
             field="CREATE_BY"
             title="创建人"
             width="100"
+            align="center"
           />
-          <vxe-column field="CREATE_TIME" title="创建时间" width="155" />
+          <vxe-column field="CREATE_TIME" title="创建时间" width="155" align="center" />
           <vxe-column
             field="UPDATE_BY"
             title="修改人"
             width="100"
+            align="center"
           />
-          <vxe-column field="UPDATE_TIME" title="修改时间" width="155" />
+          <vxe-column field="UPDATE_TIME" title="修改时间" width="155" align="center" />
           <vxe-column
             title="操作"
             fixed="right"

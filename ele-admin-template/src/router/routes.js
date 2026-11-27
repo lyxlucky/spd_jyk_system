@@ -282,6 +282,11 @@ export function getMenuRoutes(menus, homePath) {
       meta: { title: '品种备货分析' }
     });
     routes.push({
+      path: '/SystemConfig/ConfigManage',
+      component: () => import('@/views/SystemConfig/ConfigManage/index.vue'),
+      meta: { title: '系统参数表' }
+    });
+    routes.push({
       path: '/UserManage/UMUsers',
       component: () => import('@/views/UserManage/UMUsers/index.vue'),
       meta: { title: '用户管理' }

@@ -354,7 +354,7 @@
           {
             label: '供应商名称',
             prop: 'SUPPLIER_NAME',
-            minWidth: 150,
+            minWidth: 208, showOverflowTooltip: true,
             align: 'center'
           },
           {
@@ -402,7 +402,7 @@
           {
             label: '审批状态',
             prop: 'APPROVE_STATE',
-            width: 100,
+            width: 88, showOverflowTooltip: true,
             align: 'center',
             formatter: (row) => {
               if (row.APPROVE_STATE == 0) {

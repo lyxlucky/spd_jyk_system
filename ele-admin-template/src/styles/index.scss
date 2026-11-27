@@ -10,6 +10,19 @@ $--ele-font-path: '~ele-admin/es/style/fonts';
 @import './transition/index.scss';
 @import './spd-page-layout.scss';
 
+/* 科室计划的查询、明细工具栏，以及页面中的其他按钮。 */
+.ks-dept-plan-page .el-button:not(.el-button--text),
+.ks-dept-plan-search .el-button:not(.el-button--text),
+.ks-dept-plan-detail-actions .el-button:not(.el-button--text) {
+  padding-left: 5px !important;
+  padding-right: 5px !important;
+}
+
+/* 普通文字与表头共用主文字色。 */
+:root {
+  --color-text-regular: var(--color-text-primary);
+}
+
 /* 关闭响应式时：内容区允许横向滚动（对齐老系统窗口缩小靠滚动查看） */
 body.ele-body-limit-width {
   .ele-admin-fixed-body .ele-admin-content {
@@ -29,25 +42,27 @@ body.ele-body-limit-width {
   min-height: 0;
 }
 
-/* 顶部主导航：字体加粗加大、tab 间距收紧、悬停/选中蓝底白字 */
-.ele-admin-header-nav {
-  .el-menu--horizontal {
-    > .el-menu-item,
-    > .el-submenu > .el-submenu__title {
-      padding: 0 8px;
-      font-size: 13px;
-      font-weight: 600;
-    }
-    > .el-menu-item:not(.is-disabled):hover,
-    > .el-submenu:not(.is-disabled) > .el-submenu__title:hover,
-    > .el-menu-item.is-active,
-    > .el-submenu.is-active > .el-submenu__title {
-      background-color: #409eff !important;
-      color: #fff !important;
-    }
-    > .el-submenu > .el-submenu__title .el-submenu__icon-arrow {
-      color: inherit;
-    }
+/*
+ * SPD 主导航在左侧；顶栏横向菜单常为空，但 header-nav 本身是 flex:1 占位，
+ * 用来隔开左侧院徽和右侧工具。不能 display:none，否则中间没间隔。
+ * 只掏空内部滚动条内容，去掉横线，保留中间空白。
+ */
+.ele-admin-header .ele-admin-header-nav {
+  flex: 1 1 auto !important;
+  min-width: 0;
+  overflow: hidden;
+  align-self: stretch;
+
+  > .el-scrollbar {
+    height: 0 !important;
+    max-height: 0 !important;
+    overflow: hidden !important;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  > .el-scrollbar > .el-scrollbar__bar {
+    display: none !important;
   }
 }
 

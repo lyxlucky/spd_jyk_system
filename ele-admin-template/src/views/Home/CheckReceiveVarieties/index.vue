@@ -82,7 +82,7 @@ export default {
         {
           prop: 'Varietie_Name',
           label: '品种名称',
-          minWidth: 180,
+          minWidth: 192,
           showOverflowTooltip: true
         },
         {

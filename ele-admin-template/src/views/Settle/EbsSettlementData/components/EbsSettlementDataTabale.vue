@@ -102,7 +102,7 @@
             label: '供应商名称',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 180
+            minWidth: 208
           },
           {
             prop: 'VENDOR_SITE_CODE',

@@ -114,9 +114,9 @@ export default {
         { type: 'index', columnKey: 'index', label: '序号', width: 80, align: 'center', fixed: 'left' },
         { label: '操作', width: 80, fixed: 'left', slot: 'action' },
         { prop: 'VARIETIE_CODE_NEW', label: '品种编码', width: 120, showOverflowTooltip: true },
-        { prop: 'VARIETIE_NAME', label: '品种名称', minWidth: 150, showOverflowTooltip: true },
+        { prop: 'VARIETIE_NAME', label: '品种名称', minWidth: 192, showOverflowTooltip: true },
         { prop: 'SPECIFICATION_OR_TYPE', label: '规格型号', minWidth: 160, showOverflowTooltip: true },
-        { prop: 'UNIT', label: '单位', width: 80 },
+        { prop: 'UNIT', label: '单位', width: 76, showOverflowTooltip: true },
         {
           prop: 'PRICE',
           label: '当前中标价格',
@@ -143,10 +143,10 @@ export default {
         },
         { prop: 'CREATE_MAN', label: '创建人', width: 100, showOverflowTooltip: true },
         { prop: 'CREATE_TIME', label: '创建时间', width: 140, showOverflowTooltip: true },
-        { prop: 'REMARK', label: '备注', minWidth: 100, showOverflowTooltip: true },
+        { prop: 'REMARK', label: '备注', minWidth: 110, showOverflowTooltip: true },
         { slot: 'state', prop: 'STATE', label: '状态', width: 80 },
         { prop: 'APPROVAL_NUMBER', label: '注册证号', minWidth: 140, showOverflowTooltip: true },
-        { prop: 'MANUFACTURING_ENT_NAME', label: '生产企业', minWidth: 160, showOverflowTooltip: true }
+        { prop: 'MANUFACTURING_ENT_NAME', label: '生产企业', minWidth: 208, showOverflowTooltip: true }
       ]
     };
   },

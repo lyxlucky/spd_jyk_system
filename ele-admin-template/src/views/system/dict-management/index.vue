@@ -181,7 +181,7 @@
             prop: 'Remark',
             label: '备注',
             align: 'center',
-            minWidth: 90,
+            minWidth: 110,
             showOverflowTooltip: true
           },
           {

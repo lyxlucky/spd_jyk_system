@@ -297,7 +297,7 @@
 
                   </el-table-column>
 
-                  <el-table-column prop="message" label="说明" min-width="200" show-overflow-tooltip />
+                  <el-table-column prop="message" label="说明" min-width="110" show-overflow-tooltip />
 
                 </el-table>
 
@@ -323,7 +323,7 @@
 
                   <el-table-column prop="value" label="识别值" min-width="160" show-overflow-tooltip />
 
-                  <el-table-column label="置信度" width="80" align="center">
+                  <el-table-column label="置信度" width="80" align="left">
 
                     <template slot-scope="{ row }">
 
@@ -345,11 +345,11 @@
 
                 <el-table v-if="steps.length" :data="steps" size="mini" border max-height="320">
 
-                  <el-table-column prop="attemptNo" label="次数" width="56" align="center" />
+                  <el-table-column prop="attemptNo" label="次数" width="56" align="right" />
 
                   <el-table-column prop="stepName" label="步骤" width="110" show-overflow-tooltip />
 
-                  <el-table-column label="状态" width="88" align="center">
+                  <el-table-column label="状态" width="76" align="center" show-overflow-tooltip>
 
                     <template slot-scope="{ row }">
 
@@ -363,7 +363,7 @@
 
                   </el-table-column>
 
-                  <el-table-column label="耗时" width="76" align="center">
+                  <el-table-column label="耗时" width="76" align="left">
 
                     <template slot-scope="{ row }">
 

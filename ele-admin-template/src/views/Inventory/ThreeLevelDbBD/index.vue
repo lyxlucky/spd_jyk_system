@@ -365,28 +365,28 @@
             label: '品种名称',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 150
+            minWidth: 192
           },
           {
             prop: 'SPECIFICATION_OR_TYPE',
             label: '规格型号',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 120
+            minWidth: 160
           },
           {
             prop: 'MANUFACTURING_ENT_NAME',
             label: '生产企业',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 150
+            minWidth: 208
           },
           {
             prop: 'UNIT',
             label: '单位',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 80
+            width: 76
           },
           {
             prop: 'PRICE',
@@ -547,21 +547,21 @@
             label: '品种名称',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 150
+            minWidth: 192
           },
           {
             prop: 'SPECIFICATION_OR_TYPE',
             label: '规格型号',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 120
+            minWidth: 160
           },
           {
             prop: 'UNIT',
             label: '单位',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 80
+            width: 76
           },
           {
             prop: 'HIS_ZHB',
@@ -582,7 +582,7 @@
             label: '生产企业',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 150
+            minWidth: 208
           },
           // {
           //   prop: 'CONSUMER',
@@ -633,7 +633,7 @@
             label: '类型',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 140,
+            width: 76,
             formatter: (row, column, cellValue) => {
               if (row.TYPE && row.TYPE == '2') {
                 return '散货';
@@ -681,7 +681,7 @@
             label: '数量',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 100
+            width: 88
           }
         ],
         kcColumns: [
@@ -697,21 +697,21 @@
             label: '品种名称',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 150
+            minWidth: 192
           },
           {
             prop: 'SPECIFICATION_OR_TYPE',
             label: '规格型号',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 120
+            minWidth: 160
           },
           {
             prop: 'UNIT',
             label: '单位',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 80
+            width: 76
           },
           {
             prop: 'PRICE',
@@ -725,14 +725,14 @@
             label: '生产企业',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 150
+            minWidth: 208
           },
           {
             prop: 'QTY',
             label: '数量',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 100
+            width: 88
           },
           {
             prop: 'TOTAL_PRICE',

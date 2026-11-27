@@ -91,14 +91,14 @@ export default {
           label: '品种全称',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 200
+          minWidth: 192
         },
         {
           prop: 'Specification_Or_Type',
           label: '型号规格',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 190
+          minWidth: 160
         },
         {
           prop: 'Unit',
@@ -119,7 +119,7 @@ export default {
           label: '供应商名称',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 165
+          minWidth: 208
         },
         {
           prop: 'IS_JC',

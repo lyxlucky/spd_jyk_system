@@ -59,7 +59,7 @@ import { getJyDeviceTableList } from '@/api/KSInventory/JykDeviceAnalyze';
             label: '品种名称',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 380
+            minWidth: 192
           },
           {
             prop: 'SPECIFICATION_OR_TYPE',

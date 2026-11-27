@@ -78,6 +78,23 @@ export async function spdScanConsume(data) {
     }
 }
 
+export async function UpdateScanDefInstrument({defArray, bindMachine}) {
+    const DefList = defArray.join(',');
+    const [INSTRUMENT_CODE = '', INSTRUMENT_NAME = ''] = (bindMachine || '').split('/');
+    const data = {
+        DefList,
+        INSTRUMENT_CODE,
+        INSTRUMENT_NAME
+    };
+    var rep = formdataify(data)
+    const res = await request.post('/DeptConsume/UpdateScanDefInstrument', rep);
+    if (res.data.code == 200) {
+        return res.data;
+    } else {
+        return Promise.reject(new Error(res.data.msg));
+    }
+}
+
 export async function getDeptStockSummary(data) {
     var data2 = {};
     data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);

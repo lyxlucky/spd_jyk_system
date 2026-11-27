@@ -99,7 +99,7 @@ export default {
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 150
+          width: 132
         },
         {
           prop: 'Varietie_Code',
@@ -116,7 +116,7 @@ export default {
           sortable: 'custom',
           align: 'center',
           howOverflowTooltip: true,
-          minWidth: 180
+          minWidth: 192, showOverflowTooltip: true
         },
         {
           prop: 'Specification_Or_Type',
@@ -148,7 +148,7 @@ export default {
           align: 'center',
           sortable: 'custom',
           showOverflowTooltip: true,
-          minWidth: 80
+          width: 76
         },
         {
           prop: 'Price',

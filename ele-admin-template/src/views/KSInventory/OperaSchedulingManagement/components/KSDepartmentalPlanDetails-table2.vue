@@ -229,7 +229,7 @@
             label: '品种编码',
             align: 'center',
             showOverflowTooltip: true,
-            width: 150
+            width: 132
           },
           {
             prop: 'VARIETIE_NAME',
@@ -265,7 +265,7 @@
             label: '单位',
             align: 'center',
             showOverflowTooltip: true,
-            width: 80
+            width: 76
           },
           {
             prop: 'MANUFACTURING_ENT_NAME',

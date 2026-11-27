@@ -130,7 +130,7 @@
           {
             prop: 'dept_no',
             label: '科室名称',
-            minWidth: 160,
+            minWidth: 192,
             align: 'center',
             showOverflowTooltip: true
           },
@@ -151,14 +151,14 @@
           {
             prop: 'drugs_name',
             label: '品种名称',
-            minWidth: 120,
+            minWidth: 192,
             align: 'center',
             showOverflowTooltip: true
           },
           {
             prop: 'drugs_spec',
             label: '规格',
-            minWidth: 80,
+            minWidth: 160,
             align: 'center',
             showOverflowTooltip: true
           },

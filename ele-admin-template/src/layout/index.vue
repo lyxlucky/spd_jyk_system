@@ -53,11 +53,12 @@
     <!-- 登录后效期提醒 -->
     <login-tip-dialogs />
     <!-- 菜单图标 -->
-    <template v-slot:icon="{ icon }">
+    <template v-slot:icon="{ icon, item }">
       <svg-icon
         v-if="isSvgIcon(icon)"
         :icon-class="icon"
         class-name="menu-svg-icon"
+        :class="{ 'ks-inventory-menu-icon': item?.path?.startsWith('/KSInventory/') }"
       />
       <i v-else :class="icon"></i>
     </template>
@@ -70,6 +71,26 @@
         aria-label="医院院徽"
         :style="{ backgroundImage: 'url(' + hospitalLogo + ')' }"
       ></div>
+    </template>
+    <template v-for="slotName in ['top', 'tab-title']" v-slot:[slotName]="{ item, title }">
+      <span v-if="item">{{ title }}</span>
+      <div
+        v-else-if="!theme.bodyFullscreen && (slotName === 'top' || theme.layoutStyle === 'top')"
+        class="spd-side-home-tabs"
+        :class="{ 'is-narrow': theme.collapse || theme.sideNavCollapse }"
+      >
+        <button
+          v-for="label in ['首页', '菜单列表']"
+          :key="label"
+          type="button"
+          class="spd-side-home-tab"
+          :class="{ 'is-active': isHomePage }"
+          :title="label"
+          @click.stop="goHome"
+        >
+          {{ label }}
+        </button>
+      </div>
     </template>
     <!-- 顶栏右侧区域 -->
     <template v-slot:right>
@@ -206,18 +227,6 @@
         handler(value) {
           this.applyPresetClass(value);
         }
-      },
-      isHomePage() {
-        this.syncHomeTabs();
-      },
-      'theme.collapse'() {
-        this.syncHomeTabs();
-      },
-      'theme.sideNavCollapse'() {
-        this.syncHomeTabs();
-      },
-      'theme.bodyFullscreen'() {
-        this.syncHomeTabs();
       }
     },
     created() {
@@ -226,16 +235,13 @@
     },
     mounted() {
       this.rebindNavLinkage(this.theme.layoutStyle);
-      this.mountHomeTabs();
     },
     beforeDestroy() {
       this.$bus.$off(RECENT_MENUS_CHANGED, this.syncRecentMenus);
       this.unbindTopNavLinkage();
       this.unbindSideNavLinkage();
-      this.destroyHomeTabs();
       document.body.classList.remove('spd-preset');
       document.body.classList.remove('spd-layout-top');
-      document.body.classList.remove('spd-side-collapsed');
     },
     methods: {
       // 切换预设标识
@@ -245,41 +251,6 @@
       // 顶部菜单：页签右移
       applyLayoutModeClass(layoutStyle) {
         document.body.classList.toggle('spd-layout-top', layoutStyle === 'top');
-      },
-      // 首页标签挂到 body
-      mountHomeTabs() {
-        const bar = document.createElement('div');
-        bar.className = 'spd-side-home-tabs';
-        ['首页', '菜单列表'].forEach((label) => {
-          const button = document.createElement('button');
-          button.type = 'button';
-          button.className = 'spd-side-home-tab';
-          button.textContent = label;
-          button.addEventListener('click', (event) => this.goHome(event));
-          bar.appendChild(button);
-        });
-        document.body.appendChild(bar);
-        this._homeTabs = bar;
-        this.syncHomeTabs();
-      },
-      syncHomeTabs() {
-        const bar = this._homeTabs;
-        if (!bar) {
-          return;
-        }
-        const narrow = !!(this.theme.collapse || this.theme.sideNavCollapse);
-        document.body.classList.toggle('spd-side-collapsed', narrow);
-        bar.classList.toggle('is-narrow', narrow);
-        bar.classList.toggle('is-hidden', !!this.theme.bodyFullscreen);
-        Array.prototype.forEach.call(bar.children, (button) => {
-          button.classList.toggle('is-active', this.isHomePage);
-        });
-      },
-      destroyHomeTabs() {
-        if (this._homeTabs && this._homeTabs.parentNode) {
-          this._homeTabs.parentNode.removeChild(this._homeTabs);
-        }
-        this._homeTabs = null;
       },
       // 按布局重绑菜单联动
       rebindNavLinkage(layoutStyle) {
@@ -437,10 +408,7 @@
         isHome || this.$router.push(LAYOUT_PATH);
       },
       // 回主页，不触发院徽点击
-      goHome(event) {
-        if (event && event.stopPropagation) {
-          event.stopPropagation();
-        }
+      goHome() {
         if (this.$route.path !== HOME_PATH) {
           this.$router.push(HOME_PATH);
         }
@@ -539,17 +507,21 @@
 </script>
 
 <style lang="scss">
-  // 菜单 svg 图标与字体图标同一尺寸，避免和文字挤在一起
+  // 菜单 svg 图标与字体图标同一尺寸（间距交给下方 gap，这里不再加 margin）
   .ele-admin-sidebar-menus .menu-svg-icon.svg-icon,
   .ele-admin-sidebar-nav-menu .menu-svg-icon.svg-icon,
   .el-menu--popup .menu-svg-icon.svg-icon {
-    width: 18px;
-    height: 18px;
-    margin-right: 8px;
-    font-size: 18px;
-    flex: 0 0 auto;
+    width: 16px;
+    height: 16px;
+    margin-right: 0;
+    font-size: 16px;
+    flex: 0 0 16px;
     vertical-align: middle;
     text-align: center;
+  }
+
+  .ele-admin-sidebar-menus .el-menu-item .ks-inventory-menu-icon {
+    margin-right: 10px;
   }
 
   // 侧栏菜单徽章样式，定位在右侧垂直居中并调小尺寸
@@ -648,7 +620,6 @@
     .ele-admin-sidebar-menus .el-menu:not(.el-menu--collapse) {
       .el-menu-item,
       .el-submenu__title {
-        /* 长名称换行 */
         display: flex !important;
         align-items: center;
         height: auto !important;
@@ -664,39 +635,74 @@
         word-break: break-word;
         overflow: visible;
       }
-      /* 叶子菜单 */
-      .el-menu-item > a {
-        display: flex;
+
+      /*
+       * 叶子菜单外包了 el-tooltip，原先 `.el-menu-item > a` 选不中，
+       * 图标/文字没在同一 flex 里，有的项就会空出一截。
+       * display:contents 让 tooltip 外壳不参与布局。
+       */
+      .el-menu-item > .el-tooltip {
+        display: contents;
+      }
+
+      .el-menu-item a {
+        display: flex !important;
         align-items: center;
-        flex: 1;
+        flex: 1 1 auto;
         min-width: 0;
+        gap: 8px;
         color: inherit;
         line-height: inherit;
       }
-      .el-menu-item > a > i,
-      .el-menu-item > a > .menu-svg-icon,
-      .el-submenu__title > i:not(.el-submenu__icon-arrow),
-      .el-submenu__title > .menu-svg-icon {
-        flex: 0 0 18px;
-        width: 18px;
-        margin-right: 8px;
-        text-align: center;
-        line-height: 1;
+
+      .el-submenu__title {
+        gap: 8px;
       }
+
+      .el-menu-item a > i,
+      .el-menu-item a > .svg-icon,
+      .el-menu-item a > .menu-svg-icon,
+      .el-menu-item > i:not(.el-submenu__icon-arrow),
+      .el-menu-item > .svg-icon,
+      .el-menu-item > .menu-svg-icon,
+      .el-menu-item [class^='el-icon-'],
+      .el-menu-item [class*=' el-icon-'],
+      .el-submenu__title > i:not(.el-submenu__icon-arrow),
+      .el-submenu__title > .svg-icon,
+      .el-submenu__title > .menu-svg-icon,
+      .el-submenu__title [class^='el-icon-'],
+      .el-submenu__title [class*=' el-icon-'] {
+        flex: 0 0 16px !important;
+        width: 16px !important;
+        min-width: 16px !important;
+        max-width: 16px !important;
+        height: 16px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        font-size: 16px !important;
+        line-height: 16px !important;
+        text-align: center;
+        vertical-align: middle;
+        overflow: hidden;
+      }
+
       .el-submenu__title > .el-submenu__icon-arrow {
         right: 12px;
         margin-top: 0;
       }
-      /* 长名称换行 */
-      .el-menu-item > a > span,
+
+      .el-menu-item a > span,
       .el-submenu__title > span,
       .el-submenu__title > a {
-        flex: 1;
+        flex: 1 1 auto;
         min-width: 0;
+        margin: 0 !important;
+        padding: 0 !important;
         line-height: inherit;
         white-space: normal !important;
         word-break: break-word;
       }
+
       > .el-submenu,
       > .el-menu-item {
         margin-top: 0;
@@ -725,12 +731,9 @@
 
   /* 首页标签：院徽正下方 */
   .spd-side-home-tabs {
-    position: fixed;
-    top: 42px;
-    left: 0;
-    z-index: 200;
     display: flex;
-    width: 240px;
+    flex: 0 0 auto;
+    width: 100%;
     height: 30px;
     box-sizing: border-box;
     background: #fff;
@@ -746,7 +749,7 @@
     border: none;
     border-right: 1px solid #ebeef5;
     background: #fff;
-    color: #606266;
+    color: var(--color-text-primary);
     font-size: 13px;
     font-weight: 600;
     line-height: 30px;
@@ -767,26 +770,27 @@
   }
   .ele-admin-sidebar-menus,
   .ele-admin-sidebar-nav-menu {
-    margin-top: 30px;
     min-height: 0;
   }
-  /* 顶部菜单页签右移 */
-  body.spd-layout-top .ele-admin-tabs {
-    padding-left: 240px;
-    box-sizing: border-box;
+  /* 顶部导航用页签栏的首页插槽，和业务页签一起排列。 */
+  body.spd-layout-top .ele-admin-body:first-child > .ele-admin-tabs {
+    padding-left: 0;
   }
-  body.spd-layout-top.spd-side-collapsed .ele-admin-tabs {
-    padding-left: 56px;
+  body.spd-layout-top .ele-admin-body:first-child > .ele-admin-tabs > .ele-tab-tool.is-tab:has(.spd-side-home-tabs) {
+    display: flex;
+    width: 240px;
+    padding: 0;
   }
-  .spd-side-home-tabs.is-narrow {
+  body.spd-layout-top .ele-admin-collapse .ele-admin-body:first-child > .ele-admin-tabs > .ele-tab-tool.is-tab {
     width: 56px;
+  }
+  .ele-tab-tool > .spd-side-home-tabs {
+    position: relative;
+    z-index: 2;
   }
   .spd-side-home-tabs.is-narrow .spd-side-home-tab {
     padding: 0;
     font-size: 12px;
-  }
-  .spd-side-home-tabs.is-hidden {
-    display: none;
   }
 
   .ele-admin-header .ele-admin-breadcrumb {

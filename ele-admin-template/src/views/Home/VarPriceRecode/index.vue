@@ -71,21 +71,21 @@ export default {
           prop: 'VARIETIE_NAME',
           label: '品种名称',
           align: 'center',
-          minWidth: 220,
+          minWidth: 192,
           showOverflowTooltip: true
         },
         {
           prop: 'SPECIFICATION_OR_TYPE',
           label: '规格型号',
           align: 'center',
-          minWidth: 220,
+          minWidth: 160,
           showOverflowTooltip: true
         },
         {
           prop: 'MANUFACTURING_ENT_NAME',
           label: '生产企业',
           align: 'center',
-          minWidth: 220,
+          minWidth: 208,
           showOverflowTooltip: true
         },
         {

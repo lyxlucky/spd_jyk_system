@@ -96,30 +96,30 @@
             @current-change="onDelSelect"
           >
             <el-table-column prop="VARIETIE_CODE_NEW" label="品种编码" width="100" show-overflow-tooltip />
-            <el-table-column prop="VARIETIE_NAME" label="品种名称" width="100" show-overflow-tooltip />
-            <el-table-column prop="SPECIFICATION_OR_TYPE" label="规格型号" width="140" show-overflow-tooltip />
-            <el-table-column prop="SUPPLY_PRICE" label="收货价" width="68" />
-            <el-table-column prop="PURCHASE_PRICE" label="采购价" width="68" />
-            <el-table-column prop="UNIT" label="单位" width="52" />
+            <el-table-column prop="VARIETIE_NAME" label="品种名称" min-width="192" show-overflow-tooltip />
+            <el-table-column prop="SPECIFICATION_OR_TYPE" label="规格型号" min-width="160" show-overflow-tooltip />
+            <el-table-column prop="SUPPLY_PRICE" label="收货价" width="68" align="right" />
+            <el-table-column prop="PURCHASE_PRICE" label="采购价" width="68" align="right" />
+            <el-table-column prop="UNIT" label="单位" width="52" align="center" />
             <el-table-column prop="APPROVAL_NUMBER" label="注册证" width="100" show-overflow-tooltip />
-            <el-table-column prop="MANUFACTURING_ENT_NAME" label="生产企业" width="120" show-overflow-tooltip />
-            <el-table-column prop="COEFFICIENT" label="系数" width="52" />
-            <el-table-column label="收货包数/散" width="88">
+            <el-table-column prop="MANUFACTURING_ENT_NAME" label="生产企业" min-width="208" show-overflow-tooltip />
+            <el-table-column prop="COEFFICIENT" label="系数" width="52" align="right" />
+            <el-table-column label="收货包数/散" width="88" align="right">
               <template slot-scope="{ row }">{{ fmtDefPkg(row) }}</template>
             </el-table-column>
-            <el-table-column label="拒收包数/散" width="88">
+            <el-table-column label="拒收包数/散" width="88" align="right">
               <template slot-scope="{ row }">{{ fmtJsDefPkg(row) }}</template>
             </el-table-column>
             <el-table-column prop="BATCH" label="批号" width="90" show-overflow-tooltip />
-            <el-table-column label="生产日期" width="96">
+            <el-table-column label="生产日期" width="96" align="center">
               <template slot-scope="{ row }">{{ fmtDate10(row.BATCH_PRODUCTION_DATE) }}</template>
             </el-table-column>
-            <el-table-column label="有效期" width="96">
+            <el-table-column label="有效期" width="96" align="center">
               <template slot-scope="{ row }">{{ fmtDate10(row.BATCH_VALIDITY_PERIOD) }}</template>
             </el-table-column>
             <el-table-column prop="DISINFECTION_BATCH" label="灭菌批号" width="90" show-overflow-tooltip />
-            <el-table-column prop="SUPPLIER_NAME" label="供应商" width="100" show-overflow-tooltip />
-            <el-table-column label="操作" width="120" fixed="right">
+            <el-table-column prop="SUPPLIER_NAME" label="供应商" min-width="208" show-overflow-tooltip />
+            <el-table-column label="操作" width="120" fixed="right" align="center">
               <template slot-scope="{ row }">
                 <el-button type="text" size="mini" @click.stop="openEdit(row)">编辑</el-button>
                 <el-button type="text" size="mini" @click.stop="openUdi(row)">查看</el-button>
@@ -162,7 +162,7 @@
           >
             <el-table-column type="selection" width="42" align="center" />
             <el-table-column prop="DEF_NO_PKG_CODE" label="定数码" min-width="120" show-overflow-tooltip />
-            <el-table-column label="状态" width="72">
+            <el-table-column label="状态" width="72" align="center">
               <template slot-scope="{ row }">{{ fmtDefState(row.STATE) }}</template>
             </el-table-column>
           </el-table>

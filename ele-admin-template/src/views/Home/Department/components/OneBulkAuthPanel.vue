@@ -60,29 +60,29 @@
       >
         <el-table-column type="selection" width="55" fixed align="center"/>
         <el-table-column prop="Varietie_Code_New" label="品种（材料）编码" width="120" sortable="custom" show-overflow-tooltip />
-        <el-table-column prop="Varietie_Name" label="品种全称" min-width="200" sortable="custom" show-overflow-tooltip />
-        <el-table-column prop="Auto_Apply_Radix" label="PDA自动申领基数" width="120" sortable="custom" />
+        <el-table-column prop="Varietie_Name" label="品种全称" min-width="192" sortable="custom" show-overflow-tooltip />
+        <el-table-column prop="Auto_Apply_Radix" label="PDA自动申领基数" width="120" sortable="custom" align="right" />
         <el-table-column prop="Specification_Or_Type" label="型号/规格" min-width="130" sortable="custom" show-overflow-tooltip />
         <el-table-column prop="Manufacturing_Ent_Name" label="生产企业名称" min-width="170" sortable="custom" show-overflow-tooltip />
         <el-table-column prop="APPROVAL_NUMBER" label="注册证号" min-width="170" sortable="custom" show-overflow-tooltip />
-        <el-table-column prop="Unit" label="单位" width="80" sortable="custom" />
+        <el-table-column prop="Unit" label="单位" width="76" sortable="custom" show-overflow-tooltip align="center" />
         <el-table-column label="中标价" width="80" sortable="custom" align="right" prop="Price">
           <template slot-scope="{ row }">{{ fmtPrice(row.Price) }}</template>
         </el-table-column>
-        <el-table-column label="授权日期" width="100" sortable="custom" prop="Auth_Time">
+        <el-table-column label="授权日期" width="100" sortable="custom" prop="Auth_Time" align="center">
           <template slot-scope="{ row }">{{ fmtDate(row.Auth_Time) }}</template>
         </el-table-column>
-        <el-table-column label="授权到期" width="100" sortable="custom" prop="Auth_Valid_Date">
+        <el-table-column label="授权到期" width="100" sortable="custom" prop="Auth_Valid_Date" align="center">
           <template slot-scope="{ row }">{{ fmtDate(row.Auth_Valid_Date) }}</template>
         </el-table-column>
-        <el-table-column label="启用状态" width="80" sortable="custom" prop="Enable">
+        <el-table-column label="启用状态" width="80" sortable="custom" prop="Enable" align="center">
           <template slot-scope="{ row }">{{ row.Enable == 0 || row.Enable === '0' ? '停用' : row.Enable == 1 || row.Enable === '1' ? '启用' : '—' }}</template>
         </el-table-column>
-        <el-table-column label="共有库存" width="80" sortable="custom" prop="IS_SHARE">
+        <el-table-column label="共有库存" width="80" sortable="custom" prop="IS_SHARE" align="right">
           <template slot-scope="{ row }">{{ row.IS_SHARE == 1 || row.IS_SHARE === '1' ? '是' : '否' }}</template>
         </el-table-column>
-        <el-table-column prop="Auth_Bulk_Cargo_Upper_Limit" label="授权总量" width="100" align="center" sortable="custom" />
-        <el-table-column label="二级审批" width="100" align="center" prop="IS_NEED_TWO_APP">
+        <el-table-column prop="Auth_Bulk_Cargo_Upper_Limit" label="授权总量" width="100" align="right" sortable="custom" />
+        <el-table-column label="二级审批" width="100" align="left" prop="IS_NEED_TWO_APP">
           <template slot-scope="{ row }">{{ row.IS_NEED_TWO_APP == 1 || row.IS_NEED_TWO_APP === '1' ? '是' : '否' }}</template>
         </el-table-column>
       </el-table>

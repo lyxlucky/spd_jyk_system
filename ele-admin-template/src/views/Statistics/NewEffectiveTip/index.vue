@@ -334,7 +334,7 @@ export default {
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 150,
+          minWidth: 208,
           show: false
         },
         {
@@ -481,7 +481,7 @@ export default {
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 150,
+          minWidth: 208,
         },
         {
           prop: 'Contract_Code',
@@ -552,7 +552,7 @@ export default {
           sortable: 'custom',
           align: 'center',
           howOverflowTooltip: true,
-          minWidth: 180,
+          minWidth: 192, showOverflowTooltip: true,
         },
         {
           prop: 'Varietie_Code_New',
@@ -560,7 +560,7 @@ export default {
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 180,
+          width: 132,
         },
         {
           prop: 'Specification_Or_Type',
@@ -568,7 +568,7 @@ export default {
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 180,
+          minWidth: 160,
         },
         {
           prop: 'Auth_Valid',
@@ -635,7 +635,7 @@ export default {
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 180,
+          width: 132,
         },
         {
           prop: 'Varietie_Name',
@@ -643,7 +643,7 @@ export default {
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 180,
+          minWidth: 192,
         },
         {
           prop: 'Specification_Or_Type',
@@ -651,7 +651,7 @@ export default {
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 180,
+          minWidth: 160,
         },
       ],
       pageSize5: 10,
@@ -693,7 +693,7 @@ export default {
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 180,
+          width: 132,
         },
         {
           prop: 'Varietie_Name',
@@ -701,7 +701,7 @@ export default {
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 180,
+          minWidth: 192,
         },
         {
           prop: 'Specification_Or_Type',
@@ -709,7 +709,7 @@ export default {
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 180,
+          minWidth: 160,
         },
         {
           prop: 'Def_No_Pkg_Coefficient',

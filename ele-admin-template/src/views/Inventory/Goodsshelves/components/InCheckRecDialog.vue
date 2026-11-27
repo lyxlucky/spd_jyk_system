@@ -150,13 +150,13 @@ export default {
         {
           prop: 'VARIETIE_NAME',
           label: '品种名称',
-          minWidth: 140,
+          minWidth: 192,
           showOverflowTooltip: true
         },
         {
           prop: 'SPECIFICATION_OR_TYPE',
           label: '规格型号',
-          minWidth: 120,
+          minWidth: 160,
           showOverflowTooltip: true
         },
         {
@@ -174,13 +174,13 @@ export default {
         {
           prop: 'MANUFACTURING_ENT_NAME',
           label: '生产企业',
-          minWidth: 140,
+          minWidth: 208,
           showOverflowTooltip: true
         },
         {
           prop: 'SUPPLIER_NAME',
           label: '供应商名称',
-          minWidth: 140,
+          minWidth: 208,
           showOverflowTooltip: true
         },
         {

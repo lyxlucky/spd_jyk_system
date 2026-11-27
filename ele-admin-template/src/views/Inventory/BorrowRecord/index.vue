@@ -137,17 +137,17 @@
             <vxe-column
               field="VarietieName"
               title="品种名称"
-              min-width="150"
+              min-width="192"
               show-overflow
               sortable
             />
             <vxe-column
               field="Spec"
               title="规格型号"
-              min-width="120"
+              min-width="160"
               show-overflow
             />
-            <vxe-column field="Unit" title="单位" width="80" align="center" />
+            <vxe-column field="Unit" title="单位" width="76" align="center" show-overflow="tooltip" />
             <vxe-column
               field="OperatePerson"
               title="领用人"
@@ -263,13 +263,13 @@
             <vxe-column
               field="VarietieName"
               title="品种名称"
-              min-width="150"
+              min-width="192"
               show-overflow
             />
             <vxe-column
               field="Spec"
               title="规格型号"
-              min-width="120"
+              min-width="160"
               show-overflow
             />
             <vxe-column field="Batch" title="批号" width="120" show-overflow />
@@ -345,7 +345,7 @@
               field="PatientNumber"
               title="住院号"
               width="120"
-              align="center"
+              align="left"
               show-overflow
             />
             <vxe-column

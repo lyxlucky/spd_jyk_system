@@ -3,7 +3,7 @@
     <div v-loading="dataLoading" class="um-dialog-body">
     <el-table ref="table" :data="regionList" size="mini" border height="420" @selection-change="onSelectionChange">
       <el-table-column type="selection" width="45" align="center" class-name="um-checkbox-col" />
-      <el-table-column prop="DEPT_TWO_NAME" label="科室名称" min-width="160" />
+      <el-table-column prop="DEPT_TWO_NAME" label="科室名称" min-width="192" show-overflow-tooltip />
       <el-table-column prop="REGION_NAME" label="库区名称" min-width="160" />
     </el-table>
     </div>

@@ -40,9 +40,9 @@ export default {
       linkDetailId: '',
       columns: [
         { prop: 'Varietie_Code', label: '品种材料编码', width: 160 },
-        { prop: 'Varietie_Name', label: '品种全称', minWidth: 200,align: 'center' },
+        { prop: 'Varietie_Name', label: '品种全称', minWidth: 192, showOverflowTooltip: true,align: 'center' },
         { prop: 'Specification_Or_Type', label: '型号/规格', width: 120,align: 'center' },
-        { prop: 'Unit', label: '单位', width: 80, align: 'center' },
+        { prop: 'Unit', label: '单位', width: 76, showOverflowTooltip: true, align: 'center' },
         { prop: 'Manufacturing_Ent_Name', label: '生产企业名称', width: 140 ,align: 'center'},
         { prop: 'Coefficient', label: '系数', width: 80, align: 'center' },
         { prop: 'Actual_Pack_Quantity', label: '拣配包数', width: 120, align: 'center' },

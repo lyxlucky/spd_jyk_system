@@ -1,10 +1,10 @@
 <template>
   <div class="bulk-return-tab">
     <el-row :gutter="10">
-      <el-col :span="3">
+      <el-col :span="4">
         <div class="section-title">选择退货科室</div>
-        <el-form :inline="true" size="mini" class="filter-row">
-          <el-form-item style="width: 100%; margin-right: 0">
+        <el-form size="mini" class="filter-row dept-filter">
+          <el-form-item>
             <el-input
               v-model="deptFilters.SearchName"
               placeholder="二级科室"
@@ -32,7 +32,7 @@
           </template>
         </ele-pro-table>
       </el-col>
-      <el-col :span="21">
+      <el-col :span="20">
         <div class="section-title">选配退货品种</div>
         <el-form :inline="true" size="mini" class="filter-row" @submit.native.prevent>
           <el-form-item>
@@ -338,11 +338,11 @@ export default {
         { prop: 'MONTHLY_TIME', label: '结算月份', width: 120, align: 'center' },
         { columnKey: 'storageId', label: '院房库区', width: 100, slot: 'storageId' },
         { prop: 'Varietie_Code_New', label: '品种(材料)编码', width: 180, sortable: true },
-        { prop: 'varietie_name', label: '品种全称', minWidth: 120 },
+        { prop: 'varietie_name', label: '品种全称', minWidth: 192, showOverflowTooltip: true },
         { prop: 'specification_or_type', label: '型号/规格', minWidth: 120 },
         { prop: 'unit', label: '单位', width: 60, align: 'center' },
         { prop: 'manufacturing_ent_name', label: '生产企业名称', minWidth: 160 },
-        { prop: 'supplier_name', label: '供应商名称', minWidth: 140, sortable: true },
+        { prop: 'supplier_name', label: '供应商名称', minWidth: 208, showOverflowTooltip: true, sortable: true },
         { prop: 'Batch', label: '生产批号', width: 120, sortable: true },
         { columnKey: 'prodDate', label: '生产日期', width: 100, slot: 'prodDate' },
         { columnKey: 'validDate', label: '有效到期', width: 100, slot: 'validDate' },
@@ -372,11 +372,11 @@ export default {
         { type: 'selection', width: 45, align: 'center' },
         { columnKey: 'storageId', label: '库区院房', width: 100, slot: 'storageId' },
         { prop: 'Varietie_Code_New', label: '品种(材料)编码', width: 160, sortable: true },
-        { prop: 'varietie_name', label: '品种全称', minWidth: 100 },
+        { prop: 'varietie_name', label: '品种全称', minWidth: 192, showOverflowTooltip: true },
         { prop: 'specification_or_type', label: '型号/规格', minWidth: 110 },
         { prop: 'unit', label: '单位', width: 60, align: 'center' },
         { prop: 'manufacturing_ent_name', label: '生产企业名称', minWidth: 140 },
-        { prop: 'supplier_name', label: '供应商名称', minWidth: 150, sortable: true },
+        { prop: 'supplier_name', label: '供应商名称', minWidth: 208, showOverflowTooltip: true, sortable: true },
         { prop: 'Batch', label: '生产批号', width: 120, sortable: true },
         { columnKey: 'prodDate', label: '生产日期', width: 100, slot: 'prodDate' },
         { columnKey: 'validDate', label: '有效到期', width: 100, slot: 'validDate' },
@@ -752,6 +752,19 @@ export default {
   align-items: center;
   margin-bottom: 8px;
   gap: 4px;
+}
+.dept-filter {
+  :deep(.el-form-item) {
+    margin-right: 0;
+    margin-bottom: 6px;
+  }
+  :deep(.el-form-item:first-child) {
+    width: 100%;
+  }
+  :deep(.el-form-item__content),
+  :deep(.el-input) {
+    width: 100%;
+  }
 }
 .local-toolbar {
   margin-bottom: 8px;

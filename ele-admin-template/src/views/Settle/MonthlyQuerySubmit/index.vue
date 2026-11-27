@@ -252,30 +252,30 @@
           @sort-change="onSortChange"
         >
           <el-table-column type="selection" width="45" fixed="left" />
-          <el-table-column type="index" label="序号" width="60" :index="indexMethod" />
+          <el-table-column type="index" label="序号" width="60" :index="indexMethod" align="center" />
           <el-table-column prop="ID" label="唯一ID" width="90" sortable="custom" show-overflow-tooltip />
-          <el-table-column prop="MONTHLY_TIME" label="结算月份" width="110" sortable="custom" show-overflow-tooltip>
+          <el-table-column prop="MONTHLY_TIME" label="结算月份" width="110" sortable="custom" show-overflow-tooltip align="center">
             <template slot-scope="{ row }">{{ formatMonth(row.MONTHLY_TIME) }}</template>
           </el-table-column>
           <el-table-column prop="JSDH" label="结算单号" width="100" sortable="custom" show-overflow-tooltip />
-          <el-table-column prop="QSSTATE" label="发票签收状态" width="110" sortable="custom">
+          <el-table-column prop="QSSTATE" label="发票签收状态" width="110" sortable="custom" align="center">
             <template slot-scope="{ row }">{{ formatQsState(row.QSSTATE) }}</template>
           </el-table-column>
           <el-table-column prop="MONTHBILLNUM" label="发票号" width="150" sortable="custom" show-overflow-tooltip />
-          <el-table-column prop="SUPPLIER_NAME" label="供应商名称" min-width="180" sortable="custom" show-overflow-tooltip />
-          <el-table-column prop="CONSUMPTION_TYPE" label="消耗类型" width="90" sortable="custom">
+          <el-table-column prop="SUPPLIER_NAME" label="供应商名称" min-width="208" sortable="custom" show-overflow-tooltip />
+          <el-table-column prop="CONSUMPTION_TYPE" label="消耗类型" width="90" sortable="custom" align="center">
             <template slot-scope="{ row }">{{ formatConsumptionType(row.CONSUMPTION_TYPE) }}</template>
           </el-table-column>
-          <el-table-column prop="IS_GT" label="是否跟台" width="90" sortable="custom">
+          <el-table-column prop="IS_GT" label="是否跟台" width="90" sortable="custom" align="center">
             <template slot-scope="{ row }">{{ formatIsGt(row.IS_GT) }}</template>
           </el-table-column>
-          <el-table-column prop="ORDER_JS_TYPE" label="入库类型" width="180" sortable="custom" show-overflow-tooltip>
+          <el-table-column prop="ORDER_JS_TYPE" label="入库类型" width="180" sortable="custom" show-overflow-tooltip align="center">
             <template slot-scope="{ row }">{{ formatOrderJsType(row.ORDER_JS_TYPE) }}</template>
           </el-table-column>
-          <el-table-column prop="TYPE" label="类型" width="80" sortable="custom">
+          <el-table-column prop="TYPE" label="类型" width="76" sortable="custom" show-overflow-tooltip align="center">
             <template slot-scope="{ row }">{{ formatType(row.TYPE) }}</template>
           </el-table-column>
-          <el-table-column prop="ORDER_TYPE" label="订单类型" width="130" sortable="custom">
+          <el-table-column prop="ORDER_TYPE" label="订单类型" width="130" sortable="custom" align="center">
             <template slot-scope="{ row }">{{ formatOrderType(row.ORDER_TYPE) }}</template>
           </el-table-column>
           <el-table-column prop="OPERATE_MAIN_NUMBER" label="申领单号" width="130" sortable="custom" show-overflow-tooltip />
@@ -287,40 +287,40 @@
           <el-table-column prop="HIGH_OR_LOW_CLASS" label="高低值" width="90" sortable="custom">
             <template slot-scope="{ row }">{{ formatHighOrLowClass(row.HIGH_OR_LOW_CLASS) }}</template>
           </el-table-column>
-          <el-table-column prop="IS_EMBEDDED" label="是否植入" width="90" sortable="custom">
+          <el-table-column prop="IS_EMBEDDED" label="是否植入" width="90" sortable="custom" align="center">
             <template slot-scope="{ row }">{{ formatYesNo(row.IS_EMBEDDED) }}</template>
           </el-table-column>
           <el-table-column prop="CHARGING_DEPT" label="执行科室编码" width="120" sortable="custom" show-overflow-tooltip />
           <el-table-column prop="DEPT_NAME" label="执行科室名称" width="140" sortable="custom" show-overflow-tooltip />
           <el-table-column prop="VARIETIE_CODE_NEW" label="品种编码" width="120" sortable="custom" show-overflow-tooltip />
-          <el-table-column prop="VARIETIE_NAME" label="品种名称" min-width="160" sortable="custom" show-overflow-tooltip />
-          <el-table-column prop="SPECIFICATION_OR_TYPE" label="规格型号" width="150" sortable="custom" show-overflow-tooltip />
+          <el-table-column prop="VARIETIE_NAME" label="品种名称" min-width="192" sortable="custom" show-overflow-tooltip />
+          <el-table-column prop="SPECIFICATION_OR_TYPE" label="规格型号" min-width="160" sortable="custom" show-overflow-tooltip />
           <el-table-column prop="BATCH" label="批号" width="100" sortable="custom" show-overflow-tooltip />
-          <el-table-column prop="UNIT" label="单位" width="70" sortable="custom" />
+          <el-table-column prop="UNIT" label="单位" width="70" sortable="custom" align="center" />
           <el-table-column prop="CLASS_ONE" label="一级目录" min-width="150" sortable="custom" show-overflow-tooltip />
           <el-table-column prop="CLASS_TWO" label="二级目录" min-width="150" sortable="custom" show-overflow-tooltip />
           <el-table-column prop="CLASS_THREE" label="三级目录" min-width="150" sortable="custom" show-overflow-tooltip />
           <el-table-column prop="SUPPLY_PRICE" label="价格" width="90" align="right" sortable="custom">
             <template slot-scope="{ row }">{{ formatDecimal(row.SUPPLY_PRICE) }}</template>
           </el-table-column>
-          <el-table-column prop="GOODS_QTY" label="数量" width="90" align="right" sortable="custom">
+          <el-table-column prop="GOODS_QTY" label="数量" width="88" align="right" sortable="custom" show-overflow-tooltip>
             <template slot-scope="{ row }">{{ formatDecimal(row.GOODS_QTY) }}</template>
           </el-table-column>
-          <el-table-column prop="JE" label="金额" width="90" align="right" sortable="custom">
+          <el-table-column prop="JE" label="金额" width="88" align="right" sortable="custom" show-overflow-tooltip>
             <template slot-scope="{ row }">{{ formatDecimal(row.JE) }}</template>
           </el-table-column>
-          <el-table-column prop="IS_JC" label="是否集采" width="90" sortable="custom">
+          <el-table-column prop="IS_JC" label="是否集采" width="90" sortable="custom" align="center">
             <template slot-scope="{ row }">{{ formatJc(row.IS_JC) }}</template>
           </el-table-column>
           <el-table-column prop="IS_YG" label="线上/线下" width="90" sortable="custom">
             <template slot-scope="{ row }">{{ formatYg(row.IS_YG) }}</template>
           </el-table-column>
-          <el-table-column prop="IS_LC" label="是否临采" width="90" sortable="custom">
+          <el-table-column prop="IS_LC" label="是否临采" width="90" sortable="custom" align="center">
             <template slot-scope="{ row }">{{ formatLc(row.IS_LC) }}</template>
           </el-table-column>
           <el-table-column prop="DELIVERY_NOTE_NUMBER" label="入库单号" width="130" sortable="custom" show-overflow-tooltip />
-          <el-table-column prop="CREATE_TIME" label="数据创建时间" width="170" sortable="custom" show-overflow-tooltip />
-          <el-table-column prop="OPEARTION_CHARGING_TIME" label="消耗时间" width="170" sortable="custom" show-overflow-tooltip />
+          <el-table-column prop="CREATE_TIME" label="数据创建时间" width="170" sortable="custom" show-overflow-tooltip align="center" />
+          <el-table-column prop="OPEARTION_CHARGING_TIME" label="消耗时间" width="170" sortable="custom" show-overflow-tooltip align="center" />
           <el-table-column prop="SZSE_FJ_PATH" label="附件" width="120">
             <template slot-scope="{ row }">
               <a
@@ -333,16 +333,16 @@
             </template>
           </el-table-column>
           <el-table-column prop="SZSE_FJ_MARK" label="附件备注" min-width="160" show-overflow-tooltip />
-          <el-table-column prop="USE_APP_STATE" label="日清确认状态" width="110" sortable="custom">
+          <el-table-column prop="USE_APP_STATE" label="日清确认状态" width="110" sortable="custom" align="center">
             <template slot-scope="{ row }">{{ formatUseAppState(row.USE_APP_STATE) }}</template>
           </el-table-column>
-          <el-table-column prop="USE_APP_MAN" label="日清确认人" width="110" sortable="custom" show-overflow-tooltip />
-          <el-table-column prop="USE_APP_TIME" label="日清确认时间" width="150" sortable="custom" show-overflow-tooltip />
-          <el-table-column prop="SURE_MONTH_STATE" label="月结提交状态" width="110" sortable="custom">
+          <el-table-column prop="USE_APP_MAN" label="日清确认人" width="110" sortable="custom" show-overflow-tooltip align="center" />
+          <el-table-column prop="USE_APP_TIME" label="日清确认时间" width="150" sortable="custom" show-overflow-tooltip align="center" />
+          <el-table-column prop="SURE_MONTH_STATE" label="月结提交状态" width="110" sortable="custom" align="center">
             <template slot-scope="{ row }">{{ formatSureMonthState(row.SURE_MONTH_STATE) }}</template>
           </el-table-column>
-          <el-table-column prop="SURE_MONTH_MAN" label="月结提交人" width="110" sortable="custom" show-overflow-tooltip />
-          <el-table-column prop="SURE_MONTH_TIME" label="月结提交时间" width="150" sortable="custom" show-overflow-tooltip />
+          <el-table-column prop="SURE_MONTH_MAN" label="月结提交人" width="110" sortable="custom" show-overflow-tooltip align="center" />
+          <el-table-column prop="SURE_MONTH_TIME" label="月结提交时间" width="150" sortable="custom" show-overflow-tooltip align="center" />
         </el-table>
         <el-pagination
           class="pager"

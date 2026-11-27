@@ -356,16 +356,16 @@
             width="120"
             show-overflow-tooltip
           />
-          <el-table-column prop="Varietie_Name" label="品种名称" min-width="160" show-overflow-tooltip />
+          <el-table-column prop="Varietie_Name" label="品种名称" min-width="192" show-overflow-tooltip />
           <el-table-column prop="Specification_Or_Type" label="型号/规格" min-width="160" show-overflow-tooltip />
           <el-table-column prop="Unit" label="单位" width="60" align="center" />
           <el-table-column prop="Manufacturing_Ent_Name" label="生产企业名称" min-width="150" show-overflow-tooltip />
           <el-table-column prop="Purchase_Price" label="供货价" width="90" align="right" />
           <el-table-column prop="Approval_Number" label="批准文号" min-width="130" show-overflow-tooltip />
-          <el-table-column prop="Registration_Issuing_Date" label="发证日期" width="100">
+          <el-table-column prop="Registration_Issuing_Date" label="发证日期" width="100" align="center">
             <template v-slot="{ row }">{{ formatDate(row.Registration_Issuing_Date) }}</template>
           </el-table-column>
-          <el-table-column prop="Registration_Valid_Date" label="有效到期" width="100">
+          <el-table-column prop="Registration_Valid_Date" label="有效到期" width="100" align="center">
             <template v-slot="{ row }">{{ formatDate(row.Registration_Valid_Date) }}</template>
           </el-table-column>
           <el-table-column prop="Enable" label="启用状态" width="80" align="center">

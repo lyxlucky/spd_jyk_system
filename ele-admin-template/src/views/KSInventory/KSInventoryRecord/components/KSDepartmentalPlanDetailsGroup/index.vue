@@ -125,7 +125,7 @@
           label: '科室名称',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 110
+          minWidth: 192
         },
         {
           prop: 'VARIETIE_CODE_NEW',
@@ -139,21 +139,21 @@
           label: '品种名称',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 250
+          minWidth: 192
         },
         {
           prop: 'SPECIFICATION_OR_TYPE',
           label: '规格型号',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 180
+          minWidth: 160
         },
         {
           prop: 'MANUFACTURING_ENT_NAME',
           label: '生产企业',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 180
+          minWidth: 208
         },{
           prop: 'COUNT',
           label: '数量',
@@ -166,7 +166,7 @@
           label: '单位',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 80
+          width: 76
         },
         {
           prop: 'PRICE',

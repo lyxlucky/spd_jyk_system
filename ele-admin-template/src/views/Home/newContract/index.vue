@@ -25,7 +25,7 @@
                                 @current-change="onSupplierCurrentChange" style="width: 100%">
                                 <el-table-column prop="Supplier_Name" label="供应商名称">
                                 </el-table-column>
-                                <el-table-column width="100" label="启用状态">
+                                <el-table-column width="100" label="启用状态" align="center">
                                     <template slot-scope="scope">
                                         <p>{{ scope.row.Enable == 1 ? '启用' : '停用' }}</p>
                                     </template>
@@ -53,7 +53,7 @@
                                 style="width: 100%" @current-change="onContractCurrentChange">
                                 <el-table-column prop="Contract_Name" label="合同名称">
                                 </el-table-column>
-                                <el-table-column label="合同类型">
+                                <el-table-column label="合同类型" align="center">
                                     <template slot-scope="scope">
                                         <span>{{ scope.row.contract_Type == 1 ? '中标合同' : '临采合同' }}</span>
                                     </template>
@@ -232,7 +232,7 @@ export default {
                 {
                     prop: 'varietie_name',
                     label: '品种全称',
-                    minWidth: 300,
+                    minWidth: 192,
                     sortable: 'custom',
                     align: 'center',
                     showOverflowTooltip: true

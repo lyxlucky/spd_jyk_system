@@ -102,7 +102,7 @@
             align: 'center',
             showOverflowTooltip: true,
             sortable: 'custom',
-            minWidth: 150
+            minWidth: 208
           },
           {
             prop: 'RECEIVING_TIME',
@@ -134,7 +134,7 @@
             align: 'center',
             showOverflowTooltip: true,
             sortable: 'custom',
-            minWidth: 200
+            minWidth: 192
           },
           {
             prop: 'SPECIFICATION_OR_TYPE',
@@ -150,7 +150,7 @@
             align: 'center',
             showOverflowTooltip: true,
             sortable: 'custom',
-            minWidth: 90
+            width: 76
           },
           {
             prop: 'MANUFACTURING_ENT_NAME',

@@ -77,6 +77,11 @@
           <el-button @click="closeImageDialog">关 闭</el-button>
         </span>
       </el-dialog>
+
+      <KeeptListErrorDialog
+        :visible.sync="errorDialogVisible"
+        :message="errorDialogMessage"
+      />
     </div>
   </ele-modal>
 </template>
@@ -92,6 +97,7 @@
     SerachPlanList,
     KeeptListDeta
   } from '@/api/KSInventory/IntroduceUserDefinedTemp';
+  import KeeptListErrorDialog from '../KSDepartmentalPlan/components/KeeptListErrorDialog.vue';
   export default {
     name: 'IntroduceUserDefinedTemp',
     props: {
@@ -104,7 +110,8 @@
     components: {
       UserSearch,
       UserEdit,
-      ImageViewComponent
+      ImageViewComponent,
+      KeeptListErrorDialog
       // UserImport
     },
     data() {
@@ -214,7 +221,7 @@
             sortable: 'custom',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 330
+            minWidth: 192
           },
           {
             prop: 'USED_NAME',
@@ -237,7 +244,7 @@
             align: 'center',
             sortable: 'custom',
             showOverflowTooltip: true,
-            minWidth: 80
+            width: 76
           },
           {
             prop: 'BIG_BOX_COUNT',
@@ -380,7 +387,9 @@
         autoSelectAfterSearch: false,
         accumulatedSelection: {},
         selectedCodeMap: {},
-        tableReloading: false
+        tableReloading: false,
+        errorDialogVisible: false,
+        errorDialogMessage: ''
         // datasource: [],
       };
     },
@@ -529,7 +538,10 @@
             this.$message.success(res.msg);
           })
           .catch((err) => {
-            this.$message.error(err);
+            this.errorDialogMessage =
+              (err && typeof err === 'object' ? err.message : err) ||
+              '添加失败，请重试';
+            this.errorDialogVisible = true;
           })
           .finally(() => {
             loading.close();

@@ -166,7 +166,7 @@
             sortable: 'custom',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 150
+            width: 132
           },
           {
             prop: 'CHARGING_CODE',
@@ -191,7 +191,7 @@
             sortable: 'custom',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 250
+            minWidth: 192
           },
           {
             prop: 'COMMON_NAME',
@@ -272,7 +272,7 @@
             align: 'center',
             sortable: 'custom',
             showOverflowTooltip: true,
-            minWidth: 80
+            width: 76
           },
           {
             prop: 'Price',

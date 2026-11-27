@@ -13,7 +13,7 @@
         <div class="section-title">已选品种（单击行可移除）</div>
         <el-table :data="selectedRows" size="mini" stripe max-height="160" @row-click="onSelectedRowClick">
           <el-table-column prop="varietie_code_new" label="品种编码" width="120" show-overflow-tooltip />
-          <el-table-column prop="varietie_name" label="品种全称" min-width="160" show-overflow-tooltip />
+          <el-table-column prop="varietie_name" label="品种全称" min-width="192" show-overflow-tooltip />
           <el-table-column prop="approval_number" label="批准文号" width="140" show-overflow-tooltip />
         </el-table>
       </div>
@@ -44,11 +44,11 @@
           >
             <el-table-column type="selection" width="42" :selectable="leftSelectable" />
             <el-table-column prop="varietie_code_new" label="品种编码" width="110" show-overflow-tooltip />
-            <el-table-column prop="varietie_name" label="品种全称" min-width="130" show-overflow-tooltip />
-            <el-table-column prop="specification_or_type" label="规格" width="90" show-overflow-tooltip />
-            <el-table-column prop="unit" label="单位" width="50" />
-            <el-table-column prop="price" label="中标价" width="70" />
-            <el-table-column prop="manufacturing_ent_name" label="生产企业" min-width="100" show-overflow-tooltip />
+            <el-table-column prop="varietie_name" label="品种全称" min-width="192" show-overflow-tooltip />
+            <el-table-column prop="specification_or_type" label="规格" min-width="160" show-overflow-tooltip />
+            <el-table-column prop="unit" label="单位" width="50" align="center" />
+            <el-table-column prop="price" label="中标价" width="70" align="right" />
+            <el-table-column prop="manufacturing_ent_name" label="生产企业" min-width="208" show-overflow-tooltip />
           </el-table>
         </el-col>
         <el-col :span="2" class="arrow-col">
@@ -67,24 +67,24 @@
           >
             <el-table-column type="selection" width="42" />
             <el-table-column prop="varietie_code_new" label="品种编码" width="100" show-overflow-tooltip />
-            <el-table-column prop="varietie_name" label="品种全称" min-width="110" show-overflow-tooltip />
-            <el-table-column label="采购价" width="90">
+            <el-table-column prop="varietie_name" label="品种全称" min-width="192" show-overflow-tooltip />
+            <el-table-column label="采购价" width="90" align="right">
               <template slot-scope="{ row }">
                 <el-input v-model="row.purchase_price" size="mini" />
               </template>
             </el-table-column>
-            <el-table-column prop="price" label="中标价" width="70" />
-            <el-table-column label="结算价" width="90">
+            <el-table-column prop="price" label="中标价" width="70" align="right" />
+            <el-table-column label="结算价" width="90" align="right">
               <template slot-scope="{ row }">
                 <el-input v-model="row.supply_price" size="mini" />
               </template>
             </el-table-column>
-            <el-table-column label="授权到期" width="120">
+            <el-table-column label="授权到期" width="120" align="center">
               <template slot-scope="{ row }">
                 <el-input v-model="row.Auth_Valid" size="mini" placeholder="yyyy-MM-dd" @input="onAuthDateInput(row)" />
               </template>
             </el-table-column>
-            <el-table-column label="临采数量" width="80">
+            <el-table-column label="临采数量" width="80" align="right">
               <template slot-scope="{ row }">
                 <el-input v-model="row.LC_NUM" size="mini" />
               </template>
@@ -94,12 +94,12 @@
                 <el-input v-model="row.DET_CONTRACT_CODE" size="mini" />
               </template>
             </el-table-column>
-            <el-table-column label="明细起始" width="110">
+            <el-table-column label="明细起始" width="110" align="center">
               <template slot-scope="{ row }">
                 <el-input v-model="row.contractStartTime" size="mini" placeholder="yyyy-MM-dd" />
               </template>
             </el-table-column>
-            <el-table-column label="明细结束" width="110">
+            <el-table-column label="明细结束" width="110" align="center">
               <template slot-scope="{ row }">
                 <el-input v-model="row.contractEndTime" size="mini" placeholder="yyyy-MM-dd" />
               </template>

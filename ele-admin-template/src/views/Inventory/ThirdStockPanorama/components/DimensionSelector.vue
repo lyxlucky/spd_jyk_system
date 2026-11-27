@@ -18,8 +18,8 @@
         @row-click="$emit('select', $event)"
       >
         <el-table-column prop="NAME" :label="nameLabel" min-width="130" align="left" show-overflow-tooltip />
-        <el-table-column v-if="mode === 'department'" prop="CODE" label="科室编码" width="104" align="center" show-overflow-tooltip />
-        <el-table-column v-else prop="VARIETIE_CODE_NEW" label="品种编码" width="104" align="center" show-overflow-tooltip />
+        <el-table-column v-if="mode === 'department'" prop="CODE" label="科室编码" width="104" align="left" show-overflow-tooltip />
+        <el-table-column v-else prop="VARIETIE_CODE_NEW" label="品种编码" width="104" align="left" show-overflow-tooltip />
         <el-table-column label="关联数" width="70" align="right">
           <template slot-scope="{ row }">{{ row.RELATION_COUNT || 0 }}</template>
         </el-table-column>

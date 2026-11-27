@@ -337,9 +337,9 @@
             border
             :span-method="mergeScoreDetailRows"
           >
-            <el-table-column prop="CATEGORY_NAME" label="评审内容" min-width="100" align="center" />
+            <el-table-column prop="CATEGORY_NAME" label="评审内容" min-width="100" align="left" />
             <el-table-column prop="ITEM_NAME" label="评分项" min-width="260" />
-            <el-table-column prop="SCORE" label="评分" min-width="200" align="center" >
+            <el-table-column prop="SCORE" label="评分" min-width="200" align="right" >
               <template v-slot="{ row }">
                 <span v-if="row.ITEM_TYPE === '评分'">{{ row.SCORE }}</span>
                 <span v-else-if="row.ITEM_TYPE === '选择'">{{ row.SCORE === 1 ? '是' : '否' }}</span>
@@ -399,7 +399,7 @@
           </el-descriptions>
 
           <el-table :data="groupedScoreRules" border height="500px">
-            <el-table-column prop="CATEGORY_NAME" label="评审内容" min-width="120" align="center" />
+            <el-table-column prop="CATEGORY_NAME" label="评审内容" min-width="120" align="left" />
             <el-table-column label="评分项" min-width="580">
               <template v-slot="{ row }">
                 <div v-for="(item, index) in row.items" :key="index" class="score-item">
@@ -760,7 +760,7 @@
           { prop: 'EVAL_YEAR', label: '评分年份', minWidth: 120, align: 'center' },
           { prop: 'EVAL_TIME', label: '评分时间', minWidth: 160, align: 'center', formatter: (row) => this.formatDateTime(row.EVAL_TIME) },
           { prop: 'TOTAL_SCORE', label: '得分', minWidth: 100, align: 'center', formatter: (row) => this.calculateTotalScore(row) },
-          { prop: 'REMARK', label: '备注', minWidth: 200, align: 'center', showOverflowTooltip: true },
+          { prop: 'REMARK', label: '备注', minWidth: 110, align: 'center', showOverflowTooltip: true },
           {
             columnKey: 'action',
             label: '操作',

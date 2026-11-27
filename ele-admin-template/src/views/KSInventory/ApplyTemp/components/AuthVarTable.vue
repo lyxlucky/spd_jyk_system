@@ -225,7 +225,7 @@
             // sortable: 'custom',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 110
+            minWidth: 192
           },
           {
             prop: 'USED_NAME',
@@ -249,7 +249,7 @@
             // sortable: 'custom',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 110
+            width: 76
           },
           {
             prop: 'Price',
@@ -273,7 +273,7 @@
             // sortable: 'custom',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 150
+            minWidth: 208
           },
           {
             prop: 'StockQty',

@@ -75,7 +75,7 @@ import { SearchDeptPlanMsg } from '@/api/Task/NewDeptPlannedDelivery';
             label: '备注',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 100,
+            minWidth: 110,
             formatter: (_row, _column, cellValue) => {
               let bz = '';
               if (_row.SQREMARK != null) {
@@ -184,21 +184,21 @@ import { SearchDeptPlanMsg } from '@/api/Task/NewDeptPlannedDelivery';
             label: '品种名称',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 120
+            minWidth: 192
           },
           {
             prop: 'Specification_Or_Type',
             label: '规格型号',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 120
+            minWidth: 160
           },
           {
             prop: 'Unit',
             label: '单位',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 80
+            width: 76
           },
           {
             prop: 'Price',
@@ -212,7 +212,7 @@ import { SearchDeptPlanMsg } from '@/api/Task/NewDeptPlannedDelivery';
             label: '供应商',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 120
+            minWidth: 208
           },
           {
             prop: 'CONTRACT_TYPE',
@@ -239,7 +239,7 @@ import { SearchDeptPlanMsg } from '@/api/Task/NewDeptPlannedDelivery';
             label: '申请数量',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 120
+            width: 88
           },
           {
             prop: 'Left_Apply_Qty',

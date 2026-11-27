@@ -446,7 +446,7 @@
           {
             prop: 'Varietie_Name',
             label: '品种全称',
-            minWidth: 120,
+            minWidth: 192,
             align: 'center',
             showOverflowTooltip: true
           },
@@ -481,7 +481,7 @@
           {
             prop: 'Unit',
             label: '单位',
-            minWidth: 100,
+            width: 76,
             align: 'center',
             showOverflowTooltip: true
           },

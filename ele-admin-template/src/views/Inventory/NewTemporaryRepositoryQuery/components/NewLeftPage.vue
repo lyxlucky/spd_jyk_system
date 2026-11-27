@@ -44,7 +44,7 @@ export default {
           label: '科室名称',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 120,
+          minWidth: 192,
           sortable: 'custom'
         },
         {
@@ -67,7 +67,7 @@ export default {
           label: '品种全称',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 200
+          minWidth: 192
         },
         {
           prop: 'Specification_Or_Type',

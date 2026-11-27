@@ -162,14 +162,14 @@ export default {
         {
           label: '备注',
           prop: 'REMARKS',
-          width: 100,
+          minWidth: 110, showOverflowTooltip: true,
           align: 'center',
           formatter: (row) =>
             row.REMARKS == null || row.REMARKS === 'null' ? '' : row.REMARKS
         },
         { label: '备货计划单号', prop: 'Stock_Up_Plan_No', width: 110, align: 'center' },
         { label: '品种编码', prop: 'Varietie_Code_New', width: 100, align: 'center' },
-        { label: '品种名称', prop: 'Varietie_Name', minWidth: 140 },
+        { label: '品种名称', prop: 'Varietie_Name', minWidth: 192, showOverflowTooltip: true },
         { label: '型号/规格', prop: 'Specification_Or_Type', width: 140 },
         { label: '单位', prop: 'Unit', width: 50, align: 'center' },
         { label: '注册证号', prop: 'Approval_Number', width: 90, align: 'center' },
@@ -179,7 +179,7 @@ export default {
           align: 'center',
           formatter: (row) => row.supply_price?.toFixed(row.price_bl)
         },
-        { label: '供应商名称', prop: 'supplier_name', minWidth: 120 },
+        { label: '供应商名称', prop: 'supplier_name', minWidth: 208, showOverflowTooltip: true },
         { label: '生产企业名称', prop: 'Manufacturing_Ent_Name', minWidth: 120 },
         { label: '系数', prop: 'Coefficient', width: 50, align: 'center' },
         { label: '备货计划(包)', prop: 'Stock_Up_Plan_Def_Quantity', width: 90, align: 'center' },

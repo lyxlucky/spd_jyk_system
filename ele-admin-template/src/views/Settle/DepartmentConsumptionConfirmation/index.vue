@@ -246,51 +246,51 @@
           <vxe-column
             field="VARIETIE_NAME"
             title="品种名称"
-            min-width="150"
+            min-width="192"
             show-overflow
             sortable
           />
           <vxe-column
             field="SPECIFICATION_OR_TYPE"
             title="规格型号"
-            min-width="120"
+            min-width="160"
             show-overflow
             sortable
           />
-          <vxe-column field="UNIT" title="单位" width="80" align="center" />
+          <vxe-column field="UNIT" title="单位" width="76" align="center" show-overflow="tooltip" />
           <vxe-column
             field="GOODS_QTY"
             title="数量"
-            width="100"
+            width="88"
             align="right"
-            sortable
+            sortable show-overflow="tooltip"
           />
           <vxe-column
             field="SUPPLY_PRICE"
             title="单价"
-            width="100"
+            width="88"
             align="right"
             :formatter="formatPrice"
-            sortable
+            sortable show-overflow="tooltip"
           />
           <vxe-column
             field="SUM_PRICE"
             title="金额"
-            width="120"
+            width="88"
             align="right"
             :formatter="formatPrice"
-            sortable
+            sortable show-overflow="tooltip"
           />
           <vxe-column
             field="SUPPLIER_NAME"
             title="供应商"
-            min-width="150"
+            min-width="208"
             show-overflow
           />
           <vxe-column
             field="MANUFACTURING_ENT_NAME"
             title="生产企业"
-            min-width="150"
+            min-width="208"
             show-overflow
           />
           <vxe-column
@@ -389,25 +389,25 @@
           <vxe-column
             field="GOODS_QTY"
             title="数量"
-            width="100"
+            width="88"
             align="right"
-            sortable
+            sortable show-overflow="tooltip"
           />
           <vxe-column
             field="SUPPLY_PRICE"
             title="单价"
-            width="100"
+            width="88"
             align="right"
             :formatter="formatPrice"
-            sortable
+            sortable show-overflow="tooltip"
           />
           <vxe-column
             field="SUM_PRICE"
             title="金额"
-            width="120"
+            width="88"
             align="right"
             :formatter="formatDetailAmount"
-            sortable
+            sortable show-overflow="tooltip"
           />
           <vxe-column
             field="OPEARTION_CHARGING_TIME"
@@ -472,12 +472,12 @@
             show-overflow
             sortable
           />
-          <vxe-column field="SSBH" title="手术编号" width="150" align="center" />
+          <vxe-column field="SSBH" title="手术编号" width="150" align="left" />
           <vxe-column
             field="ZDMC"
             title="主刀名称"
             width="100"
-            align="center"
+            align="left"
           />
           <vxe-column
             field="IS_GT"
@@ -531,6 +531,7 @@
             title="还柜提醒"
             width="160"
             show-overflow
+            align="center"
           >
             <template #default="{ row }">
               <span
@@ -595,6 +596,7 @@
           title="提醒类型"
           width="160"
           show-overflow
+          align="center"
         />
         <vxe-column
           field="DEF_NO_PKG_CODE"
@@ -605,7 +607,7 @@
         <vxe-column
           field="VARIETIE_NAME"
           title="品种名称"
-          min-width="140"
+          min-width="192"
           show-overflow
         />
         <vxe-column
@@ -650,9 +652,9 @@
         <vxe-column
           field="SUPPLY_PRICE"
           title="单价"
-          width="90"
+          width="88"
           align="right"
-          :formatter="formatPrice"
+          :formatter="formatPrice" show-overflow="tooltip"
         />
         <vxe-column
           field="USE_APP_STATE"

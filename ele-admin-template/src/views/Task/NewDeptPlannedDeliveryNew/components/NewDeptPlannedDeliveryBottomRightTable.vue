@@ -61,7 +61,7 @@
             label: '备注',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 90
+            minWidth: 110
           },
           {
             prop: 'Varietie_Code_New',
@@ -75,7 +75,7 @@
             label: '品种全称',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 120
+            minWidth: 192
           },
           {
             prop: 'Specification_Or_Type',
@@ -89,7 +89,7 @@
             label: '单位',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 90
+            width: 76
           },
           {
             prop: 'Manufacturing_Ent_Name',

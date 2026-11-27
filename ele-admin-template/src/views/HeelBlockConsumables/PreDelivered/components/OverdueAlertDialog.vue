@@ -57,16 +57,16 @@
           </el-link>
         </template>
       </el-table-column>
-      <el-table-column prop="Supplier_Name" label="供应商" min-width="120" show-overflow-tooltip />
+      <el-table-column prop="Supplier_Name" label="供应商" min-width="208" show-overflow-tooltip />
       <el-table-column prop="Hospitalization_Number" label="住院号" width="110" show-overflow-tooltip />
       <el-table-column prop="Patient" label="病患" width="90" show-overflow-tooltip />
       <el-table-column prop="Dept_Two_Name" label="使用科室" min-width="110" show-overflow-tooltip />
-      <el-table-column label="收货时间" width="160" align="center">
+      <el-table-column label="收货时间" width="160" align="center" show-overflow-tooltip>
         <template v-slot="{ row }">{{ fmtDateTime(row.Delivery_Time) }}</template>
       </el-table-column>
       <el-table-column prop="OverdueDays" label="超期天数" width="90" align="center" />
-      <el-table-column prop="UnusedQty" label="未消耗数" width="90" align="center" />
-      <el-table-column label="审批时间" width="160" align="center">
+      <el-table-column prop="UnusedQty" label="未消耗数" width="90" align="right" />
+      <el-table-column label="审批时间" width="160" align="center" show-overflow-tooltip>
         <template v-slot="{ row }">{{ fmtDateTime(row.SBK_APPROVE_TIME) }}</template>
       </el-table-column>
     </el-table>

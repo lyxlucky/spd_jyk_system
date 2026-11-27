@@ -212,7 +212,7 @@ export default {
         }
       ],
       monthColumns: [
-        { prop: 'DEPT_TWO_NAME', label: '科室名称', minWidth: 100, showOverflowTooltip: true },
+        { prop: 'DEPT_TWO_NAME', label: '科室名称', minWidth: 192, showOverflowTooltip: true },
         {
           prop: 'USE_PRICE',
           label: '金额/万',
@@ -223,7 +223,7 @@ export default {
         { prop: 'MONTH_NUM', label: '月份', width: 90, align: 'right' }
       ],
       varietyColumns: [
-        { prop: 'VARIETIE_NAME', label: '品种名称', minWidth: 120, showOverflowTooltip: true },
+        { prop: 'VARIETIE_NAME', label: '品种名称', minWidth: 192, showOverflowTooltip: true },
         { prop: 'USE_COUNT', label: '数量', width: 70, align: 'right' },
         {
           prop: 'USE_PRICE',
@@ -234,7 +234,7 @@ export default {
         }
       ],
       varietyMonthColumns: [
-        { prop: 'VARIETIE_NAME', label: '品种名称', minWidth: 110, showOverflowTooltip: true },
+        { prop: 'VARIETIE_NAME', label: '品种名称', minWidth: 192, showOverflowTooltip: true },
         { prop: 'USE_COUNT', label: '数量', width: 70, align: 'right' },
         {
           prop: 'USE_PRICE',

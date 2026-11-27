@@ -155,7 +155,7 @@ export default {
                 {
                     prop: 'Supplier_Name',
                     label: '供应商名称',
-                    minWidth: 320,
+                    minWidth: 208,
                     sortable: 'custom',
                     align: 'center',
                     showOverflowTooltip: true

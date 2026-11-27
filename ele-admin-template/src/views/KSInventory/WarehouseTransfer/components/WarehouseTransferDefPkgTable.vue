@@ -109,28 +109,28 @@
           {
             prop: 'VARIETIE_NAME',
             label: '品种名称',
-            minWidth: 100,
+            minWidth: 192,
             align: 'center',
             showOverflowTooltip: true
           },
           {
             prop: 'SPECIFICATION_OR_TYPE',
             label: '规格',
-            minWidth: 100,
+            minWidth: 160,
             align: 'center',
             showOverflowTooltip: true
           },
           {
             prop: 'UNIT',
             label: '单位',
-            minWidth: 100,
+            width: 76,
             align: 'center',
             showOverflowTooltip: true
           },
           {
             prop: 'MANUFACTURING_ENT_NAME',
             label: '生产企业',
-            minWidth: 100,
+            minWidth: 208,
             align: 'center',
             showOverflowTooltip: true
           },

@@ -117,7 +117,7 @@
             label: '科室名称',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 120
+            minWidth: 192
           },
           {
             prop: 'HERP_ID',

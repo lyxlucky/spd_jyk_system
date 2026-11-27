@@ -31,12 +31,12 @@
     <el-table v-loading="loading" :data="list" size="mini" border height="480">
       <el-table-column type="index" label="序号" width="55" align="center" />
       <el-table-column prop="VARIETIE_CODE_NEW" label="品种编码" min-width="120" show-overflow-tooltip />
-      <el-table-column prop="VARIETIE_NAME" label="品种名称" min-width="160" show-overflow-tooltip />
+      <el-table-column prop="VARIETIE_NAME" label="品种名称" min-width="192" show-overflow-tooltip />
       <el-table-column prop="UNIT" label="单位" width="70" align="center" />
       <el-table-column
         prop="SPECIFICATION_OR_TYPE"
         label="规格型号"
-        min-width="140"
+        min-width="160"
         show-overflow-tooltip
       />
       <el-table-column prop="PRICE" label="价格" width="90" align="right" />
@@ -49,10 +49,10 @@
       <el-table-column
         prop="MANUFACTURING_ENT_NAME"
         label="生产企业"
-        min-width="180"
+        min-width="208"
         show-overflow-tooltip
       />
-      <el-table-column prop="ENABLE" label="状态" width="80" align="center">
+      <el-table-column prop="ENABLE" label="状态" width="76" align="center" show-overflow-tooltip>
         <template v-slot="{ row }">
           {{ row.ENABLE == '1' || row.ENABLE === 1 ? '启用' : '冻结' }}
         </template>

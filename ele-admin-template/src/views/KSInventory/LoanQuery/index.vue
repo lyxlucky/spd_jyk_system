@@ -138,7 +138,7 @@ export default {
           label: '品种名称',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 120
+          minWidth: 192
         },
         {
           prop: 'CHARGING_CODE',
@@ -152,21 +152,21 @@ export default {
           label: '规格型号',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 120
+          minWidth: 160
         },
         {
           prop: 'UNIT',
           label: '单位',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 80
+          width: 76
         },
         {
           prop: 'MANUFACTURING_ENT_NAME',
           label: '生产企业',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 150
+          minWidth: 208
         },
         {
           prop: 'VARIETIE_CODE_NEW',

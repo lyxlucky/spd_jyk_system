@@ -29,7 +29,7 @@
           {
             prop: 'REQUESTNOTEID',
             label: '申请单号',
-            width: 150,
+            width: 132, showOverflowTooltip: true,
             align: 'center'
           },
           {
@@ -76,7 +76,7 @@
           {
             prop: 'PROCESS_STATUS',
             label: '状态', // 更新
-            width: 120,
+            width: 76, showOverflowTooltip: true,
             align: 'center',
             formatter: (row) => {
               switch (row.PROCESS_STATUS) {

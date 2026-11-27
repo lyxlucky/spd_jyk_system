@@ -80,7 +80,7 @@ export default {
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 150
+          width: 132
         },
         {
           prop: 'VARIETIE_NAME',
@@ -88,7 +88,7 @@ export default {
           sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 150
+          minWidth: 192
         },
         {
           prop: 'MAIN_QTY',

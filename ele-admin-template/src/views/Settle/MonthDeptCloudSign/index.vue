@@ -40,7 +40,7 @@
                 @current-change="onMonthSelect"
               >
                 <el-table-column prop="Monthly_Balance_Number" label="月结单号" min-width="100" show-overflow-tooltip />
-                <el-table-column prop="sDate" label="月结月份" width="90" />
+                <el-table-column prop="sDate" label="月结月份" width="90" align="center" />
               </el-table>
             </div>
           </div>

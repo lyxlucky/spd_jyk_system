@@ -16,11 +16,11 @@
       @current-change="(row) => (current = row)"
     >
       <el-table-column prop="Supplier_Code" label="供应商编码" width="110" />
-      <el-table-column prop="Supplier_Name" label="供应商名称" min-width="180" show-overflow-tooltip />
+      <el-table-column prop="Supplier_Name" label="供应商名称" min-width="208" show-overflow-tooltip />
       <el-table-column label="状态" width="70" align="center">
         <template slot-scope="{ row }">{{ row.Enable == 1 ? '启用' : '冻结' }}</template>
       </el-table-column>
-      <el-table-column prop="Roduction_License_Valid_Date" label="生产许可证有效期" min-width="150" show-overflow-tooltip />
+      <el-table-column prop="Roduction_License_Valid_Date" label="生产许可证有效期" min-width="150" show-overflow-tooltip align="center" />
     </el-table>
     <el-pagination
       small

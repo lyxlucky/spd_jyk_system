@@ -79,7 +79,7 @@ export default {
           label: '品种名称',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 200
+          minWidth: 192
         },
         {
           prop: 'Specification_Or_Type',

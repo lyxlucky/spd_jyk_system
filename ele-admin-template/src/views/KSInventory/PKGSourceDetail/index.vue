@@ -100,14 +100,14 @@ export default {
           prop: 'Varietie_Name',
           label: '品种全称',
           align: 'left',
-          minWidth: 200,
+          minWidth: 192,
           showOverflowTooltip: true
         },
         {
           prop: 'Specification_Or_Type',
           label: '型号规格',
           align: 'left',
-          minWidth: 190,
+          minWidth: 160,
           showOverflowTooltip: true
         },
         { prop: 'IS_JC',
@@ -141,7 +141,7 @@ export default {
           prop: 'Supplier_Name',
           label: '供应商名称',
           align: 'left',
-          minWidth: 165,
+          minWidth: 208,
           showOverflowTooltip: true
         },
         {
@@ -282,11 +282,13 @@ export default {
 <style scoped>
 .pkg-source-detail {
   height: calc(100vh - 120px);
-  overflow: hidden;
+  min-width: 0;
+  overflow: auto;
 }
 
 .pkg-source-card {
-  height: 100%;
+  min-height: 100%;
+  min-width: 0;
   display: flex;
   flex-direction: column;
 }
@@ -297,6 +299,10 @@ export default {
   flex-direction: column;
   min-height: 0;
   overflow: hidden;
+}
+
+.pkg-source-card ::v-deep .ele-pro-table .el-table {
+  width: 100%;
 }
 
 .table_content {

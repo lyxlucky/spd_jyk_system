@@ -121,7 +121,7 @@ export default {
           prop: 'Varietie_Name',
           label: '品种名称',
           align: 'center',
-          minWidth: 200,
+          minWidth: 192,
           showOverflowTooltip: true
         },
         {
@@ -149,7 +149,7 @@ export default {
           prop: 'Unit',
           label: '单位',
           align: 'center',
-          minWidth: 80,
+          width: 76,
           showOverflowTooltip: true
         },
         {
@@ -168,7 +168,7 @@ export default {
         {
           prop: 'Dept_One_Name',
           label: '科室名称',
-          width: 100,
+          minWidth: 192,
           showOverflowTooltip: true
         },
         {

@@ -106,7 +106,7 @@
           {
             prop: 'AMOUNT',
             label: '金额',
-            width: 120,
+            width: 88, showOverflowTooltip: true,
             align: 'center',
             formatter: (row) => {
               return row.AMOUNT ? row.AMOUNT.toFixed(2) : '0.00';
@@ -195,7 +195,7 @@
           {
             prop: 'TYPE',
             label: '类型',
-            width: 100,
+            width: 76, showOverflowTooltip: true,
             align: 'center',
             search: true,
             fieldProps: {

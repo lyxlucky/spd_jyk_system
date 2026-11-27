@@ -23,6 +23,8 @@
     "build:smnw": "vue-cli-service build --mode smnw",
     "build:stzlww": "vue-cli-service build --mode stzlww",
     "build:stzlnw": "vue-cli-service build --mode stzlnw",
+    "build:chrmyyww": "vue-cli-service build --mode chrmyyww",
+    "build:chrmyynw": "vue-cli-service build --mode chrmyynw",
     "build:zxww": "vue-cli-service build --mode zxww",
     "build:zxnw": "vue-cli-service build --mode zxnw",
     "build:lgww": "vue-cli-service build --mode lgww",

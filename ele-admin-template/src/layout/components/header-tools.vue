@@ -6,10 +6,6 @@
       <i v-if="fullscreen" class="el-icon-_screen-restore"></i>
       <i v-else class="el-icon-_screen-full"></i>
     </div>
-    <!-- 语言切换 -->
-    <div class="ele-admin-header-tool-item">
-      <i18n-icon />
-    </div>
     <!-- 消息通知 -->
     <div class="ele-admin-header-tool-item">
       <header-notice />
@@ -67,12 +63,11 @@
 import HeaderNotice from './header-notice.vue';
 import PasswordModal from './password-modal.vue';
 import SettingDrawer from './setting-drawer.vue';
-import I18nIcon from './i18n-icon.vue';
 import { logout } from '@/utils/page-tab-util';
 import { getUserGroupByName } from '@/api/layout/index'
 
 export default {
-  components: { HeaderNotice, PasswordModal, SettingDrawer, I18nIcon },
+  components: { HeaderNotice, PasswordModal, SettingDrawer },
   props: {
     // 是否是全屏
     fullscreen: Boolean

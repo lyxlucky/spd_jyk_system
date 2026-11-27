@@ -194,7 +194,7 @@ export default {
 
           align: 'center',
           showOverflowTooltip: true,
-          width: 200
+          width: 132
         },
         {
           prop: 'VARIETIE_NAME',
@@ -202,14 +202,14 @@ export default {
 
           align: 'center',
           showOverflowTooltip: true,
-          width: 500
+          minWidth: 192
         },
         {
           prop: 'SPECIFICATION_OR_TYPE',
           label: '规格型号',
           align: 'center',
           showOverflowTooltip: true,
-          width: 200
+          minWidth: 160
         },
         {
           prop: 'UNIT',
@@ -217,7 +217,7 @@ export default {
 
           align: 'center',
           showOverflowTooltip: true,
-          width: 80
+          width: 76
         },
         {
           prop: 'BATCH',

@@ -41,10 +41,10 @@
         />
         <el-table-column
           label="类型"
-          width="80"
+          width="76"
           align="center"
           sortable
-          :sort-method="sortByType"
+          :sort-method="sortByType" show-overflow-tooltip
         >
           <template v-slot="{ row }">
             <el-tag
@@ -65,7 +65,7 @@
         <el-table-column
           prop="Remarks"
           label="备注"
-          min-width="160"
+          min-width="110"
           show-overflow-tooltip
         />
       </el-table>

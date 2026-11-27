@@ -119,21 +119,21 @@
             label: '库区',
             align: 'center',
             showOverflowTooltip: true,
-            width: 100
+            width: 76
           },
           {
             prop: 'Varietie_Code_New',
             label: '品种编码',
             align: 'center',
             showOverflowTooltip: true,
-            width: 150
+            width: 132
           },
           {
             prop: 'Varietie_Name',
             label: '品种名称',
             align: 'center',
             showOverflowTooltip: true,
-            width: 240
+            minWidth: 192
           },
           {
             prop: 'Specification_Or_Type',
@@ -145,7 +145,7 @@
           {
             prop: 'Supplier_Name',
             label: '供应商名称',
-            width: 220,
+            minWidth: 208,
             align: 'center',
             showOverflowTooltip: true
           },
@@ -154,7 +154,7 @@
             label: '单位',
             align: 'center',
             showOverflowTooltip: true,
-            width: 80
+            width: 76
           },
           {
             prop: 'Dept_Two_Code',

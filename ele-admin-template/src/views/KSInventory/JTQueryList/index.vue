@@ -168,7 +168,7 @@ export default {
           label: '供应商名称',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 180,
+          minWidth: 208,
           show: false
         },
         {
@@ -176,7 +176,7 @@ export default {
           label: '库存数量',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 150,
+          width: 88,
           formatter: (_row, _column, cellValue) => {
             return '1';
           }
@@ -212,7 +212,7 @@ export default {
           label: '生产企业',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 180
+          minWidth: 208
         },
         {
           prop: 'BATCH_PRODUCTION_DATE',

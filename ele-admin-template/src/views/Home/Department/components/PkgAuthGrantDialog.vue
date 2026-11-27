@@ -12,18 +12,18 @@
     <div v-loading="bootLoading" class="pkg-auth-wrap">
       <el-table :data="detailRows" border size="small" height="120" empty-text="点击品种行查看中标价与注册信息">
         <el-table-column prop="Varietie_Code" label="品种（材料）编码" width="120" show-overflow-tooltip />
-        <el-table-column prop="Varietie_Name" label="品种全称" min-width="120" show-overflow-tooltip />
+        <el-table-column prop="Varietie_Name" label="品种全称" min-width="192" show-overflow-tooltip />
         <el-table-column prop="Price" label="中标价" width="80" align="right" />
         <el-table-column prop="Approval_Number" label="批准文号" width="110" show-overflow-tooltip />
-        <el-table-column label="发证日期" width="100">
+        <el-table-column label="发证日期" width="100" align="center">
           <template slot-scope="{ row }">{{ fmtShortDate(row.Registration_Issuing_Date) }}</template>
         </el-table-column>
-        <el-table-column label="有效到期" width="100">
+        <el-table-column label="有效到期" width="100" align="center">
           <template slot-scope="{ row }">{{ fmtShortDate(row.Registration_Valid_Date) }}</template>
         </el-table-column>
-        <el-table-column prop="Prod_Big_Class_Name" label="产品类型" width="90" show-overflow-tooltip />
-        <el-table-column prop="Mgmt_Cat_Name" label="管理类别" width="90" show-overflow-tooltip />
-        <el-table-column prop="Regulatory_Cat_Name" label="监管类别" width="90" show-overflow-tooltip />
+        <el-table-column prop="Prod_Big_Class_Name" label="产品类型" width="90" show-overflow-tooltip align="center" />
+        <el-table-column prop="Mgmt_Cat_Name" label="管理类别" width="90" show-overflow-tooltip align="center" />
+        <el-table-column prop="Regulatory_Cat_Name" label="监管类别" width="90" show-overflow-tooltip align="center" />
       </el-table>
 
       <el-row :gutter="8" class="mt8 main-split">
@@ -50,13 +50,13 @@
           >
             <el-table-column type="selection" width="42" :selectable="srcRowSelectable" align="center" />
             <el-table-column prop="Varietie_Code_New" label="品种编码" width="100" show-overflow-tooltip />
-            <el-table-column prop="Varietie_Name" label="品种全称" min-width="110" show-overflow-tooltip />
-            <el-table-column prop="Specification_Or_Type" label="规格" width="80" show-overflow-tooltip />
-            <el-table-column prop="Unit" label="单位" width="50" />
-            <el-table-column prop="Manufacturing_Ent_Name" label="生产企业" min-width="100" show-overflow-tooltip />
-            <el-table-column prop="Def_No_Pkg_Coefficient" label="系数" width="60" />
-            <el-table-column prop="Middle_Package_Count" label="中包装数量" width="90" />
-            <el-table-column prop="Big_Box_Count" label="整箱数量" width="80" />
+            <el-table-column prop="Varietie_Name" label="品种全称" min-width="192" show-overflow-tooltip />
+            <el-table-column prop="Specification_Or_Type" label="规格" min-width="160" show-overflow-tooltip />
+            <el-table-column prop="Unit" label="单位" width="50" align="center" />
+            <el-table-column prop="Manufacturing_Ent_Name" label="生产企业" min-width="208" show-overflow-tooltip />
+            <el-table-column prop="Def_No_Pkg_Coefficient" label="系数" width="60" align="right" />
+            <el-table-column prop="Middle_Package_Count" label="中包装数量" width="90" align="right" />
+            <el-table-column prop="Big_Box_Count" label="整箱数量" width="80" align="right" />
           </el-table>
           <el-pagination
             class="pager"
@@ -91,28 +91,28 @@
             <el-table-column type="selection" width="42" align="center" />
             <el-table-column prop="Varietie_Code_New" label="编码" width="90" show-overflow-tooltip />
             <el-table-column prop="Varietie_Name" label="名称" min-width="100" show-overflow-tooltip />
-            <el-table-column prop="Specification_Or_Type" label="规格" width="70" show-overflow-tooltip />
-            <el-table-column prop="Unit" label="单位" width="45" />
-            <el-table-column prop="Manufacturing_Ent_Name" label="生产企业" min-width="90" show-overflow-tooltip />
-            <el-table-column prop="Def_No_Pkg_Coefficient" label="系数" width="55" />
-            <el-table-column prop="Middle_Package_Count" label="中包装" width="70" />
-            <el-table-column prop="Big_Box_Count" label="整箱" width="60" />
-            <el-table-column label="授权到期" width="138">
+            <el-table-column prop="Specification_Or_Type" label="规格" min-width="160" show-overflow-tooltip />
+            <el-table-column prop="Unit" label="单位" width="45" align="center" />
+            <el-table-column prop="Manufacturing_Ent_Name" label="生产企业" min-width="208" show-overflow-tooltip />
+            <el-table-column prop="Def_No_Pkg_Coefficient" label="系数" width="55" align="right" />
+            <el-table-column prop="Middle_Package_Count" label="中包装" width="70" align="right" />
+            <el-table-column prop="Big_Box_Count" label="整箱" width="60" align="right" />
+            <el-table-column label="授权到期" width="138" align="center">
               <template slot-scope="{ row }">
                 <el-date-picker v-model="row.expire" type="date" value-format="yyyy-MM-dd" size="mini" style="width: 120px" />
               </template>
             </el-table-column>
-            <el-table-column label="库存上限" width="100">
+            <el-table-column label="库存上限" width="100" align="right">
               <template slot-scope="{ row }">
                 <el-input-number v-model="row.upper" size="mini" :min="0" :controls="false" />
               </template>
             </el-table-column>
-            <el-table-column label="库存下限" width="100">
+            <el-table-column label="库存下限" width="100" align="right">
               <template slot-scope="{ row }">
                 <el-input-number v-model="row.lower" size="mini" :min="0" :controls="false" />
               </template>
             </el-table-column>
-            <el-table-column label="消耗类型" width="130">
+            <el-table-column label="消耗类型" width="130" align="center">
               <template slot-scope="{ row }">
                 <el-select v-model="row.consumptionType" size="mini" style="width: 120px">
                   <el-option label="条码扫码即消耗" value="0" />

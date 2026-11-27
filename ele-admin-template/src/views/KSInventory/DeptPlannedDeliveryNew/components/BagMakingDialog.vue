@@ -14,18 +14,18 @@
       <el-table-column label="订单优先级" width="90">
         <template slot-scope="{ row }">{{ formatPriority(row.Priority) }}</template>
       </el-table-column>
-      <el-table-column prop="Plan_Time" label="计划时间" width="100" />
+      <el-table-column prop="Plan_Time" label="计划时间" width="100" align="center" />
       <el-table-column prop="Dept_Two_Name" label="二级科室名称" width="110" show-overflow-tooltip />
       <el-table-column :label="storageLabel" width="90">
         <template>{{ storageLabel }}</template>
       </el-table-column>
       <el-table-column prop="Varietie_Code_New" label="品种编码" width="100" />
-      <el-table-column prop="Varietie_Name" label="品种名称" width="120" show-overflow-tooltip />
-      <el-table-column prop="Specification_Or_Type" label="规格型号" width="110" show-overflow-tooltip />
+      <el-table-column prop="Varietie_Name" label="品种名称" min-width="192" show-overflow-tooltip />
+      <el-table-column prop="Specification_Or_Type" label="规格型号" min-width="160" show-overflow-tooltip />
       <el-table-column prop="Unit" label="单位" width="55" align="center" />
-      <el-table-column prop="Coefficient" label="系数" width="70" align="center" />
-      <el-table-column prop="Left_Apply_Qty" label="剩余申领数量" width="100" align="center" />
-      <el-table-column label="制包数量" width="100" align="center">
+      <el-table-column prop="Coefficient" label="系数" width="70" align="right" />
+      <el-table-column prop="Left_Apply_Qty" label="剩余申领数量" width="100" align="right" />
+      <el-table-column label="制包数量" width="100" align="right">
         <template slot-scope="{ row }">
           <el-input-number
             v-model="row._bagQty"
@@ -36,12 +36,12 @@
           />
         </template>
       </el-table-column>
-      <el-table-column prop="Batch_Production_Date" label="生产日期" width="100" />
-      <el-table-column prop="Batch_Validity_Period" label="生产有效期" width="100" />
-      <el-table-column prop="Up_Shelf_Quantity" label="散货上架数量" width="100" align="center" />
-      <el-table-column prop="Manufacturing_Ent_Name" label="生产企业" width="120" show-overflow-tooltip />
-      <el-table-column prop="Supply_Price" label="结算价" width="80" align="center" />
-      <el-table-column prop="Note_Description" label="备注" width="90" show-overflow-tooltip />
+      <el-table-column prop="Batch_Production_Date" label="生产日期" width="100" align="center" />
+      <el-table-column prop="Batch_Validity_Period" label="生产有效期" width="100" align="center" />
+      <el-table-column prop="Up_Shelf_Quantity" label="散货上架数量" width="100" align="right" />
+      <el-table-column prop="Manufacturing_Ent_Name" label="生产企业" min-width="208" show-overflow-tooltip />
+      <el-table-column prop="Supply_Price" label="结算价" width="80" align="right" />
+      <el-table-column prop="Note_Description" label="备注" min-width="110" show-overflow-tooltip />
       <el-table-column prop="REMARK" label="科室备注" width="90" show-overflow-tooltip />
     </el-table>
     <div slot="footer">

@@ -104,7 +104,7 @@ export default {
                     label: '规格型号',
                     align: 'center',
                     showOverflowTooltip: true,
-                    minWidth: 60
+                    minWidth: 160
                 },
                 {
                     prop: 'PC_NUM',

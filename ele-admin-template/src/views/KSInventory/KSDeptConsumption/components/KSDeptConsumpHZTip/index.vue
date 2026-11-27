@@ -109,7 +109,7 @@
 
                 prop: 'Varietie_Name',
                 label: '品种全称',
-                width: 250,
+                minWidth: 192, showOverflowTooltip: true,
             }, 
             {
 
@@ -133,7 +133,7 @@
 
                 prop: 'Supplier_Name',
                 label: '供应商',
-                width: 200,
+                minWidth: 208, showOverflowTooltip: true,
             }, 
             {
                 prop: 'Approval_Number',
@@ -153,19 +153,19 @@
             {
                 prop: 'Supply_Price',
                 label: '单价',
-                width: 140,
+                width: 88, showOverflowTooltip: true,
             }, 
             {
                 prop: 'Cost',
                 label: '金额',
 
-                width: 100
+                width: 88, showOverflowTooltip: true
             },
           {
             prop: 'UNIT',
             label: '单位',
             align: 'center',
-            width: 80,
+            width: 76,
             showOverflowTooltip: true,
             show: false
           }

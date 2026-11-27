@@ -242,7 +242,7 @@
             // sortable: 'custom',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 100
+            minWidth: 192
           },
           {
             // prop: 'DEF_NO_PKG_CODE',
@@ -276,7 +276,7 @@
             // sortable: 'custom',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 150,
+            minWidth: 192,
             sortable: true
           },
           {
@@ -285,7 +285,7 @@
             // sortable: 'custom',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 180
+            minWidth: 160
           },
           {
             prop: 'MANUFACTURING_ENT_NAME',
@@ -293,7 +293,7 @@
             // sortable: 'custom',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 180
+            minWidth: 208
           },
           {
             prop: 'SUPPLIER_NAME',
@@ -301,7 +301,7 @@
             // // sortable: 'custom',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 280
+            minWidth: 208
           },
           {
             prop: 'STORAGED_DAYS_SORT',
@@ -342,7 +342,7 @@
             // sortable: 'custom',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 80
+            width: 76
           },
           {
             prop: 'PRICE',

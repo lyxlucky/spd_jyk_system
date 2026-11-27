@@ -29,10 +29,10 @@
             highlight-current-row
             @current-change="onBillSelect"
           >
-            <el-table-column label="日清日期" min-width="100">
+            <el-table-column label="日清日期" min-width="100" align="center">
               <template slot-scope="{ row }">{{ fmtClearingDate(row.Clearing_Time) }}</template>
             </el-table-column>
-            <el-table-column label="账单状态" width="80">
+            <el-table-column label="账单状态" width="80" align="center">
               <template slot-scope="{ row }">{{ clearingStateLabel(row.Clearing_State) }}</template>
             </el-table-column>
           </el-table>
@@ -67,7 +67,7 @@
             highlight-current-row
             @current-change="onDeptSelect"
           >
-            <el-table-column prop="Dept_Two_Name" label="科室名称" min-width="120" show-overflow-tooltip />
+            <el-table-column prop="Dept_Two_Name" label="科室名称" min-width="192" show-overflow-tooltip />
           </el-table>
         </el-card>
       </div>
@@ -98,9 +98,9 @@
             size="mini"
             height="calc(100vh - 300px)"
           >
-            <el-table-column prop="DateShow" label="日期" width="100" show-overflow-tooltip />
+            <el-table-column prop="DateShow" label="日期" width="100" show-overflow-tooltip align="center" />
             <el-table-column prop="Varietie_code" label="品种编码" width="95" show-overflow-tooltip />
-            <el-table-column prop="Varietie_name" label="品种全称" min-width="140" show-overflow-tooltip />
+            <el-table-column prop="Varietie_name" label="品种全称" min-width="192" show-overflow-tooltip />
             <el-table-column
               prop="Specification_or_Type"
               label="型号/规格"
@@ -116,9 +116,9 @@
             />
             <el-table-column prop="Charging_Dept" label="计费科室" width="100" show-overflow-tooltip />
             <el-table-column prop="Batch" label="生产批号" width="90" show-overflow-tooltip />
-            <el-table-column prop="Coefficient" label="系数" width="55" align="center" />
-            <el-table-column prop="DefQuantity" label="包数" width="55" align="center" />
-            <el-table-column prop="GoodsQuantity" label="散货数量" width="80" align="center" />
+            <el-table-column prop="Coefficient" label="系数" width="55" align="right" />
+            <el-table-column prop="DefQuantity" label="包数" width="55" align="right" />
+            <el-table-column prop="GoodsQuantity" label="散货数量" width="80" align="right" />
             <el-table-column label="单价" width="75" align="right">
               <template slot-scope="{ row }">{{ fmtPrice(row) }}</template>
             </el-table-column>

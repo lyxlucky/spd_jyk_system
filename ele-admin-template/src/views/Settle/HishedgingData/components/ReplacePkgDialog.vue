@@ -14,14 +14,14 @@
       <el-table-column prop="Operation_Number" label="手术编号" width="80" />
       <el-table-column prop="Hospitalization_Number" label="住院号" width="80" />
       <el-table-column prop="Patient_Number" label="病患号" width="80" />
-      <el-table-column prop="Opeartion_Charging_Time" label="手术计费时间" width="140" />
-      <el-table-column prop="Used_Qty" label="使用数量" width="70" align="center" />
+      <el-table-column prop="Opeartion_Charging_Time" label="手术计费时间" width="140" align="center" />
+      <el-table-column prop="Used_Qty" label="使用数量" width="70" align="right" />
       <el-table-column prop="Patient_Dept" label="病人科室" width="80" />
-      <el-table-column label="完成标志" width="80">
+      <el-table-column label="完成标志" width="80" align="center">
         <template slot-scope="{ row }">{{ fmtIsComplete(row.Is_Complete) }}</template>
       </el-table-column>
-      <el-table-column prop="Integrate_Time" label="系统对接时间" width="140" />
-      <el-table-column label="是否对冲" width="80">
+      <el-table-column prop="Integrate_Time" label="系统对接时间" width="140" align="center" />
+      <el-table-column label="是否对冲" width="80" align="center">
         <template slot-scope="{ row }">{{ fmtIsHedge(row.Is_Hedge) }}</template>
       </el-table-column>
     </el-table>
@@ -43,20 +43,20 @@
       highlight-current-row
       @current-change="(r) => (picked = r)"
     >
-      <el-table-column prop="Dept_Two_Name" label="科室名称" width="100" show-overflow-tooltip />
+      <el-table-column prop="Dept_Two_Name" label="科室名称" min-width="192" show-overflow-tooltip />
       <el-table-column prop="Dept_Two_Code" label="科室编码" width="90" />
       <el-table-column prop="VARIETIE_CODE_NEW" label="品种编码" width="90" />
       <el-table-column prop="Charging_Code" label="计费编码" width="90" />
-      <el-table-column prop="Varietie_Name" label="品种全称" min-width="160" show-overflow-tooltip />
+      <el-table-column prop="Varietie_Name" label="品种全称" min-width="192" show-overflow-tooltip />
       <el-table-column prop="Specification_Or_Type" label="型号/规格" width="90" show-overflow-tooltip />
-      <el-table-column prop="Unit" label="单位" width="55" />
-      <el-table-column prop="Manufacturing_Ent_Name" label="生产企业" min-width="120" show-overflow-tooltip />
+      <el-table-column prop="Unit" label="单位" width="55" align="center" />
+      <el-table-column prop="Manufacturing_Ent_Name" label="生产企业" min-width="208" show-overflow-tooltip />
       <el-table-column prop="Batch" label="生产批号" width="90" />
-      <el-table-column prop="Coefficient" label="系数" width="55" />
+      <el-table-column prop="Coefficient" label="系数" width="55" align="right" />
       <el-table-column prop="Def_No_Pkg_Code" label="定数码" width="130" class-name="col-pkg" />
       <el-table-column prop="Serial_Number" label="SN码" width="100" show-overflow-tooltip />
       <el-table-column prop="Rfid_Code" label="RFID码" width="100" show-overflow-tooltip />
-      <el-table-column label="库存状态" width="85">
+      <el-table-column label="库存状态" width="85" align="center">
         <template slot-scope="{ row }">{{ fmtStockState(row.Stock_State) }}</template>
       </el-table-column>
     </el-table>

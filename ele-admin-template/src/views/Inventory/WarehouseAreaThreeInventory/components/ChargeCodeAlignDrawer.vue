@@ -43,35 +43,35 @@
           field="LEDGER_CHARGE_CODE"
           title="三级库流水编码"
           width="150"
-          align="center"
+          align="left"
           show-overflow
         />
         <vxe-column
           field="VARIETIE_CODE_NEW"
           title="品种编码"
-          width="140"
-          align="center"
+          width="132"
+          align="left"
           show-overflow
         />
         <vxe-column
           field="MASTER_CHARGING_CODE"
           title="品种资料计费编码"
           width="150"
-          align="center"
+          align="left"
           show-overflow
         />
         <vxe-column
           field="VARIETIE_NAME"
           title="品种名称"
-          min-width="180"
-          align="center"
+          min-width="192"
+          align="left"
           show-overflow
         />
         <vxe-column
           field="SPECIFICATION_OR_TYPE"
           title="规格型号"
-          width="160"
-          align="center"
+          min-width="160"
+          align="left"
           show-overflow
         />
         <vxe-column field="STOCK_QTY" title="结存数量" width="100" align="right" />

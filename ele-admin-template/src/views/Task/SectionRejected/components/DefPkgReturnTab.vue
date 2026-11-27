@@ -132,14 +132,14 @@ export default {
         { prop: 'Returning_Goods_Number', label: '退货单号', minWidth: 130, sortable: true },
         { prop: 'DEPT_TWO_NAME', label: '科室', width: 90, sortable: true },
         { prop: 'Creater', label: '创建人', width: 120, sortable: true },
-        { prop: 'Create_Time', label: '创建时间', width: 160, sortable: true },
+        { prop: 'Create_Time', label: '创建时间', width: 160, showOverflowTooltip: true, sortable: true },
         { columnKey: 'returnState', label: '完成状态', width: 100, slot: 'returnState' },
         { columnKey: 'remark', label: '备注', width: 80, slot: 'remark' }
       ],
       detailColumns: [
-        { prop: 'Dept_Two_Name', label: '科室名称', width: 140, sortable: true },
+        { prop: 'Dept_Two_Name', label: '科室名称', minWidth: 192, showOverflowTooltip: true, sortable: true },
         { prop: 'Varietie_Code', label: '品种(材料)编码', width: 180, sortable: true },
-        { prop: 'Varietie_Name', label: '品种全称', minWidth: 100 },
+        { prop: 'Varietie_Name', label: '品种全称', minWidth: 192, showOverflowTooltip: true },
         { prop: 'Specification_Or_Type', label: '型号/规格', minWidth: 100 },
         { prop: 'Unit', label: '单位', width: 60, align: 'center' },
         { prop: 'Manufacturing_Ent_Name', label: '生产企业名称', width: 160 },

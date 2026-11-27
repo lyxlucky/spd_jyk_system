@@ -39,9 +39,9 @@ export default {
       columns: [
         { type: 'index', width: 50, align: 'center' },
         { prop: 'VARIETIE_CODE', label: '品种编码', minWidth: 120 },
-        { prop: 'VARIETIE_NAME', label: '品种全称', minWidth: 160, showOverflowTooltip: true },
+        { prop: 'VARIETIE_NAME', label: '品种全称', minWidth: 192, showOverflowTooltip: true },
         { prop: 'QTY', label: '数量', width: 80, align: 'center' },
-        { prop: 'PRICE', label: '单价', width: 90, align: 'right' },
+        { prop: 'PRICE', label: '单价', width: 88, showOverflowTooltip: true, align: 'right' },
         {
           label: '总金额',
           width: 100,

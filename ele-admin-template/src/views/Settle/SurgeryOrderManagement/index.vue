@@ -365,8 +365,8 @@
             width="120"
             align="center"
           />
-          <vxe-column field="GENDER" title="性别" width="80" align="center" />
-          <vxe-column field="AGE_STR" title="年龄" width="120" align="center" />
+          <vxe-column field="GENDER" title="性别" width="76" align="left" show-overflow="tooltip" />
+          <vxe-column field="AGE_STR" title="年龄" width="76" align="right" show-overflow="tooltip" />
           <vxe-column
             field="DIAGNOSIS"
             title="诊断结果"
@@ -403,28 +403,28 @@
             title="主刀科室"
             min-width="120"
             show-overflow
-            align="center"
+            align="left"
           />
           <vxe-column
             v-if="false"
             field="SMART_CABINET1"
             title="智能柜"
             width="120"
-            align="center"
+            align="left"
           />
           <vxe-column
             field="APPLY_DEPT"
             title="申请科室"
             min-width="120"
             show-overflow
-            align="center"
+            align="left"
           />
           <vxe-column
             field="PATIENT_DEPT"
             title="病人所在科室"
             min-width="120"
             show-overflow
-            align="center"
+            align="left"
           />
           <vxe-column
             field="PLAN_SURGERY_DATE"
@@ -621,7 +621,7 @@
           <vxe-column
             field="VARIETIE_NAME"
             title="品种名称"
-            min-width="150"
+            min-width="192"
             show-overflow
           />
           <vxe-column
@@ -633,7 +633,7 @@
           <vxe-column
             field="SPECIFICATION_OR_TYPE"
             title="规格型号"
-            min-width="150"
+            min-width="160"
             show-overflow
           />
           <vxe-column
@@ -646,7 +646,7 @@
           <vxe-column
             field="VARIETIE_CODE_NEW"
             title="品种编码"
-            min-width="150"
+            width="132"
             show-overflow
           />
           <vxe-column
@@ -672,6 +672,7 @@
             title="销毁人"
             min-width="100"
             show-overflow
+            align="center"
           />
           <vxe-column
             field="DESTROY_TIME"
@@ -754,7 +755,7 @@
             field="SOURCE"
             title="来源"
             width="120"
-            align="center"
+            align="left"
           />
           <vxe-column
             field="LABEL_BARCODE"
@@ -765,7 +766,7 @@
           <vxe-column
             field="VARIETIE_NAME"
             title="品种名称"
-            min-width="150"
+            min-width="192"
             show-overflow
           />
           <vxe-column
@@ -777,7 +778,7 @@
           <vxe-column
             field="SPECIFICATION_OR_TYPE"
             title="规格型号"
-            min-width="150"
+            min-width="160"
             show-overflow
           />
           <vxe-column
@@ -790,10 +791,10 @@
           <vxe-column
             field="QUANTITY"
             title="数量"
-            width="100"
-            align="right"
+            width="88"
+            align="right" show-overflow="tooltip"
           />
-          <vxe-column field="UNIT" title="单位" width="80" align="center" />
+          <vxe-column field="UNIT" title="单位" width="76" align="center" show-overflow="tooltip" />
           <vxe-column
             field="UNIT_PRICE_WITH_TAX"
             title="含税单价"

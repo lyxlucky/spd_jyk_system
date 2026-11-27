@@ -1,28 +1,6 @@
 <template>
   <div class="ks-dept-plan-detail">
-    <div class="spd-panel spd-panel--search">
-      <div class="spd-panel__head spd-panel__head--split">
-        <span>明细操作</span>
-        <span class="spd-panel__head-meta">
-          实际申领数量合计: <b>{{ sumNumber }}</b>
-          实际申领金额合计: <b>{{ sumAount }}</b>
-        </span>
-      </div>
-      <KSDepartmentalPlanDetails-search
-        @Approval="Approval"
-        @exportData="exportData"
-        @search="reload"
-        @ClickReload="ClickReload"
-        :KSDepartmentalPlanDataSearch="KSDepartmentalPlanDataSearch"
-        :selection="selection"
-        @showEditReoad="showEditReoad"
-        @BindBudget="handleBindBudget"
-        :datasourceList="datasourceList"
-      />
-    </div>
-
     <div class="spd-panel spd-table-panel">
-      <div class="spd-panel__head">申领单详情列表</div>
       <div class="spd-table-panel__wrap">
         <!-- <el-button type="danger" size="small" @click="aaa">aaa</el-button> -->
         <!-- 数据表格 -->
@@ -34,6 +12,8 @@
           size="mini"
           border
           stripe
+          title="申领单详情列表"
+          tool-class="spd-panel__head ks-dept-plan-detail-toolbar"
           :toolkit="['columns', 'fullscreen']"
           :header-overflow-hidden="false"
           highlight-current-row
@@ -44,17 +24,31 @@
           :selection.sync="selection"
           :height="tableHeight"
           full-height="calc(100vh - 100px)"
-          cache-key="KSDepartmentalPlanDetailTable"
+          cache-key="KSDepartmentalPlanDetailTable_v7"
           :row-class-name="detailRowClassName"
           @selection-change="onSelectionChange"
         >
-      <!-- 表头工具栏 -->
-      <!-- 右表头 -->
-      <!-- <template v-slot:toolkit>
-        <el-button size="small" type="danger" icon="el-icon-delete" class="ele-btn-icon" @click="removebatch">
-          删除
-        </el-button>
-      </template> -->
+      <template v-slot:toolkit>
+        <span class="spd-panel__head-meta ks-dept-plan-detail-totals">
+          实际申领数量合计: <b>{{ sumNumber }}</b>
+          实际申领金额合计: <b>{{ sumAount }}</b>
+        </span>
+      </template>
+      <template v-slot:default>
+        <div class="ks-dept-plan-detail-filters">
+          <KSDepartmentalPlanDetails-search
+            @Approval="Approval"
+            @exportData="exportData"
+            @search="reload"
+            @ClickReload="ClickReload"
+            :KSDepartmentalPlanDataSearch="KSDepartmentalPlanDataSearch"
+            :selection="selection"
+            @showEditReoad="showEditReoad"
+            @BindBudget="handleBindBudget"
+            :datasourceList="datasourceList"
+          />
+        </div>
+      </template>
       <template v-slot:PAG_TYPE="{ row }">
         <div
           :id="'PAG_TYPE' + row.ID"
@@ -70,22 +64,15 @@
         }}</el-link>
       </template>
 
-      <!-- 左表头 -->
-      <!-- <template v-slot:toolbar>
-        <label
-          >实际申领数量合计: <b>{{ sumNumber }}</b>&nbsp;&nbsp;实际申领金额合计:
-          <b>{{ sumAount }}</b>
-        </label>
-      </template> -->
-
       <template v-slot:DTL_IS_DELETE="{ row }">
         <el-tag v-if="isDetailDeleted(row)" type="info" size="mini">已剔除</el-tag>
         <el-tag v-else type="success" size="mini">正常</el-tag>
       </template>
       <template v-slot:PlanQty="{ row }">
-        <span v-if="isDetailDeleted(row)">{{ row.PlanQty }}</span>
+        <span v-if="isDetailDeleted(row)" class="plan-qty-text">{{ row.PlanQty }}</span>
         <el-input
           v-else
+          class="plan-qty-input"
           v-model="row.PlanQty"
           :min="0"
           :max="99999999"
@@ -102,10 +89,10 @@
           :content="row.VarCode + '中心库剩余库存 :' + row.StockQty"
           placement="top"
         >
-          <el-tag v-if="row.StockQty == 0" type="danger" size="mini">{{
-            row.VarCode
-          }}</el-tag>
-          <el-tag v-else type="success" size="mini">{{ row.VarCode }}</el-tag>
+          <span
+            class="var-code-text"
+            :class="row.StockQty == 0 ? 'is-empty-stock' : 'has-stock'"
+          >{{ row.VarCode }}</span>
         </el-tooltip>
       </template>
       <template v-slot:REMARK="{ row }">
@@ -364,7 +351,7 @@
     },
     data() {
       return {
-        // 表格列配置
+        // 表格列配置（默认顺序对齐列展示配置）
         columns: [
           {
             columnKey: 'selection',
@@ -385,24 +372,45 @@
             ...(HOME_HP !== 'stzyyy' ? { fixed: 'left' } : {})
           },
           {
+            columnKey: 'IMAGE_BUTTON',
+            slot: 'IMAGE_BUTTON',
+            label: '图片',
+            align: 'center',
+            width: 80
+          },
+          {
             columnKey: 'DTL_IS_DELETE',
             prop: 'DTL_IS_DELETE',
             slot: 'DTL_IS_DELETE',
             label: '明细状态',
             align: 'center',
-            width: 90,
+            width: 80,
             ...(HOME_HP !== 'stzyyy' ? { fixed: 'left' } : {})
           },
-          // {
-          //   columnKey: 'action',
-          //   label: '操作',
-          //   width: 80,
-          //   align: 'center',
-          //   resizable: false,
-          //   slot: 'action',
-          //   showOverflowTooltip: true,
-          //   fixed: 'right'
-          // },
+          {
+            columnKey: 'PlanQty',
+            slot: 'PlanQty',
+            label: '申领数量',
+            align: 'center',
+            showOverflowTooltip: true,
+            width: 96,
+            ...(HOME_HP !== 'stzyyy' ? { fixed: 'left' } : {})
+          },
+          {
+            prop: 'Unit',
+            label: '单位',
+            align: 'center',
+            showOverflowTooltip: true,
+            width: 80
+          },
+          {
+            slot: 'QUANITY',
+            prop: 'QUANITY',
+            label: '收货数量',
+            align: 'center',
+            showOverflowTooltip: true,
+            width: 96
+          },
           {
             columnKey: 'VarCode',
             prop: 'VarCode',
@@ -410,51 +418,92 @@
             label: '品种编码',
             align: 'center',
             showOverflowTooltip: true,
-            width: 150
+            width: 124
           },
+          // {
+          //   prop: 'TJ_QTY',
+          //   label: '提交数量',
+          //   align: 'center',
+          //   showOverflowTooltip: true,
+          //   width: 96
+          // },
           {
             prop: 'CHARGING_CODE',
             label: '收费编码',
             align: 'center',
             showOverflowTooltip: true,
+            width: 112
+          },
+          {
+            prop: 'VarName',
+            label: '品种全称',
+            align: 'left',
+            showOverflowTooltip: true,
+            minWidth: 192
+          },
+          {
+            prop: 'Used_Name',
+            label: '常用名',
+            align: 'left',
+            showOverflowTooltip: true,
             width: 120
           },
-
           {
-            prop: 'ITEM_NAME',
-            label: '科研费用名称',
-            align: 'center',
+            prop: 'GG',
+            label: '型号/规格',
+            align: 'left',
             showOverflowTooltip: true,
-            width: 150
+            width: 160
           },
           {
-            // prop: 'VarCode',
-            slot: 'QUANITY',
-            prop: 'QUANITY',
-            label: '收货数量',
+            prop: 'Manufacturing',
+            label: '生产企业名称',
+            align: 'left',
+            showOverflowTooltip: true,
+            width: 180
+          },
+          {
+            prop: 'PKG_SPEC',
+            label: '包装规格',
             align: 'center',
             showOverflowTooltip: true,
-            width: 150
+            width: 200,
+            formatter: (row) => this.formatPkgSpec(row)
           },
-          // {
-          //   prop: 'DEPT_ZDY_VARIETIE_CODE',
-          //   label: '自定义编码',
-
-          //   align: 'center',
-          //   showOverflowTooltip: true,
-          //   width: 120,
-          //   show: false,
-          //   formatter: (row, column, cellValue) => {
-          //     if (cellValue == null) {
-          //       return '未定义';
-          //     }
-          //     return cellValue;
-          //   }
-          // },
+          {
+            prop: 'Day_Consume_Qty',
+            label: '月均用量',
+            align: 'center',
+            showOverflowTooltip: true,
+            width: 96
+          },
+          {
+            prop: 'StockQty',
+            label: '中心库库存',
+            align: 'center',
+            showOverflowTooltip: true,
+            width: 120
+          },
+          {
+            columnKey: 'REGISTRATION_VALID_DATE',
+            slot: 'REGISTRATION_VALID_DATE',
+            label: '注册证到期',
+            align: 'center',
+            showOverflowTooltip: true,
+            width: 120
+          },
+          {
+            columnKey: 'DET_CONTRACT_END',
+            prop: 'DET_CONTRACT_END',
+            slot: 'DET_CONTRACT_END',
+            label: '合同明细到期',
+            align: 'center',
+            showOverflowTooltip: true,
+            width: 120
+          },
           {
             prop: 'CONTRACT_TYPE',
             label: '合同类型',
-
             align: 'center',
             showOverflowTooltip: true,
             width: 110,
@@ -470,44 +519,16 @@
             }
           },
           {
-            prop: 'VarName',
-            label: '品种全称',
-            align: 'center',
-            showOverflowTooltip: true,
-            width: 330
-          },
-          {
-            prop: 'Used_Name',
-            label: '常用名',
-            align: 'center',
-            showOverflowTooltip: true,
-            width: 180
-          },
-          {
-            prop: 'GG',
-            label: '型号/规格',
-            align: 'center',
-            showOverflowTooltip: true,
-            width: 180
-          },
-          {
-            prop: 'Manufacturing',
-            label: '生产企业名称',
-            align: 'center',
-            showOverflowTooltip: true,
-            width: 180
-          },
-          {
             prop: 'Brand',
             label: '品牌',
-            align: 'center',
+            align: 'left',
             showOverflowTooltip: true,
-            width: 180
+            width: 96
           },
           {
             prop: 'SUPPLIER_NAME',
             label: '启用供应商',
-            align: 'center',
+            align: 'left',
             showOverflowTooltip: true,
             width: 180
           },
@@ -521,68 +542,9 @@
             width: 90
           },
           {
-            columnKey: 'DET_CONTRACT_END',
-            prop: 'DET_CONTRACT_END',
-            slot: 'DET_CONTRACT_END',
-            label: '合同明细到期',
-            align: 'center',
-            showOverflowTooltip: true,
-            width: 120
-          },
-          // {
-          //   prop: 'TempQty',
-          //   label: '中心库库存',
-
-          //   align: 'center',
-          //   showOverflowTooltip: true,
-          //   width: 110
-          // },
-          {
-            prop: 'Day_Consume_Qty',
-            label: '平均用量(默认近30天)  ',
-
-            align: 'center',
-            showOverflowTooltip: true,
-            width: 150
-          },
-          {
-            prop: 'StockQty',
-            label: '中心库库存',
-
-            align: 'center',
-            showOverflowTooltip: true,
-            width: 120
-          },
-          {
-            prop: 'TJ_QTY',
-            label: '提交数量',
-
-            align: 'center',
-            showOverflowTooltip: true,
-            width: 80
-          },
-          {
-            columnKey: 'PlanQty',
-            slot: 'PlanQty',
-            label: '实际申领数量',
-            align: 'center',
-            showOverflowTooltip: true,
-            width: 160,
-            ...(HOME_HP !== 'stzyyy' ? { fixed: 'left' } : {})
-          },
-          {
-            prop: 'Unit',
-            label: '单位',
-
-            align: 'center',
-            showOverflowTooltip: true,
-            width: 80
-          },
-          {
             prop: 'Price',
             label: '结算价',
-
-            align: 'center',
+            align: 'right',
             showOverflowTooltip: true,
             width: 80,
             formatter: (row, column, cellValue) => {
@@ -599,25 +561,9 @@
             width: 110
           },
           {
-            prop:"BigBoxCount",
-            // prop: 'PAG_TYPE',
-            label: '大包装数量',
-            align: 'center',
-            showOverflowTooltip: true,
-            width: 110
-          },
-          {
-            prop:"MinBoxCount",
-            // prop: 'PAG_TYPE',
-            label: '中包装数量',
-            align: 'center',
-            showOverflowTooltip: true,
-            width: 110
-          },
-          {
             prop: 'TOTAL_DOLLAR',
             label: '总金额',
-            align: 'center',
+            align: 'right',
             showOverflowTooltip: true,
             width: 80,
             formatter: (row, column, cellValue) => {
@@ -629,7 +575,6 @@
           {
             prop: 'IS_NEED_TWO_APP',
             label: '二级审批',
-
             align: 'center',
             showOverflowTooltip: true,
             width: 110,
@@ -652,17 +597,24 @@
             }
           },
           {
-            columnKey: 'IMAGE_BUTTON',
-            slot: 'IMAGE_BUTTON',
-            label: '图片',
+            prop: 'ITEM_NAME',
+            label: '科研费用名称',
             align: 'center',
-            width: 80
+            showOverflowTooltip: true,
+            width: 150
           },
           {
             columnKey: 'REMARK',
             prop: 'REMARK',
             slot: 'REMARK',
             label: '备注',
+            align: 'center',
+            showOverflowTooltip: true,
+            width: 110
+          },
+          {
+            prop: 'SPDBZ',
+            label: 'SPD备注',
             align: 'center',
             showOverflowTooltip: true,
             width: 110
@@ -675,56 +627,7 @@
             showOverflowTooltip: true,
             width: 110,
             show: HOME_HP == 'bdrm'
-          },
-          {
-            prop: 'SPDBZ',
-            label: 'SPD备注',
-
-            align: 'center',
-            showOverflowTooltip: true,
-            width: 110
-          },
-          {
-            columnKey: 'REGISTRATION_VALID_DATE',
-            slot: 'REGISTRATION_VALID_DATE',
-            label: '注册证到期',
-            align: 'center',
-            showOverflowTooltip: true,
-            width: 120,
-            show: HOME_HP == 'bdrm'
-          },
-          // {
-          //   slot: 'MAN_XKZ_END',
-          //   label: '生产许可证到期',
-          //   align: 'center',
-          //   showOverflowTooltip: true,
-          //   width: 140,
-          //   show: HOME_HP == 'bdrm'
-          // },
-          // {
-          //   slot: 'AUTH_VALID',
-          //   label: '品种授权到期',
-          //   align: 'center',
-          //   showOverflowTooltip: true,
-          //   width: 120,
-          //   show: HOME_HP == 'bdrm'
-          // },
-          // {
-          //   slot: 'BUSINESS_LICENSE_VALID_DATE2',
-          //   label: '供应商经营许可证',
-          //   align: 'center',
-          //   showOverflowTooltip: true,
-          //   width: 150,
-          //   show: HOME_HP == 'bdrm'
-          // },
-          // {
-          //   slot: 'BUSINESS_LICENSE_VALID_DATE',
-          //   label: '集配商经营许可证',
-          //   align: 'center',
-          //   showOverflowTooltip: true,
-          //   width: 150,
-          //   show: HOME_HP == 'bdrm'
-          // }
+          }
         ],
         // 固定高度，不随窗口缩小重算（对齐「缩窗靠滚动、布局不变」）
         tableHeight: 320,
@@ -766,6 +669,24 @@
       formatDate(date) {
         if (!date) return '-';
         return this.$moment(date).format('YYYY-MM-DD');
+      },
+      /** 单档包装：始终 数量/单位 */
+      formatPkgQtyUnit(qty, unit) {
+        const q =
+          qty == null || qty === '' ? '' : String(qty).trim();
+        const u =
+          unit == null || unit === '' ? '' : String(unit).trim();
+        if (!q && !u) return '';
+        return `${q || '0'}/${u || '-'}`;
+      },
+      /** 大、中、小：数量/单位，数量/单位，数量/单位 */
+      formatPkgSpec(row) {
+        const parts = [
+          this.formatPkgQtyUnit(row.BigBoxCount, row.BIG_BOX_UNIT),
+          this.formatPkgQtyUnit(row.MinBoxCount, row.MIDDLE_PACKAGE_UNIT),
+          this.formatPkgQtyUnit(row.MIN_PKG_NUM, row.MIN_PKG_UNIT)
+        ].filter(Boolean);
+        return parts.length ? parts.join('，') : '-';
       },
       isDateExpired(date) {
         if (!date) return false;
@@ -1148,7 +1069,6 @@
   min-width: 0;
 }
 
-.ks-dept-plan-detail >>> .spd-panel--search,
 .ks-dept-plan-detail >>> .spd-panel__body {
   overflow: visible;
   max-width: 100%;
@@ -1188,16 +1108,33 @@
   overflow-x: auto;
 }
 
+.ks-dept-plan-detail >>> .el-table th.el-table__cell {
+  text-align: center !important;
+}
+
 .ks-dept-plan-detail >>> .el-table th .cell {
   white-space: nowrap;
+  text-align: center !important;
 }
 
-.ks-dept-plan-detail >>> .ele-table-tool-default {
-  padding: 2px 0 0 4px;
-}
-
-.ks-dept-plan-detail >>> .ele-table-tool .ele-table-tool-title {
+.ks-dept-plan-detail >>> .ks-dept-plan-detail-toolbar.ele-table-tool {
   margin: 0;
+  padding: 0 12px;
+  min-height: 34px;
+}
+
+.ks-dept-plan-detail >>> .ks-dept-plan-detail-toolbar h6 {
+  margin: 0;
+  font: inherit;
+}
+
+.ks-dept-plan-detail-totals {
+  margin-right: 8px;
+  font-weight: 700;
+}
+
+.ks-dept-plan-detail >>> .ele-pro-table-fullscreen .ks-dept-plan-detail-filters {
+  display: none;
 }
 
 .ks-dept-plan-detail >>> .el-table .is-detail-deleted {
@@ -1207,5 +1144,27 @@
 
 .ks-dept-plan-detail >>> .el-table .is-detail-deleted td {
   background-color: #f5f7fa !important;
+}
+
+.plan-qty-text {
+  display: inline-block;
+  width: 100%;
+  text-align: center;
+}
+
+.plan-qty-input >>> .el-input__inner {
+  text-align: center;
+}
+
+.var-code-text {
+  cursor: default;
+}
+
+.var-code-text.is-empty-stock {
+  color: #f56c6c;
+}
+
+.var-code-text.has-stock {
+  color: #67c23a;
 }
 </style>

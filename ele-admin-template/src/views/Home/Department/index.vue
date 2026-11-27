@@ -31,8 +31,8 @@
         :height="oneTableHeight"
         @current-change="onOneCurrentChange"
       >
-              <el-table-column prop="Dept_One_Name" label="科室名称" min-width="100" show-overflow-tooltip />
-              <el-table-column label="启用状态" width="100">
+              <el-table-column prop="Dept_One_Name" label="科室名称" min-width="192" show-overflow-tooltip />
+              <el-table-column label="启用状态" width="100" align="center">
                 <template slot-scope="{ row }">{{ fmtEnable(row.Enable) }}</template>
               </el-table-column>
               <el-table-column prop="Herp_Dept_One_Code" label="HERP科室编码" min-width="100" show-overflow-tooltip />
@@ -91,19 +91,19 @@
         :height="twoTableHeight"
         @current-change="onTwoCurrentChange"
       >
-                <el-table-column prop="Dept_Two_Name" label="科室名称" min-width="100" show-overflow-tooltip />
-                <el-table-column label="科室类型" width="100">
+                <el-table-column prop="Dept_Two_Name" label="科室名称" min-width="192" show-overflow-tooltip />
+                <el-table-column label="科室类型" width="100" align="center">
                   <template slot-scope="{ row }">{{ deptTypeLabel(row.DEPT_TYPE) }}</template>
                 </el-table-column>
                 <el-table-column prop="STORAGE_NAME" label="所属院区" min-width="100" show-overflow-tooltip />
-                <el-table-column label="启用状态" width="100">
+                <el-table-column label="启用状态" width="100" align="center">
                   <template slot-scope="{ row }">{{ fmtEnable(row.Enable) }}</template>
                 </el-table-column>
                 <el-table-column label="计划审核审批" width="110">
                   <template slot-scope="{ row }">{{ row.IS_APPLY_PLAN_REVIEW == '1' ? '开启' : '关闭' }}</template>
                 </el-table-column>
                 <el-table-column prop="Herp_Dept_Two_Code" label="HERP二级科室编码" min-width="100" show-overflow-tooltip />
-                <el-table-column label="编辑财务属性" width="150" fixed="right" align="center">
+                <el-table-column label="编辑财务属性" width="150" fixed="right" align="left">
                   <template slot-scope="{ row }">
                     <el-button type="primary" size="mini" plain @click.stop="openFinanceCw(row)">编辑/详情</el-button>
                   </template>
@@ -121,7 +121,7 @@
         :height="twoTableHeight"
         @current-change="(r) => (currentHis = r)"
       >
-        <el-table-column prop="Charging_Dept_Name" label="科室名称" min-width="140" show-overflow-tooltip />
+        <el-table-column prop="Charging_Dept_Name" label="科室名称" min-width="192" show-overflow-tooltip />
       </el-table>
     </div>
 

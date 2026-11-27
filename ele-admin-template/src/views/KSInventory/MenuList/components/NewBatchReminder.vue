@@ -103,7 +103,7 @@
             label: '品种名称',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 500
+            minWidth: 192
           },
           {
             prop: 'SPECIFICATION_OR_TYPE',
@@ -134,7 +134,7 @@
             label: '生产企业',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 200
+            minWidth: 208
           },
           {
             prop: 'APPROVAL_NUMBER',

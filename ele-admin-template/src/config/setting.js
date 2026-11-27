@@ -28,6 +28,8 @@ const getRequestTimeout = () => {
     'smnw': 3600000,  // 1小时
     'stzlww': 3600000, // 1小时
     'stzlnw': 3600000, // 1小时
+    'chrmyyww': 3600000, // 1小时
+    'chrmyynw': 3600000, // 1小时
     'zxww': 3600000,  // 1小时
     'zxnw': 3600000,  // 1小时
     'lgww': 3600000,  // 1小时
@@ -54,103 +56,36 @@ const getRequestTimeout = () => {
 
 export const REQUEST_TIMEOUT = getRequestTimeout();
 
-// 医院标识
-// bd 北大
-// szsmyl 萨米
-// lg 龙岗人民医院
-// stzl 汕头肿瘤标识
-// szhn 华南医院
-// stzx 汕头中心
-// szlhfy 龙华妇幼
-// bdrm 北京人民
-// gzbj 浙江省人民医院毕节医院
-// szss 深圳市深汕人民医院
-// yzrm 永州市第三人民医院
+// 医院标识（环境→医院映射见 hospital-assets.js，打包只打当前医院 logo/背景）
+// bd 北大 / szsmyl 萨米 / lg 龙岗 / stzl 汕头肿瘤 / chrmyy 澄海 / szhn 华南
+// stzx 汕头中心 / szlhfy 龙华妇幼 / bdrm 北京人民 / gzbj 毕节
+// szss 深汕 / yzrm 永州三院 / se2 市二 / xh 新华
+import hospitalLogo from 'hospital-logo';
+import hospitalSeal from 'hospital-seal';
 
-// 根据环境自动获取医院标识
-const getHomeHp = () => {
-  const env = process.env.VUE_APP_ENV;
-  const envHpMap = {
-    'local': 'bdrm',
-    'test': 'bdrm',
-    'bjww': 'bdrm',
-    'bjwwnew': 'bdrm',
-    'bjnw': 'bdrm',
-    'bjnwhttps': 'bdrm',
-    'bdww': 'bd',
-    'bdnw': 'bd',
-    'lhfyww': 'szlhfy',
-    'lhfynw': 'szlhfy',
-    'hnww': 'szhn',
-    'hnnw': 'szhn',
-    'smww': 'szsmyl',
-    'smnw': 'szsmyl',
-    'stzlww': 'stzl',
-    'stzlnw': 'stzl',
-    'zxww': 'stzx',
-    'zxnw': 'stzx',
-    'lgww': 'lg',
-    'lgnw': 'lg',
-    'lglsww': 'lgls',
-    'lglsnw': 'lgls',
-    'lglssk': 'lgls',
-    'sebb': 'se2',  // 市二本部、大鹏院区、龙华院区统一使用同一个HOME_HP
-    'sebbww': 'se2',  // 市二本部、大鹏院区、龙华院区统一使用同一个HOME_HP
-    'sedp': 'se2',   // 三个环境使用同一个LOGO（待定）
-    'sedpww': 'se2',   // 三个环境使用同一个LOGO（待定）
-    'selh': 'se2',    // 三个环境使用同一个LOGO（待定）
-    'selhww': 'se2',    // 三个环境使用同一个LOGO（待定）
-    'xhww': 'xh',   // 新华外网
-    'xhnw': 'xh',    // 新华内网
-    'stse': 'stse',
-    'stseww': 'stse',
-    'gzbjww': 'gzbj',
-    'gzbjnw': 'gzbj',
-    'fszxy': 'fszxy',
-    'szssww': 'szss',
-    'szssnw': 'szss',
-    'yzrmnw': 'yzrm'
-  };
-  return envHpMap[env] || 'bd';
-}
+const { resolveHomeHp } = require('./hospital-assets.js');
 
-export const HOME_HP = getHomeHp();
+export const HOME_HP = resolveHomeHp(process.env.VUE_APP_ENV);
 
-// 按医院标识返回院徽，登录页与顶栏共用同一份映射，避免两处各维护一份
-export function getHospitalLogo() {
-  const logoMap = {
-    bd: require('@/assets/logoBD.jpg'),
-    fy: require('@/assets/logoFY.jpg'),
-    szsmyl: require('@/assets/logoSM.jpg'),
-    stzl: require('@/assets/logoZL.jpg'),
-    szhn: require('@/assets/logoHN.jpg'),
-    lg: require('@/assets/logoLG.png'),
-    lgls: require('@/assets/logoLS.png'),
-    stzx: require('@/assets/logoSTZX.jpg'),
-    stse: require('@/assets/logoSTSE.png'),
-    gzbj: require('@/assets/logoGZBJ.jpg'),
-    szlhfy: require('@/assets/logoFY.jpg'),
-    bdrm: require('@/assets/logoBJ.jpg'),
-    se2: require('@/assets/szse.png'),
-    xh: require('@/assets/xh.png')
-  };
-  const asset = logoMap[HOME_HP] || require('@/assets/logo.png');
-  // webpack5 asset 模块可能返回 { default: url }，兼容两种形态，避免拼出 [object Module]
-  const path = asset && asset.default ? asset.default : asset;
-  return `${String(path)}?_t=${new Date().getTime()}`;
-}
-
-// 登录卡顶部用圆形院徽。只有单独切出院徽的医院才返回，其余医院继续用横版院标
-export function getHospitalSeal() {
-  const sealMap = {
-    bd: require('@/assets/sealBD.png')
-  };
-  const asset = sealMap[HOME_HP];
-  if (!asset) {
+function hospitalAssetUrl(asset) {
+  if (asset == null || asset === '') {
     return '';
   }
-  const path = asset && asset.default ? asset.default : asset;
+  const path = asset && asset.default != null ? asset.default : asset;
+  if (path == null || path === '') {
+    return '';
+  }
   return `${String(path)}?_t=${new Date().getTime()}`;
+}
+
+/** 当前医院院标（构建 alias，不打其它医院 logo） */
+export function getHospitalLogo() {
+  return hospitalAssetUrl(hospitalLogo);
+}
+
+/** 登录卡圆形院徽；无则返回空，继续用横版院标 */
+export function getHospitalSeal() {
+  return hospitalAssetUrl(hospitalSeal);
 }
 
 // 计算b2b的的医院ID
@@ -194,6 +129,8 @@ const getBackBaseUrl = () => {
     'smnw': 'http://192.168.8.90:18002',
     'stzlww': 'http://113.106.170.118:82',
     'stzlnw': 'http://199.199.197.110:8001',
+    'chrmyyww': 'http://121.11.24.194:18011',
+    'chrmyynw': 'http://192.168.199.48:18011',
     'zxww': 'http://47.106.243.154:831',
     'zxnw': 'http://172.16.0.99:82',
     'lgww': 'http://218.17.60.162:10052',

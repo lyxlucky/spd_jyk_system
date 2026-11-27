@@ -157,7 +157,7 @@
             // sortable: 'custom',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 110
+            minWidth: 192
           },
           {
             prop: 'SPECIFICATION_OR_TYPE',
@@ -173,7 +173,7 @@
             // sortable: 'custom',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 110
+            width: 76
           },
           {
             prop: 'Price',
@@ -197,7 +197,7 @@
             // sortable: 'custom',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 150
+            minWidth: 208
           },
           {
             prop: 'StockQty',

@@ -35,27 +35,27 @@
     >
       <el-table-column prop="DEPT_TWO_CODE" label="二级科室编码" width="160" sortable />
       <el-table-column prop="DEPT_TWO_NAME" label="二级科室名称" min-width="200" show-overflow-tooltip />
-      <el-table-column label="科室监测量" width="140">
+      <el-table-column label="科室监测量" width="140" align="right">
         <template slot-scope="{ row }">
           <el-input v-model="row.DEPT_LIMIT_QTY" size="mini" />
         </template>
       </el-table-column>
       <el-table-column prop="GOODS_QTY" label="科室已用量" width="110" align="right" sortable />
-      <el-table-column prop="WCL" label="科室完成率%" width="110" align="right" sortable />
-      <el-table-column prop="PRICE" label="单价" width="90" sortable />
-      <el-table-column label="起始日期" width="105">
+      <el-table-column prop="WCL" label="科室完成率%" width="110" align="center" sortable />
+      <el-table-column prop="PRICE" label="单价" width="88" sortable show-overflow-tooltip align="right" />
+      <el-table-column label="起始日期" width="105" align="center">
         <template slot-scope="{ row }">{{ fmtDate10(row.BUY_TIME) }}</template>
       </el-table-column>
-      <el-table-column label="结束日期" width="105">
+      <el-table-column label="结束日期" width="105" align="center">
         <template slot-scope="{ row }">{{ fmtDate10(row.BUY_TIME2) }}</template>
       </el-table-column>
       <el-table-column prop="XM_NUM" label="项目编号" min-width="120" show-overflow-tooltip />
       <el-table-column prop="XM_NAME" label="项目名称" min-width="140" show-overflow-tooltip />
-      <el-table-column prop="XM_TYPE" label="项目类型" min-width="110" show-overflow-tooltip />
+      <el-table-column prop="XM_TYPE" label="项目类型" min-width="110" show-overflow-tooltip align="center" />
       <el-table-column prop="APPROVAL_NUMBER" label="注册证号" min-width="130" show-overflow-tooltip />
       <el-table-column prop="PROD_REGISTRATION_NAME" label="注册证名称" min-width="150" show-overflow-tooltip />
-      <el-table-column prop="MANUFACTURING_ENT_NAME" label="生产企业" min-width="150" show-overflow-tooltip />
-      <el-table-column label="操作" width="90" fixed="right">
+      <el-table-column prop="MANUFACTURING_ENT_NAME" label="生产企业" min-width="208" show-overflow-tooltip />
+      <el-table-column label="操作" width="90" fixed="right" align="center">
         <template slot-scope="{ row }">
           <el-button type="danger" size="mini" plain @click="removeRow(row)">删除</el-button>
         </template>
@@ -95,7 +95,7 @@
         <el-table-column type="selection" width="42" />
         <el-table-column prop="DEPT_TWO_CODE" label="二级科室编码" width="160" sortable />
         <el-table-column prop="DEPT_TWO_NAME" label="二级科室名称" min-width="200" show-overflow-tooltip />
-        <el-table-column label="科室监测量" width="160">
+        <el-table-column label="科室监测量" width="160" align="right">
           <template slot-scope="{ row }">
             <el-input
               v-model="addQtyMap[row.DEPT_TWO_CODE]"

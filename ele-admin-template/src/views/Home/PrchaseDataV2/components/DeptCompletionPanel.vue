@@ -89,7 +89,7 @@ export default {
         { prop: 'XM_TYPE', label: '项目类型', minWidth: 110 },
         { prop: 'APPROVAL_NUMBER', label: '注册证号', minWidth: 140, showOverflowTooltip: true },
         { prop: 'PROD_REGISTRATION_NAME', label: '注册证名称', minWidth: 160, showOverflowTooltip: true },
-        { prop: 'MANUFACTURING_ENT_NAME', label: '生产企业', minWidth: 150, showOverflowTooltip: true },
+        { prop: 'MANUFACTURING_ENT_NAME', label: '生产企业', minWidth: 208, showOverflowTooltip: true },
         {
           prop: 'BUY_TIME',
           label: '起始日期',
@@ -97,7 +97,7 @@ export default {
           formatter: (_r, _c, v) => fmtDate10(v)
         },
         { columnKey: 'endDate', label: '结束日期', width: 150, slot: 'endDate' },
-        { prop: 'PRICE', label: '单价', width: 90, align: 'right' },
+        { prop: 'PRICE', label: '单价', width: 88, showOverflowTooltip: true, align: 'right' },
         { prop: 'COUNT', label: '任务量', width: 90, align: 'right' },
         { prop: 'SOURCE_FROM', label: '阳光来源', minWidth: 110, showOverflowTooltip: true },
         { prop: 'DEPT_TWO_CODE', label: '二级科室编码', width: 130 },

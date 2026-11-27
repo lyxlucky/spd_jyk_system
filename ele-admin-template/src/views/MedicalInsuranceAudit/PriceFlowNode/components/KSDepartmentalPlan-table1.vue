@@ -195,7 +195,7 @@
 
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 110
+            minWidth: 192
           },
           {
             prop: 'PlanTime',
@@ -211,7 +211,7 @@
 
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 180,
+            width: 160,
             formatter: (row, column, cellValue) => {
               return this.$util.toDateString(cellValue);
             }

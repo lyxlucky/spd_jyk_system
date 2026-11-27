@@ -125,7 +125,7 @@
           {
             prop: 'MANUFACTURING_ENT_NAME',
             label: '生产企业',
-            minWidth: 160,
+            minWidth: 208,
             showOverflowTooltip: true
           },
           {

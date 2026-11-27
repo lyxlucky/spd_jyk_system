@@ -11,17 +11,17 @@
     <el-table ref="table" :data="rows" size="mini" border height="420" @selection-change="onSelectionChange">
       <el-table-column type="selection" width="45" align="center" />
       <el-table-column prop="Name" label="库区名称" width="90" />
-      <el-table-column prop="Varietie_Name" label="品种名称" width="140" show-overflow-tooltip />
+      <el-table-column prop="Varietie_Name" label="品种名称" min-width="192" show-overflow-tooltip />
       <el-table-column prop="Varietie_Code_New" label="品种编码" width="100" />
       <el-table-column prop="Batch" label="批次" width="90" />
-      <el-table-column prop="Supply_Price" label="结算价" width="80" align="center" />
+      <el-table-column prop="Supply_Price" label="结算价" width="80" align="right" />
       <el-table-column prop="Contract_Code" label="合同编码" width="100" />
       <el-table-column prop="Supplier_Code" label="供应商编码" width="100" />
-      <el-table-column prop="Supplier_Name" label="供应商名称" width="140" show-overflow-tooltip />
-      <el-table-column prop="Up_Shelf_Quantity" label="上架数量" width="80" align="center" />
-      <el-table-column prop="Batch_Production_Date" label="生产日期" width="100" />
-      <el-table-column prop="Batch_Validity_Period" label="有效到期" width="100" />
-      <el-table-column label="优先权重" width="100" align="center">
+      <el-table-column prop="Supplier_Name" label="供应商名称" min-width="208" show-overflow-tooltip />
+      <el-table-column prop="Up_Shelf_Quantity" label="上架数量" width="80" align="right" />
+      <el-table-column prop="Batch_Production_Date" label="生产日期" width="100" align="center" />
+      <el-table-column prop="Batch_Validity_Period" label="有效到期" width="100" align="center" />
+      <el-table-column label="优先权重" width="100" align="right">
         <template slot-scope="{ row }">
           <el-input-number
             v-model="row._priorityWeight"

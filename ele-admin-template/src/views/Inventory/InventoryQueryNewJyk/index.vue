@@ -161,7 +161,7 @@ export default {
         label: '品种全称',
         align: 'center',
         showOverflowTooltip: true,
-        minWidth: 220
+        minWidth: 192
     },
     {
         prop: 'Specification_Or_Type',
@@ -175,7 +175,7 @@ export default {
         label: '单位',
         align: 'center',
         showOverflowTooltip: true,
-        minWidth: 80
+        width: 76
     },
     {
         prop: 'Goods_Qty',
@@ -217,7 +217,7 @@ export default {
         label: '供应商',
         align: 'center',
         showOverflowTooltip: true,
-        minWidth: 160
+        minWidth: 208
     },
     {
         prop: 'Batch',
@@ -437,7 +437,7 @@ export default {
         label: '备注',
         align: 'center',
         showOverflowTooltip: true,
-        minWidth: 55
+        minWidth: 110
     },
     {
         prop: 'NO_CONSUME_NUM',
@@ -597,7 +597,7 @@ export default {
           label: '品种全称',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 240
+          minWidth: 192
         },
         {
           prop: 'Specification_Or_Type',
@@ -625,7 +625,7 @@ export default {
           label: '供应商',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 180
+          minWidth: 208
         },
         {
           prop: 'Batch',

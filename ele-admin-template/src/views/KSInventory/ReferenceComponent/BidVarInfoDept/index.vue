@@ -121,7 +121,7 @@ export default {
           // sortable: 'custom',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 150
+          minWidth: 192
         },
         {
           prop: 'PROD_REGISTRATION_NAME',
@@ -152,14 +152,14 @@ export default {
         {
           prop: 'MANUFACTURING_ENT_NAME',
           label: '生产厂家',
-          width: 150,
+          minWidth: 208,
           align: 'center',
           showOverflowTooltip: true
         },
         {
           prop: 'UNIT',
           label: '单位',
-          width: 80,
+          width: 76,
           align: 'center',
           showOverflowTooltip: true
         },
@@ -197,7 +197,7 @@ export default {
         {
           prop: 'SUP_NAME',
           label: '供应商',
-          width: 150,
+          minWidth: 208,
           align: 'center',
           showOverflowTooltip: true
         },

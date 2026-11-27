@@ -361,6 +361,15 @@ export default {
           width: 90
         },
         {
+          prop: 'OUTBOUND_CONSUMPTION_TYPE',
+          label: '一出／二消',
+          align: 'center',
+          width: 100,
+          hide: !['szse', 'szse_lh', 'szse_dp'].includes(
+            String(HOME_HP || '').toLowerCase()
+          )
+        },
+        {
           prop: 'ORDER_JS_TYPE',
           label: '订单结算类型',
           align: 'center',

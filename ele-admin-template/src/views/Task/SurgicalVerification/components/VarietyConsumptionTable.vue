@@ -98,7 +98,7 @@
             label: '品种全称',
             align: 'center',
             showOverflowTooltip: true,
-            minWidth: 150
+            minWidth: 192
           },
           {
             prop: 'APPROVAL_NUMBER',

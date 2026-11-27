@@ -95,14 +95,14 @@ export default {
           label: '品种名称',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 200
+          minWidth: 192
         },
         {
           prop: 'Specification_Or_Type',
           label: '规格型号',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 200
+          minWidth: 160
         },
         {
           prop: 'Manufacturing_Ent_Name',
@@ -147,7 +147,7 @@ export default {
           label: '收货数量',
           align: 'center',
           showOverflowTooltip: true,
-          minWidth: 120,
+          width: 88,
           fixed: 'right'
         },
       ],
