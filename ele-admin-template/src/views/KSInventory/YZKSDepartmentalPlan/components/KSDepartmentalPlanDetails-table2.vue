@@ -1,0 +1,1250 @@
+<template>
+  <div class="ks-dept-plan-detail">
+    <div class="spd-panel spd-panel--search">
+      <div class="spd-panel__head spd-panel__head--split">
+        <span>明细操作</span>
+        <span class="spd-panel__head-meta">
+          实际申领数量合计: <b>{{ sumNumber }}</b>
+          实际申领金额合计: <b>{{ sumAount }}</b>
+        </span>
+      </div>
+      <KSDepartmentalPlanDetails-search
+        @Approval="Approval"
+        @exportData="exportData"
+        @search="reload"
+        @ClickReload="ClickReload"
+        :KSDepartmentalPlanDataSearch="KSDepartmentalPlanDataSearch"
+        :selection="selection"
+        @showEditReoad="showEditReoad"
+        @BindBudget="handleBindBudget"
+        :datasourceList="datasourceList"
+      />
+    </div>
+
+    <div class="spd-panel spd-table-panel">
+      <div class="spd-panel__head">申领单详情列表</div>
+      <div class="spd-table-panel__wrap">
+        <ele-pro-table
+          ref="table"
+          class="data-table"
+          size="mini"
+          border
+          stripe
+          :toolkit="['columns', 'fullscreen']"
+          :header-overflow-hidden="false"
+          highlight-current-row
+          :pageSize="pageSize"
+          :pageSizes="pageSizes"
+          :columns="columns"
+          :datasource="datasource"
+          :selection.sync="selection"
+          :height="tableHeight"
+          full-height="calc(100vh - 100px)"
+          cache-key="YZKSDepartmentalPlanDetailTable"
+          :row-class-name="detailRowClassName"
+          @selection-change="onSelectionChange"
+        >
+          <template v-slot:PAG_TYPE="{ row }">
+            <div
+              :id="'PAG_TYPE' + row.ID"
+              :key="row.id"
+              @click="dialogVisibleFun(row)"
+            >{{ row.PAG_TYPE }}
+            </div>
+          </template>
+
+          <template v-slot:QUANITY="{ row }">
+            <el-link type="primary" @click="handleQuanityDetail(row)">{{
+              row.QUANITY
+            }}</el-link>
+          </template>
+
+          <template v-slot:DTL_IS_DELETE="{ row }">
+            <el-tag v-if="isDetailDeleted(row)" type="info" size="mini">已剔除</el-tag>
+            <el-tag v-else type="success" size="mini">正常</el-tag>
+          </template>
+
+          <!-- 系数展示/切换（新增/已提交且未剔除时可切换，切换同步重算散货数量，包数不变） -->
+          <template v-slot:COEFFICIENT="{ row }">
+            <span v-if="!canEditRow(row)">{{ row.COEFFICIENT }}</span>
+            <el-select
+              v-else
+              v-model="row.COEFFICIENT"
+              size="mini"
+              style="width: 70px"
+              @change="handleCoefficientChange(row)"
+            >
+              <el-option
+                v-for="coef in row.COEFFICIENT_OPTIONS"
+                :key="coef"
+                :label="String(coef)"
+                :value="coef"
+              />
+            </el-select>
+          </template>
+
+          <!-- 实际申领包数（用户输入，无论系数为1或>1均按此输入） -->
+          <template v-slot:INPUT_QTY="{ row }">
+            <span v-if="isDetailDeleted(row)">{{ row.PACK_QTY }}</span>
+            <el-input-number
+              v-else
+              v-model="row.PACK_QTY"
+              :min="0"
+              :max="99999999"
+              :step="1"
+              :precision="0"
+              controls-position="right"
+              size="mini"
+              style="width: 100px"
+              @change="handlePackQtyChange(row)"
+            />
+          </template>
+
+          <!-- 散货数量（实际申领包数 × 系数） -->
+          <template v-slot:PlanQty="{ row }">
+            <span class="coef-converted-qty">
+              <b>{{ row.PlanQty }}</b>
+            </span>
+          </template>
+
+          <template v-slot:VarCode="{ row }">
+            <el-tooltip
+              class="item"
+              effect="dark"
+              :content="row.VarCode + '中心库剩余库存 :' + row.StockQty"
+              placement="top"
+            >
+              <el-tag v-if="row.StockQty == 0" type="danger" size="mini">{{
+                row.VarCode
+              }}</el-tag>
+              <el-tag v-else type="success" size="mini">{{ row.VarCode }}</el-tag>
+            </el-tooltip>
+          </template>
+
+          <template v-slot:REMARK="{ row }">
+            <template v-if="isDetailDeleted(row)">
+              <span>{{ row.REMARK || '无' }}</span>
+            </template>
+            <template v-else>
+              <el-link
+                v-if="row.REMARK == null"
+                type="info"
+                @click="OpenUpApplyPlanBZBox(row.ID)"
+              >无</el-link>
+              <el-tag v-else type="primary" size="mini" @click="OpenUpApplyPlanBZBox(row.ID)">{{
+                row.REMARK
+              }}</el-tag>
+            </template>
+          </template>
+
+          <template v-slot:State="{ row }">
+            <el-tag v-if="row.State == 0" type="success" size="mini">新增</el-tag>
+            <el-tag v-if="row.State == 1" type="success" size="mini">已提交</el-tag>
+            <el-tag v-if="row.State == 2" type="success" size="mini">配送中</el-tag>
+            <el-tag v-if="row.State == 5" type="success" size="mini">已审核</el-tag>
+            <el-tag v-if="row.State == 10" type="success" size="mini">强制结束</el-tag>
+            <el-tag
+              v-if="
+                (row.State == 6 || row.State == 4) &&
+                row.SUM_Left_Apply_Qty == row.SUM_Apply_Qty
+              "
+              type="success"
+              size="mini"
+            >已审批</el-tag>
+            <el-tag
+              v-if="
+                row.SUM_Left_Apply_Qty > 0 &&
+                row.SUM_Left_Apply_Qty != row.SUM_Apply_Qty
+              "
+              type="success"
+              size="mini"
+            >未收全</el-tag>
+            <el-tag v-if="row.SUM_Left_Apply_Qty == 0" type="success" size="mini">已收全</el-tag>
+          </template>
+
+          <template v-slot:action="{ row }">
+            <el-popconfirm
+              class="ele-action"
+              title="确定要删除此用户吗？"
+              @confirm="remove(row)"
+            >
+              <template v-slot:reference>
+                <el-link type="danger" :underline="false" icon="el-icon-delete">
+                  删除
+                </el-link>
+              </template>
+            </el-popconfirm>
+          </template>
+
+          <template v-slot:SKU="{ row }">
+            <el-select
+              v-model="row.SELECTED_SKU_ID"
+              clearable
+              size="mini"
+              placeholder="请选择"
+            >
+              <el-option
+                v-for="item in row?.SKUS"
+                :key="item.ID"
+                :label="item.SKU_NAME"
+                :value="item.ID"
+              />
+            </el-select>
+          </template>
+
+          <template v-slot:REGISTRATION_VALID_DATE="{ row }">
+            <span v-if="!row.REGISTRATION_VALID_DATE">-</span>
+            <span
+              v-else
+              :style="{
+                color: isDateExpired(row.REGISTRATION_VALID_DATE) ? 'red' : 'black'
+              }"
+            >
+              {{ formatDate(row.REGISTRATION_VALID_DATE) }}
+            </span>
+          </template>
+          <template v-slot:MAN_XKZ_END="{ row }">
+            <span v-if="!row.MAN_XKZ_END">-</span>
+            <span
+              v-else
+              :style="{ color: isDateExpired(row.MAN_XKZ_END) ? 'red' : 'black' }"
+            >
+              {{ formatDate(row.MAN_XKZ_END) }}
+            </span>
+          </template>
+          <template v-slot:AUTH_VALID="{ row }">
+            <span v-if="!row.AUTH_VALID">-</span>
+            <span
+              v-else
+              :style="{ color: isDateExpired(row.AUTH_VALID) ? 'red' : 'black' }"
+            >
+              {{ formatDate(row.AUTH_VALID) }}
+            </span>
+          </template>
+          <template v-slot:VAR_ENABLE="{ row }">
+            <el-tag
+              v-if="row.VAR_ENABLE == '1' || row.VAR_ENABLE === 1"
+              size="mini"
+              type="success"
+            >
+              启用
+            </el-tag>
+            <el-tag v-else size="mini" type="info">冻结</el-tag>
+          </template>
+          <template v-slot:DET_CONTRACT_END="{ row }">
+            <span v-if="!row.DET_CONTRACT_END">-</span>
+            <span
+              v-else
+              :style="{
+                color: isDateExpired(row.DET_CONTRACT_END) ? 'red' : 'black'
+              }"
+            >
+              {{ formatDate(row.DET_CONTRACT_END) }}
+            </span>
+          </template>
+          <template v-slot:BUSINESS_LICENSE_VALID_DATE2="{ row }">
+            <span v-if="!row.BUSINESS_LICENSE_VALID_DATE2">-</span>
+            <span
+              v-else
+              :style="{
+                color: isDateExpired(row.BUSINESS_LICENSE_VALID_DATE2)
+                  ? 'red'
+                  : 'black'
+              }"
+            >
+              {{ formatDate(row.BUSINESS_LICENSE_VALID_DATE2) }}
+            </span>
+          </template>
+          <template v-slot:BUSINESS_LICENSE_VALID_DATE="{ row }">
+            <span v-if="!row.BUSINESS_LICENSE_VALID_DATE">-</span>
+            <span
+              v-else
+              :style="{
+                color: isDateExpired(row.BUSINESS_LICENSE_VALID_DATE)
+                  ? 'red'
+                  : 'black'
+              }"
+            >
+              {{ formatDate(row.BUSINESS_LICENSE_VALID_DATE) }}
+            </span>
+          </template>
+          <template v-slot:IMAGE_BUTTON="{ row }">
+            <el-button type="primary" size="mini" @click="openImageDialog(row)">图片</el-button>
+          </template>
+        </ele-pro-table>
+      </div>
+    </div>
+
+    <el-dialog
+      title="包装规格"
+      :visible.sync="dialogVisible"
+      width="30%"
+      :before-close="handleClose"
+    >
+      <el-row :gutter="20">
+        <el-col :span="24">
+          <div style="display: flex">
+            <div style="display: flex">
+              <label style="width: 120px">中包装数量:</label>
+              <el-input type="number" v-model="count1" />
+            </div>
+            <div style="display: flex">
+              <label style="width: 120px">申请数量:</label>
+              <el-input type="number" v-model="count2" />
+            </div>
+          </div>
+          <div style="display: flex; margin-top: 5px">
+            <div style="display: flex">
+              <label style="width: 120px">中包装数量:</label>
+              <el-input type="number" v-model="count3" />
+            </div>
+            <div style="display: flex">
+              <label style="width: 120px">申请数量:</label>
+              <el-input type="number" v-model="count4" />
+            </div>
+          </div>
+          <div style="display: flex; margin-top: 5px">
+            <div style="display: flex">
+              <label style="width: 150px">合计散货绩数量 :</label>
+              <el-input type="number" v-model="sum" />
+            </div>
+          </div>
+        </el-col>
+      </el-row>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+      </span>
+    </el-dialog>
+
+    <!-- 图片对话框 -->
+    <el-dialog
+      title="图片查看"
+      :visible.sync="imageDialogVisible"
+      top="1vh"
+      width="90%"
+      :before-close="closeImageDialog"
+    >
+      <ImageViewComponent
+        v-if="imageDialogVisible"
+        :row-data="currentImageRow"
+      />
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="closeImageDialog">关 闭</el-button>
+      </span>
+    </el-dialog>
+
+    <QuanityDetailDialog
+      :visible.sync="QuanityDetailDialogVisible"
+      :quanityInlineCurrent="quanityInlineCurrent"
+    />
+  </div>
+</template>
+
+<script>
+import KSDepartmentalPlanDetailsSearch from './KSDepartmentalPlanDetails-search.vue';
+import QuanityDetailDialog from '@/views/KSInventory/KSDepartmentalPlan/components/QuanityDetailDialog.vue';
+import ImageViewComponent from '@/views/KSInventory/KSDepartmentalPlan/components/ImageViewComponent.vue';
+import {
+  SerachPlanListDeta,
+  UpdateApplyPlanBZ,
+  Approval,
+  getVarietieSku,
+  upPlanListDelCount
+} from '@/api/KSInventory/KSDepartmentalPlan';
+import { filterPlanDetailByVariety } from '@/views/KSInventory/KSDepartmentalPlan/utils';
+import { utils, writeFile } from 'xlsx';
+import { HOME_HP } from '@/config/setting';
+
+export default {
+  name: 'YZKSDepartmentalPlanTable',
+  props: ['KSDepartmentalPlanData'],
+  components: {
+    KSDepartmentalPlanDetailsSearch,
+    QuanityDetailDialog,
+    ImageViewComponent
+  },
+  data() {
+    return {
+      columns: [
+        {
+          columnKey: 'selection',
+          type: 'selection',
+          width: 45,
+          align: 'center',
+          ...(HOME_HP !== 'stzyyy' ? { fixed: 'left' } : {}),
+          selectable: (row) => !this.isDetailDeleted(row)
+        },
+        {
+          label: '序',
+          columnKey: 'index',
+          type: 'index',
+          width: 45,
+          align: 'center',
+          showOverflowTooltip: true,
+          ...(HOME_HP !== 'stzyyy' ? { fixed: 'left' } : {})
+        },
+        {
+          columnKey: 'DTL_IS_DELETE',
+          prop: 'DTL_IS_DELETE',
+          slot: 'DTL_IS_DELETE',
+          label: '明细状态',
+          align: 'center',
+          width: 90,
+          ...(HOME_HP !== 'stzyyy' ? { fixed: 'left' } : {})
+        },
+        {
+          columnKey: 'COEFFICIENT',
+          prop: 'COEFFICIENT',
+          slot: 'COEFFICIENT',
+          label: '系数',
+          align: 'center',
+          width: 95,
+          ...(HOME_HP !== 'stzyyy' ? { fixed: 'left' } : {})
+        },
+        {
+          columnKey: 'INPUT_QTY',
+          slot: 'INPUT_QTY',
+          label: '实际申领包数',
+          align: 'center',
+          width: 130,
+          ...(HOME_HP !== 'stzyyy' ? { fixed: 'left' } : {})
+        },
+        {
+          columnKey: 'PlanQty',
+          slot: 'PlanQty',
+          label: '散货数量',
+          align: 'center',
+          showOverflowTooltip: true,
+          width: 100,
+          ...(HOME_HP !== 'stzyyy' ? { fixed: 'left' } : {})
+        },
+        {
+          columnKey: 'VarCode',
+          prop: 'VarCode',
+          slot: 'VarCode',
+          label: '品种编码',
+          align: 'center',
+          showOverflowTooltip: true,
+          width: 150
+        },
+        {
+          prop: 'CHARGING_CODE',
+          label: '收费编码',
+          align: 'center',
+          showOverflowTooltip: true,
+          width: 120
+        },
+        {
+          prop: 'ITEM_NAME',
+          label: '科研费用名称',
+          align: 'center',
+          showOverflowTooltip: true,
+          width: 150
+        },
+        {
+          slot: 'QUANITY',
+          prop: 'QUANITY',
+          label: '收货数量',
+          align: 'center',
+          showOverflowTooltip: true,
+          width: 120
+        },
+        {
+          prop: 'CONTRACT_TYPE',
+          label: '合同类型',
+          align: 'center',
+          showOverflowTooltip: true,
+          width: 110,
+          show: false,
+          formatter: (row, column, cellValue) => {
+            if (cellValue == 2) {
+              return '临采';
+            } else if (cellValue == 1) {
+              return '中标';
+            } else {
+              return '-';
+            }
+          }
+        },
+        {
+          prop: 'VarName',
+          label: '品种全称',
+          align: 'center',
+          showOverflowTooltip: true,
+          width: 330
+        },
+        {
+          prop: 'Used_Name',
+          label: '常用名',
+          align: 'center',
+          showOverflowTooltip: true,
+          width: 180
+        },
+        {
+          prop: 'GG',
+          label: '型号/规格',
+          align: 'center',
+          showOverflowTooltip: true,
+          width: 180
+        },
+        {
+          prop: 'Manufacturing',
+          label: '生产企业名称',
+          align: 'center',
+          showOverflowTooltip: true,
+          width: 180
+        },
+        {
+          prop: 'Brand',
+          label: '品牌',
+          align: 'center',
+          showOverflowTooltip: true,
+          width: 180
+        },
+        {
+          prop: 'SUPPLIER_NAME',
+          label: '启用供应商',
+          align: 'center',
+          showOverflowTooltip: true,
+          width: 180
+        },
+        {
+          columnKey: 'VAR_ENABLE',
+          prop: 'VAR_ENABLE',
+          slot: 'VAR_ENABLE',
+          label: '启用状态',
+          align: 'center',
+          showOverflowTooltip: true,
+          width: 90
+        },
+        {
+          columnKey: 'DET_CONTRACT_END',
+          prop: 'DET_CONTRACT_END',
+          slot: 'DET_CONTRACT_END',
+          label: '合同明细到期',
+          align: 'center',
+          showOverflowTooltip: true,
+          width: 120
+        },
+        {
+          prop: 'Day_Consume_Qty',
+          label: '平均用量(默认近30天)',
+          align: 'center',
+          showOverflowTooltip: true,
+          width: 150
+        },
+        {
+          prop: 'StockQty',
+          label: '中心库库存',
+          align: 'center',
+          showOverflowTooltip: true,
+          width: 120
+        },
+        {
+          prop: 'TJ_QTY',
+          label: '提交数量',
+          align: 'center',
+          showOverflowTooltip: true,
+          width: 80
+        },
+        {
+          prop: 'Unit',
+          label: '单位',
+          align: 'center',
+          showOverflowTooltip: true,
+          width: 80
+        },
+        {
+          prop: 'Price',
+          label: '结算价',
+          align: 'center',
+          showOverflowTooltip: true,
+          width: 80,
+          formatter: (row, column, cellValue) => {
+            return Number(cellValue).toFixed(2);
+          }
+        },
+        {
+          columnKey: 'PAG_TYPE',
+          prop: 'PAG_TYPE',
+          slot: 'PAG_TYPE',
+          label: '包装规格',
+          align: 'center',
+          showOverflowTooltip: true,
+          width: 110
+        },
+        {
+          prop: 'BigBoxCount',
+          label: '大包装数量',
+          align: 'center',
+          showOverflowTooltip: true,
+          width: 110
+        },
+        {
+          prop: 'MinBoxCount',
+          label: '中包装数量',
+          align: 'center',
+          showOverflowTooltip: true,
+          width: 110
+        },
+        {
+          prop: 'TOTAL_DOLLAR',
+          label: '总金额',
+          align: 'center',
+          showOverflowTooltip: true,
+          width: 90,
+          formatter: (row) => {
+            return this.$numeral(
+              Number(row.Price) * Number(row.PlanQty)
+            ).format('0,0.00');
+          }
+        },
+        {
+          prop: 'IS_NEED_TWO_APP',
+          label: '二级审批',
+          align: 'center',
+          showOverflowTooltip: true,
+          width: 110,
+          formatter: (row) => {
+            let IS_NEED_TWO_APP = '';
+            let STATE = '';
+            if (row.IS_NEED_TWO_APP == 0) {
+              return '-';
+            }
+            if (row.IS_NEED_TWO_APP == 1) {
+              IS_NEED_TWO_APP = '是';
+            }
+            if (row.SENCOND_APP_STATE == 0) {
+              STATE = '未审批';
+            }
+            if (row.SENCOND_APP_STATE == 1) {
+              STATE = '已审批';
+            }
+            return IS_NEED_TWO_APP + '/' + STATE;
+          }
+        },
+        {
+          columnKey: 'IMAGE_BUTTON',
+          slot: 'IMAGE_BUTTON',
+          label: '图片',
+          align: 'center',
+          width: 80
+        },
+        {
+          columnKey: 'REMARK',
+          prop: 'REMARK',
+          slot: 'REMARK',
+          label: '备注',
+          align: 'center',
+          showOverflowTooltip: true,
+          width: 110
+        },
+        {
+          columnKey: 'SKU',
+          slot: 'SKU',
+          label: 'SKU',
+          align: 'center',
+          showOverflowTooltip: true,
+          width: 110,
+          show: HOME_HP == 'bdrm'
+        },
+        {
+          prop: 'SPDBZ',
+          label: 'SPD备注',
+          align: 'center',
+          showOverflowTooltip: true,
+          width: 110
+        },
+        {
+          columnKey: 'REGISTRATION_VALID_DATE',
+          slot: 'REGISTRATION_VALID_DATE',
+          label: '注册证到期',
+          align: 'center',
+          showOverflowTooltip: true,
+          width: 120,
+          show: HOME_HP == 'bdrm'
+        }
+      ],
+      tableHeight: 320,
+      toolStyle: {
+        display: 'flex',
+        'flex-wrap': 'wrap',
+        'align-items': 'flex-end'
+      },
+      pageSize: 9999999,
+      pagerCount: 2,
+      pageSizes: [100, 9999999],
+      selection: [],
+      current: null,
+      showEdit: false,
+      showImport: false,
+      datasourceList: [],
+      sumNumber: 0,
+      sumAount: 0,
+      dialogVisible: false,
+      input: 1,
+      count1: 0,
+      count2: 0,
+      count3: 0,
+      count4: 0,
+      sum: 0,
+      rowData: null,
+      QuanityDetailDialogVisible: false,
+      quanityInlineCurrent: null,
+      imageDialogVisible: false,
+      currentImageRow: null
+    };
+  },
+  methods: {
+    formatDate(date) {
+      if (!date) return '-';
+      return this.$moment(date).format('YYYY-MM-DD');
+    },
+    isDateExpired(date) {
+      if (!date) return false;
+      return this.$moment(date).isBefore(this.$moment(), 'day');
+    },
+    openImageDialog(row) {
+      this.currentImageRow = row;
+      this.imageDialogVisible = true;
+    },
+    handleBindBudget() {},
+    closeImageDialog() {
+      this.imageDialogVisible = false;
+      this.currentImageRow = null;
+    },
+    async getSKUSList(row, visible) {
+      if (!visible) return;
+      if (!row.VARIETIE_CODE) return;
+      try {
+        const res = await getVarietieSku({
+          where: {
+            VARIETIE_CODE: row.VARIETIE_CODE
+          }
+        });
+        if (res.data && Array.isArray(res.data)) {
+          this.$set(
+            row,
+            'SKUS',
+            res.data.map((item) => ({
+              value: item.SKU_NAME,
+              label: item.SKU_NAME
+            }))
+          );
+        }
+      } catch (error) {
+        this.$message.error(error.message || '获取SKU列表失败');
+      }
+    },
+    canEditRow(row) {
+      if (this.isDetailDeleted(row)) return false;
+      const state =
+        this.KSDepartmentalPlanData && this.KSDepartmentalPlanData.State != null
+          ? String(this.KSDepartmentalPlanData.State)
+          : '';
+      return state === '0' || state === '1';
+    },
+    async handleCoefficientChange(row) {
+      if (!row.ID) return;
+      const newCoef = Number(row.COEFFICIENT) > 0 ? Number(row.COEFFICIENT) : 1;
+      const packQty = Math.max(0, Math.floor(Number(row.PACK_QTY) || 0));
+      const newPlanQty = packQty * newCoef;
+      const originalCoef = row._originalCoefficient;
+      const originalPlanQty = row._originalPlanQty;
+      this.$set(row, 'COEFFICIENT', newCoef);
+      this.$set(row, 'PlanQty', newPlanQty);
+      try {
+        const res = await upPlanListDelCount({
+          ID: row.ID,
+          Qty: newPlanQty,
+          Coefficient: newCoef,
+          PackQty: packQty
+        });
+        if (res.code == 200) {
+          this.$set(row, '_originalCoefficient', newCoef);
+          this.$set(row, '_originalPlanQty', newPlanQty);
+          this.$message({
+            type: 'success',
+            message: '系数与散货数量更新成功'
+          });
+        } else {
+          this.$set(row, 'COEFFICIENT', originalCoef);
+          this.$set(row, 'PlanQty', originalPlanQty);
+          this.$message({
+            type: 'error',
+            message: res.message || res.msg || '更新失败'
+          });
+        }
+      } catch (error) {
+        this.$set(row, 'COEFFICIENT', originalCoef);
+        this.$set(row, 'PlanQty', originalPlanQty);
+        this.$message({
+          type: 'error',
+          message: error.message || '更新系数失败'
+        });
+      }
+    },
+    async handlePackQtyChange(row) {
+      if (!row.ID || row.PACK_QTY === undefined || row.PACK_QTY === '') {
+        return;
+      }
+      const coef = Number(row.COEFFICIENT) > 0 ? Number(row.COEFFICIENT) : 1;
+      const newPackQty = Math.max(0, Math.floor(Number(row.PACK_QTY) || 0));
+      const newPlanQty = newPackQty * coef;
+      const originalPlanQty = row._originalPlanQty;
+      const originalPackQty = row._originalPackQty;
+      this.$set(row, 'PACK_QTY', newPackQty);
+      this.$set(row, 'PlanQty', newPlanQty);
+      try {
+        const res = await upPlanListDelCount({
+          ID: row.ID,
+          Qty: newPlanQty,
+          Coefficient: coef,
+          PackQty: newPackQty
+        });
+        if (res.code == 200) {
+          this.$set(row, '_originalPlanQty', newPlanQty);
+          this.$set(row, '_originalPackQty', newPackQty);
+          this.$message({
+            type: 'success',
+            message: '包数与数量更新成功'
+          });
+        } else {
+          this.$set(row, 'PlanQty', originalPlanQty);
+          this.$set(row, 'PACK_QTY', originalPackQty);
+          this.$message({
+            type: 'error',
+            message: res.message || res.msg || '更新失败'
+          });
+        }
+      } catch (error) {
+        this.$set(row, 'PlanQty', originalPlanQty);
+        this.$set(row, 'PACK_QTY', originalPackQty);
+        this.$message({
+          type: 'error',
+          message: error.message || '更新数量失败'
+        });
+      }
+    },
+    async handlePlanQtyChange(row) {
+      if (!row.ID || row.PlanQty === undefined || row.PlanQty === '') {
+        return;
+      }
+      const originalPlanQty = row._originalPlanQty;
+      const coef = Number(row.COEFFICIENT) > 0 ? Number(row.COEFFICIENT) : 1;
+      try {
+        const res = await upPlanListDelCount({
+          ID: row.ID,
+          Qty: row.PlanQty,
+          Coefficient: coef,
+          PackQty: coef > 1 ? Math.floor((Number(row.PlanQty) || 0) / coef) : 0
+        });
+        if (res.code == 200) {
+          this.$set(row, '_originalPlanQty', row.PlanQty);
+          this.$message({
+            type: 'success',
+            message: '数量更新成功'
+          });
+        } else {
+          this.$set(row, 'PlanQty', originalPlanQty);
+          this.$message({
+            type: 'error',
+            message: res.message || res.msg || '更新失败'
+          });
+        }
+      } catch (error) {
+        this.$set(row, 'PlanQty', originalPlanQty);
+        this.$message({
+          type: 'error',
+          message: error.message || '更新数量失败'
+        });
+      }
+    },
+    handleQuanityDetail(data) {
+      this.quanityInlineCurrent = data;
+      this.QuanityDetailDialogVisible = true;
+    },
+    Approval() {
+      const loading = this.$loading({
+        lock: true,
+        text: 'Loading',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      });
+      Approval({ PlanNum: this.KSDepartmentalPlanData.PlanNum })
+        .then((res) => {
+          loading.close();
+          if (res.code == 200) {
+            this.$message({
+              type: 'success',
+              message: '审批成功'
+            });
+          } else {
+            this.$message({
+              type: 'error',
+              message: res.message
+            });
+          }
+          this.ClickReload();
+          const where = {
+            PlanNum: this.KSDepartmentalPlanData.PlanNum
+          };
+          this.reload({ page: 1, where });
+        })
+        .catch((err) => {
+          loading.close();
+          this.$message({
+            type: 'error',
+            message: err
+          });
+        });
+    },
+    datasource({ page, limit, where, order }) {
+      let Dept_Two_CodeStr = '';
+      const userDeptList = this.$store.state.user.info.userDept;
+      for (let i = 0; i < userDeptList.length; i++) {
+        Dept_Two_CodeStr =
+          Dept_Two_CodeStr + userDeptList[i].Dept_Two_Code + ',';
+      }
+      where.DeptCode = Dept_Two_CodeStr;
+      return SerachPlanListDeta({ page, limit, where, order }).then((res) => {
+        const processedResult = (res.result || []).map((item) => {
+          const rawCoef =
+            item.COEFFICIENT != null && item.COEFFICIENT !== ''
+              ? Number(item.COEFFICIENT)
+              : Number(item.DEF_NO_PKG_COEFFICIENT);
+          const coef = Number.isFinite(rawCoef) && rawCoef > 0 ? rawCoef : 1;
+          const planQty = Number(item.PlanQty) || 0;
+          const packQty =
+            item.PACK_QTY != null && item.PACK_QTY !== ''
+              ? Number(item.PACK_QTY)
+              : Math.floor(planQty / coef);
+          const coefSet = new Set([coef]);
+          if (Array.isArray(item.COEFFICIENTS)) {
+            item.COEFFICIENTS.forEach((c) => {
+              const val = Number(c);
+              if (Number.isFinite(val) && val > 0) {
+                coefSet.add(val);
+              }
+            });
+          }
+          const coefOptions = Array.from(coefSet).sort((a, b) => a - b);
+          return {
+            ...item,
+            COEFFICIENT: coef,
+            COEFFICIENT_OPTIONS: coefOptions,
+            PACK_QTY: packQty,
+            SELECTED_SKU_NAME: '',
+            SELECTED_SKU_ID: '',
+            _originalCoefficient: coef,
+            _originalPlanQty: item.PlanQty,
+            _originalPackQty: packQty
+          };
+        });
+        const displayList = filterPlanDetailByVariety(
+          processedResult,
+          where.varietyFilter
+        );
+
+        const tData = {
+          count: displayList.length,
+          list: displayList
+        };
+        this.datasourceList = processedResult.filter(
+          (item) => !this.isDetailDeleted(item)
+        );
+        this.sumNumber = res.sumNumber;
+        this.sumAount = Number(res.sumAount).toFixed(2);
+
+        return tData;
+      });
+    },
+    isDetailDeleted(row) {
+      return row && String(row.DTL_IS_DELETE) === '0';
+    },
+    detailRowClassName({ row }) {
+      return this.isDetailDeleted(row) ? 'is-detail-deleted' : '';
+    },
+    changeSum() {
+      this.form2.sum =
+        this.form2.count1 * this.form2.count2 +
+        this.form2.count3 * this.form2.count4;
+    },
+    reload(where) {
+      where.PlanNum = this.KSDepartmentalPlanData.PlanNum;
+      this.$refs.table.reload({ page: 1, where });
+    },
+    ClickReload(IsReload) {
+      this.$emit('IsReload', IsReload);
+      this.$emit('clickReload2');
+    },
+    remove(row) {
+      console.log(row);
+    },
+    onSelectionChange(selection) {
+      this.selection = selection;
+    },
+    showEditReoad(data) {
+      if (data == false) {
+        const where = {
+          PlanNum: this.KSDepartmentalPlanData.PlanNum
+        };
+        this.$refs.table.reload({ page: 1, where });
+      }
+    },
+    OpenUpApplyPlanBZBox(ID) {
+      this.$prompt('请输入备注信息', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消'
+      })
+        .then(({ value }) => {
+          const loading = this.$messageLoading('备注提交中..');
+          const data = {
+            ID,
+            REMARK: value
+          };
+          UpdateApplyPlanBZ(data).then((res) => {
+            if (res.code == 200) {
+              this.$message({
+                type: 'success',
+                message: '备注成功'
+              });
+            } else {
+              this.$message({
+                type: 'error',
+                message: res.message
+              });
+            }
+            loading.close();
+            this.reload({ PlanNum: '' });
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '取消备注'
+          });
+        });
+    },
+    dialogVisibleFun(row) {
+      this.dialogVisible = true;
+      this.changeSumByEN(row);
+      this.rowData = row;
+    },
+    exportData(data) {
+      const loading = this.$messageLoading('正在导出数据...');
+      let Dept_Two_CodeStr = '';
+      const userDeptList = this.$store.state.user.info.userDept;
+      for (let i = 0; i < userDeptList.length; i++) {
+        Dept_Two_CodeStr =
+          Dept_Two_CodeStr + userDeptList[i].Dept_Two_Code + ',';
+      }
+
+      this.$refs.table.doRequest(({ where, order }) => {
+        where.DeptCode = Dept_Two_CodeStr;
+        where.SerachName = data.SerachName;
+        SerachPlanListDeta({
+          page: 1,
+          limit: 999999,
+          where,
+          order
+        })
+          .then((res) => {
+            loading.close();
+            const array = [
+              [
+                '明细状态',
+                '品种编码',
+                '品种全称',
+                '常用名',
+                '型号/规格',
+                '生产企业名称',
+                '系数',
+                '实际申领包数',
+                '散货数量',
+                '单位',
+                '结算价',
+                '供应商名称'
+              ]
+            ];
+            (res.result || []).forEach((d) => {
+              const rawCoef =
+                d.COEFFICIENT != null && d.COEFFICIENT !== ''
+                  ? Number(d.COEFFICIENT)
+                  : Number(d.DEF_NO_PKG_COEFFICIENT);
+              const coef = Number.isFinite(rawCoef) && rawCoef > 0 ? rawCoef : 1;
+              const packQty =
+                d.PACK_QTY != null && d.PACK_QTY !== ''
+                  ? Number(d.PACK_QTY)
+                  : Math.floor((Number(d.PlanQty) || 0) / coef);
+              array.push([
+                String(d.DTL_IS_DELETE) === '0' ? '已剔除' : '正常',
+                d.VarCode,
+                d.VarName,
+                d.Used_Name,
+                d.GG,
+                d.Manufacturing,
+                coef,
+                packQty,
+                d.PlanQty,
+                d.Unit,
+                d.Price,
+                d.SUPPLIER_NAME
+              ]);
+            });
+            writeFile(
+              {
+                SheetNames: ['Sheet1'],
+                Sheets: {
+                  Sheet1: utils.aoa_to_sheet(array)
+                }
+              },
+              '科室计划详情.xlsx'
+            );
+            this.$message.success('导出成功');
+          })
+          .catch((e) => {
+            loading.close();
+            this.$message.error(e.message);
+          });
+      });
+    },
+    handleClose(done) {
+      done();
+    },
+    sumAoumt() {
+      this.sum = this.count1 * this.count2 + this.count3 * this.count4;
+    },
+    changeSumByEN(row) {
+      row.PlanQty = this.count1 * this.count2 + this.count3 * this.count4;
+    }
+  },
+  computed: {
+    KSDepartmentalPlanDataSearch() {
+      return this.KSDepartmentalPlanData;
+    }
+  },
+  watch: {
+    KSDepartmentalPlanDataSearch() {
+      this.$forceUpdate();
+      let where = {};
+      if (this.KSDepartmentalPlanData) {
+        where = {
+          PlanNum: this.KSDepartmentalPlanData.PlanNum
+        };
+      }
+      this.$refs.table.reload({ page: 1, where });
+    },
+    count1() {
+      this.sumAoumt();
+    },
+    count2() {
+      this.sumAoumt();
+    },
+    count3() {
+      this.sumAoumt();
+    },
+    count4() {
+      this.sumAoumt();
+    },
+    sum() {
+      const className = 'PAG_TYPE' + this.rowData.ID;
+      const div = document.getElementById(className);
+      if (div) {
+        div.click();
+      }
+    }
+  },
+  created() {
+    localStorage.setItem(
+      'YZKSDepartmentalPlanDetailTableSize',
+      JSON.stringify('mini')
+    );
+  }
+};
+</script>
+
+<style scoped>
+.ks-dept-plan-detail {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.ks-dept-plan-detail >>> .spd-panel--search,
+.ks-dept-plan-detail >>> .spd-panel__body {
+  overflow: visible;
+  max-width: 100%;
+}
+
+.ks-dept-plan-detail >>> .ele-form-search.el-form--inline {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center;
+  width: 100%;
+  max-width: 100%;
+}
+
+.ks-dept-plan-detail >>> .ele-form-search .el-form-item {
+  flex-shrink: 0;
+  margin-bottom: 6px;
+}
+
+.ks-dept-plan-detail >>> .ele-form-actions.el-form-item {
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin-right: 0 !important;
+}
+
+.ks-dept-plan-detail >>> .ele-form-actions .el-form-item__content {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 6px;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.ks-dept-plan-detail >>> .spd-table-panel__wrap {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.ks-dept-plan-detail >>> .el-table th .cell {
+  white-space: nowrap;
+}
+
+.ks-dept-plan-detail >>> .ele-table-tool-default {
+  padding: 2px 0 0 4px;
+}
+
+.ks-dept-plan-detail >>> .ele-table-tool .ele-table-tool-title {
+  margin: 0;
+}
+
+.ks-dept-plan-detail >>> .el-table .is-detail-deleted {
+  color: #909399;
+  background-color: #f5f7fa !important;
+}
+
+.ks-dept-plan-detail >>> .el-table .is-detail-deleted td {
+  background-color: #f5f7fa !important;
+}
+
+.coef-bulk-text {
+  color: #909399;
+  font-size: 12px;
+}
+
+.coef-converted-qty {
+  color: #303133;
+}
+
+.coef-formula {
+  margin-left: 4px;
+  color: #909399;
+  font-size: 12px;
+}
+</style>

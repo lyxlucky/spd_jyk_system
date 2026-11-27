@@ -37,6 +37,33 @@ export async function SerachPlanList(data) {
   }
 }
 
+export async function SerachAuthVarWithCoef(data) {
+  var data2 = {};
+  data2.page = data.page;
+  data2.size = data.limit;
+  data2.DeptCode = data.where.DeptCode;
+  data2.SerachName = data.where.SerachName ? data.where.SerachName : '';
+  data2.Token = sessionStorage.getItem(TOKEN_STORE_NAME);
+  data2.SPECIFICATION_OR_TYPE = data.where.spec ? data.where.spec : '';
+  data2.MANUFACTURING_ENT_NAME = data.where.manufacturer ? data.where.manufacturer : '';
+  data2.varType = data.where.varType ? data.where.varType : '';
+  data2.mlType = data.where.mlType ? data.where.mlType : '0';
+  data2.PlanNum = data.where.PlanNum ? data.where.PlanNum : '';
+
+  const res = await request.get('/DeptApplyPlan/SerachAuthVarWithCoef', {
+    params: data2
+  });
+  if (res.data.code == 200) {
+    res.data.result = (res.data.result || []).map((row) => ({
+      ...row,
+      SYNC_DEPT_CATALOG: data2.mlType === '1'
+    }));
+    return res.data;
+  } else {
+    return Promise.reject(new Error(res.data.msg));
+  }
+}
+
 export async function KeeptListDeta(data) {
   var data2 = {};
   data2.type = '1';

@@ -685,6 +685,12 @@ export async function upPlanListDelCount(data) {
     ID: data.ID,
     Qty: data.Qty
   };
+  if (data.Coefficient !== undefined && data.Coefficient !== null) {
+    formatData.Coefficient = data.Coefficient;
+  }
+  if (data.PackQty !== undefined && data.PackQty !== null) {
+    formatData.PackQty = data.PackQty;
+  }
   const res = await request.post('/DeptApplyPlan/upPlanListDelCount', formdataify(formatData));
   if (res.data.code == 200) {
     return res.data;

@@ -257,6 +257,11 @@ export function getMenuRoutes(menus, homePath) {
       meta: { title: '科室计划配送新' }
     });
     routes.push({
+      path: '/KSInventory/YZKSDepartmentalPlan',
+      component: () => import('@/views/KSInventory/YZKSDepartmentalPlan/index.vue'),
+      meta: { title: '科室计划管理新' }
+    });
+    routes.push({
       path: '/Task/BuyBack',
       component: () => import('@/views/Task/BuyBack/index.vue'),
       meta: { title: '中心库退购' }
